@@ -17,7 +17,7 @@ import javax.xml.transform.stream.StreamResult
 
 
 class ElementMountPoint(val parent: Element, upstream: Flow<HtmlTree>) : SingleMountPoint<HtmlTree>(upstream) {
-    override fun set(value: HtmlTree) {
+    override fun set(value: HtmlTree, last: HtmlTree?) {
         parent.append(value)
     }
 }
@@ -44,7 +44,7 @@ fun main() {
 
         val x = Var<Int>(10)
 
-      0 val c = x.flow().map {
+        val c = x.flow().map {
            val x : HtmlTree = {
                div {
                    +"$it"

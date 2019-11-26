@@ -26,15 +26,20 @@ class Var<T>(initValue: T) {
 abstract class SingleMountPoint<T>(upstream: Flow<T>) {
     init {
         GlobalScope.launch {
-            upstream.collect { set(it) }
+            upstream.collect {
+                set(it, last)
+                last = it
+            }
         }
     }
 
-    abstract fun set(value: T): Unit
+    var last: T? = null
+
+    abstract fun set(value: T, last: T?): Unit
 }
 
 class PrintingIntMountPoint(val title: String, val upstream: Flow<Int>): SingleMountPoint<Int>(upstream) {
-    override fun set(value: Int) {
+    override fun set(value: Int, last: Int?) {
         println("$title --> new Value: $value")
     }
 }
