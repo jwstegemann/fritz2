@@ -31,11 +31,13 @@ fun main() {
     val myComponent = x.flow().map {
         div {
             attribute("width","20%")
-            attribute("height", a.flow())
+            //attribute("height", a.flow())
+            a.flow().bind("height")
             div {
                 +"Wert: $it"
             }
             +z //Flow of String
+            //z.bind()
             //FIXME: unregister Mount-Points/Flows when replaced!
             myNestedComponent("$it".reversed()).bind()
         }
