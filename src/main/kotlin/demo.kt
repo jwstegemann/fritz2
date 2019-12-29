@@ -12,15 +12,17 @@ import kotlinx.coroutines.flow.flow
 fun main() {
 
     val x = Var<Int>(10)
-    val y = flow {
+    val y = Var<String>("test")
+    val z = flow {
         for (i in 1..10) {
             println("Emitting $i")
             emit("test $i")
             delay(10000)
         }
     }
+    val a = Var<String>("100%")
 
-    fun myNestedComponent(c: String) = y.map {
+    fun myNestedComponent(c: String) = y.flow().map {
         div {
             +"$c - $it"
         }
@@ -28,9 +30,13 @@ fun main() {
 
     val myComponent = x.flow().map {
         div {
+            attribute("width","20%")
+            attribute("height", a.flow())
             div {
                 +"Wert: $it"
             }
+            +z //Flow of String
+            //FIXME: unregister Mount-Points/Flows when replaced!
             myNestedComponent("$it".reversed()).bind()
         }
     }
