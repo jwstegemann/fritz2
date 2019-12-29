@@ -16,7 +16,6 @@ object HTML {
 
     fun div(content: Div.() -> Unit): Div = Div().also { it.content() }
 
-
     interface WithDomNode {
         val domNode: Node
     }
@@ -31,7 +30,7 @@ object HTML {
             domNode.appendChild(it.domNode)
         }
 
-        fun mount(upstream: Flow<HtmlNode>): SingleMountPoint<HtmlNode> = DomMountPoint(upstream, domNode)
+        fun Flow<HtmlNode>.bind(): SingleMountPoint<HtmlNode> = DomMountPoint(this, domNode)
     }
 
 
