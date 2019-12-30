@@ -1,6 +1,8 @@
 import kotlinx.coroutines.flow.map
-import HTML.div
-import HTML.mount
+import io.fritz2.binding.*
+import io.fritz2.dom.html.div
+import io.fritz2.dom.mount
+import io.fritz2.util.Browser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -22,17 +24,19 @@ fun main() {
     }
     val a = Var<String>("100%")
 
-    fun myNestedComponent(c: String) = y.flow().map {
+    fun myNestedComponent(c: String) = y.map {
         div {
             +"$c - $it"
         }
     }
 
-    val myComponent = x.flow().map {
+    val myComponent = x.map {
         div {
+            testMe = !"17%"
+            //testMe = +"Hugo"
             attribute("width","20%")
-            //attribute("height", a.flow())
-            a.flow().bind("height")
+            //attribute("height", a)
+            a.bind("height")
             div {
                 +"Wert: $it"
             }
