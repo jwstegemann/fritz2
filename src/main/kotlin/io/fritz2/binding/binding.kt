@@ -25,6 +25,7 @@ operator fun String.not() = Const(this)
 
 abstract class SingleMountPoint<T>(upstream: Flow<T>) {
     init {
+        //FIXME: GLobalScope, Context?
         GlobalScope.launch {
             upstream.collect {
                 set(it, last)
