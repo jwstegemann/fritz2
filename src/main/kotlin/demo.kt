@@ -2,7 +2,6 @@ import kotlinx.coroutines.flow.map
 import io.fritz2.binding.*
 import io.fritz2.dom.html.div
 import io.fritz2.dom.mount
-import io.fritz2.util.Browser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -49,6 +48,6 @@ fun main() {
 
     myComponent.mount("target")
 
-    Browser.run(x)
+//    Browser.run(x)
 
 }

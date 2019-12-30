@@ -2,9 +2,10 @@ package io.fritz2.dom
 
 import io.fritz2.binding.SingleMountPoint
 import io.fritz2.dom.html.Div
-import io.fritz2.util.Browser
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.Document
 import org.w3c.dom.Text
+import kotlin.browser.window
 import kotlin.reflect.KProperty
 
 
@@ -43,7 +44,7 @@ object AttributeDelegate {
 }
 
 //TODO: Could inherit w3c.dom.Element by Delegation
-abstract class Element(tagName: String, override val domNode: org.w3c.dom.Element = Browser.document.createElement(tagName)) : Node<org.w3c.dom.Element>(domNode) {
+abstract class Element(tagName: String, override val domNode: org.w3c.dom.Element = window.document.createElement(tagName)) : Node<org.w3c.dom.Element>(domNode) {
     fun attribute(name: String, value: String) = domNode.setAttribute(name, value)
     fun attribute(name: String, values: Flow<String>) = values.bind(name)
 
@@ -54,4 +55,4 @@ abstract class Element(tagName: String, override val domNode: org.w3c.dom.Elemen
     fun String.component1(): Flow<String> = flowOf(this)
 }
 
-class TextNode(private val content: String): Node<Text>(Browser.document.createTextNode(content))
+class TextNode(private val content: String): Node<Text>(window.document.createTextNode(content))

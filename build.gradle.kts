@@ -1,10 +1,24 @@
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-group = "de.oevbs"
-version = "1.0-SNAPSHOT"
+group = "io"
+version = "0.1-SNAPSHOT"
 
 plugins {
-    kotlin("jvm") version "1.3.60"
+    kotlin("js") version "1.3.61"
+}
+
+kotlin {
+    target {
+        browser {
+            runTask {
+                devServer = KotlinWebpackConfig.DevServer(
+                        port = 9000,
+                        contentBase = listOf("$projectDir/src/main/web")
+                )
+            }
+        }
+    }
 }
 
 buildscript {
@@ -13,26 +27,17 @@ buildscript {
     }
 
     dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.3.60"))
+        classpath(kotlin("gradle-plugin", version = "1.3.61"))
     }
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
-    compile("org.jetbrains.kotlinx:kotlinx-html-jvm:0.6.12")
+    implementation(kotlin("stdlib-js"))
+    testImplementation(kotlin("test-js"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.2")
 }
 
 repositories {
     mavenCentral()
     jcenter()
-}
-
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    jvmTarget = "1.8"
-}
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
-    jvmTarget = "1.8"
 }

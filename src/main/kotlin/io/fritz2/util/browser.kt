@@ -1,6 +1,6 @@
 package io.fritz2.util
 
-import io.fritz2.binding.Var
+/* import io.fritz2.binding.Var
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.w3c.dom.Document
@@ -60,3 +60,5 @@ object Browser {
 
 
 }
+
+ */
