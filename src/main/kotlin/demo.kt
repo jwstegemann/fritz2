@@ -2,9 +2,7 @@ import kotlinx.coroutines.flow.map
 import io.fritz2.binding.*
 import io.fritz2.dom.html.div
 import io.fritz2.dom.mount
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flow
 
 
@@ -43,6 +41,14 @@ fun main() {
             //z.bind()
             //FIXME: unregister Mount-Points/Flows when replaced!
             myNestedComponent("$it".reversed()).bind()
+            button {
+                +"Test-Button"
+                event("click") {
+                    GlobalScope.launch {
+                        y.set(y.value()+'.')
+                    }
+                }
+            }
         }
     }
 

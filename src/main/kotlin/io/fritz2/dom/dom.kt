@@ -1,10 +1,12 @@
 package io.fritz2.dom
 
 import io.fritz2.binding.SingleMountPoint
+import io.fritz2.dom.html.Button
 import io.fritz2.dom.html.Div
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.Document
 import org.w3c.dom.Text
+import org.w3c.dom.events.Event
 import kotlin.browser.window
 import kotlin.reflect.KProperty
 
@@ -26,9 +28,18 @@ interface WithText<T : org.w3c.dom.Node> : WithDomNode<T> {
 }
 
 //TODO: Could inherit w3c.dom.Node by Delegation
+//FIXME: Add DSL-Marker-Annotation
 abstract class Node<T : org.w3c.dom.Node>(override val domNode: T) : WithDomNode<T> {
 
+    //TODO: generic fun to register new nodes
+
+    //FIXME: move subs to somewhere elese (element?, interfaces?)
     fun div(content: Div.() -> Unit): Div = Div().also {
+        it.content()
+        domNode.appendChild(it.domNode)
+    }
+
+    fun button(content: Button.() -> Unit): Button = Button().also {
         it.content()
         domNode.appendChild(it.domNode)
     }
@@ -47,6 +58,9 @@ object AttributeDelegate {
 abstract class Element(tagName: String, override val domNode: org.w3c.dom.Element = window.document.createElement(tagName)) : Node<org.w3c.dom.Element>(domNode) {
     fun attribute(name: String, value: String) = domNode.setAttribute(name, value)
     fun attribute(name: String, values: Flow<String>) = values.bind(name)
+
+    //TODO: better syntax with infix like "handle EVENT by HANDLER"
+    fun event(type: String, handler: (Event) -> Unit) = domNode.addEventListener(type, handler)
 
     //TODO: convenience-methods for data-attributes
 
