@@ -38,3 +38,19 @@ abstract class SingleMountPoint<T>(upstream: Flow<T>) {
 
     abstract fun set(value: T, last: T?): Unit
 }
+
+abstract class MultiMountPoint<T>(upstream: Flow<List<T>>) {
+    init {
+        //FIXME: GLobalScope, Context?
+        GlobalScope.launch {
+            upstream.collect {
+                set(it, last)
+                last = it
+            }
+        }
+    }
+
+    private var last: List<T>? = null
+
+    abstract fun set(value: List<T>, last: List<T>?)
+}
