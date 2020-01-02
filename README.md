@@ -1,5 +1,8 @@
 # fritz2
 
+[![Actions Status](https://github.com/jwstegemann/fritz2/workflows/ci/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
+
+
 A proof of concept for an ***extemely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
 ## How to try it that early?
