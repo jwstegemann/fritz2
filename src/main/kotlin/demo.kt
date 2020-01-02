@@ -1,9 +1,11 @@
-import kotlinx.coroutines.flow.map
 import io.fritz2.binding.*
+import io.fritz2.dom.Element
+import io.fritz2.dom.Node
+import io.fritz2.dom.html.Div
 import io.fritz2.dom.html.div
 import io.fritz2.dom.mount
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 
 
 @ExperimentalCoroutinesApi
@@ -27,6 +29,8 @@ fun main() {
         }
     }
 
+    val s = Seq<String>(listOf("a","b","c"))
+
     val myComponent = x.map {
         div {
             testMe = !"17%"
@@ -44,11 +48,20 @@ fun main() {
             button {
                 +"Test-Button"
                 event("click") {
+                    //TODO: better convenience (coroutine-scope)
                     GlobalScope.launch {
                         y.set(y.value()+'.')
                     }
                 }
             }
+            // sequence
+            s.map {
+                Patch(it.from, it.that.map {
+                    div {
+                        +it
+                    }
+                }, it.replaced)
+            }.bind()
         }
     }
 

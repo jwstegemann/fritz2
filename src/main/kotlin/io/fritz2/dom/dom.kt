@@ -1,5 +1,7 @@
 package io.fritz2.dom
 
+import io.fritz2.binding.MultiMountPoint
+import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
 import io.fritz2.dom.html.Button
 import io.fritz2.dom.html.Div
@@ -12,7 +14,7 @@ import kotlin.reflect.KProperty
 
 
 //TODO: Variance
-interface WithDomNode<T : org.w3c.dom.Node> {
+interface WithDomNode<out T : org.w3c.dom.Node> {
     val domNode: T
 }
 
@@ -29,7 +31,7 @@ interface WithText<T : org.w3c.dom.Node> : WithDomNode<T> {
 
 //TODO: Could inherit w3c.dom.Node by Delegation
 //FIXME: Add DSL-Marker-Annotation
-abstract class Node<T : org.w3c.dom.Node>(override val domNode: T) : WithDomNode<T> {
+abstract class Node<out T : org.w3c.dom.Node>(override val domNode: T) : WithDomNode<T> {
 
     //TODO: generic fun to register new nodes
 
@@ -45,6 +47,8 @@ abstract class Node<T : org.w3c.dom.Node>(override val domNode: T) : WithDomNode
     }
 
     fun Flow<Element>.bind(): SingleMountPoint<Node<org.w3c.dom.Element>> = DomMountPoint(this, domNode)
+
+    fun Flow<Patch<Element>>.bind(): MultiMountPoint<Node<org.w3c.dom.Element>> = DomMultiMountPoint(this, domNode)
 }
 
 object AttributeDelegate {
