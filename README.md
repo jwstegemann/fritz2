@@ -4,7 +4,7 @@ A proof of concept for an ***extemely lightweight*** well-performing independent
 
 ## How to try it that early?
 Just checkout the project, import in your favourite IDE (or whatever you like), run `gradle run` and enjoy ;-). Have a look at `demo.kt`.
-But don't be too diappointed. There is not too much ready yet...
+But don't be too disappointed. There is not too much ready yet...
 
 ## What is there already?`
 
