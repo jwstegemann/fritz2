@@ -3,6 +3,7 @@ package io.fritz2.dom
 import io.fritz2.binding.MultiMountPoint
 import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
+import io.fritz2.util.removeChildren
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.get
 import kotlin.browser.window
@@ -54,9 +55,15 @@ class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: 
 }
 
 fun Flow<Element>.mount(targetId: String) {
-    window.document.getElementById(targetId)?.let { DomMountPoint(this, it) }
+    window.document.getElementById(targetId)?.let {
+        it.removeChildren()
+        DomMountPoint(this, it)
+    }
 }
 
 fun Element.mount(targetId: String) {
-    window.document.getElementById(targetId)?.let { it.appendChild(this.domNode) }
+    window.document.getElementById(targetId)?.let {
+        it.removeChildren()
+        it.appendChild(this.domNode)
+    }
 }
