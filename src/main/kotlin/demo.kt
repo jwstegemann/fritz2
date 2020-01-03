@@ -16,7 +16,7 @@ fun main() {
     val y = Var<String>("test")
     val z = flow {
         for (i in 1..10) {
-            println("Emitting $i")
+            console.log("Emitting $i")
             emit("test $i")
             delay(10000)
         }
@@ -67,6 +67,12 @@ fun main() {
 
     myComponent.mount("target")
 
-//    Browser.run(x)
-
+    GlobalScope.launch {
+        delay(1000)
+        s.set(listOf("a","b","c","d"))
+        delay(1000)
+        s.set(listOf("a","b","c"))
+        delay(1000)
+        s.set(listOf("a","e","c"))
+    }
 }
