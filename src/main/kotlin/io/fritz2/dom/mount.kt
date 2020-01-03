@@ -17,12 +17,12 @@ class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Node<T>>, val target: o
 class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<Node<T>>>, val target: org.w3c.dom.Node?): MultiMountPoint<Node<T>>(upstream) {
     //FIXME: optimize and make tailrec
     private tailrec fun removeChildren(child: org.w3c.dom.Node?, n: Int): org.w3c.dom.Node? {
-        if (n == 0) {
-            return child
+        return if (n == 0) {
+            child
         } else {
             val nextSibling = child?.nextSibling
             if (child != null) target?.removeChild(child)
-            return removeChildren(nextSibling, n - 1)
+            removeChildren(nextSibling, n - 1)
         }
     }
 
