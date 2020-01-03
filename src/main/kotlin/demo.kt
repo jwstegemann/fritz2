@@ -8,13 +8,18 @@ import io.fritz2.dom.mount
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.events.Event
+import org.w3c.dom.events.MouseEvent
 
 
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun main() {
 
-    val model = Store(Var<String>("start"))
+    val model = object : Store<String>(Var<String>("start")) {
+        val addADot = Slot<MouseEvent> {
+            data.set(data.value() + ".")
+        }
+    }
 
     val myComponent = div {
         input() {
@@ -24,6 +29,10 @@ fun main() {
         div {
             +"value: "
             model.data.bind()
+        }
+        button {
+            +"add one more little dot"
+            onClick = model.addADot
         }
 
     }

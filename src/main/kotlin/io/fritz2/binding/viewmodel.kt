@@ -15,18 +15,23 @@ open class ViewModel<T>() {
 
 }
 
-typealias Slot<T> = (Flow<T>) -> Unit
-
-@FlowPreview
-class Store<T> @ExperimentalCoroutinesApi constructor(val data: Var<T>) : ViewModel<T>() {
-
-    @ExperimentalCoroutinesApi
-    val update: Slot<T> = { slot ->
+class Slot<T>(val handler: suspend (T) -> Unit) {
+    fun connect(flow: Flow<T>) {
         GlobalScope.launch {
-            slot.collect() {
-                data.set(it)
+            flow.collect() {
+                handler(it)
             }
         }
+    }
+}
+
+
+@FlowPreview
+open class Store<T> @ExperimentalCoroutinesApi constructor(val data: Var<T>) : ViewModel<T>() {
+
+    @ExperimentalCoroutinesApi
+    val update = Slot<T> {
+        data.set(it)
     }
 
 }
