@@ -19,9 +19,7 @@ fun main() {
     val myComponent = div {
         input() {
             value = model.data
-
-            //TODO: better syntax
-            model.updateOn(event(Change))
+            onChange = model.update
         }
         div {
             +"value: "

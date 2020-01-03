@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.ir.backend.js.compile
 
 group = "io"
 version = "0.1-SNAPSHOT"
@@ -41,3 +42,4 @@ repositories {
     mavenCentral()
     jcenter()
 }
+

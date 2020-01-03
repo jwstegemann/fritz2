@@ -92,6 +92,8 @@ abstract class Element(tagName: String, override val domNode: org.w3c.dom.Elemen
         awaitClose {domNode.removeEventListener(type.name, eventListener)}
     }
 
+    infix fun handle(i: Int) = 19
+
     fun Flow<String>.bind(name: String) = AttributeMountPoint(name, this, domNode)
 
     fun String.component1(): Flow<String> = flowOf(this)
