@@ -1,6 +1,7 @@
 import io.fritz2.binding.*
 import io.fritz2.dom.Element
 import io.fritz2.dom.Node
+import io.fritz2.dom.html.Change
 import io.fritz2.dom.html.Div
 import io.fritz2.dom.html.div
 import io.fritz2.dom.mount
@@ -19,7 +20,8 @@ fun main() {
         input() {
             value = model.data
 
-            model.updateOn(event("change"))
+            //TODO: better syntax
+            model.updateOn(event(Change))
         }
         div {
             +"value: "

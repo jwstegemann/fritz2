@@ -5,14 +5,12 @@ import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
 import io.fritz2.dom.html.Button
 import io.fritz2.dom.html.Div
+import io.fritz2.dom.html.EventType
 import io.fritz2.dom.html.Input
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.channels.broadcast
+import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.w3c.dom.Document
@@ -85,21 +83,13 @@ abstract class Element(tagName: String, override val domNode: org.w3c.dom.Elemen
 
     @FlowPreview
     @ExperimentalCoroutinesApi
+    fun <E,T> event(type: EventType<E,T>): Flow<T> = callbackFlow {
+        val eventListener: (Event) -> Unit = {
+                channel.offer(type.extract(it))
+        }
+        domNode.addEventListener(type.name, eventListener)
 
-    //TODO: make generic
-    fun event(type: String): Flow<String> {
-        console.log("bin da")
-        val channel = ConflatedBroadcastChannel<String>()
-
-        domNode.addEventListener(type, {
-            GlobalScope.run {
-                val data = (it.target as HTMLInputElement).value
-                println("CHANGED TO $data")
-                channel.offer(data)
-            }
-        })
-
-        return channel.asFlow().distinctUntilChanged()
+        awaitClose {domNode.removeEventListener(type.name, eventListener)}
     }
 
     fun Flow<String>.bind(name: String) = AttributeMountPoint(name, this, domNode)
