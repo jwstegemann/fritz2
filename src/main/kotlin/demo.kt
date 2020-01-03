@@ -1,9 +1,11 @@
-import kotlinx.coroutines.flow.map
 import io.fritz2.binding.*
+import io.fritz2.dom.Element
+import io.fritz2.dom.Node
+import io.fritz2.dom.html.Div
 import io.fritz2.dom.html.div
 import io.fritz2.dom.mount
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 
 
 @ExperimentalCoroutinesApi
@@ -14,7 +16,7 @@ fun main() {
     val y = Var<String>("test")
     val z = flow {
         for (i in 1..10) {
-            println("Emitting $i")
+            console.log("Emitting $i")
             emit("test $i")
             delay(10000)
         }
@@ -26,6 +28,8 @@ fun main() {
             +"$c - $it"
         }
     }
+
+    val s = Seq<String>(listOf("a","b","c"))
 
     val myComponent = x.map {
         div {
@@ -44,16 +48,31 @@ fun main() {
             button {
                 +"Test-Button"
                 event("click") {
+                    //TODO: better convenience (coroutine-scope)
                     GlobalScope.launch {
                         y.set(y.value()+'.')
                     }
                 }
             }
+            // sequence
+            s.map {
+                Patch(it.from, it.that.map {
+                    div {
+                        +it
+                    }
+                }, it.replaced)
+            }.bind()
         }
     }
 
     myComponent.mount("target")
 
-//    Browser.run(x)
-
+    GlobalScope.launch {
+        delay(1000)
+        s.set(listOf("a","b","c","d"))
+        delay(1000)
+        s.set(listOf("a","b","c"))
+        delay(1000)
+        s.set(listOf("a","e","c"))
+    }
 }

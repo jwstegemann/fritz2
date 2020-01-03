@@ -1,7 +1,10 @@
 package io.fritz2.dom
 
+import io.fritz2.binding.MultiMountPoint
+import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
 import kotlinx.coroutines.flow.Flow
+import org.w3c.dom.get
 import kotlin.browser.window
 
 class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Node<T>>, val target: org.w3c.dom.Node?) : SingleMountPoint<Node<T>>(upstream) {
@@ -9,6 +12,39 @@ class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Node<T>>, val target: o
         last?.let { target?.replaceChild(value.domNode, last.domNode) }
                 ?: target?.appendChild(value.domNode)
     }
+}
+
+class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<Node<T>>>, val target: org.w3c.dom.Node?): MultiMountPoint<Node<T>>(upstream) {
+    //FIXME: optimize and make tailrec
+    private tailrec fun removeChildren(child: org.w3c.dom.Node?, n: Int): org.w3c.dom.Node? {
+        return if (n == 0) {
+            child
+        } else {
+            val nextSibling = child?.nextSibling
+            if (child != null) target?.removeChild(child)
+            removeChildren(nextSibling, n - 1)
+        }
+    }
+
+    override fun patch(patch: Patch<Node<T>>) {
+//        console.log("### MountPoint: ... patching: ${patch.from} with ${patch.that} replacing ${patch.replaced}")
+        patch.apply {
+            val child = removeChildren(target?.childNodes?.get(from), replaced)
+//            console.log("### MountPoint: child: $child")
+            if (child == null) {
+                for (newChild in that) {
+                    target?.appendChild(newChild.domNode)
+//                    console.log("### MountPoint: ... appending: $newChild")
+                }
+            } else {
+                for (newChild in that) {
+                    target?.insertBefore(newChild.domNode, child)
+//                    console.log("### MountPoint: ... insert: $newChild")
+                }
+            }
+        }
+    }
+
 }
 
 class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: org.w3c.dom.Element?) : SingleMountPoint<String>(upstream) {

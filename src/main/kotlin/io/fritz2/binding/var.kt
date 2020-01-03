@@ -15,26 +15,14 @@ class Var<T>(initValue: T,
     fun value(): T = channel.value
 }
 
+
 @ExperimentalCoroutinesApi
 //TODO: conflate necessary?
 class Const<T> constructor(value: T, private val flow: Flow<T> = flowOf(value).conflate()): Flow<T> by flow
+
 
 //TODO: Generic extensions?
 @ExperimentalCoroutinesApi
 operator fun String.not() = Const(this)
 
-abstract class SingleMountPoint<T>(upstream: Flow<T>) {
-    init {
-        //FIXME: GLobalScope, Context?
-        GlobalScope.launch {
-            upstream.collect {
-                set(it, last)
-                last = it
-            }
-        }
-    }
 
-    private var last: T? = null
-
-    abstract fun set(value: T, last: T?): Unit
-}
