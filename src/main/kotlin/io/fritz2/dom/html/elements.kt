@@ -6,7 +6,9 @@ import io.fritz2.dom.Element
 import io.fritz2.dom.WithText
 import org.w3c.dom.HTMLButtonElement
 
+// global elements
 fun div(content: Div.() -> Unit): Div = Div().also { it.content() }
+
 
 class Div(): Element("div"), WithText<org.w3c.dom.Element> {
     var testMe: Flow<String> by AttributeDelegate
@@ -16,4 +18,8 @@ class Div(): Element("div"), WithText<org.w3c.dom.Element> {
 //FIXME: use correct type for domNode - HtmlButtonElement here
 class Button(): Element("button"), WithText<org.w3c.dom.Element> {
     //TODO: onClick, etc. by Event-Delegate
+}
+
+class Input(): Element("input") {
+    var value: Flow<String> by AttributeDelegate
 }

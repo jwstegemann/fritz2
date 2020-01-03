@@ -56,3 +56,7 @@ class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: 
 fun Flow<Element>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let { DomMountPoint(this, it) }
 }
+
+fun Element.mount(targetId: String) {
+    window.document.getElementById(targetId)?.let { it.appendChild(this.domNode) }
+}
