@@ -20,7 +20,6 @@ But don't be too disappointed. There is not too much ready yet...
 
 ## What will come next?
 
-- efficient one-way-databinding for lists (`MultiMountPoint`)
 - effortless two-way-databinding (`ViewModel`)
 - redux-like state-handling
 - set of high-level components to build fully functional, testable, beautiful single page webapps (using some css-lib yet to be chosen) including
