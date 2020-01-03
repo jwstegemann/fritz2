@@ -20,8 +20,8 @@ But don't be too disappointed. There is not too much ready yet...
 
 ## What will come next?
 
-- effortless two-way-databinding (`ViewModel`)
-- redux-like state-handling
+- effortless two-way-databinding (`ViewModel`) (work-in-progress, have a look at branch `two-way-databinding`)
+- redux-like state-handling (work-in-progress, have a look at branch `two-way-databinding`)
 - set of high-level components to build fully functional, testable, beautiful single page webapps (using some css-lib yet to be chosen) including
   - routing
   - validation
