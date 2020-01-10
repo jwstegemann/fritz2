@@ -38,26 +38,31 @@ interface WithText<T : org.w3c.dom.Node> : WithDomNode<T> {
     }.distinctUntilChanged().conflate(), domNode)
 }
 
+object Html : HtmlElements {
+    override fun <T : Element> register(element: T, content: (T) -> Unit): T {
+        content(element)
+        return element
+    }
+}
+
+interface HtmlElements {
+    fun <T: Element> register(element: T, content: (T) -> Unit): T
+
+    fun div(content: Div.() -> Unit): Div = register(Div(), content)
+
+    fun button(content: Button.() -> Unit): Button = register(Button(), content)
+
+    fun input(content: Input.() -> Unit): Input = register(Input(), content)
+}
+
 //TODO: Could inherit w3c.dom.Node by Delegation
 //FIXME: Add DSL-Marker-Annotation
-abstract class Node<out T : org.w3c.dom.Node>(override val domNode: T) : WithDomNode<T> {
+abstract class Node<out T : org.w3c.dom.Node>(override val domNode: T) : WithDomNode<T>, HtmlElements {
 
-    //TODO: generic fun to register new nodes
-
-    //FIXME: move subs to somewhere elese (element?, interfaces?)
-    fun div(content: Div.() -> Unit): Div = Div().also {
-        it.content()
-        domNode.appendChild(it.domNode)
-    }
-
-    fun button(content: Button.() -> Unit): Button = Button().also {
-        it.content()
-        domNode.appendChild(it.domNode)
-    }
-
-    fun input(content: Input.() -> Unit): Input = Input().also {
-        it.content()
-        domNode.appendChild(it.domNode)
+    override fun <E : Element> register(element: E, content: (E) -> Unit): E {
+        content(element)
+        domNode.appendChild(element.domNode)
+        return element
     }
 
     fun Flow<Element>.bind(): SingleMountPoint<Node<org.w3c.dom.Element>> = DomMountPoint(this, domNode)

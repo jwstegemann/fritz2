@@ -10,9 +10,6 @@ import kotlinx.coroutines.FlowPreview
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.MouseEvent
 
-// global elements
-fun div(content: Div.() -> Unit): Div = Div().also { it.content() }
-
 
 class Div(): Element("div"), WithText<org.w3c.dom.Element> {
     var testMe: Flow<String> by AttributeDelegate
