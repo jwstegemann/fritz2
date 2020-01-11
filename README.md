@@ -1,10 +1,10 @@
 # fritz2
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
-[![Extremely Lightweight](https://img.shields.io/badge/%F0%9F%A6%8B-Extremely%20Lightweight-7799cc.svg)](http://todomvc.com/examples/fritz2/)
+[![Extremely Lightweight](https://tokei.rs/b1/github/jwstegemann/fritz2?category=code)](http://todomvc.com/examples/fritz2/)
 [![100% Kotlin](https://img.shields.io/badge/pure%20Kotlin-100%25-blue)](https://play.kotlinlang.org/)
 
-A proof of concept for an ***extemely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
+A proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
 ## How to try it that early?
 Just checkout the project, import in your favourite IDE (or whatever you like), run `gradle run --continuous` and enjoy ;-). Have a look at `demo.kt` (and `oldDemo.kt).
@@ -24,7 +24,7 @@ But don't be too disappointed. There is not too much ready yet...
 - set of high-level components to build fully functional, testable, beautiful single page webapps (using some css-lib yet to be chosen) including
   - routing
   - validation
-  - server-communicaiton
+  - server-communication
   - user auth
   - logging
 
