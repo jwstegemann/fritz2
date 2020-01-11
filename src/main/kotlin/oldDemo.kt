@@ -1,9 +1,6 @@
-package io.fritz2
-
 import io.fritz2.binding.Patch
 import io.fritz2.binding.Seq
 import io.fritz2.binding.Var
-import io.fritz2.binding.not
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import kotlinx.coroutines.*
@@ -12,7 +9,7 @@ import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-fun main() {
+fun oldMain() {
 
     val x = Var<Int>(10)
     val y = Var<String>("test")

@@ -10,7 +10,7 @@ A proof of concept for an ***extremely lightweight*** well-performing independen
 Just checkout the project, import in your favourite IDE (or whatever you like), run `gradle run --continuous` and enjoy ;-). Have a look at `demo.kt` (and maybe `oldDemo.kt`).
 But don't be too disappointed. There is not too much ready yet...
 
-## What is there already?```
+## What is there already?
 
 - easy reactive one- and two-way-databinding
 - first few HTML-elements (`div`, `button`, `input`)

@@ -3,7 +3,6 @@ package io.fritz2.dom
 import io.fritz2.binding.MultiMountPoint
 import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
-import io.fritz2.util.removeChildren
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
