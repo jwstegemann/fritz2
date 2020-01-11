@@ -9,6 +9,7 @@ plugins {
     kotlin("js") version "1.3.61"
 }
 
+//TODO: add DCE and closure-compiler
 kotlin {
     target {
         browser {

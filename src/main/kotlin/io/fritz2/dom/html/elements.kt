@@ -10,27 +10,28 @@ import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 import org.w3c.dom.events.MouseEvent
 
-
-class Div(): Tag("div"), WithText<Element> {
-    var testMe: Flow<String> by AttributeDelegate
-    //TODO: structure attributes and events in interfaces
-}
+@ExperimentalCoroutinesApi
+@FlowPreview
+class Div(): Tag("div"), WithText<Element>
 
 //FIXME: use correct type for domNode - HtmlButtonElement here
+@ExperimentalCoroutinesApi
+@FlowPreview
 class Button(): Tag("button"), WithText<Element> {
-    var onClick: Slot<MouseEvent> by ClickEventDelegate
+    //TODO: structure attributes and events in interfaces
+    var onClick: Slot<MouseEvent> by Click.delegate
 }
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class Input(): Tag("input") {
     var value: Flow<String> by AttributeDelegate
 
-    var onChange: Slot<String> by ChangeEventDelegate
-
-    @ExperimentalCoroutinesApi
-    @FlowPreview
-    fun changes() = event(Change)
+    var onChange: Slot<String> by Change.delegate
 }
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 interface HtmlElements {
     fun <T: Tag> register(element: T, content: (T) -> Unit): T
 

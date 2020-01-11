@@ -16,12 +16,12 @@ interface WithEvents<out T : Element> : WithDomNode<T> {
 
     @FlowPreview
     @ExperimentalCoroutinesApi
-    fun <E,T> event(type: EventType<E, T>): Flow<T> = callbackFlow {
-        val eventListener: (Event) -> Unit = {
+    fun <T> event(type: EventType<T>): Flow<T> = callbackFlow {
+        val listener: (Event) -> Unit = {
             channel.offer(type.extract(it))
         }
-        domNode.addEventListener(type.name, eventListener)
+        domNode.addEventListener(type.name, listener)
 
-        awaitClose {domNode.removeEventListener(type.name, eventListener)}
+        awaitClose {domNode.removeEventListener(type.name, listener)}
     }
 }

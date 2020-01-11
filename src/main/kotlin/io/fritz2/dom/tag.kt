@@ -4,6 +4,8 @@ import io.fritz2.binding.MultiMountPoint
 import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
 import io.fritz2.dom.html.HtmlElements
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 import kotlin.browser.window
@@ -12,6 +14,8 @@ import kotlin.browser.window
 annotation class HtmlTagMarker
 
 //TODO: Could inherit w3c.dom.Element by Delegation
+@ExperimentalCoroutinesApi
+@FlowPreview
 @HtmlTagMarker
 abstract class Tag(tagName: String, override val domNode: Element = window.document.createElement(tagName))
     : WithDomNode<Element>, WithAttributes<Element>, WithEvents<Element>, HtmlElements {

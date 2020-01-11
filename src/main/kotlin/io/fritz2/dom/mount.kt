@@ -4,6 +4,8 @@ import io.fritz2.binding.MultiMountPoint
 import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
 import io.fritz2.util.removeChildren
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 import org.w3c.dom.get
@@ -55,6 +57,8 @@ class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: 
     }
 }
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 fun Flow<Tag>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
@@ -63,6 +67,8 @@ fun Flow<Tag>.mount(targetId: String) {
 }
 
 //TODO: is this ok? Better use Constant-Flow?
+@ExperimentalCoroutinesApi
+@FlowPreview
 fun Tag.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()

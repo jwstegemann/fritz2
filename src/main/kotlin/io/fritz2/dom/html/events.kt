@@ -9,30 +9,37 @@ import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 import kotlin.reflect.KProperty
 
-class EventType<E,T>(val name: String, val extract :(Event) -> T)
-
-abstract class AbstractEventDelegate<E,T>(val type: EventType<E,T>) {
+@ExperimentalCoroutinesApi
+@FlowPreview
+interface EventDelegate<T> {
     operator fun getValue(thisRef: Tag, property: KProperty<*>): Slot<T> = throw NotImplementedError()
-    @ExperimentalCoroutinesApi
-    @FlowPreview
-    operator fun setValue(thisRef: Tag, property: KProperty<*>, slot: Slot<T>) {
-        slot.connect(thisRef.event(type))
+    operator fun setValue(thisRef: Tag, property: KProperty<*>, slot: Slot<T>)
+}
+
+@ExperimentalCoroutinesApi
+@FlowPreview
+open class EventType<T>(val name: String) {
+    open fun extract(event: Event): T = event.unsafeCast<T>()
+
+    val delegate: EventDelegate<T> = object : EventDelegate<T> {
+        override operator fun setValue(thisRef: Tag, property: KProperty<*>, slot: Slot<T>) {
+            slot.connect(thisRef.event(this@EventType))
+        }
     }
-
 }
 
-val Change = EventType<Event, String>("change") {
-    (it.target as HTMLInputElement).value
+@ExperimentalCoroutinesApi
+@FlowPreview
+val Change = object: EventType<String>("change") {
+    override fun extract(event: Event): String = (event.target as HTMLInputElement).value
 }
-object ChangeEventDelegate : AbstractEventDelegate<Event, String>(Change)
 
-val Click = EventType<MouseEvent, MouseEvent>("click") {
-    (it as MouseEvent)
-}
-object ClickEventDelegate : AbstractEventDelegate<MouseEvent, MouseEvent>(Click)
+@ExperimentalCoroutinesApi
+@FlowPreview
+val Click = EventType<MouseEvent>("click")
 
 
-enum class Keys(code: Int) {
+enum class Keys(val code: Int) {
         ArrowLeft(37),
         ArrowUp(38),
         ArrowRight(39),

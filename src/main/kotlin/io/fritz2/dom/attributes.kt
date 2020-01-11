@@ -1,9 +1,13 @@
 package io.fritz2.dom
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 import kotlin.reflect.KProperty
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 object AttributeDelegate {
     operator fun getValue(thisRef: Tag, property: KProperty<*>): Flow<String> = throw NotImplementedError()
     operator fun setValue(thisRef: Tag, property: KProperty<*>, values: Flow<String>) {
@@ -11,6 +15,8 @@ object AttributeDelegate {
     }
 }
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 interface WithAttributes<out T : Element> : WithDomNode<T> {
 
     fun attribute(name: String, value: String) = domNode.setAttribute(name, value)
