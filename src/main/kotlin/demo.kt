@@ -1,10 +1,10 @@
-import io.fritz2.binding.*
-import io.fritz2.dom.*
-import io.fritz2.dom.html.Change
-import io.fritz2.dom.html.Div
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import org.w3c.dom.events.Event
+import io.fritz2.binding.Slot
+import io.fritz2.binding.Store
+import io.fritz2.binding.Var
+import io.fritz2.dom.html.html
+import io.fritz2.dom.mount
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import org.w3c.dom.events.MouseEvent
 
 
@@ -18,20 +18,22 @@ fun main() {
         }
     }
 
-    val myComponent = Html.div {
-        input() {
-            value = model.data
-            onChange = model.update
-        }
+    val myComponent = html {
         div {
-            +"value: "
-            model.data.bind()
-        }
-        button {
-            +"add one more little dot"
-            onClick = model.addADot
-        }
+            input() {
+                value = model.data
+                onChange = model.update
+            }
+            div {
+                +"value: "
+                model.data.bind()
+            }
+            button {
+                +"add one more little dot"
+                onClick = model.addADot
+            }
 
+        }
     }
 
     myComponent.mount("target")

@@ -1,10 +1,9 @@
 package io.fritz2.dom.html
 
 import io.fritz2.binding.Slot
-import io.fritz2.dom.Element
+import io.fritz2.dom.Tag
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
@@ -13,10 +12,10 @@ import kotlin.reflect.KProperty
 class EventType<E,T>(val name: String, val extract :(Event) -> T)
 
 abstract class AbstractEventDelegate<E,T>(val type: EventType<E,T>) {
-    operator fun getValue(thisRef: Element, property: KProperty<*>): Slot<T> = throw NotImplementedError()
+    operator fun getValue(thisRef: Tag, property: KProperty<*>): Slot<T> = throw NotImplementedError()
     @ExperimentalCoroutinesApi
     @FlowPreview
-    operator fun setValue(thisRef: Element, property: KProperty<*>, slot: Slot<T>) {
+    operator fun setValue(thisRef: Tag, property: KProperty<*>, slot: Slot<T>) {
         slot.connect(thisRef.event(type))
     }
 
