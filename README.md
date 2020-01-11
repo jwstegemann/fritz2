@@ -7,7 +7,7 @@
 A proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
 ## How to try it that early?
-Just checkout the project, import in your favourite IDE (or whatever you like), run `gradle run --continuous` and enjoy ;-). Have a look at `demo.kt` (and `oldDemo.kt).
+Just checkout the project, import in your favourite IDE (or whatever you like), run `gradle run --continuous` and enjoy ;-). Have a look at `demo.kt` (and maybe `oldDemo.kt`).
 But don't be too disappointed. There is not too much ready yet...
 
 ## What is there already?```
