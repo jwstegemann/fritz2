@@ -1,78 +1,40 @@
-import io.fritz2.binding.*
-import io.fritz2.dom.Element
-import io.fritz2.dom.Node
-import io.fritz2.dom.html.Div
-import io.fritz2.dom.html.div
+import io.fritz2.binding.Slot
+import io.fritz2.binding.Store
+import io.fritz2.binding.Var
+import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import org.w3c.dom.events.MouseEvent
 
 
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun main() {
 
-    val x = Var<Int>(10)
-    val y = Var<String>("test")
-    val z = flow {
-        for (i in 1..10) {
-            console.log("Emitting $i")
-            emit("test $i")
-            delay(10000)
-        }
-    }
-    val a = Var<String>("100%")
-
-    fun myNestedComponent(c: String) = y.map {
-        div {
-            +"$c - $it"
+    val model = object : Store<String>(Var<String>("start")) {
+        val addADot = Slot<MouseEvent> {
+            data.set(data.value() + ".")
         }
     }
 
-    val s = Seq<String>(listOf("a","b","c"))
-
-    val myComponent = x.map {
+    val myComponent = html {
         div {
-            testMe = !"17%"
-            //testMe = +"Hugo"
-            attribute("width","20%")
-            //attribute("height", a)
-            a.bind("height")
+            input() {
+                value = model.data
+                onChange = model.update
+            }
             div {
-                +"Wert: $it"
+                +"value: "
+                model.data.bind()
             }
-            +z //Flow of String
-            //z.bind()
-            //FIXME: unregister Mount-Points/Flows when replaced!
-            myNestedComponent("$it".reversed()).bind()
             button {
-                +"Test-Button"
-                event("click") {
-                    //TODO: better convenience (coroutine-scope)
-                    GlobalScope.launch {
-                        y.set(y.value()+'.')
-                    }
-                }
+                +"add one more little dot"
+                onClick = model.addADot
             }
-            // sequence
-            s.map {
-                Patch(it.from, it.that.map {
-                    div {
-                        +it
-                    }
-                }, it.replaced)
-            }.bind()
+
         }
     }
 
     myComponent.mount("target")
-
-    GlobalScope.launch {
-        delay(1000)
-        s.set(listOf("a","b","c","d"))
-        delay(1000)
-        s.set(listOf("a","b","c"))
-        delay(1000)
-        s.set(listOf("a","e","c"))
-    }
 }

@@ -7,22 +7,20 @@
 A proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
 ## How to try it that early?
-Just checkout the project, import in your favourite IDE (or whatever you like), run `gradle run --continuous` and enjoy ;-). Have a look at `demo.kt`.
+Just checkout the project, import in your favourite IDE (or whatever you like), run `gradle run --continuous` and enjoy ;-). Have a look at `demo.kt` (and `oldDemo.kt).
 But don't be too disappointed. There is not too much ready yet...
 
-## What is there already?`
+## What is there already?```
 
-- reactive one-way-databinding
-- first few HTML-elements (`div`, `button`)
+- easy reactive one- and two-way-databinding
+- first few HTML-elements (`div`, `button`, `input`)
 - first attributes
-- first event-handlers (onClick) (with ugly syntax, though)
-
+- first event-handlers (onClick, onChange)
+- hassle-free redux-like state-handling (work-in-progress)
 
 ## What will come next?
 
-- effortless two-way-databinding (`ViewModel`) (work-in-progress, have a look at [branch `two-way-databinding`](https://github.com/jwstegemann/fritz2/tree/two-way-databinding))
-- redux-like state-handling (work-in-progress, have a look at [branch `two-way-databinding`](https://github.com/jwstegemann/fritz2/tree/two-way-databinding)
-)
+- complete set of html-elements, attributtes and events
 - set of high-level components to build fully functional, testable, beautiful single page webapps (using some css-lib yet to be chosen) including
   - routing
   - validation

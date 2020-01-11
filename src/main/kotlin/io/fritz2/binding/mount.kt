@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 
 abstract class SingleMountPoint<T>(upstream: Flow<T>) {
     init {
-        //FIXME: GLobalScope, Context?
+        //FIXME: GLobalScope, Context? onEach?
         GlobalScope.launch {
             upstream.collect {
                 set(it, last)
