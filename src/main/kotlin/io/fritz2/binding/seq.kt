@@ -5,8 +5,9 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
-class Patch<out T>(val from: Int, val that: List<T>, val replaced: Int)
+data class Patch<out T>(val from: Int, val that: List<T>, val replaced: Int)
 
 class Seq<T>(initValue: List<T>,
              private val channel: ConflatedBroadcastChannel<Patch<T>> = ConflatedBroadcastChannel<Patch<T>>(Patch(0, initValue,0)),
@@ -44,3 +45,10 @@ class Seq<T>(initValue: List<T>,
         last = n
     }
 }
+
+
+//TODO: flatmap needed?
+fun <T,X> Flow<Patch<T>>.map(mapper: (T) -> X): Flow<Patch<X>> =
+    this.map {
+        Patch(it.from, it.that.map(mapper), it.replaced)
+    }
