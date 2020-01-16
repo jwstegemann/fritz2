@@ -8,23 +8,26 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.MouseEvent
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class Div(): Tag("div"), WithText<Element>
+class Div(): Tag<HTMLDivElement>("div"), WithText<HTMLDivElement>
 
 //FIXME: use correct type for domNode - HtmlButtonElement here
 @ExperimentalCoroutinesApi
 @FlowPreview
-class Button(): Tag("button"), WithText<Element> {
+class Button(): Tag<HTMLButtonElement>("button"), WithText<HTMLButtonElement> {
     //TODO: structure attributes and events in interfaces
     var onClick: Slot<MouseEvent> by Click.delegate
 }
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class Input(): Tag("input") {
+class Input(): Tag<HTMLInputElement>("input") {
     var value: Flow<String> by AttributeDelegate
 
     var onChange: Slot<String> by Change.delegate
@@ -33,7 +36,7 @@ class Input(): Tag("input") {
 @ExperimentalCoroutinesApi
 @FlowPreview
 interface HtmlElements {
-    fun <T: Tag> register(element: T, content: (T) -> Unit): T
+    fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T
 
     fun div(content: Div.() -> Unit): Div = register(Div(), content)
 
