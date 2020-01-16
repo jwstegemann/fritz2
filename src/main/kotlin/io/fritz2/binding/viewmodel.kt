@@ -7,6 +7,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
@@ -15,13 +16,27 @@ open class ViewModel<T>() {
 
 }
 
-class Slot<T>(val handler: suspend (T) -> Unit) {
-    fun connect(flow: Flow<T>) {
+//TODO: Find a better name
+interface Slot<T> {
+    fun connect(flow: Flow<T>)
+}
+
+//TODO: Find a better name
+class ConcreteSlot<T>(val handler: suspend (T) -> Unit) : Slot<T> {
+    override fun connect(flow: Flow<T>) {
         GlobalScope.launch {
             flow.collect() {
                 handler(it)
             }
         }
+    }
+
+    fun <X> map(mapper: suspend (X) -> T): Slot<X> = MappedSlot<X,T>(this, mapper)
+}
+
+class MappedSlot<X, T>(val upstream: Slot<T>, val mapper: suspend (X) -> T) : Slot<X> {
+    override fun connect(flow: Flow<X>) {
+        upstream.connect(flow.map(mapper))
     }
 }
 
@@ -30,7 +45,7 @@ class Slot<T>(val handler: suspend (T) -> Unit) {
 open class Store<T> @ExperimentalCoroutinesApi constructor(val data: Var<T>) : ViewModel<T>() {
 
     @ExperimentalCoroutinesApi
-    val update = Slot<T> {
+    val update = ConcreteSlot<T> {
         data.set(it)
     }
 

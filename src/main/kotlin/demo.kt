@@ -1,3 +1,4 @@
+import io.fritz2.binding.ConcreteSlot
 import io.fritz2.binding.Slot
 import io.fritz2.binding.Store
 import io.fritz2.binding.Var
@@ -8,12 +9,15 @@ import kotlinx.coroutines.FlowPreview
 import org.w3c.dom.events.MouseEvent
 
 
+data class ActionData(val x: Int, val y: Int)
+
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun main() {
 
     val model = object : Store<String>(Var<String>("start")) {
-        val addADot = Slot<MouseEvent> {
+        val addADot = ConcreteSlot<ActionData> {
+            console.log("x: ${it.x}, y: ${it.y}")
             data.set(data.value() + ".")
         }
     }
@@ -30,7 +34,9 @@ fun main() {
             }
             button {
                 +"add one more little dot"
-                onClick = model.addADot
+                onClick = model.addADot.map {
+                    ActionData(it.clientX, it.clientY)
+                }
             }
 
         }

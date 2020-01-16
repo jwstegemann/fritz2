@@ -8,6 +8,7 @@ import kotlin.reflect.KProperty
 
 @ExperimentalCoroutinesApi
 @FlowPreview
+//TODO: different datatypes for attributes (List of String for classes, etc.)
 object AttributeDelegate {
     operator fun getValue(thisRef: Tag, property: KProperty<*>): Flow<String> = throw NotImplementedError()
     operator fun setValue(thisRef: Tag, property: KProperty<*>, values: Flow<String>) {
