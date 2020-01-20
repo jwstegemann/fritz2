@@ -4,11 +4,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 //TODO: abstract?
@@ -40,13 +38,23 @@ class MappedSlot<X, T>(val upstream: Slot<T>, val mapper: suspend (X) -> T) : Sl
     }
 }
 
+typealias Update<T> = (T) -> T
 
 @FlowPreview
-open class Store<T> @ExperimentalCoroutinesApi constructor(val data: Var<T>) : ViewModel<T>() {
+@ExperimentalCoroutinesApi
+open class Store<T>(val initialData: T) : ViewModel<T>() {
 
-    @ExperimentalCoroutinesApi
-    val update = ConcreteSlot<T> {
-        data.set(it)
+    private val updates = ConflatedBroadcastChannel<Update<T>>()
+    private val applyUpdate : suspend (T, Update<T>) -> T = {lastValue, update -> update(lastValue)}
+    val data = updates.asFlow().scan(initialData, applyUpdate).distinctUntilChanged()
+
+    fun <A> subscribe(actions: Flow<A>, handler: (T,A) -> T) {
+        GlobalScope.launch {
+            actions.collect {
+                val specificUpdate: Update<T> = { t -> handler(t,it) }
+                updates.offer(specificUpdate)
+            }
+        }
     }
 
 }

@@ -12,6 +12,7 @@ import org.w3c.dom.events.Event
 interface WithEvents<out T : Element> : WithDomNode<T> {
 
     //TODO: better syntax with infix like "handle EVENT by HANDLER"
+    //TODO: rename to "on"
     fun event(type: String, handler: (Event) -> Unit) = domNode.addEventListener(type, handler)
 
     @FlowPreview
@@ -22,6 +23,6 @@ interface WithEvents<out T : Element> : WithDomNode<T> {
         }
         domNode.addEventListener(type.name, listener)
 
-        awaitClose {domNode.removeEventListener(type.name, listener)}
+        awaitClose { domNode.removeEventListener(type.name, listener) }
     }
 }
