@@ -1,6 +1,5 @@
 package io.fritz2.dom.html
 
-import io.fritz2.binding.Slot
 import io.fritz2.dom.AttributeDelegate
 import io.fritz2.dom.Tag
 import io.fritz2.dom.WithText
@@ -22,7 +21,7 @@ class Div(): Tag<HTMLDivElement>("div"), WithText<HTMLDivElement>
 @FlowPreview
 class Button(): Tag<HTMLButtonElement>("button"), WithText<HTMLButtonElement> {
     //TODO: structure attributes and events in interfaces
-    var onClick: Slot<MouseEvent> by Click.delegate
+    val clicks by lazy { subscribe(Click) }
 }
 
 @ExperimentalCoroutinesApi
@@ -30,7 +29,7 @@ class Button(): Tag<HTMLButtonElement>("button"), WithText<HTMLButtonElement> {
 class Input(): Tag<HTMLInputElement>("input") {
     var value: Flow<String> by AttributeDelegate
 
-    var onChange: Slot<String> by Change.delegate
+    val changes by lazy { subscribe(Change) }
 }
 
 @ExperimentalCoroutinesApi
