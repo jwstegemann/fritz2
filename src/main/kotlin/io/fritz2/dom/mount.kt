@@ -58,7 +58,7 @@ class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: 
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-fun Flow<Tag>.mount(targetId: String) {
+fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
         DomMountPoint(this, it)
@@ -68,7 +68,7 @@ fun Flow<Tag>.mount(targetId: String) {
 //TODO: is this ok? Better use Constant-Flow?
 @ExperimentalCoroutinesApi
 @FlowPreview
-fun Tag.mount(targetId: String) {
+fun <X : Element> Tag<X>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
         it.appendChild(this.domNode)

@@ -17,16 +17,16 @@ annotation class HtmlTagMarker
 @ExperimentalCoroutinesApi
 @FlowPreview
 @HtmlTagMarker
-abstract class Tag(tagName: String, override val domNode: Element = window.document.createElement(tagName))
-    : WithDomNode<Element>, WithAttributes<Element>, WithEvents<Element>, HtmlElements {
+abstract class Tag<out T : Element>(tagName: String, override val domNode: T = window.document.createElement(tagName).unsafeCast<T>())
+    : WithDomNode<T>, WithAttributes<T>, WithEvents<T>, HtmlElements {
 
-    override fun <E : Tag> register(element: E, content: (E) -> Unit): E {
+    override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
         content(element)
         domNode.appendChild(element.domNode)
         return element
     }
 
-    fun Flow<Tag>.bind(): SingleMountPoint<WithDomNode<Element>> = DomMountPoint(this, domNode)
+    fun <X : Element> Flow<Tag<X>>.bind(): SingleMountPoint<WithDomNode<Element>> = DomMountPoint(this, domNode)
 
-    fun Flow<Patch<Tag>>.bind(): MultiMountPoint<WithDomNode<Element>> = DomMultiMountPoint(this, domNode)
+    fun <X : Element> Flow<Patch<Tag<X>>>.bind(): MultiMountPoint<WithDomNode<Element>> = DomMultiMountPoint(this, domNode)
 }
