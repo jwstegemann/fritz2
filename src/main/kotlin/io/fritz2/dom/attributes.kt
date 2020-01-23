@@ -3,6 +3,7 @@ package io.fritz2.dom
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
 import kotlin.reflect.KProperty
 
@@ -10,9 +11,9 @@ import kotlin.reflect.KProperty
 @FlowPreview
 //TODO: different datatypes for attributes (List of String for classes, etc.)
 object AttributeDelegate {
-    operator fun <X : Element> getValue(thisRef: Tag<X>, property: KProperty<*>): Flow<String> = throw NotImplementedError()
-    operator fun <X : Element> setValue(thisRef: Tag<X>, property: KProperty<*>, values: Flow<String>) {
-        thisRef.attribute(property.name, values)
+    operator fun <X : Element, T: Any> getValue(thisRef: Tag<X>, property: KProperty<*>): Flow<T> = throw NotImplementedError()
+    operator fun <X : Element, T: Any> setValue(thisRef: Tag<X>, property: KProperty<*>, values: Flow<T>) {
+        thisRef.attribute(property.name, values.map{s -> s.toString()})
     }
 }
 
