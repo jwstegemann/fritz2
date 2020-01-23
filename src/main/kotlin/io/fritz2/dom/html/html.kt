@@ -7,7 +7,7 @@ import org.w3c.dom.Element
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-fun <X : Element> html(content: HtmlElements.() -> Tag<X>) =
+fun <E : Element> html(content: HtmlElements.() -> Tag<E>) =
     content(object : HtmlElements {
         override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
             content(element)

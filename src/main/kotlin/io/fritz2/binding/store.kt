@@ -15,7 +15,7 @@ typealias Update<T> = (T) -> T
 @ExperimentalCoroutinesApi
 open class Store<T>(val initialData: T) {
 
-    inner class Handler<A>(val handle: (T, A) -> T) {
+    inner class Handler<A>(inline val handle: (T, A) -> T) {
         fun handle(actions: Flow<A>) {
             GlobalScope.launch {
                 actions.collect {
