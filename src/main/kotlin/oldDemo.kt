@@ -1,5 +1,4 @@
 import io.fritz2.binding.Patch
-import io.fritz2.binding.Seq
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import kotlinx.coroutines.*
