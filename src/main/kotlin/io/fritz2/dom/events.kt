@@ -11,13 +11,11 @@ import org.w3c.dom.events.Event
 
 interface WithEvents<out T : Element> : WithDomNode<T> {
 
-    //TODO: better syntax with infix like "handle EVENT by HANDLER"
-    //TODO: rename to "on"
-    fun event(type: String, handler: (Event) -> Unit) = domNode.addEventListener(type, handler)
+    fun on(type: String, handler: (Event) -> Unit) = domNode.addEventListener(type, handler)
 
     @FlowPreview
     @ExperimentalCoroutinesApi
-    fun <T> event(type: EventType<T>): Flow<T> = callbackFlow {
+    fun <T> subscribe(type: EventType<T>): Flow<T> = callbackFlow {
         val listener: (Event) -> Unit = {
             channel.offer(type.extract(it))
         }

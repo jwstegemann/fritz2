@@ -7,9 +7,7 @@ import kotlinx.coroutines.flow.*
 //TODO: conflate necessary?
 class Const<T>(value: T, private val flow: Flow<T> = flowOf(value).conflate()): Flow<T> by flow
 
-
-//TODO: Generic extensions?
 @ExperimentalCoroutinesApi
-operator fun String.not() = Const(this)
+operator fun <T> T.not() = Const(this)
 
 

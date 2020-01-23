@@ -17,7 +17,7 @@ class Div(): Tag("div"), WithText<Element>
 @FlowPreview
 class Button(): Tag("button"), WithText<Element> {
     //TODO: structure attributes and events in interfaces
-    val clicks by lazy { event(Click) }
+    val clicks by lazy { subscribe(Click) }
 }
 
 @ExperimentalCoroutinesApi
@@ -25,7 +25,7 @@ class Button(): Tag("button"), WithText<Element> {
 class Input(): Tag("input") {
     var value: Flow<String> by AttributeDelegate
 
-    var changes by lazy { event(Change) }
+    val changes by lazy { subscribe(Change) }
 }
 
 @ExperimentalCoroutinesApi

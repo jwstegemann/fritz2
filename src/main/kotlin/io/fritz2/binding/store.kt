@@ -10,24 +10,25 @@ import kotlinx.coroutines.launch
 
 typealias Update<T> = (T) -> T
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-operator fun <M,A> Flow<A>.rangeTo(slot: Store<M>.Slot<A>) {
-    slot.handle(this)
-}
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 open class Store<T>(val initialData: T) {
 
-    inner class Slot<A>(val handler: (T, A) -> T) {
+    inner class Handler<A>(val handle: (T, A) -> T) {
         fun handle(actions: Flow<A>) {
             GlobalScope.launch {
                 actions.collect {
-                    val specificUpdate: Update<T> = { t -> handler(t,it) }
+                    val specificUpdate: Update<T> = { t -> handle(t,it) }
                     updates.offer(specificUpdate)
                 }
             }
+        }
+
+        // syntactical sugar to write slot <= event-stream
+        operator fun compareTo(flow: Flow<A>): Int {
+            handle(flow)
+            return 0
         }
     }
 
@@ -35,5 +36,5 @@ open class Store<T>(val initialData: T) {
     private val applyUpdate : suspend (T, Update<T>) -> T = {lastValue, update -> update(lastValue)}
     val data = updates.asFlow().scan(initialData, applyUpdate).distinctUntilChanged()
 
-    val update = Slot<T> { _, newValue -> newValue }
+    val update = Handler<T> { _, newValue -> newValue }
 }
