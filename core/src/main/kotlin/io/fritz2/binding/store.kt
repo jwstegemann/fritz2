@@ -42,7 +42,7 @@ abstract class AbstractStore<T> {
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-open class Store<T>(val initialData: T) : AbstractStore<T>() {
+open class Store<T>(private val initialData: T) : AbstractStore<T>() {
     private val updates = ConflatedBroadcastChannel<Update<T>>()
     private val applyUpdate : suspend (T, Update<T>) -> T = {lastValue, update -> update(lastValue)}
 

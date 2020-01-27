@@ -16,13 +16,11 @@ data class Outer(val inner: Inner, val value: String) {
         val innerLens = object : Lens<Outer, Inner> {
             override fun get(parent: Outer): Inner = parent.inner
             override fun set(parent: Outer, value: Inner): Outer = parent.copy(inner = value)
-            override fun map(parent: Outer, mapper: (Inner) -> Inner): Outer = parent.copy(inner = mapper(parent.inner))
         }
 
         val valueLens = object : Lens<Outer, String> {
             override fun get(parent: Outer): String = parent.value
             override fun set(parent: Outer, value: String): Outer = parent.copy(value = value)
-            override fun map(parent: Outer, mapper: (String) -> String): Outer = parent.copy(value = mapper(parent.value))
         }
     }
 }
@@ -32,7 +30,6 @@ data class Inner(val value: String) {
         val valueLens = object : Lens<Inner, String> {
             override fun get(parent: Inner): String = parent.value
             override fun set(parent: Inner, value: String): Inner = parent.copy(value = value)
-            override fun map(parent: Inner, mapper: (String) -> String): Inner = parent.copy(value = mapper(parent.value))
         }
     }
 }

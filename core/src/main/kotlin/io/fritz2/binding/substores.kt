@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.map
 interface Lens<P,T> {
     fun get(parent: P): T
     fun set(parent: P, value: T): P
-    fun map(parent: P, mapper: (T) -> T): P
-    
+    fun map(parent: P, mapper: (T) -> T): P = set(parent, mapper(get(parent)))
+
+
     operator fun <X> plus(other: Lens<T,X>): Lens<P,X> = object : Lens<P,X> {
         override fun get(parent: P): X = other.get(this@Lens.get(parent))
         override fun set(parent: P, value: X): P = this@Lens.set(parent, other.set(this@Lens.get(parent), value))
-        override fun map(parent: P, mapper: (X) -> X): P = this@Lens.set(parent,other.map(this@Lens.get(parent), mapper))
     }
 }
 
@@ -22,7 +22,7 @@ interface Lens<P,T> {
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class SubStore<R, P, T>(val parent: AbstractStore<P>, val lens: Lens<P,T>, val rootStore: Store<R>, val rootLens: Lens<R,T>) : AbstractStore<T>() {
+class SubStore<R, P, T>(private val parent: AbstractStore<P>, private val lens: Lens<P,T>, private val rootStore: Store<R>, private val rootLens: Lens<R,T>) : AbstractStore<T>() {
 
     override fun enqueue(update: Update<T>) {
         rootStore.enqueue {
