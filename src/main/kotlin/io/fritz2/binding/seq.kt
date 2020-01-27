@@ -44,9 +44,3 @@ fun <T, X> Flow<Patch<T>>.map(mapper: (T) -> X): Flow<Patch<X>> =
     this.map {
         Patch(it.from, it.that.map(mapper), it.replaced)
 }
-
-//FIXME: not working properly...?
-fun <T, X> Flow<Patch<T>>.mapIndexed(mapper: (Int, T) -> X): Flow<Patch<X>> =
-    this.map {
-        Patch(it.from, it.that.mapIndexed(mapper), it.replaced)
-}
