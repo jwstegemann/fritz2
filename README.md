@@ -7,26 +7,26 @@
 A proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
 ## How to try it that early?
-Just checkout the project, import in your favourite IDE (or whatever you like), run `gradle run --continuous` and enjoy ;-). Have a look at `demo.kt` (and maybe `oldDemo.kt`).
+Just checkout the project, import in your favourite IDE (or whatever you like), run `./gradlew :examples:gettingstarted:run --continuous` and enjoy ;-). Have a look at the examples sub-project.
 But don't be too disappointed. There is not too much ready yet...
 
 ## What is there already?
 
 - easy reactive one- and two-way-databinding
+- one-way-databinding for lists
 - first few HTML-elements (`div`, `button`, `input`)
 - first attributes
-- first event-handlers (onClick, onChange)
+- first event-handlers (clicks, changes)
 - hassle-free redux-like state-handling (work-in-progress)
 
 ## What will come next?
 
 - complete set of html-elements, attributtes and events
-- set of high-level components to build fully functional, testable, beautiful single page webapps (using some css-lib yet to be chosen) including
-  - routing
-  - validation
-  - server-communication
-  - user auth
-  - logging
+- two-way-databinding for deep structures (nested data-classes)
+- routing
+- server-communication
+- user auth
+- logging
 
 ## Overall Goals
 

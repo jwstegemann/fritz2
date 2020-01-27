@@ -7,18 +7,25 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.*
+import org.w3c.dom.events.MouseEvent
 import kotlin.js.Date
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class Div(): Tag<HTMLDivElement>("div"), WithText<HTMLDivElement> {
+class Div: Tag<HTMLDivElement>("div"), WithText<HTMLDivElement> {
     var align: Flow<String> by AttributeDelegate
 }
+
+class Span : Tag<HTMLSpanElement>("span"), WithText<HTMLSpanElement>
+
+class Ul : Tag<HTMLUListElement>("ul")
+
+class Li : Tag<HTMLElement>("li"), WithText<HTMLElement>
 
 //FIXME: use correct type for domNode - HtmlButtonElement here
 @ExperimentalCoroutinesApi
 @FlowPreview
-class Button(): Tag<HTMLButtonElement>("button"), WithText<HTMLButtonElement> {
+class Button : Tag<HTMLButtonElement>("button"), WithText<HTMLButtonElement> {
     var autofocusFlow: Flow<Boolean> by AttributeDelegate
     var disabledFlow: Flow<Boolean> by AttributeDelegate
     var formAction: Flow<String> by AttributeDelegate
@@ -29,12 +36,12 @@ class Button(): Tag<HTMLButtonElement>("button"), WithText<HTMLButtonElement> {
     var name: Flow<String> by AttributeDelegate
     var type: Flow<String> by AttributeDelegate
     var value: Flow<String> by AttributeDelegate
-    
+
 }
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class Input(): Tag<HTMLInputElement>("input") {
+class Input : Tag<HTMLInputElement>("input") {
     var accept: Flow<String> by AttributeDelegate
     var alt: Flow<String> by AttributeDelegate
     var autocomplete: Flow<String> by AttributeDelegate
@@ -79,6 +86,12 @@ interface HtmlElements {
     fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T
 
     fun div(content: Div.() -> Unit): Div = register(Div(), content)
+
+    fun span(content: Span.() -> Unit): Span = register(Span(), content)
+
+    fun ul(content: Ul.() -> Unit): Ul = register(Ul(), content)
+
+    fun li(content: Li.() -> Unit): Li = register(Li(), content)
 
     fun button(content: Button.() -> Unit): Button = register(Button(), content)
 

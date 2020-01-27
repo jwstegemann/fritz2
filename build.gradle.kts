@@ -1,31 +1,10 @@
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.ir.backend.js.compile
-
-group = "io"
-version = "0.1-SNAPSHOT"
-
-plugins {
-    kotlin("js") version "1.3.61"
-}
-
-//TODO: add DCE and closure-compiler
-kotlin {
-    target {
-        browser {
-            runTask {
-                devServer = KotlinWebpackConfig.DevServer(
-                        port = 9000,
-                        contentBase = listOf("$projectDir/src/main/web")
-                )
-            }
-        }
-    }
-}
 
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
 
     dependencies {
@@ -33,14 +12,16 @@ buildscript {
     }
 }
 
-dependencies {
-    implementation(kotlin("stdlib-js"))
-    testImplementation(kotlin("test-js"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.2")
+allprojects {
+    //TODO: manage common setting and dependencies
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
 }
 
-repositories {
-    mavenCentral()
-    jcenter()
+subprojects {
+    group = "io.fritz2"
+    version = "0.1"
 }
-

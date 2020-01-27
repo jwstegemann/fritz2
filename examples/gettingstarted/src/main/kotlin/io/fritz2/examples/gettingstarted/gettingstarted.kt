@@ -1,13 +1,13 @@
+package io.fritz2.examples.gettingstarted
+
 import io.fritz2.binding.Store
-import io.fritz2.binding.not
+import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.events.Event
-import org.w3c.dom.events.FocusEvent
-import org.w3c.dom.events.MouseEvent
+import io.fritz2.binding.map
 
 
 data class ActionData(val x: Int, val y: Int)
@@ -20,13 +20,11 @@ fun main() {
         val addADot = Handler<ActionData> { model, _ ->
             "$model."
         }
-        val inputHasFocus = Handler<FocusEvent> { model, _ ->
-            console.log("input has now focus")
-            model
-        }
-        val divClicked = Handler<MouseEvent> { model, _ ->
-            console.log("div clicked")
-            model
+    }
+
+    val seq = object : Store<List<String>>(listOf("one", "two", "three")) {
+        val addItem = Handler<Any> { list, _ ->
+            list + "yet another item"
         }
     }
 
@@ -35,14 +33,10 @@ fun main() {
             input() {
                 value = store.data
                 store.update <= changes
-                type = !"text"
-                maxLength = !10
-                store.inputHasFocus <= focuss
             }
             div {
                 +"value: "
                 store.data.bind()
-                store.divClicked <= clicks
             }
             button {
                 +"add one more little dot"
@@ -50,7 +44,19 @@ fun main() {
                     ActionData(it.clientX, it.clientY)
                 }
             }
-
+            ul {
+                seq.each().map { s: String ->
+                    html {
+                        li {
+                            +s
+                        }
+                    }
+                }.bind()
+            }
+            button {
+                +"add an item"
+                seq.addItem <= clicks
+            }
         }
     }
 
