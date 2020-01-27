@@ -73,8 +73,8 @@ class Br : Tag<HTMLBRElement>("br")
  * Exposes the JavaScript [HTMLButtonElement](https://developer.mozilla.org/en/docs/Web/API/HTMLButtonElement) to Kotlin
  */
 class Button : Tag<HTMLButtonElement>("button"), WithText<HTMLButtonElement> {
-    var autofocusFlow: Flow<Boolean> by AttributeDelegate
-    var disabledFlow: Flow<Boolean> by AttributeDelegate
+    var autofocus: Flow<Boolean> by AttributeDelegate
+    var disabled: Flow<Boolean> by AttributeDelegate
     var formAction: Flow<String> by AttributeDelegate
     var formEnctype: Flow<String> by AttributeDelegate
     var formMethod: Flow<String> by AttributeDelegate
