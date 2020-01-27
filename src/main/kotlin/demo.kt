@@ -6,6 +6,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
 import io.fritz2.binding.map
+import io.fritz2.binding.mapIndexed
+import io.fritz2.dom.html.Li
+import org.w3c.dom.HTMLButtonElement
 
 
 data class ActionData(val x: Int, val y: Int)
@@ -23,6 +26,9 @@ fun main() {
     val seq = object : Store<List<String>>(listOf("one", "two", "three")) {
         val addItem = Handler<Any> { list, _ ->
             list + "yet another item"
+        }
+        val deleteItem = Handler<Int> { list, i ->
+            list.drop(i)
         }
     }
 
@@ -43,10 +49,11 @@ fun main() {
                 }
             }
             ul {
-                seq.each().map { s: String ->
+                seq.each().mapIndexed{ i:Int, s: String ->
                     html {
-                        li {
+                        button {
                             +s
+                            seq.deleteItem <= clicks.map { console.log(i); i }
                         }
                     }
                 }.bind()
