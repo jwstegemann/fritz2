@@ -45,13 +45,16 @@ fun main() {
                 }
             }
             ul {
-                seq.each().map { s: String ->
+                //FIXME: reactivate
+/*                seq.each().map { s: String ->
                     html {
                         li {
                             +s
                         }
                     }
                 }.bind()
+
+ */
             }
             button {
                 +"add an item"

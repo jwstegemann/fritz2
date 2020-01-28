@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 data class Patch<out T>(val from: Int, val that: List<T>, val replaced: Int)
 
 @ExperimentalCoroutinesApi
-private suspend inline fun <T> compare(oldAndNew: Pair<List<T>, List<T>>): Flow<Patch<T>> = channelFlow {
+private suspend inline fun <T: withId> compare(oldAndNew: Pair<List<T>, List<T>>): Flow<Patch<T>> = channelFlow {
     val (oldValue, newValue) = oldAndNew
     val size2Compare = if (oldValue.size < newValue.size) {
         //console.log("### Seq: append " + (newValue.size - oldValue.size) + " from " + (oldValue.size))
@@ -27,20 +27,26 @@ private suspend inline fun <T> compare(oldAndNew: Pair<List<T>, List<T>>): Flow<
     for (i in 0 until size2Compare) {
         //TODO: batch changed items in a row to one patch
         //console.log("### Seq: inner comparing: $i -> ${last[i]} to ${n[i]}")
-        if (oldValue[i] != newValue[i]) channel.send(Patch(i, listOf(newValue[i]), 1))
+        if (oldValue[i].id != newValue[i].id) channel.send(Patch(i, listOf(newValue[i]), 1))
     }
 }
 
-private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, newValue: List<T>): Pair<List<T>, List<T>> = Pair(accumulator.second, newValue)
+private suspend inline fun <T: withId> accumulate(accumulator: Pair<List<T>, List<T>>, newValue: List<T>) =
+    Pair(accumulator.second, newValue)
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-fun <T> Store<List<T>>.each(): Flow<Patch<T>>  =
+fun <T: withId> AbstractStore<List<T>>.each(): Flow<Patch<T>>  =
     data.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(::compare)
 
 
 //TODO: flatmap needed?
 fun <T, X> Flow<Patch<T>>.map(mapper: (T) -> X): Flow<Patch<X>> =
+    this.map {
+        Patch(it.from, it.that.map(mapper), it.replaced)
+    }
+
+fun <T, X> Flow<Patch<T>>.mapX(mapper: (T) -> X): Flow<Patch<X>> =
     this.map {
         Patch(it.from, it.that.map(mapper), it.replaced)
     }

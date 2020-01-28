@@ -52,5 +52,5 @@ open class Store<T>(private val initialData: T) : AbstractStore<T>() {
 
     override val data = updates.asFlow().scan(initialData, applyUpdate).distinctUntilChanged()
 
-    override fun <X> sub(lens: Lens<T, X>): AbstractStore<X> = SubStore<T,T,X>(this, lens, this, lens)
+    override fun <X> sub(lens: Lens<T, X>) = SubStore<T,T,X>(this, lens, this, lens)
 }

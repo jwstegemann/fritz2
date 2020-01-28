@@ -22,7 +22,7 @@ interface Lens<P,T> {
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class SubStore<R, P, T>(private val parent: AbstractStore<P>, private val lens: Lens<P,T>, private val rootStore: Store<R>, private val rootLens: Lens<R,T>) : AbstractStore<T>() {
+class SubStore<R, P, T>(private val parent: AbstractStore<P>, private val lens: Lens<P,T>, val rootStore: Store<R>, val rootLens: Lens<R,T>) : AbstractStore<T>() {
 
     override fun enqueue(update: Update<T>) {
         rootStore.enqueue {
