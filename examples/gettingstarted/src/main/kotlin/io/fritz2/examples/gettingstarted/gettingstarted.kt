@@ -1,3 +1,5 @@
+package io.fritz2.examples.gettingstarted
+
 import io.fritz2.binding.Store
 import io.fritz2.binding.each
 import io.fritz2.dom.html.html
