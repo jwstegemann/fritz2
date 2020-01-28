@@ -1,0 +1,57 @@
+buildscript {
+    ext.kotlin_version = '1.3.61'
+
+
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.0.0'
+    }
+
+    allprojects {
+        repositories {
+
+        }
+    }
+}
+
+
+
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "kotlin-kapt"
+apply plugin: "maven"
+
+
+group = "io.fritz2.optics"
+archivesBaseName = "optics-shared"
+version = "0.0.1"
+
+install {
+
+    repositories.mavenInstaller {
+        pom.artifactId = archivesBaseName
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.squareup:kotlinpoet:1.3.0'
+    compile 'de.jensklingenberg:mpapt-runtime:0.8.4'
+    //compile "io.fritz2.optics:optics-annotations-jvm:0.0.1"
+    compile project(":optics:annotations")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compileOnly "org.jetbrains.kotlin:kotlin-compiler-embeddable"
+    compileOnly "com.google.auto.service:auto-service:1.0-rc6"
+    kapt "com.google.auto.service:auto-service:1.0-rc6"
+}
+
+
+kapt {
+    includeCompileClasspath = true
+}

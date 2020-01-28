@@ -1,0 +1,80 @@
+buildscript {
+
+    ext.buildMaven = { p -> repositories { maven { url p } } }
+
+
+    repositories {
+        mavenLocal()
+        google()
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+    }
+
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform'
+    id "maven"
+    id("maven-publish")
+
+}
+
+group = "io,fritz2.optics"
+
+version = "0.0.1"
+
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+    jvm()
+    js()
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation kotlin('stdlib-common')
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation kotlin('test-common')
+                implementation kotlin('test-annotations-common')
+            }
+        }
+
+        jsMain {
+            dependencies {
+                implementation kotlin('stdlib-js')
+
+            }
+        }
+        jsTest {
+            dependencies {
+                implementation kotlin('test-js')
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+            }
+        }
+        jsTest {
+            dependencies {
+                implementation kotlin('test-js')
+            }
+        }
+
+    }
+}
+
+
+
+
+build.finalizedBy(publishToMavenLocal)
