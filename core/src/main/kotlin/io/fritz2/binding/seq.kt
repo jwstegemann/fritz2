@@ -1,5 +1,6 @@
 package io.fritz2.binding
 
+import io.fritz2.optics.withId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*

@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.ir.backend.js.compile
 
 buildscript {
     repositories {
+        mavenLocal()
         mavenCentral()
         jcenter()
     }

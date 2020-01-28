@@ -7,6 +7,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
 import io.fritz2.binding.mapItems
+import io.fritz2.optics.Lens
+import io.fritz2.optics.withId
 
 
 data class Outer(val inner: Inner, val value: String, val seq: List<Element>) {

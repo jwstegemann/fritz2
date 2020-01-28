@@ -1,5 +1,6 @@
 package io.fritz2.binding
 
+import io.fritz2.optics.Lens
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
@@ -37,7 +38,7 @@ abstract class AbstractStore<T> {
     abstract val data: Flow<T>
     val update: Handler<T> = Handler<T> { _, newValue -> newValue }
 
-    abstract fun <X> sub(lens: Lens<T,X>): AbstractStore<X>
+    abstract fun <X> sub(lens: Lens<T, X>): AbstractStore<X>
 }
 
 @FlowPreview

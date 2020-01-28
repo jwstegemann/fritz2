@@ -1,21 +1,9 @@
 package io.fritz2.binding
 
+import io.fritz2.optics.elementLens
+import io.fritz2.optics.withId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-
-interface withId {
-    val id: String
-}
-
-fun <T : withId> elementLens(element: T): Lens<List<T>, T> = object : Lens<List<T>, T> {
-    override fun get(parent: List<T>): T = checkNotNull(parent.find {
-        it.id == element.id
-    })
-
-    override fun set(parent: List<T>, value: T): List<T> = parent.map {
-        if (it.id == value.id) value else it
-    }
-}
 
 fun <T : withId> Store<List<T>>.sub(element: T): SubStore<List<T>,List<T>,T> {
     val lens = elementLens(element)
