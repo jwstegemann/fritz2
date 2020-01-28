@@ -6,6 +6,7 @@ import io.fritz2.dom.mount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
+import io.fritz2.binding.mapItems
 
 
 data class Outer(val inner: Inner, val value: String, val seq: List<Element>) {
@@ -79,8 +80,7 @@ fun main() {
                 +innerValue.data
             }
             ul {
-                //FIXME: why is another methode required? map ist not working!
-                seq.eachStore().mapX {
+                seq.eachStore().mapItems {
                     val elementValue = it.sub(Element.valueLens)
                     li {
                         input {
