@@ -43,4 +43,4 @@ fun <T> Store<List<T>>.each(): Flow<Patch<T>>  =
 fun <T, X> Flow<Patch<T>>.map(mapper: (T) -> X): Flow<Patch<X>> =
     this.map {
         Patch(it.from, it.that.map(mapper), it.replaced)
-    }
+}
