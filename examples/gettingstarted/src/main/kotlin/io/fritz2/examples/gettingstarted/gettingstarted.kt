@@ -32,7 +32,7 @@ fun main() {
         section {
             input {
                 value = store.data
-                store.update <= changes
+                onchange >= store.update
             }
             div {
                 +"value: "
@@ -40,9 +40,9 @@ fun main() {
             }
             button {
                 +"add one more little dot"
-                store.addADot <= clicks.map {
+                onclick.map {
                     ActionData(it.clientX, it.clientY)
-                }
+                } >= store.addADot
             }
             ul {
                 seq.each().map { s: String ->
@@ -55,7 +55,7 @@ fun main() {
             }
             button {
                 +"add an item"
-                seq.addItem <= clicks
+                onclick >= seq.addItem
             }
         }
     }
