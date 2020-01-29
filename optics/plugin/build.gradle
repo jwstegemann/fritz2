@@ -3,6 +3,8 @@ buildscript {
 
 
     repositories {
+        mavenCentral()
+
         jcenter()
     }
     dependencies {
@@ -12,46 +14,51 @@ buildscript {
 
     allprojects {
         repositories {
-
+            mavenCentral()
+            mavenLocal()
+            jcenter()
         }
     }
 }
 
 
-
-apply plugin: "org.jetbrains.kotlin.jvm"
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+}
+apply plugin: "java-gradle-plugin"
 apply plugin: "kotlin-kapt"
 apply plugin: "maven"
 
 
 group = "io.fritz2.optics"
-archivesBaseName = "optics-shared"
-version = "0.0.1"
+archivesBaseName = "optics-plugin"
+version = "1.0.0"
+
+
 
 install {
-
     repositories.mavenInstaller {
         pom.artifactId = archivesBaseName
     }
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = "io.fritz2.optics" // users will do `apply plugin: "de.jensklingenberg.mpapt"`
+            implementationClass = "io.fritz2.optics.MpAptGradlePlugin" // entry-point class
+        }
+    }
 }
 
 dependencies {
-    implementation 'com.squareup:kotlinpoet:1.3.0'
-    compile 'de.jensklingenberg:mpapt-runtime:0.8.4'
-    //compile project("de.jensklingenberg:optics-annotations-jvm:0.0.1"
-    compile project(":optics:annotations")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compileOnly "org.jetbrains.kotlin:kotlin-compiler-embeddable"
+    compile "org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.3.61"
     compileOnly "com.google.auto.service:auto-service:1.0-rc6"
     kapt "com.google.auto.service:auto-service:1.0-rc6"
 }
 
 
-kapt {
-    includeCompileClasspath = true
+build {
+    dependsOn install
 }

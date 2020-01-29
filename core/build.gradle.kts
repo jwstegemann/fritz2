@@ -26,5 +26,6 @@ dependencies {
     implementation(kotlin("stdlib-js"))
     testImplementation(kotlin("test-js"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.2")
+    implementation("io.fritz2.optics:core-js:0.0.1")
 }
 

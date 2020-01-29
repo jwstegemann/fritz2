@@ -12,3 +12,8 @@ interface Lens<P,T> {
         override fun set(parent: P, value: X): P = this@Lens.set(parent, other.set(this@Lens.get(parent), value))
     }
 }
+
+inline fun <P,T>buildLens(crossinline getter: (P)->T, crossinline setter: (P,T)->P) = object : Lens<P,T> {
+    override fun get(parent: P): T = getter(parent)
+    override fun set(parent: P, value: T): P = setter(parent,value)
+}

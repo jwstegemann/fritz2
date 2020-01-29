@@ -6,7 +6,7 @@ include("optics")
 include("optics:compiler")
 include("optics:plugin")
 include("optics:shared")
-include("optics:annotations")
+include("optics:core")
 
 include("examples")
 include("examples:gettingstarted")

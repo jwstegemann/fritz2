@@ -7,44 +7,28 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
 import io.fritz2.binding.mapItems
-import io.fritz2.optics.Lens
+import io.fritz2.optics.Optics
 import io.fritz2.optics.withId
+import io.fritz2.optics.buildLens
 
-
+@Optics
 data class Outer(val inner: Inner, val value: String, val seq: List<Element>) {
     companion object {
-        val innerLens = object : Lens<Outer, Inner> {
-            override fun get(parent: Outer): Inner = parent.inner
-            override fun set(parent: Outer, value: Inner): Outer = parent.copy(inner = value)
-        }
-
-        val valueLens = object : Lens<Outer, String> {
-            override fun get(parent: Outer): String = parent.value
-            override fun set(parent: Outer, value: String): Outer = parent.copy(value = value)
-        }
-
-        val seqLens = object : Lens<Outer, List<Element>> {
-            override fun get(parent: Outer): List<Element> = parent.seq
-            override fun set(parent: Outer, value: List<Element>): Outer = parent.copy(seq = value)
-        }
+        val innerLens = buildLens<Outer,Inner>({p -> p.inner}, {p,v -> p.copy(inner = v)})
+        val valueLens = buildLens<Outer,String>({p -> p.value}, {p,v -> p.copy(value = v)})
+        val seqLens = buildLens<Outer,List<Element>>({p -> p.seq}, {p,v -> p.copy(seq = v)})
     }
 }
 
 data class Inner(val value: String) {
     companion object {
-        val valueLens = object : Lens<Inner, String> {
-            override fun get(parent: Inner): String = parent.value
-            override fun set(parent: Inner, value: String): Inner = parent.copy(value = value)
-        }
+        val valueLens = buildLens<Inner,String>({p -> p.value}, {p,v -> p.copy(value = v)})
     }
 }
 
 data class Element(val value: String, override val id: String) : withId {
     companion object {
-        val valueLens = object : Lens<Element, String> {
-            override fun get(parent: Element): String = parent.value
-            override fun set(parent: Element, value: String): Element = parent.copy(value = value)
-        }
+        val valueLens = buildLens<Element,String>({p -> p.value}, {p,v -> p.copy(value = v)})
     }
 }
 

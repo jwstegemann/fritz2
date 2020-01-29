@@ -24,7 +24,7 @@ apply plugin: "kotlin-kapt"
 apply plugin: "maven"
 
 
-group = "io,fritz2.optics"
+group = "io.fritz2.optics"
 archivesBaseName = "optics-compiler"
 version = "0.0.1"
 

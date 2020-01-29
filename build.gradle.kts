@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.ir.backend.js.compile
 
 buildscript {
     repositories {
@@ -17,6 +15,7 @@ allprojects {
     //TODO: manage common setting and dependencies
 
     repositories {
+        mavenLocal()
         mavenCentral()
         jcenter()
     }
