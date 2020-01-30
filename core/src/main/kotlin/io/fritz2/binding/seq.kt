@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 
 data class Patch<out T>(val from: Int, val that: List<T>, val replaced: Int)
 
+//TODO: make class to hide Flow<Patch<>> in data attribute
 typealias Seq<T> = Flow<Patch<T>>
 
 //TODO: a way to call this just map?

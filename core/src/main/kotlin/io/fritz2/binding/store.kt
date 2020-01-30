@@ -15,17 +15,17 @@ abstract class AbstractStore<T> {
 
     abstract fun enqueue(update: Update<T>)
 
-    inner class Handler<A>(inline val handle: (T, A) -> T) {
+    inner class Handler<A>(inline val handler: (T, A) -> T) {
         fun handle(actions: Flow<A>): Unit {
             GlobalScope.launch {
                 actions.collect {
-                    enqueue { t -> handle(t,it) }
+                    enqueue { t -> handler(t,it) }
                 }
             }
         }
 
         fun handle(action: A): Unit {
-            enqueue { t -> handle(t,action) }
+            enqueue { t -> handler(t,action) }
         }
 
         // syntactical sugar to write slot <= event-stream

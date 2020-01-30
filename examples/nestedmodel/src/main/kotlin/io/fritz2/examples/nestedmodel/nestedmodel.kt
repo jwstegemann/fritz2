@@ -14,7 +14,7 @@ import io.fritz2.optics.buildLens
 @Optics
 data class Outer(val inner: Inner, val value: String, val seq: List<Element>) {
     companion object {
-        val innerLens = buildLens<Outer,Inner>({p -> p.inner}, {p,v -> p.copy(inner = v)})
+        val innerLens = buildLens(Outer::inner) { p, v -> p.copy(inner = v)}
         val valueLens = buildLens<Outer,String>({p -> p.value}, {p,v -> p.copy(value = v)})
         val seqLens = buildLens<Outer,List<Element>>({p -> p.seq}, {p,v -> p.copy(seq = v)})
     }
