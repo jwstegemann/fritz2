@@ -23,8 +23,14 @@ fun main() {
     }
 
     val seq = object : RootStore<List<String>>(listOf("one", "two", "three")) {
+        var count = 0
+
         val addItem = Handler<Any> { list, _ ->
-            list + "yet another item"
+            count++
+            list + "yet another item$count"
+        }
+        val deleteItem = Handler<String> { list, current ->
+            list.minus(current)
         }
     }
 

@@ -55,6 +55,12 @@ fun <T: WithId> Store<List<T>>.each(): Seq<T>  =
         a.id != b.id
     })
 
+
+//TODO: flatmap needed?
+fun <T, X> Flow<Patch<T>>.map(mapper: (T) -> X): Flow<Patch<X>> =
+    this.map {
+        Patch(it.from, it.that.map(mapper), it.replaced)
+}
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun <T> Store<List<T>>.each(): Seq<T>  =
