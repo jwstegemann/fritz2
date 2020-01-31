@@ -37,7 +37,7 @@ data class Inner(val value: String) {
     }
 }
 
-data class Element(val value: String, override val id: String) : withId {
+data class Element(val value: String, override val id: String) : WithId {
     companion object {
         val valueLens = object : Lens<Element, String> {
             override fun get(parent: Element): String = parent.value
@@ -52,7 +52,7 @@ data class Element(val value: String, override val id: String) : withId {
 @FlowPreview
 fun main() {
 
-    val model = Store(Outer(Inner("hello"), "world", listOf(
+    val model = RootStore(Outer(Inner("hello"), "world", listOf(
         Element("one","n1"),
         Element("two","n2"),
         Element("three","n3")

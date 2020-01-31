@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 typealias Update<T> = (T) -> T
 
-abstract class AbstractStore<T> {
+abstract class Store<T> {
 
     abstract fun enqueue(update: Update<T>)
 
@@ -37,12 +37,12 @@ abstract class AbstractStore<T> {
     abstract val data: Flow<T>
     val update: Handler<T> = Handler<T> { _, newValue -> newValue }
 
-    abstract fun <X> sub(lens: Lens<T,X>): AbstractStore<X>
+    abstract fun <X> sub(lens: Lens<T,X>): Store<X>
 }
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-open class Store<T>(private val initialData: T) : AbstractStore<T>() {
+open class RootStore<T>(private val initialData: T) : Store<T>() {
     private val updates = ConflatedBroadcastChannel<Update<T>>()
     private val applyUpdate : suspend (T, Update<T>) -> T = {lastValue, update -> update(lastValue)}
 
