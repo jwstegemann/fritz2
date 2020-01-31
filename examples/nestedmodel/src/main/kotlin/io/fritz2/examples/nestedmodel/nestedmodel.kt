@@ -82,10 +82,13 @@ fun main() {
             ul {
                 seq.eachStore().mapItems {
                     val elementValue = it.sub(Element.valueLens)
-                    li {
-                        input {
-                            value = elementValue.data
-                            elementValue.update <= changes
+                    //important to call html here, because otherwise children are added to dom directly and will not be removed, etc.
+                    html {
+                        li {
+                            input {
+                                value = elementValue.data
+                                elementValue.update <= changes
+                            }
                         }
                     }
                 }.bind()

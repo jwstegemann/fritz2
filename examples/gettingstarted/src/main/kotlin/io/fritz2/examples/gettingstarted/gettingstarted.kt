@@ -45,10 +45,10 @@ fun main() {
                 }
             }
             ul {
-                seq.each().mapItems { s: String ->
+                seq.each().mapItems {
                     html {
                         li {
-                            +s
+                            +it
                         }
                     }
                 }.bind()
