@@ -27,7 +27,7 @@ fun main() {
 
         val addItem = Handler<Any> { list, _ ->
             count++
-            list + "yet another item$count"
+            list + "yet another item no. $count"
         }
         val deleteItem = Handler<String> { list, current ->
             list.minus(current)
@@ -51,10 +51,13 @@ fun main() {
                 }
             }
             ul {
-                seq.each().mapItems {
+                seq.each().mapItems { s ->
                     html {
                         li {
-                            +it
+                            button {
+                                +s
+                                seq.deleteItem <= clicks.map { console.log("deleting $s"); s }
+                            }
                         }
                     }
                 }.bind()
