@@ -35,8 +35,8 @@ fun main() {
     }
 
     val myComponent = html {
-        div {
-            input() {
+        section {
+            input {
                 value = store.data
                 store.update <= changes
             }

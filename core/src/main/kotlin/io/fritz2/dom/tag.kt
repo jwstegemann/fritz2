@@ -18,7 +18,7 @@ annotation class HtmlTagMarker
 @FlowPreview
 @HtmlTagMarker
 abstract class Tag<out T : Element>(tagName: String, override val domNode: T = window.document.createElement(tagName).unsafeCast<T>())
-    : WithDomNode<T>, WithAttributes<T>, WithEvents<T>, HtmlElements {
+    : WithDomNode<T>, WithAttributes<T>, WithEvents<T>(), HtmlElements {
 
     override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
         content(element)
