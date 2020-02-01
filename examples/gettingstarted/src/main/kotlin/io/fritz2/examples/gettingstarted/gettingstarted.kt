@@ -1,8 +1,8 @@
 package io.fritz2.examples.gettingstarted
 
-import io.fritz2.binding.Store
+import io.fritz2.binding.RootStore
 import io.fritz2.binding.each
-import io.fritz2.binding.map
+import io.fritz2.binding.mapItems
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,18 +16,18 @@ data class ActionData(val x: Int, val y: Int)
 @FlowPreview
 fun main() {
 
-    val store = object : Store<String>("start") {
+    val store = object : RootStore<String>("start") {
         val addADot = Handler<ActionData> { model, _ ->
             "$model."
         }
     }
 
-    val seq = object : Store<List<String>>(listOf("one", "two", "three")) {
+    val seq = object : RootStore<List<String>>(listOf("one", "two", "three")) {
         var count = 0
 
         val addItem = Handler<Any> { list, _ ->
             count++
-            list + "yet another item$count"
+            list + "yet another item no. $count"
         }
         val deleteItem = Handler<String> { list, current ->
             list.minus(current)
@@ -51,11 +51,13 @@ fun main() {
                 }
             }
             ul {
-                seq.each().map{ s: String ->
+                seq.each().mapItems { s ->
                     html {
-                        button {
-                            +s
-                            seq.deleteItem <= clicks.map { console.log(s); s }
+                        li {
+                            button {
+                                +s
+                                seq.deleteItem <= clicks.map { console.log("deleting $s"); s }
+                            }
                         }
                     }
                 }.bind()
