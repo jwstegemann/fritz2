@@ -14,14 +14,13 @@ But don't be too disappointed. There is not too much ready yet...
 
 - easy reactive one- and two-way-databinding
 - one-way-databinding for lists
-- first few HTML-elements (`div`, `button`, `input`)
-- first attributes
-- first event-handlers (clicks, changes)
+- all html 5 elements
+- all event-handlers (clicks, changes, ...)
 - hassle-free redux-like state-handling (work-in-progress)
 
 ## What will come next?
 
-- complete set of html-elements, attributtes and events
+- ~~complete set of html-elements, attributtes and events~~ &#9745;
 - two-way-databinding for deep structures (nested data-classes)
 - routing
 - server-communication
