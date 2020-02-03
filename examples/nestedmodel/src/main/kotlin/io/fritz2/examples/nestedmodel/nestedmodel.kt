@@ -46,6 +46,7 @@ fun main() {
                         val elementValue = it.sub(Lenses.Element.value)
                         li {
                             input {
+                                attribute("id", it.id)
                                 value = elementValue.data
                                 elementValue.update <= changes
                             }

@@ -35,6 +35,8 @@ abstract class AbstractStore<T> {
         }
     }
 
+    abstract val id: String
+
     abstract val data: Flow<T>
     val update: Handler<T> = Handler<T> { _, newValue -> newValue }
 
@@ -43,7 +45,7 @@ abstract class AbstractStore<T> {
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-open class Store<T>(private val initialData: T) : AbstractStore<T>() {
+open class Store<T>(private val initialData: T, override val id: String = "")  : AbstractStore<T>() {
     private val updates = ConflatedBroadcastChannel<Update<T>>()
     private val applyUpdate : suspend (T, Update<T>) -> T = {lastValue, update -> update(lastValue)}
 
