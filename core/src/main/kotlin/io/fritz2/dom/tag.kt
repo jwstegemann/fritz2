@@ -7,7 +7,10 @@ import io.fritz2.dom.html.HtmlElements
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import org.w3c.dom.DOMTokenList
 import org.w3c.dom.Element
+import org.w3c.dom.NamedNodeMap
+import org.w3c.dom.ShadowRoot
 import kotlin.browser.window
 
 @DslMarker
@@ -29,4 +32,9 @@ abstract class Tag<out T : Element>(tagName: String, override val domNode: T = w
     fun <X : Element> Flow<Tag<X>>.bind(): SingleMountPoint<WithDomNode<Element>> = DomMountPoint(this, domNode)
 
     fun <X : Element> Flow<Patch<Tag<X>>>.bind(): MultiMountPoint<WithDomNode<Element>> = DomMultiMountPoint(this, domNode)
+
+    var id: Flow<String> by AttributeDelegate
+    var className: Flow<String>
+        get() {throw NotImplementedError()}
+        set(value) { attribute("class", value)}
 }
