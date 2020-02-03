@@ -66,6 +66,7 @@ fun main() {
             button {
                 +"add an item"
                 seq.addItem <= clicks
+                attributeData("test", "test-button1")
             }
         }
     }

@@ -7,10 +7,7 @@ import io.fritz2.dom.html.HtmlElements
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import org.w3c.dom.DOMTokenList
 import org.w3c.dom.Element
-import org.w3c.dom.NamedNodeMap
-import org.w3c.dom.ShadowRoot
 import kotlin.browser.window
 
 @DslMarker
