@@ -2,7 +2,7 @@ package io.fritz2.examples.gettingstarted
 
 import io.fritz2.binding.Store
 import io.fritz2.binding.each
-import io.fritz2.binding.mapItems
+import io.fritz2.binding.map
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,14 +23,20 @@ fun main() {
     }
 
     val seq = object : Store<List<String>>(listOf("one", "two", "three")) {
+        var count = 0
+
         val addItem = Handler<Any> { list, _ ->
-            list + "yet another item"
+            count++
+            list + "yet another item$count"
+        }
+        val deleteItem = Handler<String> { list, current ->
+            list.minus(current)
         }
     }
 
     val myComponent = html {
-        div {
-            input() {
+        section {
+            input {
                 value = store.data
                 store.update <= changes
             }
@@ -45,10 +51,11 @@ fun main() {
                 }
             }
             ul {
-                seq.each().mapItems { s: String ->
+                seq.each().map{ s: String ->
                     html {
-                        li {
+                        button {
                             +s
+                            seq.deleteItem <= clicks.map { console.log(s); s }
                         }
                     }
                 }.bind()
