@@ -2,7 +2,7 @@ package io.fritz2.examples.gettingstarted
 
 import io.fritz2.binding.Store
 import io.fritz2.binding.each
-import io.fritz2.binding.map
+import io.fritz2.binding.mapItems
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -51,7 +51,7 @@ fun main() {
                 }
             }
             ul {
-                seq.each().map{ s: String ->
+                seq.each().mapItems { s: String ->
                     html {
                         button {
                             +s

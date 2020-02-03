@@ -3,6 +3,7 @@ package io.fritz2.examples.nestedmodel
 import io.fritz2.binding.*
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import io.fritz2.examples.nestedmodel.Lenses.Element.id
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
@@ -17,9 +18,9 @@ fun main() {
         Element("two","n2"),
         Element("three","n3")
     )))
-    val outerValue = model.sub(OuterValueLens)
-    val innerValue = model.sub(OuterInnerLens).sub(InnerValueLens)
-    val seq = model.sub(OuterSeqLens)
+    val outerValue = model.sub(Lenses.Outer.value)
+    val innerValue = model.sub(Lenses.Outer.inner).sub(Lenses.Inner.value)
+    val seq = model.sub(Lenses.Outer.seq)
 
     val myComponent = html {
         div {
@@ -42,7 +43,7 @@ fun main() {
             ul {
                 seq.eachStore().mapItems {
                     html {
-                        val elementValue = it.sub(ElementValueLens)
+                        val elementValue = it.sub(Lenses.Element.value)
                         li {
                             input {
                                 value = elementValue.data
