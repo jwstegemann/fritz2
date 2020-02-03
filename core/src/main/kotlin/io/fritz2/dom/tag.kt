@@ -1,5 +1,6 @@
 package io.fritz2.dom
 
+import io.fritz2.binding.Const
 import io.fritz2.binding.MultiMountPoint
 import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
@@ -29,6 +30,8 @@ abstract class Tag<out T : Element>(tagName: String, override val domNode: T = w
     fun <X : Element> Flow<Tag<X>>.bind(): SingleMountPoint<WithDomNode<Element>> = DomMountPoint(this, domNode)
 
     fun <X : Element> Flow<Patch<Tag<X>>>.bind(): MultiMountPoint<WithDomNode<Element>> = DomMultiMountPoint(this, domNode)
+
+    operator fun <T> T.not() = Const(this)
 
     var id: Flow<String> by AttributeDelegate
     var className: Flow<String>
