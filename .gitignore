@@ -5,4 +5,4 @@
 **/.idea/
 **/.github/
 **/gradle/
-/examples/nestedmodel/model/src/main/kotlin/io/fritz2/examples/nestedmodel/Optics.kt
+/examples/nestedmodel/model/src/main/kotlin/io/fritz2/examples/nestedmodel/GeneratedOptics.kt
