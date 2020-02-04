@@ -1,9 +1,10 @@
 package io.fritz2.examples.nestedmodel
 
-import io.fritz2.binding.*
+import io.fritz2.binding.Store
+import io.fritz2.binding.eachStore
+import io.fritz2.binding.mapItems
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
-import io.fritz2.examples.nestedmodel.Lenses.Element.id
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
