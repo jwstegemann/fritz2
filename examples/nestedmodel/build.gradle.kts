@@ -24,6 +24,4 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.2")
     implementation(project(":core"))
     implementation(project(":examples:nestedmodel:model"))
-    compile("io.fritz2.optics:core-js:0.1")
 }
-

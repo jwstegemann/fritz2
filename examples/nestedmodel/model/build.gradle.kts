@@ -32,7 +32,6 @@ apply(plugin = "io.fritz2.optics")
 
 dependencies {
     implementation(kotlin("stdlib-js"))
-    compile("io.fritz2.optics:core-js:0.1")
+    api("io.fritz2.optics:core-js:0.1")
 }
-
 
