@@ -2,21 +2,37 @@ package io.fritz2.binding
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.scan
 
 interface WithSeverity: WithId {
     val severity: Severity
 }
 
-enum class Severity(val prio: Int) {
-    Info(0),
-    Warning(4),
-    Error(8),
-    Fatal(16),
+enum class Severity {
+    Info,
+    Warning,
+    Error,
+    Fatal,
 }
 
-interface Validator<D, M: WithSeverity, T> {
-    fun validate(data: D, metadata: T): List<M>
+@FlowPreview
+@ExperimentalCoroutinesApi
+abstract class Validator<D, M: WithSeverity, T> {
+
+    val msgs = ConflatedBroadcastChannel<List<M>>()
+
+    abstract fun validate(data: D, metadata: T): List<M>
+
+    fun isValid(msg: M): Boolean {
+        return msg.severity < Severity.Error
+    }
+
+    fun isValid(): Flow<Boolean> {
+        return msgs.asFlow().scan(true) { b, msgs -> msgs.all { msg -> isValid(msg) } }
+    }
 }
 
 @FlowPreview
@@ -25,23 +41,12 @@ interface Validation<D, M: WithSeverity, T> {
 
     val validator: Validator<D, M, T>
 
-    var msgs: Flow<M>
-
-    fun isValidPredicate(msg: M): Boolean {
-        return msg.severity.prio < Severity.Error.prio
-    }
-
     fun validate(data: D, metadata: T): Boolean {
         val messages = validator.validate(data, metadata)
-        msgs = flow {
-            for (msg in messages) {
-                emit(msg)
-            }
-        }
-        return messages.all { m -> isValidPredicate(m) }
+        println(messages)
+        validator.msgs.offer(messages)
+        return messages.all { m -> validator.isValid(m) }
     }
 
-    fun isValid(): Flow<Boolean> {
-        return msgs.scan(true) { b, msg -> b && isValidPredicate(msg) }
-    }
+    fun msgs(): Flow<List<M>> = validator.msgs.asFlow()
 }
