@@ -58,7 +58,7 @@ fun main() {
             }
             hre{}
             ul {
-                store.msgs().mapItems {
+                store.msgs().each().mapItems {
                     html {
                         li {
                             +it.text

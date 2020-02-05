@@ -3,9 +3,7 @@ package io.fritz2.binding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.flow.*
 
 interface WithSeverity: WithId {
     val severity: Severity
@@ -22,7 +20,8 @@ enum class Severity {
 @ExperimentalCoroutinesApi
 abstract class Validator<D, M: WithSeverity, T> {
 
-    val msgs = ConflatedBroadcastChannel<List<M>>()
+    internal val channel = ConflatedBroadcastChannel<List<M>>()
+    val msgs = channel.asFlow().distinctUntilChanged()
 
     abstract fun validate(data: D, metadata: T): List<M>
 
@@ -31,7 +30,8 @@ abstract class Validator<D, M: WithSeverity, T> {
     }
 
     fun isValid(): Flow<Boolean> {
-        return msgs.asFlow().scan(true) { b, msgs -> msgs.all { msg -> isValid(msg) } }
+        //TODO optimize
+        return msgs.map { list -> list.none {m -> !isValid(m)}}
     }
 }
 
@@ -44,9 +44,9 @@ interface Validation<D, M: WithSeverity, T> {
     fun validate(data: D, metadata: T): Boolean {
         val messages = validator.validate(data, metadata)
         println(messages)
-        validator.msgs.offer(messages)
+        validator.channel.offer(messages)
         return messages.all { m -> validator.isValid(m) }
     }
 
-    fun msgs(): Flow<Patch<M>> = validator.msgs.asFlow().each()
+    fun msgs(): Flow<List<M>> = validator.msgs
 }
