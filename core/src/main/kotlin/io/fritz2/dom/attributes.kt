@@ -1,5 +1,6 @@
 package io.fritz2.dom
 
+import io.fritz2.binding.Patch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +26,9 @@ interface WithAttributes<out T : Element> : WithDomNode<T> {
     fun attribute(name: String, values: Flow<String>) = values.bind(name)
     fun attributeData(name: String, value: String) = attribute("data-$name", value)
     fun attributeData(name: String, values: Flow<String>) = attribute("data-$name", values)
+    fun attribute(name: String, values: List<String>) = domNode.setAttribute(name, values.joinToString(separator = " "))
+    fun attribute(name: String, values: Flow<Patch<String>>) = values.bind(name)
 
     fun Flow<String>.bind(name: String) = AttributeMountPoint(name, this, domNode)
+    fun Flow<Patch<String>>.bind(name: String) = AttributeMultiMountPoint(name, this, domNode)
 }

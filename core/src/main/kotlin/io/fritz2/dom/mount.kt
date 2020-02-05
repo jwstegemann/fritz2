@@ -30,7 +30,7 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
     }
 
     override fun patch(patch: Patch<WithDomNode<T>>) {
-//        console.log("### MountPoint: ... patching: ${patch.from} with ${patch.that} replacing ${patch.replaced}")
+//        console.log("### MountPoint: ... patching: ${patch.from} with ${patch.that.joinToString()} replacing ${patch.replaced}")
         patch.apply {
             val child = removeChildren(target?.childNodes?.get(from), replaced)
 //            console.log("### MountPoint: child: $child")
@@ -53,6 +53,32 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
 class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: Element?) : SingleMountPoint<String>(upstream) {
     override fun set(value: String, last: String?) {
         target?.setAttribute(name, value)
+    }
+}
+
+//class AttributeMultiMountPoint(val name: String, upstream: Flow<Collection<String>>, val target: Element?) : SingleMountPoint<Collection<String>>(upstream) {
+//    override fun set(value: Collection<String>, last: Collection<String>?) {
+//        target?.setAttribute(name, value.joinToString(separator = " "))
+//    }
+//}
+
+class AttributeMultiMountPoint(val name: String, upstream: Flow<Patch<String>>, val target: Element?) : MultiMountPoint<String>(upstream) {
+
+    override fun patch(patch: Patch<String>) {
+        patch.apply {
+            console.log(this)
+            var entries = target?.getAttribute(name)?.split(' ')?.toMutableList()
+            if (entries == null) entries = mutableListOf()
+            if(replaced == 0) {
+                entries.addAll(from, that)
+            } else {
+                for (i in from until (from + replaced)) {
+                    entries.removeAt(i)
+                }
+                entries.addAll(from, that)
+            }
+            target?.setAttribute(name, entries.joinToString(separator = " "))
+        }
     }
 }
 

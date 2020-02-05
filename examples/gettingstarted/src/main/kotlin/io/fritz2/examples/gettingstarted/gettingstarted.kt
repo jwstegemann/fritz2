@@ -7,6 +7,9 @@ import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 
@@ -19,6 +22,15 @@ fun main() {
     val store = object : Store<String>("start") {
         val addADot = Handler<ActionData> { model, _ ->
             "$model."
+        }
+    }
+
+    val classStore = object : Store<List<String>>(listOf("btn", "items")) {
+        val add = Handler<String> { list, new ->
+            list + new
+        }
+        val remove = Handler<String> { list, del ->
+            list.minus(del)
         }
     }
 
@@ -56,8 +68,11 @@ fun main() {
                         button {
                             +s
                             id = !"delete-btn"
-                            className = !"btn"
+                            `class` = !"btn"
                             seq.deleteItem <= clicks.map { console.log(s); s }
+                            classStore.remove <= clicks.map { e ->
+                                "newItem"
+                            }
                         }
                     }
                 }.bind()
@@ -65,7 +80,12 @@ fun main() {
             button {
                 +"add an item"
                 seq.addItem <= clicks
+                classStore.add <= clicks.map { e ->
+                    "newItem"
+                }
                 attributeData("test", "test-button1")
+                id = !"button"
+                classStore.each().bind("class")
             }
         }
     }

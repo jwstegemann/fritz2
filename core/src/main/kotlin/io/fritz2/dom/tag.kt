@@ -34,7 +34,10 @@ abstract class Tag<out T : Element>(tagName: String, override val domNode: T = w
     operator fun <T> T.not() = Const(this)
 
     var id: Flow<String> by AttributeDelegate
-    var className: Flow<String>
+    var `class`: Flow<String>
         get() {throw NotImplementedError()}
         set(value) { attribute("class", value)}
+    var classes: Flow<Patch<String>>
+        get() {throw NotImplementedError()}
+        set(values) { attribute("class", values)}
 }
