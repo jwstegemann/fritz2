@@ -48,5 +48,5 @@ interface Validation<D, M: WithSeverity, T> {
         return messages.all { m -> validator.isValid(m) }
     }
 
-    fun msgs(): Flow<List<M>> = validator.msgs.asFlow()
+    fun msgs(): Flow<Patch<M>> = validator.msgs.asFlow().each()
 }

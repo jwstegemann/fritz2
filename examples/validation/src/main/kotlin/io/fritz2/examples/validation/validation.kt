@@ -13,20 +13,19 @@ data class ValMsg(override val id: String, override val severity: Severity, val 
 @FlowPreview
 object EMailValidator: Validator<String, ValMsg, String>() {
     override fun validate(data: String, metadata: String): List<ValMsg> {
-        var msgs = listOf<ValMsg>()
+        val msgs = mutableListOf<ValMsg>()
 
         if(data.isEmpty()) {
-            msgs += ValMsg("empty", Severity.Info, "Please provide some input")
+            msgs.add(ValMsg("empty", Severity.Info, "Please provide some input"))
         }
 
         if(!data.matches("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$)")) {
-            msgs += ValMsg("not_matched", Severity.Error, "Please correct the email address!")
+            msgs.add(ValMsg("not_matched", Severity.Error, "Please correct the email address!"))
         }
 
         if(data.length > 20) {
-            msgs += ValMsg("very_long", Severity.Warning, "Is it correct that your email address is that long?")
+            msgs.add(ValMsg("very_long", Severity.Warning, "Is it correct that your email address is that long?"))
         }
-
         return msgs
     }
 }
@@ -59,12 +58,10 @@ fun main() {
             }
             hre{}
             ul {
-                store.msgs().flatMapConcat { valMsgs ->
-                    valMsgs.asFlow().map {
-                        html {
-                            li {
-                                +it.text
-                            }
+                store.msgs().mapItems {
+                    html {
+                        li {
+                            +it.text
                         }
                     }
                 }.bind()
