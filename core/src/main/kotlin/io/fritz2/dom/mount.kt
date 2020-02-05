@@ -56,31 +56,26 @@ class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: 
     }
 }
 
-//class AttributeMultiMountPoint(val name: String, upstream: Flow<Collection<String>>, val target: Element?) : SingleMountPoint<Collection<String>>(upstream) {
-//    override fun set(value: Collection<String>, last: Collection<String>?) {
-//        target?.setAttribute(name, value.joinToString(separator = " "))
+//TODO: maybe possible with addClass() and removeClass() methods on elements?
+//class AttributeMultiMountPoint(val name: String, upstream: Flow<Patch<String>>, val target: Element?) : MultiMountPoint<String>(upstream) {
+//
+//    override fun patch(patch: Patch<String>) {
+//        patch.apply {
+//            console.log(this)
+//            var entries = target?.getAttribute(name)?.split(' ')?.toMutableList()
+//            if (entries == null) entries = mutableListOf()
+//            if(replaced == 0) {
+//                entries.addAll(from, that)
+//            } else {
+//                for (i in from until (from + replaced)) {
+//                    entries.removeAt(i)
+//                }
+//                entries.addAll(from, that)
+//            }
+//            target?.setAttribute(name, entries.joinToString(separator = " "))
+//        }
 //    }
 //}
-
-class AttributeMultiMountPoint(val name: String, upstream: Flow<Patch<String>>, val target: Element?) : MultiMountPoint<String>(upstream) {
-
-    override fun patch(patch: Patch<String>) {
-        patch.apply {
-            console.log(this)
-            var entries = target?.getAttribute(name)?.split(' ')?.toMutableList()
-            if (entries == null) entries = mutableListOf()
-            if(replaced == 0) {
-                entries.addAll(from, that)
-            } else {
-                for (i in from until (from + replaced)) {
-                    entries.removeAt(i)
-                }
-                entries.addAll(from, that)
-            }
-            target?.setAttribute(name, entries.joinToString(separator = " "))
-        }
-    }
-}
 
 @ExperimentalCoroutinesApi
 @FlowPreview

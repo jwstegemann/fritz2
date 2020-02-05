@@ -87,7 +87,7 @@ fun main() {
                 }
                 attributeData("test", "test-button1")
                 id = !"button"
-                classStore.each().bind("class")
+                classes = classStore.data
             }
         }
     }
