@@ -30,19 +30,19 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
     }
 
     override fun patch(patch: Patch<WithDomNode<T>>) {
-//        console.log("### MountPoint: ... patching: ${patch.from} with ${patch.that.joinToString()} replacing ${patch.replaced}")
+        //console.log("### MountPoint: ... patching: ${patch.from} with ${patch.that} replacing ${patch.replaced}")
         patch.apply {
             val child = removeChildren(target?.childNodes?.get(from), replaced)
-//            console.log("### MountPoint: child: $child")
+            //console.log("### MountPoint: child: $child")
             if (child == null) {
                 for (newChild in that) {
                     target?.appendChild(newChild.domNode)
-//                    console.log("### MountPoint: ... appending: $newChild")
+                    //console.log("### MountPoint: ... appending: $newChild")
                 }
             } else {
                 for (newChild in that) {
                     target?.insertBefore(newChild.domNode, child)
-//                    console.log("### MountPoint: ... insert: $newChild")
+                    //console.log("### MountPoint: ... insert: $newChild")
                 }
             }
         }
