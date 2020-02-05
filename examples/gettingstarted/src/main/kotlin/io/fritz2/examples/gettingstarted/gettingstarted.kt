@@ -25,8 +25,7 @@ fun main() {
         }
     }
 
-    val seq = object : RootStore<List<String>>(listOf("one", "two", "three")) {
-    val classStore = object : Store<List<String>>(listOf("btn", "items")) {
+    val classStore = object : RootStore<List<String>>(listOf("btn", "items")) {
         val add = Handler<String> { list, new ->
             list + new
         }
