@@ -54,14 +54,14 @@ private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, n
 //TODO: just one methode on Store or(!) Flow?
 @ExperimentalCoroutinesApi
 @FlowPreview
-fun <T: WithId> Store<List<T>>.each(): Seq<T> =
+fun <T: withId> Store<List<T>>.each(): Seq<T> =
     data.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
         a.id != b.id
     })
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-fun <T: WithId> Flow<List<T>>.each(): Seq<T> =
+fun <T: withId> Flow<List<T>>.each(): Seq<T> =
     this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
         a.id != b.id
     })

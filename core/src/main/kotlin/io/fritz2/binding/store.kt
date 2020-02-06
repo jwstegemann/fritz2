@@ -1,5 +1,6 @@
 package io.fritz2.binding
 
+import io.fritz2.optics.Lens
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
@@ -16,7 +17,7 @@ interface Store<T> {
 
     val data: Flow<T>
 
-    fun <X> sub(lens: Lens<T,X>): Store<X>
+    fun <X> sub(lens: Lens<T, X>): Store<X>
 }
 
 @FlowPreview
