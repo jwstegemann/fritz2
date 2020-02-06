@@ -2,11 +2,8 @@ package io.fritz2.binding
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.scan
 
 
 data class Patch<out T>(val from: Int, val that: List<T>, val replaced: Int)
@@ -51,6 +48,8 @@ private inline fun <T> compare(crossinline different: (T, T) -> Boolean): suspen
 private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, newValue: List<T>) =
     Pair(accumulator.second, newValue)
 
+
+//TODO: just one methode on Store or(!) Flow?
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun <T: WithId> Store<List<T>>.each(): Seq<T> =
@@ -66,11 +65,6 @@ fun <T: WithId> Flow<List<T>>.each(): Seq<T> =
     })
 
 
-//TODO: flatmap needed?
-fun <T, X> Flow<Patch<T>>.map(mapper: (T) -> X): Flow<Patch<X>> =
-    this.map {
-        Patch(it.from, it.that.map(mapper), it.replaced)
-}
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun <T> Store<List<T>>.each(): Seq<T> =

@@ -39,8 +39,4 @@ abstract class Tag<out T : Element>(tagName: String, override val domNode: T = w
     var classes: Flow<List<String>>
         get() {throw NotImplementedError()}
         set(values) { attribute("class", values)}
-
-    fun <X : WithSeverity> Flow<List<X>>.bind(): SingleMountPoint<List<X>> = object : SingleMountPoint<List<X>>(this){
-        override fun set(value: List<X>, last: List<X>?) {}
-    }
 }
