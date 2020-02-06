@@ -53,10 +53,18 @@ private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, n
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-fun <T: WithId> Store<List<T>>.each(): Seq<T>  =
+fun <T: WithId> Store<List<T>>.each(): Seq<T> =
     data.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
         a.id != b.id
     })
+
+@ExperimentalCoroutinesApi
+@FlowPreview
+fun <T: WithId> Flow<List<T>>.each(): Seq<T> =
+    this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
+        a.id != b.id
+    })
+
 
 //TODO: flatmap needed?
 fun <T, X> Flow<Patch<T>>.map(mapper: (T) -> X): Flow<Patch<X>> =
@@ -65,7 +73,14 @@ fun <T, X> Flow<Patch<T>>.map(mapper: (T) -> X): Flow<Patch<X>> =
 }
 @ExperimentalCoroutinesApi
 @FlowPreview
-fun <T> Store<List<T>>.each(): Seq<T>  =
+fun <T> Store<List<T>>.each(): Seq<T> =
     data.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
+        a != b
+    })
+
+@ExperimentalCoroutinesApi
+@FlowPreview
+fun <T> Flow<List<T>>.each(): Seq<T> =
+    this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
         a != b
     })

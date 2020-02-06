@@ -4,6 +4,7 @@ import io.fritz2.binding.Const
 import io.fritz2.binding.MultiMountPoint
 import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
+import io.fritz2.binding.WithSeverity
 import io.fritz2.dom.html.HtmlElements
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -38,4 +39,8 @@ abstract class Tag<out T : Element>(tagName: String, override val domNode: T = w
     var classes: Flow<List<String>>
         get() {throw NotImplementedError()}
         set(values) { attribute("class", values)}
+
+    fun <X : WithSeverity> Flow<List<X>>.bind(): SingleMountPoint<List<X>> = object : SingleMountPoint<List<X>>(this){
+        override fun set(value: List<X>, last: List<X>?) {}
+    }
 }

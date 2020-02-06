@@ -22,7 +22,7 @@ interface Lens<P,T> {
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class SubStore<R, P, T>(private val parent: Store<P>, private val lens: Lens<P,T>, val rootStore: RootStore<R>, val rootLens: Lens<R,T>) : Store<T>() {
+class SubStore<R, P, T>(private val parent: Store<P>, private val lens: Lens<P,T>, val rootStore: RootStore<R>, val rootLens: Lens<R,T>) : Store<T> {
 
     override fun enqueue(update: Update<T>) {
         rootStore.enqueue {
@@ -34,6 +34,6 @@ class SubStore<R, P, T>(private val parent: Store<P>, private val lens: Lens<P,T
         lens.get(it)
     }.distinctUntilChanged()
 
-    override fun <X> sub(lens: Lens<T,X>): SubStore<R,T,X> = SubStore<R,T,X>(this, lens, rootStore, this.rootLens + lens)
+    override fun <X> sub(lens: Lens<T,X>): SubStore<R,T,X> = SubStore(this, lens, rootStore, this.rootLens + lens)
 
 }
