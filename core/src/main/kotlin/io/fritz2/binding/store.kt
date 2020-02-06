@@ -11,36 +11,21 @@ import kotlinx.coroutines.launch
 
 typealias Update<T> = (T) -> T
 
-interface Store<T> {
+abstract class Store<T> {
 
-    fun enqueue(update: Update<T>)
+    abstract fun enqueue(update: Update<T>)
 
-    val data: Flow<T>
-
-    fun <X> sub(lens: Lens<T, X>): Store<X>
-}
-
-@FlowPreview
-@ExperimentalCoroutinesApi
-open class RootStore<T>(initialData: T) : Store<T> {
-    private val updates = ConflatedBroadcastChannel<Update<T>>()
-    private val applyUpdate : suspend (T, Update<T>) -> T = {lastValue, update -> update(lastValue)}
-
-    override fun enqueue(update: Update<T>) {
-        updates.offer(update)
-    }
-
-    inner class Handler<A>(inline val handle: (T, A) -> T) {
+    inner class Handler<A>(inline val handler: (T, A) -> T) {
         fun handle(actions: Flow<A>): Unit {
             GlobalScope.launch {
                 actions.collect {
-                    enqueue { t -> handle(t,it) }
+                    enqueue { t -> handler(t,it) }
                 }
             }
         }
 
         fun handle(action: A): Unit {
-            enqueue { t -> handle(t,action) }
+            enqueue { t -> handler(t,action) }
         }
 
         // syntactical sugar to write slot <= event-stream
@@ -49,9 +34,26 @@ open class RootStore<T>(initialData: T) : Store<T> {
             return 0
         }
     }
-    val update: Handler<T> = Handler { _, newValue -> newValue }
+
+    abstract val id: String
+
+    abstract val data: Flow<T>
+    val update: Handler<T> = Handler<T> { _, newValue -> newValue }
+
+    abstract fun <X> sub(lens: Lens<T, X>): Store<X>
+}
+
+@FlowPreview
+@ExperimentalCoroutinesApi
+open class RootStore<T>(private val initialData: T, override val id: String = "")  : Store<T>() {
+    private val updates = ConflatedBroadcastChannel<Update<T>>()
+    private val applyUpdate : suspend (T, Update<T>) -> T = {lastValue, update -> update(lastValue)}
+
+    override fun enqueue(update: Update<T>) {
+        updates.offer(update)
+    }
 
     override val data = updates.asFlow().scan(initialData, applyUpdate).distinctUntilChanged()
 
-    override fun <X> sub(lens: Lens<T, X>) = SubStore(this, lens, this, lens)
+    override fun <X> sub(lens: Lens<T, X>) = SubStore<T,T,X>(this, lens, this, lens)
 }

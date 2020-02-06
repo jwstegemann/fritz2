@@ -10,7 +10,9 @@ import kotlinx.coroutines.flow.map
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class SubStore<R, P, T>(private val parent: Store<P>, private val lens: Lens<P, T>, val rootStore: RootStore<R>, val rootLens: Lens<R,T>) : Store<T> {
+class SubStore<R, P, T>(private val parent: Store<P>, private val lens: Lens<P, T>, val rootStore: RootStore<R>, val rootLens: Lens<R,T>) : Store<T>() {
+
+    override val id: String by lazy { "${parent.id}.${lens._id}" }
 
     override fun enqueue(update: Update<T>) {
         rootStore.enqueue {
