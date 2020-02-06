@@ -30,19 +30,19 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
     }
 
     override fun patch(patch: Patch<WithDomNode<T>>) {
-//        console.log("### MountPoint: ... patching: ${patch.from} with ${patch.that} replacing ${patch.replaced}")
+        //console.log("### MountPoint: ... patching: ${patch.from} with ${patch.that} replacing ${patch.replaced}")
         patch.apply {
             val child = removeChildren(target?.childNodes?.get(from), replaced)
-//            console.log("### MountPoint: child: $child")
+            //console.log("### MountPoint: child: $child")
             if (child == null) {
                 for (newChild in that) {
                     target?.appendChild(newChild.domNode)
-//                    console.log("### MountPoint: ... appending: $newChild")
+                    //console.log("### MountPoint: ... appending: $newChild")
                 }
             } else {
                 for (newChild in that) {
                     target?.insertBefore(newChild.domNode, child)
-//                    console.log("### MountPoint: ... insert: $newChild")
+                    //console.log("### MountPoint: ... insert: $newChild")
                 }
             }
         }
@@ -55,6 +55,27 @@ class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: 
         target?.setAttribute(name, value)
     }
 }
+
+//TODO: maybe possible with addClass() and removeClass() methods on elements?
+//class AttributeMultiMountPoint(val name: String, upstream: Flow<Patch<String>>, val target: Element?) : MultiMountPoint<String>(upstream) {
+//
+//    override fun patch(patch: Patch<String>) {
+//        patch.apply {
+//            console.log(this)
+//            var entries = target?.getAttribute(name)?.split(' ')?.toMutableList()
+//            if (entries == null) entries = mutableListOf()
+//            if(replaced == 0) {
+//                entries.addAll(from, that)
+//            } else {
+//                for (i in from until (from + replaced)) {
+//                    entries.removeAt(i)
+//                }
+//                entries.addAll(from, that)
+//            }
+//            target?.setAttribute(name, entries.joinToString(separator = " "))
+//        }
+//    }
+//}
 
 @ExperimentalCoroutinesApi
 @FlowPreview

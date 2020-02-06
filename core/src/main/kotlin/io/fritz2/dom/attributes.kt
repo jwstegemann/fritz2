@@ -23,7 +23,11 @@ interface WithAttributes<out T : Element> : WithDomNode<T> {
 
     fun attribute(name: String, value: String) = domNode.setAttribute(name, value)
     fun attribute(name: String, values: Flow<String>) = values.bind(name)
-    //TODO: convenience-methods for data-attributes
+    fun attributeData(name: String, value: String) = attribute("data-$name", value)
+    fun attributeData(name: String, values: Flow<String>) = attribute("data-$name", values)
+    fun attribute(name: String, values: List<String>) = domNode.setAttribute(name, values.joinToString(separator = " "))
+    fun attribute(name: String, values: Flow<List<String>>) = values.bind(name)
 
     fun Flow<String>.bind(name: String) = AttributeMountPoint(name, this, domNode)
+    fun Flow<List<String>>.bind(name: String) = AttributeMountPoint(name, this.map{l -> l.joinToString(separator = " ")}, domNode)
 }
