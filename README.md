@@ -13,22 +13,24 @@ But don't be too disappointed. There is not too much ready yet...
 ## What is there already?
 
 - easy reactive one- and two-way-databinding
-- one-way-databinding for lists
+- even for lists and deep nested structures
 - all html 5 elements
+- complete set of attributes 
 - all event-handlers (clicks, changes, ...)
-- hassle-free redux-like state-handling (work-in-progress)
+- hassle-free redux-like state-handling
+- model-validation and message handling 
 
 ## What will come next?
 
-- ~~complete set of html-elements, attributtes and events~~ &#9745;
-- two-way-databinding for deep structures (nested data-classes)
+- complete example (ToDoMVC)
 - routing
 - server-communication
 - user auth
-- logging
+- documentation
+
 
 ## Overall Goals
 
 - stay extremely lightweight (just a few hundred lines of code for the core)
-- try to depend on as less libs as possible (hopefully only for lenses and css...)
+- try to depend on as less libs as possible (zero up to now!)
 - generating elements, attributes, events for html from specification (w3c, mozilla, ...)
