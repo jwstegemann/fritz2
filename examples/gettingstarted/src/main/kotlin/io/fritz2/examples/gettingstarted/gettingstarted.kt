@@ -2,14 +2,10 @@ package io.fritz2.examples.gettingstarted
 
 import io.fritz2.binding.RootStore
 import io.fritz2.binding.each
-import io.fritz2.binding.mapItems
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 
@@ -63,7 +59,7 @@ fun main() {
                 }
             }
             ul {
-                seq.each().mapItems { s ->
+                seq.data.each().map { s ->
                     html {
                         li {
                             button {
