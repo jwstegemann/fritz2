@@ -12,6 +12,7 @@ data class ValMsg(override val id: String, override val severity: Severity, val 
 @ExperimentalCoroutinesApi
 @FlowPreview
 object EMailValidator: Validator<String, ValMsg, String>() {
+
     override fun validate(data: String, metadata: String): List<ValMsg> {
         val msgs = mutableListOf<ValMsg>()
 
@@ -36,6 +37,7 @@ fun main() {
 
     val store = object : RootStore<String>(""), Validation<String, ValMsg, String> {
         override val validator = EMailValidator
+
 
         val updateWithValidation = Handler<String> { data, newData ->
             if (validate(newData, "update")) newData

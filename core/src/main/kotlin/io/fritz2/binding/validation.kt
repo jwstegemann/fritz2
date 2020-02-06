@@ -4,7 +4,10 @@ import io.fritz2.optics.withId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 interface WithSeverity: withId {
     val severity: Severity
@@ -26,13 +29,16 @@ abstract class Validator<D, M: WithSeverity, T> {
 
     abstract fun validate(data: D, metadata: T): List<M>
 
-    fun isValid(msg: M): Boolean {
+    open fun validPredicate(msg: M): Boolean {
         return msg.severity < Severity.Error
     }
 
     fun isValid(): Flow<Boolean> {
-        //TODO optimize
-        return msgs.map { list -> list.none {m -> !isValid(m)}}
+        return msgs.map { list -> list.none {m -> !validPredicate(m)}}
+    }
+
+    fun isNotValid(): Flow<Boolean> {
+        return msgs.map { list -> list.any {m -> validPredicate(m)}}
     }
 }
 
@@ -46,7 +52,7 @@ interface Validation<D, M: WithSeverity, T> {
         val messages = validator.validate(data, metadata)
         println(messages)
         validator.channel.offer(messages)
-        return messages.all { m -> validator.isValid(m) }
+        return messages.none { m -> !validator.validPredicate(m) }
     }
 
     fun msgs(): Flow<List<M>> = validator.msgs
