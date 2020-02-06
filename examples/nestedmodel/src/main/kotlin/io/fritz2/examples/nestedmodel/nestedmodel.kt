@@ -2,11 +2,14 @@ package io.fritz2.examples.nestedmodel
 
 import io.fritz2.binding.RootStore
 import io.fritz2.binding.eachStore
-import io.fritz2.binding.mapItems
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 fun main() {
 
     val model = RootStore(Outer(Inner("hello"), "world", listOf(
@@ -37,7 +40,7 @@ fun main() {
                 +innerValue.data
             }
             ul {
-                seq.eachStore().mapItems {
+                seq.eachStore().map {
                     html {
                         val elementValue = it.sub(Lenses.Element.value)
                         li {
