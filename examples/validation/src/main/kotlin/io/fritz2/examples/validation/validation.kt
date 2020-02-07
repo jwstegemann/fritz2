@@ -5,19 +5,17 @@ import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.map
 
 enum class Severity {
     Info,
     Warning,
-    Error,
-    Fatal,
+    Error
 }
 
 data class ValMsg(override val id: String, val severity: Severity, val text: String): Failable {
     override fun isFail(): Boolean = severity > Severity.Warning
 }
-
-
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -68,12 +66,17 @@ fun main() {
                 +"value: "
                 store.data.bind()
             }
+            div {
+                +"state: "
+                +store.validator.isValid.map{ v -> if(v) "valid" else "not valid"}
+            }
             hre{}
             ul {
                 store.msgs().each().mapItems {
                     html {
                         li {
                             +it.text
+                            `class` = !it.severity.name.toLowerCase()
                         }
                     }
                 }.bind()
