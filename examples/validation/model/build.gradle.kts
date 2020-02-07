@@ -5,10 +5,6 @@ buildscript {
         google()
         jcenter()
         mavenCentral()
-        maven {
-            name = "bintray"
-            url = uri("https://dl.bintray.com/jwstegemann/fritz2/")
-        }
     }
 
     dependencies {

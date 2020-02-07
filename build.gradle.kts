@@ -23,9 +23,5 @@ subprojects {
         mavenLocal()
         mavenCentral()
         jcenter()
-        maven {
-            name = "bintray"
-            url = uri("https://dl.bintray.com/jwstegemann/fritz2/")
-        }
     }
 }
