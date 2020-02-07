@@ -5,9 +5,19 @@ import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
 
-data class ValMsg(override val id: String, override val severity: Severity, val text: String): WithSeverity
+enum class Severity {
+    Info,
+    Warning,
+    Error,
+    Fatal,
+}
+
+data class ValMsg(override val id: String, val severity: Severity, val text: String): Failable {
+    override fun isFail(): Boolean = severity > Severity.Warning
+}
+
+
 
 @ExperimentalCoroutinesApi
 @FlowPreview

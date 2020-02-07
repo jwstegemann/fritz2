@@ -9,42 +9,25 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-interface WithSeverity: withId {
-    val severity: Severity
-}
-
-enum class Severity {
-    Info,
-    Warning,
-    Error,
-    Fatal,
+interface Failable: withId {
+    fun isFail(): Boolean
 }
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-abstract class Validator<D, M: WithSeverity, T> {
+abstract class Validator<D, M: Failable, T> {
 
     internal val channel = ConflatedBroadcastChannel<List<M>>()
     val msgs = channel.asFlow().distinctUntilChanged()
 
     abstract fun validate(data: D, metadata: T): List<M>
 
-    open fun validPredicate(msg: M): Boolean {
-        return msg.severity < Severity.Error
-    }
-
-    fun isValid(): Flow<Boolean> {
-        return msgs.map { list -> list.none {m -> !validPredicate(m)}}
-    }
-
-    fun isNotValid(): Flow<Boolean> {
-        return msgs.map { list -> list.any {m -> validPredicate(m)}}
-    }
+    val isValid by lazy {msgs.map { list -> list.none(Failable::isFail)}}
 }
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-interface Validation<D, M: WithSeverity, T> {
+interface Validation<D, M: Failable, T> {
 
     val validator: Validator<D, M, T>
 
@@ -52,7 +35,7 @@ interface Validation<D, M: WithSeverity, T> {
         val messages = validator.validate(data, metadata)
         println(messages)
         validator.channel.offer(messages)
-        return messages.none { m -> !validator.validPredicate(m) }
+        return messages.none(Failable::isFail)
     }
 
     fun msgs(): Flow<List<M>> = validator.msgs

@@ -5,8 +5,12 @@ import io.fritz2.binding.eachStore
 import io.fritz2.binding.mapItems
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 fun main() {
 
     val model = RootStore(Outer(Inner("hello"), "world", listOf(
