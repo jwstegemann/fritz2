@@ -2,10 +2,8 @@ package io.fritz2.dom
 
 import io.fritz2.binding.Const
 import io.fritz2.binding.MultiMountPoint
-import io.fritz2.binding.Patch
 import io.fritz2.binding.Seq
 import io.fritz2.binding.SingleMountPoint
-import io.fritz2.binding.WithSeverity
 import io.fritz2.dom.html.HtmlElements
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview

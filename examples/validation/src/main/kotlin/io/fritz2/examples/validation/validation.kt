@@ -5,13 +5,22 @@ import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.map
 
-data class ValMsg(override val id: String, override val severity: Severity, val text: String): WithSeverity
+enum class Severity {
+    Info,
+    Warning,
+    Error
+}
+
+data class ValMsg(override val id: String, val severity: Severity, val text: String): Failable {
+    override fun isFail(): Boolean = severity > Severity.Warning
+}
 
 @ExperimentalCoroutinesApi
 @FlowPreview
 object EMailValidator: Validator<String, ValMsg, String>() {
+
     override fun validate(data: String, metadata: String): List<ValMsg> {
         val msgs = mutableListOf<ValMsg>()
 
@@ -37,6 +46,7 @@ fun main() {
     val store = object : RootStore<String>(""), Validation<String, ValMsg, String> {
         override val validator = EMailValidator
 
+
         val updateWithValidation = Handler<String> { data, newData ->
             if (validate(newData, "update")) newData
             else data
@@ -56,12 +66,17 @@ fun main() {
                 +"value: "
                 store.data.bind()
             }
+            div {
+                +"state: "
+                +store.validator.isValid.map{ v -> if(v) "valid" else "not valid"}
+            }
             hre{}
             ul {
                 store.msgs().each().map {
                     html {
                         li {
                             +it.text
+                            `class` = !it.severity.name.toLowerCase()
                         }
                     }
                 }.bind()
