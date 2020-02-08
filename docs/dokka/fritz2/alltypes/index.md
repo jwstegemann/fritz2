@@ -163,6 +163,11 @@ Exposes the JavaScript [HTMLDivElement](https://developer.mozilla.org/en/docs/We
 
 |
 
+##### [io.fritz2.binding.Failable](../io.fritz2.binding/-failable/index.md)
+
+
+|
+
 ##### [io.fritz2.dom.html.FieldSet](../io.fritz2.dom.html/-field-set/index.md)
 
 Exposes the JavaScript [HTMLFieldSetElement](https://developer.mozilla.org/en/docs/Web/API/HTMLFieldSetElement) to Kotlin
@@ -385,12 +390,7 @@ Exposes the JavaScript [HTMLSelectElement](https://developer.mozilla.org/en/docs
 
 |
 
-##### [io.fritz2.binding.Seq](../io.fritz2.binding/-seq.md)
-
-
-|
-
-##### [io.fritz2.binding.Severity](../io.fritz2.binding/-severity/index.md)
+##### [io.fritz2.binding.Seq](../io.fritz2.binding/-seq/index.md)
 
 
 |
@@ -548,11 +548,6 @@ Exposes the JavaScript [HTMLVideoElement](https://developer.mozilla.org/en/docs/
 |
 
 ##### [io.fritz2.dom.WithEvents](../io.fritz2.dom/-with-events/index.md)
-
-
-|
-
-##### [io.fritz2.binding.WithSeverity](../io.fritz2.binding/-with-severity/index.md)
 
 
 |

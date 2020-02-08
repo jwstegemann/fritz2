@@ -2,4 +2,4 @@
 
 # each
 
-`@ExperimentalCoroutinesApi @FlowPreview fun <T : withId> Flow<`[`List`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)`<T>>.each(): `[`Seq`](../-seq.md)`<T>`
+`@ExperimentalCoroutinesApi @FlowPreview fun <T : withId> Flow<`[`List`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)`<T>>.each(): `[`Seq`](../-seq/index.md)`<T>`

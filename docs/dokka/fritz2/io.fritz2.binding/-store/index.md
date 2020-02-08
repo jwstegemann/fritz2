@@ -29,10 +29,6 @@ A Store is the plave to "store" the data, on which changes you want to react.
 | [enqueue](enqueue.md) | Enqueue a specific update of you modle.`abstract fun enqueue(update: `[`Update`](../-update.md)`<T>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
 | [sub](sub.md) | `abstract fun <X> sub(lens: Lens<T, X>): `[`Store`](./index.md)`<X>` |
 
-### Extension Functions
-
-| [each](../each.md) | `fun <T : withId> `[`Store`](./index.md)`<`[`List`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)`<T>>.each(): `[`Seq`](../-seq.md)`<T>` |
-
 ### Inheritors
 
 | [RootStore](../-root-store/index.md) | `open class RootStore<T> : `[`Store`](./index.md)`<T>` |

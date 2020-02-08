@@ -2,7 +2,7 @@
 
 # Validation
 
-`@FlowPreview @ExperimentalCoroutinesApi interface Validation<D, M : `[`WithSeverity`](../-with-severity/index.md)`, T>`
+`@FlowPreview @ExperimentalCoroutinesApi interface Validation<D, M : `[`Failable`](../-failable/index.md)`, T>`
 
 ### Properties
 
