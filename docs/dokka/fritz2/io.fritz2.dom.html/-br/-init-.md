@@ -1,0 +1,8 @@
+[fritz2](../../index.md) / [io.fritz2.dom.html](../index.md) / [Br](index.md) / [&lt;init&gt;](./-init-.md)
+
+# &lt;init&gt;
+
+`Br()`
+
+Exposes the JavaScript [HTMLBRElement](https://developer.mozilla.org/en/docs/Web/API/HTMLBRElement) to Kotlin
+

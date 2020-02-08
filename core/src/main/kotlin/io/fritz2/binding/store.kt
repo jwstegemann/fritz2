@@ -9,10 +9,23 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 
+/**
+ * An update on a store is a function to infer the next model from the current.
+ */
 typealias Update<T> = (T) -> T
 
+/**
+ * A Store is the plave to "store" the data, on which changes you want to react.
+ *
+ * @param T Type of the data that this store holds
+ */
 abstract class Store<T> {
 
+    /**
+     * Enqueue a specific update of you modle.
+     *
+     * @param update update to queue
+     */
     abstract fun enqueue(update: Update<T>)
 
     inner class Handler<A>(inline val handler: (T, A) -> T) {
