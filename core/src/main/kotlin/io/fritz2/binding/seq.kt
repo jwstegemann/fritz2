@@ -4,23 +4,32 @@ import io.fritz2.optics.withId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.flow.map
 
 
 data class Patch<out T>(val from: Int, val that: List<T>, val replaced: Int)
 
-//TODO: make class to hide Flow<Patch<>> in data attribute
-typealias Seq<T> = Flow<Patch<T>>
-
-//TODO: a way to call this just map?
-inline fun <T, X> Seq<T>.mapItems(crossinline mapper: (T) -> X): Flow<Patch<X>> =
-    this.map {
-        Patch(it.from, it.that.map(mapper), it.replaced)
+class Seq<T>(val data: Flow<Patch<T>>) {
+    inline fun <X> map(crossinline mapper: (T) -> X): Seq<X> {
+        return Seq(data.map {
+            Patch(it.from, it.that.map(mapper), it.replaced)
+        })
     }
 
+    inline fun <X> flatMap(crossinline mapper: (T) -> List<X>): Seq<X> {
+        return Seq(data.map {
+            Patch(it.from, it.that.flatMap(mapper), it.replaced)
+        })
+    }
+
+    inline fun filter(crossinline filter: (T) -> Boolean): Seq<T> {
+        return Seq(data.map {
+            Patch(it.from, it.that.filter(filter), it.replaced)
+        })
+    }
+}
 
 @ExperimentalCoroutinesApi
-private inline fun <T> compare(crossinline different: (T, T) -> Boolean): suspend (Pair<List<T>, List<T>>) -> Seq<T> =
+private inline fun <T> compare(crossinline different: (T, T) -> Boolean): suspend (Pair<List<T>, List<T>>) -> Flow<Patch<T>> =
     { oldAndNew: Pair<List<T>, List<T>> ->
         channelFlow {
             val (oldValue, newValue) = oldAndNew
@@ -50,33 +59,16 @@ private inline fun <T> compare(crossinline different: (T, T) -> Boolean): suspen
 private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, newValue: List<T>) =
     Pair(accumulator.second, newValue)
 
-
-//TODO: just one methode on Store or(!) Flow?
-@ExperimentalCoroutinesApi
-@FlowPreview
-fun <T: withId> Store<List<T>>.each(): Seq<T> =
-    data.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
-        a.id != b.id
-    })
-
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun <T: withId> Flow<List<T>>.each(): Seq<T> =
-    this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
+    Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
         a.id != b.id
-    })
-
-
-@ExperimentalCoroutinesApi
-@FlowPreview
-fun <T> Store<List<T>>.each(): Seq<T> =
-    data.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
-        a != b
-    })
+    }))
 
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun <T> Flow<List<T>>.each(): Seq<T> =
-    this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
+    Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
         a != b
-    })
+    }))
