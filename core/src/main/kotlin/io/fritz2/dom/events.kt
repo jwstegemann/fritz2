@@ -1,6 +1,5 @@
 package io.fritz2.dom
 
-import io.fritz2.binding.Store
 import io.fritz2.dom.html.EventType
 import io.fritz2.dom.html.Events
 import kotlinx.coroutines.ExperimentalCoroutinesApi

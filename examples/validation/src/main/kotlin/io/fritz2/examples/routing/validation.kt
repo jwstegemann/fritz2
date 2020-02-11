@@ -1,4 +1,4 @@
-package io.fritz2.examples.validation
+package io.fritz2.examples.routing
 
 import io.fritz2.binding.*
 import io.fritz2.dom.html.html
