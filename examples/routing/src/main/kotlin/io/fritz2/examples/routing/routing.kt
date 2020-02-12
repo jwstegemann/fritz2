@@ -26,14 +26,14 @@ fun main() {
                     a {
                         +"Show ${Pages.a}"
                         href = !""
-                        router.to <= clicks.map { mapOf("page" to Pages.a) } //FIXME not working!?
+                        router.navTo <= clicks.map { mapOf("page" to Pages.a) } //FIXME not working!?
                     }
                 }
                 li {
                     a {
                         +"Show ${Pages.b}"
                         href = !""
-                        router.to <= clicks.map { mapOf("page" to Pages.b) } //FIXME not working!?
+                        router.navTo <= clicks.map { mapOf("page" to Pages.b) } //FIXME not working!?
                     }
                 }
                 li {

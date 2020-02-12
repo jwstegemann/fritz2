@@ -10,19 +10,17 @@ import kotlinx.coroutines.launch
 import org.w3c.dom.events.Event
 import kotlin.browser.window
 
-external fun decodeURIComponent(encodedURI: String): String
-external fun encodeURIComponent(decodedURI: String): String
-
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun routing(default: String = ""): Router<String> = object : Router<String>(default) {
+fun routing(default: String = ""): Router<String> = object : Router<String>() {
     override fun unmarshal(hash: String): String = hash
     override fun marshal(route: String): String = route
-}
+}.apply { setRoute(default) }
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun routing(default: Map<String, String> = emptyMap()) = RouterWithMap(default)
+fun routing(default: Map<String, String> = emptyMap()): RouterWithMap =
+    RouterWithMap().apply { setRoute(default) }
 
 //TODO add router for data classes
 
@@ -35,15 +33,15 @@ fun routing(default: Map<String, String> = emptyMap()) = RouterWithMap(default)
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-abstract class Router<T>(initialData: T) {
+abstract class Router<T> {
     private val prefix = "#"
 
-    private val updates: Flow<Update<T>> = callbackFlow {
+    private val updates: Flow<T> = callbackFlow {
         val listener: (Event) -> Unit = {
             it.preventDefault()
-            val hash = window.document.location?.hash?.removePrefix(prefix)
-            if (hash != null && hash.isNotBlank()) {
-                channel.offer { unmarshal(decodeURIComponent(hash)) }
+            val hash = window.location.hash.removePrefix(prefix)
+            if (hash.isNotBlank()) {
+                channel.offer(unmarshal(hash))
             }
         }
         window.addEventListener(Events.load.name, listener)
@@ -51,22 +49,22 @@ abstract class Router<T>(initialData: T) {
 
         awaitClose { window.removeEventListener(Events.hashchange.name, listener) }
     }
-    private val applyUpdate: suspend (T, Update<T>) -> T = { lastValue, update -> update(lastValue) }
 
-    val data: Flow<T> = updates.scan(initialData, applyUpdate).distinctUntilChanged()
+    val data: Flow<T> = updates.distinctUntilChanged()
 
     abstract fun unmarshal(hash: String): T
     abstract fun marshal(route: T): String
 
     //FIXME not working yet... always getting a full page reload!?
-    val to: Handler<T> = Handler { route ->
-        val newRoute = prefix + encodeURIComponent(marshal(route))
+    internal fun setRoute(route: T) {
+        val newRoute = marshal(route)
         console.log("change hash to: $newRoute")
-        window.location.hash = newRoute
-        route
+        window.location.hash = prefix + newRoute
     }
 
-    inner class Handler<T>(inline val handler: (T) -> T) {
+    val navTo: Handler<T> = Handler { route -> setRoute(route) }
+
+    inner class Handler<T>(inline val handler: (T) -> Unit) {
         private fun handle(action: Flow<T>) {
             GlobalScope.launch {
                 action.collect {
@@ -83,9 +81,12 @@ abstract class Router<T>(initialData: T) {
     }
 }
 
+external fun decodeURIComponent(encodedURI: String): String
+external fun encodeURIComponent(decodedURI: String): String
+
 @FlowPreview
 @ExperimentalCoroutinesApi
-class RouterWithMap(default: Map<String, String>) : Router<Map<String, String>>(default) {
+class RouterWithMap : Router<Map<String, String>>() {
     private val assignment = "="
     private val divider = "&"
 
