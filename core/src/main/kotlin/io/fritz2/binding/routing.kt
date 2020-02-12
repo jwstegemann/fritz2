@@ -13,10 +13,11 @@ external fun encodeURIComponent(decodedURI: String): String
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-object Router {
+object Routing {
 
-    private const val divider = "&"
-    private const val assignment = "="
+    private val divider = "&"
+    private val assignment = "="
+
     private var current: Map<String, String>
     init {
         val hash = window.document.location?.hash
@@ -48,7 +49,7 @@ object Router {
         window.location.hash = marshal(current)
     }
 
-    fun listenFor(key: String): Flow<String> = params.filter{m -> m.containsKey(key)}.map{m -> m[key] ?: ""}
+    fun select(key: String): Flow<Pair<String, Map<String, String>>> = params.map{m -> (m[key] ?: "") to m}
 
     private fun marshal(params: Map<String, String>): String =
         params.map { (key, value) -> "$key$assignment${encodeURIComponent(value)}" }.joinToString(separator = divider)

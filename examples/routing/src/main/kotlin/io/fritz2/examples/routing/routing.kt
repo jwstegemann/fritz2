@@ -14,7 +14,7 @@ fun main() {
     val store = object : RootStore<String>("") {
 
         val changePage = Handler<String> { model, newPage ->
-            Router.set("page", newPage)
+            Routing.set("page", newPage)
             model
         }
 
@@ -24,7 +24,7 @@ fun main() {
         section {
             h1 {
                 +"Page: "
-                +Router.listenFor("page")
+                +Routing.listenFor("page")
             }
             label {
                 +"New Page"
