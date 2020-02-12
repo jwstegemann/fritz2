@@ -11,34 +11,45 @@ import kotlinx.coroutines.launch
 
 typealias Update<T> = (T) -> T
 
+class Handler<A>(inline val handle: (Flow<A>) -> Unit) {
+    // syntactical sugar to write slot <= event-stream
+    operator fun compareTo(flow: Flow<A>): Int {
+        handle(flow)
+        return 0
+    }
+}
+
 abstract class Store<T> {
 
-    abstract fun enqueue(update: Update<T>)
+    inline fun <A> handle(crossinline handler: (T, A) -> T) = Handler<A> {
+        GlobalScope.launch {
+            it.collect {
+                enqueue { t -> handler(t,it) }
+            }
+        }
+    }
 
-    inner class Handler<A>(inline val handler: (T, A) -> T) {
-        fun handle(actions: Flow<A>): Unit {
-            GlobalScope.launch {
-                actions.collect {
-                    enqueue { t -> handler(t,it) }
+    inline fun <A> handle(crossinline handler: (T,A) -> Any) = Handler<A> {
+        GlobalScope.launch {
+            it.collect {
+                enqueue { t ->
+                    handler(t, it)
+                    t
                 }
             }
         }
-
-        fun handle(action: A): Unit {
-            enqueue { t -> handler(t,action) }
-        }
-
-        // syntactical sugar to write slot <= event-stream
-        operator fun compareTo(flow: Flow<A>): Int {
-            handle(flow)
-            return 0
-        }
     }
+
+    infix fun <X> Flow<X>.andThen(nextHandler: Handler<X>) {
+        nextHandler.handle(this)
+    }
+
+    abstract fun enqueue(update: Update<T>)
 
     abstract val id: String
 
     abstract val data: Flow<T>
-    val update: Handler<T> = Handler<T> { _, newValue -> newValue }
+    val update = handle<T> { _, newValue -> newValue }
 
     abstract fun <X> sub(lens: Lens<T, X>): Store<X>
 }

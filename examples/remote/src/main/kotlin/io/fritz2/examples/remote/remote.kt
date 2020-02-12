@@ -19,22 +19,9 @@ data class QueryParams(val q: String)
 fun main() {
 
     val store = object : RootStore<String>("start") {
-        inner class Middleware<A,X>(val handler: Handler<X>, val mapping: suspend (A) -> Flow<X> ) {
 
-            fun handle(actions: Flow<A>): Unit {
-                handler.handle(actions.flatMapLatest(mapping))
-            }
-
-        }
-
-        val callApi = Middleware<String, String>(update) {
-            URL("https://api.github.com").get()
-        }
-
-        val test = Handler<String> {model, action ->
-            console.log("model: $model")
-            console.log("action: $action")
-            action
+        val callApi = handle<String> { _, _ ->
+            URL("https://api.github.com").get() andThen update
         }
 
     }
@@ -43,7 +30,7 @@ fun main() {
         div {
             input {
                 value = !"Hallo"
-                store.callApi.handle(changes)
+                store.callApi <= changes
             }
             div {
                 +"value: "
