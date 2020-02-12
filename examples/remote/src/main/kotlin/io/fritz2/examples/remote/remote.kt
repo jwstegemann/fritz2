@@ -20,9 +20,9 @@ fun main() {
 
     val store = object : RootStore<String>("start") {
 
-        val callApi = handle<String> { _, _ ->
-            URL("https://api.github.com").get() andThen update
-        }
+        val callApi = apply { s : String ->
+            URL("http://localhost:9000/get?foo=$s").get()
+        } andThen update
 
     }
 

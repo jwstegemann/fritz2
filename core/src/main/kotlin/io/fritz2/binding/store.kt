@@ -19,7 +19,14 @@ class Handler<A>(inline val handle: (Flow<A>) -> Unit) {
     }
 }
 
+
+class Applyer<A,X>(inline val mapper: suspend (A) -> Flow<X>)
+
 abstract class Store<T> {
+
+    infix fun <A,X> Applyer<A,X>.andThen(nextHandler: Handler<X>) = Handler<A> {
+        nextHandler.handle(it.flatMapConcat(this.mapper))
+    }
 
     inline fun <A> handle(crossinline handler: (T, A) -> T) = Handler<A> {
         GlobalScope.launch {
@@ -29,16 +36,7 @@ abstract class Store<T> {
         }
     }
 
-    inline fun <A> handle(crossinline handler: (T,A) -> Any) = Handler<A> {
-        GlobalScope.launch {
-            it.collect {
-                enqueue { t ->
-                    handler(t, it)
-                    t
-                }
-            }
-        }
-    }
+    fun <A,X> apply(mapper: suspend (A) -> Flow<X>) = Applyer<A,X>(mapper)
 
     infix fun <X> Flow<X>.andThen(nextHandler: Handler<X>) {
         nextHandler.handle(this)

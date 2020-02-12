@@ -7,8 +7,9 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import org.w3c.dom.url.URL
-import org.w3c.fetch.Response
+import org.w3c.fetch.*
 import kotlin.browser.window
+import kotlin.js.json
 
 @ExperimentalCoroutinesApi
 @FlowPreview

@@ -12,7 +12,9 @@ kotlin {
                 devServer = KotlinWebpackConfig.DevServer(
                     port = 9000,
                     contentBase = listOf("$projectDir/src/main/web")
-                )
+                ).copy(proxy = mapOf(
+                    "/get" to "http://postman-echo.com"
+                ))
             }
         }
     }
