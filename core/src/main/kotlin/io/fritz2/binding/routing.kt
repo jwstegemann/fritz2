@@ -12,15 +12,15 @@ import kotlin.browser.window
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun routing(default: String = ""): Router<String> = object : Router<String>() {
+fun routing(default: String): Router<String> = object : Router<String>() {
     override fun unmarshal(hash: String): String = hash
     override fun marshal(route: String): String = route
-}.apply { setRoute(default) }
+}.apply { if (window.location.hash.removePrefix(prefix).isBlank()) setRoute(default) }
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun routing(default: Map<String, String> = emptyMap()): RouterWithMap =
-    RouterWithMap().apply { setRoute(default) }
+fun routing(default: Map<String, String>): RouterWithMap = RouterWithMap()
+    .apply { if (window.location.hash.removePrefix(prefix).isBlank()) setRoute(default) }
 
 //TODO add router for data classes
 
@@ -34,7 +34,7 @@ fun routing(default: Map<String, String> = emptyMap()): RouterWithMap =
 @FlowPreview
 @ExperimentalCoroutinesApi
 abstract class Router<T> {
-    private val prefix = "#"
+    internal val prefix = "#"
 
     private val updates: Flow<T> = callbackFlow {
         val listener: (Event) -> Unit = {
@@ -55,11 +55,9 @@ abstract class Router<T> {
     abstract fun unmarshal(hash: String): T
     abstract fun marshal(route: T): String
 
-    //FIXME not working yet... always getting a full page reload!?
     internal fun setRoute(route: T) {
-        val newRoute = marshal(route)
-        console.log("change hash to: $newRoute")
-        window.location.hash = prefix + newRoute
+        val newRoute = prefix + marshal(route)
+        window.location.hash = newRoute
     }
 
     val navTo: Handler<T> = Handler { route -> setRoute(route) }
