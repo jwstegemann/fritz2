@@ -26,10 +26,9 @@ fun routing(default: Map<String, String>): RouterWithMap = RouterWithMap()
 
 /**
  * Router register the event-listener for hashchange-event and
- * handles route-changes. Therefore it uses [marshal] and [unmarshal]
+ * handles route-changes. Therefore it uses [marshal] and [unmarshal] methods.
  *
- * @param T type to marshal to
- * @property initialData default value
+ * @param T type to marshal the hash string to
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -60,21 +59,13 @@ abstract class Router<T> {
         window.location.hash = newRoute
     }
 
-    val navTo: Handler<T> = Handler { route -> setRoute(route) }
+    val navTo: Handler<T> = handle { route -> setRoute(route) }
 
-    inner class Handler<T>(inline val handler: (T) -> Unit) {
-        private fun handle(action: Flow<T>) {
-            GlobalScope.launch {
-                action.collect {
-                    handler(it)
-                }
+    private inline fun handle(crossinline handler: (T) -> Unit) = Handler<T> {
+        GlobalScope.launch {
+            it.collect {
+                handler(it)
             }
-        }
-
-        // syntactical sugar to write handler <= event-stream
-        operator fun compareTo(action: Flow<T>): Int {
-            handle(action)
-            return 0
         }
     }
 }
