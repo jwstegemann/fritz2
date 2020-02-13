@@ -47,7 +47,7 @@ fun main() {
         override val validator = EMailValidator
 
 
-        val updateWithValidation = Handler<String> { data, newData ->
+        val updateWithValidation = handle<String> { data, newData ->
             if (validate(newData, "update")) newData
             else data
         }

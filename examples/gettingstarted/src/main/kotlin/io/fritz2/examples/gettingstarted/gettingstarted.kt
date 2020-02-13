@@ -16,16 +16,16 @@ data class ActionData(val x: Int, val y: Int)
 fun main() {
 
     val store = object : RootStore<String>("start") {
-        val addADot = Handler<ActionData> { model, _ ->
+        val addADot = handle <ActionData> { model, _ ->
             "$model."
         }
     }
 
     val classStore = object : RootStore<List<String>>(listOf("btn", "items")) {
-        val add = Handler<String> { list, new ->
+        val add = handle<String> { list, new ->
             list + new
         }
-        val remove = Handler<String> { list, del ->
+        val remove = handle<String> { list, del ->
             list.minus(del)
         }
     }
@@ -33,11 +33,11 @@ fun main() {
     val seq = object : RootStore<List<String>>(listOf("one", "two", "three")) {
         var count = 0
 
-        val addItem = Handler<Any> { list, _ ->
+        val addItem = handle<Any> { list, _ ->
             count++
             list + "yet another item no. $count"
         }
-        val deleteItem = Handler<String> { list, current ->
+        val deleteItem = handle<String> { list, current ->
             list.minus(current)
         }
     }
