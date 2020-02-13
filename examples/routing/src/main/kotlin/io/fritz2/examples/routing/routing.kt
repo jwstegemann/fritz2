@@ -17,29 +17,27 @@ object Pages {
 @FlowPreview
 fun main() {
 
-    val router = routing(mapOf("page" to Pages.b, "test" to "=&%#+!§/%\\\$&()"))
+    val router = routing(mapOf("page" to Pages.a, "test" to "=&%#+!§/%\\\$&()"))
 
     val myComponent = html {
         section {
             ul {
                 li {
-                    a {
+                    button {
                         +"Show ${Pages.a}"
-                        href = !""
-                        router.navTo <= clicks.map { mapOf("page" to Pages.a) } //FIXME not working!?
+                        router.navTo <= clicks.map { mapOf("page" to Pages.a) }
                     }
                 }
                 li {
-                    a {
+                    button {
                         +"Show ${Pages.b}"
-                        href = !""
-                        router.navTo <= clicks.map { mapOf("page" to Pages.b) } //FIXME not working!?
+                        router.navTo <= clicks.map { mapOf("page" to Pages.b) }
                     }
                 }
                 li {
-                    a {
+                    button {
                         +"Show ${Pages.c}"
-                        href = !"#page=${Pages.c}" //works
+                        router.navTo <= clicks.map { mapOf("page" to Pages.c) }
                     }
                 }
             }
