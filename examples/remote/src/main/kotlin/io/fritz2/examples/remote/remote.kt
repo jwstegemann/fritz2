@@ -3,7 +3,7 @@ package io.fritz2.examples.remote
 import io.fritz2.binding.RootStore
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
-import io.fritz2.remote.RemoteStore
+import io.fritz2.remote.body
 import io.fritz2.remote.get
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -21,7 +21,7 @@ fun main() {
     val store = object : RootStore<String>("start") {
 
         val callApi = apply { s : String ->
-            URL("http://localhost:9000/get?foo=$s").get()
+            URL("http://localhost:9000/get?foo=$s").get().body()
         } andThen update
 
     }
@@ -29,7 +29,7 @@ fun main() {
     val myComponent = html {
         div {
             input {
-                value = !"Hallo"
+                value = !"hgfhgfhgf"
                 store.callApi <= changes
             }
             div {

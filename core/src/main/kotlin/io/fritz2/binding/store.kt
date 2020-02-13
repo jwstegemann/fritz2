@@ -19,14 +19,16 @@ class Handler<A>(inline val handle: (Flow<A>) -> Unit) {
     }
 }
 
-
-class Applyer<A,X>(inline val mapper: suspend (A) -> Flow<X>)
+class Applicator<A,X>(inline val mapper: suspend (A) -> Flow<X>)
 
 abstract class Store<T> {
 
-    infix fun <A,X> Applyer<A,X>.andThen(nextHandler: Handler<X>) = Handler<A> {
+    //TODO: another factory for (A) -> X (map instead of flatMapConcat)
+    infix fun <A,X> Applicator<A,X>.andThen(nextHandler: Handler<X>) = Handler<A> {
         nextHandler.handle(it.flatMapConcat(this.mapper))
     }
+
+    //TODO: andThen for other Applyers
 
     inline fun <A> handle(crossinline handler: (T, A) -> T) = Handler<A> {
         GlobalScope.launch {
@@ -36,11 +38,7 @@ abstract class Store<T> {
         }
     }
 
-    fun <A,X> apply(mapper: suspend (A) -> Flow<X>) = Applyer<A,X>(mapper)
-
-    infix fun <X> Flow<X>.andThen(nextHandler: Handler<X>) {
-        nextHandler.handle(this)
-    }
+    fun <A,X> apply(mapper: suspend (A) -> Flow<X>) = Applicator<A,X>(mapper)
 
     abstract fun enqueue(update: Update<T>)
 
