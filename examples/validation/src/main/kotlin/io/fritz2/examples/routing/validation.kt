@@ -1,4 +1,4 @@
-package io.fritz2.examples.routing
+package io.fritz2.examples.validation
 
 import io.fritz2.binding.*
 import io.fritz2.dom.html.html
@@ -47,7 +47,7 @@ fun main() {
         override val validator = EMailValidator
 
 
-        val updateWithValidation = Handler<String> { data, newData ->
+        val updateWithValidation = handle<String> { data, newData ->
             if (validate(newData, "update")) newData
             else data
         }

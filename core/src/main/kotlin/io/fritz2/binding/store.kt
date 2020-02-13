@@ -9,49 +9,43 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 
-/**
- * An update on a store is a function to infer the next model from the current.
- */
 typealias Update<T> = (T) -> T
 
-/**
- * A Store is the plave to "store" the data, on which changes you want to react.
- *
- * @param T Type of the data that this store holds
- */
+class Handler<A>(inline val handle: (Flow<A>) -> Unit) {
+    // syntactical sugar to write slot <= event-stream
+    operator fun compareTo(flow: Flow<A>): Int {
+        handle(flow)
+        return 0
+    }
+}
+
+class Applicator<A,X>(inline val mapper: suspend (A) -> Flow<X>)
+
 abstract class Store<T> {
 
-    /**
-     * Enqueue a specific update of you modle.
-     *
-     * @param update update to queue
-     */
-    abstract fun enqueue(update: Update<T>)
+    //TODO: another factory for (A) -> X (map instead of flatMapConcat)
+    infix fun <A,X> Applicator<A,X>.andThen(nextHandler: Handler<X>) = Handler<A> {
+        nextHandler.handle(it.flatMapConcat(this.mapper))
+    }
 
-    inner class Handler<A>(inline val handler: (T, A) -> T) {
-        fun handle(actions: Flow<A>): Unit {
-            GlobalScope.launch {
-                actions.collect {
-                    enqueue { t -> handler(t,it) }
-                }
+    //TODO: andThen for other Applyers
+
+    inline fun <A> handle(crossinline handler: (T, A) -> T) = Handler<A> {
+        GlobalScope.launch {
+            it.collect {
+                enqueue { t -> handler(t,it) }
             }
         }
-
-        fun handle(action: A): Unit {
-            enqueue { t -> handler(t,action) }
-        }
-
-        // syntactical sugar to write slot <= event-stream
-        operator fun compareTo(flow: Flow<A>): Int {
-            handle(flow)
-            return 0
-        }
     }
+
+    fun <A,X> apply(mapper: suspend (A) -> Flow<X>) = Applicator<A,X>(mapper)
+
+    abstract fun enqueue(update: Update<T>)
 
     abstract val id: String
 
     abstract val data: Flow<T>
-    val update: Handler<T> = Handler<T> { _, newValue -> newValue }
+    val update = handle<T> { _, newValue -> newValue }
 
     abstract fun <X> sub(lens: Lens<T, X>): Store<X>
 }
