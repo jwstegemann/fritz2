@@ -3,6 +3,3 @@
 # Update
 
 `typealias Update<T> = (T) -> T`
-
-An update on a store is a function to infer the next model from the current.
-

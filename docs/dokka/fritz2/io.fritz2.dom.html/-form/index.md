@@ -4,11 +4,11 @@
 
 `@ExperimentalCoroutinesApi @FlowPreview class Form : `[`Tag`](../../io.fritz2.dom/-tag/index.md)`<`[`HTMLFormElement`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-h-t-m-l-form-element/index.html)`>, `[`WithText`](../../io.fritz2.dom/-with-text/index.md)`<`[`HTMLFormElement`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-h-t-m-l-form-element/index.html)`>`
 
-Exposes the JavaScript [mElement](#)(https://developer.mozilla.org/en/docs/Web/API/`for`mElement) to Kotlin
+Exposes the JavaScript [HTMLFormElement](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-h-t-m-l-form-element/index.html)(https://developer.mozilla.org/en/docs/Web/API/`for`mElement) to Kotlin
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [mElement](#)(https://developer.mozilla.org/en/docs/Web/API/`for`mElement) to Kotlin`Form()` |
+| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLFormElement](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-h-t-m-l-form-element/index.html)(https://developer.mozilla.org/en/docs/Web/API/`for`mElement) to Kotlin`Form()` |
 
 ### Properties
 

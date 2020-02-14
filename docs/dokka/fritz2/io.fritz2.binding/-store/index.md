@@ -4,29 +4,22 @@
 
 `abstract class Store<T>`
 
-A Store is the plave to "store" the data, on which changes you want to react.
-
-### Parameters
-
-`T` - Type of the data that this store holds
-
-### Types
-
-| [Handler](-handler/index.md) | `inner class Handler<A, T>` |
-
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | A Store is the plave to "store" the data, on which changes you want to react.`Store()` |
+| [&lt;init&gt;](-init-.md) | `Store()` |
 
 ### Properties
 
 | [data](data.md) | `abstract val data: Flow<T>` |
 | [id](id.md) | `abstract val id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
-| [update](update.md) | `val update: Handler<T, T>` |
+| [update](update.md) | `val update: `[`Handler`](../-handler/index.md)`<T>` |
 
 ### Functions
 
-| [enqueue](enqueue.md) | Enqueue a specific update of you modle.`abstract fun enqueue(update: `[`Update`](../-update.md)`<T>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
+| [andThen](and-then.md) | `infix fun <A, X> `[`Applicator`](../-applicator/index.md)`<A, X>.andThen(nextHandler: `[`Handler`](../-handler/index.md)`<X>): `[`Handler`](../-handler/index.md)`<A>` |
+| [apply](apply.md) | `fun <A, X> apply(mapper: suspend (A) -> Flow<X>): `[`Applicator`](../-applicator/index.md)`<A, X>` |
+| [enqueue](enqueue.md) | `abstract fun enqueue(update: `[`Update`](../-update.md)`<T>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
+| [handle](handle.md) | `fun <A> handle(handler: (T, A) -> T): `[`Handler`](../-handler/index.md)`<A>` |
 | [sub](sub.md) | `abstract fun <X> sub(lens: Lens<T, X>): `[`Store`](./index.md)`<X>` |
 
 ### Inheritors
