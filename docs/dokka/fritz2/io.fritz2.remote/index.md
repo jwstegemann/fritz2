@@ -2,7 +2,8 @@
 
 ## Package io.fritz2.remote
 
-### Types
+### Extensions for External Classes
 
-| [Remote](-remote/index.md) | `object Remote` |
+| [kotlinx.coroutines.flow.Flow](kotlinx.coroutines.flow.-flow/index.md) |  |
+| [org.w3c.dom.url.URL](org.w3c.dom.url.-u-r-l/index.md) |  |
 

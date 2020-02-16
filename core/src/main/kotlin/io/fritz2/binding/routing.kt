@@ -10,72 +10,88 @@ import kotlinx.coroutines.launch
 import org.w3c.dom.events.Event
 import kotlin.browser.window
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-fun routing(default: String): Router<String> = object : Router<String>() {
-    override fun unmarshal(hash: String): String = hash
-    override fun marshal(route: String): String = route
-}.apply { if (window.location.hash.removePrefix(prefix).isBlank()) setRoute(default) }
-
-@FlowPreview
-@ExperimentalCoroutinesApi
-fun routing(default: Map<String, String>): RouterWithMap = RouterWithMap()
-    .apply { if (window.location.hash.removePrefix(prefix).isBlank()) setRoute(default) }
-
-//TODO add router for data classes
-
 /**
- * Router register the event-listener for hashchange-event and
- * handles route-changes. Therefore it uses [marshal] and [unmarshal] methods.
+ * Creates a new simple [String] based [Router]
  *
- * @param T type to marshal the hash string to
+ * @param default default route
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-abstract class Router<T> {
-    internal val prefix = "#"
+fun routing(default: String): Router<String> = object : Router<String>(StringRoute(default)) {}
 
-    private val updates: Flow<T> = callbackFlow {
-        val listener: (Event) -> Unit = {
-            it.preventDefault()
-            val hash = window.location.hash.removePrefix(prefix)
-            if (hash.isNotBlank()) {
-                channel.offer(unmarshal(hash))
-            }
-        }
-        window.addEventListener(Events.load.name, listener)
-        window.addEventListener(Events.hashchange.name, listener)
-
-        awaitClose { window.removeEventListener(Events.hashchange.name, listener) }
-    }
-
-    val data: Flow<T> = updates.distinctUntilChanged()
-
-    abstract fun unmarshal(hash: String): T
-    abstract fun marshal(route: T): String
-
-    internal fun setRoute(route: T) {
-        val newRoute = prefix + marshal(route)
-        window.location.hash = newRoute
-    }
-
-    val navTo: Handler<T> = handle { route -> setRoute(route) }
-
-    private inline fun handle(crossinline handler: (T) -> Unit) = Handler<T> {
-        GlobalScope.launch {
-            it.collect {
-                handler(it)
-            }
-        }
-    }
-}
-
-external fun decodeURIComponent(encodedURI: String): String
-external fun encodeURIComponent(decodedURI: String): String
-
+/**
+ * Creates a new [Map] based [Router]
+ *
+ * @param default default route
+ */
 @FlowPreview
 @ExperimentalCoroutinesApi
-class RouterWithMap : Router<Map<String, String>>() {
+fun routing(default: Map<String, String>): Router<Map<String, String>> = object : Router<Map<String, String>>(MapRoute(default)) {}
+
+/**
+ * Select return a [Pair] of the value
+ * and the complete routing [Map] for the given key in the [mapper] function.
+ */
+@FlowPreview
+@ExperimentalCoroutinesApi
+fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Map<String, String>>) -> X): Flow<X> =
+    routes.map { m -> mapper((m[key] ?: "") to m) }
+
+
+/**
+ * Creates a new type based [Router].
+ * Therefore the given type must implement the [Route] interface.
+ *
+ * @param default default route
+ */
+@FlowPreview
+@ExperimentalCoroutinesApi
+fun <T> routing(default: Route<T>): Router<T> =  object : Router<T>(default) {}
+
+/**
+ * A Route is a abstraction for routes
+ * which needed for routing
+ *
+ * @param T type to marshal and unmarshal from
+ */
+interface Route<T> {
+    /**
+     * Gives the default value when initialising the routing
+     */
+    val default: T
+
+    /**
+     * Unmarshals the *window.location.hash* to the
+     * given type [T] after getting the hashchange-event.
+     */
+    fun unmarshal(hash: String): T
+
+    /**
+     * Marshals a given object of type [T] to [String]
+     * for setting it to the *window.location.hash*
+     */
+    fun marshal(route: T): String
+}
+
+/**
+ * [StringRoute] is a simple [Route] which
+ * marshals and unmarshals nothing.
+ *
+ * @param default [String] to use when no explicit *window.location.hash* was set before
+ */
+class StringRoute(override val default: String): Route<String> {
+    override fun unmarshal(hash: String): String = hash
+    override fun marshal(route: String): String = route
+}
+
+/**
+ * [MapRoute] marshals and unmarshals a [Map] to and from *window.location.hash*.
+ * It is like using url parameters with pairs of key and value.
+ * In the begin there is only a **#** instead of **?**.
+ *
+ * @param default [Map] to use when no explicit *window.location.hash* was set before
+ */
+class MapRoute(override val default: Map<String, String>): Route<Map<String, String>> {
     private val assignment = "="
     private val divider = "&"
 
@@ -93,7 +109,61 @@ class RouterWithMap : Router<Map<String, String>>() {
             key to value
         } else param to "true"
     }
-
-    fun <X> select(key: String, mapper: (Pair<String, Map<String, String>>) -> X): Flow<X> =
-        data.map { m -> mapper((m[key] ?: "") to m) }
 }
+
+/**
+ * Router register the event-listener for hashchange-event and
+ * handles route-changes. Therefore it uses a [Route] object
+ * which can [Route.marshal] and [Route.unmarshal] the given type.
+ *
+ * @param T type to marshal and unmarshal
+ * @property route default route to use when page is called with empty hash
+ */
+@FlowPreview
+@ExperimentalCoroutinesApi
+open class Router<T>(private val route: Route<T>) {
+    private val prefix = "#"
+
+    init {
+        if (window.location.hash.removePrefix(prefix).isBlank())
+            setRoute(route.default)
+    }
+
+    private val updates: Flow<T> = callbackFlow {
+        val listener: (Event) -> Unit = {
+            it.preventDefault()
+            val hash = window.location.hash.removePrefix(prefix)
+            if (hash.isNotBlank()) {
+                channel.offer(route.unmarshal(hash))
+            }
+        }
+        window.addEventListener(Events.load.name, listener)
+        window.addEventListener(Events.hashchange.name, listener)
+
+        awaitClose { window.removeEventListener(Events.hashchange.name, listener) }
+    }
+
+    private fun setRoute(newRoute: T) {
+        window.location.hash = prefix + route.marshal(newRoute)
+    }
+
+    /**
+     * Gives the actual route as [Flow]
+     */
+    val routes: Flow<T> = updates.distinctUntilChanged()
+
+    /**
+     * Handler vor setting
+     * a new [Route] based on given [Flow].
+     */
+    val navTo: Handler<T> = Handler {
+        GlobalScope.launch {
+            it.collect {
+                setRoute(it)
+            }
+        }
+    }
+}
+
+external fun decodeURIComponent(encodedURI: String): String
+external fun encodeURIComponent(decodedURI: String): String

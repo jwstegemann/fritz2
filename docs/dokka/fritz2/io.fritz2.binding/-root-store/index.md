@@ -15,7 +15,7 @@
 
 ### Functions
 
-| [enqueue](enqueue.md) | Enqueue a specific update of you modle.`open fun enqueue(update: `[`Update`](../-update.md)`<T>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
+| [enqueue](enqueue.md) | `open fun enqueue(update: `[`Update`](../-update.md)`<T>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
 | [sub](sub.md) | `open fun <X> sub(lens: Lens<T, X>): `[`SubStore`](../-sub-store/index.md)`<T, T, X>` |
 
 ### Extension Functions

@@ -11,6 +11,11 @@ Exposes the JavaScript [HTMLAnchorElement](https://developer.mozilla.org/en/docs
 
 |
 
+##### [io.fritz2.binding.Applicator](../io.fritz2.binding/-applicator/index.md)
+
+
+|
+
 ##### [io.fritz2.dom.html.Area](../io.fritz2.dom.html/-area/index.md)
 
 Exposes the JavaScript [HTMLAreaElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAreaElement) to Kotlin
@@ -183,11 +188,16 @@ Exposes the JavaScript [HTMLFieldSetElement](https://developer.mozilla.org/en/do
 ##### [kotlinx.coroutines.flow.Flow](../io.fritz2.dom/kotlinx.coroutines.flow.-flow/index.md)
 
 
+| (extensions in package io.fritz2.remote)
+
+##### [kotlinx.coroutines.flow.Flow](../io.fritz2.remote/kotlinx.coroutines.flow.-flow/index.md)
+
+
 |
 
 ##### [io.fritz2.dom.html.Form](../io.fritz2.dom.html/-form/index.md)
 
-Exposes the JavaScript [mElement](#)(https://developer.mozilla.org/en/docs/Web/API/`for`mElement) to Kotlin
+Exposes the JavaScript [HTMLFormElement](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-h-t-m-l-form-element/index.html)(https://developer.mozilla.org/en/docs/Web/API/`for`mElement) to Kotlin
 
 
 |
@@ -195,6 +205,11 @@ Exposes the JavaScript [mElement](#)(https://developer.mozilla.org/en/docs/Web/A
 ##### [io.fritz2.dom.html.H](../io.fritz2.dom.html/-h/index.md)
 
 Exposes the JavaScript [HTMLHeadingElement](https://developer.mozilla.org/en/docs/Web/API/HTMLHeadingElement) to Kotlin
+
+
+|
+
+##### [io.fritz2.binding.Handler](../io.fritz2.binding/-handler/index.md)
 
 
 |
@@ -268,6 +283,15 @@ Exposes the JavaScript [HTMLLIElement](https://developer.mozilla.org/en/docs/Web
 ##### [io.fritz2.dom.html.Map](../io.fritz2.dom.html/-map/index.md)
 
 Exposes the JavaScript [HTMLMapElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMapElement) to Kotlin
+
+
+|
+
+##### [io.fritz2.binding.MapRoute](../io.fritz2.binding/-map-route/index.md)
+
+[MapRoute](../io.fritz2.binding/-map-route/index.md) marshals and unmarshals a [Map](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html) to and from *window.location.hash*.
+It is like using url parameters with pairs of key and value.
+In the begin there is only a **#** instead of **?**.
 
 
 |
@@ -366,12 +390,24 @@ Exposes the JavaScript [HTMLQuoteElement](https://developer.mozilla.org/en/docs/
 
 |
 
-##### [io.fritz2.remote.Remote](../io.fritz2.remote/-remote/index.md)
+##### [io.fritz2.binding.RootStore](../io.fritz2.binding/-root-store/index.md)
 
 
 |
 
-##### [io.fritz2.binding.RootStore](../io.fritz2.binding/-root-store/index.md)
+##### [io.fritz2.binding.Route](../io.fritz2.binding/-route/index.md)
+
+A Route is a abstraction for routes
+which needed for routing
+
+
+|
+
+##### [io.fritz2.binding.Router](../io.fritz2.binding/-router/index.md)
+
+Router register the event-listener for hashchange-event and
+handles route-changes. Therefore it uses a [Route](../io.fritz2.binding/-route/index.md) object
+which can [Route.marshal](../io.fritz2.binding/-route/marshal.md) and [Route.unmarshal](../io.fritz2.binding/-route/unmarshal.md) the given type.
 
 
 |
@@ -409,7 +445,13 @@ Exposes the JavaScript [HTMLSpanElement](https://developer.mozilla.org/en/docs/W
 
 ##### [io.fritz2.binding.Store](../io.fritz2.binding/-store/index.md)
 
-A Store is the plave to "store" the data, on which changes you want to react.
+
+|
+
+##### [io.fritz2.binding.StringRoute](../io.fritz2.binding/-string-route/index.md)
+
+[StringRoute](../io.fritz2.binding/-string-route/index.md) is a simple [Route](../io.fritz2.binding/-route/index.md) which
+marshals and unmarshals nothing.
 
 
 |
@@ -515,7 +557,10 @@ Exposes the JavaScript [HTMLUListElement](https://developer.mozilla.org/en/docs/
 
 ##### [io.fritz2.binding.Update](../io.fritz2.binding/-update.md)
 
-An update on a store is a function to infer the next model from the current.
+
+| (extensions in package io.fritz2.remote)
+
+##### [org.w3c.dom.url.URL](../io.fritz2.remote/org.w3c.dom.url.-u-r-l/index.md)
 
 
 |

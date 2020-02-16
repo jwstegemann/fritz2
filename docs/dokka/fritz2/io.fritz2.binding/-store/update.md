@@ -2,4 +2,4 @@
 
 # update
 
-`val update: Handler<T, T>`
+`val update: `[`Handler`](../-handler/index.md)`<T>`
