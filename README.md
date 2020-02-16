@@ -30,13 +30,13 @@ Your can either
 - all html 5 event-handlers (clicks, changes, ...)
 - hassle-free redux-like state-handling
 - model-validation and message handling 
+- routing (for SPAs, hash-based)
 
 ## What will come next?
 
-- documentation
+- documentation (work in progress)
 - complete example (ToDoMVC)
-- routing
-- server-communication (Rest APIs, etc.)
+- server-communication (Rest APIs, etc.) [(work in progress)](https://github.com/jwstegemann/fritz2/pull/14)
 - user auth (examle with OAuth)
 
 ## Overall Goals
