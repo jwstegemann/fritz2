@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`RequestTemplate(baseUrl: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, errorHandler: (`[`FetchException`](../-fetch-exception/index.md)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)` = loggingErrorHandler)`
+`RequestTemplate(baseUrl: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)` = "", errorHandler: (`[`FetchException`](../-fetch-exception/index.md)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)` = loggingErrorHandler)`
 
 Represents the common fields an attributes of a given set of http requests.
 

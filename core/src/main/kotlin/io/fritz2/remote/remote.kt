@@ -93,6 +93,7 @@ class RequestTemplate(val baseUrl : String = "", val errorHandler: (FetchExcepti
      *
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      */
+    @ExperimentalCoroutinesApi
     fun get(url: String = "") = execute(url, buildInit("GET"))
 
     /**
@@ -100,6 +101,7 @@ class RequestTemplate(val baseUrl : String = "", val errorHandler: (FetchExcepti
      *
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      */
+    @ExperimentalCoroutinesApi
     fun delete(url: String = "") = execute(url, buildInit("DELETE"))
 
     /**
@@ -107,6 +109,7 @@ class RequestTemplate(val baseUrl : String = "", val errorHandler: (FetchExcepti
      *
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      */
+    @ExperimentalCoroutinesApi
     fun head(url: String = "") = execute(url, buildInit("HEAD"))
 
     /**
@@ -115,6 +118,7 @@ class RequestTemplate(val baseUrl : String = "", val errorHandler: (FetchExcepti
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      * @param body content to send in the body of the request
      */
+    @ExperimentalCoroutinesApi
     fun post(url: String = "", body: String) = execute(url, buildInit("POST", body))
 
     /**
@@ -123,6 +127,7 @@ class RequestTemplate(val baseUrl : String = "", val errorHandler: (FetchExcepti
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      * @param body content to send in the body of the request
      */
+    @ExperimentalCoroutinesApi
     fun push(url: String = "", body: String) = execute(url, buildInit("PUSH", body))
 
     /**
@@ -131,6 +136,7 @@ class RequestTemplate(val baseUrl : String = "", val errorHandler: (FetchExcepti
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      * @param body content to send in the body of the request
      */
+    @ExperimentalCoroutinesApi
     fun patch(url: String = "", body: String) = execute(url, buildInit("PUSH", body))
 
     /**

@@ -2,7 +2,7 @@
 
 # delete
 
-`inline fun delete(crossinline url: `[`RequestTemplate`](index.md)`.() -> `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`): Flow<`[`Response`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-response/index.html)`>`
+`@ExperimentalCoroutinesApi fun delete(url: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)` = ""): Flow<`[`Response`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-response/index.html)`>`
 
 issues a delete request returning a flow of it's response
 
