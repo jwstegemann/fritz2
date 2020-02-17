@@ -3,14 +3,8 @@ package io.fritz2.examples.remote
 import io.fritz2.binding.RootStore
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
-import io.fritz2.remote.body
-import io.fritz2.remote.get
-import io.fritz2.remote.onError
-import io.fritz2.remote.post
+import io.fritz2.remote.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import org.w3c.dom.url.URL
-import org.w3c.fetch.Body
 import kotlin.browser.window
 
 
@@ -22,32 +16,54 @@ fun main() {
 
     val store = object : RootStore<String>("start") {
 
-        val callApi = apply { s : String ->
-            URL("https://reqres.in/api/users/$s").get().onError { window.alert("error fetching data: ${it.statusCode}, ${it.body}") }
+        val sampleApi = RequestTemplate("https://reqres.in/api/users")
+            .acceptJson()
+
+        val myErrorHandler = { e: FetchException ->
+            window.alert("error fetching data: ${e.statusCode}, ${e.body}")
+        }
+
+        val sampleGet = apply { s : String ->
+            sampleApi.get {"$baseUrl/$s"}
+                .onError(myErrorHandler)
                 .body()
         } andThen update
 
-        val postUpdate = apply {s : String ->
-            URL("https://reqres.in/api/users").post("""
+        val samplePost = apply {s : String ->
+            sampleApi.post ({"$baseUrl/$s"} , """
                 {
                     "name": "$s",
                     "job": "leader"
                 }
-            """.trimIndent()).body()
+            """.trimIndent())
+                .body()
         } andThen update
 
     }
 
     val myComponent = html {
         div {
-            input {
-                value = !"hgfhgfhgf"
-                store.postUpdate <= changes
+            label {
+                +"get for id"
             }
+            input {
+                value = !"start"
+                store.sampleGet <= changes
+            }
+            hre {  }
+            label {
+                +"post for id"
+            }
+            input {
+                value = !"start"
+                store.samplePost <= changes
+            }
+            hre {  }
             div {
-                +"value: "
+                +"result: "
                 store.data.bind()
             }
+
         }
     }
 
