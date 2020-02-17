@@ -1,6 +1,11 @@
 plugins {
     kotlin("js")
     `maven-publish`
+    id("org.jetbrains.dokka")
+}
+
+repositories {
+    jcenter() // or maven { url 'https://dl.bintray.com/kotlin/dokka' }
 }
 
 //TODO: add DCE and closure-compiler

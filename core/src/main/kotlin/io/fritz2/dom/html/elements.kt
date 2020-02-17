@@ -171,7 +171,7 @@ class FieldSet : Tag<HTMLFieldSetElement>("fieldset") {
 @ExperimentalCoroutinesApi
 @FlowPreview
 /**
- * Exposes the JavaScript [`for`mElement](https://developer.mozilla.org/en/docs/Web/API/`for`mElement) to Kotlin
+ * Exposes the JavaScript [HTMLFormElement](https://developer.mozilla.org/en/docs/Web/API/`for`mElement) to Kotlin
  */
 class Form : Tag<HTMLFormElement>("form"), WithText<HTMLFormElement> {
     var acceptCharset: Flow<String> by AttributeDelegate

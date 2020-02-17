@@ -1,0 +1,12 @@
+$dokka.format:markdown
+$dokka.linkExtension:md
+$dokka.location:io.fritz2.binding$each(kotlinx.coroutines.flow.Flow((kotlin.collections.List((io.fritz2.binding.each.T)))))io.fritz2.binding/kotlinx.coroutines.flow.-flow/each.md
+$dokka.location:io.fritz2.dom$mount(kotlinx.coroutines.flow.Flow((io.fritz2.dom.Tag((io.fritz2.dom.mount.X)))), kotlin.String)io.fritz2.dom/kotlinx.coroutines.flow.-flow/mount.md
+$dokka.location:io.fritz2.dom$removeChildren(org.w3c.dom.Element)io.fritz2.dom/org.w3c.dom.-element/remove-children.md
+$dokka.location:io.fritz2.remote$body(kotlinx.coroutines.flow.Flow((org.w3c.fetch.Response)))io.fritz2.remote/kotlinx.coroutines.flow.-flow/body.md
+$dokka.location:io.fritz2.remote$get(org.w3c.dom.url.URL)io.fritz2.remote/org.w3c.dom.url.-u-r-l/get.md
+$dokka.location:io.fritz2.remote$post(org.w3c.dom.url.URL, kotlin.String)io.fritz2.remote/org.w3c.dom.url.-u-r-l/post.md
+io.fritz2.binding
+io.fritz2.dom
+io.fritz2.dom.html
+io.fritz2.remote
