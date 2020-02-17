@@ -8,7 +8,7 @@
 
 ### Exceptions
 
-| [FetchException](-fetch-exception/index.md) | exception type for handling http exceptions`class FetchException : `[`Exception`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html) |
+| [FetchException](-fetch-exception/index.md) | exception type for handling http exceptions`class FetchException : `[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html) |
 
 ### Extensions for External Classes
 

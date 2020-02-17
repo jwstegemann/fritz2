@@ -7,8 +7,24 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import org.w3c.fetch.*
 
-private val loggingErrorHandler = {e: FetchException ->
-    console.error("error fetching request: ${e.statusCode} responding ${e.body}")
+/**
+ * exception type for handling http exceptions
+ *
+ * @property statusCode the http response status code
+ * @property body the body of the error-response
+ */
+class FetchException(val statusCode: Short, val body: String, val response: Response) : Throwable()
+
+private val loggingErrorHandler = { t: Throwable ->
+    when (t) {
+        is FetchException -> {
+            val e = t as FetchException
+            console.error("error on request @ ${e.response.url}: ${e.statusCode} - ${e.body}")
+        }
+        else -> {
+            console.log("error on request: ${t.message}")
+        }
+    }
 }
 
 /**
@@ -20,7 +36,7 @@ private val loggingErrorHandler = {e: FetchException ->
  * @property baseUrl the common base of all urls that you want to call using this template
  * @property errorHandler a common error handler for all requests you will send using this template. By default this just logs the error to the console.
  */
-class RequestTemplate(val baseUrl : String = "", val errorHandler: (FetchException) -> Unit = loggingErrorHandler) {
+class RequestTemplate(val baseUrl : String = "", val errorHandler: (Throwable) -> Unit = loggingErrorHandler) {
     private var method: String? = undefined
     private var headers: Headers? = undefined
     private var body: String? = undefined
@@ -45,7 +61,7 @@ class RequestTemplate(val baseUrl : String = "", val errorHandler: (FetchExcepti
         val response = kotlin.browser.window.fetch("$baseUrl/$url", init).await()
 
         if (response.ok) emit(response)
-        else throw FetchException(response.status, response.text().await())
+        else throw FetchException(response.status, response.text().await(), response)
     }.onError(errorHandler)
 
     /**
@@ -185,20 +201,11 @@ fun Flow<Response>.body() = this.map {
 }
 
 /**
- * exception type for handling http exceptions
- *
- * @property statusCode the http response status code
- * @property body the body of the error-response
- */
-class FetchException(val statusCode: Short, val body: String) : Exception()
-
-/**
  * defines, how to handle an error that occurred during a http request.
  *
  * @param handler function that describes, how to handle a thrown [FetchException]
  */
 @ExperimentalCoroutinesApi
-fun Flow<Response>.onError(handler: (FetchException) -> Unit) = this.catch { e ->
-    if (e is FetchException) handler(e)
-    else throw e
+fun Flow<Response>.onError(handler: (Throwable) -> Unit) = this.catch { e ->
+    handler(e)
 }

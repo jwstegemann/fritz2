@@ -2,7 +2,7 @@
 
 # errorHandler
 
-`val errorHandler: (`[`FetchException`](../-fetch-exception/index.md)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)
+`val errorHandler: (`[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)
 
 a common error handler for all requests you will send using this template. By default this just logs the error to the console.
 
