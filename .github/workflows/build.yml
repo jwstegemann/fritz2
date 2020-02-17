@@ -1,4 +1,5 @@
-on: [pull_request]
+name: gradle
+on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
