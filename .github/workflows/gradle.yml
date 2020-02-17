@@ -15,5 +15,7 @@ jobs:
         java-version: 1.8
     - name: Build model
       run: ./gradlew :examples:nestedmodel:model:build
+    - name: Run unit tests
+      run: ./gradlew test
     - name: Build with Gradle
       run: ./gradlew build
