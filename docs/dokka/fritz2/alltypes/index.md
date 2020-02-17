@@ -399,7 +399,7 @@ Exposes the JavaScript [HTMLQuoteElement](https://developer.mozilla.org/en/docs/
 
 ##### [io.fritz2.remote.RequestTemplate](../io.fritz2.remote/-request-template/index.md)
 
-Repesents the common fields an attributes of a given set of http requests.
+Represents the common fields an attributes of a given set of http requests.
 
 
 |

@@ -13,5 +13,5 @@ exception type for handling http exceptions
 ### Properties
 
 | [body](body.md) | the body of the error-response`val body: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
-| [statusCode](status-code.md) | the http reponse status code`val statusCode: `[`Short`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-short/index.html) |
+| [statusCode](status-code.md) | the http response status code`val statusCode: `[`Short`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-short/index.html) |
 

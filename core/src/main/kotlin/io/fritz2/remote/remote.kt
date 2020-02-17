@@ -12,7 +12,7 @@ private val loggingErrorHandler = {e: FetchException ->
 }
 
 /**
- * Repesents the common fields an attributes of a given set of http requests.
+ * Represents the common fields an attributes of a given set of http requests.
  *
  * Use it to define common headers, error-handling, base url, etc. for a specific API for example.
  * By calling one of the executing methods like [get] or [post] a specific request is built from the template and send to the server.
@@ -35,7 +35,7 @@ class RequestTemplate(val baseUrl : String = "", val errorHandler: (FetchExcepti
     private var window: Any? = undefined
 
     /**
-     * builts a request, sends it to the server, awaits the response (async), creates a flow of it and attaches the defined errorHandler
+     * builds a request, sends it to the server, awaits the response (async), creates a flow of it and attaches the defined errorHandler
      *
      * @param url function do derive the url (so you can use baseUrl)
      * @param init an instance of [RequestInit] defining the attributes of the request
@@ -181,13 +181,13 @@ fun Flow<Response>.body() = this.map {
 /**
  * exception type for handling http exceptions
  *
- * @property statusCode the http reponse status code
+ * @property statusCode the http response status code
  * @property body the body of the error-response
  */
 class FetchException(val statusCode: Short, val body: String) : Exception()
 
 /**
- * defines, how to handle an error that occured during a http request.
+ * defines, how to handle an error that occurred during a http request.
  *
  * @param handler function that describes, how to handle a thrown [FetchException]
  */

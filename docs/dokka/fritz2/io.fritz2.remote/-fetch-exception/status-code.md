@@ -4,8 +4,8 @@
 
 `val statusCode: `[`Short`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-short/index.html)
 
-the http reponse status code
+the http response status code
 
 ### Property
 
-`statusCode` - the http reponse status code
+`statusCode` - the http response status code

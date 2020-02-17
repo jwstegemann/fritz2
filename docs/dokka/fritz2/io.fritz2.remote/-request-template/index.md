@@ -4,14 +4,14 @@
 
 `class RequestTemplate`
 
-Repesents the common fields an attributes of a given set of http requests.
+Represents the common fields an attributes of a given set of http requests.
 
 Use it to define common headers, error-handling, base url, etc. for a specific API for example.
 By calling one of the executing methods like [get](get.md) or [post](post.md) a specific request is built from the template and send to the server.
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | Repesents the common fields an attributes of a given set of http requests.`RequestTemplate(baseUrl: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, errorHandler: (`[`FetchException`](../-fetch-exception/index.md)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)` = loggingErrorHandler)` |
+| [&lt;init&gt;](-init-.md) | Represents the common fields an attributes of a given set of http requests.`RequestTemplate(baseUrl: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, errorHandler: (`[`FetchException`](../-fetch-exception/index.md)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)` = loggingErrorHandler)` |
 
 ### Properties
 
@@ -24,7 +24,7 @@ By calling one of the executing methods like [get](get.md) or [post](post.md) a 
 | [acceptJson](accept-json.md) | adds a header to accept JSON as response`fun acceptJson(): `[`RequestTemplate`](./index.md) |
 | [buildInit](build-init.md) | builds a [RequestInit](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-request-init/index.html) without a body from the template using [method](build-init.md#io.fritz2.remote.RequestTemplate$buildInit(kotlin.String)/method)`fun buildInit(method: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`): `[`RequestInit`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-request-init/index.html)<br>builds a [RequestInit](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-request-init/index.html) with a body from the template using [method](build-init.md#io.fritz2.remote.RequestTemplate$buildInit(kotlin.String, kotlin.String)/method)`fun buildInit(method: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, body: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`): `[`RequestInit`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-request-init/index.html) |
 | [delete](delete.md) | issues a delete request returning a flow of it's response`fun delete(url: `[`RequestTemplate`](./index.md)`.() -> `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`): Flow<`[`Response`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-response/index.html)`>` |
-| [execute](execute.md) | builts a request, sends it to the server, awaits the response (async), creates a flow of it and attaches the defined errorHandler`fun execute(url: `[`RequestTemplate`](./index.md)`.() -> `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, init: `[`RequestInit`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-request-init/index.html)`): Flow<`[`Response`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-response/index.html)`>` |
+| [execute](execute.md) | builds a request, sends it to the server, awaits the response (async), creates a flow of it and attaches the defined errorHandler`fun execute(url: `[`RequestTemplate`](./index.md)`.() -> `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, init: `[`RequestInit`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-request-init/index.html)`): Flow<`[`Response`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-response/index.html)`>` |
 | [get](get.md) | issues a get request returning a flow of it's response`fun get(url: `[`RequestTemplate`](./index.md)`.() -> `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`): Flow<`[`Response`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-response/index.html)`>` |
 | [head](head.md) | issues a head request returning a flow of it's response`fun head(url: `[`RequestTemplate`](./index.md)`.() -> `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`): Flow<`[`Response`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-response/index.html)`>` |
 | [header](header.md) | adds the given http header to the request`fun header(name: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, value: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`): `[`RequestTemplate`](./index.md) |
