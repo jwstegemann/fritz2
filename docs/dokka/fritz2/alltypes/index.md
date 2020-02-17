@@ -173,6 +173,13 @@ Exposes the JavaScript [HTMLDivElement](https://developer.mozilla.org/en/docs/We
 
 |
 
+##### [io.fritz2.remote.FetchException](../io.fritz2.remote/-fetch-exception/index.md)
+
+exception type for handling http exceptions
+
+
+|
+
 ##### [io.fritz2.dom.html.FieldSet](../io.fritz2.dom.html/-field-set/index.md)
 
 Exposes the JavaScript [HTMLFieldSetElement](https://developer.mozilla.org/en/docs/Web/API/HTMLFieldSetElement) to Kotlin
@@ -390,6 +397,13 @@ Exposes the JavaScript [HTMLQuoteElement](https://developer.mozilla.org/en/docs/
 
 |
 
+##### [io.fritz2.remote.RequestTemplate](../io.fritz2.remote/-request-template/index.md)
+
+Repesents the common fields an attributes of a given set of http requests.
+
+
+|
+
 ##### [io.fritz2.binding.RootStore](../io.fritz2.binding/-root-store/index.md)
 
 
@@ -556,11 +570,6 @@ Exposes the JavaScript [HTMLUListElement](https://developer.mozilla.org/en/docs/
 |
 
 ##### [io.fritz2.binding.Update](../io.fritz2.binding/-update.md)
-
-
-| (extensions in package io.fritz2.remote)
-
-##### [org.w3c.dom.url.URL](../io.fritz2.remote/org.w3c.dom.url.-u-r-l/index.md)
 
 
 |
