@@ -7,7 +7,7 @@ class MountPointTests {
 
     @Test
     fun singleMountPointTest(): Unit {
-        assertEquals(1.toString(), "1", "there can be only one")
+        assertEquals(1.toString(), "2", "there can be only one")
     }
 
 }
