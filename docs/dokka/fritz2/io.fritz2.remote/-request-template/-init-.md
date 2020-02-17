@@ -4,7 +4,7 @@
 
 `RequestTemplate(baseUrl: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, errorHandler: (`[`FetchException`](../-fetch-exception/index.md)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)` = loggingErrorHandler)`
 
-Repesents the common fields an attributes of a given set of http requests.
+Represents the common fields an attributes of a given set of http requests.
 
 Use it to define common headers, error-handling, base url, etc. for a specific API for example.
 By calling one of the executing methods like [get](get.md) or [post](post.md) a specific request is built from the template and send to the server.

@@ -4,7 +4,7 @@
 
 ### Types
 
-| [RequestTemplate](-request-template/index.md) | Repesents the common fields an attributes of a given set of http requests.`class RequestTemplate` |
+| [RequestTemplate](-request-template/index.md) | Represents the common fields an attributes of a given set of http requests.`class RequestTemplate` |
 
 ### Exceptions
 
