@@ -20,7 +20,7 @@ private val loggingErrorHandler = {e: FetchException ->
  * @property baseUrl the common base of all urls that you want to call using this template
  * @property errorHandler a common error handler for all requests you will send using this template. By default this just logs the error to the console.
  */
-class RequestTemplate(val baseUrl : String, val errorHandler: (FetchException) -> Unit = loggingErrorHandler) {
+class RequestTemplate(val baseUrl : String = "", val errorHandler: (FetchException) -> Unit = loggingErrorHandler) {
     private var method: String? = undefined
     private var headers: Headers? = undefined
     private var body: String? = undefined
@@ -41,8 +41,8 @@ class RequestTemplate(val baseUrl : String, val errorHandler: (FetchException) -
      * @param init an instance of [RequestInit] defining the attributes of the request
      */
     @ExperimentalCoroutinesApi
-    inline fun execute(crossinline url: RequestTemplate.() -> String, init: RequestInit): Flow<Response> = flow {
-        val response = kotlin.browser.window.fetch(url(), init).await()
+    inline fun execute(url: String, init: RequestInit): Flow<Response> = flow {
+        val response = kotlin.browser.window.fetch("$baseUrl/$url", init).await()
 
         if (response.ok) emit(response)
         else throw FetchException(response.status, response.text().await())
@@ -53,7 +53,7 @@ class RequestTemplate(val baseUrl : String, val errorHandler: (FetchException) -
      *
      * @param method the http method to use (GET, POST, etc.)
      */
-    fun buildInit(method: String) = RequestInit(
+     private fun buildInit(method: String) = RequestInit(
         method = method,
         headers = headers,
         referrer = referrer,
@@ -73,7 +73,7 @@ class RequestTemplate(val baseUrl : String, val errorHandler: (FetchException) -
      * @param method the http method to use (GET, POST, etc.)
      * @param body content of the request
      */
-    fun buildInit(method: String, body: String) = RequestInit(
+    private fun buildInit(method: String, body: String) = RequestInit(
         method = method,
         headers = headers,
         referrer = referrer,
@@ -84,7 +84,8 @@ class RequestTemplate(val baseUrl : String, val errorHandler: (FetchException) -
         redirect = redirect,
         integrity = integrity,
         keepalive = keepalive,
-        window = window
+        window = window,
+        body = body
     )
 
     /**
@@ -92,21 +93,21 @@ class RequestTemplate(val baseUrl : String, val errorHandler: (FetchException) -
      *
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      */
-    inline fun get(crossinline url: RequestTemplate.() -> String) = execute(url, buildInit("GET"))
+    fun get(url: String = "") = execute(url, buildInit("GET"))
 
     /**
      * issues a delete request returning a flow of it's response
      *
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      */
-    inline fun delete(crossinline url: RequestTemplate.() -> String) = execute(url, buildInit("DELETE"))
+    fun delete(url: String = "") = execute(url, buildInit("DELETE"))
 
     /**
      * issues a head request returning a flow of it's response
      *
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      */
-    inline fun head(crossinline url: RequestTemplate.() -> String) = execute(url, buildInit("HEAD"))
+    fun head(url: String = "") = execute(url, buildInit("HEAD"))
 
     /**
      * issues a post request returning a flow of it's response
@@ -114,7 +115,7 @@ class RequestTemplate(val baseUrl : String, val errorHandler: (FetchException) -
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      * @param body content to send in the body of the request
      */
-    inline fun post(crossinline url: RequestTemplate.() -> String, body: String) = execute(url, buildInit("POST", body))
+    fun post(url: String = "", body: String) = execute(url, buildInit("POST", body))
 
     /**
      * issues a push request returning a flow of it's response
@@ -122,7 +123,7 @@ class RequestTemplate(val baseUrl : String, val errorHandler: (FetchException) -
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      * @param body content to send in the body of the request
      */
-    inline fun push(crossinline url: RequestTemplate.() -> String, body: String) = execute(url, buildInit("PUSH", body))
+    fun push(url: String = "", body: String) = execute(url, buildInit("PUSH", body))
 
     /**
      * issues a patch request returning a flow of it's response
@@ -130,10 +131,10 @@ class RequestTemplate(val baseUrl : String, val errorHandler: (FetchException) -
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      * @param body content to send in the body of the request
      */
-    inline fun patch(crossinline url: RequestTemplate.() -> String, body: String) = execute(url, buildInit("PUSH", body))
+    fun patch(url: String = "", body: String) = execute(url, buildInit("PUSH", body))
 
     /**
-     * checks if a [Headers] object has been initialized, does so if not and attaches the given http header
+     * checks if a [Headers] obect has been initialized, does so if not and attaches the given http header
      *
      * @param name name of the http header to add
      * @param value value of the header field

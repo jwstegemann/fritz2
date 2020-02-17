@@ -19,18 +19,12 @@ fun main() {
         val sampleApi = RequestTemplate("https://reqres.in/api/users")
             .acceptJson()
 
-        val myErrorHandler = { e: FetchException ->
-            window.alert("error fetching data: ${e.statusCode}, ${e.body}")
-        }
-
         val sampleGet = apply { s : String ->
-            sampleApi.get {"$baseUrl/$s"}
-                .onError(myErrorHandler)
-                .body()
+            sampleApi.get(s).body()
         } andThen update
 
         val samplePost = apply {s : String ->
-            sampleApi.post ({"$baseUrl/$s"} , """
+            sampleApi.post(body = """
                 {
                     "name": "$s",
                     "job": "leader"
