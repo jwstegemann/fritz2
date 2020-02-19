@@ -22,10 +22,17 @@ private val loggingErrorHandler = { t: Throwable ->
             console.error("error on request @ ${e.response.url}: ${e.statusCode} - ${e.body}")
         }
         else -> {
-            console.log("error on request: ${t.message}")
+            console.error("error on request: ${t.message}")
         }
     }
 }
+
+/**
+ * factory method to create a RequestTemplate
+ *
+ * @property baseUrl the common base of all urls that you want to call using the template
+ */
+fun remote(baseUrl: String = "") = RequestTemplate(baseUrl)
 
 /**
  * Represents the common fields an attributes of a given set of http requests.
@@ -36,7 +43,7 @@ private val loggingErrorHandler = { t: Throwable ->
  * @property baseUrl the common base of all urls that you want to call using this template
  * @property errorHandler a common error handler for all requests you will send using this template. By default this just logs the error to the console.
  */
-class RequestTemplate(val baseUrl : String = "", val errorHandler: (Throwable) -> Unit = loggingErrorHandler) {
+class RequestTemplate(val baseUrl : String = "") {
     private var method: String? = undefined
     private var headers: Headers? = undefined
     private var body: String? = undefined
@@ -62,7 +69,7 @@ class RequestTemplate(val baseUrl : String = "", val errorHandler: (Throwable) -
 
         if (response.ok) emit(response)
         else throw FetchException(response.status, response.text().await(), response)
-    }.onError(errorHandler)
+    }
 
     /**
      * builds a [RequestInit] without a body from the template using [method]
@@ -206,6 +213,13 @@ fun Flow<Response>.body() = this.map {
  * @param handler function that describes, how to handle a thrown [FetchException]
  */
 @ExperimentalCoroutinesApi
-fun Flow<Response>.onError(handler: (Throwable) -> Unit) = this.catch { e ->
-    handler(e)
+fun Flow<Response>.onError(handler: (Throwable) -> Unit) = this.catch {
+    handler(it)
+}
+
+/**
+ * adds a handler to log all exceptions that occur during a fetch action
+ */
+fun Flow<Response>.onErrorLog() = this.catch {
+    loggingErrorHandler(it)
 }

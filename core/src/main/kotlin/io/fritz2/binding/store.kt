@@ -4,6 +4,7 @@ import io.fritz2.optics.Lens
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -40,7 +41,7 @@ abstract class Store<T> {
 
     fun <A,X> apply(mapper: suspend (A) -> Flow<X>) = Applicator<A,X>(mapper)
 
-    abstract fun enqueue(update: Update<T>)
+    abstract suspend fun enqueue(update: Update<T>)
 
     abstract val id: String
 
@@ -52,12 +53,13 @@ abstract class Store<T> {
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-open class RootStore<T>(private val initialData: T, override val id: String = "")  : Store<T>() {
-    private val updates = ConflatedBroadcastChannel<Update<T>>()
+open class RootStore<T>(private val initialData: T, override val id: String = "", bufferSize: Int = 1)  : Store<T>() {
+    //TODO: best capacity?
+    private val updates = BroadcastChannel<Update<T>>(bufferSize)
     private val applyUpdate : suspend (T, Update<T>) -> T = {lastValue, update -> update(lastValue)}
 
-    override fun enqueue(update: Update<T>) {
-        updates.offer(update)
+    override suspend fun enqueue(update: Update<T>) {
+        updates.send(update)
     }
 
     override val data = updates.asFlow().scan(initialData, applyUpdate).distinctUntilChanged()

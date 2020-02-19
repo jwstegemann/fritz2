@@ -14,7 +14,7 @@ class SubStore<R, P, T>(private val parent: Store<P>, private val lens: Lens<P, 
 
     override val id: String by lazy { "${parent.id}.${lens._id}" }
 
-    override fun enqueue(update: Update<T>) {
+    override suspend fun enqueue(update: Update<T>) {
         rootStore.enqueue {
             rootLens.apply(it, update)
         }

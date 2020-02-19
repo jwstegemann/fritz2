@@ -8,19 +8,19 @@ import kotlinx.coroutines.*
 import kotlin.browser.window
 
 
-data class QueryParams(val q: String)
-
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun main() {
 
     val store = object : RootStore<String>("start") {
 
-        val sampleApi = RequestTemplate("https://reqresss.in/api/users")
+        val sampleApi = remote("https://reqresss.in/api/users")
             .acceptJson()
 
         val sampleGet = apply { s : String ->
-            sampleApi.get(s).body()
+            sampleApi.get(s)
+                .onErrorLog()
+                .body()
         } andThen update
 
         val samplePost = apply {s : String ->
@@ -30,6 +30,7 @@ fun main() {
                     "job": "leader"
                 }
             """.trimIndent())
+                .onErrorLog()
                 .body()
         } andThen update
 
