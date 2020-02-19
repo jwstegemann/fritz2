@@ -1,8 +1,9 @@
 package io.fritz2.examples.routing
 
-import io.fritz2.binding.*
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import io.fritz2.routing.router
+import io.fritz2.routing.select
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
@@ -17,7 +18,7 @@ object Pages {
 @FlowPreview
 fun main() {
 
-    val router = routing(mapOf("page" to Pages.a, "test" to "=&%#+!§/%\\\$&()"))
+    val router = router(mapOf("page" to Pages.a, "test" to "=&%#+!§/%\\\$&()"))
 
     val myComponent = html {
         section {

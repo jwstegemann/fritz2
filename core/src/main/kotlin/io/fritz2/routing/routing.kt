@@ -1,5 +1,6 @@
-package io.fritz2.binding
+package io.fritz2.routing
 
+import io.fritz2.binding.Handler
 import io.fritz2.dom.html.Events
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -17,7 +18,9 @@ import kotlin.browser.window
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun routing(default: String): Router<String> = object : Router<String>(StringRoute(default)) {}
+fun router(default: String): Router<String> = object : Router<String>(
+    StringRoute(default)
+) {}
 
 /**
  * Creates a new [Map] based [Router]
@@ -26,7 +29,9 @@ fun routing(default: String): Router<String> = object : Router<String>(StringRou
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun routing(default: Map<String, String>): Router<Map<String, String>> = object : Router<Map<String, String>>(MapRoute(default)) {}
+fun router(default: Map<String, String>): Router<Map<String, String>> = object : Router<Map<String, String>>(
+    MapRoute(default)
+) {}
 
 /**
  * Select return a [Pair] of the value
@@ -46,7 +51,7 @@ fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Ma
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun <T> routing(default: Route<T>): Router<T> =  object : Router<T>(default) {}
+fun <T> router(default: Route<T>): Router<T> =  object : Router<T>(default) {}
 
 /**
  * A Route is a abstraction for routes
@@ -91,7 +96,8 @@ class StringRoute(override val default: String): Route<String> {
  *
  * @param default [Map] to use when no explicit *window.location.hash* was set before
  */
-class MapRoute(override val default: Map<String, String>): Route<Map<String, String>> {
+class MapRoute(override val default: Map<String, String>):
+    Route<Map<String, String>> {
     private val assignment = "="
     private val divider = "&"
 
