@@ -1,6 +1,8 @@
 package io.fritz2.binding
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlin.js.Promise
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,25 +34,33 @@ class StoreTests {
         }
     }
 
+    @InternalCoroutinesApi
     @FlowPreview
     @Test
     fun storeUpdateTriggersMultiMountPoint(): Promise<Boolean> {
 
         val store = RootStore<List<Int>>(emptyList())
+        store.data.launchIn(GlobalScope)
 
         val mp = checkFlow(store.data.each().data, 5) { count, patch ->
-            console.log("Patch $patch\n")
-            val expected = (0 until count).fold(Patch<Int>(0, emptyList(), 0), {last, value ->
-                Patch(value, last.that + value, 0)
-            })
+            val expected = Patch(count, listOf(count), 0)
+
+//            console.log("$count: EXPECTED: $expected\n")
+//            console.log("$count: PATCH   : $patch\n")
             assertEquals(expected, patch, "set wrong value in MultiMountPoint")
+
         }
 
         return GlobalScope.promise {
+            delay(1) //needs a point to suspend
             for (i in 0..4) {
                 store.enqueue { it + i }
             }
+            delay(1)
+
             mp.await()
+
+            true
         }
     }
 
