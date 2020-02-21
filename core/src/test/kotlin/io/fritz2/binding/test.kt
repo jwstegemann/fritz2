@@ -13,6 +13,7 @@ class TestSingleMountPoint<T>(upstream: Flow<T>,
     var count = 0;
 
     override fun set(value: T, last: T?) {
+//        console.log("CALLED: $value from $last\n")
         check(count, value, last)
         count++;
         if (numberOfUpdates == count) done.complete(true)

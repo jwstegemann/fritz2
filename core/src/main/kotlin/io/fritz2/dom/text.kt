@@ -15,7 +15,7 @@ interface WithText<T : org.w3c.dom.Node> : WithDomNode<T> {
 
     operator fun Flow<String>.unaryPlus(): SingleMountPoint<WithDomNode<Text>> = this.bind()
 
-    //TODO: what does conflate realy mean?
+    //conflate because updates that occur faster than dom-manipulation should be ommitted
     fun Flow<String>.bind() = DomMountPoint<Text>(this.map {
         TextNode(it)
     }.distinctUntilChanged().conflate(), domNode)

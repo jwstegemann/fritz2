@@ -18,7 +18,7 @@ class FetchException(val statusCode: Short, val body: String, val response: Resp
 private val loggingErrorHandler = { t: Throwable ->
     when (t) {
         is FetchException -> {
-            val e = t as FetchException
+            val e = t
             console.error("error on request @ ${e.response.url}: ${e.statusCode} - ${e.body}")
         }
         else -> {

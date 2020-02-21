@@ -1,13 +1,13 @@
 package io.fritz2.binding
 
+import io.fritz2.flow.asSharedFlow
 import io.fritz2.optics.Lens
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 
 typealias Update<T> = (T) -> T
@@ -22,9 +22,11 @@ class Handler<A>(inline val handle: (Flow<A>) -> Unit) {
 
 class Applicator<A,X>(inline val mapper: suspend (A) -> Flow<X>)
 
+@ExperimentalCoroutinesApi
 abstract class Store<T> {
 
     //TODO: another factory for (A) -> X (map instead of flatMapConcat)
+    @FlowPreview
     infix fun <A,X> Applicator<A,X>.andThen(nextHandler: Handler<X>) = Handler<A> {
         nextHandler.handle(it.flatMapConcat(this.mapper))
     }
@@ -34,7 +36,7 @@ abstract class Store<T> {
     inline fun <A> handle(crossinline handler: (T, A) -> T) = Handler<A> {
         GlobalScope.launch {
             it.collect {
-                enqueue { t -> handler(t,it) }
+                enqueue { t ->  handler(t,it) }
             }
         }
     }
@@ -54,15 +56,18 @@ abstract class Store<T> {
 @FlowPreview
 @ExperimentalCoroutinesApi
 open class RootStore<T>(private val initialData: T, override val id: String = "", bufferSize: Int = 1)  : Store<T>() {
+
+    //private val scope = CoroutineScope(Job())
+
     //TODO: best capacity?
     private val updates = BroadcastChannel<Update<T>>(bufferSize)
-    private val applyUpdate : suspend (T, Update<T>) -> T = {lastValue, update -> update(lastValue)}
+    private val applyUpdate : suspend (T, Update<T>) -> T = { lastValue, update -> update(lastValue) }
 
     override suspend fun enqueue(update: Update<T>) {
         updates.send(update)
     }
 
-    override val data = updates.asFlow().scan(initialData, applyUpdate).distinctUntilChanged()
+    override val data = updates.asFlow().scan(initialData, applyUpdate).distinctUntilChanged().asSharedFlow()
 
     override fun <X> sub(lens: Lens<T, X>) = SubStore<T,T,X>(this, lens, this, lens)
 }

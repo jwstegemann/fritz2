@@ -16,7 +16,7 @@ data class ActionData(val x: Int, val y: Int)
 fun main() {
 
     val store = object : RootStore<String>("start") {
-        val addADot = handle <ActionData> { model, _ ->
+        val addADot = handle<Any> { model, _ ->
             "$model."
         }
     }
@@ -52,11 +52,25 @@ fun main() {
                 +"value: "
                 store.data.bind()
             }
+            div {
+                +"value: "
+                store.data.bind()
+            }
+            div {
+                +"value: "
+                store.data.bind()
+            }
+            div {
+                +"value: "
+                store.data.bind()
+            }
+            div {
+                +"value: "
+                store.data.bind()
+            }
             button {
                 +"add one more little dot"
-                store.addADot <= clicks.map {
-                    ActionData(it.clientX, it.clientY)
-                }
+                store.addADot <= clicks
             }
             ul {
                 seq.data.each().map { s ->
