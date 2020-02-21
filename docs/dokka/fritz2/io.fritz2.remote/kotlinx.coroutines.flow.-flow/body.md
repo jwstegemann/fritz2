@@ -3,3 +3,6 @@
 # body
 
 `fun Flow<`[`Response`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-response/index.html)`>.body(): Flow<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>`
+
+extracts the body from the given [Response](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.fetch/-response/index.html)
+

@@ -2,8 +2,15 @@
 
 ## Package io.fritz2.remote
 
+### Types
+
+| [RequestTemplate](-request-template/index.md) | Represents the common fields an attributes of a given set of http requests.`class RequestTemplate` |
+
+### Exceptions
+
+| [FetchException](-fetch-exception/index.md) | exception type for handling http exceptions`class FetchException : `[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html) |
+
 ### Extensions for External Classes
 
 | [kotlinx.coroutines.flow.Flow](kotlinx.coroutines.flow.-flow/index.md) |  |
-| [org.w3c.dom.url.URL](org.w3c.dom.url.-u-r-l/index.md) |  |
 

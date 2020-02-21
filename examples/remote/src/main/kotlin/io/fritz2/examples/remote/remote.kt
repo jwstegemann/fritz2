@@ -3,12 +3,8 @@ package io.fritz2.examples.remote
 import io.fritz2.binding.RootStore
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
-import io.fritz2.remote.body
-import io.fritz2.remote.get
+import io.fritz2.remote.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import org.w3c.dom.url.URL
-import org.w3c.fetch.Body
 import kotlin.browser.window
 
 
@@ -20,22 +16,48 @@ fun main() {
 
     val store = object : RootStore<String>("start") {
 
-        val callApi = apply { s : String ->
-            URL("http://localhost:9000/get?foo=$s").get().body()
+        val sampleApi = RequestTemplate("https://reqresss.in/api/users")
+            .acceptJson()
+
+        val sampleGet = apply { s : String ->
+            sampleApi.get(s).body()
+        } andThen update
+
+        val samplePost = apply {s : String ->
+            sampleApi.post(body = """
+                {
+                    "name": "$s",
+                    "job": "leader"
+                }
+            """.trimIndent())
+                .body()
         } andThen update
 
     }
 
     val myComponent = html {
         div {
-            input {
-                value = !"hgfhgfhgf"
-                store.callApi <= changes
+            label {
+                +"get for id"
             }
+            input {
+                value = !"start"
+                store.sampleGet <= changes
+            }
+            hre {  }
+            label {
+                +"post for id"
+            }
+            input {
+                value = !"start"
+                store.samplePost <= changes
+            }
+            hre {  }
             div {
-                +"value: "
+                +"result: "
                 store.data.bind()
             }
+
         }
     }
 
