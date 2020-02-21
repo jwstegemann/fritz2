@@ -6,7 +6,7 @@
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | `RootStore(initialData: T, id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)` = "")` |
+| [&lt;init&gt;](-init-.md) | `RootStore(initialData: T, id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)` = "", bufferSize: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)` = 1)` |
 
 ### Properties
 
@@ -15,7 +15,7 @@
 
 ### Functions
 
-| [enqueue](enqueue.md) | `open fun enqueue(update: `[`Update`](../-update.md)`<T>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
+| [enqueue](enqueue.md) | `open suspend fun enqueue(update: `[`Update`](../-update.md)`<T>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
 | [sub](sub.md) | `open fun <X> sub(lens: Lens<T, X>): `[`SubStore`](../-sub-store/index.md)`<T, T, X>` |
 
 ### Extension Functions

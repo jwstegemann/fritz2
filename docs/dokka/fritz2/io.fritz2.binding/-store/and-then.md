@@ -2,4 +2,4 @@
 
 # andThen
 
-`infix fun <A, X> `[`Applicator`](../-applicator/index.md)`<A, X>.andThen(nextHandler: `[`Handler`](../-handler/index.md)`<X>): `[`Handler`](../-handler/index.md)`<A>`
+`@FlowPreview infix fun <A, X> `[`Applicator`](../-applicator/index.md)`<A, X>.andThen(nextHandler: `[`Handler`](../-handler/index.md)`<X>): `[`Handler`](../-handler/index.md)`<A>`

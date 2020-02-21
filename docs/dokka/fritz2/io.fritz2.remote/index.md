@@ -14,3 +14,7 @@
 
 | [kotlinx.coroutines.flow.Flow](kotlinx.coroutines.flow.-flow/index.md) |  |
 
+### Functions
+
+| [remote](remote.md) | factory method to create a RequestTemplate`fun remote(baseUrl: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)` = ""): `[`RequestTemplate`](-request-template/index.md) |
+
