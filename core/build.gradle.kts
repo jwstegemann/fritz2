@@ -39,6 +39,28 @@ tasks {
         testTasks.forEach {
             it.testLogging.showExceptions = true
             it.testLogging.showStandardStreams = true
+            it.testLogging.minGranularity = 3
+            it.addTestListener(object : TestListener {
+                override fun beforeTest(testDescriptor: TestDescriptor?) {
+                }
+
+                override fun beforeSuite(suite: TestDescriptor?) {
+                }
+
+                override fun afterTest(testDescriptor: TestDescriptor?, result: TestResult?) {
+                }
+
+                override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+                    if (suite.parent == null) { // root suite
+                        logger.lifecycle("----")
+                        logger.lifecycle("Test result: ${result.resultType}")
+                        logger.lifecycle("Test summary: ${result.testCount} tests, " +
+                                "${result.successfulTestCount} succeeded, " +
+                                "${result.failedTestCount} failed, " +
+                                "${result.skippedTestCount} skipped")
+                    }
+                }
+            })
         }
     }
 }
