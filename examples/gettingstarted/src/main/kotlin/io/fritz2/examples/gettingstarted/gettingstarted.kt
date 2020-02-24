@@ -7,6 +7,10 @@ import io.fritz2.dom.mount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLBodyElement
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.events.Event
+import kotlin.browser.document
 
 
 data class ActionData(val x: Int, val y: Int)
@@ -52,22 +56,6 @@ fun main() {
                 +"value: "
                 store.data.bind()
             }
-            div {
-                +"value: "
-                store.data.bind()
-            }
-            div {
-                +"value: "
-                store.data.bind()
-            }
-            div {
-                +"value: "
-                store.data.bind()
-            }
-            div {
-                +"value: "
-                store.data.bind()
-            }
             button {
                 +"add one more little dot"
                 store.addADot <= clicks
@@ -76,7 +64,7 @@ fun main() {
                 seq.data.each().map { s ->
                     html {
                         li {
-                            button("delete-btn") {
+                            button("delete-btn@$s") {
                                 +s
                                 `class` = !"btn"
                                 seq.deleteItem <= clicks.map { console.log("deleting $s"); s }

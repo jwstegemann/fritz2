@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import kotlin.browser.window
+import kotlin.js.Math
+import kotlin.random.Random
 
 @DslMarker
 annotation class HtmlTagMarker

@@ -2,13 +2,66 @@ package io.fritz2.dom
 
 import io.fritz2.dom.html.EventType
 import io.fritz2.dom.html.Events
+import io.fritz2.flow.asSharedFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
+import org.w3c.dom.events.MouseEvent
+
+
+internal typealias Instance<T> = Pair<String, T>
+
+@ExperimentalCoroutinesApi
+@FlowPreview
+open class EventDispatcher<T>(val type: EventType<T>) {
+    private val dispatcherChannel = BroadcastChannel<Instance<T>>(1)
+    val events = dispatcherChannel.asFlow().asSharedFlow()
+
+    val handler: (Event) -> Unit = {event ->
+        event.stopImmediatePropagation()
+        console.log("handling $event")
+        //FIXME: offer may loose events. send needs suspended! better to have more capacity?
+        event.target?.let { target ->
+            //FIXME: safe enough?
+            val targetId = target.unsafeCast<HTMLElement>().id
+            console.log("offering $event for $targetId")
+            dispatcherChannel.offer(Pair(targetId, type.extract(event)))
+        }
+    }
+
+    private fun <E : Element> getOrCreateId(element: WithEvents<E>): String {
+        if (element.domNode.id.isEmpty()) {
+            //FXME: better algorithm for id generation
+            val generatedId = "_${element.domNode.tagName.toLowerCase()}@${element.hashCode()}"
+            console.log("setting id... to $generatedId")
+            element.domNode.setAttribute("id", generatedId)
+            return generatedId
+        }
+        else return element.domNode.id
+    }
+
+    fun <E : Element> register(element: WithEvents<E>): Flow<T> {
+        val id = getOrCreateId(element)
+        console.log("registered $type for $id")
+        return events.transform {(targetId, event) ->
+            console.log("transforming: $targetId with $id")
+            if (targetId == id) emit(event)
+        }
+    }
+
+    fun addToElement(it: Element) {
+        it.addEventListener(type.name, handler, true)
+    }
+}
+
+object ClickDispatcher: EventDispatcher<MouseEvent>(Events.click) {
+
+}
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -31,7 +84,9 @@ abstract class WithEvents<out T : Element> : WithDomNode<T> {
     val canplays by lazy { subscribe(Events.canplay)}
     val canplaythroughs by lazy { subscribe(Events.canplaythrough)}
     val changes by lazy { subscribe(Events.change)}
-    val clicks by lazy { subscribe(Events.click)}
+    //val clicks by lazy { subscribe(Events.click)}
+
+    val clicks: Flow<MouseEvent> by lazy { ClickDispatcher.register(this) }
     val contextmenus by lazy { subscribe(Events.contextmenu)}
     val copys by lazy { subscribe(Events.copy)}
     val cuts by lazy { subscribe(Events.cut)}

@@ -92,6 +92,7 @@ fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
 fun <X : Element> Tag<X>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
+        ClickDispatcher.addToElement(it)
         it.appendChild(this.domNode)
     }
 }
