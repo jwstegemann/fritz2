@@ -76,9 +76,8 @@ fun main() {
                 seq.data.each().map { s ->
                     html {
                         li {
-                            button {
+                            button("delete-btn") {
                                 +s
-                                id = !"delete-btn"
                                 `class` = !"btn"
                                 seq.deleteItem <= clicks.map { console.log("deleting $s"); s }
                                 classStore.remove <= clicks.map { e ->
@@ -89,14 +88,13 @@ fun main() {
                     }
                 }.bind()
             }
-            button {
+            button("button") {
                 +"add an item"
                 seq.addItem <= clicks
                 classStore.add <= clicks.map { e ->
                     "newItem"
                 }
                 attributeData("test", "test-button1")
-                id = !"button"
                 classes = classStore.data
             }
         }

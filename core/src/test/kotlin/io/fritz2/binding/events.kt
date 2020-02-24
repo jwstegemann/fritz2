@@ -2,6 +2,7 @@ package io.fritz2.binding
 
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import io.fritz2.test.initDocument
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -20,6 +21,8 @@ class EventTests {
     @Test
     fun eventHandlerDomChange(): Promise<Boolean> {
 
+        initDocument()
+
         val store = object : RootStore<String>("start") {
             var countHandlerCalls = 0
 
@@ -36,24 +39,16 @@ class EventTests {
                     value = store.data
                     store.update <= changes
                 }
-                div {
-                    id = !"myResult"
+                div("myResult") {
                     +"value: "
                     store.data.bind()
                 }
-                button {
-                    id = !"myButton"
+                button("myButton") {
                     +"add one more little dot"
                     store.addADot <= clicks
                 }
             }
         }
-
-        document.write("""
-            <body id="target">
-                Loading...
-            </body>
-        """.trimIndent())
 
         myComponent.mount("target")
 
