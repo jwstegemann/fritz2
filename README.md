@@ -1,7 +1,6 @@
 # fritz2
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
-[![Extremely Lightweight](https://tokei.rs/b1/github/jwstegemann/fritz2?category=code)](http://todomvc.com/examples/fritz2/)
 [![100% Kotlin](https://img.shields.io/badge/pure%20Kotlin-100%25-blue)](https://play.kotlinlang.org/)
 
 fritz2 is a proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
@@ -27,7 +26,7 @@ val component = html {
         model.update <= changes
     }
     p {
-        +"value ?"
+        +"model value = "
         store.data.bind()
     }
 }
@@ -36,7 +35,7 @@ component.mount("target")
 ```
 
 fritz2 implements **precise data binding**. That means that exactly those (and **only** those) dom-nodes (elements, attributes, etc.) change, that depend on the parts of your data-model, that have changed. 
-There is no intermediate layer needed like a virtual DOM and you do not have to implement methodes to decide, which parts of your component have to be rerendered, when your data changes.
+There is no intermediate layer needed like a virtual DOM and you do not have to implement any additional methodes to decide, which parts of your component have to be rerendered, when your data changes.
 This makes it more efficient than the react-approach - at runtime and for development.
 
 The learning curve should be quite flat. We chose Kotlin as a language, that is easy to learn and has a focus on writing clean and intuitive code.
@@ -48,6 +47,7 @@ Your can either
 * checkout the project, import in your favourite IDE (or whatever you like) and run `./gradlew :examples:gettingstarted:run` (or another example)
 * set up a new project on your own, using one of our examples as a template
 
+
 ## What is there already?
 
 - easy reactive one- and two-way-databinding
@@ -58,11 +58,14 @@ Your can either
 - hassle-free redux-like state-handling
 - model-validation and message handling 
 - routing (for SPAs, hash-based)
+- documentation (work in progress)
 
 ## What will come next?
 
-- documentation (work in progress)
 - complete example (ToDoMVC)
+- tests, tests, tests
+- performance and memory optimizations
+- streamlined build-process (DCE, etc.)
 - server-communication (Rest APIs, etc.) [(work in progress)](https://github.com/jwstegemann/fritz2/pull/14)
 - user auth (examle with OAuth)
 
