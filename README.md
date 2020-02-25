@@ -4,11 +4,38 @@
 [![Extremely Lightweight](https://tokei.rs/b1/github/jwstegemann/fritz2?category=code)](http://todomvc.com/examples/fritz2/)
 [![100% Kotlin](https://img.shields.io/badge/pure%20Kotlin-100%25-blue)](https://play.kotlinlang.org/)
 
-A proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
+fritz2 is a proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
-Using fritz2 you can easily create lightweight **reactive** html-components (using an intuitive dsl) that **automatically** change, whenever the underlying model data they are bound to changes.
+fritz2 includes anintuitive way to build and render html-elements using a type-safe dsl:
 
-fritz2 implements **precise data binding**. That means that exactly those dom-nodes (and **only** those) change, that depend on the parts of your data-model, that have changed. 
+```
+html {
+  p {
+    +"Hello World!"
+  }
+}.mount("target")
+```
+
+Using fritz2 you can easily create lightweight **reactive** html-components that are bound to an underlying model and **automatically** change, whenever the model data changes:
+
+```
+val model = RootStore<String>("init value")
+
+val component = html {
+    input {
+        value = model.data
+        model.update <= changes
+    }
+    p {
+        +"value ?"
+        store.data.bind()
+    }
+}
+
+component.mount("target")
+```
+
+fritz2 implements **precise data binding**. That means that exactly those (and **only** those) dom-nodes (elements, attributes, etc.) change, that depend on the parts of your data-model, that have changed. 
 There is no intermediate layer needed like a virtual DOM and you do not have to implement methodes to decide, which parts of your component have to be rerendered, when your data changes.
 This makes it more efficient than the react-approach - at runtime and for development.
 
