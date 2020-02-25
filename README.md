@@ -45,7 +45,7 @@ fritz2 itself only depends on only a handfull concepts you have to master. The c
 ## How to try it that early?
 Your can either
 * checkout the project, import in your favourite IDE (or whatever you like) and run `./gradlew :examples:gettingstarted:run` (or another example)
-* set up a new project on your own, using one of our examples as a template
+* set up a new project on your own following our [documentation](https://github.com/jwstegemann/fritz2/wiki/Project-Setup)
 
 
 ## What is there already?
@@ -58,7 +58,7 @@ Your can either
 - hassle-free redux-like state-handling
 - model-validation and message handling 
 - routing (for SPAs, hash-based)
-- documentation (work in progress)
+- [documentation (work in progress)](https://github.com/jwstegemann/fritz2/wiki)
 
 ## What will come next?
 
