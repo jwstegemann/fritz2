@@ -5,9 +5,9 @@
 
 fritz2 is a proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
-fritz2 includes anintuitive way to build and render html-elements using a type-safe dsl:
+fritz2 includes an intuitive way to build and render html-elements using a type-safe dsl:
 
-```
+```kotlin
 html {
   p {
     +"Hello World!"
@@ -17,7 +17,7 @@ html {
 
 Using fritz2 you can easily create lightweight **reactive** html-components that are bound to an underlying model and **automatically** change, whenever the model data changes:
 
-```
+```kotlin
 val model = RootStore<String>("init value")
 
 val component = html {
@@ -38,8 +38,10 @@ fritz2 implements **precise data binding**. That means that exactly those (and *
 There is no intermediate layer needed like a virtual DOM and you do not have to implement any additional methodes to decide, which parts of your component have to be rerendered, when your data changes.
 This makes it more efficient than the react-approach - at runtime and for development.
 
+Utilizing Koltin's multiplatform-abilities, you have to write the code of your data classes just once and use it on your client and server (i.e. in a SpringBoot-Backend). This of course also true for your model-validation-code, that can become far more complex than your data model really fast.
+
 The learning curve should be quite flat. We chose Kotlin as a language, that is easy to learn and has a focus on writing clean and intuitive code.
-fritz2 itself only depends on only a handfull concepts you have to master. The core API consists of just about a dozen key objects and types offering only the methods und functions, that are really needed. You can have a quick look at our [API documentation (work in progress)](https://jwstegemann.github.io/fritz2/dokka/fritz2/) and convince yourself.  
+fritz2 itself depends on only a handfull of concepts you have to master. The core API consists of just about a dozen key objects and types offering only the methods und functions, that are really needed. You can have a quick look at our [API documentation (work in progress)](https://jwstegemann.github.io/fritz2/dokka/fritz2/) and convince yourself.  
 
 
 ## How to try it that early?
