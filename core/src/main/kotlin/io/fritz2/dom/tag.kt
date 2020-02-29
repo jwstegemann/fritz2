@@ -9,6 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
+import org.w3c.dom.Node
 import kotlin.browser.window
 
 @DslMarker
@@ -18,7 +19,7 @@ annotation class HtmlTagMarker
 @ExperimentalCoroutinesApi
 @FlowPreview
 @HtmlTagMarker
-abstract class Tag<out T : Element>(tagName: String, override val domNode: T = window.document.createElement(tagName).unsafeCast<T>())
+abstract class Tag<out T : Element>(tagName: String, val id: String? = null, override val domNode: T = createDomElement(tagName, id).unsafeCast<T>())
     : WithDomNode<T>, WithAttributes<T>, WithEvents<T>(), HtmlElements {
 
     override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
@@ -33,9 +34,15 @@ abstract class Tag<out T : Element>(tagName: String, override val domNode: T = w
 
     operator fun <T> T.not() = Const(this)
 
-    var id: Flow<String> by AttributeDelegate
     var `class`: Flow<String> by AttributeDelegate
     var classes: Flow<List<String>>
         get() {throw NotImplementedError()}
         set(values) { attribute("class", values)}
 }
+
+internal fun createDomElement(tagName: String, id: String? = null): Element =
+    window.document.createElement(tagName).also {element ->
+        id?.let {
+            element.setAttribute("id",id)
+        }
+    }
