@@ -11,12 +11,11 @@ By calling one of the executing methods like [get](get.md) or [post](post.md) a 
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | Represents the common fields an attributes of a given set of http requests.`RequestTemplate(baseUrl: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)` = "", errorHandler: (`[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)` = loggingErrorHandler)` |
+| [&lt;init&gt;](-init-.md) | Represents the common fields an attributes of a given set of http requests.`RequestTemplate(baseUrl: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)` = "")` |
 
 ### Properties
 
 | [baseUrl](base-url.md) | the common base of all urls that you want to call using this template`val baseUrl: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
-| [errorHandler](error-handler.md) | a common error handler for all requests you will send using this template. By default this just logs the error to the console.`val errorHandler: (`[`Throwable`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)`) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
 
 ### Functions
 

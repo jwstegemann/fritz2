@@ -16,7 +16,7 @@ data class ActionData(val x: Int, val y: Int)
 fun main() {
 
     val store = object : RootStore<String>("start") {
-        val addADot = handle <ActionData> { model, _ ->
+        val addADot = handle<Any> { model, _ ->
             "$model."
         }
     }
@@ -52,19 +52,32 @@ fun main() {
                 +"value: "
                 store.data.bind()
             }
+            div {
+                +"value: "
+                store.data.bind()
+            }
+            div {
+                +"value: "
+                store.data.bind()
+            }
+            div {
+                +"value: "
+                store.data.bind()
+            }
+            div {
+                +"value: "
+                store.data.bind()
+            }
             button {
                 +"add one more little dot"
-                store.addADot <= clicks.map {
-                    ActionData(it.clientX, it.clientY)
-                }
+                store.addADot <= clicks
             }
             ul {
                 seq.data.each().map { s ->
                     html {
                         li {
-                            button {
+                            button("delete-btn") {
                                 +s
-                                id = !"delete-btn"
                                 `class` = !"btn"
                                 seq.deleteItem <= clicks.map { console.log("deleting $s"); s }
                                 classStore.remove <= clicks.map { e ->
@@ -75,14 +88,13 @@ fun main() {
                     }
                 }.bind()
             }
-            button {
+            button("button") {
                 +"add an item"
                 seq.addItem <= clicks
                 classStore.add <= clicks.map { e ->
                     "newItem"
                 }
                 attributeData("test", "test-button1")
-                id = !"button"
                 classes = classStore.data
             }
         }

@@ -294,9 +294,9 @@ Exposes the JavaScript [HTMLMapElement](https://developer.mozilla.org/en/docs/We
 
 |
 
-##### [io.fritz2.binding.MapRoute](../io.fritz2.binding/-map-route/index.md)
+##### [io.fritz2.routing.MapRoute](../io.fritz2.routing/-map-route/index.md)
 
-[MapRoute](../io.fritz2.binding/-map-route/index.md) marshals and unmarshals a [Map](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html) to and from *window.location.hash*.
+[MapRoute](../io.fritz2.routing/-map-route/index.md) marshals and unmarshals a [Map](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html) to and from *window.location.hash*.
 It is like using url parameters with pairs of key and value.
 In the begin there is only a **#** instead of **?**.
 
@@ -409,7 +409,7 @@ Represents the common fields an attributes of a given set of http requests.
 
 |
 
-##### [io.fritz2.binding.Route](../io.fritz2.binding/-route/index.md)
+##### [io.fritz2.routing.Route](../io.fritz2.routing/-route/index.md)
 
 A Route is a abstraction for routes
 which needed for routing
@@ -417,11 +417,11 @@ which needed for routing
 
 |
 
-##### [io.fritz2.binding.Router](../io.fritz2.binding/-router/index.md)
+##### [io.fritz2.routing.Router](../io.fritz2.routing/-router/index.md)
 
 Router register the event-listener for hashchange-event and
-handles route-changes. Therefore it uses a [Route](../io.fritz2.binding/-route/index.md) object
-which can [Route.marshal](../io.fritz2.binding/-route/marshal.md) and [Route.unmarshal](../io.fritz2.binding/-route/unmarshal.md) the given type.
+handles route-changes. Therefore it uses a [Route](../io.fritz2.routing/-route/index.md) object
+which can [Route.marshal](../io.fritz2.routing/-route/marshal.md) and [Route.unmarshal](../io.fritz2.routing/-route/unmarshal.md) the given type.
 
 
 |
@@ -462,9 +462,9 @@ Exposes the JavaScript [HTMLSpanElement](https://developer.mozilla.org/en/docs/W
 
 |
 
-##### [io.fritz2.binding.StringRoute](../io.fritz2.binding/-string-route/index.md)
+##### [io.fritz2.routing.StringRoute](../io.fritz2.routing/-string-route/index.md)
 
-[StringRoute](../io.fritz2.binding/-string-route/index.md) is a simple [Route](../io.fritz2.binding/-route/index.md) which
+[StringRoute](../io.fritz2.routing/-string-route/index.md) is a simple [Route](../io.fritz2.routing/-route/index.md) which
 marshals and unmarshals nothing.
 
 
