@@ -1,7 +1,6 @@
 package io.fritz2.binding
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlin.js.Promise
 import kotlin.test.Test
