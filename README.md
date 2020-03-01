@@ -2,6 +2,7 @@
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
 [![100% Kotlin](https://img.shields.io/badge/pure%20Kotlin-100%25-blue)](https://play.kotlinlang.org/)
+[ ![Download](https://api.bintray.com/packages/jwstegemann/fritz2/fritz2-core/images/download.svg?version=0.1) ](https://bintray.com/jwstegemann/fritz2/fritz2-core/0.1/link)
 
 fritz2 is a proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
@@ -21,13 +22,15 @@ Using fritz2 you can easily create lightweight **reactive** html-components that
 val model = RootStore<String>("init value")
 
 val component = html {
-    input {
-        value = model.data
-        model.update <= changes
-    }
-    p {
-        +"model value = "
-        store.data.bind()
+    div {
+        input {
+            value = model.data
+            model.update <= changes
+        }
+        p {
+            +"model value = "
+            store.data.bind()
+        }
     }
 }
 
