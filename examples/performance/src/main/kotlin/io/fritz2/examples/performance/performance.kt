@@ -23,8 +23,7 @@ fun main() {
 
     val counter = store.data.map { number ->
         html {
-            p {
-                id = !"value"
+            p("value") {
                 +number.toString()
                 val x = subscribe(Events.click)
             }
