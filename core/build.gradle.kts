@@ -5,7 +5,7 @@ plugins {
 }
 
 repositories {
-    jcenter() // or maven { url 'https://dl.bintray.com/kotlin/dokka' }
+    jcenter()
 }
 
 //TODO: add DCE and closure-compiler
@@ -17,13 +17,31 @@ kotlin {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "bintray"
+            val bintrayUsername = "jwstegemann"
+            val bintrayRepoName = "fritz2"
+            val bintrayPackageName = "fritz2-core"
+            setUrl(
+                "https://api.bintray.com/maven/" +
+                        "$bintrayUsername/$bintrayRepoName/$bintrayPackageName/;" +
+                        "publish=0;" + // Never auto-publish to allow override.
+                        "override=1"            )
+            credentials {
+                username = "jwstegemann"
+                password = System.getProperty("BINTRAY_API_KEY")
+            }
+        }
+    }
     publications {
         create<MavenPublication>("maven") {
             artifactId = "fritz2-core-js"
             from(components["kotlin"])
+            artifact(tasks.kotlinSourcesJar.get()) {
+                classifier = "sources"
+            }
         }
-        //FIXME: transitive dependencies
-        //TODO: jars for source and docs
     }
 }
 
@@ -72,4 +90,3 @@ tasks {
         }
     }
 }
-
