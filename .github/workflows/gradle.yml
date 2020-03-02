@@ -17,7 +17,7 @@ jobs:
       run: ./gradlew test
     - name: Archive test-results
       if: always()
-      uses: actions/upload-artifact@1
+      uses: actions/upload-artifact@v1.0.0
       with:
         name: Test-Results
         path: core/build/reports/tests/test
