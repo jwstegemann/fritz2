@@ -16,11 +16,11 @@ jobs:
     - name: Build and run Unit Tests
       run: ./gradlew test
     - name: Archive test-results
-        if: always()
-        uses: actions/upload-artifact@1
-        with:
-          name: Test-Results
-          path: core/build/reports/tests/test
+      if: always()
+      uses: actions/upload-artifact@1
+      with:
+        name: Test-Results
+        path: core/build/reports/tests/test
     - name: Build with Gradle
       run: ./gradlew build
 

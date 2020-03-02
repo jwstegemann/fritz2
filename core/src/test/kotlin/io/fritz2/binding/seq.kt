@@ -2,6 +2,7 @@ package io.fritz2.binding
 
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import io.fritz2.test.initDocument
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
@@ -101,11 +102,7 @@ class SeqTests {
             }
         }
 
-        document.write("""
-            <body id="target">
-                Loading...
-            </body>
-        """.trimIndent())
+        initDocument()
 
         myComponent.mount("target")
 
