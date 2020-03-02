@@ -41,7 +41,7 @@ fritz2 implements **precise data binding**. That means that exactly those (and *
 There is no intermediate layer needed like a virtual DOM and you do not have to implement any additional methodes to decide, which parts of your component have to be rerendered, when your data changes.
 This makes it more efficient than the react-approach - at runtime and for development.
 
-Utilizing Koltin's multiplatform-abilities, you have to write the code of your data classes just once and use it on your client and server (i.e. in a SpringBoot-Backend). This of course also true for your model-validation-code, that can become far more complex than your data model really fast.
+Utilizing Koltin's multiplatform-abilities, you have to write the code of your data classes just once and use it on your client and server (i.e. in a [SpringBoot](https://spring.io/guides/gs/rest-service/)-Backend). This of course also true for your model-validation-code, that can become far more complex than your data model really fast.
 
 The learning curve should be quite flat. We chose Kotlin as a language, that is easy to learn and has a focus on writing clean and intuitive code.
 fritz2 itself depends on only a handfull of concepts you have to master. The core API consists of just about a dozen key objects and types offering only the methods und functions, that are really needed. You can have a quick look at our [API documentation (work in progress)](https://jwstegemann.github.io/fritz2/dokka/fritz2/) and convince yourself.  
@@ -63,15 +63,15 @@ Your can either
 - hassle-free redux-like state-handling
 - model-validation and message handling 
 - routing (for SPAs, hash-based)
+- server-communication (Rest APIs, etc.) (work in progress)
 - [documentation (work in progress)](https://github.com/jwstegemann/fritz2/wiki)
 
 ## What will come next?
 
 - complete example (ToDoMVC)
-- tests, tests, tests
+- tests, tests, tests [(work in progress)](https://github.com/jwstegemann/fritz2/pull/18)
 - performance and memory optimizations
 - streamlined build-process (DCE, etc.)
-- server-communication (Rest APIs, etc.) [(work in progress)](https://github.com/jwstegemann/fritz2/pull/14)
 - user auth (examle with OAuth)
 
 ## Overall Goals
