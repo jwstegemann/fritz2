@@ -7,17 +7,7 @@
 
 fritz2 is a proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
-fritz2 includes an intuitive way to build and render html-elements using a type-safe dsl:
-
-```kotlin
-html {
-  p {
-    +"Hello World!"
-  }
-}.mount("target")
-```
-
-Using fritz2 you can easily create lightweight **reactive** html-components that are bound to an underlying model and **automatically** change, whenever the model data changes:
+fritz2 includes an intuitive way to build and render html-elements using a type-safe dsl. You can easily create lightweight **reactive** html-components that are bound to an underlying model and **automatically** change, whenever the model data changes:
 
 ```kotlin
 val model = RootStore<String>("init value")
@@ -39,8 +29,9 @@ component.mount("target")
 ```
 
 fritz2 implements **precise data binding**. That means that exactly those (and **only** those) dom-nodes (elements, attributes, etc.) change, that depend on the parts of your data-model, that have changed. 
-There is no intermediate layer needed like a virtual DOM and you do not have to implement any additional methodes to decide, which parts of your component have to be rerendered, when your data changes.
-This makes it more efficient than the react-approach - at runtime and for development.
+There is no intermediate layer needed like a virtual DOM and you do not have to implement any additional methodes to decide, which parts of your component have to be rerendered, when your data changes:
+
+![State management in fritz2](/docs/fritz2_state.001.png)
 
 Utilizing Koltin's multiplatform-abilities, you have to write the code of your data classes just once and use it on your client and server (i.e. in a [SpringBoot](https://spring.io/guides/gs/rest-service/)-Backend). This of course also true for your model-validation-code, that can become far more complex than your data model really fast.
 
