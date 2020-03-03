@@ -13,14 +13,14 @@ fun <E : Element> html(content: HtmlElements.() -> Tag<E>) =
         var alreadyRegistered: Boolean = false
 
         override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
-            if (!alreadyRegistered) {
+            if (alreadyRegistered) {
+                throw MultipleRootElementsException(
+                    "You can have only one root-tag per html-context!"
+                )
+            } else {
                 content(element)
                 alreadyRegistered = true
                 return element
-            } else {
-                throw MultipleRootElementsException(
-                    "Don't use multiple root elements/tags in the html{...} context of your component! That's why rendering is not working."
-                )
             }
         }
     })
