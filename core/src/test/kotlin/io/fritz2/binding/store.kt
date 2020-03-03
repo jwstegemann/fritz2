@@ -1,15 +1,16 @@
 package io.fritz2.binding
 
+import io.fritz2.test.checkFlow
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlin.js.Promise
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 class StoreTests {
 
-    @FlowPreview
     @Test
     fun testSingleMountPoint(): Promise<Boolean> {
 
@@ -32,7 +33,6 @@ class StoreTests {
         }
     }
 
-    @FlowPreview
     @Test
     fun testMultiMountPointAppendingAtEnd(): Promise<Boolean> {
 
@@ -58,7 +58,6 @@ class StoreTests {
         }
     }
 
-    @FlowPreview
     @Test
     fun testMultiMountPointAppendingAtBeginning(): Promise<Boolean> {
 
@@ -86,7 +85,6 @@ class StoreTests {
         }
     }
 
-    @FlowPreview
     @Test
     fun testMultiMountPointAppendingAtMiddle(): Promise<Boolean> {
 
@@ -114,7 +112,6 @@ class StoreTests {
         }
     }
 
-    @FlowPreview
     @Test
     fun testMultiMountPointRemovingAtEnd(): Promise<Boolean> {
 
@@ -141,7 +138,6 @@ class StoreTests {
         }
     }
 
-    @FlowPreview
     @Test
     fun testMultiMountPointRemovingAtBeginning(): Promise<Boolean> {
 
@@ -170,7 +166,6 @@ class StoreTests {
         }
     }
 
-    @FlowPreview
     @Test
     fun testMultiMountPointRemovingAtMiddle(): Promise<Boolean> {
 

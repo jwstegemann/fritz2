@@ -4,20 +4,24 @@ import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import io.fritz2.test.initDocument
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.map
-import org.w3c.dom.HTMLButtonElement
-import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.*
 import kotlin.browser.document
 import kotlin.js.Promise
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 class SeqTests {
 
-    @FlowPreview
+    @BeforeTest
+    fun setUp() {
+        initDocument()
+    }
+
     @Test
-    fun testSeqChanged(): Promise<Boolean> {
+    fun testSeqMap(): Promise<Boolean> {
 
         val store = object : RootStore<List<Int>>(listOf(0)) {
             val replaceList = handle<Any> { _, _ ->
@@ -58,11 +62,18 @@ class SeqTests {
         }
 
 
-        val myComponent = html {
+        html {
             section {
-                div("result") {
-                    +store.data.map { list -> list.joinToString() }
+                ul("list") {
+                    store.data.each().map { i ->
+                        html {
+                            li("entry$i") {
+                                +i.toString()
+                            }
+                        }
+                    }.bind()
                 }
+
                 button("replaceList") {
                     +"replaceList"
                     store.replaceList <= clicks
@@ -100,19 +111,20 @@ class SeqTests {
                     store.reverse <= clicks
                 }
             }
-        }
-
-        initDocument()
-
-        myComponent.mount("target")
+        }.mount("target")
 
         return GlobalScope.promise {
             delay(100)
 
-            val result = document.getElementById("result").unsafeCast<HTMLDivElement>()
+            val list = document.getElementById("list").unsafeCast<HTMLUListElement>()
+            val until = list.children.length - 1
 
             fun check(expected: List<Int>) {
-                assertEquals(expected.joinToString(), result.textContent, "wrong list content for result-node")
+                for (i in 0..until) {
+                    val element = list.children[i].unsafeCast<HTMLLIElement>()
+                    assertEquals("entry${expected[i]}", element.id)
+                    assertEquals(expected[i].toString(), element.textContent)
+                }
             }
 
             //inital
@@ -120,43 +132,105 @@ class SeqTests {
 
             document.getElementById("replaceList").unsafeCast<HTMLButtonElement>().click()
             delay(100)
-            check(listOf(0,1,2,3,4,5,6,7,8,9,10))
+            check(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
 
             document.getElementById("addAtBeginning").unsafeCast<HTMLButtonElement>().click()
             delay(100)
-            check(listOf(0,0,1,2,3,4,5,6,7,8,9,10))
+            check(listOf(0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
 
             document.getElementById("addAtEnd").unsafeCast<HTMLButtonElement>().click()
             delay(100)
-            check(listOf(0,0,1,2,3,4,5,6,7,8,9,10,10))
+            check(listOf(0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10))
 
             document.getElementById("addAtMiddle").unsafeCast<HTMLButtonElement>().click()
             delay(100)
-            check(listOf(0,0,1,2,3,4,5,4,5,6,6,7,8,9,10,10))
+            check(listOf(0, 0, 1, 2, 3, 4, 5, 4, 5, 6, 6, 7, 8, 9, 10, 10))
 
             document.getElementById("removeAtBeginning").unsafeCast<HTMLButtonElement>().click()
             delay(100)
-            check(listOf(0,1,2,3,4,5,4,5,6,6,7,8,9,10,10))
+            check(listOf(0, 1, 2, 3, 4, 5, 4, 5, 6, 6, 7, 8, 9, 10, 10))
 
             document.getElementById("removeAtEnd").unsafeCast<HTMLButtonElement>().click()
             delay(100)
-            check(listOf(0,1,2,3,4,5,4,5,6,6,7,8,9,10))
+            check(listOf(0, 1, 2, 3, 4, 5, 4, 5, 6, 6, 7, 8, 9, 10))
 
             document.getElementById("removeAtMiddle").unsafeCast<HTMLButtonElement>().click()
             delay(100)
-            check(listOf(0,1,2,3,4,5,6,7,8,9,10))
+            check(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
 
             document.getElementById("filterEven").unsafeCast<HTMLButtonElement>().click()
             delay(100)
-            check(listOf(0,2,4,6,8,10))
+            check(listOf(0, 2, 4, 6, 8, 10))
 
             document.getElementById("reverse").unsafeCast<HTMLButtonElement>().click()
             delay(100)
-            check(listOf(10,8,6,4,2,0))
+            check(listOf(10, 8, 6, 4, 2, 0))
 
             true
         }
     }
 
+
+//    @Test
+//    fun testSeqFlatMap(): Promise<Boolean> {
+//
+//        val store1 = object : RootStore<List<Int>>((0..10).toList()) {
+//            val filterEven = handle<Any> { list, _ ->
+//                list.filter { it % 2 == 0 }
+//            }
+//        }
+//
+//        val store2 = object : RootStore<List<Int>>((0..10).toList()) {
+//            val filterOdd = handle<Any> { list, _ ->
+//                list.filter { it % 2 == 1 }
+//            }
+//        }
+//
+//
+//        html {
+//            section {
+//                ul("list") {
+//                    store1.data.each().flatMap { i1 ->
+//                        store2.data.each().map { i2 ->
+//                            html {
+//                                li("entry$i") {
+//                                    +i.toString()
+//                                }
+//                            }
+//                        }
+//                    }.bind()
+//                }
+//
+//                button("filterEven") {
+//                    +"filterEven"
+//                    store1.filterEven <= clicks
+//                }
+//                button("filterOdd") {
+//                    +"filterOdd"
+//                    store2.filterOdd <= clicks
+//                }
+//            }
+//        }.mount("target")
+//
+//        return GlobalScope.promise {
+//            delay(100)
+//
+//            val list = document.getElementById("list").unsafeCast<HTMLUListElement>()
+//            val until = list.children.length - 1
+//
+//            fun check(expected: List<Int>) {
+//                for (i in 0..until) {
+//                    val element = list.children[i].unsafeCast<HTMLLIElement>()
+//                    assertEquals("entry${expected[i]}", element.id)
+//                    assertEquals(expected[i].toString(), element.innerText)
+//                }
+//            }
+//
+//            //inital
+//            check(listOf(0))
+//
+//            true
+//        }
+//    }
 
 }
