@@ -4,14 +4,15 @@ import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import io.fritz2.test.initDocument
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.flowOf
+import io.fritz2.test.runTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLParagraphElement
 import kotlin.browser.document
-import kotlin.js.Promise
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -19,17 +20,14 @@ import kotlin.test.assertEquals
 @FlowPreview
 class RoutingTests {
 
-    @BeforeTest
-    fun setUp() {
-        initDocument()
-    }
-
     @Test
-    fun testStringRouter(): Promise<Boolean> {
+    fun testStringRouter() = runTest {
+        initDocument()
+        delay(100)
 
-        val startPage = "start"
+        val defaultRoute = "start"
 
-        val router = router(startPage)
+        val router = router(defaultRoute)
         val testRange = 0..4
         val testId = "testId"
         val buttons = testRange.map { "btn$it" to "page$it" }
@@ -38,7 +36,7 @@ class RoutingTests {
             div(testId) {
                 +router.routes
                 ul {
-                    flowOf(buttons).each().map { (id, page) ->
+                    (!buttons).each().map { (id, page) ->
                         html {
                             li {
                                 button(id) {
@@ -51,20 +49,68 @@ class RoutingTests {
             }
         }.mount("target")
 
-        return GlobalScope.promise {
+        delay(500)
+
+        val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
+        console.log("${element.textContent}\n")
+        assertEquals(defaultRoute, element.textContent)
+
+        for ((id, page) in buttons) {
+            document.getElementById(id).unsafeCast<HTMLButtonElement>().click()
             delay(100)
-
-            val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
-            assertEquals(startPage, element.textContent)
-
-            for ((id, page) in buttons) {
-                document.getElementById(id).unsafeCast<HTMLButtonElement>().click()
-                delay(100)
-                assertEquals(page, element.textContent)
-            }
-
-            true
+            assertEquals(page, element.textContent)
         }
+    }
 
+    @Test
+    fun testMapRouter() = runTest {
+        initDocument()
+
+        val pageKey = "page"
+        val btnKey = "btn"
+        val defaultRoute = mapOf(pageKey to "start", btnKey to "")
+
+        val router = router(defaultRoute)
+        val testRange = 0..4
+        val pageId = "pageId"
+        val btnId = "btnId"
+        val buttons = testRange.map { "btn$it" to "page$it" }
+
+        html {
+            div {
+                p(pageId) {
+                    +router.select(pageKey) { it.first }
+                }
+                p(btnId) {
+                    +router.select(btnKey) { it.first }
+                }
+                ul {
+                    (!buttons).each().map { (id, page) ->
+                        html {
+                            li {
+                                button(id) {
+                                    router.navTo <= clicks.map { mapOf(pageKey to page, btnKey to id) }
+                                }
+                            }
+                        }
+                    }.bind()
+                }
+            }
+        }.mount("target")
+
+        delay(250)
+
+        val pageElement = document.getElementById(pageId).unsafeCast<HTMLParagraphElement>()
+        val btnElement = document.getElementById(btnId).unsafeCast<HTMLParagraphElement>()
+
+        assertEquals(defaultRoute[pageKey], pageElement.textContent)
+        assertEquals(defaultRoute[btnKey], btnElement.textContent)
+
+        for ((id, page) in buttons) {
+            document.getElementById(id).unsafeCast<HTMLButtonElement>().click()
+            delay(100)
+            assertEquals(page, pageElement.textContent)
+            assertEquals(id, btnElement.textContent)
+        }
     }
 }

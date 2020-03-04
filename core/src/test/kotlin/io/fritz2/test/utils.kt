@@ -4,13 +4,17 @@ import io.fritz2.binding.MultiMountPoint
 import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
-import org.w3c.dom.get
+import kotlinx.coroutines.promise
 import kotlin.browser.document
 
+
+//abstract class TestRunner : CoroutineScope by GlobalScope {
+    fun <T> runTest(block: suspend () -> T): dynamic = GlobalScope.promise { block() }
+//}
+
 fun initDocument() {
-    val children = document.childNodes
-    for (i in 0 until children.length) children[i]?.let { document.removeChild(it) }
     document.write("""
             <body id="target">
                 Loading...

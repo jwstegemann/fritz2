@@ -2,12 +2,12 @@ package io.fritz2.dom
 
 import io.fritz2.dom.html.html
 import io.fritz2.test.initDocument
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.flowOf
+import io.fritz2.test.runTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
-import kotlin.js.Promise
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -15,13 +15,9 @@ import kotlin.test.assertEquals
 @FlowPreview
 class TextTests {
 
-    @BeforeTest
-    fun setUp() {
-        initDocument()
-    }
-
     @Test
-    fun testTextOnString(): Promise<Boolean> {
+    fun testTextOnString() = runTest {
+        initDocument()
 
         val testId = "testId"
         val testText = "testText"
@@ -32,64 +28,54 @@ class TextTests {
             }
         }.mount("target")
 
-        return GlobalScope.promise {
-            delay(100)
+        delay(100)
 
-            val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
+        val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
 
-            assertEquals(testId, element.id)
-            assertEquals(testText, element.textContent)
-
-            true
-        }
+        assertEquals(testId, element.id)
+        assertEquals(testText, element.textContent)
     }
 
     @Test
-    fun testTextOnFlowOfString(): Promise<Boolean> {
+    fun testTextOnFlowOfString() = runTest {
+        initDocument()
 
         val testId = "testId"
         val testText = "testText"
 
         html {
             div(testId) {
-                +flowOf(testText)
+                +!testText
             }
         }.mount("target")
 
-        return GlobalScope.promise {
-            delay(100)
+        delay(100)
 
-            val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
+        val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
 
-            assertEquals(testId, element.id)
-            assertEquals(testText, element.textContent)
-
-            true
-        }
+        assertEquals(testId, element.id)
+        assertEquals(testText, element.textContent)
     }
 
     @Test
-    fun testTextBind(): Promise<Boolean> {
+    fun testTextBind() = runTest {
+        initDocument()
 
         val testId = "testId"
         val testText = "testText"
 
         html {
             div(testId) {
-                flowOf(testText).bind()
+                (!testText).bind()
             }
         }.mount("target")
 
-        return GlobalScope.promise {
-            delay(100)
+        delay(100)
 
-            val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
+        val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
 
-            assertEquals(testId, element.id)
-            assertEquals(testText, element.textContent)
-
-            true
-        }
+        assertEquals(testId, element.id)
+        assertEquals(testText, element.textContent)
     }
 
 }

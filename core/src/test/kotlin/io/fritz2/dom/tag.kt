@@ -3,12 +3,12 @@ package io.fritz2.dom
 import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.test.initDocument
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.flowOf
+import io.fritz2.test.runTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
-import kotlin.js.Promise
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -16,13 +16,9 @@ import kotlin.test.assertEquals
 @FlowPreview
 class TagTests {
 
-    @BeforeTest
-    fun setUp() {
-        initDocument()
-    }
-
     @Test
-    fun testSingleTag(): Promise<Boolean> {
+    fun testSingleTag() = runTest {
+        initDocument()
 
         val testId = "testId"
         val testClass = "testClass"
@@ -33,21 +29,18 @@ class TagTests {
             }
         }.mount("target")
 
-        return GlobalScope.promise {
-            delay(100)
+        delay(100)
 
-            val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
+        val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
 
-            assertEquals(testId, element.id)
-            assertEquals("div", element.localName)
-            assertEquals(testClass, element.className)
-
-            true
-        }
+        assertEquals(testId, element.id)
+        assertEquals("div", element.localName)
+        assertEquals(testClass, element.className)
     }
 
     @Test
-    fun testMultipleTags(): Promise<Boolean> {
+    fun testMultipleTags() = runTest {
+        initDocument()
 
         val testRange = (0..4)
         val testIds = testRange.map { "testId$it" }
@@ -55,26 +48,23 @@ class TagTests {
 
         html {
             ul("list") {
-                flowOf(testIds).each().map {
+                (!testIds).each().map {
                     html {
                         li(it) {
-                            classes = flowOf(testClasses)
+                            classes = !testClasses
                         }
                     }
                 }.bind()
             }
         }.mount("target")
 
-        return GlobalScope.promise {
-            delay(100)
+        delay(100)
 
-            for(i in testRange) {
-                val element = document.getElementById(testIds[i]).unsafeCast<HTMLDivElement>()
-                assertEquals(testIds[i], element.id)
-                assertEquals("li", element.localName)
-                assertEquals(testClasses.joinToString(separator = " "), element.className)
-            }
-            true
+        for(i in testRange) {
+            val element = document.getElementById(testIds[i]).unsafeCast<HTMLDivElement>()
+            assertEquals(testIds[i], element.id)
+            assertEquals("li", element.localName)
+            assertEquals(testClasses.joinToString(separator = " "), element.className)
         }
     }
 
