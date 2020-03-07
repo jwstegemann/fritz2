@@ -13,6 +13,7 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLParagraphElement
 import kotlin.browser.document
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -20,7 +21,7 @@ import kotlin.test.assertEquals
 @FlowPreview
 class RoutingTests {
 
-    @Test
+    @Test @Ignore
     fun testStringRouter() = runTest {
         initDocument()
         delay(100)
@@ -62,7 +63,7 @@ class RoutingTests {
         }
     }
 
-    @Test
+    @Test @Ignore
     fun testMapRouter() = runTest {
         initDocument()
 

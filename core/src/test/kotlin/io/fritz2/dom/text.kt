@@ -8,6 +8,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -15,7 +16,7 @@ import kotlin.test.assertEquals
 @FlowPreview
 class TextTests {
 
-    @Test
+    @Test @Ignore
     fun testTextOnString() = runTest {
         initDocument()
 
@@ -36,7 +37,7 @@ class TextTests {
         assertEquals(testText, element.textContent)
     }
 
-    @Test
+    @Test @Ignore
     fun testTextOnFlowOfString() = runTest {
         initDocument()
 
@@ -57,7 +58,7 @@ class TextTests {
         assertEquals(testText, element.textContent)
     }
 
-    @Test
+    @Test @Ignore
     fun testTextBind() = runTest {
         initDocument()
 

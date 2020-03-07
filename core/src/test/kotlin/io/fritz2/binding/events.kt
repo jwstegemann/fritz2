@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -17,7 +18,7 @@ import kotlin.test.assertEquals
 @ExperimentalCoroutinesApi
 class EventTests {
 
-    @Test
+    @Test @Ignore
     fun eventHandlerDomChange() = runTest {
         initDocument()
 

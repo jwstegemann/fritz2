@@ -5,13 +5,18 @@ import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.promise
 import kotlin.browser.document
 
 
 //abstract class TestRunner : CoroutineScope by GlobalScope {
-    fun <T> runTest(block: suspend () -> T): dynamic = GlobalScope.promise { block() }
+    fun <T> runTest(block: suspend () -> T): dynamic = GlobalScope.promise {
+    delay(100)
+    block()
+    delay(100)
+}
 //}
 
 fun initDocument() {

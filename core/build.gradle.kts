@@ -48,7 +48,7 @@ publishing {
 dependencies {
     implementation(kotlin("stdlib-js"))
     testImplementation(kotlin("test-js"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
     api("io.fritz2.optics:core-js:0.1")
 }
 

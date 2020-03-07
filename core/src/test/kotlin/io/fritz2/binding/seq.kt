@@ -12,6 +12,7 @@ import org.w3c.dom.HTMLLIElement
 import org.w3c.dom.HTMLUListElement
 import org.w3c.dom.get
 import kotlin.browser.document
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -19,7 +20,7 @@ import kotlin.test.assertEquals
 @ExperimentalCoroutinesApi
 class SeqTests {
 
-    @Test
+    @Test @Ignore
     fun testSeqMap() = runTest {
         initDocument()
 
@@ -169,7 +170,7 @@ class SeqTests {
     }
 
 
-//    @Test
+//    @Test @Ignore
 //    fun testSeqFlatMap() = runTest {
 //
 //        val store1 = object : RootStore<List<Int>>((0..10).toList()) {
