@@ -9,6 +9,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.promise
 import kotlin.browser.document
+import kotlin.browser.window
+import kotlin.random.Random
 
 
 //abstract class TestRunner : CoroutineScope by GlobalScope {
@@ -20,12 +22,15 @@ import kotlin.browser.document
 //}
 
 fun initDocument() {
+    document.clear()
     document.write("""
             <body id="target">
                 Loading...
             </body>
         """.trimIndent())
 }
+
+fun randomId(prefix: String = "id") = "$prefix-${Random.nextLong()}"
 
 fun <T> checkFlow(upstream: Flow<T>, numberOfUpdates: Int = 0, check: TestSingleMountPoint<T>.(Int, T, T?) -> Unit) = TestSingleMountPoint(upstream, check, numberOfUpdates)
 

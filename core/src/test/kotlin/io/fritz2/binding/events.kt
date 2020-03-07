@@ -18,7 +18,7 @@ import kotlin.test.assertEquals
 @ExperimentalCoroutinesApi
 class EventTests {
 
-    @Test @Ignore
+    @Test
     fun eventHandlerDomChange() = runTest {
         initDocument()
 

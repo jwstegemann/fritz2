@@ -34,9 +34,8 @@ class StoreTests {
         }
     }
 
-    @Test @Ignore
+    @Test
     fun testMultiMountPointAppendingAtEnd(): Promise<Boolean> {
-
         val store = RootStore<List<Int>>(emptyList())
         store.data.launchIn(GlobalScope)
 
@@ -47,19 +46,16 @@ class StoreTests {
         }
 
         return GlobalScope.promise {
-            delay(1) //needs a point to suspend
+            delay(100) //needs a point to suspend
             for (i in 0..4) {
                 store.enqueue { it + i }
             }
-            delay(1)
-
             mp.await()
-
             true
         }
     }
 
-    @Test @Ignore
+    @Test
     fun testMultiMountPointAppendingAtBeginning(): Promise<Boolean> {
 
         val store = RootStore(listOf(0))
@@ -76,17 +72,14 @@ class StoreTests {
         }
 
         return GlobalScope.promise {
-            delay(1) //needs a point to suspend
+            delay(100) //needs a point to suspend
             store.enqueue { listOf(1) + it }
-            delay(1)
-
             mp.await()
-
             true
         }
     }
 
-    @Test @Ignore
+    @Test
     fun testMultiMountPointAppendingAtMiddle(): Promise<Boolean> {
 
         val store = RootStore(listOf(0, 2))
@@ -103,17 +96,14 @@ class StoreTests {
         }
 
         return GlobalScope.promise {
-            delay(1) //needs a point to suspend
+            delay(100) //needs a point to suspend
             store.enqueue { listOf(0, 1, 2) }
-            delay(1)
-
             mp.await()
-
             true
         }
     }
 
-    @Test @Ignore
+    @Test
     fun testMultiMountPointRemovingAtEnd(): Promise<Boolean> {
 
         val store = RootStore(listOf(0, 1, 2))
@@ -129,17 +119,14 @@ class StoreTests {
         }
 
         return GlobalScope.promise {
-            delay(1) //needs a point to suspend
+            delay(100) //needs a point to suspend
             store.enqueue { listOf(0, 1) }
-            delay(1)
-
             mp.await()
-
             true
         }
     }
 
-    @Test @Ignore
+    @Test
     fun testMultiMountPointRemovingAtBeginning(): Promise<Boolean> {
 
         val store = RootStore(listOf(0, 1, 2))
@@ -157,17 +144,14 @@ class StoreTests {
         }
 
         return GlobalScope.promise {
-            delay(1) //needs a point to suspend
+            delay(100) //needs a point to suspend
             store.enqueue { listOf(1, 2) }
-            delay(1)
-
             mp.await()
-
             true
         }
     }
 
-    @Test @Ignore
+    @Test
     fun testMultiMountPointRemovingAtMiddle(): Promise<Boolean> {
 
         val store = RootStore(listOf(0, 1, 2))
@@ -184,12 +168,9 @@ class StoreTests {
         }
 
         return GlobalScope.promise {
-            delay(1) //needs a point to suspend
+            delay(100) //needs a point to suspend
             store.enqueue { listOf(0, 2) }
-            delay(1)
-
             mp.await()
-
             true
         }
     }

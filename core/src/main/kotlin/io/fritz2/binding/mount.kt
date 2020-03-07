@@ -1,14 +1,12 @@
 package io.fritz2.binding
 
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
-abstract class SingleMountPoint<T>(upstream: Flow<T>) {
+abstract class SingleMountPoint<T>(upstream: Flow<T>) : CoroutineScope by MainScope() {
     init {
-        //FIXME: GLobalScope, Context? onEach?
-        GlobalScope.launch {
+        launch {
             upstream.collect {
                 set(it, last)
                 last = it
@@ -22,10 +20,9 @@ abstract class SingleMountPoint<T>(upstream: Flow<T>) {
 }
 
 
-abstract class MultiMountPoint<T>(upstream: Flow<Patch<T>>) {
+abstract class MultiMountPoint<T>(upstream: Flow<Patch<T>>) : CoroutineScope by MainScope() {
     init {
-        //FIXME: GLobalScope, Context?
-        GlobalScope.launch {
+        launch {
             upstream.collect {
                 patch(it)
             }

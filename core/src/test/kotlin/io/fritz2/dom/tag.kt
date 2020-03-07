@@ -17,7 +17,7 @@ import kotlin.test.assertEquals
 @FlowPreview
 class TagTests {
 
-    @Test @Ignore
+    @Test
     fun testSingleTag() = runTest {
         initDocument()
 
@@ -39,7 +39,7 @@ class TagTests {
         assertEquals(testClass, element.className)
     }
 
-    @Test @Ignore
+    @Test
     fun testMultipleTags() = runTest {
         initDocument()
 
@@ -61,7 +61,7 @@ class TagTests {
             }
         }.mount("target")
 
-        delay(1000)
+        delay(500)
 
         for(i in testRange) {
             val element = document.getElementById(testIds[i]).unsafeCast<HTMLDivElement>()

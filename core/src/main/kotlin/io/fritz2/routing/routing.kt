@@ -2,12 +2,9 @@ package io.fritz2.routing
 
 import io.fritz2.binding.Handler
 import io.fritz2.dom.html.Events
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import org.w3c.dom.events.Event
 import kotlin.browser.window
 
@@ -127,7 +124,7 @@ class MapRoute(override val default: Map<String, String>):
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-open class Router<T>(private val route: Route<T>) {
+open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope() {
     private val prefix = "#"
 
     init {
@@ -163,7 +160,7 @@ open class Router<T>(private val route: Route<T>) {
      * a new [Route] based on given [Flow].
      */
     val navTo: Handler<T> = Handler {
-        GlobalScope.launch {
+        launch {
             it.collect {
                 setRoute(it)
             }

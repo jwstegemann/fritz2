@@ -3,6 +3,7 @@ package io.fritz2.binding
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import io.fritz2.test.initDocument
+import io.fritz2.test.randomId
 import io.fritz2.test.runTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -24,7 +25,7 @@ class SeqTests {
     fun testSeqMap() = runTest {
         initDocument()
 
-        val testId = "testId"
+        val testId = randomId()
 
         val store = object : RootStore<List<Int>>(listOf(0)) {
             val replaceList = handle<Any> { _, _ ->

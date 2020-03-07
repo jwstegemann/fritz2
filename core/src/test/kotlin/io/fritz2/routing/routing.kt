@@ -4,6 +4,7 @@ import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import io.fritz2.test.initDocument
+import io.fritz2.test.randomId
 import io.fritz2.test.runTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -21,7 +22,7 @@ import kotlin.test.assertEquals
 @FlowPreview
 class RoutingTests {
 
-    @Test @Ignore
+    @Test
     fun testStringRouter() = runTest {
         initDocument()
         delay(100)
@@ -30,7 +31,7 @@ class RoutingTests {
 
         val router = router(defaultRoute)
         val testRange = 0..4
-        val testId = "testId"
+        val testId = randomId()
         val buttons = testRange.map { "btn$it" to "page$it" }
 
         html {
@@ -63,7 +64,7 @@ class RoutingTests {
         }
     }
 
-    @Test @Ignore
+    @Test
     fun testMapRouter() = runTest {
         initDocument()
 
@@ -73,9 +74,9 @@ class RoutingTests {
 
         val router = router(defaultRoute)
         val testRange = 0..4
-        val pageId = "pageId"
-        val btnId = "btnId"
-        val buttons = testRange.map { "btn$it" to "page$it" }
+        val pageId = randomId("page")
+        val btnId = randomId("btn")
+        val buttons = testRange.map { "btn-$it" to "page-$it" }
 
         html {
             div {

@@ -16,7 +16,7 @@ import kotlin.test.assertEquals
 @FlowPreview
 class TextTests {
 
-    @Test @Ignore
+    @Test
     fun testTextOnString() = runTest {
         initDocument()
 
@@ -37,7 +37,7 @@ class TextTests {
         assertEquals(testText, element.textContent)
     }
 
-    @Test @Ignore
+    @Test
     fun testTextOnFlowOfString() = runTest {
         initDocument()
 
@@ -58,7 +58,7 @@ class TextTests {
         assertEquals(testText, element.textContent)
     }
 
-    @Test @Ignore
+    @Test
     fun testTextBind() = runTest {
         initDocument()
 

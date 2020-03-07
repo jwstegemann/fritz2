@@ -14,7 +14,7 @@ import kotlin.test.assertFailsWith
 @FlowPreview
 class HtmlTests {
 
-    @Test @Ignore
+    @Test
     fun testMultipleRootElementsException() = runTest {
         initDocument()
 
