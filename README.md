@@ -1,4 +1,4 @@
-# ![fritz2 - the potato among the ui-libs](/docs/fritz2-logo-small.png) fritz2
+# ![fritz2 - the potato among the ui-libs](/docs/fritz2-logo-small.png)
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
 [![LOC](https://img.shields.io/badge/core%20LOC-1%2C4k-green)](https://clean-code-developer.com/grades/grade-1-red/#Keep_it_simple_stupid_KISS)
