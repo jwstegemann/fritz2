@@ -1,5 +1,6 @@
-package io.fritz2.binding
+package io.fritz2.validation
 
+import io.fritz2.flow.asSharedFlow
 import io.fritz2.optics.withId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -18,7 +19,7 @@ interface Failable: withId {
 abstract class Validator<D, M: Failable, T> {
 
     internal val channel = ConflatedBroadcastChannel<List<M>>()
-    val msgs = channel.asFlow().distinctUntilChanged()
+    val msgs = channel.asFlow().distinctUntilChanged().asSharedFlow()
 
     abstract fun validate(data: D, metadata: T): List<M>
 
@@ -33,7 +34,6 @@ interface Validation<D, M: Failable, T> {
 
     fun validate(data: D, metadata: T): Boolean {
         val messages = validator.validate(data, metadata)
-        println(messages)
         validator.channel.offer(messages)
         return messages.none(Failable::isFail)
     }
