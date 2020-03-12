@@ -5,6 +5,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.w3c.dom.Element
 
+/**
+ * [html] creates a html-context for using fritz2 html elements.
+ * It's important to use only one root element in [html] method otherwise
+ * a [MultipleRootElementsException] is thrown and rendering is not working.
+ */
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun <E : Element> html(content: HtmlElements.() -> Tag<E>) =

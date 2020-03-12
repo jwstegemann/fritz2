@@ -9,9 +9,32 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-
+/**
+ * [Update] describes a call in [Handler] of a [Store].
+ */
 typealias Update<T> = (T) -> T
 
+/**
+ * [Handler] handles events and manipulate the data in a [Store].
+ *
+ *
+ * Defining a [Handler]:
+ * ```kotlin
+ * val store = object : RootStore<List<String>>(listOf()) {
+ *    val add = handle<String> { data, action ->
+ *     data + action
+ *   }
+ * }
+ * ```
+ * Using a [Handler]:
+ * ```kotlin
+ * button {
+ *   store.add <= clicks.map { _ ->
+ *    "btn clicked"
+ *   }
+ * }
+ * ```
+ */
 class Handler<A>(inline val handle: (Flow<A>) -> Unit) {
     // syntactical sugar to write slot <= event-stream
     operator fun compareTo(flow: Flow<A>): Int {

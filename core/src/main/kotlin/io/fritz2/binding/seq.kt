@@ -12,19 +12,32 @@ import kotlinx.coroutines.flow.*
  */
 data class Patch<out T>(val from: Int, val that: List<T>, val replaced: Int)
 
+/**
+ * [Seq] handles a [Flow] of [Patch] and offers some transformation methods.
+ * Its created with  [each] method on a [Flow] of [List].
+ */
 class Seq<T>(val data: Flow<Patch<T>>) {
+    /**
+     * Maps the internal value of a [Seq].
+     */
     inline fun <X> map(crossinline mapper: (T) -> X): Seq<X> {
         return Seq(data.map {
             Patch(it.from, it.that.map(mapper), it.replaced)
         })
     }
 
+    /**
+     * Maps and flattens he internal value of a [Seq].
+     */
     inline fun <X> flatMap(crossinline mapper: (T) -> List<X>): Seq<X> {
         return Seq(data.map {
             Patch(it.from, it.that.flatMap(mapper), it.replaced)
         })
     }
 
+    /**
+     * Filters the internal value of a [Seq].
+     */
     inline fun filter(crossinline filter: (T) -> Boolean): Seq<T> {
         return Seq(data.map {
             Patch(it.from, it.that.filter(filter), it.replaced)
@@ -63,6 +76,9 @@ private inline fun <T> compare(crossinline different: (T, T) -> Boolean): suspen
 private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, newValue: List<T>) =
     Pair(accumulator.second, newValue)
 
+/**
+ * Creates a [Seq] out of a [Flow] of [List].
+ */
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun <T: withId> Flow<List<T>>.each(): Seq<T> =
@@ -70,6 +86,9 @@ fun <T: withId> Flow<List<T>>.each(): Seq<T> =
         a.id != b.id
     }))
 
+/**
+ * Creates a [Seq] out of a [Flow] of [List].
+ */
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun <T> Flow<List<T>>.each(): Seq<T> =

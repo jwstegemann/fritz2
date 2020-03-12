@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
 import kotlin.reflect.KProperty
 
+/**
+ * [AttributeDelegate] delegates the handling of setting an html-element attribute from a [Flow].
+ */
 @ExperimentalCoroutinesApi
 @FlowPreview
 //TODO: different datatypes for attributes (List of String for classes, etc.)
@@ -17,6 +20,9 @@ object AttributeDelegate {
     }
 }
 
+/**
+ * [WithAttributes] enables a fritz2 html-element to set attributes to the rendered html-element.
+ */
 @ExperimentalCoroutinesApi
 @FlowPreview
 interface WithAttributes<out T : Element> : WithDomNode<T> {

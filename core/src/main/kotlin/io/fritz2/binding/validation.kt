@@ -9,10 +9,19 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
+/**
+ * [Failable] has one method [isFail] which used by the [Validator]
+ * to know if the validation was successful or not.
+ */
 interface Failable: withId {
     fun isFail(): Boolean
 }
 
+/**
+ * [Validator] has one method [validate] which getting the current data
+ * from a [Store] and some metadata and returns a [List] of messages who must
+ * implement the interface [Failable].
+ */
 @FlowPreview
 @ExperimentalCoroutinesApi
 abstract class Validator<D, M: Failable, T> {
@@ -25,6 +34,12 @@ abstract class Validator<D, M: Failable, T> {
     val isValid by lazy {msgs.map { list -> list.none(Failable::isFail)}}
 }
 
+/**
+ * [Validation] is an extension for a [Store] and offers
+ * the [validate] method which checks if the passed data an metadata
+ * is in valid state or not. Therefore it needs a [Validator] and hands
+ * back a [Flow] of [List] of [Failable]s for rendering proposes.
+ */
 @FlowPreview
 @ExperimentalCoroutinesApi
 interface Validation<D, M: Failable, T> {
