@@ -2,4 +2,4 @@
 
 # object
 
-`open fun object(content: `[`Object`](../-object/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Object`](../-object/index.md)
+`open fun object(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Object`](../-object/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Object`](../-object/index.md)

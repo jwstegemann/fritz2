@@ -2,4 +2,4 @@
 
 # fieldset
 
-`open fun fieldset(content: `[`FieldSet`](../-field-set/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`FieldSet`](../-field-set/index.md)
+`open fun fieldset(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`FieldSet`](../-field-set/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`FieldSet`](../-field-set/index.md)

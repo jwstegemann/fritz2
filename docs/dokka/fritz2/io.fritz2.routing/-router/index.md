@@ -2,7 +2,7 @@
 
 # Router
 
-`@FlowPreview @ExperimentalCoroutinesApi open class Router<T>`
+`@FlowPreview @ExperimentalCoroutinesApi open class Router<T> : CoroutineScope`
 
 Router register the event-listener for hashchange-event and
 handles route-changes. Therefore it uses a [Route](../-route/index.md) object

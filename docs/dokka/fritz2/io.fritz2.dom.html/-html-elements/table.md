@@ -2,4 +2,4 @@
 
 # table
 
-`open fun table(content: `[`Table`](../-table/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Table`](../-table/index.md)
+`open fun table(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Table`](../-table/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Table`](../-table/index.md)

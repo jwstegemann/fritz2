@@ -2,4 +2,4 @@
 
 # li
 
-`open fun li(content: `[`Li`](../-li/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Li`](../-li/index.md)
+`open fun li(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Li`](../-li/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Li`](../-li/index.md)

@@ -4,10 +4,7 @@ import io.fritz2.flow.asSharedFlow
 import io.fritz2.optics.Lens
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 
 typealias Update<T> = (T) -> T
@@ -23,7 +20,7 @@ class Handler<A>(inline val handle: (Flow<A>) -> Unit) {
 class Applicator<A,X>(inline val mapper: suspend (A) -> Flow<X>)
 
 @ExperimentalCoroutinesApi
-abstract class Store<T> {
+abstract class Store<T> : CoroutineScope by MainScope() {
 
     //TODO: another factory for (A) -> X (map instead of flatMapConcat)
     @FlowPreview
@@ -34,7 +31,7 @@ abstract class Store<T> {
     //TODO: andThen for other Applyers
 
     inline fun <A> handle(crossinline handler: (T, A) -> T) = Handler<A> {
-        GlobalScope.launch {
+        launch {
             it.collect {
                 enqueue { t ->  handler(t,it) }
             }

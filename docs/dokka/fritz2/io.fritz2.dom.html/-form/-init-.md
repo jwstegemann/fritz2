@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`Form()`
+`Form(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null)`
 
 Exposes the JavaScript [HTMLFormElement](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-h-t-m-l-form-element/index.html)(https://developer.mozilla.org/en/docs/Web/API/`for`mElement) to Kotlin
 

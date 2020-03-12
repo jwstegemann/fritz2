@@ -2,4 +2,4 @@
 
 # colgroup
 
-`open fun colgroup(content: `[`Colgroup`](../-colgroup/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Colgroup`](../-colgroup/index.md)
+`open fun colgroup(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Colgroup`](../-colgroup/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Colgroup`](../-colgroup/index.md)

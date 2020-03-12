@@ -2,4 +2,4 @@
 
 # &lt;init&gt;
 
-`Const(value: T, flow: Flow<T> = flowOf(value).conflate())`
+`Const(value: T, flow: Flow<T> = flowOf(value))`

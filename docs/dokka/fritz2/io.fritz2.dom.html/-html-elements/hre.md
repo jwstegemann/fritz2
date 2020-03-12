@@ -2,4 +2,4 @@
 
 # hre
 
-`open fun hre(content: `[`Hre`](../-hre/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Hre`](../-hre/index.md)
+`open fun hre(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Hre`](../-hre/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Hre`](../-hre/index.md)

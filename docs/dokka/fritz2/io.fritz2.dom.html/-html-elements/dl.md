@@ -2,4 +2,4 @@
 
 # dl
 
-`open fun dl(content: `[`Dl`](../-dl/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Dl`](../-dl/index.md)
+`open fun dl(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Dl`](../-dl/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Dl`](../-dl/index.md)

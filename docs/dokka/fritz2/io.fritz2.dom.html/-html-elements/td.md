@@ -2,4 +2,4 @@
 
 # td
 
-`open fun td(content: `[`Td`](../-td/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Td`](../-td/index.md)
+`open fun td(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Td`](../-td/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Td`](../-td/index.md)

@@ -4,6 +4,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 @ExperimentalCoroutinesApi
-class Const<T>(value: T, private val flow: Flow<T> = flowOf(value).conflate()): Flow<T> by flow
+class Const<T>(value: T, private val flow: Flow<T> = flowOf(value)): Flow<T> by flow
 
 

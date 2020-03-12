@@ -2,4 +2,4 @@
 
 # output
 
-`open fun output(content: `[`Output`](../-output/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Output`](../-output/index.md)
+`open fun output(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Output`](../-output/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Output`](../-output/index.md)

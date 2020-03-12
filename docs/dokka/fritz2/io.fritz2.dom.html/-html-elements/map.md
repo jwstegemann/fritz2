@@ -2,4 +2,4 @@
 
 # map
 
-`open fun map(content: `[`Map`](../-map/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Map`](../-map/index.md)
+`open fun map(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Map`](../-map/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Map`](../-map/index.md)

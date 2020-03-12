@@ -2,4 +2,4 @@
 
 # br
 
-`open fun br(content: `[`Br`](../-br/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Br`](../-br/index.md)
+`open fun br(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Br`](../-br/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Br`](../-br/index.md)

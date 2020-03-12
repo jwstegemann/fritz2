@@ -2,7 +2,7 @@
 
 # MultiMountPoint
 
-`abstract class MultiMountPoint<T>`
+`abstract class MultiMountPoint<T> : CoroutineScope`
 
 ### Constructors
 

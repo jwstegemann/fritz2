@@ -2,4 +2,4 @@
 
 # textarea
 
-`open fun textarea(content: `[`TextArea`](../-text-area/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TextArea`](../-text-area/index.md)
+`open fun textarea(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`TextArea`](../-text-area/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TextArea`](../-text-area/index.md)

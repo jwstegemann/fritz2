@@ -2,4 +2,4 @@
 
 # sub
 
-`open fun sub(content: `[`TextElement`](../-text-element/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TextElement`](../-text-element/index.md)
+`open fun sub(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`TextElement`](../-text-element/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TextElement`](../-text-element/index.md)

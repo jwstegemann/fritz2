@@ -2,4 +2,4 @@
 
 # caption
 
-`open fun caption(content: `[`Caption`](../-caption/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Caption`](../-caption/index.md)
+`open fun caption(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Caption`](../-caption/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Caption`](../-caption/index.md)

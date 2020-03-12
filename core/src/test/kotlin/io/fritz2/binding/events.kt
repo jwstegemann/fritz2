@@ -3,24 +3,23 @@ package io.fritz2.binding
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import io.fritz2.test.initDocument
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
+import io.fritz2.test.runTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
-import kotlin.js.Promise
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class EventTests {
 
-    @ExperimentalCoroutinesApi
-    @FlowPreview
     @Test
-    fun eventHandlerDomChange(): Promise<Boolean> {
-
+    fun eventHandlerDomChange() = runTest {
         initDocument()
 
         val store = object : RootStore<String>("start") {
@@ -52,27 +51,23 @@ class EventTests {
 
         myComponent.mount("target")
 
-        return GlobalScope.promise {
-            delay(250)
+        delay(100)
 
-            val result = document.getElementById("myResult").unsafeCast<HTMLDivElement>()
-            val button = document.getElementById("myButton").unsafeCast<HTMLButtonElement>()
+        val result = document.getElementById("myResult").unsafeCast<HTMLDivElement>()
+        val button = document.getElementById("myButton").unsafeCast<HTMLButtonElement>()
 
-            assertEquals(0, store.countHandlerCalls, "wrong number of handler calls")
-            assertEquals("value: start",result.textContent,"wrong dom content of result-node")
+        assertEquals(0, store.countHandlerCalls, "wrong number of handler calls")
+        assertEquals("value: start",result.textContent,"wrong dom content of result-node")
 
-            button.click()
-            delay(250)
-            assertEquals(1, store.countHandlerCalls, "wrong number of handler calls")
-            assertEquals("value: start.",result.textContent,"wrong dom content of result-node")
+        button.click()
+        delay(100)
+        assertEquals(1, store.countHandlerCalls, "wrong number of handler calls")
+        assertEquals("value: start.",result.textContent,"wrong dom content of result-node")
 
-            button.click()
-            delay(250)
-            assertEquals(2, store.countHandlerCalls, "wrong number of handler calls")
-            assertEquals("value: start..",result.textContent,"wrong dom content of result-node")
-
-            true
-        }
+        button.click()
+        delay(100)
+        assertEquals(2, store.countHandlerCalls, "wrong number of handler calls")
+        assertEquals("value: start..",result.textContent,"wrong dom content of result-node")
     }
 
 }

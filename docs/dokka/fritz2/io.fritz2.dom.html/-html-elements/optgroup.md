@@ -2,4 +2,4 @@
 
 # optgroup
 
-`open fun optgroup(content: `[`Optgroup`](../-optgroup/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Optgroup`](../-optgroup/index.md)
+`open fun optgroup(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Optgroup`](../-optgroup/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Optgroup`](../-optgroup/index.md)

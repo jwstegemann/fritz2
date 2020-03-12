@@ -90,6 +90,10 @@
 | [waitings](waitings.md) | `val waitings: Flow<`[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`>` |
 | [wheels](wheels.md) | `val wheels: Flow<`[`WheelEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-wheel-event/index.html)`>` |
 
+### Functions
+
+| [subscribe](subscribe.md) | `fun <T> subscribe(type: `[`EventType`](../../io.fritz2.dom.html/-event-type/index.md)`<T>): Flow<T>` |
+
 ### Inheritors
 
 | [Tag](../-tag/index.md) | `abstract class Tag<out T : `[`Element`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)`> : `[`WithDomNode`](../-with-dom-node/index.md)`<T>, `[`WithAttributes`](../-with-attributes/index.md)`<T>, `[`WithEvents`](./index.md)`<T>, `[`HtmlElements`](../../io.fritz2.dom.html/-html-elements/index.md) |
