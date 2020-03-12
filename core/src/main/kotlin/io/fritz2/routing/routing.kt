@@ -54,8 +54,9 @@ fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Ma
 fun <T> router(default: Route<T>): Router<T> =  object : Router<T>(default) {}
 
 /**
- * A Route is a abstraction for routes
- * which needed for routing
+ * [Route] contains information about [default] route
+ * and has two methods [marshal] and [unmarshal]
+ * which must be implemented for using in a [Router].
  *
  * @param T type to marshal and unmarshal from
  */
@@ -118,7 +119,7 @@ class MapRoute(override val default: Map<String, String>):
 }
 
 /**
- * Router register the event-listener for hashchange-event and
+ * [Router] register the event-listener for hashchange-event and
  * handles route-changes. Therefore it uses a [Route] object
  * which can [Route.marshal] and [Route.unmarshal] the given type.
  *

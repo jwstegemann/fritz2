@@ -5,7 +5,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 
-
+/**
+ * [Patch] contains information about an update on a [List].
+ * Therefore it needs a position [from], a list with new elements [that] and
+ * a number [replaced] of how many elements are replaced by this patch.
+ */
 data class Patch<out T>(val from: Int, val that: List<T>, val replaced: Int)
 
 class Seq<T>(val data: Flow<Patch<T>>) {
