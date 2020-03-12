@@ -8,7 +8,7 @@ Exposes the JavaScript [HTMLProgressElement](https://developer.mozilla.org/en/do
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLProgressElement](https://developer.mozilla.org/en/docs/Web/API/HTMLProgressElement) to Kotlin`Progress()` |
+| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLProgressElement](https://developer.mozilla.org/en/docs/Web/API/HTMLProgressElement) to Kotlin`Progress(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null)` |
 
 ### Properties
 

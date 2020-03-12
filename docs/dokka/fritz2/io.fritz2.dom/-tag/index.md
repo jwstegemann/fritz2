@@ -6,14 +6,14 @@
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | `Tag(tagName: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, domNode: T = window.document.createElement(tagName).unsafeCast<T>())` |
+| [&lt;init&gt;](-init-.md) | `Tag(tagName: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, domNode: T = createDomElement(tagName, id).unsafeCast<T>())` |
 
 ### Properties
 
 | [class](class.md) | `var class: Flow<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>` |
 | [classes](classes.md) | `var classes: Flow<`[`List`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)`<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>>` |
 | [domNode](dom-node.md) | `open val domNode: T` |
-| [id](id.md) | `var id: Flow<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>` |
+| [id](id.md) | `val id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`?` |
 
 ### Functions
 

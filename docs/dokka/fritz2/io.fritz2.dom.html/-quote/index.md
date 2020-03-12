@@ -8,7 +8,7 @@ Exposes the JavaScript [HTMLQuoteElement](https://developer.mozilla.org/en/docs/
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLQuoteElement](https://developer.mozilla.org/en/docs/Web/API/HTMLQuoteElement) to Kotlin`Quote()` |
+| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLQuoteElement](https://developer.mozilla.org/en/docs/Web/API/HTMLQuoteElement) to Kotlin`Quote(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null)` |
 
 ### Properties
 

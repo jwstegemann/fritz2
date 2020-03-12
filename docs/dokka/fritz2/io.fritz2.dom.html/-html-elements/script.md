@@ -2,4 +2,4 @@
 
 # script
 
-`open fun script(content: `[`Script`](../-script/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Script`](../-script/index.md)
+`open fun script(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Script`](../-script/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Script`](../-script/index.md)

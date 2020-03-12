@@ -2,4 +2,4 @@
 
 # ins
 
-`open fun ins(content: `[`Ins`](../-ins/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Ins`](../-ins/index.md)
+`open fun ins(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Ins`](../-ins/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Ins`](../-ins/index.md)

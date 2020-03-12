@@ -2,4 +2,4 @@
 
 # col
 
-`open fun col(content: `[`Col`](../-col/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Col`](../-col/index.md)
+`open fun col(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Col`](../-col/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Col`](../-col/index.md)

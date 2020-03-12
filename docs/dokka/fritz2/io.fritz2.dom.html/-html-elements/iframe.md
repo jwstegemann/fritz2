@@ -2,4 +2,4 @@
 
 # iframe
 
-`open fun iframe(content: `[`IFrame`](../-i-frame/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`IFrame`](../-i-frame/index.md)
+`open fun iframe(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`IFrame`](../-i-frame/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`IFrame`](../-i-frame/index.md)

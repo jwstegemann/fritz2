@@ -8,7 +8,7 @@ Exposes the JavaScript [HTMLMeterElement](https://developer.mozilla.org/en/docs/
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLMeterElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMeterElement) to Kotlin`Meter()` |
+| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLMeterElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMeterElement) to Kotlin`Meter(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null)` |
 
 ### Properties
 

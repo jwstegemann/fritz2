@@ -2,4 +2,4 @@
 
 # del
 
-`open fun del(content: `[`Del`](../-del/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Del`](../-del/index.md)
+`open fun del(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Del`](../-del/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Del`](../-del/index.md)

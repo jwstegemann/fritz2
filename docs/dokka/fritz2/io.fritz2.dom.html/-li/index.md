@@ -8,7 +8,7 @@ Exposes the JavaScript [HTMLLIElement](https://developer.mozilla.org/en/docs/Web
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLLIElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLIElement) to Kotlin`Li()` |
+| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLLIElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLIElement) to Kotlin`Li(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null)` |
 
 ### Properties
 

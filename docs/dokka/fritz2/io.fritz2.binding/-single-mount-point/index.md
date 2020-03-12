@@ -2,7 +2,7 @@
 
 # SingleMountPoint
 
-`abstract class SingleMountPoint<T>`
+`abstract class SingleMountPoint<T> : CoroutineScope`
 
 ### Constructors
 

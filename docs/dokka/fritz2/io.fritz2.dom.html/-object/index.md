@@ -8,7 +8,7 @@ Exposes the JavaScript [HTMLObjectElement](https://developer.mozilla.org/en/docs
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLObjectElement](https://developer.mozilla.org/en/docs/Web/API/HTMLObjectElement) to Kotlin`Object()` |
+| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLObjectElement](https://developer.mozilla.org/en/docs/Web/API/HTMLObjectElement) to Kotlin`Object(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null)` |
 
 ### Properties
 

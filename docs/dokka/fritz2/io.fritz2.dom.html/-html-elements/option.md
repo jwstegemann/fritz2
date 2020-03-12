@@ -2,4 +2,4 @@
 
 # option
 
-`open fun option(content: `[`Option`](../-option/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Option`](../-option/index.md)
+`open fun option(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Option`](../-option/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Option`](../-option/index.md)

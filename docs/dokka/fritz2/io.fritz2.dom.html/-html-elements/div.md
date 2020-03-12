@@ -2,4 +2,4 @@
 
 # div
 
-`open fun div(content: `[`Div`](../-div/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Div`](../-div/index.md)
+`open fun div(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Div`](../-div/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Div`](../-div/index.md)

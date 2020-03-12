@@ -8,7 +8,7 @@ Exposes the JavaScript [HTMLPreElement](https://developer.mozilla.org/en/docs/We
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLPreElement](https://developer.mozilla.org/en/docs/Web/API/HTMLPreElement) to Kotlin`Pre()` |
+| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLPreElement](https://developer.mozilla.org/en/docs/Web/API/HTMLPreElement) to Kotlin`Pre(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null)` |
 
 ### Extension Functions
 

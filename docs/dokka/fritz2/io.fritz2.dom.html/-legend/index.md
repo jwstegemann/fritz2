@@ -8,7 +8,7 @@ Exposes the JavaScript [HTMLLegendElement](https://developer.mozilla.org/en/docs
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLLegendElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLegendElement) to Kotlin`Legend()` |
+| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLLegendElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLegendElement) to Kotlin`Legend(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null)` |
 
 ### Extension Functions
 

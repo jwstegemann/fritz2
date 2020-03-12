@@ -2,7 +2,7 @@
 
 # Store
 
-`@ExperimentalCoroutinesApi abstract class Store<T>`
+`@ExperimentalCoroutinesApi abstract class Store<T> : CoroutineScope`
 
 ### Constructors
 

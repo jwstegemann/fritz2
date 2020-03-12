@@ -2,4 +2,4 @@
 
 # tfoot
 
-`open fun tfoot(content: `[`TFoot`](../-t-foot/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TFoot`](../-t-foot/index.md)
+`open fun tfoot(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`TFoot`](../-t-foot/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TFoot`](../-t-foot/index.md)

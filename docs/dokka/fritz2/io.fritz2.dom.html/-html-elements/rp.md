@@ -2,4 +2,4 @@
 
 # rp
 
-`open fun rp(content: `[`TextElement`](../-text-element/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TextElement`](../-text-element/index.md)
+`open fun rp(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`TextElement`](../-text-element/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TextElement`](../-text-element/index.md)

@@ -2,4 +2,4 @@
 
 # tbody
 
-`open fun tbody(content: `[`TBody`](../-t-body/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TBody`](../-t-body/index.md)
+`open fun tbody(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`TBody`](../-t-body/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TBody`](../-t-body/index.md)

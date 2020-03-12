@@ -6,7 +6,7 @@
 
 | [MapRoute](-map-route/index.md) | [MapRoute](-map-route/index.md) marshals and unmarshals a [Map](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html) to and from *window.location.hash*. It is like using url parameters with pairs of key and value. In the begin there is only a **#** instead of **?**.`class MapRoute : `[`Route`](-route/index.md)`<`[`Map`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html)`<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>>` |
 | [Route](-route/index.md) | A Route is a abstraction for routes which needed for routing`interface Route<T>` |
-| [Router](-router/index.md) | Router register the event-listener for hashchange-event and handles route-changes. Therefore it uses a [Route](-route/index.md) object which can [Route.marshal](-route/marshal.md) and [Route.unmarshal](-route/unmarshal.md) the given type.`open class Router<T>` |
+| [Router](-router/index.md) | Router register the event-listener for hashchange-event and handles route-changes. Therefore it uses a [Route](-route/index.md) object which can [Route.marshal](-route/marshal.md) and [Route.unmarshal](-route/unmarshal.md) the given type.`open class Router<T> : CoroutineScope` |
 | [StringRoute](-string-route/index.md) | [StringRoute](-string-route/index.md) is a simple [Route](-route/index.md) which marshals and unmarshals nothing.`class StringRoute : `[`Route`](-route/index.md)`<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>` |
 
 ### Functions

@@ -2,4 +2,4 @@
 
 # legend
 
-`open fun legend(content: `[`Legend`](../-legend/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Legend`](../-legend/index.md)
+`open fun legend(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Legend`](../-legend/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Legend`](../-legend/index.md)

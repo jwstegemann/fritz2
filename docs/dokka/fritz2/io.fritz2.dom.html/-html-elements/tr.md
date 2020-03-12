@@ -2,4 +2,4 @@
 
 # tr
 
-`open fun tr(content: `[`Tr`](../-tr/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Tr`](../-tr/index.md)
+`open fun tr(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Tr`](../-tr/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Tr`](../-tr/index.md)

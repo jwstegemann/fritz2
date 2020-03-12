@@ -2,4 +2,4 @@
 
 # datalist
 
-`open fun datalist(content: `[`DataList`](../-data-list/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`DataList`](../-data-list/index.md)
+`open fun datalist(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`DataList`](../-data-list/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`DataList`](../-data-list/index.md)

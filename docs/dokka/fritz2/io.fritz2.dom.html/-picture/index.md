@@ -8,7 +8,7 @@ Exposes the JavaScript [HTMLPictureElement](https://developer.mozilla.org/en/doc
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLPictureElement](https://developer.mozilla.org/en/docs/Web/API/HTMLPictureElement) to Kotlin`Picture()` |
+| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLPictureElement](https://developer.mozilla.org/en/docs/Web/API/HTMLPictureElement) to Kotlin`Picture(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null)` |
 
 ### Extension Functions
 

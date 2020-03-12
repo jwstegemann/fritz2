@@ -2,4 +2,4 @@
 
 # &lt;init&gt;
 
-`Tag(tagName: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, domNode: T = window.document.createElement(tagName).unsafeCast<T>())`
+`Tag(tagName: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, domNode: T = createDomElement(tagName, id).unsafeCast<T>())`

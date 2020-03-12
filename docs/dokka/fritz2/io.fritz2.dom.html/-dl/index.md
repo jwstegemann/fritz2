@@ -8,7 +8,7 @@ Exposes the JavaScript [HTMLDListElement](https://developer.mozilla.org/en/docs/
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLDListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDListElement) to Kotlin`Dl()` |
+| [&lt;init&gt;](-init-.md) | Exposes the JavaScript [HTMLDListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDListElement) to Kotlin`Dl(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null)` |
 
 ### Extension Functions
 

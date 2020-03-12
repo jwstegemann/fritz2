@@ -2,4 +2,4 @@
 
 # img
 
-`open fun img(content: `[`Img`](../-img/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Img`](../-img/index.md)
+`open fun img(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Img`](../-img/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Img`](../-img/index.md)

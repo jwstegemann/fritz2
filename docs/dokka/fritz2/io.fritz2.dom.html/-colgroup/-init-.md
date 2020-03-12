@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`Colgroup()`
+`Colgroup(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null)`
 
 Exposes the JavaScript [HTMLTableColElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableColElement) to Kotlin
 

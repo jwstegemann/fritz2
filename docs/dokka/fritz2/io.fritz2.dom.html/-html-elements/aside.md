@@ -2,4 +2,4 @@
 
 # aside
 
-`open fun aside(content: `[`TextElement`](../-text-element/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TextElement`](../-text-element/index.md)
+`open fun aside(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`TextElement`](../-text-element/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TextElement`](../-text-element/index.md)

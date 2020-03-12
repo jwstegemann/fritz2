@@ -8,7 +8,7 @@ General class for standard html5 elements
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | General class for standard html5 elements`TextElement(tagName: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`)` |
+| [&lt;init&gt;](-init-.md) | General class for standard html5 elements`TextElement(tagName: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null)` |
 
 ### Extension Functions
 

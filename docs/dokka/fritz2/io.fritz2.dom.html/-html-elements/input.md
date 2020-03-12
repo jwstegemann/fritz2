@@ -2,4 +2,4 @@
 
 # input
 
-`open fun input(content: `[`Input`](../-input/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Input`](../-input/index.md)
+`open fun input(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Input`](../-input/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Input`](../-input/index.md)

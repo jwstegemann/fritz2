@@ -2,5 +2,5 @@
 
 # progress
 
-`open fun progress(content: `[`Progress`](../-progress/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Progress`](../-progress/index.md)
-`open fun progress(content: `[`TextElement`](../-text-element/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TextElement`](../-text-element/index.md)
+`open fun progress(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`Progress`](../-progress/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`Progress`](../-progress/index.md)
+`open fun progress(id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`TextElement`](../-text-element/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TextElement`](../-text-element/index.md)

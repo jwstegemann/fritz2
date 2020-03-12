@@ -6,5 +6,5 @@
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | `Const(value: T, flow: Flow<T> = flowOf(value).conflate())` |
+| [&lt;init&gt;](-init-.md) | `Const(value: T, flow: Flow<T> = flowOf(value))` |
 
