@@ -27,7 +27,7 @@ fun main() {
             sampleApi.post(body = """
                 {
                     "name": "$s",
-                    "job": "leader"
+                    "job": "programmer"
                 }
             """.trimIndent())
                 .onErrorLog()
