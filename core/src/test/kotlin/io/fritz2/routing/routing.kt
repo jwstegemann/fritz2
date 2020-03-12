@@ -65,6 +65,7 @@ class RoutingTests {
     }
 
     @Test
+    @Ignore
     fun testMapRouter() = runTest {
         initDocument()
 
