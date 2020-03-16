@@ -3,6 +3,7 @@ package io.fritz2.examples.validation
 import io.fritz2.binding.*
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import io.fritz2.dom.value
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
@@ -59,7 +60,7 @@ fun main() {
                 +"EMail"
                 input {
                     value = store.data
-                    store.updateWithValidation <= changes
+                    store.updateWithValidation <= changes.value()
                 }
             }
             div {

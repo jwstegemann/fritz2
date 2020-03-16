@@ -4,6 +4,7 @@ import io.fritz2.binding.RootStore
 import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import io.fritz2.dom.value
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
@@ -46,7 +47,7 @@ fun main() {
         section {
             input {
                 value = store.data
-                store.update <= changes
+                store.update <= changes.value()
             }
             div {
                 +"value: "

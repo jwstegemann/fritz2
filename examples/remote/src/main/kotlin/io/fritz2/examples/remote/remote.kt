@@ -3,6 +3,7 @@ package io.fritz2.examples.remote
 import io.fritz2.binding.RootStore
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import io.fritz2.dom.value
 import io.fritz2.remote.*
 import kotlinx.coroutines.*
 import kotlin.browser.window
@@ -43,7 +44,7 @@ fun main() {
             }
             input {
                 value = !"start"
-                store.sampleGet <= changes
+                store.sampleGet <= changes.value()
             }
             hre {  }
             label {
@@ -51,7 +52,7 @@ fun main() {
             }
             input {
                 value = !"start"
-                store.samplePost <= changes
+                store.samplePost <= changes.value()
             }
             hre {  }
             div {

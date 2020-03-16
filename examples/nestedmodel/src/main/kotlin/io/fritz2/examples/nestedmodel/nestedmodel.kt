@@ -4,6 +4,7 @@ import io.fritz2.binding.RootStore
 import io.fritz2.binding.eachStore
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import io.fritz2.dom.value
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
@@ -25,7 +26,7 @@ fun main() {
         div {
             input {
                 value = outerValue.data
-                outerValue.update <= changes
+                outerValue.update <= changes.value()
             }
             span {
                 +"Outer.value = "
@@ -33,7 +34,7 @@ fun main() {
             }
             input {
                 value = innerValue.data
-                innerValue.update <= changes
+                innerValue.update <= changes.value()
             }
             span {
                 +"Inner.value = "
@@ -47,7 +48,7 @@ fun main() {
                             input {
                                 attribute("id", it.id)
                                 value = elementValue.data
-                                elementValue.update <= changes
+                                elementValue.update <= changes.value()
                             }
                         }
                     }
