@@ -7,15 +7,11 @@ import org.w3c.dom.clipboard.ClipboardEvent
 import org.w3c.dom.events.*
 import org.w3c.xhr.ProgressEvent
 
-@ExperimentalCoroutinesApi
-@FlowPreview
-open class EventType<T>(val name: String) {
-    open fun extract(event: Event): T = event.unsafeCast<T>()
+class EventType<T: Event>(val name: String) {
+    fun extract(event: Event): T = event.unsafeCast<T>()
 }
 
 // Source https://www.w3schools.com/jsref/dom_obj_event.asp
-@ExperimentalCoroutinesApi
-@FlowPreview
 object Events {
 
     // The event occurs when the loading of a media is aborted
@@ -40,9 +36,7 @@ object Events {
     val canplaythrough = EventType<Event>("canplaythrough")
 
     // The event occurs when the content of a form element, the selection, or the checked state have changed (for <input>, <select>, and <textarea>)
-    val change = object : EventType<String>("change") {
-        override fun extract(event: Event): String = (event.target as HTMLInputElement).value
-    }
+    val change = EventType<Event>("change")
 
     // The event occurs when the user clicks on an element
     val click = EventType<MouseEvent>("click")

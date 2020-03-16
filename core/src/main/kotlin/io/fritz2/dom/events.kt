@@ -12,11 +12,11 @@ import org.w3c.dom.events.Event
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-abstract class WithEvents<out T : Element> : WithDomNode<T> {
+abstract class WithEvents<T : Element> : WithDomNode<T> {
 
-    fun <T> subscribe(type: EventType<T>): Flow<T> = callbackFlow {
+    fun <E : Event> subscribe(type: EventType<E>): Flow<Listener<E, T>> = callbackFlow {
         val listener: (Event) -> Unit = {
-            channel.offer(type.extract(it))
+            offer(Listener(type.extract(it), this@WithEvents.domNode))
         }
         domNode.addEventListener(type.name, listener)
 

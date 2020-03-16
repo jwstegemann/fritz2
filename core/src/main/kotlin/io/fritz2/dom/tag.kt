@@ -18,7 +18,7 @@ annotation class HtmlTagMarker
 @ExperimentalCoroutinesApi
 @FlowPreview
 @HtmlTagMarker
-abstract class Tag<out T : Element>(tagName: String, val id: String? = null, override val domNode: T = createDomElement(tagName, id).unsafeCast<T>())
+abstract class Tag<T : Element>(tagName: String, val id: String? = null, override val domNode: T = createDomElement(tagName, id).unsafeCast<T>())
     : WithDomNode<T>, WithAttributes<T>, WithEvents<T>(), HtmlElements {
 
     override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
