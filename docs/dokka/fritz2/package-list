@@ -12,3 +12,4 @@ io.fritz2.dom.html
 io.fritz2.flow
 io.fritz2.remote
 io.fritz2.routing
+io.fritz2.validation
