@@ -8,6 +8,7 @@
 | [io.fritz2.flow](io.fritz2.flow.md) |  |
 | [io.fritz2.remote](io.fritz2.remote/index.md) |  |
 | [io.fritz2.routing](io.fritz2.routing/index.md) |  |
+| [io.fritz2.validation](io.fritz2.validation/index.md) |  |
 
 ### Index
 

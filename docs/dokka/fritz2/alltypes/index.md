@@ -168,11 +168,6 @@ Exposes the JavaScript [HTMLDivElement](https://developer.mozilla.org/en/docs/We
 
 |
 
-##### [io.fritz2.binding.Failable](../io.fritz2.binding/-failable/index.md)
-
-
-|
-
 ##### [io.fritz2.remote.FetchException](../io.fritz2.remote/-fetch-exception/index.md)
 
 exception type for handling http exceptions
@@ -574,12 +569,17 @@ Exposes the JavaScript [HTMLUListElement](https://developer.mozilla.org/en/docs/
 
 |
 
-##### [io.fritz2.binding.Validation](../io.fritz2.binding/-validation/index.md)
+##### [io.fritz2.validation.Validation](../io.fritz2.validation/-validation/index.md)
 
 
 |
 
-##### [io.fritz2.binding.Validator](../io.fritz2.binding/-validator/index.md)
+##### [io.fritz2.validation.ValidationMessage](../io.fritz2.validation/-validation-message/index.md)
+
+
+|
+
+##### [io.fritz2.validation.Validator](../io.fritz2.validation/-validator/index.md)
 
 
 |
