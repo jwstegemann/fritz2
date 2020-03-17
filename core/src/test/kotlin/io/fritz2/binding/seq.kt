@@ -80,39 +80,39 @@ class SeqTests {
 
                 button("replaceList") {
                     +"replaceList"
-                    store.replaceList <= clicks
+                    store.replaceList <= clicks()
                 }
                 button("addAtBeginning") {
                     +"addAtBeginning"
-                    store.addAtBeginning <= clicks
+                    store.addAtBeginning <= clicks()
                 }
                 button("addAtEnd") {
                     +"addAtEnd"
-                    store.addAtEnd <= clicks
+                    store.addAtEnd <= clicks()
                 }
                 button("addAtMiddle") {
                     +"addAtMiddle"
-                    store.addAtMiddle <= clicks
+                    store.addAtMiddle <= clicks()
                 }
                 button("removeAtBeginning") {
                     +"removeAtBeginning"
-                    store.removeAtBeginning <= clicks
+                    store.removeAtBeginning <= clicks()
                 }
                 button("removeAtEnd") {
                     +"removeAtEnd"
-                    store.removeAtEnd <= clicks
+                    store.removeAtEnd <= clicks()
                 }
                 button("removeAtMiddle") {
                     +"removeAtMiddle"
-                    store.removeAtMiddle <= clicks
+                    store.removeAtMiddle <= clicks()
                 }
                 button("filterEven") {
                     +"filterEven"
-                    store.filterEven <= clicks
+                    store.filterEven <= clicks()
                 }
                 button("reverse") {
                     +"reverse"
-                    store.reverse <= clicks
+                    store.reverse <= clicks()
                 }
             }
         }.mount("target")

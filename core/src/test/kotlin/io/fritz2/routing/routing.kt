@@ -42,7 +42,7 @@ class RoutingTests {
                         html {
                             li {
                                 button(id) {
-                                    router.navTo <= clicks.map { page }
+                                    router.navTo <= clicks().map { page }
                                 }
                             }
                         }
@@ -92,7 +92,7 @@ class RoutingTests {
                         html {
                             li {
                                 button(id) {
-                                    router.navTo <= clicks.map { mapOf(pageKey to page, btnKey to id) }
+                                    router.navTo <= clicks().map { mapOf(pageKey to page, btnKey to id) }
                                 }
                             }
                         }

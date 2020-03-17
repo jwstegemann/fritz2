@@ -11,7 +11,6 @@ import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -26,7 +25,7 @@ class EventTests {
         val store = object : RootStore<String>("start") {
             var countHandlerCalls = 0
 
-            val addADot = handle <Any> { model, _ ->
+            val addADot = handle { model ->
                 countHandlerCalls++
                 "$model."
              }
@@ -45,7 +44,7 @@ class EventTests {
                 }
                 button("myButton") {
                     +"add one more little dot"
-                    store.addADot <= clicks
+                    store.addADot <= clicks()
                 }
             }
         }
