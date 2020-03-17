@@ -9,15 +9,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
 
-
-data class ActionData(val x: Int, val y: Int)
-
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun main() {
 
     val store = object : RootStore<String>("start") {
-        val addADot = handle<Any> { model, _ ->
+        val addADot = handle { model ->
             "$model."
         }
     }
@@ -34,7 +31,7 @@ fun main() {
     val seq = object : RootStore<List<String>>(listOf("one", "two", "three")) {
         var count = 0
 
-        val addItem = handle<Any> { list, _ ->
+        val addItem = handle { list ->
             count++
             list + "yet another item no. $count"
         }
@@ -71,7 +68,7 @@ fun main() {
             }
             button {
                 +"add one more little dot"
-                store.addADot <= clicks
+                store.addADot <= clicks()
             }
             ul {
                 seq.data.each().map { s ->
@@ -80,10 +77,8 @@ fun main() {
                             button("delete-btn") {
                                 +s
                                 `class` = !"btn"
-                                seq.deleteItem <= clicks.map { console.log("deleting $s"); s }
-                                classStore.remove <= clicks.map { e ->
-                                    "newItem"
-                                }
+                                seq.deleteItem <= clicks().map { console.log("deleting $s"); s }
+                                classStore.remove <= clicks().map { "newItem" }
                             }
                         }
                     }
@@ -91,10 +86,8 @@ fun main() {
             }
             button("button") {
                 +"add an item"
-                seq.addItem <= clicks
-                classStore.add <= clicks.map { e ->
-                    "newItem"
-                }
+                seq.addItem <= clicks()
+                classStore.add <= clicks().map { "newItem" }
                 attributeData("test", "test-button1")
                 classes = classStore.data
             }

@@ -26,19 +26,19 @@ fun main() {
                 li {
                     button {
                         +"Show ${Pages.a}"
-                        router.navTo <= clicks.map { mapOf("page" to Pages.a) }
+                        router.navTo <= clicks().map { mapOf("page" to Pages.a) }
                     }
                 }
                 li {
                     button {
                         +"Show ${Pages.b}"
-                        router.navTo <= clicks.map { mapOf("page" to Pages.b) }
+                        router.navTo <= clicks().map { mapOf("page" to Pages.b) }
                     }
                 }
                 li {
                     button {
                         +"Show ${Pages.c}"
-                        router.navTo <= clicks.map { mapOf("page" to Pages.c) }
+                        router.navTo <= clicks().map { mapOf("page" to Pages.c) }
                     }
                 }
             }
