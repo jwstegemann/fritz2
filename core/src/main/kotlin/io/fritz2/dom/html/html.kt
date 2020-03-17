@@ -7,7 +7,7 @@ import org.w3c.dom.Element
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-fun <E : Element> html(content: HtmlElements.() -> Tag<E>) =
+fun <E : Element> tags(content: HtmlElements.() -> Tag<E>): Tag<E> =
     content(object : HtmlElements {
 
         var alreadyRegistered: Boolean = false
