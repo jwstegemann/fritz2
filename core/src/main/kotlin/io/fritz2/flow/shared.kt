@@ -6,10 +6,11 @@ package io.fritz2.flow
  */
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.*
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.broadcast
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.internal.*
-import kotlinx.coroutines.sync.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 @ExperimentalCoroutinesApi
 internal fun <T> Flow<T>.asCachedFlow(): Flow<T> {
