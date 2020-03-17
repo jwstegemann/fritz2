@@ -2,7 +2,7 @@ package io.fritz2.examples.nestedmodel
 
 import io.fritz2.binding.RootStore
 import io.fritz2.binding.eachStore
-import io.fritz2.dom.html.html
+import io.fritz2.dom.html.tags
 import io.fritz2.dom.mount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -12,36 +12,44 @@ import kotlinx.coroutines.flow.map
 @FlowPreview
 fun main() {
 
-    val model = RootStore(Outer(Inner("hello"), "world", listOf(
-        Element("one","n1"),
-        Element("two","n2"),
-        Element("three","n3")
-    )))
+    val model = RootStore(
+        Outer(
+            Inner("hello"), "world", listOf(
+                Element("one", "n1"),
+                Element("two", "n2"),
+                Element("three", "n3")
+            )
+        )
+    )
     val outerValue = model.sub(Lenses.Outer.value)
     val innerValue = model.sub(Lenses.Outer.inner).sub(Lenses.Inner.value)
     val seq = model.sub(Lenses.Outer.seq)
 
-    val myComponent = html {
+    val myComponent = tags {
         div {
             input {
                 value = outerValue.data
+                type = !"text"
+                attribute("test", outerValue.data)
+                attribute("test-abc", "abc")
+                attributeData("extra", "abc")
                 outerValue.update <= changes
             }
             span {
-                +"Outer.value = "
-                +outerValue.data
+                text("Outer.value = ")
+                text(outerValue.data)
             }
             input {
                 value = innerValue.data
                 innerValue.update <= changes
             }
             span {
-                +"Inner.value = "
-                +innerValue.data
+                text("Inner.value = ")
+                text(innerValue.data)
             }
             ul {
-                seq.eachStore().map {
-                    html {
+                bind(seq.eachStore().map {
+                    tags {
                         val elementValue = it.sub(Lenses.Element.value)
                         li {
                             input {
@@ -51,13 +59,15 @@ fun main() {
                             }
                         }
                     }
-                }.bind()
+                })
             }
             div {
-                +"Model = "
-                + model.data.map {
-                    it.toString()
-                }
+                text("Model = ")
+                text(
+                    model.data.map {
+                        it.toString()
+                    }
+                )
             }
         }
     }
