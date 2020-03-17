@@ -2,4 +2,4 @@
 
 # fullscreenerrors
 
-`val fullscreenerrors: Flow<`[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`>`
+`val fullscreenerrors: `[`Listener`](../-listener/index.md)`<`[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`, T>`

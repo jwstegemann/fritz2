@@ -2,4 +2,4 @@
 
 # hashchanges
 
-`val hashchanges: Flow<`[`HashChangeEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-hash-change-event/index.html)`>`
+`val hashchanges: `[`Listener`](../-listener/index.md)`<`[`HashChangeEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-hash-change-event/index.html)`, T>`

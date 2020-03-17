@@ -2,7 +2,7 @@
 
 # Tag
 
-`@ExperimentalCoroutinesApi @FlowPreview abstract class Tag<out T : `[`Element`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)`> : `[`WithDomNode`](../-with-dom-node/index.md)`<T>, `[`WithAttributes`](../-with-attributes/index.md)`<T>, `[`WithEvents`](../-with-events/index.md)`<T>, `[`HtmlElements`](../../io.fritz2.dom.html/-html-elements/index.md)
+`@ExperimentalCoroutinesApi @FlowPreview abstract class Tag<T : `[`Element`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)`> : `[`WithDomNode`](../-with-dom-node/index.md)`<T>, `[`WithAttributes`](../-with-attributes/index.md)`<T>, `[`WithEvents`](../-with-events/index.md)`<T>, `[`HtmlElements`](../../io.fritz2.dom.html/-html-elements/index.md)
 
 ### Constructors
 

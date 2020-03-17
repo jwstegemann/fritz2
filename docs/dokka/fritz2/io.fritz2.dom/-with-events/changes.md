@@ -2,4 +2,4 @@
 
 # changes
 
-`val changes: Flow<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>`
+`val changes: `[`Listener`](../-listener/index.md)`<`[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`, T>`

@@ -2,7 +2,7 @@
 
 # EventType
 
-`@ExperimentalCoroutinesApi @FlowPreview open class EventType<T>`
+`class EventType<T : `[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`>`
 
 ### Constructors
 
@@ -14,5 +14,5 @@
 
 ### Functions
 
-| [extract](extract.md) | `open fun extract(event: `[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`): T` |
+| [extract](extract.md) | `fun extract(event: `[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`): T` |
 

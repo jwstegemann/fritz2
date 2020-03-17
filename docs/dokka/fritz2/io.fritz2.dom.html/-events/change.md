@@ -2,4 +2,4 @@
 
 # change
 
-`val change: `[`EventType`](../-event-type/index.md)`<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>`
+`val change: `[`EventType`](../-event-type/index.md)`<`[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`>`

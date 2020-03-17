@@ -2,4 +2,4 @@
 
 # pastes
 
-`val pastes: Flow<`[`ClipboardEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.clipboard/-clipboard-event/index.html)`>`
+`val pastes: `[`Listener`](../-listener/index.md)`<`[`ClipboardEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.clipboard/-clipboard-event/index.html)`, T>`

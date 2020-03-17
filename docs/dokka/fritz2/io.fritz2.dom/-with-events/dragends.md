@@ -2,4 +2,4 @@
 
 # dragends
 
-`val dragends: Flow<`[`DragEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-drag-event/index.html)`>`
+`val dragends: `[`Listener`](../-listener/index.md)`<`[`DragEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-drag-event/index.html)`, T>`

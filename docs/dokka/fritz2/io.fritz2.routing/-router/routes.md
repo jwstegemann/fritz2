@@ -4,5 +4,5 @@
 
 `val routes: Flow<T>`
 
-Gives the actual route as [Flow](#)
+Gives the actual route as Flow
 

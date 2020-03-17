@@ -18,8 +18,8 @@ which can [Route.marshal](../-route/marshal.md) and [Route.unmarshal](../-route/
 
 ### Properties
 
-| [navTo](nav-to.md) | Handler vor setting a new [Route](../-route/index.md) based on given [Flow](#).`val navTo: `[`Handler`](../../io.fritz2.binding/-handler/index.md)`<T>` |
-| [routes](routes.md) | Gives the actual route as [Flow](#)`val routes: Flow<T>` |
+| [navTo](nav-to.md) | Handler vor setting a new [Route](../-route/index.md) based on given Flow.`val navTo: `[`Handler`](../../io.fritz2.binding/-handler/index.md)`<T>` |
+| [routes](routes.md) | Gives the actual route as Flow`val routes: Flow<T>` |
 
 ### Extension Functions
 

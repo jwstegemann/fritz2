@@ -2,4 +2,4 @@
 
 # storages
 
-`val storages: Flow<`[`StorageEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-storage-event/index.html)`>`
+`val storages: `[`Listener`](../-listener/index.md)`<`[`StorageEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-storage-event/index.html)`, T>`

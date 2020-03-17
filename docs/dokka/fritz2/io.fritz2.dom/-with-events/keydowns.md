@@ -2,4 +2,4 @@
 
 # keydowns
 
-`val keydowns: Flow<`[`KeyboardEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-keyboard-event/index.html)`>`
+`val keydowns: `[`Listener`](../-listener/index.md)`<`[`KeyboardEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-keyboard-event/index.html)`, T>`

@@ -2,4 +2,4 @@
 
 # mousemoves
 
-`val mousemoves: Flow<`[`MouseEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-mouse-event/index.html)`>`
+`val mousemoves: `[`Listener`](../-listener/index.md)`<`[`MouseEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-mouse-event/index.html)`, T>`

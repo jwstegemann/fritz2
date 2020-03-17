@@ -2,4 +2,4 @@
 
 # focuss
 
-`val focuss: Flow<`[`FocusEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-focus-event/index.html)`>`
+`val focuss: `[`Listener`](../-listener/index.md)`<`[`FocusEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-focus-event/index.html)`, T>`

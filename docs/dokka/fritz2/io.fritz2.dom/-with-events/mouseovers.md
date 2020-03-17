@@ -2,4 +2,4 @@
 
 # mouseovers
 
-`val mouseovers: Flow<`[`MouseEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-mouse-event/index.html)`>`
+`val mouseovers: `[`Listener`](../-listener/index.md)`<`[`MouseEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-mouse-event/index.html)`, T>`

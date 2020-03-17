@@ -2,7 +2,7 @@
 
 # Events
 
-`@ExperimentalCoroutinesApi @FlowPreview object Events`
+`object Events`
 
 ### Types
 
@@ -17,7 +17,7 @@
 | [blur](blur.md) | `val blur: `[`EventType`](../-event-type/index.md)`<`[`FocusEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-focus-event/index.html)`>` |
 | [canplay](canplay.md) | `val canplay: `[`EventType`](../-event-type/index.md)`<`[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`>` |
 | [canplaythrough](canplaythrough.md) | `val canplaythrough: `[`EventType`](../-event-type/index.md)`<`[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`>` |
-| [change](change.md) | `val change: `[`EventType`](../-event-type/index.md)`<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>` |
+| [change](change.md) | `val change: `[`EventType`](../-event-type/index.md)`<`[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`>` |
 | [click](click.md) | `val click: `[`EventType`](../-event-type/index.md)`<`[`MouseEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-mouse-event/index.html)`>` |
 | [contextmenu](contextmenu.md) | `val contextmenu: `[`EventType`](../-event-type/index.md)`<`[`MouseEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-mouse-event/index.html)`>` |
 | [copy](copy.md) | `val copy: `[`EventType`](../-event-type/index.md)`<`[`ClipboardEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.clipboard/-clipboard-event/index.html)`>` |
