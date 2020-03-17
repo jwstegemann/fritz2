@@ -167,10 +167,16 @@ Exposes the JavaScript [HTMLDivElement](https://developer.mozilla.org/en/docs/We
 
 ##### [io.fritz2.dom.html.Events](../io.fritz2.dom.html/-events/index.md)
 
+[Events](../io.fritz2.dom.html/-events/index.md) contains all javascript event types.
+Take a look [here](https://www.w3schools.com/jsref/dom_obj_event.asp).
+
 
 |
 
 ##### [io.fritz2.dom.html.EventType](../io.fritz2.dom.html/-event-type/index.md)
+
+[EventType](../io.fritz2.dom.html/-event-type/index.md) contains the javascript related [name](../io.fritz2.dom.html/-event-type/name.md) of an [Event](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)
+and has a method [extract](../io.fritz2.dom.html/-event-type/extract.md) to cast an [Event](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html) to its actual event-type.
 
 
 |
@@ -264,6 +270,20 @@ Exposes the JavaScript [HTMLInputElement](https://developer.mozilla.org/en/docs/
 ##### [io.fritz2.dom.html.Ins](../io.fritz2.dom.html/-ins/index.md)
 
 Exposes the JavaScript [HTMLModElement](https://developer.mozilla.org/en/docs/Web/API/HTMLModElement) to Kotlin
+
+
+|
+
+##### [io.fritz2.dom.html.Key](../io.fritz2.dom.html/-key/index.md)
+
+[Key](../io.fritz2.dom.html/-key/index.md) represents a key press e.g. for keypress events
+
+
+|
+
+##### [io.fritz2.dom.html.Keys](../io.fritz2.dom.html/-keys/index.md)
+
+[Keys](../io.fritz2.dom.html/-keys/index.md) contains most of the javascript related special key codes
 
 
 |

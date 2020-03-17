@@ -4,9 +4,8 @@
 
 `object Events`
 
-### Types
-
-| [Keys](-keys/index.md) | `enum class Keys` |
+[Events](./index.md) contains all javascript event types.
+Take a look [here](https://www.w3schools.com/jsref/dom_obj_event.asp).
 
 ### Properties
 
