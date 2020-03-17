@@ -11,14 +11,12 @@ import kotlin.browser.window
 
 @ExperimentalCoroutinesApi
 interface WithText<T : org.w3c.dom.Node> : WithDomNode<T> {
-    operator fun String.unaryPlus() = domNode.appendChild(TextNode(this).domNode)
+    fun text(content: String) = domNode.appendChild(TextNode(content).domNode)
 
-    operator fun Flow<String>.unaryPlus(): SingleMountPoint<WithDomNode<Text>> = this.bind()
-
-    //conflate because updates that occur faster than dom-manipulation should be ommitted
-    fun Flow<String>.bind() = DomMountPoint<Text>(this.map {
-        TextNode(it)
-    }.distinctUntilChanged().conflate(), domNode)
+    //conflate because updates that occur faster than dom-manipulation should be omitted
+    fun text(content: Flow<String>) = DomMountPoint(
+        content.map { TextNode(it) }.distinctUntilChanged().conflate(), domNode)
 }
 
-class TextNode(private val content: String, override val domNode: Text = window.document.createTextNode(content)): WithDomNode<Text>
+class TextNode(private val content: String, override val domNode: Text = window.document.createTextNode(content)) :
+    WithDomNode<Text>
