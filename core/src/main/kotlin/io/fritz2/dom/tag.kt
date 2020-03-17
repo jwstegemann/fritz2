@@ -27,14 +27,14 @@ abstract class Tag<out T : Element>(tagName: String, val id: String? = null, ove
         return element
     }
 
-    fun <X : Element> Flow<Tag<X>>.bind(): SingleMountPoint<WithDomNode<Element>> = DomMountPoint(this, domNode)
+    fun <X : Element> bind(flow: Flow<Tag<X>>): SingleMountPoint<WithDomNode<Element>> = DomMountPoint(flow, domNode)
 
-    fun <X : Element> Seq<Tag<X>>.bind(): MultiMountPoint<WithDomNode<Element>> = DomMultiMountPoint(this.data, domNode)
+    fun <X : Element> bind(seq: Seq<Tag<X>>): MultiMountPoint<WithDomNode<Element>> = DomMultiMountPoint(seq.data, domNode)
 
     operator fun <T> T.not() = Const(this)
 
-    var `class`: Flow<String> by AttributeDelegate
-    var classes: Flow<List<String>>
+    var className: Flow<String> by AttributeDelegate
+    var classList: Flow<List<String>>
         get() {throw NotImplementedError()}
         set(values) { attribute("class", values)}
 }
