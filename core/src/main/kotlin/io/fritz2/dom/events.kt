@@ -5,7 +5,6 @@ import io.fritz2.dom.html.Events
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
@@ -14,14 +13,14 @@ import org.w3c.dom.events.Event
 @ExperimentalCoroutinesApi
 abstract class WithEvents<T : Element> : WithDomNode<T> {
 
-    fun <E : Event> subscribe(type: EventType<E>): Flow<Listener<E, T>> = callbackFlow {
+    fun <E : Event> subscribe(type: EventType<E>): Listener<E, T> = Listener(callbackFlow {
         val listener: (Event) -> Unit = {
-            offer(Listener(type.extract(it), this@WithEvents.domNode))
+            offer(Action(type.extract(it), domNode))
         }
         domNode.addEventListener(type.name, listener)
 
         awaitClose { domNode.removeEventListener(type.name, listener) }
-    }
+    })
 
     val aborts by lazy { subscribe(Events.abort)}
     val afterprints by lazy { subscribe(Events.afterprint)}

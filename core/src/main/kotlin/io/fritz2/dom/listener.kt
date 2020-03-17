@@ -10,26 +10,43 @@ import org.w3c.dom.HTMLSelectElement
 import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.events.Event
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-class Listener<E: Event, X: Element>(val event: E, val element: X)
+/**
+ * [Action] contains the fired [Event] and targeting [Element]
+ */
+data class Action<E: Event, X: Element>(val event: E, val target: X)
 
+/**
+ * [Listener] handles a [Flow] of [Action]s and gives
+ * the [Event] with [events] as [Flow] or
+ * the targeting [Element] with [targets] also as [Flow] back.
+ * If you don't need either the [Event] or [Element] you can call the [Listener]
+ * directly (e.g. `clicks()`) to get an [Flow] of [Unit] instead.
+ */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun <E: Event> Flow<Listener<E, Element>>.pure(): Flow<E> = map { it.event }
+inline class Listener<E: Event, X: Element>(val actions: Flow<Action<E, X>>) {
+    operator fun invoke(): Flow<Unit> = actions.map { Unit }
+    fun events(): Flow<E> = actions.map { it.event }
+    fun targets(): Flow<X> = actions.map { it.target }
+}
 
+/**
+ * Gives you the new value as [String] from the targeting [Element]
+ */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun <X: Element> Flow<Listener<Event, X>>.target(): Flow<X> = map { it.element }
-
+fun Listener<Event, HTMLInputElement>.value(): Flow<String> = targets().map { it.value }
+/**
+ * Gives you the new value as [String] from the targeting [Element]
+ */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun Flow<Listener<Event, HTMLInputElement>>.value(): Flow<String> = map { it.element.value }
+fun Listener<Event, HTMLSelectElement>.value(): Flow<String> = targets().map { it.value }
+/**
+ * Gives you the new value as [String] from the targeting [Element]
+ */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun Flow<Listener<Event, HTMLSelectElement>>.value(): Flow<String> = map { it.element.value }
-@FlowPreview
-@ExperimentalCoroutinesApi
-fun Flow<Listener<Event, HTMLTextAreaElement>>.value(): Flow<String> = map { it.element.value }
+fun Listener<Event, HTMLTextAreaElement>.value(): Flow<String> = targets().map { it.value }
 
 //TODO add more methods here
