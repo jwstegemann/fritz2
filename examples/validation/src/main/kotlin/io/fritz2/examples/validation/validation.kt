@@ -1,8 +1,10 @@
 package io.fritz2.examples.validation
 
-import io.fritz2.binding.*
+import io.fritz2.binding.RootStore
+import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import io.fritz2.dom.value
 import io.fritz2.validation.Validation
 import io.fritz2.validation.ValidationMessage
 import io.fritz2.validation.Validator
