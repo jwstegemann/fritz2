@@ -16,11 +16,11 @@ import org.w3c.dom.events.Event
 data class Action<E: Event, X: Element>(val event: E, val target: X)
 
 /**
- * [Listener] handles a [Flow] of [Action]s and gives
- * the [Event] with [events] as [Flow] or
- * the targeting [Element] with [targets] also as [Flow] back.
+ * [Listener] handles a Flow of [Action]s and gives
+ * the [Event] with [events] as Flow or
+ * the targeting [Element] with [targets] also as Flow back.
  * If you don't need either the [Event] or [Element] you can call the [Listener]
- * directly (e.g. `clicks()`) to get an [Flow] of [Unit] instead.
+ * directly (e.g. `clicks()`) to get an Flow of [Unit] instead.
  */
 @FlowPreview
 @ExperimentalCoroutinesApi

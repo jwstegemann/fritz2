@@ -151,13 +151,13 @@ open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope(
     }
 
     /**
-     * Gives the actual route as [Flow]
+     * Gives the actual route as Flow
      */
     val routes: Flow<T> = updates.distinctUntilChanged()
 
     /**
      * Handler vor setting
-     * a new [Route] based on given [Flow].
+     * a new [Route] based on given Flow.
      */
     val navTo: Handler<T> = Handler {
         launch {
