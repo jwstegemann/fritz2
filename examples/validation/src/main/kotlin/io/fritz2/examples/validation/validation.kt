@@ -3,6 +3,9 @@ package io.fritz2.examples.validation
 import io.fritz2.binding.*
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import io.fritz2.validation.Validation
+import io.fritz2.validation.ValidationMessage
+import io.fritz2.validation.Validator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
@@ -13,8 +16,8 @@ enum class Severity {
     Error
 }
 
-data class ValMsg(override val id: String, val severity: Severity, val text: String): Failable {
-    override fun isFail(): Boolean = severity > Severity.Warning
+data class ValMsg(override val id: String, val severity: Severity, val text: String): ValidationMessage {
+    override fun failed(): Boolean = severity > Severity.Warning
 }
 
 @ExperimentalCoroutinesApi
