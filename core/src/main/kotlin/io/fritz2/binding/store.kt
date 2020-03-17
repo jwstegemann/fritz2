@@ -38,6 +38,14 @@ abstract class Store<T> : CoroutineScope by MainScope() {
         }
     }
 
+    inline fun handle(crossinline handler: (T) -> T) = Handler<Unit> {
+        launch {
+            it.collect {
+                enqueue { t ->  handler(t) }
+            }
+        }
+    }
+
     fun <A,X> apply(mapper: suspend (A) -> Flow<X>) = Applicator<A,X>(mapper)
 
     abstract suspend fun enqueue(update: Update<T>)
