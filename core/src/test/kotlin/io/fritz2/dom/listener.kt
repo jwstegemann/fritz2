@@ -1,6 +1,8 @@
 package io.fritz2.dom
 
 import io.fritz2.binding.RootStore
+import io.fritz2.dom.html.Key
+import io.fritz2.dom.html.Keys
 import io.fritz2.dom.html.html
 import io.fritz2.test.initDocument
 import io.fritz2.test.runTest
@@ -11,6 +13,8 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
+import org.w3c.dom.events.KeyboardEvent
+import org.w3c.dom.events.KeyboardEventInit
 import kotlin.browser.document
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -163,5 +167,85 @@ class ListenerTest {
         assertEquals(".+\$.+\$", result.textContent, "wrong dom content of result-node")
     }
 
+    @Test
+    fun testListenerForKeyboardEvent() = runTest {
+        val resultId = "result4"
+        val inputId = "button4"
 
+        val store = object : RootStore<String>("") {
+            var countHandlerCalls = 0
+
+            val keyPressed = handle { model, key: Key ->
+                countHandlerCalls++
+                var pressed = ""
+                when {
+                    key.alt -> pressed = "alt+"
+                    key.ctrl -> pressed = "ctrl+"
+                    key.meta -> pressed = "meta+"
+                    key.shift -> pressed = "shift+"
+                }
+                pressed += when (key.code) {
+                    Keys.ArrowUp.code -> "up"
+                    Keys.ArrowDown.code -> "down"
+                    Keys.ArrowLeft.code -> "left"
+                    Keys.ArrowRight.code -> "right"
+                    else -> "unknown"
+                }
+                pressed
+            }
+
+        }
+
+        html {
+            section {
+                div(resultId) {
+                    store.data.bind()
+                }
+                input(inputId) {
+                    store.keyPressed <= keydowns.key()
+                }
+            }
+        }.mount("target")
+
+        delay(100)
+
+        val result = document.getElementById(resultId).unsafeCast<HTMLDivElement>()
+        val input = document.getElementById(inputId).unsafeCast<HTMLButtonElement>()
+        var handlerCalls = 0
+
+        assertEquals(handlerCalls, store.countHandlerCalls, "wrong number of handler calls")
+        assertEquals("", result.textContent, "wrong dom content of result-node")
+
+        val keyboardEvents = listOf(Keys.ArrowUp, Keys.ArrowDown, Keys.ArrowLeft, Keys.ArrowRight)
+            .flatMap {
+                listOf(
+                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, ctrlKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, altKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, shiftKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, metaKey = true))
+                )
+            }
+
+
+        for(e in keyboardEvents) {
+            input.dispatchEvent(e)
+            delay(100)
+            assertEquals(++handlerCalls, store.countHandlerCalls, "wrong number of handler calls")
+            var expected = ""
+            when {
+                e.altKey -> expected = "alt+"
+                e.ctrlKey -> expected = "ctrl+"
+                e.metaKey -> expected = "meta+"
+                e.shiftKey -> expected = "shift+"
+            }
+            expected += when (e.keyCode) {
+                Keys.ArrowUp.code -> "up"
+                Keys.ArrowDown.code -> "down"
+                Keys.ArrowLeft.code -> "left"
+                Keys.ArrowRight.code -> "right"
+                else -> "unknown"
+            }
+            assertEquals(expected, result.textContent, "wrong dom content of result-node")
+        }
+    }
 }
