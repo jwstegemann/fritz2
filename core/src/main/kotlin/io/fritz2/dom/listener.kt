@@ -1,5 +1,6 @@
 package io.fritz2.dom
 
+import io.fritz2.dom.html.Key
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -9,6 +10,8 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLSelectElement
 import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.events.Event
+import org.w3c.dom.events.KeyboardEvent
+import org.w3c.files.FileList
 
 /**
  * [Action] contains the fired [Event] and targeting [Element]
@@ -49,4 +52,30 @@ fun Listener<Event, HTMLSelectElement>.value(): Flow<String> = targets().map { i
 @ExperimentalCoroutinesApi
 fun Listener<Event, HTMLTextAreaElement>.value(): Flow<String> = targets().map { it.value }
 
-//TODO add more methods here
+/**
+ * Gives you the [FileList] from the targeting [Element]
+ */
+@FlowPreview
+@ExperimentalCoroutinesApi
+fun Listener<Event, HTMLInputElement>.fileList(): Flow<FileList?> = targets().map { it.files }
+
+/**
+ * Gives you the checked value as [Boolean] from the targeting [Element]
+ */
+@FlowPreview
+@ExperimentalCoroutinesApi
+fun Listener<Event, HTMLInputElement>.checked(): Flow<Boolean> = targets().map { it.checked }
+
+/**
+ * Gives you the selected index as [Int] from the targeting [Element]
+ */
+@FlowPreview
+@ExperimentalCoroutinesApi
+fun Listener<Event, HTMLSelectElement>.selectedIndex(): Flow<Int> = targets().map { it.selectedIndex }
+
+/**
+ * Gives you the pressed key as [Key] from a [KeyboardEvent]
+ */
+@FlowPreview
+@ExperimentalCoroutinesApi
+fun <X: Element> Listener<KeyboardEvent, X>.key(): Flow<Key> = events().map { Key.from(it) }
