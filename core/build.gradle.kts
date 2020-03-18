@@ -8,7 +8,6 @@ repositories {
     jcenter()
 }
 
-//TODO: add DCE and closure-compiler
 kotlin {
     target {
         browser {
