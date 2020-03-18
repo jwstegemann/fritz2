@@ -7,7 +7,6 @@ import io.fritz2.dom.mount
 import io.fritz2.dom.values
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -76,7 +75,7 @@ fun main() {
                         li {
                             button("delete-btn") {
                                 +s
-                                `class` = !"btn"
+                                className = !"btn"
                                 seq.deleteItem <= clicks.map { console.log("deleting $s"); s }
                                 classStore.remove <= clicks.map { "newItem" }
                             }
@@ -89,7 +88,7 @@ fun main() {
                 seq.addItem <= clicks
                 classStore.add <= clicks.map { "newItem" }
                 attributeData("test", "test-button1")
-                classes = classStore.data
+                classList = classStore.data
             }
         }
     }
