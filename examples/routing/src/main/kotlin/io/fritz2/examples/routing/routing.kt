@@ -6,7 +6,6 @@ import io.fritz2.routing.router
 import io.fritz2.routing.select
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.map
 
 object Pages {
     const val a = "pageA"
@@ -26,25 +25,24 @@ fun main() {
                 li {
                     button {
                         +"Show ${Pages.a}"
-                        router.navTo <= clicks().map { mapOf("page" to Pages.a) }
+                        router.navTo <= clicks.map { mapOf("page" to Pages.a) }
                     }
                 }
                 li {
                     button {
                         +"Show ${Pages.b}"
-                        router.navTo <= clicks().map { mapOf("page" to Pages.b) }
+                        router.navTo <= clicks.map { mapOf("page" to Pages.b) }
                     }
                 }
                 li {
                     button {
                         +"Show ${Pages.c}"
-                        router.navTo <= clicks().map { mapOf("page" to Pages.c) }
+                        router.navTo <= clicks.map { mapOf("page" to Pages.c) }
                     }
                 }
             }
             div {
-                router.select("page") {
-                    val (page, params) = it
+                router.select("page") { (page, _) ->
                     when (page) {
                         Pages.a -> html {
                             h1 {

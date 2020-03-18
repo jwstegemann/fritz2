@@ -4,7 +4,7 @@ import io.fritz2.binding.RootStore
 import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
-import io.fritz2.dom.value
+import io.fritz2.dom.values
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
@@ -44,7 +44,7 @@ fun main() {
         section {
             input {
                 value = store.data
-                store.update <= changes.value()
+                store.update <= changes.values()
             }
             div {
                 +"value: "
@@ -68,7 +68,7 @@ fun main() {
             }
             button {
                 +"add one more little dot"
-                store.addADot <= clicks()
+                store.addADot <= clicks
             }
             ul {
                 seq.data.each().map { s ->
@@ -77,8 +77,8 @@ fun main() {
                             button("delete-btn") {
                                 +s
                                 `class` = !"btn"
-                                seq.deleteItem <= clicks().map { console.log("deleting $s"); s }
-                                classStore.remove <= clicks().map { "newItem" }
+                                seq.deleteItem <= clicks.map { console.log("deleting $s"); s }
+                                classStore.remove <= clicks.map { "newItem" }
                             }
                         }
                     }
@@ -86,8 +86,8 @@ fun main() {
             }
             button("button") {
                 +"add an item"
-                seq.addItem <= clicks()
-                classStore.add <= clicks().map { "newItem" }
+                seq.addItem <= clicks
+                classStore.add <= clicks.map { "newItem" }
                 attributeData("test", "test-button1")
                 classes = classStore.data
             }

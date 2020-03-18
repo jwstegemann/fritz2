@@ -2,7 +2,7 @@ package io.fritz2.binding
 
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
-import io.fritz2.dom.value
+import io.fritz2.dom.values
 import io.fritz2.test.initDocument
 import io.fritz2.test.runTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,7 +36,7 @@ class EventTests {
             section {
                 input {
                     value = store.data
-                    store.update <= changes.value()
+                    store.update <= changes.values()
                 }
                 div("myResult") {
                     +"value: "
@@ -44,7 +44,7 @@ class EventTests {
                 }
                 button("myButton") {
                     +"add one more little dot"
-                    store.addADot <= clicks()
+                    store.addADot <= clicks
                 }
             }
         }

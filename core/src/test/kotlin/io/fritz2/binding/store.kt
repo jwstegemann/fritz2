@@ -4,7 +4,6 @@ import io.fritz2.test.checkFlow
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlin.js.Promise
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

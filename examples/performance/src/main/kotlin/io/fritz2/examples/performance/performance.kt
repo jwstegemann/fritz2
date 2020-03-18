@@ -25,7 +25,7 @@ fun main() {
         html {
             p("value") {
                 +number.toString()
-                val x = subscribe(Events.click)
+                val x = clicks
             }
         }
     }.conflate()
@@ -41,7 +41,7 @@ fun main() {
             counter.bind()
             button {
                 +"start updates"
-                domNode.addEventListener("click", { e: Event ->
+                domNode.addEventListener("click", {
                     val values = flow<Int> {
                         for (i in 1..500000) {
                             emit(i)

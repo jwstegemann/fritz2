@@ -26,11 +26,12 @@ class ListenerTest {
 
     @BeforeTest
     fun setUp() {
-        initDocument()
     }
 
     @Test
     fun testListenerForChangeEvent() = runTest {
+        initDocument()
+
         val inputId = "input1"
         val resultId = "result1"
 
@@ -40,7 +41,7 @@ class ListenerTest {
             section {
                 input(inputId) {
                     value = store.data
-                    store.update <= changes.value()
+                    store.update <= changes.values()
                 }
                 div(resultId) {
                     +store.data
@@ -86,7 +87,7 @@ class ListenerTest {
                     store.data.bind()
                 }
                 button(buttonId) {
-                    store.addADot <= clicks()
+                    store.addADot <= clicks
                 }
             }
         }.mount("target")
@@ -141,9 +142,9 @@ class ListenerTest {
                     store.data.bind()
                 }
                 button(buttonId) {
-                    store.addDot <= clicks()
-                    store.addPlus <= clicks()
-                    store.addDollar <= clicks()
+                    store.addDot <= clicks
+                    store.addPlus <= clicks
+                    store.addDollar <= clicks
                 }
             }
         }.mount("target")
@@ -175,7 +176,7 @@ class ListenerTest {
         val store = object : RootStore<String>("") {
             var countHandlerCalls = 0
 
-            val keyPressed = handle { model, key: Key ->
+            val keyPressed = handle { _, key: Key ->
                 countHandlerCalls++
                 var pressed = ""
                 when {
@@ -187,8 +188,6 @@ class ListenerTest {
                 pressed += when (key.code) {
                     Keys.ArrowUp.code -> "up"
                     Keys.ArrowDown.code -> "down"
-                    Keys.ArrowLeft.code -> "left"
-                    Keys.ArrowRight.code -> "right"
                     else -> "unknown"
                 }
                 pressed
@@ -216,7 +215,7 @@ class ListenerTest {
         assertEquals(handlerCalls, store.countHandlerCalls, "wrong number of handler calls")
         assertEquals("", result.textContent, "wrong dom content of result-node")
 
-        val keyboardEvents = listOf(Keys.ArrowUp, Keys.ArrowDown, Keys.ArrowLeft, Keys.ArrowRight)
+        val keyboardEvents = listOf(Keys.ArrowUp, Keys.ArrowDown)
             .flatMap {
                 listOf(
                     KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, ctrlKey = true)),
@@ -241,8 +240,6 @@ class ListenerTest {
             expected += when (e.keyCode) {
                 Keys.ArrowUp.code -> "up"
                 Keys.ArrowDown.code -> "down"
-                Keys.ArrowLeft.code -> "left"
-                Keys.ArrowRight.code -> "right"
                 else -> "unknown"
             }
             assertEquals(expected, result.textContent, "wrong dom content of result-node")

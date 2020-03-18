@@ -3,10 +3,12 @@ package io.fritz2.examples.remote
 import io.fritz2.binding.RootStore
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
-import io.fritz2.dom.value
-import io.fritz2.remote.*
-import kotlinx.coroutines.*
-import kotlin.browser.window
+import io.fritz2.dom.values
+import io.fritz2.remote.body
+import io.fritz2.remote.onErrorLog
+import io.fritz2.remote.remote
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
 
 @ExperimentalCoroutinesApi
@@ -44,7 +46,7 @@ fun main() {
             }
             input {
                 value = !"start"
-                store.sampleGet <= changes.value()
+                store.sampleGet <= changes.values()
             }
             hre {  }
             label {
@@ -52,7 +54,7 @@ fun main() {
             }
             input {
                 value = !"start"
-                store.samplePost <= changes.value()
+                store.samplePost <= changes.values()
             }
             hre {  }
             div {

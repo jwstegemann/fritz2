@@ -9,7 +9,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.promise
 import kotlin.browser.document
-import kotlin.browser.window
 import kotlin.random.Random
 
 

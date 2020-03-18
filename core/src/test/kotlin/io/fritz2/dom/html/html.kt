@@ -6,7 +6,6 @@ import io.fritz2.test.runTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
