@@ -14,23 +14,15 @@ import org.w3c.dom.events.KeyboardEvent
 import org.w3c.files.FileList
 
 /**
- * [Action] contains the fired [Event] and targeting [Element]
- */
-data class Action<E: Event, X: Element>(val event: E, val target: X)
-
-/**
- * [Listener] handles a Flow of [Action]s and gives
- * the [Event] with [events] as Flow or
- * the targeting [Element] with [targets] also as Flow back.
- * If you don't need either the [Event] or [Element] you can call the [Listener]
- * directly (e.g. `clicks()`) to get an Flow of [Unit] instead.
+ * [Listener] handles a Flow of [Event]s.
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-inline class Listener<E: Event, X: Element>(val actions: Flow<Action<E, X>>) {
-    operator fun invoke(): Flow<Unit> = actions.map { Unit }
-    fun events(): Flow<E> = actions.map { it.event }
-    fun targets(): Flow<X> = actions.map { it.target }
+inline class Listener<E: Event, X: Element>(val events: Flow<E>) {
+    /**
+     * Maps the given [Event] to a new value.
+     */
+    inline fun <R> map(crossinline mapper: suspend (E) -> R) = events.map(mapper)
 }
 
 /**
@@ -38,44 +30,44 @@ inline class Listener<E: Event, X: Element>(val actions: Flow<Action<E, X>>) {
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun Listener<Event, HTMLInputElement>.value(): Flow<String> = targets().map { it.value }
+fun Listener<Event, HTMLInputElement>.values(): Flow<String> = events.map { it.target.unsafeCast<HTMLInputElement>().value }
 /**
  * Gives you the new value as [String] from the targeting [Element]
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun Listener<Event, HTMLSelectElement>.value(): Flow<String> = targets().map { it.value }
+fun Listener<Event, HTMLSelectElement>.values(): Flow<String> = events.map { it.target.unsafeCast<HTMLSelectElement>().value }
 /**
  * Gives you the new value as [String] from the targeting [Element]
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun Listener<Event, HTMLTextAreaElement>.value(): Flow<String> = targets().map { it.value }
+fun Listener<Event, HTMLTextAreaElement>.values(): Flow<String> = events.map { it.target.unsafeCast<HTMLTextAreaElement>().value }
 
 /**
  * Gives you the [FileList] from the targeting [Element]
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun Listener<Event, HTMLInputElement>.fileList(): Flow<FileList?> = targets().map { it.files }
+fun Listener<Event, HTMLInputElement>.files(): Flow<FileList?> = events.map { it.target.unsafeCast<HTMLInputElement>().files }
 
 /**
  * Gives you the checked value as [Boolean] from the targeting [Element]
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun Listener<Event, HTMLInputElement>.checked(): Flow<Boolean> = targets().map { it.checked }
+fun Listener<Event, HTMLInputElement>.states(): Flow<Boolean> = events.map { it.target.unsafeCast<HTMLInputElement>().checked }
 
 /**
  * Gives you the selected index as [Int] from the targeting [Element]
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun Listener<Event, HTMLSelectElement>.selectedIndex(): Flow<Int> = targets().map { it.selectedIndex }
+fun Listener<Event, HTMLSelectElement>.selectedIndex(): Flow<Int> = events.map { it.target.unsafeCast<HTMLSelectElement>().selectedIndex }
 
 /**
  * Gives you the pressed key as [Key] from a [KeyboardEvent]
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
-fun <X: Element> Listener<KeyboardEvent, X>.key(): Flow<Key> = events().map { Key.from(it) }
+fun <X: Element> Listener<KeyboardEvent, X>.key(): Flow<Key> = events.map { Key.from(it) }

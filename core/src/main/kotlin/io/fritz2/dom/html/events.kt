@@ -9,9 +9,7 @@ import org.w3c.xhr.ProgressEvent
  * [EventType] contains the javascript related [name] of an [Event]
  * and has a method [extract] to cast an [Event] to its actual event-type.
  */
-class EventType<T: Event>(val name: String) {
-    fun extract(event: Event): T = event.unsafeCast<T>()
-}
+class EventType<T: Event>(val name: String)
 
 /**
  * [Events] contains all javascript event types.

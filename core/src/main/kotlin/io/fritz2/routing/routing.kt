@@ -137,7 +137,7 @@ open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope(
             it.preventDefault()
             val hash = window.location.hash.removePrefix(prefix)
             if (hash.isNotBlank()) {
-                channel.offer(route.unmarshal(hash))
+                offer(route.unmarshal(hash))
             }
         }
         window.addEventListener(Events.load.name, listener)

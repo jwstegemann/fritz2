@@ -1,14 +1,13 @@
 package io.fritz2.dom
 
-import io.fritz2.binding.Const
-import io.fritz2.binding.MultiMountPoint
-import io.fritz2.binding.Seq
-import io.fritz2.binding.SingleMountPoint
+import io.fritz2.binding.*
 import io.fritz2.dom.html.HtmlElements
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
+import org.w3c.dom.events.Event
 import kotlin.browser.window
 
 @DslMarker
@@ -32,6 +31,11 @@ abstract class Tag<T : Element>(tagName: String, val id: String? = null, overrid
     fun <X : Element> Seq<Tag<X>>.bind(): MultiMountPoint<WithDomNode<Element>> = DomMultiMountPoint(this.data, domNode)
 
     operator fun <T> T.not() = Const(this)
+
+    operator fun <E: Event, X: Element> Handler<Unit>.compareTo(listener: Listener<E, X>): Int {
+        execute(listener.events.map { Unit })
+        return 0
+    }
 
     var `class`: Flow<String> by AttributeDelegate
     var classes: Flow<List<String>>
