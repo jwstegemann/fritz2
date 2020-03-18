@@ -2,4 +2,4 @@
 
 # events
 
-`fun events(): Flow<E>`
+`val events: Flow<E>`

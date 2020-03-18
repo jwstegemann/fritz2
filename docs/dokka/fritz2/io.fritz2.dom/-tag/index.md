@@ -10,14 +10,15 @@
 
 ### Properties
 
-| [class](class.md) | `var class: Flow<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>` |
-| [classes](classes.md) | `var classes: Flow<`[`List`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)`<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>>` |
+| [classList](class-list.md) | `var classList: Flow<`[`List`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)`<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>>` |
+| [className](class-name.md) | `var className: Flow<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>` |
 | [domNode](dom-node.md) | `open val domNode: T` |
 | [id](id.md) | `val id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`?` |
 
 ### Functions
 
 | [bind](bind.md) | `fun <X : `[`Element`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)`> Flow<`[`Tag`](./index.md)`<X>>.bind(): `[`SingleMountPoint`](../../io.fritz2.binding/-single-mount-point/index.md)`<`[`WithDomNode`](../-with-dom-node/index.md)`<`[`Element`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)`>>`<br>`fun <X : `[`Element`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)`> `[`Seq`](../../io.fritz2.binding/-seq/index.md)`<`[`Tag`](./index.md)`<X>>.bind(): `[`MultiMountPoint`](../../io.fritz2.binding/-multi-mount-point/index.md)`<`[`WithDomNode`](../-with-dom-node/index.md)`<`[`Element`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)`>>` |
+| [compareTo](compare-to.md) | `operator fun <E : `[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`, X : `[`Element`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)`> `[`Handler`](../../io.fritz2.binding/-handler/index.md)`<`[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`>.compareTo(listener: `[`Listener`](../-listener/index.md)`<E, X>): `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
 | [not](not.md) | `operator fun <T> T.not(): `[`Const`](../../io.fritz2.binding/-const/index.md)`<T>` |
 | [register](register.md) | `open fun <X : `[`Element`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)`, T : `[`Tag`](./index.md)`<X>> register(element: T, content: (T) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): T` |
 

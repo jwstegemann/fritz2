@@ -11,13 +11,6 @@ Exposes the JavaScript [HTMLAnchorElement](https://developer.mozilla.org/en/docs
 
 |
 
-##### [io.fritz2.dom.Action](../io.fritz2.dom/-action/index.md)
-
-[Action](../io.fritz2.dom/-action/index.md) contains the fired [Event](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html) and targeting [Element](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)
-
-
-|
-
 ##### [io.fritz2.binding.Applicator](../io.fritz2.binding/-applicator/index.md)
 
 
@@ -175,8 +168,7 @@ Take a look [here](https://www.w3schools.com/jsref/dom_obj_event.asp).
 
 ##### [io.fritz2.dom.html.EventType](../io.fritz2.dom.html/-event-type/index.md)
 
-[EventType](../io.fritz2.dom.html/-event-type/index.md) contains the javascript related [name](../io.fritz2.dom.html/-event-type/name.md) of an [Event](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)
-and has a method [extract](../io.fritz2.dom.html/-event-type/extract.md) to cast an [Event](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html) to its actual event-type.
+[EventType](../io.fritz2.dom.html/-event-type/index.md) contains the javascript related name and actual type of the [Event](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html).
 
 
 |
@@ -311,11 +303,7 @@ Exposes the JavaScript [HTMLLIElement](https://developer.mozilla.org/en/docs/Web
 
 ##### [io.fritz2.dom.Listener](../io.fritz2.dom/-listener/index.md)
 
-[Listener](../io.fritz2.dom/-listener/index.md) handles a Flow of [Action](../io.fritz2.dom/-action/index.md)s and gives
-the [Event](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html) with [events](../io.fritz2.dom/-listener/events.md) as Flow or
-the targeting [Element](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html) with [targets](../io.fritz2.dom/-listener/targets.md) also as Flow back.
-If you don't need either the [Event](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html) or [Element](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html) you can call the [Listener](../io.fritz2.dom/-listener/index.md)
-directly (e.g. `clicks()`) to get an Flow of [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) instead.
+[Listener](../io.fritz2.dom/-listener/index.md) handles a Flow of [Event](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)s.
 
 
 |

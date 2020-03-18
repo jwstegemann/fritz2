@@ -90,10 +90,6 @@
 | [waitings](waitings.md) | `val waitings: `[`Listener`](../-listener/index.md)`<`[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`, T>` |
 | [wheels](wheels.md) | `val wheels: `[`Listener`](../-listener/index.md)`<`[`WheelEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-wheel-event/index.html)`, T>` |
 
-### Functions
-
-| [subscribe](subscribe.md) | `fun <E : `[`Event`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html)`> subscribe(type: `[`EventType`](../../io.fritz2.dom.html/-event-type/index.md)`<E>): `[`Listener`](../-listener/index.md)`<E, T>` |
-
 ### Inheritors
 
 | [Tag](../-tag/index.md) | `abstract class Tag<T : `[`Element`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)`> : `[`WithDomNode`](../-with-dom-node/index.md)`<T>, `[`WithAttributes`](../-with-attributes/index.md)`<T>, `[`WithEvents`](./index.md)`<T>, `[`HtmlElements`](../../io.fritz2.dom.html/-html-elements/index.md) |
