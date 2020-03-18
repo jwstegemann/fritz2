@@ -34,8 +34,6 @@ class Applicator<A, X>(inline val execute: suspend (A) -> Flow<X>) {
 @ExperimentalCoroutinesApi
 abstract class Store<T> : CoroutineScope by MainScope() {
 
-    //TODO: another factory for (A) -> X (map instead of flatMapConcat)
-
     inline fun <A> handle(crossinline execute: (T, A) -> T) = Handler<A> {
         launch {
             it.collect {

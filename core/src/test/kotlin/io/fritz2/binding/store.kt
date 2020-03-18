@@ -54,6 +54,7 @@ class StoreTests {
         val result = document.getElementById(resultId).unsafeCast<HTMLDivElement>()
 
         button.click()
+        delay(100)
         assertEquals("start", result.textContent, "wrong dom content of result-node")
         delay(300)
         assertEquals("finish", result.textContent, "wrong dom content of result-node")
