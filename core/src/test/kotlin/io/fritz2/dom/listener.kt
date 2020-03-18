@@ -24,10 +24,6 @@ import kotlin.test.assertEquals
 @FlowPreview
 class ListenerTest {
 
-    @BeforeTest
-    fun setUp() {
-    }
-
     @Test
     fun testListenerForChangeEvent() = runTest {
         initDocument()
@@ -69,6 +65,8 @@ class ListenerTest {
 
     @Test
     fun testListenerForClickEvent() = runTest {
+        initDocument()
+
         val resultId = "result2"
         val buttonId = "button2"
 
@@ -113,6 +111,8 @@ class ListenerTest {
 
     @Test
     fun testListenerForMultipleClickEvent() = runTest {
+        initDocument()
+
         val resultId = "result3"
         val buttonId = "button3"
 
@@ -170,6 +170,8 @@ class ListenerTest {
 
     @Test
     fun testListenerForKeyboardEvent() = runTest {
+        initDocument()
+
         val resultId = "result4"
         val inputId = "button4"
 
