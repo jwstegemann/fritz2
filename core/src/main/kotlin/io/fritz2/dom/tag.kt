@@ -37,8 +37,8 @@ abstract class Tag<T : Element>(tagName: String, val id: String? = null, overrid
         return 0
     }
 
-    var `class`: Flow<String> by AttributeDelegate
-    var classes: Flow<List<String>>
+    var className: Flow<String> by AttributeDelegate
+    var classList: Flow<List<String>>
         get() {throw NotImplementedError()}
         set(values) { attribute("class", values)}
 }
