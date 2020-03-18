@@ -9,26 +9,25 @@ import kotlinx.coroutines.flow.*
 
 typealias Update<T> = (T) -> T
 
-class Handler<A>(inline val handle: (Flow<A>) -> Unit) {
+class Handler<A>(inline val execute: (Flow<A>) -> Unit) {
     // syntactical sugar to write slot <= event-stream
     operator fun compareTo(flow: Flow<A>): Int {
-        handle(flow)
+        execute(flow)
         return 0
     }
 }
 
 class Applicator<A,X>(inline val mapper: suspend (A) -> Flow<X>)
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 abstract class Store<T> : CoroutineScope by MainScope() {
 
     //TODO: another factory for (A) -> X (map instead of flatMapConcat)
-    @FlowPreview
-    infix fun <A,X> Applicator<A,X>.andThen(nextHandler: Handler<X>) = Handler<A> {
-        nextHandler.handle(it.flatMapConcat(this.mapper))
-    }
 
-    //TODO: andThen for other Applyers
+    infix fun <A,X> Applicator<A,X>.andThen(nextHandler: Handler<X>) = Handler<A> {
+        nextHandler.execute(it.flatMapConcat(this.mapper))
+    }
 
     inline fun <A> handle(crossinline handler: (T, A) -> T) = Handler<A> {
         launch {
@@ -46,7 +45,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
         }
     }
 
-    fun <A,X> apply(mapper: suspend (A) -> Flow<X>) = Applicator<A,X>(mapper)
+    fun <A,X> apply(mapper: suspend (A) -> Flow<X>) = Applicator(mapper)
 
     abstract suspend fun enqueue(update: Update<T>)
 
@@ -60,9 +59,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-open class RootStore<T>(private val initialData: T, override val id: String = "", bufferSize: Int = 1)  : Store<T>() {
-
-    //private val scope = CoroutineScope(Job())
+open class RootStore<T>(initialData: T, override val id: String = "", bufferSize: Int = 1) : Store<T>() {
 
     //TODO: best capacity?
     private val updates = BroadcastChannel<Update<T>>(bufferSize)
@@ -74,5 +71,5 @@ open class RootStore<T>(private val initialData: T, override val id: String = ""
 
     override val data = updates.asFlow().scan(initialData, applyUpdate).distinctUntilChanged().asSharedFlow()
 
-    override fun <X> sub(lens: Lens<T, X>) = SubStore<T,T,X>(this, lens, this, lens)
+    override fun <X> sub(lens: Lens<T, X>) = SubStore(this, lens, this, lens)
 }
