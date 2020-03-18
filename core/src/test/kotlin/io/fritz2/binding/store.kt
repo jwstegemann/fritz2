@@ -3,7 +3,9 @@ package io.fritz2.binding
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import io.fritz2.test.initDocument
+import io.fritz2.test.randomId
 import io.fritz2.test.runTest
+import io.fritz2.test.targetId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -22,8 +24,8 @@ class StoreTests {
     fun testStoreApplierAndThenHandler() = runTest {
         initDocument()
 
-        val resultId = "result1"
-        val buttonId = "button1"
+        val resultId = randomId("result")
+        val buttonId = randomId("button")
 
         val store = object : RootStore<String>("start") {
 
@@ -46,7 +48,7 @@ class StoreTests {
                     store.execute <= clicks
                 }
             }
-        }.mount("target")
+        }.mount(targetId)
 
         delay(100)
 
@@ -64,8 +66,8 @@ class StoreTests {
     fun testStoreApplierAndThenApplierAndThenHandler() = runTest {
         initDocument()
 
-        val resultId = "result2"
-        val buttonId = "button2"
+        val resultId = randomId("result")
+        val buttonId = randomId("button")
 
         val store = object : RootStore<String>("start") {
 
@@ -95,7 +97,7 @@ class StoreTests {
                     store.execute <= clicks
                 }
             }
-        }.mount("target")
+        }.mount(targetId)
 
         delay(100)
 
@@ -112,8 +114,8 @@ class StoreTests {
     fun testStoreApplierAndThenApplierAndThenHandlerWithTypeConversion() = runTest {
         initDocument()
 
-        val resultId = "result3"
-        val buttonId = "button3"
+        val resultId = randomId("result")
+        val buttonId = randomId("button")
 
         val store = object : RootStore<String>("start") {
 
@@ -143,7 +145,7 @@ class StoreTests {
                     store.execute <= clicks
                 }
             }
-        }.mount("target")
+        }.mount(targetId)
 
         delay(100)
 

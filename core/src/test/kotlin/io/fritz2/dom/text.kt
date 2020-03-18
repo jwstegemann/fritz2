@@ -2,7 +2,9 @@ package io.fritz2.dom
 
 import io.fritz2.dom.html.html
 import io.fritz2.test.initDocument
+import io.fritz2.test.randomId
 import io.fritz2.test.runTest
+import io.fritz2.test.targetId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -19,63 +21,63 @@ class TextTests {
     fun testTextOnString() = runTest {
         initDocument()
 
-        val testId = "testId"
-        val testText = "testText"
+        val testId = randomId()
+        val text = "testText"
 
         html {
             div(testId) {
-                +testText
+                +text
             }
-        }.mount("target")
+        }.mount(targetId)
 
         delay(100)
 
         val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
 
         assertEquals(testId, element.id)
-        assertEquals(testText, element.textContent)
+        assertEquals(text, element.textContent)
     }
 
     @Test
     fun testTextOnFlowOfString() = runTest {
         initDocument()
 
-        val testId = "testId"
-        val testText = "testText"
+        val testId =  randomId()
+        val text = "testText"
 
         html {
             div(testId) {
-                +!testText
+                +!text
             }
-        }.mount("target")
+        }.mount(targetId)
 
         delay(100)
 
         val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
 
         assertEquals(testId, element.id)
-        assertEquals(testText, element.textContent)
+        assertEquals(text, element.textContent)
     }
 
     @Test
     fun testTextBind() = runTest {
         initDocument()
 
-        val testId = "testId"
-        val testText = "testText"
+        val testId = randomId()
+        val text = "testText"
 
         html {
             div(testId) {
-                (!testText).bind()
+                (!text).bind()
             }
-        }.mount("target")
+        }.mount(targetId)
 
         delay(100)
 
         val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
 
         assertEquals(testId, element.id)
-        assertEquals(testText, element.textContent)
+        assertEquals(text, element.textContent)
     }
 
 }
