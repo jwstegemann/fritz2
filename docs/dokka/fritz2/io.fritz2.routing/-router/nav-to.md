@@ -5,5 +5,5 @@
 `val navTo: `[`Handler`](../../io.fritz2.binding/-handler/index.md)`<T>`
 
 Handler vor setting
-a new [Route](../-route/index.md) based on given [Flow](#).
+a new [Route](../-route/index.md) based on given Flow.
 

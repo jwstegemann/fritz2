@@ -6,7 +6,6 @@ import io.fritz2.routing.router
 import io.fritz2.routing.select
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.map
 
 object Pages {
     const val a = "pageA"
@@ -43,8 +42,7 @@ fun main() {
                 }
             }
             div {
-                router.select("page") {
-                    val (page, params) = it
+                router.select("page") { (page, _) ->
                     when (page) {
                         Pages.a -> html {
                             h1 {

@@ -1,8 +1,10 @@
 package io.fritz2.binding
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 abstract class SingleMountPoint<T>(upstream: Flow<T>) : CoroutineScope by MainScope() {
     init {

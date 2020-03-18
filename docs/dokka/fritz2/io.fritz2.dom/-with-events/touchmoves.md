@@ -2,4 +2,4 @@
 
 # touchmoves
 
-`val touchmoves: Flow<`[`TouchEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-touch-event/index.html)`>`
+`val touchmoves: `[`Listener`](../-listener/index.md)`<`[`TouchEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-touch-event/index.html)`, T>`

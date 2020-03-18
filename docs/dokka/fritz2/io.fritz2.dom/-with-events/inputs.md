@@ -2,4 +2,4 @@
 
 # inputs
 
-`val inputs: Flow<`[`InputEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-input-event/index.html)`>`
+`val inputs: `[`Listener`](../-listener/index.md)`<`[`InputEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-input-event/index.html)`, T>`

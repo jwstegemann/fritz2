@@ -2,7 +2,7 @@
 
 # Seq
 
-`class Seq<T>`
+`inline class Seq<T>`
 
 ### Constructors
 

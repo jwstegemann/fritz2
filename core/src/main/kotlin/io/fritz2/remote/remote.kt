@@ -1,6 +1,7 @@
 package io.fritz2.remote
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.await
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -220,6 +221,7 @@ fun Flow<Response>.onError(handler: (Throwable) -> Unit) = this.catch {
 /**
  * adds a handler to log all exceptions that occur during a fetch action
  */
+@ExperimentalCoroutinesApi
 fun Flow<Response>.onErrorLog() = this.catch {
     loggingErrorHandler(it)
 }

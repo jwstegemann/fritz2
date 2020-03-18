@@ -2,4 +2,4 @@
 
 # wheels
 
-`val wheels: Flow<`[`WheelEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-wheel-event/index.html)`>`
+`val wheels: `[`Listener`](../-listener/index.md)`<`[`WheelEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-wheel-event/index.html)`, T>`

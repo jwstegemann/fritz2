@@ -2,4 +2,4 @@
 
 # beforeunloads
 
-`val beforeunloads: Flow<`[`UIEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-u-i-event/index.html)`>`
+`val beforeunloads: `[`Listener`](../-listener/index.md)`<`[`UIEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-u-i-event/index.html)`, T>`

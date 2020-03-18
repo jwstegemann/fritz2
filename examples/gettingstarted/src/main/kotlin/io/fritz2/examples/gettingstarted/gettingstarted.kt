@@ -4,19 +4,17 @@ import io.fritz2.binding.RootStore
 import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import io.fritz2.dom.values
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
-
-
-data class ActionData(val x: Int, val y: Int)
 
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun main() {
 
     val store = object : RootStore<String>("start") {
-        val addADot = handle<Any> { model, _ ->
+        val addADot = handle { model ->
             "$model."
         }
     }
@@ -33,7 +31,7 @@ fun main() {
     val seq = object : RootStore<List<String>>(listOf("one", "two", "three")) {
         var count = 0
 
-        val addItem = handle<Any> { list, _ ->
+        val addItem = handle { list ->
             count++
             list + "yet another item no. $count"
         }
@@ -46,7 +44,7 @@ fun main() {
         section {
             input {
                 value = store.data
-                store.update <= changes
+                store.update <= changes.values()
             }
             div {
                 +"value: "
@@ -80,9 +78,7 @@ fun main() {
                                 +s
                                 `class` = !"btn"
                                 seq.deleteItem <= clicks.map { console.log("deleting $s"); s }
-                                classStore.remove <= clicks.map { e ->
-                                    "newItem"
-                                }
+                                classStore.remove <= clicks.map { "newItem" }
                             }
                         }
                     }
@@ -91,9 +87,7 @@ fun main() {
             button("button") {
                 +"add an item"
                 seq.addItem <= clicks
-                classStore.add <= clicks.map { e ->
-                    "newItem"
-                }
+                classStore.add <= clicks.map { "newItem" }
                 attributeData("test", "test-button1")
                 classes = classStore.data
             }

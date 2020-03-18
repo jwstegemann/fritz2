@@ -2,4 +2,4 @@
 
 # copys
 
-`val copys: Flow<`[`ClipboardEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.clipboard/-clipboard-event/index.html)`>`
+`val copys: `[`Listener`](../-listener/index.md)`<`[`ClipboardEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.clipboard/-clipboard-event/index.html)`, T>`

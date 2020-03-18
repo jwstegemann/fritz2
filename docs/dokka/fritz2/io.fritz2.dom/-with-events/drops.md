@@ -2,4 +2,4 @@
 
 # drops
 
-`val drops: Flow<`[`DragEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-drag-event/index.html)`>`
+`val drops: `[`Listener`](../-listener/index.md)`<`[`DragEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-drag-event/index.html)`, T>`

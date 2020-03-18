@@ -2,4 +2,4 @@
 
 # loadstarts
 
-`val loadstarts: Flow<`[`ProgressEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.xhr/-progress-event/index.html)`>`
+`val loadstarts: `[`Listener`](../-listener/index.md)`<`[`ProgressEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.xhr/-progress-event/index.html)`, T>`

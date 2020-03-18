@@ -4,7 +4,6 @@ plugins {
     kotlin("js")
 }
 
-//TODO: add DCE and closure-compiler
 kotlin {
     target {
         browser {

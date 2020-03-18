@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.*
 
 data class Patch<out T>(val from: Int, val that: List<T>, val replaced: Int)
 
-class Seq<T>(val data: Flow<Patch<T>>) {
+inline class Seq<T>(val data: Flow<Patch<T>>) {
     inline fun <X> map(crossinline mapper: (T) -> X): Seq<X> {
         return Seq(data.map {
             Patch(it.from, it.that.map(mapper), it.replaced)

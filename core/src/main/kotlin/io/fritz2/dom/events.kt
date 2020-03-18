@@ -5,23 +5,22 @@ import io.fritz2.dom.html.Events
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-abstract class WithEvents<out T : Element> : WithDomNode<T> {
+abstract class WithEvents<T : Element> : WithDomNode<T> {
 
-    fun <T> subscribe(type: EventType<T>): Flow<T> = callbackFlow {
+    private fun <E : Event> subscribe(type: EventType<E>): Listener<E, T> = Listener(callbackFlow {
         val listener: (Event) -> Unit = {
-            channel.offer(type.extract(it))
+            offer(it.unsafeCast<E>())
         }
         domNode.addEventListener(type.name, listener)
 
         awaitClose { domNode.removeEventListener(type.name, listener) }
-    }
+    })
 
     val aborts by lazy { subscribe(Events.abort)}
     val afterprints by lazy { subscribe(Events.afterprint)}

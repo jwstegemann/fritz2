@@ -2,4 +2,4 @@
 
 # pagehides
 
-`val pagehides: Flow<`[`PageTransitionEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-page-transition-event/index.html)`>`
+`val pagehides: `[`Listener`](../-listener/index.md)`<`[`PageTransitionEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-page-transition-event/index.html)`, T>`

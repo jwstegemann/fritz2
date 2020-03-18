@@ -2,4 +2,4 @@
 
 # aborts
 
-`val aborts: Flow<`[`UIEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-u-i-event/index.html)`>`
+`val aborts: `[`Listener`](../-listener/index.md)`<`[`UIEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-u-i-event/index.html)`, T>`

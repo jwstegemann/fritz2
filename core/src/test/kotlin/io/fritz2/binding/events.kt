@@ -2,6 +2,7 @@ package io.fritz2.binding
 
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
+import io.fritz2.dom.values
 import io.fritz2.test.initDocument
 import io.fritz2.test.runTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -10,7 +11,6 @@ import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -25,7 +25,7 @@ class EventTests {
         val store = object : RootStore<String>("start") {
             var countHandlerCalls = 0
 
-            val addADot = handle <Any> { model, _ ->
+            val addADot = handle { model ->
                 countHandlerCalls++
                 "$model."
              }
@@ -36,7 +36,7 @@ class EventTests {
             section {
                 input {
                     value = store.data
-                    store.update <= changes
+                    store.update <= changes.values()
                 }
                 div("myResult") {
                     +"value: "

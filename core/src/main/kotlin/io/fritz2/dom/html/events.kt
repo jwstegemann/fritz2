@@ -1,21 +1,20 @@
 package io.fritz2.dom.html
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import org.w3c.dom.*
 import org.w3c.dom.clipboard.ClipboardEvent
 import org.w3c.dom.events.*
 import org.w3c.xhr.ProgressEvent
 
-@ExperimentalCoroutinesApi
-@FlowPreview
-open class EventType<T>(val name: String) {
-    open fun extract(event: Event): T = event.unsafeCast<T>()
-}
+/**
+ * [EventType] contains the javascript related [name] of an [Event]
+ * and has a method [extract] to cast an [Event] to its actual event-type.
+ */
+class EventType<T: Event>(val name: String)
 
-// Source https://www.w3schools.com/jsref/dom_obj_event.asp
-@ExperimentalCoroutinesApi
-@FlowPreview
+/**
+ * [Events] contains all javascript event types.
+ * Take a look [here](https://www.w3schools.com/jsref/dom_obj_event.asp).
+ */
 object Events {
 
     // The event occurs when the loading of a media is aborted
@@ -40,9 +39,7 @@ object Events {
     val canplaythrough = EventType<Event>("canplaythrough")
 
     // The event occurs when the content of a form element, the selection, or the checked state have changed (for <input>, <select>, and <textarea>)
-    val change = object : EventType<String>("change") {
-        override fun extract(event: Event): String = (event.target as HTMLInputElement).value
-    }
+    val change = EventType<Event>("change")
 
     // The event occurs when the user clicks on an element
     val click = EventType<MouseEvent>("click")
@@ -256,66 +253,77 @@ object Events {
 
     // The event occurs when the mouse wheel rolls up or down over an element
     val wheel = EventType<WheelEvent>("wheel")
+}
 
-    // js key codes for special keys
-    enum class Keys(val code: Int) {
-        Backspace(8),
-        Tab(9),
-        Enter(13),
-        Shift(16),
-        Ctrl(17),
-        Alt(18),
-        Pause(19),
-        Capslock(20),
-        Escape(27),
-        Pageup(33),
-        Space(32),
-        Pagedown(34),
-        End(35),
-        Home(36),
-        PageLeft(37),
-        PageUp(38),
-        PageRight(39),
-        PageDown(40),
-        Printscreen(44),
-        Insert(45),
-        Delete(46),
-        ArrowLeft(91),
-        ArrowRight(92),
-        Select(93),
-        Numpad0(96),
-        Numpad1(97),
-        Numpad2(98),
-        Numpad3(99),
-        Numpad4(100),
-        Numpad5(101),
-        Numpad6(102),
-        Numpad7(103),
-        Numpad8(104),
-        Numpad9(105),
-        Multiply(106),
-        Add(107),
-        Subtract(109),
-        DecimalPoint(110),
-        Divide(111),
-        F1(112),
-        F2(113),
-        F3(114),
-        F4(115),
-        F5(116),
-        F6(117),
-        F7(118),
-        F8(119),
-        F9(120),
-        F10(121),
-        F11(122),
-        F12(123),
-        Numlock(144),
-        Scrolllock(145),
-        Semicolon(186),
-        Equalsign(187),
-        Comma(188),
-        Dash(189),
-        Period(190)
+/**
+ * [Key] represents a key press e.g. for keypress events
+ */
+data class Key(val code: Int, val name: String, val ctrl: Boolean, val alt: Boolean, val shift: Boolean, val meta: Boolean) {
+    companion object {
+        fun from(e: KeyboardEvent) = Key(e.keyCode, e.key, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey)
     }
+
+    fun isKey(keys: Keys): Boolean = code == keys.code
+}
+
+/**
+ * [Keys] contains most of the javascript related special key codes
+ */
+enum class Keys(val code: Int) {
+    Backspace(8),
+    Tab(9),
+    Enter(13),
+    Shift(16),
+    Ctrl(17),
+    Alt(18),
+    Pause(19),
+    CapsLock(20),
+    Escape(27),
+    Space(32),
+    Pageup(33),
+    Pagedown(34),
+    End(35),
+    Home(36),
+    ArrowLeft(37),
+    ArrowUp(38),
+    ArrowRight(39),
+    ArrowDown(40),
+    Insert(45),
+    Delete(46),
+    ContextMenu(93),
+    Numpad0(96),
+    Numpad1(97),
+    Numpad2(98),
+    Numpad3(99),
+    Numpad4(100),
+    Numpad5(101),
+    Numpad6(102),
+    Numpad7(103),
+    Numpad8(104),
+    Numpad9(105),
+    NumpadMultiply(106),
+    NumpadAdd(107),
+    NumpadSubtract(109),
+    NumpadDecimal(110),
+    NumpadDivide(111),
+    F1(112),
+    F2(113),
+    F3(114),
+    F4(115),
+    F5(116),
+    F6(117),
+    F7(118),
+    F8(119),
+    F9(120),
+    F10(121),
+    F11(122),
+    F12(123),
+    NumLock(144),
+    ScrollLock(145),
+    Semicolon(186),
+    Equalsign(187),
+    Comma(188),
+    Dash(189),
+    Period(190),
+    Backquote(220)
 }

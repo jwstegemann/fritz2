@@ -28,39 +28,39 @@ class SeqTests {
         val testId = randomId()
 
         val store = object : RootStore<List<Int>>(listOf(0)) {
-            val replaceList = handle<Any> { _, _ ->
+            val replaceList = handle { _ ->
                 (0..10).toList()
             }
 
-            val addAtBeginning = handle<Any> { list, _ ->
+            val addAtBeginning = handle { list ->
                 listOf(0) + list
             }
 
-            val addAtEnd = handle<Any> { list, _ ->
+            val addAtEnd = handle { list ->
                 list + 10
             }
 
-            val addAtMiddle = handle<Any> { list, _ ->
+            val addAtMiddle = handle { list ->
                 list.subList(0, 7) + listOf(4, 5, 6) + list.subList(7, list.size)
             }
 
-            val removeAtBeginning = handle<Any> { list, _ ->
+            val removeAtBeginning = handle { list ->
                 list.subList(1, list.size)
             }
 
-            val removeAtEnd = handle<Any> { list, _ ->
+            val removeAtEnd = handle { list ->
                 list.subList(0, list.size - 1)
             }
 
-            val removeAtMiddle = handle<Any> { list, _ ->
+            val removeAtMiddle = handle { list ->
                 list.subList(0, 6) + list.subList(9, list.size)
             }
 
-            val filterEven = handle<Any> { list, _ ->
+            val filterEven = handle { list ->
                 list.filter { it % 2 == 0 }
             }
 
-            val reverse = handle<Any> { list, _ ->
+            val reverse = handle { list ->
                 list.asReversed()
             }
         }

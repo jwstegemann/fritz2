@@ -109,5 +109,5 @@
 
 ### Inheritors
 
-| [Tag](../../io.fritz2.dom/-tag/index.md) | `abstract class Tag<out T : `[`Element`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)`> : `[`WithDomNode`](../../io.fritz2.dom/-with-dom-node/index.md)`<T>, `[`WithAttributes`](../../io.fritz2.dom/-with-attributes/index.md)`<T>, `[`WithEvents`](../../io.fritz2.dom/-with-events/index.md)`<T>, `[`HtmlElements`](./index.md) |
+| [Tag](../../io.fritz2.dom/-tag/index.md) | `abstract class Tag<T : `[`Element`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html)`> : `[`WithDomNode`](../../io.fritz2.dom/-with-dom-node/index.md)`<T>, `[`WithAttributes`](../../io.fritz2.dom/-with-attributes/index.md)`<T>, `[`WithEvents`](../../io.fritz2.dom/-with-events/index.md)`<T>, `[`HtmlElements`](./index.md) |
 

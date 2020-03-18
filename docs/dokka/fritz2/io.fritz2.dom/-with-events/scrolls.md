@@ -2,4 +2,4 @@
 
 # scrolls
 
-`val scrolls: Flow<`[`UIEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-u-i-event/index.html)`>`
+`val scrolls: `[`Listener`](../-listener/index.md)`<`[`UIEvent`](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-u-i-event/index.html)`, T>`
