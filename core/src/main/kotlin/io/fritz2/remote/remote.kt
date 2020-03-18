@@ -221,6 +221,7 @@ fun Flow<Response>.onError(handler: (Throwable) -> Unit) = this.catch {
 /**
  * adds a handler to log all exceptions that occur during a fetch action
  */
+@ExperimentalCoroutinesApi
 fun Flow<Response>.onErrorLog() = this.catch {
     loggingErrorHandler(it)
 }
