@@ -3,7 +3,7 @@
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
 [![LOC](https://img.shields.io/badge/core%20LOC-1%2C4k-green)](https://clean-code-developer.com/grades/grade-1-red/#Keep_it_simple_stupid_KISS)
 [![100% Kotlin](https://img.shields.io/badge/pure%20Kotlin-100%25-blue)](https://play.kotlinlang.org/)
-[ ![Download](https://api.bintray.com/packages/jwstegemann/fritz2/fritz2-core/images/download.svg?version=0.1) ](https://bintray.com/jwstegemann/fritz2/fritz2-core/0.1/link)
+[ ![Download](https://api.bintray.com/packages/jwstegemann/fritz2/fritz2-core/images/download.svg?version=0.2) ](https://bintray.com/jwstegemann/fritz2/fritz2-core/0.2/link)
 
 fritz2 is a proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
