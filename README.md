@@ -16,7 +16,7 @@ val component = html {
     div {
         input {
             value = model.data
-            model.update <= changes
+            model.update <= changes.values()
         }
         p {
             +"model value = "
@@ -60,9 +60,7 @@ You can either
 ## What will come next?
 
 - complete example (ToDoMVC)
-- tests, tests, tests [(work in progress)](https://github.com/jwstegemann/fritz2/pull/18)
 - performance and memory optimizations
-- streamlined build-process (DCE, etc.)
 - user auth (examle with OAuth)
 
 ## Overall Goals
