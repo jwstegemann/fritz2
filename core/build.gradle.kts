@@ -29,7 +29,7 @@ publishing {
                         "override=1"            )
             credentials {
                 username = "jwstegemann"
-                password = System.getProperty("BINTRAY_API_KEY")
+                password = System.getenv("BINTRAY_API_KEY")
             }
         }
     }
@@ -48,7 +48,7 @@ dependencies {
     implementation(kotlin("stdlib-js"))
     testImplementation(kotlin("test-js"))
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
-    api("io.fritz2.optics:core-js:0.1")
+    api("io.fritz2.optics:core-js:0.2")
 }
 
 tasks {
