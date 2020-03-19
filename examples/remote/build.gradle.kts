@@ -9,11 +9,10 @@ kotlin {
         browser {
             runTask {
                 devServer = KotlinWebpackConfig.DevServer(
-                    port = 9000,
-                    contentBase = listOf("$projectDir/src/main/web")
-                ).copy(proxy = mapOf(
-                    "/get" to "http://postman-echo.com"
-                ))
+                    contentBase = listOf("$projectDir/src/main/resources"),
+                    //sourceSets.getByName("resources").resources.asPath)
+                    proxy = mapOf("/get" to "http://postman-echo.com")
+                )
             }
         }
     }
