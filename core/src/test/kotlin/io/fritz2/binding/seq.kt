@@ -5,6 +5,7 @@ import io.fritz2.dom.mount
 import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
+import io.fritz2.test.targetId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -28,7 +29,7 @@ class SeqTests {
         val testId = randomId()
 
         val store = object : RootStore<List<Int>>(listOf(0)) {
-            val replaceList = handle { _ ->
+            val replaceList = handle {
                 (0..10).toList()
             }
 
@@ -79,45 +80,34 @@ class SeqTests {
                 }
 
                 button("replaceList") {
-                    +"replaceList"
                     store.replaceList <= clicks
                 }
                 button("addAtBeginning") {
-                    +"addAtBeginning"
                     store.addAtBeginning <= clicks
                 }
                 button("addAtEnd") {
-                    +"addAtEnd"
                     store.addAtEnd <= clicks
                 }
                 button("addAtMiddle") {
-                    +"addAtMiddle"
                     store.addAtMiddle <= clicks
                 }
                 button("removeAtBeginning") {
-                    +"removeAtBeginning"
                     store.removeAtBeginning <= clicks
                 }
                 button("removeAtEnd") {
-                    +"removeAtEnd"
                     store.removeAtEnd <= clicks
                 }
                 button("removeAtMiddle") {
-                    +"removeAtMiddle"
                     store.removeAtMiddle <= clicks
                 }
                 button("filterEven") {
-                    +"filterEven"
                     store.filterEven <= clicks
                 }
                 button("reverse") {
-                    +"reverse"
                     store.reverse <= clicks
                 }
             }
-        }.mount("target")
-
-        delay(100)
+        }.mount(targetId)
 
         val list = document.getElementById(testId).unsafeCast<HTMLUListElement>()
         val until = list.children.length - 1
@@ -169,64 +159,4 @@ class SeqTests {
         delay(100)
         check(listOf(10, 8, 6, 4, 2, 0))
     }
-
-
-//    @Test @Ignore
-//    fun testSeqFlatMap() = runTest {
-//
-//        val store1 = object : RootStore<List<Int>>((0..10).toList()) {
-//            val filterEven = handle<Any> { list, _ ->
-//                list.filter { it % 2 == 0 }
-//            }
-//        }
-//
-//        val store2 = object : RootStore<List<Int>>((0..10).toList()) {
-//            val filterOdd = handle<Any> { list, _ ->
-//                list.filter { it % 2 == 1 }
-//            }
-//        }
-//
-//
-//        html {
-//            section {
-//                ul("list") {
-//                    store1.data.each().flatMap { i1 ->
-//                        store2.data.each().map { i2 ->
-//                            html {
-//                                li("entry$i") {
-//                                    +i.toString()
-//                                }
-//                            }
-//                        }
-//                    }.bind()
-//                }
-//
-//                button("filterEven") {
-//                    +"filterEven"
-//                    store1.filterEven <= clicks
-//                }
-//                button("filterOdd") {
-//                    +"filterOdd"
-//                    store2.filterOdd <= clicks
-//                }
-//            }
-//        }.mount("target")
-//
-//        delay(250)
-//
-//        val list = document.getElementById("list").unsafeCast<HTMLUListElement>()
-//        val until = list.children.length - 1
-//
-//        fun check(expected: List<Int>) {
-//            for (i in 0..until) {
-//                val element = list.children[i].unsafeCast<HTMLLIElement>()
-//                assertEquals("entry${expected[i]}", element.id)
-//                assertEquals(expected[i].toString(), element.innerText)
-//            }
-//        }
-//
-//        //inital
-//        check(listOf(0))
-//    }
-
 }

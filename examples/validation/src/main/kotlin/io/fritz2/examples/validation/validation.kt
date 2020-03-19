@@ -81,7 +81,7 @@ fun main() {
                     html {
                         li {
                             +it.text
-                            `class` = !it.severity.name.toLowerCase()
+                            className = !it.severity.name.toLowerCase()
                         }
                     }
                 }.bind()

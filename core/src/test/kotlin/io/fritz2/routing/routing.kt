@@ -6,6 +6,7 @@ import io.fritz2.dom.mount
 import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
+import io.fritz2.test.targetId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -48,7 +49,7 @@ class RoutingTests {
                     }.bind()
                 }
             }
-        }.mount("target")
+        }.mount(targetId)
 
         delay(500)
 
@@ -98,7 +99,7 @@ class RoutingTests {
                     }.bind()
                 }
             }
-        }.mount("target")
+        }.mount(targetId)
 
         delay(250)
 

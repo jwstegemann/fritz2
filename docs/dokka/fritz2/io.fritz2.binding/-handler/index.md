@@ -6,11 +6,11 @@
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | `Handler(handle: (Flow<A>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)` |
+| [&lt;init&gt;](-init-.md) | `Handler(execute: (Flow<A>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)` |
 
 ### Properties
 
-| [handle](handle.md) | `val handle: (Flow<A>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
+| [execute](execute.md) | `val execute: (Flow<A>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
 
 ### Functions
 

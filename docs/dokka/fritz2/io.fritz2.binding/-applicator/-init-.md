@@ -2,4 +2,4 @@
 
 # &lt;init&gt;
 
-`Applicator(inline mapper: suspend (A) -> Flow<X>)`
+`Applicator(inline execute: suspend (A) -> Flow<X>)`

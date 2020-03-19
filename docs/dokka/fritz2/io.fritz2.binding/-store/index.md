@@ -2,7 +2,7 @@
 
 # Store
 
-`@ExperimentalCoroutinesApi abstract class Store<T> : CoroutineScope`
+`@FlowPreview @ExperimentalCoroutinesApi abstract class Store<T> : CoroutineScope`
 
 ### Constructors
 
@@ -16,10 +16,9 @@
 
 ### Functions
 
-| [andThen](and-then.md) | `infix fun <A, X> `[`Applicator`](../-applicator/index.md)`<A, X>.andThen(nextHandler: `[`Handler`](../-handler/index.md)`<X>): `[`Handler`](../-handler/index.md)`<A>` |
 | [apply](apply.md) | `fun <A, X> apply(mapper: suspend (A) -> Flow<X>): `[`Applicator`](../-applicator/index.md)`<A, X>` |
 | [enqueue](enqueue.md) | `abstract suspend fun enqueue(update: `[`Update`](../-update.md)`<T>): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) |
-| [handle](handle.md) | `fun <A> handle(handler: (T, A) -> T): `[`Handler`](../-handler/index.md)`<A>`<br>`fun handle(handler: (T) -> T): `[`Handler`](../-handler/index.md)`<`[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`>` |
+| [handle](handle.md) | `fun <A> handle(execute: (T, A) -> T): `[`Handler`](../-handler/index.md)`<A>`<br>`fun handle(execute: (T) -> T): `[`Handler`](../-handler/index.md)`<`[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`>` |
 | [sub](sub.md) | `abstract fun <X> sub(lens: Lens<T, X>): `[`Store`](./index.md)`<X>` |
 
 ### Inheritors

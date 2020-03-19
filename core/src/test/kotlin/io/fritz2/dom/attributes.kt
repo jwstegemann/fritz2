@@ -4,12 +4,17 @@ import io.fritz2.dom.html.html
 import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
+import io.fritz2.test.targetId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
+import org.w3c.dom.HTMLDivElement
+import kotlin.browser.document
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
-@ExperimentalCoroutinesApi
 @FlowPreview
+@ExperimentalCoroutinesApi
 class AttributeTests {
 
     @Test
@@ -18,6 +23,7 @@ class AttributeTests {
 
         val testRange = (0..4)
         val testId = randomId()
+
         val (name0, value0) = "test0" to "value0"
         val (name1, value1) = "test1" to "value1"
         val (name2, values2) = "test2" to testRange.map { "value$it" }
@@ -32,10 +38,9 @@ class AttributeTests {
                 attribute(name2, values2)
                 attribute(name3, !values3)
             }
-        }.mount("target")
+        }.mount(targetId)
 
-        /*
-        delay(500)
+        delay(200)
 
         val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
 
@@ -51,6 +56,5 @@ class AttributeTests {
         assertEquals(values2.joinToString(separator = " "), element.getAttribute(name2))
         assertEquals(values3.joinToString(separator = " "), element.getAttribute(name3))
 
-         */
     }
 }

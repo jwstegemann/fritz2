@@ -2,4 +2,4 @@
 
 # &lt;init&gt;
 
-`Handler(inline handle: (Flow<A>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`
+`Handler(inline execute: (Flow<A>) -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`)`

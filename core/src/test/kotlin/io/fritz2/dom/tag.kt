@@ -3,7 +3,9 @@ package io.fritz2.dom
 import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.test.initDocument
+import io.fritz2.test.randomId
 import io.fritz2.test.runTest
+import io.fritz2.test.targetId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -20,14 +22,14 @@ class TagTests {
     fun testSingleTag() = runTest {
         initDocument()
 
-        val testId = "testId"
+        val testId = randomId()
         val testClass = "testClass"
 
         html {
             div(testId) {
-                `class` = !testClass
+                className = !testClass
             }
-        }.mount("target")
+        }.mount(targetId)
 
         delay(100)
 
@@ -51,14 +53,12 @@ class TagTests {
                 (!testIds).each().map {
                     html {
                         li(it) {
-                            classes = !testClasses
-                            //attribute("class", testClasses.joinToString(separator = " "))
-                            //attribute("class", "hugo")
+                            classList = !testClasses
                         }
                     }
                 }.bind()
             }
-        }.mount("target")
+        }.mount(targetId)
 
         delay(500)
 

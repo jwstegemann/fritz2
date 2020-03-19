@@ -1,9 +1,18 @@
 package io.fritz2.binding
 
-import io.fritz2.test.checkFlow
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.launchIn
-import kotlin.js.Promise
+import io.fritz2.dom.html.html
+import io.fritz2.dom.mount
+import io.fritz2.test.initDocument
+import io.fritz2.test.randomId
+import io.fritz2.test.runTest
+import io.fritz2.test.targetId
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLDivElement
+import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -12,165 +21,140 @@ import kotlin.test.assertEquals
 class StoreTests {
 
     @Test
-    fun testSingleMountPoint(): Promise<Boolean> {
+    fun testStoreApplierAndThenHandler() = runTest {
+        initDocument()
 
-        val store = RootStore("")
+        val resultId = randomId("result")
+        val buttonId = randomId("button")
 
-        val mp = checkFlow(store.data, 5) { count, value, _ ->
-            //console.log("CHECK $count: $value from $last\n")
-            val expected = (0 until count).fold("",{ s,i ->
-                "$s-$i"
-            })
-            assertEquals(expected, value, "set wrong value in SingleMountPoint\n")
-        }
+        val store = object : RootStore<String>("start") {
 
-        return GlobalScope.promise {
-            for (i in 0..4) {
-                //console.log("enqueue: -$i\n")
-                store.enqueue { "$it-$i" }
+            val finish = apply<Unit, String> {
+                flow {
+                    delay(200)
+                    emit("finish")
+                }
             }
-            mp.await()
+
+            val execute = finish andThen update
         }
+
+        html {
+            section {
+                div(resultId) {
+                    +store.data
+                }
+                button(buttonId) {
+                    store.execute <= clicks
+                }
+            }
+        }.mount(targetId)
+
+        delay(100)
+
+        val button = document.getElementById(buttonId).unsafeCast<HTMLButtonElement>()
+        val result = document.getElementById(resultId).unsafeCast<HTMLDivElement>()
+
+        button.click()
+        delay(100)
+        assertEquals("start", result.textContent, "wrong dom content of result-node")
+        delay(300)
+        assertEquals("finish", result.textContent, "wrong dom content of result-node")
     }
 
     @Test
-    fun testMultiMountPointAppendingAtEnd(): Promise<Boolean> {
-        val store = RootStore<List<Int>>(emptyList())
-        store.data.launchIn(GlobalScope)
+    fun testStoreApplierAndThenApplierAndThenHandler() = runTest {
+        initDocument()
 
-        val mp = checkFlow(store.data.each().data, 5) { count, patch ->
-            val expected = Patch(count, listOf(count), 0)
+        val resultId = randomId("result")
+        val buttonId = randomId("button")
 
-            assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
-        }
+        val store = object : RootStore<String>("start") {
 
-        return GlobalScope.promise {
-            delay(100) //needs a point to suspend
-            for (i in 0..4) {
-                store.enqueue { it + i }
+            val generate = apply<Unit, String> {
+                flow {
+                    delay(100)
+                    emit("generate")
+                }
             }
-            mp.await()
-            true
+
+            val finish = apply<String, String> {
+                flow {
+                    delay(100)
+                    emit("finish")
+                }
+            }
+
+            val execute = generate andThen finish andThen update
         }
+
+        html {
+            section {
+                div(resultId) {
+                    +store.data
+                }
+                button(buttonId) {
+                    store.execute <= clicks
+                }
+            }
+        }.mount(targetId)
+
+        delay(100)
+
+        val button = document.getElementById(buttonId).unsafeCast<HTMLButtonElement>()
+        val result = document.getElementById(resultId).unsafeCast<HTMLDivElement>()
+
+        button.click()
+        assertEquals("start", result.textContent, "wrong dom content of result-node")
+        delay(300)
+        assertEquals("finish", result.textContent, "wrong dom content of result-node")
     }
 
     @Test
-    fun testMultiMountPointAppendingAtBeginning(): Promise<Boolean> {
+    fun testStoreApplierAndThenApplierAndThenHandlerWithTypeConversion() = runTest {
+        initDocument()
 
-        val store = RootStore(listOf(0))
-        store.data.launchIn(GlobalScope)
+        val resultId = randomId("result")
+        val buttonId = randomId("button")
 
-        val mp = checkFlow(store.data.each().data, 3) { count, patch ->
-            val expected = when (count) {
-                0 -> Patch(0, listOf(0), 0)
-                1 -> Patch(1, listOf(0), 0)
-                2 -> Patch(0, listOf(1), 1)
-                else -> throw AssertionError("set wrong value in MultiMountPoint\n")
+        val store = object : RootStore<String>("start") {
+
+            val generate = apply<Unit, Int> {
+                flow {
+                    delay(100)
+                    emit(100)
+                }
             }
-            assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
-        }
 
-        return GlobalScope.promise {
-            delay(100) //needs a point to suspend
-            store.enqueue { listOf(1) + it }
-            mp.await()
-            true
-        }
-    }
-
-    @Test
-    fun testMultiMountPointAppendingAtMiddle(): Promise<Boolean> {
-
-        val store = RootStore(listOf(0, 2))
-        store.data.launchIn(GlobalScope)
-
-        val mp = checkFlow(store.data.each().data, 3) { count, patch ->
-            val expected = when (count) {
-                0 -> Patch(0, listOf(0, 2), 0)
-                1 -> Patch(2, listOf(2), 0)
-                2 -> Patch(1, listOf(1), 1)
-                else -> throw AssertionError("set wrong value in MultiMountPoint\n")
+            val finish = apply<Int, String> {
+                flow {
+                    delay(100)
+                    emit(it.toString())
+                }
             }
-            assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
+
+            val execute = generate andThen finish andThen update
         }
 
-        return GlobalScope.promise {
-            delay(100) //needs a point to suspend
-            store.enqueue { listOf(0, 1, 2) }
-            mp.await()
-            true
-        }
-    }
-
-    @Test
-    fun testMultiMountPointRemovingAtEnd(): Promise<Boolean> {
-
-        val store = RootStore(listOf(0, 1, 2))
-        store.data.launchIn(GlobalScope)
-
-        val mp = checkFlow(store.data.each().data, 2) { count, patch ->
-            val expected = when (count) {
-                0 -> Patch(0, listOf(0, 1, 2), 0)
-                1 -> Patch(2, emptyList(), 1)
-                else -> throw AssertionError("set wrong value in MultiMountPoint\n")
+        html {
+            section {
+                div(resultId) {
+                    +store.data
+                }
+                button(buttonId) {
+                    store.execute <= clicks
+                }
             }
-            assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
-        }
+        }.mount(targetId)
 
-        return GlobalScope.promise {
-            delay(100) //needs a point to suspend
-            store.enqueue { listOf(0, 1) }
-            mp.await()
-            true
-        }
-    }
+        delay(100)
 
-    @Test
-    fun testMultiMountPointRemovingAtBeginning(): Promise<Boolean> {
+        val button = document.getElementById(buttonId).unsafeCast<HTMLButtonElement>()
+        val result = document.getElementById(resultId).unsafeCast<HTMLDivElement>()
 
-        val store = RootStore(listOf(0, 1, 2))
-        store.data.launchIn(GlobalScope)
-
-        val mp = checkFlow(store.data.each().data, 4) { count, patch ->
-            val expected = when (count) {
-                0 -> Patch(0, listOf(0, 1, 2), 0)
-                1 -> Patch(2, emptyList(), 1)
-                2 -> Patch(0, listOf(1), 1)
-                3 -> Patch(1, listOf(2), 1)
-                else -> throw AssertionError("set wrong value in MultiMountPoint\n")
-            }
-            assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
-        }
-
-        return GlobalScope.promise {
-            delay(100) //needs a point to suspend
-            store.enqueue { listOf(1, 2) }
-            mp.await()
-            true
-        }
-    }
-
-    @Test
-    fun testMultiMountPointRemovingAtMiddle(): Promise<Boolean> {
-
-        val store = RootStore(listOf(0, 1, 2))
-        store.data.launchIn(GlobalScope)
-
-        val mp = checkFlow(store.data.each().data, 3) { count, patch ->
-            val expected = when (count) {
-                0 -> Patch(0, listOf(0, 1, 2), 0)
-                1 -> Patch(2, emptyList(), 1)
-                2 -> Patch(1, listOf(2), 1)
-                else -> throw AssertionError("set wrong value in MultiMountPoint\n")
-            }
-            assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
-        }
-
-        return GlobalScope.promise {
-            delay(100) //needs a point to suspend
-            store.enqueue { listOf(0, 2) }
-            mp.await()
-            true
-        }
+        button.click()
+        assertEquals("start", result.textContent, "wrong dom content of result-node")
+        delay(300)
+        assertEquals("100", result.textContent, "wrong dom content of result-node")
     }
 }

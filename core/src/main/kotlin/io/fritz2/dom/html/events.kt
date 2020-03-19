@@ -6,8 +6,7 @@ import org.w3c.dom.events.*
 import org.w3c.xhr.ProgressEvent
 
 /**
- * [EventType] contains the javascript related [name] of an [Event]
- * and has a method [extract] to cast an [Event] to its actual event-type.
+ * [EventType] contains the javascript related name and actual type of the [Event].
  */
 class EventType<T: Event>(val name: String)
 

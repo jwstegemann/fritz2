@@ -11,19 +11,18 @@ import kotlinx.coroutines.promise
 import kotlin.browser.document
 import kotlin.random.Random
 
-
-//abstract class TestRunner : CoroutineScope by GlobalScope {
-    fun <T> runTest(block: suspend () -> T): dynamic = GlobalScope.promise {
+fun <T> runTest(block: suspend () -> T): dynamic = GlobalScope.promise {
     delay(100)
     block()
     delay(100)
 }
-//}
+
+val targetId = "target"
 
 fun initDocument() {
     document.clear()
     document.write("""
-            <body id="target">
+            <body id="$targetId">
                 Loading...
             </body>
         """.trimIndent())

@@ -2,4 +2,4 @@
 
 # validate
 
-`open fun validate(data: D, metadata: T): `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
+`open fun validate(data: D, context: T): `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)

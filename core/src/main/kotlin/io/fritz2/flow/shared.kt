@@ -27,6 +27,7 @@ internal fun <T> Flow<T>.asCachedFlow(): Flow<T> {
     }
 }
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 internal fun <T> Flow<T>.asSharedFlow(scope: CoroutineScope = GlobalScope): Flow<T> = SharedFlow(this, scope)
 
@@ -41,6 +42,7 @@ internal fun <T> Flow<T>.asSharedFlow(scope: CoroutineScope = GlobalScope): Flow
  * 1) The underlying [BroadcastChannel] is closed. A new BroadcastChannel will be created when a new collector starts.
  * 2) The cache is reset.  New collectors will not receive values from before the reset, but will generate a new cache.
  */
+@FlowPreview
 @ExperimentalCoroutinesApi
 internal class SharedFlow<T>(
     private val sourceFlow: Flow<T>,
@@ -57,7 +59,6 @@ internal class SharedFlow<T>(
     ) = collector.emitAll(createFlow())
 
     // Replay happens per new collector, if cacheHistory > 0.
-    @FlowPreview
     private suspend fun createFlow(): Flow<T> = getChannel()
             .asFlow()
             .replayIfNeeded()
@@ -69,11 +70,9 @@ internal class SharedFlow<T>(
     }
 
     // lazy holder for the BroadcastChannel, which is reset whenever all collection ends
-    @FlowPreview
     private var lazyChannelRef = createLazyChannel()
 
     // must be lazy so that the broadcast doesn't begin immediately after a reset
-    @FlowPreview
     private fun createLazyChannel() = lazy(LazyThreadSafetyMode.NONE) {
         sourceFlow.cacheIfNeeded()
             // UNDISPATCHED is important, otherwise you have to wait before the first downstream flow can connect (otherwise there is a deadlock)
