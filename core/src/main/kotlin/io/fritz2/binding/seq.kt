@@ -1,6 +1,6 @@
 package io.fritz2.binding
 
-import io.fritz2.optics.withId
+import io.fritz2.optics.WithId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -61,7 +61,7 @@ private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, n
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-fun <T: withId> Flow<List<T>>.each(): Seq<T> =
+fun <T: WithId> Flow<List<T>>.each(): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat(compare {a,b ->
         a.id != b.id
     }))
