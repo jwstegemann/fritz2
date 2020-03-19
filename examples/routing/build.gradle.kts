@@ -7,12 +7,6 @@ plugins {
 kotlin {
     target {
         browser {
-            runTask {
-                devServer = KotlinWebpackConfig.DevServer(
-                    port = 9000,
-                    contentBase = listOf("$projectDir/src/main/web")
-                )
-            }
         }
     }
 }

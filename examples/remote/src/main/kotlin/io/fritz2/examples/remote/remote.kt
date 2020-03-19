@@ -17,7 +17,7 @@ fun main() {
 
     val store = object : RootStore<String>("start") {
 
-        val sampleApi = remote("https://reqresss.in/api/users")
+        val sampleApi = remote("https://reqres.in/api/users")
             .acceptJson()
 
         val sampleGet = apply { s : String ->

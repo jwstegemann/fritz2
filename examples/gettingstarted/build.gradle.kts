@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
-
 plugins {
     kotlin("js")
 }
@@ -7,16 +5,9 @@ plugins {
 kotlin {
     target {
         browser {
-            runTask {
-                devServer = KotlinWebpackConfig.DevServer(
-                    port = 9000,
-                    contentBase = listOf("$projectDir/src/main/web")
-                )
-            }
         }
     }
 }
-
 
 dependencies {
     implementation(kotlin("stdlib-js"))
