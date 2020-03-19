@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("io.fritz2.optics:plugin:0.1")
+        classpath("io.fritz2.optics:plugin:0.2")
     }
 }
 
@@ -42,7 +42,7 @@ apply(plugin = "io.fritz2.optics")
 
 dependencies {
     implementation(kotlin("stdlib-js"))
-    api("io.fritz2.optics:core-js:0.1")
+    api("io.fritz2.optics:core-js:0.2")
 }
 
 
