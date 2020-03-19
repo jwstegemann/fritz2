@@ -1,6 +1,6 @@
 name: build
 
-oon:
+on:
   push:
     branches:
       - '**'

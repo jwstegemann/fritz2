@@ -1,7 +1,7 @@
 package io.fritz2.validation
 
 import io.fritz2.flow.asSharedFlow
-import io.fritz2.optics.withId
+import io.fritz2.optics.WithId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-interface ValidationMessage: withId {
+interface ValidationMessage: WithId {
     fun failed(): Boolean
 }
 
