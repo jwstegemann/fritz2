@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.*
 
 data class ToDo(
     val text: String,
-    val completed: Boolean,
+    val completed: Boolean = false,
     override val id: String = text.hashCode().toString()
 ) : WithId
 
@@ -30,19 +30,15 @@ val completedLens = buildLens<ToDo, Boolean>("completed", {it.completed}, {p,v -
 fun main() {
 
     val toDos = object : RootStore<List<ToDo>>(emptyList()) {
-        val add = handle<String> { toDos, text ->
-            toDos + ToDo(text, false)
-        }
+        val add = handle<String> { toDos, text -> toDos.plus(ToDo(text)) }
 
-        val remove = handle<ToDo> {toDos, item ->
-            toDos.minus(item)
-        }
+        val remove = handle<ToDo> {toDos, item -> toDos.minus(item) }
 
         val toggleAll = handle<Boolean> {toDos, toggle ->
             toDos.map { it.copy(completed = toggle)}
         }
 
-        val count = data.map { it.count { !it.completed } }
+        val count = data.map { todos -> todos.count { !it.completed } }
     }
 
     fun HtmlElements.inputHeader() {
