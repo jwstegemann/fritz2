@@ -52,7 +52,9 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
 
 class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: Element?) : SingleMountPoint<String>(upstream) {
     override fun set(value: String, last: String?) {
-        target?.setAttribute(name, value)
+        //FIXME: Should only be true for Boolean-Attributes...
+        if (value == "false") target?.removeAttribute(name)
+        else target?.setAttribute(name, value)
     }
 }
 

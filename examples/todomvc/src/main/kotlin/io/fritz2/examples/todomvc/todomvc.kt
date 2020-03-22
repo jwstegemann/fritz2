@@ -11,6 +11,7 @@ import io.fritz2.dom.states
 import io.fritz2.dom.values
 import io.fritz2.optics.WithId
 import io.fritz2.optics.buildLens
+import io.fritz2.routing.router
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -28,6 +29,7 @@ val completedLens = buildLens<ToDo, Boolean>("completed", {it.completed}, {p,v -
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun main() {
+   // val router = router("/")
 
     val toDos = object : RootStore<List<ToDo>>(emptyList()) {
         val add = handle<String> { toDos, text -> toDos.plus(ToDo(text)) }
@@ -38,7 +40,12 @@ fun main() {
             toDos.map { it.copy(completed = toggle)}
         }
 
-        val count = data.map { todos -> todos.count { !it.completed } }
+        val clearCompleted = handle {toDos ->
+            toDos.filter { !it.completed }
+        }
+
+        val count = data.map { todos -> todos.count { !it.completed } }.distinctUntilChanged()
+        val allChecked = data.map { todos -> todos.all { it.completed }}
     }
 
     fun HtmlElements.inputHeader() {
@@ -63,6 +70,7 @@ fun main() {
             input("toggle-all") {
                 className = !"toggle-all"
                 type = !"checkbox"
+                checked = toDos.allChecked
                 toDos.toggleAll <= changes.states()
                 //TODO: set if all items are completed
             }
@@ -83,7 +91,7 @@ fun main() {
                                 input {
                                     className = !"toggle"
                                     type = !"checkbox"
-                                    defaultChecked = completedStore.data
+                                    checked = completedStore.data
                                     completedStore.update <= changes.states()
                                 }
                                 label { textStore.data.bind() }
@@ -112,27 +120,35 @@ fun main() {
                     }.bind()
                 }
             }
+            ul {
+                className = !"filters"
+                //FIMXE: render by loop
+                li {
+                    a {
+                        className = !"selected"
+                        href = !"#/"
+                        +"All"
+                    }
+                }
+                li {
+                    a {
+                        href = !"#/active"
+                        +"Active"
+                    }
+                }
+                li {
+                    a {
+                        href = !"#/completed"
+                        +"Completed"
+                    }
+                }
+            }
+            button {
+                className = !"clear-completed"
+                +"Clear completed"
+                toDos.clearCompleted <= clicks
+            }
         }
-        /*
-        <footer class="footer">
-        <!-- This should be `0 items left` by default -->
-        <span class="todo-count"><strong>0</strong> item left</span>
-        <!-- Remove this if you don't implement routing -->
-        <ul class="filters">
-        <li>
-        <a class="selected" href="#/">All</a>
-        </li>
-        <li>
-        <a href="#/active">Active</a>
-        </li>
-        <li>
-        <a href="#/completed">Completed</a>
-        </li>
-        </ul>
-        <!-- Hidden if no completed items are left ↓ -->
-        <button class="clear-completed">Clear completed</button>
-        </footer>
-         */
     }
 
     val app = html {
