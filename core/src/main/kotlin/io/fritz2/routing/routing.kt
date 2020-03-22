@@ -2,6 +2,7 @@ package io.fritz2.routing
 
 import io.fritz2.binding.Handler
 import io.fritz2.dom.html.Events
+import io.fritz2.flow.asSharedFlow
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
@@ -153,7 +154,7 @@ open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope(
     /**
      * Gives the actual route as Flow
      */
-    val routes: Flow<T> = updates.distinctUntilChanged()
+    val routes: Flow<T> = updates.distinctUntilChanged().asSharedFlow()
 
     /**
      * Handler vor setting

@@ -77,7 +77,7 @@ fun main() {
             }
             ul {
                 className = !"todo-list"
-                toDos.data.flatMapLatest { all ->
+                toDos.data.flatMapMerge { all ->
                     router.routes.map { route ->
                         console.log("filter to $route")
                         when(route) {
