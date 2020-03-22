@@ -1,9 +1,6 @@
 package io.fritz2.examples.todomvc
 
-import io.fritz2.binding.Const
-import io.fritz2.binding.RootStore
-import io.fritz2.binding.each
-import io.fritz2.binding.eachStore
+import io.fritz2.binding.*
 import io.fritz2.dom.html.HtmlElements
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
@@ -29,7 +26,7 @@ val completedLens = buildLens<ToDo, Boolean>("completed", {it.completed}, {p,v -
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun main() {
-   // val router = router("/")
+    val router = router("/")
 
     val toDos = object : RootStore<List<ToDo>>(emptyList()) {
         val add = handle<String> { toDos, text -> toDos.plus(ToDo(text)) }
@@ -80,7 +77,17 @@ fun main() {
             }
             ul {
                 className = !"todo-list"
-                toDos.eachStore().map { toDoStore ->
+                toDos.data.flatMapLatest { all ->
+                    router.routes.map { route ->
+                        console.log("filter to $route")
+                        when(route) {
+                            "/completed" -> all.filter { it.completed }
+                            "/active" -> all.filter { !it.completed }
+                            else -> all
+                        }
+                    }
+                }.each().map { toDo ->
+                    val toDoStore = toDos.sub(toDo)
                     val textStore = toDoStore.sub(textLens)
                     val completedStore = toDoStore.sub(completedLens)
                     html {
@@ -125,19 +132,21 @@ fun main() {
                 //FIMXE: render by loop
                 li {
                     a {
-                        className = !"selected"
+                        className = router.routes.map {if (it == "/") "selected" else ""}
                         href = !"#/"
                         +"All"
                     }
                 }
                 li {
                     a {
+                        className = router.routes.map {if (it == "/active") "selected" else ""}
                         href = !"#/active"
                         +"Active"
                     }
                 }
                 li {
                     a {
+                        className = router.routes.map {if (it == "/completed") "selected" else ""}
                         href = !"#/completed"
                         +"Completed"
                     }
