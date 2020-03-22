@@ -13,8 +13,7 @@ import io.fritz2.optics.WithId
 import io.fritz2.optics.buildLens
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 
 data class ToDo(
     val text: String,
@@ -35,7 +34,15 @@ fun main() {
             toDos + ToDo(text, false)
         }
 
-        val count = data.map { it.size }
+        val remove = handle<ToDo> {toDos, item ->
+            toDos.minus(item)
+        }
+
+        val toggleAll = handle<Boolean> {toDos, toggle ->
+            toDos.map { it.copy(completed = toggle)}
+        }
+
+        val count = data.map { it.count { !it.completed } }
     }
 
     fun HtmlElements.inputHeader() {
@@ -57,8 +64,16 @@ fun main() {
     fun HtmlElements.mainSection() {
         section {
             className = !"main"
-            //        <input id="toggle-all" class="toggle-all" type="checkbox">
-            //        <label for="toggle-all">Mark all as complete</label>
+            input("toggle-all") {
+                className = !"toggle-all"
+                type = !"checkbox"
+                toDos.toggleAll <= changes.states()
+                //TODO: set if all items are completed
+            }
+            label {
+                `for` = !"toggle-all"
+                +"Mark all as complete"
+            }
             ul {
                 className = !"todo-list"
                 toDos.eachStore().map { toDoStore ->
@@ -78,6 +93,7 @@ fun main() {
                                 label { textStore.data.bind() }
                                 button {
                                     className = !"destroy"
+                                    toDos.remove <= clicks.events.flatMapLatest { toDoStore.data }
                                 }
                             }
                             // <input class="edit" value="Create a TodoMVC template">
