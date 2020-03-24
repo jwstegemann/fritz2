@@ -128,11 +128,6 @@ class MapRoute(override val default: Map<String, String>):
 open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope() {
     private val prefix = "#"
 
-    init {
-        if (window.location.hash.removePrefix(prefix).isBlank())
-            setRoute(route.default)
-    }
-
     private val updates: Flow<T> = callbackFlow {
         val listener: (Event) -> Unit = {
             it.preventDefault()
@@ -143,6 +138,9 @@ open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope(
         }
         window.addEventListener(Events.load.name, listener)
         window.addEventListener(Events.hashchange.name, listener)
+
+        if (window.location.hash.removePrefix(prefix).isBlank())
+            setRoute(route.default)
 
         awaitClose { window.removeEventListener(Events.hashchange.name, listener) }
     }
