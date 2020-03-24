@@ -16,11 +16,13 @@ import kotlinx.coroutines.flow.*
 data class ToDo(
     val text: String,
     val completed: Boolean = false,
+    val editing: Boolean = false,
     override val id: String = text.hashCode().toString()
 ) : WithId
 
 val textLens = buildLens<ToDo, String>("text", {it.text}, {p,v -> p.copy(text = v)})
 val completedLens = buildLens<ToDo, Boolean>("completed", {it.completed}, {p,v -> p.copy(completed = v)})
+val editingLens = buildLens<ToDo, Boolean>("editing", {it.editing}, {p,v -> p.copy(editing = v)})
 
 
 @ExperimentalCoroutinesApi
@@ -29,9 +31,13 @@ fun main() {
     val router = router("/")
 
     val toDos = object : RootStore<List<ToDo>>(emptyList()) {
-        val add = handle<String> { toDos, text -> toDos.plus(ToDo(text)) }
+        val add = handle<String> { toDos, text ->
+            toDos.plus(ToDo(text))
+        }
 
-        val remove = handle<ToDo> {toDos, item -> toDos.minus(item) }
+        val remove = handle<ToDo> {
+                toDos, item -> toDos.minus(item)
+        }
 
         val toggleAll = handle<Boolean> {toDos, toggle ->
             toDos.map { it.copy(completed = toggle)}
@@ -48,38 +54,31 @@ fun main() {
     fun HtmlElements.inputHeader() {
         header {
             h1 { +"todos" }
-            input {
-                className = !"new-todo"
+            input("new-todo") {
                 placeholder = !"What needs to be done?"
                 autofocus = Const(true)
 
-                toDos.add <= changes.values().onEach {
-                    console.log("adding $it")
-                    domNode.value = ""
-                }
+                toDos.add <= changes.values().onEach { domNode.value = "" }
             }
         }
     }
 
     fun HtmlElements.mainSection() {
-        section {
-            className = !"main"
+        section("main") {
             input("toggle-all") {
-                className = !"toggle-all"
                 type = !"checkbox"
                 checked = toDos.allChecked
+
                 toDos.toggleAll <= changes.states()
-                //TODO: set if all items are completed
             }
             label {
                 `for` = !"toggle-all"
                 +"Mark all as complete"
             }
-            ul {
-                className = !"todo-list"
-                toDos.data.flatMapMerge { all ->
+            ul("todo-list") {
+                toDos.data.flatMapLatest { all ->
                     router.routes.map { route ->
-                        console.log("filter to $route")
+                        console.log("setting filter to $route")
                         when(route) {
                             "/completed" -> all.filter { it.completed }
                             "/active" -> all.filter { !it.completed }
@@ -90,24 +89,37 @@ fun main() {
                     val toDoStore = toDos.sub(toDo)
                     val textStore = toDoStore.sub(textLens)
                     val completedStore = toDoStore.sub(completedLens)
+                    val editingStore = toDoStore.sub(editingLens)
+
                     html {
                         li {
-                            className = completedStore.data.map { if(it) "completed" else "" }
-                            div {
-                                className = !"view"
-                                input {
-                                    className = !"toggle"
+                            className = toDoStore.data.map {
+                                //TODO: allow map of className -> boolean
+                                if (it.completed) "completed" else " "
+                                    .plus(if (it.editing) "editing" else "")
+                            }
+                            div("view") {
+                                input("toggle") {
                                     type = !"checkbox"
                                     checked = completedStore.data
+
                                     completedStore.update <= changes.states()
                                 }
-                                label { textStore.data.bind() }
-                                button {
-                                    className = !"destroy"
-                                    toDos.remove <= clicks.events.flatMapLatest { toDoStore.data }
+                                label {
+                                    textStore.data.bind()
+
+                                    editingStore.update <= dblclicks.map { true }
+                                }
+                                button("destroy") {
+                                    toDos.remove <= clicks.events.map{ toDo } //flatMapLatest { toDoStore.data }
                                 }
                             }
-                            // <input class="edit" value="Create a TodoMVC template">
+                            input("edit") {
+                                value = textStore.data
+                                textStore.update <= changes.values()
+
+                                editingStore.update <= blurs.map { false }
+                            }
                         }
                     }
                 }.bind()
@@ -115,11 +127,19 @@ fun main() {
         }
     }
 
+    fun HtmlElements.filter(text: String, route: String) {
+        li {
+            a {
+                className = router.routes.map {if (it == route) "selected" else ""}
+                href = !"#$route"
+                +text
+            }
+        }
+    }
+
     fun HtmlElements.appFooter() {
-        footer {
-            className = !"footer"
-            span {
-                className = !"todo-count"
+        footer("footer") {
+            span("todo-count") {
                 strong {
                     toDos.count.map {
                         val plural = if (it != 1) "s" else ""
@@ -127,40 +147,23 @@ fun main() {
                     }.bind()
                 }
             }
-            ul {
-                className = !"filters"
-                //FIMXE: render by loop
-                li {
-                    a {
-                        className = router.routes.map {if (it == "/") "selected" else ""}
-                        href = !"#/"
-                        +"All"
-                    }
-                }
-                li {
-                    a {
-                        className = router.routes.map {if (it == "/active") "selected" else ""}
-                        href = !"#/active"
-                        +"Active"
-                    }
-                }
-                li {
-                    a {
-                        className = router.routes.map {if (it == "/completed") "selected" else ""}
-                        href = !"#/completed"
-                        +"Completed"
-                    }
-                }
+
+            ul("filters") {
+                //TODO: Make map and use in routing
+                filter("All","/")
+                filter("Active","/active")
+                filter("Completed", "/completed")
             }
-            button {
-                className = !"clear-completed"
+            button("clear-completed") {
                 +"Clear completed"
+
                 toDos.clearCompleted <= clicks
             }
         }
     }
 
     val app = html {
+        //TODO: allow to mount three in a row...
         section {
             inputHeader()
             mainSection()

@@ -23,7 +23,7 @@ fun main() {
 
     val counter = store.data.map { number ->
         html {
-            p("value") {
+            p(id ="value") {
                 +number.toString()
                 val x = clicks
             }
