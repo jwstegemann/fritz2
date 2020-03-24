@@ -13,11 +13,11 @@ import kotlin.browser.window
 @DslMarker
 annotation class HtmlTagMarker
 
-//TODO: Could inherit w3c.dom.Element by Delegation
+//TODO: remove unnecassary default-arguments
 @ExperimentalCoroutinesApi
 @FlowPreview
 @HtmlTagMarker
-abstract class Tag<T : Element>(tagName: String, val id: String? = null, override val domNode: T = createDomElement(tagName, id).unsafeCast<T>())
+abstract class Tag<T : Element>(tagName: String, val id: String? = null, val baseClass: String? = null, override val domNode: T = createDomElement(tagName, id, baseClass).unsafeCast<T>())
     : WithDomNode<T>, WithAttributes<T>, WithEvents<T>(), HtmlElements {
 
     override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
@@ -39,16 +39,25 @@ abstract class Tag<T : Element>(tagName: String, val id: String? = null, overrid
 
     var className: Flow<String>
         get() {throw NotImplementedError()}
-        set(value) { attribute("class", value)}
+        set(value) {
+            attribute("class", if (baseClass != null) value.map { "$baseClass $it" } else value)
+        }
 
     var classList: Flow<List<String>>
         get() {throw NotImplementedError()}
-        set(values) { attribute("class", values)}
+        set(values) {
+            attribute("class", if (baseClass != null) values.map { it + baseClass} else values)
+        }
+
+    //TODO: classMap
 }
 
-internal fun createDomElement(tagName: String, id: String? = null): Element =
+internal fun createDomElement(tagName: String, id: String?, baseClass: String?): Element =
     window.document.createElement(tagName).also {element ->
         id?.let {
-            element.setAttribute("id",id)
+            element.setAttribute("id",it)
+        }
+        baseClass?.let {
+            element.setAttribute("class", it)
         }
     }
