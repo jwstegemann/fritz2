@@ -49,7 +49,11 @@ abstract class Tag<T : Element>(tagName: String, val id: String? = null, val bas
             attribute("class", if (baseClass != null) values.map { it + baseClass} else values)
         }
 
-    //TODO: classMap
+    var classMap: Flow<Map<String, Boolean>>
+        get() {throw NotImplementedError()}
+        set(values) {
+            attribute("class", if (baseClass != null) values.map { it + (baseClass to true)} else values)
+        }
 }
 
 internal fun createDomElement(tagName: String, id: String?, baseClass: String?): Element =

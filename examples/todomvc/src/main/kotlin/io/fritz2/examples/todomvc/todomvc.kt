@@ -1,9 +1,9 @@
 package io.fritz2.examples.todomvc
 
 import io.fritz2.binding.*
+import io.fritz2.dom.append
 import io.fritz2.dom.html.HtmlElements
 import io.fritz2.dom.html.html
-import io.fritz2.dom.mount
 import io.fritz2.dom.states
 import io.fritz2.dom.values
 import io.fritz2.optics.WithId
@@ -20,9 +20,19 @@ data class ToDo(
     override val id: String = text.hashCode().toString()
 ) : WithId
 
+
 val textLens = buildLens<ToDo, String>("text", {it.text}, {p,v -> p.copy(text = v)})
 val completedLens = buildLens<ToDo, Boolean>("completed", {it.completed}, {p,v -> p.copy(completed = v)})
 val editingLens = buildLens<ToDo, Boolean>("editing", {it.editing}, {p,v -> p.copy(editing = v)})
+
+
+data class Filter(val text: String, val function: (List<ToDo>) -> List<ToDo>)
+
+val filters = mapOf (
+    "/" to Filter("All") { it },
+    "/active" to Filter("Active") { toDos -> toDos.filter { !it.completed } },
+    "/completed" to Filter("Completed") { toDos -> toDos.filter { it.completed } }
+)
 
 
 @ExperimentalCoroutinesApi
@@ -32,11 +42,11 @@ fun main() {
 
     val toDos = object : RootStore<List<ToDo>>(emptyList()) {
         val add = handle<String> { toDos, text ->
-            toDos.plus(ToDo(text))
+            toDos + ToDo(text)
         }
 
         val remove = handle<ToDo> {
-                toDos, item -> toDos.minus(item)
+                toDos, item -> toDos - item
         }
 
         val toggleAll = handle<Boolean> {toDos, toggle ->
@@ -51,7 +61,7 @@ fun main() {
         val allChecked = data.map { todos -> todos.all { it.completed }}
     }
 
-    fun HtmlElements.inputHeader() {
+    val inputHeader = html {
         header {
             h1 { +"todos" }
             input("new-todo") {
@@ -63,7 +73,7 @@ fun main() {
         }
     }
 
-    fun HtmlElements.mainSection() {
+    val mainSection = html {
         section("main") {
             input("toggle-all") {
                 type = !"checkbox"
@@ -77,14 +87,7 @@ fun main() {
             }
             ul("todo-list") {
                 toDos.data.flatMapLatest { all ->
-                    router.routes.map { route ->
-                        console.log("setting filter to $route")
-                        when(route) {
-                            "/completed" -> all.filter { it.completed }
-                            "/active" -> all.filter { !it.completed }
-                            else -> all
-                        }
-                    }
+                    router.routes.map { route -> filters[route]?.function?.invoke(all) ?: all }
                 }.each().map { toDo ->
                     val toDoStore = toDos.sub(toDo)
                     val textStore = toDoStore.sub(textLens)
@@ -93,11 +96,11 @@ fun main() {
 
                     html {
                         li {
-                            className = toDoStore.data.map {
-                                //TODO: allow map of className -> boolean
-                                if (it.completed) "completed" else " "
-                                    .plus(if (it.editing) "editing" else "")
-                            }
+                            //TODO: better flatmap over editing and completed
+                            classMap = toDoStore.data.map { mapOf(
+                                    "completed" to it.completed,
+                                    "editing" to it.editing
+                            )}
                             div("view") {
                                 input("toggle") {
                                     type = !"checkbox"
@@ -137,22 +140,18 @@ fun main() {
         }
     }
 
-    fun HtmlElements.appFooter() {
+    val appFooter = html {
         footer("footer") {
             span("todo-count") {
                 strong {
                     toDos.count.map {
-                        val plural = if (it != 1) "s" else ""
-                        "$it item$plural left"
+                        "$it item${if (it != 1) "s" else ""} left"
                     }.bind()
                 }
             }
 
             ul("filters") {
-                //TODO: Make map and use in routing
-                filter("All","/")
-                filter("Active","/active")
-                filter("Completed", "/completed")
+                filters.forEach { filter(it.value.text, it.key) }
             }
             button("clear-completed") {
                 +"Clear completed"
@@ -162,14 +161,5 @@ fun main() {
         }
     }
 
-    val app = html {
-        //TODO: allow to mount three in a row...
-        section {
-            inputHeader()
-            mainSection()
-            appFooter()
-        }
-    }
-
-    app.mount("todoapp")
+    append("todoapp", inputHeader, mainSection, appFooter)
 }
