@@ -139,6 +139,8 @@ open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope(
         window.addEventListener(Events.load.name, listener)
         window.addEventListener(Events.hashchange.name, listener)
 
+        delay(100)
+
         if (window.location.hash.removePrefix(prefix).isBlank())
             setRoute(route.default)
 

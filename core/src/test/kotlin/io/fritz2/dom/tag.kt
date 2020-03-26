@@ -1,5 +1,6 @@
 package io.fritz2.dom
 
+import io.fritz2.binding.const
 import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.test.initDocument
@@ -27,7 +28,7 @@ class TagTests {
 
         html {
             div(testId) {
-                className = !testClass
+                className = const(testClass)
             }
         }.mount(targetId)
 
@@ -50,10 +51,10 @@ class TagTests {
 
         html {
             ul("list") {
-                (!testIds).each().map {
+                (const(testIds)).each().map {
                     html {
                         li(it) {
-                            classList = !testClasses
+                            classList = const(testClasses)
                         }
                     }
                 }.bind()

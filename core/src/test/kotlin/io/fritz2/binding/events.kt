@@ -44,11 +44,11 @@ class EventTests {
                     store.update <= changes.values()
                 }
                 div(resultId) {
-                    +"value: "
+                    text("value: ")
                     store.data.bind()
                 }
                 button(buttonId) {
-                    +"add one more little dot"
+                    text("add one more little dot")
                     store.addADot <= clicks
                 }
             }

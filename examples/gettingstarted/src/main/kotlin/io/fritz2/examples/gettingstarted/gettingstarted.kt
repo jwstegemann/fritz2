@@ -46,12 +46,12 @@ fun main() {
                 store.update <= changes.values()
             }
             div {
-                +"value: "
+                text("value: ")
                 store.data.bind()
             }
 
             button {
-                +"add one more little dot"
+                text("add one more little dot")
                 store.addADot <= clicks
             }
             ul {
@@ -59,7 +59,7 @@ fun main() {
                     html {
                         li {
                             button("btn", "delete-btn") {
-                                +s
+                                text(s)
                                 seq.deleteItem <= clicks.map { console.log("deleting $s"); s }
                                 classStore.remove <= clicks.map { "newItem" }
                             }
@@ -68,10 +68,10 @@ fun main() {
                 }.bind()
             }
             button(id="button") {
-                +"add an item"
+                text("add an item")
                 seq.addItem <= clicks
                 classStore.add <= clicks.map { "newItem" }
-                attributeData("test", "test-button1")
+                attr("data-test", "test-button1")
                 classList = classStore.data
             }
         }

@@ -1,5 +1,6 @@
 package io.fritz2.dom
 
+import io.fritz2.binding.const
 import io.fritz2.dom.html.html
 import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
@@ -31,12 +32,12 @@ class AttributeTests {
 
         html {
             div(testId) {
-                attribute(name0, value0)
-                attribute(name1, !value1)
-                attributeData(name0, value0)
-                attributeData(name1, !value1)
-                attribute(name2, values2)
-                attribute(name3, !values3)
+                attr(name0, value0)
+                attr(name1, const(value1))
+                attr("data-$name0", value0)
+                attr("data-$name1", const(value1))
+                attr(name2, values2)
+                attr(name3, const(values3))
             }
         }.mount(targetId)
 

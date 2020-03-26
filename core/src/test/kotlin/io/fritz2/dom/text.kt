@@ -1,5 +1,6 @@
 package io.fritz2.dom
 
+import io.fritz2.binding.const
 import io.fritz2.dom.html.html
 import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
@@ -26,7 +27,7 @@ class TextTests {
 
         html {
             div(testId) {
-                +text
+                text(text)
             }
         }.mount(targetId)
 
@@ -47,7 +48,7 @@ class TextTests {
 
         html {
             div(testId) {
-                +!text
+                const(text).bind()
             }
         }.mount(targetId)
 
@@ -68,7 +69,7 @@ class TextTests {
 
         html {
             div(testId) {
-                (!text).bind()
+                const(text).bind()
             }
         }.mount(targetId)
 

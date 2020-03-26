@@ -30,8 +30,6 @@ abstract class Tag<T : Element>(tagName: String, val id: String? = null, val bas
 
     fun <X : Element> Seq<Tag<X>>.bind(): MultiMountPoint<WithDomNode<Element>> = DomMultiMountPoint(this.data, domNode)
 
-    operator fun <T> T.not() = Const(this)
-
     operator fun <E: Event, X: Element> Handler<Unit>.compareTo(listener: Listener<E, X>): Int {
         execute(listener.events.map { Unit })
         return 0
@@ -40,19 +38,19 @@ abstract class Tag<T : Element>(tagName: String, val id: String? = null, val bas
     var className: Flow<String>
         get() {throw NotImplementedError()}
         set(value) {
-            attribute("class", if (baseClass != null) value.map { "$baseClass $it" } else value)
+            (if (baseClass != null) value.map { "$baseClass $it" } else value).bindAttr("class")
         }
 
     var classList: Flow<List<String>>
         get() {throw NotImplementedError()}
         set(values) {
-            attribute("class", if (baseClass != null) values.map { it + baseClass} else values)
+            (if (baseClass != null) values.map { it + baseClass} else values).bindAttr("class")
         }
 
     var classMap: Flow<Map<String, Boolean>>
         get() {throw NotImplementedError()}
         set(values) {
-            attribute("class", if (baseClass != null) values.map { it + (baseClass to true)} else values)
+            (if (baseClass != null) values.map { it + (baseClass to true)} else values).bindAttr("class")
         }
 }
 

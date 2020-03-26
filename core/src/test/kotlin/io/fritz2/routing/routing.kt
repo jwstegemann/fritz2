@@ -1,5 +1,6 @@
 package io.fritz2.routing
 
+import io.fritz2.binding.const
 import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
@@ -9,14 +10,11 @@ import io.fritz2.test.runTest
 import io.fritz2.test.targetId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.launchIn
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLParagraphElement
 import kotlin.browser.document
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -38,9 +36,9 @@ class RoutingTests {
 
         html {
             div(testId) {
-                +router.routes
+                router.routes.bind()
                 ul {
-                    (!buttons).each().map { (id, page) ->
+                    const(buttons).each().map { (id, page) ->
                         html {
                             li {
                                 button(id) {
@@ -84,13 +82,13 @@ class RoutingTests {
         html {
             div {
                 p(pageId) {
-                    +router.select(pageKey) { it.first }
+                    router.select(pageKey) { it.first }.bind()
                 }
                 p(btnId) {
-                    +router.select(btnKey) { it.first }
+                    router.select(btnKey) { it.first }.bind()
                 }
                 ul {
-                    (!buttons).each().map { (id, page) ->
+                    const(buttons).each().map { (id, page) ->
                         html {
                             li {
                                 button(id) {

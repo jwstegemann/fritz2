@@ -73,7 +73,7 @@ class SeqTests {
                     store.data.each().map { i ->
                         html {
                             li("entry$i") {
-                                +i.toString()
+                                text(i.toString())
                             }
                         }
                     }.bind()

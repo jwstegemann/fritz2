@@ -63,10 +63,10 @@ fun main() {
 
     val inputHeader = html {
         header {
-            h1 { +"todos" }
+            h1 { text("todos") }
             input("new-todo") {
-                placeholder = !"What needs to be done?"
-                autofocus = Const(true)
+                placeholder = const("What needs to be done?")
+                autofocus = const(true)
 
                 toDos.add <= changes.values().onEach { domNode.value = "" }
             }
@@ -76,14 +76,14 @@ fun main() {
     val mainSection = html {
         section("main") {
             input("toggle-all") {
-                type = !"checkbox"
+                type = const("checkbox")
                 checked = toDos.allChecked
 
                 toDos.toggleAll <= changes.states()
             }
             label {
-                `for` = !"toggle-all"
-                +"Mark all as complete"
+                `for` = const("toggle-all")
+                text("Mark all as complete")
             }
             ul("todo-list") {
                 toDos.data.flatMapLatest { all ->
@@ -103,7 +103,7 @@ fun main() {
                             )}
                             div("view") {
                                 input("toggle") {
-                                    type = !"checkbox"
+                                    type = const("checkbox")
                                     checked = completedStore.data
 
                                     completedStore.update <= changes.states()
@@ -121,6 +121,10 @@ fun main() {
                                 value = textStore.data
                                 textStore.update <= changes.values()
 
+                                editingStore.data.map { isEditing ->
+                                    if (isEditing) domNode.focus()
+                                    isEditing.toString()
+                                }.watch()
                                 editingStore.update <= blurs.map { false }
                             }
                         }
@@ -134,8 +138,8 @@ fun main() {
         li {
             a {
                 className = router.routes.map {if (it == route) "selected" else ""}
-                href = !"#$route"
-                +text
+                href = const("#$route")
+                text(text)
             }
         }
     }
@@ -154,7 +158,7 @@ fun main() {
                 filters.forEach { filter(it.value.text, it.key) }
             }
             button("clear-completed") {
-                +"Clear completed"
+                text("Clear completed")
 
                 toDos.clearCompleted <= clicks
             }

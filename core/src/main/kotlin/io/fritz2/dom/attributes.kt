@@ -13,7 +13,7 @@ import kotlin.reflect.KProperty
 object AttributeDelegate {
     operator fun <X : Element, T: Any> getValue(thisRef: Tag<X>, property: KProperty<*>): Flow<T> = throw NotImplementedError()
     operator fun <X : Element, T: Any> setValue(thisRef: Tag<X>, property: KProperty<*>, values: Flow<T>) {
-        thisRef.attribute(property.name, values.map{s -> s.toString()})
+        thisRef.apply { values.map{ s -> s.toString()}.bindAttr(property.name) }
     }
 }
 
@@ -21,17 +21,12 @@ object AttributeDelegate {
 @FlowPreview
 interface WithAttributes<out T : Element> : WithDomNode<T> {
 
-    fun attribute(name: String, value: String) = domNode.setAttribute(name, value)
-    fun attribute(name: String, values: Flow<String>) = values.bind(name)
-    fun attributeData(name: String, value: String) = attribute("data-$name", value)
-    fun attributeData(name: String, values: Flow<String>) = attribute("data-$name", values)
-    fun attribute(name: String, values: List<String>) = domNode.setAttribute(name, values.joinToString(separator = " "))
-    fun attribute(name: String, values: Flow<List<String>>) = values.bind(name)
-    fun attribute(name: String, values: Flow<Map<String, Boolean>>) = values.bind(name)
+    fun attr(name: String, value: String) = domNode.setAttribute(name, value)
+    fun attr(name: String, values: List<String>) = domNode.setAttribute(name, values.joinToString(separator = " "))
 
-    fun Flow<String>.bind(name: String) = AttributeMountPoint(name, this, domNode)
-    fun Flow<List<String>>.bind(name: String) = AttributeMountPoint(name, this.map{l -> l.joinToString(separator = " ")}, domNode)
-    fun Flow<Map<String, Boolean>>.bind(name: String) = AttributeMountPoint(name, this.map{ m ->
+    fun Flow<String>.bindAttr(name: String) = AttributeMountPoint(name, this, domNode)
+    fun Flow<List<String>>.bindAttr(name: String) = AttributeMountPoint(name, this.map{ l -> l.joinToString(separator = " ")}, domNode)
+    fun Flow<Map<String, Boolean>>.bindAttr(name: String) = AttributeMountPoint(name, this.map{ m ->
             m.filter { it.value }.keys.joinToString(" ")
     }, domNode)
 }

@@ -41,7 +41,7 @@ class ListenerTest {
                     store.update <= changes.values()
                 }
                 div(resultId) {
-                    +store.data
+                    store.data.bind()
                 }
             }
         }.mount(targetId)

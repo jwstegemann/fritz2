@@ -24,7 +24,7 @@ fun main() {
     val counter = store.data.map { number ->
         html {
             p(id ="value") {
-                +number.toString()
+                text(number.toString())
                 val x = clicks
             }
         }
@@ -40,7 +40,7 @@ fun main() {
         div {
             counter.bind()
             button {
-                +"start updates"
+                text("start updates")
                 domNode.addEventListener("click", {
                     val values = flow<Int> {
                         for (i in 1..500000) {

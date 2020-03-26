@@ -42,7 +42,7 @@ class StoreTests {
         html {
             section {
                 div(resultId) {
-                    +store.data
+                    store.data.bind()
                 }
                 button(buttonId) {
                     store.execute <= clicks
@@ -91,7 +91,7 @@ class StoreTests {
         html {
             section {
                 div(resultId) {
-                    +store.data
+                    store.data.bind()
                 }
                 button(buttonId) {
                     store.execute <= clicks
@@ -139,7 +139,7 @@ class StoreTests {
         html {
             section {
                 div(resultId) {
-                    +store.data
+                    store.data.bind()
                 }
                 button(buttonId) {
                     store.execute <= clicks
