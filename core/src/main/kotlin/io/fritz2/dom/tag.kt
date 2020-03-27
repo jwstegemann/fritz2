@@ -38,6 +38,7 @@ abstract class Tag<T : Element>(tagName: String, val id: String? = null, val bas
     var className: Flow<String>
         get() {throw NotImplementedError()}
         set(value) {
+            //TODO: better elvis?
             (if (baseClass != null) value.map { "$baseClass $it" } else value).bindAttr("class")
         }
 

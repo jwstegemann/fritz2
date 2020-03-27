@@ -31,13 +31,13 @@ class AttributeTests {
         val (name3, values3) = "test3" to testRange.map { "value$it" }
 
         html {
-            div(testId) {
+            div(id=testId) {
                 attr(name0, value0)
-                attr(name1, const(value1))
+                const(value1).bindAttr(name1)
                 attr("data-$name0", value0)
-                attr("data-$name1", const(value1))
+                const(value1).bindAttr("data-$name1")
                 attr(name2, values2)
-                attr(name3, const(values3))
+                const(values3).bindAttr(name3)
             }
         }.mount(targetId)
 

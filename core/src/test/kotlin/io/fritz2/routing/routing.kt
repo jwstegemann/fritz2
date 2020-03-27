@@ -35,13 +35,13 @@ class RoutingTests {
         val buttons = testRange.map { "btn$it" to "page$it" }
 
         html {
-            div(testId) {
+            div(id=testId) {
                 router.routes.bind()
                 ul {
                     const(buttons).each().map { (id, page) ->
                         html {
                             li {
-                                button(id) {
+                                button(id=id) {
                                     router.navTo <= clicks.map { page }
                                 }
                             }
@@ -81,17 +81,17 @@ class RoutingTests {
 
         html {
             div {
-                p(pageId) {
+                p(id=pageId) {
                     router.select(pageKey) { it.first }.bind()
                 }
-                p(btnId) {
+                p(id=btnId) {
                     router.select(btnKey) { it.first }.bind()
                 }
                 ul {
                     const(buttons).each().map { (id, page) ->
                         html {
                             li {
-                                button(id) {
+                                button(id=id) {
                                     router.navTo <= clicks.map { mapOf(pageKey to page, btnKey to id) }
                                 }
                             }

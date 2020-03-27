@@ -69,41 +69,41 @@ class SeqTests {
 
         html {
             section {
-                ul(testId) {
+                ul(id=testId) {
                     store.data.each().map { i ->
                         html {
-                            li("entry$i") {
+                            li(id = "entry$i") {
                                 text(i.toString())
                             }
                         }
                     }.bind()
                 }
 
-                button("replaceList") {
+                button(id="replaceList") {
                     store.replaceList <= clicks
                 }
-                button("addAtBeginning") {
+                button(id="addAtBeginning") {
                     store.addAtBeginning <= clicks
                 }
-                button("addAtEnd") {
+                button(id="addAtEnd") {
                     store.addAtEnd <= clicks
                 }
-                button("addAtMiddle") {
+                button(id="addAtMiddle") {
                     store.addAtMiddle <= clicks
                 }
-                button("removeAtBeginning") {
+                button(id="removeAtBeginning") {
                     store.removeAtBeginning <= clicks
                 }
-                button("removeAtEnd") {
+                button(id="removeAtEnd") {
                     store.removeAtEnd <= clicks
                 }
-                button("removeAtMiddle") {
+                button(id="removeAtMiddle") {
                     store.removeAtMiddle <= clicks
                 }
-                button("filterEven") {
+                button(id="filterEven") {
                     store.filterEven <= clicks
                 }
-                button("reverse") {
+                button(id="reverse") {
                     store.reverse <= clicks
                 }
             }

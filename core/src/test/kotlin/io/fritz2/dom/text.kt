@@ -26,7 +26,7 @@ class TextTests {
         val text = "testText"
 
         html {
-            div(testId) {
+            div(id=testId) {
                 text(text)
             }
         }.mount(targetId)
@@ -47,7 +47,7 @@ class TextTests {
         val text = "testText"
 
         html {
-            div(testId) {
+            div(id=testId) {
                 const(text).bind()
             }
         }.mount(targetId)
@@ -68,7 +68,7 @@ class TextTests {
         val text = "testText"
 
         html {
-            div(testId) {
+            div(id=testId) {
                 const(text).bind()
             }
         }.mount(targetId)

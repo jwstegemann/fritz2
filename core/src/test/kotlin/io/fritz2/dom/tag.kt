@@ -27,7 +27,7 @@ class TagTests {
         val testClass = "testClass"
 
         html {
-            div(testId) {
+            div(id=testId) {
                 className = const(testClass)
             }
         }.mount(targetId)
@@ -50,10 +50,10 @@ class TagTests {
         val testClasses = testRange.map { "testClass$it" }
 
         html {
-            ul("list") {
+            ul(id = "list") {
                 (const(testIds)).each().map {
                     html {
-                        li(it) {
+                        li(id=it) {
                             classList = const(testClasses)
                         }
                     }
