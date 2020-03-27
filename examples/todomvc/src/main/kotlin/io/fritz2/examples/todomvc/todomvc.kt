@@ -47,15 +47,15 @@ fun main() {
             toDos + ToDo(text)
         }
 
-        val remove = handle<ToDo> {
-                toDos, item -> toDos - item
+        val remove = handle<ToDo> { toDos, item ->
+            toDos - item
         }
 
-        val toggleAll = handle<Boolean> {toDos, toggle ->
+        val toggleAll = handle<Boolean> { toDos, toggle ->
             toDos.map { it.copy(completed = toggle)}
         }
 
-        val clearCompleted = handle {toDos ->
+        val clearCompleted = handle { toDos ->
             toDos.filter { !it.completed }
         }
 
