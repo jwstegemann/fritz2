@@ -12,7 +12,7 @@ fritz2 includes an intuitive way to build and render html-elements using a type-
 ```kotlin
 val model = RootStore<String>("init value")
 
-val component = html {
+html {
     div {
         input {
             value = model.data
@@ -23,9 +23,7 @@ val component = html {
             store.data.bind()
         }
     }
-}
-
-component.mount("target")
+}.mount("target")
 ```
 
 fritz2 implements **precise data binding**. That means that exactly those (and **only** those) dom-nodes (elements, attributes, etc.) change, that depend on the parts of your data-model, that have changed. 
@@ -40,7 +38,7 @@ fritz2 itself depends on only a handfull of [concepts](https://github.com/jwsteg
 
 ## How to try it that early?
 You can either
-* checkout the project, import it in your favourite IDE (or whatever you like) and run `./gradlew :examples:gettingstarted:run` (or another example)
+* checkout the project, import it in your favourite IDE (or whatever you like) and run `./gradlew :examples:todomvc:run` (or another example)
 * set up a new project on your own following our [documentation](https://github.com/jwstegemann/fritz2/wiki/Project-Setup)
 
 
@@ -56,12 +54,12 @@ You can either
 - routing (for SPAs, hash-based)
 - server-communication (Rest APIs, etc.) (work in progress)
 - [documentation (work in progress)](https://github.com/jwstegemann/fritz2/wiki)
+- [example-app](https://github.com/jwstegemann/fritz2/tree/master/examples/todomvc) implementing the specification of [TodoMVC](http://todomvc.com/) (work in progress) 
 
 ## What will come next?
 
-- complete example (ToDoMVC)
 - performance and memory optimizations
-- user auth (examle with OAuth)
+- user auth (example with OAuth)
 
 ## Overall Goals
 

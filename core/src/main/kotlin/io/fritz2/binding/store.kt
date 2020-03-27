@@ -58,7 +58,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
 
     abstract val data: Flow<T>
     val update = handle<T> { _, newValue -> newValue }
-
+    
     abstract fun <X> sub(lens: Lens<T, X>): Store<X>
 }
 

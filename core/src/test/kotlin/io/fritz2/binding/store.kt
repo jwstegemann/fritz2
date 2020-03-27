@@ -41,10 +41,10 @@ class StoreTests {
 
         html {
             section {
-                div(resultId) {
-                    +store.data
+                div(id=resultId) {
+                    store.data.bind()
                 }
-                button(buttonId) {
+                button(id=buttonId) {
                     store.execute <= clicks
                 }
             }
@@ -90,10 +90,10 @@ class StoreTests {
 
         html {
             section {
-                div(resultId) {
-                    +store.data
+                div(id=resultId) {
+                    store.data.bind()
                 }
-                button(buttonId) {
+                button(id=buttonId) {
                     store.execute <= clicks
                 }
             }
@@ -138,10 +138,10 @@ class StoreTests {
 
         html {
             section {
-                div(resultId) {
-                    +store.data
+                div(id=resultId) {
+                    store.data.bind()
                 }
-                button(buttonId) {
+                button(id=buttonId) {
                     store.execute <= clicks
                 }
             }

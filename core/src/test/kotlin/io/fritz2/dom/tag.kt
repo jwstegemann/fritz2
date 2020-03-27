@@ -1,5 +1,6 @@
 package io.fritz2.dom
 
+import io.fritz2.binding.const
 import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.test.initDocument
@@ -26,8 +27,8 @@ class TagTests {
         val testClass = "testClass"
 
         html {
-            div(testId) {
-                className = !testClass
+            div(id=testId) {
+                className = const(testClass)
             }
         }.mount(targetId)
 
@@ -49,11 +50,11 @@ class TagTests {
         val testClasses = testRange.map { "testClass$it" }
 
         html {
-            ul("list") {
-                (!testIds).each().map {
+            ul(id = "list") {
+                (const(testIds)).each().map {
                     html {
-                        li(it) {
-                            classList = !testClasses
+                        li(id=it) {
+                            classList = const(testClasses)
                         }
                     }
                 }.bind()

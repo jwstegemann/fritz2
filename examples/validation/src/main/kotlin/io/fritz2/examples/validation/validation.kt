@@ -1,6 +1,7 @@
 package io.fritz2.examples.validation
 
 import io.fritz2.binding.RootStore
+import io.fritz2.binding.const
 import io.fritz2.binding.each
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
@@ -61,27 +62,27 @@ fun main() {
     val myComponent = html {
         section {
             label {
-                +"EMail"
+                text("EMail")
                 input {
                     value = store.data
                     store.updateWithValidation <= changes.values()
                 }
             }
             div {
-                +"value: "
+                text("value: ")
                 store.data.bind()
             }
             div {
-                +"state: "
-                +store.validator.isValid.map{ v -> if(v) "valid" else "not valid"}
+                text("state: ")
+                store.validator.isValid.map{ v -> if(v) "valid" else "not valid"}.bind()
             }
             hre{}
             ul {
                 store.msgs().each().map {
                     html {
                         li {
-                            +it.text
-                            className = !it.severity.name.toLowerCase()
+                            text(it.text)
+                            className = const(it.severity.name.toLowerCase())
                         }
                     }
                 }.bind()

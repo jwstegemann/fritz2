@@ -36,12 +36,12 @@ class ListenerTest {
 
         html {
             section {
-                input(inputId) {
+                input(id=inputId) {
                     value = store.data
                     store.update <= changes.values()
                 }
-                div(resultId) {
-                    +store.data
+                div(id=resultId) {
+                    store.data.bind()
                 }
             }
         }.mount(targetId)
@@ -82,10 +82,10 @@ class ListenerTest {
 
         html {
             section {
-                div(resultId) {
+                div(id=resultId) {
                     store.data.bind()
                 }
-                button(buttonId) {
+                button(id=buttonId) {
                     store.addADot <= clicks
                 }
             }
@@ -139,10 +139,10 @@ class ListenerTest {
 
         html {
             section {
-                div(resultId) {
+                div(id=resultId) {
                     store.data.bind()
                 }
-                button(buttonId) {
+                button(id=buttonId) {
                     store.addDot <= clicks
                     store.addPlus <= clicks
                     store.addDollar <= clicks
@@ -200,10 +200,10 @@ class ListenerTest {
 
         html {
             section {
-                div(resultId) {
+                div(id=resultId) {
                     store.data.bind()
                 }
-                input(inputId) {
+                input(id=inputId) {
                     store.keyPressed <= keydowns.key()
                 }
             }

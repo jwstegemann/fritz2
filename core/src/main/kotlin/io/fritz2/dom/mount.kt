@@ -52,7 +52,9 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
 
 class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: Element?) : SingleMountPoint<String>(upstream) {
     override fun set(value: String, last: String?) {
-        target?.setAttribute(name, value)
+        //FIXME: Should only be true for Boolean-Attributes...
+        if (value == "false") target?.removeAttribute(name)
+        else target?.setAttribute(name, value)
     }
 }
 
@@ -86,12 +88,27 @@ fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
     }
 }
 
-//TODO: is this ok? Better use Constant-Flow?
+@ExperimentalCoroutinesApi
+@FlowPreview
+fun <X : Element> append(targetId: String, vararg flows: Flow<Tag<X>>) {
+    window.document.getElementById(targetId)?.let { element ->
+        flows.forEach { flow -> DomMountPoint(flow, element) }
+    }
+}
+
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun <X : Element> Tag<X>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
         it.appendChild(this.domNode)
+    }
+}
+
+@ExperimentalCoroutinesApi
+@FlowPreview
+fun <X : Element> append(targetId: String, vararg tags: Tag<X>) {
+    window.document.getElementById(targetId)?.let { element ->
+        tags.forEach { tag -> element.appendChild(tag.domNode) }
     }
 }

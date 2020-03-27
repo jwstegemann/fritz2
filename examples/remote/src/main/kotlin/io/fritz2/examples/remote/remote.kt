@@ -1,6 +1,7 @@
 package io.fritz2.examples.remote
 
 import io.fritz2.binding.RootStore
+import io.fritz2.binding.const
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import io.fritz2.dom.values
@@ -42,23 +43,23 @@ fun main() {
     val myComponent = html {
         div {
             label {
-                +"get for id"
+                text("get for id")
             }
             input {
-                value = !"start"
+                value = const("start")
                 store.sampleGet <= changes.values()
             }
             hre {  }
             label {
-                +"post for id"
+                text("post for id")
             }
             input {
-                value = !"start"
+                value = const("start")
                 store.samplePost <= changes.values()
             }
             hre {  }
             div {
-                +"result: "
+                text("result: ")
                 store.data.bind()
             }
 

@@ -24,19 +24,19 @@ fun main() {
             ul {
                 li {
                     button {
-                        +"Show ${Pages.a}"
+                        text("Show ${Pages.a}")
                         router.navTo <= clicks.map { mapOf("page" to Pages.a) }
                     }
                 }
                 li {
                     button {
-                        +"Show ${Pages.b}"
+                        text("Show ${Pages.b}")
                         router.navTo <= clicks.map { mapOf("page" to Pages.b) }
                     }
                 }
                 li {
                     button {
-                        +"Show ${Pages.c}"
+                        text("Show ${Pages.c}")
                         router.navTo <= clicks.map { mapOf("page" to Pages.c) }
                     }
                 }
@@ -46,22 +46,22 @@ fun main() {
                     when (page) {
                         Pages.a -> html {
                             h1 {
-                                +"Showing page A"
+                                text("Showing page A")
                             }
                         }
                         Pages.b -> html {
                             h1 {
-                                +"Showing page B"
+                                text("Showing page B")
                             }
                         }
                         Pages.c -> html {
                             h1 {
-                                +"Showing page C"
+                                text("Showing page C")
                             }
                         }
                         else -> html {
                             h1 {
-                                +"Page $page not found!"
+                                text("Page $page not found!")
                             }
                         }
                     }

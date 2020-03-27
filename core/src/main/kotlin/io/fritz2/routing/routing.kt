@@ -2,6 +2,7 @@ package io.fritz2.routing
 
 import io.fritz2.binding.Handler
 import io.fritz2.dom.html.Events
+import io.fritz2.flow.asSharedFlow
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
@@ -127,11 +128,6 @@ class MapRoute(override val default: Map<String, String>):
 open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope() {
     private val prefix = "#"
 
-    init {
-        if (window.location.hash.removePrefix(prefix).isBlank())
-            setRoute(route.default)
-    }
-
     private val updates: Flow<T> = callbackFlow {
         val listener: (Event) -> Unit = {
             it.preventDefault()
@@ -143,6 +139,11 @@ open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope(
         window.addEventListener(Events.load.name, listener)
         window.addEventListener(Events.hashchange.name, listener)
 
+        delay(100)
+
+        if (window.location.hash.removePrefix(prefix).isBlank())
+            setRoute(route.default)
+
         awaitClose { window.removeEventListener(Events.hashchange.name, listener) }
     }
 
@@ -153,7 +154,7 @@ open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope(
     /**
      * Gives the actual route as Flow
      */
-    val routes: Flow<T> = updates.distinctUntilChanged()
+    val routes: Flow<T> = updates.distinctUntilChanged().asSharedFlow()
 
     /**
      * Handler vor setting

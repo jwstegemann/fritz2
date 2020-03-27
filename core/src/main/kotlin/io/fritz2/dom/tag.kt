@@ -13,11 +13,11 @@ import kotlin.browser.window
 @DslMarker
 annotation class HtmlTagMarker
 
-//TODO: Could inherit w3c.dom.Element by Delegation
+//TODO: remove unnecassary default-arguments
 @ExperimentalCoroutinesApi
 @FlowPreview
 @HtmlTagMarker
-abstract class Tag<T : Element>(tagName: String, val id: String? = null, override val domNode: T = createDomElement(tagName, id).unsafeCast<T>())
+abstract class Tag<T : Element>(tagName: String, val id: String? = null, val baseClass: String? = null, override val domNode: T = createDomElement(tagName, id, baseClass).unsafeCast<T>())
     : WithDomNode<T>, WithAttributes<T>, WithEvents<T>(), HtmlElements {
 
     override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
@@ -30,8 +30,6 @@ abstract class Tag<T : Element>(tagName: String, val id: String? = null, overrid
 
     fun <X : Element> Seq<Tag<X>>.bind(): MultiMountPoint<WithDomNode<Element>> = DomMultiMountPoint(this.data, domNode)
 
-    operator fun <T> T.not() = Const(this)
-
     operator fun <E: Event, X: Element> Handler<Unit>.compareTo(listener: Listener<E, X>): Int {
         execute(listener.events.map { Unit })
         return 0
@@ -39,16 +37,30 @@ abstract class Tag<T : Element>(tagName: String, val id: String? = null, overrid
 
     var className: Flow<String>
         get() {throw NotImplementedError()}
-        set(value) { attribute("class", value)}
+        set(value) {
+            //TODO: better elvis?
+            (if (baseClass != null) value.map { "$baseClass $it" } else value).bindAttr("class")
+        }
 
     var classList: Flow<List<String>>
         get() {throw NotImplementedError()}
-        set(values) { attribute("class", values)}
+        set(values) {
+            (if (baseClass != null) values.map { it + baseClass} else values).bindAttr("class")
+        }
+
+    var classMap: Flow<Map<String, Boolean>>
+        get() {throw NotImplementedError()}
+        set(values) {
+            (if (baseClass != null) values.map { it + (baseClass to true)} else values).bindAttr("class")
+        }
 }
 
-internal fun createDomElement(tagName: String, id: String? = null): Element =
+internal fun createDomElement(tagName: String, id: String?, baseClass: String?): Element =
     window.document.createElement(tagName).also {element ->
         id?.let {
-            element.setAttribute("id",id)
+            element.setAttribute("id",it)
+        }
+        baseClass?.let {
+            element.setAttribute("class", it)
         }
     }

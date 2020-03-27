@@ -1,5 +1,6 @@
 package io.fritz2.dom
 
+import io.fritz2.binding.const
 import io.fritz2.dom.html.html
 import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
@@ -30,13 +31,13 @@ class AttributeTests {
         val (name3, values3) = "test3" to testRange.map { "value$it" }
 
         html {
-            div(testId) {
-                attribute(name0, value0)
-                attribute(name1, !value1)
-                attributeData(name0, value0)
-                attributeData(name1, !value1)
-                attribute(name2, values2)
-                attribute(name3, !values3)
+            div(id=testId) {
+                attr(name0, value0)
+                const(value1).bindAttr(name1)
+                attr("data-$name0", value0)
+                const(value1).bindAttr("data-$name1")
+                attr(name2, values2)
+                const(values3).bindAttr(name3)
             }
         }.mount(targetId)
 

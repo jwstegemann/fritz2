@@ -29,24 +29,23 @@ fun main() {
                 outerValue.update <= changes.values()
             }
             span {
-                +"Outer.value = "
-                +outerValue.data
+                text("Outer.value = ")
+                outerValue.data.bind()
             }
             input {
                 value = innerValue.data
                 innerValue.update <= changes.values()
             }
             span {
-                +"Inner.value = "
-                +innerValue.data
+                text("Inner.value = ")
+                innerValue.data.bind()
             }
             ul {
                 seq.eachStore().map {
                     html {
                         val elementValue = it.sub(Lenses.Element.value)
                         li {
-                            input {
-                                attribute("id", it.id)
+                            input(id = it.id) {
                                 value = elementValue.data
                                 elementValue.update <= changes.values()
                             }
@@ -55,10 +54,10 @@ fun main() {
                 }.bind()
             }
             div {
-                +"Model = "
-                + model.data.map {
+                text("Model = ")
+                model.data.map {
                     it.toString()
-                }
+                }.bind()
             }
         }
     }
