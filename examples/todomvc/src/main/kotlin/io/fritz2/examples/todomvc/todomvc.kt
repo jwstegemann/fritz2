@@ -3,7 +3,9 @@ package io.fritz2.examples.todomvc
 import io.fritz2.binding.*
 import io.fritz2.dom.append
 import io.fritz2.dom.html.HtmlElements
+import io.fritz2.dom.html.Keys
 import io.fritz2.dom.html.html
+import io.fritz2.dom.key
 import io.fritz2.dom.states
 import io.fritz2.dom.values
 import io.fritz2.optics.WithId
@@ -122,10 +124,14 @@ fun main() {
                                 textStore.update <= changes.values()
 
                                 editingStore.data.map { isEditing ->
-                                    if (isEditing) domNode.focus()
+                                    if (isEditing) domNode.apply {
+                                        focus()
+                                        select()
+                                    }
                                     isEditing.toString()
                                 }.watch()
                                 editingStore.update <= blurs.map { false }
+                                editingStore.update <= keyups.key().filter { it.isKey(Keys.Enter) }.map { true }
                             }
                         }
                     }
