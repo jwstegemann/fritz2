@@ -130,8 +130,10 @@ fun main() {
                                     }
                                     isEditing.toString()
                                 }.watch()
-                                editingStore.update <= blurs.map { false }
-                                editingStore.update <= keyups.key().filter { it.isKey(Keys.Enter) }.map { true }
+                                editingStore.update <= merge(
+                                    blurs.map { false },
+                                    keyups.key().filter { it.isKey(Keys.Enter) }.map { false }
+                                )
                             }
                         }
                     }
