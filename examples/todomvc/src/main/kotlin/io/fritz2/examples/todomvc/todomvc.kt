@@ -19,7 +19,7 @@ data class ToDo(
     val text: String,
     val completed: Boolean = false,
     val editing: Boolean = false,
-    override val id: String = text //uniqueId() //text.hashCode().toString()
+    override val id: String = text.hashCode().toString()
 ) : WithId
 
 

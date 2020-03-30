@@ -45,8 +45,7 @@ fun main() {
                     html {
                         val elementValue = it.sub(Lenses.Element.value)
                         li {
-                            input {
-                                attr("id", it.id)
+                            input(id = it.id) {
                                 value = elementValue.data
                                 elementValue.update <= changes.values()
                             }
