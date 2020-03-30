@@ -2,6 +2,7 @@ package io.fritz2.dom.html
 
 import io.fritz2.dom.AttributeDelegate
 import io.fritz2.dom.Tag
+import io.fritz2.dom.ValueAttributeDelegate
 import io.fritz2.dom.WithText
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -82,7 +83,7 @@ class Button(id: String? = null, baseClass: String? = null): Tag<HTMLButtonEleme
     var formTarget: Flow<String> by AttributeDelegate
     var name: Flow<String> by AttributeDelegate
     var type: Flow<String> by AttributeDelegate
-    var value: Flow<String> by AttributeDelegate
+    var value: Flow<String> by ValueAttributeDelegate
 }
 
 @ExperimentalCoroutinesApi
@@ -108,7 +109,7 @@ class Dl(id: String? = null, baseClass: String? = null): Tag<HTMLDListElement>("
  * Exposes the JavaScript [HTMLDataElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDataElement) to Kotlin
  */
 class Data(id: String? = null, baseClass: String? = null): Tag<HTMLDataElement>("data", id, baseClass), WithText<HTMLDataElement> {
-    var value: Flow<String> by AttributeDelegate
+    var value: Flow<String> by ValueAttributeDelegate
 }
 
 @ExperimentalCoroutinesApi
@@ -190,7 +191,7 @@ class Form(id: String? = null, baseClass: String? = null): Tag<HTMLFormElement>(
 /**
  * Exposes the JavaScript [HTMLHRElement](https://developer.mozilla.org/en/docs/Web/API/HTMLHRElement) to Kotlin
  */
-class Hre(id: String? = null, baseClass: String? = null): Tag<HTMLHRElement>("hr", id, baseClass)
+class Hr(id: String? = null, baseClass: String? = null): Tag<HTMLHRElement>("hr", id, baseClass)
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -270,7 +271,7 @@ class Input(id: String? = null, baseClass: String? = null): Tag<HTMLInputElement
     var step: Flow<String> by AttributeDelegate
     var type: Flow<String> by AttributeDelegate
     var defaultValue: Flow<String> by AttributeDelegate
-    var value: Flow<String> by AttributeDelegate
+    var value: Flow<String> by ValueAttributeDelegate
     var width: Flow<Int> by AttributeDelegate
 }
 
@@ -430,7 +431,7 @@ class Option(id: String? = null, baseClass: String? = null): Tag<HTMLOptionEleme
     var label: Flow<String> by AttributeDelegate
     var defaultSelected: Flow<Boolean> by AttributeDelegate
     var selected: Flow<Boolean> by AttributeDelegate
-    var value: Flow<String> by AttributeDelegate
+    var value: Flow<String> by ValueAttributeDelegate
     var text: Flow<String> by AttributeDelegate
 }
 
@@ -442,7 +443,7 @@ class Option(id: String? = null, baseClass: String? = null): Tag<HTMLOptionEleme
 class Output(id: String? = null, baseClass: String? = null): Tag<HTMLOutputElement>("output", id, baseClass), WithText<HTMLOutputElement> {
     var name: Flow<String> by AttributeDelegate
     var defaultValue: Flow<String> by AttributeDelegate
-    var value: Flow<String> by AttributeDelegate
+    var value: Flow<String> by ValueAttributeDelegate
 }
 
 @ExperimentalCoroutinesApi
@@ -459,7 +460,7 @@ class P(id: String? = null, baseClass: String? = null): Tag<HTMLParagraphElement
  */
 class Param(id: String? = null, baseClass: String? = null): Tag<HTMLParamElement>("param", id, baseClass), WithText<HTMLParamElement> {
     var name: Flow<String> by AttributeDelegate
-    var value: Flow<String> by AttributeDelegate
+    var value: Flow<String> by ValueAttributeDelegate
 }
 
 @ExperimentalCoroutinesApi
@@ -527,7 +528,7 @@ class Select(id: String? = null, baseClass: String? = null): Tag<HTMLSelectEleme
     var size: Flow<Int> by AttributeDelegate
     var length: Flow<Int> by AttributeDelegate
     var selectedIndex: Flow<Int> by AttributeDelegate
-    var value: Flow<String> by AttributeDelegate
+    var value: Flow<String> by ValueAttributeDelegate
 }
 
 @ExperimentalCoroutinesApi
@@ -644,7 +645,7 @@ class TextArea(id: String? = null, baseClass: String? = null): Tag<HTMLTextAreaE
     var rows: Flow<Int> by AttributeDelegate
     var wrap: Flow<String> by AttributeDelegate
     var defaultValue: Flow<String> by AttributeDelegate
-    var value: Flow<String> by AttributeDelegate
+    var value: Flow<String> by ValueAttributeDelegate
 }
 
 @ExperimentalCoroutinesApi
@@ -701,7 +702,7 @@ interface HtmlElements {
     fun embed(baseClass: String? = null, id: String? = null, content: Embed.() -> Unit): Embed = register(Embed(id, baseClass), content)
     fun fieldset(baseClass: String? = null, id: String? = null, content: FieldSet.() -> Unit): FieldSet = register(FieldSet(id, baseClass), content)
     fun form(baseClass: String? = null, id: String? = null, content: Form.() -> Unit): Form = register(Form(id, baseClass), content)
-    fun hre(baseClass: String? = null, id: String? = null, content: Hre.() -> Unit): Hre = register(Hre(id, baseClass), content)
+    fun hr(baseClass: String? = null, id: String? = null, content: Hr.() -> Unit): Hr = register(Hr(id, baseClass), content)
     fun h1(baseClass: String? = null, id: String? = null, content: H.() -> Unit): H = register(H(1, id, baseClass), content)
     fun h2(baseClass: String? = null, id: String? = null, content: H.() -> Unit): H = register(H(2, id, baseClass), content)
     fun h3(baseClass: String? = null, id: String? = null, content: H.() -> Unit): H = register(H(3, id, baseClass), content)

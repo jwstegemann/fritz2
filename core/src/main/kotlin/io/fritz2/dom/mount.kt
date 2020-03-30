@@ -7,6 +7,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.get
 import kotlin.browser.window
 
@@ -55,6 +56,17 @@ class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: 
         //FIXME: Should only be true for Boolean-Attributes...
         if (value == "false") target?.removeAttribute(name)
         else target?.setAttribute(name, value)
+    }
+}
+
+/**
+ * [ValueAttributeDelegate] is a special [SingleMountPoint] for the html value
+ * attribute without calling `setAttribute` method.
+ */
+class ValueAttributeMountPoint(upstream: Flow<String>, val target: Element?) : SingleMountPoint<String>(upstream) {
+    override fun set(value: String, last: String?) {
+        if (value == "false") target?.removeAttribute("value")
+        else target?.unsafeCast<HTMLInputElement>()?.value = value
     }
 }
 
