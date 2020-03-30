@@ -53,7 +53,10 @@ fun main() {
         }
 
         val toggleAll = handle<Boolean> {toDos, toggle ->
-            toDos.map { it.copy(completed = toggle)}
+            console.log("toggling $toggle")
+            val res = toDos.map { it.copy(completed = toggle)}
+            console.log("res: $res")
+            res
         }
 
         val clearCompleted = handle {toDos ->
@@ -61,7 +64,7 @@ fun main() {
         }
 
         val count = data.map { todos -> todos.count { !it.completed } }.distinctUntilChanged()
-        val allChecked = data.map { todos -> todos.all { it.completed }}.distinctUntilChanged()
+        val allChecked = data.map { todos -> todos.isNotEmpty() && todos.all { it.completed }}.distinctUntilChanged()
     }
 
     val inputHeader = html {
@@ -78,7 +81,7 @@ fun main() {
 
     val mainSection = html {
         section("main") {
-            input("toggle-all") {
+            input("toggle-all", id="toggle-all") {
                 type = const("checkbox")
                 checked = toDos.allChecked
 
