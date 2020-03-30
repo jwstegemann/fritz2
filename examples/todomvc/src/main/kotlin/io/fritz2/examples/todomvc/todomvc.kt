@@ -19,7 +19,7 @@ data class ToDo(
     val text: String,
     val completed: Boolean = false,
     val editing: Boolean = false,
-    override val id: String = text.hashCode().toString()
+    override val id: String = text //uniqueId() //text.hashCode().toString()
 ) : WithId
 
 
@@ -44,11 +44,12 @@ fun main() {
 
     val toDos = object : RootStore<List<ToDo>>(emptyList()) {
         val add = handle<String> { toDos, text ->
-            toDos + ToDo(text)
+            if (text.isNotEmpty()) toDos + ToDo(text)
+            else toDos
         }
 
-        val remove = handle<ToDo> {
-                toDos, item -> toDos - item
+        val remove = handle<ToDo> { toDos, item ->
+            toDos.filterNot { it.id == item.id }
         }
 
         val toggleAll = handle<Boolean> {toDos, toggle ->
@@ -56,11 +57,11 @@ fun main() {
         }
 
         val clearCompleted = handle {toDos ->
-            toDos.filter { !it.completed }
+            toDos.filterNot { it.completed }
         }
 
         val count = data.map { todos -> todos.count { !it.completed } }.distinctUntilChanged()
-        val allChecked = data.map { todos -> todos.all { it.completed }}
+        val allChecked = data.map { todos -> todos.all { it.completed }}.distinctUntilChanged()
     }
 
     val inputHeader = html {
@@ -98,6 +99,7 @@ fun main() {
 
                     html {
                         li {
+                            attr("data-id", toDoStore.id)
                             //TODO: better flatmap over editing and completed
                             classMap = toDoStore.data.map { mapOf(
                                     "completed" to it.completed,

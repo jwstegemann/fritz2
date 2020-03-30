@@ -47,7 +47,7 @@ class EventTests {
                     text("value: ")
                     store.data.bind()
                 }
-                button(id= buttonId) {
+                button(id = buttonId) {
                     text("add one more little dot")
                     store.addADot <= clicks
                 }
