@@ -19,7 +19,7 @@ data class ToDo(
     val text: String,
     val completed: Boolean = false,
     val editing: Boolean = false,
-    override val id: String = text.hashCode().toString()
+    override val id: String = uniqueId() //text.hashCode().toString()
 ) : WithId
 
 
@@ -48,18 +48,15 @@ fun main() {
             else toDos
         }
 
-        val remove = handle<ToDo> { toDos, item ->
-            toDos.filterNot { it.id == item.id }
+        val remove = handle<String> { toDos, id ->
+            toDos.filterNot { it.id == id }
         }
 
-        val toggleAll = handle<Boolean> {toDos, toggle ->
-            console.log("toggling $toggle")
-            val res = toDos.map { it.copy(completed = toggle)}
-            console.log("res: $res")
-            res
+        val toggleAll = handle<Boolean> { toDos, toggle ->
+            toDos.map { it.copy(completed = toggle) }
         }
 
-        val clearCompleted = handle {toDos ->
+        val clearCompleted = handle { toDos ->
             toDos.filterNot { it.completed }
         }
 
@@ -121,7 +118,7 @@ fun main() {
                                     editingStore.update <= dblclicks.map { true }
                                 }
                                 button("destroy") {
-                                    toDos.remove <= clicks.events.map{ toDo } //flatMapLatest { toDoStore.data }
+                                    toDos.remove <= clicks.events.map { toDo.id } //flatMapLatest { toDoStore.data }
                                 }
                             }
                             input("edit") {

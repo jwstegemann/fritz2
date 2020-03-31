@@ -3,7 +3,8 @@ package io.fritz2.binding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 abstract class SingleMountPoint<T>(upstream: Flow<T>) : CoroutineScope by MainScope() {
@@ -31,9 +32,9 @@ abstract class MultiMountPoint<T>(upstream: Flow<Patch<T>>) : CoroutineScope by 
     init {
         launch {
             try {
-            upstream.collect {
-                patch(it)
-            }
+                upstream.collect {
+                    patch(it)
+                }
             } catch (t: Throwable) {
                 this.cancel()
             }
