@@ -17,6 +17,19 @@ object AttributeDelegate {
     }
 }
 
+/**
+ * [ValueAttributeDelegate] is a special attribute delegate for
+ * the html value attribute.
+ */
+@ExperimentalCoroutinesApi
+@FlowPreview
+object ValueAttributeDelegate {
+    operator fun <X : Element> getValue(thisRef: Tag<X>, property: KProperty<*>): Flow<String> = throw NotImplementedError()
+    operator fun <X : Element> setValue(thisRef: Tag<X>, property: KProperty<*>, values: Flow<String>) {
+        ValueAttributeMountPoint(values, thisRef.domNode)
+    }
+}
+
 @ExperimentalCoroutinesApi
 @FlowPreview
 interface WithAttributes<out T : Element> : WithDomNode<T> {

@@ -1,7 +1,7 @@
 package io.fritz2.examples.gettingstarted
 
 import io.fritz2.binding.RootStore
-import io.fritz2.binding.each
+import io.fritz2.binding.const
 import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import io.fritz2.dom.values
@@ -12,70 +12,43 @@ import kotlinx.coroutines.FlowPreview
 @FlowPreview
 fun main() {
 
-    val store = object : RootStore<String>("start") {
+    val store = object : RootStore<String>("") {
         val addADot = handle { model ->
             "$model."
         }
     }
 
-    val classStore = object : RootStore<List<String>>(listOf("btn", "items")) {
-        val add = handle<String> { list, new ->
-            list + new
-        }
-        val remove = handle<String> { list, del ->
-            list.minus(del)
-        }
-    }
+    val gettingstarted = html {
+        div {
+            div("form-group") {
+                label {
+                    text("Input")
+                    `for` = const(store.id)
+                }
+                input("form-control", id = store.id) {
+                    placeholder = const("Add some input")
+                    value = store.data
 
-    val seq = object : RootStore<List<String>>(listOf("one", "two", "three")) {
-        var count = 0
-
-        val addItem = handle { list ->
-            count++
-            list + "yet another item no. $count"
-        }
-        val deleteItem = handle<String> { list, current ->
-            list.minus(current)
-        }
-    }
-
-    val myComponent = html {
-        section {
-            input {
-                value = store.data
-                store.update <= changes.values()
+                    store.update <= changes.values()
+                }
             }
-            div {
-                text("value: ")
-                store.data.bind()
+            div("form-group") {
+                label {
+                    text("Value")
+                }
+                div("form-control") {
+                    store.data.bind()
+                    attr("readonly", "true")
+                }
             }
-
-            button {
-                text("add one more little dot")
-                store.addADot <= clicks
-            }
-            ul {
-                seq.data.each().map { s ->
-                    html {
-                        li {
-                            button("btn", "delete-btn") {
-                                text(s)
-                                seq.deleteItem <= clicks.map { console.log("deleting $s"); s }
-                                classStore.remove <= clicks.map { "newItem" }
-                            }
-                        }
-                    }
-                }.bind()
-            }
-            button(id="button") {
-                text("add an item")
-                seq.addItem <= clicks
-                classStore.add <= clicks.map { "newItem" }
-                attr("data-test", "test-button1")
-                classList = classStore.data
+            div("form-group") {
+                button("btn btn-primary") {
+                    text("Add a dot")
+                    store.addADot <= clicks
+                }
             }
         }
     }
 
-    myComponent.mount("target")
+    gettingstarted.mount("target")
 }

@@ -49,7 +49,7 @@ fun main() {
                 value = const("start")
                 store.sampleGet <= changes.values()
             }
-            hre {  }
+            hr { }
             label {
                 text("post for id")
             }
@@ -57,7 +57,7 @@ fun main() {
                 value = const("start")
                 store.samplePost <= changes.values()
             }
-            hre {  }
+            hr { }
             div {
                 text("result: ")
                 store.data.bind()

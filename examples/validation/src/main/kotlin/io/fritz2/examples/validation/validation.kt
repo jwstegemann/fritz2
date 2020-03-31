@@ -74,9 +74,9 @@ fun main() {
             }
             div {
                 text("state: ")
-                store.validator.isValid.map{ v -> if(v) "valid" else "not valid"}.bind()
+                store.validator.isValid.map { v -> if (v) "valid" else "not valid" }.bind()
             }
-            hre{}
+            hr {}
             ul {
                 store.msgs().each().map {
                     html {
