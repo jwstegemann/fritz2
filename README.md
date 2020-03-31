@@ -46,9 +46,7 @@ You can either
 
 - easy reactive one- and two-way-databinding
 - even for lists and deep nested structures
-- all html 5 elements
-- complete set of attributes 
-- all html 5 event-handlers (clicks, changes, ...)
+- complete set of html5 elements, attributes and events
 - hassle-free redux-like state-handling
 - model-validation and message handling 
 - routing (for SPAs, hash-based)

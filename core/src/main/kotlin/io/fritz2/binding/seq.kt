@@ -32,6 +32,7 @@ inline class Seq<T>(val data: Flow<Patch<T>>) {
 private inline fun <T> compare(crossinline different: (T, T) -> Boolean): suspend (Pair<List<T>, List<T>>) -> Flow<Patch<T>> =
     { oldAndNew: Pair<List<T>, List<T>> ->
         flow {
+            //console.log("----------------------------------------")
             val (oldValue, newValue) = oldAndNew
             //console.log("old = $oldValue; new = $newValue")
             val size2Compare = if (oldValue.size < newValue.size) {
