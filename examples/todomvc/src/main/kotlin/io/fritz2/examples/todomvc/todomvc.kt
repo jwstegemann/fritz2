@@ -19,7 +19,7 @@ data class ToDo(
     val text: String,
     val completed: Boolean = false,
     val editing: Boolean = false,
-    override val id: String = text.hashCode().toString()
+    override val id: String = uniqueId() //text.hashCode().toString()
 ) : WithId
 
 
@@ -44,23 +44,24 @@ fun main() {
 
     val toDos = object : RootStore<List<ToDo>>(emptyList()) {
         val add = handle<String> { toDos, text ->
-            toDos + ToDo(text)
+            if (text.isNotEmpty()) toDos + ToDo(text)
+            else toDos
         }
 
-        val remove = handle<ToDo> { toDos, item ->
-            toDos - item
+        val remove = handle<String> { toDos, id ->
+            toDos.filterNot { it.id == id }
         }
 
         val toggleAll = handle<Boolean> { toDos, toggle ->
-            toDos.map { it.copy(completed = toggle)}
+            toDos.map { it.copy(completed = toggle) }
         }
 
         val clearCompleted = handle { toDos ->
-            toDos.filter { !it.completed }
+            toDos.filterNot { it.completed }
         }
 
         val count = data.map { todos -> todos.count { !it.completed } }.distinctUntilChanged()
-        val allChecked = data.map { todos -> todos.all { it.completed }}
+        val allChecked = data.map { todos -> todos.isNotEmpty() && todos.all { it.completed }}.distinctUntilChanged()
     }
 
     val inputHeader = html {
@@ -77,7 +78,7 @@ fun main() {
 
     val mainSection = html {
         section("main") {
-            input("toggle-all") {
+            input("toggle-all", id="toggle-all") {
                 type = const("checkbox")
                 checked = toDos.allChecked
 
@@ -98,6 +99,7 @@ fun main() {
 
                     html {
                         li {
+                            attr("data-id", toDoStore.id)
                             //TODO: better flatmap over editing and completed
                             classMap = toDoStore.data.map { mapOf(
                                     "completed" to it.completed,
@@ -116,7 +118,7 @@ fun main() {
                                     editingStore.update <= dblclicks.map { true }
                                 }
                                 button("destroy") {
-                                    toDos.remove <= clicks.events.map{ toDo } //flatMapLatest { toDoStore.data }
+                                    toDos.remove <= clicks.events.map { toDo.id } //flatMapLatest { toDoStore.data }
                                 }
                             }
                             input("edit") {

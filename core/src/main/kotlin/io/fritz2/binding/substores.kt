@@ -1,5 +1,6 @@
 package io.fritz2.binding
 
+import io.fritz2.flow.asSharedFlow
 import io.fritz2.optics.Lens
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -20,9 +21,10 @@ class SubStore<R, P, T>(private val parent: Store<P>, private val lens: Lens<P, 
         }
     }
 
+    //FIMXE: Should this be a shared flow (less calls to getters) or not (overhead of shared flow counting references, mem-leak?)
     override val data: Flow<T> = parent.data.map {
         lens.get(it)
-    }.distinctUntilChanged()
+    }.distinctUntilChanged().asSharedFlow()
 
     override fun <X> sub(lens: Lens<T,X>): SubStore<R,T,X> = SubStore(this, lens, rootStore, this.rootLens + lens)
 
