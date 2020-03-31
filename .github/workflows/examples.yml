@@ -1,0 +1,38 @@
+name: build
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build model
+        run: ./gradlew :examples:nestedmodel:model:build
+      - name: Build and run Unit Tests
+        run: ./gradlew test
+      - name: Archive test-results
+        if: always()
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: Test-Results
+          path: core/build/reports/tests/test
+      - name: Build with Gradle
+        run: ./gradlew browserProductionWebpack
+
+      - name: Deploy gettingstarted
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v1.3.0
+        with:
+          target_branch: gh-pages
+          build_dir: examples/gettingstarted/build/distributions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
