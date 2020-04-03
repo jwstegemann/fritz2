@@ -1,2 +1,3 @@
-**/build
-!**/build/distributions/**
+**/build/kotlin
+**/build/processedResources
+**/build/reports

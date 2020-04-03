@@ -41,7 +41,7 @@ fritz2 itself depends on only a handful of [concepts](https://github.com/jwstege
 ## How to try it that early?
 You can either
 * checkout the project, import it in your favourite IDE (or whatever you like) and run `./gradlew :examples:todomvc:run` (or another example)
-* take a look at our deployed examples [here](https://jamowei.github.io/fritz2-examples/)
+* take a look at our [examples repo](https://jamowei.github.io/fritz2-examples/)
 * set up a new project on your own following our [documentation](https://github.com/jwstegemann/fritz2/wiki/Project-Setup)
 
 
