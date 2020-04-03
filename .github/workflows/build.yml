@@ -26,11 +26,3 @@ jobs:
         path: core/build/reports/tests/test
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Updating Github Pages
-      uses: crazy-max/ghaction-github-pages@v1.3.0
-      with:
-        target_branch: gh-pages
-        keep_history: false
-        build_dir: pages
-      env:
-        GITHUB_PAT: ${{ secrets.FRITZ2_DOKKA_TOKEN }}
