@@ -1,2 +1,2 @@
 **/build
-!**/build/distributions
+!**/build/distributions/**
