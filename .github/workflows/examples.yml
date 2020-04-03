@@ -1,4 +1,4 @@
-name: build
+name: examples
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
         if: success()
         uses: crazy-max/ghaction-github-pages@v1.3.0
         with:
-          repo: https://github.com/jamowei/fritz2-examples.git
+          repo: https://github.com/jamowei/fritz2-examples
           target_branch: master
           keep_history: false
           build_dir: examples
