@@ -1,4 +1,4 @@
-## Welcome to fritz2
+#![fritz2 - the potato among the ui-libs](https://github.com/jwstegemann/fritz2/raw/master/docs/fritz2-logo-small.png)
 
 You can either take a look at
 
