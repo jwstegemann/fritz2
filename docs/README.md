@@ -1,4 +1,4 @@
-# ![fritz2 - the potato among the ui-libs](https://github.com/jwstegemann/fritz2/raw/master/docs/fritz2-logo-small.png)
+# ![fritz2 - the potato among the ui-libs](https://jwstegemann.github.io/fritz2/static/fritz2-logo-small.png)
 
 You can either take a look at
 

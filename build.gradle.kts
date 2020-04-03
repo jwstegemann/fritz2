@@ -36,7 +36,7 @@ subprojects {
 tasks {
     val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
         outputFormat = "markdown"
-        outputDirectory = "$projectDir/docs/dokka"
+        outputDirectory = "$projectDir/pages/dokka"
         subProjects = listOf("core")
         configuration {
             platform = "JS"

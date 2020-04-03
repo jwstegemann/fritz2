@@ -1,4 +1,4 @@
-# ![fritz2 - the potato among the ui-libs](https://github.com/jwstegemann/fritz2/raw/master/docs/fritz2-logo-small.png)
+# ![fritz2 - the potato among the ui-libs](https://jwstegemann.github.io/fritz2/static/fritz2-logo-small.png)
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
 [![LOC](https://img.shields.io/badge/lines%20of%20code-1%2C4k-green)](https://clean-code-developer.com/grades/grade-1-red/#Keep_it_simple_stupid_KISS)
@@ -29,9 +29,9 @@ html {
 ```
 
 fritz2 implements **precise data binding**. That means that exactly those (and **only** those) dom-nodes (elements, attributes, etc.) change, that depend on the parts of your data-model, that have changed. 
-There is no intermediate layer needed like a virtual DOM and you do not have to implement any additional methodes to decide, which parts of your component have to be rerendered, when your data changes:
+There is no intermediate layer needed like a virtual DOM and you do not have to implement any additional methods to decide, which parts of your component have to be rerendered, when your data changes:
 
-![State management in fritz2](/docs/fritz2_state.001.png)
+![State management in fritz2](https://jwstegemann.github.io/fritz2/static/fritz2_state.001.png)
 
 Utilizing Koltin's multiplatform-abilities, you have to write the code of your data classes just once and use it on your client and server (i.e. in a [SpringBoot](https://spring.io/guides/gs/rest-service/)-Backend). This of course also true for your model-validation-code, that can become far more complex than your data model really fast.
 
