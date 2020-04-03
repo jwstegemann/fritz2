@@ -1,0 +1,16 @@
+$dokka.format:markdown
+$dokka.linkExtension:md
+$dokka.location:io.fritz2.binding$each(kotlinx.coroutines.flow.Flow((kotlin.collections.List((io.fritz2.binding.each.T)))))io.fritz2.binding/kotlinx.coroutines.flow.-flow/each.md
+$dokka.location:io.fritz2.binding$watch(kotlinx.coroutines.flow.Flow((io.fritz2.binding.watch.T)), kotlinx.coroutines.CoroutineScope)io.fritz2.binding/kotlinx.coroutines.flow.-flow/watch.md
+$dokka.location:io.fritz2.dom$mount(kotlinx.coroutines.flow.Flow((io.fritz2.dom.Tag((io.fritz2.dom.mount.X)))), kotlin.String)io.fritz2.dom/kotlinx.coroutines.flow.-flow/mount.md
+$dokka.location:io.fritz2.dom$removeChildren(org.w3c.dom.Element)io.fritz2.dom/org.w3c.dom.-element/remove-children.md
+$dokka.location:io.fritz2.remote$body(kotlinx.coroutines.flow.Flow((org.w3c.fetch.Response)))io.fritz2.remote/kotlinx.coroutines.flow.-flow/body.md
+$dokka.location:io.fritz2.remote$onError(kotlinx.coroutines.flow.Flow((org.w3c.fetch.Response)), kotlin.Function1((kotlin.Throwable, kotlin.Unit)))io.fritz2.remote/kotlinx.coroutines.flow.-flow/on-error.md
+$dokka.location:io.fritz2.remote$onErrorLog(kotlinx.coroutines.flow.Flow((org.w3c.fetch.Response)))io.fritz2.remote/kotlinx.coroutines.flow.-flow/on-error-log.md
+io.fritz2.binding
+io.fritz2.dom
+io.fritz2.dom.html
+io.fritz2.flow
+io.fritz2.remote
+io.fritz2.routing
+io.fritz2.validation
