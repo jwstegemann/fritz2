@@ -6,4 +6,3 @@
 **/gradle/
 **/src/generated/
 /examples/nestedmodel/model/src/main/kotlin/io/fritz2/examples/nestedmodel/GeneratedOptics.kt
-/examples/remote/build/
