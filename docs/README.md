@@ -1,6 +1,6 @@
 ## Welcome to fritz2
 
-You can either take a look to
+You can either take a look at
 
 - [Wiki](https://github.com/jwstegemann/fritz2/wiki)
 - [API-Documentation](https://jwstegemann.github.io/fritz2/dokka/fritz2/)
