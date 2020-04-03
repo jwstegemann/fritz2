@@ -19,3 +19,14 @@ jobs:
         run: ./gradlew core:publish
         env: # Or as an environment variable
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+      - name: Generating API docs
+        run: ./gradlew core:dokka
+      - name: Updating API docs
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v1.3.0
+        with:
+          target_branch: gh-pages
+          keep_history: false
+          build_dir: pages
+        env:
+          GITHUB_PAT: ${{ secrets.FRITZ2_DOKKA_TOKEN }}
