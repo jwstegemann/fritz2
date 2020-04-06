@@ -39,7 +39,7 @@ class MountTests {
         store.data.launchIn(GlobalScope)
 
         val mp = checkFlow(store.data.each().data, 5) { count, patch ->
-            val expected = Patch(count, listOf(count), 0)
+            val expected = Patch.Insert(count, count)
 
             assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
         }
@@ -61,10 +61,10 @@ class MountTests {
         store.data.launchIn(GlobalScope)
 
         val mp = checkFlow(store.data.each().data, 3) { count, patch ->
-            val expected = when (count) {
-                0 -> Patch(0, listOf(0), 0)
-                1 -> Patch(1, listOf(0), 0)
-                2 -> Patch(0, listOf(1), 1)
+            val expected: Patch<Int> = when (count) {
+                0 -> Patch.Insert(0, 0) //Patch(0, listOf(0), 0)
+                1 -> Patch.Insert(1, 0) // Patch(1, listOf(0), 0)
+                2 -> Patch.Delete(0, 1) // Patch(0, listOf(1), 1)
                 else -> throw AssertionError("set wrong value in MultiMountPoint\n")
             }
             assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
@@ -85,10 +85,10 @@ class MountTests {
         store.data.launchIn(GlobalScope)
 
         val mp = checkFlow(store.data.each().data, 3) { count, patch ->
-            val expected = when (count) {
-                0 -> Patch(0, listOf(0, 2), 0)
-                1 -> Patch(2, listOf(2), 0)
-                2 -> Patch(1, listOf(1), 1)
+            val expected: Patch<Int> = when (count) {
+                0 -> Patch.Insert(0, 0) //Patch(0, listOf(0, 2), 0)
+                //1 -> Patch(2, listOf(2), 0)
+                ///2 -> Patch(1, listOf(1), 1)
                 else -> throw AssertionError("set wrong value in MultiMountPoint\n")
             }
             assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
@@ -109,9 +109,9 @@ class MountTests {
         store.data.launchIn(GlobalScope)
 
         val mp = checkFlow(store.data.each().data, 2) { count, patch ->
-            val expected = when (count) {
-                0 -> Patch(0, listOf(0, 1, 2), 0)
-                1 -> Patch(2, emptyList(), 1)
+            val expected: Patch<Int> = when (count) {
+                0 -> Patch.Insert(0, 0) // Patch(0, listOf(0, 1, 2), 0)
+                // 1 -> Patch(2, emptyList(), 1)
                 else -> throw AssertionError("set wrong value in MultiMountPoint\n")
             }
             assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
@@ -132,11 +132,11 @@ class MountTests {
         store.data.launchIn(GlobalScope)
 
         val mp = checkFlow(store.data.each().data, 4) { count, patch ->
-            val expected = when (count) {
-                0 -> Patch(0, listOf(0, 1, 2), 0)
-                1 -> Patch(2, emptyList(), 1)
-                2 -> Patch(0, listOf(1), 1)
-                3 -> Patch(1, listOf(2), 1)
+            val expected: Patch<Int> = when (count) {
+                0 -> Patch.Insert(0, 0) //Patch(0, listOf(0, 1, 2), 0)
+                //1 -> Patch(2, emptyList(), 1)
+                //2 -> Patch(0, listOf(1), 1)
+                //3 -> Patch(1, listOf(2), 1)
                 else -> throw AssertionError("set wrong value in MultiMountPoint\n")
             }
             assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
@@ -157,10 +157,10 @@ class MountTests {
         store.data.launchIn(GlobalScope)
 
         val mp = checkFlow(store.data.each().data, 3) { count, patch ->
-            val expected = when (count) {
-                0 -> Patch(0, listOf(0, 1, 2), 0)
-                1 -> Patch(2, emptyList(), 1)
-                2 -> Patch(1, listOf(2), 1)
+            val expected: Patch<Int> = when (count) {
+                0 -> Patch.Insert(0, 0) //Patch(0, listOf(0, 1, 2), 0)
+                //1 -> Patch(2, emptyList(), 1)
+                //2 -> Patch(1, listOf(2), 1)
                 else -> throw AssertionError("set wrong value in MultiMountPoint\n")
             }
             assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")

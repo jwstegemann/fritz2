@@ -2,9 +2,12 @@ package io.fritz2.binding
 
 import io.fritz2.flow.asSharedFlow
 import io.fritz2.optics.Lens
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 
 typealias Update<T> = (T) -> T
@@ -19,7 +22,7 @@ class Handler<A>(inline val execute: (Flow<A>) -> Unit) {
 
 
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 class Applicator<A, X>(inline val execute: suspend (A) -> Flow<X>) {
     infix fun andThen(nextHandler: Handler<X>) = Handler<A> {
         nextHandler.execute(it.flatMapConcat(this.execute))
@@ -31,7 +34,7 @@ class Applicator<A, X>(inline val execute: suspend (A) -> Flow<X>) {
 }
 
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 abstract class Store<T> : CoroutineScope by MainScope() {
 
     inline fun <A> handle(crossinline execute: (T, A) -> T) = Handler<A> {
@@ -63,7 +66,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
 }
 
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 open class RootStore<T>(initialData: T, override val id: String = "", bufferSize: Int = 1) : Store<T>() {
 
     //TODO: best capacity?

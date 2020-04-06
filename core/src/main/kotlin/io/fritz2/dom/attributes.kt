@@ -1,13 +1,12 @@
 package io.fritz2.dom
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
 import kotlin.reflect.KProperty
 
-@ExperimentalCoroutinesApi
+
 @FlowPreview
 //TODO: different datatypes for attributes (List of String for classes, etc.)
 object AttributeDelegate {
@@ -21,7 +20,7 @@ object AttributeDelegate {
  * [ValueAttributeDelegate] is a special attribute delegate for
  * the html value attribute.
  */
-@ExperimentalCoroutinesApi
+
 @FlowPreview
 object ValueAttributeDelegate {
     operator fun <X : Element> getValue(thisRef: Tag<X>, property: KProperty<*>): Flow<String> = throw NotImplementedError()
@@ -30,7 +29,7 @@ object ValueAttributeDelegate {
     }
 }
 
-@ExperimentalCoroutinesApi
+
 @FlowPreview
 interface WithAttributes<out T : Element> : WithDomNode<T> {
 

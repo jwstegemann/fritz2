@@ -3,12 +3,10 @@ package io.fritz2.dom
 import io.fritz2.binding.MultiMountPoint
 import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.get
 import kotlin.browser.window
 
 class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val target: org.w3c.dom.Node?) : SingleMountPoint<WithDomNode<T>>(upstream) {
@@ -32,7 +30,7 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
 
     override fun patch(patch: Patch<WithDomNode<T>>) {
         //console.log("### MountPoint: ... patching: ${patch.from} with ${patch.that} replacing ${patch.replaced}")
-        patch.apply {
+/*        patch.apply {
             val child = removeChildren(target?.childNodes?.get(from), replaced)
             //console.log("### MountPoint: child: $child")
             if (child == null) {
@@ -47,6 +45,8 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
                 }
             }
         }
+
+ */
     }
 
 }
@@ -91,7 +91,7 @@ class ValueAttributeMountPoint(upstream: Flow<String>, val target: Element?) : S
 //    }
 //}
 
-@ExperimentalCoroutinesApi
+
 @FlowPreview
 fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
@@ -100,7 +100,7 @@ fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
     }
 }
 
-@ExperimentalCoroutinesApi
+
 @FlowPreview
 fun <X : Element> append(targetId: String, vararg flows: Flow<Tag<X>>) {
     window.document.getElementById(targetId)?.let { element ->
@@ -108,7 +108,7 @@ fun <X : Element> append(targetId: String, vararg flows: Flow<Tag<X>>) {
     }
 }
 
-@ExperimentalCoroutinesApi
+
 @FlowPreview
 fun <X : Element> Tag<X>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
@@ -117,7 +117,7 @@ fun <X : Element> Tag<X>.mount(targetId: String) {
     }
 }
 
-@ExperimentalCoroutinesApi
+
 @FlowPreview
 fun <X : Element> append(targetId: String, vararg tags: Tag<X>) {
     window.document.getElementById(targetId)?.let { element ->

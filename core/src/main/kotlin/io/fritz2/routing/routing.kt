@@ -15,7 +15,7 @@ import kotlin.browser.window
  * @param default default route
  */
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 fun router(default: String): Router<String> = object : Router<String>(
     StringRoute(default)
 ) {}
@@ -26,7 +26,7 @@ fun router(default: String): Router<String> = object : Router<String>(
  * @param default default route
  */
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 fun router(default: Map<String, String>): Router<Map<String, String>> = object : Router<Map<String, String>>(
     MapRoute(default)
 ) {}
@@ -36,7 +36,7 @@ fun router(default: Map<String, String>): Router<Map<String, String>> = object :
  * and the complete routing [Map] for the given key in the [mapper] function.
  */
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Map<String, String>>) -> X): Flow<X> =
     routes.map { m -> mapper((m[key] ?: "") to m) }
 
@@ -48,7 +48,7 @@ fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Ma
  * @param default default route
  */
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 fun <T> router(default: Route<T>): Router<T> =  object : Router<T>(default) {}
 
 /**
@@ -124,7 +124,7 @@ class MapRoute(override val default: Map<String, String>):
  * @property route default route to use when page is called with empty hash
  */
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope() {
     private val prefix = "#"
 

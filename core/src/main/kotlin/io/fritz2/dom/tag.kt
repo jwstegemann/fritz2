@@ -1,8 +1,10 @@
 package io.fritz2.dom
 
-import io.fritz2.binding.*
+import io.fritz2.binding.Handler
+import io.fritz2.binding.MultiMountPoint
+import io.fritz2.binding.Seq
+import io.fritz2.binding.SingleMountPoint
 import io.fritz2.dom.html.HtmlElements
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -14,7 +16,7 @@ import kotlin.browser.window
 annotation class HtmlTagMarker
 
 //TODO: remove unnecassary default-arguments
-@ExperimentalCoroutinesApi
+
 @FlowPreview
 @HtmlTagMarker
 abstract class Tag<T : Element>(tagName: String, val id: String? = null, val baseClass: String? = null, override val domNode: T = createDomElement(tagName, id, baseClass).unsafeCast<T>())

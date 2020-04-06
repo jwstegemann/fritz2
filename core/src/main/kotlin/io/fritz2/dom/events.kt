@@ -2,7 +2,6 @@ package io.fritz2.dom
 
 import io.fritz2.dom.html.EventType
 import io.fritz2.dom.html.Events
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -10,7 +9,7 @@ import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 abstract class WithEvents<T : Element> : WithDomNode<T> {
 
     private fun <E : Event> subscribe(type: EventType<E>): Listener<E, T> = Listener(callbackFlow {

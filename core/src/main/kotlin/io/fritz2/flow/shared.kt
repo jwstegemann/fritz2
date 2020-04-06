@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-@ExperimentalCoroutinesApi
+
 internal fun <T> Flow<T>.asCachedFlow(): Flow<T> {
 
     var cache: T? = null
@@ -28,7 +28,7 @@ internal fun <T> Flow<T>.asCachedFlow(): Flow<T> {
 }
 
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 internal fun <T> Flow<T>.asSharedFlow(scope: CoroutineScope = GlobalScope): Flow<T> = SharedFlow(this, scope)
 
 /**
@@ -43,7 +43,7 @@ internal fun <T> Flow<T>.asSharedFlow(scope: CoroutineScope = GlobalScope): Flow
  * 2) The cache is reset.  New collectors will not receive values from before the reset, but will generate a new cache.
  */
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 internal class SharedFlow<T>(
     private val sourceFlow: Flow<T>,
     private val scope: CoroutineScope

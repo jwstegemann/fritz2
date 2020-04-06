@@ -1,3 +1,13 @@
+import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
+
+tasks.withType<Kotlin2JsCompile>().configureEach {
+    kotlinOptions.freeCompilerArgs = listOf(
+        "-Xopt-in=kotlin.ExperimentalStdlibApi",
+        "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+        "-Xopt-in=kotlinx.coroutines.FlowPreview"
+    )
+}
+
 plugins {
     kotlin("js")
     `maven-publish`
@@ -50,6 +60,9 @@ dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
     api("io.fritz2.optics:core-js:0.2")
 }
+
+
+
 
 tasks {
     test {

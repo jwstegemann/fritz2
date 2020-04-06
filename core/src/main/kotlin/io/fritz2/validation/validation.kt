@@ -2,7 +2,6 @@ package io.fritz2.validation
 
 import io.fritz2.flow.asSharedFlow
 import io.fritz2.optics.WithId
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +14,7 @@ interface ValidationMessage: WithId {
 }
 
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 abstract class Validator<D, M: ValidationMessage, T> {
 
     internal val channel = ConflatedBroadcastChannel<List<M>>()
@@ -27,7 +26,7 @@ abstract class Validator<D, M: ValidationMessage, T> {
 }
 
 @FlowPreview
-@ExperimentalCoroutinesApi
+
 interface Validation<D, M: ValidationMessage, T> {
 
     val validator: Validator<D, M, T>

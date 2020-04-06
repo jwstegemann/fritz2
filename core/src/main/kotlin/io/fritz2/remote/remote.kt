@@ -1,6 +1,5 @@
 package io.fritz2.remote
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.await
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -64,7 +63,7 @@ class RequestTemplate(val baseUrl : String = "") {
      * @param url function do derive the url (so you can use baseUrl)
      * @param init an instance of [RequestInit] defining the attributes of the request
      */
-    @ExperimentalCoroutinesApi
+
     inline fun execute(url: String, init: RequestInit): Flow<Response> = flow {
         val response = kotlin.browser.window.fetch("$baseUrl/$url", init).await()
 
@@ -117,7 +116,7 @@ class RequestTemplate(val baseUrl : String = "") {
      *
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      */
-    @ExperimentalCoroutinesApi
+
     fun get(url: String = "") = execute(url, buildInit("GET"))
 
     /**
@@ -125,7 +124,7 @@ class RequestTemplate(val baseUrl : String = "") {
      *
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      */
-    @ExperimentalCoroutinesApi
+
     fun delete(url: String = "") = execute(url, buildInit("DELETE"))
 
     /**
@@ -133,7 +132,7 @@ class RequestTemplate(val baseUrl : String = "") {
      *
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      */
-    @ExperimentalCoroutinesApi
+
     fun head(url: String = "") = execute(url, buildInit("HEAD"))
 
     /**
@@ -142,7 +141,7 @@ class RequestTemplate(val baseUrl : String = "") {
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      * @param body content to send in the body of the request
      */
-    @ExperimentalCoroutinesApi
+
     fun post(url: String = "", body: String) = execute(url, buildInit("POST", body))
 
     /**
@@ -151,7 +150,7 @@ class RequestTemplate(val baseUrl : String = "") {
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      * @param body content to send in the body of the request
      */
-    @ExperimentalCoroutinesApi
+
     fun push(url: String = "", body: String) = execute(url, buildInit("PUSH", body))
 
     /**
@@ -160,7 +159,7 @@ class RequestTemplate(val baseUrl : String = "") {
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      * @param body content to send in the body of the request
      */
-    @ExperimentalCoroutinesApi
+
     fun patch(url: String = "", body: String) = execute(url, buildInit("PUSH", body))
 
     /**
@@ -213,7 +212,7 @@ fun Flow<Response>.body() = this.map {
  *
  * @param handler function that describes, how to handle a thrown [FetchException]
  */
-@ExperimentalCoroutinesApi
+
 fun Flow<Response>.onError(handler: (Throwable) -> Unit) = this.catch {
     handler(it)
 }
@@ -221,7 +220,7 @@ fun Flow<Response>.onError(handler: (Throwable) -> Unit) = this.catch {
 /**
  * adds a handler to log all exceptions that occur during a fetch action
  */
-@ExperimentalCoroutinesApi
+
 fun Flow<Response>.onErrorLog() = this.catch {
     loggingErrorHandler(it)
 }
