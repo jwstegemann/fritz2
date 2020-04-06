@@ -12,7 +12,7 @@ object Myer {
     fun <T : WithId> diff(oldList: List<T>, newList: List<T>): Flow<Patch<T>> {
         val isSame = { a: T, b: T -> a.id == b.id }
         val trace = shortestEdit(oldList, newList, isSame)
-        return flow<Patch<T>> {
+        return flow {
             backtrack<T>(trace, oldList, newList, isSame)
         }
     }
@@ -20,7 +20,7 @@ object Myer {
     fun <T> diff(oldList: List<T>, newList: List<T>): Flow<Patch<T>> {
         val isSame = { a: T, b: T -> a == b }
         val trace = shortestEdit(oldList, newList, isSame)
-        return flow<Patch<T>> {
+        return flow {
             backtrack<T>(trace, oldList, newList, isSame)
         }
     }
@@ -56,19 +56,18 @@ object Myer {
 //                console.run { log("d=$d, k=$k | x: $prevX -> $x, | y: $prevY -> $y") }
 
                 if (prevX < x) {
-                    val start = prevX
                     val element = oldList[prevX]
-                    console.log(" - raw: delete $element @ $start \n")
+                    console.log(" - raw: delete $element @ $prevX \n")
 
                     // try to combine
                     if (lastPatch != null) {
                         // combine adjacent deletes
-                        if (lastPatch is Patch.Delete && lastPatch.start == start + 1) {
-                            lastPatch = Patch.Delete(start, lastPatch.count + 1)
+                        if (lastPatch is Patch.Delete && lastPatch.start == prevX + 1) {
+                            lastPatch = Patch.Delete(prevX, lastPatch.count + 1)
                         }
                         // combine directly following insert and delete of same element as move
                         else if (lastPatch is Patch.Insert && isSame(lastPatch.element, element)) {
-                            lastPatch = Patch.Move(start, lastPatch.index - 1)
+                            lastPatch = Patch.Move(prevX, lastPatch.index - 1)
                         } else {
                             emit(lastPatch)
                             lastPatch = Patch.Delete(prevX, 1)
@@ -88,11 +87,15 @@ object Myer {
                     // try to combine
                     if (lastPatch != null) {
                         // combine adjacent inserts
-                        /*if (lastPatch is Patch.Insert && lastPatch.index == start + 1) {
-                            lastPatch = Patch.Delete(start, lastPatch.count + 1)
-                        } else */
+                        if (lastPatch is Patch.Insert && lastPatch.index == index) {
+                            //turn oder of elements!
+                            lastPatch = Patch.InsertMany(listOf(lastPatch.element, element), lastPatch.index)
+                        } else if (lastPatch is Patch.InsertMany && lastPatch.index == index) {
+                            //turn oder of elements!
+                            lastPatch = Patch.InsertMany(lastPatch.elements + element, lastPatch.index)
+                        }
                         // combine directly following insert and delete of same element as move
-                        if (lastPatch is Patch.Delete && lastPatch.count == 1 && isSame(
+                        else if (lastPatch is Patch.Delete && lastPatch.count == 1 && isSame(
                                 oldList[lastPatch.start],
                                 element
                             )
@@ -128,7 +131,7 @@ object Myer {
         val v = CircularArray(max)
         v.set(1, 0)
 
-        return buildList<CircularArray> {
+        return buildList {
             outerLoop@ for (d in 0..max) {
                 add(v.copyOf())
                 for (k in -d..d step 2) {

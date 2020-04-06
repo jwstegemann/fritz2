@@ -19,6 +19,11 @@ class MyerTests {
             is Patch.Insert<T> -> {
                 add(patch.index, patch.element)
             }
+            is Patch.InsertMany<T> -> {
+                for (element in patch.elements) {
+                    add(patch.index, element)
+                }
+            }
             is Patch.Delete<T> -> {
                 for (i in (patch.start + patch.count - 1) downTo patch.start) {
                     removeAt(i)
@@ -150,4 +155,27 @@ class MyerTests {
         runTestCase(old, new)
     }
 
+    @Test
+    fun testInsertManyEnd() = runTest {
+        val old = mutableListOf<String>("a", "b")
+        val new = mutableListOf<String>("a", "b", "c", "d", "e")
+
+        runTestCase(old, new)
+    }
+
+    @Test
+    fun testInsertManyStart() = runTest {
+        val old = mutableListOf<String>("d", "e", "f")
+        val new = mutableListOf<String>("a", "b", "c", "d", "e", "f")
+
+        runTestCase(old, new)
+    }
+
+    @Test
+    fun testInsertManyMiddle() = runTest {
+        val old = mutableListOf<String>("a", "d")
+        val new = mutableListOf<String>("a", "b", "c", "d")
+
+        runTestCase(old, new)
+    }
 }
