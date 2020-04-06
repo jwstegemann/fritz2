@@ -1,6 +1,7 @@
 package io.fritz2.utils
 
 import io.fritz2.binding.Patch
+import io.fritz2.optics.WithId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -8,21 +9,32 @@ import kotlinx.coroutines.flow.flow
 @ExperimentalStdlibApi
 object Myer {
 
-    fun <T> diff(oldList: List<T>, newList: List<T>, isSame: (a: T, b: T) -> Boolean): Flow<Patch<T>> {
+    fun <T : WithId> diff(oldList: List<T>, newList: List<T>): Flow<Patch<T>> {
+        val isSame = { a: T, b: T -> a.id == b.id }
         val trace = shortestEdit(oldList, newList, isSame)
         return flow<Patch<T>> {
-            backtrack<T>(trace, oldList, newList)
+            backtrack<T>(trace, oldList, newList, isSame)
         }
     }
 
-    private suspend fun <T> FlowCollector<Patch<T>>.backtrack(
+    fun <T> diff(oldList: List<T>, newList: List<T>): Flow<Patch<T>> {
+        val isSame = { a: T, b: T -> a == b }
+        val trace = shortestEdit(oldList, newList, isSame)
+        return flow<Patch<T>> {
+            backtrack<T>(trace, oldList, newList, isSame)
+        }
+    }
+
+    private suspend inline fun <T> FlowCollector<Patch<T>>.backtrack(
         trace: List<CircularArray>,
         oldList: List<T>,
-        newList: List<T>
+        newList: List<T>,
+        isSame: (a: T, b: T) -> Boolean
     ) {
         var x = oldList.size
         var y = newList.size
 
+        var lastPatch: Patch<T>? = null
         for ((d, v) in trace.withIndex().reversed()) {
             val k = x - y
 
@@ -44,13 +56,57 @@ object Myer {
 //                console.run { log("d=$d, k=$k | x: $prevX -> $x, | y: $prevY -> $y") }
 
                 if (prevX < x) {
+                    val start = prevX
                     val element = oldList[prevX]
-//                    console.log("delete $element @ $prevX ")
-                    emit(Patch.Delete(prevX, 1))
+                    console.log(" - raw: delete $element @ $start \n")
+
+                    // try to combine
+                    if (lastPatch != null) {
+                        // combine adjacent deletes
+                        if (lastPatch is Patch.Delete && lastPatch.start == start + 1) {
+                            lastPatch = Patch.Delete(start, lastPatch.count + 1)
+                        }
+                        // combine directly following insert and delete of same element as move
+                        else if (lastPatch is Patch.Insert && isSame(lastPatch.element, element)) {
+                            lastPatch = Patch.Move(start, lastPatch.index - 1)
+                        } else {
+                            emit(lastPatch)
+                            lastPatch = Patch.Delete(prevX, 1)
+                        }
+                    }
+                    //nothing there to combine
+                    else {
+                        lastPatch = Patch.Delete(prevX, 1)
+                    }
+
                 } else if (prevY < y) {
                     val element = newList[prevY]
-//                    console.log("insert $element before $x")
-                    emit(Patch.Insert(element, x))
+                    val index = x
+
+                    console.log(" - raw: insert $element @ $index \n")
+
+                    // try to combine
+                    if (lastPatch != null) {
+                        // combine adjacent inserts
+                        /*if (lastPatch is Patch.Insert && lastPatch.index == start + 1) {
+                            lastPatch = Patch.Delete(start, lastPatch.count + 1)
+                        } else */
+                        // combine directly following insert and delete of same element as move
+                        if (lastPatch is Patch.Delete && lastPatch.count == 1 && isSame(
+                                oldList[lastPatch.start],
+                                element
+                            )
+                        ) {
+                            lastPatch = Patch.Move(lastPatch.start, index)
+                        } else {
+                            emit(lastPatch)
+                            lastPatch = Patch.Insert(element, x)
+                        }
+                    }
+                    //nothing there to combine
+                    else {
+                        lastPatch = Patch.Insert(element, x)
+                    }
                 }
             }
 
@@ -58,9 +114,10 @@ object Myer {
             y = prevY
         }
 
+        if (lastPatch != null) emit(lastPatch)
     }
 
-    private fun <T> shortestEdit(
+    private inline fun <T> shortestEdit(
         oldList: List<T>,
         newList: List<T>,
         isSame: (a: T, b: T) -> Boolean
@@ -87,7 +144,6 @@ object Myer {
                     }
 
                     var y = x - k
-
                     //console.log("moved to ($x,$y)")
 
                     //walk diagonal is possible as far as possible
@@ -97,7 +153,6 @@ object Myer {
                     }
 
                     //console.log("    -> k = $k, best x = $x")
-
                     v.set(k, x)
 
                     if (x >= oldList.size && y >= newList.size) break@outerLoop

@@ -8,8 +8,6 @@ import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
 import io.fritz2.test.targetId
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
@@ -18,8 +16,7 @@ import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@ExperimentalCoroutinesApi
-@FlowPreview
+
 class RoutingTests {
 
     @Test
@@ -35,13 +32,13 @@ class RoutingTests {
         val buttons = testRange.map { "btn$it" to "page$it" }
 
         html {
-            div(id=testId) {
+            div(id = testId) {
                 router.routes.bind()
                 ul {
                     const(buttons).each().map { (id, page) ->
                         html {
                             li {
-                                button(id=id) {
+                                button(id = id) {
                                     router.navTo <= clicks.map { page }
                                 }
                             }
@@ -81,17 +78,17 @@ class RoutingTests {
 
         html {
             div {
-                p(id=pageId) {
+                p(id = pageId) {
                     router.select(pageKey) { it.first }.bind()
                 }
-                p(id=btnId) {
+                p(id = btnId) {
                     router.select(btnKey) { it.first }.bind()
                 }
                 ul {
                     const(buttons).each().map { (id, page) ->
                         html {
                             li {
-                                button(id=id) {
+                                button(id = id) {
                                     router.navTo <= clicks.map { mapOf(pageKey to page, btnKey to id) }
                                 }
                             }

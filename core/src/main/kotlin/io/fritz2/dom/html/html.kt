@@ -1,11 +1,9 @@
 package io.fritz2.dom.html
 
 import io.fritz2.dom.Tag
-import kotlinx.coroutines.FlowPreview
 import org.w3c.dom.Element
 
 
-@FlowPreview
 fun <E : Element> html(content: HtmlElements.() -> Tag<E>) =
     content(object : HtmlElements {
 

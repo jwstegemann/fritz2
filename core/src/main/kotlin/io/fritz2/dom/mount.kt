@@ -3,20 +3,21 @@ package io.fritz2.dom
 import io.fritz2.binding.MultiMountPoint
 import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
 import kotlin.browser.window
 
-class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val target: org.w3c.dom.Node?) : SingleMountPoint<WithDomNode<T>>(upstream) {
+class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val target: org.w3c.dom.Node?) :
+    SingleMountPoint<WithDomNode<T>>(upstream) {
     override fun set(value: WithDomNode<T>, last: WithDomNode<T>?) {
         last?.let { target?.replaceChild(value.domNode, last.domNode) }
-                ?: target?.appendChild(value.domNode)
+            ?: target?.appendChild(value.domNode)
     }
 }
 
-class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<T>>>, val target: org.w3c.dom.Node?): MultiMountPoint<WithDomNode<T>>(upstream) {
+class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<T>>>, val target: org.w3c.dom.Node?) :
+    MultiMountPoint<WithDomNode<T>>(upstream) {
     //FIXME: optimize
     private tailrec fun removeChildren(child: org.w3c.dom.Node?, n: Int): org.w3c.dom.Node? {
         return if (n == 0) {
@@ -51,7 +52,8 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
 
 }
 
-class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: Element?) : SingleMountPoint<String>(upstream) {
+class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: Element?) :
+    SingleMountPoint<String>(upstream) {
     override fun set(value: String, last: String?) {
         //FIXME: Should only be true for Boolean-Attributes...
         if (value == "false") target?.removeAttribute(name)
@@ -92,7 +94,6 @@ class ValueAttributeMountPoint(upstream: Flow<String>, val target: Element?) : S
 //}
 
 
-@FlowPreview
 fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
@@ -101,7 +102,6 @@ fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
 }
 
 
-@FlowPreview
 fun <X : Element> append(targetId: String, vararg flows: Flow<Tag<X>>) {
     window.document.getElementById(targetId)?.let { element ->
         flows.forEach { flow -> DomMountPoint(flow, element) }
@@ -109,7 +109,6 @@ fun <X : Element> append(targetId: String, vararg flows: Flow<Tag<X>>) {
 }
 
 
-@FlowPreview
 fun <X : Element> Tag<X>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
@@ -118,7 +117,6 @@ fun <X : Element> Tag<X>.mount(targetId: String) {
 }
 
 
-@FlowPreview
 fun <X : Element> append(targetId: String, vararg tags: Tag<X>) {
     window.document.getElementById(targetId)?.let { element ->
         tags.forEach { tag -> element.appendChild(tag.domNode) }

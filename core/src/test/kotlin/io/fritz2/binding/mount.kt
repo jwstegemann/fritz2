@@ -1,14 +1,15 @@
 package io.fritz2.binding
 
 import io.fritz2.test.checkFlow
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.promise
 import kotlin.js.Promise
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@FlowPreview
-@ExperimentalCoroutinesApi
+
 class MountTests {
 
     @Test
@@ -18,7 +19,7 @@ class MountTests {
 
         val mp = checkFlow(store.data, 5) { count, value, _ ->
             //console.log("CHECK $count: $value from $last\n")
-            val expected = (0 until count).fold("",{ s,i ->
+            val expected = (0 until count).fold("", { s, i ->
                 "$s-$i"
             })
             assertEquals(expected, value, "set wrong value in SingleMountPoint\n")

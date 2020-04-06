@@ -6,8 +6,6 @@ import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
 import io.fritz2.test.targetId
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLLIElement
@@ -18,11 +16,11 @@ import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@FlowPreview
-@ExperimentalCoroutinesApi
+
 class SeqTests {
 
-    @Test @Ignore
+    @Test
+    @Ignore
     fun testSeqMap() = runTest {
         initDocument()
 
@@ -69,7 +67,7 @@ class SeqTests {
 
         html {
             section {
-                ul(id=testId) {
+                ul(id = testId) {
                     store.data.each().map { i ->
                         html {
                             li(id = "entry$i") {
@@ -79,31 +77,31 @@ class SeqTests {
                     }.bind()
                 }
 
-                button(id="replaceList") {
+                button(id = "replaceList") {
                     store.replaceList <= clicks
                 }
-                button(id="addAtBeginning") {
+                button(id = "addAtBeginning") {
                     store.addAtBeginning <= clicks
                 }
-                button(id="addAtEnd") {
+                button(id = "addAtEnd") {
                     store.addAtEnd <= clicks
                 }
-                button(id="addAtMiddle") {
+                button(id = "addAtMiddle") {
                     store.addAtMiddle <= clicks
                 }
-                button(id="removeAtBeginning") {
+                button(id = "removeAtBeginning") {
                     store.removeAtBeginning <= clicks
                 }
-                button(id="removeAtEnd") {
+                button(id = "removeAtEnd") {
                     store.removeAtEnd <= clicks
                 }
-                button(id="removeAtMiddle") {
+                button(id = "removeAtMiddle") {
                     store.removeAtMiddle <= clicks
                 }
-                button(id="filterEven") {
+                button(id = "filterEven") {
                     store.filterEven <= clicks
                 }
-                button(id="reverse") {
+                button(id = "reverse") {
                     store.reverse <= clicks
                 }
             }

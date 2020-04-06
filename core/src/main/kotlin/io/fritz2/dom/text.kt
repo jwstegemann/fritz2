@@ -18,4 +18,5 @@ interface WithText<T : org.w3c.dom.Node> : WithDomNode<T> {
     }.distinctUntilChanged().conflate(), domNode)
 }
 
-class TextNode(private val content: String, override val domNode: Text = window.document.createTextNode(content)): WithDomNode<Text>
+class TextNode(private val content: String, override val domNode: Text = window.document.createTextNode(content)) :
+    WithDomNode<Text>

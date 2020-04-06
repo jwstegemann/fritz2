@@ -3,9 +3,12 @@ package io.fritz2.routing
 import io.fritz2.binding.Handler
 import io.fritz2.dom.html.Events
 import io.fritz2.flow.asSharedFlow
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import org.w3c.dom.events.Event
 import kotlin.browser.window
 
@@ -14,7 +17,7 @@ import kotlin.browser.window
  *
  * @param default default route
  */
-@FlowPreview
+
 
 fun router(default: String): Router<String> = object : Router<String>(
     StringRoute(default)
@@ -25,7 +28,7 @@ fun router(default: String): Router<String> = object : Router<String>(
  *
  * @param default default route
  */
-@FlowPreview
+
 
 fun router(default: Map<String, String>): Router<Map<String, String>> = object : Router<Map<String, String>>(
     MapRoute(default)
@@ -35,7 +38,7 @@ fun router(default: Map<String, String>): Router<Map<String, String>> = object :
  * Select return a [Pair] of the value
  * and the complete routing [Map] for the given key in the [mapper] function.
  */
-@FlowPreview
+
 
 fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Map<String, String>>) -> X): Flow<X> =
     routes.map { m -> mapper((m[key] ?: "") to m) }
@@ -47,9 +50,9 @@ fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Ma
  *
  * @param default default route
  */
-@FlowPreview
 
-fun <T> router(default: Route<T>): Router<T> =  object : Router<T>(default) {}
+
+fun <T> router(default: Route<T>): Router<T> = object : Router<T>(default) {}
 
 /**
  * A Route is a abstraction for routes
@@ -82,7 +85,7 @@ interface Route<T> {
  *
  * @param default [String] to use when no explicit *window.location.hash* was set before
  */
-class StringRoute(override val default: String): Route<String> {
+class StringRoute(override val default: String) : Route<String> {
     override fun unmarshal(hash: String): String = hash
     override fun marshal(route: String): String = route
 }
@@ -94,7 +97,7 @@ class StringRoute(override val default: String): Route<String> {
  *
  * @param default [Map] to use when no explicit *window.location.hash* was set before
  */
-class MapRoute(override val default: Map<String, String>):
+class MapRoute(override val default: Map<String, String>) :
     Route<Map<String, String>> {
     private val assignment = "="
     private val divider = "&"
@@ -123,7 +126,7 @@ class MapRoute(override val default: Map<String, String>):
  * @param T type to marshal and unmarshal
  * @property route default route to use when page is called with empty hash
  */
-@FlowPreview
+
 
 open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope() {
     private val prefix = "#"

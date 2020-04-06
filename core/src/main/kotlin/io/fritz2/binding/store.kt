@@ -3,7 +3,6 @@ package io.fritz2.binding
 import io.fritz2.flow.asSharedFlow
 import io.fritz2.optics.Lens
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.*
@@ -21,8 +20,6 @@ class Handler<A>(inline val execute: (Flow<A>) -> Unit) {
 }
 
 
-@FlowPreview
-
 class Applicator<A, X>(inline val execute: suspend (A) -> Flow<X>) {
     infix fun andThen(nextHandler: Handler<X>) = Handler<A> {
         nextHandler.execute(it.flatMapConcat(this.execute))
@@ -33,7 +30,6 @@ class Applicator<A, X>(inline val execute: suspend (A) -> Flow<X>) {
     }
 }
 
-@FlowPreview
 
 abstract class Store<T> : CoroutineScope by MainScope() {
 
@@ -61,11 +57,10 @@ abstract class Store<T> : CoroutineScope by MainScope() {
 
     abstract val data: Flow<T>
     val update = handle<T> { _, newValue -> newValue }
-    
+
     abstract fun <X> sub(lens: Lens<T, X>): Store<X>
 }
 
-@FlowPreview
 
 open class RootStore<T>(initialData: T, override val id: String = "", bufferSize: Int = 1) : Store<T>() {
 

@@ -1,6 +1,5 @@
 package io.fritz2.binding
 
-import io.fritz2.optics.WithId
 import io.fritz2.utils.Myer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
@@ -12,13 +11,17 @@ sealed class Patch<out T> {
         override fun <R> map(mapping: (T) -> R): Patch<R> = Insert(mapping(element), index)
     }
 
-    //data class InsertMany<T>(val elements: List<T>, val index: Int) : Patch<T>()
+    data class InsertMany<T>(val elements: List<T>, val index: Int) : Patch<T>() {
+        override fun <R> map(mapping: (T) -> R): Patch<R> = InsertMany(elements.map(mapping), index)
+    }
 
     data class Delete<T>(val start: Int, val count: Int = 1) : Patch<T>() {
         override fun <R> map(mapping: (T) -> R): Patch<R> = this.unsafeCast<Patch<R>>() //Delete(start, count)
     }
 
-    //data class Move(val from: Int, val to: Int)
+    data class Move<T>(val from: Int, val to: Int) : Patch<T>() {
+        override fun <R> map(mapping: (T) -> R): Patch<R> = this.unsafeCast<Patch<R>>() //Delete(start, count)
+    }
 
     abstract fun <R> map(mapping: (T) -> R): Patch<R>
 }
@@ -36,17 +39,17 @@ private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, n
     Pair(accumulator.second, newValue)
 
 
+//FIXME: is this needed for type inference?
+/*
 fun <T : WithId> Flow<List<T>>.each(): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
-        Myer.diff(old, new) { a, b ->
-            a.id == b.id
-        }
+        Myer.diff(old, new)
     })
-
+*/
 
 fun <T> Flow<List<T>>.each(): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
-        Myer.diff(old, new) { a, b -> a == b }
+        Myer.diff(old, new)
     })
 
 

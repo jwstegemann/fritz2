@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
-
+@ExperimentalTime
 class MyerTests {
 
     private fun <T> MutableList<T>.applyPatch(patch: Patch<T>): Unit {
@@ -20,9 +20,14 @@ class MyerTests {
                 add(patch.index, patch.element)
             }
             is Patch.Delete<T> -> {
-                for (i in patch.start until (patch.start + patch.count)) {
+                for (i in (patch.start + patch.count - 1) downTo patch.start) {
                     removeAt(i)
                 }
+            }
+            is Patch.Move<T> -> {
+                val element = get(patch.from)
+                removeAt(patch.from)
+                add(patch.to, element)
             }
         }
     }
@@ -64,21 +69,23 @@ class MyerTests {
         return Pair(old, new)
     }
 
-    @ExperimentalTime
-    suspend fun runTestCase(): Unit {
 
-        val (old, new) = createTestCase()
+    suspend fun runTestCase(old: MutableList<String>, new: MutableList<String>): Unit {
+
         console.log("old: $old \n")
         console.log("new: $new \n")
 
         with(measureTime {
-            val patches = Myer.diff(old, new) { a, b -> a == b }
+            val patches = Myer.diff(old, new)
 
-            patches.map { patch ->
-                console.log("applying patch: $patch \n")
-                old.applyPatch(patch)
-                console.log("... result: $old \n")
-            }.reduce { _, value -> value }
+            try {
+                patches.map { patch ->
+                    console.log("applying patch: $patch \n")
+                    old.applyPatch(patch)
+                    console.log("... result: $old \n")
+                }.reduce { _, value -> value }
+            } catch (e: NoSuchElementException) {
+            } //if there is nothing to do this is ok
 
             assertEquals(new, old)
 
@@ -87,12 +94,60 @@ class MyerTests {
         }
     }
 
-    @ExperimentalTime
     @Test
-    fun testMyer() = runTest {
-        repeat(20) {
-            runTestCase()
+    fun randomTests() = runTest {
+        repeat(50) {
+            val (old, new) = createTestCase()
+            runTestCase(old, new)
         }
+    }
+
+    @Test
+    fun testMoveRight() = runTest {
+        val old = mutableListOf<String>("a", "b", "c", "d")
+        val new = mutableListOf<String>("a", "c", "b", "d")
+
+        runTestCase(old, new)
+    }
+
+    @Test
+    fun testMoveLeft() = runTest {
+        val old = mutableListOf<String>("a", "b", "c", "d")
+        val new = mutableListOf<String>("d", "b", "c", "a")
+
+        runTestCase(old, new)
+    }
+
+    @Test
+    fun testDeleteManyEnd() = runTest {
+        val old = mutableListOf<String>("a", "b", "c", "d", "e", "f", "g")
+        val new = mutableListOf<String>("a", "b", "c", "d")
+
+        runTestCase(old, new)
+    }
+
+    @Test
+    fun testDeleteManyStart() = runTest {
+        val old = mutableListOf<String>("a", "b", "c", "d", "e", "f", "g")
+        val new = mutableListOf<String>("c", "d", "e", "f", "g")
+
+        runTestCase(old, new)
+    }
+
+    @Test
+    fun testDeleteManyMiddle() = runTest {
+        val old = mutableListOf<String>("a", "b", "c", "d", "e", "f", "g")
+        val new = mutableListOf<String>("a", "b", "f", "g")
+
+        runTestCase(old, new)
+    }
+
+    @Test
+    fun testNothingToDo() = runTest {
+        val old = mutableListOf<String>("a", "b")
+        val new = mutableListOf<String>("a", "b")
+
+        runTestCase(old, new)
     }
 
 }

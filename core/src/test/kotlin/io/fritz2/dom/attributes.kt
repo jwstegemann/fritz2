@@ -6,16 +6,13 @@ import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
 import io.fritz2.test.targetId
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@FlowPreview
-@ExperimentalCoroutinesApi
+
 class AttributeTests {
 
     @Test
@@ -31,7 +28,7 @@ class AttributeTests {
         val (name3, values3) = "test3" to testRange.map { "value$it" }
 
         html {
-            div(id=testId) {
+            div(id = testId) {
                 attr(name0, value0)
                 const(value1).bindAttr(name1)
                 attr("data-$name0", value0)

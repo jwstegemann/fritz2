@@ -43,7 +43,7 @@ fun remote(baseUrl: String = "") = RequestTemplate(baseUrl)
  * @property baseUrl the common base of all urls that you want to call using this template
  * @property errorHandler a common error handler for all requests you will send using this template. By default this just logs the error to the console.
  */
-class RequestTemplate(val baseUrl : String = "") {
+class RequestTemplate(val baseUrl: String = "") {
     private var method: String? = undefined
     private var headers: Headers? = undefined
     private var body: String? = undefined
@@ -76,7 +76,7 @@ class RequestTemplate(val baseUrl : String = "") {
      *
      * @param method the http method to use (GET, POST, etc.)
      */
-     private fun buildInit(method: String) = RequestInit(
+    private fun buildInit(method: String) = RequestInit(
         method = method,
         headers = headers,
         referrer = referrer,
@@ -168,7 +168,7 @@ class RequestTemplate(val baseUrl : String = "") {
      * @param name name of the http header to add
      * @param value value of the header field
      */
-    private inline fun addHeader(name: String, value: String): RequestTemplate =  apply {
+    private inline fun addHeader(name: String, value: String): RequestTemplate = apply {
         if (headers == null || headers == undefined) headers = Headers()
         headers!!.append(name, value)
     }
@@ -186,7 +186,7 @@ class RequestTemplate(val baseUrl : String = "") {
      *
      * @param value media type to accept
      */
-    fun accept(value: String)= addHeader("Accept", value)
+    fun accept(value: String) = addHeader("Accept", value)
 
     /**
      * adds a header to accept JSON as response
@@ -194,8 +194,6 @@ class RequestTemplate(val baseUrl : String = "") {
     fun acceptJson() = accept("application/json")
 
 }
-
-
 
 
 // Response
