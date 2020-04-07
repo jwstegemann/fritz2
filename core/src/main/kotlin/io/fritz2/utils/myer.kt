@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.flow
 object Myer {
 
     fun <T : WithId> diff(oldList: List<T>, newList: List<T>): Flow<Patch<T>> {
-        console.log("diffing $oldList - $newList")
         val isSame = { a: T, b: T -> a.id == b.id }
         val trace = shortestEdit(oldList, newList, isSame)
         return flow {
@@ -54,11 +53,8 @@ object Myer {
             }
 
             if (d > 0) {
-//                console.run { log("d=$d, k=$k | x: $prevX -> $x, | y: $prevY -> $y") }
-
                 if (prevX < x) {
                     val element = oldList[prevX]
-//                    console.log(" - raw: delete $element @ $prevX \n")
 
                     // try to combine
                     if (lastPatch != null) {
@@ -82,8 +78,6 @@ object Myer {
                 } else if (prevY < y) {
                     val element = newList[prevY]
                     val index = x
-
-//                    console.log(" - raw: insert $element @ $index \n")
 
                     // try to combine
                     if (lastPatch != null) {
@@ -136,27 +130,19 @@ object Myer {
             outerLoop@ for (d in 0..max) {
                 add(v.copyOf())
                 for (k in -d..d step 2) {
-                    //console.log("evaluating d=$d, k=$k")
-
                     //walk right or down?
                     var x = if ((k == -d) || (k != d && v.get(k - 1) < v.get(k + 1))) {
-                        //console.log("move down (insert)")
                         v.get(k + 1)
                     } else {
-                        //console.log("move right (delete)")
                         v.get(k - 1) + 1
                     }
 
                     var y = x - k
-                    //console.log("moved to ($x,$y)")
-
                     //walk diagonal is possible as far as possible
                     while (x < oldList.size && y < newList.size && isSame(oldList[x], newList[y])) {
                         x += 1
                         y += 1
                     }
-
-                    //console.log("    -> k = $k, best x = $x")
                     v.set(k, x)
 
                     if (x >= oldList.size && y >= newList.size) break@outerLoop

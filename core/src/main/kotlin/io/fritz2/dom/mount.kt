@@ -23,7 +23,6 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
     private fun Node.insertOrAppend(child: Node, index: Int): Unit {
         if (index == childNodes.length) appendChild(child)
         else childNodes.item(index)?.let {
-//            console.log("inserting ${child.textContent} before ${it.textContent}")
             insertBefore(child, it)
         }
     }
@@ -31,14 +30,11 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
     private fun Node.insert(element: WithDomNode<T>, index: Int): Unit = insertOrAppend(element.domNode, index)
 
     private fun Node.insertMany(elements: List<WithDomNode<T>>, index: Int) {
-//        console.log("insertMany @ $index")
         if (index == childNodes.length) {
             for (child in elements.reversed()) appendChild(child.domNode)
         } else {
             childNodes.item(index)?.let {
-//                console.log("inserting before ${it.textContent}")
                 for (child in elements.reversed()) {
-//                    console.log("... inserting ${child.domNode.textContent}")
                     insertBefore(child.domNode, it)
                 }
             }
@@ -56,14 +52,11 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
     }
 
     private fun Node.move(from: Int, to: Int): Unit {
-//        console.log("moving $from -Y $to")
         val itemToMove = childNodes.item(from)
-//        console.log("... item $itemToMove")
         if (itemToMove != null) insertOrAppend(itemToMove, to)
     }
 
     override fun patch(patch: Patch<WithDomNode<T>>) {
-        console.log("*** $patch")
         when (patch) {
             is Patch.Insert -> target?.insert(patch.element, patch.index)
             is Patch.InsertMany -> target?.insertMany(patch.elements, patch.index)
