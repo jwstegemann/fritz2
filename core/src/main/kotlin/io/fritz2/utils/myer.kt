@@ -57,7 +57,7 @@ object Myer {
 
                 if (prevX < x) {
                     val element = oldList[prevX]
-                    console.log(" - raw: delete $element @ $prevX \n")
+//                    console.log(" - raw: delete $element @ $prevX \n")
 
                     // try to combine
                     if (lastPatch != null) {
@@ -82,7 +82,7 @@ object Myer {
                     val element = newList[prevY]
                     val index = x
 
-                    console.log(" - raw: insert $element @ $index \n")
+//                    console.log(" - raw: insert $element @ $index \n")
 
                     // try to combine
                     if (lastPatch != null) {

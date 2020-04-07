@@ -51,7 +51,7 @@ class RoutingTests {
         delay(500)
 
         val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
-        console.log("${element.textContent}\n")
+        //console.log("${element.textContent}\n")
         assertEquals(defaultRoute, element.textContent)
 
         for ((id, page) in buttons) {

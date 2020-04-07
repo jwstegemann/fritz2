@@ -78,17 +78,17 @@ class MyerTests {
 
     suspend fun runTestCase(old: MutableList<String>, new: MutableList<String>): Unit {
 
-        console.log("old: $old \n")
-        console.log("new: $new \n")
+//        console.log("old: $old \n")
+//        console.log("new: $new \n")
 
         with(measureTime {
             val patches = Myer.diff(old, new)
 
             try {
                 patches.map { patch ->
-                    console.log("applying patch: $patch \n")
+//                    console.log("applying patch: $patch \n")
                     old.applyPatch(patch)
-                    console.log("... result: $old \n")
+//                    console.log("... result: $old \n")
                 }.reduce { _, value -> value }
             } catch (e: NoSuchElementException) {
             } //if there is nothing to do this is ok
@@ -96,7 +96,7 @@ class MyerTests {
             assertEquals(new, old)
 
         }.inMilliseconds) {
-            console.log("took $this ms \n")
+//            console.log("took $this ms \n")
         }
     }
 
