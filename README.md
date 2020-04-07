@@ -1,9 +1,11 @@
-# ![fritz2 - the potato among the ui-libs](/docs/fritz2-logo-small.png)
+# ![fritz2 - the potato among the ui-libs](https://jwstegemann.github.io/fritz2/static/fritz2-logo-small.png)
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
-[![LOC](https://img.shields.io/badge/core%20LOC-1%2C4k-green)](https://clean-code-developer.com/grades/grade-1-red/#Keep_it_simple_stupid_KISS)
-[![100% Kotlin](https://img.shields.io/badge/pure%20Kotlin-100%25-blue)](https://play.kotlinlang.org/)
-[ ![Download](https://api.bintray.com/packages/jwstegemann/fritz2/fritz2-core/images/download.svg?version=0.2) ](https://bintray.com/jwstegemann/fritz2/fritz2-core/0.2/link)
+[![LOC](https://img.shields.io/badge/lines%20of%20code-1%2C4k-green)](https://clean-code-developer.com/grades/grade-1-red/#Keep_it_simple_stupid_KISS)
+[![100% Kotlin](https://img.shields.io/badge/kotlin-100%25-blue)](https://play.kotlinlang.org/)
+[![Dokka](https://img.shields.io/badge/API-dokka-green)](https://jwstegemann.github.io/fritz2/dokka/fritz2/)
+[![Wiki](https://img.shields.io/badge/docs-wiki-blue)](https://github.com/jwstegemann/fritz2/wiki)
+[![Download](https://api.bintray.com/packages/jwstegemann/fritz2/fritz2-core/images/download.svg?version=0.2)](https://bintray.com/jwstegemann/fritz2/fritz2-core/0.2/link)
 
 fritz2 is a proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
@@ -19,7 +21,7 @@ html {
             model.update <= changes.values()
         }
         p {
-            +"model value = "
+            text("model value = ")
             store.data.bind()
         }
     }
@@ -27,18 +29,19 @@ html {
 ```
 
 fritz2 implements **precise data binding**. That means that exactly those (and **only** those) dom-nodes (elements, attributes, etc.) change, that depend on the parts of your data-model, that have changed. 
-There is no intermediate layer needed like a virtual DOM and you do not have to implement any additional methodes to decide, which parts of your component have to be rerendered, when your data changes:
+There is no intermediate layer needed like a virtual DOM and you do not have to implement any additional methods to decide, which parts of your component have to be rerendered, when your data changes:
 
-![State management in fritz2](/docs/fritz2_state.001.png)
+![State management in fritz2](https://jwstegemann.github.io/fritz2/static/fritz2_state.001.png)
 
 Utilizing Koltin's multiplatform-abilities, you have to write the code of your data classes just once and use it on your client and server (i.e. in a [SpringBoot](https://spring.io/guides/gs/rest-service/)-Backend). This of course also true for your model-validation-code, that can become far more complex than your data model really fast.
 
 The learning curve should be quite flat. We chose Kotlin as a language, that is easy to learn and has a focus on writing clean and intuitive code.
-fritz2 itself depends on only a handfull of [concepts](https://github.com/jwstegemann/fritz2/wiki)) you have to master. The [core API](https://jwstegemann.github.io/fritz2/dokka/fritz2/) consists of just about a dozen key objects and types offering only the methods und functions, that are really needed. 
+fritz2 itself depends on only a handful of [concepts](https://github.com/jwstegemann/fritz2/wiki)) you have to master. The [core API](https://jwstegemann.github.io/fritz2/dokka/fritz2/) consists of just about a dozen key objects and types offering only the methods und functions, that are really needed. 
 
 ## How to try it that early?
 You can either
 * checkout the project, import it in your favourite IDE (or whatever you like) and run `./gradlew :examples:todomvc:run` (or another example)
+* take a look at our [examples repo](https://jamowei.github.io/fritz2-examples/)
 * set up a new project on your own following our [documentation](https://github.com/jwstegemann/fritz2/wiki/Project-Setup)
 
 
@@ -50,9 +53,9 @@ You can either
 - hassle-free redux-like state-handling
 - model-validation and message handling 
 - routing (for SPAs, hash-based)
+- [example-app](https://github.com/jwstegemann/fritz2/tree/master/examples/todomvc) implementing the specification of [TodoMVC](http://todomvc.com/)
 - server-communication (Rest APIs, etc.) (work in progress)
-- [documentation (work in progress)](https://github.com/jwstegemann/fritz2/wiki)
-- [example-app](https://github.com/jwstegemann/fritz2/tree/master/examples/todomvc) implementing the specification of [TodoMVC](http://todomvc.com/) (work in progress) 
+- [documentation](https://github.com/jwstegemann/fritz2/wiki) (work in progress)
 
 ## What will come next?
 
@@ -67,4 +70,5 @@ You can either
 
 ## Inspiration
 
-fritz2 is heavily inspired by the great [Binding.scala](https://github.com/ThoughtWorksInc/Binding.scala). Later I discovered that a lot of those concepts are described independently in [Meiosis](https://meiosis.js.org/).
+fritz2 is heavily inspired by the great [Binding.scala](https://github.com/ThoughtWorksInc/Binding.scala).
+Later I discovered that a lot of those concepts are described independently in [Meiosis](https://meiosis.js.org/).

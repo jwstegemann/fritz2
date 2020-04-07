@@ -784,7 +784,6 @@ interface HtmlElements {
 
     fun output(baseClass: String? = null, id: String? = null, content: Output.() -> Unit): Output =
         register(Output(id, baseClass), content)
-
     fun p(baseClass: String? = null, id: String? = null, content: P.() -> Unit): P = register(P(id, baseClass), content)
     fun param(baseClass: String? = null, id: String? = null, content: Param.() -> Unit): Param =
         register(Param(id, baseClass), content)

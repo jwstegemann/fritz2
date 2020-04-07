@@ -1,0 +1,32 @@
+name: examples
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build model
+        run: ./gradlew :examples:nestedmodel:model:build
+      - name: Build and run Unit Tests
+        run: ./gradlew test
+      - name: Webpack with Gradle
+        run: ./gradlew browserProductionWebpack
+      - name: Push Examples
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v1.3.0
+        with:
+          repo: jamowei/fritz2-examples
+          target_branch: master
+          keep_history: false
+          build_dir: examples
+        env:
+          GITHUB_PAT: ${{ secrets.PAT_FRITZ2_EXAMPLES }}

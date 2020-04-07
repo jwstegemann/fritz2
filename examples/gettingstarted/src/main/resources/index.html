@@ -3,15 +3,15 @@
     <title>Getting started</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="github-embed.css">
+    <link rel="stylesheet" type="text/css" href="https://jwstegemann.github.io/fritz2/static/github-embed.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.23.0/polyfill.min.js"></script>
-    <script src="github-embed.min.js"></script>
+    <script src="https://jwstegemann.github.io/fritz2/static/github-embed.min.js"></script>
 </head>
 <body>
 <div class="container">
     <div class="jumbotron">
         <h1 class="display-4">Getting started</h1>
-        <p class="lead">This example shows the one- and two-way data-binding in fritz2.</p>
+        <p class="lead">This example shows the one- and two-way-databinding in fritz2.</p>
         <hr class="my-4"/>
         <div class="card">
             <div id="target" class="card-body"></div>
@@ -34,11 +34,18 @@
         "owner": "jwstegemann",
         "repo": "fritz2",
         "ref": "master",
-        "embed": [{
-            "path": "examples/gettingstarted/src/main/kotlin/io/fritz2/examples/gettingstarted/gettingstarted.kt",
-            "type": "kotlin",
-            "label": "gettingstarted.kt"
-        }]
+        "embed": [
+            {
+                "path": "examples/gettingstarted/src/main/kotlin/io/fritz2/examples/gettingstarted/gettingstarted.kt",
+                "type": "kotlin",
+                "label": "gettingstarted.kt"
+            },
+            {
+                "path": "examples/gettingstarted/src/main/resources/index.html",
+                "type": "html",
+                "label": "index.html"
+            }
+        ]
     });
 </script>
 </body>

@@ -1,0 +1,20 @@
+name: pages
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Updating Github Pages
+        uses: crazy-max/ghaction-github-pages@v1.3.0
+        with:
+          target_branch: gh-pages
+          keep_history: false
+          build_dir: pages
+        env:
+          GITHUB_PAT: ${{ secrets.FRITZ2_DOKKA_TOKEN }}
