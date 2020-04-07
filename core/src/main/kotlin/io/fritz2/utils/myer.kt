@@ -67,7 +67,7 @@ object Myer {
                         }
                         // combine directly following insert and delete of same element as move
                         else if (lastPatch is Patch.Insert && isSame(lastPatch.element, element)) {
-                            lastPatch = Patch.Move(prevX, lastPatch.index - 1)
+                            lastPatch = Patch.Move(prevX, lastPatch.index) // - 1)
                         } else {
                             emit(lastPatch)
                             lastPatch = Patch.Delete(prevX, 1)

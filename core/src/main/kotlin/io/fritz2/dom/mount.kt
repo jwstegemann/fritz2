@@ -6,6 +6,7 @@ import io.fritz2.binding.SingleMountPoint
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.Node
 import kotlin.browser.window
 
 class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val target: org.w3c.dom.Node?) :
@@ -18,36 +19,56 @@ class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val ta
 
 class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<T>>>, val target: org.w3c.dom.Node?) :
     MultiMountPoint<WithDomNode<T>>(upstream) {
-    //FIXME: optimize
-    private tailrec fun removeChildren(child: org.w3c.dom.Node?, n: Int): org.w3c.dom.Node? {
-        return if (n == 0) {
-            child
-        } else {
-            val nextSibling = child?.nextSibling
-            if (child != null) target?.removeChild(child)
-            removeChildren(nextSibling, n - 1)
+
+    private fun Node.insertOrAppend(child: Node, index: Int): Unit {
+        if (index == childNodes.length) appendChild(child)
+        else childNodes.item(index)?.let {
+            console.log("inserting ${child.textContent} before ${it.textContent}")
+            insertBefore(child, it)
         }
     }
 
-    override fun patch(patch: Patch<WithDomNode<T>>) {
-        //console.log("### MountPoint: ... patching: ${patch.from} with ${patch.that} replacing ${patch.replaced}")
-/*        patch.apply {
-            val child = removeChildren(target?.childNodes?.get(from), replaced)
-            //console.log("### MountPoint: child: $child")
-            if (child == null) {
-                for (newChild in that) {
-                    target?.appendChild(newChild.domNode)
-                    //console.log("### MountPoint: ... appending: $newChild")
-                }
-            } else {
-                for (newChild in that) {
-                    target?.insertBefore(newChild.domNode, child)
-                    //console.log("### MountPoint: ... insert: $newChild")
+    private fun Node.insert(element: WithDomNode<T>, index: Int): Unit = insertOrAppend(element.domNode, index)
+
+    private fun Node.insertMany(elements: List<WithDomNode<T>>, index: Int) {
+        console.log("insertMany @ $index")
+        if (index == childNodes.length) {
+            for (child in elements.reversed()) appendChild(child.domNode)
+        } else {
+            childNodes.item(index)?.let {
+                console.log("inserting before ${it.textContent}")
+                for (child in elements.reversed()) {
+                    console.log("... inserting ${child.domNode.textContent}")
+                    insertBefore(child.domNode, it)
                 }
             }
         }
+    }
 
- */
+    private fun Node.delete(start: Int, count: Int): Unit {
+        var itemToDelete = childNodes.item(start)
+        repeat(count) {
+            itemToDelete?.let {
+                removeChild(it)
+                itemToDelete = it.nextSibling
+            }
+        }
+    }
+
+    private fun Node.move(from: Int, to: Int): Unit {
+        console.log("moving $from -Y $to")
+        val itemToMove = childNodes.item(from)
+        console.log("... item $itemToMove")
+        if (itemToMove != null) insertOrAppend(itemToMove, to)
+    }
+
+    override fun patch(patch: Patch<WithDomNode<T>>) {
+        when (patch) {
+            is Patch.Insert -> target?.insert(patch.element, patch.index)
+            is Patch.InsertMany -> target?.insertMany(patch.elements, patch.index)
+            is Patch.Delete -> target?.delete(patch.start, patch.count)
+            is Patch.Move -> target?.move(patch.from, patch.to)
+        }
     }
 
 }

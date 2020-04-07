@@ -32,7 +32,8 @@ class MyerTests {
             is Patch.Move<T> -> {
                 val element = get(patch.from)
                 removeAt(patch.from)
-                add(patch.to, element)
+                if (patch.from > patch.to) add(patch.to, element)
+                else add(patch.to - 1, element)
             }
         }
     }
