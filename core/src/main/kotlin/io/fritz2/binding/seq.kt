@@ -1,5 +1,6 @@
 package io.fritz2.binding
 
+import io.fritz2.optics.WithId
 import io.fritz2.utils.Myer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
@@ -39,13 +40,10 @@ private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, n
     Pair(accumulator.second, newValue)
 
 
-//FIXME: is this needed for type inference?
-/*
 fun <T : WithId> Flow<List<T>>.each(): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
         Myer.diff(old, new)
     })
-*/
 
 fun <T> Flow<List<T>>.each(): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->

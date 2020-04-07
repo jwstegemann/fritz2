@@ -49,8 +49,8 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
         var itemToDelete = childNodes.item(start)
         repeat(count) {
             itemToDelete?.let {
-                removeChild(it)
                 itemToDelete = it.nextSibling
+                removeChild(it)
             }
         }
     }
@@ -63,6 +63,7 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
     }
 
     override fun patch(patch: Patch<WithDomNode<T>>) {
+        console.log("*** $patch")
         when (patch) {
             is Patch.Insert -> target?.insert(patch.element, patch.index)
             is Patch.InsertMany -> target?.insertMany(patch.elements, patch.index)

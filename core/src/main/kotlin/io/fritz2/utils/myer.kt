@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.flow
 object Myer {
 
     fun <T : WithId> diff(oldList: List<T>, newList: List<T>): Flow<Patch<T>> {
+        console.log("diffing $oldList - $newList")
         val isSame = { a: T, b: T -> a.id == b.id }
         val trace = shortestEdit(oldList, newList, isSame)
         return flow {
