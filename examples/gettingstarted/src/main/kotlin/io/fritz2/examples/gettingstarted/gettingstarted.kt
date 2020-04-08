@@ -12,7 +12,7 @@ import kotlinx.coroutines.FlowPreview
 @FlowPreview
 fun main() {
 
-    val store = object : RootStore<String>("") {
+    val store = object : RootStore<String>("", id = "model") {
         val addADot = handle { model ->
             "$model."
         }
@@ -21,9 +21,8 @@ fun main() {
     val gettingstarted = html {
         div {
             div("form-group") {
-                label {
+                label(`for` = store.id) {
                     text("Input")
-                    `for` = const(store.id)
                 }
                 input("form-control", id = store.id) {
                     placeholder = const("Add some input")
