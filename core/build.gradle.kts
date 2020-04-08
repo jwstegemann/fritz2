@@ -4,7 +4,8 @@ tasks.withType<Kotlin2JsCompile>().configureEach {
     kotlinOptions.freeCompilerArgs = listOf(
         "-Xopt-in=kotlin.ExperimentalStdlibApi",
         "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-        "-Xopt-in=kotlinx.coroutines.FlowPreview"
+        "-Xopt-in=kotlinx.coroutines.FlowPreview",
+        "-XXLanguage:+InlineClasses"
     )
 }
 
