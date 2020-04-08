@@ -15,12 +15,12 @@ fritz2 includes an intuitive way to build and render html-elements using a type-
 val model = RootStore<String>("init value")
 
 html {
-    div {
+    div("some-css-class") {
         input {
             value = model.data
             model.update <= changes.values()
         }
-        p {
+        p() {
             text("model value = ")
             store.data.bind()
         }
