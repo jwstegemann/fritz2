@@ -1,14 +1,14 @@
 # ![fritz2 - the potato among the ui-libs](https://jwstegemann.github.io/fritz2/static/fritz2-logo-small.png)
 
 # Examples
-This repo host only the compiled examples from fritz2 with github pages.
+This repo hosts ready-to-try examples to give you quick insight into how development of web-apps using fritz2 is like. 
 
-To see the complete code from the examples you can take a look at the [fritz2-repo](https://github.com/jwstegemann/fritz2).
+The main source-code is included. To see the complete code of the examples you can take a look at the [fritz2-repo](https://github.com/jwstegemann/fritz2/tree/master/examples).
 
 Also take a look at our [wiki](https://github.com/jwstegemann/fritz2/wiki)
-and learn how to use the fritz2 framework for your own projects.
+and learn how to use fritz2 with your own projects.
 
-Here are our examples:
+The following examples are available (work in progress):
 * [gettingstarted](https://jamowei.github.io/fritz2-examples/gettingstarted/build/distributions/index.html) - shows the one- and two-way-databinding in fritz2.
 * [nestedmodel](https://jamowei.github.io/fritz2-examples/nestedmodel/build/distributions/index.html) - shows the handling with complex models in fritz2.
 * [performance](https://jamowei.github.io/fritz2-examples/performance/build/distributions/index.html) - measures the performance of fritz2.

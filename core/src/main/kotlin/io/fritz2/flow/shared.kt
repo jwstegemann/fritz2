@@ -5,14 +5,17 @@ package io.fritz2.flow
  * can be removed, when PR https://github.com/Kotlin/kotlinx.coroutines/pull/1716 is closed
  */
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.broadcast
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-@ExperimentalCoroutinesApi
+
 internal fun <T> Flow<T>.asCachedFlow(): Flow<T> {
 
     var cache: T? = null
@@ -27,8 +30,7 @@ internal fun <T> Flow<T>.asCachedFlow(): Flow<T> {
     }
 }
 
-@FlowPreview
-@ExperimentalCoroutinesApi
+
 internal fun <T> Flow<T>.asSharedFlow(scope: CoroutineScope = GlobalScope): Flow<T> = SharedFlow(this, scope)
 
 /**
@@ -42,8 +44,6 @@ internal fun <T> Flow<T>.asSharedFlow(scope: CoroutineScope = GlobalScope): Flow
  * 1) The underlying [BroadcastChannel] is closed. A new BroadcastChannel will be created when a new collector starts.
  * 2) The cache is reset.  New collectors will not receive values from before the reset, but will generate a new cache.
  */
-@FlowPreview
-@ExperimentalCoroutinesApi
 internal class SharedFlow<T>(
     private val sourceFlow: Flow<T>,
     private val scope: CoroutineScope
@@ -60,9 +60,9 @@ internal class SharedFlow<T>(
 
     // Replay happens per new collector, if cacheHistory > 0.
     private suspend fun createFlow(): Flow<T> = getChannel()
-            .asFlow()
-            .replayIfNeeded()
-            .onCompletion { onCollectEnd() }
+        .asFlow()
+        .replayIfNeeded()
+        .onCompletion { onCollectEnd() }
 
     private suspend fun getChannel(): BroadcastChannel<T> = mutex.withLock {
         refCount++

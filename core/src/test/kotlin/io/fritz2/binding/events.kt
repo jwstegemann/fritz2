@@ -7,8 +7,6 @@ import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
 import io.fritz2.test.targetId
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
@@ -16,8 +14,7 @@ import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@FlowPreview
-@ExperimentalCoroutinesApi
+
 class EventTests {
 
     @Test
@@ -43,7 +40,7 @@ class EventTests {
                     value = store.data
                     store.update <= changes.values()
                 }
-                div(id=resultId) {
+                div(id = resultId) {
                     text("value: ")
                     store.data.bind()
                 }

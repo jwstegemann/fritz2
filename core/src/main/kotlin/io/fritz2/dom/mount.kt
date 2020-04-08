@@ -3,55 +3,72 @@ package io.fritz2.dom
 import io.fritz2.binding.MultiMountPoint
 import io.fritz2.binding.Patch
 import io.fritz2.binding.SingleMountPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.get
+import org.w3c.dom.Node
 import kotlin.browser.window
 
-class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val target: org.w3c.dom.Node?) : SingleMountPoint<WithDomNode<T>>(upstream) {
+class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val target: org.w3c.dom.Node?) :
+    SingleMountPoint<WithDomNode<T>>(upstream) {
     override fun set(value: WithDomNode<T>, last: WithDomNode<T>?) {
         last?.let { target?.replaceChild(value.domNode, last.domNode) }
-                ?: target?.appendChild(value.domNode)
+            ?: target?.appendChild(value.domNode)
     }
 }
 
-class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<T>>>, val target: org.w3c.dom.Node?): MultiMountPoint<WithDomNode<T>>(upstream) {
-    //FIXME: optimize
-    private tailrec fun removeChildren(child: org.w3c.dom.Node?, n: Int): org.w3c.dom.Node? {
-        return if (n == 0) {
-            child
-        } else {
-            val nextSibling = child?.nextSibling
-            if (child != null) target?.removeChild(child)
-            removeChildren(nextSibling, n - 1)
+class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<T>>>, val target: org.w3c.dom.Node?) :
+    MultiMountPoint<WithDomNode<T>>(upstream) {
+
+    private fun Node.insertOrAppend(child: Node, index: Int): Unit {
+        if (index == childNodes.length) appendChild(child)
+        else childNodes.item(index)?.let {
+            insertBefore(child, it)
         }
     }
 
-    override fun patch(patch: Patch<WithDomNode<T>>) {
-        //console.log("### MountPoint: ... patching: ${patch.from} with ${patch.that} replacing ${patch.replaced}")
-        patch.apply {
-            val child = removeChildren(target?.childNodes?.get(from), replaced)
-            //console.log("### MountPoint: child: $child")
-            if (child == null) {
-                for (newChild in that) {
-                    target?.appendChild(newChild.domNode)
-                    //console.log("### MountPoint: ... appending: $newChild")
-                }
-            } else {
-                for (newChild in that) {
-                    target?.insertBefore(newChild.domNode, child)
-                    //console.log("### MountPoint: ... insert: $newChild")
+    private fun Node.insert(element: WithDomNode<T>, index: Int): Unit = insertOrAppend(element.domNode, index)
+
+    private fun Node.insertMany(elements: List<WithDomNode<T>>, index: Int) {
+        if (index == childNodes.length) {
+            for (child in elements.reversed()) appendChild(child.domNode)
+        } else {
+            childNodes.item(index)?.let {
+                for (child in elements.reversed()) {
+                    insertBefore(child.domNode, it)
                 }
             }
         }
     }
 
+    private fun Node.delete(start: Int, count: Int): Unit {
+        var itemToDelete = childNodes.item(start)
+        repeat(count) {
+            itemToDelete?.let {
+                itemToDelete = it.nextSibling
+                removeChild(it)
+            }
+        }
+    }
+
+    private fun Node.move(from: Int, to: Int): Unit {
+        val itemToMove = childNodes.item(from)
+        if (itemToMove != null) insertOrAppend(itemToMove, to)
+    }
+
+    override fun patch(patch: Patch<WithDomNode<T>>) {
+        when (patch) {
+            is Patch.Insert -> target?.insert(patch.element, patch.index)
+            is Patch.InsertMany -> target?.insertMany(patch.elements, patch.index)
+            is Patch.Delete -> target?.delete(patch.start, patch.count)
+            is Patch.Move -> target?.move(patch.from, patch.to)
+        }
+    }
+
 }
 
-class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: Element?) : SingleMountPoint<String>(upstream) {
+class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: Element?) :
+    SingleMountPoint<String>(upstream) {
     override fun set(value: String, last: String?) {
         //FIXME: Should only be true for Boolean-Attributes...
         if (value == "false") target?.removeAttribute(name)
@@ -91,8 +108,7 @@ class ValueAttributeMountPoint(upstream: Flow<String>, val target: Element?) : S
 //    }
 //}
 
-@ExperimentalCoroutinesApi
-@FlowPreview
+
 fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
@@ -100,16 +116,14 @@ fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
     }
 }
 
-@ExperimentalCoroutinesApi
-@FlowPreview
+
 fun <X : Element> append(targetId: String, vararg flows: Flow<Tag<X>>) {
     window.document.getElementById(targetId)?.let { element ->
         flows.forEach { flow -> DomMountPoint(flow, element) }
     }
 }
 
-@ExperimentalCoroutinesApi
-@FlowPreview
+
 fun <X : Element> Tag<X>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
@@ -117,8 +131,7 @@ fun <X : Element> Tag<X>.mount(targetId: String) {
     }
 }
 
-@ExperimentalCoroutinesApi
-@FlowPreview
+
 fun <X : Element> append(targetId: String, vararg tags: Tag<X>) {
     window.document.getElementById(targetId)?.let { element ->
         tags.forEach { tag -> element.appendChild(tag.domNode) }

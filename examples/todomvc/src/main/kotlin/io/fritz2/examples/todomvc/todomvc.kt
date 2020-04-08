@@ -11,6 +11,7 @@ import io.fritz2.dom.values
 import io.fritz2.optics.WithId
 import io.fritz2.optics.buildLens
 import io.fritz2.routing.router
+import io.fritz2.utils.createUUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -19,7 +20,7 @@ data class ToDo(
     val text: String,
     val completed: Boolean = false,
     val editing: Boolean = false,
-    override val id: String = uniqueId() //text.hashCode().toString()
+    override val id: String = createUUID()
 ) : WithId
 
 
@@ -78,14 +79,13 @@ fun main() {
 
     val mainSection = html {
         section("main") {
-            input("toggle-all", id="toggle-all") {
+            input("toggle-all", id = "toggle-all") {
                 type = const("checkbox")
                 checked = toDos.allChecked
 
                 toDos.toggleAll <= changes.states()
             }
-            label {
-                `for` = const("toggle-all")
+            label(`for` = "toggle-all") {
                 text("Mark all as complete")
             }
             ul("todo-list") {

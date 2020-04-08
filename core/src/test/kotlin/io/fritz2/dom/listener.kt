@@ -8,8 +8,6 @@ import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
 import io.fritz2.test.targetId
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
@@ -21,8 +19,7 @@ import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@ExperimentalCoroutinesApi
-@FlowPreview
+
 class ListenerTest {
 
     @Test
@@ -30,17 +27,17 @@ class ListenerTest {
         initDocument()
 
         val inputId = randomId("input")
-        val resultId =  randomId("result")
+        val resultId = randomId("result")
 
         val store = object : RootStore<String>("start") {}
 
         html {
             section {
-                input(id=inputId) {
+                input(id = inputId) {
                     value = store.data
                     store.update <= changes.values()
                 }
-                div(id=resultId) {
+                div(id = resultId) {
                     store.data.bind()
                 }
             }
@@ -82,10 +79,10 @@ class ListenerTest {
 
         html {
             section {
-                div(id=resultId) {
+                div(id = resultId) {
                     store.data.bind()
                 }
-                button(id=buttonId) {
+                button(id = buttonId) {
                     store.addADot <= clicks
                 }
             }
@@ -139,10 +136,10 @@ class ListenerTest {
 
         html {
             section {
-                div(id=resultId) {
+                div(id = resultId) {
                     store.data.bind()
                 }
-                button(id=buttonId) {
+                button(id = buttonId) {
                     store.addDot <= clicks
                     store.addPlus <= clicks
                     store.addDollar <= clicks
@@ -200,10 +197,10 @@ class ListenerTest {
 
         html {
             section {
-                div(id=resultId) {
+                div(id = resultId) {
                     store.data.bind()
                 }
-                input(id=inputId) {
+                input(id = inputId) {
                     store.keyPressed <= keydowns.key()
                 }
             }
@@ -229,7 +226,7 @@ class ListenerTest {
             }
 
 
-        for(e in keyboardEvents) {
+        for (e in keyboardEvents) {
             input.dispatchEvent(e)
             delay(100)
             assertEquals(++handlerCalls, store.countHandlerCalls, "wrong number of handler calls")

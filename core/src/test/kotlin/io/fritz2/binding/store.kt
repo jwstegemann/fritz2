@@ -6,8 +6,6 @@ import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
 import io.fritz2.test.targetId
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import org.w3c.dom.HTMLButtonElement
@@ -16,8 +14,7 @@ import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@FlowPreview
-@ExperimentalCoroutinesApi
+
 class StoreTests {
 
     @Test
@@ -41,10 +38,10 @@ class StoreTests {
 
         html {
             section {
-                div(id=resultId) {
+                div(id = resultId) {
                     store.data.bind()
                 }
-                button(id=buttonId) {
+                button(id = buttonId) {
                     store.execute <= clicks
                 }
             }
@@ -90,10 +87,10 @@ class StoreTests {
 
         html {
             section {
-                div(id=resultId) {
+                div(id = resultId) {
                     store.data.bind()
                 }
-                button(id=buttonId) {
+                button(id = buttonId) {
                     store.execute <= clicks
                 }
             }
@@ -138,10 +135,10 @@ class StoreTests {
 
         html {
             section {
-                div(id=resultId) {
+                div(id = resultId) {
                     store.data.bind()
                 }
-                button(id=buttonId) {
+                button(id = buttonId) {
                     store.execute <= clicks
                 }
             }
