@@ -752,7 +752,6 @@ interface HtmlElements {
         return register(label, content)
     }
 
-
     fun legend(baseClass: String? = null, id: String? = null, content: Legend.() -> Unit): Legend =
         register(Legend(id, baseClass), content)
 
