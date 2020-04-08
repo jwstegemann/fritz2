@@ -1,6 +1,5 @@
 package io.fritz2.remote
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.await
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -44,7 +43,7 @@ fun remote(baseUrl: String = "") = RequestTemplate(baseUrl)
  * @property baseUrl the common base of all urls that you want to call using this template
  * @property errorHandler a common error handler for all requests you will send using this template. By default this just logs the error to the console.
  */
-class RequestTemplate(val baseUrl : String = "") {
+class RequestTemplate(val baseUrl: String = "") {
     private var method: String? = undefined
     private var headers: Headers? = undefined
     private var body: String? = undefined
@@ -64,7 +63,6 @@ class RequestTemplate(val baseUrl : String = "") {
      * @param url function do derive the url (so you can use baseUrl)
      * @param init an instance of [RequestInit] defining the attributes of the request
      */
-    @ExperimentalCoroutinesApi
     inline fun execute(url: String, init: RequestInit): Flow<Response> = flow {
         val response = kotlin.browser.window.fetch("$baseUrl/$url", init).await()
 
@@ -77,7 +75,7 @@ class RequestTemplate(val baseUrl : String = "") {
      *
      * @param method the http method to use (GET, POST, etc.)
      */
-     private fun buildInit(method: String) = RequestInit(
+    private fun buildInit(method: String) = RequestInit(
         method = method,
         headers = headers,
         referrer = referrer,
@@ -117,7 +115,6 @@ class RequestTemplate(val baseUrl : String = "") {
      *
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      */
-    @ExperimentalCoroutinesApi
     fun get(url: String = "") = execute(url, buildInit("GET"))
 
     /**
@@ -125,7 +122,6 @@ class RequestTemplate(val baseUrl : String = "") {
      *
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      */
-    @ExperimentalCoroutinesApi
     fun delete(url: String = "") = execute(url, buildInit("DELETE"))
 
     /**
@@ -133,7 +129,6 @@ class RequestTemplate(val baseUrl : String = "") {
      *
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      */
-    @ExperimentalCoroutinesApi
     fun head(url: String = "") = execute(url, buildInit("HEAD"))
 
     /**
@@ -142,7 +137,6 @@ class RequestTemplate(val baseUrl : String = "") {
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      * @param body content to send in the body of the request
      */
-    @ExperimentalCoroutinesApi
     fun post(url: String = "", body: String) = execute(url, buildInit("POST", body))
 
     /**
@@ -151,7 +145,6 @@ class RequestTemplate(val baseUrl : String = "") {
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      * @param body content to send in the body of the request
      */
-    @ExperimentalCoroutinesApi
     fun push(url: String = "", body: String) = execute(url, buildInit("PUSH", body))
 
     /**
@@ -160,7 +153,6 @@ class RequestTemplate(val baseUrl : String = "") {
      * @param url function to derive the url (so you can use baseUrl or other (inherited) parameters
      * @param body content to send in the body of the request
      */
-    @ExperimentalCoroutinesApi
     fun patch(url: String = "", body: String) = execute(url, buildInit("PUSH", body))
 
     /**
@@ -169,7 +161,7 @@ class RequestTemplate(val baseUrl : String = "") {
      * @param name name of the http header to add
      * @param value value of the header field
      */
-    private inline fun addHeader(name: String, value: String): RequestTemplate =  apply {
+    private inline fun addHeader(name: String, value: String): RequestTemplate = apply {
         if (headers == null || headers == undefined) headers = Headers()
         headers!!.append(name, value)
     }
@@ -187,7 +179,7 @@ class RequestTemplate(val baseUrl : String = "") {
      *
      * @param value media type to accept
      */
-    fun accept(value: String)= addHeader("Accept", value)
+    fun accept(value: String) = addHeader("Accept", value)
 
     /**
      * adds a header to accept JSON as response
@@ -195,8 +187,6 @@ class RequestTemplate(val baseUrl : String = "") {
     fun acceptJson() = accept("application/json")
 
 }
-
-
 
 
 // Response
@@ -213,7 +203,6 @@ fun Flow<Response>.body() = this.map {
  *
  * @param handler function that describes, how to handle a thrown [FetchException]
  */
-@ExperimentalCoroutinesApi
 fun Flow<Response>.onError(handler: (Throwable) -> Unit) = this.catch {
     handler(it)
 }
@@ -221,7 +210,6 @@ fun Flow<Response>.onError(handler: (Throwable) -> Unit) = this.catch {
 /**
  * adds a handler to log all exceptions that occur during a fetch action
  */
-@ExperimentalCoroutinesApi
 fun Flow<Response>.onErrorLog() = this.catch {
     loggingErrorHandler(it)
 }

@@ -6,16 +6,13 @@ import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
 import io.fritz2.test.targetId
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@ExperimentalCoroutinesApi
-@FlowPreview
+
 class TextTests {
 
     @Test
@@ -26,7 +23,7 @@ class TextTests {
         val text = "testText"
 
         html {
-            div(id=testId) {
+            div(id = testId) {
                 text(text)
             }
         }.mount(targetId)
@@ -43,11 +40,11 @@ class TextTests {
     fun testTextOnFlowOfString() = runTest {
         initDocument()
 
-        val testId =  randomId()
+        val testId = randomId()
         val text = "testText"
 
         html {
-            div(id=testId) {
+            div(id = testId) {
                 const(text).bind()
             }
         }.mount(targetId)
@@ -68,7 +65,7 @@ class TextTests {
         val text = "testText"
 
         html {
-            div(id=testId) {
+            div(id = testId) {
                 const(text).bind()
             }
         }.mount(targetId)

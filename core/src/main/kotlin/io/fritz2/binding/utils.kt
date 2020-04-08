@@ -1,7 +1,6 @@
 package io.fritz2.binding
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +12,7 @@ import kotlin.random.nextUBytes
 
 fun <T> const(value: T): Flow<T> = flowOf(value)
 
-@ExperimentalCoroutinesApi
+
 fun <T> Flow<T>.watch(scope: CoroutineScope = MainScope()): Job = this.catch {}.launchIn(scope)
 
 fun uniqueId() = Random.nextUBytes(16).contentHashCode().toString()

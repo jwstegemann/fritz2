@@ -8,7 +8,7 @@ import org.w3c.xhr.ProgressEvent
 /**
  * [EventType] contains the javascript related name and actual type of the [Event].
  */
-class EventType<T: Event>(val name: String)
+class EventType<T : Event>(val name: String)
 
 /**
  * [Events] contains all javascript event types.
@@ -257,7 +257,14 @@ object Events {
 /**
  * [Key] represents a key press e.g. for keypress events
  */
-data class Key(val code: Int, val name: String, val ctrl: Boolean, val alt: Boolean, val shift: Boolean, val meta: Boolean) {
+data class Key(
+    val code: Int,
+    val name: String,
+    val ctrl: Boolean,
+    val alt: Boolean,
+    val shift: Boolean,
+    val meta: Boolean
+) {
     companion object {
         fun from(e: KeyboardEvent) = Key(e.keyCode, e.key, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey)
     }

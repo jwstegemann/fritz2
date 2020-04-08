@@ -11,7 +11,7 @@ abstract class SingleMountPoint<T>(upstream: Flow<T>) : CoroutineScope by MainSc
     init {
         launch {
             try {
-               upstream.collect {
+                upstream.collect {
                     set(it, last)
                     last = it
                 }
