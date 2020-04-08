@@ -17,8 +17,6 @@ import kotlin.browser.window
  *
  * @param default default route
  */
-
-
 fun router(default: String): Router<String> = object : Router<String>(
     StringRoute(default)
 ) {}
@@ -28,8 +26,6 @@ fun router(default: String): Router<String> = object : Router<String>(
  *
  * @param default default route
  */
-
-
 fun router(default: Map<String, String>): Router<Map<String, String>> = object : Router<Map<String, String>>(
     MapRoute(default)
 ) {}
@@ -38,8 +34,6 @@ fun router(default: Map<String, String>): Router<Map<String, String>> = object :
  * Select return a [Pair] of the value
  * and the complete routing [Map] for the given key in the [mapper] function.
  */
-
-
 fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Map<String, String>>) -> X): Flow<X> =
     routes.map { m -> mapper((m[key] ?: "") to m) }
 
@@ -50,8 +44,6 @@ fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Ma
  *
  * @param default default route
  */
-
-
 fun <T> router(default: Route<T>): Router<T> = object : Router<T>(default) {}
 
 /**
@@ -126,8 +118,6 @@ class MapRoute(override val default: Map<String, String>) :
  * @param T type to marshal and unmarshal
  * @property route default route to use when page is called with empty hash
  */
-
-
 open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope() {
     private val prefix = "#"
 

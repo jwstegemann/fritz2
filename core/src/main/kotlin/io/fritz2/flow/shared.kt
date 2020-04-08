@@ -44,8 +44,6 @@ internal fun <T> Flow<T>.asSharedFlow(scope: CoroutineScope = GlobalScope): Flow
  * 1) The underlying [BroadcastChannel] is closed. A new BroadcastChannel will be created when a new collector starts.
  * 2) The cache is reset.  New collectors will not receive values from before the reset, but will generate a new cache.
  */
-
-
 internal class SharedFlow<T>(
     private val sourceFlow: Flow<T>,
     private val scope: CoroutineScope
