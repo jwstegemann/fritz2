@@ -20,8 +20,6 @@ object AttributeDelegate {
  * [ValueAttributeDelegate] is a special attribute delegate for
  * the html value attribute.
  */
-
-
 object ValueAttributeDelegate {
     operator fun <X : Element> getValue(thisRef: Tag<X>, property: KProperty<*>): Flow<String> =
         throw NotImplementedError()
