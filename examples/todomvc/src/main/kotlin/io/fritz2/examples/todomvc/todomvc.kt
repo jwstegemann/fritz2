@@ -78,14 +78,13 @@ fun main() {
 
     val mainSection = html {
         section("main") {
-            input("toggle-all", id="toggle-all") {
+            input("toggle-all", id = "toggle-all") {
                 type = const("checkbox")
                 checked = toDos.allChecked
 
                 toDos.toggleAll <= changes.states()
             }
-            label {
-                `for` = const("toggle-all")
+            label(`for` = "toggle-all") {
                 text("Mark all as complete")
             }
             ul("todo-list") {

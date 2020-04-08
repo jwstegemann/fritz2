@@ -746,8 +746,12 @@ interface HtmlElements {
     fun li(baseClass: String? = null, id: String? = null, content: Li.() -> Unit): Li =
         register(Li(id, baseClass), content)
 
-    fun label(baseClass: String? = null, id: String? = null, content: Label.() -> Unit): Label =
-        register(Label(id, baseClass), content)
+    fun label(baseClass: String? = null, id: String? = null, `for`: String? = null, content: Label.() -> Unit): Label {
+        val label = Label(id, baseClass)
+        if (`for` != null) label.domNode.setAttribute("for", `for`)
+        return register(label, content)
+    }
+
 
     fun legend(baseClass: String? = null, id: String? = null, content: Legend.() -> Unit): Legend =
         register(Legend(id, baseClass), content)
