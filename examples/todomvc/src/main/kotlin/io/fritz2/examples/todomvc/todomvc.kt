@@ -155,6 +155,11 @@ fun main() {
 
     val appFooter = html {
         footer("footer") {
+            className = toDos.count.map {
+                if (it == 0) "hidden"
+                else ""
+            }
+
             span("todo-count") {
                 strong {
                     toDos.count.map {
