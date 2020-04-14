@@ -24,7 +24,7 @@ open class Handler<A>(inline val execute: (Flow<A>) -> Unit) {
 
 class EmittingHandler<A, E>(bufferSize: Int, val execute: (Flow<A>, SendChannel<E>) -> Unit) : Flow<E> {
 
-    private val channel = BroadcastChannel<E>(bufferSize)
+    internal val channel = BroadcastChannel<E>(bufferSize)
 
     @InternalCoroutinesApi
     override suspend fun collect(collector: FlowCollector<E>) {
