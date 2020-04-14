@@ -107,7 +107,7 @@ fun main() {
             div("form-group my-4") {
                 button("btn btn-primary") {
                     text("Add")
-                    listStore.add <= clicks.events.flatMapMerge { personStore.data }
+                    personStore.save <= clicks
                 }
 
                 button("btn btn-secondary mx-2") {
