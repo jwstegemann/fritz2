@@ -26,7 +26,7 @@ fun router(default: String): Router<String> = object : Router<String>(
  *
  * @param default default route
  */
-fun router(default: Map<String, String>): Router<Map<String, String>> = object : Router<Map<String, String>>(
+fun router(default: Map<String, Any>): Router<Map<String, Any>> = object : Router<Map<String, Any>>(
     MapRoute(default)
 ) {}
 
@@ -34,8 +34,8 @@ fun router(default: Map<String, String>): Router<Map<String, String>> = object :
  * Select return a [Pair] of the value
  * and the complete routing [Map] for the given key in the [mapper] function.
  */
-fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Map<String, String>>) -> X): Flow<X> =
-    routes.map { m -> mapper((m[key] ?: "") to m) }
+fun <X> Router<Map<String, Any>>.select(key: String, mapper: (Pair<Any, Map<String, Any>>) -> X): Flow<X> =
+    routes.map { m -> mapper((m[key] ?: Unit) to m) }
 
 
 /**
@@ -89,16 +89,16 @@ class StringRoute(override val default: String) : Route<String> {
  *
  * @param default [Map] to use when no explicit *window.location.hash* was set before
  */
-class MapRoute(override val default: Map<String, String>) :
-    Route<Map<String, String>> {
+class MapRoute(override val default: Map<String, Any>) :
+    Route<Map<String, Any>> {
     private val assignment = "="
     private val divider = "&"
 
-    override fun unmarshal(hash: String): Map<String, String> =
+    override fun unmarshal(hash: String): Map<String, Any> =
         hash.split(divider).filter { s -> s.isNotBlank() }.asReversed().map(::extractPair).toMap()
 
-    override fun marshal(route: Map<String, String>): String =
-        route.map { (key, value) -> "$key$assignment${encodeURIComponent(value)}" }.joinToString(separator = divider)
+    override fun marshal(route: Map<String, Any>): String =
+        route.map { (key, value) -> "$key$assignment${encodeURIComponent(value.toString())}" }.joinToString(separator = divider)
 
     private fun extractPair(param: String): Pair<String, String> {
         val equalsPos = param.indexOf(assignment)

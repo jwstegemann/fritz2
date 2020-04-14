@@ -79,10 +79,10 @@ class RoutingTests {
         html {
             div {
                 p(id = pageId) {
-                    router.select(pageKey) { it.first }.bind()
+                    router.select(pageKey) { it.first.toString() }.bind()
                 }
                 p(id = btnId) {
-                    router.select(btnKey) { it.first }.bind()
+                    router.select(btnKey) { it.first.toString() }.bind()
                 }
                 ul {
                     const(buttons).each().map { (id, page) ->

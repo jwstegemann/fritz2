@@ -3,10 +3,7 @@ package io.fritz2.dom
 import io.fritz2.dom.html.Key
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.HTMLSelectElement
-import org.w3c.dom.HTMLTextAreaElement
+import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.files.FileList
@@ -20,6 +17,28 @@ inline class Listener<E : Event, X : Element>(val events: Flow<E>) {
      */
     inline fun <R> map(crossinline mapper: suspend (E) -> R) = events.map(mapper)
 }
+
+/**
+ * Calls the js method [preventDefault] on the given [Event]
+ */
+fun <E : Event, X : Element> Listener<E, X>.preventDefault(): Listener<E, X> = Listener(
+    events.map { it.preventDefault(); it }
+)
+
+
+/**
+ * Calls the js method [stopImmediatePropagation] on the given [Event]
+ */
+fun <E : Event, X : Element> Listener<E, X>.stopImmediatePropagation(): Listener<E, X> = Listener(
+    events.map { it.stopImmediatePropagation(); it }
+)
+
+/**
+ * Calls the js method [stopPropagation] on the given [Event]
+ */
+fun <E : Event, X : Element> Listener<E, X>.stopPropagation(): Listener<E, X> = Listener(
+    events.map { it.stopPropagation(); it }
+)
 
 /**
  * Gives you the new value as [String] from the targeting [Element]
@@ -56,6 +75,24 @@ fun Listener<Event, HTMLInputElement>.states(): Flow<Boolean> =
  */
 fun Listener<Event, HTMLSelectElement>.selectedIndex(): Flow<Int> =
     events.map { it.target.unsafeCast<HTMLSelectElement>().selectedIndex }
+
+/**
+ * Gives you the selected value as [String] from the targeting [Element]
+ */
+fun Listener<Event, HTMLSelectElement>.selectedValue(): Flow<String> =
+    events.map {
+        val select = it.target.unsafeCast<HTMLSelectElement>()
+        select.options[select.selectedIndex].unsafeCast<HTMLOptionElement>().value
+    }
+
+/**
+ * Gives you the selected text as [String] from the targeting [Element]
+ */
+fun Listener<Event, HTMLSelectElement>.selectedText(): Flow<String> =
+    events.map {
+        val select = it.target.unsafeCast<HTMLSelectElement>()
+        select.options[select.selectedIndex].unsafeCast<HTMLOptionElement>().text
+    }
 
 /**
  * Gives you the pressed key as [Key] from a [KeyboardEvent]
