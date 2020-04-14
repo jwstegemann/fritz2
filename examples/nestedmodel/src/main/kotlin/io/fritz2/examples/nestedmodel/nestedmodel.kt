@@ -18,7 +18,12 @@ import org.w3c.dom.HTMLDivElement
 @FlowPreview
 fun main() {
 
-    val personStore = RootStore(Person(createUUID()))
+    val personStore = object : RootStore<Person>(Person(createUUID())) {
+        val save = handleAndEmit<Unit, Person> { p ->
+            offer(p)
+            p
+        }
+    }
 
     val name = personStore.sub(Lenses.Person.name)
     val birthday = personStore.sub(Lenses.Person.birthday)
@@ -34,6 +39,9 @@ fun main() {
             list + person
         }
     }
+
+    //connect the two stores
+    listStore.add <= personStore.save
 
     // helper method for creating form-groups from SubStores
     fun <X, Y> HtmlElements.formGroup(
