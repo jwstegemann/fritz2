@@ -11,7 +11,6 @@ and learn how to use fritz2 with your own projects.
 The following examples are available (work in progress):
 * [gettingstarted](https://jamowei.github.io/fritz2-examples/gettingstarted/build/distributions/index.html) - shows the one- and two-way-databinding in fritz2.
 * [nestedmodel](https://jamowei.github.io/fritz2-examples/nestedmodel/build/distributions/index.html) - shows the handling with complex models in fritz2.
-* [performance](https://jamowei.github.io/fritz2-examples/performance/build/distributions/index.html) - measures the performance of fritz2.
 * [remote](https://jamowei.github.io/fritz2-examples/remote/build/distributions/index.html) - shows the use of remote extension within fritz2.
 * [routing](https://jamowei.github.io/fritz2-examples/routing/build/distributions/index.html) - shows the use of routing extension within fritz2.
 * [validation](https://jamowei.github.io/fritz2-examples/validation/build/distributions/index.html) - shows the use of validation extension within fritz2.

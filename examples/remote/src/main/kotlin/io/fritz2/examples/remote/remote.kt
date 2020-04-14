@@ -11,60 +11,84 @@ import io.fritz2.remote.remote
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
-
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun main() {
 
-    val store = object : RootStore<String>("start") {
+    val userStore = object : RootStore<String>("") {
 
-        val sampleApi = remote("https://reqres.in/api/users")
-            .acceptJson()
+        val users = remote("https://reqres.in/api/users").acceptJson()
 
-        val sampleGet = apply { s : String ->
-            sampleApi.get(s)
+        val loadAllUsers = apply<Unit, String> {
+            users.get()
                 .onErrorLog()
                 .body()
         } andThen update
 
-        val samplePost = apply {s : String ->
-            sampleApi.post(body = """
-                {
-                    "name": "$s",
-                    "job": "programmer"
-                }
-            """.trimIndent())
+        val loadUserById = apply { s: String ->
+            users.get(s)
+                .onErrorLog()
+                .body()
+        } andThen update
+
+        val saveUserWithName = apply { s: String ->
+            users.post(
+                body =
+                """
+                    {
+                        "name": "$s",
+                        "job": "programmer"
+                    }
+                """.trimIndent()
+            )
                 .onErrorLog()
                 .body()
         } andThen update
 
     }
 
-    val myComponent = html {
+    html {
         div {
-            label {
-                text("get for id")
-            }
-            input {
-                value = const("start")
-                store.sampleGet <= changes.values()
-            }
-            hr { }
-            label {
-                text("post for id")
-            }
-            input {
-                value = const("start")
-                store.samplePost <= changes.values()
-            }
-            hr { }
-            div {
-                text("result: ")
-                store.data.bind()
+            div("form-group") {
+                label("load-user") {
+                    text("Load user by id")
+                }
+                input("form-control", id = "load-user") {
+                    placeholder = const("Enter user id")
+                    userStore.loadUserById <= changes.values()
+                }
             }
 
+            hr("my-4") { }
+
+            div("form-group") {
+                label("save-user") {
+                    text("Save user")
+                }
+                input("form-control", id = "save-user") {
+                    placeholder = const("Enter new user name")
+                    userStore.saveUserWithName <= changes.values()
+                }
+            }
+
+            hr("my-4") { }
+
+            div("form-group") {
+                button("btn btn-primary") {
+                    text("Load all users")
+                    userStore.loadAllUsers <= clicks
+                }
+            }
+            div("card card-body") {
+                h6("card-title") {
+                    text("User store data")
+                }
+                pre("text-wrap") {
+                    code {
+                        userStore.data.bind()
+                    }
+                }
+            }
         }
-    }
-
-    myComponent.mount("target")
+    }.mount("target")
 }
