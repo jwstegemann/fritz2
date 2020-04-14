@@ -7,10 +7,9 @@ import io.fritz2.dom.html.html
 import io.fritz2.dom.mount
 import io.fritz2.dom.states
 import io.fritz2.dom.values
+import io.fritz2.utils.createUUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLDivElement
@@ -19,7 +18,7 @@ import org.w3c.dom.HTMLDivElement
 @FlowPreview
 fun main() {
 
-    val personStore = RootStore(Person(uniqueId()))
+    val personStore = RootStore(Person(createUUID()))
 
     val name = personStore.sub(Lenses.Person.name)
     val birthday = personStore.sub(Lenses.Person.birthday)
@@ -37,14 +36,15 @@ fun main() {
     }
 
     // helper method for creating form-groups from SubStores
-    fun <X, Y> HtmlElements.formGroup(label: String,
-                                      subStore: SubStore<X, Y, String>,
-                                      inputType: String = "text",
-                                      extraClass: String = "") {
+    fun <X, Y> HtmlElements.formGroup(
+        label: String,
+        subStore: SubStore<X, Y, String>,
+        inputType: String = "text",
+        extraClass: String = ""
+    ) {
         div("form-group $extraClass") {
-            label {
+            label(`for` = subStore.id) {
                 text(label)
-                `for` = const(subStore.id)
             }
             input("form-control", id = subStore.id) {
                 placeholder = const(label)
@@ -56,7 +56,8 @@ fun main() {
         }
     }
 
-    fun HtmlElements.activityCheckbox(activity: SubStore<Person, List<Activity>, Activity>): Tag<HTMLDivElement> {
+    // helper method for creating checkboxes for activities
+    fun activityCheckbox(activity: SubStore<Person, List<Activity>, Activity>): Tag<HTMLDivElement> {
         val name = activity.sub(Lenses.Activity.name)
         val like = activity.sub(Lenses.Activity.like)
 
@@ -68,9 +69,7 @@ fun main() {
 
                     like.update <= changes.states()
                 }
-                label("form-check-label") {
-                    `for` = const(activity.id)
-
+                label("form-check-label", `for` = activity.id) {
                     name.data.bind()
                 }
             }
