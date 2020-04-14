@@ -71,7 +71,12 @@ object PersonValidator: Validator<Person, Message, String>() {
 @FlowPreview
 fun main() {
 
-    val personStore = RootStore(Person(createUUID()))
+    val personStore = object : RootStore<Person>(Person(createUUID())) {
+        val save = handleAndEmit<Unit, Person> { p ->
+            offer(p)
+            p
+        }
+    }
 
     val name = personStore.sub(Person.name)
     val birthday = personStore.sub(Person.birthday)
@@ -91,6 +96,9 @@ fun main() {
             if(validate(person, "add")) list + person else list
         }
     }
+
+    //connect the two stores
+    listStore.add <= personStore.save
 
     // adding bootstrap css classes to the validated elements
     listStore.validator.msgs.onEach { msgs ->
@@ -197,7 +205,7 @@ fun main() {
             div("form-group my-4") {
                 button("btn btn-primary") {
                     text("Add")
-                    listStore.add <= clicks.events.flatMapMerge { personStore.data }
+                    personStore.save <= clicks
                 }
 
                 button("btn btn-secondary mx-2") {
