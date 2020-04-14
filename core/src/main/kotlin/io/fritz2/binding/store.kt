@@ -3,18 +3,37 @@ package io.fritz2.binding
 import io.fritz2.flow.asSharedFlow
 import io.fritz2.optics.Lens
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 
 typealias Update<T> = (T) -> T
 
-class Handler<A>(inline val execute: (Flow<A>) -> Unit) {
+open class Handler<A>(inline val execute: (Flow<A>) -> Unit) {
     // syntactical sugar to write slot <= event-stream
     operator fun compareTo(flow: Flow<A>): Int {
         execute(flow)
+        return 0
+    }
+}
+
+
+class EmittingHandler<A, E>(bufferSize: Int, val execute: (Flow<A>, SendChannel<E>) -> Unit) : Flow<E> {
+
+    private val channel = BroadcastChannel<E>(bufferSize)
+
+    @InternalCoroutinesApi
+    override suspend fun collect(collector: FlowCollector<E>) {
+        collector.emitAll(channel.asFlow())
+    }
+
+    // syntactical sugar to write slot <= event-stream
+    operator fun compareTo(flow: Flow<A>): Int {
+        execute(flow, channel)
         return 0
     }
 }
@@ -48,6 +67,24 @@ abstract class Store<T> : CoroutineScope by MainScope() {
             }
         }
     }
+
+    inline fun <A, E> handleAndEmit(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T, A) -> T) =
+        EmittingHandler<A, E>(bufferSize) { inFlow, outChannel ->
+            launch {
+                inFlow.collect {
+                    enqueue { t -> outChannel.execute(t, it) }
+                }
+            }
+        }
+
+    inline fun <A, E> handleAndEmit(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T) -> T) =
+        EmittingHandler<Unit, E>(bufferSize) { inFlow, outChannel ->
+            launch {
+                inFlow.collect {
+                    enqueue { t -> outChannel.execute(t) }
+                }
+            }
+        }
 
     fun <A, X> apply(mapper: suspend (A) -> Flow<X>) = Applicator(mapper)
 
