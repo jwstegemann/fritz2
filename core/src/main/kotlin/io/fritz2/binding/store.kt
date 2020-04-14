@@ -76,3 +76,28 @@ open class RootStore<T>(initialData: T, override val id: String = "", bufferSize
 
     override fun <X> sub(lens: Lens<T, X>) = SubStore(this, lens, this, lens)
 }
+
+
+interface LensId<T> {
+    val id: String
+    fun <X> sub(lens: Lens<T, X>): LensId<X>
+}
+
+
+class LensIdRoot<T>(override val id: String = "") : LensId<T> {
+
+    override fun <X> sub(lens: Lens<T, X>): LensId<X> = LensIdSub(this, lens, this, lens)
+
+}
+
+
+class LensIdSub<R, P, T>(
+    private val parent: LensId<P>,
+    private val lens: Lens<P, T>,
+    val rootStore: LensIdRoot<R>,
+    val rootLens: Lens<R, T>
+): LensId<T> {
+    override val id: String by lazy { "${parent.id}.${lens._id}" }
+
+    override fun <X> sub(lens: Lens<T, X>): LensIdSub<R, T, X> = LensIdSub(this, lens, rootStore, this.rootLens + lens)
+}
