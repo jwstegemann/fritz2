@@ -28,8 +28,8 @@ interface Validation<D, M : ValidationMessage, T> {
 
     val validator: Validator<D, M, T>
 
-    fun validate(data: D, context: T): Boolean {
-        val messages = validator.validate(data, context)
+    fun validate(data: D, metadata: T): Boolean {
+        val messages = validator.validate(data, metadata)
         validator.channel.offer(messages)
         return messages.none(ValidationMessage::failed)
     }
