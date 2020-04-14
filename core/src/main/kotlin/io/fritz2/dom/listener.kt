@@ -7,6 +7,7 @@ import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.files.FileList
+import kotlin.js.Date
 
 /**
  * [Listener] handles a Flow of [Event]s.
@@ -45,6 +46,18 @@ fun <E : Event, X : Element> Listener<E, X>.stopPropagation(): Listener<E, X> = 
  */
 fun Listener<Event, HTMLInputElement>.values(): Flow<String> =
     events.map { it.target.unsafeCast<HTMLInputElement>().value }
+
+/**
+ * Gives you the new value as [Date] from the targeting [Element]
+ */
+fun Listener<Event, HTMLInputElement>.valuesAsDate(): Flow<Date> =
+    events.map { it.target.unsafeCast<HTMLInputElement>().valueAsDate }
+
+/**
+ * Gives you the new value as [Double] from the targeting [Element]
+ */
+fun Listener<Event, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
+    events.map { it.target.unsafeCast<HTMLInputElement>().valueAsNumber }
 
 /**
  * Gives you the new value as [String] from the targeting [Element]

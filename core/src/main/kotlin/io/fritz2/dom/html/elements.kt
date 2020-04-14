@@ -6,6 +6,7 @@ import io.fritz2.dom.ValueAttributeDelegate
 import io.fritz2.dom.WithText
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.*
+import kotlin.js.Date
 
 
 /**
@@ -265,6 +266,8 @@ class Input(id: String? = null, baseClass: String? = null) : Tag<HTMLInputElemen
     var type: Flow<String> by AttributeDelegate
     var defaultValue: Flow<String> by AttributeDelegate
     var value: Flow<String> by ValueAttributeDelegate
+    var valueAsDate: Flow<Date> by ValueAttributeDelegate
+    var valueAsNumber: Flow<Double> by ValueAttributeDelegate
     var width: Flow<Int> by AttributeDelegate
 }
 
