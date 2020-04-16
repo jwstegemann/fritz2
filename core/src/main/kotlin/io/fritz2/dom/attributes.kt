@@ -21,10 +21,10 @@ object AttributeDelegate {
  * the html value attribute.
  */
 object ValueAttributeDelegate {
-    operator fun <X : Element, T : Any> getValue(thisRef: Tag<X>, property: KProperty<*>): Flow<T> =
+    operator fun <X : Element> getValue(thisRef: Tag<X>, property: KProperty<*>): Flow<String> =
         throw NotImplementedError()
 
-    operator fun <X : Element, T : Any> setValue(thisRef: Tag<X>, property: KProperty<*>, values: Flow<T>) {
+    operator fun <X : Element> setValue(thisRef: Tag<X>, property: KProperty<*>, values: Flow<String>) {
         ValueAttributeMountPoint(values, thisRef.domNode)
     }
 }

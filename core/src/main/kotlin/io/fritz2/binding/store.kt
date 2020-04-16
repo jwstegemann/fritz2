@@ -94,8 +94,6 @@ abstract class Store<T> : CoroutineScope by MainScope() {
 
     abstract val data: Flow<T>
     val update = handle<T> { _, newValue -> newValue }
-
-    abstract fun <X> sub(lens: Lens<T, X>): Store<X>
 }
 
 
@@ -111,30 +109,27 @@ open class RootStore<T>(initialData: T, override val id: String = "", bufferSize
 
     override val data = updates.asFlow().scan(initialData, applyUpdate).distinctUntilChanged().asSharedFlow()
 
-    override fun <X> sub(lens: Lens<T, X>) = SubStore(this, lens, this, lens)
+    fun <X> sub(lens: Lens<T, X>) = SubStore(this, lens, this, lens)
 }
 
 
-interface LensId<T> {
+interface ModelId<T> {
     val id: String
-    fun <X> sub(lens: Lens<T, X>): LensId<X>
+    fun <X> sub(lens: Lens<T, X>): ModelId<X>
 }
 
 
-class LensIdRoot<T>(override val id: String = "") : LensId<T> {
-
-    override fun <X> sub(lens: Lens<T, X>): LensId<X> = LensIdSub(this, lens, this, lens)
-
+class ModelIdRoot<T>(override val id: String = "") : ModelId<T> {
+    override fun <X> sub(lens: Lens<T, X>): ModelId<X> = ModelIdSub(this, lens, this, lens)
 }
 
 
-class LensIdSub<R, P, T>(
-    private val parent: LensId<P>,
+class ModelIdSub<R, P, T>(
+    private val parent: ModelId<P>,
     private val lens: Lens<P, T>,
-    val rootStore: LensIdRoot<R>,
+    val rootStore: ModelIdRoot<R>,
     val rootLens: Lens<R, T>
-): LensId<T> {
+): ModelId<T> {
     override val id: String by lazy { "${parent.id}.${lens._id}" }
-
-    override fun <X> sub(lens: Lens<T, X>): LensIdSub<R, T, X> = LensIdSub(this, lens, rootStore, this.rootLens + lens)
+    override fun <X> sub(lens: Lens<T, X>): ModelIdSub<R, T, X> = ModelIdSub(this, lens, rootStore, this.rootLens + lens)
 }

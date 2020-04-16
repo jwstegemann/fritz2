@@ -8,7 +8,6 @@ import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.Node
 import kotlin.browser.window
-import kotlin.js.Date
 
 class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val target: org.w3c.dom.Node?) :
     SingleMountPoint<WithDomNode<T>>(upstream) {
@@ -81,19 +80,9 @@ class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: 
  * [ValueAttributeDelegate] is a special [SingleMountPoint] for the html value
  * attribute without calling `setAttribute` method.
  */
-class ValueAttributeMountPoint<T>(upstream: Flow<T>, val target: Element?) : SingleMountPoint<T>(upstream) {
-    override fun set(value: T, last: T?) {
-        when (value) {
-            is String -> {
-                target?.unsafeCast<HTMLInputElement>()?.value = value
-            }
-            is Double -> {
-                target?.unsafeCast<HTMLInputElement>()?.valueAsNumber = value
-            }
-            is Date -> {
-                target?.unsafeCast<HTMLInputElement>()?.valueAsDate = value
-            }
-        }
+class ValueAttributeMountPoint(upstream: Flow<String>, val target: Element?) : SingleMountPoint<String>(upstream) {
+    override fun set(value: String, last: String?) {
+        target?.unsafeCast<HTMLInputElement>()?.value = value
     }
 }
 

@@ -1,16 +1,18 @@
 package io.fritz2.examples.validation
 
+import com.soywiz.klock.*
+import com.soywiz.klock.DateFormat
+import io.fritz2.format.Format
 import io.fritz2.optics.Lens
 import io.fritz2.optics.Lenses
 import io.fritz2.optics.WithId
 import io.fritz2.optics.buildLens
-import kotlin.js.Date
 
 @Lenses
 data class Person(
     override val id: String,
     val name: String = "",
-    val birthday: Date = Date("1/1/1900"),
+    val birthday: Date = Date(1900, 1, 1),
     val address: Address = Address(),
     val activities: List<Activity> = listOf(
         Activity("ac1", "walking"),
@@ -87,3 +89,10 @@ data class Activity(
 
 }
 
+object Format {
+    val date = object : Format<Date> {
+        private val formatter: DateFormat = DateFormat("yyyy-MM-dd")
+        override fun parse(value: String): Date = formatter.parseDate(value)
+        override fun format(value: Date): String = formatter.format(value)
+    }
+}

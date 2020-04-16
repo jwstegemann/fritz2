@@ -3,7 +3,7 @@
 # Examples
 This repo hosts ready-to-try examples to give you quick insight into how development of web-apps using fritz2 is like. 
 
-The main source-code is included. To see the complete code of the examples you can take a look at the [fritz2-repo](https://github.com/jwstegemann/fritz2/tree/master/examples).
+The source-code is included. To see the complete code of the examples you can take a look at the [fritz2-repo](https://github.com/jwstegemann/fritz2/tree/master/examples).
 
 Also take a look at our [wiki](https://github.com/jwstegemann/fritz2/wiki)
 and learn how to use fritz2 with your own projects.
