@@ -1,8 +1,9 @@
 # ![fritz2 - the potato among the ui-libs](https://jwstegemann.github.io/fritz2/static/fritz2-logo-small.png)
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
-[![LOC](https://img.shields.io/badge/lines%20of%20code-1%2C4k-green)](https://clean-code-developer.com/grades/grade-1-red/#Keep_it_simple_stupid_KISS)
+[![LOC](https://img.shields.io/badge/lines%20of%20code-1%2C5k-green)](https://clean-code-developer.com/grades/grade-1-red/#Keep_it_simple_stupid_KISS)
 [![100% Kotlin](https://img.shields.io/badge/kotlin-100%25-blue)](https://play.kotlinlang.org/)
+[![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://jamowei.github.io/fritz2-examples/)
 [![Dokka](https://img.shields.io/badge/API-dokka-green)](https://jwstegemann.github.io/fritz2/dokka/fritz2/)
 [![Wiki](https://img.shields.io/badge/docs-wiki-blue)](https://github.com/jwstegemann/fritz2/wiki)
 [![Download](https://api.bintray.com/packages/jwstegemann/fritz2/fritz2-core/images/download.svg?version=0.2)](https://bintray.com/jwstegemann/fritz2/fritz2-core/0.2/link)

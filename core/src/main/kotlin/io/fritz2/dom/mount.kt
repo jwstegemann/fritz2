@@ -82,8 +82,7 @@ class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: 
  */
 class ValueAttributeMountPoint(upstream: Flow<String>, val target: Element?) : SingleMountPoint<String>(upstream) {
     override fun set(value: String, last: String?) {
-        if (value == "false") target?.removeAttribute("value")
-        else target?.unsafeCast<HTMLInputElement>()?.value = value
+        target?.unsafeCast<HTMLInputElement>()?.value = value
     }
 }
 

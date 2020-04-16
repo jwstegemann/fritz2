@@ -1,9 +1,6 @@
 package io.fritz2.dom
 
-import io.fritz2.binding.Handler
-import io.fritz2.binding.MultiMountPoint
-import io.fritz2.binding.Seq
-import io.fritz2.binding.SingleMountPoint
+import io.fritz2.binding.*
 import io.fritz2.dom.html.HtmlElements
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -37,6 +34,11 @@ abstract class Tag<T : Element>(
 
     operator fun <E : Event, X : Element> Handler<Unit>.compareTo(listener: Listener<E, X>): Int {
         execute(listener.events.map { Unit })
+        return 0
+    }
+
+    operator fun <E : Event, X : Element, T> EmittingHandler<Unit, T>.compareTo(listener: Listener<E, X>): Int {
+        execute(listener.events.map { Unit }, channel)
         return 0
     }
 

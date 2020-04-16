@@ -14,5 +14,6 @@ dependencies {
     testImplementation(kotlin("test-js"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
     implementation(project(":core"))
-    implementation(project(":examples:nestedmodel:model"))
+    // libary for handling dates
+    implementation("com.soywiz.korlibs.klock:klock-js:1.10.5")
 }
