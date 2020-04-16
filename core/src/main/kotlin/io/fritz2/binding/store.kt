@@ -22,7 +22,7 @@ open class Handler<A>(inline val execute: (Flow<A>) -> Unit) {
 }
 
 
-class EmittingHandler<A, E>(bufferSize: Int, val execute: (Flow<A>, SendChannel<E>) -> Unit) : Flow<E> {
+class EmittingHandler<A, E>(bufferSize: Int, inline val execute: (Flow<A>, SendChannel<E>) -> Unit) : Flow<E> {
 
     internal val channel = BroadcastChannel<E>(bufferSize)
 
@@ -39,6 +39,7 @@ class EmittingHandler<A, E>(bufferSize: Int, val execute: (Flow<A>, SendChannel<
 }
 
 
+//FIXME: we need an Applicator, that can access the actual model
 class Applicator<A, X>(inline val execute: suspend (A) -> Flow<X>) {
     infix fun andThen(nextHandler: Handler<X>) = Handler<A> {
         nextHandler.execute(it.flatMapConcat(this.execute))
@@ -68,6 +69,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
         }
     }
 
+    //FIXME: why no suspend on execute
     inline fun <A, E> handleAndEmit(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T, A) -> T) =
         EmittingHandler<A, E>(bufferSize) { inFlow, outChannel ->
             launch {
