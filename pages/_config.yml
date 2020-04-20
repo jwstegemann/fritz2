@@ -1,4 +1,4 @@
-theme: jekyll-theme-cayman
+remote_theme: pmarsceill/just-the-docs
 plugins:
   - jekyll-relative-links
 relative_links:
