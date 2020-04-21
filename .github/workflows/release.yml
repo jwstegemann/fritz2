@@ -25,8 +25,9 @@ jobs:
         if: success()
         uses: crazy-max/ghaction-github-pages@v1.3.0
         with:
-          target_branch: gh-pages
+          repo: jwstegemann/fritz2-api 
+          target_branch: master
           keep_history: false
-          build_dir: pages
+          build_dir: api/dokka
         env:
           GITHUB_PAT: ${{ secrets.FRITZ2_DOKKA_TOKEN }}
