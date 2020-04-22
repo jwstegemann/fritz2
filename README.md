@@ -6,7 +6,7 @@
 [![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://www.fritz2.dev/examples.html)
 [![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev/fritz2/)
 [![Docs](https://img.shields.io/badge/docs-wiki-blue)](https://docs.fritz2.dev)
-[![Download](https://api.bintray.com/packages/jwstegemann/fritz2/fritz2-core/images/download.svg?version=0.2)](https://bintray.com/jwstegemann/fritz2/fritz2-core/0.2/link)
+[![Download](https://api.bintray.com/packages/jwstegemann/fritz2/fritz2-core/images/download.svg?version=0.3)](https://bintray.com/jwstegemann/fritz2/fritz2-core/0.3/link)
 
 fritz2 is a proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
