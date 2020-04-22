@@ -6,3 +6,4 @@
 **/gradle/
 **/src/generated/
 GeneratedOptics.kt
+/api/dokka/fritz2/
