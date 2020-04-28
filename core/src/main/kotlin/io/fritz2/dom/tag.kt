@@ -8,12 +8,21 @@ import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import kotlin.browser.window
 
+/**
+ * A marker to separate the layers of calls in the type-safe-builder pattern.
+ */
 @DslMarker
 annotation class HtmlTagMarker
 
+/**
+ * Represents a tag in the resulting HTML. Sorry for the name, but we needed to delimit it from the [Element] it is wrapping.
+ *
+ * @param tagName name of the tag. Used to create the corresponding [Element]
+ * @param id the DOM-id of the element to be created
+ * @param baseClass a static base value for the class-attribute. All dynamic values for this attribute will be concatenated to this base-value.
+ * @param domNode the [Element]-instance that is wrapped by this [Tag] (you should never have to pass this by yourself, just let it be created by the default)
+ */
 //TODO: remove unnecassary default-arguments
-
-
 @HtmlTagMarker
 abstract class Tag<T : Element>(
     tagName: String,
@@ -22,26 +31,55 @@ abstract class Tag<T : Element>(
     override val domNode: T = createDomElement(tagName, id, baseClass).unsafeCast<T>()
 ) : WithDomNode<T>, WithAttributes<T>, WithEvents<T>(), HtmlElements {
 
+    /**
+     * creates the content of the [Tag] and appends it as a child to the wrapped [Element]
+     *
+     * @param element the parent element of the new content
+     * @param content lamda building the content (following the type-safe-builder pattern)
+     */
     override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
         content(element)
         domNode.appendChild(element.domNode)
         return element
     }
 
+    /**
+     * binds a [Flow] of [Tag]s at this position (creates a [DomMountPoint] as a placeholder and adds it to the builder)
+     */
     fun <X : Element> Flow<Tag<X>>.bind(): SingleMountPoint<WithDomNode<Element>> = DomMountPoint(this, domNode)
 
+    /**
+     * binds a [Seq] of [Tag]s at this position (creates a [DomMultiMountPoint] as a placeholder and adds it to the builder)
+     */
     fun <X : Element> Seq<Tag<X>>.bind(): MultiMountPoint<WithDomNode<Element>> = DomMultiMountPoint(this.data, domNode)
 
+
+    /**
+     * convenience-method to connect an event-[Listener] to a [Handler] that takes no action.
+     *
+     * @param listener to connect to the [Handler]
+     * @receiver the [Handler] that handles the events from the [Listener]
+     */
     operator fun <E : Event, X : Element> Handler<Unit>.compareTo(listener: Listener<E, X>): Int {
         execute(listener.events.map { Unit })
         return 0
     }
 
+    /**
+     * convenience-method to connect an event-[Listener] to an [EmittingHandler] that takes no action.
+     *
+     * @param listener to connect to the [EmittingHandler]
+     * @receiver the [EmittingHandler] that handles the events from the [Listener]
+     */
     operator fun <E : Event, X : Element, T> EmittingHandler<Unit, T>.compareTo(listener: Listener<E, X>): Int {
         execute(listener.events.map { Unit }, channel)
         return 0
     }
 
+    /**
+     * Delegate to bind a [Flow] of [String]s as the dynamic part of the class-attribute
+     * @see WithAttributes.bindAttr
+     */
     var className: Flow<String>
         get() {
             throw NotImplementedError()
@@ -51,6 +89,10 @@ abstract class Tag<T : Element>(
             (if (baseClass != null) value.map { "$baseClass $it" } else value).bindAttr("class")
         }
 
+    /**
+     * Delegate to bind a [Flow] of [List]s as the dynamic part of the class-attribute
+     * @see WithAttributes.bindAttr
+     */
     var classList: Flow<List<String>>
         get() {
             throw NotImplementedError()
@@ -59,6 +101,10 @@ abstract class Tag<T : Element>(
             (if (baseClass != null) values.map { it + baseClass } else values).bindAttr("class")
         }
 
+    /**
+     * Delegate to bind a [Flow] of [Map]s as the dynamic part of the class-attribute
+     * @see WithAttributes.bindAttr
+     */
     var classMap: Flow<Map<String, Boolean>>
         get() {
             throw NotImplementedError()

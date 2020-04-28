@@ -9,14 +9,31 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.Node
 import kotlin.browser.window
 
+/**
+ * A [SingleMountPoint] to mount the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ *
+ * @param upstream the Flow of [WithDomNode]s to mount here.
+ */
 class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val target: org.w3c.dom.Node?) :
     SingleMountPoint<WithDomNode<T>>(upstream) {
+
+    /**
+     * updates the elements in the DOM
+     *
+     * @param value new [Tag]
+     * @param last last [Tag] (to be replaced)
+     */
     override fun set(value: WithDomNode<T>, last: WithDomNode<T>?) {
         last?.let { target?.replaceChild(value.domNode, last.domNode) }
             ?: target?.appendChild(value.domNode)
     }
 }
 
+/**
+ * A [MultiMountPoint] to mount the values of a [Flow] of [Patch]es (mostly [Tag]s) at this point in the DOM.
+ *
+ * @param upstream the Flow of [WithDomNode]s to mount here.
+ */
 class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<T>>>, val target: org.w3c.dom.Node?) :
     MultiMountPoint<WithDomNode<T>>(upstream) {
 
@@ -56,6 +73,11 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
         if (itemToMove != null) insertOrAppend(itemToMove, to)
     }
 
+    /**
+     * executes the patches on the DOM
+     *
+     * @param patch [Patch] to handle
+     */
     override fun patch(patch: Patch<WithDomNode<T>>) {
         when (patch) {
             is Patch.Insert -> target?.insert(patch.element, patch.index)
@@ -67,8 +89,21 @@ class DomMultiMountPoint<T : org.w3c.dom.Node>(upstream: Flow<Patch<WithDomNode<
 
 }
 
+/**
+ * a [SingleMountPoint] to mount the values of a [Flow] to a DOM-attribute.
+ *
+ * @param name of the attribute
+ * @param upstream [Flow] to mount to the attribute
+ * @param target the element where to set the attribute
+ */
 class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: Element?) :
     SingleMountPoint<String>(upstream) {
+    /**
+     * updates the attribute-value in the DOM
+     *
+     * @param value new value
+     * @param value last value (to be replaced)
+     */
     override fun set(value: String, last: String?) {
         //FIXME: Should only be true for Boolean-Attributes...
         if (value == "false") target?.removeAttribute(name)
@@ -81,6 +116,12 @@ class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: 
  * attribute without calling `setAttribute` method.
  */
 class ValueAttributeMountPoint(upstream: Flow<String>, val target: Element?) : SingleMountPoint<String>(upstream) {
+    /**
+     * updates the attribute-value in the DOM
+     *
+     * @param value new value
+     * @param value last value (to be replaced)
+     */
     override fun set(value: String, last: String?) {
         target?.unsafeCast<HTMLInputElement>()?.value = value
     }
@@ -108,6 +149,12 @@ class ValueAttributeMountPoint(upstream: Flow<String>, val target: Element?) : S
 //}
 
 
+/**
+ * mounts a [Flow] of [Tag]s to a constant element
+ *
+ * @param targetId id of the element to mount to
+ * @receiver the [Flow] to mount to this element
+ */
 fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
@@ -115,7 +162,12 @@ fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
     }
 }
 
-
+/**
+ * appends one or more [Flow]s of [Tag]s to the content of a constant element
+ *
+ * @param targetId id of the element to mount to
+ * @param flows the [Flow]s to mount to this element
+ */
 fun <X : Element> append(targetId: String, vararg flows: Flow<Tag<X>>) {
     window.document.getElementById(targetId)?.let { element ->
         flows.forEach { flow -> DomMountPoint(flow, element) }
@@ -123,6 +175,11 @@ fun <X : Element> append(targetId: String, vararg flows: Flow<Tag<X>>) {
 }
 
 
+/**
+ * mounts a static [Tag] to an elements content
+ *
+ * @param targetId id of the element to mount to
+ */
 fun <X : Element> Tag<X>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
@@ -130,7 +187,11 @@ fun <X : Element> Tag<X>.mount(targetId: String) {
     }
 }
 
-
+/**
+ * appends one or more static [Tag]s to an elements content
+ *
+ * @param targetId id of the element to mount to
+ */
 fun <X : Element> append(targetId: String, vararg tags: Tag<X>) {
     window.document.getElementById(targetId)?.let { element ->
         tags.forEach { tag -> element.appendChild(tag.domNode) }
