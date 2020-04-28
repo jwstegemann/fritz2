@@ -6,9 +6,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 
+/**
+ * Implementation of Myer's diff algorithm on two [List]s creating a [Flow] of [Patch]es.
+ */
 @ExperimentalStdlibApi
 object Myer {
 
+    /**
+     * diffs to versions of a [List] of a type implementing [WithId]
+     * The definition of an id to identify the same object in both [List]s makes it possible to detect, if an object is moved from one position to another.
+     * Also this method does not emit a [Patch] if values within an element change.
+     *
+     * @param oldList old version of the [List]
+     * @param newLis new version of the [List]
+     * @return a [Flow] of [Patch]es needed to transform the old list into the new one
+     */
     fun <T : WithId> diff(oldList: List<T>, newList: List<T>): Flow<Patch<T>> {
         val isSame = { a: T, b: T -> a.id == b.id }
         val trace = shortestEdit(oldList, newList, isSame)
@@ -17,6 +29,13 @@ object Myer {
         }
     }
 
+    /**
+     * diffs to versions of a [List] of a type not implementing [WithId]
+     *
+     * @param oldList old version of the [List]
+     * @param newLis new version of the [List]
+     * @return a [Flow] of [Patch]es needed to transform the old list into the new one
+     */
     fun <T> diff(oldList: List<T>, newList: List<T>): Flow<Patch<T>> {
         val isSame = { a: T, b: T -> a == b }
         val trace = shortestEdit(oldList, newList, isSame)

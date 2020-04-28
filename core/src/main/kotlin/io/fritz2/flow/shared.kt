@@ -1,7 +1,7 @@
 package io.fritz2.flow
 
 /*
- * from https://github.com/RBusarow/kotlinx.coroutines/blob/SharedFlow/kotlinx-coroutines-core/common/src/flow/internal/SharedFlow.kt
+ * taken from https://github.com/RBusarow/kotlinx.coroutines/blob/SharedFlow/kotlinx-coroutines-core/common/src/flow/internal/SharedFlow.kt
  * can be removed, when PR https://github.com/Kotlin/kotlinx.coroutines/pull/1716 is closed
  */
 
