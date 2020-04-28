@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
- * [Format] [parse]s and [format]s the given
- * [String] value in the target type.
+ * [parse]s and [format]s the given
+ * [String] value from and to the target type.
  */
 interface Format<T> {
 
