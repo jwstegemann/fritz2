@@ -17,7 +17,7 @@ fun main() {
 
     val userStore = object : RootStore<String>("") {
 
-        val users = remote("https://reqres.in/api/users").acceptJson()
+        val users = remote("https://reqres.in/api/users")
 
         val loadAllUsers = apply<Unit, String> {
             users.get()
