@@ -90,7 +90,9 @@ fun main() {
             }
             ul("todo-list") {
                 toDos.data.flatMapLatest { all ->
-                    router.routes.map { route -> filters[route]?.function?.invoke(all) ?: all }
+                    router.routes.map { route ->
+                        filters[route]?.function?.invoke(all) ?: all
+                    }
                 }.each().map { toDo ->
                     val toDoStore = toDos.sub(toDo)
                     val textStore = toDoStore.sub(textLens)
