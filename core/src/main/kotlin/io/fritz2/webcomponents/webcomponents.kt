@@ -1,12 +1,14 @@
 package io.fritz2.webcomponents
 
 import io.fritz2.dom.Tag
+import io.fritz2.flow.asSharedFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.*
+import org.w3c.dom.Document
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLLinkElement
+import org.w3c.dom.HTMLStyleElement
 import kotlin.browser.window
 import kotlin.reflect.KClass
 
@@ -24,8 +26,11 @@ internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsC
                 this.webComponent = new _init();
                 
                 const shadowRoot = this.attachShadow({mode: 'open'});
+
+                let styleElement = this.webComponent.loadCss(document)
+                if (styleElement) shadowRoot.appendChild(styleElement)
+
                 shadowRoot.appendChild(this.webComponent.content.domNode)
-                console.log("Hallo!!!")
             }
             
             static get observedAttributes() {
@@ -33,7 +38,6 @@ internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsC
             }
             
             attributeChangedCallback(attrName, oldVal, newVal) {
-                console.log("changed " + attrName + "=" + newVal)
                 if (this.webComponent.attributeChangedCallback) this.webComponent.attributeChangedCallback(attrName, newVal);
             }
 
@@ -52,16 +56,31 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
     lateinit var attributeChangedCallback: (name: String, value: String) -> Unit
 
     val attributeChanges: Flow<Pair<String, String>> = if (observeAttributes) {
-        callbackFlow {
+        callbackFlow<Pair<String, String>> {
             attributeChangedCallback = { name, value ->
                 offer(Pair(name, value))
             }
             awaitClose {}
-        }
+        }.distinctUntilChanged().asSharedFlow()
     } else {
         flowOf()
     }
 
+    @JsName("loadCss")
+    open fun loadCss(document: Document): Element? = null
+
+    fun linkStylesheet(document: Document, url: String) =
+        document.createElement("link").unsafeCast<HTMLLinkElement>().apply {
+            rel = "stylesheet"
+            href = "weathercard.css"
+        }
+
+    fun setStylesheet(document: Document, text: String) =
+        document.createElement("style").unsafeCast<HTMLStyleElement>().apply {
+            innerText = text
+        }
+
+    fun attributeChanges(name: String) = attributeChanges.filter { (n, _) -> n == name }.map { (_, value) -> value }
 }
 
 fun <X : Element, T : WebComponent<X>> registerWebComponent(
