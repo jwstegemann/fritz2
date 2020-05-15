@@ -89,6 +89,8 @@ abstract class Tag<T : Element>(
             (if (baseClass != null) value.map { "$baseClass $it" } else value).bindAttr("class")
         }
 
+    var style: Flow<String> by AttributeDelegate
+
     /**
      * Delegate to bind a [Flow] of [List]s as the dynamic part of the class-attribute
      * @see WithAttributes.bindAttr

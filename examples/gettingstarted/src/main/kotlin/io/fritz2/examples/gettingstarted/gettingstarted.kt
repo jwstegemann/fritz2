@@ -21,6 +21,7 @@ fun main() {
     val gettingstarted = html {
         div {
             div("form-group") {
+                style = const("border: 1px solid red;")
                 label(`for` = store.id) {
                     text("Input")
                 }
