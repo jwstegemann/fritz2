@@ -33,9 +33,20 @@ internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsC
             }
             
             attributeChangedCallback(attrName, oldVal, newVal) {
-                if (this.webComponent.attributeChangedCallback) this.webComponent.attributeChangedCallback(attrName, newVal);
+                this.webComponent.attributeChangedCallback(attrName, newVal);
+            }
+            
+            connectedCallback() {
+                this.webComponent.connectedCallback(this)
             }
 
+            disconnectedCallback() {
+                this.webComponent.disconnectedCallback(this)
+            }
+
+            adoptedCallback() {
+                this.webComponent.adoptedCallback(this)
+            }
 
         }
     """
@@ -78,6 +89,18 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
         }
 
     fun attributeChanges(name: String) = attributeChanges.filter { (n, _) -> n == name }.map { (_, value) -> value }
+
+    @JsName("connectedCallback")
+    open fun connectedCallback(element: HTMLElement): Unit {
+    }
+
+    @JsName("disconnectedCallback")
+    open fun disconnectedCallback(element: HTMLElement): Unit {
+    }
+
+    @JsName("adoptedCallback")
+    open fun adoptedCallback(element: HTMLElement): Unit {
+    }
 }
 
 fun <X : Element, T : WebComponent<X>> registerWebComponent(
