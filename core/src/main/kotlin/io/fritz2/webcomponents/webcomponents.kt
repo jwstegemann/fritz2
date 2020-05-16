@@ -5,10 +5,7 @@ import io.fritz2.flow.asSharedFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
-import org.w3c.dom.Document
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLLinkElement
-import org.w3c.dom.HTMLStyleElement
+import org.w3c.dom.*
 import kotlin.browser.window
 import kotlin.reflect.KClass
 
@@ -18,19 +15,17 @@ private external fun <T> nativeFunction(vararg params: String, block: String): T
 
 internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsClass<T>, observedAttributes: Array<out String>) -> () -> dynamic =
     nativeFunction(
-        "_init", "_attributes", block = """
+        "_component", "_attributes", block = """
         return class extends HTMLElement {
         
             constructor() {
                 super();
-                this.webComponent = new _init();
+                this.webComponent = new _component();
                 
                 const shadowRoot = this.attachShadow({mode: 'open'});
-
-                let styleElement = this.webComponent.loadCss(document)
-                if (styleElement) shadowRoot.appendChild(styleElement)
-
-                shadowRoot.appendChild(this.webComponent.content.domNode)
+                
+                let content = this.webComponent.init(this, shadowRoot)
+                shadowRoot.appendChild(content.domNode)
             }
             
             static get observedAttributes() {
@@ -50,8 +45,8 @@ internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsC
 @ExperimentalCoroutinesApi
 @JsName("WebComponent")
 abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
-    @JsName("content")
-    abstract val content: Tag<T>
+    @JsName("init")
+    abstract fun init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T>
 
     lateinit var attributeChangedCallback: (name: String, value: String) -> Unit
 
@@ -66,18 +61,20 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
         flowOf()
     }
 
-    @JsName("loadCss")
-    open fun loadCss(document: Document): Element? = null
 
-    fun linkStylesheet(document: Document, url: String) =
-        document.createElement("link").unsafeCast<HTMLLinkElement>().apply {
-            rel = "stylesheet"
-            href = "weathercard.css"
+    fun linkStylesheet(shadowRoot: ShadowRoot, url: String) =
+        shadowRoot.ownerDocument?.let {
+            shadowRoot.appendChild(it.createElement("link").unsafeCast<HTMLLinkElement>().apply {
+                rel = "stylesheet"
+                href = "weathercard.css"
+            })
         }
 
-    fun setStylesheet(document: Document, text: String) =
-        document.createElement("style").unsafeCast<HTMLStyleElement>().apply {
-            innerText = text
+    fun setStylesheet(shadowRoot: ShadowRoot, text: String) =
+        shadowRoot.ownerDocument?.let {
+            shadowRoot.appendChild(it.createElement("style").unsafeCast<HTMLStyleElement>().apply {
+                innerText = text
+            })
         }
 
     fun attributeChanges(name: String) = attributeChanges.filter { (n, _) -> n == name }.map { (_, value) -> value }
