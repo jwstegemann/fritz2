@@ -26,21 +26,22 @@ fun main() {
         } andThen update
 
         val loadUserById = apply { s: String ->
-            users.get(s)
+            users.acceptJson()
+                .get(s)
                 .onErrorLog()
                 .body()
         } andThen update
 
         val saveUserWithName = apply { s: String ->
-            users.post(
-                body =
-                """
+            users.body("""
                     {
                         "name": "$s",
                         "job": "programmer"
                     }
-                """.trimIndent()
-            )
+                """.trimIndent())
+                .contentType("application/json; charset=utf-8")
+                .acceptJson()
+                .post()
                 .onErrorLog()
                 .body()
         } andThen update
