@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import org.w3c.fetch.*
+import kotlin.browser.window
 
 /**
  * exception type for handling http exceptions
@@ -31,7 +32,7 @@ private val loggingErrorHandler = { t: Throwable ->
  *
  * @property baseUrl the common base of all urls that you want to call using the template
  */
-fun remote(baseUrl: String = "") = RequestTemplate(baseUrl)
+fun remote(baseUrl: String = "") = Request(baseUrl = baseUrl)
 
 /**
  * Represents the common fields an attributes of a given set of http requests.
@@ -40,66 +41,49 @@ fun remote(baseUrl: String = "") = RequestTemplate(baseUrl)
  * By calling one of the executing methods like [get] or [post] a specific request is built from the template and send to the server.
  *
  * @property baseUrl the common base of all urls that you want to call using this template
- * @property errorHandler a common error handler for all requests you will send using this template. By default this just logs the error to the console.
  */
-class RequestTemplate(val baseUrl: String = "") {
-    private var method: String? = undefined
-    private var headers: Headers? = undefined
-    private var body: String? = undefined
-    private var referrer: String? = undefined
-    private var referrerPolicy: dynamic = undefined
-    private var mode: RequestMode? = undefined
-    private var credentials: RequestCredentials? = undefined
-    private var cache: RequestCache? = undefined
-    private var redirect: RequestRedirect? = undefined
-    private var integrity: String? = undefined
-    private var keepalive: Boolean? = undefined
-    private var window: Any? = undefined
+open class Request(
+    private val baseUrl: String = "",
+    private val headers: Map<String, String> = emptyMap(),
+    private val body: String? = undefined,
+    private val referrer: String? = undefined,
+    private val referrerPolicy: dynamic = undefined,
+    private val mode: RequestMode? = undefined,
+    private val credentials: RequestCredentials? = undefined,
+    private val cache: RequestCache? = undefined,
+    private val redirect: RequestRedirect? = undefined,
+    private val integrity: String? = undefined,
+    private val keepalive: Boolean? = undefined,
+    private val reqWindow: Any? = undefined
+) {
 
     /**
      * builds a request, sends it to the server, awaits the response (async), creates a flow of it and attaches the defined errorHandler
      *
-     * @param url function do derive the url (so you can use baseUrl)
+     * @param subUrl function do derive the url (so you can use baseUrl)
      * @param init an instance of [RequestInit] defining the attributes of the request
      */
-    private fun execute(url: String, init: RequestInit): Flow<Response> = flow {
-        val response = kotlin.browser.window.fetch("$baseUrl/$url", init).await()
+    private fun execute(subUrl: String, init: RequestInit): Flow<Response> = flow {
+        val url = "${baseUrl.trimEnd('/')}/${subUrl.trimStart('/')}"
+        val response = window.fetch(url, init).await()
 
         if (response.ok) emit(response)
         else throw FetchException(response.status, response.text().await(), response)
     }
 
     /**
-     * builds a [RequestInit] without a body from the template using [method]
-     *
-     * @param method the http method to use (GET, POST, etc.)
-     */
-    private fun buildInit(method: String) = RequestInit(
-        method = method,
-        headers = headers,
-        referrer = referrer,
-        referrerPolicy = referrerPolicy,
-        mode = mode,
-        credentials = credentials,
-        cache = cache,
-        redirect = redirect,
-        integrity = integrity,
-        keepalive = keepalive,
-        window = window
-    )
-
-    /**
      * builds a [RequestInit] with a body from the template using [method]
      *
      * @param method the http method to use (GET, POST, etc.)
-     * @param body content of the request
-     * @param contentType content-type of the request body (default: application/json)
      */
-    private fun buildInit(method: String, contentType: String = "application/json", body: String): RequestInit {
-        addHeader("Content-Type", contentType)
+    private fun buildInit(method: String): RequestInit {
+        // Headers has no methods for reading key-value-pairs
+        val reqHeader = Headers()
+        for ((k,v) in headers) reqHeader.set(k,v)
         return RequestInit(
             method = method,
-            headers = headers,
+            body = body,
+            headers = reqHeader,
             referrer = referrer,
             referrerPolicy = referrerPolicy,
             mode = mode,
@@ -108,8 +92,7 @@ class RequestTemplate(val baseUrl: String = "") {
             redirect = redirect,
             integrity = integrity,
             keepalive = keepalive,
-            window = window,
-            body = body
+            window = reqWindow
         )
     }
 
@@ -118,84 +101,76 @@ class RequestTemplate(val baseUrl: String = "") {
     /**
      * issues a get request returning a flow of it's response
      *
-     * @param url endpoint url which getting appended to the baseUrl with `/`
+     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    fun get(url: String = "") = execute(url, buildInit("GET"))
+    fun get(subUrl: String = "") = execute(subUrl, buildInit("GET"))
 
     /**
      * issues a head request returning a flow of it's response
      *
-     * @param url endpoint url which getting appended to the baseUrl with `/`
+     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    fun head(url: String = "") = execute(url, buildInit("HEAD"))
-
-    /**
-     * issues a post request returning a flow of it's response
-     *
-     * @param url endpoint url which getting appended to the baseUrl with `/`
-     * @param contentType content-type of the given body
-     * @param body content to send in the body of the request
-     */
-    fun post(url: String = "", contentType: String = "application/json", body: String) =
-        execute(url, buildInit("POST", contentType, body))
-
-    /**
-     * issues a put request returning a flow of it's response
-     *
-     * @param url endpoint url which getting appended to the baseUrl with `/`
-     * @param contentType content-type of the given body
-     * @param body content to send in the body of the request
-     */
-    fun put(url: String = "", contentType: String = "application/json", body: String) =
-        execute(url, buildInit("PUT", contentType, body))
-
-    /**
-     * issues a delete request returning a flow of it's response
-     *
-     * @param url endpoint url which getting appended to the baseUrl with `/`
-     * @param contentType content-type of the given body
-     * @param body content to send in the body of the request
-     */
-    fun delete(url: String = "", contentType: String = "application/json", body: String? = null): Flow<Response> {
-        return if(body != null) execute(url, buildInit("DELETE", contentType, body))
-            else execute(url, buildInit("DELETE"))
-    }
+    fun head(subUrl: String = "") = execute(subUrl, buildInit("HEAD"))
 
     /**
      * issues a connect request returning a flow of it's response
      *
-     * @param url endpoint url which getting appended to the baseUrl with `/`
+     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    fun connect(url: String = "") = execute(url, buildInit("CONNECT"))
+    fun connect(subUrl: String = "") = execute(subUrl, buildInit("CONNECT"))
 
     /**
      * issues a options request returning a flow of it's response
      *
-     * @param url endpoint url which getting appended to the baseUrl with `/`
+     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    fun options(url: String = "") = execute(url, buildInit("OPTIONS"))
+    fun options(subUrl: String = "") = execute(subUrl, buildInit("OPTIONS"))
+
+    /**
+     * issues a delete request returning a flow of it's response
+     *
+     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
+     */
+    open fun delete(subUrl: String = ""): Flow<Response> {
+        return execute(subUrl, buildInit("DELETE"))
+    }
+
+    /**
+     * issues a post request returning a flow of it's response
+     *
+     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
+     */
+    fun post(subUrl: String = ""): Flow<Response> {
+        return execute(subUrl, buildInit("POST"))
+    }
+
+    /**
+     * issues a put request returning a flow of it's response
+     *
+     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
+     */
+    fun put(subUrl: String = ""): Flow<Response> {
+        return execute(subUrl, buildInit("PUT"))
+    }
 
     /**
      * issues a patch request returning a flow of it's response
      *
-     * @param url endpoint url which getting appended to the baseUrl with `/`
-     * @param contentType content-type of the given body
-     * @param body content to send in the body of the request
+     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    fun patch(url: String = "", contentType: String = "application/json", body: String) = execute(url, buildInit("PATCH", contentType, body))
-
-    // Headers
+    fun patch(subUrl: String = ""): Flow<Response> {
+        return execute(subUrl, buildInit("PATCH"))
+    }
 
     /**
-     * checks if a [Headers] object has been initialized, does so if not and attaches the given http header
+     * sets the body content to the request
      *
-     * @param name name of the http header to add
-     * @param value value of the header field
+     * @param content body as string
      */
-    private fun addHeader(name: String, value: String): RequestTemplate = apply {
-        if (headers == null || headers == undefined) headers = Headers()
-        headers!!.append(name, value)
-    }
+    fun body(content: String) = Request(
+        baseUrl, headers, content, referrer, referrerPolicy, mode,
+        credentials, cache, redirect, integrity, keepalive, reqWindow
+    )
 
     /**
      * adds the given http header to the request
@@ -203,7 +178,17 @@ class RequestTemplate(val baseUrl: String = "") {
      * @param name name of the http header to add
      * @param value value of the header field
      */
-    fun header(name: String, value: String) = addHeader(name, value)
+    fun header(name: String, value: String) = Request(
+        baseUrl, headers.plus(name to value), body, referrer, referrerPolicy, mode,
+        credentials, cache, redirect, integrity, keepalive, reqWindow)
+
+    /**
+     * adds the given [Content-Type](https://developer.mozilla.org/de/docs/Web/HTTP/Headers/Content-Type)
+     * value to the http headers
+     *
+     * @param value cache-control value
+     */
+    fun contentType(value: String) = header("Content-Type", value)
 
     /**
      * adds the basic [Authorization](https://developer.mozilla.org/de/docs/Web/HTTP/Headers/Authorization)
@@ -213,7 +198,7 @@ class RequestTemplate(val baseUrl: String = "") {
      * @param password password of the user
      */
     fun basicAuth(username: String, password: String) =
-        addHeader("Authorization", "Basic ${btoa("$username:$password")}")
+        header("Authorization", "Basic ${btoa("$username:$password")}")
 
     /**
      * adds the given [Cache-Control](https://developer.mozilla.org/de/docs/Web/HTTP/Headers/Cache-Control)
@@ -221,7 +206,7 @@ class RequestTemplate(val baseUrl: String = "") {
      *
      * @param value cache-control value
      */
-    fun cacheControl(value: String) = addHeader("Cache-Control", value)
+    fun cacheControl(value: String) = header("Cache-Control", value)
 
     /**
      * adds the given [Accept](https://developer.mozilla.org/de/docs/Web/HTTP/Headers/Accept)
@@ -229,14 +214,13 @@ class RequestTemplate(val baseUrl: String = "") {
      *
      * @param value media type to accept
      */
-    fun accept(value: String) = addHeader("Accept", value)
+    fun accept(value: String) = header("Accept", value)
 
     /**
      * adds a header to accept JSON as response
      */
     fun acceptJson() = accept("application/json")
 }
-
 
 // Response
 

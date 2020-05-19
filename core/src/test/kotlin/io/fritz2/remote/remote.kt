@@ -10,16 +10,16 @@ import kotlin.test.*
  */
 class RemoteTests {
 
-    val remote = remote("https://httpbin.org")
-    val codes = listOf<Short>(401, 500)
+    private val remote = remote("https://httpbin.org")
+    private val codes = listOf<Short>(401, 500)
 
     @Test
     fun testHTTPMethods() = runTest {
         remote.get("get").onError { fail("get request not working") }.first()
         remote.delete("delete").onError { fail("delete request not working") }.first()
-        remote.patch("patch", body = "").onError { fail("patch request not working") }.first()
-        remote.post("post", body = "").onError { fail("post request not working") }.first()
-        remote.put("put", body = "").onError { fail("put request not working") }.first()
+        remote.body("").patch("patch").onError { fail("patch request not working") }.first()
+        remote.body("").post("post").onError { fail("post request not working") }.first()
+        remote.body("").put("put").onError { fail("put request not working") }.first()
     }
 
     @Test
@@ -60,7 +60,7 @@ class RemoteTests {
         val method = "patch"
         for(code in codes) {
             assertEquals(null,
-                remote.patch("status/$code", body = "").onError { ex -> assertEquals(code, ex.statusCode, "$method: expected status code not matched") }.singleOrNull(),
+                remote.body("").patch("status/$code").onError { ex -> assertEquals(code, ex.statusCode, "$method: expected status code not matched") }.singleOrNull(),
                 "$method: expected response should be null"
             )
         }
@@ -71,7 +71,7 @@ class RemoteTests {
         val method = "post"
         for(code in codes) {
             assertEquals(null,
-                remote.post("status/$code", body = "").onError { ex -> assertEquals(code, ex.statusCode, "$method: expected status code not matched") }.singleOrNull(),
+                remote.body("").post("status/$code").onError { ex -> assertEquals(code, ex.statusCode, "$method: expected status code not matched") }.singleOrNull(),
                 "$method: expected response should be null"
             )
         }
@@ -82,7 +82,7 @@ class RemoteTests {
         val method = "put"
         for(code in codes) {
             assertEquals(null,
-                remote.put("status/$code", body = "").onError { ex -> assertEquals(code, ex.statusCode, "$method: expected status code not matched") }.singleOrNull(),
+                remote.body("").put("status/$code").onError { ex -> assertEquals(code, ex.statusCode, "$method: expected status code not matched") }.singleOrNull(),
                 "$method: expected response should be null"
             )
         }
