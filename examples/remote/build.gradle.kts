@@ -5,6 +5,9 @@ plugins {
 kotlin {
     target {
         browser {
+            webpackTask {
+
+            }
         }
     }
 }

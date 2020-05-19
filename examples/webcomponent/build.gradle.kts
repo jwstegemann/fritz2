@@ -14,5 +14,6 @@ dependencies {
     testImplementation(kotlin("test-js"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
     implementation(project(":core"))
+    implementation(npm("@mat3e-ux/stars"))
 }
 

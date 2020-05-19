@@ -39,6 +39,11 @@
     -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .2s;
 }
 
+.weather-card m3-stars {
+    color: #666;
+    -webkit-animation: up 2s cubic-bezier(.39, 0, .38, 1) .2s;
+}
+
 .weather-card h2 {
     font-weight: 300;
     font-size: 2.25em;

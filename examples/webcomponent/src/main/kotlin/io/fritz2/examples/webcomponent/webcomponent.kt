@@ -8,6 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.ShadowRoot
+import kotlin.browser.window
 
 
 @ExperimentalCoroutinesApi
@@ -22,6 +23,10 @@ class WeatherCard : WebComponent<HTMLDivElement>() {
         return html {
             div("weather-card") {
                 h2 { city.bind() }
+                custom("m3-stars") {
+                    attr("max", "5")
+                    attr("current", "3.5")
+                }
                 h3 {
                     text("Cloudy")
                     span {
@@ -67,6 +72,11 @@ class WeatherCard : WebComponent<HTMLDivElement>() {
     }
 }
 
+@JsModule("@mat3e-ux/stars")
+@JsNonModule
+abstract external class Stars() : HTMLElement
+
 fun main(args: Array<String>) {
     registerWebComponent("weather-card", WeatherCard::class, "city")
+    window.customElements.define("m3-stars", Stars::class.js.unsafeCast<() -> dynamic>())
 }
