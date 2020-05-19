@@ -28,16 +28,17 @@ class WebComponentTests {
 
         registerWebComponent("my-component", MyComponent::class)
 
-        delay(500)
+        delay(250)
 
         val body = document.getElementById(targetId).unsafeCast<HTMLBodyElement>()
 
         body.appendChild(document.createElement("my-component", ElementCreationOptions("my-component")))
 
-        delay(1000)
+        delay(250)
 
-        //val content = document.getElementById("paragraph-in-web-component").unsafeCast<HTMLParagraphElement>()
-        val content = document.getElementsByTagName("p").get(0)
+        val content = document.getElementsByTagName("my-component")[0]?.let {
+            it.shadowRoot?.getElementById("paragraph-in-web-component")
+        }
 
         assertEquals("I am a WebComponent", content?.textContent?.trim())
     }
