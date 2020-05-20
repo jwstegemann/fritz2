@@ -67,7 +67,11 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
     @JsName("init")
     abstract fun init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T>
 
-    private lateinit var attributeChangedCallback: (name: String, value: String) -> Unit
+    /**
+     * this callback is used, when building the component in native-js (since ES2015-classes are not supported by Kotlin/JS by now)
+     */
+    //cannot be private or internal because it is used in native js
+    lateinit var attributeChangedCallback: (name: String, value: String) -> Unit
 
     /**
      * a [Flow] of all changes made to observed attributes.
