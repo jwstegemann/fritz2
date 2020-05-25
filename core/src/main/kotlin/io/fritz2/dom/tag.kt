@@ -24,7 +24,7 @@ annotation class HtmlTagMarker
  */
 //TODO: remove unnecassary default-arguments
 @HtmlTagMarker
-abstract class Tag<T : Element>(
+open class Tag<T : Element>(
     tagName: String,
     val id: String? = null,
     val baseClass: String? = null,
@@ -88,6 +88,8 @@ abstract class Tag<T : Element>(
             //TODO: better elvis?
             (if (baseClass != null) value.map { "$baseClass $it" } else value).bindAttr("class")
         }
+
+    var style: Flow<String> by AttributeDelegate
 
     /**
      * Delegate to bind a [Flow] of [List]s as the dynamic part of the class-attribute
