@@ -24,7 +24,7 @@ annotation class HtmlTagMarker
  */
 //TODO: remove unnecassary default-arguments
 @HtmlTagMarker
-open class Tag<T : Element>(
+open class Tag<out T : Element>(
     tagName: String,
     val id: String? = null,
     val baseClass: String? = null,
