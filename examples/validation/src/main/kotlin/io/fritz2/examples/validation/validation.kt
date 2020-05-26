@@ -236,7 +236,7 @@ fun main() {
                 label(`for` = activities.id) {
                     text("Activities")
                 }
-                div("form-control", id = activities.id) {
+                div(id = activities.id) {
                     activities.eachStore().map { activity ->
                         activityCheckbox(activity)
                     }.bind()
