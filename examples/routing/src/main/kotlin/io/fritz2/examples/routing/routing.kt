@@ -1,8 +1,11 @@
 package io.fritz2.examples.routing
 
 import io.fritz2.binding.const
-import io.fritz2.dom.*
-import io.fritz2.dom.html.html
+import io.fritz2.binding.handledBy
+import io.fritz2.dom.html.render
+import io.fritz2.dom.mount
+import io.fritz2.dom.selectedText
+import io.fritz2.dom.states
 import io.fritz2.routing.router
 import io.fritz2.routing.select
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,7 +30,7 @@ fun main() {
 
     val router = router(mapOf("page" to Pages.home))
 
-    html {
+    render {
         div {
             nav("navbar navbar-expand-lg navbar-light bg-light") {
                 a("navbar-brand") {
@@ -41,27 +44,38 @@ fun main() {
                     span("navbar-toggler-icon") {}
                 }
 
-                div("collapse navbar-collapse", id="navbarContent") {
+                div("collapse navbar-collapse", id = "navbarContent") {
                     ul("navbar-nav mr-auto") {
                         li("btn nav-item") {
                             a("nav-link") {
                                 text(Pages.home)
 
-                                router.navTo <= clicks.map { mapOf("page" to Pages.home) }
+                                clicks.map { mapOf("page" to Pages.home) } handledBy router.navTo
                             }
                         }
                         li("btn nav-item") {
                             a("nav-link") {
                                 text(Pages.show)
 
-                                router.navTo <= clicks.map { mapOf("page" to Pages.show, "extra" to "extra text") }
+                                clicks.map {
+                                    mapOf(
+                                        "page" to Pages.show,
+                                        "extra" to "extra text"
+                                    )
+                                } handledBy router.navTo
                             }
                         }
                         li("btn nav-item") {
                             a("nav-link") {
                                 text(Pages.change)
 
-                                router.navTo <= clicks.map { mapOf("page" to Pages.change, "debug" to false, "role" to Roles.anonymous) }
+                                clicks.map {
+                                    mapOf(
+                                        "page" to Pages.change,
+                                        "debug" to false,
+                                        "role" to Roles.anonymous
+                                    )
+                                } handledBy router.navTo
                             }
                         }
                     }
@@ -70,21 +84,23 @@ fun main() {
             div("card") {
                 router.select("page") { (page, params) ->
                     when (page) {
-                        Pages.home -> html {
+                        Pages.home -> render {
                             div("card-body") {
                                 h5("card-title") {
-                                  text(Pages.home)
+                                    text(Pages.home)
                                 }
                                 p("card-text") {
-                                    text("""
+                                    text(
+                                        """
                                         |Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
                                         |sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
                                         |sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. 
-                                        |Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.""".trimMargin())
+                                        |Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.""".trimMargin()
+                                    )
                                 }
                             }
                         }
-                        Pages.show -> html {
+                        Pages.show -> render {
                             div("card-body") {
                                 h5("card-title") {
                                     text(Pages.show)
@@ -100,7 +116,7 @@ fun main() {
                                 }
                             }
                         }
-                        Pages.change -> html {
+                        Pages.change -> render {
                             div("card-body") {
                                 h5("card-title") {
                                     text(Pages.change)
@@ -114,9 +130,9 @@ fun main() {
                                             type = const("checkbox")
                                             checked = const(params["debug"].unsafeCast<Boolean>())
 
-                                            router.navTo <= changes.states().map { checked ->
+                                            changes.states().map { checked ->
                                                 params.plus("debug" to checked)
-                                            }
+                                            } handledBy router.navTo
                                         }
                                         label("form-check-label", `for` = "debug") {
                                             text("enable debug flag")
@@ -141,14 +157,14 @@ fun main() {
                                             selected = const(params["role"] == Roles.admin)
                                         }
 
-                                        router.navTo <= changes.selectedText().map { text ->
+                                        changes.selectedText().map { text ->
                                             params.plus("role" to text)
-                                        }
+                                        } handledBy router.navTo
                                     }
                                 }
                             }
                         }
-                        else -> html {
+                        else -> render {
                             div("card-body") {
                                 h5("card-title") {
                                     text("Page not found")

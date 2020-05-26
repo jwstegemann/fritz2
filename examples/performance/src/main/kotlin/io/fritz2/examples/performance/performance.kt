@@ -1,17 +1,14 @@
 package io.fritz2.examples.gettingstarted
 
 import io.fritz2.binding.RootStore
-import io.fritz2.binding.each
-import io.fritz2.dom.html.EventType
-import io.fritz2.dom.html.Events
-import io.fritz2.dom.html.html
+import io.fritz2.binding.handledBy
+import io.fritz2.dom.html.render
 import io.fritz2.dom.mount
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.events.Event
 import kotlin.browser.document
 
 @ExperimentalCoroutinesApi
@@ -22,21 +19,23 @@ fun main() {
     }
 
     val counter = store.data.map { number ->
-        html {
-            p(id ="value") {
+        render {
+            p(id = "value") {
                 text(number.toString())
                 val x = clicks
             }
         }
     }.conflate()
 
-    document.write("""
+    document.write(
+        """
             <body id="target">
                 Loading...
             </body>
-        """.trimIndent())
+        """.trimIndent()
+    )
 
-    html {
+    render {
         div {
             counter.bind()
             button {
@@ -48,7 +47,7 @@ fun main() {
                         }
                     }
 
-                    store.update <= values
+                    values handledBy store.update
                 })
             }
         }

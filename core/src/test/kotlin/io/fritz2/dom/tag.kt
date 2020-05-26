@@ -2,7 +2,7 @@ package io.fritz2.dom
 
 import io.fritz2.binding.const
 import io.fritz2.binding.each
-import io.fritz2.dom.html.html
+import io.fritz2.dom.html.render
 import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
@@ -23,7 +23,7 @@ class TagTests {
         val testId = randomId()
         val testClass = "testClass"
 
-        html {
+        render {
             div(id = testId) {
                 className = const(testClass)
             }
@@ -46,10 +46,10 @@ class TagTests {
         val testIds = testRange.map { "testId$it" }
         val testClasses = testRange.map { "testClass$it" }
 
-        html {
+        render {
             ul(id = "list") {
                 (const(testIds)).each().map {
-                    html {
+                    render {
                         li(id = it) {
                             classList = const(testClasses)
                         }

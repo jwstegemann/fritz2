@@ -2,7 +2,8 @@ package io.fritz2.routing
 
 import io.fritz2.binding.const
 import io.fritz2.binding.each
-import io.fritz2.dom.html.html
+import io.fritz2.binding.handledBy
+import io.fritz2.dom.html.render
 import io.fritz2.dom.mount
 import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
@@ -31,15 +32,15 @@ class RoutingTests {
         val testId = randomId()
         val buttons = testRange.map { "btn$it" to "page$it" }
 
-        html {
+        render {
             div(id = testId) {
                 router.routes.bind()
                 ul {
                     const(buttons).each().map { (id, page) ->
-                        html {
+                        render {
                             li {
                                 button(id = id) {
-                                    router.navTo <= clicks.map { page }
+                                    clicks.map { page } handledBy router.navTo
                                 }
                             }
                         }
@@ -76,7 +77,7 @@ class RoutingTests {
         val btnId = randomId("btn")
         val buttons = testRange.map { "btn-$it" to "page-$it" }
 
-        html {
+        render {
             div {
                 p(id = pageId) {
                     router.select(pageKey) { it.first.toString() }.bind()
@@ -86,10 +87,10 @@ class RoutingTests {
                 }
                 ul {
                     const(buttons).each().map { (id, page) ->
-                        html {
+                        render {
                             li {
                                 button(id = id) {
-                                    router.navTo <= clicks.map { mapOf(pageKey to page, btnKey to id) }
+                                    clicks.map { mapOf(pageKey to page, btnKey to id) } handledBy router.navTo
                                 }
                             }
                         }

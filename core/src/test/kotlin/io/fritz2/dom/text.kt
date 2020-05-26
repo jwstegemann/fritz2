@@ -1,7 +1,7 @@
 package io.fritz2.dom
 
 import io.fritz2.binding.const
-import io.fritz2.dom.html.html
+import io.fritz2.dom.html.render
 import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
@@ -22,7 +22,7 @@ class TextTests {
         val testId = randomId()
         val text = "testText"
 
-        html {
+        render {
             div(id = testId) {
                 text(text)
             }
@@ -43,7 +43,7 @@ class TextTests {
         val testId = randomId()
         val text = "testText"
 
-        html {
+        render {
             div(id = testId) {
                 const(text).bind()
             }
@@ -64,7 +64,7 @@ class TextTests {
         val testId = randomId()
         val text = "testText"
 
-        html {
+        render {
             div(id = testId) {
                 const(text).bind()
             }

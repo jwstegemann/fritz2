@@ -1,6 +1,6 @@
 package io.fritz2.routing
 
-import io.fritz2.binding.Handler
+import io.fritz2.binding.SimpleHandler
 import io.fritz2.dom.html.Events
 import io.fritz2.flow.asSharedFlow
 import kotlinx.coroutines.CoroutineScope
@@ -98,7 +98,8 @@ class MapRoute(override val default: Map<String, Any>) :
         hash.split(divider).filter { s -> s.isNotBlank() }.asReversed().map(::extractPair).toMap()
 
     override fun marshal(route: Map<String, Any>): String =
-        route.map { (key, value) -> "$key$assignment${encodeURIComponent(value.toString())}" }.joinToString(separator = divider)
+        route.map { (key, value) -> "$key$assignment${encodeURIComponent(value.toString())}" }
+            .joinToString(separator = divider)
 
     private fun extractPair(param: String): Pair<String, String> {
         val equalsPos = param.indexOf(assignment)
@@ -153,7 +154,7 @@ open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope(
      * Handler vor setting
      * a new [Route] based on given Flow.
      */
-    val navTo: Handler<T> = Handler {
+    val navTo: SimpleHandler<T> = SimpleHandler {
         launch {
             it.collect {
                 setRoute(it)

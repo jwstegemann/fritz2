@@ -1,7 +1,7 @@
 package io.fritz2.examples.webcomponent
 
 import io.fritz2.dom.Tag
-import io.fritz2.dom.html.html
+import io.fritz2.dom.html.render
 import io.fritz2.webcomponents.WebComponent
 import io.fritz2.webcomponents.registerWebComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,7 +20,9 @@ class WeatherCard : WebComponent<HTMLDivElement>() {
         linkStylesheet(shadowRoot, "./weathercard.css")
         // setStylesheet(shadowRoot, """.weather-card { border: 1px solid red; }""")
 
-        return html {
+        // add you Stores, etc. here
+
+        return render {
             div("weather-card") {
                 h2 { city.bind() }
                 custom("m3-stars") {

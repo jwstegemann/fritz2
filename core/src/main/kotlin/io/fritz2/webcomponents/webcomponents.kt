@@ -97,7 +97,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
         shadowRoot.ownerDocument?.let {
             shadowRoot.appendChild(it.createElement("link").unsafeCast<HTMLLinkElement>().apply {
                 rel = "stylesheet"
-                href = "weathercard.css"
+                href = url
             })
         }
     }

@@ -3,7 +3,6 @@ package io.fritz2.binding
 import io.fritz2.flow.asSharedFlow
 import io.fritz2.optics.Lens
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.SendChannel
@@ -17,76 +16,17 @@ typealias Update<T> = (T) -> T
 
 
 /**
- * A [Handler] defines, how to handle actions in your [Store]. Each Handler accepts actions of a defined type.
- * If your handler just needs the current value of the [Store] and no action, use [Unit].
- *
- * @param execute defines how to handle the values of the connected [Flow]
- */
-open class Handler<A>(inline val execute: (Flow<A>) -> Unit) {
-    /**
-     * you can bind a [Flow] of actions/events to this [Handler] by using <= as an operator.
-     */
-    // syntactical sugar to write handler <= event-flow
-    operator fun compareTo(flow: Flow<A>): Int {
-        execute(flow)
-        return 0
-    }
-}
-
-/**
- * An [EmittingHandler] is a special [Handler] that is a new [Flow] by itself. You can emit values to this [Flow] from your code
- * and connect it to other [Handler]s on this or on other [Store]s. This way inter-store-communication is done in fritz2.
- *
- * @param bufferSize number of values of the new [Flow] to buffer
- * @param execute defines how to handle the values of the connected [Flow]
- */
-class EmittingHandler<A, E>(bufferSize: Int, inline val execute: (Flow<A>, SendChannel<E>) -> Unit) : Flow<E> {
-
-    internal val channel = BroadcastChannel<E>(bufferSize)
-
-    @InternalCoroutinesApi
-    /**
-     * implementing the [Flow]-interface
-     */
-    override suspend fun collect(collector: FlowCollector<E>) {
-        collector.emitAll(channel.asFlow())
-    }
-
-    /**
-     * you can bind a [Flow] of actions/events to this [Handler] by using <= as an operator.
-     */
-    // syntactical sugar to write handler <= event-flow
-    operator fun compareTo(flow: Flow<A>): Int {
-        execute(flow, channel)
-        return 0
-    }
-}
-
-
-//FIXME: we need an Applicator, that can access the actual model
-class Applicator<A, X>(inline val execute: suspend (A) -> Flow<X>) {
-    infix fun andThen(nextHandler: Handler<X>) = Handler<A> {
-        nextHandler.execute(it.flatMapConcat(this.execute))
-    }
-
-    infix fun <Y> andThen(nextApplicator: Applicator<X, Y>): Applicator<A, Y> = Applicator {
-        execute(it).flatMapConcat(nextApplicator.execute)
-    }
-}
-
-
-/**
  * The [Store] is the main type for all data binding activities. It the base class of all concrete Stores like [RootStore], [SubStore], etc.
  */
 abstract class Store<T> : CoroutineScope by MainScope() {
 
     /**
-     * factory method to create a [Handler] mapping the actual value of the [Store] and a given Action to a new value.
+     * factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
      *
      *
      * @param execute lambda that is executed whenever a new action-value appears on the connected event-[Flow].
      */
-    inline fun <A> handle(crossinline execute: (T, A) -> T) = Handler<A> {
+    inline fun <A> handle(crossinline execute: (T, A) -> T) = SimpleHandler<A> {
         launch {
             it.collect {
                 enqueue { t -> execute(t, it) }
@@ -95,11 +35,11 @@ abstract class Store<T> : CoroutineScope by MainScope() {
     }
 
     /**
-     * factory method to create a [Handler] that does not take an Action
+     * factory method to create a [SimpleHandler] that does not take an Action
      *
      * @param execute lambda that is execute for each event on the connected [Flow]
      */
-    inline fun handle(crossinline execute: (T) -> T) = Handler<Unit> {
+    inline fun handle(crossinline execute: (T) -> T) = SimpleHandler<Unit> {
         launch {
             it.collect {
                 enqueue { t -> execute(t) }
@@ -109,7 +49,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
 
     /**
      * factory method to create a [EmittingHandler] taking an action-value and the current store value to derive the new value.
-     * An [EmittingHandler] is a [Flow] by itself and can therefore be connected to other [Handler]s even in other [Store]s.
+     * An [EmittingHandler] is a [Flow] by itself and can therefore be connected to other [SimpleHandler]s even in other [Store]s.
      *
      * @param bufferSize number of values to buffer
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
@@ -166,7 +106,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
     abstract val data: Flow<T>
 
     /**
-     * a simple [Handler] that just takes the given action-value as the new value for the [Store].
+     * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
      */
     val update = handle<T> { _, newValue -> newValue }
 }
@@ -247,7 +187,7 @@ class ModelIdSub<R, P, T>(
     private val lens: Lens<P, T>,
     val rootStore: ModelIdRoot<R>,
     val rootLens: Lens<R, T>
-): ModelId<T> {
+) : ModelId<T> {
     /**
      * defines how the id of a part is derived from the one of it's parent
      */
