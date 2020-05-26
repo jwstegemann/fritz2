@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.3.70"))
+        classpath(kotlin("gradle-plugin", version = "1.3.71"))
     }
 }
 
@@ -24,7 +24,7 @@ allprojects {
 
 subprojects {
     group = "io.fritz2"
-    version = "0.3"
+    version = "0.4"
 
     repositories {
         mavenLocal()

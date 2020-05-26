@@ -11,7 +11,7 @@ import org.w3c.files.FileList
 /**
  * [Listener] handles a Flow of [Event]s.
  */
-inline class Listener<E : Event, X : Element>(val events: Flow<E>) {
+inline class Listener<E : Event, out X : Element>(val events: Flow<E>) {
     /**
      * Maps the given [Event] to a new value.
      */

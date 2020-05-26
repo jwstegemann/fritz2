@@ -1,6 +1,6 @@
 package io.fritz2.binding
 
-import io.fritz2.dom.html.html
+import io.fritz2.dom.html.render
 import io.fritz2.dom.mount
 import io.fritz2.dom.values
 import io.fritz2.test.initDocument
@@ -34,11 +34,11 @@ class EventTests {
         }
 
 
-        html {
+        render {
             section {
                 input {
                     value = store.data
-                    store.update <= changes.values()
+                    changes.values() handledBy store.update
                 }
                 div(id = resultId) {
                     text("value: ")
@@ -46,7 +46,7 @@ class EventTests {
                 }
                 button(id = buttonId) {
                     text("add one more little dot")
-                    store.addADot <= clicks
+                    clicks handledBy store.addADot
                 }
             }
         }.mount(targetId)

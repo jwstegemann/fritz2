@@ -672,6 +672,9 @@ class TextElement(tagName: String, id: String? = null, baseClass: String? = null
 
 
 interface HtmlElements {
+    fun custom(localName: String, content: Tag<HTMLElement>.() -> Unit): Tag<HTMLElement> =
+        register(Tag(localName), content)
+
     fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T
     fun a(baseClass: String? = null, id: String? = null, content: A.() -> Unit): A = register(A(id, baseClass), content)
     fun area(baseClass: String? = null, id: String? = null, content: Area.() -> Unit): Area =
@@ -787,6 +790,7 @@ interface HtmlElements {
 
     fun output(baseClass: String? = null, id: String? = null, content: Output.() -> Unit): Output =
         register(Output(id, baseClass), content)
+
     fun p(baseClass: String? = null, id: String? = null, content: P.() -> Unit): P = register(P(id, baseClass), content)
     fun param(baseClass: String? = null, id: String? = null, content: Param.() -> Unit): Param =
         register(Param(id, baseClass), content)

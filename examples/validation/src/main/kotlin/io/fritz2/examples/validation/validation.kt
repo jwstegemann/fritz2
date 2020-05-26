@@ -1,10 +1,15 @@
 package io.fritz2.examples.validation
 
-import com.soywiz.klock.*
+import com.soywiz.klock.Date
+import com.soywiz.klock.DateFormat
+import com.soywiz.klock.DateTime
 import io.fritz2.binding.*
-import io.fritz2.dom.*
+import io.fritz2.dom.Tag
 import io.fritz2.dom.html.HtmlElements
-import io.fritz2.dom.html.html
+import io.fritz2.dom.html.render
+import io.fritz2.dom.mount
+import io.fritz2.dom.states
+import io.fritz2.dom.values
 import io.fritz2.optics.Lens
 import io.fritz2.utils.createUUID
 import io.fritz2.validation.Validation
@@ -25,13 +30,13 @@ enum class Status(val inputClass: String, val messageClass: String) {
     Invalid("is-invalid", "invalid-feedback")
 }
 
-data class Message(override val id: String, val status: Status, val text: String): ValidationMessage {
+data class Message(override val id: String, val status: Status, val text: String) : ValidationMessage {
     override fun failed(): Boolean = status > Status.Valid
 }
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-object PersonValidator: Validator<Person, Message, String>() {
+object PersonValidator : Validator<Person, Message, String>() {
 
     override fun validate(data: Person, metadata: String): List<Message> {
         // working with mutable list here is much more easier
@@ -39,7 +44,7 @@ object PersonValidator: Validator<Person, Message, String>() {
         val idStore = ModelIdRoot<Person>()
 
         // validate name
-        if(data.name.trim().isBlank())
+        if (data.name.trim().isBlank())
             msgs.add(Message(idStore.sub(Person.name).id, Status.Invalid, "Please provide a name"))
         else
             msgs.add(Message(idStore.sub(Person.name).id, Status.Valid, "Good name"))
@@ -65,7 +70,7 @@ object PersonValidator: Validator<Person, Message, String>() {
         val addressId = idStore.sub(Person.address)
         fun checkAddressField(name: String, lens: Lens<Address, String>) {
             val value = lens.get(data.address)
-            if(value.trim().isBlank())
+            if (value.trim().isBlank())
                 msgs.add(Message(addressId.sub(lens).id, Status.Invalid, "Please provide a $name"))
             else
                 msgs.add(Message(addressId.sub(lens).id, Status.Valid, "Ok"))
@@ -76,10 +81,16 @@ object PersonValidator: Validator<Person, Message, String>() {
         checkAddressField("city", Address.city)
 
         // check activities
-        if(data.activities.none { it.like })
+        if (data.activities.none { it.like })
             msgs.add(Message(idStore.sub(Person.activities).id, Status.Invalid, "Please provide at least one activity"))
         else
-            msgs.add(Message(idStore.sub(Person.activities).id, Status.Valid, "You choose ${data.activities.count { it.like }} activities"))
+            msgs.add(
+                Message(
+                    idStore.sub(Person.activities).id,
+                    Status.Valid,
+                    "You choose ${data.activities.count { it.like }} activities"
+                )
+            )
 
         return msgs
     }
@@ -112,7 +123,7 @@ fun main() {
             // cleanup validation
             validator.cleanUp()
             // only update the list when new person is valid
-            if(validate(person, "add")) {
+            if (validate(person, "add")) {
                 offer(person)
                 validator.cleanUp()
                 Person(createUUID())
@@ -131,15 +142,13 @@ fun main() {
 
     // extend with the Validation interface and provide a PersonValidator
     val listStore = object : RootStore<List<Person>>(emptyList()) {
-        val add: Handler<Person> = handle { list, person ->
-             list + person
+        val add: SimpleHandler<Person> = handle { list, person ->
+            list + person
         }
     }
 
     //connect the two stores
-    listStore.add <= personStore.save
-
-
+    personStore.save handledBy listStore.add
 
 
     // adding bootstrap css classes to the validated elements
@@ -170,7 +179,7 @@ fun main() {
                 value = subStore.data
                 type = const(inputType)
 
-                subStore.update <= changes.values()
+                changes.values() handledBy subStore.update
             }
             div("message", id = "${subStore.id}-message") { }
         }
@@ -181,13 +190,13 @@ fun main() {
         val name = activity.sub(Activity.name)
         val like = activity.sub(Activity.like)
 
-        return html {
+        return render {
             div("form-check form-check-inline") {
                 input("form-check-input", id = activity.id) {
                     type = const("checkbox")
                     checked = like.data
 
-                    like.update <= changes.states()
+                    changes.states() handledBy like.update
                 }
                 label("form-check-label", `for` = activity.id) {
                     name.data.bind()
@@ -196,7 +205,7 @@ fun main() {
         }
     }
 
-    html {
+    render {
         div {
             h4 { text("Person") }
             stringInput("Name", name)
@@ -210,7 +219,7 @@ fun main() {
                     value = birthday.data
                     type = const("date")
 
-                    birthday.update <= changes.values()
+                    changes.values() handledBy birthday.update
                 }
                 div("message", id = "${birthday.id}-message") { }
             }
@@ -227,7 +236,7 @@ fun main() {
                 label(`for` = activities.id) {
                     text("Activities")
                 }
-                div("form-control", id = activities.id) {
+                div(id = activities.id) {
                     activities.eachStore().map { activity ->
                         activityCheckbox(activity)
                     }.bind()
@@ -237,7 +246,7 @@ fun main() {
             div("form-group my-4") {
                 button("btn btn-primary") {
                     text("Add")
-                    personStore.save <= clicks
+                    clicks handledBy personStore.save
                 }
 
                 button("btn btn-secondary mx-2") {
@@ -271,7 +280,7 @@ fun main() {
                                 "${person.address.postalCode} ${person.address.city}"
                         val activities = person.activities.filter { it.like }.map { it.name }.joinToString()
 
-                        html {
+                        render {
                             tr {
                                 td { text(person.name) }
                                 td { text(person.birthday.format(DateFormat.FORMAT_DATE) ?: "") }
