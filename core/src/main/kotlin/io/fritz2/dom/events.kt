@@ -11,7 +11,7 @@ import org.w3c.dom.events.Event
 /**
  * this interfaces offers [Listener]s for all DOM-events available
  */
-abstract class WithEvents<T : Element> : WithDomNode<T> {
+abstract class WithEvents<out T : Element> : WithDomNode<T> {
 
     /**
      * factory-method to create a [Listener] on a DOM-element

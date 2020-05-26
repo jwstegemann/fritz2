@@ -14,7 +14,7 @@ import kotlin.browser.window
 @ExperimentalCoroutinesApi
 class WeatherCard : WebComponent<HTMLDivElement>() {
 
-    val city = attributeChanges("city")
+    private val city = attributeChanges("city")
 
     override fun init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<HTMLDivElement> {
         linkStylesheet(shadowRoot, "./weathercard.css")
@@ -76,9 +76,10 @@ class WeatherCard : WebComponent<HTMLDivElement>() {
 
 @JsModule("@mat3e-ux/stars")
 @JsNonModule
-abstract external class Stars() : HTMLElement
+abstract external class Stars : HTMLElement
 
-fun main(args: Array<String>) {
+@ExperimentalCoroutinesApi
+fun main() {
     registerWebComponent("weather-card", WeatherCard::class, "city")
     window.customElements.define("m3-stars", Stars::class.js.unsafeCast<() -> dynamic>())
 }

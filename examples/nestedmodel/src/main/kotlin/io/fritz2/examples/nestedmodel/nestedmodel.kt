@@ -65,19 +65,19 @@ fun main() {
 
     // helper method for creating checkboxes for activities
     fun activityCheckbox(activity: SubStore<Person, List<Activity>, Activity>): Tag<HTMLDivElement> {
-        val name = activity.sub(Lenses.Activity.name)
-        val like = activity.sub(Lenses.Activity.like)
+        val activityName = activity.sub(Lenses.Activity.name)
+        val activityLike = activity.sub(Lenses.Activity.like)
 
         return render {
             div("form-check form-check-inline") {
                 input("form-check-input", id = activity.id) {
                     type = const("checkbox")
-                    checked = like.data
+                    checked = activityLike.data
 
-                    changes.states() handledBy like.update
+                    changes.states() handledBy activityLike.update
                 }
                 label("form-check-label", `for` = activity.id) {
-                    name.data.bind()
+                    activityName.data.bind()
                 }
             }
         }
@@ -136,16 +136,16 @@ fun main() {
                 }
                 tbody {
                     listStore.data.each().map { person ->
-                        val address = "${person.address.street} ${person.address.number}, " +
+                        val fullAddress = "${person.address.street} ${person.address.number}, " +
                                 "${person.address.postalCode} ${person.address.city}"
-                        val activities = person.activities.filter { it.like }.map { it.name }.joinToString()
+                        val selectedActivities = person.activities.filter { it.like }.map { it.name }.joinToString()
 
                         render {
                             tr {
                                 td { text(person.name) }
                                 td { text(person.birthday) }
-                                td { text(address) }
-                                td { text(activities) }
+                                td { text(fullAddress) }
+                                td { text(selectedActivities) }
                             }
                         }
                     }.bind()
