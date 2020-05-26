@@ -53,28 +53,28 @@ open class Tag<T : Element>(
      */
     fun <X : Element> Seq<Tag<X>>.bind(): MultiMountPoint<WithDomNode<Element>> = DomMultiMountPoint(this.data, domNode)
 
+    /**
+     * convenience method to bind [Event]s to a [Handler]
+     *
+     * @param handler [Handler] that will handle the [Event]s
+     * @receiver [Listener]
+     */
+    infix fun <E : Event, X : Element> Listener<E, X>.handledBy(handler: Handler<Unit>) =
+        handler.execute(this.events.map { Unit })
+
+    infix fun <E : Event, X : Element> Listener<E, X>.handledBy(handler: Handler<E>) = handler.execute(this.events)
 
     /**
-     * convenience-method to connect an event-[Listener] to a [Handler] that takes no action.
+     * convenience method to bind [Event]s to a [EmittingHandler]
      *
-     * @param listener to connect to the [Handler]
-     * @receiver the [Handler] that handles the events from the [Listener]
+     * @param handler [EmittingHandler] that will handle the [Event]s
+     * @receiver [Listener]
      */
-    operator fun <E : Event, X : Element> Handler<Unit>.compareTo(listener: Listener<E, X>): Int {
-        execute(listener.events.map { Unit })
-        return 0
-    }
+    infix fun <E : Event, X : Element, T> Listener<E, X>.handledBy(handler: EmittingHandler<Unit, T>) =
+        handler.execute(this.events.map { Unit }, handler.channel)
 
-    /**
-     * convenience-method to connect an event-[Listener] to an [EmittingHandler] that takes no action.
-     *
-     * @param listener to connect to the [EmittingHandler]
-     * @receiver the [EmittingHandler] that handles the events from the [Listener]
-     */
-    operator fun <E : Event, X : Element, T> EmittingHandler<Unit, T>.compareTo(listener: Listener<E, X>): Int {
-        execute(listener.events.map { Unit }, channel)
-        return 0
-    }
+    infix fun <E : Event, X : Element, T> Listener<E, X>.handledBy(handler: EmittingHandler<E, T>) =
+        handler.execute(this.events, handler.channel)
 
     /**
      * Delegate to bind a [Flow] of [String]s as the dynamic part of the class-attribute

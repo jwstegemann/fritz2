@@ -98,7 +98,8 @@ class MapRoute(override val default: Map<String, Any>) :
         hash.split(divider).filter { s -> s.isNotBlank() }.asReversed().map(::extractPair).toMap()
 
     override fun marshal(route: Map<String, Any>): String =
-        route.map { (key, value) -> "$key$assignment${encodeURIComponent(value.toString())}" }.joinToString(separator = divider)
+        route.map { (key, value) -> "$key$assignment${encodeURIComponent(value.toString())}" }
+            .joinToString(separator = divider)
 
     private fun extractPair(param: String): Pair<String, String> {
         val equalsPos = param.indexOf(assignment)

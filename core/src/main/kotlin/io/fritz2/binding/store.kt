@@ -3,7 +3,6 @@ package io.fritz2.binding
 import io.fritz2.flow.asSharedFlow
 import io.fritz2.optics.Lens
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.SendChannel
@@ -14,65 +13,6 @@ import kotlinx.coroutines.launch
  * defines a type for transforming one value into the next
  */
 typealias Update<T> = (T) -> T
-
-
-/**
- * A [Handler] defines, how to handle actions in your [Store]. Each Handler accepts actions of a defined type.
- * If your handler just needs the current value of the [Store] and no action, use [Unit].
- *
- * @param execute defines how to handle the values of the connected [Flow]
- */
-open class Handler<A>(inline val execute: (Flow<A>) -> Unit) {
-    /**
-     * you can bind a [Flow] of actions/events to this [Handler] by using <= as an operator.
-     */
-    // syntactical sugar to write handler <= event-flow
-    operator fun compareTo(flow: Flow<A>): Int {
-        execute(flow)
-        return 0
-    }
-}
-
-/**
- * An [EmittingHandler] is a special [Handler] that is a new [Flow] by itself. You can emit values to this [Flow] from your code
- * and connect it to other [Handler]s on this or on other [Store]s. This way inter-store-communication is done in fritz2.
- *
- * @param bufferSize number of values of the new [Flow] to buffer
- * @param execute defines how to handle the values of the connected [Flow]
- */
-class EmittingHandler<A, E>(bufferSize: Int, inline val execute: (Flow<A>, SendChannel<E>) -> Unit) : Flow<E> {
-
-    internal val channel = BroadcastChannel<E>(bufferSize)
-
-    @InternalCoroutinesApi
-    /**
-     * implementing the [Flow]-interface
-     */
-    override suspend fun collect(collector: FlowCollector<E>) {
-        collector.emitAll(channel.asFlow())
-    }
-
-    /**
-     * you can bind a [Flow] of actions/events to this [Handler] by using <= as an operator.
-     */
-    // syntactical sugar to write handler <= event-flow
-    operator fun compareTo(flow: Flow<A>): Int {
-        execute(flow, channel)
-        return 0
-    }
-}
-
-
-//FIXME: we need an Applicator, that can access the actual model
-class Applicator<A, X>(inline val execute: suspend (A) -> Flow<X>) {
-    infix fun andThen(nextHandler: Handler<X>) = Handler<A> {
-        nextHandler.execute(it.flatMapConcat(this.execute))
-    }
-
-    infix fun <Y> andThen(nextApplicator: Applicator<X, Y>): Applicator<A, Y> = Applicator {
-        execute(it).flatMapConcat(nextApplicator.execute)
-    }
-}
 
 
 /**
@@ -247,7 +187,7 @@ class ModelIdSub<R, P, T>(
     private val lens: Lens<P, T>,
     val rootStore: ModelIdRoot<R>,
     val rootLens: Lens<R, T>
-): ModelId<T> {
+) : ModelId<T> {
     /**
      * defines how the id of a part is derived from the one of it's parent
      */

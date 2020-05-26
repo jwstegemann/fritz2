@@ -1,9 +1,10 @@
 package io.fritz2.dom
 
 import io.fritz2.binding.RootStore
+import io.fritz2.binding.handledBy
 import io.fritz2.dom.html.Key
 import io.fritz2.dom.html.Keys
-import io.fritz2.dom.html.html
+import io.fritz2.dom.html.render
 import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
 import io.fritz2.test.runTest
@@ -31,11 +32,11 @@ class ListenerTest {
 
         val store = object : RootStore<String>("start") {}
 
-        html {
+        render {
             section {
                 input(id = inputId) {
                     value = store.data
-                    store.update <= changes.values()
+                    changes.values() handledBy store.update
                 }
                 div(id = resultId) {
                     store.data.bind()
@@ -77,13 +78,13 @@ class ListenerTest {
             }
         }
 
-        html {
+        render {
             section {
                 div(id = resultId) {
                     store.data.bind()
                 }
                 button(id = buttonId) {
-                    store.addADot <= clicks
+                    clicks handledBy store.addADot
                 }
             }
         }.mount(targetId)
@@ -134,15 +135,15 @@ class ListenerTest {
 
         }
 
-        html {
+        render {
             section {
                 div(id = resultId) {
                     store.data.bind()
                 }
                 button(id = buttonId) {
-                    store.addDot <= clicks
-                    store.addPlus <= clicks
-                    store.addDollar <= clicks
+                    clicks handledBy store.addDot
+                    clicks handledBy store.addPlus
+                    clicks handledBy store.addDollar
                 }
             }
         }.mount(targetId)
@@ -195,13 +196,13 @@ class ListenerTest {
 
         }
 
-        html {
+        render {
             section {
                 div(id = resultId) {
                     store.data.bind()
                 }
                 input(id = inputId) {
-                    store.keyPressed <= keydowns.key()
+                    keydowns.key() handledBy store.keyPressed
                 }
             }
         }.mount(targetId)

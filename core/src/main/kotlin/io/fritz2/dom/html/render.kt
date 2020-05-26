@@ -4,7 +4,7 @@ import io.fritz2.dom.Tag
 import org.w3c.dom.Element
 
 
-fun <E : Element> html(content: HtmlElements.() -> Tag<E>) =
+fun <E : Element> render(content: HtmlElements.() -> Tag<E>) =
     content(object : HtmlElements {
 
         var alreadyRegistered: Boolean = false

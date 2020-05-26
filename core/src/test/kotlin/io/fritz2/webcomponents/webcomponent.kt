@@ -1,7 +1,7 @@
 package io.fritz2.webcomponents
 
 import io.fritz2.dom.Tag
-import io.fritz2.dom.html.html
+import io.fritz2.dom.html.render
 import io.fritz2.test.initDocument
 import io.fritz2.test.runTest
 import io.fritz2.test.targetId
@@ -15,7 +15,7 @@ class WebComponentTests {
 
     class MyComponent : WebComponent<HTMLParagraphElement>() {
         override fun init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<HTMLParagraphElement> =
-            html {
+            render {
                 p(id = "paragraph-in-web-component") {
                     text("I am a WebComponent")
                 }

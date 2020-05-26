@@ -2,7 +2,8 @@ package io.fritz2.examples.gettingstarted
 
 import io.fritz2.binding.RootStore
 import io.fritz2.binding.const
-import io.fritz2.dom.html.html
+import io.fritz2.binding.handledBy
+import io.fritz2.dom.html.render
 import io.fritz2.dom.mount
 import io.fritz2.dom.values
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,10 +19,9 @@ fun main() {
         }
     }
 
-    val gettingstarted = html {
+    val gettingstarted = render {
         div {
             div("form-group") {
-                style = const("border: 1px solid red;")
                 label(`for` = store.id) {
                     text("Input")
                 }
@@ -29,7 +29,7 @@ fun main() {
                     placeholder = const("Add some input")
                     value = store.data
 
-                    store.update <= changes.values()
+                    changes.values() handledBy store.update
                 }
             }
             div("form-group") {
@@ -44,7 +44,7 @@ fun main() {
             div("form-group") {
                 button("btn btn-primary") {
                     text("Add a dot")
-                    store.addADot <= clicks
+                    clicks handledBy store.addADot
                 }
             }
         }

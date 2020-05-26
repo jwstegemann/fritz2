@@ -1,7 +1,9 @@
 package io.fritz2.examples.validation
 
-import com.soywiz.klock.*
+import com.soywiz.klock.Date
 import com.soywiz.klock.DateFormat
+import com.soywiz.klock.format
+import com.soywiz.klock.parseDate
 import io.fritz2.format.Format
 import io.fritz2.optics.Lens
 import io.fritz2.optics.Lenses

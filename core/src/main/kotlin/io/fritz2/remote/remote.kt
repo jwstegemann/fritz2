@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import org.w3c.fetch.*
+import kotlin.browser.window as browserWindow
+
 
 /**
  * exception type for handling http exceptions
@@ -64,7 +66,7 @@ class RequestTemplate(val baseUrl: String = "") {
      * @param init an instance of [RequestInit] defining the attributes of the request
      */
     inline fun execute(url: String, init: RequestInit): Flow<Response> = flow {
-        val response = kotlin.browser.window.fetch("$baseUrl/$url", init).await()
+        val response = browserWindow.fetch("$baseUrl/$url", init).await()
 
         if (response.ok) emit(response)
         else throw FetchException(response.status, response.text().await(), response)

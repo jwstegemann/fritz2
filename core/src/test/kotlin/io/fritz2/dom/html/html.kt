@@ -16,7 +16,7 @@ class HtmlTests {
         initDocument()
 
         assertFailsWith(MultipleRootElementsException::class) {
-            html {
+            render {
                 div {
                     text("div1")
                 }

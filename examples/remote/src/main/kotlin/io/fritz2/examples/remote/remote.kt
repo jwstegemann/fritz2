@@ -2,7 +2,8 @@ package io.fritz2.examples.remote
 
 import io.fritz2.binding.RootStore
 import io.fritz2.binding.const
-import io.fritz2.dom.html.html
+import io.fritz2.binding.handledBy
+import io.fritz2.dom.html.render
 import io.fritz2.dom.mount
 import io.fritz2.dom.values
 import io.fritz2.remote.body
@@ -47,7 +48,7 @@ fun main() {
 
     }
 
-    html {
+    render {
         div {
             div("form-group") {
                 label("load-user") {
@@ -55,7 +56,7 @@ fun main() {
                 }
                 input("form-control", id = "load-user") {
                     placeholder = const("Enter user id")
-                    userStore.loadUserById <= changes.values()
+                    changes.values() handledBy userStore.loadUserById
                 }
             }
 
@@ -67,7 +68,7 @@ fun main() {
                 }
                 input("form-control", id = "save-user") {
                     placeholder = const("Enter new user name")
-                    userStore.saveUserWithName <= changes.values()
+                    changes.values() handledBy userStore.saveUserWithName
                 }
             }
 
@@ -76,7 +77,7 @@ fun main() {
             div("form-group") {
                 button("btn btn-primary") {
                     text("Load all users")
-                    userStore.loadAllUsers <= clicks
+                    clicks handledBy userStore.loadAllUsers
                 }
             }
             div("card card-body") {

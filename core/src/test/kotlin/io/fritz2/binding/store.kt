@@ -1,6 +1,6 @@
 package io.fritz2.binding
 
-import io.fritz2.dom.html.html
+import io.fritz2.dom.html.render
 import io.fritz2.dom.mount
 import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
@@ -36,13 +36,13 @@ class StoreTests {
             val execute = finish andThen update
         }
 
-        html {
+        render {
             section {
                 div(id = resultId) {
                     store.data.bind()
                 }
                 button(id = buttonId) {
-                    store.execute <= clicks
+                    clicks handledBy store.execute
                 }
             }
         }.mount(targetId)
@@ -85,13 +85,13 @@ class StoreTests {
             val execute = generate andThen finish andThen update
         }
 
-        html {
+        render {
             section {
                 div(id = resultId) {
                     store.data.bind()
                 }
                 button(id = buttonId) {
-                    store.execute <= clicks
+                    clicks handledBy store.execute
                 }
             }
         }.mount(targetId)
@@ -133,13 +133,13 @@ class StoreTests {
             val execute = generate andThen finish andThen update
         }
 
-        html {
+        render {
             section {
                 div(id = resultId) {
                     store.data.bind()
                 }
                 button(id = buttonId) {
-                    store.execute <= clicks
+                    clicks handledBy store.execute
                 }
             }
         }.mount(targetId)

@@ -1,6 +1,6 @@
 package io.fritz2.binding
 
-import io.fritz2.dom.html.html
+import io.fritz2.dom.html.render
 import io.fritz2.dom.mount
 import io.fritz2.test.initDocument
 import io.fritz2.test.randomId
@@ -65,11 +65,11 @@ class SeqTests {
         }
 
 
-        html {
+        render {
             section {
                 ul(id = testId) {
                     store.data.each().map { i ->
-                        html {
+                        render {
                             li(id = "entry$i") {
                                 text(i.toString())
                             }
@@ -78,31 +78,31 @@ class SeqTests {
                 }
 
                 button(id = "replaceList") {
-                    store.replaceList <= clicks
+                    clicks handledBy store.replaceList
                 }
                 button(id = "addAtBeginning") {
-                    store.addAtBeginning <= clicks
+                    clicks handledBy store.addAtBeginning
                 }
                 button(id = "addAtEnd") {
-                    store.addAtEnd <= clicks
+                    clicks handledBy store.addAtEnd
                 }
                 button(id = "addAtMiddle") {
-                    store.addAtMiddle <= clicks
+                    clicks handledBy store.addAtMiddle
                 }
                 button(id = "removeAtBeginning") {
-                    store.removeAtBeginning <= clicks
+                    clicks handledBy store.removeAtBeginning
                 }
                 button(id = "removeAtEnd") {
-                    store.removeAtEnd <= clicks
+                    clicks handledBy store.removeAtEnd
                 }
                 button(id = "removeAtMiddle") {
-                    store.removeAtMiddle <= clicks
+                    clicks handledBy store.removeAtMiddle
                 }
                 button(id = "filterEven") {
-                    store.filterEven <= clicks
+                    clicks handledBy store.filterEven
                 }
                 button(id = "reverse") {
-                    store.reverse <= clicks
+                    clicks handledBy store.reverse
                 }
             }
         }.mount(targetId)
