@@ -122,7 +122,7 @@ fun main() {
                                     dblclicks.map { true } handledBy editingStore.update
                                 }
                                 button("destroy") {
-                                    clicks.events.map { toDo.id } //flatMapLatest { toDoStore.data } handledBy toDos.remove
+                                    clicks.events.map { toDo.id } handledBy toDos.remove //flatMapLatest { toDoStore.data }
                                 }
                             }
                             input("edit") {
