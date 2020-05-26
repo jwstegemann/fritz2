@@ -6,7 +6,7 @@
 [![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://www.fritz2.dev/examples.html)
 [![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev/fritz2/)
 [![Docs](https://img.shields.io/badge/docs-wiki-blue)](https://docs.fritz2.dev)
-[![Download](https://api.bintray.com/packages/jwstegemann/fritz2/fritz2-core/images/download.svg?version=0.3)](https://bintray.com/jwstegemann/fritz2/fritz2-core/0.3/link)
+[![Download](https://api.bintray.com/packages/jwstegemann/fritz2/fritz2-core/images/download.svg?version=0.4)](https://bintray.com/jwstegemann/fritz2/fritz2-core/0.4/link)
 
 fritz2 is a proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
@@ -15,11 +15,11 @@ fritz2 includes an intuitive way to build and render html-elements using a type-
 ```kotlin
 val model = RootStore<String>("init value")
 
-html {
+render {
     div("some-css-class") {
         input {
             value = model.data
-            model.update <= changes.values()
+            changes.values() handledBy model.update 
         }
         p {
             text("model value = ")
@@ -55,7 +55,7 @@ You can either
 - model-validation and message handling 
 - routing (for SPAs, hash-based)
 - [examples](https://www.fritz2.dev/examples.html) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
-- server-communication (Rest APIs, etc.) (work in progress)
+- server-communication (Rest APIs, etc.)
 - [documentation](https://docs.fritz2.dev) (work in progress)
 
 ## What will come next?
