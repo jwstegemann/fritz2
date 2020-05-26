@@ -56,25 +56,11 @@ open class Tag<T : Element>(
     /**
      * convenience method to bind [Event]s to a [Handler]
      *
-     * @param handler [Handler] that will handle the [Event]s
+     * @param handler [SimpleHandler] that will handle the [Event]s
      * @receiver [Listener]
      */
     infix fun <E : Event, X : Element> Listener<E, X>.handledBy(handler: Handler<Unit>) =
         handler.execute(this.events.map { Unit })
-
-    infix fun <E : Event, X : Element> Listener<E, X>.handledBy(handler: Handler<E>) = handler.execute(this.events)
-
-    /**
-     * convenience method to bind [Event]s to a [EmittingHandler]
-     *
-     * @param handler [EmittingHandler] that will handle the [Event]s
-     * @receiver [Listener]
-     */
-    infix fun <E : Event, X : Element, T> Listener<E, X>.handledBy(handler: EmittingHandler<Unit, T>) =
-        handler.execute(this.events.map { Unit }, handler.channel)
-
-    infix fun <E : Event, X : Element, T> Listener<E, X>.handledBy(handler: EmittingHandler<E, T>) =
-        handler.execute(this.events, handler.channel)
 
     /**
      * Delegate to bind a [Flow] of [String]s as the dynamic part of the class-attribute

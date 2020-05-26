@@ -5,13 +5,17 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
 
+interface Handler<A> {
+    val execute: (Flow<A>) -> Unit
+}
+
 /**
- * A [Handler] defines, how to handle actions in your [Store]. Each Handler accepts actions of a defined type.
+ * A [SimpleHandler] defines, how to handle actions in your [Store]. Each Handler accepts actions of a defined type.
  * If your handler just needs the current value of the [Store] and no action, use [Unit].
  *
  * @param execute defines how to handle the values of the connected [Flow]
  */
-class Handler<A>(inline val execute: (Flow<A>) -> Unit)
+class SimpleHandler<A>(override inline val execute: (Flow<A>) -> Unit) : Handler<A>
 
 /**
  * bind a [Flow] of actions/events to an [Handler]
@@ -22,15 +26,20 @@ class Handler<A>(inline val execute: (Flow<A>) -> Unit)
 infix fun <A> Flow<A>.handledBy(handler: Handler<A>) = handler.execute(this)
 
 /**
- * An [EmittingHandler] is a special [Handler] that constitutes a new [Flow] by itself. You can emit values to this [Flow] from your code
- * and connect it to other [Handler]s on this or on other [Store]s. This way inter-store-communication is done in fritz2.
+ * An [EmittingHandler] is a special [SimpleHandler] that constitutes a new [Flow] by itself. You can emit values to this [Flow] from your code
+ * and connect it to other [SimpleHandler]s on this or on other [Store]s. This way inter-store-communication is done in fritz2.
  *
  * @param bufferSize number of values of the new [Flow] to buffer
- * @param execute defines how to handle the values of the connected [Flow]
+ * @param executeWithChannel defines how to handle the values of the connected [Flow]
  */
-class EmittingHandler<A, E>(bufferSize: Int, inline val execute: (Flow<A>, SendChannel<E>) -> Unit) : Flow<E> {
+class EmittingHandler<A, E>(bufferSize: Int, inline val executeWithChannel: (Flow<A>, SendChannel<E>) -> Unit) :
+    Handler<A>, Flow<E> {
 
     internal val channel = BroadcastChannel<E>(bufferSize)
+
+    override val execute: (Flow<A>) -> Unit = {
+        executeWithChannel(it, channel)
+    }
 
     @InternalCoroutinesApi
     /**
@@ -41,23 +50,11 @@ class EmittingHandler<A, E>(bufferSize: Int, inline val execute: (Flow<A>, SendC
     }
 }
 
-/**
- * bind a [Flow] of actions/events to an [EmittingHandler]
- *
- * @param handler [EmittingHandler] that will be called for each action/event on the [Flow]
- * @receiver [Flow] of action/events to bind to an [EmittingHandler]
- */
-infix fun <A, E> Flow<A>.handledBy(handler: EmittingHandler<A, E>) = handler.execute(this, handler.channel)
-
 
 //FIXME: we need an Applicator, that can access the actual model
 class Applicator<A, X>(inline val execute: suspend (A) -> Flow<X>) {
-    infix fun andThen(nextHandler: Handler<X>) = Handler<A> {
+    infix fun andThen(nextHandler: Handler<X>) = SimpleHandler<A> {
         nextHandler.execute(it.flatMapConcat(this.execute))
-    }
-
-    infix fun <E> andThen(nextHandler: EmittingHandler<X, E>) = Handler<A> {
-        nextHandler.execute(it.flatMapConcat(this.execute), nextHandler.channel)
     }
 
     infix fun <Y> andThen(nextApplicator: Applicator<X, Y>): Applicator<A, Y> = Applicator {

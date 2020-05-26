@@ -20,6 +20,8 @@ class WeatherCard : WebComponent<HTMLDivElement>() {
         linkStylesheet(shadowRoot, "./weathercard.css")
         // setStylesheet(shadowRoot, """.weather-card { border: 1px solid red; }""")
 
+        // add you Stores, etc. here
+
         return render {
             div("weather-card") {
                 h2 { city.bind() }

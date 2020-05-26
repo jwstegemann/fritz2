@@ -142,7 +142,7 @@ fun main() {
 
     // extend with the Validation interface and provide a PersonValidator
     val listStore = object : RootStore<List<Person>>(emptyList()) {
-        val add: Handler<Person> = handle { list, person ->
+        val add: SimpleHandler<Person> = handle { list, person ->
             list + person
         }
     }

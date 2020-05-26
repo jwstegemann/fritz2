@@ -34,7 +34,7 @@ fun main() {
     val activities = personStore.sub(Lenses.Person.activities)
 
     val listStore = object : RootStore<List<Person>>(emptyList()) {
-        val add: Handler<Person> = handle { list, person ->
+        val add: SimpleHandler<Person> = handle { list, person ->
             list + person
         }
     }

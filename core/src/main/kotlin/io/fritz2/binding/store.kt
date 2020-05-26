@@ -21,12 +21,12 @@ typealias Update<T> = (T) -> T
 abstract class Store<T> : CoroutineScope by MainScope() {
 
     /**
-     * factory method to create a [Handler] mapping the actual value of the [Store] and a given Action to a new value.
+     * factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
      *
      *
      * @param execute lambda that is executed whenever a new action-value appears on the connected event-[Flow].
      */
-    inline fun <A> handle(crossinline execute: (T, A) -> T) = Handler<A> {
+    inline fun <A> handle(crossinline execute: (T, A) -> T) = SimpleHandler<A> {
         launch {
             it.collect {
                 enqueue { t -> execute(t, it) }
@@ -35,11 +35,11 @@ abstract class Store<T> : CoroutineScope by MainScope() {
     }
 
     /**
-     * factory method to create a [Handler] that does not take an Action
+     * factory method to create a [SimpleHandler] that does not take an Action
      *
      * @param execute lambda that is execute for each event on the connected [Flow]
      */
-    inline fun handle(crossinline execute: (T) -> T) = Handler<Unit> {
+    inline fun handle(crossinline execute: (T) -> T) = SimpleHandler<Unit> {
         launch {
             it.collect {
                 enqueue { t -> execute(t) }
@@ -49,7 +49,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
 
     /**
      * factory method to create a [EmittingHandler] taking an action-value and the current store value to derive the new value.
-     * An [EmittingHandler] is a [Flow] by itself and can therefore be connected to other [Handler]s even in other [Store]s.
+     * An [EmittingHandler] is a [Flow] by itself and can therefore be connected to other [SimpleHandler]s even in other [Store]s.
      *
      * @param bufferSize number of values to buffer
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
@@ -106,7 +106,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
     abstract val data: Flow<T>
 
     /**
-     * a simple [Handler] that just takes the given action-value as the new value for the [Store].
+     * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
      */
     val update = handle<T> { _, newValue -> newValue }
 }

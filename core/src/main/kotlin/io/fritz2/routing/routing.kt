@@ -1,6 +1,6 @@
 package io.fritz2.routing
 
-import io.fritz2.binding.Handler
+import io.fritz2.binding.SimpleHandler
 import io.fritz2.dom.html.Events
 import io.fritz2.flow.asSharedFlow
 import kotlinx.coroutines.CoroutineScope
@@ -154,7 +154,7 @@ open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope(
      * Handler vor setting
      * a new [Route] based on given Flow.
      */
-    val navTo: Handler<T> = Handler {
+    val navTo: SimpleHandler<T> = SimpleHandler {
         launch {
             it.collect {
                 setRoute(it)
