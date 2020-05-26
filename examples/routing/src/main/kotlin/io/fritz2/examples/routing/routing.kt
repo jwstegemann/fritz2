@@ -47,13 +47,25 @@ fun main() {
                 div("collapse navbar-collapse", id = "navbarContent") {
                     ul("navbar-nav mr-auto") {
                         li("btn nav-item") {
+                            className = router.routes.map {
+                                if(it.containsValue(Pages.home)) "active" else ""
+                            }
+
                             a("nav-link") {
                                 text(Pages.home)
 
-                                clicks.map { mapOf("page" to Pages.home) } handledBy router.navTo
+                                clicks.map {
+                                    mapOf(
+                                        "page" to Pages.home
+                                    )
+                                } handledBy router.navTo
                             }
                         }
                         li("btn nav-item") {
+                            className = router.routes.map {
+                                if(it.containsValue(Pages.show)) "active" else ""
+                            }
+
                             a("nav-link") {
                                 text(Pages.show)
 
@@ -66,6 +78,10 @@ fun main() {
                             }
                         }
                         li("btn nav-item") {
+                            className = router.routes.map {
+                                if(it.containsValue(Pages.change)) "active" else ""
+                            }
+
                             a("nav-link") {
                                 text(Pages.change)
 
