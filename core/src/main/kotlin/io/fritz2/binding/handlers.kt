@@ -20,7 +20,6 @@ class Handler<A>(inline val execute: (Flow<A>) -> Unit)
  * @receiver [Flow] of action/events to bind to an [Handler]
  */
 infix fun <A> Flow<A>.handledBy(handler: Handler<A>) = handler.execute(this)
-infix fun <A> Flow<A>.handledBy(handler: Handler<Unit>) = handler.execute(this.map { Unit })
 
 /**
  * An [EmittingHandler] is a special [Handler] that constitutes a new [Flow] by itself. You can emit values to this [Flow] from your code
@@ -49,16 +48,16 @@ class EmittingHandler<A, E>(bufferSize: Int, inline val execute: (Flow<A>, SendC
  * @receiver [Flow] of action/events to bind to an [EmittingHandler]
  */
 infix fun <A, E> Flow<A>.handledBy(handler: EmittingHandler<A, E>) = handler.execute(this, handler.channel)
-infix fun <A, E> Flow<A>.handledBy(handler: EmittingHandler<Unit, E>) =
-    handler.execute(this.map { Unit }, handler.channel)
-
-//infix fun <A, E> Flow<A>.handledBy(handler: EmittingHandler<Unit, E>) = handler.execute(this.map {Unit}, handler.channel)
 
 
 //FIXME: we need an Applicator, that can access the actual model
 class Applicator<A, X>(inline val execute: suspend (A) -> Flow<X>) {
     infix fun andThen(nextHandler: Handler<X>) = Handler<A> {
         nextHandler.execute(it.flatMapConcat(this.execute))
+    }
+
+    infix fun <E> andThen(nextHandler: EmittingHandler<X, E>) = Handler<A> {
+        nextHandler.execute(it.flatMapConcat(this.execute), nextHandler.channel)
     }
 
     infix fun <Y> andThen(nextApplicator: Applicator<X, Y>): Applicator<A, Y> = Applicator {
