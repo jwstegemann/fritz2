@@ -221,15 +221,124 @@ open class Request(
      * adds a header to accept JSON as response
      */
     fun acceptJson() = accept("application/json")
+
+    /**
+     * sets the referrer property of the [Request]
+     *
+     * @param value of the property
+     */
+    fun referrer(value: String) = Request(
+        baseUrl, headers, body, value, referrerPolicy, mode,
+        credentials, cache, redirect, integrity, keepalive, reqWindow)
+
+    /**
+     * sets the referrerPolicy property of the [Request]
+     *
+     * @param value of the property
+     */
+    fun referrerPolicy(value: dynamic) = Request(
+        baseUrl, headers, body, referrer, value, mode,
+        credentials, cache, redirect, integrity, keepalive, reqWindow)
+
+    /**
+     * sets the requestMode property of the [Request]
+     *
+     * @param value of the property
+     */
+    fun requestMode(value: RequestMode) = Request(
+        baseUrl, headers, body, referrer, referrerPolicy, value,
+        credentials, cache, redirect, integrity, keepalive, reqWindow)
+
+    /**
+     * sets the credentials property of the [Request]
+     *
+     * @param value of the property
+     */
+    fun credentials(value: RequestCredentials) = Request(
+        baseUrl, headers, body, referrer, referrerPolicy, mode,
+        value, cache, redirect, integrity, keepalive, reqWindow)
+
+    /**
+     * sets the cache property of the [Request]
+     *
+     * @param value of the property
+     */
+    fun cache(value: RequestCache) = Request(
+        baseUrl, headers, body, referrer, referrerPolicy, mode,
+        credentials, value, redirect, integrity, keepalive, reqWindow)
+
+    /**
+     * sets the redirect property of the [Request]
+     *
+     * @param value of the property
+     */
+    fun redirect(value: RequestRedirect) = Request(
+        baseUrl, headers, body, referrer, referrerPolicy, mode,
+        credentials, cache, value, integrity, keepalive, reqWindow)
+
+    /**
+     * sets the integrity property of the [Request]
+     *
+     * @param value of the property
+     */
+    fun integrity(value: String) = Request(
+        baseUrl, headers, body, referrer, referrerPolicy, mode,
+        credentials, cache, redirect, value, keepalive, reqWindow)
+
+    /**
+     * sets the keepalive property of the [Request]
+     *
+     * @param value of the property
+     */
+    fun keepalive(value: Boolean) = Request(
+        baseUrl, headers, body, referrer, referrerPolicy, mode,
+        credentials, cache, redirect, integrity, value, reqWindow)
+
+    /**
+     * sets the reqWindow property of the [Request]
+     *
+     * @param value of the property
+     */
+    fun reqWindow(value: Any) = Request(
+        baseUrl, headers, body, referrer, referrerPolicy, mode,
+        credentials, cache, redirect, integrity, keepalive, value)
 }
 
 // Response
 
 /**
- * extracts the body from the given [Response]
+ * extracts the body as string from the given [Response]
  */
 fun Flow<Response>.body() = this.map {
     it.text().await()
+}
+
+/**
+ * extracts the body as blob from the given [Response]
+ */
+fun Flow<Response>.blob() = this.map {
+    it.blob().await()
+}
+
+/**
+ * extracts the body as arrayBuffer from the given [Response]
+ */
+fun Flow<Response>.arrayBuffer() = this.map {
+    it.arrayBuffer().await()
+}
+
+/**
+ * extracts the body as formData from the given [Response]
+ */
+fun Flow<Response>.formData() = this.map {
+    it.formData().await()
+}
+
+/**
+ * extracts the body as json from the given [Response]
+ */
+fun Flow<Response>.json() = this.map {
+    it.json().await()
 }
 
 /**
