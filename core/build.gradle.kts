@@ -1,31 +1,46 @@
-import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
-
-tasks.withType<Kotlin2JsCompile>().configureEach {
-    kotlinOptions.freeCompilerArgs = listOf(
-        "-Xopt-in=kotlin.ExperimentalStdlibApi",
-        "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-        "-Xopt-in=kotlinx.coroutines.FlowPreview",
-        "-XXLanguage:+InlineClasses"
-    )
-}
-
 plugins {
-    kotlin("js")
-    `maven-publish`
+    kotlin("multiplatform")
+    id("maven-publish")
     id("org.jetbrains.dokka")
 }
 
-repositories {
-    jcenter()
-}
-
 kotlin {
-    target {
-        browser {
+    jvm()
+    js().browser()
+
+    sourceSets {
+        all {
+            languageSettings.apply {
+                enableLanguageFeature("InlineClasses") // language feature name
+                useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes") // annotation FQ-name
+                useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
+                useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                useExperimentalAnnotation("kotlinx.coroutines.FlowPreview")
+            }
+        }
+
+        val commonMain by getting {
+            dependencies {
+                implementation(kotlin("stdlib"))
+            }
+        }
+        val jsMain by getting {
+            dependencies {
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
+                api("io.fritz2.optics:core-js:0.2")
+            }
+        }
+        val jsTest by getting {
+            dependencies {
+                implementation(kotlin("test-js"))
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
+                api("io.fritz2.optics:core-js:0.2")
+            }
         }
     }
 }
 
+/*
 publishing {
     repositories {
         maven {
@@ -54,17 +69,9 @@ publishing {
         }
     }
 }
+*/
 
-dependencies {
-    implementation(kotlin("stdlib-js"))
-    testImplementation(kotlin("test-js"))
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
-    api("io.fritz2.optics:core-js:0.2")
-}
-
-
-
-
+/*
 tasks {
     test {
         testTasks.forEach {
@@ -103,3 +110,4 @@ tasks {
         }
     }
 }
+ */

@@ -1,7 +1,6 @@
 package io.fritz2.validation
 
 import io.fritz2.flow.asSharedFlow
-import io.fritz2.optics.WithId
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -9,17 +8,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 /**
- * Minimal interface that has to be implemented by the result-type of a [Validation]
- */
-interface ValidationMessage : WithId {
-    fun failed(): Boolean
-}
-
-
-/**
  * Implement this interface to describe, how a certain data-model should be validated.
  */
-abstract class Validator<D, M : ValidationMessage, T> {
+actual abstract class Validator<D, M : ValidationMessage, T> {
 
     internal val channel = ConflatedBroadcastChannel<List<M>>()
 
@@ -29,14 +20,7 @@ abstract class Validator<D, M : ValidationMessage, T> {
      */
     val msgs = channel.asFlow().distinctUntilChanged().asSharedFlow()
 
-    /**
-     * method that has to be implemented to describe the validation-rules
-     *
-     * @param data model-instance to be validated
-     * @param metadata some data to be used as parameters for the validation (validate differently for the steps in a process)
-     * @return a [List] of messages (your result-type implementing [ValidationMessage])
-     */
-    abstract fun validate(data: D, metadata: T): List<M>
+    actual abstract fun validate(data: D, metadata: T): List<M>
 
     /**
      * A [Flow] representing the current state of the model (valid or not).

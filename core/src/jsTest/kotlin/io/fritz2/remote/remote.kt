@@ -3,7 +3,10 @@ package io.fritz2.remote
 import io.fritz2.test.runTest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.singleOrNull
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.fail
 
 /**
  * See [Httpbin]((https://httpbin.org/) for testing endpoints

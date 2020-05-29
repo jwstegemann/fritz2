@@ -30,7 +30,7 @@ enum class Status(val inputClass: String, val messageClass: String) {
     Invalid("is-invalid", "invalid-feedback")
 }
 
-data class Message(override val id: String, val status: Status, val text: String) : ValidationMessage {
+data class Message(val id: String, val status: Status, val text: String) : ValidationMessage {
     override fun failed(): Boolean = status > Status.Valid
 }
 

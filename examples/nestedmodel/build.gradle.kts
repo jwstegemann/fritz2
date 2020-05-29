@@ -1,18 +1,40 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        google()
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("io.fritz2.optics:plugin:0.2")
+    }
+}
+
 plugins {
-    kotlin("js")
+    kotlin("multiplatform")
 }
 
 kotlin {
-    target {
-        browser {
+    kotlin {
+        jvm()
+        js().browser()
+
+        sourceSets {
+            val commonMain by getting {
+                dependencies {
+                    implementation(kotlin("stdlib"))
+                }
+            }
+            val jsMain by getting {
+                dependencies {
+                    implementation("io.fritz2.optics:core-js:0.2")
+                }
+            }
         }
     }
 }
 
-dependencies {
-    implementation(kotlin("stdlib-js"))
-    testImplementation(kotlin("test-js"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
-    implementation(project(":core"))
-    implementation(project(":examples:nestedmodel:model"))
-}
+apply(plugin = "io.fritz2.optics")
+
+
