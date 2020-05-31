@@ -8,8 +8,8 @@ import io.fritz2.dom.html.render
 import io.fritz2.dom.key
 import io.fritz2.dom.states
 import io.fritz2.dom.values
-import io.fritz2.optics.WithId
-import io.fritz2.optics.buildLens
+import io.fritz2.lenses.WithId
+import io.fritz2.lenses.buildLens
 import io.fritz2.routing.router
 import io.fritz2.utils.createUUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,9 +24,16 @@ data class ToDo(
 ) : WithId
 
 
-val textLens = buildLens<ToDo, String>("text", { it.text }, { p, v -> p.copy(text = v) })
-val completedLens = buildLens<ToDo, Boolean>("completed", { it.completed }, { p, v -> p.copy(completed = v) })
-val editingLens = buildLens<ToDo, Boolean>("editing", { it.editing }, { p, v -> p.copy(editing = v) })
+val textLens =
+    buildLens<ToDo, String>("text", { it.text }, { p, v -> p.copy(text = v) })
+val completedLens = buildLens<ToDo, Boolean>(
+    "completed",
+    { it.completed },
+    { p, v -> p.copy(completed = v) })
+val editingLens = buildLens<ToDo, Boolean>(
+    "editing",
+    { it.editing },
+    { p, v -> p.copy(editing = v) })
 
 
 data class Filter(val text: String, val function: (List<ToDo>) -> List<ToDo>)

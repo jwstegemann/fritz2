@@ -3,7 +3,7 @@ package io.fritz2.binding
 import io.fritz2.flow.asSharedFlow
 import io.fritz2.format.Format
 import io.fritz2.format.FormatStore
-import io.fritz2.optics.Lens
+import io.fritz2.lenses.Lens
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map

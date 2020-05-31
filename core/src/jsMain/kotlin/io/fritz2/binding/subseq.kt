@@ -1,7 +1,7 @@
 package io.fritz2.binding
 
-import io.fritz2.optics.WithId
-import io.fritz2.optics.elementLens
+import io.fritz2.lenses.WithId
+import io.fritz2.lenses.elementLens
 
 /**
  * factory-method to create a [SubStore] using a [RootStore] as parent.
