@@ -10,7 +10,7 @@ import io.fritz2.dom.html.render
 import io.fritz2.dom.mount
 import io.fritz2.dom.states
 import io.fritz2.dom.values
-import io.fritz2.optics.Lens
+import io.fritz2.lenses.Lens
 import io.fritz2.utils.createUUID
 import io.fritz2.validation.Validation
 import io.fritz2.validation.ValidationMessage

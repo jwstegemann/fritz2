@@ -1,7 +1,7 @@
 package io.fritz2.examples.nestedmodel
 
-import io.fritz2.optics.Lenses
-import io.fritz2.optics.WithId
+import io.fritz2.lenses.Lenses
+import io.fritz2.lenses.WithId
 
 @Lenses
 data class Person(

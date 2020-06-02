@@ -1,21 +1,16 @@
 package io.fritz2.examples.nestedmodel
 
-import io.fritz2.binding.*
-import io.fritz2.dom.Tag
-import io.fritz2.dom.html.HtmlElements
-import io.fritz2.dom.html.render
-import io.fritz2.dom.mount
-import io.fritz2.dom.states
-import io.fritz2.dom.values
+import hugo
+import io.fritz2.binding.RootStore
 import io.fritz2.utils.createUUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.map
-import org.w3c.dom.HTMLDivElement
 
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun main() {
+
+    hugo()
 
     val personStore = object : RootStore<Person>(Person(createUUID())) {
         val save = handleAndEmit<Unit, Person> { p ->
@@ -23,7 +18,7 @@ fun main() {
             p
         }
     }
-
+/*
     val name = personStore.sub(Lenses.Person.name)
     val birthday = personStore.sub(Lenses.Person.birthday)
     val address = personStore.sub(Lenses.Person.address)
@@ -153,5 +148,5 @@ fun main() {
             }
         }
     }.mount("target")
-
+*/
 }

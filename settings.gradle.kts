@@ -2,6 +2,8 @@ rootProject.name = "fritz2"
 
 include("core")
 
+include("lenses-annotation-processor")
+
 include("examples")
 include("examples:gettingstarted")
 include("examples:todomvc")

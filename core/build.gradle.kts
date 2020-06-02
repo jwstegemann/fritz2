@@ -27,20 +27,18 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
-                api("io.fritz2.optics:core-js:0.2")
             }
         }
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
-                api("io.fritz2.optics:core-js:0.2")
             }
         }
     }
 }
 
-/*
+
 publishing {
     repositories {
         maven {
@@ -59,7 +57,7 @@ publishing {
             }
         }
     }
-    publications {
+/*    publications {
         create<MavenPublication>("maven") {
             artifactId = "fritz2-core-js"
             from(components["kotlin"])
@@ -68,8 +66,10 @@ publishing {
             }
         }
     }
+
+ */
 }
-*/
+
 
 /*
 tasks {

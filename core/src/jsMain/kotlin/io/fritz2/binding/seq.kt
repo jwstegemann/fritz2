@@ -1,6 +1,6 @@
 package io.fritz2.binding
 
-import io.fritz2.optics.WithId
+import io.fritz2.lenses.WithId
 import io.fritz2.utils.Myer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat

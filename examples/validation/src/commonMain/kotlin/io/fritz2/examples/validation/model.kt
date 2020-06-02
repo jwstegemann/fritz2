@@ -5,10 +5,12 @@ import com.soywiz.klock.DateFormat
 import com.soywiz.klock.format
 import com.soywiz.klock.parseDate
 import io.fritz2.format.Format
-import io.fritz2.optics.Lens
-import io.fritz2.optics.WithId
-import io.fritz2.optics.buildLens
+import io.fritz2.lenses.Lens
+import io.fritz2.lenses.Lenses
+import io.fritz2.lenses.WithId
+import io.fritz2.lenses.buildLens
 
+@Lenses
 data class Person(
     override val id: String,
     val name: String = "",
@@ -25,24 +27,31 @@ data class Person(
 ) : WithId {
 
     companion object {
-        val id: Lens<Person, String> = buildLens("id", { it.id }, { p, v ->
-            p.copy(id = v)
-        })
+        val id: Lens<Person, String> =
+            buildLens("id", { it.id }, { p, v ->
+                p.copy(id = v)
+            })
 
-        val name: Lens<Person, String> = buildLens("name", { it.name }, { p, v -> p.copy(name = v) })
+        val name: Lens<Person, String> =
+            buildLens("name", { it.name }, { p, v -> p.copy(name = v) })
 
-        val birthday: Lens<Person, Date> = buildLens("birthday", {
-            it.birthday
-        }, { p, v -> p.copy(birthday = v) })
+        val birthday: Lens<Person, Date> =
+            buildLens("birthday", {
+                it.birthday
+            }, { p, v -> p.copy(birthday = v) })
 
         val address: Lens<Person, Address> =
             buildLens("address", { it.address }, { p, v -> p.copy(address = v) })
 
         val activities: Lens<Person,
-                List<Activity>> = buildLens("activities", { it.activities }, { p, v -> p.copy(activities = v) })
+                List<Activity>> = buildLens(
+            "activities",
+            { it.activities },
+            { p, v -> p.copy(activities = v) })
     }
 }
 
+@Lenses
 data class Address(
     val street: String = "",
     val number: String = "",
@@ -51,22 +60,27 @@ data class Address(
 ) {
 
     companion object {
-        val street: Lens<Address, String> = buildLens("street", {
-            it.street
-        }, { p, v -> p.copy(street = v) })
+        val street: Lens<Address, String> =
+            buildLens("street", {
+                it.street
+            }, { p, v -> p.copy(street = v) })
 
-        val number: Lens<Address, String> = buildLens("number", {
-            it.number
-        }, { p, v -> p.copy(number = v) })
+        val number: Lens<Address, String> =
+            buildLens("number", {
+                it.number
+            }, { p, v -> p.copy(number = v) })
 
-        val postalCode: Lens<Address, String> = buildLens("postalCode", {
-            it.postalCode
-        }, { p, v -> p.copy(postalCode = v) })
+        val postalCode: Lens<Address, String> =
+            buildLens("postalCode", {
+                it.postalCode
+            }, { p, v -> p.copy(postalCode = v) })
 
-        val city: Lens<Address, String> = buildLens("city", { it.city }, { p, v -> p.copy(city = v) })
+        val city: Lens<Address, String> =
+            buildLens("city", { it.city }, { p, v -> p.copy(city = v) })
     }
 }
 
+@Lenses
 data class Activity(
     override val id: String,
     val name: String,
@@ -74,15 +88,18 @@ data class Activity(
 ) : WithId {
 
     companion object {
-        val id: Lens<Activity, String> = buildLens("id", { it.id }, { p, v ->
-            p.copy(id = v)
-        })
+        val id: Lens<Activity, String> =
+            buildLens("id", { it.id }, { p, v ->
+                p.copy(id = v)
+            })
 
-        val name: Lens<Activity, String> = buildLens("name", { it.name }, { p, v -> p.copy(name = v) })
+        val name: Lens<Activity, String> =
+            buildLens("name", { it.name }, { p, v -> p.copy(name = v) })
 
-        val like: Lens<Activity, Boolean> = buildLens("like", {
-            it.like
-        }, { p, v -> p.copy(like = v) })
+        val like: Lens<Activity, Boolean> =
+            buildLens("like", {
+                it.like
+            }, { p, v -> p.copy(like = v) })
     }
 
 }

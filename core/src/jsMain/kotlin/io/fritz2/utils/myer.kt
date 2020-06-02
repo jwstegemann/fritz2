@@ -1,7 +1,7 @@
 package io.fritz2.utils
 
 import io.fritz2.binding.Patch
-import io.fritz2.optics.WithId
+import io.fritz2.lenses.WithId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow

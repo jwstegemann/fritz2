@@ -1,7 +1,7 @@
 package io.fritz2.binding
 
 import io.fritz2.flow.asSharedFlow
-import io.fritz2.optics.Lens
+import io.fritz2.lenses.Lens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
