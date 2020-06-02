@@ -6,11 +6,9 @@ import com.soywiz.klock.format
 import com.soywiz.klock.parseDate
 import io.fritz2.format.Format
 import io.fritz2.optics.Lens
-import io.fritz2.optics.Lenses
 import io.fritz2.optics.WithId
 import io.fritz2.optics.buildLens
 
-@Lenses
 data class Person(
     override val id: String,
     val name: String = "",
@@ -45,7 +43,6 @@ data class Person(
     }
 }
 
-@Lenses
 data class Address(
     val street: String = "",
     val number: String = "",
@@ -70,7 +67,6 @@ data class Address(
     }
 }
 
-@Lenses
 data class Activity(
     override val id: String,
     val name: String,

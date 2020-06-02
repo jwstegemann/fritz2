@@ -1,8 +1,8 @@
 buildscript {
     repositories {
         mavenLocal()
-        google()
-        jcenter()
+//        google()
+//        jcenter()
         mavenCentral()
     }
 
@@ -16,25 +16,23 @@ plugins {
 }
 
 kotlin {
-    kotlin {
-        jvm()
-        js().browser()
+    jvm()
+    js().browser()
 
-        sourceSets {
-            val commonMain by getting {
-                dependencies {
-                    implementation(kotlin("stdlib"))
-                }
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(kotlin("stdlib"))
+                implementation(project(":core"))
+                implementation("io.fritz2.optics:core:0.2")
             }
-            val jsMain by getting {
-                dependencies {
-                    implementation("io.fritz2.optics:core-js:0.2")
-                }
+        }
+        val jsMain by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
             }
         }
     }
 }
 
 apply(plugin = "io.fritz2.optics")
-
-

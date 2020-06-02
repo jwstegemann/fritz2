@@ -2,7 +2,8 @@ package io.fritz2.validation
 
 
 /**
- * Minimal interface that has to be implemented by the result-type of a [Validation]
+ * Minimal interface that has to be implemented and contains the message from
+ * validation process.
  */
 interface ValidationMessage {
     fun failed(): Boolean
