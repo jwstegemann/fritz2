@@ -8,17 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
- * [parse]s and [format]s the given
- * [String] value from and to the target type.
- */
-interface Format<T> {
-
-    fun parse(value: String): T
-    fun format(value: T): String
-
-}
-
-/**
  * A [Store] representing the formatted value of it's parent [Store].
  * Use this to transparently bind a Date, an Int or some other data-type in your model to an HTML-input (that can only handle [String]s).
  * Do not create an instance by yourself. Use the factory-method at [SubStore]
