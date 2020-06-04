@@ -20,7 +20,6 @@ kotlin {
                     implementation(kotlin("stdlib-jdk8"))
                     implementation("com.squareup:kotlinpoet:1.6.0")
                     implementation(kotlin("compiler-embeddable"))
-                    implementation(kotlin("kapt3"))
                 }
             }
 
