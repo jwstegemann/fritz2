@@ -4,17 +4,14 @@ import java.io.File
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.RoundEnvironment
 import javax.annotation.processing.SupportedAnnotationTypes
-import javax.annotation.processing.SupportedOptions
+import javax.annotation.processing.SupportedSourceVersion
+import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
-import javax.tools.Diagnostic.Kind.ERROR
 
 
 @SupportedAnnotationTypes("io.fritz2.lenses.Lenses")
-@SupportedOptions(LensesAnnotationProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 class LensesAnnotationProcessor() : AbstractProcessor() {
-    companion object {
-        const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
-    }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(Lenses::class.java.name)
 
@@ -22,10 +19,7 @@ class LensesAnnotationProcessor() : AbstractProcessor() {
         val annotatedElements = roundEnv?.getElementsAnnotatedWith(Lenses::class.java)
         if (annotatedElements == null || annotatedElements.isEmpty()) return false
 
-        val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME] ?: run {
-            processingEnv.messager.printMessage(ERROR, "Can't find the target directory for generated Kotlin files.")
-            return false
-        }
+        val kaptKotlinGeneratedDir = "src/commonGenerated/kotlin"
 
         File(kaptKotlinGeneratedDir, "testGenerated.kt").apply {
             parentFile.mkdirs()
