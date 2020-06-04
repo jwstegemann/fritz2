@@ -17,8 +17,10 @@ kotlin {
                 dependencies {
                     implementation(kotlin("stdlib"))
                     implementation(project(":core"))
-                    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-                    implementation("com.squareup:kotlinpoet:1.3.0")
+                    implementation(kotlin("stdlib-jdk8"))
+                    implementation("com.squareup:kotlinpoet:1.6.0")
+                    implementation(kotlin("compiler-embeddable"))
+                    implementation(kotlin("kapt3"))
                 }
             }
 
