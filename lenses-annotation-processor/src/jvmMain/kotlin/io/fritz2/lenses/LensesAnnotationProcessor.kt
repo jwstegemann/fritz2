@@ -1,13 +1,14 @@
 package io.fritz2.lenses
 
 import java.io.File
-import javax.annotation.processing.*
-import javax.lang.model.SourceVersion
+import javax.annotation.processing.AbstractProcessor
+import javax.annotation.processing.RoundEnvironment
+import javax.annotation.processing.SupportedAnnotationTypes
+import javax.annotation.processing.SupportedOptions
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic.Kind.ERROR
 
 
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes("io.fritz2.lenses.Lenses")
 @SupportedOptions(LensesAnnotationProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME)
 class LensesAnnotationProcessor() : AbstractProcessor() {

@@ -1,0 +1,2 @@
+- remove coroutines-deps from examples
+- validation -> Lenses
