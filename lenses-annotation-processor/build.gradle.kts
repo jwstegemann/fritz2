@@ -3,6 +3,8 @@ plugins {
     id("maven-publish")
 }
 
+val kotlinpoet_version = "1.6.0"
+
 kotlin {
     kotlin {
         jvm()
@@ -18,7 +20,10 @@ kotlin {
                     implementation(kotlin("stdlib"))
                     implementation(project(":core"))
                     implementation(kotlin("stdlib-jdk8"))
-                    implementation("com.squareup:kotlinpoet:1.6.0")
+                    implementation("com.squareup:kotlinpoet:$kotlinpoet_version")
+                    implementation("com.squareup:kotlinpoet-classinspector-elements:$kotlinpoet_version")
+                    implementation("com.squareup:kotlinpoet-metadata:$kotlinpoet_version")
+                    implementation("com.squareup:kotlinpoet-metadata-specs:$kotlinpoet_version")
                     implementation(kotlin("compiler-embeddable"))
                 }
             }
