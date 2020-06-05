@@ -5,7 +5,8 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
 import com.squareup.kotlinpoet.classinspector.elements.ElementsClassInspector
 import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
 import com.squareup.kotlinpoet.metadata.specs.toTypeSpec
-import java.io.File
+import net.ltgt.gradle.incap.IncrementalAnnotationProcessor
+import net.ltgt.gradle.incap.IncrementalAnnotationProcessorType
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.RoundEnvironment
 import javax.annotation.processing.SupportedAnnotationTypes
@@ -18,10 +19,9 @@ import javax.lang.model.element.TypeElement
 @KotlinPoetMetadataPreview
 @SupportedAnnotationTypes("io.fritz2.lenses.Lenses")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
+@IncrementalAnnotationProcessor(IncrementalAnnotationProcessorType.AGGREGATING)
 class LensesAnnotationProcessor() : AbstractProcessor() {
     private final val kaptKotlinGeneratedDir = "src/commonGenerated/kotlin"
-
-    override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(Lenses::class.java.name)
 
     override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
 
@@ -52,11 +52,11 @@ class LensesAnnotationProcessor() : AbstractProcessor() {
 
                 fileSpecBuilder
                     .build()
-                    .writeTo(
-                        File(kaptKotlinGeneratedDir).apply {
+                    .writeTo(processingEnv.filer)
+/*                        File(kaptKotlinGeneratedDir).apply {
                             parentFile.mkdirs()
                         }
-                    )
+                    )*/
             }
 
         return true
