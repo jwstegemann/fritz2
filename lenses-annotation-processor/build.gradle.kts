@@ -1,11 +1,11 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("kapt")
+//    kotlin("kapt")
     id("maven-publish")
 }
 
 val kotlinpoet_version = "1.6.0"
-val incap_version = "0.3"
+//val incap_version = "0.3"
 
 kotlin {
     kotlin {
@@ -26,9 +26,9 @@ kotlin {
                     implementation("com.squareup:kotlinpoet-classinspector-elements:$kotlinpoet_version")
                     implementation("com.squareup:kotlinpoet-metadata:$kotlinpoet_version")
                     implementation("com.squareup:kotlinpoet-metadata-specs:$kotlinpoet_version")
-                    compileOnly("net.ltgt.gradle.incap:incap:${incap_version}")
-                    configurations.get("kapt").dependencies.add(compileOnly("net.ltgt.gradle.incap:incap-processor:${incap_version}"))
-                    implementation(kotlin("compiler-embeddable"))
+//                    compileOnly("net.ltgt.gradle.incap:incap:${incap_version}")
+//                    configurations.get("kapt").dependencies.add(compileOnly("net.ltgt.gradle.incap:incap-processor:${incap_version}"))
+//                    implementation(kotlin("compiler-embeddable"))
                 }
             }
 

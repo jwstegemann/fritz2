@@ -14,8 +14,6 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Build model
-      run: ./gradlew :examples:nestedmodel:model:build
     - name: Build and run Unit Tests
       run: ./gradlew test
     - name: Archive test-results
