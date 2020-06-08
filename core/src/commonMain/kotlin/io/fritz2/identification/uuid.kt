@@ -1,4 +1,4 @@
-package io.fritz2.utils
+package io.fritz2.identification
 
 /**
  * creates something like an UUID
