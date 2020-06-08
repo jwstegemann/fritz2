@@ -3,10 +3,7 @@ package io.fritz2.utils
 import kotlin.js.Date
 import kotlin.random.Random
 
-/**
- * factory method to create something like an UUID
- */
-fun createUUID(): String {
+actual fun createUUID(): String {
     inline fun createChar(dt: Int) = (dt + Random.nextInt(16)).toString(16)  //toString(16)
     inline fun createOther(dt: Int) = ((dt + Random.nextInt(16)) and 0x3 or 0x8).toString(16)
 
