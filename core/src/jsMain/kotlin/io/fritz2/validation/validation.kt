@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 /**
  * Implement this interface to describe, how a certain data-model should be validated.
  */
-actual abstract class Validator<D, M : ValidationMessage, T> {
+actual abstract class Validator<D, M : ValidationMessage, T> actual constructor() {
 
     internal val channel = ConflatedBroadcastChannel<List<M>>()
 

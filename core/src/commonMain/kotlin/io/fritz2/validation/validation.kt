@@ -13,7 +13,7 @@ interface ValidationMessage {
 /**
  * Implement this interface to describe, how a certain data-model should be validated.
  */
-expect abstract class Validator<D, M : ValidationMessage, T> {
+expect abstract class Validator<D, M : ValidationMessage, T>() {
 
     /**
      * method that has to be implemented to describe the validation-rules
