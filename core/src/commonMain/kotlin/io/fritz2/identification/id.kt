@@ -5,4 +5,4 @@ package io.fritz2.identification
  *
  * @return UUID as String
  */
-expect fun createUUID(): String
+expect fun uniqueId(): String
