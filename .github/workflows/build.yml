@@ -15,7 +15,7 @@ jobs:
       with:
         java-version: 11
     - name: Build and run Unit Tests
-      run: ./gradlew test
+      run: ./gradlew jsTest
     - name: Archive test-results
       if: always()
       uses: actions/upload-artifact@v1.0.0
