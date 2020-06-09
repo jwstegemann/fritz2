@@ -18,7 +18,7 @@ import javax.tools.Diagnostic.Kind.ERROR
 
 @KotlinPoetMetadataPreview
 @SupportedAnnotationTypes("io.fritz2.lenses.Lenses")
-@SupportedSourceVersion(SourceVersion.RELEASE_12)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedOptions(KAPT_KOTLIN_GENERATED_OPTION_NAME)
 //@IncrementalAnnotationProcessor(IncrementalAnnotationProcessorType.AGGREGATING)
 class LensesAnnotationProcessor() : AbstractProcessor() {
