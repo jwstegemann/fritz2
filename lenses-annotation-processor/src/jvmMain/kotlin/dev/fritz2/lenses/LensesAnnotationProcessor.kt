@@ -33,7 +33,7 @@ class LensesAnnotationProcessor() : AbstractProcessor() {
             return false
         }
 
-        val classInspector = ElementsClassInspector.create(processingEnv.elementUtils, processingEnv.typeUtils)
+//        val classInspector = ElementsClassInspector.create(processingEnv.elementUtils, processingEnv.typeUtils)
 
         val annotatedElements = roundEnv?.getElementsAnnotatedWith(Lenses::class.java)
         if (annotatedElements == null || annotatedElements.isEmpty()) return false
@@ -43,7 +43,7 @@ class LensesAnnotationProcessor() : AbstractProcessor() {
             .map { it as TypeElement }
             .associateWith { it.toTypeSpec() }
             .toList()
-            .groupBy { (element, classData) ->
+            .groupBy { (element, _) ->
                 processingEnv.elementUtils.getPackageOf(element).qualifiedName.toString()
             }
             .forEach { (pack, classes) ->
@@ -72,6 +72,7 @@ class LensesAnnotationProcessor() : AbstractProcessor() {
         val classSpec = TypeSpec.objectBuilder(classData.name ?: "unknown")
 
         classData.propertySpecs.forEach { propertyData ->
+            //FIXME: replace deprecated function call
             classSpec.addProperty((handleField(element.asClassName(), propertyData)))
         }
 
