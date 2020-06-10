@@ -1,9 +1,6 @@
 package dev.fritz2.dom.html
 
-import dev.fritz2.dom.AttributeDelegate
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.ValueAttributeDelegate
-import dev.fritz2.dom.WithText
+import dev.fritz2.dom.*
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.*
 
@@ -238,7 +235,7 @@ class Input(id: String? = null, baseClass: String? = null) : Tag<HTMLInputElemen
     var autocomplete: Flow<String> by AttributeDelegate
     var autofocus: Flow<Boolean> by AttributeDelegate
     var defaultChecked: Flow<Boolean> by AttributeDelegate
-    var checked: Flow<Boolean> by AttributeDelegate
+    var checked: Flow<Boolean> by CheckedAttributeDelegate
     var dirName: Flow<String> by AttributeDelegate
     var disabled: Flow<Boolean> by AttributeDelegate
     var formAction: Flow<String> by AttributeDelegate

@@ -127,6 +127,22 @@ class ValueAttributeMountPoint(upstream: Flow<String>, val target: Element?) : S
     }
 }
 
+/**
+ * [CheckedAttributeMountPoint] is a special [SingleMountPoint] for the html value
+ * attribute without calling `setAttribute` method.
+ */
+class CheckedAttributeMountPoint(upstream: Flow<Boolean>, val target: Element?) : SingleMountPoint<Boolean>(upstream) {
+    /**
+     * updates the attribute-value in the DOM
+     *
+     * @param value new value
+     * @param value last value (to be replaced)
+     */
+    override fun set(value: Boolean, last: Boolean?) {
+        target?.unsafeCast<HTMLInputElement>()?.checked = value
+    }
+}
+
 //TODO: maybe possible with addClass() and removeClass() methods on elements?
 //class AttributeMultiMountPoint(val name: String, upstream: Flow<Patch<String>>, val target: Element?) : MultiMountPoint<String>(upstream) {
 //
