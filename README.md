@@ -29,7 +29,8 @@ render {
 }.mount("target")
 ```
 
-fritz2 implements **precise data binding**. This means that when parts of your data model change, only the DOM-nodes depending on those parts will change as well.
+fritz2 implements **precise data binding**. This means that when parts of your data model change, **exactly those** and ONLY those DOM-nodes depending on the changed parts will automatically change as well.
+
 No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additional methods to decide which parts of your component have to be re-rendered:
 
 ![State management in fritz2](https://www.fritz2.dev/static/fritz2_state.001.png)
@@ -57,11 +58,6 @@ fritz2 itself depends on only a handful of [concepts](https://docs.fritz2.dev) y
 - [examples](https://www.fritz2.dev/examples.html) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
 - server-communication (Rest APIs, etc.)
 - [documentation](https://docs.fritz2.dev) (work in progress)
-
-## What is next for fritz2?
-
-- performance and memory optimizations
-- user auth (example with OAuth)
 
 ## Overall Goals
 
