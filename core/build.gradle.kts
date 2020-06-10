@@ -26,13 +26,13 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.7")
             }
         }
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.4")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.7")
             }
         }
     }
@@ -58,12 +58,8 @@ publishing {
             }
         }
     }
-
-    publications {
-        create<MavenPublication>("maven") {
-        }
-    }
 }
+
 
 tasks {
     val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {

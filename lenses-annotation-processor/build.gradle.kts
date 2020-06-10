@@ -55,9 +55,4 @@ publishing {
             }
         }
     }
-
-    publications {
-        create<MavenPublication>("maven") {
-        }
-    }
 }
