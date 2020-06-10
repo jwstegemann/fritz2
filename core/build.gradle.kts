@@ -45,69 +45,38 @@ publishing {
             name = "bintray"
             val bintrayUsername = "jwstegemann"
             val bintrayRepoName = "fritz2"
-            val bintrayPackageName = "fritz2-core"
+            val bintrayPackageName = "core"
             setUrl(
                 "https://api.bintray.com/maven/" +
                         "$bintrayUsername/$bintrayRepoName/$bintrayPackageName/;" +
                         "publish=0;" + // Never auto-publish to allow override.
-                        "override=1"            )
+                        "override=0"
+            )
             credentials {
                 username = "jwstegemann"
                 password = System.getenv("BINTRAY_API_KEY")
             }
         }
     }
-/*    publications {
+
+    publications {
         create<MavenPublication>("maven") {
-            artifactId = "fritz2-core-js"
-            from(components["kotlin"])
-            artifact(tasks.kotlinSourcesJar.get()) {
-                classifier = "sources"
-            }
         }
     }
-
- */
 }
 
-
-/*
 tasks {
-    test {
-        testTasks.forEach {
-            it.testLogging.showExceptions = true
-            it.testLogging.showStandardStreams = true
-            it.testLogging.minGranularity = 3
-            it.testLogging.error {
-                this.events(org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-                    org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
-                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED)
+    val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
+        impliedPlatforms = mutableListOf("common")
+        outputFormat = "markdown"
+        outputDirectory = "$projectDir/api/dokka"
+        multiplatform {
+            val js by creating {
+                impliedPlatforms = mutableListOf("js")
             }
-            it.addTestListener(object : TestListener {
-                override fun beforeTest(testDescriptor: TestDescriptor?) {
-                }
-
-                override fun beforeSuite(suite: TestDescriptor?) {
-                }
-
-                override fun afterTest(testDescriptor: TestDescriptor?, result: TestResult?) {
-                }
-
-                override fun afterSuite(suite: TestDescriptor, result: TestResult) {
-                    if (suite.parent == null) { // root suite
-                        val summary = "| Test summary: ${result.testCount} tests, " +
-                                "${result.successfulTestCount} succeeded, " +
-                                "${result.failedTestCount} failed, " +
-                                "${result.skippedTestCount} skipped"
-                        val line = "+".padEnd(summary.length,'-') + "-+"
-                        logger.lifecycle(line)
-                        logger.lifecycle("| Test result: ${result.resultType}".padEnd(summary.length, ' ') + " |")
-                        logger.lifecycle(summary + " |")
-                        logger.lifecycle(line)
-                    }
-                }
-            })
+            val jvm by creating {
+                impliedPlatforms = mutableListOf("jvm")
+            }
         }
     }
 }
- */

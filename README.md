@@ -34,7 +34,7 @@ There is no intermediate layer needed like a virtual DOM and you do not have to 
 
 ![State management in fritz2](https://www.fritz2.dev/static/fritz2_state.001.png)
 
-Utilizing Koltin's multiplatform-abilities, you have to write the code of your data classes just once and use it on your client and server (i.e. in a [SpringBoot](https://spring.io/guides/gs/rest-service/)-Backend). This of course also true for your model-validation-code, that can become far more complex than your data model really fast.
+Utilizing Koltin's multiplatform-abilities, you have to write the code of your data classes just once and use it on your client and server (i.e. in a [SpringBoot](https://spring.dev/guides/gs/rest-service/)-Backend). This of course also true for your model-validation-code, that can become far more complex than your data model really fast.
 
 The learning curve should be quite flat. We chose Kotlin as a language, that is easy to learn and has a focus on writing clean and intuitive code.
 fritz2 itself depends on only a handful of [concepts](https://docs.fritz2.dev)) you have to master. The [core API](https://api.fritz2.dev/fritz2/) consists of just about a dozen key objects and types offering only the methods und functions, that are really needed. 

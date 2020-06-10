@@ -11,7 +11,7 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.dokka") version "0.10.0"
+    id("org.jetbrains.dokka") version "0.10.1"
 }
 
 repositories {
@@ -23,7 +23,7 @@ allprojects {
 }
 
 subprojects {
-    group = "io.fritz2"
+    group = "dev.fritz2"
     version = "0.5"
 
     repositories {
@@ -33,18 +33,3 @@ subprojects {
     }
 }
 
-tasks {
-    val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
-        outputFormat = "markdown"
-        outputDirectory = "$projectDir/api/dokka"
-        subProjects = listOf("core")
-        configuration {
-            platform = "JS"
-            sourceLink {
-                path = "src/main/kotlin" // or simply "./"
-                url = "https://github.com/jwstegemann/fritz2/blob/master/src/main/kotlin" //remove src/main/kotlin if you use "./" above
-                lineSuffix = "#L"
-            }
-        }
-    }
-}
