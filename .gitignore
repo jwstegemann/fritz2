@@ -7,3 +7,4 @@
 **/src/generated/
 GeneratedOptics.kt
 /api/dokka/fritz2/
+/core/api/dokka/core/
