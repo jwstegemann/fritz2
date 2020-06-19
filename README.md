@@ -1,13 +1,13 @@
 ![fritz2](https://www.fritz2.dev/images/fritz2_logo_grey.png)
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
-[![LOC](https://img.shields.io/badge/lines%20of%20code-1%2C5k-green)](https://clean-code-developer.com/grades/grade-1-red/#Keep_it_simple_stupid_KISS)
-[![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://www.fritz2.dev/examples.html)
-[![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev/core/)
-[![Docs](https://img.shields.io/badge/docs-documentation-blue)](https://docs.fritz2.dev)
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
+[![LOC](https://img.shields.io/badge/lines%20of%20code-1%2C5k-green)](https://clean-code-developer.com/grades/grade-1-red/#Keep_it_simple_stupid_KISS)
 [![Download](https://api.bintray.com/packages/jwstegemann/fritz2/core/images/download.svg)](https://bintray.com/jwstegemann/fritz2/core/_latestVersion)
 
+[![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://www.fritz2.dev/examples.html)
+[![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev/core/)
+[![Docs](https://img.shields.io/badge/doc-umentation-blue)](https://docs.fritz2.dev)
 [![Discord](https://img.shields.io/discord/723492739819241513?color=7389D8&label=Chat&logo=discord&logoColor=ffffff)](https://discord.gg/UwQRH93)
 
 fritz2 is a proof of concept for an ***extremely lightweight***, well-performing, independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
