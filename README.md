@@ -3,8 +3,8 @@
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
 [![LOC](https://img.shields.io/badge/lines%20of%20code-1%2C5k-green)](https://clean-code-developer.com/grades/grade-1-red/#Keep_it_simple_stupid_KISS)
 [![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://www.fritz2.dev/examples.html)
-[![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev/fritz2/)
-[![Docs](https://img.shields.io/badge/docs-wiki-blue)](https://docs.fritz2.dev)
+[![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev/core/)
+[![Docs](https://img.shields.io/badge/doc-umentation-blue)](https://docs.fritz2.dev)
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 [![Download](https://api.bintray.com/packages/jwstegemann/fritz2/core/images/download.svg)](https://bintray.com/jwstegemann/fritz2/core/_latestVersion)
 
