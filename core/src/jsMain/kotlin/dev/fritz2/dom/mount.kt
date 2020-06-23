@@ -124,6 +124,7 @@ class ValueAttributeMountPoint(upstream: Flow<String>, val target: Element?) : S
      */
     override fun set(value: String, last: String?) {
         target?.unsafeCast<HTMLInputElement>()?.value = value
+        target?.unsafeCast<HTMLInputElement>()?.defaultValue = value
         target?.setAttribute("value", value)
     }
 }
@@ -141,6 +142,7 @@ class CheckedAttributeMountPoint(upstream: Flow<Boolean>, val target: Element?) 
      */
     override fun set(value: Boolean, last: Boolean?) {
         target?.unsafeCast<HTMLInputElement>()?.checked = value
+        target?.unsafeCast<HTMLInputElement>()?.defaultChecked = value
         if(value) target?.setAttribute("checked", "")
         else target?.removeAttribute("checked")
     }
