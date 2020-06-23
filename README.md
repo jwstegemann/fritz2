@@ -1,16 +1,19 @@
 ![fritz2](https://www.fritz2.dev/images/fritz2_logo_grey.png)
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
+[![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 [![LOC](https://img.shields.io/badge/lines%20of%20code-1%2C5k-green)](https://clean-code-developer.com/grades/grade-1-red/#Keep_it_simple_stupid_KISS)
-[![100% Kotlin](https://img.shields.io/badge/kotlin-100%25-blue)](https://play.kotlinlang.org/)
+[![Download](https://api.bintray.com/packages/jwstegemann/fritz2/core/images/download.svg)](https://bintray.com/jwstegemann/fritz2/core/_latestVersion)
+
 [![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://www.fritz2.dev/examples.html)
-[![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev/fritz2/)
-[![Docs](https://img.shields.io/badge/docs-wiki-blue)](https://docs.fritz2.dev)
-[![Download](https://api.bintray.com/packages/jwstegemann/fritz2/fritz2-core/images/download.svg?version=0.4)](https://bintray.com/jwstegemann/fritz2/fritz2-core/0.4/link)
+[![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev/core/)
+[![Docs](https://img.shields.io/badge/doc-umentation-blue)](https://docs.fritz2.dev)
+[![Slack](https://img.shields.io/badge/slack-channel-green?logo=slack)](https://fritz2workspace.slack.com/)
+[![Discord](https://img.shields.io/discord/723492739819241513?color=7389D8&label=Chat&logo=discord&logoColor=ffffff)](https://discord.gg/UwQRH93)
 
-fritz2 is a proof of concept for an ***extremely lightweight*** well-performing independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
+fritz2 is a proof of concept for an ***extremely lightweight***, well-performing, independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
 
-fritz2 includes an intuitive way to build and render html-elements using a type-safe dsl. You can easily create lightweight **reactive** html-components that are bound to an underlying model and **automatically** change, whenever the model data changes:
+fritz2 includes an intuitive way to build and render html-elements using a type-safe dsl. You can easily create lightweight **reactive** html-components that are bound to an underlying model and **automatically** change whenever the model data changes:
 
 ```kotlin
 val model = RootStore<String>("init value")
@@ -29,24 +32,25 @@ render {
 }.mount("target")
 ```
 
-fritz2 implements **precise data binding**. That means that exactly those (and **only** those) dom-nodes (elements, attributes, etc.) change, that depend on the parts of your data-model, that have changed. 
-There is no intermediate layer needed like a virtual DOM and you do not have to implement any additional methods to decide, which parts of your component have to be rerendered, when your data changes:
+fritz2 implements **precise data binding**. This means that when parts of your data model change, **exactly those** and ONLY those DOM-nodes depending on the changed parts will automatically change as well.
+
+No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additional methods to decide which parts of your component have to be re-rendered:
 
 ![State management in fritz2](https://www.fritz2.dev/static/fritz2_state.001.png)
 
-Utilizing Koltin's multiplatform-abilities, you have to write the code of your data classes just once and use it on your client and server (i.e. in a [SpringBoot](https://spring.io/guides/gs/rest-service/)-Backend). This of course also true for your model-validation-code, that can become far more complex than your data model really fast.
+Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data classes only once and use it on your client and server (i.e. in a [SpringBoot](https://spring.io/guides/gs/rest-service/)-Backend). This is also true for your model-validation-code, which can quickly become far more complex than your data model.
 
-The learning curve should be quite flat. We chose Kotlin as a language, that is easy to learn and has a focus on writing clean and intuitive code.
-fritz2 itself depends on only a handful of [concepts](https://docs.fritz2.dev)) you have to master. The [core API](https://api.fritz2.dev/fritz2/) consists of just about a dozen key objects and types offering only the methods und functions, that are really needed. 
+Expect a flat learning curve - we chose Kotlin for its focus on writing clean and intuitive code, which makes working with fritz2 easy to learn.
+fritz2 itself depends on only a handful of [concepts](https://docs.fritz2.dev) you have to master. The [core API](https://api.fritz2.dev/fritz2/) consists of about a dozen key objects and types offering only essential methods und functions. 
 
 ## How to try it?
-You can either
-* take a look at our hosted [examples](https://www.fritz2.dev/examples.html)
-* set up a new project on your own following our [documentation](https://docs.fritz2.dev/Project.html)
-* checkout the project, import it in your favourite IDE (or whatever you like) and run `./gradlew :examples:todomvc:run` (or another example)
+
+* Take a look at our hosted [examples](https://www.fritz2.dev/examples.html)
+* Or set up a new project on your own, following our [documentation](https://docs.fritz2.dev/Project.html)
+* Or checkout the project, import it in your favourite IDE and run `./gradlew :examples:todomvc:run` (or any other example)
 
 
-## What is there already?
+## What we've got so far
 
 - easy reactive one- and two-way-databinding
 - even for lists and deep nested structures
@@ -58,18 +62,12 @@ You can either
 - server-communication (Rest APIs, etc.)
 - [documentation](https://docs.fritz2.dev) (work in progress)
 
-## What will come next?
-
-- performance and memory optimizations
-- user auth (example with OAuth)
-
 ## Overall Goals
 
-- stay extremely lightweight (just a few hundred lines of code for the core)
-- try to depend on as less libs as possible (zero up to now!)
+- staying extremely lightweight (a few hundred lines of code for the core)
+- keeping dependencies as low as possible (zero up to now!)
 - generating elements, attributes, events for html from specification (w3c, mozilla, ...)
 
 ## Inspiration
 
-fritz2 is heavily inspired by the great [Binding.scala](https://github.com/ThoughtWorksInc/Binding.scala).
-Later I discovered that a lot of those concepts are described independently in [Meiosis](https://meiosis.js.org/).
+fritz2 is hugely inspired by the great [Binding.scala](https://github.com/ThoughtWorksInc/Binding.scala). Later we discovered that a lot of those concepts are described independently in [Meiosis](https://meiosis.js.org/).

@@ -1,0 +1,157 @@
+package dev.fritz2.binding
+
+import dev.fritz2.dom.html.render
+import dev.fritz2.dom.mount
+import dev.fritz2.test.initDocument
+import dev.fritz2.test.randomId
+import dev.fritz2.test.runTest
+import dev.fritz2.test.targetId
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLDivElement
+import kotlin.browser.document
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+
+class StoreTests {
+
+    @Test
+    fun testStoreApplierAndThenHandler() = runTest {
+        initDocument()
+
+        val resultId = randomId("result")
+        val buttonId = randomId("button")
+
+        val store = object : RootStore<String>("start") {
+
+            val finish = apply<Unit, String> {
+                flow {
+                    delay(200)
+                    emit("finish")
+                }
+            }
+
+            val execute = finish andThen update
+        }
+
+        render {
+            section {
+                div(id = resultId) {
+                    store.data.bind()
+                }
+                button(id = buttonId) {
+                    clicks handledBy store.execute
+                }
+            }
+        }.mount(targetId)
+
+        delay(100)
+
+        val button = document.getElementById(buttonId).unsafeCast<HTMLButtonElement>()
+        val result = document.getElementById(resultId).unsafeCast<HTMLDivElement>()
+
+        button.click()
+        delay(100)
+        assertEquals("start", result.textContent, "wrong dom content of result-node")
+        delay(300)
+        assertEquals("finish", result.textContent, "wrong dom content of result-node")
+    }
+
+    @Test
+    fun testStoreApplierAndThenApplierAndThenHandler() = runTest {
+        initDocument()
+
+        val resultId = randomId("result")
+        val buttonId = randomId("button")
+
+        val store = object : RootStore<String>("start") {
+
+            val generate = apply<Unit, String> {
+                flow {
+                    delay(100)
+                    emit("generate")
+                }
+            }
+
+            val finish = apply<String, String> {
+                flow {
+                    delay(100)
+                    emit("finish")
+                }
+            }
+
+            val execute = generate andThen finish andThen update
+        }
+
+        render {
+            section {
+                div(id = resultId) {
+                    store.data.bind()
+                }
+                button(id = buttonId) {
+                    clicks handledBy store.execute
+                }
+            }
+        }.mount(targetId)
+
+        delay(100)
+
+        val button = document.getElementById(buttonId).unsafeCast<HTMLButtonElement>()
+        val result = document.getElementById(resultId).unsafeCast<HTMLDivElement>()
+
+        button.click()
+        assertEquals("start", result.textContent, "wrong dom content of result-node")
+        delay(300)
+        assertEquals("finish", result.textContent, "wrong dom content of result-node")
+    }
+
+    @Test
+    fun testStoreApplierAndThenApplierAndThenHandlerWithTypeConversion() = runTest {
+        initDocument()
+
+        val resultId = randomId("result")
+        val buttonId = randomId("button")
+
+        val store = object : RootStore<String>("start") {
+
+            val generate = apply<Unit, Int> {
+                flow {
+                    delay(100)
+                    emit(100)
+                }
+            }
+
+            val finish = apply<Int, String> {
+                flow {
+                    delay(100)
+                    emit(it.toString())
+                }
+            }
+
+            val execute = generate andThen finish andThen update
+        }
+
+        render {
+            section {
+                div(id = resultId) {
+                    store.data.bind()
+                }
+                button(id = buttonId) {
+                    clicks handledBy store.execute
+                }
+            }
+        }.mount(targetId)
+
+        delay(100)
+
+        val button = document.getElementById(buttonId).unsafeCast<HTMLButtonElement>()
+        val result = document.getElementById(resultId).unsafeCast<HTMLDivElement>()
+
+        button.click()
+        assertEquals("start", result.textContent, "wrong dom content of result-node")
+        delay(300)
+        assertEquals("100", result.textContent, "wrong dom content of result-node")
+    }
+}
