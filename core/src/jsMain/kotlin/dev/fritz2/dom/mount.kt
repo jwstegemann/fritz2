@@ -113,33 +113,38 @@ class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: 
 
 /**
  * [ValueAttributeDelegate] is a special [SingleMountPoint] for the html value
- * attribute without calling `setAttribute` method.
+ * attribute with the setter directly and the `setAttribute` method.
  */
 class ValueAttributeMountPoint(upstream: Flow<String>, val target: Element?) : SingleMountPoint<String>(upstream) {
     /**
-     * updates the attribute-value in the DOM
+     * updates the attribute value in the DOM
      *
      * @param value new value
      * @param value last value (to be replaced)
      */
     override fun set(value: String, last: String?) {
         target?.unsafeCast<HTMLInputElement>()?.value = value
+        target?.unsafeCast<HTMLInputElement>()?.defaultValue = value
+        target?.setAttribute("value", value)
     }
 }
 
 /**
- * [CheckedAttributeMountPoint] is a special [SingleMountPoint] for the html value
- * attribute without calling `setAttribute` method.
+ * [CheckedAttributeMountPoint] is a special [SingleMountPoint] for the html checked
+ * attribute with the setter directly and the `setAttribute` method.
  */
 class CheckedAttributeMountPoint(upstream: Flow<Boolean>, val target: Element?) : SingleMountPoint<Boolean>(upstream) {
     /**
-     * updates the attribute-value in the DOM
+     * updates the attribute checked in the DOM
      *
      * @param value new value
      * @param value last value (to be replaced)
      */
     override fun set(value: Boolean, last: Boolean?) {
         target?.unsafeCast<HTMLInputElement>()?.checked = value
+        target?.unsafeCast<HTMLInputElement>()?.defaultChecked = value
+        if(value) target?.setAttribute("checked", "")
+        else target?.removeAttribute("checked")
     }
 }
 
