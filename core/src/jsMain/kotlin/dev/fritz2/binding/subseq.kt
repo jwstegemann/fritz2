@@ -1,13 +1,13 @@
 package dev.fritz2.binding
 
-import dev.fritz2.lenses.WithId
 import dev.fritz2.lenses.elementLens
+import dev.fritz2.lenses.idProvider
 
 /**
  * factory-method to create a [SubStore] using a [RootStore] as parent.
  */
-fun <T : WithId> RootStore<List<T>>.sub(element: T): SubStore<List<T>, List<T>, T> {
-    val lens = elementLens(element)
+fun <T> RootStore<List<T>>.sub(element: T, id: idProvider<T>): SubStore<List<T>, List<T>, T> {
+    val lens = elementLens(element, id)
     return SubStore(this, lens, this, lens)
 }
 
@@ -15,8 +15,8 @@ fun <T : WithId> RootStore<List<T>>.sub(element: T): SubStore<List<T>, List<T>, 
 /**
  * factory-method to create a [SubStore] using another [SubStore] as parent.
  */
-fun <R, P, T : WithId> SubStore<R, P, List<T>>.sub(element: T): SubStore<R, List<T>, T> {
-    val lens = elementLens(element)
+fun <R, P, T> SubStore<R, P, List<T>>.sub(element: T, id: idProvider<T>): SubStore<R, List<T>, T> {
+    val lens = elementLens(element, id)
     return SubStore(this, lens, rootStore, rootLens + lens)
 }
 
@@ -25,8 +25,8 @@ fun <R, P, T : WithId> SubStore<R, P, List<T>>.sub(element: T): SubStore<R, List
  * convenience-method to create a [Seq] of [SubStores], one for each element of the [List].
  * You can also call [each] and inside it's lambda create the [SubStore] using [sub].
  */
-fun <T : WithId> RootStore<List<T>>.eachStore(): Seq<SubStore<List<T>, List<T>, T>> = this.data.each().map {
-    sub(it)
+fun <T> RootStore<List<T>>.eachStore(id: idProvider<T>): Seq<SubStore<List<T>, List<T>, T>> = this.data.each().map {
+    sub(it, id)
 }
 
 
@@ -34,6 +34,7 @@ fun <T : WithId> RootStore<List<T>>.eachStore(): Seq<SubStore<List<T>, List<T>, 
  * convenience-method to create a [Seq] of [SubStores], one for each element of the [List].
  * You can also call [each] and inside it's lambda create the [SubStore] using [sub].
  */
-fun <R, P, T : WithId> SubStore<R, P, List<T>>.eachStore(): Seq<SubStore<R, List<T>, T>> = this.data.each().map {
-    sub(it)
-}
+fun <R, P, T> SubStore<R, P, List<T>>.eachStore(id: idProvider<T>): Seq<SubStore<R, List<T>, T>> =
+    this.data.each().map {
+        sub(it, id)
+    }
