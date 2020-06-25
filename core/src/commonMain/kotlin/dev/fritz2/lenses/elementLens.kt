@@ -1,19 +1,17 @@
 package dev.fritz2.lenses
 
-fun <T : WithId> elementLens(element: T): Lens<List<T>, T> = object :
-    Lens<List<T>, T> {
-    override val _id: String = element.id
+typealias idProvider<T> = (T) -> String
 
-    override fun get(parent: List<T>): T = checkNotNull(parent.find {
-        it.id == element.id
-    })
+fun <T> elementLens(element: T, id: idProvider<T>): Lens<List<T>, T> = object :
+    Lens<List<T>, T> {
+    override val _id: String = id(element)
+
+    override fun get(parent: List<T>): T = parent.find {
+        id(it) == id(element)
+    } ?: throw IndexOutOfBoundsException()
 
     override fun set(parent: List<T>, value: T): List<T> = parent.map {
-        if (it.id == value.id) value else it
+        if (id(it) == id(value)) value else it
     }
 
-}
-
-interface WithId {
-    val id: String
 }
