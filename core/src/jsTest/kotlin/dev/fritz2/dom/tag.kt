@@ -3,8 +3,8 @@ package dev.fritz2.dom
 import dev.fritz2.binding.const
 import dev.fritz2.binding.each
 import dev.fritz2.dom.html.render
+import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
-import dev.fritz2.test.randomId
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.coroutines.delay
@@ -20,7 +20,7 @@ class TagTests {
     fun testSingleTag() = runTest {
         initDocument()
 
-        val testId = randomId()
+        val testId = uniqueId()
         val testClass = "testClass"
 
         render {
