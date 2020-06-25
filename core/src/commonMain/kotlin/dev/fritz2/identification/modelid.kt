@@ -20,9 +20,11 @@ interface ModelId<T> {
 
 
 /**
- * Starting point for creating your [ModelId]s. Same as [RootStore] but just for ids. Use it in validation for example.
+ * Starting point for getting your [ModelId]s.
+ * Call [sub] to get the underlying ids of a an deep nested model structure
+ * It's useful in validation process to know which html elements are not valid.
  */
-class ModelIdRoot<T>(override val id: String = "") : ModelId<T> {
+class RootModelId<T>(override val id: String = "") : ModelId<T> {
 
     /**
      * method to create a [ModelId] for a part of your data-model
@@ -30,18 +32,19 @@ class ModelIdRoot<T>(override val id: String = "") : ModelId<T> {
      * @param lens a [Lens] describing, of which part of your data model you want the id
      */
     override fun <X> sub(lens: Lens<T, X>): ModelId<X> =
-        ModelIdSub(this, lens, this, lens)
+        SubModelId(this, lens, this, lens)
 }
 
 
 /**
- * Same as [SubStore] but just for ids. Use it in validation for example.
+ *  Gives the next [ModelId] in a deep nested model structure.
+ *  It's useful in validation process to know which html elements are not valid.
  */
-class ModelIdSub<R, P, T>(
-    private val parent: ModelId<P>,
-    private val lens: Lens<P, T>,
-    val rootStore: ModelIdRoot<R>,
-    val rootLens: Lens<R, T>
+class SubModelId<R, P, T>(
+        private val parent: ModelId<P>,
+        private val lens: Lens<P, T>,
+        val rootStore: RootModelId<R>,
+        val rootLens: Lens<R, T>
 ) : ModelId<T> {
     /**
      * defines how the id of a part is derived from the one of it's parent
@@ -53,6 +56,6 @@ class ModelIdSub<R, P, T>(
      *
      * @param lens a [Lens] describing, of which part of your data model you want the id
      */
-    override fun <X> sub(lens: Lens<T, X>): ModelIdSub<R, T, X> =
-        ModelIdSub(this, lens, rootStore, this.rootLens + lens)
+    override fun <X> sub(lens: Lens<T, X>): SubModelId<R, T, X> =
+        SubModelId(this, lens, rootStore, this.rootLens + lens)
 }
