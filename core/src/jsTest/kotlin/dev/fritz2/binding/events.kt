@@ -3,8 +3,8 @@ package dev.fritz2.binding
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.dom.values
+import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
-import dev.fritz2.test.randomId
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.coroutines.delay
@@ -21,8 +21,8 @@ class EventTests {
     fun eventHandlerDomChange() = runTest {
         initDocument()
 
-        val resultId = randomId("result")
-        val buttonId = randomId("button")
+        val resultId = uniqueId()
+        val buttonId = uniqueId()
 
         val store = object : RootStore<String>("start") {
             var countHandlerCalls = 0

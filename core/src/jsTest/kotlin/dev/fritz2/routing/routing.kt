@@ -5,8 +5,8 @@ import dev.fritz2.binding.each
 import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
+import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
-import dev.fritz2.test.randomId
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.coroutines.delay
@@ -29,7 +29,7 @@ class RoutingTests {
 
         val router = router(defaultRoute)
         val testRange = 0..4
-        val testId = randomId()
+        val testId = uniqueId()
         val buttons = testRange.map { "btn$it" to "page$it" }
 
         render {
@@ -73,8 +73,8 @@ class RoutingTests {
         val router = router(defaultRoute)
 
         val testRange = 0..4
-        val pageId = randomId("page")
-        val btnId = randomId("btn")
+        val pageId = uniqueId()
+        val btnId = uniqueId()
         val buttons = testRange.map { "btn-$it" to "page-$it" }
 
         render {

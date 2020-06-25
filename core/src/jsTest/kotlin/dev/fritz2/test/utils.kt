@@ -9,7 +9,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.promise
 import kotlin.browser.document
-import kotlin.random.Random
 
 fun <T> runTest(block: suspend () -> T): dynamic = GlobalScope.promise {
     delay(100)
@@ -29,8 +28,6 @@ fun initDocument() {
         """.trimIndent()
     )
 }
-
-fun randomId(prefix: String = "id") = "$prefix-${Random.nextLong()}"
 
 fun <T> checkFlow(upstream: Flow<T>, numberOfUpdates: Int = 0, check: TestSingleMountPoint<T>.(Int, T, T?) -> Unit) =
     TestSingleMountPoint(upstream, check, numberOfUpdates)

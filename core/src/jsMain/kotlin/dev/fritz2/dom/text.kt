@@ -20,6 +20,8 @@ interface WithText<T : org.w3c.dom.Node> : WithDomNode<T> {
      */
     fun text(value: String): Node = domNode.appendChild(TextNode(value).domNode)
 
+    operator fun String.unaryPlus(): Node = domNode.appendChild(TextNode(this).domNode)
+
     /**
      * binds a [Flow] of [String]s at this position (creates a [DomMountPoint] here as a placeholder)
      *

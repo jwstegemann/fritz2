@@ -2,8 +2,8 @@ package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
+import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
-import dev.fritz2.test.randomId
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.coroutines.delay
@@ -24,7 +24,7 @@ class SeqTests {
     fun testSeqMap() = runTest {
         initDocument()
 
-        val testId = randomId()
+        val testId = uniqueId()
 
         val store = object : RootStore<List<Int>>(listOf(0)) {
             val replaceList = handle {
