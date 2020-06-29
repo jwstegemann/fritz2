@@ -3,6 +3,7 @@ package dev.fritz2.binding
 import dev.fritz2.test.checkFlow
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.promise
 import kotlin.js.Promise
@@ -14,7 +15,7 @@ import kotlin.test.assertEquals
 class MountTests {
 
     @Test
-    fun testSingleMountPoint(): Promise<Boolean> {
+    fun testSingleMountPointWithData(): Promise<Boolean> {
 
         val store = RootStore("")
 
@@ -33,6 +34,31 @@ class MountTests {
                 store.enqueue { "$it-$i" }
             }
             mp.await()
+            true
+        }
+    }
+
+    @Test
+    fun testSingleMountPointWithFlow(): Promise<Boolean> {
+
+        val store = RootStore(flowOf(""))
+
+        val mp = checkFlow(store.data, 5) { count, value, _ ->
+            //console.log("CHECK $count: $value from $last\n")
+            val expected = (0 until count).fold("", { s, i ->
+                "$s-$i"
+            })
+            assertEquals(expected, value, "set wrong value in SingleMountPoint\n")
+        }
+
+        return GlobalScope.promise {
+            delay(100)
+            for (i in 0..4) {
+                //console.log("enqueue: -$i\n")
+                store.enqueue { "$it-$i" }
+            }
+            mp.await()
+            true
         }
     }
 
