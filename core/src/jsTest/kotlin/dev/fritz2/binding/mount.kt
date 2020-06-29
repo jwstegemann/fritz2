@@ -27,6 +27,7 @@ class MountTests {
         }
 
         return GlobalScope.promise {
+            delay(100)
             for (i in 0..4) {
                 //console.log("enqueue: -$i\n")
                 store.enqueue { "$it-$i" }
