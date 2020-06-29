@@ -193,7 +193,7 @@ class MountTests {
     }
 
     @Test
-    fun testOrderOfMountPointsCreation() = runTest {
+    fun testOrderOfDomNodeCreation() = runTest {
         initDocument()
 
         val outer = uniqueId()
@@ -222,5 +222,28 @@ class MountTests {
         val outerElement = document.getElementById(outer) as HTMLDivElement
         assertEquals(inner1, outerElement.firstElementChild?.id, "first element id does not match")
         assertEquals(inner2, outerElement.lastElementChild?.id, "last element id does not match")
+    }
+
+    @Test
+    fun testOrderOfTextNodeCreation() = runTest {
+        initDocument()
+
+        val id = uniqueId()
+
+        val text = flowOf("test")
+
+        render {
+            div(id = id) {
+                text("start-")
+                text.bind()
+                text("-end")
+            }
+        }.mount("target")
+
+        delay(250)
+
+        val div = document.getElementById(id) as HTMLDivElement
+        assertEquals("start-test-end", div.innerText, "order of text does not match")
+//        assertEquals("start--endtest", div.innerText, "order of text does not match")
     }
 }
