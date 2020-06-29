@@ -1,10 +1,19 @@
 package dev.fritz2.binding
 
+import dev.fritz2.dom.html.render
+import dev.fritz2.dom.mount
+import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.checkFlow
+import dev.fritz2.test.initDocument
+import dev.fritz2.test.runTest
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.promise
+import org.w3c.dom.HTMLDivElement
+import kotlin.browser.document
 import kotlin.js.Promise
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -181,5 +190,37 @@ class MountTests {
             mp.await()
             true
         }
+    }
+
+    @Test
+    fun testOrderOfMountPointsCreation() = runTest {
+        initDocument()
+
+        val outer = uniqueId()
+        val inner1 = uniqueId()
+        val inner2 = uniqueId()
+
+        val text = flowOf("test")
+
+        render {
+            div(id = outer) {
+                text.map {
+                    render {
+                        div(id = inner1) {
+                            text(it)
+                        }
+                    }
+                }.bind()
+                div(id = inner2) {
+                    text("hallo")
+                }
+            }
+        }.mount("target")
+
+        delay(250)
+
+        val outerElement = document.getElementById(outer) as HTMLDivElement
+        assertEquals(inner1, outerElement.firstElementChild?.id, "first element id does not match")
+        assertEquals(inner2, outerElement.lastElementChild?.id, "last element id does not match")
     }
 }
