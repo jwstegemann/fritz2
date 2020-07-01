@@ -11,6 +11,8 @@ import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 
 class AttributeTests {
@@ -35,6 +37,18 @@ class AttributeTests {
                 const(value1).bindAttr("data-$name1")
                 attr(name2, values2)
                 const(values3).bindAttr(name3)
+
+                const(true).bindAttr("test4")
+                const(false).bindAttr("test5")
+
+                const(true).bindAttr("test6") { "foo" }
+                const(false).bindAttr("test7") { "value-does-not-matter" }
+
+                const(true).bindAttr("test8", false) { it.toString() }
+                const(false).bindAttr("test9", false) { it.toString() }
+
+                const(true).bindAttr("test10", false) { "foo" }
+                const(false).bindAttr("test11", false) { "bar" }
             }
         }.mount(targetId)
 
@@ -54,5 +68,21 @@ class AttributeTests {
         assertEquals(values2.joinToString(separator = " "), element.getAttribute(name2))
         assertEquals(values3.joinToString(separator = " "), element.getAttribute(name3))
 
+        assertEquals(value0, element.getAttribute(name0))
+        assertEquals(value1, element.getAttribute(name1))
+
+        assertTrue(element.hasAttribute("test4"))
+        assertEquals("", element.getAttribute("test4"))
+        assertFalse(element.hasAttribute("test5"))
+
+        assertTrue(element.hasAttribute("test6"))
+        assertEquals("foo", element.getAttribute("test6"))
+        assertFalse(element.hasAttribute("test7"))
+
+        assertEquals("true", element.getAttribute("test8"))
+        assertEquals("false", element.getAttribute("test9"))
+
+        assertEquals("foo", element.getAttribute("test10"))
+        assertEquals("bar", element.getAttribute("test11"))
     }
 }

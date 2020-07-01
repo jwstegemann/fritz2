@@ -72,6 +72,22 @@ interface WithAttributes<out T : Element> : WithDomNode<T> {
     fun Flow<String>.bindAttr(name: String) = AttributeMountPoint(name, this, domNode)
 
     /**
+     * bind a boolean [Flow] to a boolean attribute / flag. Use [removeWhenFalse] to control whether the attribute
+     * will be removed when the flow emits `false`. Use the [value] function to specify the actual value of the
+     * attribute.
+     *
+     * @param name of the attribute
+     * @param removeWhenFalse whether to remove the attribute when the flow emits `false`
+     * @param value function to map the boolean values to arbitrary string values
+     * @receiver the [Flow] to bind
+     */
+    fun Flow<Boolean>.bindAttr(
+        name: String,
+        removeWhenFalse: Boolean = true,
+        value: (Boolean) -> String = { "" }
+    ) = BooleanAttributeMountPoint(name, this, domNode, removeWhenFalse, value)
+
+    /**
      * bind a [Flow] of [List]s to an attribute. The attribute will be updated in the DOM whenever a new value appears on this [Flow].
      * The elements of the list will be concatenated by empty space.
      *
