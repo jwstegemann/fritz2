@@ -19,7 +19,7 @@ repositories {
 }
 
 allprojects {
-    //TODO: manage common setting and dependencies
+    //manage common setting and dependencies
 }
 
 subprojects {
