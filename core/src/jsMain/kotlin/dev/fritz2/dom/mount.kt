@@ -4,9 +4,11 @@ import dev.fritz2.binding.MultiMountPoint
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.SingleMountPoint
 import kotlinx.coroutines.flow.Flow
+import org.w3c.dom.Comment
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.Node
+import kotlin.browser.document
 import kotlin.browser.window
 
 /**
@@ -17,6 +19,8 @@ import kotlin.browser.window
 class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val target: org.w3c.dom.Node?) :
     SingleMountPoint<WithDomNode<T>>(upstream) {
 
+    var placeholder: Comment? = document.createComment("...")
+
     /**
      * updates the elements in the DOM
      *
@@ -24,10 +28,19 @@ class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val ta
      * @param last last [Tag] (to be replaced)
      */
     override fun set(value: WithDomNode<T>, last: WithDomNode<T>?) {
-        last?.let { target?.replaceChild(value.domNode, last.domNode) }
-            ?: target?.appendChild(value.domNode)
+        if (last?.domNode != null) {
+            target?.replaceChild(value.domNode, last.domNode)
+        } else {
+            target?.replaceChild(value.domNode, placeholder!!)
+            placeholder = null // so it can be garbage collected
+        }
+    }
+
+    init {
+        target?.appendChild(placeholder!!)
     }
 }
+
 
 /**
  * A [MultiMountPoint] to mount the values of a [Flow] of [Patch]es (mostly [Tag]s) at this point in the DOM.
