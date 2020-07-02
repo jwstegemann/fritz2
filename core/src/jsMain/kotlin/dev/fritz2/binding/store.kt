@@ -55,7 +55,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
     //FIXME: why no suspend on execute
-    inline fun <A, E> handleAndEmit(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T, A) -> T) =
+    inline fun <A, E> handleAndOffer(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T, A) -> T) =
         EmittingHandler<A, E>(bufferSize) { inFlow, outChannel ->
             launch {
                 inFlow.collect {
@@ -70,7 +70,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      * @param bufferSize number of values to buffer
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
-    inline fun <A, E> handleAndEmit(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T) -> T) =
+    inline fun <E> handleAndOffer(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T) -> T) =
         EmittingHandler<Unit, E>(bufferSize) { inFlow, outChannel ->
             launch {
                 inFlow.collect {
