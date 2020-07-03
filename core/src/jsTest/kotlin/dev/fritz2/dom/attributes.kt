@@ -40,15 +40,7 @@ class AttributeTests {
 
                 const(true).bindAttr("test4")
                 const(false).bindAttr("test5")
-
-                const(true).bindAttr("test6") { "foo" }
-                const(false).bindAttr("test7") { "value-does-not-matter" }
-
-                const(true).bindAttr("test8", false) { it.toString() }
-                const(false).bindAttr("test9", false) { it.toString() }
-
-                const(true).bindAttr("test10", false) { "foo" }
-                const(false).bindAttr("test11", false) { "bar" }
+                const(true).bindAttr("test6", "foo")
             }
         }.mount(targetId)
 
@@ -73,16 +65,10 @@ class AttributeTests {
 
         assertTrue(element.hasAttribute("test4"))
         assertEquals("", element.getAttribute("test4"))
+
         assertFalse(element.hasAttribute("test5"))
 
         assertTrue(element.hasAttribute("test6"))
         assertEquals("foo", element.getAttribute("test6"))
-        assertFalse(element.hasAttribute("test7"))
-
-        assertEquals("true", element.getAttribute("test8"))
-        assertEquals("false", element.getAttribute("test9"))
-
-        assertEquals("foo", element.getAttribute("test10"))
-        assertEquals("bar", element.getAttribute("test11"))
     }
 }

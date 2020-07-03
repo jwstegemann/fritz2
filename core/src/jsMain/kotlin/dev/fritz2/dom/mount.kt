@@ -116,19 +116,13 @@ class BooleanAttributeMountPoint(
     private val name: String,
     upstream: Flow<Boolean>,
     private val target: Element?,
-    private val removeWhenFalse: Boolean,
-    private val value: (Boolean) -> String
+    private val trueValue: String
 ) : SingleMountPoint<Boolean>(upstream) {
     override fun set(value: Boolean, last: Boolean?) {
-        val stringValue = this.value.invoke(value)
         if (value) {
-            target?.setAttribute(name, stringValue)
+            target?.setAttribute(name, trueValue)
         } else {
-            if (removeWhenFalse) {
-                target?.removeAttribute(name)
-            } else {
-                target?.setAttribute(name, stringValue)
-            }
+            target?.removeAttribute(name)
         }
     }
 }
