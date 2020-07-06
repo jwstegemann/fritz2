@@ -47,7 +47,6 @@ fritz2 itself depends on only a handful of [concepts](https://docs.fritz2.dev) y
 
 * Take a look at our hosted [examples](https://www.fritz2.dev/examples.html)
 * Or set up a new project on your own, following our [documentation](https://docs.fritz2.dev/Project.html)
-* Or checkout the project, import it in your favourite IDE and run `./gradlew :examples:todomvc:run` (or any other example)
 
 
 ## What we've got so far
