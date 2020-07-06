@@ -29,7 +29,7 @@ open class Tag<out T : Element>(
     val id: String? = null,
     val baseClass: String? = null,
     override val domNode: T = createDomElement(tagName, id, baseClass).unsafeCast<T>()
-) : WithDomNode<T>, WithAttributes<T>, WithEvents<T>(), HtmlElements {
+) : WithDomNode<T>, WithAttributes<T>, WithComment<T>, WithEvents<T>(), HtmlElements {
 
     /**
      * creates the content of the [Tag] and appends it as a child to the wrapped [Element]
