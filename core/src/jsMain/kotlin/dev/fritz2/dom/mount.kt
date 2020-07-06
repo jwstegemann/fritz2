@@ -13,10 +13,40 @@ import kotlin.browser.window
 
 /**
  * A [SingleMountPoint] to mount the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * If you mix constant [Tag]s with one or more of these MountPoints, the order ist not guaranteed.
+ * Wrap you mounted elements in a constant [Tag] or use [DomMountPointFixOrder] instead (for example by setting preseveOrder when binding).
  *
  * @param upstream the Flow of [WithDomNode]s to mount here.
  */
 class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val target: org.w3c.dom.Node?) :
+    SingleMountPoint<WithDomNode<T>>(upstream) {
+
+    /**
+     * updates the elements in the DOM
+     *
+     * @param value new [Tag]
+     * @param last last [Tag] (to be replaced)
+     */
+    override fun set(value: WithDomNode<T>, last: WithDomNode<T>?) {
+        if (last?.domNode != null) {
+            target?.replaceChild(value.domNode, last.domNode)
+        } else {
+            target?.appendChild(value.domNode)
+        }
+    }
+}
+
+
+/**
+ * A [SingleMountPoint] to mount the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * This MountPoint guarantees to preserve the order of children at it's target by using a placeholder-comment to reserve
+ * it's place in the child-list until the first value on the upstream flow is available.
+ * For performance-reasons and because it is not necessary in most use-cases this is not the default-behaviour when binding a flow.
+ * You can enable it though be setting the preserveOrder-parameter when binding.
+ *
+ * @param upstream the Flow of [WithDomNode]s to mount here.
+ */
+class DomMountPointPreserveOrder<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val target: org.w3c.dom.Node?) :
     SingleMountPoint<WithDomNode<T>>(upstream) {
 
     var placeholder: Comment? = document.createComment("...")

@@ -210,7 +210,7 @@ class MountTests {
                             text(it)
                         }
                     }
-                }.bind()
+                }.bind(preserveOrder = true)
                 div(id = inner2) {
                     text("hallo")
                 }
@@ -235,7 +235,7 @@ class MountTests {
         render {
             div(id = id) {
                 text("start-")
-                text.bind()
+                text.bind(preserveOrder = true)
                 text("-end")
             }
         }.mount("target")
