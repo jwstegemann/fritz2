@@ -5,8 +5,8 @@ import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.render
+import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
-import dev.fritz2.test.randomId
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.coroutines.delay
@@ -27,8 +27,8 @@ class ListenerTest {
     fun testListenerForChangeEvent() = runTest {
         initDocument()
 
-        val inputId = randomId("input")
-        val resultId = randomId("result")
+        val inputId = uniqueId()
+        val resultId = uniqueId()
 
         val store = object : RootStore<String>("start") {}
 
