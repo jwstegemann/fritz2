@@ -52,5 +52,5 @@ class SubStore<R, P, T>(
      */
     infix fun using(format: Format<T>) = FormatStore(this, rootStore, rootLens, format)
 
-    infix fun <X> mapWith(mapper: StoreMapper<T, X>) = MapStore(this, rootStore, mapper)
+    infix fun <X> mapWith(mapper: StoreMapper<T, X>) = MapStore(this, mapper)
 }
