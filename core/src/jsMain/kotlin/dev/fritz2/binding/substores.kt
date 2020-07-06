@@ -51,4 +51,6 @@ class SubStore<R, P, T>(
      * a factory-method to create a [FormatStore] from this [Store] using the given [Format] to convert the current value as well as [Update]s
      */
     infix fun using(format: Format<T>) = FormatStore(this, rootStore, rootLens, format)
+
+    infix fun <X> mapWith(mapper: StoreMapper<T, X>) = MapStore(this, rootStore, mapper)
 }
