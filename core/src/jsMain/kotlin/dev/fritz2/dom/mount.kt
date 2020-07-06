@@ -14,7 +14,7 @@ import kotlin.browser.window
 /**
  * A [SingleMountPoint] to mount the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
  * If you mix constant [Tag]s with one or more of these MountPoints, the order ist not guaranteed.
- * Wrap you mounted elements in a constant [Tag] or use [DomMountPointFixOrder] instead (for example by setting preseveOrder when binding).
+ * Wrap your mounted elements in a constant [Tag] or use [DomMountPointFixOrder] instead (for example by setting preseveOrder when binding).
  *
  * @param upstream the Flow of [WithDomNode]s to mount here.
  */
