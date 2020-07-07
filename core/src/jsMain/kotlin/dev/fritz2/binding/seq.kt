@@ -99,7 +99,7 @@ private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, n
  * This allows the detection os moves.
  * Keep in mind, that no [Patch] is derived, when an element stays the same, but changes it's internal values.
  */
-fun <T> Flow<List<T>>.eachEntity(id: idProvider<T>): Seq<T> =
+fun <T> Flow<List<T>>.each(id: idProvider<T>): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
         Myer.diff(old, new, id)
     })
@@ -109,12 +109,17 @@ fun <T> Flow<List<T>>.eachEntity(id: idProvider<T>): Seq<T> =
  * Call it for example on the data-[Flow] of your (Sub-)Store.
  * The [Patch]es are determined using Myer's diff-algorithm.
  */
-fun <T> Flow<List<T>>.eachElement(): Seq<T> =
+fun <T> Flow<List<T>>.each(): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
         Myer.diff(old, new)
     })
 
-fun <T> Flow<List<T>>.eachIndex(): Seq<T> =
+/**
+ * factory method to create a [Seq] from a [Flow] of a [List]
+ * The [Patch]es are determined by the position of elements, so elements are just added or removed it the end.
+ * This is only usefull in connection with [Store]s in your rendering.
+ */
+internal fun <T> Flow<List<T>>.eachIndex(): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
         val oldSize = old.size
         val newSize = new.size
