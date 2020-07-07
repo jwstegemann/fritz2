@@ -1,7 +1,7 @@
 package dev.fritz2.routing
 
 import dev.fritz2.binding.const
-import dev.fritz2.binding.each
+import dev.fritz2.binding.eachElement
 import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
@@ -36,7 +36,7 @@ class RoutingTests {
             div(id = testId) {
                 router.routes.bind()
                 ul {
-                    const(buttons).each().map { (id, page) ->
+                    const(buttons).eachElement().map { (id, page) ->
                         render {
                             li {
                                 button(id = id) {
@@ -86,7 +86,7 @@ class RoutingTests {
                     router.select(btnKey) { it.first.toString() }.bind()
                 }
                 ul {
-                    const(buttons).each().map { (id, page) ->
+                    const(buttons).eachElement().map { (id, page) ->
                         render {
                             li {
                                 button(id = id) {

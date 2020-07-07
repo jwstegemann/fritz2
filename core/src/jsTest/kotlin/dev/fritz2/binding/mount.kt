@@ -51,7 +51,7 @@ class MountTests {
         val store = RootStore<List<Int>>(emptyList())
         store.data.launchIn(GlobalScope)
 
-        val mp = checkFlow(store.data.each().data, 5) { count, patch ->
+        val mp = checkFlow(store.data.eachElement().data, 5) { count, patch ->
             val expected = Patch.Insert(count, count)
 
             assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
@@ -74,7 +74,7 @@ class MountTests {
         val store = RootStore(listOf(0))
         store.data.launchIn(GlobalScope)
 
-        val mp = checkFlow(store.data.each().data, 3) { count, patch ->
+        val mp = checkFlow(store.data.eachElement().data, 3) { count, patch ->
             val expected: Patch<Int> = when (count) {
                 0 -> Patch.Insert(0, 0) //Patch(0, listOf(0), 0)
                 1 -> Patch.Insert(1, 0) // Patch(1, listOf(0), 0)
@@ -99,7 +99,7 @@ class MountTests {
         val store = RootStore(listOf(0, 2))
         store.data.launchIn(GlobalScope)
 
-        val mp = checkFlow(store.data.each().data, 3) { count, patch ->
+        val mp = checkFlow(store.data.eachElement().data, 3) { count, patch ->
             val expected: Patch<Int> = when (count) {
                 0 -> Patch.Insert(0, 0) //Patch(0, listOf(0, 2), 0)
                 //1 -> Patch(2, listOf(2), 0)
@@ -124,7 +124,7 @@ class MountTests {
         val store = RootStore(listOf(0, 1, 2))
         store.data.launchIn(GlobalScope)
 
-        val mp = checkFlow(store.data.each().data, 2) { count, patch ->
+        val mp = checkFlow(store.data.eachElement().data, 2) { count, patch ->
             val expected: Patch<Int> = when (count) {
                 0 -> Patch.Insert(0, 0) // Patch(0, listOf(0, 1, 2), 0)
                 // 1 -> Patch(2, emptyList(), 1)
@@ -148,7 +148,7 @@ class MountTests {
         val store = RootStore(listOf(0, 1, 2))
         store.data.launchIn(GlobalScope)
 
-        val mp = checkFlow(store.data.each().data, 4) { count, patch ->
+        val mp = checkFlow(store.data.eachElement().data, 4) { count, patch ->
             val expected: Patch<Int> = when (count) {
                 0 -> Patch.Insert(0, 0) //Patch(0, listOf(0, 1, 2), 0)
                 //1 -> Patch(2, emptyList(), 1)
@@ -174,7 +174,7 @@ class MountTests {
         val store = RootStore(listOf(0, 1, 2))
         store.data.launchIn(GlobalScope)
 
-        val mp = checkFlow(store.data.each().data, 3) { count, patch ->
+        val mp = checkFlow(store.data.eachElement().data, 3) { count, patch ->
             val expected: Patch<Int> = when (count) {
                 0 -> Patch.Insert(0, 0) //Patch(0, listOf(0, 1, 2), 0)
                 //1 -> Patch(2, emptyList(), 1)

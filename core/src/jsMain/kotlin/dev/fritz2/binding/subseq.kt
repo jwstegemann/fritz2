@@ -23,18 +23,19 @@ fun <R, P, T> SubStore<R, P, List<T>>.sub(element: T, id: idProvider<T>): SubSto
 
 /**
  * convenience-method to create a [Seq] of [SubStores], one for each element of the [List].
- * You can also call [each] and inside it's lambda create the [SubStore] using [sub].
+ * You can also call [eachElement] and inside it's lambda create the [SubStore] using [sub].
  */
-fun <T> RootStore<List<T>>.eachStore(id: idProvider<T>): Seq<SubStore<List<T>, List<T>, T>> = this.data.each().map {
-    sub(it, id)
-}
+fun <T> RootStore<List<T>>.eachStore(id: idProvider<T>): Seq<SubStore<List<T>, List<T>, T>> =
+    this.data.eachElement().map {
+        sub(it, id)
+    }
 
 
 /**
  * convenience-method to create a [Seq] of [SubStores], one for each element of the [List].
- * You can also call [each] and inside it's lambda create the [SubStore] using [sub].
+ * You can also call [eachElement] and inside it's lambda create the [SubStore] using [sub].
  */
 fun <R, P, T> SubStore<R, P, List<T>>.eachStore(id: idProvider<T>): Seq<SubStore<R, List<T>, T>> =
-    this.data.each().map {
+    this.data.eachIndex().map {
         sub(it, id)
     }

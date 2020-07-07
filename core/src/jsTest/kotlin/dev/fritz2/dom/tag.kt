@@ -1,7 +1,7 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.const
-import dev.fritz2.binding.each
+import dev.fritz2.binding.eachElement
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
@@ -48,7 +48,7 @@ class TagTests {
 
         render {
             ul(id = "list") {
-                (const(testIds)).each().map {
+                (const(testIds)).eachElement().map {
                     render {
                         li(id = it) {
                             classList = const(testClasses)
