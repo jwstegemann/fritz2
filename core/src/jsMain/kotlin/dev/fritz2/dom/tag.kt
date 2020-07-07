@@ -29,7 +29,7 @@ open class Tag<out T : Element>(
     val id: String? = null,
     val baseClass: String? = null,
     override val domNode: T = createDomElement(tagName, id, baseClass).unsafeCast<T>()
-) : WithDomNode<T>, WithAttributes<T>, WithEvents<T>(), HtmlElements {
+) : WithDomNode<T>, WithAttributes<T>, WithComment<T>, WithEvents<T>(), HtmlElements {
 
     /**
      * creates the content of the [Tag] and appends it as a child to the wrapped [Element]
@@ -44,9 +44,13 @@ open class Tag<out T : Element>(
     }
 
     /**
-     * binds a [Flow] of [Tag]s at this position (creates a [DomMountPoint] as a placeholder and adds it to the builder)
+     * binds a [Flow] of [Tag]s at this position (creates a DomMountPoint as a placeholder and adds it to the builder)
+     *
+     * @param preserveOrder set this to true, if you need to guarantee the order of children by using a temporary placeholder element
      */
-    fun <X : Element> Flow<Tag<X>>.bind(): SingleMountPoint<WithDomNode<Element>> = DomMountPoint(this, domNode)
+    fun <X : Element> Flow<Tag<X>>.bind(preserveOrder: Boolean = false): SingleMountPoint<WithDomNode<Element>> =
+        if (preserveOrder) DomMountPointPreserveOrder(this, domNode)
+        else DomMountPoint(this, domNode)
 
     /**
      * binds a [Seq] of [Tag]s at this position (creates a [DomMultiMountPoint] as a placeholder and adds it to the builder)

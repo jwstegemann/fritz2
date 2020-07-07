@@ -68,7 +68,7 @@ class SeqTests {
         render {
             section {
                 ul(id = testId) {
-                    store.data.each().map { i ->
+                    store.data.eachElement().map { i ->
                         render {
                             li(id = "entry$i") {
                                 text(i.toString())

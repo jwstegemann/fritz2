@@ -52,13 +52,14 @@ fun <R, P, T> SubStore<R, P, List<T>>.sub(index: Int): SubStore<R, List<T>, T> {
 
 /**
  * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] using a given [idProvider].
- * You can also call [each] and inside it's lambda create the [SubStore] using [sub].
+ * You can also call [eachElement] and inside it's lambda create the [SubStore] using [sub].
  *
  * @param id [idProvider] to identify the same entity (i.e. when it's content changed)
  */
-fun <T> RootStore<List<T>>.eachStore(id: idProvider<T>): Seq<SubStore<List<T>, List<T>, T>> = this.data.each().map {
-    sub(it, id)
-}
+fun <T> RootStore<List<T>>.eachStore(id: idProvider<T>): Seq<SubStore<List<T>, List<T>, T>> =
+    this.data.eachElement().map {
+        sub(it, id)
+    }
 
 /**
  * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] without [idProvider]
@@ -73,12 +74,12 @@ fun <T> RootStore<List<T>>.eachStore(): Seq<SubStore<List<T>, List<T>, T>> =
 
 /**
  * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] using a given [idProvider]
- * You can also call [each] and inside it's lambda create the [SubStore] using [sub].
+ * You can also call [eachElement] and inside it's lambda create the [SubStore] using [sub].
  *
  * @param id [idProvider] to identify the same entity (i.e. when it's content changed)
  */
 fun <R, P, T> SubStore<R, P, List<T>>.eachStore(id: idProvider<T>): Seq<SubStore<R, List<T>, T>> =
-    this.data.each().map {
+    this.data.eachIndex().map {
         sub(it, id)
     }
 

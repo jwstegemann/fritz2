@@ -2,10 +2,7 @@ package dev.fritz2.binding
 
 import dev.fritz2.lenses.idProvider
 import dev.fritz2.utils.Myer
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.flow.*
 
 /**
  * A [Patch] describes the changes made to a [Seq]
@@ -102,7 +99,7 @@ private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, n
  * This allows the detection os moves.
  * Keep in mind, that no [Patch] is derived, when an element stays the same, but changes it's internal values.
  */
-fun <T> Flow<List<T>>.each(id: idProvider<T>): Seq<T> =
+fun <T> Flow<List<T>>.eachEntity(id: idProvider<T>): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
         Myer.diff(old, new, id)
     })
@@ -112,9 +109,18 @@ fun <T> Flow<List<T>>.each(id: idProvider<T>): Seq<T> =
  * Call it for example on the data-[Flow] of your (Sub-)Store.
  * The [Patch]es are determined using Myer's diff-algorithm.
  */
-fun <T> Flow<List<T>>.each(): Seq<T> =
+fun <T> Flow<List<T>>.eachElement(): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
         Myer.diff(old, new)
+    })
+
+fun <T> Flow<List<T>>.eachIndex(): Seq<T> =
+    Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
+        val oldSize = old.size
+        val newSize = new.size
+        if (oldSize < newSize) flowOf<Patch<T>>(Patch.InsertMany(new.subList(oldSize, newSize - 1), oldSize))
+        else if (oldSize > newSize) flowOf<Patch<T>>(Patch.Delete(newSize, (oldSize - newSize)))
+        else emptyFlow<Patch<T>>()
     })
 
 
