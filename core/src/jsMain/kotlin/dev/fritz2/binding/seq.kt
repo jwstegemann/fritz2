@@ -118,7 +118,7 @@ fun <T> Flow<List<T>>.eachIndex(): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
         val oldSize = old.size
         val newSize = new.size
-        if (oldSize < newSize) flowOf<Patch<T>>(Patch.InsertMany(new.subList(oldSize, newSize - 1), oldSize))
+        if (oldSize < newSize) flowOf<Patch<T>>(Patch.InsertMany(new.subList(oldSize, newSize).reversed(), oldSize))
         else if (oldSize > newSize) flowOf<Patch<T>>(Patch.Delete(newSize, (oldSize - newSize)))
         else emptyFlow<Patch<T>>()
     })

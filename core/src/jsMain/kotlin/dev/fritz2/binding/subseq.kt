@@ -49,15 +49,14 @@ fun <R, P, T> SubStore<R, P, List<T>>.sub(index: Int): SubStore<R, List<T>, T> {
     return SubStore(this, lens, rootStore, rootLens + lens)
 }
 
-
 /**
  * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] using a given [idProvider].
- * You can also call [eachElement] and inside it's lambda create the [SubStore] using [sub].
+ * You can also call [each] and inside it's lambda create the [SubStore] using [sub].
  *
  * @param id [idProvider] to identify the same entity (i.e. when it's content changed)
  */
-fun <T> RootStore<List<T>>.eachStore(id: idProvider<T>): Seq<SubStore<List<T>, List<T>, T>> =
-    this.data.eachElement().map {
+fun <T> RootStore<List<T>>.eachEntity(id: idProvider<T>): Seq<SubStore<List<T>, List<T>, T>> =
+    this.data.eachEntity(id).map {
         sub(it, id)
     }
 
@@ -66,11 +65,10 @@ fun <T> RootStore<List<T>>.eachStore(id: idProvider<T>): Seq<SubStore<List<T>, L
  * using the index in the list (do not use this, if you want to manipulate the list itself (add or move elements, filter, etc.).
  * You can also call [each] and inside it's lambda create the [SubStore] using [sub].
  */
-fun <T> RootStore<List<T>>.eachStore(): Seq<SubStore<List<T>, List<T>, T>> =
-    this.data.map { it.withIndex().toList() }.each().map { (i, _) ->
+fun <T> RootStore<List<T>>.eachIndex(): Seq<SubStore<List<T>, List<T>, T>> =
+    this.data.map { it.withIndex().toList() }.eachIndex().map { (i, _) ->
         sub(i)
     }
-
 
 /**
  * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] using a given [idProvider]
@@ -78,7 +76,7 @@ fun <T> RootStore<List<T>>.eachStore(): Seq<SubStore<List<T>, List<T>, T>> =
  *
  * @param id [idProvider] to identify the same entity (i.e. when it's content changed)
  */
-fun <R, P, T> SubStore<R, P, List<T>>.eachStore(id: idProvider<T>): Seq<SubStore<R, List<T>, T>> =
+fun <R, P, T> SubStore<R, P, List<T>>.eachEntity(id: idProvider<T>): Seq<SubStore<R, List<T>, T>> =
     this.data.eachIndex().map {
         sub(it, id)
     }
@@ -88,7 +86,7 @@ fun <R, P, T> SubStore<R, P, List<T>>.eachStore(id: idProvider<T>): Seq<SubStore
  * using the index in the list (do not use this, if you want to manipulate the list itself (add or move elements, filter, etc.).
  * You can also call [each] and inside it's lambda create the [SubStore] using [sub].
  */
-fun <R, P, T> SubStore<R, P, List<T>>.eachStore(): Seq<SubStore<R, List<T>, T>> =
-    this.data.map { it.withIndex().toList() }.each().map { (i, _) ->
+fun <R, P, T> SubStore<R, P, List<T>>.eachIndex(): Seq<SubStore<R, List<T>, T>> =
+    this.data.map { it.withIndex().toList() }.eachIndex().map { (i, _) ->
         sub(i)
     }
