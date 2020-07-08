@@ -1,26 +1,26 @@
 name: build
 
 on:
-  push:
+  pull_request:
     branches:
-      - '**'
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 12
-      uses: actions/setup-java@v1
-      with:
-        java-version: 12
-    - name: Build and run Unit Tests
-      run: ./gradlew allTests
-    - name: Archive test-results
-      if: always()
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: Test-Results
-        path: core/build/reports/tests/allTests
-    - name: Build with Gradle
-      run: ./gradlew build
+      - uses: actions/checkout@v2
+      - name: Set up JDK 12
+        uses: actions/setup-java@v1
+        with:
+          java-version: 12
+      - name: Build and run Unit Tests
+        run: ./gradlew allTests
+      - name: Archive test-results
+        if: always()
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: Test-Results
+          path: core/build/reports/tests/allTests
+      - name: Build with Gradle
+        run: ./gradlew build
