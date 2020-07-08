@@ -118,7 +118,7 @@ class MountTests {
     }
 
     @Test
-    fun testOrderOfDomNodeCreation() = runTest {
+    fun testOrderOfSingleMountPointCreation() = runTest {
         initDocument()
 
         val outer = uniqueId()
@@ -147,6 +147,36 @@ class MountTests {
         val outerElement = document.getElementById(outer) as HTMLDivElement
         assertEquals(inner1, outerElement.firstElementChild?.id, "first element id does not match")
         assertEquals(inner2, outerElement.lastElementChild?.id, "last element id does not match")
+    }
+
+    @Test
+    fun testOrderOfMultiMountPointCreation() = runTest {
+        initDocument()
+
+        val outer = uniqueId()
+        val inner1 = uniqueId()
+        val inner2 = uniqueId()
+        val inner3 = uniqueId()
+
+        val text = flowOf(listOf(inner1, inner2))
+
+        render {
+            div(id = outer) {
+                text.each().map {
+                    render {
+                        div(id = it) {}
+                    }
+                }.bind()
+                div(id = inner3) {}
+            }
+        }.mount("target")
+
+        delay(250)
+
+        val outerElement = document.getElementById(outer) as HTMLDivElement
+        assertEquals(inner1, outerElement.firstElementChild?.id, "first element id does not match")
+        assertEquals(inner2, outerElement.firstElementChild?.nextElementSibling?.id, "second element id does not match")
+        assertEquals(inner3, outerElement.lastElementChild?.id, "last element id does not match")
     }
 
     @Test
