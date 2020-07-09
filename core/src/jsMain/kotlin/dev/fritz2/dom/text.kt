@@ -2,7 +2,6 @@ package dev.fritz2.dom
 
 import dev.fritz2.binding.SingleMountPoint
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.Node
@@ -32,7 +31,7 @@ interface WithText<T : org.w3c.dom.Node> : WithDomNode<T> {
     fun Flow<String>.bind(preserveOrder: Boolean = false): SingleMountPoint<WithDomNode<Text>> {
         val upstream = this.map {
             TextNode(it)
-        }.distinctUntilChanged().conflate()
+        }.distinctUntilChanged()
 
         return if (preserveOrder) DomMountPointPreserveOrder(upstream, domNode)
         else DomMountPoint(upstream, domNode)

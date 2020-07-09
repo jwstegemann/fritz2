@@ -6,7 +6,13 @@ plugins {
 
 kotlin {
     jvm()
-    js().browser()
+    js().browser {
+        testTask {
+            useKarma {
+                useChrome()
+            }
+        }
+    }
 
     sourceSets {
         all {
@@ -15,6 +21,7 @@ kotlin {
                 useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes") // annotation FQ-name
                 useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                useExperimentalAnnotation("kotlinx.coroutines.InternalCoroutinesApi")
                 useExperimentalAnnotation("kotlinx.coroutines.FlowPreview")
             }
         }
