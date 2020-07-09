@@ -6,13 +6,7 @@ plugins {
 
 kotlin {
     jvm()
-    js().browser {
-        testTask {
-            useKarma {
-                useChrome()
-            }
-        }
-    }
+    js().browser()
 
     sourceSets {
         all {

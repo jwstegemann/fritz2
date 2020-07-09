@@ -7,15 +7,14 @@ import dev.fritz2.test.checkFlow
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.asPromise
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.promise
 import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
 import kotlin.js.Promise
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -44,77 +43,20 @@ class MountTests {
         }
     }
 
-    //FIXME: new tests for MultiMountPoint (not testing diff-Algorithm but just the MountPoint)
     @Test
-    @Ignore
-    fun testMultiMountPointAppendingAtEnd(): Promise<Boolean> {
-        val store = RootStore<List<Int>>(emptyList())
-        store.data.launchIn(GlobalScope)
+    fun testMultiMountPoint(): Promise<Boolean> {
+        val listToTest = listOf(1, 2, 3, 4, 5)
 
-        val mp = checkFlow(store.data.each().data, 5) { count, patch ->
-            val expected = Patch.Insert(count, count)
+        val store = RootStore<List<Int>>(listToTest)
 
-            assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
+        val mp = checkFlow(store.data.each().data, 1) { count, patch ->
+            println("$count sdkfnskdfnskdjfns")
+            val expected = Patch.InsertMany(listToTest.reversed(), 0)
+            assertEquals(expected, patch, "set wrong value in MultiMountPoint")
         }
 
-        return GlobalScope.promise {
-            delay(100) //needs a point to suspend
-            for (i in 0..4) {
-                store.enqueue { it + i }
-            }
-            mp.await()
-            true
-        }
-    }
-
-    @Test
-    @Ignore
-    fun testMultiMountPointAppendingAtBeginning(): Promise<Boolean> {
-
-        val store = RootStore(listOf(0))
-        store.data.launchIn(GlobalScope)
-
-        val mp = checkFlow(store.data.each().data, 3) { count, patch ->
-            val expected: Patch<Int> = when (count) {
-                0 -> Patch.Insert(0, 0) //Patch(0, listOf(0), 0)
-                1 -> Patch.Insert(1, 0) // Patch(1, listOf(0), 0)
-                2 -> Patch.Delete(0, 1) // Patch(0, listOf(1), 1)
-                else -> throw AssertionError("set wrong value in MultiMountPoint\n")
-            }
-            assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
-        }
-
-        return GlobalScope.promise {
-            delay(100) //needs a point to suspend
-            store.enqueue { listOf(1) + it }
-            mp.await()
-            true
-        }
-    }
-
-    @Test
-    @Ignore
-    fun testMultiMountPointAppendingAtMiddle(): Promise<Boolean> {
-
-        val store = RootStore(listOf(0, 2))
-        store.data.launchIn(GlobalScope)
-
-        val mp = checkFlow(store.data.each().data, 3) { count, patch ->
-            val expected: Patch<Int> = when (count) {
-                0 -> Patch.Insert(0, 0) //Patch(0, listOf(0, 2), 0)
-                //1 -> Patch(2, listOf(2), 0)
-                ///2 -> Patch(1, listOf(1), 1)
-                else -> throw AssertionError("set wrong value in MultiMountPoint\n")
-            }
-            assertEquals(expected, patch, "set wrong value in MultiMountPoint\n")
-        }
-
-        return GlobalScope.promise {
-            delay(100) //needs a point to suspend
-            store.enqueue { listOf(0, 1, 2) }
-            mp.await()
-            true
-        }
+        store.data.watch()
+        return mp.asPromise()
     }
 
     @Test
