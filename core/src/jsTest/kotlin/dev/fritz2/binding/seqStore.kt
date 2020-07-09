@@ -17,6 +17,8 @@ class StoreHugoTests {
 
     private val listId = "list" + uniqueId()
 
+    val suffix = uniqueId()
+
     private fun listContent() = document.getElementById(listId)?.textContent
     private fun clickButton(id: String) {
         (document.getElementById(id) as HTMLButtonElement).click()
@@ -56,30 +58,30 @@ class StoreHugoTests {
                         }
                     }.bind()
                 }
-                button(id = "append") { clicks handledBy store.append }
-                button(id = "change") { clicks handledBy store.change }
-                button(id = "insert") { clicks handledBy store.insert }
-                button(id = "delete") { clicks handledBy store.delete }
+                button(id = "append" + suffix) { clicks handledBy store.append }
+                button(id = "change" + suffix) { clicks handledBy store.change }
+                button(id = "insert" + suffix) { clicks handledBy store.insert }
+                button(id = "delete" + suffix) { clicks handledBy store.delete }
             }
         }.mount(targetId)
 
         delay(200)
         assertEquals("abcd", listContent(), "list incorrect after init")
 
-        clickButton("append")
-        delay(200)
+        clickButton("append" + suffix)
+        delay(100)
         assertEquals("abcde", listContent(), "list incorrect after append")
 
-        clickButton("change")
-        delay(200)
+        clickButton("change" + suffix)
+        delay(100)
         assertEquals("axcde", listContent(), "list incorrect after change")
 
-        clickButton("insert")
-        delay(200)
+        clickButton("insert" + suffix)
+        delay(100)
         assertEquals("yaxcde", listContent(), "list incorrect after insert")
 
-        clickButton("delete")
-        delay(200)
+        clickButton("delete" + suffix)
+        delay(100)
         assertEquals("yaxde", listContent(), "list incorrect after delete")
 
     }

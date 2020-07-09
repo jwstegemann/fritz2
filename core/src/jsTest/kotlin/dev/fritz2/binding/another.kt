@@ -10,7 +10,6 @@ import dev.fritz2.test.targetId
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
 import kotlin.browser.document
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -21,7 +20,7 @@ class SeqTests {
         (document.getElementById(id) as HTMLButtonElement).click()
     }
 
-    private val
+    private val suffix = uniqueId()
 
     /*
      * with id...
@@ -46,7 +45,6 @@ class SeqTests {
     }
 
     @Test
-    @Ignore
     fun testEachEntity() = runTest {
         val listId = "list" + uniqueId()
         initDocument()
@@ -62,30 +60,30 @@ class SeqTests {
                         }
                     }.bind()
                 }
-                button(id = "append") { clicks handledBy store.append }
-                button(id = "change") { clicks handledBy store.change }
-                button(id = "insert") { clicks handledBy store.insert }
-                button(id = "delete") { clicks handledBy store.delete }
+                button(id = "append" + suffix) { clicks handledBy store.append }
+                button(id = "change" + suffix) { clicks handledBy store.change }
+                button(id = "insert" + suffix) { clicks handledBy store.insert }
+                button(id = "delete" + suffix) { clicks handledBy store.delete }
             }
         }.mount(targetId)
 
-        delay(400)
+        delay(200)
         assertEquals("abcd", listContent(listId), "list incorrect after init")
 
-        clickButton("append")
-        delay(200)
+        clickButton("append" + suffix)
+        delay(100)
         assertEquals("abcde", listContent(listId), "list incorrect after append")
 
-        clickButton("change")
-        delay(200)
+        clickButton("change" + suffix)
+        delay(100)
         assertEquals("abcde", listContent(listId), "list incorrect after change")
 
-        clickButton("insert")
-        delay(200)
+        clickButton("insert" + suffix)
+        delay(100)
         assertEquals("yabcde", listContent(listId), "list incorrect after insert")
 
-        clickButton("delete")
-        delay(200)
+        clickButton("delete" + suffix)
+        delay(100)
         assertEquals("yabde", listContent(listId), "list incorrect after delete")
     }
 }
