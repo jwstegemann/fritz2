@@ -2,10 +2,7 @@ package dev.fritz2.binding
 
 import dev.fritz2.lenses.idProvider
 import dev.fritz2.utils.Myer
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.flow.*
 
 /**
  * A [Patch] describes the changes made to a [Seq]
@@ -115,6 +112,20 @@ fun <T> Flow<List<T>>.each(id: idProvider<T>): Seq<T> =
 fun <T> Flow<List<T>>.each(): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
         Myer.diff(old, new)
+    })
+
+/**
+ * factory method to create a [Seq] from a [Flow] of a [List]
+ * The [Patch]es are determined by the position of elements, so elements are just added or removed it the end.
+ * This is only usefull in connection with [Store]s in your rendering.
+ */
+internal fun <T> Flow<List<T>>.eachIndex(): Seq<T> =
+    Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
+        val oldSize = old.size
+        val newSize = new.size
+        if (oldSize < newSize) flowOf<Patch<T>>(Patch.InsertMany(new.subList(oldSize, newSize).reversed(), oldSize))
+        else if (oldSize > newSize) flowOf<Patch<T>>(Patch.Delete(newSize, (oldSize - newSize)))
+        else emptyFlow<Patch<T>>()
     })
 
 

@@ -15,6 +15,7 @@ kotlin {
                 useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes") // annotation FQ-name
                 useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                useExperimentalAnnotation("kotlinx.coroutines.InternalCoroutinesApi")
                 useExperimentalAnnotation("kotlinx.coroutines.FlowPreview")
             }
         }

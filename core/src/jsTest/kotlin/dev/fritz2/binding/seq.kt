@@ -3,158 +3,251 @@ package dev.fritz2.binding
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
+import dev.fritz2.lenses.buildLens
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
-import org.w3c.dom.HTMLLIElement
-import org.w3c.dom.HTMLUListElement
-import org.w3c.dom.get
 import kotlin.browser.document
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-
 class SeqTests {
 
+    private fun listContent(listId: String) = document.getElementById(listId)?.textContent
+    private fun clickButton(id: String) {
+        (document.getElementById(id) as HTMLButtonElement).click()
+    }
+
+    class TestListStore() : RootStore<List<String>>(listOf("a", "b", "c", "d")) {
+        val append = handle { model -> model + "e" }
+        val change = handle { model -> listOf(model.first(), "x") + model.takeLast(3) }
+        val insert = handle { model -> listOf("y") + model }
+        val delete = handle { model -> model.take(3) + model.takeLast(2) }
+    }
+
     @Test
-    @Ignore
-    fun testSeqMap() = runTest {
+    fun testEachElement() = runTest {
+        val listId = "list" + uniqueId()
+        val appendBtnId = "btn-append" + uniqueId()
+        val changeBtnId = "btn-change" + uniqueId()
+        val insertBtnId = "btn-insert" + uniqueId()
+        val deleteBtnId = "btn-delete" + uniqueId()
+
         initDocument()
 
-        val testId = uniqueId()
-
-        val store = object : RootStore<List<Int>>(listOf(0)) {
-            val replaceList = handle {
-                (0..10).toList()
-            }
-
-            val addAtBeginning = handle { list ->
-                listOf(0) + list
-            }
-
-            val addAtEnd = handle { list ->
-                list + 10
-            }
-
-            val addAtMiddle = handle { list ->
-                list.subList(0, 7) + listOf(4, 5, 6) + list.subList(7, list.size)
-            }
-
-            val removeAtBeginning = handle { list ->
-                list.subList(1, list.size)
-            }
-
-            val removeAtEnd = handle { list ->
-                list.subList(0, list.size - 1)
-            }
-
-            val removeAtMiddle = handle { list ->
-                list.subList(0, 6) + list.subList(9, list.size)
-            }
-
-            val filterEven = handle { list ->
-                list.filter { it % 2 == 0 }
-            }
-
-            val reverse = handle { list ->
-                list.asReversed()
-            }
-        }
-
+        val store = TestListStore()
 
         render {
-            section {
-                ul(id = testId) {
-                    store.data.each().map { i ->
+            div {
+                ul(id = listId) {
+                    store.data.each().map {
                         render {
-                            li(id = "entry$i") {
-                                text(i.toString())
-                            }
+                            li { text(it) }
                         }
                     }.bind()
                 }
-
-                button(id = "replaceList") {
-                    clicks handledBy store.replaceList
-                }
-                button(id = "addAtBeginning") {
-                    clicks handledBy store.addAtBeginning
-                }
-                button(id = "addAtEnd") {
-                    clicks handledBy store.addAtEnd
-                }
-                button(id = "addAtMiddle") {
-                    clicks handledBy store.addAtMiddle
-                }
-                button(id = "removeAtBeginning") {
-                    clicks handledBy store.removeAtBeginning
-                }
-                button(id = "removeAtEnd") {
-                    clicks handledBy store.removeAtEnd
-                }
-                button(id = "removeAtMiddle") {
-                    clicks handledBy store.removeAtMiddle
-                }
-                button(id = "filterEven") {
-                    clicks handledBy store.filterEven
-                }
-                button(id = "reverse") {
-                    clicks handledBy store.reverse
-                }
+                button(id = appendBtnId) { clicks handledBy store.append }
+                button(id = changeBtnId) { clicks handledBy store.change }
+                button(id = insertBtnId) { clicks handledBy store.insert }
+                button(id = deleteBtnId) { clicks handledBy store.delete }
             }
         }.mount(targetId)
 
-        val list = document.getElementById(testId).unsafeCast<HTMLUListElement>()
-        val until = list.children.length - 1
+        delay(200)
+        assertEquals("abcd", listContent(listId), "list incorrect after init")
 
-        fun check(expected: List<Int>) {
-            for (i in 0..until) {
-                val element = list.children[i].unsafeCast<HTMLLIElement>()
-                assertEquals("entry${expected[i]}", element.id)
-                assertEquals(expected[i].toString(), element.textContent)
+        clickButton(appendBtnId)
+        delay(100)
+        assertEquals("abcde", listContent(listId), "list incorrect after append")
+
+        clickButton(changeBtnId)
+        delay(100)
+        assertEquals("axcde", listContent(listId), "list incorrect after change")
+
+        clickButton(insertBtnId)
+        delay(100)
+        assertEquals("yaxcde", listContent(listId), "list incorrect after insert")
+
+        clickButton(deleteBtnId)
+        delay(100)
+        assertEquals("yaxde", listContent(listId), "list incorrect after delete")
+    }
+
+
+    @Test
+    @Ignore
+    fun testEachIndexStore() = runTest {
+        val listId = "list" + uniqueId()
+        val appendBtnId = "btn-append" + uniqueId()
+        val changeBtnId = "btn-change" + uniqueId()
+        val insertBtnId = "btn-insert" + uniqueId()
+        val deleteBtnId = "btn-delete" + uniqueId()
+
+        initDocument()
+
+        val store = TestListStore()
+
+        render {
+            div {
+                ul(id = listId) {
+                    store.each().map {
+                        render {
+                            li { it.data.bind() }
+                        }
+                    }.bind()
+                }
+                button(id = "append") { clicks handledBy store.append }
+                button(id = "change") { clicks handledBy store.change }
+                button(id = "insert") { clicks handledBy store.insert }
+                button(id = "delete") { clicks handledBy store.delete }
+
+                div(id = "hugo") { store.data.map { it.toString() }.bind() }
             }
-        }
+        }.mount(targetId)
 
-        //inital
-        check(listOf(0))
+        delay(200)
+        assertEquals("abcd", listContent(listId), "list incorrect after init")
 
-        document.getElementById("replaceList").unsafeCast<HTMLButtonElement>().click()
+        clickButton(appendBtnId)
         delay(100)
-        check(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+        assertEquals("abcde", listContent(listId), "list incorrect after append")
 
-        document.getElementById("addAtBeginning").unsafeCast<HTMLButtonElement>().click()
+        clickButton("change")
         delay(100)
-        check(listOf(0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+        assertEquals("axcde", listContent(listId), "list incorrect after change")
 
-        document.getElementById("addAtEnd").unsafeCast<HTMLButtonElement>().click()
+        clickButton("insert")
         delay(100)
-        check(listOf(0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10))
+        assertEquals("yaxcde", listContent(listId), "list incorrect after insert")
 
-        document.getElementById("addAtMiddle").unsafeCast<HTMLButtonElement>().click()
+        clickButton("delete")
         delay(100)
-        check(listOf(0, 0, 1, 2, 3, 4, 5, 4, 5, 6, 6, 7, 8, 9, 10, 10))
+        assertEquals("yaxde", listContent(listId), "list incorrect after delete")
+    }
 
-        document.getElementById("removeAtBeginning").unsafeCast<HTMLButtonElement>().click()
-        delay(100)
-        check(listOf(0, 1, 2, 3, 4, 5, 4, 5, 6, 6, 7, 8, 9, 10, 10))
 
-        document.getElementById("removeAtEnd").unsafeCast<HTMLButtonElement>().click()
-        delay(100)
-        check(listOf(0, 1, 2, 3, 4, 5, 4, 5, 6, 6, 7, 8, 9, 10))
+/*
+     * with id...
+     */
 
-        document.getElementById("removeAtMiddle").unsafeCast<HTMLButtonElement>().click()
-        delay(100)
-        check(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+    data class Entity(val id: String, val value: String)
 
-        document.getElementById("filterEven").unsafeCast<HTMLButtonElement>().click()
-        delay(100)
-        check(listOf(0, 2, 4, 6, 8, 10))
+    val valueLens = buildLens("value", Entity::value, { p, v -> p.copy(value = v) })
 
-        document.getElementById("reverse").unsafeCast<HTMLButtonElement>().click()
+    class TestEntityListStore() : RootStore<List<Entity>>(
+        listOf(
+            Entity("1", "a"),
+            Entity("2", "b"),
+            Entity("3", "c"),
+            Entity("4", "d")
+        )
+    ) {
+        val append = handle { model -> model + Entity("5", "e") }
+        val change = handle { model -> listOf(model.first(), Entity("2", "x")) + model.takeLast(3) }
+        val insert = handle { model -> listOf(Entity("0", "y")) + model }
+        val delete = handle { model -> model.take(3) + model.takeLast(2) }
+    }
+
+    @Test
+    fun testEachEntity() = runTest {
+        val listId = "list" + uniqueId()
+        val appendBtnId = "btn-append" + uniqueId()
+        val changeBtnId = "btn-change" + uniqueId()
+        val insertBtnId = "btn-insert" + uniqueId()
+        val deleteBtnId = "btn-delete" + uniqueId()
+
+        initDocument()
+
+        val store = TestEntityListStore()
+
+        render {
+            div {
+                ul(id = listId) {
+                    store.data.each(Entity::id).map {
+                        render {
+                            li { text(it.value) }
+                        }
+                    }.bind()
+                }
+                button(id = appendBtnId) { clicks handledBy store.append }
+                button(id = changeBtnId) { clicks handledBy store.change }
+                button(id = insertBtnId) { clicks handledBy store.insert }
+                button(id = deleteBtnId) { clicks handledBy store.delete }
+            }
+        }.mount(targetId)
+
+        delay(200)
+        assertEquals("abcd", listContent(listId), "list incorrect after init")
+
+        clickButton(appendBtnId)
         delay(100)
-        check(listOf(10, 8, 6, 4, 2, 0))
+        assertEquals("abcde", listContent(listId), "list incorrect after append")
+
+        clickButton(changeBtnId)
+        delay(100)
+        assertEquals("abcde", listContent(listId), "list incorrect after change")
+
+        clickButton(insertBtnId)
+        delay(100)
+        assertEquals("yabcde", listContent(listId), "list incorrect after insert")
+
+        clickButton(deleteBtnId)
+        delay(100)
+        assertEquals("yabde", listContent(listId), "list incorrect after delete")
+    }
+
+
+    @Test
+    fun testEachEntityStore() = runTest {
+        val listId = "list" + uniqueId()
+        val appendBtnId = "btn-append" + uniqueId()
+        val changeBtnId = "btn-change" + uniqueId()
+        val insertBtnId = "btn-insert" + uniqueId()
+        val deleteBtnId = "btn-delete" + uniqueId()
+
+        initDocument()
+
+        val store = TestEntityListStore()
+
+        render {
+            div {
+                ul(id = listId) {
+                    store.each(Entity::id).map {
+                        val valueStore = it.sub(valueLens)
+                        render {
+                            li { valueStore.data.bind() }
+                        }
+                    }.bind()
+                }
+                button(id = appendBtnId) { clicks handledBy store.append }
+                button(id = changeBtnId) { clicks handledBy store.change }
+                button(id = insertBtnId) { clicks handledBy store.insert }
+                button(id = deleteBtnId) { clicks handledBy store.delete }
+            }
+        }.mount(targetId)
+
+        delay(200)
+        assertEquals("abcd", listContent(listId), "list incorrect after init")
+
+        clickButton(appendBtnId)
+        delay(100)
+        assertEquals("abcde", listContent(listId), "list incorrect after append")
+
+        clickButton(changeBtnId)
+        delay(100)
+        assertEquals("axcde", listContent(listId), "list incorrect after change")
+
+        clickButton(insertBtnId)
+        delay(100)
+        assertEquals("yaxcde", listContent(listId), "list incorrect after insert")
+
+        clickButton(deleteBtnId)
+        delay(100)
+        assertEquals("yaxde", listContent(listId), "list incorrect after delete")
+
     }
 }
