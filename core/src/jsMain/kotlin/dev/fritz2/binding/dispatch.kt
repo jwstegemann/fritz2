@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flowOf
  *
  * @param wait optional time to wait before the action is dispatched
  */
-fun <A> dispatch(data: A, wait: Long? = null) = Action(data, GlobalScope, wait)
+fun <A> action(data: A, wait: Long? = null) = Action(data, GlobalScope, wait)
 
 /**
  * factory-function to create an [Action]
@@ -17,14 +17,14 @@ fun <A> dispatch(data: A, wait: Long? = null) = Action(data, GlobalScope, wait)
  * @receiver the [Store] that's [CoroutineScope] is used to dispatch the [Action]
  * @param wait optional time to wait before the action is dispatched
  */
-fun <T, A> Store<T>.dispatch(data: A, wait: Long? = null) = Action(data, this, wait)
+fun <T, A> Store<T>.action(data: A, wait: Long? = null) = Action(data, this, wait)
 
 /**
  * factory-function to create an [Action] without data
  *
  * @param wait optional time to wait before the action is dispatched
  */
-fun dispatch(wait: Long? = null) = Action(Unit, GlobalScope, wait)
+fun action(wait: Long? = null) = Action(Unit, GlobalScope, wait)
 
 /**
  * factory-function to create an [Action] without data
@@ -32,7 +32,7 @@ fun dispatch(wait: Long? = null) = Action(Unit, GlobalScope, wait)
  * @receiver the [Store] that's [CoroutineScope] is used to dispatch the [Action]
  * @param wait optional time to wait before the action is dispatched
  */
-fun <T> Store<T>.dispatch(wait: Long? = null) = Action(Unit, this, wait)
+fun <T> Store<T>.action(wait: Long? = null) = Action(Unit, this, wait)
 
 /**
  * represents some dispatchable that can be processed by a [Store]'s [Handler]
