@@ -11,7 +11,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import kotlin.browser.document
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -79,7 +78,6 @@ class SeqTests {
 
 
     @Test
-    @Ignore
     fun testEachIndexStore() = runTest {
         val listId = "list" + uniqueId()
         val appendBtnId = "btn-append" + uniqueId()
@@ -100,10 +98,10 @@ class SeqTests {
                         }
                     }.bind()
                 }
-                button(id = "append") { clicks handledBy store.append }
-                button(id = "change") { clicks handledBy store.change }
-                button(id = "insert") { clicks handledBy store.insert }
-                button(id = "delete") { clicks handledBy store.delete }
+                button(id = appendBtnId) { clicks handledBy store.append }
+                button(id = changeBtnId) { clicks handledBy store.change }
+                button(id = insertBtnId) { clicks handledBy store.insert }
+                button(id = deleteBtnId) { clicks handledBy store.delete }
 
                 div(id = "hugo") { store.data.map { it.toString() }.bind() }
             }
@@ -116,23 +114,18 @@ class SeqTests {
         delay(100)
         assertEquals("abcde", listContent(listId), "list incorrect after append")
 
-        clickButton("change")
+        clickButton(changeBtnId)
         delay(100)
         assertEquals("axcde", listContent(listId), "list incorrect after change")
 
-        clickButton("insert")
+        clickButton(insertBtnId)
         delay(100)
         assertEquals("yaxcde", listContent(listId), "list incorrect after insert")
 
-        clickButton("delete")
+        clickButton(deleteBtnId)
         delay(100)
         assertEquals("yaxde", listContent(listId), "list incorrect after delete")
     }
-
-
-/*
-     * with id...
-     */
 
     data class Entity(val id: String, val value: String)
 
