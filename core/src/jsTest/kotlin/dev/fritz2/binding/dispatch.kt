@@ -21,7 +21,7 @@ class DispatchTests {
             val reverse = handle { it.reversed() }
 
             init {
-                dispatch(reverse)
+                dispatch(Unit) handledBy reverse
             }
         }
 
@@ -55,7 +55,7 @@ class DispatchTests {
         }.mount(targetId)
 
         delay(200)
-        dispatch(store.reverse)
+        dispatch(Unit) handledBy store.reverse
 
         delay(500)
         val content = document.getElementById(valueId)?.textContent

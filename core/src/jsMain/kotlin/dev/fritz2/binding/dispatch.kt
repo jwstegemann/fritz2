@@ -5,46 +5,52 @@ import kotlinx.coroutines.flow.flowOf
 
 
 /**
- * dispatches a given action to a given handler
+ * factory-function to create an [Action]
  *
- * @param action an instance of the action to dispatch
- * @param handler that should handle the action
- * @param scope optional [CoroutineScope] the action is launched in
  * @param wait optional time to wait before the action is dispatched
  */
-fun <A> dispatch(action: A, handler: Handler<A>, scope: CoroutineScope = GlobalScope, wait: Long? = null): Unit {
-    scope.launch(start = CoroutineStart.ATOMIC) {
-        if (wait != null) delay(wait)
-        flowOf(action) handledBy handler
+fun <A> dispatch(data: A, wait: Long? = null) = Action(data, GlobalScope, wait)
+
+/**
+ * factory-function to create an [Action]
+ *
+ * @receiver the [Store] that's [CoroutineScope] is used to dispatch the [Action]
+ * @param wait optional time to wait before the action is dispatched
+ */
+fun <T, A> Store<T>.dispatch(data: A, wait: Long? = null) = Action(data, this, wait)
+
+/**
+ * factory-function to create an [Action] without data
+ *
+ * @param wait optional time to wait before the action is dispatched
+ */
+fun dispatch(wait: Long? = null) = Action(Unit, GlobalScope, wait)
+
+/**
+ * factory-function to create an [Action] without data
+ *
+ * @receiver the [Store] that's [CoroutineScope] is used to dispatch the [Action]
+ * @param wait optional time to wait before the action is dispatched
+ */
+fun <T> Store<T>.dispatch(wait: Long? = null) = Action(Unit, this, wait)
+
+/**
+ * represents some dispatchable that can be processed by a [Store]'s [Handler]
+ */
+class Action<T>(val data: T, val scope: CoroutineScope, val wait: Long?)
+
+/**
+ * binds a single [Action] to a [Handler]
+ *
+ * @receiver the [Action] that will be bound
+ * @param handler the [Handler] that will process the [Action]'s data
+ */
+infix fun <A> Action<A>.handledBy(handler: Handler<A>) {
+    this.also { action ->
+        action.scope.launch(start = CoroutineStart.ATOMIC) {
+            if (action.wait != null) delay(action.wait)
+            flowOf(action.data) handledBy handler
+        }
     }
 }
-
-/**
- * convenience function to dispatch a action without content
- *
- * @param handler that should handle the action
- * @param scope optional [CoroutineScope] the action is launched in
- * @param wait optional time to wait before the action is dispatched
- */
-fun dispatch(handler: Handler<Unit>, scope: CoroutineScope = GlobalScope, wait: Long? = null): Unit =
-    dispatch<Unit>(Unit, handler, scope, wait)
-
-/**
- * dispatches a given action to a given handler within the scope of the [Store]
- *
- * @param action an instance of the action to dispatch
- * @param handler that should handle the action
- * @param wait optional time to wait before the action is dispatched
- */
-fun <T, A> Store<T>.dispatch(action: A, handler: Handler<A>, wait: Long? = null): Unit =
-    dispatch(action, handler, this, wait)
-
-/**
- * convenience function to dispatch an action without content within the scope of the [Store]
- *
- * @param handler that should handle the action
- * @param wait optional time to wait before the action is dispatched
- */
-fun <T> Store<T>.dispatch(handler: Handler<Unit>, wait: Long? = null): Unit =
-    dispatch<Unit>(Unit, handler, this, wait)
 
