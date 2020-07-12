@@ -11,7 +11,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import kotlin.browser.document
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
