@@ -27,7 +27,7 @@ class StoreTests {
 
         val store = object : RootStore<String>("start") {
 
-            val finish = apply<Unit, String> {
+            val finish = apply {
                 flow {
                     delay(200)
                     emit("finish")
@@ -69,7 +69,7 @@ class StoreTests {
 
         val store = object : RootStore<String>("start") {
 
-            val generate = apply<Unit, String> {
+            val generate = apply {
                 flow {
                     delay(100)
                     emit("generate")
@@ -117,7 +117,7 @@ class StoreTests {
 
         val store = object : RootStore<String>("start") {
 
-            val generate = apply<Unit, Int> {
+            val generate = apply {
                 flow {
                     delay(100)
                     emit(100)
