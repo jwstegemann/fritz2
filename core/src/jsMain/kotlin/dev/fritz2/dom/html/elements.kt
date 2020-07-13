@@ -8,7 +8,7 @@ import org.w3c.dom.*
 /**
  * Exposes the JavaScript [HTMLAnchorElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAnchorElement) to Kotlin
  */
-class A(id: String? = null, baseClass: String? = null) : Tag<HTMLAnchorElement>("a", id, baseClass),
+open class A(id: String? = null, baseClass: String? = null) : Tag<HTMLAnchorElement>("a", id, baseClass),
     WithText<HTMLAnchorElement> {
     var target: Flow<String> by AttributeDelegate
     var download: Flow<String> by AttributeDelegate
@@ -34,7 +34,7 @@ class A(id: String? = null, baseClass: String? = null) : Tag<HTMLAnchorElement>(
 /**
  * Exposes the JavaScript [HTMLAreaElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAreaElement) to Kotlin
  */
-class Area(id: String? = null, baseClass: String? = null) : Tag<HTMLAreaElement>("area", id, baseClass),
+open class Area(id: String? = null, baseClass: String? = null) : Tag<HTMLAreaElement>("area", id, baseClass),
     WithText<HTMLAreaElement> {
     var alt: Flow<String> by AttributeDelegate
     var coords: Flow<String> by AttributeDelegate
@@ -60,13 +60,13 @@ class Area(id: String? = null, baseClass: String? = null) : Tag<HTMLAreaElement>
 /**
  * Exposes the JavaScript [HTMLBRElement](https://developer.mozilla.org/en/docs/Web/API/HTMLBRElement) to Kotlin
  */
-class Br(id: String? = null, baseClass: String? = null) : Tag<HTMLBRElement>("br", id, baseClass)
+open class Br(id: String? = null, baseClass: String? = null) : Tag<HTMLBRElement>("br", id, baseClass)
 
 
 /**
  * Exposes the JavaScript [HTMLButtonElement](https://developer.mozilla.org/en/docs/Web/API/HTMLButtonElement) to Kotlin
  */
-class Button(id: String? = null, baseClass: String? = null) : Tag<HTMLButtonElement>("button", id, baseClass),
+open class Button(id: String? = null, baseClass: String? = null) : Tag<HTMLButtonElement>("button", id, baseClass),
     WithText<HTMLButtonElement> {
     var autofocus: Flow<Boolean> by AttributeDelegate
     var disabled: Flow<Boolean> by AttributeDelegate
@@ -84,7 +84,7 @@ class Button(id: String? = null, baseClass: String? = null) : Tag<HTMLButtonElem
 /**
  * Exposes the JavaScript [HTMLCanvasElement](https://developer.mozilla.org/en/docs/Web/API/HTMLCanvasElement) to Kotlin
  */
-class Canvas(id: String? = null, baseClass: String? = null) : Tag<HTMLCanvasElement>("canvas", id, baseClass),
+open class Canvas(id: String? = null, baseClass: String? = null) : Tag<HTMLCanvasElement>("canvas", id, baseClass),
     WithText<HTMLCanvasElement> {
     var width: Flow<Int> by AttributeDelegate
     var height: Flow<Int> by AttributeDelegate
@@ -94,14 +94,14 @@ class Canvas(id: String? = null, baseClass: String? = null) : Tag<HTMLCanvasElem
 /**
  * Exposes the JavaScript [HTMLDListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDListElement) to Kotlin
  */
-class Dl(id: String? = null, baseClass: String? = null) : Tag<HTMLDListElement>("dl", id, baseClass),
+open class Dl(id: String? = null, baseClass: String? = null) : Tag<HTMLDListElement>("dl", id, baseClass),
     WithText<HTMLDListElement>
 
 
 /**
  * Exposes the JavaScript [HTMLDataElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDataElement) to Kotlin
  */
-class Data(id: String? = null, baseClass: String? = null) : Tag<HTMLDataElement>("data", id, baseClass),
+open class Data(id: String? = null, baseClass: String? = null) : Tag<HTMLDataElement>("data", id, baseClass),
     WithText<HTMLDataElement> {
     var value: Flow<String> by ValueAttributeDelegate
 }
@@ -110,14 +110,14 @@ class Data(id: String? = null, baseClass: String? = null) : Tag<HTMLDataElement>
 /**
  * Exposes the JavaScript [HTMLDataListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDataListElement) to Kotlin
  */
-class DataList(id: String? = null, baseClass: String? = null) : Tag<HTMLDataListElement>("datalist", id, baseClass),
+open class DataList(id: String? = null, baseClass: String? = null) : Tag<HTMLDataListElement>("datalist", id, baseClass),
     WithText<HTMLDataListElement>
 
 
 /**
  * Exposes the JavaScript [HTMLDetailsElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDetailsElement) to Kotlin
  */
-class Details(id: String? = null, baseClass: String? = null) : Tag<HTMLDetailsElement>("details", id, baseClass),
+open class Details(id: String? = null, baseClass: String? = null) : Tag<HTMLDetailsElement>("details", id, baseClass),
     WithText<HTMLDetailsElement> {
     var open: Flow<Boolean> by AttributeDelegate
 }
@@ -126,7 +126,7 @@ class Details(id: String? = null, baseClass: String? = null) : Tag<HTMLDetailsEl
 /**
  * Exposes the JavaScript [HTMLDialogElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDialogElement) to Kotlin
  */
-class Dialog(id: String? = null, baseClass: String? = null) : Tag<HTMLDialogElement>("dialog", id, baseClass),
+open class Dialog(id: String? = null, baseClass: String? = null) : Tag<HTMLDialogElement>("dialog", id, baseClass),
     WithText<HTMLDialogElement> {
     var open: Flow<Boolean> by AttributeDelegate
     var returnValue: Flow<String> by AttributeDelegate
@@ -136,7 +136,7 @@ class Dialog(id: String? = null, baseClass: String? = null) : Tag<HTMLDialogElem
 /**
  * Exposes the JavaScript [HTMLDivElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDivElement) to Kotlin
  */
-class Div(id: String? = null, baseClass: String? = null) : Tag<HTMLDivElement>("div", id, baseClass),
+open class Div(id: String? = null, baseClass: String? = null) : Tag<HTMLDivElement>("div", id, baseClass),
     WithText<HTMLDivElement> {
     var align: Flow<String> by AttributeDelegate
 }
@@ -145,7 +145,7 @@ class Div(id: String? = null, baseClass: String? = null) : Tag<HTMLDivElement>("
 /**
  * Exposes the JavaScript [HTMLDivElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDivElement) to Kotlin
  */
-class Embed(id: String? = null, baseClass: String? = null) : Tag<HTMLEmbedElement>("embed", id, baseClass) {
+open class Embed(id: String? = null, baseClass: String? = null) : Tag<HTMLEmbedElement>("embed", id, baseClass) {
     var src: Flow<String> by AttributeDelegate
     var type: Flow<String> by AttributeDelegate
     var width: Flow<String> by AttributeDelegate
@@ -156,7 +156,7 @@ class Embed(id: String? = null, baseClass: String? = null) : Tag<HTMLEmbedElemen
 /**
  * Exposes the JavaScript [HTMLFieldSetElement](https://developer.mozilla.org/en/docs/Web/API/HTMLFieldSetElement) to Kotlin
  */
-class FieldSet(id: String? = null, baseClass: String? = null) : Tag<HTMLFieldSetElement>("fieldSet", id, baseClass) {
+open class FieldSet(id: String? = null, baseClass: String? = null) : Tag<HTMLFieldSetElement>("fieldSet", id, baseClass) {
     var disabled: Flow<Boolean> by AttributeDelegate
     var name: Flow<String> by AttributeDelegate
 }
@@ -165,7 +165,7 @@ class FieldSet(id: String? = null, baseClass: String? = null) : Tag<HTMLFieldSet
 /**
  * Exposes the JavaScript [HTMLFormElement](https://developer.mozilla.org/en/docs/Web/API/`for`mElement) to Kotlin
  */
-class Form(id: String? = null, baseClass: String? = null) : Tag<HTMLFormElement>("form", id, baseClass),
+open class Form(id: String? = null, baseClass: String? = null) : Tag<HTMLFormElement>("form", id, baseClass),
     WithText<HTMLFormElement> {
     var acceptCharset: Flow<String> by AttributeDelegate
     var action: Flow<String> by AttributeDelegate
@@ -182,20 +182,20 @@ class Form(id: String? = null, baseClass: String? = null) : Tag<HTMLFormElement>
 /**
  * Exposes the JavaScript [HTMLHRElement](https://developer.mozilla.org/en/docs/Web/API/HTMLHRElement) to Kotlin
  */
-class Hr(id: String? = null, baseClass: String? = null) : Tag<HTMLHRElement>("hr", id, baseClass)
+open class Hr(id: String? = null, baseClass: String? = null) : Tag<HTMLHRElement>("hr", id, baseClass)
 
 
 /**
  * Exposes the JavaScript [HTMLHeadingElement](https://developer.mozilla.org/en/docs/Web/API/HTMLHeadingElement) to Kotlin
  */
-class H(num: Int, id: String? = null, baseClass: String? = null) : Tag<HTMLHeadingElement>("h$num", id, baseClass),
+open class H(num: Int, id: String? = null, baseClass: String? = null) : Tag<HTMLHeadingElement>("h$num", id, baseClass),
     WithText<HTMLHeadingElement>
 
 
 /**
  * Exposes the JavaScript [HTMLIFrameElement](https://developer.mozilla.org/en/docs/Web/API/HTMLIFrameElement) to Kotlin
  */
-class IFrame(id: String? = null, baseClass: String? = null) : Tag<HTMLIFrameElement>("iframe", id, baseClass),
+open class IFrame(id: String? = null, baseClass: String? = null) : Tag<HTMLIFrameElement>("iframe", id, baseClass),
     WithText<HTMLIFrameElement> {
     var src: Flow<String> by AttributeDelegate
     var srcdoc: Flow<String> by AttributeDelegate
@@ -211,7 +211,7 @@ class IFrame(id: String? = null, baseClass: String? = null) : Tag<HTMLIFrameElem
 /**
  * Exposes the JavaScript [HTMLImageElement](https://developer.mozilla.org/en/docs/Web/API/HTMLImageElement) to Kotlin
  */
-class Img(id: String? = null, baseClass: String? = null) : Tag<HTMLImageElement>("img", id, baseClass),
+open class Img(id: String? = null, baseClass: String? = null) : Tag<HTMLImageElement>("img", id, baseClass),
     WithText<HTMLImageElement> {
     var alt: Flow<String> by AttributeDelegate
     var src: Flow<String> by AttributeDelegate
@@ -229,7 +229,7 @@ class Img(id: String? = null, baseClass: String? = null) : Tag<HTMLImageElement>
 /**
  * Exposes the JavaScript [HTMLInputElement](https://developer.mozilla.org/en/docs/Web/API/HTMLInputElement) to Kotlin
  */
-class Input(id: String? = null, baseClass: String? = null) : Tag<HTMLInputElement>("input", id, baseClass) {
+open class Input(id: String? = null, baseClass: String? = null) : Tag<HTMLInputElement>("input", id, baseClass) {
     var accept: Flow<String> by AttributeDelegate
     var alt: Flow<String> by AttributeDelegate
     var autocomplete: Flow<String> by AttributeDelegate
@@ -269,7 +269,7 @@ class Input(id: String? = null, baseClass: String? = null) : Tag<HTMLInputElemen
 /**
  * Exposes the JavaScript [HTMLLIElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLIElement) to Kotlin
  */
-class Li(id: String? = null, baseClass: String? = null) : Tag<HTMLLIElement>("li", id, baseClass),
+open class Li(id: String? = null, baseClass: String? = null) : Tag<HTMLLIElement>("li", id, baseClass),
     WithText<HTMLLIElement> {
     var value: Flow<Int> by AttributeDelegate
 }
@@ -278,7 +278,7 @@ class Li(id: String? = null, baseClass: String? = null) : Tag<HTMLLIElement>("li
 /**
  * Exposes the JavaScript [HTMLLabelElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLabelElement) to Kotlin
  */
-class Label(id: String? = null, baseClass: String? = null) : Tag<HTMLLabelElement>("label", id, baseClass),
+open class Label(id: String? = null, baseClass: String? = null) : Tag<HTMLLabelElement>("label", id, baseClass),
     WithText<HTMLLabelElement> {
     var `for`: Flow<String> by AttributeDelegate
 }
@@ -287,14 +287,14 @@ class Label(id: String? = null, baseClass: String? = null) : Tag<HTMLLabelElemen
 /**
  * Exposes the JavaScript [HTMLLegendElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLegendElement) to Kotlin
  */
-class Legend(id: String? = null, baseClass: String? = null) : Tag<HTMLLegendElement>("legend", id, baseClass),
+open class Legend(id: String? = null, baseClass: String? = null) : Tag<HTMLLegendElement>("legend", id, baseClass),
     WithText<HTMLLegendElement>
 
 
 /**
  * Exposes the JavaScript [HTMLMapElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMapElement) to Kotlin
  */
-class Map(id: String? = null, baseClass: String? = null) : Tag<HTMLMapElement>("map", id, baseClass),
+open class Map(id: String? = null, baseClass: String? = null) : Tag<HTMLMapElement>("map", id, baseClass),
     WithText<HTMLMapElement> {
     var name: Flow<String> by AttributeDelegate
 }
@@ -303,7 +303,7 @@ class Map(id: String? = null, baseClass: String? = null) : Tag<HTMLMapElement>("
 /**
  * Exposes the JavaScript [HTMLAudioElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAudioElement) to Kotlin
  */
-class Audio(id: String? = null, baseClass: String? = null) : Tag<HTMLAudioElement>("audio", id, baseClass),
+open class Audio(id: String? = null, baseClass: String? = null) : Tag<HTMLAudioElement>("audio", id, baseClass),
     WithText<HTMLAudioElement> {
     var src: Flow<String> by AttributeDelegate
     var preload: Flow<String> by AttributeDelegate
@@ -322,7 +322,7 @@ class Audio(id: String? = null, baseClass: String? = null) : Tag<HTMLAudioElemen
 /**
  * Exposes the JavaScript [HTMLVideoElement](https://developer.mozilla.org/en/docs/Web/API/HTMLVideoElement) to Kotlin
  */
-class Video(id: String? = null, baseClass: String? = null) : Tag<HTMLVideoElement>("video", id, baseClass),
+open class Video(id: String? = null, baseClass: String? = null) : Tag<HTMLVideoElement>("video", id, baseClass),
     WithText<HTMLVideoElement> {
     var width: Flow<Int> by AttributeDelegate
     var height: Flow<Int> by AttributeDelegate
@@ -345,7 +345,7 @@ class Video(id: String? = null, baseClass: String? = null) : Tag<HTMLVideoElemen
 /**
  * Exposes the JavaScript [HTMLMeterElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMeterElement) to Kotlin
  */
-class Meter(id: String? = null, baseClass: String? = null) : Tag<HTMLMeterElement>("meter", id, baseClass),
+open class Meter(id: String? = null, baseClass: String? = null) : Tag<HTMLMeterElement>("meter", id, baseClass),
     WithText<HTMLMeterElement> {
     var value: Flow<Double> by AttributeDelegate
     var min: Flow<Double> by AttributeDelegate
@@ -359,7 +359,7 @@ class Meter(id: String? = null, baseClass: String? = null) : Tag<HTMLMeterElemen
 /**
  * Exposes the JavaScript [HTMLModElement](https://developer.mozilla.org/en/docs/Web/API/HTMLModElement) to Kotlin
  */
-class Ins(id: String? = null, baseClass: String? = null) : Tag<HTMLModElement>("ins", id, baseClass),
+open class Ins(id: String? = null, baseClass: String? = null) : Tag<HTMLModElement>("ins", id, baseClass),
     WithText<HTMLModElement> {
     var cite: Flow<String> by AttributeDelegate
     var dateTime: Flow<String> by AttributeDelegate
@@ -369,7 +369,7 @@ class Ins(id: String? = null, baseClass: String? = null) : Tag<HTMLModElement>("
 /**
  * Exposes the JavaScript [HTMLModElement](https://developer.mozilla.org/en/docs/Web/API/HTMLModElement) to Kotlin
  */
-class Del(id: String? = null, baseClass: String? = null) : Tag<HTMLModElement>("del", id, baseClass),
+open class Del(id: String? = null, baseClass: String? = null) : Tag<HTMLModElement>("del", id, baseClass),
     WithText<HTMLModElement> {
     var cite: Flow<String> by AttributeDelegate
     var dateTime: Flow<String> by AttributeDelegate
@@ -379,7 +379,7 @@ class Del(id: String? = null, baseClass: String? = null) : Tag<HTMLModElement>("
 /**
  * Exposes the JavaScript [HTMLOListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOListElement) to Kotlin
  */
-class Ol(id: String? = null, baseClass: String? = null) : Tag<HTMLOListElement>("ol", id, baseClass),
+open class Ol(id: String? = null, baseClass: String? = null) : Tag<HTMLOListElement>("ol", id, baseClass),
     WithText<HTMLOListElement> {
     var reversed: Flow<Boolean> by AttributeDelegate
     var start: Flow<Int> by AttributeDelegate
@@ -390,7 +390,7 @@ class Ol(id: String? = null, baseClass: String? = null) : Tag<HTMLOListElement>(
 /**
  * Exposes the JavaScript [HTMLObjectElement](https://developer.mozilla.org/en/docs/Web/API/HTMLObjectElement) to Kotlin
  */
-class Object(id: String? = null, baseClass: String? = null) : Tag<HTMLObjectElement>("object", id, baseClass),
+open class Object(id: String? = null, baseClass: String? = null) : Tag<HTMLObjectElement>("object", id, baseClass),
     WithText<HTMLObjectElement> {
     var data: Flow<String> by AttributeDelegate
     var type: Flow<String> by AttributeDelegate
@@ -405,7 +405,7 @@ class Object(id: String? = null, baseClass: String? = null) : Tag<HTMLObjectElem
 /**
  * Exposes the JavaScript [HTMLOptGroupElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOptGroupElement) to Kotlin
  */
-class Optgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLOptGroupElement>("optgroup", id, baseClass),
+open class Optgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLOptGroupElement>("optgroup", id, baseClass),
     WithText<HTMLOptGroupElement> {
     var disabled: Flow<Boolean> by AttributeDelegate
     var label: Flow<String> by AttributeDelegate
@@ -415,7 +415,7 @@ class Optgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLOptGroup
 /**
  * Exposes the JavaScript [HTMLOptionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOptionElement) to Kotlin
  */
-class Option(id: String? = null, baseClass: String? = null) : Tag<HTMLOptionElement>("option", id, baseClass),
+open class Option(id: String? = null, baseClass: String? = null) : Tag<HTMLOptionElement>("option", id, baseClass),
     WithText<HTMLOptionElement> {
     var disabled: Flow<Boolean> by AttributeDelegate
     var label: Flow<String> by AttributeDelegate
@@ -429,7 +429,7 @@ class Option(id: String? = null, baseClass: String? = null) : Tag<HTMLOptionElem
 /**
  * Exposes the JavaScript [HTMLOutputElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOutputElement) to Kotlin
  */
-class Output(id: String? = null, baseClass: String? = null) : Tag<HTMLOutputElement>("output", id, baseClass),
+open class Output(id: String? = null, baseClass: String? = null) : Tag<HTMLOutputElement>("output", id, baseClass),
     WithText<HTMLOutputElement> {
     var name: Flow<String> by AttributeDelegate
     var defaultValue: Flow<String> by AttributeDelegate
@@ -440,14 +440,14 @@ class Output(id: String? = null, baseClass: String? = null) : Tag<HTMLOutputElem
 /**
  * Exposes the JavaScript [HTMLParagraphElement](https://developer.mozilla.org/en/docs/Web/API/HTMLParagraphElement) to Kotlin
  */
-class P(id: String? = null, baseClass: String? = null) : Tag<HTMLParagraphElement>("p", id, baseClass),
+open class P(id: String? = null, baseClass: String? = null) : Tag<HTMLParagraphElement>("p", id, baseClass),
     WithText<HTMLParagraphElement>
 
 
 /**
  * Exposes the JavaScript [HTMLParamElement](https://developer.mozilla.org/en/docs/Web/API/HTMLParamElement) to Kotlin
  */
-class Param(id: String? = null, baseClass: String? = null) : Tag<HTMLParamElement>("param", id, baseClass),
+open class Param(id: String? = null, baseClass: String? = null) : Tag<HTMLParamElement>("param", id, baseClass),
     WithText<HTMLParamElement> {
     var name: Flow<String> by AttributeDelegate
     var value: Flow<String> by ValueAttributeDelegate
@@ -457,21 +457,21 @@ class Param(id: String? = null, baseClass: String? = null) : Tag<HTMLParamElemen
 /**
  * Exposes the JavaScript [HTMLPictureElement](https://developer.mozilla.org/en/docs/Web/API/HTMLPictureElement) to Kotlin
  */
-class Picture(id: String? = null, baseClass: String? = null) : Tag<HTMLPictureElement>("picture", id, baseClass),
+open class Picture(id: String? = null, baseClass: String? = null) : Tag<HTMLPictureElement>("picture", id, baseClass),
     WithText<HTMLPictureElement>
 
 
 /**
  * Exposes the JavaScript [HTMLPreElement](https://developer.mozilla.org/en/docs/Web/API/HTMLPreElement) to Kotlin
  */
-class Pre(id: String? = null, baseClass: String? = null) : Tag<HTMLPreElement>("pre", id, baseClass),
+open class Pre(id: String? = null, baseClass: String? = null) : Tag<HTMLPreElement>("pre", id, baseClass),
     WithText<HTMLPreElement>
 
 
 /**
  * Exposes the JavaScript [HTMLProgressElement](https://developer.mozilla.org/en/docs/Web/API/HTMLProgressElement) to Kotlin
  */
-class Progress(id: String? = null, baseClass: String? = null) : Tag<HTMLProgressElement>("progress", id, baseClass),
+open class Progress(id: String? = null, baseClass: String? = null) : Tag<HTMLProgressElement>("progress", id, baseClass),
     WithText<HTMLProgressElement> {
     var value: Flow<Double> by AttributeDelegate
     var max: Flow<Double> by AttributeDelegate
@@ -481,7 +481,7 @@ class Progress(id: String? = null, baseClass: String? = null) : Tag<HTMLProgress
 /**
  * Exposes the JavaScript [HTMLQuoteElement](https://developer.mozilla.org/en/docs/Web/API/HTMLQuoteElement) to Kotlin
  */
-class Quote(id: String? = null, baseClass: String? = null) : Tag<HTMLQuoteElement>("quote", id, baseClass),
+open class Quote(id: String? = null, baseClass: String? = null) : Tag<HTMLQuoteElement>("quote", id, baseClass),
     WithText<HTMLQuoteElement> {
     var cite: Flow<String> by AttributeDelegate
 }
@@ -490,7 +490,7 @@ class Quote(id: String? = null, baseClass: String? = null) : Tag<HTMLQuoteElemen
 /**
  * Exposes the JavaScript [HTMLScriptElement](https://developer.mozilla.org/en/docs/Web/API/HTMLScriptElement) to Kotlin
  */
-class Script(id: String? = null, baseClass: String? = null) : Tag<HTMLScriptElement>("script", id, baseClass) {
+open class Script(id: String? = null, baseClass: String? = null) : Tag<HTMLScriptElement>("script", id, baseClass) {
     var src: Flow<String> by AttributeDelegate
     var type: Flow<String> by AttributeDelegate
     var charset: Flow<String> by AttributeDelegate
@@ -506,7 +506,7 @@ class Script(id: String? = null, baseClass: String? = null) : Tag<HTMLScriptElem
 /**
  * Exposes the JavaScript [HTMLSelectElement](https://developer.mozilla.org/en/docs/Web/API/HTMLSelectElement) to Kotlin
  */
-class Select(id: String? = null, baseClass: String? = null) : Tag<HTMLSelectElement>("select", id, baseClass) {
+open class Select(id: String? = null, baseClass: String? = null) : Tag<HTMLSelectElement>("select", id, baseClass) {
     var autocomplete: Flow<String> by AttributeDelegate
     var autofocus: Flow<Boolean> by AttributeDelegate
     var disabled: Flow<Boolean> by AttributeDelegate
@@ -523,21 +523,21 @@ class Select(id: String? = null, baseClass: String? = null) : Tag<HTMLSelectElem
 /**
  * Exposes the JavaScript [HTMLSpanElement](https://developer.mozilla.org/en/docs/Web/API/HTMLSpanElement) to Kotlin
  */
-class Span(id: String? = null, baseClass: String? = null) : Tag<HTMLSpanElement>("span", id, baseClass),
+open class Span(id: String? = null, baseClass: String? = null) : Tag<HTMLSpanElement>("span", id, baseClass),
     WithText<HTMLSpanElement>
 
 
 /**
  * Exposes the JavaScript [HTMLTableCaptionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableCaptionElement) to Kotlin
  */
-class Caption(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCaptionElement>("caption", id, baseClass),
+open class Caption(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCaptionElement>("caption", id, baseClass),
     WithText<HTMLTableCaptionElement>
 
 
 /**
  * Exposes the JavaScript [HTMLTableCellElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableCellElement) to Kotlin
  */
-class Th(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCellElement>("th", id, baseClass),
+open class Th(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCellElement>("th", id, baseClass),
     WithText<HTMLTableCellElement> {
     var colSpan: Flow<Int> by AttributeDelegate
     var rowSpan: Flow<Int> by AttributeDelegate
@@ -550,7 +550,7 @@ class Th(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCellEleme
 /**
  * Exposes the JavaScript [HTMLTableCellElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableCellElement) to Kotlin
  */
-class Td(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCellElement>("td", id, baseClass),
+open class Td(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCellElement>("td", id, baseClass),
     WithText<HTMLTableCellElement> {
     var colSpan: Flow<Int> by AttributeDelegate
     var rowSpan: Flow<Int> by AttributeDelegate
@@ -563,7 +563,7 @@ class Td(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCellEleme
 /**
  * Exposes the JavaScript [HTMLTableColElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableColElement) to Kotlin
  */
-class Col(id: String? = null, baseClass: String? = null) : Tag<HTMLTableColElement>("col", id, baseClass),
+open class Col(id: String? = null, baseClass: String? = null) : Tag<HTMLTableColElement>("col", id, baseClass),
     WithText<HTMLTableColElement> {
     var span: Flow<Int> by AttributeDelegate
 }
@@ -572,7 +572,7 @@ class Col(id: String? = null, baseClass: String? = null) : Tag<HTMLTableColEleme
 /**
  * Exposes the JavaScript [HTMLTableColElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableColElement) to Kotlin
  */
-class Colgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLTableColElement>("colgroup", id, baseClass),
+open class Colgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLTableColElement>("colgroup", id, baseClass),
     WithText<HTMLTableColElement> {
     var span: Flow<Int> by AttributeDelegate
 }
@@ -581,38 +581,38 @@ class Colgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCol
 /**
  * Exposes the JavaScript [HTMLTableElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableElement) to Kotlin
  */
-class Table(id: String? = null, baseClass: String? = null) : Tag<HTMLTableElement>("table", id, baseClass)
+open class Table(id: String? = null, baseClass: String? = null) : Tag<HTMLTableElement>("table", id, baseClass)
 
 
 /**
  * Exposes the JavaScript [HTMLTableRowElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableRowElement) to Kotlin
  */
-class Tr(id: String? = null, baseClass: String? = null) : Tag<HTMLTableRowElement>("tr", id, baseClass),
+open class Tr(id: String? = null, baseClass: String? = null) : Tag<HTMLTableRowElement>("tr", id, baseClass),
     WithText<HTMLTableRowElement>
 
 
 /**
  * Exposes the JavaScript [HTMLTableSectionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableSectionElement) to Kotlin
  */
-class TFoot(id: String? = null, baseClass: String? = null) : Tag<HTMLTableSectionElement>("tfoot", id, baseClass)
+open class TFoot(id: String? = null, baseClass: String? = null) : Tag<HTMLTableSectionElement>("tfoot", id, baseClass)
 
 
 /**
  * Exposes the JavaScript [HTMLTableSectionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableSectionElement) to Kotlin
  */
-class THead(id: String? = null, baseClass: String? = null) : Tag<HTMLTableSectionElement>("thead", id, baseClass)
+open class THead(id: String? = null, baseClass: String? = null) : Tag<HTMLTableSectionElement>("thead", id, baseClass)
 
 
 /**
  * Exposes the JavaScript [HTMLTableSectionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableSectionElement) to Kotlin
  */
-class TBody(id: String? = null, baseClass: String? = null) : Tag<HTMLTableSectionElement>("tbody", id, baseClass)
+open class TBody(id: String? = null, baseClass: String? = null) : Tag<HTMLTableSectionElement>("tbody", id, baseClass)
 
 
 /**
  * Exposes the JavaScript [HTMLTextAreaElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTextAreaElement) to Kotlin
  */
-class TextArea(id: String? = null, baseClass: String? = null) : Tag<HTMLTextAreaElement>("textarea", id, baseClass),
+open class TextArea(id: String? = null, baseClass: String? = null) : Tag<HTMLTextAreaElement>("textarea", id, baseClass),
     WithText<HTMLTextAreaElement> {
     var autocomplete: Flow<String> by AttributeDelegate
     var autofocus: Flow<Boolean> by AttributeDelegate
@@ -636,7 +636,7 @@ class TextArea(id: String? = null, baseClass: String? = null) : Tag<HTMLTextArea
 /**
  * Exposes the JavaScript [HTMLTimeElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTimeElement) to Kotlin
  */
-class Time(id: String? = null, baseClass: String? = null) : Tag<HTMLTimeElement>("time", id, baseClass),
+open class Time(id: String? = null, baseClass: String? = null) : Tag<HTMLTimeElement>("time", id, baseClass),
     WithText<HTMLTimeElement> {
     var dateTime: Flow<String> by AttributeDelegate
 }
@@ -645,7 +645,7 @@ class Time(id: String? = null, baseClass: String? = null) : Tag<HTMLTimeElement>
 /**
  * Exposes the JavaScript [HTMLTrackElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTrackElement) to Kotlin
  */
-class Track(id: String? = null, baseClass: String? = null) : Tag<HTMLTrackElement>("track", id, baseClass),
+open class Track(id: String? = null, baseClass: String? = null) : Tag<HTMLTrackElement>("track", id, baseClass),
     WithText<HTMLTrackElement> {
     var kind: Flow<String> by AttributeDelegate
     var src: Flow<String> by AttributeDelegate
@@ -658,13 +658,13 @@ class Track(id: String? = null, baseClass: String? = null) : Tag<HTMLTrackElemen
 /**
  * Exposes the JavaScript [HTMLUListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLUListElement) to Kotlin
  */
-class Ul(id: String? = null, baseClass: String? = null) : Tag<HTMLUListElement>("ul", id, baseClass)
+open class Ul(id: String? = null, baseClass: String? = null) : Tag<HTMLUListElement>("ul", id, baseClass)
 
 
 /**
  * General class for standard html5 elements
  */
-class TextElement(tagName: String, id: String? = null, baseClass: String? = null) :
+open class TextElement(tagName: String, id: String? = null, baseClass: String? = null) :
     Tag<HTMLElement>(tagName, id, baseClass), WithText<HTMLElement>
 
 
