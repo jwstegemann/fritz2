@@ -72,7 +72,7 @@ publishing {
                 "https://api.bintray.com/maven/" +
                         "$bintrayUsername/$bintrayRepoName/$bintrayPackageName/;" +
                         "publish=0;" + // Never auto-publish to allow override.
-                        "override=0"
+                        "override=1"
             )
             credentials {
                 username = "jwstegemann"
