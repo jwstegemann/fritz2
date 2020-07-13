@@ -148,9 +148,25 @@ class AttributeMountPoint(val name: String, upstream: Flow<String>, val target: 
      * @param value last value (to be replaced)
      */
     override fun set(value: String, last: String?) {
-        //FIXME: Should only be true for Boolean-Attributes...
-        if (value == "false") target?.removeAttribute(name)
-        else target?.setAttribute(name, value)
+        target?.setAttribute(name, value)
+    }
+}
+
+/**
+ * [BooleanAttributeMountPoint] is a special [SingleMountPoint] for the boolean attributes.
+ */
+class BooleanAttributeMountPoint(
+    private val name: String,
+    upstream: Flow<Boolean>,
+    private val target: Element?,
+    private val trueValue: String
+) : SingleMountPoint<Boolean>(upstream) {
+    override fun set(value: Boolean, last: Boolean?) {
+        if (value) {
+            target?.setAttribute(name, trueValue)
+        } else {
+            target?.removeAttribute(name)
+        }
     }
 }
 

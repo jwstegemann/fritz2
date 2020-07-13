@@ -24,4 +24,3 @@ jobs:
         path: core/build/reports/tests/allTests
     - name: Build with Gradle
       run: ./gradlew build
-      

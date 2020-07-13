@@ -35,7 +35,7 @@ internal object ValueAttributeDelegate {
  */
 internal object CheckedAttributeDelegate {
     operator fun <X : Element> getValue(thisRef: Tag<X>, property: KProperty<*>): Flow<Boolean> =
-            throw NotImplementedError()
+        throw NotImplementedError()
 
     operator fun <X : Element> setValue(thisRef: Tag<X>, property: KProperty<*>, values: Flow<Boolean>) {
         CheckedAttributeMountPoint(values, thisRef.domNode)
@@ -70,6 +70,17 @@ interface WithAttributes<out T : Element> : WithDomNode<T> {
      * @receiver the [Flow] to bind
      */
     fun Flow<String>.bindAttr(name: String) = AttributeMountPoint(name, this, domNode)
+
+    /**
+     * bind a boolean [Flow] to a boolean attribute / flag. When the flow emits `true` the attribute will be added.
+     * When the flow emits `false` the attribute will be removed.
+     *
+     * @param name of the attribute
+     * @param value value for the attribute (defaults to "")
+     * @receiver the [Flow] to bind
+     */
+    fun Flow<Boolean>.bindAttr(name: String, value: String = ""): BooleanAttributeMountPoint =
+        BooleanAttributeMountPoint(name, this, domNode, value)
 
     /**
      * bind a [Flow] of [List]s to an attribute. The attribute will be updated in the DOM whenever a new value appears on this [Flow].
