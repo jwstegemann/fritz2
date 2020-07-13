@@ -1,6 +1,5 @@
 package dev.fritz2.dom
 
-import dev.fritz2.binding.const
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
@@ -13,23 +12,23 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-class TextTests {
+class CommentTests {
 
     @Test
-    fun testTextOnString() = runTest {
+    fun testCommentOnString() = runTest {
         initDocument()
 
         val id1 = uniqueId()
         val id2 = uniqueId()
-        val text = "testText"
+        val comment = "testComment"
 
         render {
             section {
                 div(id = id1) {
-                    text(text)
+                    comment(comment)
                 }
                 div(id = id2) {
-                    +text
+                    !comment
                 }
             }
         }.mount(targetId)
@@ -39,33 +38,13 @@ class TextTests {
         val div1 = document.getElementById(id1) as HTMLDivElement
 
         assertEquals(id1, div1.id)
-        assertEquals(text, div1.textContent)
+        assertEquals(8, div1.firstChild?.nodeType)
+        assertEquals(comment, div1.firstChild?.nodeValue)
 
         val div2 = document.getElementById(id2) as HTMLDivElement
 
         assertEquals(id2, div2.id)
-        assertEquals(text, div2.textContent)
+        assertEquals(8, div2.firstChild?.nodeType)
+        assertEquals(comment, div2.firstChild?.nodeValue)
     }
-
-    @Test
-    fun testTextOnFlowOfString() = runTest {
-        initDocument()
-
-        val testId = uniqueId()
-        val text = "testText"
-
-        render {
-            div(id = testId) {
-                const(text).bind()
-            }
-        }.mount(targetId)
-
-        delay(100)
-
-        val element = document.getElementById(testId) as HTMLDivElement
-
-        assertEquals(testId, element.id)
-        assertEquals(text, element.textContent)
-    }
-
 }

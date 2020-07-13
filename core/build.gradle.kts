@@ -6,8 +6,29 @@ plugins {
 
 kotlin {
     jvm()
-    js().browser()
-
+    js().browser {
+        testTask {
+            useKarma {
+//                useSafari()
+//                useFirefox()
+//                useChrome()
+                useChromeHeadless()
+//                usePhantomJS()
+            }
+        }
+// just to have a place to copy it from...
+/*            runTask {
+                devServer = DevServer(
+                    port = 9000,
+                    contentBase = listOf("$projectDir/src/jsMain/resources")
+                ).copy(
+                    proxy = mapOf(
+                        "/get" to "http://postman-echo.com"
+                    )
+                )
+            }
+ */
+    }
     sourceSets {
         all {
             languageSettings.apply {
@@ -15,6 +36,7 @@ kotlin {
                 useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes") // annotation FQ-name
                 useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                useExperimentalAnnotation("kotlinx.coroutines.InternalCoroutinesApi")
                 useExperimentalAnnotation("kotlinx.coroutines.FlowPreview")
             }
         }

@@ -19,12 +19,12 @@ repositories {
 }
 
 allprojects {
-    //TODO: manage common setting and dependencies
+    //manage common setting and dependencies
 }
 
 subprojects {
     group = "dev.fritz2"
-    version = "0.5"
+    version = "0.6"
 
     repositories {
         mavenLocal()
