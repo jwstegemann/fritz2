@@ -4,13 +4,17 @@ import dev.fritz2.binding.MultiMountPoint
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.SingleMountPoint
 import kotlinx.coroutines.flow.Flow
+import org.w3c.dom.Comment
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.Node
+import kotlin.browser.document
 import kotlin.browser.window
 
 /**
  * A [SingleMountPoint] to mount the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * If you mix constant [Tag]s with one or more of these MountPoints, the order ist not guaranteed.
+ * Wrap your mounted elements in a constant [Tag] or use [DomMountPointFixOrder] instead (for example by setting preseveOrder when binding).
  *
  * @param upstream the Flow of [WithDomNode]s to mount here.
  */
@@ -24,10 +28,49 @@ class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val ta
      * @param last last [Tag] (to be replaced)
      */
     override fun set(value: WithDomNode<T>, last: WithDomNode<T>?) {
-        last?.let { target?.replaceChild(value.domNode, last.domNode) }
-            ?: target?.appendChild(value.domNode)
+        if (last?.domNode != null) {
+            target?.replaceChild(value.domNode, last.domNode)
+        } else {
+            target?.appendChild(value.domNode)
+        }
     }
 }
+
+
+/**
+ * A [SingleMountPoint] to mount the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * This MountPoint guarantees to preserve the order of children at it's target by using a placeholder-comment to reserve
+ * it's place in the child-list until the first value on the upstream flow is available.
+ * For performance-reasons and because it is not necessary in most use-cases this is not the default-behaviour when binding a flow.
+ * You can enable it though be setting the preserveOrder-parameter when binding.
+ *
+ * @param upstream the Flow of [WithDomNode]s to mount here.
+ */
+class DomMountPointPreserveOrder<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val target: org.w3c.dom.Node?) :
+    SingleMountPoint<WithDomNode<T>>(upstream) {
+
+    var placeholder: Comment? = document.createComment("...")
+
+    /**
+     * updates the elements in the DOM
+     *
+     * @param value new [Tag]
+     * @param last last [Tag] (to be replaced)
+     */
+    override fun set(value: WithDomNode<T>, last: WithDomNode<T>?) {
+        if (last?.domNode != null) {
+            target?.replaceChild(value.domNode, last.domNode)
+        } else {
+            target?.replaceChild(value.domNode, placeholder!!)
+            placeholder = null // so it can be garbage collected
+        }
+    }
+
+    init {
+        target?.appendChild(placeholder!!)
+    }
+}
+
 
 /**
  * A [MultiMountPoint] to mount the values of a [Flow] of [Patch]es (mostly [Tag]s) at this point in the DOM.

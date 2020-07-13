@@ -55,7 +55,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
     //FIXME: why no suspend on execute
-    inline fun <A, E> handleAndEmit(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T, A) -> T) =
+    inline fun <A, E> handleAndOffer(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T, A) -> T) =
         EmittingHandler<A, E>(bufferSize) { inFlow, outChannel ->
             launch {
                 inFlow.collect {
@@ -70,7 +70,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      * @param bufferSize number of values to buffer
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
-    inline fun <A, E> handleAndEmit(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T) -> T) =
+    inline fun <E> handleAndOffer(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T) -> T) =
         EmittingHandler<Unit, E>(bufferSize) { inFlow, outChannel ->
             launch {
                 inFlow.collect {
@@ -86,6 +86,12 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      */
     fun <A, X> apply(mapper: suspend (A) -> Flow<X>) = Applicator(mapper)
 
+    /**
+     * factory method, to create an [Applicator].
+     *
+     * @param mapper defines how to transform the given action into a new asynchronous [Flow], for example by calling a remote interface.
+     */
+    fun <X> apply(mapper: suspend (Unit) -> Flow<X>) = Applicator(mapper)
 
     /**
      * abstract method defining, how this [Store] handles an [Update]
@@ -118,7 +124,10 @@ abstract class Store<T> : CoroutineScope by MainScope() {
  * @param id: the id of this store. ids of [SubStore]s will be concatenated.
  * @param bufferSize: number of values to buffer
  */
-open class RootStore<T>(initialData: T, override val id: String = "", bufferSize: Int = 1) : Store<T>() {
+open class RootStore<T>(initialData: T,
+                        override val id: String = "",
+                        dropInitialData: Boolean = false,
+                        bufferSize: Int = 1) : Store<T>() {
 
     //TODO: best capacity?
     private val updates = BroadcastChannel<Update<T>>(bufferSize)
@@ -136,7 +145,10 @@ open class RootStore<T>(initialData: T, override val id: String = "", bufferSize
      * the [Flow] only emit's a new value, when the value is differs from the last one to avoid calculations and updates that are not necessary.
      * This has to be a SharedFlow, because the updated should only be applied once, regardless how many depending values or ui-elements or bound to it.
      */
-    override val data = updates.asFlow().scan(initialData, applyUpdate).distinctUntilChanged().asSharedFlow()
+    override val data = updates.asFlow().scan(initialData, applyUpdate)
+        .drop(if(dropInitialData) 1 else 0)
+        .distinctUntilChanged()
+        .asSharedFlow()
 
     /**
      * create a [SubStore] that represents a certain part of your data model.
