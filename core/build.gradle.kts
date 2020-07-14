@@ -2,6 +2,24 @@ plugins {
     kotlin("multiplatform")
     id("maven-publish")
     id("org.jetbrains.dokka")
+    id("io.gitlab.arturbosch.detekt")
+}
+
+detekt {
+    toolVersion = "1.10.0"
+    input = files("src/commonMain/kotlin", "src/jsMain/kotlin", "src/jvmMain/kotlin")
+    config = files("${parent?.projectDir}/.detekt/config.yml")
+    buildUponDefaultConfig = false
+//    reports {
+//        xml {
+//            enabled = true
+//            destination = file("$reportsDir/detekt.xml")
+//        }
+//        html {
+//            enabled = true
+//            destination = file("$reportsDir/detekt.html")
+//        }
+//    }
 }
 
 kotlin {

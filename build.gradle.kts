@@ -11,7 +11,8 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.dokka") version "0.10.1"
+    id("org.jetbrains.dokka") version "0.10.1" apply false
+    id("io.gitlab.arturbosch.detekt") version "1.10.0" apply false
 }
 
 repositories {
