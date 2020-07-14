@@ -64,7 +64,7 @@ class SubModelId<R, P, T>(
 }
 
 /**
- * create a [ModelId] for an element in your [Store]'s list.
+ * create a [ModelId] for an element in your [ModelId]'s list.
  *
  * @param element to get the [ModelId] for
  * @param idProvider to get the id from an instance
@@ -75,10 +75,9 @@ fun <X> RootModelId<List<X>>.sub(element: X, idProvider: idProvider<X>): ModelId
 }
 
 /**
- * create a [ModelId] for an element in your [Store]'s list.
- * use this one, if you use [Store].each() without idProvider to iterate over your list
+ * create a [ModelId] for an element in your [ModelId]'s list.
  *
- * @param position you need the [ModelId] for
+ * @param index you need the [ModelId] for
  */
 fun <X> RootModelId<List<X>>.sub(index: Int): ModelId<X> {
     val lens = positionLens<X>(index)
@@ -86,7 +85,7 @@ fun <X> RootModelId<List<X>>.sub(index: Int): ModelId<X> {
 }
 
 /**
- * create a [ModelId] for an element in your [Store]'s list.
+ * create a [ModelId] for an element in your [ModelId]'s list.
  *
  * @param element to get the [ModelId] for
  * @param idProvider to get the id from an instance
@@ -97,10 +96,9 @@ fun <R, P, X> SubModelId<R, P, List<X>>.sub(element: X, idProvider: idProvider<X
 }
 
 /**
- * create a [ModelId] for an element in your [Store]'s list.
- * use this one, if you use [Store].each() without idProvider to iterate over your list
+ * create a [ModelId] for an element in your [ModelId]'s list.
  *
- * @param position you need the [ModelId] for
+ * @param index you need the [ModelId] for
  */
 fun <R, P, X> SubModelId<R, P, List<X>>.sub(index: Int): ModelId<X> {
     val lens = positionLens<X>(index)
