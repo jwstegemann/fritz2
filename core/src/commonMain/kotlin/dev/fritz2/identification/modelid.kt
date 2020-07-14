@@ -1,6 +1,9 @@
 package dev.fritz2.identification
 
 import dev.fritz2.lenses.Lens
+import dev.fritz2.lenses.elementLens
+import dev.fritz2.lenses.idProvider
+import dev.fritz2.lenses.positionLens
 
 /**
  * represents the id of certain element in a deep nested model structure.
@@ -58,4 +61,48 @@ class SubModelId<R, P, T>(
      */
     override fun <X> sub(lens: Lens<T, X>): SubModelId<R, T, X> =
         SubModelId(this, lens, rootStore, this.rootLens + lens)
+}
+
+/**
+ * create a [ModelId] for an element in your [Store]'s list.
+ *
+ * @param element to get the [ModelId] for
+ * @param idProvider to get the id from an instance
+ */
+fun <X> RootModelId<List<X>>.sub(element: X, idProvider: idProvider<X>): ModelId<X> {
+    val lens = elementLens(element, idProvider)
+    return SubModelId(this, lens, this, lens)
+}
+
+/**
+ * create a [ModelId] for an element in your [Store]'s list.
+ * use this one, if you use [Store].each() without idProvider to iterate over your list
+ *
+ * @param position you need the [ModelId] for
+ */
+fun <X> RootModelId<List<X>>.sub(index: Int): ModelId<X> {
+    val lens = positionLens<X>(index)
+    return SubModelId(this, lens, this, lens)
+}
+
+/**
+ * create a [ModelId] for an element in your [Store]'s list.
+ *
+ * @param element to get the [ModelId] for
+ * @param idProvider to get the id from an instance
+ */
+fun <R, P, X> SubModelId<R, P, List<X>>.sub(element: X, idProvider: idProvider<X>): ModelId<X> {
+    val lens = elementLens(element, idProvider)
+    return SubModelId<R, List<X>, X>(this, lens, this.rootStore, this.rootLens + lens)
+}
+
+/**
+ * create a [ModelId] for an element in your [Store]'s list.
+ * use this one, if you use [Store].each() without idProvider to iterate over your list
+ *
+ * @param position you need the [ModelId] for
+ */
+fun <R, P, X> SubModelId<R, P, List<X>>.sub(index: Int): ModelId<X> {
+    val lens = positionLens<X>(index)
+    return SubModelId<R, List<X>, X>(this, lens, this.rootStore, this.rootLens + lens)
 }
