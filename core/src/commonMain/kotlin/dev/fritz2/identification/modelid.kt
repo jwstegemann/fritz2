@@ -34,7 +34,7 @@ class RootModelId<T>(override val id: String = "") : ModelId<T> {
      *
      * @param lens a [Lens] describing, of which part of your data model you want the id
      */
-    override fun <X> sub(lens: Lens<T, X>): ModelId<X> =
+    override fun <X> sub(lens: Lens<T, X>): SubModelId<T, T, X> =
         SubModelId(this, lens, this, lens)
 }
 
@@ -44,10 +44,10 @@ class RootModelId<T>(override val id: String = "") : ModelId<T> {
  *  It's useful in validation process to know which html elements are not valid.
  */
 class SubModelId<R, P, T>(
-        private val parent: ModelId<P>,
-        private val lens: Lens<P, T>,
-        val rootStore: RootModelId<R>,
-        val rootLens: Lens<R, T>
+    private val parent: ModelId<P>,
+    private val lens: Lens<P, T>,
+    val rootModelId: RootModelId<R>,
+    val rootLens: Lens<R, T>
 ) : ModelId<T> {
     /**
      * defines how the id of a part is derived from the one of it's parent
@@ -60,7 +60,7 @@ class SubModelId<R, P, T>(
      * @param lens a [Lens] describing, of which part of your data model you want the id
      */
     override fun <X> sub(lens: Lens<T, X>): SubModelId<R, T, X> =
-        SubModelId(this, lens, rootStore, this.rootLens + lens)
+        SubModelId(this, lens, rootModelId, this.rootLens + lens)
 }
 
 /**
@@ -69,7 +69,10 @@ class SubModelId<R, P, T>(
  * @param element to get the [ModelId] for
  * @param idProvider to get the id from an instance
  */
-fun <X> RootModelId<List<X>>.sub(element: X, idProvider: idProvider<X>): ModelId<X> {
+inline fun <reified X> RootModelId<List<X>>.sub(
+    element: X,
+    noinline idProvider: idProvider<X>
+): SubModelId<List<X>, List<X>, X> {
     val lens = elementLens(element, idProvider)
     return SubModelId(this, lens, this, lens)
 }
@@ -79,7 +82,7 @@ fun <X> RootModelId<List<X>>.sub(element: X, idProvider: idProvider<X>): ModelId
  *
  * @param index you need the [ModelId] for
  */
-fun <X> RootModelId<List<X>>.sub(index: Int): ModelId<X> {
+inline fun <reified X> RootModelId<List<X>>.sub(index: Int): SubModelId<List<X>, List<X>, X> {
     val lens = positionLens<X>(index)
     return SubModelId(this, lens, this, lens)
 }
@@ -90,17 +93,20 @@ fun <X> RootModelId<List<X>>.sub(index: Int): ModelId<X> {
  * @param element to get the [ModelId] for
  * @param idProvider to get the id from an instance
  */
-fun <R, P, X> SubModelId<R, P, List<X>>.sub(element: X, idProvider: idProvider<X>): ModelId<X> {
+inline fun <R, P, reified X> SubModelId<R, P, List<X>>.sub(
+    element: X,
+    noinline idProvider: idProvider<X>
+): SubModelId<R, List<X>, X> {
     val lens = elementLens(element, idProvider)
-    return SubModelId<R, List<X>, X>(this, lens, this.rootStore, this.rootLens + lens)
+    return SubModelId<R, List<X>, X>(this, lens, this.rootModelId, this.rootLens + lens)
 }
 
 /**
  * create a [ModelId] for an element in your [ModelId]'s list.
  *
- * @param index you need the [ModelId] for
+ * @param index of the element in your list you need the [ModelId] for
  */
-fun <R, P, X> SubModelId<R, P, List<X>>.sub(index: Int): ModelId<X> {
+inline fun <R, P, reified X> SubModelId<R, P, List<X>>.sub(index: Int): SubModelId<R, List<X>, X> {
     val lens = positionLens<X>(index)
-    return SubModelId<R, List<X>, X>(this, lens, this.rootStore, this.rootLens + lens)
+    return SubModelId<R, List<X>, X>(this, lens, this.rootModelId, this.rootLens + lens)
 }
