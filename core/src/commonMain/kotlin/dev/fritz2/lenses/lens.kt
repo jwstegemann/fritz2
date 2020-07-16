@@ -4,7 +4,7 @@ interface Lens<P, T> {
     val _id: String
     fun get(parent: P): T
     fun set(parent: P, value: T): P
-    fun apply(parent: P, mapper: (T) -> T): P = set(parent, mapper(get(parent)))
+    suspend fun apply(parent: P, mapper: suspend (T) -> T): P = set(parent, mapper(get(parent)))
 
 
     operator fun <X> plus(other: Lens<T, X>): Lens<P, X> = object :

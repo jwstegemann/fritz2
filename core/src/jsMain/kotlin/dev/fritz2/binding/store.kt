@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 /**
  * defines a type for transforming one value into the next
  */
-typealias Update<T> = (T) -> T
+typealias Update<T> = suspend (T) -> T
 
 
 /**
@@ -26,7 +26,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      *
      * @param execute lambda that is executed whenever a new action-value appears on the connected event-[Flow].
      */
-    inline fun <A> handle(crossinline execute: (T, A) -> T) = SimpleHandler<A> {
+    inline fun <A> handle(crossinline execute: suspend (T, A) -> T) = SimpleHandler<A> {
         launch {
             it.collect {
                 enqueue { t -> execute(t, it) }
@@ -39,7 +39,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      *
      * @param execute lambda that is execute for each event on the connected [Flow]
      */
-    inline fun handle(crossinline execute: (T) -> T) = SimpleHandler<Unit> {
+    inline fun handle(crossinline execute: suspend (T) -> T) = SimpleHandler<Unit> {
         launch {
             it.collect {
                 enqueue { t -> execute(t) }
@@ -55,7 +55,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
     //FIXME: why no suspend on execute
-    inline fun <A, E> handleAndOffer(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T, A) -> T) =
+    inline fun <A, E> handleAndOffer(bufferSize: Int = 1, crossinline execute: suspend SendChannel<E>.(T, A) -> T) =
         EmittingHandler<A, E>(bufferSize) { inFlow, outChannel ->
             launch {
                 inFlow.collect {
@@ -70,7 +70,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      * @param bufferSize number of values to buffer
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
-    inline fun <E> handleAndOffer(bufferSize: Int = 1, crossinline execute: SendChannel<E>.(T) -> T) =
+    inline fun <E> handleAndOffer(bufferSize: Int = 1, crossinline execute: suspend SendChannel<E>.(T) -> T) =
         EmittingHandler<Unit, E>(bufferSize) { inFlow, outChannel ->
             launch {
                 inFlow.collect {

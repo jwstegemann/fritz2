@@ -1,10 +1,6 @@
 package dev.fritz2.remote
 
 import kotlinx.coroutines.await
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import org.w3c.fetch.*
 import kotlin.browser.window as browserWindow
 
@@ -64,11 +60,10 @@ open class Request(
      * @param subUrl function do derive the url (so you can use baseUrl)
      * @param init an instance of [RequestInit] defining the attributes of the request
      */
-    private fun execute(subUrl: String, init: RequestInit): Flow<Response> = flow {
+    private suspend fun execute(subUrl: String, init: RequestInit): Response {
         val url = "${baseUrl.trimEnd('/')}/${subUrl.trimStart('/')}"
         val response = browserWindow.fetch(url, init).await()
-
-        if (response.ok) emit(response)
+        if (response.ok) return response
         else throw FetchException(response.status, response.text().await(), response)
     }
 
@@ -104,64 +99,57 @@ open class Request(
      *
      * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    fun get(subUrl: String = "") = execute(subUrl, buildInit("GET"))
+    suspend fun get(subUrl: String = "") = execute(subUrl, buildInit("GET"))
 
     /**
      * issues a head request returning a flow of it's response
      *
      * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    fun head(subUrl: String = "") = execute(subUrl, buildInit("HEAD"))
+    suspend fun head(subUrl: String = "") = execute(subUrl, buildInit("HEAD"))
 
     /**
      * issues a connect request returning a flow of it's response
      *
      * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    fun connect(subUrl: String = "") = execute(subUrl, buildInit("CONNECT"))
+    suspend fun connect(subUrl: String = "") = execute(subUrl, buildInit("CONNECT"))
 
     /**
      * issues a options request returning a flow of it's response
      *
      * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    fun options(subUrl: String = "") = execute(subUrl, buildInit("OPTIONS"))
+    suspend fun options(subUrl: String = "") = execute(subUrl, buildInit("OPTIONS"))
 
     /**
      * issues a delete request returning a flow of it's response
      *
      * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    open fun delete(subUrl: String = ""): Flow<Response> {
-        return execute(subUrl, buildInit("DELETE"))
-    }
+    open suspend fun delete(subUrl: String = "") = execute(subUrl, buildInit("DELETE"))
 
     /**
      * issues a post request returning a flow of it's response
      *
      * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    fun post(subUrl: String = ""): Flow<Response> {
-        return execute(subUrl, buildInit("POST"))
-    }
+    suspend fun post(subUrl: String = "") = execute(subUrl, buildInit("POST"))
 
     /**
      * issues a put request returning a flow of it's response
      *
      * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    fun put(subUrl: String = ""): Flow<Response> {
-        return execute(subUrl, buildInit("PUT"))
-    }
+    suspend fun put(subUrl: String = "") = execute(subUrl, buildInit("PUT"))
+
 
     /**
      * issues a patch request returning a flow of it's response
      *
      * @param subUrl endpoint url which getting appended to the baseUrl with `/`
      */
-    fun patch(subUrl: String = ""): Flow<Response> {
-        return execute(subUrl, buildInit("PATCH"))
-    }
+    suspend fun patch(subUrl: String = "") = execute(subUrl, buildInit("PATCH"))
 
     /**
      * sets the body content to the request
@@ -309,59 +297,26 @@ open class Request(
 /**
  * extracts the body as string from the given [Response]
  */
-fun Flow<Response>.body() = this.map {
-    it.text().await()
-}
+suspend fun Response.getBody() = this.text().await()
 
 /**
  * extracts the body as blob from the given [Response]
  */
-fun Flow<Response>.blob() = this.map {
-    it.blob().await()
-}
+suspend fun Response.getBlob() = this.blob().await()
 
 /**
  * extracts the body as arrayBuffer from the given [Response]
  */
-fun Flow<Response>.arrayBuffer() = this.map {
-    it.arrayBuffer().await()
-}
+suspend fun Response.getArrayBuffer() = this.arrayBuffer().await()
 
 /**
  * extracts the body as formData from the given [Response]
  */
-fun Flow<Response>.formData() = this.map {
-    it.formData().await()
-}
+suspend fun Response.getFormData() = this.formData().await()
 
 /**
  * extracts the body as json from the given [Response]
  */
-fun Flow<Response>.json() = this.map {
-    it.json().await()
-}
-
-/**
- * defines, how to handle an error that occurred during a http request.
- *
- * @param handler function that describes, how to handle a thrown [FetchException]
- */
-fun Flow<Response>.onError(handler: (FetchException) -> Unit) = this.catch {
-    when (it) {
-        is FetchException -> {
-            handler(it)
-        }
-        else -> {
-            loggingErrorHandler(it)
-        }
-    }
-}
-
-/**
- * adds a handler to log all exceptions that occur during a fetch action
- */
-fun Flow<Response>.onErrorLog() = this.catch {
-    loggingErrorHandler(it)
-}
+suspend fun Response.getJson() = json().await()
 
 external fun btoa(decoded: String): String
