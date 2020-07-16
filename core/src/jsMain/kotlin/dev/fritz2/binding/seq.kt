@@ -1,6 +1,6 @@
 package dev.fritz2.binding
 
-import dev.fritz2.lenses.idProvider
+import dev.fritz2.lenses.IdProvider
 import dev.fritz2.utils.Myer
 import kotlinx.coroutines.flow.*
 
@@ -99,7 +99,7 @@ private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, n
  * This allows the detection os moves.
  * Keep in mind, that no [Patch] is derived, when an element stays the same, but changes it's internal values.
  */
-fun <T> Flow<List<T>>.each(id: idProvider<T>): Seq<T> =
+fun <T, I> Flow<List<T>>.each(id: IdProvider<T, I>): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
         Myer.diff(old, new, id)
     })

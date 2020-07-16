@@ -25,17 +25,17 @@ inline fun <P, T> buildLens(id: String, crossinline getter: (P) -> T, crossinlin
 /**
  * function to derive a valid id for a given instance that does not change over time.
  */
-typealias idProvider<T> = (T) -> String
+typealias IdProvider<T, I> = (T) -> I
 
 /**
  * creates a [Lens] pointing to a certain element in a list
  *
  * @param element current instance of the element to focus on
- * @param id [idProvider] to identify the element in the list (i.e. when it's content changes over time)
+ * @param id [IdProvider] to identify the element in the list (i.e. when it's content changes over time)
  */
-fun <T> elementLens(element: T, id: idProvider<T>): Lens<List<T>, T> = object :
+fun <T, I> elementLens(element: T, id: IdProvider<T, I>): Lens<List<T>, T> = object :
     Lens<List<T>, T> {
-    override val _id: String = id(element)
+    override val _id: String = id(element).toString()
 
     override fun get(parent: List<T>): T = parent.find {
         id(it) == id(element)

@@ -1,7 +1,7 @@
 package dev.fritz2.utils
 
 import dev.fritz2.binding.Patch
-import dev.fritz2.lenses.idProvider
+import dev.fritz2.lenses.IdProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -21,7 +21,7 @@ object Myer {
      * @param newLis new version of the [List]
      * @return a [Flow] of [Patch]es needed to transform the old list into the new one
      */
-    fun <T> diff(oldList: List<T>, newList: List<T>, id: idProvider<T>): Flow<Patch<T>> {
+    fun <T, I> diff(oldList: List<T>, newList: List<T>, id: IdProvider<T, I>): Flow<Patch<T>> {
         val isSame = { a: T, b: T -> id(a) == id(b) }
         val trace = shortestEdit(oldList, newList, isSame)
         return flow {

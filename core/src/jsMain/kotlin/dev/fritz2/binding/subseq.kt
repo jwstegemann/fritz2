@@ -1,17 +1,17 @@
 package dev.fritz2.binding
 
+import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.elementLens
-import dev.fritz2.lenses.idProvider
 import dev.fritz2.lenses.positionLens
 import kotlinx.coroutines.flow.map
 
 /**
- * factory-method to create a [SubStore] using a [RootStore] as parent using a given [idProvider].
+ * factory-method to create a [SubStore] using a [RootStore] as parent using a given [IdProvider].
  *
  * @param element current instance of the entity to focus on
- * @param id [idProvider] to identify the same entity (i.e. when it's content changed)
+ * @param id [IdProvider] to identify the same entity (i.e. when it's content changed)
  */
-fun <T> RootStore<List<T>>.sub(element: T, id: idProvider<T>): SubStore<List<T>, List<T>, T> {
+fun <T, I> RootStore<List<T>>.sub(element: T, id: IdProvider<T, I>): SubStore<List<T>, List<T>, T> {
     val lens = elementLens(element, id)
     return SubStore(this, lens, this, lens)
 }
@@ -28,12 +28,12 @@ fun <T> RootStore<List<T>>.sub(index: Int): SubStore<List<T>, List<T>, T> {
 }
 
 /**
- * factory-method to create a [SubStore] using another [SubStore] as parent using a given [idProvider].
+ * factory-method to create a [SubStore] using another [SubStore] as parent using a given [IdProvider].
  *
  * @param element current instance of the entity to focus on
- * @param id [idProvider] to identify the same entity (i.e. when it's content changed)
+ * @param id [IdProvider] to identify the same entity (i.e. when it's content changed)
  */
-fun <R, P, T> SubStore<R, P, List<T>>.sub(element: T, id: idProvider<T>): SubStore<R, List<T>, T> {
+fun <R, P, T, I> SubStore<R, P, List<T>>.sub(element: T, id: IdProvider<T, I>): SubStore<R, List<T>, T> {
     val lens = elementLens(element, id)
     return SubStore(this, lens, rootStore, rootLens + lens)
 }
@@ -50,18 +50,18 @@ fun <R, P, T> SubStore<R, P, List<T>>.sub(index: Int): SubStore<R, List<T>, T> {
 }
 
 /**
- * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] using a given [idProvider].
+ * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] using a given [IdProvider].
  * You can also call [each] and inside it's lambda create the [SubStore] using [sub].
  *
- * @param id [idProvider] to identify the same entity (i.e. when it's content changed)
+ * @param id [IdProvider] to identify the same entity (i.e. when it's content changed)
  */
-fun <T> RootStore<List<T>>.each(id: idProvider<T>): Seq<SubStore<List<T>, List<T>, T>> =
+fun <T, I> RootStore<List<T>>.each(id: IdProvider<T, I>): Seq<SubStore<List<T>, List<T>, T>> =
     this.data.each(id).map {
         sub(it, id)
     }
 
 /**
- * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] without [idProvider]
+ * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] without [IdProvider]
  * using the index in the list (do not use this, if you want to manipulate the list itself (add or move elements, filter, etc.).
  */
 fun <T> RootStore<List<T>>.each(): Seq<SubStore<List<T>, List<T>, T>> =
@@ -70,18 +70,18 @@ fun <T> RootStore<List<T>>.each(): Seq<SubStore<List<T>, List<T>, T>> =
     }
 
 /**
- * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] using a given [idProvider]
+ * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] using a given [IdProvider]
  * You can also call [each] and inside it's lambda create the [SubStore] using [sub].
  *
- * @param id [idProvider] to identify the same entity (i.e. when it's content changed)
+ * @param id [IdProvider] to identify the same entity (i.e. when it's content changed)
  */
-fun <R, P, T> SubStore<R, P, List<T>>.each(id: idProvider<T>): Seq<SubStore<R, List<T>, T>> =
+fun <R, P, T, I> SubStore<R, P, List<T>>.each(id: IdProvider<T, I>): Seq<SubStore<R, List<T>, T>> =
     this.data.each().map {
         sub(it, id)
     }
 
 /**
- * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] without [idProvider]
+ * convenience-method to create a [Seq] of [SubStores], one for each element of the [List] without [IdProvider]
  * using the index in the list (do not use this, if you want to manipulate the list itself (add or move elements, filter, etc.).
  * You can also call [each] and inside it's lambda create the [SubStore] using [sub].
  */
