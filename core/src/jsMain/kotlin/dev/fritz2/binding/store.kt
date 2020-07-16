@@ -80,20 +80,6 @@ abstract class Store<T> : CoroutineScope by MainScope() {
         }
 
     /**
-     * factory method, to create an [Applicator].
-     *
-     * @param mapper defines how to transform the given action into a new asynchronous [Flow], for example by calling a remote interface.
-     */
-    fun <A, X> apply(mapper: suspend (A) -> Flow<X>) = Applicator(mapper)
-
-    /**
-     * factory method, to create an [Applicator].
-     *
-     * @param mapper defines how to transform the given action into a new asynchronous [Flow], for example by calling a remote interface.
-     */
-    fun <X> apply(mapper: suspend (Unit) -> Flow<X>) = Applicator(mapper)
-
-    /**
      * abstract method defining, how this [Store] handles an [Update]
      *
      * @param update the [Update] to handle
