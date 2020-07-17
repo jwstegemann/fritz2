@@ -1,6 +1,7 @@
 package dev.fritz2.format
 
 import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.Update
 import dev.fritz2.lenses.Lens
@@ -46,5 +47,8 @@ class FormatStore<R, P>(
      */
     override val data: Flow<String> = parent.data.map { format.format(it) }
 
+    /**
+     * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
+     */
     override val update = handle<String> { _, newValue -> newValue }
 }

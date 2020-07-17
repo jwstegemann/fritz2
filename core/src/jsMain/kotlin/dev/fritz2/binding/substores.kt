@@ -35,6 +35,9 @@ class SubStore<R, P, T>(
         }
     }
 
+    /**
+     * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
+     */
     override val update = handle<T> { _, newValue -> newValue }
 
     /**
