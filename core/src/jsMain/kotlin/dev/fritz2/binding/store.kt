@@ -18,7 +18,7 @@ typealias Update<T> = suspend (T) -> T
 /**
  * The [Store] is the main type for all data binding activities. It the base class of all concrete Stores like [RootStore], [SubStore], etc.
  */
-abstract class Store<T> : CoroutineScope by MainScope() {
+interface Store<T> : CoroutineScope {
 
     /**
      * factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
@@ -26,7 +26,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      *
      * @param execute lambda that is executed whenever a new action-value appears on the connected event-[Flow].
      */
-    inline fun <A> handle(crossinline execute: suspend (T, A) -> T) = SimpleHandler<A> {
+    fun <A> handle(execute: suspend (T, A) -> T) = SimpleHandler<A> {
         launch {
             it.collect {
                 enqueue { t -> execute(t, it) }
@@ -39,7 +39,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      *
      * @param execute lambda that is execute for each event on the connected [Flow]
      */
-    inline fun handle(crossinline execute: suspend (T) -> T) = SimpleHandler<Unit> {
+    fun handle(execute: suspend (T) -> T) = SimpleHandler<Unit> {
         launch {
             it.collect {
                 enqueue { t -> execute(t) }
@@ -55,7 +55,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
     //FIXME: why no suspend on execute
-    inline fun <A, E> handleAndOffer(bufferSize: Int = 1, crossinline execute: suspend SendChannel<E>.(T, A) -> T) =
+    fun <A, E> handleAndOffer(bufferSize: Int = 1, execute: suspend SendChannel<E>.(T, A) -> T) =
         EmittingHandler<A, E>(bufferSize) { inFlow, outChannel ->
             launch {
                 inFlow.collect {
@@ -70,7 +70,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
      * @param bufferSize number of values to buffer
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
-    inline fun <E> handleAndOffer(bufferSize: Int = 1, crossinline execute: suspend SendChannel<E>.(T) -> T) =
+    fun <E> handleAndOffer(bufferSize: Int = 1, execute: suspend SendChannel<E>.(T) -> T) =
         EmittingHandler<Unit, E>(bufferSize) { inFlow, outChannel ->
             launch {
                 inFlow.collect {
@@ -100,7 +100,7 @@ abstract class Store<T> : CoroutineScope by MainScope() {
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
      */
-    val update = handle<T> { _, newValue -> newValue }
+    val update: Handler<T>
 }
 
 /**
@@ -110,10 +110,12 @@ abstract class Store<T> : CoroutineScope by MainScope() {
  * @param id: the id of this store. ids of [SubStore]s will be concatenated.
  * @param bufferSize: number of values to buffer
  */
-open class RootStore<T>(initialData: T,
-                        override val id: String = "",
-                        dropInitialData: Boolean = false,
-                        bufferSize: Int = 1) : Store<T>() {
+open class RootStore<T>(
+    initialData: T,
+    override val id: String = "",
+    dropInitialData: Boolean = false,
+    bufferSize: Int = 1
+) : Store<T>, CoroutineScope by MainScope() {
 
     //TODO: best capacity?
     private val updates = BroadcastChannel<Update<T>>(bufferSize)
@@ -132,9 +134,11 @@ open class RootStore<T>(initialData: T,
      * This has to be a SharedFlow, because the updated should only be applied once, regardless how many depending values or ui-elements or bound to it.
      */
     override val data = updates.asFlow().scan(initialData, applyUpdate)
-        .drop(if(dropInitialData) 1 else 0)
+        .drop(if (dropInitialData) 1 else 0)
         .distinctUntilChanged()
         .asSharedFlow()
+
+    override val update = handle<T> { _, newValue -> newValue }
 
     /**
      * create a [SubStore] that represents a certain part of your data model.

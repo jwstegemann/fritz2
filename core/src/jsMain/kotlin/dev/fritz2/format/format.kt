@@ -4,6 +4,8 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.Update
 import dev.fritz2.lenses.Lens
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -23,7 +25,7 @@ class FormatStore<R, P>(
     private val rootStore: RootStore<R>,
     private val rootLens: Lens<R, P>,
     private val format: Format<P>
-) : Store<String>() {
+) : Store<String>, CoroutineScope by MainScope() {
 
     /**
      * id of this [Store]
@@ -43,4 +45,6 @@ class FormatStore<R, P>(
      * applies the given [Format] to the data-[Flow] of the parent [Store]
      */
     override val data: Flow<String> = parent.data.map { format.format(it) }
+
+    override val update = handle<String> { _, newValue -> newValue }
 }
