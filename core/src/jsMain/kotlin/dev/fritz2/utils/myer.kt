@@ -21,8 +21,8 @@ object Myer {
      * @param newLis new version of the [List]
      * @return a [Flow] of [Patch]es needed to transform the old list into the new one
      */
-    fun <T, I> diff(oldList: List<T>, newList: List<T>, id: IdProvider<T, I>): Flow<Patch<T>> {
-        val isSame = { a: T, b: T -> id(a) == id(b) }
+    fun <T, I> diff(oldList: List<T>, newList: List<T>, idProvider: IdProvider<T, I>): Flow<Patch<T>> {
+        val isSame = { a: T, b: T -> idProvider(a) == idProvider(b) }
         val trace = shortestEdit(oldList, newList, isSame)
         return flow {
             backtrack<T>(trace, oldList, newList, isSame)

@@ -93,19 +93,22 @@ private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, n
 
 
 /**
- * factory method to create a [Seq] from a [Flow] of a [List] of a type implementing [WithId]
+ * Creates a [Seq] from a [Flow] of a [List].
  * Call it for example on the data-[Flow] of your (Sub-)Store.
- * The [Patch]es are determined using Myer's diff-algorithm. Elements with the same id are considered the same element.
- * This allows the detection os moves.
- * Keep in mind, that no [Patch] is derived, when an element stays the same, but changes it's internal values.
+ * The [Patch]es are determined using Myer's diff-algorithm.
+ * Elements with the same id, provided by the [idProvider], are considered the same element.
+ * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
+ * when an element stays the same, but changes it's internal values.
+ *
+ * @param [idProvider] to identify the element in the list (i.e. when it's content changes over time)
  */
-fun <T, I> Flow<List<T>>.each(id: IdProvider<T, I>): Seq<T> =
+fun <T, I> Flow<List<T>>.each(idProvider: IdProvider<T, I>): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
-        Myer.diff(old, new, id)
+        Myer.diff(old, new, idProvider)
     })
 
 /**
- * factory method to create a [Seq] from a [Flow] of a [List]
+ * Creates a [Seq] from a [Flow] of a [List]
  * Call it for example on the data-[Flow] of your (Sub-)Store.
  * The [Patch]es are determined using Myer's diff-algorithm.
  */
@@ -115,7 +118,7 @@ fun <T> Flow<List<T>>.each(): Seq<T> =
     })
 
 /**
- * factory method to create a [Seq] from a [Flow] of a [List]
+ * Creates a [Seq] from a [Flow] of a [List]
  * The [Patch]es are determined by the position of elements, so elements are just added or removed it the end.
  * This is only usefull in connection with [Store]s in your rendering.
  */
