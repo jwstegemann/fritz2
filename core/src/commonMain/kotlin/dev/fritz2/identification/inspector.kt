@@ -1,8 +1,8 @@
 package dev.fritz2.identification
 
+import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.elementLens
-import dev.fritz2.lenses.idProvider
 import dev.fritz2.lenses.positionLens
 
 /**
@@ -22,7 +22,7 @@ interface Inspector<T> {
     val id: String
 
     /**
-     * method to create a new [Inspector] for a part of your underlying data-model
+     * creates a new [Inspector] for a part of your underlying data-model
      *
      * @param lens a [Lens] describing, of which part of your data
      * model you want to have the next [Inspector]
@@ -73,21 +73,21 @@ class SubInspector<R, P, T>(
 }
 
 /**
- * create a [Inspector] for an element in your [Inspector]'s list.
+ * creates a [Inspector] for an element in your [Inspector]'s list.
  *
  * @param element to get the [Inspector] for
  * @param idProvider to get the id from an instance
  */
-inline fun <reified X> RootInspector<List<X>>.sub(
-    element: X,
-    noinline idProvider: idProvider<X>
-): SubInspector<List<X>, List<X>, X> {
+inline fun <reified T, I> RootInspector<List<T>>.sub(
+    element: T,
+    noinline idProvider: IdProvider<T, I>
+): SubInspector<List<T>, List<T>, T> {
     val lens = elementLens(element, idProvider)
     return SubInspector(this, lens, this, lens)
 }
 
 /**
- * create a [Inspector] for an element in your [Inspector]'s list.
+ * creates a [Inspector] for an element in your [Inspector]'s list.
  *
  * @param index you need the [Inspector] for
  */
@@ -97,21 +97,21 @@ inline fun <reified X> RootInspector<List<X>>.sub(index: Int): SubInspector<List
 }
 
 /**
- * create a [Inspector] for an element in your [Inspector]'s list.
+ * creates a [Inspector] for an element in your [Inspector]'s list.
  *
  * @param element to get the [Inspector] for
  * @param idProvider to get the id from an instance
  */
-inline fun <R, P, reified X> SubInspector<R, P, List<X>>.sub(
-    element: X,
-    noinline idProvider: idProvider<X>
-): SubInspector<R, List<X>, X> {
+inline fun <R, P, reified T, I> SubInspector<R, P, List<T>>.sub(
+    element: T,
+    noinline idProvider: IdProvider<T, I>
+): SubInspector<R, List<T>, T> {
     val lens = elementLens(element, idProvider)
-    return SubInspector<R, List<X>, X>(this, lens, this.rootModelId, this.rootLens + lens)
+    return SubInspector<R, List<T>, T>(this, lens, this.rootModelId, this.rootLens + lens)
 }
 
 /**
- * create a [Inspector] for an element in your [Inspector]'s list.
+ * creates a [Inspector] for an element in your [Inspector]'s list.
  *
  * @param index of the element in your list you need the [Inspector] for
  */

@@ -25,24 +25,24 @@ inline fun <P, T> buildLens(id: String, crossinline getter: (P) -> T, crossinlin
 /**
  * function to derive a valid id for a given instance that does not change over time.
  */
-typealias idProvider<T> = (T) -> String
+typealias IdProvider<T, I> = (T) -> I
 
 /**
  * creates a [Lens] pointing to a certain element in a list
  *
  * @param element current instance of the element to focus on
- * @param id [idProvider] to identify the element in the list (i.e. when it's content changes over time)
+ * @param idProvider to identify the element in the list (i.e. when it's content changes over time)
  */
-fun <T> elementLens(element: T, id: idProvider<T>): Lens<List<T>, T> = object :
+fun <T, I> elementLens(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, T> = object :
     Lens<List<T>, T> {
-    override val _id: String = id(element)
+    override val _id: String = idProvider(element).toString()
 
     override fun get(parent: List<T>): T = parent.find {
-        id(it) == id(element)
+        idProvider(it) == idProvider(element)
     } ?: throw IndexOutOfBoundsException()
 
     override fun set(parent: List<T>, value: T): List<T> = parent.map {
-        if (id(it) == id(value)) value else it
+        if (idProvider(it) == idProvider(value)) value else it
     }
 }
 
