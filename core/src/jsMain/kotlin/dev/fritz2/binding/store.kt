@@ -84,18 +84,17 @@ interface Store<T> : CoroutineScope {
      *
      * @param update the [Update] to handle
      */
-    abstract suspend fun enqueue(update: Update<T>)
+    suspend fun enqueue(update: Update<T>)
 
     /**
      * base-id of this [Store]. ids of depending [Store]s are concatenated separated by a dot.
      */
-    abstract val id: String
-
+    val id: String
 
     /**
      * the [Flow] representing the current value of the [Store]. Use this to bind it to ui-elements or derive calculated values by using [map] for example.
      */
-    abstract val data: Flow<T>
+    val data: Flow<T>
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
@@ -140,7 +139,7 @@ open class RootStore<T>(
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
      */
-    override val update = handle<T> { _, newValue -> newValue }
+    override val update = this.handle<T> { _, newValue -> newValue }
 
     /**
      * create a [SubStore] that represents a certain part of your data model.
