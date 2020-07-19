@@ -1,6 +1,7 @@
 package dev.fritz2.format
 
 import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.SubStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.Update
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.map
 /**
  * A [Store] representing the formatted value of it's parent [Store].
  * Use this to transparently bind a Date, an Int or some other data-type in your model to an HTML-input (that can only handle [String]s).
- * Do not create an instance by yourself. Use the factory-method at [SubStore]
+ * Do not create an instance by yourself. Use the [SubStore.using] instead.
  *
  * @param parent parent [Store]
  * @param rootStore [RootStore] in this chain of [Store]s
