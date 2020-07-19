@@ -4,6 +4,8 @@ import dev.fritz2.flow.asSharedFlow
 import dev.fritz2.format.Format
 import dev.fritz2.format.FormatStore
 import dev.fritz2.lenses.Lens
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -17,7 +19,7 @@ class SubStore<R, P, T>(
     private val lens: Lens<P, T>,
     internal val rootStore: RootStore<R>,
     internal val rootLens: Lens<R, T>
-) : Store<T>() {
+) : Store<T>, CoroutineScope by MainScope() {
 
     /**
      * defines how to infer the id of the sub-part from the parent's id.
@@ -32,6 +34,11 @@ class SubStore<R, P, T>(
             rootLens.apply(it, update)
         }
     }
+
+    /**
+     * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
+     */
+    override val update = handle<T> { _, newValue -> newValue }
 
     /**
      * the current value of the [SubStore] is derived from the data of it's parent using the given [Lens].

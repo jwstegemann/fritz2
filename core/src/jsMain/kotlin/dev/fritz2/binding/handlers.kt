@@ -3,7 +3,10 @@ package dev.fritz2.binding
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emitAll
 
 interface Handler<A> {
     val execute: (Flow<A>) -> Unit
@@ -47,17 +50,5 @@ class EmittingHandler<A, E>(bufferSize: Int, inline val executeWithChannel: (Flo
      */
     override suspend fun collect(collector: FlowCollector<E>) {
         collector.emitAll(channel.asFlow())
-    }
-}
-
-
-//FIXME: we need an Applicator, that can access the actual model
-class Applicator<A, X>(inline val execute: suspend (A) -> Flow<X>) {
-    infix fun andThen(nextHandler: Handler<X>) = SimpleHandler<A> {
-        nextHandler.execute(it.flatMapConcat(this.execute))
-    }
-
-    infix fun <Y> andThen(nextApplicator: Applicator<X, Y>): Applicator<A, Y> = Applicator {
-        execute(it).flatMapConcat(nextApplicator.execute)
     }
 }
