@@ -5,7 +5,7 @@ import dev.fritz2.test.runTest
 import kotlin.test.*
 
 /**
- * See [Httpbin]((https://httpbin.org/) for testing endpoints
+ * See [Httpbin](https://httpbin.org/) for testing endpoints
  */
 class RemoteTests {
 
@@ -88,6 +88,9 @@ class RemoteTests {
         assertTrue(body.contains(Regex("""Cache-Control.+no-cache""")), "Cache-Control header not found")
     }
 
+    /**
+     * See [crudcrud.com](https://crudcrud.com).
+     */
     @Test
     fun testCURD() = runTest {
         val crudcrud = remote("https://crudcrud.com")
