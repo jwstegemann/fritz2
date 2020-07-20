@@ -92,7 +92,7 @@ class RemoteTests {
      * See [crudcrud.com](https://crudcrud.com).
      */
     @Test
-    fun testCURD() = runTest {
+    fun testCRUDMethods() = runTest {
         val crudcrud = remote("https://crudcrud.com")
         val regex = """href="/Dashboard/(.+)">""".toRegex()
         val endpointId = regex.find(crudcrud.get().getBody())?.groupValues?.get(1)
@@ -102,7 +102,7 @@ class RemoteTests {
         val users = crudcrud.append("api/$endpointId/users")
         val names = mutableListOf<String>()
         val ids = mutableListOf<String>()
-        for (i in 1..5) {
+        for (i in 1..3) {
             val name = "name-${uniqueId()}"
             names.add(name)
             val saved = users.body("""{"num": $i, "name": "$name"}""").contentType("application/json").post().getBody()
