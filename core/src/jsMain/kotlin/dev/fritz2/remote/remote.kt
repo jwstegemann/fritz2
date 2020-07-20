@@ -64,7 +64,7 @@ open class Request(
         val url = "${baseUrl.trimEnd('/')}/${subUrl.trimStart('/')}"
         val response = browserWindow.fetch(url, init).await()
         if (response.ok) return response
-        else throw FetchException(response.status, response.text().await(), response)
+        else throw FetchException(response.status, response.getBody(), response)
     }
 
     /**
@@ -97,49 +97,49 @@ open class Request(
     /**
      * issues a get request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
+     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
      */
     suspend fun get(subUrl: String = "") = execute(subUrl, buildInit("GET"))
 
     /**
      * issues a head request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
+     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
      */
     suspend fun head(subUrl: String = "") = execute(subUrl, buildInit("HEAD"))
 
     /**
      * issues a connect request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
+     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
      */
     suspend fun connect(subUrl: String = "") = execute(subUrl, buildInit("CONNECT"))
 
     /**
      * issues a options request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
+     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
      */
     suspend fun options(subUrl: String = "") = execute(subUrl, buildInit("OPTIONS"))
 
     /**
      * issues a delete request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
+     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
      */
     open suspend fun delete(subUrl: String = "") = execute(subUrl, buildInit("DELETE"))
 
     /**
      * issues a post request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
+     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
      */
     suspend fun post(subUrl: String = "") = execute(subUrl, buildInit("POST"))
 
     /**
      * issues a put request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
+     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
      */
     suspend fun put(subUrl: String = "") = execute(subUrl, buildInit("PUT"))
 
@@ -147,9 +147,20 @@ open class Request(
     /**
      * issues a patch request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the baseUrl with `/`
+     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
      */
     suspend fun patch(subUrl: String = "") = execute(subUrl, buildInit("PATCH"))
+
+    /**
+     * appends the given [subUrl] to the [baseUrl]
+     *
+     * @param subUrl url which getting appended to the [baseUrl] with `/`
+     */
+    fun append(subUrl: String) = Request(
+            "${baseUrl.trimEnd('/')}/${subUrl.trimStart('/')}",
+            headers, body, referrer, referrerPolicy, mode,
+            credentials, cache, redirect, integrity, keepalive, reqWindow
+    )
 
     /**
      * sets the body content to the request
@@ -298,6 +309,8 @@ open class Request(
  * extracts the body as string from the given [Response]
  */
 suspend fun Response.getBody() = this.text().await()
+
+suspend fun Response.getHeaders() = this.headers
 
 /**
  * extracts the body as blob from the given [Response]
