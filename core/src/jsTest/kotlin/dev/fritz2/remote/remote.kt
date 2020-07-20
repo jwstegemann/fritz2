@@ -1,9 +1,8 @@
 package dev.fritz2.remote
 
+import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.runTest
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 /**
  * See [Httpbin]((https://httpbin.org/) for testing endpoints
@@ -88,4 +87,37 @@ class RemoteTests {
         assertTrue(body.contains(Regex("""Accept.+application/json""")), "Accept header not found")
         assertTrue(body.contains(Regex("""Cache-Control.+no-cache""")), "Cache-Control header not found")
     }
+
+    @Test
+    fun testCURD() = runTest {
+        val crudcrud = remote("https://crudcrud.com")
+        val regex = """href="/Dashboard/(.+)">""".toRegex()
+        val endpointId = regex.find(crudcrud.get().getBody())?.groupValues?.get(1)
+                ?: fail("Could not get UniqueEndpointId for https://crudcrud.com/")
+        println("See Dashboard here: https://crudcrud.com/Dashboard/$endpointId")
+
+        val users = crudcrud.append("api/$endpointId/users")
+        val names = mutableListOf<String>()
+        val ids = mutableListOf<String>()
+        for (i in 1..5) {
+            val name = "name-${uniqueId()}"
+            names.add(name)
+            val saved = users.body("""{"num": $i, "name": "$name"}""").contentType("application/json").post().getBody()
+            val id = JSON.parse<dynamic>(saved)._id
+            if(id != undefined) ids.add(id as String)
+            assertTrue(saved.contains(name), "saved entity not like posted")
+        }
+        val load = users.acceptJson().get().getBody()
+        for(name in names) {
+            assertTrue(load.contains(name), "posted entity is not in list")
+        }
+        for (id in ids) {
+            users.delete(id)
+        }
+        val empty = users.acceptJson().get().getBody()
+        for(name in names) {
+            assertFalse(empty.contains(name), "deleted entity is in list")
+        }
+    }
+
 }
