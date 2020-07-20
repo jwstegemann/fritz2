@@ -24,7 +24,7 @@ jobs:
       with:
         name: Test-Results
         path: core/build/reports/tests/allTests
-    - name: Build with Gradle
+    - name: Publish with Gradle
       run: ./gradlew publish
       env: # Or as an environment variable
         BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
