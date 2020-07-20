@@ -14,6 +14,8 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 12
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
     - name: Build and run Unit Tests
       run: ./gradlew allTests
     - name: Archive test-results
@@ -23,4 +25,6 @@ jobs:
         name: Test-Results
         path: core/build/reports/tests/allTests
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew publish
+      env: # Or as an environment variable
+        BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}

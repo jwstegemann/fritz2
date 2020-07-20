@@ -38,15 +38,13 @@ publishing {
     repositories {
         maven {
             name = "bintray"
-            val bintrayUsername = "jwstegemann"
-            val bintrayRepoName = "fritz2"
-            val bintrayPackageName = "lenses-annotation-processor"
-            setUrl(
-                "https://api.bintray.com/maven/" +
-                        "$bintrayUsername/$bintrayRepoName/$bintrayPackageName/;" +
-                        "publish=0;" + // Never auto-publish to allow override.
-                        "override=0"
-            )
+            val releaseUrl = "https://api.bintray.com/maven/jwstegemann/fritz2/${project.name}/;" +
+                    "publish=0;" + // Never auto-publish to allow override.
+                    "override=1"
+            val snapshotUrl = "https://oss.jfrog.org/artifactory/oss-snapshot-local"
+
+            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotUrl else releaseUrl)
+
             credentials {
                 username = "jwstegemann"
                 password = System.getenv("BINTRAY_API_KEY")
