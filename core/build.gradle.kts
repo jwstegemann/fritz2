@@ -77,8 +77,9 @@ publishing {
                     "publish=0;" + // Never auto-publish to allow override.
                     "override=1"
             val snapshotUrl = "https://oss.jfrog.org/artifactory/oss-snapshot-local"
+            val isRelease = System.getenv("GITHUB_EVENT_NAME").equals("release", true)
 
-            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotUrl else releaseUrl)
+            url = uri(if (isRelease && !version.toString().endsWith("SNAPSHOT")) releaseUrl else snapshotUrl)
 
             credentials {
                 username = "jwstegemann"
