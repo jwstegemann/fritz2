@@ -1,14 +1,20 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.action
 import dev.fritz2.binding.const
+import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.mount
+import dev.fritz2.dom.selectedText
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLOptionElement
+import org.w3c.dom.HTMLSelectElement
 import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -83,5 +89,56 @@ class MountTests {
 
         assertEquals(false, input.checked, "modified elem.checked is not equal")
         assertEquals(null, input.getAttribute("checked"), "modified elem.getAttribute(\"checked\") is not equal")
+    }
+
+    @Test
+    fun testSelectedAttributeMountPoint() = runTest {
+        initDocument()
+
+        val id = uniqueId()
+        val option1Id = "option1-${uniqueId()}"
+        val option2Id = "option2-${uniqueId()}"
+
+        val store = object : RootStore<String>("option1") {
+            val select = handle<String> { _, action ->
+                action
+            }
+        }
+
+        render {
+            div {
+                select (id = id) {
+                    option(id = option1Id) {
+                        text("option1")
+                        selected = store.data.map { it == "option1" }
+                    }
+                    option(id = option2Id) {
+                        text("option2")
+                        selected = store.data.map { it == "option2" }
+                    }
+                    changes.selectedText() handledBy store.select
+                }
+            }
+        }.mount(targetId)
+
+        delay(250)
+
+        val select = document.getElementById(id) as HTMLSelectElement
+        val option1 = document.getElementById(option1Id) as HTMLOptionElement
+        val option2 = document.getElementById(option2Id) as HTMLOptionElement
+        assertEquals(0, select.selectedIndex, "initial first option is not selected")
+        assertEquals(true, option1.selected, "initial first option.selected is not true")
+        assertEquals("", option1.getAttribute("selected"), "initial first option.getAttribute(\"selected\") is not filled")
+        assertEquals(false, option2.selected, "initial second option.selected is not false")
+        assertEquals(null, option2.getAttribute("selected"), "initial second option.getAttribute(\"selected\") is not empty")
+
+        action("option2") handledBy store.select
+        delay(250)
+
+        assertEquals(1, select.selectedIndex, "modified second option is not selected")
+        assertEquals(false, option1.selected, "modified first option.selected is not false")
+        assertEquals(null, option1.getAttribute("selected"), "modified first option.getAttribute(\"selected\") is not empty")
+        assertEquals(true, option2.selected, "modified second option.selected is not true")
+        assertEquals("", option2.getAttribute("selected"), "modified second option.getAttribute(\"selected\") is not filled")
     }
 }

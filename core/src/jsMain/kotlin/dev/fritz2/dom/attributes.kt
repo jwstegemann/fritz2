@@ -43,6 +43,19 @@ internal object CheckedAttributeDelegate {
 }
 
 /**
+ * [SelectedAttributeDelegate] is a special attribute delegate for
+ * the html selected attribute.
+ */
+internal object SelectedAttributeDelegate {
+    operator fun <X : Element> getValue(thisRef: Tag<X>, property: KProperty<*>): Flow<Boolean> =
+        throw NotImplementedError()
+
+    operator fun <X : Element> setValue(thisRef: Tag<X>, property: KProperty<*>, values: Flow<Boolean>) {
+        SelectedAttributeMountPoint(values, thisRef.domNode)
+    }
+}
+
+/**
  * This interface allows instances of implementing classes to set and bind DOM-attributes.
  */
 interface WithAttributes<out T : Element> : WithDomNode<T> {
