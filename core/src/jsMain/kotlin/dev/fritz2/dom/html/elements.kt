@@ -420,7 +420,7 @@ open class Option(id: String? = null, baseClass: String? = null) : Tag<HTMLOptio
     var disabled: Flow<Boolean> by AttributeDelegate
     var label: Flow<String> by AttributeDelegate
     var defaultSelected: Flow<Boolean> by AttributeDelegate
-    var selected: Flow<Boolean> by AttributeDelegate
+    var selected: Flow<Boolean> by SelectedAttributeDelegate
     var value: Flow<String> by ValueAttributeDelegate
     var text: Flow<String> by AttributeDelegate
 }

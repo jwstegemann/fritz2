@@ -4,10 +4,7 @@ import dev.fritz2.binding.MultiMountPoint
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.SingleMountPoint
 import kotlinx.coroutines.flow.Flow
-import org.w3c.dom.Comment
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.Node
+import org.w3c.dom.*
 import kotlin.browser.document
 import kotlin.browser.window
 
@@ -204,6 +201,25 @@ class CheckedAttributeMountPoint(upstream: Flow<Boolean>, val target: Element?) 
         target?.unsafeCast<HTMLInputElement>()?.defaultChecked = value
         if(value) target?.setAttribute("checked", "")
         else target?.removeAttribute("checked")
+    }
+}
+
+/**
+ * [SelectedAttributeMountPoint] is a special [SingleMountPoint] for the html selected
+ * attribute with the setter directly and the `setAttribute` method.
+ */
+class SelectedAttributeMountPoint(upstream: Flow<Boolean>, val target: Element?) : SingleMountPoint<Boolean>(upstream) {
+    /**
+     * updates the attribute selected in the DOM
+     *
+     * @param value new value
+     * @param value last value (to be replaced)
+     */
+    override fun set(value: Boolean, last: Boolean?) {
+        target?.unsafeCast<HTMLOptionElement>()?.selected = value
+        target?.unsafeCast<HTMLOptionElement>()?.defaultSelected = value
+        if(value) target?.setAttribute("selected", "")
+        else target?.removeAttribute("selected")
     }
 }
 
