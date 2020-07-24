@@ -24,7 +24,6 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
 
     /**
      * A [Flow] representing the current state of the model (valid or not).
-     * Use this to easily make actions possible of not depending on the validity of your model (save-button, etc.)
      */
     val isValid by lazy { msgs.map { list -> list.none(ValidationMessage::failed) } }
 }
