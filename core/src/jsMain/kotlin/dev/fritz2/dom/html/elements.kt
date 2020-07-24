@@ -689,6 +689,12 @@ interface HtmlElements {
     fun dl(baseClass: String? = null, id: String? = null, content: Dl.() -> Unit): Dl =
         register(Dl(id, baseClass), content)
 
+    fun dt(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
+        register(TextElement("dt", id, baseClass), content)
+
+    fun dd(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
+        register(TextElement("dd", id, baseClass), content)
+
     fun data(baseClass: String? = null, id: String? = null, content: Data.() -> Unit): Data =
         register(Data(id, baseClass), content)
 
