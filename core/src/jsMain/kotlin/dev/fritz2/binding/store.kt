@@ -23,6 +23,7 @@ typealias ErrorHandler<T> = (Throwable, T) -> T
  */
 const val defaultTransaction = "..."
 
+
 /**
  * type of elements in the update-queue of a [Store]
  *
@@ -154,14 +155,22 @@ open class RootStore<T>(
     bufferSize: Int = 1
 ) : Store<T>, CoroutineScope by MainScope() {
 
-    private val updates = BroadcastChannel<QueuedUpdate<T>>(bufferSize)
+    private val runningTransaction = BroadcastChannel<String?>(1)
+    val running = runningTransaction.asFlow().distinctUntilChanged().debounce(100).asSharedFlow()
+
     private val applyUpdate: suspend (T, QueuedUpdate<T>) -> T = { lastValue, queuedUpdate ->
+        runningTransaction.send(queuedUpdate.transaction)
         try {
             queuedUpdate.update(lastValue)
         } catch (e: Throwable) {
             queuedUpdate.errorHandler(e, lastValue)
+        } finally {
+            runningTransaction.send(null)
         }
     }
+
+
+    private val updates = BroadcastChannel<QueuedUpdate<T>>(bufferSize)
 
     /**
      * in a [RootStore] an [Update] is handled by sending it to the internal [updates]-channel.
