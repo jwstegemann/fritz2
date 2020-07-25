@@ -29,10 +29,14 @@ class SubStore<R, P, T>(
     /**
      * Since a [SubStore] is just a view on a [RootStore] holding the real value, it forwards the [Update] to it, using it's [Lens] to transform it.
      */
-    override suspend fun enqueue(update: Update<T>) {
-        rootStore.enqueue {
-            rootLens.apply(it, update)
-        }
+    override suspend fun enqueue(queuedUpdate: QueuedUpdate<T>) {
+        rootStore.enqueue(QueuedUpdate<R>({
+            try {
+                rootLens.apply(it, queuedUpdate.update)
+            } catch (e: Throwable) {
+                rootLens.apply(it, { oldValue -> queuedUpdate.errorHandler(e, oldValue) })
+            }
+        }, rootStore::errorHandler, queuedUpdate.transaction))
     }
 
     /**

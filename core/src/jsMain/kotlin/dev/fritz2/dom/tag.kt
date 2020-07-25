@@ -64,7 +64,7 @@ open class Tag<out T : Element>(
      * @receiver [Listener]
      */
     infix fun <E : Event, X : Element> Listener<E, X>.handledBy(handler: Handler<Unit>) =
-        handler.execute(this.events.map { Unit })
+        handler.collect(this.events.map { Unit })
 
     /**
      * Delegate to bind a [Flow] of [String]s as the dynamic part of the class-attribute

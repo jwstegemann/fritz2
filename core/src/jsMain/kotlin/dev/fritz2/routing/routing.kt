@@ -8,7 +8,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import org.w3c.dom.events.Event
 import kotlin.browser.window
 
@@ -154,13 +153,11 @@ open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope(
      * Handler vor setting
      * a new [Route] based on given Flow.
      */
-    val navTo: SimpleHandler<T> = SimpleHandler {
-        launch {
-            it.collect {
-                setRoute(it)
-            }
-        }
+    val navTo: SimpleHandler<T> = SimpleHandler { flow ->
+        flow.onEach { setRoute(it) }
+            .launchIn(this)
     }
+
 }
 
 external fun decodeURIComponent(encodedURI: String): String

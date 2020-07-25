@@ -131,4 +131,57 @@ class StoreTests {
         assertEquals("s1.finish", div2.textContent, "textContent of div2 is not same like store2 after click")
         assertEquals("s2.finish", div3.textContent, "textContent of div3 is not same like store3 after click")
     }
+
+    @Test
+    fun testErrorHandling() = runTest {
+        initDocument()
+
+        val errorMsg = uniqueId()
+        val valueId = uniqueId()
+        fun getValue() = document.getElementById(valueId)?.textContent
+        val buttonId = uniqueId()
+
+        var errorHandlerResult = ""
+        val startValue = "start"
+        val errorHandler: ErrorHandler<String> = { e, o ->
+            errorHandlerResult = e.message.orEmpty()
+            o
+        }
+
+        val store = object : RootStore<String>(startValue) {
+            val testHandler = handle(errorHandler) { model ->
+                if (errorHandlerResult.isEmpty()) throw Exception(errorMsg)
+                model.reversed()
+            }
+        }
+
+        render {
+            div {
+                span(id = valueId) { store.data.bind() }
+                button(id = buttonId) {
+                    clicks handledBy store.testHandler
+                }
+            }
+        }.mount(targetId)
+
+        delay(100)
+
+        assertEquals(getValue(), startValue, "wrong start value")
+
+        (document.getElementById(buttonId) as HTMLButtonElement).click()
+
+        delay(150)
+
+        assertEquals(errorMsg, errorHandlerResult, "wrong message")
+        assertEquals(getValue(), startValue, "wrong value after error")
+
+        (document.getElementById(buttonId) as HTMLButtonElement).click()
+
+        delay(150)
+
+        assertEquals(getValue(), startValue.reversed(), "wrong value second action")
+
+    }
+
+
 }
