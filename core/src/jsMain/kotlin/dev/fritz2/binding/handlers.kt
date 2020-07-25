@@ -8,12 +8,17 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emitAll
 
+/**
+ * Base-interface the different types of handlers
+ *
+ * @property collect function describing how this handler collects a flow when connected by [handledBy]
+ */
 interface Handler<A> {
     val collect: (Flow<A>) -> Unit
 }
 
 /**
- * A [SimpleHandler] defines, how to handle actions in your [Store]. Each Handler accepts actions of a defined type.
+ * Defines, how to handle actions in your [Store]. Each Handler accepts actions of a defined type.
  * If your handler just needs the current value of the [Store] and no action, use [Unit].
  *
  * @param collect defines how to handle the values of the connected [Flow]
@@ -34,6 +39,7 @@ infix fun <A> Flow<A>.handledBy(handler: Handler<A>) = handler.collect(this)
  *
  * @param bufferSize number of values of the new [Flow] to buffer
  * @param collectWithChannel defines how to handle the values of the connected [Flow]
+ * @property collect function defining how this [Handler] collects a [Flow] when connected using [handledBy]
  */
 class OfferingHandler<A, E>(bufferSize: Int, inline val collectWithChannel: (Flow<A>, SendChannel<E>) -> Unit) :
     Handler<A>, Flow<E> {

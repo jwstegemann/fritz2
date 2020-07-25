@@ -15,6 +15,9 @@ interface WithComment<out T : org.w3c.dom.Node> : WithDomNode<T> {
      */
     fun comment(value: String): Node = domNode.appendChild(CommentNode(value).domNode)
 
+    /*
+     * Shortcut to create a comment in your HTML by using !"Comment Text"
+     */
     operator fun String.not(): Node = domNode.appendChild(CommentNode(this).domNode)
 }
 

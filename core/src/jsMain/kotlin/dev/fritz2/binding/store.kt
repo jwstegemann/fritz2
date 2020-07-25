@@ -42,8 +42,14 @@ class QueuedUpdate<T>(
  */
 interface Store<T> : CoroutineScope {
 
-    fun errorHandler(e: Throwable, oldValue: T): T {
-        console.error("ERROR[$id]: ${e.message}", e)
+    /**
+     * default error handler printing the error an keeping the previous value
+     *
+     * @param exception Exception to handle
+     * @param oldValue previous value of the [Store]
+     */
+    fun errorHandler(exception: Throwable, oldValue: T): T {
+        console.error("ERROR[$id]: ${exception.message}", exception)
         return oldValue
     }
 

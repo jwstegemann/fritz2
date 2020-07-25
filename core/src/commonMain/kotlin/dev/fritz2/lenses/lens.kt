@@ -1,12 +1,42 @@
 package dev.fritz2.lenses
 
+/**
+ * Describes a focus point into a data structure, i.e. a property of a given complex entity
+ *
+ * @property _id identies the focus of this lens
+ */
 interface Lens<P, T> {
     val _id: String
+
+    /**
+     * gets the value of the focus target
+     *
+     * @param parent concrete instance to apply the focus to
+     */
     fun get(parent: P): T
+
+    /**
+     * sets the value of the focus target
+     *
+     * @param parent concrete instance to apply the focus to
+     * @param value the new value of the focus target
+     */
     fun set(parent: P, value: T): P
+
+    /**
+     * manipulates the focus target's value inside the [parent]
+     *
+     * @param parent concrete instance to apply the focus to
+     * @param mapper function defining the manipulation
+     */
     suspend fun apply(parent: P, mapper: suspend (T) -> T): P = set(parent, mapper(get(parent)))
 
 
+    /**
+     * appends to [Lens]es so that the resulting [Lens] points from the parent of the [Lens] this is called on to the target of [other]
+     *
+     * @param other [Lens] to append to this one
+     */
     operator fun <X> plus(other: Lens<T, X>): Lens<P, X> = object :
         Lens<P, X> {
         override val _id = "${this@Lens._id}.${other._id}"
@@ -15,6 +45,13 @@ interface Lens<P, T> {
     }
 }
 
+/**
+ * convenience function to create a [Lens]
+ *
+ * @param id of the [Lens]
+ * @param getter of the [Lens]
+ * @param setter of the [Lens]
+ */
 inline fun <P, T> buildLens(id: String, crossinline getter: (P) -> T, crossinline setter: (P, T) -> P) = object :
     Lens<P, T> {
     override val _id = id
