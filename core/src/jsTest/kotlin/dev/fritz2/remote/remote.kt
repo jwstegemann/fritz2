@@ -30,7 +30,7 @@ class RemoteTests {
         remote.basicAuth(user, password).get("basic-auth/$user/$password")
 
         assertFailsWith(FetchException::class) {
-            remote.basicAuth(user, password).get("basic-auth/$user/${password}a")
+            remote.basicAuth(user, password).get("basic-auth/$user/${password}a").getOrThrow()
         }
     }
 
@@ -39,7 +39,7 @@ class RemoteTests {
     fun testGetStatusCodes() = runTest {
         for(code in codes) {
             assertFailsWith(FetchException::class) {
-                remote.get("status/$code")
+                remote.get("status/$code").getOrThrow()
             }
         }
     }
@@ -49,7 +49,7 @@ class RemoteTests {
     fun testDeleteStatusCodes() = runTest {
         for(code in codes) {
             assertFailsWith(FetchException::class) {
-                remote.delete("status/$code")
+                remote.delete("status/$code").getOrThrow()
             }
         }
     }
@@ -58,7 +58,7 @@ class RemoteTests {
     fun testPatchStatusCodes() = runTest {
         for(code in codes) {
             assertFailsWith(FetchException::class) {
-                remote.body("").patch("status/$code")
+                remote.body("").patch("status/$code").getOrThrow()
             }
         }
     }
@@ -67,7 +67,7 @@ class RemoteTests {
     fun testPostStatusCodes() = runTest {
         for(code in codes) {
             assertFailsWith(FetchException::class) {
-                remote.body("").post("status/$code")
+                remote.body("").post("status/$code").getOrThrow()
             }
         }
     }
@@ -76,14 +76,14 @@ class RemoteTests {
     fun testPutStatusCodes() = runTest {
         for(code in codes) {
             assertFailsWith(FetchException::class) {
-                remote.body("").put("status/$code")
+                remote.body("").put("status/$code").getOrThrow()
             }
         }
     }
 
     @Test
     fun testGetHeaders() = runTest {
-        val body: String = remote.acceptJson().cacheControl("no-cache").get("headers").getBody()
+        val body: String = remote.acceptJson().cacheControl("no-cache").get("headers").getOrThrow().getBody()
         assertTrue(body.contains(Regex("""Accept.+application/json""")), "Accept header not found")
         assertTrue(body.contains(Regex("""Cache-Control.+no-cache""")), "Cache-Control header not found")
     }
@@ -95,8 +95,8 @@ class RemoteTests {
     fun testCRUDMethods() = runTest {
         val crudcrud = remote("https://crudcrud.com")
         val regex = """href="/Dashboard/(.+)">""".toRegex()
-        val endpointId = regex.find(crudcrud.get().getBody())?.groupValues?.get(1)
-                ?: fail("Could not get UniqueEndpointId for https://crudcrud.com/")
+        val endpointId = regex.find(crudcrud.get().getOrThrow().getBody())?.groupValues?.get(1)
+            ?: fail("Could not get UniqueEndpointId for https://crudcrud.com/")
         println("See Dashboard here: https://crudcrud.com/Dashboard/$endpointId")
 
         val users = crudcrud.append("api/$endpointId/users")
@@ -105,19 +105,21 @@ class RemoteTests {
         for (i in 1..3) {
             val name = "name-${uniqueId()}"
             names.add(name)
-            val saved = users.body("""{"num": $i, "name": "$name"}""").contentType("application/json").post().getBody()
+            val saved =
+                users.body("""{"num": $i, "name": "$name"}""").contentType("application/json").post().getOrThrow()
+                    .getBody()
             val id = JSON.parse<dynamic>(saved)._id
             if(id != undefined) ids.add(id as String)
             assertTrue(saved.contains(name), "saved entity not like posted")
         }
-        val load = users.acceptJson().get().getBody()
+        val load = users.acceptJson().get().getOrThrow().getBody()
         for(name in names) {
             assertTrue(load.contains(name), "posted entity is not in list")
         }
         for (id in ids) {
             users.delete(id)
         }
-        val empty = users.acceptJson().get().getBody()
+        val empty = users.acceptJson().get().getOrThrow().getBody()
         for(name in names) {
             assertFalse(empty.contains(name), "deleted entity is in list")
         }
