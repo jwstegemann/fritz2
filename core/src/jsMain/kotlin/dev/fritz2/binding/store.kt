@@ -1,7 +1,9 @@
 package dev.fritz2.binding
 
 import dev.fritz2.flow.asSharedFlow
+import dev.fritz2.format.Format
 import dev.fritz2.lenses.Lens
+import dev.fritz2.lenses.Lenses
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -188,8 +190,19 @@ open class RootStore<T>(
     /**
      * create a [SubStore] that represents a certain part of your data model.
      *
-     * @param lens: a [Lens] describing, which part of your data model you will create [SubStore] for. Use @Lenses to let your compiler
+     * @param lens: a [Lens] describing, which part of your data model you will create [SubStore] for.
+     * Use @[Lenses] annotation to let your compiler
      * create the lenses for you or use the buildLens-factory-method.
      */
-    fun <X> sub(lens: Lens<T, X>) = SubStore(this, lens, this, lens)
+    fun <X> sub(lens: Lens<T, X>): SubStore<T, T, X> =
+        SubStore(this, lens, this, lens)
+
+    /**
+     * creates a new [SubStore] using the given [Format] to convert the
+     * value of type [T] to a [String] and vice versa.
+     *
+     * @param format a [Format] for the type [T]
+     */
+    fun using(format: Format<T>): SubStore<T, T, String> =
+        SubStore(this, format.lens, this, format.lens)
 }
