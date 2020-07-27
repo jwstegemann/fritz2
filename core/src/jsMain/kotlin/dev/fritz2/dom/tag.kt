@@ -75,8 +75,7 @@ open class Tag<out T : Element>(
             throw NotImplementedError()
         }
         set(value) {
-            //TODO: better elvis?
-            (if (baseClass != null) value.map { "$baseClass $it" } else value).bindAttr("class")
+            (baseClass?.let { value.map { "$baseClass $it" } } ?: value).bindAttr("class")
         }
 
     var style: Flow<String> by AttributeDelegate
