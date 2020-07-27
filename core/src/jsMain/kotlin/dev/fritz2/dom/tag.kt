@@ -64,7 +64,7 @@ open class Tag<out T : Element>(
      * @receiver [Listener]
      */
     infix fun <E : Event, X : Element> Listener<E, X>.handledBy(handler: Handler<Unit>) =
-        handler.execute(this.events.map { Unit })
+        handler.collect(this.events.map { Unit })
 
     /**
      * Delegate to bind a [Flow] of [String]s as the dynamic part of the class-attribute
@@ -75,8 +75,7 @@ open class Tag<out T : Element>(
             throw NotImplementedError()
         }
         set(value) {
-            //TODO: better elvis?
-            (if (baseClass != null) value.map { "$baseClass $it" } else value).bindAttr("class")
+            (baseClass?.let { value.map { "$baseClass $it" } } ?: value).bindAttr("class")
         }
 
     var style: Flow<String> by AttributeDelegate

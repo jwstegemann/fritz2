@@ -1,11 +1,8 @@
 package dev.fritz2.format
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.SubStore
-import dev.fritz2.binding.SimpleHandler
-import dev.fritz2.binding.Store
-import dev.fritz2.binding.Update
+import dev.fritz2.binding.*
 import dev.fritz2.lenses.Lens
+import dev.fritz2.lenses.buildLens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +26,9 @@ class FormatStore<R, P>(
     private val format: Format<P>
 ) : Store<String>, CoroutineScope by MainScope() {
 
+    //FIXME: replace by Substore using this lens, maybe change format's signature to fit the lens methods
+    val formatLens = rootLens + buildLens("", format::format, { p, v -> format.parse(v) })
+
     /**
      * id of this [Store]
      */
@@ -37,10 +37,14 @@ class FormatStore<R, P>(
     /**
      * applies the given [Format] before handling an [Update]
      */
-    override suspend fun enqueue(update: Update<String>) {
-        rootStore.enqueue {
-            rootLens.apply(it, { t -> format.parse(update(format.format(t))) })
-        }
+    override suspend fun enqueue(queuedUpdate: QueuedUpdate<String>) {
+        rootStore.enqueue(QueuedUpdate<R>({
+            try {
+                formatLens.apply(it, queuedUpdate.update)
+            } catch (e: Throwable) {
+                formatLens.apply(it, { oldValue -> queuedUpdate.errorHandler(e, oldValue) })
+            }
+        }, rootStore::errorHandler, queuedUpdate.transaction))
     }
 
     /**

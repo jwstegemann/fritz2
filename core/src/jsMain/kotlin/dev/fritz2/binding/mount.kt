@@ -4,8 +4,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 /**
  * A [SingleMountPoint] collects the values of a given [Flow] one by one. Use this for data-types that represent a single (simple or complex) value.
@@ -14,17 +14,15 @@ import kotlinx.coroutines.launch
  */
 abstract class SingleMountPoint<T>(upstream: Flow<T>) : CoroutineScope by MainScope() {
     init {
-        launch {
+        upstream.onEach {
             try {
-                upstream.collect {
-                    set(it, last)
-                    last = it
-                }
-            } catch (t: Throwable) {
+                set(it, last)
+                last = it
+            } catch (e: Throwable) {
+                console.error("ERROR[SingleMountPoint]: ${e.message}", e)
                 this.cancel()
-                // do nothing here but ignore the exception
             }
-        }
+        }.launchIn(this)
     }
 
     private var last: T? = null
@@ -45,15 +43,14 @@ abstract class SingleMountPoint<T>(upstream: Flow<T>) : CoroutineScope by MainSc
  */
 abstract class MultiMountPoint<T>(upstream: Flow<Patch<T>>) : CoroutineScope by MainScope() {
     init {
-        launch {
+        upstream.onEach {
             try {
-                upstream.collect {
-                    patch(it)
-                }
-            } catch (t: Throwable) {
+                patch(it)
+            } catch (e: Throwable) {
+                console.error("ERROR[MultiMountPoint]: ${e.message}", e)
                 this.cancel()
             }
-        }
+        }.launchIn(this)
     }
 
     /**

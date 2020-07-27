@@ -43,10 +43,10 @@ sealed class Patch<out T> {
      * @param start the index of the first element, that has been deleted
      * @param count the number of elements, that have to be deleted
      */
-    /**
-     * nothing to be mapped here...
-     */
     data class Delete<T>(val start: Int, val count: Int = 1) : Patch<T>() {
+        /**
+         * nothing to be mapped here...
+         */
         override fun <R> map(mapping: (T) -> R): Patch<R> = this.unsafeCast<Patch<R>>()
     }
 

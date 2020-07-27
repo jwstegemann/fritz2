@@ -7,12 +7,34 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 /**
  * defines a type for transforming one value into the next
  */
 typealias Update<T> = suspend (T) -> T
+
+/**
+ * defines a type for handling errors in updates
+ */
+typealias ErrorHandler<T> = (Throwable, T) -> T
+
+/**
+ * represents the default transaction
+ */
+const val defaultTransaction = "..."
+
+/**
+ * type of elements in the update-queue of a [Store]
+ *
+ * @property update function describing the step from the old value to the new
+ * @property errorHandler describes the handling of errors during an update and the new value in case of error
+ * @property transaction transaction done by this update
+ */
+class QueuedUpdate<T>(
+    inline val update: Update<T>,
+    inline val errorHandler: (Throwable, T) -> T,
+    val transaction: String
+)
 
 
 /**
@@ -21,17 +43,28 @@ typealias Update<T> = suspend (T) -> T
 interface Store<T> : CoroutineScope {
 
     /**
-     * factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
+     * default error handler printing the error an keeping the previous value
      *
+     * @param exception Exception to handle
+     * @param oldValue previous value of the [Store]
+     */
+    fun errorHandler(exception: Throwable, oldValue: T): T {
+        console.error("ERROR[$id]: ${exception.message}", exception)
+        return oldValue
+    }
+
+    /**
+     * factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
      *
      * @param execute lambda that is executed whenever a new action-value appears on the connected event-[Flow].
      */
-    fun <A> handle(execute: suspend (T, A) -> T) = SimpleHandler<A> {
-        launch {
-            it.collect {
-                enqueue { t -> execute(t, it) }
-            }
-        }
+    fun <A> handle(
+        errorHandler: ErrorHandler<T> = ::errorHandler,
+        transaction: String = defaultTransaction,
+        execute: suspend (T, A) -> T
+    ) = SimpleHandler<A> {
+        it.onEach { enqueue(QueuedUpdate({ t -> execute(t, it) }, errorHandler, transaction)) }
+            .launchIn(this)
     }
 
     /**
@@ -39,44 +72,49 @@ interface Store<T> : CoroutineScope {
      *
      * @param execute lambda that is execute for each event on the connected [Flow]
      */
-    fun handle(execute: suspend (T) -> T) = SimpleHandler<Unit> {
-        launch {
-            it.collect {
-                enqueue { t -> execute(t) }
-            }
-        }
+    fun handle(
+        errorHandler: ErrorHandler<T> = ::errorHandler,
+        transaction: String = defaultTransaction,
+        execute: suspend (T) -> T
+    ) = SimpleHandler<Unit> {
+        it.onEach { enqueue(QueuedUpdate({ t -> execute(t) }, errorHandler, transaction)) }
+            .launchIn(this)
     }
 
     /**
-     * factory method to create a [EmittingHandler] taking an action-value and the current store value to derive the new value.
-     * An [EmittingHandler] is a [Flow] by itself and can therefore be connected to other [SimpleHandler]s even in other [Store]s.
+     * factory method to create a [OfferingHandler] taking an action-value and the current store value to derive the new value.
+     * An [OfferingHandler] is a [Flow] by itself and can therefore be connected to other [SimpleHandler]s even in other [Store]s.
      *
      * @param bufferSize number of values to buffer
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
     //FIXME: why no suspend on execute
-    fun <A, E> handleAndOffer(bufferSize: Int = 1, execute: suspend SendChannel<E>.(T, A) -> T) =
-        EmittingHandler<A, E>(bufferSize) { inFlow, outChannel ->
-            launch {
-                inFlow.collect {
-                    enqueue { t -> outChannel.execute(t, it) }
-                }
-            }
+    fun <A, E> handleAndOffer(
+        errorHandler: ErrorHandler<T> = ::errorHandler,
+        transaction: String = defaultTransaction,
+        bufferSize: Int = 1,
+        execute: suspend SendChannel<E>.(T, A) -> T
+    ) =
+        OfferingHandler<A, E>(bufferSize) { inFlow, outChannel ->
+            inFlow.onEach { enqueue(QueuedUpdate({ t -> outChannel.execute(t, it) }, errorHandler, transaction)) }
+                .launchIn(this)
         }
 
     /**
-     * factory method to create an [EmittingHandler] that does not take an action in it's [execute]-lambda.
+     * factory method to create an [OfferingHandler] that does not take an action in it's [execute]-lambda.
      *
      * @param bufferSize number of values to buffer
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
-    fun <E> handleAndOffer(bufferSize: Int = 1, execute: suspend SendChannel<E>.(T) -> T) =
-        EmittingHandler<Unit, E>(bufferSize) { inFlow, outChannel ->
-            launch {
-                inFlow.collect {
-                    enqueue { t -> outChannel.execute(t) }
-                }
-            }
+    fun <E> handleAndOffer(
+        errorHandler: ErrorHandler<T> = ::errorHandler,
+        transaction: String = defaultTransaction,
+        bufferSize: Int = 1,
+        execute: suspend SendChannel<E>.(T) -> T
+    ) =
+        OfferingHandler<Unit, E>(bufferSize) { inFlow, outChannel ->
+            inFlow.onEach { enqueue(QueuedUpdate({ t -> outChannel.execute(t) }, errorHandler, transaction)) }
+                .launchIn(this)
         }
 
     /**
@@ -84,7 +122,7 @@ interface Store<T> : CoroutineScope {
      *
      * @param update the [Update] to handle
      */
-    suspend fun enqueue(update: Update<T>)
+    suspend fun enqueue(update: QueuedUpdate<T>)
 
     /**
      * base-id of this [Store]. ids of depending [Store]s are concatenated separated by a dot.
@@ -116,13 +154,19 @@ open class RootStore<T>(
     bufferSize: Int = 1
 ) : Store<T>, CoroutineScope by MainScope() {
 
-    private val updates = BroadcastChannel<Update<T>>(bufferSize)
-    private val applyUpdate: suspend (T, Update<T>) -> T = { lastValue, update -> update(lastValue) }
+    private val updates = BroadcastChannel<QueuedUpdate<T>>(bufferSize)
+    private val applyUpdate: suspend (T, QueuedUpdate<T>) -> T = { lastValue, queuedUpdate ->
+        try {
+            queuedUpdate.update(lastValue)
+        } catch (e: Throwable) {
+            queuedUpdate.errorHandler(e, lastValue)
+        }
+    }
 
     /**
      * in a [RootStore] an [Update] is handled by sending it to the internal [updates]-channel.
      */
-    override suspend fun enqueue(update: Update<T>) {
+    override suspend fun enqueue(update: QueuedUpdate<T>) {
         updates.send(update)
     }
 

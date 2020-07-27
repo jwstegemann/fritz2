@@ -39,6 +39,29 @@ class TagTests {
     }
 
     @Test
+    fun testSingleTagWithBaseClass() = runTest {
+        initDocument()
+
+        val testId = uniqueId()
+        val baseClass = "baseClass"
+        val testClass = "testClass"
+
+        render {
+            div(baseClass = baseClass, id = testId) {
+                className = const(testClass)
+            }
+        }.mount(targetId)
+
+        delay(100)
+
+        val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
+
+        assertEquals(testId, element.id)
+        assertEquals("div", element.localName)
+        assertEquals("$baseClass $testClass", element.className)
+    }
+
+    @Test
     fun testMultipleTags() = runTest {
         initDocument()
 

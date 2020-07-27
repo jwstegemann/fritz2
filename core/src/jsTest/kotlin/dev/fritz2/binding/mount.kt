@@ -37,7 +37,7 @@ class MountTests {
         return GlobalScope.promise {
             for (i in 0..4) {
                 //console.log("enqueue: -$i\n")
-                store.enqueue { "$it-$i" }
+                store.enqueue(QueuedUpdate({ "$it-$i" }, store::errorHandler, ""))
             }
             mp.await()
         }

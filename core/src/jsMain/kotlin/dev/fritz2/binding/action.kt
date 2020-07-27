@@ -36,6 +36,10 @@ fun <T> Store<T>.action(wait: Long? = null) = Action(Unit, this, wait)
 
 /**
  * represents some dispatchable that can be processed by a [Store]'s [Handler]
+ *
+ * @property data payload of this action
+ * @property scope [CoroutineScope] the action will run in
+ * @property wait ms to wait before the action is fired
  */
 class Action<T>(val data: T, val scope: CoroutineScope, val wait: Long?)
 
