@@ -21,13 +21,13 @@ import kotlin.test.assertTrue
 
 
 class RestTests {
-    data class RestPerson(val name: String, val age: Int, val _id: String = "")
+    data class RestPerson(val name: String, val age: Int, val _id: String)
 
-    val nameLens = buildLens("name", RestPerson::name, { p, v -> p.copy(name = v) })
+    private val nameLens = buildLens("name", RestPerson::name) { p, v -> p.copy(name = v) }
+    private val ageLens = buildLens("age", RestPerson::age) { p, v -> RestPerson(p.name, v, p._id) }
 
-    //val ageLens = buildLens("age", RestPerson::age, { p, v -> RestPerson(p.name, v, p._id) })
-    val ageLens = buildLens("age", RestPerson::age, { p, v -> p.copy(age = v) })
-    val idLens = buildLens("id", RestPerson::_id, { p, v -> p.copy(_id = v) })
+    //private val ageLens = buildLens("age", RestPerson::age) { p, v -> p.copy(age = v) }
+    private val idLens = buildLens("id", RestPerson::_id) { p, v -> p.copy(_id = v) }
 
 
     //TODO: Default Serializer
@@ -64,6 +64,8 @@ class RestTests {
             private val rest = RestEntityService(personResource)
 
             val load = handle { entity, id: String -> rest.load(entity, id) }
+
+            //            val load = handle(execute = rest::load)
             val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(this, entity) }
             val delete = handleAndOffer<Unit> { entity -> rest.delete(this, entity) }
         }
@@ -91,20 +93,13 @@ class RestTests {
         assertEquals(startPerson.name, nameAfterStart, "no name after start")
 
         action() handledBy entityStore.saveOrUpdate
-
         delay(200)
 
         val idAfterSave = document.getElementById(idId)?.textContent
         assertTrue(idAfterSave?.length ?: 0 > 10, "no id after save")
 
-        println("####### $idAfterSave \n")
-
         action(data = changedAge) handledBy ageSubStore.update
-
-        delay(200)
-
         action() handledBy entityStore.saveOrUpdate
-
         delay(200)
 
         val ageAfterUpdate = document.getElementById(ageId)?.textContent
@@ -112,14 +107,12 @@ class RestTests {
 
         action(data = 0) handledBy ageSubStore.update
         action(idAfterSave.orEmpty()) handledBy entityStore.load
-
         delay(200)
 
         val ageAfterLoad = document.getElementById(ageId)?.textContent
         assertEquals("99", ageAfterLoad, "wrong age after load")
 
         action() handledBy entityStore.delete
-
         delay(200)
 
         val idAfterDelete = document.getElementById(idId)?.textContent
