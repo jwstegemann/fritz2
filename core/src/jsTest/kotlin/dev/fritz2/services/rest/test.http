@@ -1,0 +1,10 @@
+POST https://crudcrud.com/api/f56d74726b114ed589f02c984e2fdf75/personx
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Heinz",
+  "age": 18
+}
+
+###

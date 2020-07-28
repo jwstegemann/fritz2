@@ -100,6 +100,13 @@ interface Store<T> : CoroutineScope {
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
      */
     val update: Handler<T>
+
+    /**
+     * calls a handler on each new value of the [Store]
+     */
+    fun syncBy(handler: Handler<Unit>) {
+        data.drop(1).map { Unit } handledBy handler
+    }
 }
 
 /**
