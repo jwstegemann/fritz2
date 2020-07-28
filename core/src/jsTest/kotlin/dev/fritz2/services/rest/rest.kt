@@ -14,29 +14,32 @@ import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class RestTests {
-    data class Person(val name: String, val age: Int, val _id: String = "")
 
-    val nameLens = buildLens("name", Person::name, { p, v -> p.copy(name = v) })
-    val ageLens = buildLens("age", Person::age, { p, v -> p.copy(age = v) })
-    val idLens = buildLens("id", Person::_id, { p, v -> p.copy(_id = v) })
+class RestTests {
+    data class RestPerson(val name: String, val age: Int, val _id: String = "")
+
+    val nameLens = buildLens("name", RestPerson::name, { p, v -> p.copy(name = v) })
+
+    //val ageLens = buildLens("age", RestPerson::age, { p, v -> RestPerson(p.name, v, p._id) })
+    val ageLens = buildLens("age", RestPerson::age, { p, v -> p.copy(age = v) })
+    val idLens = buildLens("id", RestPerson::_id, { p, v -> p.copy(_id = v) })
+
 
     //TODO: Default Serializer
-    object PersonSerializer : Serializer<Person, String> {
+    object PersonSerializer : Serializer<RestPerson, String> {
         data class PersonWithoutId(val name: String, val age: Int)
 
-        private fun removeId(person: Person) = PersonWithoutId(person.name, person.age)
+        private fun removeId(person: RestPerson) = PersonWithoutId(person.name, person.age)
 
-        override fun write(item: Person): String = JSON.stringify(removeId(item))
-        override fun read(msg: String): Person = JSON.parse(msg)
-        override fun writeList(items: List<Person>): String = JSON.stringify(items.map { removeId(it) })
-        override fun readList(msg: String): List<Person> = JSON.parse(msg)
+        override fun write(item: RestPerson): String = JSON.stringify(removeId(item))
+        override fun read(msg: String): RestPerson = JSON.parse(msg)
+        override fun writeList(items: List<RestPerson>): String = JSON.stringify(items.map { removeId(it) })
+        override fun readList(msg: String): List<RestPerson> = JSON.parse(msg)
     }
 
     /**
@@ -46,27 +49,23 @@ class RestTests {
     fun testEntityService() = runTest {
         initDocument()
 
-        val startPerson = Person("Heinz", 18, "")
+        val startPerson = RestPerson("Heinz", 18, "")
         val changedAge = 99
 
         val personResource = RestResource(
             "",
-            Person::_id,
+            RestPerson::_id,
             PersonSerializer,
-            Person("", 0, ""),
-            remote = getFreshCrudcrudEndpoint().append("/personx")
+            RestPerson("", 0, ""),
+            remote = getFreshCrudcrudEndpoint().append("/person")
         )
 
-        val entityStore = object : RootStore<Person>(personResource.emptyEntity) {
+        val entityStore = object : RootStore<RestPerson>(personResource.emptyEntity) {
             private val rest = RestEntityService(personResource)
 
             val load = handle { entity, id: String -> rest.load(entity, id) }
             val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(this, entity) }
-
-            //            val delete = handleAndOffer<Unit> { entity: Person , id: String -> rest.delete(this, entity, id)}
-            val reset = handle { personResource.emptyEntity }
-
-            val trigger = merge(saveOrUpdate) //, delete)
+            val delete = handleAndOffer<Unit> { entity -> rest.delete(this, entity) }
         }
 
         val nameId = "name-${uniqueId()}"
@@ -93,7 +92,7 @@ class RestTests {
 
         action() handledBy entityStore.saveOrUpdate
 
-        delay(250)
+        delay(200)
 
         val idAfterSave = document.getElementById(idId)?.textContent
         assertTrue(idAfterSave?.length ?: 0 > 10, "no id after save")
@@ -102,11 +101,11 @@ class RestTests {
 
         action(data = changedAge) handledBy ageSubStore.update
 
-        delay(400)
+        delay(200)
 
-//        action() handledBy entityStore.saveOrUpdate
+        action() handledBy entityStore.saveOrUpdate
 
-//        delay(400)
+        delay(200)
 
         val ageAfterUpdate = document.getElementById(ageId)?.textContent
         assertEquals(changedAge.toString(), ageAfterUpdate, "wrong age after update")
@@ -114,14 +113,14 @@ class RestTests {
         action(data = 0) handledBy ageSubStore.update
         action(idAfterSave.orEmpty()) handledBy entityStore.load
 
-        delay(150)
+        delay(200)
 
         val ageAfterLoad = document.getElementById(ageId)?.textContent
         assertEquals("99", ageAfterLoad, "wrong age after load")
 
-        action(idAfterSave.orEmpty()) handledBy entityStore.load
+        action() handledBy entityStore.delete
 
-        delay(150)
+        delay(200)
 
         val idAfterDelete = document.getElementById(idId)?.textContent
         assertEquals(startPerson._id, idAfterDelete, "wrong id after delete")
