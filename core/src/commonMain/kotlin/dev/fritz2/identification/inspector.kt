@@ -1,5 +1,6 @@
 package dev.fritz2.identification
 
+import dev.fritz2.format.Format
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.elementLens
@@ -28,6 +29,14 @@ interface Inspector<T> {
      * model you want to have the next [Inspector]
      */
     fun <X> sub(lens: Lens<T, X>): Inspector<X>
+
+    /**
+     * creates a new [Inspector] using the given [Format] to convert the
+     * value of type [T] to a [String] and vice versa.
+     *
+     * @param format a [Format] for the type [T]
+     */
+    fun using(format: Format<T>): Inspector<String>
 }
 
 
@@ -45,6 +54,9 @@ class RootInspector<T>(
 
     override fun <X> sub(lens: Lens<T, X>): SubInspector<T, T, X> =
         SubInspector(this, lens, this, lens)
+
+    override fun using(format: Format<T>): Inspector<String> =
+        SubInspector(this, format.lens, this, format.lens)
 }
 
 /**
@@ -70,6 +82,9 @@ class SubInspector<R, P, T>(
 
     override fun <X> sub(lens: Lens<T, X>): SubInspector<R, T, X> =
         SubInspector(this, lens, rootModelId, this.rootLens + lens)
+
+    override fun using(format: Format<T>): Inspector<String> =
+        SubInspector(this, format.lens, rootModelId, this.rootLens + format.lens)
 }
 
 /**

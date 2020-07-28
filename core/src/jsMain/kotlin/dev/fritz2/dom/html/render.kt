@@ -22,4 +22,4 @@ fun <E : Element> render(content: HtmlElements.() -> Tag<E>) =
         }
     })
 
-internal class MultipleRootElementsException(message: String) : RuntimeException(message)
+class MultipleRootElementsException(message: String) : RuntimeException(message)

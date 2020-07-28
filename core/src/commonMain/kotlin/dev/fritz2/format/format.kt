@@ -1,12 +1,35 @@
 package dev.fritz2.format
 
+import dev.fritz2.lenses.Lens
+import dev.fritz2.lenses.buildLens
+
 /**
- * [parse]s and [format]s the given
- * [String] value from and to the target type.
+ * [Format] specifies how to convert a value of type [T]
+ * to a [String] an vice versa.
+ *
+ * @param id sub id to append
  */
-interface Format<T> {
+abstract class Format<T>(val id: String = "") {
 
-    fun parse(value: String): T
-    fun format(value: T): String
+    /**
+     * parses the given [String] to the type [T]
+     *
+     * @param old last value of [T]
+     * @param value new value to parse as [String]
+     * @return [T]
+     */
+    abstract fun parse(old: T, value: String): T
 
+    /**
+     * formats the given value to [String]
+     *
+     * @param value to format of type [T]
+     * @return [String]
+     */
+    abstract fun format(value: T): String
+
+    /**
+     * generates a [Lens] for this [Format]
+     */
+    val lens = buildLens(id, ::format, ::parse)
 }

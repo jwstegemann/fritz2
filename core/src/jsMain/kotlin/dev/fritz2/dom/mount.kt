@@ -244,6 +244,13 @@ class SelectedAttributeMountPoint(upstream: Flow<Boolean>, val target: Element?)
 //    }
 //}
 
+/**
+ * [MountTargetNotFoundException] occurs when the targeted html element is not present in document.
+ *
+ * @param targetId id which used for mounting
+ */
+class MountTargetNotFoundException(targetId: String) :
+    Exception("html document contains no element with id: $targetId")
 
 /**
  * mounts a [Flow] of [Tag]s to a constant element
@@ -255,7 +262,7 @@ fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
         DomMountPoint(this, it)
-    }
+    } ?: throw MountTargetNotFoundException(targetId)
 }
 
 /**
@@ -267,7 +274,7 @@ fun <X : Element> Flow<Tag<X>>.mount(targetId: String) {
 fun <X : Element> append(targetId: String, vararg flows: Flow<Tag<X>>) {
     window.document.getElementById(targetId)?.let { element ->
         flows.forEach { flow -> DomMountPoint(flow, element) }
-    }
+    } ?: throw MountTargetNotFoundException(targetId)
 }
 
 
@@ -280,7 +287,7 @@ fun <X : Element> Tag<X>.mount(targetId: String) {
     window.document.getElementById(targetId)?.let {
         it.removeChildren()
         it.appendChild(this.domNode)
-    }
+    } ?: throw MountTargetNotFoundException(targetId)
 }
 
 /**
@@ -291,5 +298,5 @@ fun <X : Element> Tag<X>.mount(targetId: String) {
 fun <X : Element> append(targetId: String, vararg tags: Tag<X>) {
     window.document.getElementById(targetId)?.let { element ->
         tags.forEach { tag -> element.appendChild(tag.domNode) }
-    }
+    } ?: throw MountTargetNotFoundException(targetId)
 }

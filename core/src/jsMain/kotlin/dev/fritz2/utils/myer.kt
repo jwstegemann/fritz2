@@ -13,12 +13,13 @@ import kotlinx.coroutines.flow.flow
 object Myer {
 
     /**
-     * diffs to versions of a [List] of a type implementing [WithId]
-     * The definition of an id to identify the same object in both [List]s makes it possible to detect, if an object is moved from one position to another.
+     * diffs to versions of a [List] by providing an [IdProvider].
+     * The definition of an id to identify the same object in both [List]s makes it possible to detect,
+     * if an object is moved from one position to another.
      * Also this method does not emit a [Patch] if values within an element change.
      *
      * @param oldList old version of the [List]
-     * @param newLis new version of the [List]
+     * @param newList new version of the [List]
      * @return a [Flow] of [Patch]es needed to transform the old list into the new one
      */
     fun <T, I> diff(oldList: List<T>, newList: List<T>, idProvider: IdProvider<T, I>): Flow<Patch<T>> {
@@ -30,10 +31,10 @@ object Myer {
     }
 
     /**
-     * diffs to versions of a [List] of a type not implementing [WithId]
+     * diffs to versions of a [List] with an [IdProvider].
      *
      * @param oldList old version of the [List]
-     * @param newLis new version of the [List]
+     * @param newList new version of the [List]
      * @return a [Flow] of [Patch]es needed to transform the old list into the new one
      */
     fun <T> diff(oldList: List<T>, newList: List<T>): Flow<Patch<T>> {
