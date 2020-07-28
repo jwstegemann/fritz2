@@ -2,7 +2,6 @@ package dev.fritz2.binding
 
 import dev.fritz2.flow.asSharedFlow
 import dev.fritz2.format.Format
-import dev.fritz2.format.FormatStore
 import dev.fritz2.lenses.Lens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -29,14 +28,14 @@ class SubStore<R, P, T>(
     /**
      * Since a [SubStore] is just a view on a [RootStore] holding the real value, it forwards the [Update] to it, using it's [Lens] to transform it.
      */
-    override suspend fun enqueue(queuedUpdate: QueuedUpdate<T>) {
+    override suspend fun enqueue(update: QueuedUpdate<T>) {
         rootStore.enqueue(QueuedUpdate<R>({
             try {
-                rootLens.apply(it, queuedUpdate.update)
+                rootLens.apply(it, update.update)
             } catch (e: Throwable) {
-                rootLens.apply(it, { oldValue -> queuedUpdate.errorHandler(e, oldValue) })
+                rootLens.apply(it, { oldValue -> update.errorHandler(e, oldValue) })
             }
-        }, rootStore::errorHandler, queuedUpdate.transaction))
+        }, rootStore::errorHandler, update.transaction))
     }
 
     /**
@@ -52,14 +51,19 @@ class SubStore<R, P, T>(
     }.distinctUntilChanged().asSharedFlow()
 
     /**
-     * factory-method to create another [SubStore] using this one as it's parent.
+     * creates a new [SubStore] using this one as it's parent.
      *
      * @param lens a [Lens] describing which part to create the [SubStore] for
      */
-    fun <X> sub(lens: Lens<T, X>): SubStore<R, T, X> = SubStore(this, lens, rootStore, rootLens + lens)
+    fun <X> sub(lens: Lens<T, X>): SubStore<R, T, X> =
+        SubStore(this, lens, rootStore, rootLens + lens)
 
     /**
-     * a factory-method to create a [FormatStore] from this [Store] using the given [Format] to convert the current value as well as [Update]s
+     * creates a new [SubStore] using the given [Format] to convert the
+     * value of type [T] to a [String] and vice versa.
+     *
+     * @param format a [Format] for the type [T]
      */
-    infix fun using(format: Format<T>) = FormatStore(this, rootStore, rootLens, format)
+    fun using(format: Format<T>): SubStore<R, T, String> =
+        SubStore(this, format.lens, rootStore, rootLens + format.lens)
 }

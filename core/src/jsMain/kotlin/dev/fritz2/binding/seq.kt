@@ -51,7 +51,8 @@ sealed class Patch<out T> {
     }
 
     /**
-     * A [Patch] saying, that an element has been moved from one position to another. This is only used on [Seq] of types implementing [WithId].
+     * A [Patch] saying, that an element has been moved from one position to another.
+     * This is only used on [Seq] with a corresponding [IdProvider].
      *
      * @param from old index of the element
      * @param to new index of the element

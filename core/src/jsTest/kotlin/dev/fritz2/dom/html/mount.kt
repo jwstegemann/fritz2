@@ -4,6 +4,8 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.action
 import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
+import dev.fritz2.dom.MountTargetNotFoundException
+import dev.fritz2.dom.append
 import dev.fritz2.dom.mount
 import dev.fritz2.dom.selectedText
 import dev.fritz2.identification.uniqueId
@@ -18,6 +20,7 @@ import org.w3c.dom.HTMLSelectElement
 import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class MountTests {
 
@@ -137,8 +140,40 @@ class MountTests {
 
         assertEquals(1, select.selectedIndex, "modified second option is not selected")
         assertEquals(false, option1.selected, "modified first option.selected is not false")
-        assertEquals(null, option1.getAttribute("selected"), "modified first option.getAttribute(\"selected\") is not empty")
+        assertEquals(
+            null,
+            option1.getAttribute("selected"),
+            "modified first option.getAttribute(\"selected\") is not empty"
+        )
         assertEquals(true, option2.selected, "modified second option.selected is not true")
-        assertEquals("", option2.getAttribute("selected"), "modified second option.getAttribute(\"selected\") is not filled")
+        assertEquals(
+            "",
+            option2.getAttribute("selected"),
+            "modified second option.getAttribute(\"selected\") is not filled"
+        )
+    }
+
+    @Test
+    fun testMountTargetNotFoundException() = runTest {
+        initDocument()
+
+        assertFailsWith(MountTargetNotFoundException::class) {
+            render {
+                div {
+                    text("div1")
+                }
+            }.mount(targetId + "error")
+            delay(100)
+        }
+
+        assertFailsWith(MountTargetNotFoundException::class) {
+            val dom = render {
+                div {
+                    text("div1")
+                }
+            }
+            append(targetId + "error", dom)
+            delay(150)
+        }
     }
 }

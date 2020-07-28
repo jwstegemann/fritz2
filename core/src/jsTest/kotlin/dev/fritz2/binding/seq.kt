@@ -129,7 +129,7 @@ class SeqTests {
 
     data class Entity(val id: String, val value: String)
 
-    val valueLens = buildLens("value", Entity::value, { p, v -> p.copy(value = v) })
+    val valueLens = buildLens("value", Entity::value) { p, v -> p.copy(value = v) }
 
     class TestEntityListStore() : RootStore<List<Entity>>(
         listOf(
