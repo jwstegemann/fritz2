@@ -104,7 +104,6 @@ open class RestQueryService<T, I, Q>(
     inline val buildQuery: suspend Request.(Q) -> Response = { accept(resource.contentType).get() }
 ) : QueryService<T, I, Q> {
 
-
     /**
      * queries the resource by sending the request build by [buildQuery] using [query]
      *
