@@ -177,18 +177,16 @@ class RestTests {
 
         entityStore.data.watch()
 
-        delay(100)
-
         testList.forEach {
             action(it) handledBy entityStore.update
             delay(1)
             action() handledBy entityStore.saveOrUpdate
         }
 
-        delay(400)
+        delay(500)
 
         action() handledBy queryStore.query
-        delay(400)
+        delay(500)
 
         val listAfterQuery = document.getElementById(listId)?.textContent
         assertEquals(testList.joinToString("") { it.name }, listAfterQuery, "wrong list after query")

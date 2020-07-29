@@ -14,9 +14,9 @@ import kotlinx.coroutines.promise
 import kotlin.browser.document
 
 fun <T> runTest(block: suspend () -> T): dynamic = GlobalScope.promise {
-    delay(100)
+    delay(50)
     block()
-    delay(100)
+    delay(50)
 }
 
 val targetId = "target"
