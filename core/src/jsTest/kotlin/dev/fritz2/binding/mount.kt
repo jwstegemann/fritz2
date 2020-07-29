@@ -49,7 +49,7 @@ class MountTests {
 
         val store = RootStore<List<Int>>(listToTest)
 
-        val mp = checkFlow(store.data.each().data, 1) { count, patch ->
+        val mp = checkFlow(store.data.each().data, 1) { _, patch ->
             val expected = Patch.InsertMany(listToTest.reversed(), 0)
             assertEquals(expected, patch, "set wrong value in MultiMountPoint")
         }
