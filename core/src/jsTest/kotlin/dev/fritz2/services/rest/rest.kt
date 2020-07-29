@@ -1,8 +1,6 @@
 package dev.fritz2.services.rest
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.action
-import dev.fritz2.binding.handledBy
+import dev.fritz2.binding.*
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
@@ -19,32 +17,35 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-
+/*
+ * See [crudcrud.com](https://crudcrud.com).
+ */
 class RestTests {
     data class RestPerson(val name: String, val age: Int, val _id: String)
 
     private val nameLens = buildLens("name", RestPerson::name) { p, v -> p.copy(name = v) }
-    private val ageLens = buildLens("age", RestPerson::age) { p, v -> RestPerson(p.name, v, p._id) }
-
-    //private val ageLens = buildLens("age", RestPerson::age) { p, v -> p.copy(age = v) }
+    private val ageLens = buildLens("age", RestPerson::age) { p, v -> p.copy(age = v) }
     private val idLens = buildLens("id", RestPerson::_id) { p, v -> p.copy(_id = v) }
 
 
-    //TODO: Default Serializer
     object PersonSerializer : Serializer<RestPerson, String> {
         data class PersonWithoutId(val name: String, val age: Int)
 
         private fun removeId(person: RestPerson) = PersonWithoutId(person.name, person.age)
 
         override fun write(item: RestPerson): String = JSON.stringify(removeId(item))
-        override fun read(msg: String): RestPerson = JSON.parse(msg)
+        override fun read(msg: String): RestPerson {
+            val obj = JSON.parse<dynamic>(msg)
+            return RestPerson(obj.name as String, obj.age as Int, obj._id as String)
+        }
+
         override fun writeList(items: List<RestPerson>): String = JSON.stringify(items.map { removeId(it) })
-        override fun readList(msg: String): List<RestPerson> = JSON.parse(msg)
+        override fun readList(msg: String): List<RestPerson> {
+            val list = JSON.parse<Array<dynamic>>(msg)
+            return list.map { obj -> RestPerson(obj.name as String, obj.age as Int, obj._id as String) }
+        }
     }
 
-    /**
-     * See [crudcrud.com](https://crudcrud.com).
-     */
     @Test
     fun testEntityService() = runTest {
         initDocument()
@@ -119,4 +120,95 @@ class RestTests {
         assertEquals(startPerson._id, idAfterDelete, "wrong id after delete")
     }
 
+
+    @Test
+    fun testQueryService() = runTest {
+        initDocument()
+
+        val testList = listOf(
+            RestPerson("A", 0, ""),
+            RestPerson("B", 1, ""),
+            RestPerson("C", 0, ""),
+            RestPerson("D", 1, ""),
+            RestPerson("E", 0, "")
+        )
+
+        val personResource = RestResource(
+            "",
+            RestPerson::_id,
+            PersonSerializer,
+            RestPerson("", 0, ""),
+            remote = getFreshCrudcrudEndpoint().append("/person")
+        )
+
+        val entityStore = object : RootStore<RestPerson>(personResource.emptyEntity) {
+            private val rest = RestEntityService(personResource)
+
+            val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(this, entity) }
+        }
+
+        val queryStore = object : RootStore<List<RestPerson>>(listOf(RestPerson("Hugo", 0, ""))) {
+            private val rest = RestQueryService<RestPerson, String, Unit>(personResource)
+
+            val query = handle<Unit> { entities, query -> rest.query(entities, query) }
+            val delete = handle<String> { entites, id -> rest.delete(entites, id) }
+        }
+
+        val listId = "list-${uniqueId()}"
+        val firstPersonId = "first-${uniqueId()}"
+
+        render {
+            div {
+                ul(id = listId) {
+                    queryStore.data.each(RestPerson::_id).map { p ->
+                        render {
+                            li { +p.name }
+                        }
+                    }.bind()
+                }
+                span(id = firstPersonId) {
+                    queryStore.data.map {
+                        if (it.isEmpty()) ""
+                        else it.first()._id
+                    }.bind()
+                }
+            }
+        }.mount(targetId)
+
+        entityStore.data.watch()
+
+        delay(100)
+
+        testList.forEach {
+            action(it) handledBy entityStore.update
+            delay(1)
+            action() handledBy entityStore.saveOrUpdate
+        }
+
+        delay(400)
+
+        action() handledBy queryStore.query
+        delay(400)
+
+        val listAfterQuery = document.getElementById(listId)?.textContent
+        assertEquals(testList.joinToString("") { it.name }, listAfterQuery, "wrong list after query")
+
+        val firstId = document.getElementById(firstPersonId)?.textContent
+        assertTrue(firstId != null && firstId.length > 10)
+
+        action(firstId) handledBy queryStore.delete
+        delay(200)
+
+        val listAfterDelete = document.getElementById(listId)?.textContent
+        assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDelete, "wrong list after query")
+
+        action(emptyList<RestPerson>()) handledBy queryStore.update
+        delay(1)
+        action() handledBy queryStore.query
+        delay(400)
+
+        val listAfterDeleteAndQuery = document.getElementById(listId)?.textContent
+        assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDeleteAndQuery, "wrong list after query")
+
+    }
 }

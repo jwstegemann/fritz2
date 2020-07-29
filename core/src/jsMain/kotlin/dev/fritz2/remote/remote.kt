@@ -13,17 +13,6 @@ import kotlin.browser.window as browserWindow
  */
 class FetchException(val statusCode: Short, val body: String, val response: Response) : Throwable()
 
-private val loggingErrorHandler = { t: Throwable ->
-    when (t) {
-        is FetchException -> {
-            console.error("error on request @ ${t.response.url}: ${t.statusCode} - ${t.body}")
-        }
-        else -> {
-            console.error("error on request: ${t.message}")
-        }
-    }
-}
-
 /**
  * factory method to create a RequestTemplate
  *
