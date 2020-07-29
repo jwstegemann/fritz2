@@ -139,7 +139,7 @@ class LocalStorageTests {
             val saveOrUpdate = handleAndOffer<Unit> { entity -> localStorage.saveOrUpdate(this, entity) }
         }
 
-        val queryStore = object : RootStore<List<LocalPerson>>(listOf(LocalPerson("Hugo", 0, ""))) {
+        val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
             private val localStorage =
                 LocalStorageQueryService<LocalPerson, String, Unit>(personResource) { entities, query ->
                     entities.sortedBy(LocalPerson::name)

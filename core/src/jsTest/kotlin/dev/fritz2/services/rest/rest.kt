@@ -128,9 +128,7 @@ class RestTests {
         val testList = listOf(
             RestPerson("A", 0, ""),
             RestPerson("B", 1, ""),
-            RestPerson("C", 0, ""),
-            RestPerson("D", 1, ""),
-            RestPerson("E", 0, "")
+            RestPerson("C", 0, "")
         )
 
         val personResource = RestResource(
@@ -147,7 +145,7 @@ class RestTests {
             val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(this, entity) }
         }
 
-        val queryStore = object : RootStore<List<RestPerson>>(listOf(RestPerson("Hugo", 0, ""))) {
+        val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
             private val rest = RestQueryService<RestPerson, String, Unit>(personResource)
 
             val query = handle<Unit> { entities, query -> rest.query(entities, query) }
@@ -183,7 +181,7 @@ class RestTests {
             action() handledBy entityStore.saveOrUpdate
         }
 
-        delay(500)
+        delay(400)
 
         action() handledBy queryStore.query
         delay(500)
