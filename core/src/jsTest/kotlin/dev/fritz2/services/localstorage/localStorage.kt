@@ -141,7 +141,7 @@ class LocalStorageTests {
 
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
             private val localStorage =
-                LocalStorageQueryService<LocalPerson, String, Unit>(personResource) { entities, query ->
+                LocalStorageQueryService<LocalPerson, String, Unit>(personResource) { entities, _ ->
                     entities.sortedBy(LocalPerson::name)
                 }
 
@@ -155,10 +155,8 @@ class LocalStorageTests {
         render {
             div {
                 ul(id = listId) {
-                    queryStore.data.each(LocalPerson::_id).map { p ->
-                        render {
-                            li { +p.name }
-                        }
+                    queryStore.data.each(LocalPerson::_id).render { p ->
+                        li { +p.name }
                     }.bind()
                 }
                 span(id = firstPersonId) {

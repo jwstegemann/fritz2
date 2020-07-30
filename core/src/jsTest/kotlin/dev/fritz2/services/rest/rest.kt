@@ -158,10 +158,8 @@ class RestTests {
         render {
             div {
                 ul(id = listId) {
-                    queryStore.data.each(RestPerson::_id).map { p ->
-                        render {
-                            li { +p.name }
-                        }
+                    queryStore.data.each(RestPerson::_id).render { p ->
+                        li { +p.name }
                     }.bind()
                 }
                 span(id = firstPersonId) {

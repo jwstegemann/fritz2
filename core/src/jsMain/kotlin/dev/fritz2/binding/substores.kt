@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.map
 class SubStore<R, P, T>(
     private val parent: Store<P>,
     private val lens: Lens<P, T>,
-    internal val rootStore: RootStore<R>,
+    val root: RootStore<R>,
     internal val rootLens: Lens<R, T>
 ) : Store<T>, CoroutineScope by MainScope() {
 
@@ -29,13 +29,13 @@ class SubStore<R, P, T>(
      * Since a [SubStore] is just a view on a [RootStore] holding the real value, it forwards the [Update] to it, using it's [Lens] to transform it.
      */
     override suspend fun enqueue(update: QueuedUpdate<T>) {
-        rootStore.enqueue(QueuedUpdate<R>({
+        root.enqueue(QueuedUpdate<R>({
             try {
                 rootLens.apply(it, update.update)
             } catch (e: Throwable) {
                 rootLens.apply(it, { oldValue -> update.errorHandler(e, oldValue) })
             }
-        }, rootStore::errorHandler, update.transaction))
+        }, root::errorHandler, update.transaction))
     }
 
     /**
@@ -56,7 +56,7 @@ class SubStore<R, P, T>(
      * @param lens a [Lens] describing which part to create the [SubStore] for
      */
     fun <X> sub(lens: Lens<T, X>): SubStore<R, T, X> =
-        SubStore(this, lens, rootStore, rootLens + lens)
+        SubStore(this, lens, root, rootLens + lens)
 
     /**
      * creates a new [SubStore] using the given [Format] to convert the
@@ -65,5 +65,5 @@ class SubStore<R, P, T>(
      * @param format a [Format] for the type [T]
      */
     fun using(format: Format<T>): SubStore<R, T, String> =
-        SubStore(this, format.lens, rootStore, rootLens + format.lens)
+        SubStore(this, format.lens, root, rootLens + format.lens)
 }

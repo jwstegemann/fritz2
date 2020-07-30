@@ -35,7 +35,7 @@ fun <T> RootStore<List<T>>.sub(index: Int): SubStore<List<T>, List<T>, T> {
  */
 fun <R, P, T, I> SubStore<R, P, List<T>>.sub(element: T, idProvider: IdProvider<T, I>): SubStore<R, List<T>, T> {
     val lens = elementLens(element, idProvider)
-    return SubStore(this, lens, rootStore, rootLens + lens)
+    return SubStore(this, lens, root, rootLens + lens)
 }
 
 /**
@@ -46,7 +46,7 @@ fun <R, P, T, I> SubStore<R, P, List<T>>.sub(element: T, idProvider: IdProvider<
  */
 fun <R, P, T> SubStore<R, P, List<T>>.sub(index: Int): SubStore<R, List<T>, T> {
     val lens = positionLens<T>(index)
-    return SubStore(this, lens, rootStore, rootLens + lens)
+    return SubStore(this, lens, root, rootLens + lens)
 }
 
 /**
