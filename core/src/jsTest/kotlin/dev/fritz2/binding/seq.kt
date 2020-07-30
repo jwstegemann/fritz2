@@ -43,10 +43,8 @@ class SeqTests {
         render {
             div {
                 ul(id = listId) {
-                    store.data.each().map {
-                        render {
-                            li { text(it) }
-                        }
+                    store.data.each().render {
+                        li { text(it) }
                     }.bind()
                 }
                 button(id = appendBtnId) { clicks handledBy store.append }
@@ -160,10 +158,8 @@ class SeqTests {
         render {
             div {
                 ul(id = listId) {
-                    store.data.each(Entity::id).map {
-                        render {
-                            li { text(it.value) }
-                        }
+                    store.data.each(Entity::id).render {
+                        li { text(it.value) }
                     }.bind()
                 }
                 button(id = appendBtnId) { clicks handledBy store.append }

@@ -1,8 +1,12 @@
 package dev.fritz2.remote
 
 import dev.fritz2.identification.uniqueId
+import dev.fritz2.test.getFreshCrudcrudEndpoint
 import dev.fritz2.test.runTest
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * See [Httpbin](https://httpbin.org/) for testing endpoints
@@ -93,13 +97,7 @@ class RemoteTests {
      */
     @Test
     fun testCRUDMethods() = runTest {
-        val crudcrud = remote("https://crudcrud.com")
-        val regex = """href="/Dashboard/(.+)">""".toRegex()
-        val endpointId = regex.find(crudcrud.get().getBody())?.groupValues?.get(1)
-                ?: fail("Could not get UniqueEndpointId for https://crudcrud.com/")
-        println("See Dashboard here: https://crudcrud.com/Dashboard/$endpointId")
-
-        val users = crudcrud.append("api/$endpointId/users")
+        val users = getFreshCrudcrudEndpoint().append("/users")
         val names = mutableListOf<String>()
         val ids = mutableListOf<String>()
         for (i in 1..3) {

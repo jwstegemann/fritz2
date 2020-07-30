@@ -3,6 +3,9 @@ package dev.fritz2.test
 import dev.fritz2.binding.MultiMountPoint
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.SingleMountPoint
+import dev.fritz2.remote.Request
+import dev.fritz2.remote.getBody
+import dev.fritz2.remote.remote
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -11,9 +14,9 @@ import kotlinx.coroutines.promise
 import kotlin.browser.document
 
 fun <T> runTest(block: suspend () -> T): dynamic = GlobalScope.promise {
-    delay(100)
+    delay(50)
     block()
-    delay(100)
+    delay(50)
 }
 
 val targetId = "target"
@@ -66,4 +69,15 @@ class TestMultiMountPoint<T>(
         count++;
         if (numberOfUpdates == count) done.complete(true)
     }
+}
+
+suspend fun getFreshCrudcrudEndpoint(): Request {
+    val crudcrud = remote("https://crudcrud.com")
+    val regex = """href="/Dashboard/(.+)">""".toRegex()
+    val endpointId = regex.find(crudcrud.get().getBody())?.groupValues?.get(1)
+        ?: throw Exception("Could not get UniqueEndpointId for https://crudcrud.com/")
+
+    println("ENDPOINT: $endpointId \n")
+
+    return crudcrud.append("/api/$endpointId")
 }

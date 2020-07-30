@@ -1,8 +1,12 @@
 package dev.fritz2.binding
 
+import dev.fritz2.dom.Tag
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.utils.Myer
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.Element
+import dev.fritz2.dom.html.render as globalRender
 
 /**
  * A [Patch] describes the changes made to a [Seq]
@@ -85,6 +89,19 @@ inline class Seq<T>(val data: Flow<Patch<T>>) {
     fun <X> map(mapper: (T) -> X): Seq<X> {
         return Seq(data.map {
             it.map(mapper)
+        })
+    }
+
+    /**
+     * convenience-method to easily map each value in the [Seq] to a [Tag]
+     */
+    fun <X : Element> render(mapper: HtmlElements.(T) -> Tag<X>): Seq<Tag<X>> {
+        return Seq(data.map { patch ->
+            patch.map {
+                globalRender {
+                    mapper(it)
+                }
+            }
         })
     }
 }
