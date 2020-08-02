@@ -1,7 +1,5 @@
 package dev.fritz2.services.entity
 
-import kotlinx.coroutines.channels.SendChannel
-
 /**
  * defines the interface that should be provided by all services dealing with a single Entity.
  */
@@ -23,7 +21,7 @@ interface EntityService<T, I> {
      * @param entity entity to save
      * @return the entity (identified by [id]) loaded
      */
-    suspend fun saveOrUpdate(channel: SendChannel<Unit>, entity: T): T
+    suspend fun saveOrUpdate(entity: T): T
 
     /**
      * deletes an entity
@@ -32,7 +30,7 @@ interface EntityService<T, I> {
      * @param entity entity to delete
      * @return the new entity after deletion
      */
-    suspend fun delete(channel: SendChannel<Unit>, entity: T): T
+    suspend fun delete(entity: T): T
 }
 
 /**
@@ -50,12 +48,12 @@ interface QueryService<T, I, Q> {
     suspend fun query(entities: List<T>, query: Q): List<T>
 
     /**
-     * saves the complete list of entities
+     * updates all entities in the list
      *
      * @param entities current list
      * @return list after save
      */
-    suspend fun saveAll(entities: List<T>): List<T>
+    suspend fun updateAll(entities: List<T>): List<T>
 
     /**
      * delete on entity
@@ -65,4 +63,13 @@ interface QueryService<T, I, Q> {
      * @return list after deletion
      */
     suspend fun delete(entities: List<T>, id: I): List<T>
+
+    /**
+     * delete on entity
+     *
+     * @param entities current list
+     * @param id of the entity to delete
+     * @return list after deletion
+     */
+    suspend fun delete(entities: List<T>, ids: List<I>): List<T>
 }

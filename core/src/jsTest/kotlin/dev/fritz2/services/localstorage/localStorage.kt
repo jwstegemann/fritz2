@@ -5,7 +5,7 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
-import dev.fritz2.services.serialization.Serializer
+import dev.fritz2.serialization.Serializer
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
@@ -60,8 +60,8 @@ class LocalStorageTests {
             val load = handle { entity, id: String -> localStorage.load(entity, id) }
 
             //            val load = handle(execute = rest::load)
-            val saveOrUpdate = handleAndOffer<Unit> { entity -> localStorage.saveOrUpdate(this, entity) }
-            val delete = handleAndOffer<Unit> { entity -> localStorage.delete(this, entity) }
+            val saveOrUpdate = handleAndOffer<Unit> { entity -> localStorage.saveOrUpdate(entity) }
+            val delete = handleAndOffer<Unit> { entity -> localStorage.delete(entity) }
         }
 
         val nameId = "name-${uniqueId()}"
@@ -136,7 +136,7 @@ class LocalStorageTests {
         val entityStore = object : RootStore<LocalPerson>(personResource.emptyEntity) {
             private val localStorage = LocalStorageEntityService(personResource)
 
-            val saveOrUpdate = handleAndOffer<Unit> { entity -> localStorage.saveOrUpdate(this, entity) }
+            val saveOrUpdate = handleAndOffer<Unit> { entity -> localStorage.saveOrUpdate(entity) }
         }
 
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {

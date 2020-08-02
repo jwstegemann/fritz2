@@ -147,6 +147,20 @@ interface Store<T> : CoroutineScope {
     fun syncBy(handler: Handler<Unit>) {
         data.drop(1).map { Unit } handledBy handler
     }
+
+    /**
+     * calls a handler on each new value of the [Store]
+     */
+    fun syncBy(handler: Handler<T>) {
+        data.drop(1) handledBy handler
+    }
+}
+
+/**
+ * calls a handler on each new value of the [Store]
+ */
+inline fun <T, R> Store<T>.syncBy(handler: Handler<R>, crossinline mapper: suspend (T) -> R) {
+    data.drop(1).map(mapper) handledBy handler
 }
 
 /**

@@ -4,10 +4,9 @@ import dev.fritz2.lenses.IdProvider
 import dev.fritz2.remote.Request
 import dev.fritz2.remote.getBody
 import dev.fritz2.remote.remote
+import dev.fritz2.serialization.Serializer
 import dev.fritz2.services.entity.EntityService
 import dev.fritz2.services.entity.QueryService
-import dev.fritz2.services.serialization.Serializer
-import kotlinx.coroutines.channels.SendChannel
 import org.w3c.fetch.Response
 
 
@@ -63,7 +62,7 @@ open class RestEntityService<T, I>(
      * @param entity entity to save
      * @return the saved entity
      */
-    override suspend fun saveOrUpdate(channel: SendChannel<Unit>, entity: T): T =
+    override suspend fun saveOrUpdate(entity: T): T =
         resource.remote.contentType(resource.contentType)
             .body(resource.serializer.write(entity)).run {
                 if (resource.id(entity) == resource.id(resource.emptyEntity)) {
@@ -74,8 +73,6 @@ open class RestEntityService<T, I>(
                     put(resource.serializeId(resource.id(entity)))
                     entity
                 }
-            }.also {
-                channel.offer(Unit)
             }
 
     /**
@@ -85,9 +82,8 @@ open class RestEntityService<T, I>(
      * @param entity entity to delete
      * @return the emptyEntity defined at [resource]
      */
-    override suspend fun delete(channel: SendChannel<Unit>, entity: T): T {
+    override suspend fun delete(entity: T): T {
         resource.remote.delete(resource.serializeId(resource.id(entity)))
-        channel.offer(Unit)
         return resource.emptyEntity
     }
 }
@@ -124,12 +120,16 @@ open class RestQueryService<T, I, Q>(
      * @param entities current list
      * @return list after saving
      */
-    override suspend fun saveAll(entities: List<T>): List<T> =
+    override suspend fun updateAll(entities: List<T>): List<T> =
         resource.serializer.readList(
             resource.remote
-                .contentType(resource.contentType).body(resource.serializer.writeList(entities)).put()
+                .contentType(resource.contentType).body(resource.serializer.writeList(entities)).post()
                 .getBody()
         )
+
+    private suspend fun deleteById(id: I) {
+        resource.remote.delete(resource.serializeId(id))
+    }
 
     /**
      * deletes one entity from the list
@@ -139,8 +139,21 @@ open class RestQueryService<T, I, Q>(
      * @return list after deletion
      */
     override suspend fun delete(entities: List<T>, id: I): List<T> {
-        resource.remote.delete(resource.serializeId(id))
+        deleteById(id)
         return entities.filterNot { resource.id(it) == id }
     }
 
+    /**
+     * deletes all entities from the action's list
+     *
+     * @param entities list before deletion
+     * @param id identifies the entity to delete
+     * @return list after deletion
+     */
+    override suspend fun delete(entities: List<T>, ids: List<I>): List<T> {
+        ids.forEach {
+            deleteById(it)
+        }
+        return entities.filterNot { ids.contains(resource.id(it)) }
+    }
 }

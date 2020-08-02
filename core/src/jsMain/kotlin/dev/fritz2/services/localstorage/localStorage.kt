@@ -1,10 +1,9 @@
 package dev.fritz2.services.localstorage
 
 import dev.fritz2.lenses.IdProvider
+import dev.fritz2.serialization.Serializer
 import dev.fritz2.services.entity.EntityService
 import dev.fritz2.services.entity.QueryService
-import dev.fritz2.services.serialization.Serializer
-import kotlinx.coroutines.channels.SendChannel
 import org.w3c.dom.get
 import kotlin.browser.localStorage
 import kotlin.browser.window
@@ -53,7 +52,7 @@ open class LocalStorageEntityService<T, I>(
      * @param entity entity to save
      * @return the saved entity
      */
-    override suspend fun saveOrUpdate(channel: SendChannel<Unit>, entity: T): T {
+    override suspend fun saveOrUpdate(entity: T): T {
         window.localStorage.setItem(
             "${resource.prefix}.${resource.serializeId(resource.id(entity))}",
             resource.serializer.write(entity)
@@ -68,7 +67,7 @@ open class LocalStorageEntityService<T, I>(
      * @param entity entity to delete
      * @return the emptyEntity defined at [resource]
      */
-    override suspend fun delete(channel: SendChannel<Unit>, entity: T): T {
+    override suspend fun delete(entity: T): T {
         window.localStorage.removeItem("${resource.prefix}.${resource.serializeId(resource.id(entity))}")
         return resource.emptyEntity
     }
@@ -110,7 +109,7 @@ open class LocalStorageQueryService<T, I, Q>(
      * @param entities current list
      * @return list after saving
      */
-    override suspend fun saveAll(entities: List<T>): List<T> {
+    override suspend fun updateAll(entities: List<T>): List<T> {
         entities.forEach { entity ->
             window.localStorage.setItem(
                 "${resource.prefix}.${resource.serializeId(resource.id(entity))}",
@@ -118,6 +117,10 @@ open class LocalStorageQueryService<T, I, Q>(
             )
         }
         return entities
+    }
+
+    private fun deleteById(id: I) {
+        window.localStorage.removeItem("${resource.prefix}.${resource.serializeId(id)}")
     }
 
     /**
@@ -128,7 +131,19 @@ open class LocalStorageQueryService<T, I, Q>(
      * @return list after deletion
      */
     override suspend fun delete(entities: List<T>, id: I): List<T> {
-        window.localStorage.removeItem("${resource.prefix}.${resource.serializeId(id)}")
+        deleteById(id)
         return entities.filterNot { resource.id(it) == id }
+    }
+
+    /**
+     * deletes one entity from local-storage
+     *
+     * @param entities list before deletion
+     * @param id identifies the entity to delete
+     * @return list after deletion
+     */
+    override suspend fun delete(entities: List<T>, ids: List<I>): List<T> {
+        ids.forEach(::deleteById)
+        return entities.filterNot { ids.contains(resource.id(it)) }
     }
 }
