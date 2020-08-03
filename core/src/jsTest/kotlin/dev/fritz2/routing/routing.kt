@@ -10,10 +10,12 @@ import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLParagraphElement
 import kotlin.browser.document
+import kotlin.browser.window
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -23,14 +25,15 @@ class RoutingTests {
     @Test
     fun testStringRouter() = runTest {
         initDocument()
-        delay(100)
 
-        val defaultRoute = "start"
+        window.location.hash = ""
+
+        val defaultRoute = ""
 
         val router = router(defaultRoute)
-        val testRange = 0..4
+        val testRange = 0..2
         val testId = uniqueId()
-        val buttons = testRange.map { "btn$it" to "page$it" }
+        val buttons = testRange.map { "btn-${uniqueId()}" to "page$it" }
 
         render {
             div(id = testId) {
@@ -49,10 +52,9 @@ class RoutingTests {
             }
         }.mount(targetId)
 
-        delay(500)
+        delay(200)
 
         val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
-        //console.log("${element.textContent}\n")
         assertEquals(defaultRoute, element.textContent)
 
         for ((id, page) in buttons) {
@@ -66,32 +68,33 @@ class RoutingTests {
     fun testMapRouter() = runTest {
         initDocument()
 
+        window.location.hash = ""
+
         val pageKey = "page"
         val btnKey = "btn"
         val defaultRoute = mapOf(pageKey to "start", btnKey to "")
 
         val router = router(defaultRoute)
 
-        val testRange = 0..4
-        val pageId = uniqueId()
-        val btnId = uniqueId()
-        val buttons = testRange.map { "btn-$it" to "page-$it" }
+        val testRange = 0..2
+        val pageId = "page-${uniqueId()}"
+        val btnId = "btn-${uniqueId()}"
+        val buttons = testRange.map { "btn-${uniqueId()}" to "page-$it" }
 
         render {
             div {
-                p(id = pageId) {
-                    router.select(pageKey) { it.first.toString() }.bind()
+                div(id = pageId) {
+                    router.select(pageKey, "").bind()
                 }
-                p(id = btnId) {
-                    router.select(btnKey) { it.first.toString() }.bind()
+                div(id = btnId) {
+                    router.select(btnKey) { it.first ?: "" }.bind()
                 }
                 ul {
-                    const(buttons).each().map { (id, page) ->
-                        render {
-                            li {
-                                button(id = id) {
-                                    clicks.map { mapOf(pageKey to page, btnKey to id) } handledBy router.navTo
-                                }
+                    const(buttons).each().render { (id, page) ->
+                        li {
+                            button(id = id) {
+                                +page
+                                clicks.map { mapOf(pageKey to page, btnKey to id) } handledBy router.navTo
                             }
                         }
                     }.bind()
@@ -99,20 +102,42 @@ class RoutingTests {
             }
         }.mount(targetId)
 
-        delay(200)
+        delay(250)
 
-        val pageElement = document.getElementById(pageId).unsafeCast<HTMLParagraphElement>()
-        val btnElement = document.getElementById(btnId).unsafeCast<HTMLParagraphElement>()
+        val pageElement = document.getElementById(pageId) as HTMLDivElement
+        val btnElement = document.getElementById(btnId) as HTMLDivElement
 
-        //FIXME: not working
-//        assertEquals(defaultRoute[pageKey], pageElement.textContent)
-//        assertEquals(defaultRoute[btnKey], btnElement.textContent)
+        assertEquals(defaultRoute[pageKey], pageElement.textContent, "initial page does not match")
+        assertEquals(defaultRoute[btnKey], btnElement.textContent, "initial btn does not match")
 
         for ((id, page) in buttons) {
             document.getElementById(id).unsafeCast<HTMLButtonElement>().click()
-            delay(100)
+            delay(250)
             assertEquals(page, pageElement.textContent)
             assertEquals(id, btnElement.textContent)
         }
+    }
+
+    @Test
+    fun testMapRouterFailing() = runTest {
+        initDocument()
+
+        window.location.hash = ""
+
+        val router = router(mapOf("test" to "123"))
+
+        val divId = "div-${uniqueId()}"
+
+        render {
+            div(id = divId) {
+                router.select("fail", "error").bind()
+            }
+        }.mount(targetId)
+
+        delay(250)
+
+        val divElement = document.getElementById(divId) as HTMLDivElement
+
+        assertEquals("error", divElement.textContent, "expected default value not occur")
     }
 }
