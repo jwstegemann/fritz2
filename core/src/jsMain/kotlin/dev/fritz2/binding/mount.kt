@@ -1,7 +1,10 @@
 package dev.fritz2.binding
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -10,12 +13,14 @@ import kotlinx.coroutines.flow.onEach
  *
  * @param upstream the Flow that should be mounted at this point.
  */
-abstract class SingleMountPoint<T>(upstream: Flow<T>) {
+abstract class SingleMountPoint<T>(upstream: Flow<T>) : CoroutineScope by MainScope() {
     init {
         upstream.onEach {
             set(it, last)
             last = it
-        }.launchIn(MainScope())
+        }.catch {
+            cancel()
+        }.launchIn(this)
     }
 
     private var last: T? = null
@@ -34,9 +39,11 @@ abstract class SingleMountPoint<T>(upstream: Flow<T>) {
  *
  * @param upstream the Flow that should be mounted at this point.
  */
-abstract class MultiMountPoint<T>(upstream: Flow<Patch<T>>) {
+abstract class MultiMountPoint<T>(upstream: Flow<Patch<T>>) : CoroutineScope by MainScope() {
     init {
-        upstream.onEach { patch(it) }.launchIn(MainScope())
+        upstream.onEach { patch(it) }
+            .catch { cancel() }
+            .launchIn(MainScope())
     }
 
     /**
