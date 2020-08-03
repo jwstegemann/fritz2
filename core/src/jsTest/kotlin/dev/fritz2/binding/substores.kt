@@ -91,21 +91,16 @@ class SubStoreTests {
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person, id = "person") {}
         val id = "complete-${uniqueId()}"
-        val format = object : Format<Person>(id) {
-            override fun parse(old: Person, value: String): Person {
-                val fields = value.split(",")
-                val name = fields[0]
-                val street = fields[1]
-                val code = fields[2].toInt()
-                return Person(name, Address(street, PostalCode(code)))
-            }
 
-            override fun format(value: Person): String =
-                "${value.name},${value.address.street},${value.address.postalCode.code}"
+        fun formatPerson(person: Person) = "${person.name},${person.address.street},${person.address.postalCode.code}"
 
-        }
-
-        val completeSub = store.using(format)
+        val completeSub = store.using(id, {
+            val fields = it.split(",")
+            val name = fields[0]
+            val street = fields[1]
+            val code = fields[2].toInt()
+            Person(name, Address(street, PostalCode(code)))
+        }, ::formatPerson)
 
         render {
             div {
@@ -121,13 +116,13 @@ class SubStoreTests {
         val completeDiv = document.getElementById(completeSub.id) as HTMLDivElement
 
         assertTrue(completeDiv.id.endsWith(id))
-        assertEquals(format.format(person), completeDiv.innerText, "formatting is not working")
+        assertEquals(formatPerson(person), completeDiv.innerText, "formatting is not working")
 
         val newPerson = Person("Bar", Address("Foo St. 9", PostalCode(1111)))
-        action(format.format(newPerson)) handledBy completeSub.update
+        action(formatPerson(newPerson)) handledBy completeSub.update
 
         delay(200)
 
-        assertEquals(format.format(newPerson), completeDiv.innerText, "parsing is not working")
+        assertEquals(formatPerson(newPerson), completeDiv.innerText, "parsing is not working")
     }
 }
