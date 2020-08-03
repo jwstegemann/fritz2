@@ -1,7 +1,5 @@
 package dev.fritz2.services.entity
 
-import kotlinx.coroutines.channels.SendChannel
-
 /**
  * defines the interface that should be provided by all services dealing with a single Entity.
  */
@@ -19,20 +17,18 @@ interface EntityService<T, I> {
     /**
      * saves or updates an entity
      *
-     * @param channel channel to inform about changes
      * @param entity entity to save
-     * @return the entity (identified by [id]) loaded
+     * @return the new entity after save or update
      */
-    suspend fun saveOrUpdate(channel: SendChannel<Unit>, entity: T): T
+    suspend fun saveOrUpdate(entity: T): T
 
     /**
      * deletes an entity
      *
-     * @param channel channel to inform about changes
      * @param entity entity to delete
-     * @return the new entity after deletion
+     * @return a new entity after deletion
      */
-    suspend fun delete(channel: SendChannel<Unit>, entity: T): T
+    suspend fun delete(entity: T): T
 }
 
 /**
@@ -43,26 +39,35 @@ interface QueryService<T, I, Q> {
     /**
      * runs a query
      *
-     * @param entities current list
+     * @param entities entity list
      * @param query object defining the query
      * @return result of the query
      */
     suspend fun query(entities: List<T>, query: Q): List<T>
 
     /**
-     * saves the complete list of entities
+     * updates all entities in the list
      *
-     * @param entities current list
-     * @return list after save
+     * @param entities entity list
+     * @return list after update
      */
-    suspend fun saveAll(entities: List<T>): List<T>
+    suspend fun updateAll(entities: List<T>): List<T>
 
     /**
-     * delete on entity
+     * delete one entity
      *
-     * @param entities current list
-     * @param id of the entity to delete
+     * @param entities entity list
+     * @param id of entity to delete
      * @return list after deletion
      */
     suspend fun delete(entities: List<T>, id: I): List<T>
+
+    /**
+     * delete multiple entities
+     *
+     * @param entities entity list
+     * @param ids of entities to delete
+     * @return list after deletion
+     */
+    suspend fun delete(entities: List<T>, ids: List<I>): List<T>
 }

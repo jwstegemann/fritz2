@@ -90,7 +90,6 @@ interface Store<T> : CoroutineScope {
      * @param bufferSize number of values to buffer
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
-    //FIXME: why no suspend on execute
     fun <A, E> handleAndOffer(
         errorHandler: ErrorHandler<T> = ::errorHandler,
         transaction: String = defaultTransaction,
@@ -147,6 +146,20 @@ interface Store<T> : CoroutineScope {
     fun syncBy(handler: Handler<Unit>) {
         data.drop(1).map { Unit } handledBy handler
     }
+
+    /**
+     * calls a handler on each new value of the [Store]
+     */
+    fun syncBy(handler: Handler<T>) {
+        data.drop(1) handledBy handler
+    }
+}
+
+/**
+ * calls a handler on each new value of the [Store]
+ */
+inline fun <T, R> Store<T>.syncBy(handler: Handler<R>, crossinline mapper: suspend (T) -> R) {
+    data.drop(1).map(mapper) handledBy handler
 }
 
 /**
@@ -213,3 +226,11 @@ open class RootStore<T>(
     fun using(format: Format<T>): SubStore<T, T, String> =
         SubStore(this, format.lens, this, format.lens)
 }
+
+/**
+ * convenience method to create a simple [RootStore] without any handlers, etc.
+ *
+ * @param initialData: the first current value of this [Store]
+ * @param id: the id of this store. ids of [SubStore]s will be concatenated.
+ */
+fun <T> storeOf(initialData: T, id: String = "") = RootStore(initialData, id)
