@@ -1,6 +1,9 @@
 package dev.fritz2.validation
 
-import dev.fritz2.binding.*
+import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.action
+import dev.fritz2.binding.each
+import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
@@ -65,21 +68,33 @@ class ValidationJSTests {
 
         assertEquals(carName, divData.innerText, "c1: car name has changed")
         assertEquals(1, divMessages.childElementCount, "c1: there is not 1 message")
-        assertEquals(carNameIsBlank.text, divMessages.firstElementChild?.textContent, "c1: there is not expected message")
+        assertEquals(
+            carNameIsBlank.text,
+            divMessages.firstElementChild?.textContent,
+            "c1: there is not expected message"
+        )
 
         action(c2) handledBy store.update
         delay(100)
 
         assertEquals(carName, divData.innerText, "c2: car name has changed")
         assertEquals(1, divMessages.childElementCount, "c2: there is not 1 message")
-        assertEquals(colorValuesAreToLow.text, divMessages.firstElementChild?.textContent, "c2: there is not expected message")
+        assertEquals(
+            colorValuesAreToLow.text,
+            divMessages.firstElementChild?.textContent,
+            "c2: there is not expected message"
+        )
 
         action(c3) handledBy store.update
         delay(100)
 
         assertEquals(carName, divData.innerText, "c3: car name has changed")
         assertEquals(1, divMessages.childElementCount, "c3: there is not 1 message")
-        assertEquals(colorValuesAreToHigh.text, divMessages.firstElementChild?.textContent, "c3: there is not expected message")
+        assertEquals(
+            colorValuesAreToHigh.text,
+            divMessages.firstElementChild?.textContent,
+            "c3: there is not expected message"
+        )
 
         action(c4) handledBy store.update
         delay(100)

@@ -38,7 +38,7 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      * @param data model to validate
      * @param metadata extra information for the validation process
      * @return a [Boolean] for using in if conditions
-    */
+     */
     fun isValid(data: D, metadata: T): Boolean {
         val messages = validate(data, metadata)
         msgs.value = messages

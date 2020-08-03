@@ -11,13 +11,13 @@ val colorValuesAreToHigh = ValidationTests.Message("color members are greater th
 val carValidator = validator { car: ValidationTests.Car, _: Unit ->
     val msgs = mutableListOf<ValidationTests.Message>()
 
-    if(car.name.isBlank())
+    if (car.name.isBlank())
         msgs.add(carNameIsBlank)
 
-    if(car.color.r < 0 || car.color.g < 0 || car.color.b < 0)
+    if (car.color.r < 0 || car.color.g < 0 || car.color.b < 0)
         msgs.add(colorValuesAreToLow)
 
-    if(car.color.r > 255 || car.color.g > 255 || car.color.b > 255)
+    if (car.color.r > 255 || car.color.g > 255 || car.color.b > 255)
         msgs.add(colorValuesAreToHigh)
 
     msgs
