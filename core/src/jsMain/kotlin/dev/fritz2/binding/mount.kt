@@ -1,8 +1,6 @@
 package dev.fritz2.binding
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -12,17 +10,12 @@ import kotlinx.coroutines.flow.onEach
  *
  * @param upstream the Flow that should be mounted at this point.
  */
-abstract class SingleMountPoint<T>(upstream: Flow<T>) : CoroutineScope by MainScope() {
+abstract class SingleMountPoint<T>(upstream: Flow<T>) {
     init {
         upstream.onEach {
-            try {
-                set(it, last)
-                last = it
-            } catch (e: Throwable) {
-                console.error("ERROR[SingleMountPoint]: ${e.message}", e)
-                this.cancel()
-            }
-        }.launchIn(this)
+            set(it, last)
+            last = it
+        }.launchIn(MainScope())
     }
 
     private var last: T? = null
@@ -41,16 +34,9 @@ abstract class SingleMountPoint<T>(upstream: Flow<T>) : CoroutineScope by MainSc
  *
  * @param upstream the Flow that should be mounted at this point.
  */
-abstract class MultiMountPoint<T>(upstream: Flow<Patch<T>>) : CoroutineScope by MainScope() {
+abstract class MultiMountPoint<T>(upstream: Flow<Patch<T>>) {
     init {
-        upstream.onEach {
-            try {
-                patch(it)
-            } catch (e: Throwable) {
-                console.error("ERROR[MultiMountPoint]: ${e.message}", e)
-                this.cancel()
-            }
-        }.launchIn(this)
+        upstream.onEach { patch(it) }.launchIn(MainScope())
     }
 
     /**

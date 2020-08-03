@@ -1,12 +1,10 @@
 package dev.fritz2.binding
 
-import dev.fritz2.flow.asSharedFlow
 import dev.fritz2.format.Format
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
 
@@ -90,7 +88,6 @@ interface Store<T> : CoroutineScope {
      * @param bufferSize number of values to buffer
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
-    //FIXME: why no suspend on execute
     fun <A, E> handleAndOffer(
         errorHandler: ErrorHandler<T> = ::errorHandler,
         transaction: String = defaultTransaction,
@@ -177,9 +174,14 @@ open class RootStore<T>(
     bufferSize: Int = 1
 ) : Store<T>, CoroutineScope by MainScope() {
 
-    private val updates = BroadcastChannel<QueuedUpdate<T>>(bufferSize)
-    private val applyUpdate: suspend (T, QueuedUpdate<T>) -> T = { lastValue, queuedUpdate ->
-        try {
+    private val state = MutableStateFlow(initialData)
+
+    /**
+     * in a [RootStore] an [Update] is handled by sending it to the internal [updates]-channel.
+     */
+    override suspend fun enqueue(queuedUpdate: QueuedUpdate<T>) {
+        val lastValue = state.value
+        state.value = try {
             queuedUpdate.update(lastValue)
         } catch (e: Throwable) {
             queuedUpdate.errorHandler(e, lastValue)
@@ -187,21 +189,11 @@ open class RootStore<T>(
     }
 
     /**
-     * in a [RootStore] an [Update] is handled by sending it to the internal [updates]-channel.
-     */
-    override suspend fun enqueue(update: QueuedUpdate<T>) {
-        updates.send(update)
-    }
-
-    /**
      * the current value of a [RootStore] is derived be applying the updates on the internal channel one by one to get the next value.
      * the [Flow] only emit's a new value, when the value is differs from the last one to avoid calculations and updates that are not necessary.
      * This has to be a SharedFlow, because the updated should only be applied once, regardless how many depending values or ui-elements or bound to it.
      */
-    override val data = updates.asFlow().scan(initialData, applyUpdate)
-        .drop(if (dropInitialData) 1 else 0)
-        .distinctUntilChanged()
-        .asSharedFlow()
+    override val data: Flow<T> = if (!dropInitialData) state else state.drop(1)
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
@@ -227,3 +219,11 @@ open class RootStore<T>(
     fun using(format: Format<T>): SubStore<T, T, String> =
         SubStore(this, format.lens, this, format.lens)
 }
+
+/**
+ * convenience method to create a simple [RootStore] without any handlers, etc.
+ *
+ * @param initialData: the first current value of this [Store]
+ * @param id: the id of this store. ids of [SubStore]s will be concatenated.
+ */
+fun <T> storeOf(initialData: T, id: String = "") = RootStore(initialData, id)
