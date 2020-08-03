@@ -71,11 +71,11 @@ class SubStore<R, P, T>(
      * creates a new [SubStore] using the two given functions [parse] and [format]
      * to convert a value of type [T] to a [String] and vice versa.
      *
-     * @param id for prepending in resulting [SubStore].id
      * @param parse function for parsing a [String] to [T]
      * @param format function for parsing a [T] to [String]
+     * @param id for prepending in resulting [SubStore].id
      */
-    fun using(id: String = "", parse: (String) -> T, format: (T) -> String): SubStore<R, T, String> =
+    fun using(parse: (String) -> T, format: (T) -> String, id: String = ""): SubStore<R, T, String> =
         using(object : Format<T>(id) {
             override fun parse(old: T, value: String): T = parse(value)
             override fun format(value: T): String = format(value)

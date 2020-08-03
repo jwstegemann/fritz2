@@ -94,13 +94,13 @@ class SubStoreTests {
 
         fun formatPerson(person: Person) = "${person.name},${person.address.street},${person.address.postalCode.code}"
 
-        val completeSub = store.using(id, {
+        val completeSub = store.using({
             val fields = it.split(",")
             val name = fields[0]
             val street = fields[1]
             val code = fields[2].toInt()
             Person(name, Address(street, PostalCode(code)))
-        }, ::formatPerson)
+        }, ::formatPerson, id)
 
         render {
             div {
