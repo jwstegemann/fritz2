@@ -230,7 +230,7 @@ open class RootStore<T>(
 /**
  * convenience method to create a simple [RootStore] without any handlers, etc.
  *
- * @param initialData: the first current value of this [Store]
- * @param id: the id of this store. ids of [SubStore]s will be concatenated.
+ * @param initialData the first current value of this [Store]
+ * @param id the id of this store. ids of [SubStore]s will be concatenated.
  */
 fun <T> storeOf(initialData: T, id: String = "") = RootStore(initialData, id)
