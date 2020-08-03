@@ -203,27 +203,4 @@ open class RootStore<T>(
      */
     fun <X> sub(lens: Lens<T, X>): SubStore<T, T, X> =
         SubStore(this, lens, this, lens)
-
-    /**
-     * creates a new [SubStore] using the given [Format] to convert a
-     * value of type [T] to a [String] and vice versa.
-     *
-     * @param format a [Format] for a type [T]
-     */
-    fun using(format: Format<T>): SubStore<T, T, String> =
-        SubStore(this, format.lens, this, format.lens)
-
-    /**
-     * creates a new [SubStore] using the two given functions [parse] and [format]
-     * to convert a value of type [T] to a [String] and vice versa.
-     *
-     * @param parse function for parsing a [String] to [T]
-     * @param format function for parsing a [T] to [String]
-     * @param id for prepending in resulting [SubStore].id
-     */
-    fun using(parse: (String) -> T, format: (T) -> String, id: String = ""): SubStore<T, T, String> =
-        using(object : Format<T>(id) {
-            override fun parse(old: T, value: String): T = parse(value)
-            override fun format(value: T): String = format(value)
-        })
 }

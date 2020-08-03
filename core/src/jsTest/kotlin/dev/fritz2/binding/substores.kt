@@ -4,6 +4,8 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.format.Format
 import dev.fritz2.identification.uniqueId
+import dev.fritz2.lenses.Lens
+import dev.fritz2.lenses.Lenses
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -92,15 +94,21 @@ class SubStoreTests {
         val store = object : RootStore<Person>(person, id = "person") {}
         val id = "complete-${uniqueId()}"
 
-        fun formatPerson(person: Person) = "${person.name},${person.address.street},${person.address.postalCode.code}"
+        val format = object : Format<Person>(id) {
+            override fun parse(old: Person, value: String): Person {
+                val fields = value.split(",")
+                val name = fields[0]
+                val street = fields[1]
+                val code = fields[2].toInt()
+                return Person(name, Address(street, PostalCode(code)))
+            }
 
-        val completeSub = store.using({
-            val fields = it.split(",")
-            val name = fields[0]
-            val street = fields[1]
-            val code = fields[2].toInt()
-            Person(name, Address(street, PostalCode(code)))
-        }, ::formatPerson, id)
+            override fun format(value: Person): String =
+                "${person.name},${person.address.street},${person.address.postalCode.code}"
+
+        }
+
+        val completeSub = store.sub(format.lens)
 
         render {
             div {
@@ -116,13 +124,13 @@ class SubStoreTests {
         val completeDiv = document.getElementById(completeSub.id) as HTMLDivElement
 
         assertTrue(completeDiv.id.endsWith(id))
-        assertEquals(formatPerson(person), completeDiv.innerText, "formatting is not working")
+        assertEquals(format.format(person), completeDiv.innerText, "formatting is not working")
 
         val newPerson = Person("Bar", Address("Foo St. 9", PostalCode(1111)))
-        action(formatPerson(newPerson)) handledBy completeSub.update
+        action(format.format(newPerson)) handledBy completeSub.update
 
         delay(200)
 
-        assertEquals(formatPerson(newPerson), completeDiv.innerText, "parsing is not working")
+        assertEquals(format.format(newPerson), completeDiv.innerText, "parsing is not working")
     }
 }

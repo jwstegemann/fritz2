@@ -1,9 +1,11 @@
 package dev.fritz2.lenses
 
+import dev.fritz2.format.Format
+
 /**
  * Describes a focus point into a data structure, i.e. a property of a given complex entity
  *
- * @property _id identies the focus of this lens
+ * @property _id identifies the focus of this lens
  */
 interface Lens<P, T> {
     val _id: String
@@ -43,6 +45,17 @@ interface Lens<P, T> {
         override fun get(parent: P): X = other.get(this@Lens.get(parent))
         override fun set(parent: P, value: X): P = this@Lens.set(parent, other.set(this@Lens.get(parent), value))
     }
+
+    /**
+     * creates a new [Lens] using the two given functions [parse] and [format]
+     * to convert a value of type [T] to a [String] and vice versa.
+     *
+     * @param parse function for parsing a [String] to [T]
+     * @param format function for parsing a [T] to [String]
+     * @param id for prepending in resulting [Lens].id
+     */
+    fun using(parse: (String) -> T, format: (T) -> String, id: String = ""): Lens<P, String> =
+        this + buildLens(id, format, { _, value -> parse(value)})
 }
 
 /**
