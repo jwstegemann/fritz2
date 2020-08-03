@@ -29,12 +29,25 @@ fun router(default: Map<String, String>): Router<Map<String, String>> = object :
 ) {}
 
 /**
- * Select return a [Pair] of the value
- * and the complete routing [Map] for the given key in the [mapper] function.
+ * Selects with the given key a [Pair] of the value
+ * and the complete routing [Map] into the [transform] function.
+ *
+ * @param key for looking in [Map]
+ * @param transform mapping function to run on selected [Pair] of the value and routing [Map]
+ * @return new [Flow] of the result by calling the [transform] function
  */
-fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Map<String, String>>) -> X): Flow<X> =
-    routes.map { m -> mapper((m[key] ?: "") to m) }
+fun <X> Router<Map<String, String>>.select(key: String, transform: suspend (Pair<String?, Map<String, String>>) -> X): Flow<X> =
+    routes.map { m -> transform((m[key]) to m) }
 
+/**
+ * Returns the value for the given key.
+ *
+ * @param key for looking in [Map]
+ * @param orElse if key not in [Map]
+ * @return [Flow] of [String] with the value
+ */
+fun Router<Map<String, String>>.select(key: String, orElse: String): Flow<String> =
+    routes.map { m -> m[key] ?: orElse }
 
 /**
  * Creates a new type based [Router].
@@ -131,7 +144,6 @@ open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope(
         }
 
         val listener: (Event) -> Unit = {
-            println("event occurs: $it")
             it.preventDefault()
             offer(route.unmarshal(window.location.hash.removePrefix(prefix)))
         }
