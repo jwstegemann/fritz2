@@ -25,8 +25,6 @@ class LocalStorageTests {
 
 
     object PersonSerializer : Serializer<LocalPerson, String> {
-        data class PersonWithoutId(val name: String, val age: Int)
-
         override fun write(item: LocalPerson): String = JSON.stringify(item)
         override fun read(msg: String): LocalPerson {
             val obj = JSON.parse<dynamic>(msg)
@@ -59,9 +57,8 @@ class LocalStorageTests {
 
             val load = handle { entity, id: String -> localStorage.load(entity, id) }
 
-            //            val load = handle(execute = rest::load)
-            val saveOrUpdate = handleAndOffer<Unit> { entity -> localStorage.saveOrUpdate(entity) }
-            val delete = handleAndOffer<Unit> { entity -> localStorage.delete(entity) }
+            val saveOrUpdate = handle { entity -> localStorage.saveOrUpdate(entity) }
+            val delete = handle { entity -> localStorage.delete(entity) }
         }
 
         val nameId = "name-${uniqueId()}"

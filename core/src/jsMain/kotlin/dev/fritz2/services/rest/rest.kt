@@ -11,19 +11,19 @@ import org.w3c.fetch.Response
 
 
 /**
- * Definition of a concrete resource
+ * defines of a concrete [RestResource]
  *
- * @param url base-url of the service
- * @param id function to provide an id for a given entity
+ * @param url base-url of the REST-API
+ * @param idProvider function to provide an id for a given entity
  * @param serializer used to (de-)serialize the entity/response
- * @param emptyEntity an instance of the entity defining an empty [Store] (after reset, etc.)
- * @param contentType to be used by the service's requests
- * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentification, etc.
- * @param serializeId convert the entities [id] into a [String]
+ * @param emptyEntity an instance of the entity defining an empty state (e.g. after deletion)
+ * @param contentType to be used by the REST-API
+ * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
+ * @param serializeId convert the entities [idProvider] into a [String]
  */
 data class RestResource<T, I>(
     val url: String,
-    inline val id: IdProvider<T, I>,
+    inline val idProvider: IdProvider<T, I>,
     val serializer: Serializer<T, String>,
     inline val emptyEntity: T,
     val contentType: String = "application/json; charset=utf-8",
@@ -33,16 +33,16 @@ data class RestResource<T, I>(
 
 
 /**
- * provides crud-functions to deal with a single entity
+ * provides crud-functions for REST-API to a defined [RestResource]
  *
- * @param resource definition of the Rest-resource
+ * @param resource definition of the [RestResource]
  */
 open class RestEntityService<T, I>(
     val resource: RestResource<T, I>
 ) : EntityService<T, I> {
 
     /**
-     * loads an entity by a get request to [resource].url/(id)
+     * loads an entity by a get request to [resource].url/{id}
      *
      * @param entity current entity (before load)
      * @param id of the entity to load
@@ -55,44 +55,42 @@ open class RestEntityService<T, I>(
         )
 
     /**
-     * sends a a post-(for save) or put-(for update) request to [resource].url/(id) with the serialized entity in it's body.
+     * sends a post-(for save) or a put-(for update) request to [resource].url/{id} with the serialized entity in it's body.
      * The emptyEntity of [resource] is used to determine if it should saved or updated
      *
-     * @param channel channel to inform about changes
      * @param entity entity to save
      * @return the saved entity
      */
     override suspend fun saveOrUpdate(entity: T): T =
         resource.remote.contentType(resource.contentType)
             .body(resource.serializer.write(entity)).run {
-                if (resource.id(entity) == resource.id(resource.emptyEntity)) {
+                if (resource.idProvider(entity) == resource.idProvider(resource.emptyEntity)) {
                     resource.serializer.read(
                         accept(resource.contentType).post().getBody()
                     )
                 } else {
-                    put(resource.serializeId(resource.id(entity)))
+                    put(resource.serializeId(resource.idProvider(entity)))
                     entity
                 }
             }
 
     /**
-     * deletes an entity by a delete-request to [resource].url/(id)
+     * deletes an entity by a delete-request to [resource].url/{id}
      *
-     * @param channel channel to inform about changes
      * @param entity entity to delete
      * @return the emptyEntity defined at [resource]
      */
     override suspend fun delete(entity: T): T {
-        resource.remote.delete(resource.serializeId(resource.id(entity)))
+        resource.remote.delete(resource.serializeId(resource.idProvider(entity)))
         return resource.emptyEntity
     }
 }
 
 
 /**
- * provides services to deal with queries to a defined Rest-resource
+ * provides services to deal with queries for REST-API to a defined [RestResource]
  *
- * @param resource definition of the Rest-resource
+ * @param resource definition of the [RestResource]
  * @param buildQuery function to build a [Request] for a given object defining the query
  */
 open class RestQueryService<T, I, Q>(
@@ -101,7 +99,7 @@ open class RestQueryService<T, I, Q>(
 ) : QueryService<T, I, Q> {
 
     /**
-     * queries the resource by sending the request build by [buildQuery] using [query]
+     * queries the resource by sending the request which is build by [buildQuery] using the [query]
      *
      * @param entities current list of entities
      * @param query object defining the query
@@ -115,10 +113,10 @@ open class RestQueryService<T, I, Q>(
         )
 
     /**
-     * saves all entities in the current list (sending a put-request to the base-url of the [resource])
+     * updates all entities in the current list (sending a post-request to the base-url of the [resource])
      *
      * @param entities current list
-     * @return list after saving
+     * @return list after update
      */
     override suspend fun updateAll(entities: List<T>): List<T> =
         resource.serializer.readList(
@@ -140,20 +138,20 @@ open class RestQueryService<T, I, Q>(
      */
     override suspend fun delete(entities: List<T>, id: I): List<T> {
         deleteById(id)
-        return entities.filterNot { resource.id(it) == id }
+        return entities.filterNot { resource.idProvider(it) == id }
     }
 
     /**
-     * deletes all entities from the action's list
+     * deletes multiple entities from the list
      *
      * @param entities list before deletion
-     * @param id identifies the entity to delete
+     * @param ids identifies the entities to delete
      * @return list after deletion
      */
     override suspend fun delete(entities: List<T>, ids: List<I>): List<T> {
         ids.forEach {
             deleteById(it)
         }
-        return entities.filterNot { ids.contains(resource.id(it)) }
+        return entities.filterNot { ids.contains(resource.idProvider(it)) }
     }
 }
