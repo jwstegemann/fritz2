@@ -2,19 +2,12 @@ package dev.fritz2.validation
 
 
 /**
- * Minimal interface that has to be implemented and contains the message from
- * validation process.
+ * convenience method for creating a new [Validator]
  */
-interface ValidationMessage {
-    /**
-     * decides if the [ValidationMessage] is a fail which is needed
-     * to determine if validation is successful or not
-     *
-     * @return is failed or not
-     */
-    fun failed(): Boolean
-}
-
+fun <D, M : ValidationMessage, T> validator(doValidation: (D, T) -> List<M>) =
+    object : Validator<D, M, T>() {
+        override fun validate(data: D, metadata: T): List<M> = doValidation(data, metadata)
+    }
 
 /**
  * Describes the logic for validating a given data-model.
@@ -35,15 +28,18 @@ expect abstract class Validator<D, M : ValidationMessage, T>() {
      * @return a [List] of messages (your result-type implementing [ValidationMessage])
      */
     abstract fun validate(data: D, metadata: T): List<M>
-
 }
 
 /**
- * convenience method for creating a new [Validator]
+ * Minimal interface that has to be implemented and contains the message from
+ * validation process.
  */
-fun <D, M : ValidationMessage, T> validator(doValidation: (D, T) -> List<M>): Validator<D, M, T> =
-    object : Validator<D, M, T>() {
-        override fun validate(data: D, metadata: T): List<M> = doValidation(data, metadata)
-    }
-
-
+interface ValidationMessage {
+    /**
+     * decides if the [ValidationMessage] is a fail which is needed
+     * to determine if validation is successful or not
+     *
+     * @return is failed or not
+     */
+    fun failed(): Boolean
+}

@@ -1,40 +1,39 @@
 package dev.fritz2.validation
 
-import dev.fritz2.lenses.Lenses
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-val carNameIsBlank = ValidationTests.Message("car name can not be blank")
-val colorValuesAreToLow = ValidationTests.Message("color members are lower then 0")
-val colorValuesAreToHigh = ValidationTests.Message("color members are greater then 255")
+data class Car(val name: String, val color: Color)
 
-val carValidator = validator { car: ValidationTests.Car, _: Unit ->
-    val msgs = mutableListOf<ValidationTests.Message>()
+data class Color(val r: Int, val g: Int, val b: Int)
 
-    if (car.name.isBlank())
-        msgs.add(carNameIsBlank)
+class Message(val text: String) : ValidationMessage {
+    override fun failed(): Boolean = true
+}
 
-    if (car.color.r < 0 || car.color.g < 0 || car.color.b < 0)
-        msgs.add(colorValuesAreToLow)
+val carNameIsBlank = Message("car name can not be blank")
+val colorValuesAreToLow = Message("color members are lower then 0")
+val colorValuesAreToHigh = Message("color members are greater then 255")
 
-    if (car.color.r > 255 || car.color.g > 255 || car.color.b > 255)
-        msgs.add(colorValuesAreToHigh)
+val carValidator = object: Validator<Car, Message, Unit>() {
+    override fun validate(data: Car, metadata: Unit): List<Message> {
+        val msgs = mutableListOf<Message>()
 
-    msgs
+        if (data.name.isBlank())
+            msgs.add(carNameIsBlank)
+
+        if (data.color.r < 0 || data.color.g < 0 || data.color.b < 0)
+            msgs.add(colorValuesAreToLow)
+
+        if (data.color.r > 255 || data.color.g > 255 || data.color.b > 255)
+            msgs.add(colorValuesAreToHigh)
+
+        return msgs
+    }
+
 }
 
 class ValidationTests {
-
-    @Lenses
-    data class Car(val name: String, val color: Color)
-
-    @Lenses
-    data class Color(val r: Int, val g: Int, val b: Int)
-
-    class Message(val text: String) : ValidationMessage {
-        override fun failed(): Boolean = true
-
-    }
 
     @Test
     fun testValidation() {

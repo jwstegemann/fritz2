@@ -24,16 +24,16 @@ class ValidationJSTests {
         initDocument()
 
         val carName = "ok"
-        val c1 = ValidationTests.Car(" ", ValidationTests.Color(120, 120, 120))
-        val c2 = ValidationTests.Car("car1", ValidationTests.Color(-1, -1, -1))
-        val c3 = ValidationTests.Car("car2", ValidationTests.Color(256, 256, 256))
-        val c4 = ValidationTests.Car(" ", ValidationTests.Color(256, -1, 120))
+        val c1 = Car(" ", Color(120, 120, 120))
+        val c2 = Car("car1", Color(-1, -1, -1))
+        val c3 = Car("car2", Color(256, 256, 256))
+        val c4 = Car(" ", Color(256, -1, 120))
 
         val store =
-            object : RootStore<ValidationTests.Car>(
-                ValidationTests.Car(carName, ValidationTests.Color(120, 120, 120))
+            object : RootStore<Car>(
+                Car(carName, Color(120, 120, 120))
             ) {
-                override val update = handle<ValidationTests.Car> { old, new ->
+                override val update = handle<Car> { old, new ->
                     if (carValidator.isValid(new, Unit)) new else old
                 }
             }
@@ -47,7 +47,7 @@ class ValidationJSTests {
                     store.data.map { it.name }.bind()
                 }
                 div(id = idMessages) {
-                    carValidator.msgs.each(ValidationTests.Message::text).render {
+                    carValidator.msgs.each(Message::text).render {
                         p {
                             +it.text
                         }
