@@ -1,10 +1,12 @@
 package dev.fritz2.binding
 
+import dev.fritz2.flow.asSharedFlow
 import dev.fritz2.format.Format
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
 
@@ -174,14 +176,9 @@ open class RootStore<T>(
     bufferSize: Int = 1
 ) : Store<T>, CoroutineScope by MainScope() {
 
-    private val state = MutableStateFlow(initialData)
-
-    /**
-     * in a [RootStore] an [Update] is handled by sending it to the internal [updates]-channel.
-     */
-    override suspend fun enqueue(queuedUpdate: QueuedUpdate<T>) {
-        val lastValue = state.value
-        state.value = try {
+    private val updates = BroadcastChannel<QueuedUpdate<T>>(bufferSize)
+    private val applyUpdate: suspend (T, QueuedUpdate<T>) -> T = { lastValue, queuedUpdate ->
+        try {
             queuedUpdate.update(lastValue)
         } catch (e: Throwable) {
             queuedUpdate.errorHandler(e, lastValue)
@@ -189,11 +186,21 @@ open class RootStore<T>(
     }
 
     /**
+     * in a [RootStore] an [Update] is handled by sending it to the internal [updates]-channel.
+     */
+    override suspend fun enqueue(update: QueuedUpdate<T>) {
+        updates.send(update)
+    }
+
+    /**
      * the current value of a [RootStore] is derived be applying the updates on the internal channel one by one to get the next value.
      * the [Flow] only emit's a new value, when the value is differs from the last one to avoid calculations and updates that are not necessary.
      * This has to be a SharedFlow, because the updated should only be applied once, regardless how many depending values or ui-elements or bound to it.
      */
-    override val data: Flow<T> = if (!dropInitialData) state else state.drop(1)
+    override val data = updates.asFlow().scan(initialData, applyUpdate)
+        .drop(if (dropInitialData) 1 else 0)
+        .distinctUntilChanged()
+        .asSharedFlow()
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
