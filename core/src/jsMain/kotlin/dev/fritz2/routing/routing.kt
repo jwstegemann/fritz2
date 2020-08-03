@@ -6,7 +6,6 @@ import dev.fritz2.flow.asSharedFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.events.Event
 import kotlin.browser.window
@@ -116,26 +115,27 @@ class MapRoute(override val default: Map<String, String>) :
  * which can [Route.marshal] and [Route.unmarshal] the given type.
  *
  * @param T type to marshal and unmarshal
- * @property route default route to use when page is called with empty hash
+ * @property route default route to use when page is called and no hash is set
  */
 open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope() {
+
     private val prefix = "#"
 
-    private val updates: Flow<T> = callbackFlow {
-        val listener: (Event) -> Unit = {
-            it.preventDefault()
-            val hash = window.location.hash.removePrefix(prefix)
-            if (hash.isNotBlank()) {
-                offer(route.unmarshal(hash))
-            }
-        }
-        window.addEventListener(Events.load.name, listener)
-        window.addEventListener(Events.hashchange.name, listener)
+    private val hashchange: Flow<T> = callbackFlow {
 
-        delay(100)
-
-        if (window.location.hash.removePrefix(prefix).isBlank())
+        if (window.location.hash.isBlank()) {
             setRoute(route.default)
+            offer(route.default)
+        } else {
+            offer(route.unmarshal(window.location.hash.removePrefix(prefix)))
+        }
+
+        val listener: (Event) -> Unit = {
+            println("event occurs: $it")
+            it.preventDefault()
+            offer(route.unmarshal(window.location.hash.removePrefix(prefix)))
+        }
+        window.addEventListener(Events.hashchange.name, listener)
 
         awaitClose { window.removeEventListener(Events.hashchange.name, listener) }
     }
@@ -145,13 +145,12 @@ open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope(
     }
 
     /**
-     * Gives the actual route as Flow
+     * returns a [Flow] with the current route
      */
-    val routes: Flow<T> = updates.distinctUntilChanged().asSharedFlow()
+    val routes: Flow<T> = hashchange.distinctUntilChanged().asSharedFlow()
 
     /**
-     * Handler vor setting
-     * a new [Route] based on given Flow.
+     * Handler for setting a new [Route] based on given Flow.
      */
     val navTo: SimpleHandler<T> = SimpleHandler { flow ->
         flow.onEach { setRoute(it) }
