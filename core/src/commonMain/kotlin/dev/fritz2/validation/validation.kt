@@ -6,6 +6,12 @@ package dev.fritz2.validation
  * validation process.
  */
 interface ValidationMessage {
+    /**
+     * decides if the [ValidationMessage] is a fail which is needed
+     * to determine if validation is successful or not
+     *
+     * @return is failed or not
+     */
     fun failed(): Boolean
 }
 
