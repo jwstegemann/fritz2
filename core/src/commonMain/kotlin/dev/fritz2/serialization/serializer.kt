@@ -1,4 +1,4 @@
-package dev.fritz2.services.serialization
+package dev.fritz2.serialization
 
 interface Serializer<T, S> {
     fun write(item: T): S

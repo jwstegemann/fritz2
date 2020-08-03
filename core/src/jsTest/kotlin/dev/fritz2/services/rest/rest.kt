@@ -5,7 +5,7 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
-import dev.fritz2.services.serialization.Serializer
+import dev.fritz2.serialization.Serializer
 import dev.fritz2.test.getFreshCrudcrudEndpoint
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -21,7 +21,7 @@ import kotlin.test.assertTrue
  * See [crudcrud.com](https://crudcrud.com).
  */
 class RestTests {
-    data class RestPerson(val name: String, val age: Int, val _id: String)
+    data class RestPerson(val name: String, val age: Int, val _id: String = "")
 
     private val nameLens = buildLens("name", RestPerson::name) { p, v -> p.copy(name = v) }
     private val ageLens = buildLens("age", RestPerson::age) { p, v -> p.copy(age = v) }
@@ -50,14 +50,14 @@ class RestTests {
     fun testEntityService() = runTest {
         initDocument()
 
-        val startPerson = RestPerson("Heinz", 18, "")
+        val startPerson = RestPerson("Heinz", 18)
         val changedAge = 99
 
         val personResource = RestResource(
             "",
             RestPerson::_id,
             PersonSerializer,
-            RestPerson("", 0, ""),
+            RestPerson("", 0),
             remote = getFreshCrudcrudEndpoint().append("/person")
         )
 
@@ -65,10 +65,8 @@ class RestTests {
             private val rest = RestEntityService(personResource)
 
             val load = handle { entity, id: String -> rest.load(entity, id) }
-
-            //            val load = handle(execute = rest::load)
-            val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(this, entity) }
-            val delete = handleAndOffer<Unit> { entity -> rest.delete(this, entity) }
+            val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(entity) }
+            val delete = handleAndOffer<Unit> { entity -> rest.delete(entity) }
         }
 
         val nameId = "name-${uniqueId()}"
@@ -142,14 +140,14 @@ class RestTests {
         val entityStore = object : RootStore<RestPerson>(personResource.emptyEntity) {
             private val rest = RestEntityService(personResource)
 
-            val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(this, entity) }
+            val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(entity) }
         }
 
         val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
             private val rest = RestQueryService<RestPerson, String, Unit>(personResource)
 
             val query = handle<Unit> { entities, query -> rest.query(entities, query) }
-            val delete = handle<String> { entites, id -> rest.delete(entites, id) }
+            val delete = handle<String> { entities, id -> rest.delete(entities, id) }
         }
 
         val listId = "list-${uniqueId()}"

@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -15,13 +16,10 @@ import kotlinx.coroutines.flow.onEach
 abstract class SingleMountPoint<T>(upstream: Flow<T>) : CoroutineScope by MainScope() {
     init {
         upstream.onEach {
-            try {
-                set(it, last)
-                last = it
-            } catch (e: Throwable) {
-                console.error("ERROR[SingleMountPoint]: ${e.message}", e)
-                this.cancel()
-            }
+            set(it, last)
+            last = it
+        }.catch {
+            cancel()
         }.launchIn(this)
     }
 
@@ -43,14 +41,9 @@ abstract class SingleMountPoint<T>(upstream: Flow<T>) : CoroutineScope by MainSc
  */
 abstract class MultiMountPoint<T>(upstream: Flow<Patch<T>>) : CoroutineScope by MainScope() {
     init {
-        upstream.onEach {
-            try {
-                patch(it)
-            } catch (e: Throwable) {
-                console.error("ERROR[MultiMountPoint]: ${e.message}", e)
-                this.cancel()
-            }
-        }.launchIn(this)
+        upstream.onEach { patch(it) }
+            .catch { cancel() }
+            .launchIn(MainScope())
     }
 
     /**

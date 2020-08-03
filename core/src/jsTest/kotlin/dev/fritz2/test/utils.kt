@@ -32,42 +32,39 @@ fun initDocument() {
     )
 }
 
-fun <T> checkFlow(upstream: Flow<T>, numberOfUpdates: Int = 0, check: TestSingleMountPoint<T>.(Int, T, T?) -> Unit) =
-    TestSingleMountPoint(upstream, check, numberOfUpdates)
+fun <T> checkFlow(upstream: Flow<T>, check: TestSingleMountPoint<T>.(Int, T, T?) -> Boolean) =
+    TestSingleMountPoint(upstream, check)
 
 class TestSingleMountPoint<T>(
     upstream: Flow<T>,
-    val check: TestSingleMountPoint<T>.(Int, T, T?) -> Unit,
-    val numberOfUpdates: Int,
+    val check: TestSingleMountPoint<T>.(Int, T, T?) -> Boolean,
     val done: CompletableDeferred<Boolean> = CompletableDeferred()
 ) : SingleMountPoint<T>(upstream), CompletableDeferred<Boolean> by done {
     var count = 0;
 
     override fun set(value: T, last: T?) {
-        check(count, value, last)
+        val result = check(count, value, last)
         count++;
-        if (numberOfUpdates == count) done.complete(true)
+        if (result) done.complete(true)
     }
 }
 
 fun <T> checkFlow(
     upstream: Flow<Patch<T>>,
-    numberOfUpdates: Int = 0,
-    check: TestMultiMountPoint<T>.(Int, Patch<T>) -> Unit
-) = TestMultiMountPoint(upstream, check, numberOfUpdates)
+    check: TestMultiMountPoint<T>.(Int, Patch<T>) -> Boolean
+) = TestMultiMountPoint(upstream, check)
 
 class TestMultiMountPoint<T>(
     upstream: Flow<Patch<T>>,
-    val check: TestMultiMountPoint<T>.(Int, Patch<T>) -> Unit,
-    val numberOfUpdates: Int,
+    val check: TestMultiMountPoint<T>.(Int, Patch<T>) -> Boolean,
     val done: CompletableDeferred<Boolean> = CompletableDeferred()
 ) : MultiMountPoint<T>(upstream), CompletableDeferred<Boolean> by done {
     private var count = 0;
 
     override fun patch(patch: Patch<T>) {
-        check(count, patch)
+        val result = check(count, patch)
         count++;
-        if (numberOfUpdates == count) done.complete(true)
+        if (result) done.complete(true)
     }
 }
 

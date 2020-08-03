@@ -17,6 +17,7 @@ import kotlin.browser.document
 import kotlin.js.Promise
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 
 class MountTests {
@@ -26,18 +27,24 @@ class MountTests {
 
         val store = RootStore("")
 
-        val mp = checkFlow(store.data, 5) { count, value, _ ->
-            //console.log("CHECK $count: $value from $last\n")
-            val expected = (0 until count).fold("", { s, i ->
-                "$s-$i"
-            })
-            assertEquals(expected, value, "set wrong value in SingleMountPoint\n")
+        val values = listOf(
+            "",
+            "1",
+            "1-2",
+            "1-2-3",
+            "1-2-3-4"
+        )
+
+        val mp = checkFlow(store.data) { _, value, _ ->
+            assertTrue(values.contains(value))
+            value == values.last()
         }
 
+        store.data.watch()
+
         return GlobalScope.promise {
-            for (i in 0..4) {
-                //console.log("enqueue: -$i\n")
-                store.enqueue(QueuedUpdate({ "$it-$i" }, store::errorHandler, ""))
+            values.forEach { value ->
+                store.enqueue(QueuedUpdate({ value }, store::errorHandler, value))
             }
             mp.await()
         }
@@ -49,9 +56,10 @@ class MountTests {
 
         val store = RootStore<List<Int>>(listToTest)
 
-        val mp = checkFlow(store.data.each().data, 1) { _, patch ->
+        val mp = checkFlow(store.data.each().data) { _, patch ->
             val expected = Patch.InsertMany(listToTest.reversed(), 0)
             assertEquals(expected, patch, "set wrong value in MultiMountPoint")
+            true
         }
 
         store.data.watch()
