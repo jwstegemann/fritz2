@@ -30,7 +30,7 @@ class TrackingTests {
         val valueId = "value-${uniqueId()}"
 
         val store = object : RootStore<String>(startValue) {
-            val running = Tracker()
+            val running = tracker()
 
             val longRunningHandler = handle {
                 running.track(transactionText) {
