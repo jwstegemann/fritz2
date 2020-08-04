@@ -1,4 +1,4 @@
-package dev.fritz2.services.tracking
+package dev.fritz2.tracking
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.action
