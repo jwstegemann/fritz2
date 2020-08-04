@@ -15,11 +15,13 @@ import kotlinx.coroutines.flow.map
  */
 actual abstract class Validator<D, M : ValidationMessage, T> actual constructor() {
 
+    private val state = MutableStateFlow<List<M>>(emptyList())
+
     /**
      * contains the [List] of [ValidationMessage]s which gets updated every time when [isValid] gets called.
      * If no messages result from validation its returns an empty list.
      */
-    val msgs: MutableStateFlow<List<M>> = MutableStateFlow(emptyList())
+    val msgs = state as Flow<List<M>>
 
     /**
      * validates the given data by using the given metadata and returns
@@ -41,7 +43,7 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      */
     fun isValid(data: D, metadata: T): Boolean {
         val messages = validate(data, metadata)
-        msgs.value = messages
+        state.value = messages
         return messages.none(ValidationMessage::failed)
     }
 
