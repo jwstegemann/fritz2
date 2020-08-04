@@ -1,7 +1,6 @@
 package dev.fritz2.binding
 
 import dev.fritz2.flow.asSharedFlow
-import dev.fritz2.format.Format
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import kotlinx.coroutines.CoroutineScope
