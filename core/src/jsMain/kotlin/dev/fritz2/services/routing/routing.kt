@@ -1,4 +1,4 @@
-package dev.fritz2.routing
+package dev.fritz2.services.routing
 
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.Events
@@ -34,7 +34,7 @@ fun router(default: Map<String, String>): Router<Map<String, String>> = object :
  * @return new [Flow] of the result by calling the [transform] function
  */
 fun <X> Router<Map<String, String>>.select(key: String, transform: suspend (Pair<String?, Map<String, String>>) -> X): Flow<X> =
-    route.map { m -> transform((m[key]) to m) }
+    this.map { m -> transform((m[key]) to m) }
 
 /**
  * Returns the value for the given key.
@@ -44,7 +44,7 @@ fun <X> Router<Map<String, String>>.select(key: String, transform: suspend (Pair
  * @return [Flow] of [String] with the value
  */
 fun Router<Map<String, String>>.select(key: String, orElse: String): Flow<String> =
-    route.map { m -> m[key] ?: orElse }
+    this.map { m -> m[key] ?: orElse }
 
 /**
  * Creates a new type based [Router].
@@ -127,14 +127,12 @@ class MapRoute(override val default: Map<String, String>) :
  * @param T type to marshal and unmarshal
  * @property defaultRoute default route to use when page is called and no hash is set
  */
-open class Router<T>(private val defaultRoute: Route<T>) {
+abstract class Router<T>(
+    private val defaultRoute: Route<T>,
+    state: MutableStateFlow<T> = MutableStateFlow(defaultRoute.default)
+) : Flow<T> by state {
 
     private val prefix = "#"
-
-    /**
-     * returns a [Flow] with the current route
-     */
-    val route = MutableStateFlow<T>(defaultRoute.default)
 
     /**
      * Handler for setting a new [Route] based on given Flow.
@@ -146,14 +144,14 @@ open class Router<T>(private val defaultRoute: Route<T>) {
     init {
         if (window.location.hash.isBlank()) {
             setRoute(defaultRoute.default)
-            route.value = defaultRoute.default
+            state.value = defaultRoute.default
         } else {
-            route.value = defaultRoute.unmarshal(window.location.hash.removePrefix(prefix))
+            state.value = defaultRoute.unmarshal(window.location.hash.removePrefix(prefix))
         }
 
         val listener: (Event) -> Unit = {
             it.preventDefault()
-            route.value = defaultRoute.unmarshal(window.location.hash.removePrefix(prefix))
+            state.value = defaultRoute.unmarshal(window.location.hash.removePrefix(prefix))
         }
         window.addEventListener(Events.hashchange.name, listener)
     }

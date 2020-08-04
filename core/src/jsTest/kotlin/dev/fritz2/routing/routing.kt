@@ -6,6 +6,8 @@ import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
+import dev.fritz2.services.routing.router
+import dev.fritz2.services.routing.select
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
@@ -35,7 +37,7 @@ class RoutingTests {
 
         render {
             div(id = testId) {
-                router.route.bind()
+                router.bind()
                 ul {
                     const(buttons).each().map { (id, page) ->
                         render {
