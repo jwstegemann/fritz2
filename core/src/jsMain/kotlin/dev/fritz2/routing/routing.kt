@@ -2,10 +2,7 @@ package dev.fritz2.routing
 
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.Events
-import dev.fritz2.flow.asSharedFlow
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.events.Event
 import kotlin.browser.window
@@ -37,7 +34,7 @@ fun router(default: Map<String, String>): Router<Map<String, String>> = object :
  * @return new [Flow] of the result by calling the [transform] function
  */
 fun <X> Router<Map<String, String>>.select(key: String, transform: suspend (Pair<String?, Map<String, String>>) -> X): Flow<X> =
-    routes.map { m -> transform((m[key]) to m) }
+    route.map { m -> transform((m[key]) to m) }
 
 /**
  * Returns the value for the given key.
@@ -47,7 +44,7 @@ fun <X> Router<Map<String, String>>.select(key: String, transform: suspend (Pair
  * @return [Flow] of [String] with the value
  */
 fun Router<Map<String, String>>.select(key: String, orElse: String): Flow<String> =
-    routes.map { m -> m[key] ?: orElse }
+    route.map { m -> m[key] ?: orElse }
 
 /**
  * Creates a new type based [Router].
@@ -128,47 +125,42 @@ class MapRoute(override val default: Map<String, String>) :
  * which can [Route.marshal] and [Route.unmarshal] the given type.
  *
  * @param T type to marshal and unmarshal
- * @property route default route to use when page is called and no hash is set
+ * @property defaultRoute default route to use when page is called and no hash is set
  */
-open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope() {
+open class Router<T>(private val defaultRoute: Route<T>) {
 
     private val prefix = "#"
-
-    private val hashchange: Flow<T> = callbackFlow {
-
-        if (window.location.hash.isBlank()) {
-            setRoute(route.default)
-            offer(route.default)
-        } else {
-            offer(route.unmarshal(window.location.hash.removePrefix(prefix)))
-        }
-
-        val listener: (Event) -> Unit = {
-            it.preventDefault()
-            offer(route.unmarshal(window.location.hash.removePrefix(prefix)))
-        }
-        window.addEventListener(Events.hashchange.name, listener)
-
-        awaitClose { window.removeEventListener(Events.hashchange.name, listener) }
-    }
-
-    private fun setRoute(newRoute: T) {
-        window.location.hash = prefix + route.marshal(newRoute)
-    }
 
     /**
      * returns a [Flow] with the current route
      */
-    val routes: Flow<T> = hashchange.distinctUntilChanged().asSharedFlow()
+    val route = MutableStateFlow<T>(defaultRoute.default)
 
     /**
      * Handler for setting a new [Route] based on given Flow.
      */
     val navTo: SimpleHandler<T> = SimpleHandler { flow ->
-        flow.onEach { setRoute(it) }
-            .launchIn(this)
+        flow.onEach { setRoute(it) }.launchIn(MainScope())
     }
 
+    init {
+        if (window.location.hash.isBlank()) {
+            setRoute(defaultRoute.default)
+            route.value = defaultRoute.default
+        } else {
+            route.value = defaultRoute.unmarshal(window.location.hash.removePrefix(prefix))
+        }
+
+        val listener: (Event) -> Unit = {
+            it.preventDefault()
+            route.value = defaultRoute.unmarshal(window.location.hash.removePrefix(prefix))
+        }
+        window.addEventListener(Events.hashchange.name, listener)
+    }
+
+    private fun setRoute(newRoute: T) {
+        window.location.hash = prefix + defaultRoute.marshal(newRoute)
+    }
 }
 
 external fun decodeURIComponent(encodedURI: String): String

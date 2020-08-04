@@ -10,12 +10,10 @@ import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
 import kotlin.browser.window
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -37,7 +35,7 @@ class RoutingTests {
 
         render {
             div(id = testId) {
-                router.routes.bind()
+                router.route.bind()
                 ul {
                     const(buttons).each().map { (id, page) ->
                         render {
