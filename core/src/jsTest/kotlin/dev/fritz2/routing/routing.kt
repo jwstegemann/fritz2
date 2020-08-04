@@ -1,4 +1,4 @@
-package dev.fritz2.services.routing
+package dev.fritz2.routing
 
 import dev.fritz2.binding.const
 import dev.fritz2.binding.each
