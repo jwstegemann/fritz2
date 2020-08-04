@@ -1,4 +1,4 @@
-package dev.fritz2.services.rest
+package dev.fritz2.repositories.rest
 
 import dev.fritz2.binding.*
 import dev.fritz2.dom.html.render
@@ -62,7 +62,7 @@ class RestTests {
         )
 
         val entityStore = object : RootStore<RestPerson>(personResource.emptyEntity) {
-            private val rest = RestEntityService(personResource)
+            private val rest = restEntity(personResource)
 
             val load = handle { entity, id: String -> rest.load(entity, id) }
             val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(entity) }
@@ -138,13 +138,13 @@ class RestTests {
         )
 
         val entityStore = object : RootStore<RestPerson>(personResource.emptyEntity) {
-            private val rest = RestEntityService(personResource)
+            private val rest = restEntity(personResource)
 
             val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(entity) }
         }
 
         val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
-            private val rest = RestQueryService<RestPerson, String, Unit>(personResource)
+            private val rest = restQuery<RestPerson, String, Unit>(personResource)
 
             val query = handle<Unit> { entities, query -> rest.query(entities, query) }
             val delete = handle<String> { entities, id -> rest.delete(entities, id) }

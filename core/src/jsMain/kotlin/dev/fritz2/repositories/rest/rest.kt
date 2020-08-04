@@ -1,12 +1,13 @@
-package dev.fritz2.services.rest
+package dev.fritz2.repositories.rest
 
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.remote.Request
 import dev.fritz2.remote.getBody
 import dev.fritz2.remote.remote
+import dev.fritz2.repositories.EntityRepository
+import dev.fritz2.repositories.QueryRepository
+import dev.fritz2.repositories.Resource
 import dev.fritz2.serialization.Serializer
-import dev.fritz2.services.entity.EntityService
-import dev.fritz2.services.entity.QueryService
 import org.w3c.fetch.Response
 
 
@@ -23,13 +24,13 @@ import org.w3c.fetch.Response
  */
 data class RestResource<T, I>(
     val url: String,
-    inline val idProvider: IdProvider<T, I>,
-    val serializer: Serializer<T, String>,
-    inline val emptyEntity: T,
+    override inline val idProvider: IdProvider<T, I>,
+    override val serializer: Serializer<T, String>,
+    override inline val emptyEntity: T,
     val contentType: String = "application/json; charset=utf-8",
     val remote: Request = remote(url),
-    inline val serializeId: (I) -> String = { it.toString() }
-)
+    override inline val serializeId: (I) -> String = { it.toString() }
+) : Resource<T, I>
 
 
 /**
@@ -37,54 +38,53 @@ data class RestResource<T, I>(
  *
  * @param resource definition of the [RestResource]
  */
-open class RestEntityService<T, I>(
-    val resource: RestResource<T, I>
-) : EntityService<T, I> {
+fun <T, I> restEntity(resource: RestResource<T, I>): EntityRepository<T, I> =
+    object : EntityRepository<T, I> {
 
-    /**
-     * loads an entity by a get request to [resource].url/{id}
-     *
-     * @param entity current entity (before load)
-     * @param id of the entity to load
-     * @return the entity (identified by [id]) loaded
-     */
-    override suspend fun load(entity: T, id: I): T =
-        resource.serializer.read(
-            resource.remote.accept(resource.contentType).get(resource.serializeId(id))
-                .getBody()
-        )
+        /**
+         * loads an entity by a get request to [resource].url/{id}
+         *
+         * @param entity current entity (before load)
+         * @param id of the entity to load
+         * @return the entity (identified by [id]) loaded
+         */
+        override suspend fun load(entity: T, id: I): T =
+            resource.serializer.read(
+                resource.remote.accept(resource.contentType).get(resource.serializeId(id))
+                    .getBody()
+            )
 
-    /**
-     * sends a post-(for save) or a put-(for update) request to [resource].url/{id} with the serialized entity in it's body.
-     * The emptyEntity of [resource] is used to determine if it should saved or updated
-     *
-     * @param entity entity to save
-     * @return the saved entity
-     */
-    override suspend fun saveOrUpdate(entity: T): T =
-        resource.remote.contentType(resource.contentType)
-            .body(resource.serializer.write(entity)).run {
-                if (resource.idProvider(entity) == resource.idProvider(resource.emptyEntity)) {
-                    resource.serializer.read(
-                        accept(resource.contentType).post().getBody()
-                    )
-                } else {
-                    put(resource.serializeId(resource.idProvider(entity)))
-                    entity
+        /**
+         * sends a post-(for save) or a put-(for update) request to [resource].url/{id} with the serialized entity in it's body.
+         * The emptyEntity of [resource] is used to determine if it should saved or updated
+         *
+         * @param entity entity to save
+         * @return the saved entity
+         */
+        override suspend fun saveOrUpdate(entity: T): T =
+            resource.remote.contentType(resource.contentType)
+                .body(resource.serializer.write(entity)).run {
+                    if (resource.idProvider(entity) == resource.idProvider(resource.emptyEntity)) {
+                        resource.serializer.read(
+                            accept(resource.contentType).post().getBody()
+                        )
+                    } else {
+                        put(resource.serializeId(resource.idProvider(entity)))
+                        entity
+                    }
                 }
-            }
 
-    /**
-     * deletes an entity by a delete-request to [resource].url/{id}
-     *
-     * @param entity entity to delete
-     * @return the emptyEntity defined at [resource]
-     */
-    override suspend fun delete(entity: T): T {
-        resource.remote.delete(resource.serializeId(resource.idProvider(entity)))
-        return resource.emptyEntity
+        /**
+         * deletes an entity by a delete-request to [resource].url/{id}
+         *
+         * @param entity entity to delete
+         * @return the emptyEntity defined at [resource]
+         */
+        override suspend fun delete(entity: T): T {
+            resource.remote.delete(resource.serializeId(resource.idProvider(entity)))
+            return resource.emptyEntity
+        }
     }
-}
 
 
 /**
@@ -93,10 +93,10 @@ open class RestEntityService<T, I>(
  * @param resource definition of the [RestResource]
  * @param buildQuery function to build a [Request] for a given object defining the query
  */
-open class RestQueryService<T, I, Q>(
-    val resource: RestResource<T, I>,
-    inline val buildQuery: suspend Request.(Q) -> Response = { accept(resource.contentType).get() }
-) : QueryService<T, I, Q> {
+inline fun <T, I, Q> restQuery(
+    resource: RestResource<T, I>,
+    crossinline buildQuery: suspend Request.(Q) -> Response = { accept(resource.contentType).get() }
+): QueryRepository<T, I, Q> = object : QueryRepository<T, I, Q> {
 
     /**
      * queries the resource by sending the request which is build by [buildQuery] using the [query]

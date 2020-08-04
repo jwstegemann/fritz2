@@ -1,4 +1,4 @@
-package dev.fritz2.services.localstorage
+package dev.fritz2.repositories.localstorage
 
 import dev.fritz2.binding.*
 import dev.fritz2.dom.html.render
@@ -53,7 +53,7 @@ class LocalStorageTests {
         )
 
         val entityStore = object : RootStore<LocalPerson>(personResource.emptyEntity) {
-            private val localStorage = LocalStorageEntityService(personResource)
+            private val localStorage = localStorageEntity(personResource)
 
             val load = handle { entity, id: String -> localStorage.load(entity, id) }
 
@@ -131,14 +131,14 @@ class LocalStorageTests {
         )
 
         val entityStore = object : RootStore<LocalPerson>(personResource.emptyEntity) {
-            private val localStorage = LocalStorageEntityService(personResource)
+            private val localStorage = localStorageEntity(personResource)
 
             val saveOrUpdate = handleAndOffer<Unit> { entity -> localStorage.saveOrUpdate(entity) }
         }
 
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
             private val localStorage =
-                LocalStorageQueryService<LocalPerson, String, Unit>(personResource) { entities, _ ->
+                localStorageQuery(personResource) { entities, _: Unit ->
                     entities.sortedBy(LocalPerson::name)
                 }
 
