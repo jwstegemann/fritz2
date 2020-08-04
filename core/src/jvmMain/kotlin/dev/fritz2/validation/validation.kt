@@ -1,4 +1,4 @@
-package dev.fritz2.services.validation
+package dev.fritz2.validation
 
 /**
  * Describes the logic for validating a given data-model.

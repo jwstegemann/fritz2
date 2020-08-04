@@ -1,4 +1,4 @@
-package dev.fritz2.services.validation
+package dev.fritz2.validation
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
