@@ -39,7 +39,7 @@ interface Lens<P, T> {
      */
     operator fun <X> plus(other: Lens<T, X>): Lens<P, X> = object :
         Lens<P, X> {
-        override val id = "${this@Lens.id}.${other.id}"
+        override val id = "${this@Lens.id}.${other.id}".trimEnd('.')
         override fun get(parent: P): X = other.get(this@Lens.get(parent))
         override fun set(parent: P, value: X): P = this@Lens.set(parent, other.set(this@Lens.get(parent), value))
     }
@@ -65,7 +65,7 @@ inline fun <P, T> buildLens(id: String, crossinline getter: (P) -> T, crossinlin
  * @param parse function for parsing a [String] to [P]
  * @param format function for formatting a [P] to [String]
  */
-inline fun <P> formatLens(crossinline parse: (String) -> P, crossinline format: (P) -> String): Lens<P, String> =
+inline fun <P> format(crossinline parse: (String) -> P, crossinline format: (P) -> String): Lens<P, String> =
     object : Lens<P, String> {
         override val id: String = ""
         override fun get(parent: P): String = format(parent)

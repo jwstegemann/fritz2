@@ -4,7 +4,7 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
-import dev.fritz2.lenses.formatLens
+import dev.fritz2.lenses.format
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
@@ -90,7 +90,7 @@ class SubStoreTests {
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person, id = "person") {}
 
-        val personFormatLens = formatLens(
+        val personFormatLens = format(
             { value: String ->
                 val fields = value.split(",")
                 val name = fields[0]
@@ -116,7 +116,7 @@ class SubStoreTests {
 
         val completeDiv = document.getElementById(completeSub.id) as HTMLDivElement
 
-        assertEquals("${store.id}.", completeDiv.id)
+        assertEquals(store.id, completeDiv.id)
         assertEquals(personFormatLens.get(person), completeDiv.innerText, "formatting is not working")
 
         val newPerson = Person("Bar", Address("Foo St. 9", PostalCode(1111)))

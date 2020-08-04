@@ -23,7 +23,7 @@ class SubStore<R, P, T>(
     /**
      * defines how to infer the id of the sub-part from the parent's id.
      */
-    override val id: String by lazy { "${parent.id}.${lens.id}" }
+    override val id: String by lazy { "${parent.id}.${lens.id}".trimEnd('.') }
 
     /**
      * Since a [SubStore] is just a view on a [RootStore] holding the real value, it forwards the [Update] to it, using it's [Lens] to transform it.

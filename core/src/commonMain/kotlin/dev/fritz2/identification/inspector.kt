@@ -59,14 +59,14 @@ class SubInspector<R, P, T>(
 ) : Inspector<T> {
 
     /**
+     * generates the corresponding id
+     */
+    override val id: String by lazy { "${parent.id}.${lens.id}".trimEnd('.') }
+
+    /**
      * returns the underlying data
      */
     override val data: T = lens.get(parent.data)
-
-    /**
-     * generates the corresponding id
-     */
-    override val id: String by lazy { "${parent.id}.${lens.id}" }
 
     override fun <X> sub(lens: Lens<T, X>): SubInspector<R, T, X> =
         SubInspector(this, lens, rootModelId, this.rootLens + lens)
