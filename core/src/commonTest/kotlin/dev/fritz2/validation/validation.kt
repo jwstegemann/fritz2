@@ -1,5 +1,7 @@
 package dev.fritz2.validation
 
+import dev.fritz2.services.validation.ValidationMessage
+import dev.fritz2.services.validation.Validator
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
