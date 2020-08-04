@@ -36,10 +36,10 @@ expect abstract class Validator<D, M : ValidationMessage, T>() {
  */
 interface ValidationMessage {
     /**
-     * decides if the [ValidationMessage] is a fail which is needed
+     * decides if the [ValidationMessage] is an error which is needed
      * to determine if validation is successful or not
      *
-     * @return is failed or not
+     * @return if it is a error or not
      */
-    fun failed(): Boolean
+    fun isError(): Boolean
 }

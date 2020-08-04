@@ -8,7 +8,7 @@ data class Car(val name: String, val color: Color)
 data class Color(val r: Int, val g: Int, val b: Int)
 
 class Message(val text: String) : ValidationMessage {
-    override fun failed(): Boolean = true
+    override fun isError(): Boolean = true
 }
 
 val carNameIsBlank = Message("car name can not be blank")

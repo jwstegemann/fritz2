@@ -20,5 +20,5 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      * @param metadata extra information for the validation process
      * @return a [Boolean] for using in if conditions
      */
-    fun isValid(data: D, metadata: T): Boolean = validate(data, metadata).none(ValidationMessage::failed)
+    fun isValid(data: D, metadata: T): Boolean = validate(data, metadata).none(ValidationMessage::isError)
 }

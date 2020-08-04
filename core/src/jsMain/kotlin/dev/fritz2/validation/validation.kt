@@ -44,12 +44,12 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
     fun isValid(data: D, metadata: T): Boolean {
         val messages = validate(data, metadata)
         state.value = messages
-        return messages.none(ValidationMessage::failed)
+        return messages.none(ValidationMessage::isError)
     }
 
     /**
      * A [Flow] representing the current state of the model (valid or not).
      */
-    val isValid: Flow<Boolean> by lazy { msgs.map { list -> list.none(ValidationMessage::failed) } }
+    val isValid: Flow<Boolean> by lazy { msgs.map { list -> list.none(ValidationMessage::isError) } }
 }
 
