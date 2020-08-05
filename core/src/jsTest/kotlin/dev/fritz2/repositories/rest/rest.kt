@@ -5,6 +5,7 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
+import dev.fritz2.repositories.Resource
 import dev.fritz2.serialization.Serializer
 import dev.fritz2.test.getFreshCrudcrudEndpoint
 import dev.fritz2.test.initDocument
@@ -53,16 +54,16 @@ class RestTests {
         val startPerson = RestPerson("Heinz", 18)
         val changedAge = 99
 
-        val personResource = RestResource(
-            "",
+        val personResource = Resource(
             RestPerson::_id,
             PersonSerializer,
-            RestPerson("", 0),
-            remote = getFreshCrudcrudEndpoint().append("/person")
+            RestPerson("", 0)
         )
 
+        val crudcrudRemote = getFreshCrudcrudEndpoint().append("/person")
+
         val entityStore = object : RootStore<RestPerson>(personResource.emptyEntity) {
-            private val rest = restEntity(personResource)
+            private val rest = restEntity(personResource, "", remote = crudcrudRemote)
 
             val load = handle { entity, id: String -> rest.load(entity, id) }
             val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(entity) }
@@ -129,22 +130,22 @@ class RestTests {
             RestPerson("C", 0, "")
         )
 
-        val personResource = RestResource(
-            "",
+        val personResource = Resource(
             RestPerson::_id,
             PersonSerializer,
-            RestPerson("", 0, ""),
-            remote = getFreshCrudcrudEndpoint().append("/person")
+            RestPerson("", 0, "")
         )
 
+        val crudcrudRemote = getFreshCrudcrudEndpoint().append("/person")
+
         val entityStore = object : RootStore<RestPerson>(personResource.emptyEntity) {
-            private val rest = restEntity(personResource)
+            private val rest = restEntity(personResource, "", remote = crudcrudRemote)
 
             val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(entity) }
         }
 
         val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
-            private val rest = restQuery<RestPerson, String, Unit>(personResource)
+            private val rest = restQuery<RestPerson, String, Unit>(personResource, "", remote = crudcrudRemote)
 
             val query = handle<Unit> { entities, query -> rest.query(entities, query) }
             val delete = handle<String> { entities, id -> rest.delete(entities, id) }

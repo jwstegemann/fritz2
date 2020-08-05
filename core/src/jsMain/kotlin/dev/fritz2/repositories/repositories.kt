@@ -5,28 +5,18 @@ import dev.fritz2.serialization.Serializer
 
 /**
  * defines the interface that is used in the repositories
+ *
+ * @param idProvider function to provide an id for a given entity
+ * @param serializer used to (de-)serialize the entity/response
+ * @param emptyEntity an instance of the entity defining an empty state (e.g. after deletion)
+ * @param serializeId convert the entities [idProvider] into a [String], default calling [toString]
  */
-interface Resource<T, I> {
-    /**
-     * function to provide an id for a given entity
-     */
-    val idProvider: IdProvider<T, I>
-
-    /**
-     * used to (de-)serialize the entity/response
-     */
-    val serializer: Serializer<T, String>
-
-    /**
-     * gives an instance of the entity defining an empty state (e.g. after deletion)
-     */
-    val emptyEntity: T
-
-    /**
-     * converts the entities [idProvider] into a [String]
-     */
-    val serializeId: (I) -> String
-}
+data class Resource<T, I>(
+    val idProvider: IdProvider<T, I>,
+    val serializer: Serializer<T, String>,
+    val emptyEntity: T,
+    val serializeId: (I) -> String = { it.toString() }
+)
 
 /**
  * defines the interface that should be provided by all repositories dealing with a single Entity.

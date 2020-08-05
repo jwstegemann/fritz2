@@ -5,6 +5,7 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
+import dev.fritz2.repositories.Resource
 import dev.fritz2.serialization.Serializer
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -45,15 +46,14 @@ class LocalStorageTests {
         val startPerson = LocalPerson("Heinz", 18)
         val changedAge = 99
 
-        val personResource = LocalResource(
-            "",
+        val personResource = Resource(
             LocalPerson::_id,
             PersonSerializer,
             LocalPerson("", 0)
         )
 
         val entityStore = object : RootStore<LocalPerson>(personResource.emptyEntity) {
-            private val localStorage = localStorageEntity(personResource)
+            private val localStorage = localStorageEntity(personResource, "")
 
             val load = handle { entity, id: String -> localStorage.load(entity, id) }
 
@@ -123,22 +123,21 @@ class LocalStorageTests {
             LocalPerson("E", 0)
         )
 
-        val personResource = LocalResource(
-            "",
+        val personResource = Resource(
             LocalPerson::_id,
             PersonSerializer,
             LocalPerson("", 0)
         )
 
         val entityStore = object : RootStore<LocalPerson>(personResource.emptyEntity) {
-            private val localStorage = localStorageEntity(personResource)
+            private val localStorage = localStorageEntity(personResource, "")
 
             val saveOrUpdate = handleAndOffer<Unit> { entity -> localStorage.saveOrUpdate(entity) }
         }
 
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
             private val localStorage =
-                localStorageQuery(personResource) { entities, _: Unit ->
+                localStorageQuery(personResource, "") { entities, _: Unit ->
                     entities.sortedBy(LocalPerson::name)
                 }
 
