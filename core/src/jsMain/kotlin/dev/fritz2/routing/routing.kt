@@ -12,18 +12,22 @@ import kotlin.browser.window
  *
  * @param default default route
  */
-fun router(default: String): Router<String> = object : Router<String>(
-    StringRoute(default)
-) {}
+fun router(default: String): Router<String> = Router(StringRoute(default))
 
 /**
  * Creates a new [Map] based [Router]
  *
  * @param default default route
  */
-fun router(default: Map<String, String>): Router<Map<String, String>> = object : Router<Map<String, String>>(
-    MapRoute(default)
-) {}
+fun router(default: Map<String, String>): Router<Map<String, String>> = Router(MapRoute(default))
+
+/**
+ * Creates a new type based [Router].
+ * Therefore the given type must implement the [Route] interface.
+ *
+ * @param default default route
+ */
+fun <T> router(default: Route<T>): Router<T> = Router(default)
 
 /**
  * Selects with the given key a [Pair] of the value
@@ -33,7 +37,10 @@ fun router(default: Map<String, String>): Router<Map<String, String>> = object :
  * @param transform mapping function to run on selected [Pair] of the value and routing [Map]
  * @return new [Flow] of the result by calling the [transform] function
  */
-fun <X> Router<Map<String, String>>.select(key: String, transform: suspend (Pair<String?, Map<String, String>>) -> X): Flow<X> =
+fun <X> Router<Map<String, String>>.select(
+    key: String,
+    transform: suspend (Pair<String?, Map<String, String>>) -> X
+): Flow<X> =
     this.map { m -> transform((m[key]) to m) }
 
 /**
@@ -45,14 +52,6 @@ fun <X> Router<Map<String, String>>.select(key: String, transform: suspend (Pair
  */
 fun Router<Map<String, String>>.select(key: String, orElse: String): Flow<String> =
     this.map { m -> m[key] ?: orElse }
-
-/**
- * Creates a new type based [Router].
- * Therefore the given type must implement the [Route] interface.
- *
- * @param default default route
- */
-fun <T> router(default: Route<T>): Router<T> = object : Router<T>(default) {}
 
 /**
  * A Route is a abstraction for routes
@@ -127,7 +126,7 @@ class MapRoute(override val default: Map<String, String>) :
  * @param T type to marshal and unmarshal
  * @property defaultRoute default route to use when page is called and no hash is set
  */
-abstract class Router<T>(
+class Router<T>(
     private val defaultRoute: Route<T>,
     state: MutableStateFlow<T> = MutableStateFlow(defaultRoute.default)
 ) : Flow<T> by state {
