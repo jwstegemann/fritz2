@@ -19,6 +19,7 @@ class SubStore<R, P, T>(
     val root: RootStore<R>,
     internal val rootLens: Lens<R, T>
 ) : Store<T>, CoroutineScope by MainScope() {
+    override var updateListener: (T) -> Unit = {}
 
     /**
      * defines how to infer the id of the sub-part from the parent's id.

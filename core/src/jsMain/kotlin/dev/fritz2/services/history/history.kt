@@ -6,37 +6,67 @@ import kotlin.math.min
 
 
 fun <T> history(maxSize: Int = 10, initialValue: List<T> = emptyList()) =
-    History(maxSize, MutableStateFlow(initialValue))
+    History<T>(maxSize, MutableStateFlow(null to initialValue))
 
-class History<T>(val maxSize: Int, private val history: MutableStateFlow<List<T>>) : StateFlow<List<T>> by history {
+class History<T>(private val maxSize: Int, private val history: MutableStateFlow<Pair<T?, List<T>>>) :
+    Flow<List<T>> by history.map({ it.second }) {
 
-    fun addEntry(entry: T) {
-        val oldHistory = history.value
-        if (oldHistory.isEmpty() || entry != oldHistory.first()) {
-            history.value = buildList {
-                add(entry)
-                if (oldHistory.isNotEmpty()) {
-                    addAll(oldHistory.subList(0, min(maxSize, oldHistory.size)))
-                }
+    private fun enqueue(entry: T) {
+        console.log("ADD ENTRY")
+        try {
+            val oldHistory = history.value
+            val newHistory = if (oldHistory.first != null) {
+                oldHistory.copy(entry, oldHistory.second.push(oldHistory.first!!))
+            } else {
+                oldHistory.copy(first = entry)
             }
+            history.value = newHistory
+        } catch (t: Throwable) {
+            console.error("ERRRROOOORRRR: ${t.message}", t)
         }
     }
 
-    fun last(): T = history.value.first()
+    private fun List<T>.push(entry: T): List<T> =
+        if (isEmpty() || entry != first()) {
+            buildList {
+                add(entry)
+                if (isNotEmpty()) {
+                    addAll(subList(0, min(maxSize, size)))
+                }
+            }
+        } else this
 
-    fun back(): T = history.value.let {
-        history.value = it.drop(1)
-        it.first()
+    fun add(entry: T) {
+        console.log("ADD ENTRY")
+        try {
+            val oldHistory = history.value
+            val newHistory = oldHistory.copy(second = oldHistory.second.push(entry))
+            history.value = newHistory
+        } catch (t: Throwable) {
+            console.error("ERRRROOOORRRR: ${t.message}", t)
+        }
+    }
+
+    fun last(): T = history.value.second.first()
+
+    fun back(): T {
+        val result = history.value.second.first()
+        val old = history.value.first
+        console.log("++++ result $result")
+        val newHistory = history.value.second.drop(1)
+        console.log("++++ new history $newHistory")
+        history.value = old to newHistory
+        return result
     }
 
     fun reset() {
-        history.value = emptyList()
+        history.value = null to emptyList()
     }
 
     val available by lazy { map { it.isNotEmpty() }.distinctUntilChanged() }
 
     //FIXME: not working!
-    fun sync(upstream: Store<T>, drop: Int = 1) {
-        upstream.data.drop(drop).onEach { addEntry(it) }.launchIn(upstream)
+    fun sync(upstream: Store<T>) {
+        upstream.data.onEach { enqueue(it) }.launchIn(upstream)
     }
 }

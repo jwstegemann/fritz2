@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emitAll
 
 /**
- * Base-interface the different types of handlers
+ * Base-interface of the different types of handlers
  *
  * @property collect function describing how this handler collects a flow when connected by [handledBy]
  */

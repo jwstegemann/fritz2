@@ -44,6 +44,8 @@ class QueuedUpdate<T>(
  */
 interface Store<T> : CoroutineScope {
 
+    var updateListener: (T) -> Unit
+
     /**
      * default error handler printing the error an keeping the previous value
      *
@@ -153,6 +155,7 @@ interface Store<T> : CoroutineScope {
     fun syncBy(handler: Handler<T>) {
         data.drop(1) handledBy handler
     }
+
 }
 
 /**
@@ -160,6 +163,15 @@ interface Store<T> : CoroutineScope {
  */
 inline fun <T, R> Store<T>.syncBy(handler: Handler<R>, crossinline mapper: suspend (T) -> R) {
     data.drop(1).map(mapper) handledBy handler
+}
+
+inline fun <T> Store<T>.onUpdate(crossinline execute: (T) -> Unit) {
+    updateListener = updateListener before execute
+}
+
+inline infix fun <A, T : (A) -> Unit> T.before(crossinline other: (A) -> Unit): (A) -> Unit = { a: A ->
+    invoke(a)
+    other(a)
 }
 
 /**
@@ -176,12 +188,17 @@ open class RootStore<T>(
     bufferSize: Int = 1
 ) : Store<T>, CoroutineScope by MainScope() {
 
+    override var updateListener: (T) -> Unit = {}
+
     private val updates = BroadcastChannel<QueuedUpdate<T>>(bufferSize)
     private val applyUpdate: suspend (T, QueuedUpdate<T>) -> T = { lastValue, queuedUpdate ->
         try {
             queuedUpdate.update(lastValue)
         } catch (e: Throwable) {
             queuedUpdate.errorHandler(e, lastValue)
+        }.also {
+            console.log("####### BINA $it")
+            updateListener(it)
         }
     }
 
@@ -194,7 +211,7 @@ open class RootStore<T>(
 
     /**
      * the current value of a [RootStore] is derived be applying the updates on the internal channel one by one to get the next value.
-     * the [Flow] only emit's a new value, when the value is differs from the last one to avoid calculations and updates that are not necessary.
+     * the [Flow] only emits a new value, when the value is differs from the last one to avoid calculations and updates that are not necessary.
      * This has to be a SharedFlow, because the updated should only be applied once, regardless how many depending values or ui-elements or bound to it.
      */
     override val data = updates.asFlow().scan(initialData, applyUpdate)
