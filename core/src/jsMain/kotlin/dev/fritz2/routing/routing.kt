@@ -96,8 +96,7 @@ open class StringRoute(override val default: String) : Route<String> {
  *
  * @param default [Map] to use when no explicit *window.location.hash* was set before
  */
-open class MapRoute(override val default: Map<String, String>) :
-    Route<Map<String, String>> {
+open class MapRoute(override val default: Map<String, String>) : Route<Map<String, String>> {
     private val assignment = "="
     private val divider = "&"
 
