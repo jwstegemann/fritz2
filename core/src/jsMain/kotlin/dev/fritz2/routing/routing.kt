@@ -84,7 +84,7 @@ interface Route<T> {
  *
  * @param default [String] to use when no explicit *window.location.hash* was set before
  */
-class StringRoute(override val default: String) : Route<String> {
+open class StringRoute(override val default: String) : Route<String> {
     override fun unmarshal(hash: String): String = hash
     override fun marshal(route: String): String = route
 }
@@ -96,7 +96,7 @@ class StringRoute(override val default: String) : Route<String> {
  *
  * @param default [Map] to use when no explicit *window.location.hash* was set before
  */
-class MapRoute(override val default: Map<String, String>) :
+open class MapRoute(override val default: Map<String, String>) :
     Route<Map<String, String>> {
     private val assignment = "="
     private val divider = "&"
@@ -126,7 +126,7 @@ class MapRoute(override val default: Map<String, String>) :
  * @param T type to marshal and unmarshal
  * @property defaultRoute default route to use when page is called and no hash is set
  */
-class Router<T>(
+open class Router<T>(
     private val defaultRoute: Route<T>,
     state: MutableStateFlow<T> = MutableStateFlow(defaultRoute.default)
 ) : Flow<T> by state {
