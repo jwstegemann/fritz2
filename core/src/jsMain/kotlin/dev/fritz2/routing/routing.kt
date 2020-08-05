@@ -80,7 +80,7 @@ interface Route<T> {
 
 /**
  * [StringRoute] is a simple [Route] which
- * marshals and unmarshals nothing.
+ * marshals and unmarshalls nothing.
  *
  * @param default [String] to use when no explicit *window.location.hash* was set before
  */
@@ -125,7 +125,7 @@ open class MapRoute(override val default: Map<String, String>) : Route<Map<Strin
  * @param T type to marshal and unmarshal
  * @property defaultRoute default route to use when page is called and no hash is set
  */
-open class Router<T>(
+class Router<T>(
     private val defaultRoute: Route<T>,
     state: MutableStateFlow<T> = MutableStateFlow(defaultRoute.default)
 ) : Flow<T> by state {
