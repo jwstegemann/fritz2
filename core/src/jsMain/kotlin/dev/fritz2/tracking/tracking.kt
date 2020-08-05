@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.debounce
  * convenience method for creating a [Tracker]
  */
 fun tracker(defaultTransaction: String = "...", debounceTimeout: Long = 100): Tracker =
-    object : Tracker(defaultTransaction, debounceTimeout) {}
+    Tracker(defaultTransaction, debounceTimeout)
 
 /**
  * tracks running transactions (e.g. inside a [Store])
@@ -18,7 +18,7 @@ fun tracker(defaultTransaction: String = "...", debounceTimeout: Long = 100): Tr
  * @param debounceTimeout denounces values in the [Flow] of running transaction by this value
  * @param state stores the actual running transaction or null
  */
-abstract class Tracker(
+class Tracker(
     private val defaultTransaction: String,
     debounceTimeout: Long,
     private val state: MutableStateFlow<String?> = MutableStateFlow(null)
