@@ -1,9 +1,27 @@
-package dev.fritz2.services.entity
+package dev.fritz2.repositories
+
+import dev.fritz2.lenses.IdProvider
+import dev.fritz2.serialization.Serializer
 
 /**
- * defines the interface that should be provided by all services dealing with a single Entity.
+ * defines the interface that is used in the repositories
+ *
+ * @param idProvider function to provide an id for a given entity
+ * @param serializer used to (de-)serialize the entity/response
+ * @param emptyEntity an instance of the entity defining an empty state (e.g. after deletion)
+ * @param serializeId convert the entities [idProvider] into a [String], default calling [toString]
  */
-interface EntityService<T, I> {
+data class Resource<T, I>(
+    val idProvider: IdProvider<T, I>,
+    val serializer: Serializer<T, String>,
+    val emptyEntity: T,
+    val serializeId: (I) -> String = { it.toString() }
+)
+
+/**
+ * defines the interface that should be provided by all repositories dealing with a single Entity.
+ */
+interface EntityRepository<T, I> {
 
     /**
      * loads an entity
@@ -32,9 +50,9 @@ interface EntityService<T, I> {
 }
 
 /**
- * defines the interface that should be provided by all services dealing with a list of Entities.
+ * defines the interface that should be provided by all repositories dealing with a list of Entities.
  */
-interface QueryService<T, I, Q> {
+interface QueryRepository<T, I, Q> {
 
     /**
      * runs a query
