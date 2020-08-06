@@ -1,7 +1,6 @@
 package dev.fritz2.binding
 
 import dev.fritz2.flow.asSharedFlow
-import dev.fritz2.format.Format
 import dev.fritz2.lenses.Lens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -20,10 +19,11 @@ class SubStore<R, P, T>(
     internal val rootLens: Lens<R, T>
 ) : Store<T>, CoroutineScope by MainScope() {
 
+
     /**
      * defines how to infer the id of the sub-part from the parent's id.
      */
-    override val id: String by lazy { "${parent.id}.${lens._id}" }
+    override val id: String by lazy { "${parent.id}.${lens.id}".trimEnd('.') }
 
     /**
      * Since a [SubStore] is just a view on a [RootStore] holding the real value, it forwards the [Update] to it, using it's [Lens] to transform it.
@@ -57,13 +57,4 @@ class SubStore<R, P, T>(
      */
     fun <X> sub(lens: Lens<T, X>): SubStore<R, T, X> =
         SubStore(this, lens, root, rootLens + lens)
-
-    /**
-     * creates a new [SubStore] using the given [Format] to convert the
-     * value of type [T] to a [String] and vice versa.
-     *
-     * @param format a [Format] for the type [T]
-     */
-    fun using(format: Format<T>): SubStore<R, T, String> =
-        SubStore(this, format.lens, root, rootLens + format.lens)
 }

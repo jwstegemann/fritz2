@@ -5,18 +5,18 @@ import dev.fritz2.lenses.buildLens
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@Lenses
-data class Address(val street: String, val id: String = uniqueId())
-
-val streetLens = buildLens(Address::street.name, Address::street) { p, v -> p.copy(street = v) }
-
-@Lenses
-data class Person(val name: String, val address: Address, val id: String = uniqueId())
-
-val nameLens = buildLens(Person::name.name, Person::name) { p, v -> p.copy(name = v) }
-val addressLens = buildLens(Person::address.name, Person::address) { p, v -> p.copy(address = v) }
-
 class InspectorTests {
+
+    @Lenses
+    data class Address(val street: String, val id: String = uniqueId())
+
+    val streetLens = buildLens(Address::street.name, Address::street) { p, v -> p.copy(street = v) }
+
+    @Lenses
+    data class Person(val name: String, val address: Address, val id: String = uniqueId())
+
+    val nameLens = buildLens(Person::name.name, Person::name) { p, v -> p.copy(name = v) }
+    val addressLens = buildLens(Person::address.name, Person::address) { p, v -> p.copy(address = v) }
 
     @Test
     fun testInspectorIds() {
