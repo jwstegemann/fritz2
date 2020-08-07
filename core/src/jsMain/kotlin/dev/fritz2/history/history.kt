@@ -42,7 +42,7 @@ class History<T>(private val maxSize: Int, private val history: MutableStateFlow
             buildList {
                 add(entry)
                 if (isNotEmpty()) {
-                    addAll(oldList.subList(0, min(maxSize, oldList.size)))
+                    addAll(oldList.subList(0, min(maxSize - 1, oldList.size)))
                 }
             }
         } else oldList
