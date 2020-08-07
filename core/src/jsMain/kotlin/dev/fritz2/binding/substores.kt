@@ -19,7 +19,7 @@ class SubStore<R, P, T>(
     val root: RootStore<R>,
     internal val rootLens: Lens<R, T>
 ) : Store<T>, CoroutineScope by MainScope() {
-    override var updateListener: (T) -> Unit = {}
+
 
     /**
      * defines how to infer the id of the sub-part from the parent's id.
@@ -30,7 +30,7 @@ class SubStore<R, P, T>(
      * Since a [SubStore] is just a view on a [RootStore] holding the real value, it forwards the [Update] to it, using it's [Lens] to transform it.
      */
     override suspend fun enqueue(update: QueuedUpdate<T>) {
-        root.enqueue(QueuedUpdate<R>({
+        root.enqueue(QueuedUpdate({
             try {
                 rootLens.apply(it, update.update)
             } catch (e: Throwable) {

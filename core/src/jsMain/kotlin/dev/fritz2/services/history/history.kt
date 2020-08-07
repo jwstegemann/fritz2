@@ -8,55 +8,41 @@ import kotlin.math.min
 fun <T> history(maxSize: Int = 10, initialValue: List<T> = emptyList()) =
     History<T>(maxSize, MutableStateFlow(null to initialValue))
 
+
 class History<T>(private val maxSize: Int, private val history: MutableStateFlow<Pair<T?, List<T>>>) :
     Flow<List<T>> by history.map({ it.second }) {
 
     private fun enqueue(entry: T) {
-        console.log("ADD ENTRY")
-        try {
-            val oldHistory = history.value
-            val newHistory = if (oldHistory.first != null) {
-                oldHistory.copy(entry, oldHistory.second.push(oldHistory.first!!))
-            } else {
-                oldHistory.copy(first = entry)
-            }
-            history.value = newHistory
-        } catch (t: Throwable) {
-            console.error("ERRRROOOORRRR: ${t.message}", t)
+        history.value.also { old ->
+            if (entry == old.first) return
+            history.value = old.copy(
+                entry, if (old.first != null) {
+                    push(old.first!!, old.second)
+                } else {
+                    old.second
+                }
+            )
         }
     }
 
-    private fun List<T>.push(entry: T): List<T> =
-        if (isEmpty() || entry != first()) {
-            buildList {
-                add(entry)
-                if (isNotEmpty()) {
-                    addAll(subList(0, min(maxSize, size)))
-                }
-            }
-        } else this
+    private fun push(entry: T, old: List<T>): List<T> = old.ifEmpty {
+        buildList {
+            add(entry)
+            if (old.isNotEmpty()) addAll(old.subList(0, min(maxSize, old.size)))
+        }
+    }
 
     fun add(entry: T) {
-        console.log("ADD ENTRY")
-        try {
-            val oldHistory = history.value
-            val newHistory = oldHistory.copy(second = oldHistory.second.push(entry))
-            history.value = newHistory
-        } catch (t: Throwable) {
-            console.error("ERRRROOOORRRR: ${t.message}", t)
+        history.value.also { old ->
+            history.value = old.copy(second = push(entry, old.second))
         }
     }
 
     fun last(): T = history.value.second.first()
 
-    fun back(): T {
-        val result = history.value.second.first()
-        val old = history.value.first
-        console.log("++++ result $result")
-        val newHistory = history.value.second.drop(1)
-        console.log("++++ new history $newHistory")
-        history.value = old to newHistory
-        return result
+    fun back(): T = history.value.let {
+        history.value = it.copy(null, it.second.drop(1))
+        return it.second.first()
     }
 
     fun reset() {
@@ -65,8 +51,9 @@ class History<T>(private val maxSize: Int, private val history: MutableStateFlow
 
     val available by lazy { map { it.isNotEmpty() }.distinctUntilChanged() }
 
-    //FIXME: not working!
-    fun sync(upstream: Store<T>) {
-        upstream.data.onEach { enqueue(it) }.launchIn(upstream)
+    fun sync(upstream: Store<T>): History<T> = this.apply {
+        upstream.data.onEach { enqueue(it) }.catch { t ->
+            console.error("ERROR[history]: ${t.message}", t)
+        }.launchIn(upstream)
     }
 }
