@@ -2,11 +2,7 @@ package dev.fritz2.routing
 
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.Events
-import dev.fritz2.flow.asSharedFlow
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.events.Event
 import kotlin.browser.window
@@ -16,26 +12,14 @@ import kotlin.browser.window
  *
  * @param default default route
  */
-fun router(default: String): Router<String> = object : Router<String>(
-    StringRoute(default)
-) {}
+fun router(default: String): Router<String> = Router(StringRoute(default))
 
 /**
  * Creates a new [Map] based [Router]
  *
  * @param default default route
  */
-fun router(default: Map<String, String>): Router<Map<String, String>> = object : Router<Map<String, String>>(
-    MapRoute(default)
-) {}
-
-/**
- * Select return a [Pair] of the value
- * and the complete routing [Map] for the given key in the [mapper] function.
- */
-fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Map<String, String>>) -> X): Flow<X> =
-    routes.map { m -> mapper((m[key] ?: "") to m) }
-
+fun router(default: Map<String, String>): Router<Map<String, String>> = Router(MapRoute(default))
 
 /**
  * Creates a new type based [Router].
@@ -43,7 +27,31 @@ fun <X> Router<Map<String, String>>.select(key: String, mapper: (Pair<String, Ma
  *
  * @param default default route
  */
-fun <T> router(default: Route<T>): Router<T> = object : Router<T>(default) {}
+fun <T> router(default: Route<T>): Router<T> = Router(default)
+
+/**
+ * Selects with the given key a [Pair] of the value
+ * and the complete routing [Map] into the [transform] function.
+ *
+ * @param key for looking in [Map]
+ * @param transform mapping function to run on selected [Pair] of the value and routing [Map]
+ * @return new [Flow] of the result by calling the [transform] function
+ */
+fun <X> Router<Map<String, String>>.select(
+    key: String,
+    transform: suspend (Pair<String?, Map<String, String>>) -> X
+): Flow<X> =
+    this.map { m -> transform((m[key]) to m) }
+
+/**
+ * Returns the value for the given key.
+ *
+ * @param key for looking in [Map]
+ * @param orElse if key not in [Map]
+ * @return [Flow] of [String] with the value
+ */
+fun Router<Map<String, String>>.select(key: String, orElse: String): Flow<String> =
+    this.map { m -> m[key] ?: orElse }
 
 /**
  * A Route is a abstraction for routes
@@ -72,11 +80,11 @@ interface Route<T> {
 
 /**
  * [StringRoute] is a simple [Route] which
- * marshals and unmarshals nothing.
+ * marshals and unmarshalls nothing.
  *
  * @param default [String] to use when no explicit *window.location.hash* was set before
  */
-class StringRoute(override val default: String) : Route<String> {
+open class StringRoute(override val default: String) : Route<String> {
     override fun unmarshal(hash: String): String = hash
     override fun marshal(route: String): String = route
 }
@@ -88,8 +96,7 @@ class StringRoute(override val default: String) : Route<String> {
  *
  * @param default [Map] to use when no explicit *window.location.hash* was set before
  */
-class MapRoute(override val default: Map<String, String>) :
-    Route<Map<String, String>> {
+open class MapRoute(override val default: Map<String, String>) : Route<Map<String, String>> {
     private val assignment = "="
     private val divider = "&"
 
@@ -116,48 +123,40 @@ class MapRoute(override val default: Map<String, String>) :
  * which can [Route.marshal] and [Route.unmarshal] the given type.
  *
  * @param T type to marshal and unmarshal
- * @property route default route to use when page is called with empty hash
+ * @property defaultRoute default route to use when page is called and no hash is set
  */
-open class Router<T>(private val route: Route<T>) : CoroutineScope by MainScope() {
+class Router<T>(
+    private val defaultRoute: Route<T>,
+    state: MutableStateFlow<T> = MutableStateFlow(defaultRoute.default)
+) : Flow<T> by state {
+
     private val prefix = "#"
 
-    private val updates: Flow<T> = callbackFlow {
+    /**
+     * Handler for setting a new [Route] based on given Flow.
+     */
+    val navTo: SimpleHandler<T> = SimpleHandler { flow ->
+        flow.onEach { setRoute(it) }.launchIn(MainScope())
+    }
+
+    init {
+        if (window.location.hash.isBlank()) {
+            setRoute(defaultRoute.default)
+            state.value = defaultRoute.default
+        } else {
+            state.value = defaultRoute.unmarshal(window.location.hash.removePrefix(prefix))
+        }
+
         val listener: (Event) -> Unit = {
             it.preventDefault()
-            val hash = window.location.hash.removePrefix(prefix)
-            if (hash.isNotBlank()) {
-                offer(route.unmarshal(hash))
-            }
+            state.value = defaultRoute.unmarshal(window.location.hash.removePrefix(prefix))
         }
-        window.addEventListener(Events.load.name, listener)
         window.addEventListener(Events.hashchange.name, listener)
-
-        delay(100)
-
-        if (window.location.hash.removePrefix(prefix).isBlank())
-            setRoute(route.default)
-
-        awaitClose { window.removeEventListener(Events.hashchange.name, listener) }
     }
 
     private fun setRoute(newRoute: T) {
-        window.location.hash = prefix + route.marshal(newRoute)
+        window.location.hash = prefix + defaultRoute.marshal(newRoute)
     }
-
-    /**
-     * Gives the actual route as Flow
-     */
-    val routes: Flow<T> = updates.distinctUntilChanged().asSharedFlow()
-
-    /**
-     * Handler vor setting
-     * a new [Route] based on given Flow.
-     */
-    val navTo: SimpleHandler<T> = SimpleHandler { flow ->
-        flow.onEach { setRoute(it) }
-            .launchIn(this)
-    }
-
 }
 
 external fun decodeURIComponent(encodedURI: String): String

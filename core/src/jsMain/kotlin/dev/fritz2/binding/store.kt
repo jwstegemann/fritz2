@@ -1,7 +1,6 @@
 package dev.fritz2.binding
 
 import dev.fritz2.flow.asSharedFlow
-import dev.fritz2.format.Format
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import kotlinx.coroutines.CoroutineScope
@@ -216,21 +215,12 @@ open class RootStore<T>(
      */
     fun <X> sub(lens: Lens<T, X>): SubStore<T, T, X> =
         SubStore(this, lens, this, lens)
-
-    /**
-     * creates a new [SubStore] using the given [Format] to convert the
-     * value of type [T] to a [String] and vice versa.
-     *
-     * @param format a [Format] for the type [T]
-     */
-    fun using(format: Format<T>): SubStore<T, T, String> =
-        SubStore(this, format.lens, this, format.lens)
 }
 
 /**
  * convenience method to create a simple [RootStore] without any handlers, etc.
  *
- * @param initialData: the first current value of this [Store]
- * @param id: the id of this store. ids of [SubStore]s will be concatenated.
+ * @param initialData the first current value of this [Store]
+ * @param id the id of this store. ids of [SubStore]s will be concatenated.
  */
 fun <T> storeOf(initialData: T, id: String = "") = RootStore(initialData, id)

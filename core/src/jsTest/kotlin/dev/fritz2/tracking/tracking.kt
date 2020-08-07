@@ -1,4 +1,4 @@
-package dev.fritz2.services.tracking
+package dev.fritz2.tracking
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.action
@@ -30,7 +30,7 @@ class TrackingTests {
         val valueId = "value-${uniqueId()}"
 
         val store = object : RootStore<String>(startValue) {
-            val running = Tracker()
+            val running = tracker()
 
             val longRunningHandler = handle {
                 running.track(transactionText) {

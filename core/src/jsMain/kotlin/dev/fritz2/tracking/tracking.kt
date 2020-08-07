@@ -1,19 +1,26 @@
-package dev.fritz2.services.tracking
+package dev.fritz2.tracking
 
+import dev.fritz2.binding.Store
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 
 /**
- * tracks running transactions (inside a [Store])
+ * convenience method for creating a [Tracker]
+ */
+fun tracker(defaultTransaction: String = "...", debounceTimeout: Long = 100): Tracker =
+    Tracker(defaultTransaction, debounceTimeout)
+
+/**
+ * tracks running transactions (e.g. inside a [Store])
  *
  * @param defaultTransaction default transactions text (used if not specified when [track] is called)
- * @param debounceTimeout debounces values in the [Flow] of running transaction by this value
+ * @param debounceTimeout denounces values in the [Flow] of running transaction by this value
  * @param state stores the actual running transaction or null
  */
 class Tracker(
-    private val defaultTransaction: String = "...",
-    debounceTimeout: Long = 100,
+    private val defaultTransaction: String,
+    debounceTimeout: Long,
     private val state: MutableStateFlow<String?> = MutableStateFlow(null)
 ) : Flow<String?> by state.debounce(debounceTimeout) {
 

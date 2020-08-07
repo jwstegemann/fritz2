@@ -3,15 +3,15 @@ package dev.fritz2.lenses
 /**
  * Describes a focus point into a data structure, i.e. a property of a given complex entity
  *
- * @property _id identies the focus of this lens
+ * @property id identifies the focus of this lens
  */
 interface Lens<P, T> {
-    val _id: String
+    val id: String
 
     /**
      * gets the value of the focus target
      *
-     * @param parent concrete instance to apply the focus to
+     * @param parent concrete instance to apply the focus tos
      */
     fun get(parent: P): T
 
@@ -39,7 +39,7 @@ interface Lens<P, T> {
      */
     operator fun <X> plus(other: Lens<T, X>): Lens<P, X> = object :
         Lens<P, X> {
-        override val _id = "${this@Lens._id}.${other._id}"
+        override val id = "${this@Lens.id}.${other.id}".trimEnd('.')
         override fun get(parent: P): X = other.get(this@Lens.get(parent))
         override fun set(parent: P, value: X): P = this@Lens.set(parent, other.set(this@Lens.get(parent), value))
     }
@@ -52,12 +52,25 @@ interface Lens<P, T> {
  * @param getter of the [Lens]
  * @param setter of the [Lens]
  */
-inline fun <P, T> buildLens(id: String, crossinline getter: (P) -> T, crossinline setter: (P, T) -> P) = object :
-    Lens<P, T> {
-    override val _id = id
-    override fun get(parent: P): T = getter(parent)
-    override fun set(parent: P, value: T): P = setter(parent, value)
-}
+inline fun <P, T> buildLens(id: String, crossinline getter: (P) -> T, crossinline setter: (P, T) -> P): Lens<P, T> =
+    object : Lens<P, T> {
+        override val id: String = id
+        override fun get(parent: P): T = getter(parent)
+        override fun set(parent: P, value: T): P = setter(parent, value)
+    }
+
+/**
+ * creates a [Lens] converting [P] to and from a [String]
+ *
+ * @param parse function for parsing a [String] to [P]
+ * @param format function for formatting a [P] to [String]
+ */
+inline fun <P> format(crossinline parse: (String) -> P, crossinline format: (P) -> String): Lens<P, String> =
+    object : Lens<P, String> {
+        override val id: String = ""
+        override fun get(parent: P): String = format(parent)
+        override fun set(parent: P, value: String): P = parse(value)
+    }
 
 /**
  * function to derive a valid id for a given instance that does not change over time.
@@ -72,7 +85,7 @@ typealias IdProvider<T, I> = (T) -> I
  */
 fun <T, I> elementLens(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, T> = object :
     Lens<List<T>, T> {
-    override val _id: String = idProvider(element).toString()
+    override val id: String = idProvider(element).toString()
 
     override fun get(parent: List<T>): T = parent.find {
         idProvider(it) == idProvider(element)
@@ -89,7 +102,7 @@ fun <T, I> elementLens(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, 
  * @param index position to focus on
  */
 fun <T> positionLens(index: Int): Lens<List<T>, T> = object : Lens<List<T>, T> {
-    override val _id: String = index.toString()
+    override val id: String = index.toString()
 
     override fun get(parent: List<T>): T = parent[index]
 

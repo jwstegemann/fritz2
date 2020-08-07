@@ -1,39 +1,29 @@
-package dev.fritz2.services.localstorage
+package dev.fritz2.repositories.localstorage
 
-import dev.fritz2.lenses.IdProvider
-import dev.fritz2.serialization.Serializer
-import dev.fritz2.services.entity.EntityService
-import dev.fritz2.services.entity.QueryService
+import dev.fritz2.repositories.EntityRepository
+import dev.fritz2.repositories.QueryRepository
+import dev.fritz2.repositories.Resource
 import org.w3c.dom.get
 import kotlin.browser.localStorage
 import kotlin.browser.window
 
 /**
- * defines a concrete [LocalResource]
+ * provides crud-functions for [localStorage] to deal with a single entity
  *
- * @param prefix prefix of all keys of this resource
- * @param idProvider function to provide an id for a given entity
- * @param serializer used to (de-)serialize the entity/response
- * @param emptyEntity an instance of the entity defining an empty state (e.g. after deletion)
- * @param serializeId convert the entities [idProvider] into a [String], default calling [toString]
+ * @param resource definition of the [Resource] to use
+ * @param prefix prefix used for prepending to the keys
  */
-data class LocalResource<T, I>(
-    val prefix: String,
-    inline val idProvider: IdProvider<T, I>,
-    val serializer: Serializer<T, String>,
-    inline val emptyEntity: T,
-    inline val serializeId: (I) -> String = { it.toString() }
-)
-
+fun <T, I> localStorageEntity(resource: Resource<T, I>, prefix: String): EntityRepository<T, I> =
+    LocalStorageEntity(resource, prefix)
 
 /**
  * provides crud-functions for [localStorage] to deal with a single entity
  *
- * @param resource definition of the [LocalResource]
+ * @param resource definition of the [Resource] to use
+ * @param prefix prefix used for prepending to the keys
  */
-open class LocalStorageEntityService<T, I>(
-    val resource: LocalResource<T, I>
-) : EntityService<T, I> {
+class LocalStorageEntity<T, I>(private val resource: Resource<T, I>, private val prefix: String) :
+    EntityRepository<T, I> {
 
     /**
      * loads an entity from [localStorage] using prefix and id defined in [resource]
@@ -43,7 +33,8 @@ open class LocalStorageEntityService<T, I>(
      * @return the entity (identified by [id])
      */
     override suspend fun load(entity: T, id: I): T =
-        window.localStorage["${resource.prefix}.${resource.serializeId(id)}"]?.let(resource.serializer::read) ?: entity
+        window.localStorage["${prefix}.${resource.serializeId(id)}"]?.let(resource.serializer::read)
+            ?: entity
 
     /**
      * saves the serialized entity to [localStorage] using prefix and id defined in [resource]
@@ -53,7 +44,7 @@ open class LocalStorageEntityService<T, I>(
      */
     override suspend fun saveOrUpdate(entity: T): T {
         window.localStorage.setItem(
-            "${resource.prefix}.${resource.serializeId(resource.idProvider(entity))}",
+            "${prefix}.${resource.serializeId(resource.idProvider(entity))}",
             resource.serializer.write(entity)
         )
         return entity
@@ -63,26 +54,40 @@ open class LocalStorageEntityService<T, I>(
      * deletes the entity in [localStorage]
      *
      * @param entity entity to delete
-     * @return the []emptyEntity defined at [resource]
+     * @return the emptyEntity defined at [resource]
      */
     override suspend fun delete(entity: T): T {
-        window.localStorage.removeItem("${resource.prefix}.${resource.serializeId(resource.idProvider(entity))}")
+        window.localStorage.removeItem("${prefix}.${resource.serializeId(resource.idProvider(entity))}")
         return resource.emptyEntity
     }
+
 }
 
-
 /**
- * provides services to deal with queries to a specific resource (identified by common prefix) in [localStorage]
+ * provides functions to deal with queries to a specific [Resource] in [localStorage]
  *
  * @param resource definition of resource in [localStorage]
+ * @param prefix prefix used for prepending to the keys
  * @param runQuery function to apply a given query to the collection of entities in [localStorage]
  */
-open class LocalStorageQueryService<T, I, Q>(
-    val resource: LocalResource<T, I>,
-    inline val runQuery: (List<T>, Q) -> List<T> = { entities, _ -> entities }
+fun <T, I, Q> localStorageQuery(
+    resource: Resource<T, I>,
+    prefix: String,
+    runQuery: (List<T>, Q) -> List<T> = { entities, _ -> entities }
+): LocalStorageQuery<T, I, Q> = LocalStorageQuery(resource, prefix, runQuery)
 
-) : QueryService<T, I, Q> {
+/**
+ * provides functions to deal with queries to a specific [Resource] in [localStorage]
+ *
+ * @param resource definition of resource in [localStorage]
+ * @param prefix prefix used for prepending to the keys
+ * @param runQuery function to apply a given query to the collection of entities in [localStorage]
+ */
+class LocalStorageQuery<T, I, Q>(
+    private val resource: Resource<T, I>,
+    private val prefix: String,
+    private inline val runQuery: (List<T>, Q) -> List<T> = { entities, _ -> entities }
+) : QueryRepository<T, I, Q> {
 
     /**
      * applies a given query to the collection of entities
@@ -95,7 +100,7 @@ open class LocalStorageQueryService<T, I, Q>(
     override suspend fun query(entities: List<T>, query: Q): List<T> = runQuery(buildList<T> {
         for (index in 0 until localStorage.length) {
             val key = localStorage.key(index)
-            if (key != null && key.startsWith(resource.prefix)) {
+            if (key != null && key.startsWith(prefix)) {
                 add(resource.serializer.read(localStorage[key]!!))
             }
         }
@@ -110,7 +115,7 @@ open class LocalStorageQueryService<T, I, Q>(
     override suspend fun updateAll(entities: List<T>): List<T> {
         entities.forEach { entity ->
             window.localStorage.setItem(
-                "${resource.prefix}.${resource.serializeId(resource.idProvider(entity))}",
+                "${prefix}.${resource.serializeId(resource.idProvider(entity))}",
                 resource.serializer.write(entity)
             )
         }
@@ -118,7 +123,7 @@ open class LocalStorageQueryService<T, I, Q>(
     }
 
     private fun deleteById(id: I) {
-        window.localStorage.removeItem("${resource.prefix}.${resource.serializeId(id)}")
+        window.localStorage.removeItem("${prefix}.${resource.serializeId(id)}")
     }
 
     /**
@@ -144,4 +149,5 @@ open class LocalStorageQueryService<T, I, Q>(
         ids.forEach(::deleteById)
         return entities.filterNot { ids.contains(resource.idProvider(it)) }
     }
+
 }

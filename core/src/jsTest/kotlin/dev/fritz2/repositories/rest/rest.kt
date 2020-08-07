@@ -1,11 +1,13 @@
-package dev.fritz2.services.localstorage
+package dev.fritz2.repositories.rest
 
 import dev.fritz2.binding.*
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
+import dev.fritz2.repositories.Resource
 import dev.fritz2.serialization.Serializer
+import dev.fritz2.test.getFreshCrudcrudEndpoint
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
@@ -16,25 +18,32 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class LocalStorageTests {
-    data class LocalPerson(val name: String, val age: Int, val _id: String = uniqueId())
+/*
+ * See [crudcrud.com](https://crudcrud.com).
+ */
+class RestTests {
+    data class RestPerson(val name: String, val age: Int, val _id: String = "")
 
-    private val nameLens = buildLens("name", LocalPerson::name) { p, v -> p.copy(name = v) }
-    private val ageLens = buildLens("age", LocalPerson::age) { p, v -> p.copy(age = v) }
-    private val idLens = buildLens("id", LocalPerson::_id) { p, v -> p.copy(_id = v) }
+    private val nameLens = buildLens("name", RestPerson::name) { p, v -> p.copy(name = v) }
+    private val ageLens = buildLens("age", RestPerson::age) { p, v -> p.copy(age = v) }
+    private val idLens = buildLens("id", RestPerson::_id) { p, v -> p.copy(_id = v) }
 
 
-    object PersonSerializer : Serializer<LocalPerson, String> {
-        override fun write(item: LocalPerson): String = JSON.stringify(item)
-        override fun read(msg: String): LocalPerson {
+    object PersonSerializer : Serializer<RestPerson, String> {
+        data class PersonWithoutId(val name: String, val age: Int)
+
+        private fun removeId(person: RestPerson) = PersonWithoutId(person.name, person.age)
+
+        override fun write(item: RestPerson): String = JSON.stringify(removeId(item))
+        override fun read(msg: String): RestPerson {
             val obj = JSON.parse<dynamic>(msg)
-            return LocalPerson(obj.name as String, obj.age as Int, obj._id as String)
+            return RestPerson(obj.name as String, obj.age as Int, obj._id as String)
         }
 
-        override fun writeList(items: List<LocalPerson>): String = JSON.stringify(items)
-        override fun readList(msg: String): List<LocalPerson> {
+        override fun writeList(items: List<RestPerson>): String = JSON.stringify(items.map { removeId(it) })
+        override fun readList(msg: String): List<RestPerson> {
             val list = JSON.parse<Array<dynamic>>(msg)
-            return list.map { obj -> LocalPerson(obj.name as String, obj.age as Int, obj._id as String) }
+            return list.map { obj -> RestPerson(obj.name as String, obj.age as Int, obj._id as String) }
         }
     }
 
@@ -42,23 +51,23 @@ class LocalStorageTests {
     fun testEntityService() = runTest {
         initDocument()
 
-        val startPerson = LocalPerson("Heinz", 18)
+        val startPerson = RestPerson("Heinz", 18)
         val changedAge = 99
 
-        val personResource = LocalResource(
-            "",
-            LocalPerson::_id,
+        val personResource = Resource(
+            RestPerson::_id,
             PersonSerializer,
-            LocalPerson("", 0)
+            RestPerson("", 0)
         )
 
-        val entityStore = object : RootStore<LocalPerson>(personResource.emptyEntity) {
-            private val localStorage = LocalStorageEntityService(personResource)
+        val crudcrudRemote = getFreshCrudcrudEndpoint().append("/person")
 
-            val load = handle { entity, id: String -> localStorage.load(entity, id) }
+        val entityStore = object : RootStore<RestPerson>(personResource.emptyEntity) {
+            private val rest = restEntity(personResource, "", remote = crudcrudRemote)
 
-            val saveOrUpdate = handle { entity -> localStorage.saveOrUpdate(entity) }
-            val delete = handle { entity -> localStorage.delete(entity) }
+            val load = handle { entity, id: String -> rest.load(entity, id) }
+            val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(entity) }
+            val delete = handleAndOffer<Unit> { entity -> rest.delete(entity) }
         }
 
         val nameId = "name-${uniqueId()}"
@@ -106,8 +115,8 @@ class LocalStorageTests {
         action() handledBy entityStore.delete
         delay(200)
 
-        val nameAfterDelete = document.getElementById(nameId)?.textContent
-        assertEquals("", nameAfterDelete, "wrong name after delete")
+        val idAfterDelete = document.getElementById(idId)?.textContent
+        assertEquals(startPerson._id, idAfterDelete, "wrong id after delete")
     }
 
 
@@ -116,34 +125,30 @@ class LocalStorageTests {
         initDocument()
 
         val testList = listOf(
-            LocalPerson("A", 0),
-            LocalPerson("B", 1),
-            LocalPerson("C", 0),
-            LocalPerson("D", 1),
-            LocalPerson("E", 0)
+            RestPerson("A", 0, ""),
+            RestPerson("B", 1, ""),
+            RestPerson("C", 0, "")
         )
 
-        val personResource = LocalResource(
-            "",
-            LocalPerson::_id,
+        val personResource = Resource(
+            RestPerson::_id,
             PersonSerializer,
-            LocalPerson("", 0)
+            RestPerson("", 0, "")
         )
 
-        val entityStore = object : RootStore<LocalPerson>(personResource.emptyEntity) {
-            private val localStorage = LocalStorageEntityService(personResource)
+        val crudcrudRemote = getFreshCrudcrudEndpoint().append("/person")
 
-            val saveOrUpdate = handleAndOffer<Unit> { entity -> localStorage.saveOrUpdate(entity) }
+        val entityStore = object : RootStore<RestPerson>(personResource.emptyEntity) {
+            private val rest = restEntity(personResource, "", remote = crudcrudRemote)
+
+            val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(entity) }
         }
 
-        val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
-            private val localStorage =
-                LocalStorageQueryService<LocalPerson, String, Unit>(personResource) { entities, _ ->
-                    entities.sortedBy(LocalPerson::name)
-                }
+        val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
+            private val rest = restQuery<RestPerson, String, Unit>(personResource, "", remote = crudcrudRemote)
 
-            val query = handle<Unit> { entities, query -> localStorage.query(entities, query) }
-            val delete = handle<String> { entites, id -> localStorage.delete(entites, id) }
+            val query = handle<Unit> { entities, query -> rest.query(entities, query) }
+            val delete = handle<String> { entities, id -> rest.delete(entities, id) }
         }
 
         val listId = "list-${uniqueId()}"
@@ -152,7 +157,7 @@ class LocalStorageTests {
         render {
             div {
                 ul(id = listId) {
-                    queryStore.data.each(LocalPerson::_id).render { p ->
+                    queryStore.data.each(RestPerson::_id).render { p ->
                         li { +p.name }
                     }.bind()
                 }
@@ -167,8 +172,6 @@ class LocalStorageTests {
 
         entityStore.data.watch()
 
-        delay(100)
-
         testList.forEach {
             action(it) handledBy entityStore.update
             delay(1)
@@ -178,7 +181,7 @@ class LocalStorageTests {
         delay(400)
 
         action() handledBy queryStore.query
-        delay(400)
+        delay(500)
 
         val listAfterQuery = document.getElementById(listId)?.textContent
         assertEquals(testList.joinToString("") { it.name }, listAfterQuery, "wrong list after query")
@@ -192,7 +195,7 @@ class LocalStorageTests {
         val listAfterDelete = document.getElementById(listId)?.textContent
         assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDelete, "wrong list after query")
 
-        action(emptyList<LocalPerson>()) handledBy queryStore.update
+        action(emptyList<RestPerson>()) handledBy queryStore.update
         delay(1)
         action() handledBy queryStore.query
         delay(400)

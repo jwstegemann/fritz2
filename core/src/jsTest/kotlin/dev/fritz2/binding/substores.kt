@@ -2,9 +2,9 @@ package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
-import dev.fritz2.format.Format
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
+import dev.fritz2.lenses.format
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
@@ -14,7 +14,6 @@ import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class SubStoreTests {
 
@@ -90,22 +89,19 @@ class SubStoreTests {
 
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person, id = "person") {}
-        val id = "complete-${uniqueId()}"
-        val format = object : Format<Person>(id) {
-            override fun parse(old: Person, value: String): Person {
+
+        val personFormatLens = format(
+            { value: String ->
                 val fields = value.split(",")
                 val name = fields[0]
                 val street = fields[1]
                 val code = fields[2].toInt()
-                return Person(name, Address(street, PostalCode(code)))
-            }
-
-            override fun format(value: Person): String =
+                Person(name, Address(street, PostalCode(code)))
+            }, { value: Person ->
                 "${value.name},${value.address.street},${value.address.postalCode.code}"
+            })
 
-        }
-
-        val completeSub = store.using(format)
+        val completeSub = store.sub(personFormatLens)
 
         render {
             div {
@@ -120,14 +116,14 @@ class SubStoreTests {
 
         val completeDiv = document.getElementById(completeSub.id) as HTMLDivElement
 
-        assertTrue(completeDiv.id.endsWith(id))
-        assertEquals(format.format(person), completeDiv.innerText, "formatting is not working")
+        assertEquals(store.id, completeDiv.id)
+        assertEquals(personFormatLens.get(person), completeDiv.innerText, "formatting is not working")
 
         val newPerson = Person("Bar", Address("Foo St. 9", PostalCode(1111)))
-        action(format.format(newPerson)) handledBy completeSub.update
+        action(personFormatLens.get(newPerson)) handledBy completeSub.update
 
         delay(200)
 
-        assertEquals(format.format(newPerson), completeDiv.innerText, "parsing is not working")
+        assertEquals(personFormatLens.get(newPerson), completeDiv.innerText, "parsing is not working")
     }
 }
