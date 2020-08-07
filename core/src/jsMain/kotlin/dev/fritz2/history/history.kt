@@ -1,7 +1,6 @@
 package dev.fritz2.history
 
 import dev.fritz2.binding.Store
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
 import kotlin.math.min
 
@@ -25,30 +24,26 @@ fun <T> history(maxSize: Int = 10, initialValue: List<T> = emptyList()) =
 class History<T>(private val maxSize: Int, private val history: MutableStateFlow<Pair<T?, List<T>>>) :
     Flow<List<T>> by history.map({ it.second }) {
 
-    init {
-        history.onEach {
-            console.log("### history:")
-            console.log("###    -> ${it.first}")
-            console.log("###    -> ${it.second}")
-            console.log("")
-        }.launchIn(MainScope())
-    }
-
+    /*
+     * This method is only used when the history is synced to a store.
+     * It keeps track of the current value of the store in the first part of the pair and the history in the second.
+     * When a new update occurs it is store in first and the old first is pushed to the history.
+     */
     private fun enqueue(entry: T) {
-        val oldHistory = history.value
-        val newHistory = if (oldHistory.first != null) {
-            oldHistory.copy(entry, push(oldHistory.first!!, oldHistory.second))
-        } else {
-            oldHistory.copy(first = entry)
+        history.value.let { old ->
+            history.value = if (old.first != null) {
+                old.copy(entry, push(old.first!!, old.second))
+            } else {
+                old.copy(first = entry)
+            }
         }
-        history.value = newHistory
     }
 
     private fun push(entry: T, oldList: List<T>): List<T> =
         if (oldList.isEmpty() || entry != oldList.first()) {
             buildList {
                 add(entry)
-                if (isNotEmpty()) {
+                if (oldList.isNotEmpty()) {
                     addAll(oldList.subList(0, min(maxSize - 1, oldList.size)))
                 }
             }
@@ -60,13 +55,8 @@ class History<T>(private val maxSize: Int, private val history: MutableStateFlow
      * @param entry value to add
      */
     fun add(entry: T) {
-        console.log("ADD ENTRY")
-        try {
-            val oldHistory = history.value
-            val newHistory = oldHistory.copy(second = push(entry, oldHistory.second))
-            history.value = newHistory
-        } catch (t: Throwable) {
-            console.error("ERRRROOOORRRR: ${t.message}", t)
+        history.value.also { old ->
+            history.value = old.copy(second = push(entry, old.second))
         }
     }
 
@@ -83,14 +73,9 @@ class History<T>(private val maxSize: Int, private val history: MutableStateFlow
      * and removes it from the history.
      * Throws [IndexOutOfBoundsException] if called on an empty history.
      */
-    fun back(): T {
-        val result = history.value.second.first()
-        val old = history.value.first
-        console.log("++++ result $result")
-        val newHistory = history.value.second.drop(1)
-        console.log("++++ new history $newHistory")
-        history.value = null to newHistory
-        return result
+    fun back(): T = history.value.let { old ->
+        history.value = (null to old.second.drop(1))
+        old.second.first()
     }
 
     /**
