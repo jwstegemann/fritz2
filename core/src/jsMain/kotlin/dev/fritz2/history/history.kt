@@ -63,7 +63,8 @@ class History<T>(private val maxSize: Int, private val history: MutableStateFlow
     /**
      * gets the last value that has been added to the history.
      * Leaves history unmodified.
-     * Throws [IndexOutOfBoundsException] if called on an empty history.
+     *
+     * @throws [IndexOutOfBoundsException] if called on an empty history.
      */
     fun last(): T = history.value.second.first()
 
@@ -71,7 +72,8 @@ class History<T>(private val maxSize: Int, private val history: MutableStateFlow
     /**
      * gets the last value that has been added
      * and removes it from the history.
-     * Throws [IndexOutOfBoundsException] if called on an empty history.
+     *
+     * @throws [IndexOutOfBoundsException] if called on an empty history.
      */
     fun back(): T = history.value.let { old ->
         history.value = (null to old.second.drop(1))
@@ -92,6 +94,8 @@ class History<T>(private val maxSize: Int, private val history: MutableStateFlow
 
     /**
      * syncs this history to a given store, so that each update is automatically stored in history.
+     *
+     * @param upstream [Store] to sync with
      */
     fun sync(upstream: Store<T>): History<T> = this.apply {
         upstream.data.onEach { enqueue(it) }.catch { t ->
