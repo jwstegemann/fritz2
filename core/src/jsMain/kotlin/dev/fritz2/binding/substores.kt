@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.map
  * A [Store] that is derived from your [RootStore] or another [SubStore] that represents a part of the data-model of it's parent.
  * Use the .sub-factory-method on the parent [Store] to create it.
  */
-class SubStore<R, P, T>(
+open class SubStore<R, P, T>(
     private val parent: Store<P>,
     private val lens: Lens<P, T>,
-    val root: RootStore<R>,
+    val root: Store<R>,
     internal val rootLens: Lens<R, T>
 ) : Store<T>, CoroutineScope by MainScope() {
 
@@ -55,6 +55,6 @@ class SubStore<R, P, T>(
      *
      * @param lens a [Lens] describing which part to create the [SubStore] for
      */
-    fun <X> sub(lens: Lens<T, X>): SubStore<R, T, X> =
+    open fun <X> sub(lens: Lens<T, X>): SubStore<R, T, X> =
         SubStore(this, lens, root, rootLens + lens)
 }

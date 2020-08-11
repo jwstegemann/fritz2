@@ -107,19 +107,22 @@ class LocalStorageQuery<T, I, Q>(
     }, query)
 
     /**
-     * updates all given entities to [localStorage]
+     * updates given entities to [localStorage]
      *
      * @param entities entity list to save
      * @return entity list after update
      */
-    override suspend fun updateAll(entities: List<T>): List<T> {
-        entities.forEach { entity ->
-            window.localStorage.setItem(
-                "${prefix}.${resource.serializeId(resource.idProvider(entity))}",
-                resource.serializer.write(entity)
-            )
-        }
-        return entities
+    override suspend fun updateMany(entities: List<T>, entitiesToUpdate: List<T>): List<T> {
+        val updated: Map<I, T> = (entities + entitiesToUpdate).groupBy{ resource.idProvider(it) }
+            .filterValues { it.size > 1 }.mapValues { (id, entities) ->
+                val entity = entities.last()
+                window.localStorage.setItem(
+                    "${prefix}.${resource.serializeId(id)}",
+                    resource.serializer.write(entity)
+                )
+                entity
+            }
+        return entities.map { updated[resource.idProvider(it)] ?: it }
     }
 
     /**

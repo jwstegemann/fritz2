@@ -7,7 +7,6 @@ import dev.fritz2.repositories.EntityRepository
 import dev.fritz2.repositories.QueryRepository
 import dev.fritz2.repositories.Resource
 import org.w3c.fetch.Response
-import kotlin.browser.localStorage
 
 
 /**
@@ -136,17 +135,26 @@ class RestQuery<T, I, Q>(
         )
 
     /**
-     * updates all entities in the current list (sending a post-request to the base-url of the [resource])
+     * updates given entities in the [entities] list
+     * (sending a put-request to the base-url of the [resource] for every updated entity)
      *
      * @param entities current list
+     * @param entitiesToUpdate entities which getting updated
      * @return list after update
      */
-    override suspend fun updateAll(entities: List<T>): List<T> =
-        resource.serializer.readList(
-            remote
-                .contentType(contentType).body(resource.serializer.writeList(entities)).post()
-                .getBody()
-        )
+    override suspend fun updateMany(entities: List<T>, entitiesToUpdate: List<T>): List<T> {
+        println("toUpdate: $entitiesToUpdate \n")
+        val request = remote.contentType(contentType)
+        val updated: Map<I, T> = (entities + entitiesToUpdate).groupBy { resource.idProvider(it) }
+            .filterValues { it.size > 1 }.mapValues { (id, entities) ->
+                val entity = entities.last()
+                println("entity toUpdate: $entity \n")
+                request.body(resource.serializer.write(entity))
+                    .put(resource.serializeId(id))
+                entity
+            }
+        return entities.map { updated[resource.idProvider(it)] ?: it }
+    }
 
     /**
      * sends a post-(for add) or a put-(for update) request to [resource].url/{id}

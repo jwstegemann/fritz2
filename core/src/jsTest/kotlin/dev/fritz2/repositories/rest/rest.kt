@@ -6,6 +6,7 @@ import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.Resource
+import dev.fritz2.repositories.localstorage.LocalStorageTests
 import dev.fritz2.serialization.Serializer
 import dev.fritz2.test.getFreshCrudcrudEndpoint
 import dev.fritz2.test.initDocument
@@ -203,13 +204,14 @@ class RestTests {
     }
 
     @Test
-    fun testQueryServiceAddOrUpdate() = runTest {
+    fun testQueryServiceUpdate() = runTest {
         initDocument()
 
         val testList = listOf(
             RestPerson("A", 0, ""),
             RestPerson("B", 1, ""),
-            RestPerson("C", 0, "")
+            RestPerson("C", 0, ""),
+            RestPerson("D", 0, "")
         )
 
         val personResource = Resource(
@@ -227,25 +229,19 @@ class RestTests {
 
             private val rest = restQuery<RestPerson, String, Unit>(personResource, "", remote = crudcrudRemote)
 
-            val addOrUpdate = handle<RestPerson> { entities, person -> rest.addOrUpdate(entities, person) }
+            val addOrUpdate = handle<RestPerson> { entities, entity -> rest.addOrUpdate(entities, entity) }
 
-            val change = handle { entities -> rest.addOrUpdate(entities, entities.first { it.name == "B" }.copy(name = "B2")) }
+            val updateMany = handle { rest.updateMany(it, it.map { it.copy(name = "${it.name}2") }) }
+            val updateSingle = handle { rest.addOrUpdate(it, it[2].copy(name = "C3")) }
         }
 
         val listId = "list-${uniqueId()}"
-        val firstPersonId = "first-${uniqueId()}"
 
         render {
             div {
                 ul(id = listId) {
                     queryStore.each(RestPerson::_id).render { p ->
                         li { p.data.map { it.name }.bind() }
-                    }.bind()
-                }
-                span(id = firstPersonId) {
-                    queryStore.data.map {
-                        if (it.isEmpty()) ""
-                        else it.first()._id
                     }.bind()
                 }
             }
@@ -257,10 +253,20 @@ class RestTests {
         }
 
         delay(400)
+        val listAfterAdd = document.getElementById(listId)?.textContent
+        assertEquals(testList.joinToString("") { it.name }, listAfterAdd, "wrong list after adding")
 
-        action() handledBy queryStore.change
-        delay(500)
+        val updatedTestList = testList.map { it.copy(name = "${it.name}2") }
+        action() handledBy queryStore.updateMany
+        delay(400)
+
+        val listAfterUpdateMany = document.getElementById(listId)?.textContent
+        assertEquals(updatedTestList.joinToString("") { it.name }, listAfterUpdateMany, "wrong list after update many")
+
+
+        action() handledBy queryStore.updateSingle
+        delay(250)
         val listAfterUpdate = document.getElementById(listId)?.textContent
-        assertEquals(testList.map { if(it.name == "B") it.copy(name = "B2") else it }.joinToString("") { it.name }, listAfterUpdate, "wrong list after update")
+        assertEquals(updatedTestList.map { if(it.name == "C2") it.copy(name = "C3") else it }.joinToString("") { it.name }, listAfterUpdate, "wrong list after update")
     }
 }
