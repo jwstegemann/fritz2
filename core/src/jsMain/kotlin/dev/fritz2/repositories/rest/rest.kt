@@ -7,6 +7,7 @@ import dev.fritz2.repositories.EntityRepository
 import dev.fritz2.repositories.QueryRepository
 import dev.fritz2.repositories.Resource
 import org.w3c.fetch.Response
+import kotlin.browser.localStorage
 
 
 /**
@@ -146,6 +147,28 @@ class RestQuery<T, I, Q>(
                 .contentType(contentType).body(resource.serializer.writeList(entities)).post()
                 .getBody()
         )
+
+    /**
+     * sends a post-(for add) or a put-(for update) request to [resource].url/{id}
+     * with the serialized entity in it's body. The emptyEntity of [resource] is used to
+     * determine if it should saved or updated
+     *
+     * @param entities entity list
+     * @param entity entity to add or update
+     * @return list after add or update
+     */
+    override suspend fun addOrUpdate(entities: List<T>, entity: T): List<T> =
+        remote.contentType(contentType)
+            .body(resource.serializer.write(entity)).run {
+                if (resource.idProvider(entity) == resource.idProvider(resource.emptyEntity)) {
+                    entities + resource.serializer.read(
+                        accept(contentType).post().getBody()
+                    )
+                } else {
+                    put(resource.serializeId(resource.idProvider(entity)))
+                    entities.map { if(resource.idProvider(it) == resource.idProvider(entity)) entity else it }
+                }
+            }
 
     private suspend fun deleteById(id: I) {
         remote.delete(resource.serializeId(id))

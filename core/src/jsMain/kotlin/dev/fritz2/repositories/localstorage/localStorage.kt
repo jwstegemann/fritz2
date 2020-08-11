@@ -122,6 +122,28 @@ class LocalStorageQuery<T, I, Q>(
         return entities
     }
 
+    /**
+     * adds or updates a given entity to [localStorage]
+     *
+     * @param entities entity list
+     * @param entity entity to add or update
+     * @return list after add or update
+     */
+    override suspend fun addOrUpdate(entities: List<T>, entity: T): List<T> {
+        window.localStorage.setItem(
+            "${prefix}.${resource.serializeId(resource.idProvider(entity))}",
+            resource.serializer.write(entity)
+        )
+        var inList = false
+        val updatedList = entities.map {
+            if(resource.idProvider(it) == resource.idProvider(entity)) {
+                inList = true
+                entity
+            } else it
+        }
+        return if(inList) updatedList else entities + entity
+    }
+
     private fun deleteById(id: I) {
         window.localStorage.removeItem("${prefix}.${resource.serializeId(id)}")
     }
