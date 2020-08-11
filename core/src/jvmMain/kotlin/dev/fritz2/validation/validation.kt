@@ -11,6 +11,8 @@ package dev.fritz2.validation
  */
 actual abstract class Validator<D, M : ValidationMessage, T> actual constructor() {
 
+    lateinit var msgs: List<M>
+
     actual abstract fun validate(data: D, metadata: T): List<M>
 
     /**
@@ -20,5 +22,6 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      * @param metadata extra information for the validation process
      * @return a [Boolean] for using in if conditions
      */
-    fun isValid(data: D, metadata: T): Boolean = validate(data, metadata).none(ValidationMessage::isError)
+    fun isValid(data: D, metadata: T): Boolean = validate(data, metadata)
+        .also { msgs = it }.none(ValidationMessage::isError)
 }
