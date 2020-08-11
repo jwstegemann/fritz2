@@ -72,6 +72,15 @@ interface QueryRepository<T, I, Q> {
     suspend fun updateAll(entities: List<T>): List<T>
 
     /**
+     * adds or updates an entity in the list
+     *
+     * @param entities entity list
+     * @param entity entity to save
+     * @return list after add or update
+     */
+    suspend fun addOrUpdate(entities: List<T>, entity: T): List<T>
+
+    /**
      * delete one entity
      *
      * @param entities entity list

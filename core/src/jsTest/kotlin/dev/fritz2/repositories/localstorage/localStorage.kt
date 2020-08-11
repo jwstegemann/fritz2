@@ -6,6 +6,7 @@ import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.Resource
+import dev.fritz2.repositories.rest.RestTests
 import dev.fritz2.serialization.Serializer
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -16,6 +17,7 @@ import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class LocalStorageTests {
     data class LocalPerson(val name: String, val age: Int, val _id: String = uniqueId())
@@ -53,6 +55,10 @@ class LocalStorageTests {
         )
 
         val entityStore = object : RootStore<LocalPerson>(personResource.emptyEntity) {
+            override fun errorHandler(exception: Throwable, oldValue: LocalPerson): LocalPerson {
+                fail(exception.message)
+            }
+
             private val localStorage = localStorageEntity(personResource, "")
 
             val load = handle { entity, id: String -> localStorage.load(entity, id) }
@@ -129,18 +135,16 @@ class LocalStorageTests {
             LocalPerson("", 0)
         )
 
-        val entityStore = object : RootStore<LocalPerson>(personResource.emptyEntity) {
-            private val localStorage = localStorageEntity(personResource, "")
-
-            val saveOrUpdate = handleAndOffer<Unit> { entity -> localStorage.saveOrUpdate(entity) }
-        }
-
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
+            override fun errorHandler(exception: Throwable, oldValue: List<LocalPerson>): List<LocalPerson> {
+                fail(exception.message)
+            }
+
             private val localStorage =
                 localStorageQuery(personResource, "") { entities, _: Unit ->
                     entities.sortedBy(LocalPerson::name)
                 }
-
+            val addOrUpdate = handle<LocalPerson> { entities, person -> localStorage.addOrUpdate(entities, person) }
             val query = handle<Unit> { entities, query -> localStorage.query(entities, query) }
             val delete = handle<String> { entites, id -> localStorage.delete(entites, id) }
         }
@@ -151,8 +155,8 @@ class LocalStorageTests {
         render {
             div {
                 ul(id = listId) {
-                    queryStore.data.each(LocalPerson::_id).render { p ->
-                        li { +p.name }
+                    queryStore.each(LocalPerson::_id).render { p ->
+                        li { p.data.map { it.name }.bind() }
                     }.bind()
                 }
                 span(id = firstPersonId) {
@@ -164,20 +168,17 @@ class LocalStorageTests {
             }
         }.mount(targetId)
 
-        entityStore.data.watch()
-
         delay(100)
 
         testList.forEach {
-            action(it) handledBy entityStore.update
+            action(it) handledBy queryStore.addOrUpdate
             delay(1)
-            action() handledBy entityStore.saveOrUpdate
         }
 
-        delay(400)
+        delay(250)
 
         action() handledBy queryStore.query
-        delay(400)
+        delay(250)
 
         val listAfterQuery = document.getElementById(listId)?.textContent
         assertEquals(testList.joinToString("") { it.name }, listAfterQuery, "wrong list after query")
@@ -186,7 +187,7 @@ class LocalStorageTests {
         assertTrue(firstId != null && firstId.length > 10)
 
         action(firstId) handledBy queryStore.delete
-        delay(200)
+        delay(250)
 
         val listAfterDelete = document.getElementById(listId)?.textContent
         assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDelete, "wrong list after query")
@@ -194,10 +195,14 @@ class LocalStorageTests {
         action(emptyList<LocalPerson>()) handledBy queryStore.update
         delay(1)
         action() handledBy queryStore.query
-        delay(400)
+        delay(250)
 
         val listAfterDeleteAndQuery = document.getElementById(listId)?.textContent
         assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDeleteAndQuery, "wrong list after query")
 
+        action(testList[2].copy(name = "C2")) handledBy queryStore.addOrUpdate
+        delay(400)
+        val listAfterUpdate = document.getElementById(listId)?.textContent
+        assertEquals(testList.drop(1).map { if(it.name == "C") it.copy(name = "C2") else it }.joinToString("") { it.name }, listAfterUpdate, "wrong list after update")
     }
 }
