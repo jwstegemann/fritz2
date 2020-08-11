@@ -260,14 +260,13 @@ class RestTests {
 
         val updatedTestList = testList.map { it.copy(name = "${it.name}2") }
         action() handledBy queryStore.updateMany
-        delay(400)
+        delay(500)
 
         val listAfterUpdateMany = document.getElementById(listId)?.textContent
         assertEquals(updatedTestList.joinToString("") { it.name }, listAfterUpdateMany, "wrong list after update many")
 
-
         action() handledBy queryStore.updateSingle
-        delay(400)
+        delay(500)
         val listAfterUpdate = document.getElementById(listId)?.textContent
         assertEquals(updatedTestList.map { if(it.name == "C2") it.copy(name = "C3") else it }.joinToString("") { it.name }, listAfterUpdate, "wrong list after update")
     }
