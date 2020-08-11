@@ -231,8 +231,8 @@ class RestTests {
 
             val addOrUpdate = handle<RestPerson> { entities, entity -> rest.addOrUpdate(entities, entity) }
 
-            val updateMany = handle { rest.updateMany(it, it.map { it.copy(name = "${it.name}2") }) }
-            val updateSingle = handle { rest.addOrUpdate(it, it[2].copy(name = "C3")) }
+            val updateMany = handle { entities -> rest.updateMany(entities, entities.map { it.copy(name = "${it.name}2") }) }
+            val updateSingle = handle { entities -> rest.addOrUpdate(entities, entities[2].copy(name = "C3")) }
         }
 
         val listId = "list-${uniqueId()}"
