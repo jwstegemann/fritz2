@@ -143,12 +143,10 @@ class RestQuery<T, I, Q>(
      * @return list after update
      */
     override suspend fun updateMany(entities: List<T>, entitiesToUpdate: List<T>): List<T> {
-        println("toUpdate: $entitiesToUpdate \n")
         val request = remote.contentType(contentType)
         val updated: Map<I, T> = (entities + entitiesToUpdate).groupBy { resource.idProvider(it) }
             .filterValues { it.size > 1 }.mapValues { (id, entities) ->
                 val entity = entities.last()
-                println("entity toUpdate: $entity \n")
                 request.body(resource.serializer.write(entity))
                     .put(resource.serializeId(id))
                 entity
