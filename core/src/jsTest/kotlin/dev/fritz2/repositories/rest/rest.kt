@@ -247,8 +247,6 @@ class RestTests {
             }
         }.mount(targetId)
 
-        delay(200)
-
         testList.forEach {
             action(it) handledBy queryStore.addOrUpdate
             delay(1)
