@@ -55,6 +55,6 @@ class SubStore<R, P, T>(
      *
      * @param lens a [Lens] describing which part to create the [SubStore] for
      */
-    open fun <X> sub(lens: Lens<T, X>): SubStore<R, T, X> =
+    fun <X> sub(lens: Lens<T, X>): SubStore<R, T, X> =
         SubStore(this, lens, root, rootLens + lens)
 }
