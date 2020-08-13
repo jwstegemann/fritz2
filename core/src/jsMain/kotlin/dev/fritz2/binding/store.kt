@@ -20,21 +20,14 @@ typealias Update<T> = suspend (T) -> T
 typealias ErrorHandler<T> = (Throwable, T) -> T
 
 /**
- * represents the default transaction
- */
-const val defaultTransaction = "..."
-
-/**
  * type of elements in the update-queue of a [Store]
  *
  * @property update function describing the step from the old value to the new
  * @property errorHandler describes the handling of errors during an update and the new value in case of error
- * @property transaction transaction done by this update
  */
 class QueuedUpdate<T>(
     inline val update: Update<T>,
-    inline val errorHandler: (Throwable, T) -> T,
-    val transaction: String
+    inline val errorHandler: (Throwable, T) -> T
 )
 
 
@@ -61,10 +54,9 @@ interface Store<T> : CoroutineScope {
      */
     fun <A> handle(
         errorHandler: ErrorHandler<T> = ::errorHandler,
-        transaction: String = defaultTransaction,
         execute: suspend (T, A) -> T
     ) = SimpleHandler<A> {
-        it.onEach { enqueue(QueuedUpdate({ t -> execute(t, it) }, errorHandler, transaction)) }
+        it.onEach { enqueue(QueuedUpdate({ t -> execute(t, it) }, errorHandler)) }
             .launchIn(this)
     }
 
@@ -75,10 +67,9 @@ interface Store<T> : CoroutineScope {
      */
     fun handle(
         errorHandler: ErrorHandler<T> = ::errorHandler,
-        transaction: String = defaultTransaction,
         execute: suspend (T) -> T
     ) = SimpleHandler<Unit> {
-        it.onEach { enqueue(QueuedUpdate({ t -> execute(t) }, errorHandler, transaction)) }
+        it.onEach { enqueue(QueuedUpdate({ t -> execute(t) }, errorHandler)) }
             .launchIn(this)
     }
 
@@ -91,12 +82,11 @@ interface Store<T> : CoroutineScope {
      */
     fun <A, E> handleAndOffer(
         errorHandler: ErrorHandler<T> = ::errorHandler,
-        transaction: String = defaultTransaction,
         bufferSize: Int = 1,
         execute: suspend SendChannel<E>.(T, A) -> T
     ) =
         OfferingHandler<A, E>(bufferSize) { inFlow, outChannel ->
-            inFlow.onEach { enqueue(QueuedUpdate({ t -> outChannel.execute(t, it) }, errorHandler, transaction)) }
+            inFlow.onEach { enqueue(QueuedUpdate({ t -> outChannel.execute(t, it) }, errorHandler)) }
                 .launchIn(this)
         }
 
@@ -108,12 +98,11 @@ interface Store<T> : CoroutineScope {
      */
     fun <E> handleAndOffer(
         errorHandler: ErrorHandler<T> = ::errorHandler,
-        transaction: String = defaultTransaction,
         bufferSize: Int = 1,
         execute: suspend SendChannel<E>.(T) -> T
     ) =
         OfferingHandler<Unit, E>(bufferSize) { inFlow, outChannel ->
-            inFlow.onEach { enqueue(QueuedUpdate({ t -> outChannel.execute(t) }, errorHandler, transaction)) }
+            inFlow.onEach { enqueue(QueuedUpdate({ t -> outChannel.execute(t) }, errorHandler)) }
                 .launchIn(this)
         }
 
