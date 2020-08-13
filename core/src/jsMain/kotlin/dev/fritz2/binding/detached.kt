@@ -49,8 +49,7 @@ class DetachedStore<T, P>(private val initialData: T, private val parent: Store<
      * Since a [SubStore] is just a view on a [RootStore] holding the real value, it forwards the [Update] to it, using it's [Lens] to transform it.
      */
     override suspend fun enqueue(update: QueuedUpdate<T>) {
-        val t = update.update(state.value)
-        state.value = t
+        state.value = update.update(state.value)
     }
 
     /**
