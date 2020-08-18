@@ -11,12 +11,12 @@
 [![Slack](https://img.shields.io/badge/slack-channel-green?logo=slack)](https://fritz2workspace.slack.com/)
 [![Discord](https://img.shields.io/discord/723492739819241513?color=7389D8&label=Chat&logo=discord&logoColor=ffffff)](https://discord.gg/UwQRH93)
 
-fritz2 is a proof of concept for an ***extremely lightweight***, well-performing, independent library for client-side ui in ***Kotlin*** heavily depending on coroutines and flows.
+fritz2 is an ***extremely lightweight***, well-performing, independent library to build reactive web apps in ***Kotlin*** heavily depending on coroutines and flows.
 
 fritz2 includes an intuitive way to build and render html-elements using a type-safe dsl. You can easily create lightweight **reactive** html-components that are bound to an underlying model and **automatically** change whenever the model data changes:
 
 ```kotlin
-val model = RootStore<String>("init value")
+val model = storeOf("init value")
 
 render {
     div("some-css-class") {
@@ -25,7 +25,7 @@ render {
             changes.values() handledBy model.update 
         }
         p {
-            text("model value = ")
+            +"model value = "
             store.data.bind()
         }
     }
@@ -38,7 +38,7 @@ No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additio
 
 ![State management in fritz2](https://www.fritz2.dev/static/fritz2_state.001.png)
 
-Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data classes only once and use it on your client and server (i.e. in a [SpringBoot](https://spring.io/guides/gs/rest-service/)-Backend). This is also true for your model-validation-code, which can quickly become far more complex than your data model.
+Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data classes only once and use it on your client and server (i.e. in a [SpringBoot](https://github.com/jamowei/fritz2-spring-todomvc)- or [Ktor](https://github.com/jamowei/fritz2-ktor-todomvc)-Backend). This is also true for your model-validation-code, which can quickly become far more complex than your data model.
 
 Expect a flat learning curve - we chose Kotlin for its focus on writing clean and intuitive code, which makes working with fritz2 easy to learn.
 fritz2 itself depends on only a handful of [concepts](https://docs.fritz2.dev) you have to master. The [core API](https://api.fritz2.dev/fritz2/) consists of about a dozen key objects and types offering only essential methods und functions. 
@@ -58,8 +58,9 @@ fritz2 itself depends on only a handful of [concepts](https://docs.fritz2.dev) y
 - model-validation and message handling 
 - routing (for SPAs, hash-based)
 - [examples](https://www.fritz2.dev/examples.html) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
-- server-communication (Rest APIs, etc.)
-- [documentation](https://docs.fritz2.dev) (work in progress)
+- backend-repositories (Rest APIs, LocalStorage, etc.)
+- history / undo
+- [documentation](https://docs.fritz2.dev)
 
 ## Overall Goals
 
@@ -70,3 +71,7 @@ fritz2 itself depends on only a handful of [concepts](https://docs.fritz2.dev) y
 ## Inspiration
 
 fritz2 is hugely inspired by the great [Binding.scala](https://github.com/ThoughtWorksInc/Binding.scala). Later we discovered that a lot of those concepts are described independently in [Meiosis](https://meiosis.js.org/).
+
+## Leave us a star...
+
+If you like the idea of a lightweight pure Kotlin implementation for building reactive web apps, please give us a star on github. Thank you.
