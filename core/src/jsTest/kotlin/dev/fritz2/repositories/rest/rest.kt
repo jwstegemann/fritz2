@@ -2,6 +2,7 @@ package dev.fritz2.repositories.rest
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.action
+import dev.fritz2.binding.each
 import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
@@ -124,149 +125,155 @@ class RestTests {
     }
 
 
-//    @Test
-//    fun testQueryService() = runTest {
-//        initDocument()
-//
-//        val testList = listOf(
-//            RestPerson("A", 0, ""),
-//            RestPerson("B", 1, ""),
-//            RestPerson("C", 0, "")
-//        )
-//
-//        val personResource = Resource(
-//            RestPerson::id,
-//            PersonSerializer,
-//            RestPerson("", 0, "")
-//        )
-//
-//        val crudcrudRemote = localServer().append("/person")
-//
-//        val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
-//            override fun errorHandler(exception: Throwable, oldValue: List<RestPerson>): List<RestPerson> {
-//                fail(exception.message)
-//            }
-//
-//            private val rest = restQuery<RestPerson, String, Unit>(personResource, "", remote = crudcrudRemote)
-//
-//            val addOrUpdate = handle<RestPerson> { entities, person -> rest.addOrUpdate(entities, person) }
-//            val query = handle<Unit> { entities, query -> rest.query(entities, query) }
-//            val delete = handle<String> { entities, id -> rest.delete(entities, id) }
-//        }
-//
-//        val listId = "list-${uniqueId()}"
-//        val firstPersonId = "first-${uniqueId()}"
-//
-//        render {
-//            div {
-//                ul(id = listId) {
-//                    queryStore.each(RestPerson::id).render { p ->
-//                        li { p.data.map { it.name }.bind() }
-//                    }.bind()
-//                }
-//                span(id = firstPersonId) {
-//                    queryStore.data.map {
-//                        if (it.isEmpty()) ""
-//                        else it.first().id
-//                    }.bind()
-//                }
-//            }
-//        }.mount(targetId)
-//
-//        testList.forEach {
-//            action(it) handledBy queryStore.addOrUpdate
-//            delay(1)
-//        }
-//
-//        delay(400)
-//
-//        action() handledBy queryStore.query
-//        delay(500)
-//
-//        val listAfterQuery = document.getElementById(listId)?.textContent
-//        assertEquals(testList.joinToString("") { it.name }, listAfterQuery, "wrong list after query")
-//
-//        val firstId = document.getElementById(firstPersonId)?.textContent
-//        assertTrue(firstId != null && firstId.length > 10)
-//
-//        action(firstId) handledBy queryStore.delete
-//        delay(200)
-//
-//        val listAfterDelete = document.getElementById(listId)?.textContent
-//        assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDelete, "wrong list after delete")
-//
-//        action(emptyList<RestPerson>()) handledBy queryStore.update
-//        delay(1)
-//        action() handledBy queryStore.query
-//        delay(400)
-//
-//        val listAfterDeleteAndQuery = document.getElementById(listId)?.textContent
-//        assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDeleteAndQuery, "wrong list after query")
-//    }
-//
-//    @Test
-//    fun testQueryServiceUpdate() = runTest {
-//        initDocument()
-//
-//        val testList = listOf(
-//            RestPerson("A", 0, ""),
-//            RestPerson("B", 1, ""),
-//            RestPerson("C", 0, ""),
-//            RestPerson("D", 0, "")
-//        )
-//
-//        val personResource = Resource(
-//            RestPerson::id,
-//            PersonSerializer,
-//            RestPerson("", 0, "")
-//        )
-//
-//        val crudcrudRemote = localServer().append("/person")
-//
-//        val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
-//            override fun errorHandler(exception: Throwable, oldValue: List<RestPerson>): List<RestPerson> {
-//                fail(exception.message)
-//            }
-//
-//            private val rest = restQuery<RestPerson, String, Unit>(personResource, "", remote = crudcrudRemote)
-//
-//            val addOrUpdate = handle<RestPerson> { entities, entity -> rest.addOrUpdate(entities, entity) }
-//
-//            val updateMany = handle { entities -> rest.updateMany(entities, entities.map { it.copy(name = "${it.name}2") }) }
-//            val updateSingle = handle { entities -> rest.addOrUpdate(entities, entities[2].copy(name = "C3")) }
-//        }
-//
-//        val listId = "list-${uniqueId()}"
-//
-//        render {
-//            div {
-//                ul(id = listId) {
-//                    queryStore.each(RestPerson::id).render { p ->
-//                        li { p.data.map { it.name }.bind() }
-//                    }.bind()
-//                }
-//            }
-//        }.mount(targetId)
-//
-//        testList.forEach {
-//            action(it) handledBy queryStore.addOrUpdate
-//            delay(1)
-//        }
-//
-//        delay(500)
-//        val listAfterAdd = document.getElementById(listId)?.textContent
-//        assertEquals(testList.joinToString("") { it.name }, listAfterAdd, "wrong list after adding")
-//
-//        val updatedTestList = testList.map { it.copy(name = "${it.name}2") }
-//        action() handledBy queryStore.updateMany
-//        delay(800)
-//
-//        val listAfterUpdateMany = document.getElementById(listId)?.textContent
-//        assertEquals(updatedTestList.joinToString("") { it.name }, listAfterUpdateMany, "wrong list after update many")
-//
-//        action() handledBy queryStore.updateSingle
-//        delay(500)
-//        val listAfterUpdate = document.getElementById(listId)?.textContent
-//        assertEquals(updatedTestList.map { if(it.name == "C2") it.copy(name = "C3") else it }.joinToString("") { it.name }, listAfterUpdate, "wrong list after update")
-//    }
+    @Test
+    fun testQueryService() = runTest {
+        initDocument()
+
+        val testList = listOf(
+            RestPerson("A", 0),
+            RestPerson("B", 1),
+            RestPerson("C", 0)
+        )
+
+        val personResource = Resource(
+            RestPerson::id,
+            PersonSerializer,
+            RestPerson("", 0)
+        )
+
+        val remote = localServer("/persons")
+
+        val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
+            override fun errorHandler(exception: Throwable, oldValue: List<RestPerson>): List<RestPerson> {
+                fail(exception.message)
+            }
+
+            private val rest = restQuery<RestPerson, Int, Unit>(personResource, "", remote = remote)
+
+            val addOrUpdate = handle<RestPerson> { entities, person -> rest.addOrUpdate(entities, person) }
+            val query = handle<Unit> { entities, query -> rest.query(entities, query) }
+            val delete = handle<Int> { entities, id -> rest.delete(entities, id) }
+        }
+
+        val listId = "list-${uniqueId()}"
+        val firstPersonId = "first-${uniqueId()}"
+
+        render {
+            div {
+                ul(id = listId) {
+                    queryStore.each(RestPerson::id).render { p ->
+                        li { p.data.map { it.name }.bind() }
+                    }.bind()
+                }
+                span(id = firstPersonId) {
+                    queryStore.data.map {
+                        if (it.isEmpty()) ""
+                        else it.first().id.toString()
+                    }.bind()
+                }
+            }
+        }.mount(targetId)
+
+        testList.forEach {
+            action(it) handledBy queryStore.addOrUpdate
+            delay(1)
+        }
+
+        delay(400)
+
+        action() handledBy queryStore.query
+        delay(500)
+
+        val listAfterQuery = document.getElementById(listId)?.textContent
+        assertEquals(testList.joinToString("") { it.name }, listAfterQuery, "wrong list after query")
+
+        val firstId = document.getElementById(firstPersonId)?.textContent?.toInt()
+        assertTrue(firstId != null && firstId > 0)
+
+        action(firstId) handledBy queryStore.delete
+        delay(200)
+
+        val listAfterDelete = document.getElementById(listId)?.textContent
+        assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDelete, "wrong list after delete")
+
+        action(emptyList<RestPerson>()) handledBy queryStore.update
+        delay(1)
+        action() handledBy queryStore.query
+        delay(400)
+
+        val listAfterDeleteAndQuery = document.getElementById(listId)?.textContent
+        assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDeleteAndQuery, "wrong list after query")
+    }
+
+    @Test
+    fun testQueryServiceUpdate() = runTest {
+        initDocument()
+
+        val testList = listOf(
+            RestPerson("A", 0),
+            RestPerson("B", 1),
+            RestPerson("C", 0),
+            RestPerson("D", 0)
+        )
+
+        val personResource = Resource(
+            RestPerson::id,
+            PersonSerializer,
+            RestPerson("", 0)
+        )
+
+        val remote = localServer("/persons")
+
+        val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
+            override fun errorHandler(exception: Throwable, oldValue: List<RestPerson>): List<RestPerson> {
+                fail(exception.message)
+            }
+
+            private val rest = restQuery<RestPerson, Int, Unit>(personResource, "", remote = remote)
+
+            val addOrUpdate = handle<RestPerson> { entities, entity ->
+                rest.addOrUpdate(entities, entity)
+            }
+            val updateMany = handle { entities ->
+                rest.updateMany(entities, entities.map { it.copy(name = "${it.name}2") })
+            }
+            val updateSingle = handle { entities ->
+                rest.addOrUpdate(entities, entities[2].copy(name = "C3"))
+            }
+        }
+
+        val listId = "list-${uniqueId()}"
+
+        render {
+            div {
+                ul(id = listId) {
+                    queryStore.each(RestPerson::id).render { p ->
+                        li { p.data.map { it.name }.bind() }
+                    }.bind()
+                }
+            }
+        }.mount(targetId)
+
+        testList.forEach {
+            action(it) handledBy queryStore.addOrUpdate
+            delay(1)
+        }
+
+        delay(500)
+        val listAfterAdd = document.getElementById(listId)?.textContent
+        assertEquals(testList.joinToString("") { it.name }, listAfterAdd, "wrong list after adding")
+
+        val updatedTestList = testList.map { it.copy(name = "${it.name}2") }
+        action() handledBy queryStore.updateMany
+        delay(800)
+
+        val listAfterUpdateMany = document.getElementById(listId)?.textContent
+        assertEquals(updatedTestList.joinToString("") { it.name }, listAfterUpdateMany, "wrong list after update many")
+
+        action() handledBy queryStore.updateSingle
+        delay(500)
+        val listAfterUpdate = document.getElementById(listId)?.textContent
+        assertEquals(updatedTestList.map { if (it.name == "C2") it.copy(name = "C3") else it }
+            .joinToString("") { it.name }, listAfterUpdate, "wrong list after update")
+    }
 }

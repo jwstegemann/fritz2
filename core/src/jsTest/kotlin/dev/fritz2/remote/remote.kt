@@ -3,7 +3,10 @@ package dev.fritz2.remote
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.localServer
 import dev.fritz2.test.runTest
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * See [Httpbin](https://httpbin.org/) for testing endpoints
@@ -89,34 +92,30 @@ class RemoteTests {
         assertTrue(body.contains(Regex("""Cache-Control.+no-cache""")), "Cache-Control header not found")
     }
 
-    /**
-     * See [crudcrud.com](https://crudcrud.com).
-     */
     @Test
-    @Ignore
     fun testCRUDMethods() = runTest {
-        val users = localServer("/persons")
-        val names = mutableListOf<String>()
-        val ids = mutableListOf<String>()
-        for (i in 1..3) {
-            val name = "name-${uniqueId()}"
-            names.add(name)
+        val posts = localServer("/posts")
+        val texts = mutableListOf<String>()
+        val ids = mutableListOf<Int>()
+        for (i in 1..5) {
+            val text = uniqueId()
+            texts.add(text)
             val saved =
-                users.body("""{"name": "$name", "age": ${i * 10}""").contentType("application/json").post().getBody()
-            val id = JSON.parse<dynamic>(saved)._id
-            if(id != undefined) ids.add(id as String)
-            assertTrue(saved.contains(name), "saved entity not like posted")
+                posts.body("""{"text": "$text"""").contentType("application/json").post().getBody()
+            val id = JSON.parse<dynamic>(saved).id
+            if (id != undefined) ids.add(id as Int)
+            assertTrue(saved.contains(text), "saved entity not like posted")
         }
-        val load = users.acceptJson().get().getBody()
-        for(name in names) {
-            assertTrue(load.contains(name), "posted entity is not in list")
+        val load = posts.acceptJson().get().getBody()
+        for (text in texts) {
+            assertTrue(load.contains(text), "posted entity is not in list")
         }
         for (id in ids) {
-            users.delete(id)
+            posts.delete(id.toString())
         }
-        val empty = users.acceptJson().get().getBody()
-        for(name in names) {
-            assertFalse(empty.contains(name), "deleted entity is in list")
+        val empty = posts.acceptJson().get().getBody()
+        for (text in texts) {
+            assertFalse(empty.contains(text), "deleted entity is in list")
         }
     }
 
