@@ -1,12 +1,9 @@
 package dev.fritz2.remote
 
 import dev.fritz2.identification.uniqueId
-import dev.fritz2.test.getFreshCrudcrudEndpoint
+import dev.fritz2.test.localServer
 import dev.fritz2.test.runTest
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 /**
  * See [Httpbin](https://httpbin.org/) for testing endpoints
@@ -96,14 +93,16 @@ class RemoteTests {
      * See [crudcrud.com](https://crudcrud.com).
      */
     @Test
+    @Ignore
     fun testCRUDMethods() = runTest {
-        val users = getFreshCrudcrudEndpoint().append("/users")
+        val users = localServer("/persons")
         val names = mutableListOf<String>()
         val ids = mutableListOf<String>()
         for (i in 1..3) {
             val name = "name-${uniqueId()}"
             names.add(name)
-            val saved = users.body("""{"num": $i, "name": "$name"}""").contentType("application/json").post().getBody()
+            val saved =
+                users.body("""{"name": "$name", "age": ${i * 10}""").contentType("application/json").post().getBody()
             val id = JSON.parse<dynamic>(saved)._id
             if(id != undefined) ids.add(id as String)
             assertTrue(saved.contains(name), "saved entity not like posted")
