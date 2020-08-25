@@ -101,7 +101,7 @@ class RemoteTests {
             val text = uniqueId()
             texts.add(text)
             val saved =
-                posts.body("""{"text": "$text"""").contentType("application/json").post().getBody()
+                posts.body("""{"text": "$text"}""").contentType("application/json").post().getBody()
             val id = JSON.parse<dynamic>(saved).id
             if (id != undefined) ids.add(id as Int)
             assertTrue(saved.contains(text), "saved entity not like posted")
