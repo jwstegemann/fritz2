@@ -14,14 +14,6 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 12
-    - name: Set up Nodejs 12
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12'
-    - name: Set up Test Server
-      run: npm install -g json-server
-    - name: Running Test Server
-      run: json-server --watch core/json-server/db.json &
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build and run Unit Tests
