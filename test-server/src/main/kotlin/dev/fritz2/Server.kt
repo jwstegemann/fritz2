@@ -5,12 +5,12 @@ import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.jackson.*
-import io.ktor.network.sockets.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.netty.*
 import io.ktor.util.*
+import org.slf4j.event.Level
 import java.util.*
 
 fun main(args: Array<String>): Unit = EngineMain.main(args)
@@ -47,6 +47,10 @@ object CRUDRepo {
 
 @KtorExperimentalAPI
 fun Application.main() {
+
+    install(CallLogging) {
+        level = Level.INFO
+    }
 
     install(ContentNegotiation) {
         jackson()
