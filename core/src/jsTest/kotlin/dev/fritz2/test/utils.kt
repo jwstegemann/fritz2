@@ -67,5 +67,12 @@ class TestMultiMountPoint<T>(
     }
 }
 
-suspend fun localServer(endpoint: String): Request =
-    remote("http://localhost:3000").append(endpoint)
+typealias Endpoint = String
+const val test: Endpoint = "test"
+const val rest: Endpoint = "rest"
+
+suspend fun testServer(endpoint: Endpoint): Request {
+    val r = remote("http://localhost:3000/$endpoint")
+    if(endpoint == rest) r.get("clear")
+    return r
+}

@@ -1,8 +1,10 @@
 package dev.fritz2.remote
 
-import dev.fritz2.identification.uniqueId
-import dev.fritz2.test.localServer
+import dev.fritz2.test.rest
+import dev.fritz2.test.testServer
 import dev.fritz2.test.runTest
+import dev.fritz2.test.test
+import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
@@ -13,14 +15,16 @@ import kotlin.test.assertTrue
  */
 class RemoteTests {
 
-    private val remote = remote("https://httpbin.org")
-    private val codes = listOf<Short>(401, 500)
+    private val codes = listOf<Short>(400, 401, 403, 404, 429, 500, 501, 503)
 
 
     @Test
     fun testHTTPMethods() = runTest {
+        val remote = testServer(test)
         remote.get("get")
         remote.delete("delete")
+        remote.head("head")
+        remote.options("options")
         remote.body("").patch("patch")
         remote.body("").post("post")
         remote.body("").put("put")
@@ -29,18 +33,20 @@ class RemoteTests {
 
     @Test
     fun testBasicAuth() = runTest {
-        val user = "test-user"
-        val password = "awl12@d+aw23"
-        remote.basicAuth(user, password).get("basic-auth/$user/$password")
+        val remote = testServer(test)
+        val user = "test"
+        val password = "password"
+        remote.basicAuth(user, password).get("basicAuth")
 
         assertFailsWith(FetchException::class) {
-            remote.basicAuth(user, password).get("basic-auth/$user/${password}a")
+            remote.basicAuth(user, password+"w").get("basicAuth")
         }
     }
 
 
     @Test
-    fun testGetStatusCodes() = runTest {
+    fun testErrorStatusCodes() = runTest {
+        val remote = testServer(test)
         for(code in codes) {
             assertFailsWith(FetchException::class) {
                 remote.get("status/$code")
@@ -48,72 +54,41 @@ class RemoteTests {
         }
     }
 
-
     @Test
-    fun testDeleteStatusCodes() = runTest {
-        for(code in codes) {
-            assertFailsWith(FetchException::class) {
-                remote.delete("status/$code")
-            }
-        }
-    }
-
-    @Test
-    fun testPatchStatusCodes() = runTest {
-        for(code in codes) {
-            assertFailsWith(FetchException::class) {
-                remote.body("").patch("status/$code")
-            }
-        }
-    }
-
-    @Test
-    fun testPostStatusCodes() = runTest {
-        for(code in codes) {
-            assertFailsWith(FetchException::class) {
-                remote.body("").post("status/$code")
-            }
-        }
-    }
-
-    @Test
-    fun testPutStatusCodes() = runTest {
-        for(code in codes) {
-            assertFailsWith(FetchException::class) {
-                remote.body("").put("status/$code")
-            }
-        }
-    }
-
-    @Test
-    fun testGetHeaders() = runTest {
-        val body: String = remote.acceptJson().cacheControl("no-cache").get("headers").getBody()
+    fun testHeaders() = runTest {
+        val remote = testServer(test)
+        val body: String = remote
+            .acceptJson()
+            .cacheControl("no-cache")
+            .header("test", "this is a test")
+            .get("headers").getBody()
         assertTrue(body.contains(Regex("""Accept.+application/json""")), "Accept header not found")
         assertTrue(body.contains(Regex("""Cache-Control.+no-cache""")), "Cache-Control header not found")
+        assertTrue(body.contains(Regex("""Test.+this is a test""")), "Test header not found")
     }
 
     @Test
     fun testCRUDMethods() = runTest {
-        val posts = localServer("/posts")
+        val remote = testServer(rest)
         val texts = mutableListOf<String>()
-        val ids = mutableListOf<Int>()
-        for (i in 1..5) {
-            val text = uniqueId()
+        val ids = mutableListOf<String>()
+        for (i in 0..5) {
+            val text = Random.nextLong().toString()
             texts.add(text)
-            val saved =
-                posts.body("""{"text": "$text"}""").contentType("application/json").post().getBody()
-            val id = JSON.parse<dynamic>(saved).id
-            if (id != undefined) ids.add(id as Int)
+            val saved = remote.body("""{"text": "$text"}""")
+                .contentType("application/json").post().getBody()
+            val id = JSON.parse<dynamic>(saved).id as String
+            ids.add(id)
             assertTrue(saved.contains(text), "saved entity not like posted")
         }
-        val load = posts.acceptJson().get().getBody()
+        val load = remote.acceptJson().get().getBody()
         for (text in texts) {
             assertTrue(load.contains(text), "posted entity is not in list")
         }
         for (id in ids) {
-            posts.delete(id.toString())
+            remote.delete(id)
         }
-        val empty = posts.acceptJson().get().getBody()
+        val empty = remote.acceptJson().get().getBody()
         for (text in texts) {
             assertFalse(empty.contains(text), "deleted entity is in list")
         }

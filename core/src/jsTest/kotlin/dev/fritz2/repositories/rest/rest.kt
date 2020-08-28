@@ -10,10 +10,7 @@ import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.Resource
 import dev.fritz2.serialization.Serializer
-import dev.fritz2.test.initDocument
-import dev.fritz2.test.localServer
-import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
+import dev.fritz2.test.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlin.browser.document
@@ -23,12 +20,11 @@ import kotlin.test.assertTrue
 import kotlin.test.fail
 
 class RestTests {
-    data class RestPerson(val name: String, val age: Int, val id: Int = -1)
+    data class RestPerson(val name: String, val age: Int, val id: String = "")
 
     private val nameLens = buildLens("name", RestPerson::name) { p, v -> p.copy(name = v) }
     private val ageLens = buildLens("age", RestPerson::age) { p, v -> p.copy(age = v) }
     private val idLens = buildLens("id", RestPerson::id) { p, v -> p.copy(id = v) }
-
 
     object PersonSerializer : Serializer<RestPerson, String> {
         data class PersonWithoutId(val name: String, val age: Int)
@@ -38,13 +34,13 @@ class RestTests {
         override fun write(item: RestPerson): String = JSON.stringify(removeId(item))
         override fun read(msg: String): RestPerson {
             val obj = JSON.parse<dynamic>(msg)
-            return RestPerson(obj.name as String, obj.age as Int, obj.id as Int)
+            return RestPerson(obj.name as String, obj.age as Int, obj.id as String)
         }
 
         override fun writeList(items: List<RestPerson>): String = JSON.stringify(items.map { removeId(it) })
         override fun readList(msg: String): List<RestPerson> {
             val list = JSON.parse<Array<dynamic>>(msg)
-            return list.map { obj -> RestPerson(obj.name as String, obj.age as Int, obj.id as Int) }
+            return list.map { obj -> RestPerson(obj.name as String, obj.age as Int, obj.id as String) }
         }
     }
 
@@ -61,7 +57,7 @@ class RestTests {
             RestPerson("", 0)
         )
 
-        val remote = localServer("/persons")
+        val remote = testServer(rest)
 
         val entityStore = object : RootStore<RestPerson>(personResource.emptyEntity) {
             override fun errorHandler(exception: Throwable, oldValue: RestPerson): RestPerson {
@@ -70,7 +66,7 @@ class RestTests {
 
             private val rest = restEntity(personResource, "", remote = remote)
 
-            val load = handle { entity, id: Int -> rest.load(entity, id) }
+            val load = handle { entity, id: String -> rest.load(entity, id) }
             val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(entity) }
             val delete = handleAndOffer<Unit> { entity -> rest.delete(entity) }
         }
@@ -100,8 +96,8 @@ class RestTests {
         action() handledBy entityStore.saveOrUpdate
         delay(200)
 
-        val idAfterSave = document.getElementById(idId)?.textContent?.toInt()
-        assertTrue(idAfterSave ?: -1 > 0, "no id after save")
+        val idAfterSave = document.getElementById(idId)?.textContent
+        assertTrue(idAfterSave?.length ?: 0 > 10, "no id after save")
 
         action(data = changedAge) handledBy ageSubStore.update
         action() handledBy entityStore.saveOrUpdate
@@ -111,7 +107,7 @@ class RestTests {
         assertEquals(changedAge.toString(), ageAfterUpdate, "wrong age after update")
 
         action(data = 0) handledBy ageSubStore.update
-        action(idAfterSave ?: 0) handledBy entityStore.load
+        action(idAfterSave.orEmpty()) handledBy entityStore.load
         delay(200)
 
         val ageAfterLoad = document.getElementById(ageId)?.textContent
@@ -121,7 +117,7 @@ class RestTests {
         delay(200)
 
         val idAfterDelete = document.getElementById(idId)?.textContent
-        assertEquals(startPerson.id, idAfterDelete?.toInt(), "wrong id after delete")
+        assertEquals(startPerson.id, idAfterDelete, "wrong id after delete")
     }
 
 
@@ -141,18 +137,18 @@ class RestTests {
             RestPerson("", 0)
         )
 
-        val remote = localServer("/persons")
+        val remote = testServer(rest)
 
         val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
             override fun errorHandler(exception: Throwable, oldValue: List<RestPerson>): List<RestPerson> {
                 fail(exception.message)
             }
 
-            private val rest = restQuery<RestPerson, Int, Unit>(personResource, "", remote = remote)
+            private val rest = restQuery<RestPerson, String, Unit>(personResource, "", remote = remote)
 
             val addOrUpdate = handle<RestPerson> { entities, person -> rest.addOrUpdate(entities, person) }
             val query = handle<Unit> { entities, query -> rest.query(entities, query) }
-            val delete = handle<Int> { entities, id -> rest.delete(entities, id) }
+            val delete = handle<String> { entities, id -> rest.delete(entities, id) }
         }
 
         val listId = "list-${uniqueId()}"
@@ -187,8 +183,8 @@ class RestTests {
         val listAfterQuery = document.getElementById(listId)?.textContent
         assertEquals(testList.joinToString("") { it.name }, listAfterQuery, "wrong list after query")
 
-        val firstId = document.getElementById(firstPersonId)?.textContent?.toInt()
-        assertTrue(firstId != null && firstId > 0)
+        val firstId = document.getElementById(firstPersonId)?.textContent
+        assertTrue(firstId != null && firstId.length > 10)
 
         action(firstId) handledBy queryStore.delete
         delay(200)
@@ -222,14 +218,14 @@ class RestTests {
             RestPerson("", 0)
         )
 
-        val remote = localServer("/persons")
+        val remote = testServer(rest)
 
         val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
             override fun errorHandler(exception: Throwable, oldValue: List<RestPerson>): List<RestPerson> {
                 fail(exception.message)
             }
 
-            private val rest = restQuery<RestPerson, Int, Unit>(personResource, "", remote = remote)
+            private val rest = restQuery<RestPerson, String, Unit>(personResource, "", remote = remote)
 
             val addOrUpdate = handle<RestPerson> { entities, entity ->
                 rest.addOrUpdate(entities, entity)

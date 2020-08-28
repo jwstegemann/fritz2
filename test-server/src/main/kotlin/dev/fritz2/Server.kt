@@ -5,6 +5,7 @@ import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.jackson.*
+import io.ktor.network.sockets.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -16,7 +17,7 @@ fun main(args: Array<String>): Unit = EngineMain.main(args)
 
 typealias Json = Map<String, Any>
 
-object CRUD {
+object CRUDRepo {
     private val store: MutableMap<String, Json> = mutableMapOf()
 
     fun create(json: Json): Json {
@@ -38,6 +39,10 @@ object CRUD {
     fun delete(id: String) {
         store.remove(id)
     }
+
+    fun clear() {
+        store.clear()
+    }
 }
 
 @KtorExperimentalAPI
@@ -55,32 +60,69 @@ fun Application.main() {
     }
 
     routing {
+
+        get("/") {
+            call.respondText("Test Server is running...", contentType = ContentType.Text.Plain)
+        }
+
+        // RESTFul API
         route("/rest") {
             get {
-                call.respond(CRUD.read())
+                call.respond(CRUDRepo.read())
             }
             post {
-                call.respond(CRUD.create(call.receive()))
+                call.respond(CRUDRepo.create(call.receive()))
             }
             put("{id}") {
                 val id = call.parameters["id"] ?: throw MissingRequestParameterException("id")
-                call.respond(CRUD.update(id, call.receive()))
+                call.respond(CRUDRepo.update(id, call.receive()))
             }
             delete("{id}") {
                 val id = call.parameters["id"] ?: throw MissingRequestParameterException("id")
-                CRUD.delete(id)
+                CRUDRepo.delete(id)
+                call.response.status(HttpStatusCode.OK)
+            }
+            get("/clear") {
+                CRUDRepo.clear()
                 call.response.status(HttpStatusCode.OK)
             }
         }
 
-        get("/") {
-            call.respondText("Test Server running...", contentType = ContentType.Text.Plain)
-        }
-
-        authenticate("auth") {
-            get("/basicAuth") {
-                val principal = call.principal<UserIdPrincipal>()!!
-                call.respondText("Hello ${principal.name}")
+        // Remote Basics
+        route("test") {
+            get("/get") {
+                call.respondText("GET")
+            }
+            delete("/delete") {
+                call.respondText("DELETE")
+            }
+            patch("/patch") {
+                call.respondText("PATCH")
+            }
+            post("/post") {
+                call.respondText("POST")
+            }
+            put("/put") {
+                call.respondText("PUT")
+            }
+            head("/head") {
+                call.respondText("HEAD")
+            }
+            options("/options") {
+                call.respondText("OPTIONS")
+            }
+            get("/status/{code}") {
+                val code = call.parameters["code"] ?: throw MissingRequestParameterException("code")
+                call.respond(HttpStatusCode.fromValue(code.toInt()))
+            }
+            authenticate("auth") {
+                get("/basicAuth") {
+                    val principal = call.principal<UserIdPrincipal>()!!
+                    call.respondText("Hello ${principal.name}")
+                }
+            }
+            get("/headers") {
+                call.respond(call.request.headers.toMap())
             }
         }
     }
