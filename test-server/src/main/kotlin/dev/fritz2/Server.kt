@@ -63,6 +63,26 @@ fun Application.main() {
         }
     }
 
+    install(CORS) {
+        method(HttpMethod.Options)
+        method(HttpMethod.Get)
+        method(HttpMethod.Post)
+        method(HttpMethod.Put)
+        method(HttpMethod.Delete)
+        method(HttpMethod.Patch)
+        method(HttpMethod.Head)
+        header(HttpHeaders.Authorization)
+        header(HttpHeaders.ContentType)
+        header(HttpHeaders.Accept)
+        header(HttpHeaders.CacheControl)
+        header("test")
+        anyHost()
+        host("localhost")
+        allowXHttpMethodOverride()
+        allowCredentials = true
+        allowNonSimpleContentTypes = true
+    }
+
     routing {
 
         get("/") {

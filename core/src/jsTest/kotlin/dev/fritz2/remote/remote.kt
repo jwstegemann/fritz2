@@ -1,9 +1,9 @@
 package dev.fritz2.remote
 
 import dev.fritz2.test.rest
-import dev.fritz2.test.testServer
 import dev.fritz2.test.runTest
 import dev.fritz2.test.test
+import dev.fritz2.test.testServer
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -62,9 +62,9 @@ class RemoteTests {
             .cacheControl("no-cache")
             .header("test", "this is a test")
             .get("headers").getBody()
-        assertTrue(body.contains(Regex("""Accept.+application/json""")), "Accept header not found")
-        assertTrue(body.contains(Regex("""Cache-Control.+no-cache""")), "Cache-Control header not found")
-        assertTrue(body.contains(Regex("""Test.+this is a test""")), "Test header not found")
+        assertTrue(body.contains(Regex("""accept.+application/json""")), "Accept header not found")
+        assertTrue(body.contains(Regex("""cache-control.+no-cache""")), "Cache-Control header not found")
+        assertTrue(body.contains(Regex("""test.+this is a test""")), "Test header not found")
     }
 
     @Test

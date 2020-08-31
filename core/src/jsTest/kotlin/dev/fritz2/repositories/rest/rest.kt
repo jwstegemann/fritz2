@@ -81,7 +81,7 @@ class RestTests {
 
         render {
             div {
-                div(id = idId) { idSubStore.data.map { it.toString() }.bind() }
+                div(id = idId) { idSubStore.data.map { it }.bind() }
                 div(id = nameId) { nameSubStore.data.bind() }
                 div(id = ageId) { ageSubStore.data.map { it.toString() }.bind() }
             }
@@ -111,7 +111,7 @@ class RestTests {
         delay(200)
 
         val ageAfterLoad = document.getElementById(ageId)?.textContent
-        assertEquals("99", ageAfterLoad, "wrong age after load")
+        assertEquals(changedAge.toString(), ageAfterLoad, "wrong age after load")
 
         action() handledBy entityStore.delete
         delay(200)
@@ -164,7 +164,7 @@ class RestTests {
                 span(id = firstPersonId) {
                     queryStore.data.map {
                         if (it.isEmpty()) ""
-                        else it.first().id.toString()
+                        else it.first().id
                     }.bind()
                 }
             }
