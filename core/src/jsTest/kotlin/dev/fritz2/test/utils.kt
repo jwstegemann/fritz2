@@ -4,7 +4,6 @@ import dev.fritz2.binding.MultiMountPoint
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.SingleMountPoint
 import dev.fritz2.remote.Request
-import dev.fritz2.remote.getBody
 import dev.fritz2.remote.remote
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.GlobalScope
@@ -68,13 +67,12 @@ class TestMultiMountPoint<T>(
     }
 }
 
-suspend fun getFreshCrudcrudEndpoint(): Request {
-    val crudcrud = remote("https://crudcrud.com")
-    val regex = """href="/Dashboard/(.+)">""".toRegex()
-    val endpointId = regex.find(crudcrud.get().getBody())?.groupValues?.get(1)
-        ?: throw Exception("Could not get UniqueEndpointId for https://crudcrud.com/")
+typealias Endpoint = String
+const val test: Endpoint = "test"
+const val rest: Endpoint = "rest"
 
-    println("ENDPOINT: $endpointId \n")
-
-    return crudcrud.append("/api/$endpointId")
+suspend fun testServer(endpoint: Endpoint): Request {
+    val r = remote("http://localhost:3000/$endpoint")
+    if(endpoint == rest) r.get("clear")
+    return r
 }

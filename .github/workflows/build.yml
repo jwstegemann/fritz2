@@ -24,5 +24,11 @@ jobs:
       with:
         name: Test-Results
         path: core/build/reports/tests/allTests
+    - name: Archive server log
+      if: always()
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Server-Logs
+        path: test-server/build/server.log
     - name: Build with Gradle
       run: ./gradlew build

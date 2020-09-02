@@ -11,7 +11,6 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.dokka") version "0.10.1"
 }
 
 repositories {
@@ -32,4 +31,3 @@ subprojects {
         jcenter()
     }
 }
-

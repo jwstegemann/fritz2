@@ -1,6 +1,5 @@
 rootProject.name = "fritz2"
 
-include("core")
-include("lenses-annotation-processor")
+include("core", "lenses-annotation-processor", "test-server")
 
 enableFeaturePreview("GRADLE_METADATA")
