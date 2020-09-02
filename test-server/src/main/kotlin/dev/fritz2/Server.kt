@@ -18,12 +18,13 @@ fun main(args: Array<String>): Unit = EngineMain.main(args)
 typealias Json = Map<String, Any>
 
 object CRUDRepo {
+    private const val idKey = "_id"
     private val store: MutableMap<String, Json> = mutableMapOf()
 
     fun create(json: Json): Json {
         val id = UUID.randomUUID().toString()
         val new = json.toMutableMap()
-        new["id"] = id
+        new[idKey] = id
         store[id] = new
         return new
     }
@@ -31,8 +32,12 @@ object CRUDRepo {
     fun read() =
         store.values.toList()
 
+    fun read(id: String) = store[id]
+
     fun update(id: String, json: Json): Json {
-        store[id] = json
+        val updated = json.toMutableMap()
+        updated[idKey] = id
+        store[id] = updated
         return json
     }
 
@@ -42,6 +47,10 @@ object CRUDRepo {
 
     fun clear() {
         store.clear()
+    }
+
+    override fun toString(): String {
+        return store.toString()
     }
 }
 
@@ -92,14 +101,26 @@ fun Application.main() {
         // RESTFul API
         route("/rest") {
             get {
-                call.respond(CRUDRepo.read())
+                val body = CRUDRepo.read()
+                log.info("GET: $body")
+                call.respond(body)
+            }
+            get("{id}") {
+                val id = call.parameters["id"] ?: throw MissingRequestParameterException("id")
+                val json = CRUDRepo.read(id) ?: throw NotFoundException("item with id=$id not found")
+                log.info("GET: id=$id; json=$json")
+                call.respond(json)
             }
             post {
-                call.respond(CRUDRepo.create(call.receive()))
+                val body = call.receive<Json>()
+                log.info("POST: $body")
+                call.respond(CRUDRepo.create(body))
             }
             put("{id}") {
                 val id = call.parameters["id"] ?: throw MissingRequestParameterException("id")
-                call.respond(CRUDRepo.update(id, call.receive()))
+                val body = call.receive<Json>()
+                log.info("PUT: $id; $body")
+                call.respond(CRUDRepo.update(id, body))
             }
             delete("{id}") {
                 val id = call.parameters["id"] ?: throw MissingRequestParameterException("id")
@@ -131,9 +152,6 @@ fun Application.main() {
             }
             head("/head") {
                 call.respondText("HEAD")
-            }
-            options("/options") {
-                call.respondText("OPTIONS")
             }
             get("/status/{code}") {
                 val code = call.parameters["code"] ?: throw MissingRequestParameterException("code")

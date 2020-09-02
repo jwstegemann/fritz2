@@ -24,7 +24,6 @@ class RemoteTests {
         remote.get("get")
         remote.delete("delete")
         remote.head("head")
-        remote.options("options")
         remote.body("").patch("patch")
         remote.body("").post("post")
         remote.body("").put("put")
@@ -77,7 +76,7 @@ class RemoteTests {
             texts.add(text)
             val saved = remote.body("""{"text": "$text"}""")
                 .contentType("application/json").post().getBody()
-            val id = JSON.parse<dynamic>(saved).id as String
+            val id = JSON.parse<dynamic>(saved)._id as String
             ids.add(id)
             assertTrue(saved.contains(text), "saved entity not like posted")
         }
