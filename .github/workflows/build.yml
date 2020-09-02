@@ -29,6 +29,6 @@ jobs:
       uses: actions/upload-artifact@v1.0.0
       with:
         name: Server-Logs
-        path: core/build/server.log
+        path: test-server/build/server.log
     - name: Build with Gradle
       run: ./gradlew build
