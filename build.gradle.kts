@@ -24,7 +24,7 @@ allprojects {
 
 subprojects {
     group = "dev.fritz2"
-    version = "0.8-SNAPSHOT"
+    version = "0.7.1"
 
     repositories {
         mavenLocal()
