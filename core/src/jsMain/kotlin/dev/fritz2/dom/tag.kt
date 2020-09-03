@@ -2,11 +2,11 @@ package dev.fritz2.dom
 
 import dev.fritz2.binding.*
 import dev.fritz2.dom.html.HtmlElements
+import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
-import kotlin.browser.window
 
 /**
  * A marker to separate the layers of calls in the type-safe-builder pattern.

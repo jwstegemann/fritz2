@@ -2,10 +2,10 @@ package dev.fritz2.routing
 
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.Events
+import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.events.Event
-import kotlin.browser.window
 
 /**
  * Creates a new simple [String] based [Router]

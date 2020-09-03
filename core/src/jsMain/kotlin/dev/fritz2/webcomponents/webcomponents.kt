@@ -2,11 +2,11 @@ package dev.fritz2.webcomponents
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.flow.asSharedFlow
+import kotlinx.browser.window
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
-import kotlin.browser.window
 import kotlin.reflect.KClass
 
 @JsName("Function")

@@ -5,9 +5,9 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
+import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.*
-import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

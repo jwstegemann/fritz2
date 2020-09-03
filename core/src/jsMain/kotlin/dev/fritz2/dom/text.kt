@@ -1,12 +1,12 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.SingleMountPoint
+import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.Node
 import org.w3c.dom.Text
-import kotlin.browser.window
 
 
 /**

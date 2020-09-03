@@ -2,7 +2,7 @@ package dev.fritz2.remote
 
 import kotlinx.coroutines.await
 import org.w3c.fetch.*
-import kotlin.browser.window as browserWindow
+import kotlinx.browser.window as browserWindow
 
 
 /**
