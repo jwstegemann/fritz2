@@ -52,7 +52,12 @@ open class Request(
      * @param init an instance of [RequestInit] defining the attributes of the request
      */
     private suspend fun execute(subUrl: String, init: RequestInit): Response {
-        val url = "${baseUrl.trimEnd('/')}/${subUrl.trimStart('/')}"
+        val url = buildString {
+            append(baseUrl.trimEnd('/'))
+            if (subUrl.isNotEmpty()) {
+                append("/${subUrl.trimStart('/')}")
+            }
+        }
         val response = browserWindow.fetch(url, init).await()
         if (response.ok) return response
         else throw FetchException(response.status, response.getBody(), response)
