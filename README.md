@@ -60,6 +60,7 @@ fritz2 itself depends on only a handful of [concepts](https://docs.fritz2.dev) y
 - [examples](https://www.fritz2.dev/examples.html) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
 - backend-repositories (Rest APIs, LocalStorage, etc.)
 - history / undo
+- processing state ("spinning wheel")
 - [documentation](https://docs.fritz2.dev)
 
 ## Overall Goals
