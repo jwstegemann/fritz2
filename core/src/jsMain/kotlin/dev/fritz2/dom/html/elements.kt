@@ -68,12 +68,12 @@ open class Br(id: String? = null, baseClass: String? = null) : Tag<HTMLBRElement
  */
 open class Button(id: String? = null, baseClass: String? = null) : Tag<HTMLButtonElement>("button", id, baseClass),
     WithText<HTMLButtonElement> {
-    var autofocus: Flow<Boolean> by AttributeDelegate
-    var disabled: Flow<Boolean> by AttributeDelegate
+    var autofocus: Flow<Boolean> by BooleanAttributeDelegate
+    var disabled: Flow<Boolean> by BooleanAttributeDelegate
     var formAction: Flow<String> by AttributeDelegate
     var formEnctype: Flow<String> by AttributeDelegate
     var formMethod: Flow<String> by AttributeDelegate
-    var formNoValidate: Flow<Boolean> by AttributeDelegate
+    var formNoValidate: Flow<Boolean> by BooleanAttributeDelegate
     var formTarget: Flow<String> by AttributeDelegate
     var name: Flow<String> by AttributeDelegate
     var type: Flow<String> by AttributeDelegate
@@ -119,7 +119,7 @@ open class DataList(id: String? = null, baseClass: String? = null) : Tag<HTMLDat
  */
 open class Details(id: String? = null, baseClass: String? = null) : Tag<HTMLDetailsElement>("details", id, baseClass),
     WithText<HTMLDetailsElement> {
-    var open: Flow<Boolean> by AttributeDelegate
+    var open: Flow<Boolean> by BooleanAttributeDelegate
 }
 
 
@@ -128,7 +128,7 @@ open class Details(id: String? = null, baseClass: String? = null) : Tag<HTMLDeta
  */
 open class Dialog(id: String? = null, baseClass: String? = null) : Tag<HTMLDialogElement>("dialog", id, baseClass),
     WithText<HTMLDialogElement> {
-    var open: Flow<Boolean> by AttributeDelegate
+    var open: Flow<Boolean> by BooleanAttributeDelegate
     var returnValue: Flow<String> by AttributeDelegate
 }
 
@@ -157,7 +157,7 @@ open class Embed(id: String? = null, baseClass: String? = null) : Tag<HTMLEmbedE
  * Exposes the JavaScript [HTMLFieldSetElement](https://developer.mozilla.org/en/docs/Web/API/HTMLFieldSetElement) to Kotlin
  */
 open class FieldSet(id: String? = null, baseClass: String? = null) : Tag<HTMLFieldSetElement>("fieldSet", id, baseClass) {
-    var disabled: Flow<Boolean> by AttributeDelegate
+    var disabled: Flow<Boolean> by BooleanAttributeDelegate
     var name: Flow<String> by AttributeDelegate
 }
 
@@ -174,7 +174,7 @@ open class Form(id: String? = null, baseClass: String? = null) : Tag<HTMLFormEle
     var encoding: Flow<String> by AttributeDelegate
     var method: Flow<String> by AttributeDelegate
     var name: Flow<String> by AttributeDelegate
-    var noValidate: Flow<Boolean> by AttributeDelegate
+    var noValidate: Flow<Boolean> by BooleanAttributeDelegate
     var target: Flow<String> by AttributeDelegate
 }
 
@@ -200,8 +200,8 @@ open class IFrame(id: String? = null, baseClass: String? = null) : Tag<HTMLIFram
     var src: Flow<String> by AttributeDelegate
     var srcdoc: Flow<String> by AttributeDelegate
     var name: Flow<String> by AttributeDelegate
-    var allowFullscreen: Flow<Boolean> by AttributeDelegate
-    var allowUserMedia: Flow<Boolean> by AttributeDelegate
+    var allowFullscreen: Flow<Boolean> by BooleanAttributeDelegate
+    var allowUserMedia: Flow<Boolean> by BooleanAttributeDelegate
     var width: Flow<String> by AttributeDelegate
     var height: Flow<String> by AttributeDelegate
     var referrerPolicy: Flow<String> by AttributeDelegate
@@ -219,7 +219,7 @@ open class Img(id: String? = null, baseClass: String? = null) : Tag<HTMLImageEle
     var sizes: Flow<String> by AttributeDelegate
     var crossOrigin: Flow<String> by AttributeDelegate
     var useMap: Flow<String> by AttributeDelegate
-    var isMap: Flow<Boolean> by AttributeDelegate
+    var isMap: Flow<Boolean> by BooleanAttributeDelegate
     var width: Flow<Int> by AttributeDelegate
     var height: Flow<Int> by AttributeDelegate
     var referrerPolicy: Flow<String> by AttributeDelegate
@@ -233,29 +233,29 @@ open class Input(id: String? = null, baseClass: String? = null) : Tag<HTMLInputE
     var accept: Flow<String> by AttributeDelegate
     var alt: Flow<String> by AttributeDelegate
     var autocomplete: Flow<String> by AttributeDelegate
-    var autofocus: Flow<Boolean> by AttributeDelegate
-    var defaultChecked: Flow<Boolean> by AttributeDelegate
+    var autofocus: Flow<Boolean> by BooleanAttributeDelegate
+    var defaultChecked: Flow<Boolean> by BooleanAttributeDelegate
     var checked: Flow<Boolean> by CheckedAttributeDelegate
     var dirName: Flow<String> by AttributeDelegate
-    var disabled: Flow<Boolean> by AttributeDelegate
+    var disabled: Flow<Boolean> by BooleanAttributeDelegate
     var formAction: Flow<String> by AttributeDelegate
     var formEnctype: Flow<String> by AttributeDelegate
     var formMethod: Flow<String> by AttributeDelegate
-    var formNoValidate: Flow<Boolean> by AttributeDelegate
+    var formNoValidate: Flow<Boolean> by BooleanAttributeDelegate
     var formTarget: Flow<String> by AttributeDelegate
     var height: Flow<Int> by AttributeDelegate
-    var indeterminate: Flow<Boolean> by AttributeDelegate
+    var indeterminate: Flow<Boolean> by BooleanAttributeDelegate
     var inputMode: Flow<String> by AttributeDelegate
     var max: Flow<String> by AttributeDelegate
     var maxLength: Flow<Int> by AttributeDelegate
     var min: Flow<String> by AttributeDelegate
     var minLength: Flow<Int> by AttributeDelegate
-    var multiple: Flow<Boolean> by AttributeDelegate
+    var multiple: Flow<Boolean> by BooleanAttributeDelegate
     var name: Flow<String> by AttributeDelegate
     var pattern: Flow<String> by AttributeDelegate
     var placeholder: Flow<String> by AttributeDelegate
-    var readOnly: Flow<Boolean> by AttributeDelegate
-    var required: Flow<Boolean> by AttributeDelegate
+    var readOnly: Flow<Boolean> by BooleanAttributeDelegate
+    var required: Flow<Boolean> by BooleanAttributeDelegate
     var size: Flow<Int> by AttributeDelegate
     var src: Flow<String> by AttributeDelegate
     var step: Flow<String> by AttributeDelegate
@@ -310,12 +310,12 @@ open class Audio(id: String? = null, baseClass: String? = null) : Tag<HTMLAudioE
     var currentTime: Flow<Double> by AttributeDelegate
     var defaultPlaybackRate: Flow<Double> by AttributeDelegate
     var playbackRate: Flow<Double> by AttributeDelegate
-    var autoplay: Flow<Boolean> by AttributeDelegate
-    var loop: Flow<Boolean> by AttributeDelegate
-    var controls: Flow<Boolean> by AttributeDelegate
+    var autoplay: Flow<Boolean> by BooleanAttributeDelegate
+    var loop: Flow<Boolean> by BooleanAttributeDelegate
+    var controls: Flow<Boolean> by BooleanAttributeDelegate
     var volume: Flow<Double> by AttributeDelegate
-    var muted: Flow<Boolean> by AttributeDelegate
-    var defaultMuted: Flow<Boolean> by AttributeDelegate
+    var muted: Flow<Boolean> by BooleanAttributeDelegate
+    var defaultMuted: Flow<Boolean> by BooleanAttributeDelegate
 }
 
 
@@ -327,18 +327,18 @@ open class Video(id: String? = null, baseClass: String? = null) : Tag<HTMLVideoE
     var width: Flow<Int> by AttributeDelegate
     var height: Flow<Int> by AttributeDelegate
     var poster: Flow<String> by AttributeDelegate
-    var playsInline: Flow<Boolean> by AttributeDelegate
+    var playsInline: Flow<Boolean> by BooleanAttributeDelegate
     var src: Flow<String> by AttributeDelegate
     var preload: Flow<String> by AttributeDelegate
     var currentTime: Flow<Double> by AttributeDelegate
     var defaultPlaybackRate: Flow<Double> by AttributeDelegate
     var playbackRate: Flow<Double> by AttributeDelegate
-    var autoplay: Flow<Boolean> by AttributeDelegate
-    var loop: Flow<Boolean> by AttributeDelegate
-    var controls: Flow<Boolean> by AttributeDelegate
+    var autoplay: Flow<Boolean> by BooleanAttributeDelegate
+    var loop: Flow<Boolean> by BooleanAttributeDelegate
+    var controls: Flow<Boolean> by BooleanAttributeDelegate
     var volume: Flow<Double> by AttributeDelegate
-    var muted: Flow<Boolean> by AttributeDelegate
-    var defaultMuted: Flow<Boolean> by AttributeDelegate
+    var muted: Flow<Boolean> by BooleanAttributeDelegate
+    var defaultMuted: Flow<Boolean> by BooleanAttributeDelegate
 }
 
 
@@ -381,7 +381,7 @@ open class Del(id: String? = null, baseClass: String? = null) : Tag<HTMLModEleme
  */
 open class Ol(id: String? = null, baseClass: String? = null) : Tag<HTMLOListElement>("ol", id, baseClass),
     WithText<HTMLOListElement> {
-    var reversed: Flow<Boolean> by AttributeDelegate
+    var reversed: Flow<Boolean> by BooleanAttributeDelegate
     var start: Flow<Int> by AttributeDelegate
     var type: Flow<String> by AttributeDelegate
 }
@@ -394,7 +394,7 @@ open class Object(id: String? = null, baseClass: String? = null) : Tag<HTMLObjec
     WithText<HTMLObjectElement> {
     var data: Flow<String> by AttributeDelegate
     var type: Flow<String> by AttributeDelegate
-    var typeMustMatch: Flow<Boolean> by AttributeDelegate
+    var typeMustMatch: Flow<Boolean> by BooleanAttributeDelegate
     var name: Flow<String> by AttributeDelegate
     var useMap: Flow<String> by AttributeDelegate
     var width: Flow<String> by AttributeDelegate
@@ -407,7 +407,7 @@ open class Object(id: String? = null, baseClass: String? = null) : Tag<HTMLObjec
  */
 open class Optgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLOptGroupElement>("optgroup", id, baseClass),
     WithText<HTMLOptGroupElement> {
-    var disabled: Flow<Boolean> by AttributeDelegate
+    var disabled: Flow<Boolean> by BooleanAttributeDelegate
     var label: Flow<String> by AttributeDelegate
 }
 
@@ -417,10 +417,10 @@ open class Optgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLOpt
  */
 open class Option(id: String? = null, baseClass: String? = null) : Tag<HTMLOptionElement>("option", id, baseClass),
     WithText<HTMLOptionElement> {
-    var disabled: Flow<Boolean> by AttributeDelegate
+    var disabled: Flow<Boolean> by BooleanAttributeDelegate
     var label: Flow<String> by AttributeDelegate
-    var defaultSelected: Flow<Boolean> by AttributeDelegate
-    var selected: Flow<Boolean> by SelectedAttributeDelegate
+    var defaultSelected: Flow<Boolean> by BooleanAttributeDelegate
+    var selected: Flow<Boolean> by BooleanAttributeDelegate
     var value: Flow<String> by ValueAttributeDelegate
     var text: Flow<String> by AttributeDelegate
 }
@@ -494,8 +494,8 @@ open class Script(id: String? = null, baseClass: String? = null) : Tag<HTMLScrip
     var src: Flow<String> by AttributeDelegate
     var type: Flow<String> by AttributeDelegate
     var charset: Flow<String> by AttributeDelegate
-    var async: Flow<Boolean> by AttributeDelegate
-    var defer: Flow<Boolean> by AttributeDelegate
+    var async: Flow<Boolean> by BooleanAttributeDelegate
+    var defer: Flow<Boolean> by BooleanAttributeDelegate
     var text: Flow<String> by AttributeDelegate
     var nonce: Flow<String> by AttributeDelegate
     var event: Flow<String> by AttributeDelegate
@@ -508,11 +508,11 @@ open class Script(id: String? = null, baseClass: String? = null) : Tag<HTMLScrip
  */
 open class Select(id: String? = null, baseClass: String? = null) : Tag<HTMLSelectElement>("select", id, baseClass) {
     var autocomplete: Flow<String> by AttributeDelegate
-    var autofocus: Flow<Boolean> by AttributeDelegate
-    var disabled: Flow<Boolean> by AttributeDelegate
-    var multiple: Flow<Boolean> by AttributeDelegate
+    var autofocus: Flow<Boolean> by BooleanAttributeDelegate
+    var disabled: Flow<Boolean> by BooleanAttributeDelegate
+    var multiple: Flow<Boolean> by BooleanAttributeDelegate
     var name: Flow<String> by AttributeDelegate
-    var required: Flow<Boolean> by AttributeDelegate
+    var required: Flow<Boolean> by BooleanAttributeDelegate
     var size: Flow<Int> by AttributeDelegate
     var length: Flow<Int> by AttributeDelegate
     var selectedIndex: Flow<Int> by AttributeDelegate
@@ -615,17 +615,17 @@ open class TBody(id: String? = null, baseClass: String? = null) : Tag<HTMLTableS
 open class TextArea(id: String? = null, baseClass: String? = null) : Tag<HTMLTextAreaElement>("textarea", id, baseClass),
     WithText<HTMLTextAreaElement> {
     var autocomplete: Flow<String> by AttributeDelegate
-    var autofocus: Flow<Boolean> by AttributeDelegate
+    var autofocus: Flow<Boolean> by BooleanAttributeDelegate
     var cols: Flow<Int> by AttributeDelegate
     var dirName: Flow<String> by AttributeDelegate
-    var disabled: Flow<Boolean> by AttributeDelegate
+    var disabled: Flow<Boolean> by BooleanAttributeDelegate
     var inputMode: Flow<String> by AttributeDelegate
     var maxLength: Flow<Int> by AttributeDelegate
     var minLength: Flow<Int> by AttributeDelegate
     var name: Flow<String> by AttributeDelegate
     var placeholder: Flow<String> by AttributeDelegate
-    var readOnly: Flow<Boolean> by AttributeDelegate
-    var required: Flow<Boolean> by AttributeDelegate
+    var readOnly: Flow<Boolean> by BooleanAttributeDelegate
+    var required: Flow<Boolean> by BooleanAttributeDelegate
     var rows: Flow<Int> by AttributeDelegate
     var wrap: Flow<String> by AttributeDelegate
     var defaultValue: Flow<String> by AttributeDelegate
@@ -651,7 +651,7 @@ open class Track(id: String? = null, baseClass: String? = null) : Tag<HTMLTrackE
     var src: Flow<String> by AttributeDelegate
     var srclang: Flow<String> by AttributeDelegate
     var label: Flow<String> by AttributeDelegate
-    var default: Flow<Boolean> by AttributeDelegate
+    var default: Flow<Boolean> by BooleanAttributeDelegate
 }
 
 

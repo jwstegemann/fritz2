@@ -16,6 +16,15 @@ internal object AttributeDelegate {
     }
 }
 
+internal object BooleanAttributeDelegate {
+    operator fun <X : Element> getValue(thisRef: Tag<X>, property: KProperty<*>): Flow<Boolean> =
+        throw NotImplementedError()
+
+    operator fun <X : Element> setValue(thisRef: Tag<X>, property: KProperty<*>, values: Flow<Boolean>) {
+        BooleanAttributeMountPoint(property.name, values, thisRef.domNode, "")
+    }
+}
+
 /**
  * [ValueAttributeDelegate] is a special attribute delegate for
  * the html value attribute.
