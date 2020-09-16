@@ -46,7 +46,7 @@ fritz2 itself depends on only a handful of [concepts](https://docs.fritz2.dev) y
 ## How to try it?
 
 * Take a look at our hosted [examples](https://www.fritz2.dev/examples.html)
-* Or set up a new project on your own, following our [documentation](https://docs.fritz2.dev/Project.html)
+* Or set up a new project on your own, following our [documentation](https://docs.fritz2.dev/ProjectSetup.html)
 
 
 ## What we've got so far
