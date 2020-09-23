@@ -3,9 +3,9 @@ package dev.fritz2.repositories.localstorage
 import dev.fritz2.repositories.EntityRepository
 import dev.fritz2.repositories.QueryRepository
 import dev.fritz2.repositories.Resource
+import kotlinx.browser.localStorage
+import kotlinx.browser.window
 import org.w3c.dom.get
-import kotlin.browser.localStorage
-import kotlin.browser.window
 
 /**
  * provides crud-functions for [localStorage] to deal with a single entity

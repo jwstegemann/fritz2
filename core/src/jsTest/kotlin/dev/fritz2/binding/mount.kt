@@ -6,6 +6,7 @@ import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.checkFlow
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
+import kotlinx.browser.document
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.asPromise
 import kotlinx.coroutines.delay
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.promise
 import org.w3c.dom.HTMLDivElement
-import kotlin.browser.document
 import kotlin.js.Promise
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.dokka") version "0.10.1"
 }
 
-val coroutines_version = "1.3.7"
+val coroutines_version = "1.3.9"
 
 kotlin {
     jvm()

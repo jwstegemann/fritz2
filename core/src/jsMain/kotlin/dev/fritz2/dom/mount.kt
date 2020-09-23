@@ -3,10 +3,10 @@ package dev.fritz2.dom
 import dev.fritz2.binding.MultiMountPoint
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.SingleMountPoint
+import kotlinx.browser.document
+import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.*
-import kotlin.browser.document
-import kotlin.browser.window
 
 /**
  * A [SingleMountPoint] to mount the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.

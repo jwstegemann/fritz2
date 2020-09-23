@@ -5,12 +5,12 @@ import dev.fritz2.binding.Patch
 import dev.fritz2.binding.SingleMountPoint
 import dev.fritz2.remote.Request
 import dev.fritz2.remote.remote
+import kotlinx.browser.document
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.promise
-import kotlin.browser.document
 
 fun <T> runTest(block: suspend () -> T): dynamic = GlobalScope.promise {
     delay(50)

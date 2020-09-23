@@ -9,11 +9,11 @@ import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
+import kotlinx.browser.document
+import kotlinx.browser.window
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
-import kotlin.browser.document
-import kotlin.browser.window
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

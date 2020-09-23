@@ -7,11 +7,11 @@ import dev.fritz2.lenses.buildLens
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
+import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
-import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail

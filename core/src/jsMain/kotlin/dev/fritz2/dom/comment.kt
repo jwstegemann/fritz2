@@ -1,8 +1,8 @@
 package dev.fritz2.dom
 
+import kotlinx.browser.window
 import org.w3c.dom.Comment
 import org.w3c.dom.Node
-import kotlin.browser.window
 
 /**
  * Interface providing functionality to handle comments
