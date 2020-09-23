@@ -3,8 +3,10 @@ package dev.fritz2.test
 import dev.fritz2.binding.MultiMountPoint
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.SingleMountPoint
+import dev.fritz2.remote.Connection
 import dev.fritz2.remote.Request
 import dev.fritz2.remote.remote
+import dev.fritz2.remote.websocket
 import kotlinx.browser.document
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.GlobalScope
@@ -68,11 +70,15 @@ class TestMultiMountPoint<T>(
 }
 
 typealias Endpoint = String
+
 const val test: Endpoint = "test"
 const val rest: Endpoint = "rest"
 
-suspend fun testServer(endpoint: Endpoint): Request {
+suspend fun testHttpServer(endpoint: Endpoint): Request {
     val r = remote("http://localhost:3000/$endpoint")
-    if(endpoint == rest) r.get("clear")
+    if (endpoint == rest) r.get("clear")
     return r
 }
+
+suspend fun testWebsocketServer(endpoint: Endpoint): Connection =
+    websocket("ws://localhost:3000/$endpoint")

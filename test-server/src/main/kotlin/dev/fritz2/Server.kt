@@ -4,12 +4,15 @@ import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.http.cio.websocket.*
 import io.ktor.jackson.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.netty.*
 import io.ktor.util.*
+import io.ktor.websocket.*
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import org.slf4j.event.Level
 import java.util.*
 
@@ -92,6 +95,8 @@ fun Application.main() {
         allowNonSimpleContentTypes = true
     }
 
+    install(WebSockets)
+
     routing {
 
         get("/") {
@@ -165,6 +170,32 @@ fun Application.main() {
             }
             get("/headers") {
                 call.respond(call.request.headers.toMap())
+            }
+        }
+
+        webSocket("/simple") {
+            for (frame in incoming) {
+                try {
+                    when (frame) {
+                        is Frame.Text -> {
+                            val text = frame.readText()
+                            log.info("[ws-simple] receiving: $text")
+                            outgoing.send(Frame.Text("Client said: $text"))
+                            if (text.equals("bye", ignoreCase = true)) {
+                                close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
+                            }
+                        }
+                        is Frame.Close -> {
+                            log.info("[ws-simple] closing: ${closeReason.await()}")
+                        }
+                        else -> log.info(frame.frameType.name)
+                    }
+                } catch (e: ClosedReceiveChannelException) {
+                    log.error("[ws-simple] close: ${closeReason.await()}")
+                } catch (e: Throwable) {
+                    log.error("[ws-simple] error: ${closeReason.await()}")
+                    e.printStackTrace()
+                }
             }
         }
     }
