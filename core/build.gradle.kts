@@ -1,8 +1,10 @@
 plugins {
     kotlin("multiplatform")
     id("maven-publish")
-    id("org.jetbrains.dokka")
+    id("org.jetbrains.dokka") version "0.10.1"
 }
+
+val coroutines_version = "1.3.9"
 
 kotlin {
     jvm()
@@ -15,9 +17,11 @@ kotlin {
                 useChromeHeadless()
 //                usePhantomJS()
             }
+            //running test-server in background
+            dependsOn(":test-server:start")
         }
-// just to have a place to copy it from...
-/*            runTask {
+        // just to have a place to copy it from...
+        /* runTask {
                 devServer = DevServer(
                     port = 9000,
                     contentBase = listOf("$projectDir/src/jsMain/resources")
@@ -27,7 +31,7 @@ kotlin {
                     )
                 )
             }
- */
+        */
     }
     sourceSets {
         all {
@@ -56,13 +60,13 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.9")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
             }
         }
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.9")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
             }
         }
     }
@@ -88,7 +92,6 @@ publishing {
         }
     }
 }
-
 
 tasks {
     val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {

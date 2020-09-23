@@ -2,9 +2,8 @@
 **/gradlew
 **/gradlew.bat
 **/.gradle/
+*.iml
 **/.idea/
 **/gradle/
 **/src/generated/
-GeneratedOptics.kt
-/api/dokka/fritz2/
 /core/api/dokka/core/
