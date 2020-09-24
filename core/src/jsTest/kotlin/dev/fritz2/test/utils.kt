@@ -3,10 +3,8 @@ package dev.fritz2.test
 import dev.fritz2.binding.MultiMountPoint
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.SingleMountPoint
-import dev.fritz2.remote.Connection
 import dev.fritz2.remote.Request
 import dev.fritz2.remote.remote
-import dev.fritz2.remote.websocket
 import kotlinx.browser.document
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.GlobalScope
@@ -79,6 +77,3 @@ suspend fun testHttpServer(endpoint: Endpoint): Request {
     if (endpoint == rest) r.get("clear")
     return r
 }
-
-suspend fun testWebsocketServer(endpoint: Endpoint): Connection =
-    websocket("ws://localhost:3000/$endpoint")
