@@ -4,6 +4,9 @@ import dev.fritz2.flow.asSharedFlow
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.elementLens
+import dev.fritz2.remote.Socket
+import dev.fritz2.remote.body
+import dev.fritz2.repositories.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -91,4 +94,23 @@ class DetachedStore<T, P>(private val initialData: T, private val parent: Store<
         detached.drop(1) handledBy handler
     }
 
+    override fun <I> syncWith(socket: Socket, resource: Resource<T, I>) {
+        val session = socket.connect()
+        session.messages.body.map {
+            resource.serializer.read(it)
+        } handledBy update
+        detached.drop(1).onEach {
+            session.send(resource.serializer.write(it))
+        }.watch()
+    }
+}
+
+fun <T, P, I> DetachedStore<List<T>, P>.syncWith(socket: Socket, resource: Resource<T, I>) {
+    val session = socket.connect()
+    session.messages.body.map {
+        resource.serializer.readList(it)
+    } handledBy update
+    detached.drop(1).onEach {
+        session.send(resource.serializer.writeList(it))
+    }.watch()
 }
