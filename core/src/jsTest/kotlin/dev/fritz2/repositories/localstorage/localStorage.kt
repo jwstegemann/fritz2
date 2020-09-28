@@ -65,7 +65,7 @@ class LocalStorageTests {
 
             val load = handle { entity, id: String -> localStorage.load(entity, id) }
 
-            val saveOrUpdate = handle { entity -> localStorage.saveOrUpdate(entity) }
+            val saveOrUpdate = handle { entity -> localStorage.addOrUpdate(entity) }
             val delete = handle { entity -> localStorage.delete(entity) }
         }
 

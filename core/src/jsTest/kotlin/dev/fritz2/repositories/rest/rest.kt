@@ -67,7 +67,7 @@ class RestTests {
             private val rest = restEntity(personResource, "", remote = remote)
 
             val load = handle { entity, id: String -> rest.load(entity, id) }
-            val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.saveOrUpdate(entity) }
+            val saveOrUpdate = handleAndOffer<Unit> { entity -> rest.addOrUpdate(entity) }
             val delete = handleAndOffer<Unit> { entity -> rest.delete(entity) }
         }
 

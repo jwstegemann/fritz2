@@ -4,7 +4,7 @@ import dev.fritz2.binding.MultiMountPoint
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.SingleMountPoint
 import dev.fritz2.remote.Request
-import dev.fritz2.remote.remote
+import dev.fritz2.remote.http
 import kotlinx.browser.document
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.GlobalScope
@@ -73,7 +73,7 @@ const val test: Endpoint = "test"
 const val rest: Endpoint = "rest"
 
 suspend fun testHttpServer(endpoint: Endpoint): Request {
-    val r = remote("http://localhost:3000/$endpoint")
+    val r = http("http://localhost:3000/$endpoint")
     if (endpoint == rest) r.get("clear")
     return r
 }
