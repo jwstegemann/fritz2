@@ -173,7 +173,7 @@ fun Application.main() {
             }
         }
 
-        webSocket("/simple") {
+        webSocket("/text") {
             for (frame in incoming) {
                 try {
                     when (frame) {
@@ -184,6 +184,28 @@ fun Application.main() {
                             if (text.equals("bye", ignoreCase = true)) {
                                 close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
                             }
+                        }
+                        is Frame.Close -> {
+                            log.info("[ws-simple] closing: ${closeReason.await()}")
+                        }
+                        else -> log.info(frame.frameType.name)
+                    }
+                } catch (e: ClosedReceiveChannelException) {
+                    log.error("[ws-simple] close: ${closeReason.await()}")
+                } catch (e: Throwable) {
+                    log.error("[ws-simple] error: ${closeReason.await()}")
+                    e.printStackTrace()
+                }
+            }
+        }
+        webSocket("/binary") {
+            for (frame in incoming) {
+                try {
+                    when (frame) {
+                        is Frame.Binary -> {
+                            val data = frame.data
+                            log.info("[ws-simple] receiving: $data")
+                            outgoing.send(Frame.Binary(true, data))
                         }
                         is Frame.Close -> {
                             log.info("[ws-simple] closing: ${closeReason.await()}")

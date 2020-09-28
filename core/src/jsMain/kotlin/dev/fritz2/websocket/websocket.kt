@@ -14,8 +14,6 @@ fun websocket(url: String, vararg protocols: String): Socket = Socket(url, proto
 class SendException(message: String) : Exception(message)
 class CloseException(message: String) : Exception(message)
 
-//enum class State(event: Event) { CONNECTING, OPEN, CLOSED, ERROR }
-
 sealed class State {
 
     abstract fun asShort(): Short
@@ -33,17 +31,6 @@ sealed class State {
         override fun toString(): String = "Closed"
     }
 }
-
-//enum class MessageType { TEXT, BINARY, BINARY_VIEW, BLOB }
-
-//sealed class Message<T> (
-//    val messageType: MessageType,
-//    val data: T
-//) {
-//    class Binary(data: ArrayBuffer) : Message<ArrayBuffer>(MessageType.BINARY, data)
-//    class Text(data: String) : Message<String>(MessageType.TEXT, data)
-//    class File(data: Blob) : Message<Blob>(MessageType.BLOB, data)
-//}
 
 open class Socket(
     private val baseUrl: String = "",
@@ -104,7 +91,9 @@ open class Session(private val webSocket: WebSocket) {
     }
 
     suspend fun send(message: String) {
-        doWhenOpen { webSocket.send(message) }
+        doWhenOpen {
+            webSocket.send(message)
+        }
     }
 
     suspend fun send(message: ArrayBuffer) {
@@ -139,26 +128,6 @@ open class Session(private val webSocket: WebSocket) {
         }
     }
 
-//    suspend fun <T> send(message: Message<T>) {
-//        when (webSocket.readyState) {
-//            WebSocket.CONNECTING -> {
-//                delay(50); send(message)
-//            }
-//            WebSocket.OPEN -> {
-//                when (message.messageType) {
-//                    MessageType.BINARY -> {
-//                        webSocket.send(message.data.unsafeCast<ArrayBuffer>())
-//                    }
-//                    MessageType.TEXT -> webSocket.send(message.data.unsafeCast<String>())
-//                    MessageType.BLOB -> webSocket.send(message.data.unsafeCast<Blob>())
-//                    else -> throw SendException("frame type not supported")
-//                }
-//            }
-//            WebSocket.CLOSING -> throw SendException("socket is closing")
-//            WebSocket.CLOSED -> throw SendException("socket is closed")
-//        }
-//    }
-
     suspend fun close(code: Short = 1000, reason: String = "") {
         try {
             webSocket.close(code, reason)
@@ -166,5 +135,8 @@ open class Session(private val webSocket: WebSocket) {
             throw CloseException(t.message ?: "error while closing session")
         }
     }
-
 }
+
+fun Flow<MessageEvent>.getBody(): Flow<String> = this.map { it.data.unsafeCast<String>() }
+fun Flow<MessageEvent>.getBlob(): Flow<Blob> = this.map { it.data.unsafeCast<Blob>() }
+fun Flow<MessageEvent>.getArrayBuffer(): Flow<ArrayBuffer> = this.map { it.data.unsafeCast<ArrayBuffer>() }
