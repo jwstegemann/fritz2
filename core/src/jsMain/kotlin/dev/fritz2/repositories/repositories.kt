@@ -33,12 +33,12 @@ interface EntityRepository<T, I> {
     suspend fun load(entity: T, id: I): T
 
     /**
-     * saves or updates an entity
+     * adds or updates an entity
      *
-     * @param entity entity to save
-     * @return the new entity after save or update
+     * @param entity entity to add or to save
+     * @return the new entity after add or update
      */
-    suspend fun saveOrUpdate(entity: T): T
+    suspend fun addOrUpdate(entity: T): T
 
     /**
      * deletes an entity

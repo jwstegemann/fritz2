@@ -2,7 +2,7 @@ package dev.fritz2.repositories.rest
 
 import dev.fritz2.remote.Request
 import dev.fritz2.remote.getBody
-import dev.fritz2.remote.remote
+import dev.fritz2.remote.http
 import dev.fritz2.repositories.EntityRepository
 import dev.fritz2.repositories.QueryRepository
 import dev.fritz2.repositories.Resource
@@ -21,7 +21,7 @@ fun <T, I> restEntity(
     resource: Resource<T, I>,
     url: String,
     contentType: String = "application/json; charset=utf-8",
-    remote: Request = remote(url)
+    remote: Request = http(url)
 ): EntityRepository<T, I> =
     RestEntity(resource, url, contentType, remote)
 
@@ -37,7 +37,7 @@ class RestEntity<T, I>(
     private val resource: Resource<T, I>,
     val url: String,
     val contentType: String,
-    private val remote: Request
+    val remote: Request
 ) : EntityRepository<T, I> {
 
     /**
@@ -54,13 +54,13 @@ class RestEntity<T, I>(
         )
 
     /**
-     * sends a post-(for save) or a put-(for update) request to [resource].url/{id} with the serialized entity in it's body.
-     * The emptyEntity of [resource] is used to determine if it should saved or updated
+     * sends a post-(for add) or a put-(for update) request to [resource].url/{id} with the serialized entity in it's body.
+     * The [Resource.emptyEntity] of [resource] is used to determine if it should add or updated
      *
      * @param entity entity to save
-     * @return the saved entity
+     * @return the added or saved entity
      */
-    override suspend fun saveOrUpdate(entity: T): T =
+    override suspend fun addOrUpdate(entity: T): T =
         remote.contentType(contentType)
             .body(resource.serializer.write(entity)).run {
                 if (resource.idProvider(entity) == resource.idProvider(resource.emptyEntity)) {
@@ -99,7 +99,7 @@ fun <T, I, Q> restQuery(
     resource: Resource<T, I>,
     url: String,
     contentType: String = "application/json; charset=utf-8",
-    remote: Request = remote(url),
+    remote: Request = http(url),
     buildQuery: suspend Request.(Q) -> Response = { accept(contentType).get() }
 ): QueryRepository<T, I, Q> = RestQuery(resource, url, contentType, remote, buildQuery)
 
