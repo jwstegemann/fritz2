@@ -34,8 +34,8 @@ class SimpleHandler<A>(override inline val collect: (Flow<A>) -> Unit) : Handler
 infix fun <A> Flow<A>.handledBy(handler: Handler<A>) = handler.collect(this)
 
 /**
- * An [OfferingHandler] is a special [SimpleHandler] that constitutes a new [Flow] by itself. You can emit values to this [Flow] from your code
- * and connect it to other [SimpleHandler]s on this or on other [Store]s. This way inter-store-communication is done in fritz2.
+ * An [OfferingHandler] is a special [Handler] that constitutes a new [Flow] by itself. You can emit values to this [Flow] from your code
+ * and connect it to other [Handler]s on this or on other [Store]s. This way inter-store-communication is done in fritz2.
  *
  * @param bufferSize number of values of the new [Flow] to buffer
  * @param collectWithChannel defines how to handle the values of the connected [Flow]
