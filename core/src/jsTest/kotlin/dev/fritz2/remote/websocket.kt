@@ -1,4 +1,4 @@
-package dev.fritz2.websocket
+package dev.fritz2.remote
 
 import dev.fritz2.binding.watch
 import dev.fritz2.test.runTest
@@ -28,13 +28,13 @@ class WebSocketTests {
         session.state.map {
             println("Connection state is: $it\n")
             when (counter) {
-                0 -> assertTrue(it is State.Connecting, "state not matching")
-                1 -> assertTrue(it is State.Open, "state not matching")
-                2 -> assertTrue(it is State.Closed, "state not matching")
+                0 -> assertTrue(it is SocketState.Connecting, "state not matching")
+                1 -> assertTrue(it is SocketState.Open, "state not matching")
+                2 -> assertTrue(it is SocketState.Closed, "state not matching")
             }
         }.watch()
 
-        session.messages.getBody().onEach {
+        session.messages.body.onEach {
             println("Server said: ${it}\n")
             when (counter) {
                 0 -> assertEquals("Server said: Client said: A", it, "message not matching")
@@ -107,7 +107,7 @@ class WebSocketTests {
         session.send(data.buffer)
         delay(100)
 
-        session.messages.getArrayBuffer().onEach {
+        session.messages.arrayBuffer.onEach {
             val array = Uint8Array(it)
             assertEquals(data, array, "binary data is not matched")
         }.watch()
@@ -128,7 +128,7 @@ class WebSocketTests {
         session.send(data)
         delay(100)
 
-        session.messages.getBlob().onEach {
+        session.messages.blob.onEach {
             val reader = FileReader()
             reader.onload = {
                 assertEquals("Hello World", reader.result, "blob data is not matched")
