@@ -3,6 +3,9 @@ package dev.fritz2.binding
 import dev.fritz2.flow.asSharedFlow
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
+import dev.fritz2.remote.Socket
+import dev.fritz2.remote.body
+import dev.fritz2.repositories.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -141,6 +144,16 @@ interface Store<T> : CoroutineScope {
     fun syncBy(handler: Handler<T>) {
         data.drop(1) handledBy handler
     }
+
+    fun <I> syncWith(socket: Socket, resource: Resource<T, I>) {
+        val session = socket.connect()
+        session.messages.body.map {
+            resource.serializer.read(it)
+        } handledBy update
+        data.drop(1).onEach {
+            session.send(resource.serializer.write(it))
+        }.watch()
+    }
 }
 
 /**
@@ -148,6 +161,16 @@ interface Store<T> : CoroutineScope {
  */
 inline fun <T, R> Store<T>.syncBy(handler: Handler<R>, crossinline mapper: suspend (T) -> R) {
     data.drop(1).map(mapper) handledBy handler
+}
+
+fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
+    val session = socket.connect()
+    session.messages.body.map {
+        resource.serializer.readList(it)
+    } handledBy update
+    data.drop(1).onEach {
+        session.send(resource.serializer.writeList(it))
+    }.watch()
 }
 
 /**
