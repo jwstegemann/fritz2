@@ -1,6 +1,6 @@
 package dev.fritz2.styling.params
 
-import dev.fritz2.styling.Property
+import dev.fritz2.styling.theme.Property
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -44,7 +44,7 @@ object WrapValues : PropertyValues {
  *
  * It does **not** create a flexbox layout though!
  *
- * This is done by a special [dev.fritz2.styling.components.flex] fabric function that creates a component
+ * This is done by a special [dev.fritz2.components.flex] fabric function that creates a component
  * with the [display](https://developer.mozilla.org/de/docs/Web/CSS/display) property already set to ``flex``.
  *
  * So it is recommended to use the provided functions within the styles parameter of [dev.fritz2.styling.components.flex].

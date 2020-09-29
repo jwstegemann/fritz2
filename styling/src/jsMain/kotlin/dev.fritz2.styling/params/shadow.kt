@@ -1,11 +1,30 @@
 package dev.fritz2.styling.params
 
-import dev.fritz2.styling.Property
-import dev.fritz2.styling.Shadows
-import dev.fritz2.styling.theme
+import dev.fritz2.styling.theme.Property
+import dev.fritz2.styling.theme.Shadows
+import dev.fritz2.styling.theme.theme
 
 const val textShadowKey = "text-shadow: "
 const val boxShadowKey = "box-shadow: "
+
+typealias ShadowProperty = Property
+
+fun shadow(
+    offsetHorizontal: String,
+    offsetVertical: String = offsetHorizontal,
+    blur: String? = null,
+    spread: String? = null,
+    color: String? = null,
+    inset: Boolean = false
+): ShadowProperty = buildString {
+    append(offsetHorizontal, " ", offsetVertical)
+    if (blur != null) append(" ", blur)
+    if (spread != null) append(" ", spread)
+    if (color != null) append(" ", color)
+    if (inset) append(" inset")
+}
+
+infix fun ShadowProperty.and(other: ShadowProperty): ShadowProperty = "$this, $other"
 
 interface Shadow : StyleParams {
     /*

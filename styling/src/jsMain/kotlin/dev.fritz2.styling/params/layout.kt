@@ -1,7 +1,7 @@
 package dev.fritz2.styling.params
 
-import dev.fritz2.styling.Property
-import dev.fritz2.styling.theme
+import dev.fritz2.styling.theme.Property
+import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 internal const val widthKey = "width: "

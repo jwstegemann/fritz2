@@ -1,6 +1,6 @@
 package dev.fritz2.styling.params
 
-import dev.fritz2.styling.Property
+import dev.fritz2.styling.theme.Property
 
 /*
  * Central Alignment Contexts, inspired by https://drafts.csswg.org/css-align-3/

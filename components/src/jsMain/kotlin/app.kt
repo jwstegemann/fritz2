@@ -8,16 +8,18 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.dom.selectedIndex
 import dev.fritz2.routing.router
-import dev.fritz2.styling.*
 import dev.fritz2.styling.params.AreaName
 import dev.fritz2.styling.params.end
+import dev.fritz2.styling.params.rgba
 import dev.fritz2.styling.params.start
+import dev.fritz2.styling.theme.currentTheme
+import dev.fritz2.styling.theme.render
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
 val themes = listOf(
-    ("small Fonts") to DefaultTheme(),
-    ("large Fonts") to Default2()
+    ("small Fonts") to SmallFonts,
+    ("large Fonts") to LargeFonts
 )
 
 @ExperimentalCoroutinesApi
@@ -86,7 +88,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                     border {
                         style { solid }
                         width { thin }
-                        color { disabled }
+                        color { light }
                     }
                     radius { tiny }
                     boxShadow { flat }
@@ -112,7 +114,6 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             alt = const("Woman paying for a purchase")
                         }
                     }
-                    //val header = gridTemplate()
                     box({
                         zIndex { base }
                         //width { "300px" }
@@ -124,7 +125,9 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             md = { left { normal } }
                         )
                     }) {
-                        text(theme.teaserText) { +"Marketing" }
+                        text(
+                            theme.teaserText
+                        ) { +"Marketing" }
                         link({
                             margins { top { tiny } }
                             fontSize { normal }

@@ -17,7 +17,7 @@ val select = staticStyle(
         border: 1px solid;
         border-color: inherit;
         background-color: white;
-        transition: all 0.2s,
+        transition: all 0.2s;
 
 """
 )

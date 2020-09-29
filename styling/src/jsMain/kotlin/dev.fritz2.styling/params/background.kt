@@ -1,7 +1,7 @@
 package dev.fritz2.styling.params
 
 import dev.fritz2.dom.HtmlTagMarker
-import dev.fritz2.styling.Property
+import dev.fritz2.styling.theme.Property
 
 /**
  * Alias for the specific [BackgroundRepeats] properties

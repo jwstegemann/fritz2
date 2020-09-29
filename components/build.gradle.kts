@@ -36,9 +36,10 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                implementation(project(":styling"))
+                implementation(project(":core"))
             }
         }
+
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
@@ -49,13 +50,14 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
+                implementation(project(":styling"))
             }
         }
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
             }
         }
     }

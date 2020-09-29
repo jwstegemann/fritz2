@@ -1,8 +1,8 @@
 package dev.fritz2.styling.params
 
-import dev.fritz2.styling.Property
-import dev.fritz2.styling.ZIndices
-import dev.fritz2.styling.theme
+import dev.fritz2.styling.theme.Property
+import dev.fritz2.styling.theme.ZIndices
+import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 internal const val positionKey = "position: "
@@ -41,7 +41,7 @@ class PositioningContext(
      * ```
      *
      * @param value positional value; recommended to use the predefined properties of the
-     *              [theme][dev.fritz2.styling.Theme.space]
+     *              [theme][dev.fritz2.styling.theme.Theme.space]
      */
     fun top(value: ScaledValueProperty) = property("top: ", theme().space, value, target)
 
@@ -56,7 +56,7 @@ class PositioningContext(
      * ```
      *
      * @param value positional value; recommended to use the predefined properties of the
-     *              [theme][dev.fritz2.styling.Theme.space]
+     *              [theme][dev.fritz2.styling.theme.Theme.space]
      */
     fun left(value: ScaledValueProperty) = property("left: ", theme().space, value, target)
 
@@ -71,7 +71,7 @@ class PositioningContext(
      * ```
      *
      * @param value positional value; recommended to use the predefined properties of the
-     *              [theme][dev.fritz2.styling.Theme.space]
+     *              [theme][dev.fritz2.styling.theme.Theme.space]
      */
     fun bottom(value: ScaledValueProperty) = property("bottom: ", theme().space, value, target)
 
@@ -86,7 +86,7 @@ class PositioningContext(
      * ```
      *
      * @param value positional value; recommended to use the predefined properties of the
-     *              [theme][dev.fritz2.styling.Theme.space]
+     *              [theme][dev.fritz2.styling.theme.Theme.space]
      */
     fun right(value: ScaledValueProperty) = property("right: ", theme().space, value, target)
 
@@ -102,7 +102,7 @@ class PositioningContext(
      * ```
      *
      * @param value positional value; recommended to use the predefined properties of the
-     *              [theme][dev.fritz2.styling.Theme.space]
+     *              [theme][dev.fritz2.styling.theme.Theme.space]
      */
     fun vertical(value: ScaledValueProperty) {
         property("top: ", theme().space, value, target)
@@ -121,7 +121,7 @@ class PositioningContext(
      * ```
      *
      * @param value positional value; recommended to use the predefined properties of the
-     *              [theme][dev.fritz2.styling.Theme.space]
+     *              [theme][dev.fritz2.styling.theme.Theme.space]
      */
     fun horizontal(value: ScaledValueProperty) {
         property("left: ", theme().space, value, target)
