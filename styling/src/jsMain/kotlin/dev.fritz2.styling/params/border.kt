@@ -82,7 +82,7 @@ internal const val borderBottomLeftRadiusKey = "border-bottom-left-radius: "
  * }
  * ```
  *
- * Used within the nexted context those three properties correspond to the ``border-{side}-{type}`` properties,
+ * Used within the nested context those three properties correspond to the ``border-{side}-{type}`` properties,
  * where ``type`` is one of ``width``, ``style`` or ``color`` and ``side`` is one of ``top``, ``right``, ``bottom``
  * or ``left``.
  *
