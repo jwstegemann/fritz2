@@ -15,6 +15,7 @@ internal const val paddingRightKey = "padding-right: "
 internal const val paddingBottomKey = "padding-bottom: "
 internal const val paddingLeftKey = "padding-left: "
 
+
 /**
  * This _context class_ enables the definition of the common space oriented (margin and padding) styling properties.
  *
@@ -165,8 +166,7 @@ class SpacesContext(
 @ExperimentalCoroutinesApi
 interface Space : StyleParams {
     /**
-     * This function sets the [margin](https://developer.mozilla.org/de/docs/Web/CSS/margin) property
-     * for each media device independently.
+     * This function sets the [margin](https://developer.mozilla.org/de/docs/Web/CSS/margin) property.
      *
      * Example call:
      * ```
@@ -208,7 +208,7 @@ interface Space : StyleParams {
         property(marginKey, theme().space, sm, md, lg, xl)
 
     /**
-     * This function opens the context for defining the margin related properties for each media device independently.
+     * This function opens the context for defining the margin related properties.
      *
      * Example call:
      * ```
@@ -293,7 +293,6 @@ interface Space : StyleParams {
 
     /**
      * This function sets the [padding](https://developer.mozilla.org/de/docs/Web/CSS/padding) property
-     * for each media device independently.
      *
      * Example call:
      * ```
@@ -335,7 +334,7 @@ interface Space : StyleParams {
         property(paddingKey, theme().space, sm, md, lg, xl)
 
     /**
-     * This function opens the context for defining the padding related properties for each media device independently.
+     * This function opens the context for defining the padding related properties.
      *
      * Example call:
      * ```

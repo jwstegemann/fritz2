@@ -123,7 +123,7 @@ interface Typo : StyleParams {
      * Example call:
      * ```
      * font-family(
-     *     sm = { body }
+     *     sm = { body },
      *     lg = { heading }
      * )
      * ```
@@ -147,7 +147,6 @@ interface Typo : StyleParams {
 
     /**
      * This function sets the [font-size](https://developer.mozilla.org/de/docs/Web/CSS/font-size) property
-     * for each media device independently.
      *
      * Example call:
      * ```
@@ -166,7 +165,7 @@ interface Typo : StyleParams {
      * Example call:
      * ```
      * font-size(
-     *     sm = { small }
+     *     sm = { small },
      *     lg = { normal }
      * )
      * ```
@@ -208,7 +207,7 @@ interface Typo : StyleParams {
      * Example call:
      * ```
      * font-weight(
-     *     sm = { normal }
+     *     sm = { normal },
      *     lg = { bold }
      * )
      * ```
@@ -232,7 +231,6 @@ interface Typo : StyleParams {
 
     /**
      * This function sets the [line-height](https://developer.mozilla.org/de/docs/Web/CSS/line-height) property
-     * for each media device independently.
      *
      * Example call:
      * ```
@@ -251,7 +249,7 @@ interface Typo : StyleParams {
      * Example call:
      * ```
      * line-height(
-     *     sm = { small }
+     *     sm = { small },
      *     lg = { normal }
      * )
      * ```
@@ -275,7 +273,6 @@ interface Typo : StyleParams {
 
     /**
      * This function sets the [letter-spacing](https://developer.mozilla.org/de/docs/Web/CSS/letter-spacing) property
-     * for each media device independently.
      *
      * Example call:
      * ```
@@ -294,7 +291,7 @@ interface Typo : StyleParams {
      * Example call:
      * ```
      * letter-spacing(
-     *     sm = { small }
+     *     sm = { small },
      *     lg = { normal }
      * )
      * ```
@@ -318,7 +315,6 @@ interface Typo : StyleParams {
 
     /**
      * This function sets the [text-align](https://developer.mozilla.org/de/docs/Web/CSS/text-align) property
-     * for each media device independently.
      *
      * Example call:
      * ```
@@ -337,7 +333,7 @@ interface Typo : StyleParams {
      * Example call:
      * ```
      * text-align(
-     *     sm = { center }
+     *     sm = { center },
      *     lg = { left }
      * )
      * ```
@@ -361,7 +357,6 @@ interface Typo : StyleParams {
 
     /**
      * This function sets the [text-transform](https://developer.mozilla.org/de/docs/Web/CSS/text-transform) property
-     * for each media device independently.
      *
      * Example call:
      * ```
@@ -380,7 +375,7 @@ interface Typo : StyleParams {
      * Example call:
      * ```
      * font-transform(
-     *     sm = { capitalize }
+     *     sm = { capitalize },
      *     lg = { uppercase }
      * )
      * ```
@@ -404,7 +399,6 @@ interface Typo : StyleParams {
 
     /**
      * This function sets the [font-style](https://developer.mozilla.org/de/docs/Web/CSS/font-style) property
-     * for each media device independently.
      *
      * Example call:
      * ```
@@ -423,7 +417,7 @@ interface Typo : StyleParams {
      * Example call:
      * ```
      * font-style(
-     *     sm = { normal }
+     *     sm = { normal },
      *     lg = { italic }
      * )
      * ```

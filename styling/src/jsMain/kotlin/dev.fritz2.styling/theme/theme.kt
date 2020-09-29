@@ -37,7 +37,22 @@ typealias PredefinedBoxStyle = BoxStyleParams.() -> Unit
 typealias Property = String
 
 /**
- * Standard interface for themes in fritz2
+ * Standard interface for themes in fritz2.
+ *
+ * This interface is implemented by fritz2's [DefaultTheme].
+ * Of course you can use your own implementations or even extend this interface and add more specifications to it that you need for your UI.
+ *
+ * ```
+ * interface ExtendedTheme : Theme {
+ *     interface Columns {
+ *         val landscapeMode: Int
+ *         val portraitMode: Int
+ *     }
+ *
+ *     val columns: Columns
+ * }
+ * ```
+ *
  */
 interface Theme {
     /**

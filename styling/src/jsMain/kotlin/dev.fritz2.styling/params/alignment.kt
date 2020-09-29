@@ -2,12 +2,16 @@ package dev.fritz2.styling.params
 
 import dev.fritz2.styling.theme.Property
 
-/*
- * Central Alignment Contexts, inspired by https://drafts.csswg.org/css-align-3/
- */
 
+/**
+ * Alias for specific justification properties.
+ */
 typealias JustifyContentProperty = Property
 
+/**
+ * Predefined values for justification
+ * Central Alignment Contexts inspired by [https://drafts.csswg.org/css-align-3/]
+ */
 object JustifyContentValues : PropertyValues {
     override val key = "justify-content: "
 
@@ -21,8 +25,15 @@ object JustifyContentValues : PropertyValues {
     const val spaceEvenly: JustifyContentProperty = "space-evenly"
 }
 
+/**
+ * Alias for specific item alignment properties.
+ */
 typealias AlignItemsProperty = Property
 
+/**
+ * Predefined values for alignment of items
+ * Central Alignment Contexts inspired by [https://drafts.csswg.org/css-align-3/]
+ */
 object AlignItemsValues : PropertyValues {
     override val key = "align-items: "
 
@@ -37,8 +48,15 @@ object AlignItemsValues : PropertyValues {
     const val baseline: AlignItemsProperty = "baseline"
 }
 
+/**
+ * Alias for specific content alignment properties.
+ */
 typealias AlignContentProperty = Property
 
+/**
+ * Predefined values for alignment of content
+ * Central Alignment Contexts inspired by [https://drafts.csswg.org/css-align-3/]
+ */
 object AlignContentValues : PropertyValues {
     override val key = "align-content: "
 
@@ -52,14 +70,50 @@ object AlignContentValues : PropertyValues {
     const val spaceEvenly: AlignContentProperty = "space-evenly"
 }
 
+/**
+ * This _context_ interface offers functions to align or justify elements.
+ *
+ * It used in [FlexStyleParams] and [GridStyleParams] .
+ *
+ * There are overrides for all functions that enable one to define the styling for
+ * the different media devices independently.
+ */
 interface Alignment : StyleParams {
-    /*
-     * justifyContent
+    /**
+     * This function sets the [justify-content](https://developer.mozilla.org/de/docs/Web/CSS/justify-content) property
+     *
+     * Example call:
+     * ```
+     * justify-content { flexStart }
+     * ```
+     *
+     * @param value extension function parameter for small media devices, recommended to use
+     *           predefined values from [JustifyContentValues]
      */
-
     fun justifyContent(value: JustifyContentValues.() -> JustifyContentProperty) =
         property(JustifyContentValues.key, JustifyContentValues.value(), smProperties)
 
+    /**
+     * This function sets the [justify-content](https://developer.mozilla.org/de/docs/Web/CSS/justify-content) property
+     * for each media device independently.
+     *
+     * Example call:
+     * ```
+     * justify-content(
+     *     sm = { flexStart },
+     *     lg = { center }
+     * )
+     * ```
+     *
+     * @param sm extension function parameter for small media devices, recommended to use
+     *           predefined values from [JustifyContentValues]
+     * @param md extension function parameter for medium sized media devices, recommended to use
+     *           predefined values via [JustifyContentValues]
+     * @param lg extension function parameter for large media devices, recommended to use
+     *           predefined values via [JustifyContentValues]
+     * @param xl extension function parameter for extra large media devices, recommended to use
+     *           predefined values via [JustifyContentValues]
+     */
     fun justifyContent(
         sm: (JustifyContentValues.() -> JustifyContentProperty)? = null,
         md: (JustifyContentValues.() -> JustifyContentProperty)? = null,
@@ -72,13 +126,41 @@ interface Alignment : StyleParams {
         if (xl != null) property(JustifyContentValues.key, JustifyContentValues.xl(), xlProperties)
     }
 
-    /*
-     * alignItems
+    /**
+     * This function sets the [align-items](https://developer.mozilla.org/de/docs/Web/CSS/align-items) property
+     *
+     * Example call:
+     * ```
+     * align-items { flexStart }
+     * ```
+     *
+     * @param value extension function parameter for small media devices, recommended to use
+     *           predefined values from [AlignItemsValues]
      */
-
     fun alignItems(value: AlignItemsValues.() -> AlignItemsProperty) =
         property(AlignItemsValues.key, AlignItemsValues.value(), smProperties)
 
+    /**
+     * This function sets the [align-items](https://developer.mozilla.org/de/docs/Web/CSS/align-items) property
+     * for each media device independently.
+     *
+     * Example call:
+     * ```
+     * align-items(
+     *     sm = { flexStart },
+     *     lg = { center }
+     * )
+     * ```
+     *
+     * @param sm extension function parameter for small media devices, recommended to use
+     *           predefined values from [AlignItemsValues]
+     * @param md extension function parameter for medium sized media devices, recommended to use
+     *           predefined values via [AlignItemsValues]
+     * @param lg extension function parameter for large media devices, recommended to use
+     *           predefined values via [AlignItemsValues]
+     * @param xl extension function parameter for extra large media devices, recommended to use
+     *           predefined values via [AlignItemsValues]
+     */
     fun alignItems(
         sm: (AlignItemsValues.() -> AlignItemsProperty)? = null,
         md: (AlignItemsValues.() -> AlignItemsProperty)? = null,
@@ -91,13 +173,41 @@ interface Alignment : StyleParams {
         if (xl != null) property(AlignItemsValues.key, AlignItemsValues.xl(), xlProperties)
     }
 
-    /*
-     * alignContent
+    /**
+     * This function sets the [align-content](https://developer.mozilla.org/de/docs/Web/CSS/align-content) property
+     *
+     * Example call:
+     * ```
+     * align-content { flexStart }
+     * ```
+     *
+     * @param sm extension function parameter for small media devices, recommended to use
+     *           predefined values from [AlignContentValues]
      */
-
     fun alignContent(value: AlignContentValues.() -> AlignContentProperty) =
         property(AlignContentValues.key, AlignContentValues.value(), smProperties)
 
+    /**
+     * This function sets the [align-content](https://developer.mozilla.org/de/docs/Web/CSS/align-content) property
+     * for each media device independently.
+     *
+     * Example call:
+     * ```
+     * align-content(
+     *     sm = { flexStart },
+     *     lg = { center }
+     * )
+     * ```
+     *
+     * @param sm extension function parameter for small media devices, recommended to use
+     *           predefined values from [AlignContentValues]
+     * @param md extension function parameter for medium sized media devices, recommended to use
+     *           predefined values via [AlignContentValues]
+     * @param lg extension function parameter for large media devices, recommended to use
+     *           predefined values via [AlignContentValues]
+     * @param xl extension function parameter for extra large media devices, recommended to use
+     *           predefined values via [AlignContentValues]
+     */
     fun alignContent(
         sm: (AlignContentValues.() -> AlignContentProperty)? = null,
         md: (AlignContentValues.() -> AlignContentProperty)? = null,
@@ -111,8 +221,15 @@ interface Alignment : StyleParams {
     }
 }
 
+/**
+ * Alias for specific self alignment properties.
+ */
 typealias SelfAlignItemProperty = Property
 
+/**
+ * Predefined values for self alignment
+ * Central Alignment Contexts inspired by [https://drafts.csswg.org/css-align-3/]
+ */
 object SelfAlignItemsValues : PropertyValues {
     override val key = "align-self: "
 
@@ -125,11 +242,30 @@ object SelfAlignItemsValues : PropertyValues {
     const val baseline: SelfAlignItemProperty = "baseline"
 }
 
+/**
+ * This _context_ interface offers functions for self-alignment.
+ *
+ * It used in [FlexStyleParams] and [GridStyleParams] .
+ *
+ * There are overrides for all functions that enable one to define the styling for
+ * the different media devices independently.
+ */
 interface SelfAlignment {
+    /**
+     * This function sets the [self-align](https://developer.mozilla.org/de/docs/Web/CSS/align-content) property
+     *
+     * Example call:
+     * ```
+     * self-align { flexStart }
+     * ```
+     *
+     * @param value extension function parameter for small media devices, recommended to use
+     *           predefined values from [AlignContentValues]
+     */
     fun alignSelf(value: SelfAlignItemsValues.() -> SelfAlignItemProperty)
 }
 
-class SelfAlignmentImpl(
+internal class SelfAlignmentImpl(
     styleParam: StyleParams,
     private val target: StringBuilder
 ) : SelfAlignment, StyleParams by styleParam {
