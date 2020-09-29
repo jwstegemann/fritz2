@@ -11,7 +11,7 @@ inline fun HtmlElements.text(
     styles: Style<BasicStyleParams> = {},
     crossinline init: P.() -> Any = {}
 ): P {
-
+    //console.log("#### $styles")
     return p(use(styles, "text")) {
         init()
     }

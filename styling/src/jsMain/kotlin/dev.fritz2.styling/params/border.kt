@@ -1,9 +1,9 @@
 package dev.fritz2.styling.params
 
-import dev.fritz2.styling.Colors
-import dev.fritz2.styling.Property
-import dev.fritz2.styling.Thickness
-import dev.fritz2.styling.theme
+import dev.fritz2.styling.theme.Colors
+import dev.fritz2.styling.theme.Property
+import dev.fritz2.styling.theme.Thickness
+import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**

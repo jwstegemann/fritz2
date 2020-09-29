@@ -54,10 +54,7 @@ typealias StyleClass = String
  */
 fun staticStyle(name: String, css: String): StyleClass {
     ".$name { $css }".let {
-        console.log("***")
-        console.log("    $it")
         serialize(compile(it), Styling.middleware)
-        console.log("###")
     }
     return name
 }
