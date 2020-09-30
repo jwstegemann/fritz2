@@ -12,14 +12,14 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>
 
     return div {
         div {
-            singleSselect {
-                value = themeStore.data.map { i -> themes[i].name }
-                themes.forEach {
-                    option { +it.name }
-                }
-
-                changes.selectedIndex() handledBy themeStore.selectTheme
-            }
+//            singleSelect {
+//                value = themeStore.data.map { i -> themes[i].name }
+//                themes.forEach {
+//                    option { +it.name }
+//                }
+//
+//                changes.selectedIndex() handledBy themeStore.selectTheme
+//            }
             flexBox({
                 margin { small }
                 padding { small }
