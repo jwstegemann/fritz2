@@ -3,6 +3,7 @@ import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.ScaledValue
 import dev.fritz2.styling.theme.Theme
 
+
 interface ExtendedTheme : Theme {
     interface MyProp {
         val a: Property
@@ -14,7 +15,7 @@ interface ExtendedTheme : Theme {
     val teaserText: PredefinedBasicStyle
 }
 
-object LargeFonts : ExtendedTheme, DefaultTheme() {
+open class SmallFonts : ExtendedTheme, DefaultTheme() {
     override val test = object : ExtendedTheme.MyProp {
         override val a: Property = space.normal
         override val b: Property = "b"
@@ -31,7 +32,7 @@ object LargeFonts : ExtendedTheme, DefaultTheme() {
 }
 
 
-object SmallFonts : DefaultTheme() {
+class LargeFonts : SmallFonts() {
     override val fontSizes = ScaledValue<Property>(
         smaller = "1.125rem",
         small = "1.25rem",
@@ -41,5 +42,4 @@ object SmallFonts : DefaultTheme() {
         huge = "3rem"
     )
 }
-
 

@@ -8,7 +8,6 @@ import dev.fritz2.styling.params.BoxStyleParams
 import dev.fritz2.styling.params.FlexStyleParams
 import dev.fritz2.styling.params.GridStyleParams
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import org.w3c.dom.Element
 
 /**
@@ -150,26 +149,27 @@ interface Theme {
  * [StateFlow] that holds the current selected [Theme]
  */
 @ExperimentalCoroutinesApi
-val currentTheme = MutableStateFlow<Theme>(DefaultTheme())
+var currentTheme: Theme = DefaultTheme()
 
 /**
  * get the currently selected [Theme]
  */
 @ExperimentalCoroutinesApi
-fun theme(): Theme = currentTheme.value
+fun theme(): Theme = currentTheme
 
 /**
  * get the currently selected [Theme] correctly casted
  */
 @ExperimentalCoroutinesApi
-fun <T : Theme> theme(): Theme = currentTheme.value.unsafeCast<T>()
+inline fun <reified T : Theme> theme(): Theme = currentTheme.unsafeCast<T>()
 
 /**
  * convenience function to create a render-context that provides a specialized theme correctly typed
  */
 //TODO: add for Flow.render and each().render
 @ExperimentalCoroutinesApi
-inline fun <E : Element, T : Theme> render(crossinline content: HtmlElements.(T) -> Tag<E>): Tag<E> =
+inline fun <E : Element, reified T : Theme> render(crossinline content: HtmlElements.(T) -> Tag<E>): Tag<E> =
     dev.fritz2.dom.html.render {
-        content(currentTheme.value.unsafeCast<T>())
+        content(currentTheme.unsafeCast<T>())
     }
+

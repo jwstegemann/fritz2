@@ -17,17 +17,19 @@ import dev.fritz2.styling.theme.render
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
-val themes = listOf(
-    ("small Fonts") to SmallFonts,
-    ("large Fonts") to LargeFonts
+val themes = listOf<Pair<String, ExtendedTheme>>(
+    ("small Fonts") to SmallFonts(),
+    ("large Fonts") to LargeFonts()
 )
 
 @ExperimentalCoroutinesApi
 fun main() {
+    currentTheme = themes.first().second
 
     val router = router("")
 
     render { theme: ExtendedTheme ->
+        console.log("####" + (currentTheme is ExtendedTheme))
         section {
             flex({
                 height { "60px" }
@@ -66,7 +68,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
 
     val themeStore = object : RootStore<Int>(0) {
         val selectTheme = handle<Int> { _, index ->
-            currentTheme.value = themes[index].second
+            currentTheme = themes[index].second
             index
         }
     }
@@ -125,9 +127,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             md = { left { normal } }
                         )
                     }) {
-                        text(
-                            theme.teaserText
-                        ) { +"Marketing" }
+                        text(theme.teaserText) { +"Marketing" }
                         link({
                             margins { top { tiny } }
                             fontSize { normal }
