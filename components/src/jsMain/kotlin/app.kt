@@ -1,4 +1,5 @@
 import dev.fritz2.binding.const
+import dev.fritz2.binding.handledBy
 import dev.fritz2.components.flexBox
 import dev.fritz2.components.styled
 import dev.fritz2.components.themeProvider
@@ -9,8 +10,10 @@ import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.render
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 
 /*
 val themes = listOf<Pair<String, ExtendedTheme>>(
@@ -85,7 +88,8 @@ fun main() {
                         direction { row }
                         justifyContent { spaceEvenly }
                         alignItems { center }
-                    }) {
+                    })
+                    {
                         (::a.styled {
                             fontSize { large }
                         }) {
@@ -96,19 +100,31 @@ fun main() {
                             fontSize { large }
                         }) {
                             +"flexBox"
-                            href = const("#flexBoxDemo")
+                            href = const("#flexBox")
                         }
                         (::a.styled {
                             fontSize { large }
                         }) {
                             +"gridBox"
-                            href = const("#gridBoxDemo")
+                            href = const("#gridBox")
                         }
                         (::a.styled {
                             fontSize { large }
                         }) {
                             +"input"
                             href = const("#input")
+                        }
+                        (::a.styled {
+                            fontSize { large }
+                        }) {
+                            +"multiselect"
+                            href = const("#multiselect")
+                        }
+                        (::a.styled {
+                            fontSize { large }
+                        }) {
+                            +"singleselect"
+                            href = const("#singleselect")
                         }
                         (::a.styled {
                             fontSize { large }
@@ -126,19 +142,21 @@ fun main() {
                             fontSize { large }
                         }) {
                             +"buttons"
-                            href = const("#buttonDemo")
+                            href = const("#buttons")
                         }
                     }
                     router.render { site ->
                         when (site) {
                             "input" -> inputDemo()
-//                    "buttons" -> buttonDemo(theme)
+                            "buttons" -> buttonDemo(theme)
                             "formcontrol" -> formControlDemo()
                             "text" -> textDemo()
-                            "flexBoxDemo" -> flexBoxDemo(store, themes, theme)
-                            "gridBoxDemo" -> gridBoxDemo()
-                            "buttonDemo" -> buttonDemo(theme)
-                            else -> stackDemo(theme)
+                            "flexBox" -> flexBoxDemo(store, themes, theme)
+                            "gridBox" -> gridBoxDemo()
+                            "multiselect" -> multiSelectDemo()
+                            "singleselect" -> singleSelectDemo()
+                            "stack" -> stackDemo(theme)
+                            else -> textDemo()
                         }
                     }.bind()
                 }

@@ -34,6 +34,7 @@ interface Pseudos : StyleParams {
     }
 
     fun active(content: BasicParams.() -> Unit) = pseudo("active", content)
+    fun before(content: BasicParams.() -> Unit) = pseudo("before", content)
     fun checked(content: BasicParams.() -> Unit) = pseudo("checked", content)
     fun default(content: BasicParams.() -> Unit) = pseudo("default", content)
     fun disabled(content: BasicParams.() -> Unit) = pseudo("disabled", content)

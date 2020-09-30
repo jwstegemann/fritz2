@@ -225,7 +225,6 @@ open class Img(id: String? = null, baseClass: String? = null) : Tag<HTMLImageEle
     var referrerPolicy: Flow<String> by AttributeDelegate
 }
 
-
 /**
  * Exposes the JavaScript [HTMLInputElement](https://developer.mozilla.org/en/docs/Web/API/HTMLInputElement) to Kotlin
  */
