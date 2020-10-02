@@ -8,7 +8,7 @@ import kotlinx.browser.window as browserWindow
 
 
 /**
- * exception type for handling http exceptions
+ * [Exception] type for handling http exceptions
  *
  * @property statusCode the http response status code
  * @property body the body of the error-response
@@ -18,9 +18,9 @@ class FetchException(val statusCode: Short, val body: String, val response: Resp
 )
 
 /**
- * factory method to create a RequestTemplate
+ * creates a new [Request]
  *
- * @property baseUrl the common base of all urls that you want to call using the template
+ * @param baseUrl the common base of all urls that you want to call using the template
  */
 fun http(baseUrl: String = "") = Request(baseUrl = baseUrl)
 

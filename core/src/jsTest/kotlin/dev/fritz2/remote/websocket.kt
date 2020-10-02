@@ -28,9 +28,9 @@ class WebSocketTests {
         session.state.map {
             println("Connection state is: $it\n")
             when (counter) {
-                0 -> assertTrue(it is SocketState.Connecting, "state not matching")
-                1 -> assertTrue(it is SocketState.Open, "state not matching")
-                2 -> assertTrue(it is SocketState.Closed, "state not matching")
+                0 -> assertTrue(it is SessionState.Connecting, "state not matching")
+                1 -> assertTrue(it is SessionState.Open, "state not matching")
+                2 -> assertTrue(it is SessionState.Closed, "state not matching")
             }
         }.watch()
 
@@ -140,4 +140,6 @@ class WebSocketTests {
 
         delay(200)
     }
+
+
 }
