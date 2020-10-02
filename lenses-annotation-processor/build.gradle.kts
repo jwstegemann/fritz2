@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform")
+    kotlin("jvm")
 //    kotlin("kapt")
     id("maven-publish")
 }
@@ -8,29 +8,17 @@ val kotlinpoet_version = "1.6.0"
 //val incap_version = "0.3"
 
 kotlin {
-    jvm()
-    js().nodejs()
-
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-            }
-        }
-        val jvmMain by getting {
-            dependencies {
-                implementation(kotlin("stdlib"))
-                implementation(project(":core"))
-                implementation(kotlin("stdlib-jdk8"))
-                implementation("com.squareup:kotlinpoet:$kotlinpoet_version")
-                implementation("com.squareup:kotlinpoet-classinspector-elements:$kotlinpoet_version")
-                implementation("com.squareup:kotlinpoet-metadata:$kotlinpoet_version")
-                implementation("com.squareup:kotlinpoet-metadata-specs:$kotlinpoet_version")
+    dependencies {
+        api(kotlin("stdlib"))
+        api(project(":core"))
+        api(kotlin("stdlib-jdk8"))
+        api("com.squareup:kotlinpoet:$kotlinpoet_version")
+        api("com.squareup:kotlinpoet-classinspector-elements:$kotlinpoet_version")
+        api("com.squareup:kotlinpoet-metadata:$kotlinpoet_version")
+        api("com.squareup:kotlinpoet-metadata-specs:$kotlinpoet_version")
 //                    compileOnly("net.ltgt.gradle.incap:incap:${incap_version}")
 //                    configurations.get("kapt").dependencies.add(compileOnly("net.ltgt.gradle.incap:incap-processor:${incap_version}"))
 //                    implementation(kotlin("compiler-embeddable"))
-            }
-        }
-
     }
 }
 
