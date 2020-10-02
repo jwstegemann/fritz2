@@ -38,7 +38,7 @@ tasks.register<com.github.psxpaul.task.JavaExecFork>("start") {
     workingDir = buildDir
     standardOutput = "$buildDir/server.log"
     errorOutput = "$buildDir/error.log"
-    stopAfter = project(":core").tasks["jsLegacyTest"]
+    stopAfter = project(":core").tasks["jsTest"]
     waitForPort = 3000
 }
 
