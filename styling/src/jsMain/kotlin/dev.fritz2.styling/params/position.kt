@@ -32,7 +32,7 @@ class PositioningContext(
 
     /**
      * This function is used to define the positional behaviour of an element by the
-     * [top](https://developer.mozilla.org/en-US/docs/Web/CSS/top) property.
+     * [top](https://developer.mozilla.org/en/docs/Web/CSS/top) property.
      *
      * example call:
      * ```
@@ -47,7 +47,7 @@ class PositioningContext(
 
     /**
      * This function is used to define the positional behaviour of an element by the
-     * [left](https://developer.mozilla.org/en-US/docs/Web/CSS/left) property.
+     * [left](https://developer.mozilla.org/en/docs/Web/CSS/left) property.
      *
      * example call:
      * ```
@@ -62,7 +62,7 @@ class PositioningContext(
 
     /**
      * This function is used to define the positional behaviour of an element by the
-     * [bottom](https://developer.mozilla.org/en-US/docs/Web/CSS/bottom) property.
+     * [bottom](https://developer.mozilla.org/en/docs/Web/CSS/bottom) property.
      *
      * example call:
      * ```
@@ -77,7 +77,7 @@ class PositioningContext(
 
     /**
      * This function is used to define the positional behaviour of an element by the
-     * [right](https://developer.mozilla.org/en-US/docs/Web/CSS/right) property.
+     * [right](https://developer.mozilla.org/en/docs/Web/CSS/right) property.
      *
      * example call:
      * ```
@@ -92,8 +92,8 @@ class PositioningContext(
 
     /**
      * This _convenience_ function is used to define the _vertical_ positional behaviour of an element by the
-     * [top](https://developer.mozilla.org/en-US/docs/Web/CSS/top) and
-     * [bottom](https://developer.mozilla.org/en-US/docs/Web/CSS/bottom) properties at once.
+     * [top](https://developer.mozilla.org/en/docs/Web/CSS/top) and
+     * [bottom](https://developer.mozilla.org/en/docs/Web/CSS/bottom) properties at once.
      *
      * example call:
      * ```
@@ -111,8 +111,8 @@ class PositioningContext(
 
     /**
      * This _convenience_ function is used to define the _horizontal_ positional behaviour of an element by the
-     * [right](https://developer.mozilla.org/en-US/docs/Web/CSS/right) and
-     * [left](https://developer.mozilla.org/en-US/docs/Web/CSS/left) properties at once.
+     * [right](https://developer.mozilla.org/en/docs/Web/CSS/right) and
+     * [left](https://developer.mozilla.org/en/docs/Web/CSS/left) properties at once.
      *
      * example call:
      * ```
@@ -147,7 +147,7 @@ class PositionContext(
 ) : StyleParams by styleParams {
 
     /**
-     * This property sets the ``static`` value for the [position](https://developer.mozilla.org/en-US/docs/Web/CSS/position)
+     * This property sets the ``static`` value for the [position](https://developer.mozilla.org/en/docs/Web/CSS/position)
      * property.
      *
      * Hint: As this value disables _positioning_, there is no need to open up the [PositioningContext]! That is why
@@ -157,7 +157,7 @@ class PositionContext(
 
     /**
      * This function sets the ``relative`` value for the
-     * [position](https://developer.mozilla.org/en-US/docs/Web/CSS/position) property and opens up the [PositioningContext]
+     * [position](https://developer.mozilla.org/en/docs/Web/CSS/position) property and opens up the [PositioningContext]
      * in order to enable the definition of side distances.
      *
      * @param value extension function parameter to open the [PositioningContext] as scope of the functional expression
@@ -167,7 +167,7 @@ class PositionContext(
 
     /**
      * This function sets the ``absolute`` value for the
-     * [position](https://developer.mozilla.org/en-US/docs/Web/CSS/position) property and opens up the [PositioningContext]
+     * [position](https://developer.mozilla.org/en/docs/Web/CSS/position) property and opens up the [PositioningContext]
      * in order to enable the definition of side distances.
      *
      * @param value extension function parameter to open the [PositioningContext] as scope of the functional expression
@@ -177,7 +177,7 @@ class PositionContext(
 
     /**
      * This function sets the ``sticky`` value for the
-     * [position](https://developer.mozilla.org/en-US/docs/Web/CSS/position) property and opens up the [PositioningContext]
+     * [position](https://developer.mozilla.org/en/docs/Web/CSS/position) property and opens up the [PositioningContext]
      * in order to enable the definition of side distances.
      *
      * @param value extension function parameter to open the [PositioningContext] as scope of the functional expression
@@ -187,7 +187,7 @@ class PositionContext(
 
     /**
      * This function sets the ``fixed`` value for the
-     * [position](https://developer.mozilla.org/en-US/docs/Web/CSS/position) property and opens up the [PositioningContext]
+     * [position](https://developer.mozilla.org/en/docs/Web/CSS/position) property and opens up the [PositioningContext]
      * in order to enable the definition of side distances.
      *
      * @param value extension function parameter to open the [PositioningContext] as scope of the functional expression
@@ -215,7 +215,7 @@ class PositionContext(
 interface Position : StyleParams {
 
     /**
-     * This function sets the [z-index](https://developer.mozilla.org/en-US/docs/Web/CSS/z-index) CSS property of an element
+     * This function sets the [z-index](https://developer.mozilla.org/en/docs/Web/CSS/z-index) CSS property of an element
      * for all media devices at once.
      *
      * Although you can provide a custom value for the index, it is recommended to use the predefined functions
@@ -237,7 +237,7 @@ interface Position : StyleParams {
     fun zIndex(value: ZIndicesProperty) = property(ZIndices.key, theme().zIndices, value)
 
     /**
-     * This function sets the [z-index](https://developer.mozilla.org/en-US/docs/Web/CSS/z-index) CSS property of an element
+     * This function sets the [z-index](https://developer.mozilla.org/en/docs/Web/CSS/z-index) CSS property of an element
      * for each media device independently.
      *
      * For a detailed overview have a look at the variant of [zIndex] for all media devices!
@@ -268,7 +268,7 @@ interface Position : StyleParams {
         property(ZIndices.key, theme().zIndices, sm, md, lg, xl)
 
     /**
-     * This function sets the [position](https://developer.mozilla.org/en-US/docs/Web/CSS/position) CSS property of an element
+     * This function sets the [position](https://developer.mozilla.org/en/docs/Web/CSS/position) CSS property of an element
      * for all media devices at once.
      *
      * the actual definition is done within a dedicated _context_ class [PositionContext].
@@ -291,7 +291,7 @@ interface Position : StyleParams {
         property(positionKey, PositionContext(this, smProperties).value())
 
     /**
-     * This function sets the [position](https://developer.mozilla.org/en-US/docs/Web/CSS/position) CSS property of an element
+     * This function sets the [position](https://developer.mozilla.org/en/docs/Web/CSS/position) CSS property of an element
      * for each media device independently.
      *
      * the actual definition is done within a dedicated _context_ class [PositionContext].

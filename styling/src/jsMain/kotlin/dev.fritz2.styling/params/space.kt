@@ -166,7 +166,7 @@ class SpacesContext(
 @ExperimentalCoroutinesApi
 interface Space : StyleParams {
     /**
-     * This function sets the [margin](https://developer.mozilla.org/en-US/docs/Web/CSS/margin) property.
+     * This function sets the [margin](https://developer.mozilla.org/en/docs/Web/CSS/margin) property.
      *
      * Example call:
      * ```
@@ -179,7 +179,7 @@ interface Space : StyleParams {
     fun margin(value: ScaledValueProperty) = property(marginKey, theme().space, value)
 
     /**
-     * This function sets the [margin](https://developer.mozilla.org/en-US/docs/Web/CSS/margin) property
+     * This function sets the [margin](https://developer.mozilla.org/en/docs/Web/CSS/margin) property
      * for each media device independently.
      *
      * Example call:
@@ -292,7 +292,7 @@ interface Space : StyleParams {
     }
 
     /**
-     * This function sets the [padding](https://developer.mozilla.org/en-US/docs/Web/CSS/padding) property
+     * This function sets the [padding](https://developer.mozilla.org/en/docs/Web/CSS/padding) property
      *
      * Example call:
      * ```
@@ -305,7 +305,7 @@ interface Space : StyleParams {
     fun padding(value: ScaledValueProperty) = property(paddingKey, theme().space, value)
 
     /**
-     * This function sets the [padding](https://developer.mozilla.org/en-US/docs/Web/CSS/padding) property
+     * This function sets the [padding](https://developer.mozilla.org/en/docs/Web/CSS/padding) property
      * for each media device independently.
      *
      * Example call:

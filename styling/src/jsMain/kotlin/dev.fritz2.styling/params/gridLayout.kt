@@ -10,7 +10,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 typealias AutoFlowProperty = Property
 
 /**
- * Predefined values for the [grid-auto-flow](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-flow)
+ * Predefined values for the [grid-auto-flow](https://developer.mozilla.org/en/docs/Web/CSS/grid-auto-flow)
  * property. Should be used as expression result for the [GridLayout.autoFlow] functions.
  */
 object AutoFlowValues : PropertyValues {
@@ -29,7 +29,7 @@ object AutoFlowValues : PropertyValues {
 /**
  * This _context_ class enables to set the template properties for _rows_, _columns_ and their corresponding _automatic_
  * variants for dynamically added rows or columns (have a look at
- * [Auto placement](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout)
+ * [Auto placement](https://developer.mozilla.org/en/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout)
  * documentation) in a flexible yet comfortable way.
  *
  * This class exposes two variants of the [repeat] function in order so specify the amount of rows or columns of a grid
@@ -60,36 +60,36 @@ class GridTemplateContext(
 ) : StyleParams by styleParams {
 
     /**
-     * Predefined value for the [minmax()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat) related CSS value
+     * Predefined value for the [minmax()](https://developer.mozilla.org/en/docs/Web/CSS/repeat) related CSS value
      */
     val autoFit: Property = "auto-fit"
 
     /**
-     * Predefined value for the [minmax()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat) related CSS value
+     * Predefined value for the [minmax()](https://developer.mozilla.org/en/docs/Web/CSS/repeat) related CSS value
      */
     val autoFill: Property = "auto-fill"
 
     /**
-     * Predefined value for the [minmax()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat) related CSS value and
-     * predefined value for the [minmax()](https://developer.mozilla.org/en-US/docs/Web/CSS/minmax) related CSS value
+     * Predefined value for the [minmax()](https://developer.mozilla.org/en/docs/Web/CSS/repeat) related CSS value and
+     * predefined value for the [minmax()](https://developer.mozilla.org/en/docs/Web/CSS/minmax) related CSS value
      */
     val minContent: Property = "min-content"
 
     /**
-     * Predefined value for the [minmax()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat) related CSS value and
-     * predefined value for the [minmax()](https://developer.mozilla.org/en-US/docs/Web/CSS/minmax) related CSS value
+     * Predefined value for the [minmax()](https://developer.mozilla.org/en/docs/Web/CSS/repeat) related CSS value and
+     * predefined value for the [minmax()](https://developer.mozilla.org/en/docs/Web/CSS/minmax) related CSS value
      */
     val maxContent: Property = "max-content"
 
     /**
-     * Predefined value for the [minmax()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat) related CSS value and
-     * predefined value for the [minmax()](https://developer.mozilla.org/en-US/docs/Web/CSS/minmax) related CSS value
+     * Predefined value for the [minmax()](https://developer.mozilla.org/en/docs/Web/CSS/repeat) related CSS value and
+     * predefined value for the [minmax()](https://developer.mozilla.org/en/docs/Web/CSS/minmax) related CSS value
      */
     val auto: Property = "auto"
 
 
     /**
-     * Function to create the CSS [repeat](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat) function.
+     * Function to create the CSS [repeat](https://developer.mozilla.org/en/docs/Web/CSS/repeat) function.
      *
      * This variant is specialized for integer based repetition.
      *
@@ -103,7 +103,7 @@ class GridTemplateContext(
         "repeat($count, ${value()})"
 
     /**
-     * Function to create the CSS [repeat](https://developer.mozilla.org/en-US/docs/Web/CSS/repeat) function.
+     * Function to create the CSS [repeat](https://developer.mozilla.org/en/docs/Web/CSS/repeat) function.
      *
      * This variant is specialized for property based repetition, which works best if you want to apply one of the
      * predefined values like [minContent] or similar.
@@ -119,7 +119,7 @@ class GridTemplateContext(
         "repeat($count, ${value()})"
 
     /**
-     * Function to create the CSS [minmax](https://developer.mozilla.org/en-US/docs/Web/CSS/minmax) function.
+     * Function to create the CSS [minmax](https://developer.mozilla.org/en/docs/Web/CSS/minmax) function.
      *
      * @param min value or expression for the lower limit
      * @param max value or expression for the upper limit
@@ -154,7 +154,7 @@ val AreaName.middle: String
 
 /**
  * This _context_ class is responsible for defining the
- * [grid area layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Grid_Template_Areas)
+ * [grid area layout](https://developer.mozilla.org/en/docs/Web/CSS/CSS_Grid_Layout/Grid_Template_Areas)
  * as comfortable and safe as possible.
  *
  * It contains only one function: [row]. This function has the purpose to create exactly _one_ row of the grid area.
@@ -196,12 +196,12 @@ internal const val columnGapKey = "column-gap: "
 
 /**
  * This _context_ interface offers functions to **style** the container component for
- * [grid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Basic_Concepts_of_Grid_Layout)-layouts.
+ * [grid](https://developer.mozilla.org/en/docs/Web/CSS/CSS_Grid_Layout/Basic_Concepts_of_Grid_Layout)-layouts.
  *
  * It does **not** create a grid layout though!
  *
  * This is done by a special [dev.fritz2.styling.components.grid] fabric function that creates a component
- * with the [display](https://developer.mozilla.org/en-US/docs/Web/CSS/display) property already set to ``grid``.
+ * with the [display](https://developer.mozilla.org/en/docs/Web/CSS/display) property already set to ``grid``.
  *
  * So it is recommended to use the provided functions within the styles parameter of [dev.fritz2.styling.components.grid].
  *
@@ -268,7 +268,7 @@ interface GridLayout : StyleParams, Alignment {
 
     /**
      * This function opens a context ([GridTemplateContext]) to specify the column layout of a grid layout via the
-     * [grid-template-columns](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns) CSS property
+     * [grid-template-columns](https://developer.mozilla.org/en/docs/Web/CSS/grid-template-columns) CSS property
      * for all media devices.
      *
      * The actual definition is then done within the [GridTemplateContext] using the specific topic functions of it.
@@ -283,7 +283,7 @@ interface GridLayout : StyleParams, Alignment {
 
     /**
      * This function opens a context ([GridTemplateContext]) to specify the column layout of a grid layout via the
-     * [grid-template-columns](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns) CSS property
+     * [grid-template-columns](https://developer.mozilla.org/en/docs/Web/CSS/grid-template-columns) CSS property
      * for each media device independently.
      *
      * The actual definition is then done within the [GridTemplateContext] using the specific topic functions of it.
@@ -313,7 +313,7 @@ interface GridLayout : StyleParams, Alignment {
 
     /**
      * This function opens a context ([GridTemplateContext]) to specify the row layout of a grid layout via the
-     * [grid-template-rows](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-rows) CSS property
+     * [grid-template-rows](https://developer.mozilla.org/en/docs/Web/CSS/grid-template-rows) CSS property
      * for all media devices.
      *
      * The actual definition is then done within the [GridTemplateContext] using the specific topic functions of it.
@@ -328,7 +328,7 @@ interface GridLayout : StyleParams, Alignment {
 
     /**
      * This function opens a context ([GridTemplateContext]) to specify the row layout of a grid layout via the
-     * [grid-template-rows](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-rows) CSS property
+     * [grid-template-rows](https://developer.mozilla.org/en/docs/Web/CSS/grid-template-rows) CSS property
      * for each media device independently.
      *
      * The actual definition is then done within the [GridTemplateContext] using the specific topic functions of it.
@@ -358,7 +358,7 @@ interface GridLayout : StyleParams, Alignment {
 
     /**
      * This function opens a context ([GridTemplateContext]) to specify the auto rows layout of a grid layout via the
-     * [grid-auto-rows](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-rows) CSS property
+     * [grid-auto-rows](https://developer.mozilla.org/en/docs/Web/CSS/grid-auto-rows) CSS property
      * for all media devices.
      *
      * The actual definition is then done within the [GridTemplateContext] using the specific topic functions of it.
@@ -373,7 +373,7 @@ interface GridLayout : StyleParams, Alignment {
 
     /**
      * This function opens a context ([GridTemplateContext]) to specify the auto rows layout of a grid layout via the
-     * [grid-auto-rows](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-rows) CSS property
+     * [grid-auto-rows](https://developer.mozilla.org/en/docs/Web/CSS/grid-auto-rows) CSS property
      * for each media device independently.
      *
      * The actual definition is then done within the [GridTemplateContext] using the specific topic functions of it.
@@ -403,7 +403,7 @@ interface GridLayout : StyleParams, Alignment {
 
     /**
      * This function opens a context ([GridTemplateContext]) to specify the auto columns layout of a grid layout via the
-     * [grid-auto-columns](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-columns) CSS property
+     * [grid-auto-columns](https://developer.mozilla.org/en/docs/Web/CSS/grid-auto-columns) CSS property
      * for all media devices.
      *
      * The actual definition is then done within the [GridTemplateContext] using the specific topic functions of it.
@@ -418,7 +418,7 @@ interface GridLayout : StyleParams, Alignment {
 
     /**
      * This function opens a context ([GridTemplateContext]) to specify the auto columns layout of a grid layout via the
-     * [grid-auto-columns](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-columns) CSS property
+     * [grid-auto-columns](https://developer.mozilla.org/en/docs/Web/CSS/grid-auto-columns) CSS property
      * for each media device independently.
      *
      * The actual definition is then done within the [GridTemplateContext] using the specific topic functions of it.
@@ -447,7 +447,7 @@ interface GridLayout : StyleParams, Alignment {
     }
 
     /**
-     * This function sets the [grid-auto-flow](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-flow) property
+     * This function sets the [grid-auto-flow](https://developer.mozilla.org/en/docs/Web/CSS/grid-auto-flow) property
      * for all media devices.
      *
      * It is recommended to use the predefined properties of [AutoFlowValues] as value.
@@ -466,7 +466,7 @@ interface GridLayout : StyleParams, Alignment {
         property(AutoFlowValues.key, AutoFlowValues.value(), smProperties)
 
     /**
-     * This function sets the [grid-auto-flow](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-flow) property
+     * This function sets the [grid-auto-flow](https://developer.mozilla.org/en/docs/Web/CSS/grid-auto-flow) property
      * for each media device independently.
      *
      * It is recommended to use the predefined properties of [AutoFlowValues] as value.
@@ -504,7 +504,7 @@ interface GridLayout : StyleParams, Alignment {
 
     /**
      * This function opens a context ([GridTemplateContext]) to specify the overall layout of a grid layout via the
-     * [grid-template-areas](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas) CSS property
+     * [grid-template-areas](https://developer.mozilla.org/en/docs/Web/CSS/grid-template-areas) CSS property
      * for all media devices.
      *
      * The actual definition for the rows is then done within the [GridAreaContext] using the [GridAreaContext.row]
@@ -572,7 +572,7 @@ interface GridLayout : StyleParams, Alignment {
 
     /**
      * This function opens a context ([GridTemplateContext]) to specify the overall layout of a grid layout via the
-     * [grid-template-areas](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas) CSS property
+     * [grid-template-areas](https://developer.mozilla.org/en/docs/Web/CSS/grid-template-areas) CSS property
      * for each media device independently.
      *
      * For a detailed overview and usage recommendations have a look at the variant for all media devices at once!
@@ -617,7 +617,7 @@ interface GridLayout : StyleParams, Alignment {
     }
 
     /**
-     * This function sets the [column-gap](https://developer.mozilla.org/en-US/docs/Web/CSS/column-gap) property
+     * This function sets the [column-gap](https://developer.mozilla.org/en/docs/Web/CSS/column-gap) property
      * for all media devices.
      *
      * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.Theme.gridGap].
@@ -633,7 +633,7 @@ interface GridLayout : StyleParams, Alignment {
     fun columnGap(value: ScaledValueProperty) = property(columnGapKey, theme().gaps, value)
 
     /**
-     * This function sets the [column-gap](https://developer.mozilla.org/en-US/docs/Web/CSS/column-gap) property
+     * This function sets the [column-gap](https://developer.mozilla.org/en/docs/Web/CSS/column-gap) property
      * for each media device independently.
      *
      * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.Theme.gridGap].
@@ -664,7 +664,7 @@ interface GridLayout : StyleParams, Alignment {
         property(columnGapKey, theme().gaps, sm, md, lg, xl)
 
     /**
-     * This function sets the [row-gap](https://developer.mozilla.org/en-US/docs/Web/CSS/row-gap) property
+     * This function sets the [row-gap](https://developer.mozilla.org/en/docs/Web/CSS/row-gap) property
      * for all media devices.
      *
      * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.Theme.gridGap].
@@ -680,7 +680,7 @@ interface GridLayout : StyleParams, Alignment {
     fun rowGap(value: ScaledValueProperty) = property(rowGapKey, theme().gaps, value)
 
     /**
-     * This function sets the [row-gap](https://developer.mozilla.org/en-US/docs/Web/CSS/row-gap) property
+     * This function sets the [row-gap](https://developer.mozilla.org/en/docs/Web/CSS/row-gap) property
      * for each media device independently.
      *
      * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.Theme.gridGap].
@@ -715,8 +715,8 @@ interface GridLayout : StyleParams, Alignment {
      * for all media devices.
      *
      * It sets the following CSS properties:
-     * - [row-gap](https://developer.mozilla.org/en-US/docs/Web/CSS/row-gap)
-     * - [column-gap](https://developer.mozilla.org/en-US/docs/Web/CSS/column-gap)
+     * - [row-gap](https://developer.mozilla.org/en/docs/Web/CSS/row-gap)
+     * - [column-gap](https://developer.mozilla.org/en/docs/Web/CSS/column-gap)
      *
      * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.Theme.gridGap].
      *
@@ -738,8 +738,8 @@ interface GridLayout : StyleParams, Alignment {
      * for each media device independently.
      *
      * It sets the following CSS properties:
-     * - [row-gap](https://developer.mozilla.org/en-US/docs/Web/CSS/row-gap)
-     * - [column-gap](https://developer.mozilla.org/en-US/docs/Web/CSS/column-gap)
+     * - [row-gap](https://developer.mozilla.org/en/docs/Web/CSS/row-gap)
+     * - [column-gap](https://developer.mozilla.org/en/docs/Web/CSS/column-gap)
      *
      * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.Theme.gridGap].
      *
@@ -771,7 +771,7 @@ interface GridLayout : StyleParams, Alignment {
     }
 
     /**
-     * Function to create the CSS [fit-content](https://developer.mozilla.org/en-US/docs/Web/CSS/fit-content) function.
+     * Function to create the CSS [fit-content](https://developer.mozilla.org/en/docs/Web/CSS/fit-content) function.
      */
     // TODO: Find better scope; could be also used outside of grid,
     //  like ``width``, ``height`` and similar!

@@ -11,7 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 typealias TextTransformProperty = Property
 
 /**
- * Predefined values for the [text-transform](https://developer.mozilla.org/en-US/docs/Web/CSS/text-transform)
+ * Predefined values for the [text-transform](https://developer.mozilla.org/en/docs/Web/CSS/text-transform)
  * property. Should be used as expression result in [Typo.textTransform].
  */
 object TextTransforms : PropertyValues {
@@ -31,7 +31,7 @@ object TextTransforms : PropertyValues {
 typealias FontStyleProperty = Property
 
 /**
- * Predefined values for the [font-style](https://developer.mozilla.org/en-US/docs/Web/CSS/font-style)
+ * Predefined values for the [font-style](https://developer.mozilla.org/en/docs/Web/CSS/font-style)
  * property. Should be used as expression result in [Typo.fontStyle].
  */
 object FontStyles : PropertyValues {
@@ -50,7 +50,7 @@ object FontStyles : PropertyValues {
 typealias  TextAlignProperty = Property
 
 /**
- * Predefined values for the [text-align](https://developer.mozilla.org/en-US/docs/Web/CSS/text-align)
+ * Predefined values for the [text-align](https://developer.mozilla.org/en/docs/Web/CSS/text-align)
  * property. Should be used as expression result in [Typo.textAlign].
  */
 object TextAligns : PropertyValues {
@@ -70,7 +70,7 @@ object TextAligns : PropertyValues {
 typealias FontWeightProperty = Property
 
 /**
- * Predefined values for the [font-weight](https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight)
+ * Predefined values for the [font-weight](https://developer.mozilla.org/en/docs/Web/CSS/font-weight)
  * property. Should be used as expression result in [Typo.fontWeight].
  */
 object FontWeights : PropertyValues {
@@ -104,7 +104,7 @@ internal const val lineHeightKey = "line-height: "
 interface Typo : StyleParams {
 
     /**
-     * This function sets the [font-family](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family) property.
+     * This function sets the [font-family](https://developer.mozilla.org/en/docs/Web/CSS/font-family) property.
      *
      * Example call:
      * ```
@@ -117,7 +117,7 @@ interface Typo : StyleParams {
     fun fontFamily(value: Fonts.() -> Property) = property(fontSizeKey, theme().fonts, value)
 
     /**
-     * This function sets the [font-family](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family) property
+     * This function sets the [font-family](https://developer.mozilla.org/en/docs/Web/CSS/font-family) property
      * for each media device independently.
      *
      * Example call:
@@ -146,7 +146,7 @@ interface Typo : StyleParams {
         property(fontSizeKey, theme().fonts, sm, md, lg, xl)
 
     /**
-     * This function sets the [font-size](https://developer.mozilla.org/en-US/docs/Web/CSS/font-size) property
+     * This function sets the [font-size](https://developer.mozilla.org/en/docs/Web/CSS/font-size) property
      *
      * Example call:
      * ```
@@ -159,7 +159,7 @@ interface Typo : StyleParams {
     fun fontSize(value: ScaledValueProperty) = property(fontSizeKey, theme().fontSizes, value)
 
     /**
-     * This function sets the [font-size](https://developer.mozilla.org/en-US/docs/Web/CSS/font-size) property
+     * This function sets the [font-size](https://developer.mozilla.org/en/docs/Web/CSS/font-size) property
      * for each media device independently.
      *
      * Example call:
@@ -188,7 +188,7 @@ interface Typo : StyleParams {
         property(fontSizeKey, theme().fontSizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [font-weight](https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight) property
+     * This function sets the [font-weight](https://developer.mozilla.org/en/docs/Web/CSS/font-weight) property
      *
      * Example call:
      * ```
@@ -201,7 +201,7 @@ interface Typo : StyleParams {
     fun fontWeight(value: FontWeights.() -> FontWeightProperty) = property(FontWeights, value)
 
     /**
-     * This function sets the [font-weight](https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight) property
+     * This function sets the [font-weight](https://developer.mozilla.org/en/docs/Web/CSS/font-weight) property
      * for each media device independently.
      *
      * Example call:
@@ -230,7 +230,7 @@ interface Typo : StyleParams {
         property(FontWeights, sm, md, lg, xl)
 
     /**
-     * This function sets the [line-height](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height) property
+     * This function sets the [line-height](https://developer.mozilla.org/en/docs/Web/CSS/line-height) property
      *
      * Example call:
      * ```
@@ -243,7 +243,7 @@ interface Typo : StyleParams {
     fun lineHeight(value: ScaledValueProperty) = property(lineHeightKey, theme().lineHeights, value)
 
     /**
-     * This function sets the [line-height](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height) property
+     * This function sets the [line-height](https://developer.mozilla.org/en/docs/Web/CSS/line-height) property
      * for each media device independently.
      *
      * Example call:
@@ -272,7 +272,7 @@ interface Typo : StyleParams {
         property(lineHeightKey, theme().lineHeights, sm, md, lg, xl)
 
     /**
-     * This function sets the [letter-spacing](https://developer.mozilla.org/en-US/docs/Web/CSS/letter-spacing) property
+     * This function sets the [letter-spacing](https://developer.mozilla.org/en/docs/Web/CSS/letter-spacing) property
      *
      * Example call:
      * ```
@@ -285,7 +285,7 @@ interface Typo : StyleParams {
     fun letterSpacing(value: ScaledValueProperty) = property(letterSpacingKey, theme().letterSpacings, value)
 
     /**
-     * This function sets the [letter-spacing](https://developer.mozilla.org/en-US/docs/Web/CSS/letter-spacing) property
+     * This function sets the [letter-spacing](https://developer.mozilla.org/en/docs/Web/CSS/letter-spacing) property
      * for each media device independently.
      *
      * Example call:
@@ -314,7 +314,7 @@ interface Typo : StyleParams {
         property(letterSpacingKey, theme().letterSpacings, sm, md, lg, xl)
 
     /**
-     * This function sets the [text-align](https://developer.mozilla.org/en-US/docs/Web/CSS/text-align) property
+     * This function sets the [text-align](https://developer.mozilla.org/en/docs/Web/CSS/text-align) property
      *
      * Example call:
      * ```
@@ -327,7 +327,7 @@ interface Typo : StyleParams {
     fun textAlign(value: TextAligns.() -> TextAlignProperty) = property(TextAligns, value)
 
     /**
-     * This function sets the [text-align](https://developer.mozilla.org/en-US/docs/Web/CSS/text-align) property
+     * This function sets the [text-align](https://developer.mozilla.org/en/docs/Web/CSS/text-align) property
      * for each media device independently.
      *
      * Example call:
@@ -356,7 +356,7 @@ interface Typo : StyleParams {
         property(TextAligns, sm, md, lg, xl)
 
     /**
-     * This function sets the [text-transform](https://developer.mozilla.org/en-US/docs/Web/CSS/text-transform) property
+     * This function sets the [text-transform](https://developer.mozilla.org/en/docs/Web/CSS/text-transform) property
      *
      * Example call:
      * ```
@@ -369,7 +369,7 @@ interface Typo : StyleParams {
     fun textTransform(value: TextTransforms.() -> TextTransformProperty) = property(TextTransforms, value)
 
     /**
-     * This function sets the [text-transform](https://developer.mozilla.org/en-US/docs/Web/CSS/text-transform) property
+     * This function sets the [text-transform](https://developer.mozilla.org/en/docs/Web/CSS/text-transform) property
      * for each media device independently.
      *
      * Example call:
@@ -398,7 +398,7 @@ interface Typo : StyleParams {
         property(TextTransforms, sm, md, lg, xl)
 
     /**
-     * This function sets the [font-style](https://developer.mozilla.org/en-US/docs/Web/CSS/font-style) property
+     * This function sets the [font-style](https://developer.mozilla.org/en/docs/Web/CSS/font-style) property
      *
      * Example call:
      * ```
@@ -411,7 +411,7 @@ interface Typo : StyleParams {
     fun fontStyle(value: FontStyles.() -> FontStyleProperty) = property(FontStyles, value)
 
     /**
-     * This function sets the [font-style](https://developer.mozilla.org/en-US/docs/Web/CSS/font-style) property
+     * This function sets the [font-style](https://developer.mozilla.org/en/docs/Web/CSS/font-style) property
      * for each media device independently.
      *
      * Example call:

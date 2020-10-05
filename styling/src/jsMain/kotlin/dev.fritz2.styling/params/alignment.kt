@@ -80,7 +80,7 @@ object AlignContentValues : PropertyValues {
  */
 interface Alignment : StyleParams {
     /**
-     * This function sets the [justify-content](https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content) property
+     * This function sets the [justify-content](https://developer.mozilla.org/en/docs/Web/CSS/justify-content) property
      *
      * Example call:
      * ```
@@ -94,7 +94,7 @@ interface Alignment : StyleParams {
         property(JustifyContentValues.key, JustifyContentValues.value(), smProperties)
 
     /**
-     * This function sets the [justify-content](https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content) property
+     * This function sets the [justify-content](https://developer.mozilla.org/en/docs/Web/CSS/justify-content) property
      * for each media device independently.
      *
      * Example call:
@@ -127,7 +127,7 @@ interface Alignment : StyleParams {
     }
 
     /**
-     * This function sets the [align-items](https://developer.mozilla.org/en-US/docs/Web/CSS/align-items) property
+     * This function sets the [align-items](https://developer.mozilla.org/en/docs/Web/CSS/align-items) property
      *
      * Example call:
      * ```
@@ -141,7 +141,7 @@ interface Alignment : StyleParams {
         property(AlignItemsValues.key, AlignItemsValues.value(), smProperties)
 
     /**
-     * This function sets the [align-items](https://developer.mozilla.org/en-US/docs/Web/CSS/align-items) property
+     * This function sets the [align-items](https://developer.mozilla.org/en/docs/Web/CSS/align-items) property
      * for each media device independently.
      *
      * Example call:
@@ -174,7 +174,7 @@ interface Alignment : StyleParams {
     }
 
     /**
-     * This function sets the [align-content](https://developer.mozilla.org/en-US/docs/Web/CSS/align-content) property
+     * This function sets the [align-content](https://developer.mozilla.org/en/docs/Web/CSS/align-content) property
      *
      * Example call:
      * ```
@@ -188,7 +188,7 @@ interface Alignment : StyleParams {
         property(AlignContentValues.key, AlignContentValues.value(), smProperties)
 
     /**
-     * This function sets the [align-content](https://developer.mozilla.org/en-US/docs/Web/CSS/align-content) property
+     * This function sets the [align-content](https://developer.mozilla.org/en/docs/Web/CSS/align-content) property
      * for each media device independently.
      *
      * Example call:
@@ -252,7 +252,7 @@ object SelfAlignItemsValues : PropertyValues {
  */
 interface SelfAlignment {
     /**
-     * This function sets the [self-align](https://developer.mozilla.org/en-US/docs/Web/CSS/align-content) property
+     * This function sets the [self-align](https://developer.mozilla.org/en/docs/Web/CSS/align-content) property
      *
      * Example call:
      * ```

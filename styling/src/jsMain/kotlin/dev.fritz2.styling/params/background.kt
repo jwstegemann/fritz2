@@ -9,7 +9,7 @@ import dev.fritz2.styling.theme.Property
 typealias BackgroundRepeatProperty = Property
 
 /**
- * Predefined values for the [background-repeat](https://developer.mozilla.org/en-US/docs/Web/CSS/background-repeat)
+ * Predefined values for the [background-repeat](https://developer.mozilla.org/en/docs/Web/CSS/background-repeat)
  * property. Should be used as expression result in [BackgroundContext.repeat].
  */
 object BackgroundRepeats {
@@ -29,7 +29,7 @@ object BackgroundRepeats {
 typealias BackgroundBlendModeProperty = Property
 
 /**
- * Predefined values for the [background-blend-mode](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode)
+ * Predefined values for the [background-blend-mode](https://developer.mozilla.org/en/docs/Web/CSS/background-blend-mode)
  * property. Should be used as expression result in [BackgroundContext.blendMode].
  */
 object BackgroundBlendModes {
@@ -57,7 +57,7 @@ object BackgroundBlendModes {
 typealias BackgroundPositionProperty = Property
 
 /**
- * Predefined values for the [background-position](https://developer.mozilla.org/en-US/docs/Web/CSS/background-position)
+ * Predefined values for the [background-position](https://developer.mozilla.org/en/docs/Web/CSS/background-position)
  * property. Should be used as expression result in [BackgroundContext.position], [BackgroundPositionContext.horizontal]
  * or [BackgroundPositionContext.vertical].
  */
@@ -71,7 +71,7 @@ object BackgroundPositions {
 
 /**
  * Nested _context class_ to enable separate definitions of horizontal and vertical background positioning
- * for the [background-position](https://developer.mozilla.org/en-US/docs/Web/CSS/background-position) property.
+ * for the [background-position](https://developer.mozilla.org/en/docs/Web/CSS/background-position) property.
  *
  * This _context_ is passed as receiver by [BackgroundContext.positions] function and is therefore nested within the
  * [BackgroundContext] context.
@@ -103,7 +103,7 @@ class BackgroundPositionContext(private val values: MutableList<Property>) {
 typealias  BackgroundSizeProperty = Property
 
 /**
- * Predefined values for the [background-size](https://developer.mozilla.org/en-US/docs/Web/CSS/background-size)
+ * Predefined values for the [background-size](https://developer.mozilla.org/en/docs/Web/CSS/background-size)
  * property. Should be used as expression result in [BackgroundContext.size], [BackgroundSizeContext.horizontal]
  * or [BackgroundSizeContext.vertical].
  */
@@ -115,7 +115,7 @@ object BackgroundSizes {
 
 /**
  * Nested _context class_ to enable separate definitions of horizontal and vertical background sizing
- * for the [background-size](https://developer.mozilla.org/en-US/docs/Web/CSS/background-size) property.
+ * for the [background-size](https://developer.mozilla.org/en/docs/Web/CSS/background-size) property.
  *
  * This _context_ is passed as receiver by [BackgroundContext.sizes] function and is therefore nested within the
  * [BackgroundContext] context.
@@ -144,8 +144,8 @@ class BackgroundSizeContext(private val values: MutableList<Property>) {
 typealias BackgroundBoxProperty = Property
 
 /**
- * Predefined values for the [background-origin](https://developer.mozilla.org/en-US/docs/Web/CSS/background-origin)
- * and [background-clip](https://developer.mozilla.org/en-US/docs/Web/CSS/background-clip) properties.
+ * Predefined values for the [background-origin](https://developer.mozilla.org/en/docs/Web/CSS/background-origin)
+ * and [background-clip](https://developer.mozilla.org/en/docs/Web/CSS/background-clip) properties.
  * Should be used as expression result in [BackgroundContext.origin] or [BackgroundContext.clip].
  */
 object BackgroundBoxValues {
@@ -157,7 +157,7 @@ object BackgroundBoxValues {
 typealias BackgroundAttachmentProperty = Property
 
 /**
- * Predefined values for the [background-attachment](https://developer.mozilla.org/en-US/docs/Web/CSS/background-attachment)
+ * Predefined values for the [background-attachment](https://developer.mozilla.org/en/docs/Web/CSS/background-attachment)
  * property. Should be used as expression result in [BackgroundContext.attachment].
  */
 object BackgroundAttachments {
@@ -207,7 +207,7 @@ class BackgroundContext(
 ) : StyleParams by styleParams {
 
     /**
-     * This function is used to set the [background-blend-mode](https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode)
+     * This function is used to set the [background-blend-mode](https://developer.mozilla.org/en/docs/Web/CSS/background-blend-mode)
      * property. Predefined values are offered by [BackgroundBlendModes].
      *
      * Example call
@@ -225,7 +225,7 @@ class BackgroundContext(
 
     /**
      * This function is used to set a _URL_ for the
-     * [background-image](https://developer.mozilla.org/en-US/docs/Web/CSS/background-image) property.
+     * [background-image](https://developer.mozilla.org/en/docs/Web/CSS/background-image) property.
      *
      * Example call
      * ```
@@ -243,14 +243,14 @@ class BackgroundContext(
 
     /**
      * This function is used to set the value for the
-     * [background-image](https://developer.mozilla.org/en-US/docs/Web/CSS/background-image) property to ``none``.
+     * [background-image](https://developer.mozilla.org/en/docs/Web/CSS/background-image) property to ``none``.
      *
      * If you want to set a URL, use [image] instead!
      */
     fun noImage() = property(backgroundImageKey, "none", target)
 
     /**
-     * This function is used to set the [background-position](https://developer.mozilla.org/en-US/docs/Web/CSS/background-position)
+     * This function is used to set the [background-position](https://developer.mozilla.org/en/docs/Web/CSS/background-position)
      * property. Predefined values are offered by [BackgroundPositions].
      *
      * This functions only sets _one_ value.
@@ -289,7 +289,7 @@ class BackgroundContext(
     }
 
     /**
-     * This function is used to set the [background-size](https://developer.mozilla.org/en-US/docs/Web/CSS/background-size)
+     * This function is used to set the [background-size](https://developer.mozilla.org/en/docs/Web/CSS/background-size)
      * property. Predefined values are offered by [BackgroundSizes].
      *
      * This functions only sets _one_ value.
@@ -328,7 +328,7 @@ class BackgroundContext(
     }
 
     /**
-     * This function is used to set the [background-repeat](https://developer.mozilla.org/en-US/docs/Web/CSS/background-repeat)
+     * This function is used to set the [background-repeat](https://developer.mozilla.org/en/docs/Web/CSS/background-repeat)
      * property. Predefined values are offered by [BackgroundRepeats].
      *
      * Example call
@@ -345,7 +345,7 @@ class BackgroundContext(
         property(backgroundRepeatKey, BackgroundRepeats.value(), target)
 
     /**
-     * This function is used to set the [background-origin](https://developer.mozilla.org/en-US/docs/Web/CSS/background-origin)
+     * This function is used to set the [background-origin](https://developer.mozilla.org/en/docs/Web/CSS/background-origin)
      * property. Predefined values are offered by [BackgroundBoxValues].
      *
      * Example call
@@ -362,7 +362,7 @@ class BackgroundContext(
         property(backgroundOriginKey, BackgroundBoxValues.value(), target)
 
     /**
-     * This function is used to set the [background-clip](https://developer.mozilla.org/en-US/docs/Web/CSS/background-clip)
+     * This function is used to set the [background-clip](https://developer.mozilla.org/en/docs/Web/CSS/background-clip)
      * property. Predefined values are offered by [BackgroundBoxValues].
      *
      * Example call
@@ -379,7 +379,7 @@ class BackgroundContext(
         property(backgroundClipKey, BackgroundBoxValues.value(), target)
 
     /**
-     * This function is used to set the [background-attachment](https://developer.mozilla.org/en-US/docs/Web/CSS/background-attachment)
+     * This function is used to set the [background-attachment](https://developer.mozilla.org/en/docs/Web/CSS/background-attachment)
      * property. Predefined values are offered by [BackgroundAttachments].
      *
      * Example call
@@ -397,7 +397,7 @@ class BackgroundContext(
 
     /**
      * This function is used to set a color for the
-     * [background-color](https://developer.mozilla.org/en-US/docs/Web/CSS/background-color) property.
+     * [background-color](https://developer.mozilla.org/en/docs/Web/CSS/background-color) property.
      *
      * Example call
      * ```

@@ -22,7 +22,7 @@ annotation class HtmlTagMarker
  * @param baseClass a static base value for the class-attribute. All dynamic values for this attribute will be concatenated to this base-value.
  * @param domNode the [Element]-instance that is wrapped by this [Tag] (you should never have to pass this by yourself, just let it be created by the default)
  */
-//TODO: remove unnecassary default-arguments
+//TODO: remove unnecessary default-arguments
 @HtmlTagMarker
 open class Tag<out T : Element>(
     tagName: String,

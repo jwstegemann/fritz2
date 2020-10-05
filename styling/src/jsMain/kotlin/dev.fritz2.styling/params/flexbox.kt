@@ -9,7 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 typealias DirectionProperty = Property
 
 /**
- * Predefined values for the [flex-direction](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-direction)
+ * Predefined values for the [flex-direction](https://developer.mozilla.org/en/docs/Web/CSS/flex-direction)
  * property. Should be used as expression result in [Flexbox.direction] functions.
  */
 object DirectionValues : PropertyValues {
@@ -27,7 +27,7 @@ object DirectionValues : PropertyValues {
 typealias WrapProperty = Property
 
 /**
- * Predefined values for the [flex-wrap](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-wrap)
+ * Predefined values for the [flex-wrap](https://developer.mozilla.org/en/docs/Web/CSS/flex-wrap)
  * property. Should be used as expression result in [Flexbox.wrap] functions.
  */
 object WrapValues : PropertyValues {
@@ -40,12 +40,12 @@ object WrapValues : PropertyValues {
 
 /**
  * This _context_ interface offers functions to **style**
- * [flexbox](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox)-layouts.
+ * [flexbox](https://developer.mozilla.org/en/docs/Learn/CSS/CSS_layout/Flexbox)-layouts.
  *
  * It does **not** create a flexbox layout though!
  *
  * This is done by a special [dev.fritz2.components.flex] fabric function that creates a component
- * with the [display](https://developer.mozilla.org/en-US/docs/Web/CSS/display) property already set to ``flex``.
+ * with the [display](https://developer.mozilla.org/en/docs/Web/CSS/display) property already set to ``flex``.
  *
  * So it is recommended to use the provided functions within the styles parameter of [dev.fritz2.styling.components.flex].
  *
@@ -77,7 +77,7 @@ object WrapValues : PropertyValues {
 interface Flexbox : StyleParams, Alignment {
 
     /**
-     * This function sets the [flex-direction](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-direction) property
+     * This function sets the [flex-direction](https://developer.mozilla.org/en/docs/Web/CSS/flex-direction) property
      * for all media devices.
      *
      * Example call:
@@ -92,7 +92,7 @@ interface Flexbox : StyleParams, Alignment {
         property(DirectionValues.key, DirectionValues.value(), smProperties)
 
     /**
-     * This function sets the [flex-direction](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-direction) property
+     * This function sets the [flex-direction](https://developer.mozilla.org/en/docs/Web/CSS/flex-direction) property
      * for each media device independently.
      *
      * Example call:
@@ -125,7 +125,7 @@ interface Flexbox : StyleParams, Alignment {
     }
 
     /**
-     * This function sets the [flex-wrap](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-wrap) property
+     * This function sets the [flex-wrap](https://developer.mozilla.org/en/docs/Web/CSS/flex-wrap) property
      * for all media devices.
      *
      * Example call:
@@ -140,7 +140,7 @@ interface Flexbox : StyleParams, Alignment {
         property(WrapValues.key, WrapValues.value(), smProperties)
 
     /**
-     * This function sets the [flex-wrap](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-wrap) property
+     * This function sets the [flex-wrap](https://developer.mozilla.org/en/docs/Web/CSS/flex-wrap) property
      * for each media device independently.
      *
      * Example call:
