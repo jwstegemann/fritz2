@@ -17,7 +17,7 @@ internal const val maxHeightKey = "max-height: "
 typealias DisplayProperty = Property
 
 /**
- * Predefined values for the [display](https://developer.mozilla.org/de/docs/Web/CSS/display)
+ * Predefined values for the [display](https://developer.mozilla.org/en/docs/Web/CSS/display)
  * property. Should be used as expression result in [Layout.display].
  */
 object DisplayValues : PropertyValues {
@@ -59,7 +59,7 @@ object DisplayValues : PropertyValues {
 typealias OverflowProperty = Property
 
 /**
- * Predefined _common_ values for the [overflow](https://developer.mozilla.org/de/docs/Web/CSS/overflow)
+ * Predefined _common_ values for the [overflow](https://developer.mozilla.org/en/docs/Web/CSS/overflow)
  * related properties.
  *
  * This class acts only as base class and should not be used directly!
@@ -82,13 +82,13 @@ open class OverflowBaseValues(override val key: String) : PropertyValues {
 }
 
 /**
- * Predefined values for the [overflow](https://developer.mozilla.org/de/docs/Web/CSS/overflow)
+ * Predefined values for the [overflow](https://developer.mozilla.org/en/docs/Web/CSS/overflow)
  * property. Should be used as expression result in [Layout.overflow].
  */
 object OverflowValues : OverflowBaseValues("overflow: ")
 
 /**
- * Predefined values for the [overflow-x](https://developer.mozilla.org/de/docs/Web/CSS/overflow-x)
+ * Predefined values for the [overflow-x](https://developer.mozilla.org/en/docs/Web/CSS/overflow-x)
  * property. Should be used as expression result in [Layout.overflowX].
  */
 object OverflowXValues : OverflowBaseValues("overflow-x: ") {
@@ -98,7 +98,7 @@ object OverflowXValues : OverflowBaseValues("overflow-x: ") {
 }
 
 /**
- * Predefined values for the [overflow-y](https://developer.mozilla.org/de/docs/Web/CSS/overflow-y)
+ * Predefined values for the [overflow-y](https://developer.mozilla.org/en/docs/Web/CSS/overflow-y)
  * property. Should be used as expression result in [Layout.overflowY].
  */
 object OverflowYValues : OverflowBaseValues("overflow-y: ") {
@@ -113,7 +113,7 @@ object OverflowYValues : OverflowBaseValues("overflow-y: ") {
 typealias VerticalAlignProperty = Property
 
 /**
- * Predefined values for the [vertical-align](https://developer.mozilla.org/de/docs/Web/CSS/vertical-align)
+ * Predefined values for the [vertical-align](https://developer.mozilla.org/en/docs/Web/CSS/vertical-align)
  * property. Should be used as expression result in [Layout.verticalAlign].
  */
 object VerticalAlignValues : PropertyValues {
@@ -134,7 +134,7 @@ object VerticalAlignValues : PropertyValues {
 
 /**
  * This _context_ interface offers functions to **style**
- * [grid layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout)-cells / child elements.
+ * [grid layout](https://developer.mozilla.org/en/docs/Web/CSS/CSS_Grid_Layout)-cells / child elements.
  *
  * It does **not** configure the grid template / container itself. This should be done by [GridLayout] functions!
  *
@@ -186,7 +186,7 @@ class GridContext(
 
     /**
      * This function is used to set the name of an area part of the grid layout via the
-     * [grid-area](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-area) property.
+     * [grid-area](https://developer.mozilla.org/en/docs/Web/CSS/grid-area) property.
      *
      * example calls:
      * ```
@@ -204,7 +204,7 @@ class GridContext(
 
     /**
      * This function is used to define the position within the columns of a grid for a child element using the
-     * [grid-column](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column) property.
+     * [grid-column](https://developer.mozilla.org/en/docs/Web/CSS/grid-column) property.
      *
      * example call:
      * ```
@@ -224,7 +224,7 @@ class GridContext(
 
     /**
      * This function is used to define the position within the rows of a grid for a child element using the
-     * [grid-row](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row) property.
+     * [grid-row](https://developer.mozilla.org/en/docs/Web/CSS/grid-row) property.
      *
      * example call:
      * ```
@@ -254,8 +254,8 @@ class GridRowColumnContext(
     /**
      * This function is used to define the start position within the columns or rows of a grid for a child element
      * using the CSS properties:
-     * - [grid-column-start](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column-start)
-     * - [grid-row-start](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row-start)
+     * - [grid-column-start](https://developer.mozilla.org/en/docs/Web/CSS/grid-column-start)
+     * - [grid-row-start](https://developer.mozilla.org/en/docs/Web/CSS/grid-row-start)
      *
      * example calls:
      * ```
@@ -271,8 +271,8 @@ class GridRowColumnContext(
     /**
      * This function is used to define the end position within the columns or rows of a grid for a child element
      * using the CSS properties:
-     * - [grid-column-end](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column-end)
-     * - [grid-row-end](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row-end)
+     * - [grid-column-end](https://developer.mozilla.org/en/docs/Web/CSS/grid-column-end)
+     * - [grid-row-end](https://developer.mozilla.org/en/docs/Web/CSS/grid-row-end)
      *
      * example calls:
      * ```
@@ -307,7 +307,7 @@ class GridRowColumnContext(
 typealias FlexBasisProperty = Property
 
 /**
- * Predefined values for the [flex-basis](https://developer.mozilla.org/de/docs/Web/CSS/flex-basis)
+ * Predefined values for the [flex-basis](https://developer.mozilla.org/en/docs/Web/CSS/flex-basis)
  * property. Should be used as expression result in [FlexItemContext.basis].
  */
 object FlexBasisValues : PropertyValues {
@@ -358,7 +358,7 @@ class FlexItemContext(
 ) : StyleParams by styleParams, SelfAlignment by selfAlignment {
 
     /**
-     * This function sets the [order](https://developer.mozilla.org/de/docs/Web/CSS/order) CSS property.
+     * This function sets the [order](https://developer.mozilla.org/en/docs/Web/CSS/order) CSS property.
      *
      * example call:
      * ```
@@ -370,7 +370,7 @@ class FlexItemContext(
     fun order(value: () -> Property) = property("order: ", value(), target)
 
     /**
-     * This function sets the [flex-grow](https://developer.mozilla.org/de/docs/Web/CSS/flex-grow) CSS property.
+     * This function sets the [flex-grow](https://developer.mozilla.org/en/docs/Web/CSS/flex-grow) CSS property.
      *
      * example call:
      * ```
@@ -382,7 +382,7 @@ class FlexItemContext(
     fun grow(value: () -> Property) = property("flex-grow: ", value(), target)
 
     /**
-     * This function sets the [flex-shrink](https://developer.mozilla.org/de/docs/Web/CSS/flex-shrink) CSS property.
+     * This function sets the [flex-shrink](https://developer.mozilla.org/en/docs/Web/CSS/flex-shrink) CSS property.
      *
      * example call:
      * ```
@@ -394,7 +394,7 @@ class FlexItemContext(
     fun shrink(value: () -> Property) = property("flex-shrink: ", value(), target)
 
     /**
-     * This function sets the [flex-basis](https://developer.mozilla.org/de/docs/Web/CSS/flex-basis) CSS property.
+     * This function sets the [flex-basis](https://developer.mozilla.org/en/docs/Web/CSS/flex-basis) CSS property.
      *
      * example call:
      * ```
@@ -408,7 +408,7 @@ class FlexItemContext(
         property(FlexBasisValues.key, FlexBasisValues.value(), target)
 
     /**
-     * This function sets the [flex-basis](https://developer.mozilla.org/de/docs/Web/CSS/flex-basis) CSS property.
+     * This function sets the [flex-basis](https://developer.mozilla.org/en/docs/Web/CSS/flex-basis) CSS property.
      *
      * example call:
      * ```
@@ -477,7 +477,7 @@ interface Layout : StyleParams {
      * size { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun size(value: SizesProperty) {
@@ -494,10 +494,10 @@ interface Layout : StyleParams {
      * size { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun size(
         sm: SizesProperty? = null,
@@ -510,7 +510,7 @@ interface Layout : StyleParams {
     }
 
     /**
-     * This function sets the [width](https://developer.mozilla.org/de/docs/Web/CSS/width) property of a component
+     * This function sets the [width](https://developer.mozilla.org/en/docs/Web/CSS/width) property of a component
      * for all media devices.
      *
      * example calls:
@@ -519,13 +519,13 @@ interface Layout : StyleParams {
      * width { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun width(value: SizesProperty) = property(widthKey, theme().sizes, value)
 
     /**
-     * This function sets the [width](https://developer.mozilla.org/de/docs/Web/CSS/width) property of a component
+     * This function sets the [width](https://developer.mozilla.org/en/docs/Web/CSS/width) property of a component
      * for each media device independently.
      *
      * example calls:
@@ -534,10 +534,10 @@ interface Layout : StyleParams {
      * width { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun width(
         sm: SizesProperty? = null,
@@ -548,7 +548,7 @@ interface Layout : StyleParams {
         property(widthKey, theme().sizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [height](https://developer.mozilla.org/de/docs/Web/CSS/height) property of a component
+     * This function sets the [height](https://developer.mozilla.org/en/docs/Web/CSS/height) property of a component
      * for all media devices.
      *
      * example calls:
@@ -557,13 +557,13 @@ interface Layout : StyleParams {
      * height { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun height(value: SizesProperty) = property(heightKey, theme().sizes, value)
 
     /**
-     * This function sets the [height](https://developer.mozilla.org/de/docs/Web/CSS/height) property of a component
+     * This function sets the [height](https://developer.mozilla.org/en/docs/Web/CSS/height) property of a component
      * for each media device independently.
      *
      * example calls:
@@ -572,10 +572,10 @@ interface Layout : StyleParams {
      * height { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun height(
         sm: SizesProperty? = null,
@@ -586,7 +586,7 @@ interface Layout : StyleParams {
         property(heightKey, theme().sizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [min-width](https://developer.mozilla.org/de/docs/Web/CSS/min-width) property of a component
+     * This function sets the [min-width](https://developer.mozilla.org/en/docs/Web/CSS/min-width) property of a component
      * for all media devices.
      *
      * example calls:
@@ -595,13 +595,13 @@ interface Layout : StyleParams {
      * minWidth { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun minWidth(value: SizesProperty) = property(minWidthKey, theme().sizes, value)
 
     /**
-     * This function sets the [min-width](https://developer.mozilla.org/de/docs/Web/CSS/min-width) property of a component
+     * This function sets the [min-width](https://developer.mozilla.org/en/docs/Web/CSS/min-width) property of a component
      * for all media devices.
      *
      * example calls:
@@ -610,10 +610,10 @@ interface Layout : StyleParams {
      * minWidth { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun minWidth(
         sm: SizesProperty? = null,
@@ -624,7 +624,7 @@ interface Layout : StyleParams {
         property(minWidthKey, theme().sizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [max-width](https://developer.mozilla.org/de/docs/Web/CSS/max-width) property of a component
+     * This function sets the [max-width](https://developer.mozilla.org/en/docs/Web/CSS/max-width) property of a component
      * for all media devices.
      *
      * example calls:
@@ -633,13 +633,13 @@ interface Layout : StyleParams {
      * maxWidth { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun maxWidth(value: SizesProperty) = property(maxWidthKey, theme().sizes, value)
 
     /**
-     * This function sets the [max-width](https://developer.mozilla.org/de/docs/Web/CSS/max-width) property of a component
+     * This function sets the [max-width](https://developer.mozilla.org/en/docs/Web/CSS/max-width) property of a component
      * for all media devices.
      *
      * example calls:
@@ -648,10 +648,10 @@ interface Layout : StyleParams {
      * maxWidth { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun maxWidth(
         sm: SizesProperty? = null,
@@ -662,7 +662,7 @@ interface Layout : StyleParams {
         property(maxWidthKey, theme().sizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [min-height](https://developer.mozilla.org/de/docs/Web/CSS/min-height) property of a component
+     * This function sets the [min-height](https://developer.mozilla.org/en/docs/Web/CSS/min-height) property of a component
      * for all media devices.
      *
      * example calls:
@@ -671,13 +671,13 @@ interface Layout : StyleParams {
      * minHeight { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun minHeight(value: SizesProperty) = property(minHeightKey, theme().sizes, value)
 
     /**
-     * This function sets the [min-height](https://developer.mozilla.org/de/docs/Web/CSS/min-height) property of a component
+     * This function sets the [min-height](https://developer.mozilla.org/en/docs/Web/CSS/min-height) property of a component
      * for all media devices.
      *
      * example calls:
@@ -686,10 +686,10 @@ interface Layout : StyleParams {
      * minHeight { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun minHeight(
         sm: SizesProperty? = null,
@@ -700,7 +700,7 @@ interface Layout : StyleParams {
         property(minHeightKey, theme().sizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [max-height](https://developer.mozilla.org/de/docs/Web/CSS/max-height) property of a component
+     * This function sets the [max-height](https://developer.mozilla.org/en/docs/Web/CSS/max-height) property of a component
      * for all media devices.
      *
      * example calls:
@@ -709,13 +709,13 @@ interface Layout : StyleParams {
      * maxHeight { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun maxHeight(value: SizesProperty) = property(maxHeightKey, theme().sizes, value)
 
     /**
-     * This function sets the [max-height](https://developer.mozilla.org/de/docs/Web/CSS/max-height) property of a component
+     * This function sets the [max-height](https://developer.mozilla.org/en/docs/Web/CSS/max-height) property of a component
      * for all media devices.
      *
      * example calls:
@@ -724,10 +724,10 @@ interface Layout : StyleParams {
      * maxHeight { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun maxHeight(
         sm: SizesProperty? = null,
@@ -738,7 +738,7 @@ interface Layout : StyleParams {
         property(maxHeightKey, theme().sizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [display](https://developer.mozilla.org/de/docs/Web/CSS/display) property of a component
+     * This function sets the [display](https://developer.mozilla.org/en/docs/Web/CSS/display) property of a component
      * for all media devices.
      *
      * If you want to create a flex- or grid-layout prefer to use the specialized [dev.fritz2.styling.components.flex]
@@ -759,11 +759,11 @@ interface Layout : StyleParams {
     fun display(value: DisplayValues.() -> DisplayProperty) = property(DisplayValues, value)
 
     /**
-     * This function sets the [display](https://developer.mozilla.org/de/docs/Web/CSS/display) property of a component
+     * This function sets the [display](https://developer.mozilla.org/en/docs/Web/CSS/display) property of a component
      * for each media device independently.
      *
-     * If you want to create a flex- or grid-layout prefer to use the specialized [dev.fritz2.styling.components.flex]
-     * and [dev.fritz2.styling.components.grid] factory functions in order to create a box, that has this property
+     * If you want to create a flex- or grid-layout prefer to use the specialized [dev.fritz2.components.flex]
+     * and [dev.fritz2.components.grid] factory functions in order to create a box, that has this property
      * already set.
      *
      * example calls:
@@ -792,7 +792,7 @@ interface Layout : StyleParams {
         property(DisplayValues, sm, md, lg, xl)
 
     /**
-     * This function sets the [vertical-align](https://developer.mozilla.org/de/docs/Web/CSS/vertical-align) property
+     * This function sets the [vertical-align](https://developer.mozilla.org/en/docs/Web/CSS/vertical-align) property
      * of a component for all media devices.
      *
      * example calls:
@@ -808,7 +808,7 @@ interface Layout : StyleParams {
         property(VerticalAlignValues, value)
 
     /**
-     * This function sets the [vertical-align](https://developer.mozilla.org/de/docs/Web/CSS/vertical-align) property
+     * This function sets the [vertical-align](https://developer.mozilla.org/en/docs/Web/CSS/vertical-align) property
      * of a component for each media device independently.
      *
      * example calls:
@@ -835,7 +835,7 @@ interface Layout : StyleParams {
         property(VerticalAlignValues, sm, md, lg, xl)
 
     /**
-     * This function sets the [overflow](https://developer.mozilla.org/de/docs/Web/CSS/overflow) property
+     * This function sets the [overflow](https://developer.mozilla.org/en/docs/Web/CSS/overflow) property
      * of a component for all media devices.
      *
      * example calls:
@@ -849,7 +849,7 @@ interface Layout : StyleParams {
     fun overflow(value: OverflowValues.() -> OverflowProperty) = property(OverflowValues, value)
 
     /**
-     * This function sets the [overflow](https://developer.mozilla.org/de/docs/Web/CSS/overflow) property
+     * This function sets the [overflow](https://developer.mozilla.org/en/docs/Web/CSS/overflow) property
      * of a component for each media device independently.
      *
      * example calls:
@@ -875,7 +875,7 @@ interface Layout : StyleParams {
         property(OverflowValues, sm, md, lg, xl)
 
     /**
-     * This function sets the [overflow-x](https://developer.mozilla.org/de/docs/Web/CSS/overflow-x) property
+     * This function sets the [overflow-x](https://developer.mozilla.org/en/docs/Web/CSS/overflow-x) property
      * of a component for all media devices.
      *
      * example calls:
@@ -889,7 +889,7 @@ interface Layout : StyleParams {
     fun overflowX(value: OverflowXValues.() -> OverflowProperty) = property(OverflowXValues, value)
 
     /**
-     * This function sets the [overflow-x](https://developer.mozilla.org/de/docs/Web/CSS/overflow-x) property
+     * This function sets the [overflow-x](https://developer.mozilla.org/en/docs/Web/CSS/overflow-x) property
      * of a component for all media devices.
      *
      * example calls:
@@ -915,7 +915,7 @@ interface Layout : StyleParams {
         property(OverflowXValues, sm, md, lg, xl)
 
     /**
-     * This function sets the [overflow-y](https://developer.mozilla.org/de/docs/Web/CSS/overflow-y) property
+     * This function sets the [overflow-y](https://developer.mozilla.org/en/docs/Web/CSS/overflow-y) property
      * of a component for all media devices.
      *
      * example calls:
@@ -929,7 +929,7 @@ interface Layout : StyleParams {
     fun overflowY(value: OverflowYValues.() -> OverflowProperty) = property(OverflowYValues, value)
 
     /**
-     * This function sets the [overflow-y](https://developer.mozilla.org/de/docs/Web/CSS/overflow-y) property
+     * This function sets the [overflow-y](https://developer.mozilla.org/en/docs/Web/CSS/overflow-y) property
      * of a component for all media devices.
      *
      * example calls:

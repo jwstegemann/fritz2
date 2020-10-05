@@ -12,7 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 typealias BorderStyleProperty = Property
 
 /**
- * Predefined values for the [border-style](https://developer.mozilla.org/de/docs/Web/CSS/border-style)
+ * Predefined values for the [border-style](https://developer.mozilla.org/en/docs/Web/CSS/border-style)
  * property. Should be used as expression result in [BorderContext.style].
  */
 object BorderStyleValues : PropertyValues {
@@ -69,9 +69,9 @@ internal const val borderBottomLeftRadiusKey = "border-bottom-left-radius: "
  * acts as a _nested context_.
  *
  * The definable properties for the direct usage by [Border.border] correspond to the
- * [border-width](https://developer.mozilla.org/de/docs/Web/CSS/border-width),
- * [border-style](https://developer.mozilla.org/de/docs/Web/CSS/border-style) and
- * [border-color](https://developer.mozilla.org/de/docs/Web/CSS/border-color) CSS properties.
+ * [border-width](https://developer.mozilla.org/en/docs/Web/CSS/border-width),
+ * [border-style](https://developer.mozilla.org/en/docs/Web/CSS/border-style) and
+ * [border-color](https://developer.mozilla.org/en/docs/Web/CSS/border-color) CSS properties.
  *
  * This usage enables border styling like this:
  * ```
@@ -117,7 +117,7 @@ class BorderContext(
 
     /**
      * This function is used to set the _width_ of a border for the
-     * [border-width](https://developer.mozilla.org/de/docs/Web/CSS/border-width) property or the individual side width
+     * [border-width](https://developer.mozilla.org/en/docs/Web/CSS/border-width) property or the individual side width
      * property according to the passed [BorderContext.widthKey] value like ``border-{side}-width``.
      *
      * example call:
@@ -134,7 +134,7 @@ class BorderContext(
 
     /**
      * This function is used to set the _style_ of a border for the
-     * [border-style](https://developer.mozilla.org/de/docs/Web/CSS/border-style) property or the individual side style
+     * [border-style](https://developer.mozilla.org/en/docs/Web/CSS/border-style) property or the individual side style
      * property according to the passed [BorderContext.styleKey] value like ``border-{side}-style``.
      *
      * example call:
@@ -152,7 +152,7 @@ class BorderContext(
 
     /**
      * This function is used to set the _color_ of a border for the
-     * [border-color](https://developer.mozilla.org/de/docs/Web/CSS/border-color) property or the individual side color
+     * [border-color](https://developer.mozilla.org/en/docs/Web/CSS/border-color) property or the individual side color
      * property according to the passed [BorderContext.colorKey] value like ``border-{side}-color``.
      *
      * example call:
@@ -288,7 +288,7 @@ class BordersContext(
  * each corner independently. There are also convenience functions to handle the radii of one _side_ at once, like
  * [right] and [left] or [top] and [bottom]. Those are most useful for pairwise usage of course.
  *
- * The theme offers predefined values as [ScaledValueProperty] via its [dev.fritz2.styling.Theme.radii] property.
+ * The theme offers predefined values as [ScaledValueProperty] via its [dev.fritz2.styling.theme.Theme.radii] property.
  *
  * This usage enables border styling for each side like this:
  * ```
@@ -317,7 +317,7 @@ class RadiiContext(
 
     /**
      * This function enables the definition of the border radius for the _top left_ corner of a block via the
-     * [border-top-left-radius](https://developer.mozilla.org/de/docs/Web/CSS/border-top-left-radius) CSS property.
+     * [border-top-left-radius](https://developer.mozilla.org/en/docs/Web/CSS/border-top-left-radius) CSS property.
      *
      * example call:
      * ```
@@ -326,13 +326,13 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun topLeft(value: ScaledValueProperty) = property(borderTopLeftRadiusKey, theme().radii, value, target)
 
     /**
      * This function enables the definition of the border radius for the _top right_ corner of a block via the
-     * [border-top-right-radius](https://developer.mozilla.org/de/docs/Web/CSS/border-top-right-radius) CSS property.
+     * [border-top-right-radius](https://developer.mozilla.org/en/docs/Web/CSS/border-top-right-radius) CSS property.
      *
      * example call:
      * ```
@@ -341,13 +341,13 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun topRight(value: ScaledValueProperty) = property(borderTopRightRadiusKey, theme().radii, value, target)
 
     /**
      * This function enables the definition of the border radius for the _bottom right_ corner of a block via the
-     * [border-bottom-right-radius](https://developer.mozilla.org/de/docs/Web/CSS/border-bottom-right-radius) CSS property.
+     * [border-bottom-right-radius](https://developer.mozilla.org/en/docs/Web/CSS/border-bottom-right-radius) CSS property.
      *
      * example call:
      * ```
@@ -356,13 +356,13 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun bottomRight(value: ScaledValueProperty) = property(borderBottomRightRadiusKey, theme().radii, value, target)
 
     /**
      * This function enables the definition of the border radius for the _bottom left_ corner of a block via the
-     * [border-bottom-left-radius](https://developer.mozilla.org/de/docs/Web/CSS/border-bottom-left-radius) CSS property.
+     * [border-bottom-left-radius](https://developer.mozilla.org/en/docs/Web/CSS/border-bottom-left-radius) CSS property.
      *
      * example call:
      * ```
@@ -371,15 +371,15 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun bottomLeft(value: ScaledValueProperty) = property(borderBottomLeftRadiusKey, theme().radii, value, target)
 
     /**
      * This _convenience_ function enables the definition of the border radius for the _top left_ and _top right_
      * corners of a block at once via the
-     * [border-top-left-radius](https://developer.mozilla.org/de/docs/Web/CSS/border-top-left-radius) and
-     * [border-top-right-radius](https://developer.mozilla.org/de/docs/Web/CSS/border-top-right-radius) CSS properties.
+     * [border-top-left-radius](https://developer.mozilla.org/en/docs/Web/CSS/border-top-left-radius) and
+     * [border-top-right-radius](https://developer.mozilla.org/en/docs/Web/CSS/border-top-right-radius) CSS properties.
      *
      * example call:
      * ```
@@ -388,7 +388,7 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun top(value: ScaledValueProperty) {
         topRight(value)
@@ -398,8 +398,8 @@ class RadiiContext(
     /**
      * This _convenience_ function enables the definition of the border radius for the _bottom left_ and _bottom right_
      * corners of a block at once via the
-     * [border-bottom-left-radius](https://developer.mozilla.org/de/docs/Web/CSS/border-bottom-left-radius) and
-     * [border-bottom-right-radius](https://developer.mozilla.org/de/docs/Web/CSS/border-bottom-right-radius) CSS properties.
+     * [border-bottom-left-radius](https://developer.mozilla.org/en/docs/Web/CSS/border-bottom-left-radius) and
+     * [border-bottom-right-radius](https://developer.mozilla.org/en/docs/Web/CSS/border-bottom-right-radius) CSS properties.
      *
      * example call:
      * ```
@@ -408,7 +408,7 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun bottom(value: ScaledValueProperty) {
         bottomLeft(value)
@@ -418,8 +418,8 @@ class RadiiContext(
     /**
      * This _convenience_ function enables the definition of the border radius for the _top right_ and _bottom right_
      * corners of a block at once via the
-     * [border-top-right-radius](https://developer.mozilla.org/de/docs/Web/CSS/border-top-right-radius) and
-     * [border-bottom-right-radius](https://developer.mozilla.org/de/docs/Web/CSS/border-bottom-right-radius)
+     * [border-top-right-radius](https://developer.mozilla.org/en/docs/Web/CSS/border-top-right-radius) and
+     * [border-bottom-right-radius](https://developer.mozilla.org/en/docs/Web/CSS/border-bottom-right-radius)
      * CSS properties.
      *
      * example call:
@@ -429,7 +429,7 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun right(value: ScaledValueProperty) {
         topRight(value)
@@ -439,8 +439,8 @@ class RadiiContext(
     /**
      * This _convenience_ function enables the definition of the border radius for the _top left_ and _bottom left_
      * corners of a block at once via the
-     * [border-top-left-radius](https://developer.mozilla.org/de/docs/Web/CSS/border-top-left-radius) and
-     * [border-bottom-left-radius](https://developer.mozilla.org/de/docs/Web/CSS/border-bottom-left-radius)
+     * [border-top-left-radius](https://developer.mozilla.org/en/docs/Web/CSS/border-top-left-radius) and
+     * [border-bottom-left-radius](https://developer.mozilla.org/en/docs/Web/CSS/border-bottom-left-radius)
      * CSS properties.
      *
      * example call:
@@ -450,7 +450,7 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun left(value: ScaledValueProperty) {
         topLeft(value)
@@ -593,7 +593,7 @@ interface Border : StyleParams {
      * // radius { "1em 2em" } // use custom property for _ellipsis_!
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun radius(value: ScaledValueProperty) =
         property(borderRadiusKey, theme().radii, value, smProperties)
@@ -609,10 +609,10 @@ interface Border : StyleParams {
      * )
      * ```
      *
-     * @param sm scale value for small media devices, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
-     * @param md scale value for medium sized media devices, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
-     * @param lg scale value for large media devices, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
-     * @param xl scale value for extra large media devices, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param sm scale value for small media devices, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
+     * @param md scale value for medium sized media devices, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
+     * @param lg scale value for large media devices, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
+     * @param xl scale value for extra large media devices, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun radius(
         sm: (ScaledValueProperty)? = null,
