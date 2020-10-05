@@ -152,7 +152,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
 
 @ExperimentalCoroutinesApi
 fun HtmlElements.gridDemo(): Div {
-    // example from https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Layout_using_Named_Grid_Lines
+    // example from https://developer.mozilla.org/en/docs/Web/CSS/CSS_Grid_Layout/Layout_using_Named_Grid_Lines
     return div {
         val grid = object {
             val HEADER: AreaName = "header"

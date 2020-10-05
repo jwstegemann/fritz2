@@ -14,8 +14,8 @@ typealias ShadowProperty = Property
 
 /**
  * creates a valid value for shadow-properties like
- * [box-shadow](https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow) or
- * [text-shadow](https://developer.mozilla.org/en-US/docs/Web/CSS/text-shadow)
+ * [box-shadow](https://developer.mozilla.org/en/docs/Web/CSS/box-shadow) or
+ * [text-shadow](https://developer.mozilla.org/en/docs/Web/CSS/text-shadow)
  *
  * @param offsetHorizontal horizontal offset of the shadow
  * @param offsetVertical vertical offset of the shadow
@@ -54,7 +54,7 @@ infix fun ShadowProperty.and(other: ShadowProperty): ShadowProperty = "$this, $o
  */
 interface Shadow : StyleParams {
     /**
-     * This function sets the [text-shadow](https://developer.mozilla.org/en-US/docs/Web/CSS/text-shadow) property.
+     * This function sets the [text-shadow](https://developer.mozilla.org/en/docs/Web/CSS/text-shadow) property.
      *
      * Example call:
      * ```
@@ -67,7 +67,7 @@ interface Shadow : StyleParams {
     fun textShadow(value: Shadows.() -> Property) = property(textShadowKey, theme().shadows, value)
 
     /**
-     * This function sets the [text-shadow](https://developer.mozilla.org/en-US/docs/Web/CSS/text-shadow) property
+     * This function sets the [text-shadow](https://developer.mozilla.org/en/docs/Web/CSS/text-shadow) property
      * for each media device independently.
      *
      * Example call:
@@ -96,7 +96,7 @@ interface Shadow : StyleParams {
         property(textShadowKey, theme().shadows, sm, md, lg, xl)
 
     /**
-     * This function sets the [box-shadow](https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow) property.
+     * This function sets the [box-shadow](https://developer.mozilla.org/en/docs/Web/CSS/box-shadow) property.
      *
      * Example call:
      * ```
@@ -109,7 +109,7 @@ interface Shadow : StyleParams {
     fun boxShadow(value: Shadows.() -> Property) = property(boxShadowKey, theme().shadows, value)
 
     /**
-     * This function sets the [box-shadow](https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow) property
+     * This function sets the [box-shadow](https://developer.mozilla.org/en/docs/Web/CSS/box-shadow) property
      * for each media device independently.
      *
      * Example call:

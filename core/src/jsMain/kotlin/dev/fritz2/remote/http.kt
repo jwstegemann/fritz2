@@ -213,7 +213,7 @@ open class Request(
     )
 
     /**
-     * adds the given [Content-Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type)
+     * adds the given [Content-Type](https://developer.mozilla.org/en/docs/Web/HTTP/Headers/Content-Type)
      * value to the http headers
      *
      * @param value cache-control value
@@ -221,7 +221,7 @@ open class Request(
     fun contentType(value: String) = header("Content-Type", value)
 
     /**
-     * adds the basic [Authorization](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization)
+     * adds the basic [Authorization](https://developer.mozilla.org/en/docs/Web/HTTP/Headers/Authorization)
      * header for the given username and password
      *
      * @param username name of the user
@@ -231,7 +231,7 @@ open class Request(
         header("Authorization", "Basic ${btoa("$username:$password")}")
 
     /**
-     * adds the given [Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control)
+     * adds the given [Cache-Control](https://developer.mozilla.org/en/docs/Web/HTTP/Headers/Cache-Control)
      * value to the http headers
      *
      * @param value cache-control value
@@ -239,7 +239,7 @@ open class Request(
     fun cacheControl(value: String) = header("Cache-Control", value)
 
     /**
-     * adds the given [Accept](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept)
+     * adds the given [Accept](https://developer.mozilla.org/en/docs/Web/HTTP/Headers/Accept)
      * value to the http headers, e.g "application/pdf"
      *
      * @param value media type to accept
