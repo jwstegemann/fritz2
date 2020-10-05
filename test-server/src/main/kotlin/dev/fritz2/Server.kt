@@ -1,5 +1,8 @@
 package dev.fritz2
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
@@ -179,21 +182,21 @@ fun Application.main() {
                     when (frame) {
                         is Frame.Text -> {
                             val text = frame.readText()
-                            log.info("[ws-simple] receiving: $text")
+                            log.info("[ws-text] receiving: $text")
                             outgoing.send(Frame.Text("Client said: $text"))
                             if (text.equals("bye", ignoreCase = true)) {
                                 close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
                             }
                         }
                         is Frame.Close -> {
-                            log.info("[ws-simple] closing: ${closeReason.await()}")
+                            log.info("[ws-text] closing: ${closeReason.await()}")
                         }
                         else -> log.info(frame.frameType.name)
                     }
                 } catch (e: ClosedReceiveChannelException) {
-                    log.error("[ws-simple] close: ${closeReason.await()}")
+                    log.error("[ws-text] close: ${closeReason.await()}")
                 } catch (e: Throwable) {
-                    log.error("[ws-simple] error: ${closeReason.await()}")
+                    log.error("[ws-text] error: ${closeReason.await()}")
                     e.printStackTrace()
                 }
             }
@@ -204,18 +207,45 @@ fun Application.main() {
                     when (frame) {
                         is Frame.Binary -> {
                             val data = frame.data
-                            log.info("[ws-simple] receiving: $data")
+                            log.info("[ws-binary] receiving: $data")
                             outgoing.send(Frame.Binary(true, data))
                         }
                         is Frame.Close -> {
-                            log.info("[ws-simple] closing: ${closeReason.await()}")
+                            log.info("[ws-binary] closing: ${closeReason.await()}")
                         }
                         else -> log.info(frame.frameType.name)
                     }
                 } catch (e: ClosedReceiveChannelException) {
-                    log.error("[ws-simple] close: ${closeReason.await()}")
+                    log.error("[ws-binary] close: ${closeReason.await()}")
                 } catch (e: Throwable) {
-                    log.error("[ws-simple] error: ${closeReason.await()}")
+                    log.error("[ws-binary] error: ${closeReason.await()}")
+                    e.printStackTrace()
+                }
+            }
+        }
+        webSocket("/json") {
+            val objectMapper = ObjectMapper()
+            for (frame in incoming) {
+                try {
+                    when (frame) {
+                        is Frame.Text -> {
+                            val body = objectMapper.readValue(frame.readText(), jacksonTypeRef<MutableMap<String, Any>>())
+                            log.info("[ws-json] receiving: $body")
+                            if(body["_id"] == "test") {
+                                body["name"] = "Hans"
+                                log.info("[ws-json] sending: $body")
+                                outgoing.send(Frame.Text(objectMapper.writeValueAsString(body)))
+                            }
+                        }
+                        is Frame.Close -> {
+                            log.info("[ws-json] closing: ${closeReason.await()}")
+                        }
+                        else -> log.info(frame.frameType.name)
+                    }
+                } catch (e: ClosedReceiveChannelException) {
+                    log.error("[ws-json] close: ${closeReason.await()}")
+                } catch (e: Throwable) {
+                    log.error("[ws-json] error: ${closeReason.await()}")
                     e.printStackTrace()
                 }
             }

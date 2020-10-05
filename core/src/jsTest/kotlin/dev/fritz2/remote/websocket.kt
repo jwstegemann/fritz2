@@ -1,7 +1,19 @@
 package dev.fritz2.remote
 
+import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.action
+import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.watch
+import dev.fritz2.dom.html.render
+import dev.fritz2.dom.mount
+import dev.fritz2.identification.uniqueId
+import dev.fritz2.lenses.buildLens
+import dev.fritz2.repositories.Resource
+import dev.fritz2.serialization.Serializer
+import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
+import dev.fritz2.test.targetId
+import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -9,10 +21,7 @@ import org.khronos.webgl.Uint8Array
 import org.w3c.files.Blob
 import org.w3c.files.BlobPropertyBag
 import org.w3c.files.FileReader
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class WebSocketTests {
 
@@ -141,5 +150,86 @@ class WebSocketTests {
         delay(200)
     }
 
+    data class SocketPerson(val name: String, val age: Int, val _id: String = uniqueId())
+
+    private val nameLens = buildLens("name", SocketPerson::name) { p, v -> p.copy(name = v) }
+    private val ageLens = buildLens("age", SocketPerson::age) { p, v -> p.copy(age = v) }
+    private val idLens = buildLens("id", SocketPerson::_id) { p, v -> p.copy(_id = v) }
+
+    object PersonSerializer : Serializer<SocketPerson, String> {
+        override fun write(item: SocketPerson): String = JSON.stringify(item)
+        override fun read(msg: String): SocketPerson {
+            val obj = JSON.parse<dynamic>(msg)
+            return SocketPerson(obj.name as String, obj.age as Int, obj._id as String)
+        }
+
+        override fun writeList(items: List<SocketPerson>): String = JSON.stringify(items)
+        override fun readList(msg: String): List<SocketPerson> {
+            val list = JSON.parse<Array<dynamic>>(msg)
+            return list.map { obj -> SocketPerson(obj.name as String, obj.age as Int, obj._id as String) }
+        }
+    }
+
+    @Test
+    fun testSyncWith() = runTest {
+        initDocument()
+
+        val startPerson = SocketPerson("Heinz", 18)
+        val changedAge = 99
+        val testId = "test"
+        val testName = "Hans"
+
+        val personResource = Resource(
+                SocketPerson::_id,
+                PersonSerializer,
+                SocketPerson("", 0)
+        )
+
+        val socket = websocket.append("json")
+
+        val entityStore = object : RootStore<SocketPerson>(personResource.emptyEntity) {
+            override fun errorHandler(exception: Throwable, oldValue: SocketPerson): SocketPerson {
+                fail(exception.message)
+            }
+
+            init {
+                syncWith(socket, personResource)
+            }
+        }
+
+        val nameId = "name-${uniqueId()}"
+        val nameSubStore = entityStore.sub(nameLens)
+        val ageId = "age-${uniqueId()}"
+        val ageSubStore = entityStore.sub(ageLens)
+        val idId = "id-${uniqueId()}"
+        val idSubStore = entityStore.sub(idLens)
+
+
+        render {
+            div {
+                div(id = idId) { idSubStore.data.bind() }
+                div(id = nameId) { nameSubStore.data.bind() }
+                div(id = ageId) { ageSubStore.data.map { it.toString() }.bind() }
+            }
+        }.mount(targetId)
+
+        action(startPerson) handledBy entityStore.update
+        delay(100)
+
+        val nameAfterStart = document.getElementById(nameId)?.textContent
+        assertEquals(startPerson.name, nameAfterStart, "no name after start")
+
+        action(data = changedAge) handledBy ageSubStore.update
+        delay(200)
+
+        val ageAfterUpdate = document.getElementById(ageId)?.textContent
+        assertEquals(changedAge.toString(), ageAfterUpdate, "wrong age after update")
+
+        action(data = testId) handledBy idSubStore.update
+        delay(200)
+
+        val nameAfterUpdate = document.getElementById(nameId)?.textContent
+        assertEquals(testName, nameAfterUpdate, "wrong name after server update")
+    }
 
 }
