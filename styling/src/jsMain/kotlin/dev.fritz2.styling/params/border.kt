@@ -288,7 +288,7 @@ class BordersContext(
  * each corner independently. There are also convenience functions to handle the radii of one _side_ at once, like
  * [right] and [left] or [top] and [bottom]. Those are most useful for pairwise usage of course.
  *
- * The theme offers predefined values as [ScaledValueProperty] via its [dev.fritz2.styling.Theme.radii] property.
+ * The theme offers predefined values as [ScaledValueProperty] via its [dev.fritz2.styling.theme.Theme.radii] property.
  *
  * This usage enables border styling for each side like this:
  * ```
@@ -326,7 +326,7 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun topLeft(value: ScaledValueProperty) = property(borderTopLeftRadiusKey, theme().radii, value, target)
 
@@ -341,7 +341,7 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun topRight(value: ScaledValueProperty) = property(borderTopRightRadiusKey, theme().radii, value, target)
 
@@ -356,7 +356,7 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun bottomRight(value: ScaledValueProperty) = property(borderBottomRightRadiusKey, theme().radii, value, target)
 
@@ -371,7 +371,7 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun bottomLeft(value: ScaledValueProperty) = property(borderBottomLeftRadiusKey, theme().radii, value, target)
 
@@ -388,7 +388,7 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun top(value: ScaledValueProperty) {
         topRight(value)
@@ -408,7 +408,7 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun bottom(value: ScaledValueProperty) {
         bottomLeft(value)
@@ -429,7 +429,7 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun right(value: ScaledValueProperty) {
         topRight(value)
@@ -450,7 +450,7 @@ class RadiiContext(
      * }
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun left(value: ScaledValueProperty) {
         topLeft(value)
@@ -593,7 +593,7 @@ interface Border : StyleParams {
      * // radius { "1em 2em" } // use custom property for _ellipsis_!
      * ```
      *
-     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun radius(value: ScaledValueProperty) =
         property(borderRadiusKey, theme().radii, value, smProperties)
@@ -609,10 +609,10 @@ interface Border : StyleParams {
      * )
      * ```
      *
-     * @param sm scale value for small media devices, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
-     * @param md scale value for medium sized media devices, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
-     * @param lg scale value for large media devices, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
-     * @param xl scale value for extra large media devices, recommended to use predefined values via [dev.fritz2.styling.Theme.radii]
+     * @param sm scale value for small media devices, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
+     * @param md scale value for medium sized media devices, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
+     * @param lg scale value for large media devices, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
+     * @param xl scale value for extra large media devices, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun radius(
         sm: (ScaledValueProperty)? = null,
