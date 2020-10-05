@@ -17,7 +17,7 @@ internal const val maxHeightKey = "max-height: "
 typealias DisplayProperty = Property
 
 /**
- * Predefined values for the [display](https://developer.mozilla.org/de/docs/Web/CSS/display)
+ * Predefined values for the [display](https://developer.mozilla.org/en-US/docs/Web/CSS/display)
  * property. Should be used as expression result in [Layout.display].
  */
 object DisplayValues : PropertyValues {
@@ -59,7 +59,7 @@ object DisplayValues : PropertyValues {
 typealias OverflowProperty = Property
 
 /**
- * Predefined _common_ values for the [overflow](https://developer.mozilla.org/de/docs/Web/CSS/overflow)
+ * Predefined _common_ values for the [overflow](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow)
  * related properties.
  *
  * This class acts only as base class and should not be used directly!
@@ -82,13 +82,13 @@ open class OverflowBaseValues(override val key: String) : PropertyValues {
 }
 
 /**
- * Predefined values for the [overflow](https://developer.mozilla.org/de/docs/Web/CSS/overflow)
+ * Predefined values for the [overflow](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow)
  * property. Should be used as expression result in [Layout.overflow].
  */
 object OverflowValues : OverflowBaseValues("overflow: ")
 
 /**
- * Predefined values for the [overflow-x](https://developer.mozilla.org/de/docs/Web/CSS/overflow-x)
+ * Predefined values for the [overflow-x](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-x)
  * property. Should be used as expression result in [Layout.overflowX].
  */
 object OverflowXValues : OverflowBaseValues("overflow-x: ") {
@@ -98,7 +98,7 @@ object OverflowXValues : OverflowBaseValues("overflow-x: ") {
 }
 
 /**
- * Predefined values for the [overflow-y](https://developer.mozilla.org/de/docs/Web/CSS/overflow-y)
+ * Predefined values for the [overflow-y](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-y)
  * property. Should be used as expression result in [Layout.overflowY].
  */
 object OverflowYValues : OverflowBaseValues("overflow-y: ") {
@@ -113,7 +113,7 @@ object OverflowYValues : OverflowBaseValues("overflow-y: ") {
 typealias VerticalAlignProperty = Property
 
 /**
- * Predefined values for the [vertical-align](https://developer.mozilla.org/de/docs/Web/CSS/vertical-align)
+ * Predefined values for the [vertical-align](https://developer.mozilla.org/en-US/docs/Web/CSS/vertical-align)
  * property. Should be used as expression result in [Layout.verticalAlign].
  */
 object VerticalAlignValues : PropertyValues {
@@ -307,7 +307,7 @@ class GridRowColumnContext(
 typealias FlexBasisProperty = Property
 
 /**
- * Predefined values for the [flex-basis](https://developer.mozilla.org/de/docs/Web/CSS/flex-basis)
+ * Predefined values for the [flex-basis](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-basis)
  * property. Should be used as expression result in [FlexItemContext.basis].
  */
 object FlexBasisValues : PropertyValues {
@@ -358,7 +358,7 @@ class FlexItemContext(
 ) : StyleParams by styleParams, SelfAlignment by selfAlignment {
 
     /**
-     * This function sets the [order](https://developer.mozilla.org/de/docs/Web/CSS/order) CSS property.
+     * This function sets the [order](https://developer.mozilla.org/en-US/docs/Web/CSS/order) CSS property.
      *
      * example call:
      * ```
@@ -370,7 +370,7 @@ class FlexItemContext(
     fun order(value: () -> Property) = property("order: ", value(), target)
 
     /**
-     * This function sets the [flex-grow](https://developer.mozilla.org/de/docs/Web/CSS/flex-grow) CSS property.
+     * This function sets the [flex-grow](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-grow) CSS property.
      *
      * example call:
      * ```
@@ -382,7 +382,7 @@ class FlexItemContext(
     fun grow(value: () -> Property) = property("flex-grow: ", value(), target)
 
     /**
-     * This function sets the [flex-shrink](https://developer.mozilla.org/de/docs/Web/CSS/flex-shrink) CSS property.
+     * This function sets the [flex-shrink](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-shrink) CSS property.
      *
      * example call:
      * ```
@@ -394,7 +394,7 @@ class FlexItemContext(
     fun shrink(value: () -> Property) = property("flex-shrink: ", value(), target)
 
     /**
-     * This function sets the [flex-basis](https://developer.mozilla.org/de/docs/Web/CSS/flex-basis) CSS property.
+     * This function sets the [flex-basis](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-basis) CSS property.
      *
      * example call:
      * ```
@@ -408,7 +408,7 @@ class FlexItemContext(
         property(FlexBasisValues.key, FlexBasisValues.value(), target)
 
     /**
-     * This function sets the [flex-basis](https://developer.mozilla.org/de/docs/Web/CSS/flex-basis) CSS property.
+     * This function sets the [flex-basis](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-basis) CSS property.
      *
      * example call:
      * ```
@@ -510,7 +510,7 @@ interface Layout : StyleParams {
     }
 
     /**
-     * This function sets the [width](https://developer.mozilla.org/de/docs/Web/CSS/width) property of a component
+     * This function sets the [width](https://developer.mozilla.org/en-US/docs/Web/CSS/width) property of a component
      * for all media devices.
      *
      * example calls:
@@ -525,7 +525,7 @@ interface Layout : StyleParams {
     fun width(value: SizesProperty) = property(widthKey, theme().sizes, value)
 
     /**
-     * This function sets the [width](https://developer.mozilla.org/de/docs/Web/CSS/width) property of a component
+     * This function sets the [width](https://developer.mozilla.org/en-US/docs/Web/CSS/width) property of a component
      * for each media device independently.
      *
      * example calls:
@@ -548,7 +548,7 @@ interface Layout : StyleParams {
         property(widthKey, theme().sizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [height](https://developer.mozilla.org/de/docs/Web/CSS/height) property of a component
+     * This function sets the [height](https://developer.mozilla.org/en-US/docs/Web/CSS/height) property of a component
      * for all media devices.
      *
      * example calls:
@@ -563,7 +563,7 @@ interface Layout : StyleParams {
     fun height(value: SizesProperty) = property(heightKey, theme().sizes, value)
 
     /**
-     * This function sets the [height](https://developer.mozilla.org/de/docs/Web/CSS/height) property of a component
+     * This function sets the [height](https://developer.mozilla.org/en-US/docs/Web/CSS/height) property of a component
      * for each media device independently.
      *
      * example calls:
@@ -586,7 +586,7 @@ interface Layout : StyleParams {
         property(heightKey, theme().sizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [min-width](https://developer.mozilla.org/de/docs/Web/CSS/min-width) property of a component
+     * This function sets the [min-width](https://developer.mozilla.org/en-US/docs/Web/CSS/min-width) property of a component
      * for all media devices.
      *
      * example calls:
@@ -601,7 +601,7 @@ interface Layout : StyleParams {
     fun minWidth(value: SizesProperty) = property(minWidthKey, theme().sizes, value)
 
     /**
-     * This function sets the [min-width](https://developer.mozilla.org/de/docs/Web/CSS/min-width) property of a component
+     * This function sets the [min-width](https://developer.mozilla.org/en-US/docs/Web/CSS/min-width) property of a component
      * for all media devices.
      *
      * example calls:
@@ -624,7 +624,7 @@ interface Layout : StyleParams {
         property(minWidthKey, theme().sizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [max-width](https://developer.mozilla.org/de/docs/Web/CSS/max-width) property of a component
+     * This function sets the [max-width](https://developer.mozilla.org/en-US/docs/Web/CSS/max-width) property of a component
      * for all media devices.
      *
      * example calls:
@@ -639,7 +639,7 @@ interface Layout : StyleParams {
     fun maxWidth(value: SizesProperty) = property(maxWidthKey, theme().sizes, value)
 
     /**
-     * This function sets the [max-width](https://developer.mozilla.org/de/docs/Web/CSS/max-width) property of a component
+     * This function sets the [max-width](https://developer.mozilla.org/en-US/docs/Web/CSS/max-width) property of a component
      * for all media devices.
      *
      * example calls:
@@ -662,7 +662,7 @@ interface Layout : StyleParams {
         property(maxWidthKey, theme().sizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [min-height](https://developer.mozilla.org/de/docs/Web/CSS/min-height) property of a component
+     * This function sets the [min-height](https://developer.mozilla.org/en-US/docs/Web/CSS/min-height) property of a component
      * for all media devices.
      *
      * example calls:
@@ -677,7 +677,7 @@ interface Layout : StyleParams {
     fun minHeight(value: SizesProperty) = property(minHeightKey, theme().sizes, value)
 
     /**
-     * This function sets the [min-height](https://developer.mozilla.org/de/docs/Web/CSS/min-height) property of a component
+     * This function sets the [min-height](https://developer.mozilla.org/en-US/docs/Web/CSS/min-height) property of a component
      * for all media devices.
      *
      * example calls:
@@ -700,7 +700,7 @@ interface Layout : StyleParams {
         property(minHeightKey, theme().sizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [max-height](https://developer.mozilla.org/de/docs/Web/CSS/max-height) property of a component
+     * This function sets the [max-height](https://developer.mozilla.org/en-US/docs/Web/CSS/max-height) property of a component
      * for all media devices.
      *
      * example calls:
@@ -715,7 +715,7 @@ interface Layout : StyleParams {
     fun maxHeight(value: SizesProperty) = property(maxHeightKey, theme().sizes, value)
 
     /**
-     * This function sets the [max-height](https://developer.mozilla.org/de/docs/Web/CSS/max-height) property of a component
+     * This function sets the [max-height](https://developer.mozilla.org/en-US/docs/Web/CSS/max-height) property of a component
      * for all media devices.
      *
      * example calls:
@@ -738,7 +738,7 @@ interface Layout : StyleParams {
         property(maxHeightKey, theme().sizes, sm, md, lg, xl)
 
     /**
-     * This function sets the [display](https://developer.mozilla.org/de/docs/Web/CSS/display) property of a component
+     * This function sets the [display](https://developer.mozilla.org/en-US/docs/Web/CSS/display) property of a component
      * for all media devices.
      *
      * If you want to create a flex- or grid-layout prefer to use the specialized [dev.fritz2.styling.components.flex]
@@ -759,7 +759,7 @@ interface Layout : StyleParams {
     fun display(value: DisplayValues.() -> DisplayProperty) = property(DisplayValues, value)
 
     /**
-     * This function sets the [display](https://developer.mozilla.org/de/docs/Web/CSS/display) property of a component
+     * This function sets the [display](https://developer.mozilla.org/en-US/docs/Web/CSS/display) property of a component
      * for each media device independently.
      *
      * If you want to create a flex- or grid-layout prefer to use the specialized [dev.fritz2.styling.components.flex]
@@ -792,7 +792,7 @@ interface Layout : StyleParams {
         property(DisplayValues, sm, md, lg, xl)
 
     /**
-     * This function sets the [vertical-align](https://developer.mozilla.org/de/docs/Web/CSS/vertical-align) property
+     * This function sets the [vertical-align](https://developer.mozilla.org/en-US/docs/Web/CSS/vertical-align) property
      * of a component for all media devices.
      *
      * example calls:
@@ -808,7 +808,7 @@ interface Layout : StyleParams {
         property(VerticalAlignValues, value)
 
     /**
-     * This function sets the [vertical-align](https://developer.mozilla.org/de/docs/Web/CSS/vertical-align) property
+     * This function sets the [vertical-align](https://developer.mozilla.org/en-US/docs/Web/CSS/vertical-align) property
      * of a component for each media device independently.
      *
      * example calls:
@@ -835,7 +835,7 @@ interface Layout : StyleParams {
         property(VerticalAlignValues, sm, md, lg, xl)
 
     /**
-     * This function sets the [overflow](https://developer.mozilla.org/de/docs/Web/CSS/overflow) property
+     * This function sets the [overflow](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow) property
      * of a component for all media devices.
      *
      * example calls:
@@ -849,7 +849,7 @@ interface Layout : StyleParams {
     fun overflow(value: OverflowValues.() -> OverflowProperty) = property(OverflowValues, value)
 
     /**
-     * This function sets the [overflow](https://developer.mozilla.org/de/docs/Web/CSS/overflow) property
+     * This function sets the [overflow](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow) property
      * of a component for each media device independently.
      *
      * example calls:
@@ -875,7 +875,7 @@ interface Layout : StyleParams {
         property(OverflowValues, sm, md, lg, xl)
 
     /**
-     * This function sets the [overflow-x](https://developer.mozilla.org/de/docs/Web/CSS/overflow-x) property
+     * This function sets the [overflow-x](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-x) property
      * of a component for all media devices.
      *
      * example calls:
@@ -889,7 +889,7 @@ interface Layout : StyleParams {
     fun overflowX(value: OverflowXValues.() -> OverflowProperty) = property(OverflowXValues, value)
 
     /**
-     * This function sets the [overflow-x](https://developer.mozilla.org/de/docs/Web/CSS/overflow-x) property
+     * This function sets the [overflow-x](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-x) property
      * of a component for all media devices.
      *
      * example calls:
@@ -915,7 +915,7 @@ interface Layout : StyleParams {
         property(OverflowXValues, sm, md, lg, xl)
 
     /**
-     * This function sets the [overflow-y](https://developer.mozilla.org/de/docs/Web/CSS/overflow-y) property
+     * This function sets the [overflow-y](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-y) property
      * of a component for all media devices.
      *
      * example calls:
@@ -929,7 +929,7 @@ interface Layout : StyleParams {
     fun overflowY(value: OverflowYValues.() -> OverflowProperty) = property(OverflowYValues, value)
 
     /**
-     * This function sets the [overflow-y](https://developer.mozilla.org/de/docs/Web/CSS/overflow-y) property
+     * This function sets the [overflow-y](https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-y) property
      * of a component for all media devices.
      *
      * example calls:
