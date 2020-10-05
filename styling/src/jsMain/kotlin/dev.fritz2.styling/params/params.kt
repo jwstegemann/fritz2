@@ -293,3 +293,77 @@ inline fun <T : StyleParams> use(styling: Style<T>, prefix: String = "s"): Style
             else it
         }
     }
+
+/**
+ * creates a dynamic css-rule from the given [StyleParams]
+ *
+ * @param styling lambda building the [StyleParams]
+ * @param more lambda building the [StyleParams]
+ * @param prefix used when creating the dynamic css class name
+ * @return css class name
+ */
+@ExperimentalCoroutinesApi
+inline fun <T : StyleParams, U : StyleParams> use(styling: Style<T>, more: Style<U>, prefix: String = "s"): StyleClass =
+    StyleParamsImpl(theme()).let { base ->
+        (base.unsafeCast<T>()).styling()
+        (base.unsafeCast<U>()).more()
+        base.toCss().let {
+            if (it.isNotEmpty()) style(it, prefix)
+            else it
+        }
+    }
+
+/**
+ * creates a dynamic css-rule from the given [StyleParams]
+ *
+ * @param styling lambda building the [StyleParams]
+ * @param more lambda building the [StyleParams]
+ * @param evenMore lambda building the [StyleParams]
+ * @param prefix used when creating the dynamic css class name
+ * @return css class name
+ */
+@ExperimentalCoroutinesApi
+inline fun <T : StyleParams, U : StyleParams, V : StyleParams> use(
+    styling: Style<T>,
+    more: Style<U>,
+    evenMore: Style<V>,
+    prefix: String = "s"
+): StyleClass =
+    StyleParamsImpl(theme()).let { base ->
+        (base.unsafeCast<T>()).styling()
+        (base.unsafeCast<U>()).more()
+        (base.unsafeCast<V>()).evenMore()
+        base.toCss().let {
+            if (it.isNotEmpty()) style(it, prefix)
+            else it
+        }
+    }
+
+/**
+ * creates a dynamic css-rule from the given [StyleParams]
+ *
+ * @param styling lambda building the [StyleParams]
+ * @param more lambda building the [StyleParams]
+ * @param evenMore lambda building the [StyleParams]
+ * @param andEvenMore lambda building the [StyleParams]
+ * @param prefix used when creating the dynamic css class name
+ * @return css class name
+ */
+@ExperimentalCoroutinesApi
+inline fun <T : StyleParams, U : StyleParams, V : StyleParams, W : StyleParams> use(
+    styling: Style<T>,
+    more: Style<U>,
+    evenMore: Style<V>,
+    andEvenMore: Style<W>,
+    prefix: String = "s"
+): StyleClass =
+    StyleParamsImpl(theme()).let { base ->
+        (base.unsafeCast<T>()).styling()
+        (base.unsafeCast<U>()).more()
+        (base.unsafeCast<V>()).evenMore()
+        (base.unsafeCast<W>()).andEvenMore()
+        base.toCss().let {
+            if (it.isNotEmpty()) style(it, prefix)
+            else it
+        }
+    }
