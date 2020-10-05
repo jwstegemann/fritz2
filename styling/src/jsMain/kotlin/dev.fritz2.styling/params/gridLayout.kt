@@ -203,7 +203,7 @@ internal const val columnGapKey = "column-gap: "
  * This is done by a special [dev.fritz2.styling.components.grid] fabric function that creates a component
  * with the [display](https://developer.mozilla.org/en/docs/Web/CSS/display) property already set to ``grid``.
  *
- * So it is recommended to use the provided functions within the styles parameter of [dev.fritz2.styling.components.grid].
+ * So it is recommended to use the provided functions within the styles parameter of [dev.fritz2.components.grid].
  *
  * This interface offers all the inherited functions of [Alignment] that corresponds to the
  * [CSS alignment module](https://www.w3.org/TR/css-align-3/).
@@ -529,7 +529,7 @@ interface GridLayout : StyleParams, Alignment {
      * - tedious to type (no autocompletion)
      * - not safe for refactorings (only search + replace is possible)
      * - easy to introduce typos
-     * - easy to misspell the name in the related [dev.fritz2.styling.components.box] component and therefore break the
+     * - easy to misspell the name in the related [dev.fritz2.components.box] component and therefore break the
      *   relation!
      *
      * That is why it is recommended to use some sort of _container_ for the area names!
@@ -620,7 +620,7 @@ interface GridLayout : StyleParams, Alignment {
      * This function sets the [column-gap](https://developer.mozilla.org/en/docs/Web/CSS/column-gap) property
      * for all media devices.
      *
-     * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.Theme.gridGap].
+     * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.theme.Theme.gaps].
      *
      * Example call:
      * ```
@@ -628,7 +628,7 @@ interface GridLayout : StyleParams, Alignment {
      * ```
      *
      * @param value provide a value of type [ScaledValueProperty] that defines the gap of the column,
-     *              recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *              recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      */
     fun columnGap(value: ScaledValueProperty) = property(columnGapKey, theme().gaps, value)
 
@@ -636,7 +636,7 @@ interface GridLayout : StyleParams, Alignment {
      * This function sets the [column-gap](https://developer.mozilla.org/en/docs/Web/CSS/column-gap) property
      * for each media device independently.
      *
-     * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.Theme.gridGap].
+     * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.theme.Theme.gaps].
      *
      * Example call:
      * ```
@@ -647,13 +647,13 @@ interface GridLayout : StyleParams, Alignment {
      * ```
      *
      * @param sm provide a value of type [ScaledValueProperty] that defines the gap of the column for small media devices,
-     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      * @param sm provide a value of type [ScaledValueProperty] that defines the gap of the column for medium sized media devices,
-     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      * @param sm provide a value of type [ScaledValueProperty] that defines the gap of the column for large media devices,
-     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      * @param sm provide a value of type [ScaledValueProperty] that defines the gap of the column for extra large media devices,
-     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      */
     fun columnGap(
         sm: ScaledValueProperty? = null,
@@ -667,7 +667,7 @@ interface GridLayout : StyleParams, Alignment {
      * This function sets the [row-gap](https://developer.mozilla.org/en/docs/Web/CSS/row-gap) property
      * for all media devices.
      *
-     * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.Theme.gridGap].
+     * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.theme.Theme.gaps].
      *
      * Example call:
      * ```
@@ -675,7 +675,7 @@ interface GridLayout : StyleParams, Alignment {
      * ```
      *
      * @param value provide a value of type [ScaledValueProperty] that defines the gap of the row,
-     *              recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *              recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      */
     fun rowGap(value: ScaledValueProperty) = property(rowGapKey, theme().gaps, value)
 
@@ -683,7 +683,7 @@ interface GridLayout : StyleParams, Alignment {
      * This function sets the [row-gap](https://developer.mozilla.org/en/docs/Web/CSS/row-gap) property
      * for each media device independently.
      *
-     * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.Theme.gridGap].
+     * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.theme.Theme.gaps].
      *
      * Example call:
      * ```
@@ -694,13 +694,13 @@ interface GridLayout : StyleParams, Alignment {
      * ```
      *
      * @param sm provide a value of type [ScaledValueProperty] that defines the gap of the row for small media devices,
-     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      * @param sm provide a value of type [ScaledValueProperty] that defines the gap of the row for medium sized media devices,
-     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      * @param sm provide a value of type [ScaledValueProperty] that defines the gap of the row for large media devices,
-     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      * @param sm provide a value of type [ScaledValueProperty] that defines the gap of the row for extra large media devices,
-     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      */
     fun rowGap(
         sm: ScaledValueProperty? = null,
@@ -718,7 +718,7 @@ interface GridLayout : StyleParams, Alignment {
      * - [row-gap](https://developer.mozilla.org/en/docs/Web/CSS/row-gap)
      * - [column-gap](https://developer.mozilla.org/en/docs/Web/CSS/column-gap)
      *
-     * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.Theme.gridGap].
+     * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.theme.Theme.gaps].
      *
      * Example call:
      * ```
@@ -726,7 +726,7 @@ interface GridLayout : StyleParams, Alignment {
      * ```
      *
      * @param value provide a value of type [ScaledValueProperty] that defines the gap of the row and column,
-     *              recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *              recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      */
     fun gap(value: ScaledValueProperty) {
         columnGap(value)
@@ -741,7 +741,7 @@ interface GridLayout : StyleParams, Alignment {
      * - [row-gap](https://developer.mozilla.org/en/docs/Web/CSS/row-gap)
      * - [column-gap](https://developer.mozilla.org/en/docs/Web/CSS/column-gap)
      *
-     * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.Theme.gridGap].
+     * It is recommended to use the predefined properties from the [theme][dev.fritz2.styling.theme.Theme.gaps].
      *
      * Example call:
      * ```
@@ -752,13 +752,13 @@ interface GridLayout : StyleParams, Alignment {
      * ```
      *
      * @param sm provide a value of type [ScaledValueProperty] that defines the gap of the row and column for small media devices,
-     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      * @param sm provide a value of type [ScaledValueProperty] that defines the gap of the row and column  for medium sized media devices,
-     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      * @param sm provide a value of type [ScaledValueProperty] that defines the gap of the row and column for large media devices,
-     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      * @param sm provide a value of type [ScaledValueProperty] that defines the gap of the row and column for extra large media devices,
-     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gridGap].
+     *           recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      */
     fun gap(
         sm: ScaledValueProperty? = null,

@@ -219,9 +219,9 @@ interface Position : StyleParams {
      * for all media devices at once.
      *
      * Although you can provide a custom value for the index, it is recommended to use the predefined functions
-     * (have a look at [dev.fritz2.styling.ZIndices]) and therefore _spans_ of the [theme][dev.fritz2.styling.Theme.zIndices].
+     * (have a look at [dev.fritz2.styling.theme.ZIndices]) and therefore _spans_ of the [theme][dev.fritz2.styling.theme.Theme.zIndices].
      * Those are especially designed to define common groups of layers for clear purposes like one for a
-     * [layer][dev.fritz2.styling.ZIndices.layer] or also [modal][dev.fritz2.styling.ZIndices.modal] dialog.
+     * [layer][dev.fritz2.styling.theme.ZIndices.layer] or also [modal][dev.fritz2.styling.theme.ZIndices.modal] dialog.
      * Those groups are designed to model an order in an ascending way.
      *
      * example call:
@@ -232,7 +232,7 @@ interface Position : StyleParams {
      *                             // the element to the front (assuming the outer context counts the consumed levels)
      * ```
      *
-     * @param value extension function parameter in order to bring [dev.fritz2.styling.ZIndices] functions into scope.
+     * @param value extension function parameter in order to bring [dev.fritz2.styling.theme.ZIndices] functions into scope.
      */
     fun zIndex(value: ZIndicesProperty) = property(ZIndices.key, theme().zIndices, value)
 
@@ -250,13 +250,13 @@ interface Position : StyleParams {
      * })
      * ```
      *
-     * @param sm extension function parameter in order to bring [dev.fritz2.styling.ZIndices] functions into scope
+     * @param sm extension function parameter in order to bring [dev.fritz2.styling.theme.ZIndices] functions into scope
      *           for small media devices
-     * @param md extension function parameter in order to bring [dev.fritz2.styling.ZIndices] functions into scope
+     * @param md extension function parameter in order to bring [dev.fritz2.styling.theme.ZIndices] functions into scope
      *           for medium sized media devices
-     * @param lg extension function parameter in order to bring [dev.fritz2.styling.ZIndices] functions into scope
+     * @param lg extension function parameter in order to bring [dev.fritz2.styling.theme.ZIndices] functions into scope
      *           for large media devices
-     * @param xl extension function parameter in order to bring [dev.fritz2.styling.ZIndices] functions into scope
+     * @param xl extension function parameter in order to bring [dev.fritz2.styling.theme.ZIndices] functions into scope
      *           for extra large media devices
      */
     fun zIndex(

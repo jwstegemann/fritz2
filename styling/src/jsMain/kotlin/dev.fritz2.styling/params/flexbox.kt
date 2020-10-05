@@ -47,7 +47,7 @@ object WrapValues : PropertyValues {
  * This is done by a special [dev.fritz2.components.flex] fabric function that creates a component
  * with the [display](https://developer.mozilla.org/en/docs/Web/CSS/display) property already set to ``flex``.
  *
- * So it is recommended to use the provided functions within the styles parameter of [dev.fritz2.styling.components.flex].
+ * So it is recommended to use the provided functions within the styles parameter of [dev.fritz2.components.flex].
  *
  * This interface offers all the inherited functions of [Alignment] that corresponds to the
  * [CSS alignment module](https://www.w3.org/TR/css-align-3/).

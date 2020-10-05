@@ -477,7 +477,7 @@ interface Layout : StyleParams {
      * size { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun size(value: SizesProperty) {
@@ -494,10 +494,10 @@ interface Layout : StyleParams {
      * size { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun size(
         sm: SizesProperty? = null,
@@ -519,7 +519,7 @@ interface Layout : StyleParams {
      * width { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun width(value: SizesProperty) = property(widthKey, theme().sizes, value)
@@ -534,10 +534,10 @@ interface Layout : StyleParams {
      * width { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun width(
         sm: SizesProperty? = null,
@@ -557,7 +557,7 @@ interface Layout : StyleParams {
      * height { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun height(value: SizesProperty) = property(heightKey, theme().sizes, value)
@@ -572,10 +572,10 @@ interface Layout : StyleParams {
      * height { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun height(
         sm: SizesProperty? = null,
@@ -595,7 +595,7 @@ interface Layout : StyleParams {
      * minWidth { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun minWidth(value: SizesProperty) = property(minWidthKey, theme().sizes, value)
@@ -610,10 +610,10 @@ interface Layout : StyleParams {
      * minWidth { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun minWidth(
         sm: SizesProperty? = null,
@@ -633,7 +633,7 @@ interface Layout : StyleParams {
      * maxWidth { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun maxWidth(value: SizesProperty) = property(maxWidthKey, theme().sizes, value)
@@ -648,10 +648,10 @@ interface Layout : StyleParams {
      * maxWidth { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun maxWidth(
         sm: SizesProperty? = null,
@@ -671,7 +671,7 @@ interface Layout : StyleParams {
      * minHeight { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun minHeight(value: SizesProperty) = property(minHeightKey, theme().sizes, value)
@@ -686,10 +686,10 @@ interface Layout : StyleParams {
      * minHeight { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun minHeight(
         sm: SizesProperty? = null,
@@ -709,7 +709,7 @@ interface Layout : StyleParams {
      * maxHeight { "2em" } // provide a custom value
      * ```
      *
-     * @param value custom property or predefined symbol by [dev.fritz2.styling.Sizes] like [dev.fritz2.styling.Sizes.normal]
+     * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
     fun maxHeight(value: SizesProperty) = property(maxHeightKey, theme().sizes, value)
@@ -724,10 +724,10 @@ interface Layout : StyleParams {
      * maxHeight { "2em" } // provide a custom value
      * ```
      *
-     * @param sm custom property or predefined symbol by [dev.fritz2.styling.Sizes] for small media devices
-     * @param md custom property or predefined symbol by [dev.fritz2.styling.Sizes] for medium sized media devices
-     * @param lg custom property or predefined symbol by [dev.fritz2.styling.Sizes] for large media devices
-     * @param xl custom property or predefined symbol by [dev.fritz2.styling.Sizes] for extra large media devices
+     * @param sm custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for small media devices
+     * @param md custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for medium sized media devices
+     * @param lg custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for large media devices
+     * @param xl custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] for extra large media devices
      */
     fun maxHeight(
         sm: SizesProperty? = null,
@@ -762,8 +762,8 @@ interface Layout : StyleParams {
      * This function sets the [display](https://developer.mozilla.org/en/docs/Web/CSS/display) property of a component
      * for each media device independently.
      *
-     * If you want to create a flex- or grid-layout prefer to use the specialized [dev.fritz2.styling.components.flex]
-     * and [dev.fritz2.styling.components.grid] factory functions in order to create a box, that has this property
+     * If you want to create a flex- or grid-layout prefer to use the specialized [dev.fritz2.components.flex]
+     * and [dev.fritz2.components.grid] factory functions in order to create a box, that has this property
      * already set.
      *
      * example calls:
