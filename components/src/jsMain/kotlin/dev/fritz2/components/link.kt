@@ -12,22 +12,22 @@ val link = staticStyle(
     """
     transition: all 0.15s ease-out;
     cursor: pointer;
-    textDecoration: none;
+    text-decoration: none;
     outline: none;
     color: inherit;
     
     &:hover {
-        textDecoration: underline;    
+        text-decoration: underline;    
     }
 
     &:focus {
-        boxShadow: outline;
+        box-shadow: outline;
     }
     
     &:disabled {
         opacity: 0.4;
         cursor: not-allowed;
-        textDecoration: none;
+        text-decoration: none;
     }
 """
 )

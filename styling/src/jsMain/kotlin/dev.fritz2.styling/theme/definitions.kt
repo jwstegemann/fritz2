@@ -26,8 +26,9 @@ open class ScaledValue<T : Property>(
     val large: T = normal,
     val larger: T = large,
     val huge: T = larger,
+    val giant: T = huge,
     open val none: T = tiny,
-    val full: T = huge
+    val full: T = giant
 ) {
     val initial: T = "initial".unsafeCast<T>()
     val inherit: T = "inherit".unsafeCast<T>()
@@ -39,11 +40,11 @@ open class ScaledValue<T : Property>(
  */
 class WeightedValue<T : Property>(
     val normal: T,
-    val lighter: T = normal,
-    val light: T = lighter,
-    val stronger: T = normal,
-    val strong: T = stronger,
-    val none: T = light,
+    val light: T = normal,
+    val lighter: T = light,
+    val strong: T = normal,
+    val stronger: T = strong,
+    val none: T = lighter,
     val full: T = strong
 ) {
     val initial: T = "initial".unsafeCast<T>()
@@ -74,8 +75,9 @@ class Sizes(
     large: Property = normal,
     larger: Property = large,
     huge: Property = larger,
-    full: Property = large
-) : ScaledValue<Property>(normal, small, smaller, tiny, large, larger, huge, full = full) {
+    giant: Property = huge,
+    full: Property = giant
+) : ScaledValue<Property>(normal, small, smaller, tiny, large, larger, huge, giant, full = full) {
     val borderBox: Property = "border-box"
     val contentBox: Property = "content-box"
     val maxContent: Property = "max-content"

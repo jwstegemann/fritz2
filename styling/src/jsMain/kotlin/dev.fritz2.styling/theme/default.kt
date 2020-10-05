@@ -22,7 +22,8 @@ open class DefaultTheme : Theme {
         large = "1.25rem",
         larger = "1.5rem",
         huge = "2rem",
-        full = "2.5rem"
+        giant = "3rem",
+        full = "4rem"
     )
 
     override val position = space
@@ -33,15 +34,17 @@ open class DefaultTheme : Theme {
         smaller = "0.75rem",
         small = "0.875rem",
         normal = "1rem",
-        large = "1.125rem",
+        large = "1.25rem",
         larger = "1.5rem",
-        huge = "2.25rem"
+        huge = "2rem",
+        giant = "3rem",
+        full = "4rem"
     )
 
     override val colors = object : Colors {
-        override val primary = "#007bff"
-        override val secondary = "#6c757d"
-        override val tertiary = "#6c757d"
+        override val primary = "#3d405b"
+        override val secondary = "#e07a5f"
+        override val tertiary = "#81b29a"
         override val success = "#28a745"
         override val danger = "#dc3545"
         override val warning = "#ffc107"
@@ -62,11 +65,13 @@ open class DefaultTheme : Theme {
     override val lineHeights = ScaledValue(
         normal = "normal",
         tiny = "1",
-        small = "1.25",
-        smaller = "1.375",
+        smaller = "1.25",
+        small = "1.375",
         large = "1.5",
         larger = "1.625",
-        huge = "2"
+        huge = "2",
+        giant = "2.25",
+        full = "3"
     )
 
     override val letterSpacings = ScaledValue(
@@ -79,13 +84,14 @@ open class DefaultTheme : Theme {
     )
 
     override val sizes = Sizes(
+        tiny = "5rem",
+        smaller = "8rem",
+        small = "13rem",
         normal = "auto",
-        small = "25rem",
-        smaller = "15rem",
-        tiny = "10rem",
-        large = "50rem",
-        larger = "75rem",
-        huge = "100rem",
+        large = "21rem",
+        larger = "34rem",
+        huge = "55rem",
+        giant = "89rem",
         full = "100%"
     )
 
@@ -97,6 +103,7 @@ open class DefaultTheme : Theme {
     )
 
     override val radii = ScaledValue(
+        none = "0",
         small = "0.125rem",
         normal = "0.25rem",
         large = "0.5rem",
