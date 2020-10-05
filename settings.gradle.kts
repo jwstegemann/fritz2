@@ -1,5 +1,13 @@
+pluginManagement {
+  repositories {
+    mavenCentral()
+    jcenter()
+    maven("https://dl.bintray.com/kotlin/kotlin-dev")
+    maven("https://dl.bintray.com/kotlin/kotlin-eap")
+    gradlePluginPortal()
+    mavenLocal()
+  }
+}
 rootProject.name = "fritz2"
 
 include("core", "lenses-annotation-processor", "test-server")
-
-enableFeaturePreview("GRADLE_METADATA")
