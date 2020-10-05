@@ -47,7 +47,7 @@ fun hsla(h: Int, s: Int, l: Int, a: Double) = "hsl($h,$s% c vn,,$l%,$a)"
 interface Color : StyleParams {
 
     /**
-     * This function sets the [color](https://developer.mozilla.org/de/docs/Web/CSS/color) property
+     * This function sets the [color](https://developer.mozilla.org/en-US/docs/Web/CSS/color) property
      * for all media devices.
      *
      * Example call:
@@ -64,7 +64,7 @@ interface Color : StyleParams {
     fun color(value: Colors.() -> ColorProperty) = property(colorKey, theme().colors, value)
 
     /**
-     * This function sets the [color](https://developer.mozilla.org/de/docs/Web/CSS/color) property
+     * This function sets the [color](https://developer.mozilla.org/en-US/docs/Web/CSS/color) property
      * for each media device independently.
      *
      * Example call:
@@ -94,7 +94,7 @@ interface Color : StyleParams {
 
 
     /**
-     * This function sets the [opacity](https://developer.mozilla.org/de/docs/Web/CSS/opacity) property
+     * This function sets the [opacity](https://developer.mozilla.org/en-US/docs/Web/CSS/opacity) property
      * for all media devices.
      *
      * Example call:
@@ -109,7 +109,7 @@ interface Color : StyleParams {
     fun opacity(value: WeightedValueProperty) = property(opacityKey, theme().opacities, value)
 
     /**
-     * This function sets the [opacity](https://developer.mozilla.org/de/docs/Web/CSS/opacity) property
+     * This function sets the [opacity](https://developer.mozilla.org/en-US/docs/Web/CSS/opacity) property
      * for each media device independently.
      *
      * Example call:
