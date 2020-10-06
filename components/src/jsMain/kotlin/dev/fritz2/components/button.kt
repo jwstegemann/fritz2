@@ -28,6 +28,10 @@ val basicButtonStyles: Style<BasicStyleParams> = {
     lineHeight { smaller }
     radius { normal }
     fontWeight { semiBold }
+
+    hover {
+        background { color { secondary } }
+    }
 }
 
 object ButtonVariants {
