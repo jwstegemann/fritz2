@@ -208,7 +208,7 @@ typealias Style<T> = T.() -> Unit
  * interface combining all the basic style-parameters
  */
 @ExperimentalCoroutinesApi
-interface BasicStyleParams : Space, Color, Border, Typo, Background, Position, Shadow, Layout {
+interface BasicStyleParams : Space, Color, Border, Typo, Background, Position, Shadow, Layout, Pseudos {
     /**
      * allows the usage of predefined styles in this context
      *
