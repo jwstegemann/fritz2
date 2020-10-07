@@ -1,14 +1,22 @@
 package dev.fritz2.styling.params
 
+import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 interface Pseudos : StyleParams {
-    private inline fun pseudo(key: String, content: BasicStyleParams.() -> Unit) {
+    private inline fun pseudo(key: String, content: BasicStyleParams.() -> Unit, parameter: Property = "") {
         StyleParamsImpl(theme()).let { base ->
             base.content()
-            smProperties.append(" &:", key, "{", base.toCss(), "} ")
+            smProperties.append(
+                " &:",
+                key,
+                if (parameter.isEmpty()) parameter else "($parameter)",
+                "{",
+                base.toCss(),
+                "} "
+            )
         }
     }
 
@@ -45,12 +53,13 @@ interface Pseudos : StyleParams {
     fun valid(content: BasicStyleParams.() -> Unit) = pseudo("valid", content)
     fun visited(content: BasicStyleParams.() -> Unit) = pseudo("visited", content)
 
-    /*    :dir()
-    :lang()
-    :not()
-    :nth-child()
-    :nth-last-child()
-    :nth-last-of-type()
-    :nth-of-type()
-    */
+    fun dir(param: Property, content: BasicStyleParams.() -> Unit) = pseudo("dir", content, param)
+    fun lang(param: Property, content: BasicStyleParams.() -> Unit) = pseudo("lang", content, param)
+    fun not(param: Property, content: BasicStyleParams.() -> Unit) = pseudo("not", content, param)
+    fun nthChild(param: Property, content: BasicStyleParams.() -> Unit) = pseudo("nth-child", content, param)
+    fun nthLastChild(param: Property, content: BasicStyleParams.() -> Unit) = pseudo("nth-last-child", content, param)
+    fun nthLastOfType(param: Property, content: BasicStyleParams.() -> Unit) =
+        pseudo("nth-last-of-type", content, param)
+
+    fun nthOfType(param: Property, content: BasicStyleParams.() -> Unit) = pseudo("nth-of-type", content, param)
 }
