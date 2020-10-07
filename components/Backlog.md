@@ -7,6 +7,12 @@
 - wo sinnvoll: _Convenience_ Funktionen für den simplen Standard-Use-Case
   - Beispiel: Aufruf von Komponenten-Factory nur mit Übergabe des ``Store``s, Anbindung an Standard-Handler ``update`` 
   wird dann intern durchgeführt.
+  
+## TODOs
+
+- ``none`` bei _Background_ und _Border_ einbauen (Property mit getter)
+- Aufteilung des ``Sizes`` Typs in zwei Unterelemente: ``element`` + ``container`` um Größen für kleine und große 
+Elemente besser anzugeben.
 
 ## Eingabekomponenten
 
