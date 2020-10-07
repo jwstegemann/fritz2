@@ -19,7 +19,8 @@ class ResponsiveValue<T : Property>(val sm: T, val md: T = sm, val lg: T = md, v
  * Defines a value that has different expressions for different scales.
  */
 open class ScaledValue<T : Property>(
-    val normal: T,
+    val
+    normal: T,
     val small: T = normal,
     val smaller: T = small,
     val tiny: T = smaller,
@@ -187,7 +188,8 @@ class Shadows(
     val lowered: ShadowProperty,
     val bottom: ShadowProperty = lowered,
     val outline: ShadowProperty,
-    val glowing: ShadowProperty = outline,
+    val glowing: ShadowProperty =outline,
+    val none: ShadowProperty = "none"
 )
 
 /**

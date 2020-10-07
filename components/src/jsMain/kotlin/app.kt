@@ -1,19 +1,17 @@
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
+import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.render
+import dev.fritz2.dom.html.*
 import dev.fritz2.dom.mount
 import dev.fritz2.dom.selectedIndex
+import dev.fritz2.dom.values
 import dev.fritz2.routing.router
-import dev.fritz2.styling.params.AreaName
-import dev.fritz2.styling.params.end
-import dev.fritz2.styling.params.rgba
-import dev.fritz2.styling.params.start
+import dev.fritz2.styling.params.*
 import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.render
+import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
@@ -52,10 +50,15 @@ fun main() {
                     href = const("#grid")
                     +"grid"
                 }
+                Link {
+                    href = const("#input")
+                    +"input"
+                }
             }
             router.render { site ->
                 when (site) {
                     "grid" -> gridDemo()
+                    "input" -> inputDemo()
                     else -> flexDemo(theme)
                 }
             }.bind()
@@ -289,6 +292,96 @@ fun HtmlElements.gridDemo(): Div {
                 }
             }) {
                 Text { +"Overlay" }
+            }
+        }
+    }
+}
+
+@ExperimentalCoroutinesApi
+fun HtmlElements.inputDemo(): Div {
+
+    val user = storeOf("Devtator")
+
+    return div {
+        Flex({
+            direction { column }
+            padding { normal }
+        }) {
+            h1 { +"Input Showcase" }
+
+            Text { +"Basic" }
+            Input {
+                placeholder = const("Platzhalter")
+            }
+
+            Text { +"Basic + Readonly + Custom Styling" }
+            Input(
+                {
+                    //background { color { "lightgrey" } }
+                    focus {
+                        border {
+                            color { dark }
+                        }
+                        boxShadow { none }
+                    }
+                },
+                type = { text }
+            ) {
+                value = const("Nicht zu ändern!")
+                readOnly = const(true)
+            }
+
+
+            Text { +"Passwort" }
+            Input(
+                type = { password }
+            ) {
+                placeholder = const("Passwort")
+            }
+
+            Text { +"Basic + Store" }
+            Input(store = user) {
+                placeholder = const("Name")
+            }
+            Text { +"changes manuell an Store gebunden" }
+            Input {
+                placeholder = const("Name")
+                changes.values() handledBy user.update
+            }
+            LineUp(theme().space.tiny,
+                styles = {
+                    margins { vertical { tiny } }
+                }
+            ) {
+                Text {
+                    +"eingegebener Name:"
+                }
+                Text({
+                    background { color { "lightgrey" } }
+                    radius { normal }
+                    paddings { horizontal { tiny } }
+                }) {
+                    user.data.bind()
+                }
+            }
+
+            Text { +"Sizes" }
+            Input(size = { large }) {
+                placeholder = const("large")
+            }
+            Input(size = { normal }) {
+                placeholder = const("normal")
+            }
+            Input(size = { small }) {
+                placeholder = const("small")
+            }
+
+            Text { +"Variants" }
+            Input(variant = { outline }) {
+                placeholder = const("outline")
+            }
+            Input(variant = { filled }) {
+                placeholder = const("filled")
             }
         }
     }
