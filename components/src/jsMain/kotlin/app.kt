@@ -1,23 +1,18 @@
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
+import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.render
+import dev.fritz2.dom.html.*
 import dev.fritz2.dom.mount
 import dev.fritz2.dom.selectedIndex
+import dev.fritz2.dom.values
 import dev.fritz2.routing.router
-import dev.fritz2.styling.params.AreaName
-import dev.fritz2.styling.params.end
-import dev.fritz2.styling.params.rgba
-import dev.fritz2.styling.params.start
+import dev.fritz2.styling.params.*
 import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.render
-import dev.fritz2.tracking.tracker
-import kotlinx.browser.window
+import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 
 val themes = listOf<Pair<String, ExtendedTheme>>(
@@ -55,10 +50,15 @@ fun main() {
                     href = const("#grid")
                     +"grid"
                 }
+                Link {
+                    href = const("#input")
+                    +"input"
+                }
             }
             router.render { site ->
                 when (site) {
                     "grid" -> gridDemo()
+                    "input" -> inputDemo()
                     else -> flexDemo(theme)
                 }
             }.bind()
@@ -70,19 +70,9 @@ fun main() {
 fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
 
     val themeStore = object : RootStore<Int>(0) {
-        val loading = tracker()
-
         val selectTheme = handle<Int> { _, index ->
             currentTheme = themes[index].second
             index
-        }
-
-        val showMsg = handle { model ->
-            loading.track("running...") {
-                delay(2000)
-                window.alert("geclickt")
-            }
-            model
         }
     }
 
@@ -120,7 +110,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                         )
                         flex { shrink { "0" } }
                     }) {
-                        Image({
+                        image({
                             width(sm = { normal }, md = { tiny })
                             boxShadow { flat }
                             radius { large }
@@ -155,27 +145,17 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             color { dark }
                         }) {
                             +"Getting a new business off the ground is a lot of hard work. Here are five ideas you can use to find your first customers."
-                            themeStore.loading.map { "state: " + it.orEmpty() }.bind()
                         }
                     }
                     LineUp {
-                        Button("long running", themeStore.loading) handledBy themeStore.showMsg
-                        Button("long running", themeStore.loading, hugo = "waiting...") handledBy themeStore.showMsg
+                        Button() {
+                            Icon(theme.icons.arrowUp)
+                            +"Normal"
+                        }
+                        Button(variant = { outline }) { +"Outline" }
+                        Button(variant = { ghost }, color = theme.colors.info) { +"Ghost" }
+                        Button(variant = { link }) { +"Link" }
 
-//                        Button {
-//                            Spinner({
-//                                position { absolute { left { "auto" } } }
-//                                margins { right { "0" } }
-//                            })
-//                            span { +"long running" }
-//                        }
-
-//                        Button(variant = { outline }) { Spinner(); +"Outline" }
-//                        Button(variant = { ghost }, color = theme.colors.info) { +"Ghost" }
-//                        Button(variant = { link }) { +"Link" }
-
-
-                        Button("move up", theme.icons.arrowUp) handledBy themeStore.showMsg
                     }
                 }
             }
@@ -312,6 +292,96 @@ fun HtmlElements.gridDemo(): Div {
                 }
             }) {
                 Text { +"Overlay" }
+            }
+        }
+    }
+}
+
+@ExperimentalCoroutinesApi
+fun HtmlElements.inputDemo(): Div {
+
+    val user = storeOf("Devtator")
+
+    return div {
+        Flex({
+            direction { column }
+            padding { normal }
+        }) {
+            h1 { +"Input Showcase" }
+
+            Text { +"Basic" }
+            Input {
+                placeholder = const("Platzhalter")
+            }
+
+            Text { +"Basic + Readonly + Custom Styling" }
+            Input(
+                {
+                    //background { color { "lightgrey" } }
+                    focus {
+                        border {
+                            color { dark }
+                        }
+                        boxShadow { none }
+                    }
+                },
+                type = { text }
+            ) {
+                value = const("Nicht zu ändern!")
+                readOnly = const(true)
+            }
+
+
+            Text { +"Passwort" }
+            Input(
+                type = { password }
+            ) {
+                placeholder = const("Passwort")
+            }
+
+            Text { +"Basic + Store" }
+            Input(store = user) {
+                placeholder = const("Name")
+            }
+            Text { +"changes manuell an Store gebunden" }
+            Input {
+                placeholder = const("Name")
+                changes.values() handledBy user.update
+            }
+            LineUp(theme().space.tiny,
+                styles = {
+                    margins { vertical { tiny } }
+                }
+            ) {
+                Text {
+                    +"eingegebener Name:"
+                }
+                Text({
+                    background { color { "lightgrey" } }
+                    radius { normal }
+                    paddings { horizontal { tiny } }
+                }) {
+                    user.data.bind()
+                }
+            }
+
+            Text { +"Sizes" }
+            Input(size = { large }) {
+                placeholder = const("large")
+            }
+            Input(size = { normal }) {
+                placeholder = const("normal")
+            }
+            Input(size = { small }) {
+                placeholder = const("small")
+            }
+
+            Text { +"Variants" }
+            Input(variant = { outline }) {
+                placeholder = const("outline")
+            }
+            Input(variant = { filled }) {
+                placeholder = const("filled")
             }
         }
     }
