@@ -6,13 +6,26 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 interface Pseudos : StyleParams {
+    private inline fun pseudo(key: String, content: BasicStyleParams.() -> Unit) {
+        StyleParamsImpl(theme()).let { base ->
+            base.content()
+            smProperties.append(
+                " &:",
+                key,
+                "{",
+                base.toCss(),
+                "} "
+            )
+        }
+    }
+
     private inline fun pseudo(key: String, content: BasicStyleParams.() -> Unit, parameter: Property = "") {
         StyleParamsImpl(theme()).let { base ->
             base.content()
             smProperties.append(
                 " &:",
                 key,
-                if (parameter.isEmpty()) parameter else "($parameter)",
+                "($parameter)",
                 "{",
                 base.toCss(),
                 "} "
