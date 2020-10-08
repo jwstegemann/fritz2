@@ -120,7 +120,8 @@ open class DefaultTheme : Theme {
         top = shadow("0", "19px", "38px", rgba(0, 0, 0, 0.30))
                 and shadow("0", "15px", "12px", rgba(0, 0, 0, 0.22)),
         lowered = shadow("0", "2px", "4px", color = rgba(0, 0, 0, 0.06), inset = true),
-        glowing = shadow("0", "0", "2px", color = rgba(0, 0, 255, 0.5))
+        glowing = shadow("0", "0", "2px", color = rgba(0, 0, 255, 0.5)),
+        outline = shadow("0", "0", "0", "3px", color = rgba(66, 153, 225, 0.6))
     )
 
     override val zIndices = ZIndices(1, 100, 2, 200, 300, 2, 400, 2)

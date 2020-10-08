@@ -153,6 +153,27 @@ class SpacesContext(
         property(leftKey, theme().space, value, target)
         property(rightKey, theme().space, value, target)
     }
+
+    /**
+     * This function is used to set the all paddings or margins
+     * It is usefull to override existing specific definitions for top, etc.
+     *
+     * example call:
+     * ```
+     * paddings {
+     *     all { small }
+     * }
+     * ```
+     *
+     * @param value extension function parameter to bring the predefined space values of the theme
+     *              into the scope of the functional expression
+     */
+    fun all(value: ScaledValueProperty) {
+        property(leftKey, theme().space, value, target)
+        property(rightKey, theme().space, value, target)
+        property(topKey, theme().space, value, target)
+        property(bottomKey, theme().space, value, target)
+    }
 }
 
 /**
