@@ -86,6 +86,26 @@ object FontWeights : PropertyValues {
     const val inherit: FontWeightProperty = "inherit"
 }
 
+/**
+ * Alias for specific [TextDecorations] properties.
+ */
+typealias TextDecorationProperty = Property
+
+/**
+ * Predefined values for the [font-weight](https://developer.mozilla.org/en/docs/Web/CSS/font-weight)
+ * property. Should be used as expression result in [Typo.textDecoration].
+ */
+object TextDecorations : PropertyValues {
+    override val key = "text-decoration: "
+
+    const val none: TextDecorationProperty = "normal"
+    const val underline: TextDecorationProperty = "underline"
+    const val inherit: TextDecorationProperty = "inherit"
+    const val initial: TextDecorationProperty = "initial"
+    const val unset: TextDecorationProperty = "unset"
+}
+
+
 internal const val fontSizeKey = "font-size: "
 internal const val letterSpacingKey = "letter-spacing: "
 internal const val lineHeightKey = "line-height: "
@@ -108,7 +128,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * font-family { body }
+     * fontFamily { body }
      * ```
      *
      * @param value extension function parameter for small media devices, recommended to use
@@ -122,7 +142,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * font-family(
+     * fontFamily(
      *     sm = { body },
      *     lg = { heading }
      * )
@@ -150,7 +170,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * font-size { small }
+     * fontSize { small }
      * ```
      *
      * @param value extension function parameter for small media devices, recommended to use
@@ -164,7 +184,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * font-size(
+     * fontSize(
      *     sm = { small },
      *     lg = { normal }
      * )
@@ -192,7 +212,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * font-weight { bold }
+     * fontWeight { bold }
      * ```
      *
      * @param value extension function parameter for small media devices, recommended to use
@@ -206,7 +226,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * font-weight(
+     * fontWeight(
      *     sm = { normal },
      *     lg = { bold }
      * )
@@ -230,11 +250,53 @@ interface Typo : StyleParams {
         property(FontWeights, sm, md, lg, xl)
 
     /**
+     * This function sets the [text-decoration](https://developer.mozilla.org/en/docs/Web/CSS/text-decoration) property
+     * for each media device independently.
+     *
+     * Example call:
+     * ```
+     * textDecoration(
+     *     sm = { normal },
+     *     lg = { bold }
+     * )
+     * ```
+     *
+     * @param sm extension function parameter for small media devices, recommended to use
+     *           predefined values from [TextDecorations]
+     * @param md extension function parameter for medium sized media devices, recommended to use
+     *           predefined values via [TextDecorations]
+     * @param lg extension function parameter for large media devices, recommended to use
+     *           predefined values via [TextDecorations]
+     * @param xl extension function parameter for extra large media devices, recommended to use
+     *           predefined values via [TextDecorations]
+     */
+    fun textDecoration(
+        sm: (TextDecorations.() -> TextDecorationProperty)? = null,
+        md: (TextDecorations.() -> TextDecorationProperty)? = null,
+        lg: (TextDecorations.() -> TextDecorationProperty)? = null,
+        xl: (TextDecorations.() -> TextDecorationProperty)? = null,
+    ) =
+        property(TextDecorations, sm, md, lg, xl)
+
+    /**
+     * This function sets the [text-decoration](https://developer.mozilla.org/en/docs/Web/CSS/text-decoration) property
+     *
+     * Example call:
+     * ```
+     * textDecoration { bold }
+     * ```
+     *
+     * @param value extension function parameter for small media devices, recommended to use
+     *           predefined values from [TextDecorations]
+     */
+    fun textDecoration(value: TextDecorations.() -> TextDecorationProperty) = property(TextDecorations, value)
+
+    /**
      * This function sets the [line-height](https://developer.mozilla.org/en/docs/Web/CSS/line-height) property
      *
      * Example call:
      * ```
-     * line-height { small }
+     * lineHeight { small }
      * ```
      *
      * @param value extension function parameter for small media devices, recommended to use
@@ -248,7 +310,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * line-height(
+     * lineHeight(
      *     sm = { small },
      *     lg = { normal }
      * )
@@ -290,7 +352,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * letter-spacing(
+     * letterSpacing(
      *     sm = { small },
      *     lg = { normal }
      * )
@@ -318,7 +380,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * text-align { center }
+     * textAlign { center }
      * ```
      *
      * @param value extension function parameter for small media devices, recommended to use
@@ -332,7 +394,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * text-align(
+     * textAlign(
      *     sm = { center },
      *     lg = { left }
      * )
@@ -360,7 +422,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * font-transform { capitalize }
+     * textTransform { capitalize }
      * ```
      *
      * @param value extension function parameter for small media devices, recommended to use
@@ -374,7 +436,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * font-transform(
+     * textTransform(
      *     sm = { capitalize },
      *     lg = { uppercase }
      * )
@@ -402,7 +464,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * font-style { normal }
+     * fontStyle { normal }
      * ```
      *
      * @param value extension function parameter for small media devices, recommended to use
@@ -416,7 +478,7 @@ interface Typo : StyleParams {
      *
      * Example call:
      * ```
-     * font-style(
+     * fontStyle(
      *     sm = { normal },
      *     lg = { italic }
      * )

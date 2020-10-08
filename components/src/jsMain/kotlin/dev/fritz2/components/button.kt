@@ -3,12 +3,14 @@ package dev.fritz2.components
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.params.BasicStyleParams
+import dev.fritz2.styling.params.ColorProperty
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.use
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.theme
 
-val basicButtonStyleClass = staticStyle(
-    "btn",
+val buttonFoundations = staticStyle(
+    "button",
     """
     appearance: none;
     display: inline-flex;
@@ -21,23 +23,71 @@ val basicButtonStyleClass = staticStyle(
     vertical-align: middle;
     outline: none;
     
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        boxShadow: none;
+    }
+    
+    .icon:first-of-type {
+        margin-left: -0.2rem
+    }
 """
 )
 
-val basicButtonStyles: Style<BasicStyleParams> = {
+inline fun basicButtonStyles(mainColor: ColorProperty): Style<BasicStyleParams> = {
+    css("--main-color: $mainColor;")
     lineHeight { smaller }
     radius { normal }
     fontWeight { semiBold }
 
-    hover {
-        background { color { secondary } }
+    focus {
+        boxShadow { outline }
     }
 }
 
 object ButtonVariants {
     val solid: Style<BasicStyleParams> = {
-        background { color { primary } }
+        background { color { "var(--main-color)" } }
         color { light }
+
+        hover {
+            css("filter: brightness(132%);")
+        }
+
+        active {
+            css("filter: brightness(132%);")
+        }
+    }
+
+    val outline: Style<BasicStyleParams> = {
+        color { "var(--main-color)" }
+        border {
+            width { thin }
+            style { solid }
+            color { "var(--main-color)" }
+        }
+
+        hover {
+            background { color { light } }
+        }
+    }
+
+    val ghost: Style<BasicStyleParams> = {
+        color { "var(--main-color)" }
+    }
+
+    val link: Style<BasicStyleParams> = {
+        paddings { all { none } }
+        height { auto }
+        lineHeight { normal }
+        color { "var(--main-color)" }
+        hover {
+            textDecoration { underline }
+        }
+        active {
+            color { secondary }
+        }
     }
 }
 
@@ -52,18 +102,19 @@ object ButtonSizes {
     }
 }
 
-inline fun HtmlElements.btn(
+inline fun HtmlElements.Button(
     styles: Style<BasicStyleParams> = {},
+    color: ColorProperty = theme().colors.primary,
     variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
     size: ButtonSizes.() -> Style<BasicStyleParams> = { normal },
     crossinline init: Button.() -> Any
 ): Button {
     return button(
-        "${basicButtonStyleClass} ${
+        "$buttonFoundations ${
             use(
-                basicButtonStyles,
-                ButtonVariants.variant(),
+                basicButtonStyles(color),
                 ButtonSizes.size(),
+                ButtonVariants.variant(),
                 styles,
                 "button"
             )

@@ -323,7 +323,7 @@ inline fun <T : StyleParams, U : StyleParams> use(styling: Style<T>, more: Style
  * @return css class name
  */
 @ExperimentalCoroutinesApi
-inline fun <T : StyleParams, U : StyleParams, V : StyleParams> use(
+fun <T : StyleParams, U : StyleParams, V : StyleParams> use(
     styling: Style<T>,
     more: Style<U>,
     evenMore: Style<V>,
@@ -363,6 +363,7 @@ inline fun <T : StyleParams, U : StyleParams, V : StyleParams, W : StyleParams> 
         (base.unsafeCast<V>()).evenMore()
         (base.unsafeCast<W>()).andEvenMore()
         base.toCss().let {
+            console.log("#### $prefix -> $it")
             if (it.isNotEmpty()) style(it, prefix)
             else it
         }
