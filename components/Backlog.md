@@ -62,7 +62,7 @@ Variante / Repräsentation:
 
 ### Grid
 
-### Stack
+### Stack (Jens)
 
 - Orientierung: vertical / horizontal
 - Parameter oder getrennte Subkomponenten-Factory-Funktionen
@@ -74,7 +74,7 @@ Variante / Repräsentation:
 
 ## Weitere Komponenten
 
-### Icon
+### Icon (Jens)
 
 - SVG-Icons per Theme
 - **kein** Font
