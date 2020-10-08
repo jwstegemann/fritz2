@@ -7,7 +7,7 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.use
 
 
-inline fun HtmlElements.text(
+inline fun HtmlElements.Text(
     styles: Style<BasicStyleParams> = {},
     crossinline init: P.() -> Any = {}
 ): P {

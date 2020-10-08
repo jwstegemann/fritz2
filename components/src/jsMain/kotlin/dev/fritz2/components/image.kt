@@ -13,7 +13,7 @@ inline fun HtmlElements.image(
 ): Img {
 
     //FIXME: how to deal with attributes we want to add things to from component and init?
-    return img(use(styles, "img")) {
+    return Image(use(styles, "img")) {
         init()
     }
 

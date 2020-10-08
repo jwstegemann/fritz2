@@ -743,7 +743,7 @@ interface HtmlElements {
     fun iframe(baseClass: String? = null, id: String? = null, content: IFrame.() -> Unit): IFrame =
         register(IFrame(id, baseClass), content)
 
-    fun img(baseClass: String? = null, id: String? = null, content: Img.() -> Unit): Img =
+    fun Image(baseClass: String? = null, id: String? = null, content: Img.() -> Unit): Img =
         register(Img(id, baseClass), content)
 
     fun input(baseClass: String? = null, id: String? = null, content: Input.() -> Unit): Input =

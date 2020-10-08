@@ -2,10 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.BasicStyleParams
-import dev.fritz2.styling.params.ColorProperty
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.use
+import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.theme
 
@@ -103,7 +100,7 @@ object ButtonSizes {
 }
 
 inline fun HtmlElements.Button(
-    styles: Style<BasicStyleParams> = {},
+    crossinline styles: Style<BasicStyleParams> = {},
     color: ColorProperty = theme().colors.primary,
     variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
     size: ButtonSizes.() -> Style<BasicStyleParams> = { normal },
@@ -112,10 +109,10 @@ inline fun HtmlElements.Button(
     return button(
         "$buttonFoundations ${
             use(
-                basicButtonStyles(color),
-                ButtonSizes.size(),
-                ButtonVariants.variant(),
-                styles,
+                basicButtonStyles(color) +
+                        ButtonSizes.size() +
+                        ButtonVariants.variant() +
+                        styles,
                 "button"
             )
         }"
