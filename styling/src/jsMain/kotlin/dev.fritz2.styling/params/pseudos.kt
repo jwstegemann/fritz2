@@ -75,4 +75,17 @@ interface Pseudos : StyleParams {
         pseudo("nth-last-of-type", content, param)
 
     fun nthOfType(param: Property, content: BasicStyleParams.() -> Unit) = pseudo("nth-of-type", content, param)
+
+    fun children(selector: String = "", content: BasicStyleParams.() -> Unit) {
+        StyleParamsImpl(theme()).let { base ->
+            base.content()
+            smProperties.append(
+                " *$selector",
+                "{",
+                base.toCss(),
+                "} "
+            )
+        }
+    }
+
 }

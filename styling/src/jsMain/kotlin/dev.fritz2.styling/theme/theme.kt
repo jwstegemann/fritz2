@@ -143,6 +143,11 @@ interface Theme {
      * definition of the scale for gaps
      */
     val gaps: ScaledValue<Property>
+
+    /**
+     * definition of theme-icons
+     */
+    val icons: Icons
 }
 
 /**

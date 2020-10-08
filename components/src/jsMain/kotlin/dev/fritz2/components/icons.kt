@@ -6,17 +6,11 @@ import dev.fritz2.styling.params.BasicStyleParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.use
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.IconDefinition
 import kotlinx.browser.document
 import org.w3c.dom.svg.SVGElement
 
 const val xmlns = "http://www.w3.org/2000/svg"
-
-class IconDefinition(
-    val displayName: String,
-    val viewBox: String = "0 0 24 24",
-    val path: String
-)
-
 
 class Svg(
     override val domNode: SVGElement =
@@ -34,15 +28,11 @@ val iconFoundations = staticStyle(
     vertical-align: middle;
     flex-shrink: 0;
     backface-visibility: hidden;
-    
-    :not(":root") {
-        overflow: hidden;
-    }
 """
 )
 
 
-fun HtmlElements.Icon(styles: Style<BasicStyleParams> = {}, def: IconDefinition) {
+fun HtmlElements.Icon(def: IconDefinition, styles: Style<BasicStyleParams> = {}) {
     val classAttribute = "$iconFoundations ${use(styles, "icon")}"
     val element = Svg()
     register(element, {

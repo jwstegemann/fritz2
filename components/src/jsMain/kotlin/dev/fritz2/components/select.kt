@@ -22,7 +22,7 @@ val select = staticStyle(
 """
 )
 
-inline fun HtmlElements.sel(
+inline fun HtmlElements.Select(
     styles: Style<BasicStyleParams> = {},
     crossinline init: Select.() -> Any
 ): Select {

@@ -189,3 +189,19 @@ class Shadows(
     val outline: ShadowProperty,
     val glowing: ShadowProperty = outline,
 )
+
+/**
+ * Defines a specific icon
+ */
+class IconDefinition(
+    val displayName: String,
+    val viewBox: String = "0 0 24 24",
+    val path: String
+)
+
+/**
+ * Definition of standard-icons
+ */
+interface Icons {
+    val arrowUp: IconDefinition
+}

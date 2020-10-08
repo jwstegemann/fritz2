@@ -7,9 +7,9 @@ import dev.fritz2.styling.staticStyle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-inline fun HtmlElements.box(
+inline fun HtmlElements.Box(
     styles: Style<BoxStyleParams> = {},
-    crossinline init: HtmlElements.() -> Any
+    crossinline init: Div.() -> Unit
 ): Div {
 
     return div(use(styles, "box")) {
@@ -24,9 +24,9 @@ val flex = staticStyle(
 )
 
 @ExperimentalCoroutinesApi
-inline fun HtmlElements.flex(
+inline fun HtmlElements.Flex(
     styles: Style<FlexStyleParams> = {},
-    crossinline init: HtmlElements.() -> Any
+    crossinline init: Div.() -> Unit
 ): Div {
 
     return div("$flex ${use(styles, "flex")}") {
@@ -41,9 +41,9 @@ val grid = staticStyle(
 )
 
 @ExperimentalCoroutinesApi
-inline fun HtmlElements.grid(
+inline fun HtmlElements.Grid(
     styles: Style<GridStyleParams> = {},
-    crossinline init: HtmlElements.() -> Any
+    crossinline init: Div.() -> Unit
 ): Div {
 
     return div("$grid ${use(styles, "grid")}") {

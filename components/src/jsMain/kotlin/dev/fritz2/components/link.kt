@@ -32,7 +32,7 @@ val link = staticStyle(
 """
 )
 
-inline fun HtmlElements.link(
+inline fun HtmlElements.Link(
     styles: Style<BasicStyleParams> = {},
     crossinline init: A.() -> Any
 ): A {
