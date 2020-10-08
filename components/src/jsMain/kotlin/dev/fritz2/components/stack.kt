@@ -6,7 +6,7 @@ import dev.fritz2.styling.params.Style
 
 fun HtmlElements.Stack(styles: Style<FlexStyleParams>) {
 
-    val stackStyles = {}
+//    val stackStyles = {}
 
 /*    return flex(stackStyles + styles) {
 
