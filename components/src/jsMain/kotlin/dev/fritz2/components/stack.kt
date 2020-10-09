@@ -9,11 +9,11 @@ import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.theme
 
 
-fun HtmlElements.Stack(
+inline fun HtmlElements.StackUp(
     spacing: Property = theme().space.normal,
     reverse: Boolean = false,
-    styles: Style<FlexStyleParams> = {},
-    init: Div.() -> Unit
+    crossinline styles: Style<FlexStyleParams> = {},
+    crossinline init: Div.() -> Unit
 ): Div {
     val stackStyles: Style<FlexStyleParams> = {
         if (reverse) {
@@ -33,11 +33,11 @@ fun HtmlElements.Stack(
     return Flex(stackStyles + styles, init)
 }
 
-fun HtmlElements.Group(
+inline fun HtmlElements.LineUp(
     spacing: Property = theme().space.normal,
     reverse: Boolean = false,
-    styles: Style<FlexStyleParams> = {},
-    init: Div.() -> Unit
+    crossinline styles: Style<FlexStyleParams> = {},
+    crossinline init: Div.() -> Unit
 ): Div {
     val stackStyles: Style<FlexStyleParams> = {
         if (reverse) {
