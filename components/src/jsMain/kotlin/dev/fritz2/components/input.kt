@@ -45,7 +45,7 @@ val basicInputStyles: Style<BasicStyleParams> = {
 
     focus {
         border {
-            color { "#3182ce" } // TODO Wo definieren? Ggf. übergeben?
+            color { "#3182ce" } // TODO : Wehre to define? Or ability to provide?
         }
         boxShadow { outline }
     }
@@ -99,9 +99,7 @@ object InputVariants {
         }
 
         hover {
-            background {
-                color { dark }
-            }
+            css("filter: brightness(90%);")
         }
 
         focus {
