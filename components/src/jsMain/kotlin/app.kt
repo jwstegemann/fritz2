@@ -300,7 +300,7 @@ fun HtmlElements.gridDemo(): Div {
 @ExperimentalCoroutinesApi
 fun HtmlElements.inputDemo(): Div {
 
-    val user = storeOf("Devtator")
+    val user = storeOf("John Doe")
 
     return div {
         Flex({
@@ -311,7 +311,7 @@ fun HtmlElements.inputDemo(): Div {
 
             Text { +"Basic" }
             Input {
-                placeholder = const("Platzhalter")
+                placeholder = const("Placeholder")
             }
 
             Text { +"Basic + Readonly + Custom Styling" }
@@ -327,23 +327,23 @@ fun HtmlElements.inputDemo(): Div {
                 },
                 type = { text }
             ) {
-                value = const("Nicht zu ändern!")
+                value = const("Readonly!")
                 readOnly = const(true)
             }
 
 
-            Text { +"Passwort" }
+            Text { +"Password" }
             Input(
                 type = { password }
             ) {
-                placeholder = const("Passwort")
+                placeholder = const("Password")
             }
 
             Text { +"Basic + Store" }
             Input(store = user) {
                 placeholder = const("Name")
             }
-            Text { +"changes manuell an Store gebunden" }
+            Text { +"changes manually applied to store's update" }
             Input {
                 placeholder = const("Name")
                 changes.values() handledBy user.update
@@ -354,7 +354,7 @@ fun HtmlElements.inputDemo(): Div {
                 }
             ) {
                 Text {
-                    +"eingegebener Name:"
+                    +"given Name:"
                 }
                 Text({
                     background { color { "lightgrey" } }
