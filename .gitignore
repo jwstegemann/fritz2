@@ -7,3 +7,6 @@
 **/gradle/
 **/src/generated/
 /core/api/dokka/core/
+/api/dokka/fritz2/alltypes.md
+/api/dokka/fritz2/index.md
+/api/dokka/fritz2/package-list
