@@ -62,6 +62,53 @@ class DomListMountPoint<T : org.w3c.dom.Node>(upstream: Flow<List<WithDomNode<T>
     }
 }
 
+/**
+ * A [SingleMountPoint] to mount the values of a [Flow] of a [List] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * This MountPoint guarantees to preserve the order of children at it's target by using a placeholder-comment to reserve
+ * it's place in the child-list until the first value on the upstream flow is available.
+ * For performance-reasons and because it is not necessary in most use-cases this is not the default-behaviour when binding a flow.
+ * You can enable it though be setting the preserveOrder-parameter when binding.
+ *
+ * @param upstream the Flow of [List] of [WithDomNode]s to mount here.
+ */
+class DomListMountPointPreserveOrder<T : org.w3c.dom.Node>(
+    upstream: Flow<List<WithDomNode<T>>>,
+    val target: org.w3c.dom.Node?
+) :
+    SingleMountPoint<List<WithDomNode<T>>>(upstream) {
+
+    val placeholder: Comment = document.createComment("...")
+
+    /**
+     * updates the elements in the DOM
+     *
+     * @param value new [Tag]
+     * @param last last [Tag] (to be replaced)
+     */
+    override fun set(value: List<WithDomNode<T>>, last: List<WithDomNode<T>>?) {
+        if (last != null) {
+            if (last.isNotEmpty()) {
+                if (value.isNotEmpty()) value.forEach { target?.insertBefore(it.domNode, last.first().domNode) }
+                else target?.insertBefore(placeholder, last.first().domNode)
+                last.forEach { target?.removeChild(it.domNode) }
+            } else {
+                if (value.isNotEmpty()) value.forEach { target?.insertBefore(it.domNode, last.first().domNode) }
+                target?.removeChild(placeholder)
+            }
+        } else {
+            // first call set here
+            if (value.isNotEmpty()) {
+                value.forEach { target?.insertBefore(it.domNode, placeholder) }
+                target?.removeChild(placeholder)
+            }
+        }
+    }
+
+    init {
+        target?.appendChild(placeholder!!)
+    }
+}
+
 
 /**
  * A [SingleMountPoint] to mount the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
@@ -113,7 +160,7 @@ class NullableDomMountPointPreserveOrder<T : org.w3c.dom.Node>(
 ) :
     SingleMountPoint<WithDomNode<T>?>(upstream) {
 
-    private val placeholder: Comment? = document.createComment("...")
+    private val placeholder: Comment = document.createComment("...")
 
     /**
      * updates the elements in the DOM
@@ -124,14 +171,14 @@ class NullableDomMountPointPreserveOrder<T : org.w3c.dom.Node>(
     override fun set(value: WithDomNode<T>?, last: WithDomNode<T>?) {
         if (last?.domNode != null) {
             if (value != null) target?.replaceChild(value.domNode, last.domNode)
-            else target?.replaceChild(placeholder!!, last.domNode)
+            else target?.replaceChild(placeholder, last.domNode)
         } else {
-            if (value != null) target?.replaceChild(value.domNode, placeholder!!)
+            if (value != null) target?.replaceChild(value.domNode, placeholder)
         }
     }
 
     init {
-        target?.appendChild(placeholder!!)
+        target?.appendChild(placeholder)
     }
 }
 

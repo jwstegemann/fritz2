@@ -35,7 +35,6 @@ fun main() {
     val router = router("")
 
     render { theme: ExtendedTheme ->
-        console.log("####" + (currentTheme is ExtendedTheme))
         section {
             Flex({
                 height { "60px" }
@@ -168,7 +167,11 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                     }
                     LineUp {
                         Button("long running", themeStore.loading) handledBy themeStore.showMsg
-                        Button("long running", themeStore.loading, hugo = "waiting...") handledBy themeStore.showMsg
+                        Button(
+                            "long running",
+                            themeStore.loading,
+                            loadingText = "waiting..."
+                        ) handledBy themeStore.showMsg
 
 //                        Button {
 //                            Spinner({
@@ -183,7 +186,13 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
 //                        Button(variant = { link }) { +"Link" }
 
 
-                        Button("move up", theme.icons.arrowUp) handledBy themeStore.showMsg
+                        //FIXME: make loading Flow<boolean> and offer loading.transaction
+                        Button(
+                            "move up",
+                            theme.icons.arrowUp,
+                            themeStore.loading,
+                            loadingText = "waiting..."
+                        ) handledBy themeStore.showMsg
                     }
                 }
             }
