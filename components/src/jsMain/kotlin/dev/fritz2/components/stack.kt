@@ -10,9 +10,9 @@ import dev.fritz2.styling.theme.theme
 
 
 inline fun HtmlElements.StackUp(
+    crossinline styles: Style<FlexStyleParams> = {},
     spacing: Property = theme().space.normal,
     reverse: Boolean = false,
-    crossinline styles: Style<FlexStyleParams> = {},
     crossinline init: Div.() -> Unit
 ): Div {
     val stackStyles: Style<FlexStyleParams> = {
@@ -34,9 +34,9 @@ inline fun HtmlElements.StackUp(
 }
 
 inline fun HtmlElements.LineUp(
+    crossinline styles: Style<FlexStyleParams> = {},
     spacing: Property = theme().space.normal,
     reverse: Boolean = false,
-    crossinline styles: Style<FlexStyleParams> = {},
     crossinline init: Div.() -> Unit
 ): Div {
     val stackStyles: Style<FlexStyleParams> = {
