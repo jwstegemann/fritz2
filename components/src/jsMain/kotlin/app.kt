@@ -14,7 +14,10 @@ import dev.fritz2.styling.params.rgba
 import dev.fritz2.styling.params.start
 import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.render
+import dev.fritz2.tracking.tracker
+import kotlinx.browser.window
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 
 val themes = listOf<Pair<String, ExtendedTheme>>(
@@ -67,9 +70,19 @@ fun main() {
 fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
 
     val themeStore = object : RootStore<Int>(0) {
+        val loading = tracker()
+
         val selectTheme = handle<Int> { _, index ->
             currentTheme = themes[index].second
             index
+        }
+
+        val showMsg = handle { model ->
+            loading.track("running...") {
+                delay(2000)
+                window.alert("geclickt")
+            }
+            model
         }
     }
 
@@ -142,16 +155,26 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             color { dark }
                         }) {
                             +"Getting a new business off the ground is a lot of hard work. Here are five ideas you can use to find your first customers."
+                            themeStore.loading.map { "state: " + it.orEmpty() }.bind()
                         }
                     }
                     LineUp {
-                        Button() {
-                            Icon(theme.icons.arrowUp)
-                            +"Normal"
+                        //Button("long running", themeStore.loading) handledBy themeStore.showMsg
+
+                        Button {
+                            Spinner({
+                                position { absolute { left { "auto" } } }
+                                margins { right { "0" } }
+                            })
+                            span { +"long running" }
                         }
-                        Button(variant = { outline }) { +"Outline" }
-                        Button(variant = { ghost }, color = theme.colors.info) { +"Ghost" }
-                        Button(variant = { link }) { +"Link" }
+
+//                        Button(variant = { outline }) { Spinner(); +"Outline" }
+//                        Button(variant = { ghost }, color = theme.colors.info) { +"Ghost" }
+//                        Button(variant = { link }) { +"Link" }
+
+
+                        Button("move up", theme.icons.arrowUp) handledBy themeStore.showMsg
 
                     }
                 }

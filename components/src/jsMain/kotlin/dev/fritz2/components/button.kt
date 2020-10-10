@@ -4,7 +4,9 @@ import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.theme
+import kotlinx.coroutines.flow.Flow
 
 val buttonFoundations = staticStyle(
     "button",
@@ -24,10 +26,6 @@ val buttonFoundations = staticStyle(
         opacity: 0.4;
         cursor: not-allowed;
         boxShadow: none;
-    }
-    
-    .icon:first-of-type {
-        margin-left: -0.2rem
     }
 """
 )
@@ -100,6 +98,93 @@ object ButtonSizes {
 }
 
 inline fun HtmlElements.Button(
+    text: String,
+    crossinline styles: Style<BasicStyleParams> = {},
+    color: ColorProperty = theme().colors.primary,
+    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal }
+): Flow<Unit> {
+    lateinit var buttonClicks: Flow<Unit>
+    Button(styles, color, variant, size) {
+        buttonClicks = clicks.map { Unit }
+        +text
+    }
+    return buttonClicks
+}
+
+val invisible = staticStyle(
+    "invisible", """
+    opacity: 0;
+"""
+)
+
+inline fun HtmlElements.Button(
+    text: String,
+    loading: Flow<String?>,
+    crossinline styles: Style<BasicStyleParams> = {},
+    color: ColorProperty = theme().colors.primary,
+    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal }
+): Flow<Unit> {
+    lateinit var buttonClicks: Flow<Unit>
+    Button(styles, color, variant, size) {
+        buttonClicks = clicks.map { Unit }
+        loading.renderNotNull { state ->
+            if (state != null)
+                Spinner({
+                    position { absolute { top { "0" } } }
+                    margins { right { none } }
+                })
+            else null
+        }.bind(true)
+
+    }
+    return buttonClicks
+}
+
+val buttonLeftIconStyle: Style<BasicStyleParams> = {
+    width { "1.15em" }
+    height { "1.15em" }
+    margins {
+        left { "-0.2rem" }
+        right { "0.35rem" }
+    }
+}
+
+val buttonRightIconStyle: Style<BasicStyleParams> = {
+    width { "1.15em" }
+    height { "1.15em" }
+    margins {
+        right { "-0.2rem" }
+        left { "0.35rem" }
+    }
+}
+
+inline fun HtmlElements.Button(
+    text: String,
+    icon: IconDefinition,
+    crossinline styles: Style<BasicStyleParams> = {},
+    iconRight: Boolean = false,
+    color: ColorProperty = theme().colors.primary,
+    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal }
+): Flow<Unit> {
+    lateinit var buttonClicks: Flow<Unit>
+    Button(styles, color, variant, size) {
+        buttonClicks = clicks.map { Unit }
+        if (!iconRight) {
+            Icon(icon, buttonLeftIconStyle)
+        }
+        +text
+        if (iconRight) {
+            Icon(icon, buttonRightIconStyle)
+        }
+    }
+    return buttonClicks
+}
+
+
+inline fun HtmlElements.Button(
     crossinline styles: Style<BasicStyleParams> = {},
     color: ColorProperty = theme().colors.primary,
     variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
@@ -109,8 +194,8 @@ inline fun HtmlElements.Button(
     return button(
         "$buttonFoundations ${
             use(
-                basicButtonStyles(color) +
-                        ButtonSizes.size() +
+                ButtonSizes.size() +
+                        basicButtonStyles(color) +
                         ButtonVariants.variant() +
                         styles,
                 "button"

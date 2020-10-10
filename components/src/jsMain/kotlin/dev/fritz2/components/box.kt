@@ -9,10 +9,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 inline fun HtmlElements.Box(
     styles: Style<BoxStyleParams> = {},
+    cssClasses: String = "",
     crossinline init: Div.() -> Unit
 ): Div {
 
-    return div(use(styles, "box")) {
+    return div(cssClasses + use(styles, "box")) {
         init()
     }
 
