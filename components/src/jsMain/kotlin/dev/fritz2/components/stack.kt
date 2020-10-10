@@ -42,12 +42,12 @@ inline fun HtmlElements.LineUp(
     val stackStyles: Style<FlexStyleParams> = {
         if (reverse) {
             direction { rowReverse }
-            children(":not(:first-child)") {
+            children(" > :not(:first-child)") {
                 margins { right { spacing } }
             }
         } else {
             direction { row }
-            children(":not(:first-child)") {
+            children(" > :not(:first-child)") {
                 margins { left { spacing } }
             }
         }

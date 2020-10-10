@@ -2,10 +2,12 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.renderNotNull
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.Flow
 
 val buttonFoundations = staticStyle(
@@ -118,10 +120,10 @@ val invisible = staticStyle(
 """
 )
 
-inline fun HtmlElements.Button(
+fun HtmlElements.Button(
     text: String,
     loading: Flow<String?>,
-    crossinline styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicStyleParams> = {},
     color: ColorProperty = theme().colors.primary,
     variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
     size: ButtonSizes.() -> Style<BasicStyleParams> = { normal }
@@ -132,15 +134,18 @@ inline fun HtmlElements.Button(
         loading.renderNotNull { state ->
             if (state != null)
                 Spinner({
-                    position { absolute { top { "0" } } }
-                    margins { right { none } }
+                    css("position: absolute;")
                 })
             else null
-        }.bind(true)
-
+        }.bind()
+        span {
+            className = invisible.whenever(loading) { it != null }
+            +text
+        }
     }
     return buttonClicks
 }
+
 
 val buttonLeftIconStyle: Style<BasicStyleParams> = {
     width { "1.15em" }
