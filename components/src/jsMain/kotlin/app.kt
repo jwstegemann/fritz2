@@ -160,6 +160,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                     }
                     LineUp {
                         Button("long running", themeStore.loading) handledBy themeStore.showMsg
+                        Button("long running", themeStore.loading, hugo = "waiting...") handledBy themeStore.showMsg
 
 //                        Button {
 //                            Spinner({
