@@ -7,12 +7,19 @@
 - wo sinnvoll: _Convenience_ Funktionen für den simplen Standard-Use-Case
   - Beispiel: Aufruf von Komponenten-Factory nur mit Übergabe des ``Store``s, Anbindung an Standard-Handler ``update`` 
   wird dann intern durchgeführt.
+- Parameterreihenfolge bei Komponenten:
+  - Pflichtparameter
+  - Style als **erster** optionaler Parameter
+  - restliche optionale Parameter
+  - ``init`` als letztes
   
 ## TODOs
 
 - ``none`` bei _Background_ und _Border_ einbauen (Property mit getter)
 - Aufteilung des ``Sizes`` Typs in zwei Unterelemente: ``element`` + ``container`` um Größen für kleine und große 
 Elemente besser anzugeben.
+- Extension Funktion für ``use``, um ``use<BasicStyleParams>(...)`` zu verkürzen
+- Doku: Beispiel + Hinweis, wie man CSS-DSL *ohne* Komponenten nutzt (s. davor)
 
 ## Eingabekomponenten
 
