@@ -147,11 +147,15 @@ interface Store<T> : CoroutineScope {
 
     fun <I> syncWith(socket: Socket, resource: Resource<T, I>) {
         val session = socket.connect()
+        var last: T? = null
         session.messages.body.map {
-            resource.serializer.read(it)
+            val received = resource.serializer.read(it)
+            last = received
+            received
         } handledBy update
+
         data.drop(1).onEach {
-            session.send(resource.serializer.write(it))
+            if (last != it) session.send(resource.serializer.write(it))
         }.watch()
     }
 }
@@ -165,11 +169,15 @@ inline fun <T, R> Store<T>.syncBy(handler: Handler<R>, crossinline mapper: suspe
 
 fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
     val session = socket.connect()
+    var last: List<T>? = null
     session.messages.body.map {
-        resource.serializer.readList(it)
+        val received = resource.serializer.readList(it)
+        last = received
+        received
     } handledBy update
+
     data.drop(1).onEach {
-        session.send(resource.serializer.writeList(it))
+        if (last != it) session.send(resource.serializer.writeList(it))
     }.watch()
 }
 

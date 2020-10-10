@@ -96,21 +96,29 @@ class DetachedStore<T, P>(private val initialData: T, private val parent: Store<
 
     override fun <I> syncWith(socket: Socket, resource: Resource<T, I>) {
         val session = socket.connect()
+        var last: T? = null
         session.messages.body.map {
-            resource.serializer.read(it)
+            val received = resource.serializer.read(it)
+            last = received
+            received
         } handledBy update
+
         detached.drop(1).onEach {
-            session.send(resource.serializer.write(it))
+            if (last != it) session.send(resource.serializer.write(it))
         }.watch()
     }
 }
 
 fun <T, P, I> DetachedStore<List<T>, P>.syncWith(socket: Socket, resource: Resource<T, I>) {
     val session = socket.connect()
+    var last: List<T>? = null
     session.messages.body.map {
-        resource.serializer.readList(it)
+        val received = resource.serializer.readList(it)
+        last = received
+        received
     } handledBy update
+
     detached.drop(1).onEach {
-        session.send(resource.serializer.writeList(it))
+        if (last != it) session.send(resource.serializer.writeList(it))
     }.watch()
 }
