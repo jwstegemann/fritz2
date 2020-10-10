@@ -3,17 +3,22 @@ import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
-import dev.fritz2.dom.html.*
+import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.dom.selectedIndex
 import dev.fritz2.dom.values
 import dev.fritz2.routing.router
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.AreaName
+import dev.fritz2.styling.params.end
+import dev.fritz2.styling.params.rgba
+import dev.fritz2.styling.params.start
 import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.render
+import dev.fritz2.styling.theme.theme
 import dev.fritz2.tracking.tracker
 import kotlinx.browser.window
-import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -371,10 +376,10 @@ fun HtmlElements.inputDemo(): Div {
                 placeholder = const("Name")
                 changes.values() handledBy user.update
             }
-            LineUp(theme().space.tiny,
-                styles = {
+            LineUp(
+                {
                     margins { vertical { tiny } }
-                }
+                }, spacing = theme().space.tiny
             ) {
                 Text {
                     +"given Name:"

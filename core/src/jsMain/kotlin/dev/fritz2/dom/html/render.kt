@@ -47,6 +47,7 @@ fun renderAll(content: HtmlElements.() -> Unit): List<Tag<HTMLElement>> {
 }
 
 
+
 /**
  *  creates a render context for [Tag]s. It should only contain
  *  one root [Tag] like [Div] otherwise a [MultipleRootElementsException]
@@ -96,7 +97,7 @@ fun <X, E : Element> Flow<X>.render(mapper: HtmlElements.(X) -> Tag<E>): Flow<Ta
 fun <X, E : Element> Flow<X>.renderNotNull(mapper: HtmlElements.(X) -> Tag<E>?): Flow<Tag<E>?> {
     return this.map { data ->
         dev.fritz2.dom.html.renderNotNull {
-            data?.let { mapper(it) }
+            mapper(data)
         }
     }
 }
@@ -109,7 +110,7 @@ fun <X, E : Element> Flow<X>.renderNotNull(mapper: HtmlElements.(X) -> Tag<E>?):
 fun <X> Flow<X>.renderAll(mapper: HtmlElements.(X) -> Unit): Flow<List<Tag<HTMLElement>>> {
     return this.map { data ->
         dev.fritz2.dom.html.renderAll {
-            data?.let { mapper(it) }
+            mapper(data)
         }
     }
 }
