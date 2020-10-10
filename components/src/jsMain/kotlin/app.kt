@@ -120,7 +120,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                         )
                         flex { shrink { "0" } }
                     }) {
-                        image({
+                        Image({
                             width(sm = { normal }, md = { tiny })
                             boxShadow { flat }
                             radius { large }
@@ -159,15 +159,15 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                         }
                     }
                     LineUp {
-                        //Button("long running", themeStore.loading) handledBy themeStore.showMsg
+                        Button("long running", themeStore.loading) handledBy themeStore.showMsg
 
-                        Button {
-                            Spinner({
-                                position { absolute { left { "auto" } } }
-                                margins { right { "0" } }
-                            })
-                            span { +"long running" }
-                        }
+//                        Button {
+//                            Spinner({
+//                                position { absolute { left { "auto" } } }
+//                                margins { right { "0" } }
+//                            })
+//                            span { +"long running" }
+//                        }
 
 //                        Button(variant = { outline }) { Spinner(); +"Outline" }
 //                        Button(variant = { ghost }, color = theme.colors.info) { +"Ghost" }
@@ -175,7 +175,6 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
 
 
                         Button("move up", theme.icons.arrowUp) handledBy themeStore.showMsg
-
                     }
                 }
             }

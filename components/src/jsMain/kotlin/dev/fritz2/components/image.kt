@@ -7,13 +7,13 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.use
 
 
-inline fun HtmlElements.image(
+inline fun HtmlElements.Image(
     styles: Style<BasicStyleParams> = {},
     crossinline init: Img.() -> Unit
 ): Img {
 
     //FIXME: how to deal with attributes we want to add things to from component and init?
-    return Image(use(styles, "img")) {
+    return img(use(styles, "img")) {
         init()
     }
 

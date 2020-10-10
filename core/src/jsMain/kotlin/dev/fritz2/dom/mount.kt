@@ -70,6 +70,44 @@ class DomMountPointPreserveOrder<T : org.w3c.dom.Node>(upstream: Flow<WithDomNod
 
 
 /**
+ * A [SingleMountPoint] to mount the nullable values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * This MountPoint guarantees to preserve the order of children at it's target by using a placeholder-comment to reserve
+ * it's place in the child-list until the first value on the upstream flow is available.
+ * For performance-reasons and because it is not necessary in most use-cases this is not the default-behaviour when binding a flow.
+ * You can enable it though be setting the preserveOrder-parameter when binding.
+ *
+ * @param upstream the Flow of [WithDomNode]s to mount here.
+ */
+class NullableDomMountPointPreserveOrder<T : org.w3c.dom.Node>(
+    upstream: Flow<WithDomNode<T>?>,
+    val target: org.w3c.dom.Node?
+) :
+    SingleMountPoint<WithDomNode<T>?>(upstream) {
+
+    private val placeholder: Comment? = document.createComment("...")
+
+    /**
+     * updates the elements in the DOM
+     *
+     * @param value new [Tag]
+     * @param last last [Tag] (to be replaced)
+     */
+    override fun set(value: WithDomNode<T>?, last: WithDomNode<T>?) {
+        if (last?.domNode != null) {
+            if (value != null) target?.replaceChild(value.domNode, last.domNode)
+            else target?.replaceChild(placeholder!!, last.domNode)
+        } else {
+            if (value != null) target?.replaceChild(value.domNode, placeholder!!)
+        }
+    }
+
+    init {
+        target?.appendChild(placeholder!!)
+    }
+}
+
+
+/**
  * A [MultiMountPoint] to mount the values of a [Flow] of [Patch]es (mostly [Tag]s) at this point in the DOM.
  *
  * @param upstream the Flow of [WithDomNode]s to mount here.
