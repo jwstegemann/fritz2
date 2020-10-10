@@ -123,7 +123,7 @@ fun HtmlElements.Button(
     text: String,
     loading: Flow<String?>,
     styles: Style<BasicStyleParams> = {},
-    hugo: String? = null,
+    loadingText: String? = null,
     color: ColorProperty = theme().colors.primary,
     variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
     size: ButtonSizes.() -> Style<BasicStyleParams> = { normal }
@@ -135,10 +135,10 @@ fun HtmlElements.Button(
             //render spinner
             if (state != null) {
                 Spinner({
-                    if (hugo == null) css("position: absolute;")
-                    else margins { right { "0.5rem" } }
+                    if (loadingText == null) css("position: absolute;")
+                    else buttonLeftIconStyle()
                 })
-                span(if (hugo == null) hidden else "") { +(hugo ?: text) }
+                span(if (loadingText == null) hidden else "") { +(loadingText ?: text) }
             } else {
                 span { +text }
             }
@@ -169,7 +169,9 @@ val buttonRightIconStyle: Style<BasicStyleParams> = {
 inline fun HtmlElements.Button(
     text: String,
     icon: IconDefinition,
+    loading: Flow<String?>,
     crossinline styles: Style<BasicStyleParams> = {},
+    loadingText: String? = null,
     iconRight: Boolean = false,
     color: ColorProperty = theme().colors.primary,
     variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
@@ -178,13 +180,23 @@ inline fun HtmlElements.Button(
     lateinit var buttonClicks: Flow<Unit>
     Button(styles, color, variant, size) {
         buttonClicks = clicks.map { Unit }
-        if (!iconRight) {
-            Icon(icon, buttonLeftIconStyle)
-        }
-        +text
-        if (iconRight) {
-            Icon(icon, buttonRightIconStyle)
-        }
+        loading.renderAll { state ->
+            if (!iconRight) {
+                if (state != null) {
+                    Spinner({
+                        buttonLeftIconStyle()
+                    })
+                } else Icon(icon, buttonLeftIconStyle)
+            }
+            span { +(if (state != null && loadingText != null) loadingText else text) }
+            if (iconRight) {
+                if (state != null) {
+                    Spinner({
+                        buttonRightIconStyle()
+                    })
+                } else Icon(icon, buttonRightIconStyle)
+            }
+        }.bind()
     }
     return buttonClicks
 }

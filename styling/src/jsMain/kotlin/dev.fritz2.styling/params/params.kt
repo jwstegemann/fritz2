@@ -298,7 +298,7 @@ inline fun <T : StyleParams> use(styling: Style<T>, prefix: String = "s"): Style
     StyleParamsImpl(theme()).let { base ->
         (base.unsafeCast<T>()).styling()
         base.toCss().let {
-            console.log("### $prefix -> $it")
+//            console.log("### $prefix -> $it")
             if (it.isNotEmpty()) style(it, prefix)
             else it
         }
