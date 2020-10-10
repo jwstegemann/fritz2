@@ -5,6 +5,7 @@ import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
+import io.ktor.http.content.*
 import io.ktor.jackson.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -170,6 +171,23 @@ fun Application.main() {
             }
             get("/headers") {
                 call.respond(call.request.headers.toMap())
+            }
+        }
+
+        route("/extra") {
+            post("/arraybuffer") {
+                val received = call.receiveChannel().toByteArray()
+                log.info("[arraybuffer] received: $received")
+                call.respondBytes(received)
+            }
+            post("/formData") {
+                call.receiveMultipart().forEachPart {
+                    when (it) {
+                        is PartData.FormItem -> log.info("[formData] received: ${it.value}")
+                        is PartData.FileItem -> log.info("[formData] received: ${it.originalFileName}")
+                        else -> log.info("[formData] received: name=${it.name}, contentType=${it.contentType}")
+                    }
+                }
             }
         }
 

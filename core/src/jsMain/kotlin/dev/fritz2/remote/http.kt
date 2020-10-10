@@ -1,6 +1,7 @@
 package dev.fritz2.remote
 
 import kotlinx.coroutines.await
+import org.khronos.webgl.ArrayBuffer
 import org.w3c.fetch.*
 import org.w3c.files.Blob
 import org.w3c.xhr.FormData
@@ -171,6 +172,16 @@ open class Request(
     )
 
     /**
+     * sets the [ArrayBuffer] content to the request
+     *
+     * @param content body as [ArrayBuffer]
+     */
+    fun arrayBuffer(content: ArrayBuffer) = Request(
+        baseUrl, headers, content, referrer, referrerPolicy, mode,
+        credentials, cache, redirect, integrity, keepalive, reqWindow
+    )
+
+    /**
      * sets the [FormData] content to the request
      *
      * @param content body as [FormData]
@@ -181,7 +192,7 @@ open class Request(
     )
 
     /**
-     * sets the body content to the request
+     * sets the [Blob] content to the request
      *
      * @param content body as [Blob]
      */

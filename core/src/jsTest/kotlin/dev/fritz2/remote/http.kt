@@ -4,11 +4,10 @@ import dev.fritz2.test.rest
 import dev.fritz2.test.runTest
 import dev.fritz2.test.test
 import dev.fritz2.test.testHttpServer
+import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.get
 import kotlin.random.Random
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class RemoteTests {
 
@@ -87,6 +86,19 @@ class RemoteTests {
         val empty = remote.acceptJson().get().getBody()
         for (text in texts) {
             assertFalse(empty.contains(text), "deleted entity is in list")
+        }
+    }
+
+    @Test
+    fun testByteArray() = runTest {
+        val remote = testHttpServer("extra/arraybuffer")
+        val data = Uint8Array(arrayOf(1, 2, 3))
+        val response = remote.arrayBuffer(data.buffer).post()
+        val result = Uint8Array(response.getArrayBuffer())
+        var i = 0
+        while (i < result.length) {
+            assertEquals(data[i], result[i], "binary data is not matched")
+            i++
         }
     }
 
