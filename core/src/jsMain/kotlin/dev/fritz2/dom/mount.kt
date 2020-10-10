@@ -33,6 +33,35 @@ class DomMountPoint<T : org.w3c.dom.Node>(upstream: Flow<WithDomNode<T>>, val ta
     }
 }
 
+/**
+ * A [SingleMountPoint] to mount the values of a [Flow] of a [List] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * If you mix constant [Tag]s with one or more of these MountPoints, the order ist not guaranteed.
+ * Wrap your mounted elements in a constant [Tag] or use [DomMountPointFixOrder] instead (for example by setting preseveOrder when binding).
+ *
+ * @param upstream the Flow of [List] of [WithDomNode]s to mount here.
+ */
+class DomListMountPoint<T : org.w3c.dom.Node>(upstream: Flow<List<WithDomNode<T>>>, val target: org.w3c.dom.Node?) :
+    SingleMountPoint<List<WithDomNode<T>>>(upstream) {
+
+    /**
+     * updates the elements in the DOM
+     *
+     * @param value new [Tag]
+     * @param last last [Tag] (to be replaced)
+     */
+    override fun set(value: List<WithDomNode<T>>, last: List<WithDomNode<T>>?) {
+        if (last != null) {
+            if (last.isNotEmpty()) {
+                value.forEach { target?.insertBefore(it.domNode, last.first().domNode) }
+                last.forEach { target?.removeChild(it.domNode) }
+            }
+        } else {
+            // first call set here
+            value.forEach { target?.appendChild(it.domNode) }
+        }
+    }
+}
+
 
 /**
  * A [SingleMountPoint] to mount the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.

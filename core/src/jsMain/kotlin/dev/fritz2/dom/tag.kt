@@ -59,6 +59,9 @@ open class Tag<out T : Element>(
     fun <X : Element> Flow<Tag<X>?>.bind(): SingleMountPoint<WithDomNode<Element>?> =
         NullableDomMountPointPreserveOrder(this, domNode)
 
+    fun <X : Element> Flow<List<Tag<X>>>.bind(): SingleMountPoint<List<WithDomNode<Element>>> =
+        DomListMountPoint(this, domNode)
+
     /**
      * binds a [Seq] of [Tag]s at this position (creates a [DomMultiMountPoint] as a placeholder and adds it to the builder)
      */

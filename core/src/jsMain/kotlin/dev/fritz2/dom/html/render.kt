@@ -4,6 +4,7 @@ import dev.fritz2.dom.Tag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
 
 /**
  *  creates a render context for [Tag]s. It should only contain
@@ -30,6 +31,21 @@ fun <E : Element> render(content: HtmlElements.() -> Tag<E>) =
             }
         }
     })
+
+fun renderAll(content: HtmlElements.() -> Unit): List<Tag<HTMLElement>> {
+    val children = mutableListOf<Tag<HTMLElement>>()
+
+    content(object : HtmlElements {
+        override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
+            content(element)
+            children.add(element.unsafeCast<Tag<HTMLElement>>())
+            return element
+        }
+    })
+
+    return children
+}
+
 
 /**
  *  creates a render context for [Tag]s. It should only contain
@@ -85,6 +101,18 @@ fun <X, E : Element> Flow<X>.renderNotNull(mapper: HtmlElements.(X) -> Tag<E>?):
     }
 }
 
+/**
+ * convenience-method to easily map a value to a [List] of [Tag]s.
+ *
+ * @param mapper maps a value to a [Tag]
+ */
+fun <X> Flow<X>.renderAll(mapper: HtmlElements.(X) -> Unit): Flow<List<Tag<HTMLElement>>> {
+    return this.map { data ->
+        dev.fritz2.dom.html.renderAll {
+            data?.let { mapper(it) }
+        }
+    }
+}
 
 /**
  * occurs when more then one root [Tag] is defined in a [render] context

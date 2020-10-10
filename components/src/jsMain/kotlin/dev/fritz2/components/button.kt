@@ -2,12 +2,11 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.renderNotNull
+import dev.fritz2.dom.html.renderAll
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.theme
-import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.Flow
 
 val buttonFoundations = staticStyle(
@@ -114,9 +113,9 @@ inline fun HtmlElements.Button(
     return buttonClicks
 }
 
-val invisible = staticStyle(
-    "invisible", """
-    opacity: 0;
+val hidden = staticStyle(
+    "hidden", """
+    visibility: hidden;
 """
 )
 
@@ -124,6 +123,7 @@ fun HtmlElements.Button(
     text: String,
     loading: Flow<String?>,
     styles: Style<BasicStyleParams> = {},
+    hugo: String? = null,
     color: ColorProperty = theme().colors.primary,
     variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
     size: ButtonSizes.() -> Style<BasicStyleParams> = { normal }
@@ -131,17 +131,18 @@ fun HtmlElements.Button(
     lateinit var buttonClicks: Flow<Unit>
     Button(styles, color, variant, size) {
         buttonClicks = clicks.map { Unit }
-        loading.renderNotNull { state ->
-            if (state != null)
+        loading.renderAll { state ->
+            //render spinner
+            if (state != null) {
                 Spinner({
-                    css("position: absolute;")
+                    if (hugo == null) css("position: absolute;")
+                    else margins { right { "0.5rem" } }
                 })
-            else null
+                span(if (hugo == null) hidden else "") { +(hugo ?: text) }
+            } else {
+                span { +text }
+            }
         }.bind()
-        span {
-            className = invisible.whenever(loading) { it != null }
-            +text
-        }
     }
     return buttonClicks
 }
