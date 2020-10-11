@@ -162,7 +162,6 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             color { dark }
                         }) {
                             +"Getting a new business off the ground is a lot of hard work. Here are five ideas you can use to find your first customers."
-                            themeStore.loading.map { "state: " + it.orEmpty() }.bind()
                         }
                     }
                     LineUp {

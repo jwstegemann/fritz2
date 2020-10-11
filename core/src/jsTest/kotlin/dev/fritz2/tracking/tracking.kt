@@ -42,7 +42,7 @@ class TrackingTests {
 
         render {
             div {
-                span(id = transactionId) { store.running.map { it.orEmpty() }.bind() }
+                span(id = transactionId) { store.running.map { if (it) transactionText else "" }.bind() }
                 span(id = valueId) { store.data.bind() }
             }
         }.mount(targetId)
