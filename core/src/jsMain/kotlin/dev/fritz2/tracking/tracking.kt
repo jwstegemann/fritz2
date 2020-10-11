@@ -1,9 +1,7 @@
 package dev.fritz2.tracking
 
 import dev.fritz2.binding.Store
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.*
 
 /**
  * convenience method for creating a [Tracker]
@@ -19,10 +17,10 @@ fun tracker(defaultTransaction: String = "...", debounceTimeout: Long = 100): Tr
  * @param state stores the actual running transaction or null
  */
 class Tracker(
-    private val defaultTransaction: String,
-    debounceTimeout: Long,
-    private val state: MutableStateFlow<String?> = MutableStateFlow(null)
-) : Flow<String?> by state.debounce(debounceTimeout) {
+    val defaultTransaction: String,
+    private val debounceTimeout: Long,
+    val state: MutableStateFlow<String?> = MutableStateFlow(null)
+) : Flow<Boolean> by (state.debounce(debounceTimeout).distinctUntilChanged().map { it != null }) {
 
     /**
      * tracks a given operation
@@ -30,9 +28,18 @@ class Tracker(
      * @param transaction text describing the transaction
      * @param operation function to track
      */
-    suspend fun <T> track(transaction: String = defaultTransaction, operation: suspend () -> T): T {
+    inline fun <T> track(transaction: String = defaultTransaction, operation: () -> T): T {
         state.value = transaction
         return operation().also { state.value = null }
     }
 
+    /**
+     * return a [Flow] to check, if a certain transaction is running
+     *
+     * @param transaction name of transaction to monitor
+     */
+    operator fun invoke(transaction: String): Flow<Boolean> =
+        state.debounce(debounceTimeout).distinctUntilChanged().map {
+            it != null && it == transaction
+        }
 }

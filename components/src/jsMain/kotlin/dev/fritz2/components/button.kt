@@ -121,7 +121,7 @@ val hidden = staticStyle(
 
 fun HtmlElements.Button(
     text: String,
-    loading: Flow<String?>,
+    loading: Flow<Boolean>,
     styles: Style<BasicStyleParams> = {},
     loadingText: String? = null,
     color: ColorProperty = theme().colors.primary,
@@ -131,9 +131,9 @@ fun HtmlElements.Button(
     lateinit var buttonClicks: Flow<Unit>
     Button(styles, color, variant, size) {
         buttonClicks = clicks.map { Unit }
-        loading.renderAll { state ->
+        loading.renderAll { running ->
             //render spinner
-            if (state != null) {
+            if (running) {
                 Spinner({
                     if (loadingText == null) css("position: absolute;")
                     else buttonLeftIconStyle()
@@ -169,7 +169,7 @@ val buttonRightIconStyle: Style<BasicStyleParams> = {
 inline fun HtmlElements.Button(
     text: String,
     icon: IconDefinition,
-    loading: Flow<String?>,
+    loading: Flow<Boolean>,
     crossinline styles: Style<BasicStyleParams> = {},
     loadingText: String? = null,
     iconRight: Boolean = false,
@@ -180,17 +180,17 @@ inline fun HtmlElements.Button(
     lateinit var buttonClicks: Flow<Unit>
     Button(styles, color, variant, size) {
         buttonClicks = clicks.map { Unit }
-        loading.renderAll { state ->
+        loading.renderAll { running ->
             if (!iconRight) {
-                if (state != null) {
+                if (running) {
                     Spinner({
                         buttonLeftIconStyle()
                     })
                 } else Icon(icon, buttonLeftIconStyle)
             }
-            span { +(if (state != null && loadingText != null) loadingText else text) }
+            span { +(if (running && loadingText != null) loadingText else text) }
             if (iconRight) {
-                if (state != null) {
+                if (running) {
                     Spinner({
                         buttonRightIconStyle()
                     })
