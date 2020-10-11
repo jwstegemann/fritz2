@@ -8,7 +8,7 @@ val coroutines_version = "1.3.9"
 
 kotlin {
     jvm()
-    js().browser {
+    js(LEGACY).browser {
         testTask {
             useKarma {
 //                useSafari()

@@ -1,33 +1,19 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-    }
-
-    dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.4.0"))
-    }
-}
-
 plugins {
-}
-
-repositories {
-    jcenter() // or maven { url 'https://dl.bintray.com/kotlin/dokka' }
+    kotlin("multiplatform") version "1.4.10" apply false
 }
 
 allprojects {
     //manage common setting and dependencies
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven("https://dl.bintray.com/kotlin/kotlin-dev")
+        maven("https://dl.bintray.com/kotlin/kotlin-eap")
+    }
 }
 
 subprojects {
     group = "dev.fritz2"
     version = "0.8-SNAPSHOT"
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-    }
 }
