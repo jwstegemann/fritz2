@@ -45,12 +45,17 @@ val basicInputStyles: Style<BasicStyleParams> = {
 
     focus {
         border {
-            color { "#3182ce" } // TODO : Wehre to define? Or ability to provide?
+            color { "#3182ce" } // TODO : Where to define? Or ability to provide?
         }
         boxShadow { outline }
     }
 
-    // TODO: Fix https://github.com/jwstegemann/fritz2/issues/171 to make this work!
+    readOnly {
+        background {
+            color { disabled }
+        }
+    }
+
     disabled {
         background {
             color { disabled }
@@ -130,12 +135,12 @@ object InputType {
 }
 
 @ExperimentalCoroutinesApi
-inline fun HtmlElements.Input(
-    crossinline styles: Style<BasicStyleParams> = {},
-    crossinline type: InputType.() -> String = { text },
+fun HtmlElements.Input(
+    styles: Style<BasicStyleParams> = {},
+    type: InputType.() -> String = { text },
     variant: InputVariants.() -> Style<BasicStyleParams> = { outline },
     size: InputSizes.() -> Style<BasicStyleParams> = { normal },
-    crossinline init: Input.() -> Unit
+    init: Input.() -> Unit
 ): Input {
 
     return input(
@@ -155,13 +160,13 @@ inline fun HtmlElements.Input(
 }
 
 @ExperimentalCoroutinesApi
-inline fun HtmlElements.Input(
+fun HtmlElements.Input(
     store: Store<String>,
-    crossinline styles: Style<BasicStyleParams> = {},
-    crossinline type: InputType.() -> String = { text },
+    styles: Style<BasicStyleParams> = {},
+    type: InputType.() -> String = { text },
     variant: InputVariants.() -> Style<BasicStyleParams> = { outline },
     size: InputSizes.() -> Style<BasicStyleParams> = { normal },
-    crossinline init: Input.() -> Unit
+    init: Input.() -> Unit
 ): Input {
     return Input(
         styles = styles,
