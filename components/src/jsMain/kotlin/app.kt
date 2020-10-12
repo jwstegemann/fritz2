@@ -47,6 +47,10 @@ fun main() {
                     +"input"
                 }
                 Link().apply() {
+                    href = const("#formcontrol")
+                    +"formcontrol"
+                }
+                Link().apply() {
                     href = const("#buttons")
                     +"buttons"
                 }
@@ -57,6 +61,7 @@ fun main() {
                     "grid" -> gridDemo()
                     "input" -> inputDemo()
                     "buttons" -> buttonDemo(theme)
+                    "formcontrol" -> formControlDemo()
                     else -> flexDemo(theme)
                 }
             }.bind()

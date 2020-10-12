@@ -3,9 +3,20 @@ package dev.fritz2.components
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.params.*
+import dev.fritz2.styling.staticStyle
 
 
 abstract class StackComponentContext(prefix: String) : FlexComponentContext(prefix) {
+
+    companion object Foundation {
+        val cssClass = staticStyle(
+            "f2Stack",
+            """
+                align-items: center;
+            """.trimIndent()
+        )
+    }
+
     var reverse: Boolean = false
     var spacing: ScaledValueProperty = { normal }
 
@@ -29,7 +40,6 @@ class StackUpComponentContext(prefix: String) : StackComponentContext(prefix) {
                 margins { top(this@StackUpComponentContext.spacing) }
             }
         }
-        alignItems { center }
     }
 }
 
@@ -46,21 +56,35 @@ class LineUpComponentContext(prefix: String) : StackComponentContext(prefix) {
                 margins { left(this@LineUpComponentContext.spacing) }
             }
         }
-        alignItems { center }
     }
 }
 
 fun HtmlElements.f2StackUp(build: Context<StackComponentContext> = {}): Component<Div> {
-    val context = StackUpComponentContext("f2StackUp").apply(build)
-    return f2Flex {
-        context.stackStyles()
+    val context = StackUpComponentContext("f2StackUp")
+        .apply {
+            build()
+            stackStyles()
+        }
+
+    return Component { init ->
+        div(
+            "${FlexComponentContext.cssClass} ${StackComponentContext.cssClass} ${context.cssClass}",
+            content = init
+        )
     }
 }
 
 fun HtmlElements.f2LineUp(build: Context<StackComponentContext> = {}): Component<Div> {
-    val context = LineUpComponentContext("f2LineUp").apply(build)
+    val context = LineUpComponentContext("f2LineUp")
+        .apply {
+            build()
+            stackStyles()
+        }
 
-    return f2Flex {
-        context.stackStyles()
+    return Component { init ->
+        div(
+            "${FlexComponentContext.cssClass} ${StackComponentContext.cssClass} ${context.cssClass}",
+            content = init
+        )
     }
 }

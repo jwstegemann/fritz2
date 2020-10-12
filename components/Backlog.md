@@ -20,6 +20,7 @@
 Elemente besser anzugeben.
 - Extension Funktion für ``use``, um ``use<BasicStyleParams>(...)`` zu verkürzen
 - Doku: Beispiel + Hinweis, wie man CSS-DSL *ohne* Komponenten nutzt (s. davor)
+- ``attr`` für boolesche Attribute?
 
 ## Eingabekomponenten
 
@@ -74,7 +75,7 @@ Variante / Repräsentation:
 - Orientierung: vertical / horizontal
 - Parameter oder getrennte Subkomponenten-Factory-Funktionen
 
-### FormControl
+### FormControl (Christian)
 
 - benötigt ``Input``
 - zusammengesetzte / zusammensetzbare Komponente

@@ -189,6 +189,7 @@ class Shadows(
     val bottom: ShadowProperty = lowered,
     val outline: ShadowProperty,
     val glowing: ShadowProperty =outline,
+    val danger: ShadowProperty,
     val none: ShadowProperty = "none"
 )
 
