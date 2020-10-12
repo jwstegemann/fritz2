@@ -3,7 +3,6 @@ import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
-import dev.fritz2.components.buttons.Button
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.render
@@ -59,11 +58,17 @@ fun main() {
                     href = const("#input")
                     +"input"
                 }
+                Link {
+                    href = const("#buttons")
+                    +"buttons"
+                }
+
             }
             router.render { site ->
                 when (site) {
                     "grid" -> gridDemo()
                     "input" -> inputDemo()
+                    "buttons" -> buttonDemo(theme)
                     else -> flexDemo(theme)
                 }
             }.bind()
@@ -151,35 +156,6 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                         }) {
                             +"Getting a new business off the ground is a lot of hard work. Here are five ideas you can use to find your first customers."
                         }
-                    }
-                    LineUp {
-                        Button("long running", themeStore.loading) handledBy themeStore.showMsg
-                        Button(
-                            "long running",
-                            themeStore.loading,
-                            loadingText = "waiting..."
-                        ) handledBy themeStore.showMsg
-
-//                        Button {
-//                            Spinner({
-//                                position { absolute { left { "auto" } } }
-//                                margins { right { "0" } }
-//                            })
-//                            span { +"long running" }
-//                        }
-
-//                        Button(variant = { outline }) { Spinner(); +"Outline" }
-//                        Button(variant = { ghost }, color = theme.colors.info) { +"Ghost" }
-//                        Button(variant = { link }) { +"Link" }
-
-
-                        //FIXME: make loading Flow<boolean> and offer loading.transaction
-                        Button(
-                            "move up",
-                            theme.icons.arrowUp,
-                            themeStore.loading,
-                            loadingText = "waiting..."
-                        ) handledBy themeStore.showMsg
                     }
                 }
             }

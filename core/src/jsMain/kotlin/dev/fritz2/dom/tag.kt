@@ -35,7 +35,7 @@ open class Tag<out T : Element>(
      * creates the content of the [Tag] and appends it as a child to the wrapped [Element]
      *
      * @param element the parent element of the new content
-     * @param content lamda building the content (following the type-safe-builder pattern)
+     * @param content lambda building the content (following the type-safe-builder pattern)
      */
     override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
         content(element)
