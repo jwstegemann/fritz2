@@ -406,19 +406,6 @@ class FlexItemContext(
      */
     fun basis(value: FlexBasisValues.() -> FlexBasisProperty) =
         property(FlexBasisValues.key, FlexBasisValues.value(), target)
-
-    /**
-     * This function sets the [flex-basis](https://developer.mozilla.org/en/docs/Web/CSS/flex-basis) CSS property.
-     *
-     * example call:
-     * ```
-     * basis { "200px" }
-     * basis { "10em" }
-     * ```
-     *
-     * @param value function parameter to bring back a custom size value
-     */
-    fun basis(value: () -> Property) = property(FlexBasisValues.key, value(), target)
 }
 
 

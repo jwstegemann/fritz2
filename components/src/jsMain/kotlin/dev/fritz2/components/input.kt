@@ -39,6 +39,7 @@ class InputComponentContext private constructor(prefix: String) : BasicComponent
                 transition: all 250ms;
                 white-space: nowrap;
                 outline: none;
+                width: 100%
             """
         )
 
@@ -178,10 +179,9 @@ fun HtmlElements.f2Input(build: Context<InputComponentContext> = {}): Component<
         input("${InputComponentContext.cssClass} ${context.cssClass}") {
             attr("type", context.type)
             init()
-            if (context.store != null) {
-                // TODO: Check whether the non null assert is safe here!
-                value = context.store!!.data
-                changes.values() handledBy context.store!!.update
+            context.store?.let {
+                value = it.data
+                changes.values() handledBy it.update
             }
         }
     }
