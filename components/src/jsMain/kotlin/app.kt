@@ -350,21 +350,15 @@ fun HtmlElements.inputDemo(): Div {
                 placeholder = const("Placeholder")
             }
 
-            Text { +"Basic + Readonly + Custom Styling" }
-            Input(
-                {
-                    //background { color { "lightgrey" } }
-                    focus {
-                        border {
-                            color { dark }
-                        }
-                        boxShadow { none }
-                    }
-                },
-                type = { text }
-            ) {
+            Text { +"Basic + Readonly" }
+            Input {
                 value = const("Readonly!")
                 readOnly = const(true)
+            }
+            Text { +"Basic + Disabled" }
+            Input {
+                value = const("Disabled!")
+                disabled = const(true)
             }
 
 
