@@ -18,12 +18,12 @@ inline fun HtmlElements.StackUp(
     val stackStyles: Style<FlexStyleParams> = {
         if (reverse) {
             direction { columnReverse }
-            children(":not(:first-child)") {
+            children(" > :not(:first-child)") {
                 margins { bottom { spacing } }
             }
         } else {
             direction { column }
-            children(":not(:first-child)") {
+            children(" > :not(:first-child)") {
                 margins { top { spacing } }
             }
         }
