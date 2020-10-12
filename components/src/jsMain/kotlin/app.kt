@@ -3,6 +3,7 @@ import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
+import dev.fritz2.components.buttons.Button
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.render
@@ -17,10 +18,7 @@ import dev.fritz2.styling.params.start
 import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.render
 import dev.fritz2.styling.theme.theme
-import dev.fritz2.tracking.tracker
-import kotlinx.browser.window
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 
 val themes = listOf<Pair<String, ExtendedTheme>>(
@@ -77,19 +75,9 @@ fun main() {
 fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
 
     val themeStore = object : RootStore<Int>(0) {
-        val loading = tracker()
-
         val selectTheme = handle<Int> { _, index ->
             currentTheme = themes[index].second
             index
-        }
-
-        val showMsg = handle { model ->
-            loading.track("running...") {
-                delay(2000)
-                window.alert("geclickt")
-            }
-            model
         }
     }
 
