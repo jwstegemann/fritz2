@@ -22,7 +22,7 @@ fun <T> Flow<T>.watch(scope: CoroutineScope = MainScope()): Job = this.catch {}.
  * watches the data-[Flow] of a [Store].
  * You have to use this, if you never bind your [Store]'s data flow but want to run it's [Handler]s anyway.
  */
-fun <T> Store<T>.watch(): Store<T> {
-    data.watch()
+fun <T> Store<T>.watch(scope: CoroutineScope = MainScope()): Store<T> {
+    data.watch(scope)
     return this
 }

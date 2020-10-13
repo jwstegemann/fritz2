@@ -49,6 +49,16 @@ fun HtmlElements.buttonDemo(theme: ExtendedTheme): Div {
                     ClickButton(theme.icons.arrowUp, buttonStore.loading) handledBy buttonStore.showMsg
                 }
 
+                LineUp {
+                    ClickButton(theme.icons.arrowUp, "save") handledBy buttonStore.showMsg
+                    ClickButton(theme.icons.arrowUp, "save", buttonStore.loading) handledBy buttonStore.showMsg
+                }
+
+                LineUp {
+                    ClickButton("save", theme.icons.arrowUp) handledBy buttonStore.showMsg
+                    ClickButton("save", theme.icons.arrowUp, buttonStore.loading) handledBy buttonStore.showMsg
+                }
+
             }
         }
     }

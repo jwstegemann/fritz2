@@ -4,7 +4,6 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.params.BasicStyleParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.plus
 import dev.fritz2.styling.params.use
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Property
@@ -35,5 +34,7 @@ inline fun HtmlElements.Spinner(
         height { "1rem" }
     }
 
-    return div("$spinnerFoundations ${use(spinnerStyles + styles, "spinner")}") {}
+    return div(use(styles, "spinner")) {
+        div("$spinnerFoundations ${use(spinnerStyles, "spinner")}") {}
+    }
 }
