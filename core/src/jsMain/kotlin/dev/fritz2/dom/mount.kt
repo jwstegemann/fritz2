@@ -54,6 +54,8 @@ class DomListMountPoint<T : org.w3c.dom.Node>(upstream: Flow<List<WithDomNode<T>
             if (last.isNotEmpty()) {
                 value.forEach { target?.insertBefore(it.domNode, last.first().domNode) }
                 last.forEach { target?.removeChild(it.domNode) }
+            } else {
+                value.forEach { target?.appendChild(it.domNode) }
             }
         } else {
             // first call set here

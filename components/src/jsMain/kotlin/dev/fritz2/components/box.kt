@@ -8,7 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 inline fun HtmlElements.Box(
-    styles: Style<BoxStyleParams> = {},
+    styles: Style<BoxParams> = {},
     cssClasses: String = "",
     crossinline init: Div.() -> Unit
 ): Div {
@@ -26,7 +26,7 @@ val flex = staticStyle(
 
 @ExperimentalCoroutinesApi
 inline fun HtmlElements.Flex(
-    styles: Style<FlexStyleParams> = {},
+    styles: Style<FlexParams> = {},
     crossinline init: Div.() -> Unit
 ): Div {
 
@@ -43,7 +43,7 @@ val grid = staticStyle(
 
 @ExperimentalCoroutinesApi
 inline fun HtmlElements.Grid(
-    styles: Style<GridStyleParams> = {},
+    styles: Style<GridParams> = {},
     crossinline init: Div.() -> Unit
 ): Div {
 

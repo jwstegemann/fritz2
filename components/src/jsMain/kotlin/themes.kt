@@ -33,7 +33,7 @@ open class SmallFonts : ExtendedTheme, DefaultTheme() {
 
 
 class LargeFonts : SmallFonts() {
-    override val fontSizes = ScaledValue<Property>(
+    override val fontSizes = ScaledValue(
         smaller = "1.125rem",
         small = "1.25rem",
         normal = "1.5rem",

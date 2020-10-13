@@ -3,32 +3,32 @@ package dev.fritz2.styling.theme
 import DefaultTheme
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.BasicStyleParams
-import dev.fritz2.styling.params.BoxStyleParams
-import dev.fritz2.styling.params.FlexStyleParams
-import dev.fritz2.styling.params.GridStyleParams
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.FlexParams
+import dev.fritz2.styling.params.GridParams
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.w3c.dom.Element
 
 /**
- * alias to easily create predefined styles based on [BasicStyleParams]
+ * alias to easily create predefined styles based on [BasicParams]
  */
-typealias PredefinedBasicStyle = BasicStyleParams.() -> Unit
+typealias PredefinedBasicStyle = BasicParams.() -> Unit
 
 /**
- * alias to easily create predefined styles based on [FlexStyleParams]
+ * alias to easily create predefined styles based on [FlexParams]
  */
-typealias PredefinedFlexStyle = FlexStyleParams.() -> Unit
+typealias PredefinedFlexStyle = FlexParams.() -> Unit
 
 /**
- * alias to easily create predefined styles based on [GridStyleParams]
+ * alias to easily create predefined styles based on [GridParams]
  */
-typealias PredefinedGridStyle = GridStyleParams.() -> Unit
+typealias PredefinedGridStyle = GridParams.() -> Unit
 
 /**
- * alias to easily create predefined styles based on [BoxStyleParams]
+ * alias to easily create predefined styles based on [BoxParams]
  */
-typealias PredefinedBoxStyle = BoxStyleParams.() -> Unit
+typealias PredefinedBoxStyle = BoxParams.() -> Unit
 
 /**
  * alias for property values
@@ -57,7 +57,7 @@ interface Theme {
     /**
      * break points for different screen sizes that apply when working with [ResponsiveValue]s
      */
-    val breakPoints: ResponsiveValue<Property>
+    val breakPoints: ResponsiveValue
 
     /**
      * the media query used for middle sized screens
@@ -77,17 +77,17 @@ interface Theme {
     /**
      * definition of the space-scale
      */
-    val space: ScaledValue<Property>
+    val space: ScaledValue
 
     /**
      * definition of the position-scale
      */
-    val position: ScaledValue<Property>
+    val position: ScaledValue
 
     /**
      * definition of the font-size-scale
      */
-    val fontSizes: ScaledValue<Property>
+    val fontSizes: ScaledValue
 
     /**
      * definition of the theme's colors
@@ -102,12 +102,12 @@ interface Theme {
     /**
      * definition of the scale for line-heights
      */
-    val lineHeights: ScaledValue<Property>
+    val lineHeights: ScaledValue
 
     /**
      * definition of the scale for letter-spacings
      */
-    val letterSpacings: ScaledValue<Property>
+    val letterSpacings: ScaledValue
 
     /**
      * definition of the theme's sizes
@@ -117,12 +117,12 @@ interface Theme {
     /**
      * definition of the scale for border-widths
      */
-    val borderWidths: Thickness<Property>
+    val borderWidths: Thickness
 
     /**
      * definition of the scale for border-radii
      */
-    val radii: ScaledValue<Property>
+    val radii: ScaledValue
 
     /**
      * definition of the theme's shadows
@@ -137,12 +137,12 @@ interface Theme {
     /**
      * definition of the scale for opacities
      */
-    val opacities: WeightedValue<Property>
+    val opacities: WeightedValue
 
     /**
      * definition of the scale for gaps
      */
-    val gaps: ScaledValue<Property>
+    val gaps: ScaledValue
 
     /**
      * definition of theme-icons
