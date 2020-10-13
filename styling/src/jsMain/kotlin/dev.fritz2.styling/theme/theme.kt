@@ -57,7 +57,7 @@ interface Theme {
     /**
      * break points for different screen sizes that apply when working with [ResponsiveValue]s
      */
-    val breakPoints: ResponsiveValue<Property>
+    val breakPoints: ResponsiveValue
 
     /**
      * the media query used for middle sized screens
@@ -77,17 +77,17 @@ interface Theme {
     /**
      * definition of the space-scale
      */
-    val space: ScaledValue<Property>
+    val space: ScaledValue
 
     /**
      * definition of the position-scale
      */
-    val position: ScaledValue<Property>
+    val position: ScaledValue
 
     /**
      * definition of the font-size-scale
      */
-    val fontSizes: ScaledValue<Property>
+    val fontSizes: ScaledValue
 
     /**
      * definition of the theme's colors
@@ -102,12 +102,12 @@ interface Theme {
     /**
      * definition of the scale for line-heights
      */
-    val lineHeights: ScaledValue<Property>
+    val lineHeights: ScaledValue
 
     /**
      * definition of the scale for letter-spacings
      */
-    val letterSpacings: ScaledValue<Property>
+    val letterSpacings: ScaledValue
 
     /**
      * definition of the theme's sizes
@@ -117,12 +117,12 @@ interface Theme {
     /**
      * definition of the scale for border-widths
      */
-    val borderWidths: Thickness<Property>
+    val borderWidths: Thickness
 
     /**
      * definition of the scale for border-radii
      */
-    val radii: ScaledValue<Property>
+    val radii: ScaledValue
 
     /**
      * definition of the theme's shadows
@@ -137,12 +137,12 @@ interface Theme {
     /**
      * definition of the scale for opacities
      */
-    val opacities: WeightedValue<Property>
+    val opacities: WeightedValue
 
     /**
      * definition of the scale for gaps
      */
-    val gaps: ScaledValue<Property>
+    val gaps: ScaledValue
 
     /**
      * definition of theme-icons

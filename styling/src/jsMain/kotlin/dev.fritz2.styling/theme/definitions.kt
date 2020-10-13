@@ -13,56 +13,56 @@ import dev.fritz2.styling.params.ShadowProperty
  * @param lg value for large screens (and default for all the others)
  * @param xl value for extra large screens (and default for all the others)
  */
-class ResponsiveValue<T : Property>(val sm: T, val md: T = sm, val lg: T = md, val xl: T = lg)
+class ResponsiveValue(val sm: Property, val md: Property = sm, val lg: Property = md, val xl: Property = lg)
 
 /**
  * Defines a value that has different expressions for different scales.
  */
-open class ScaledValue<T : Property>(
+open class ScaledValue(
     val
-    normal: T,
-    val small: T = normal,
-    val smaller: T = small,
-    val tiny: T = smaller,
-    val large: T = normal,
-    val larger: T = large,
-    val huge: T = larger,
-    val giant: T = huge,
-    open val none: T = tiny,
-    val full: T = giant
+    normal: Property,
+    val small: Property = normal,
+    val smaller: Property = small,
+    val tiny: Property = smaller,
+    val large: Property = normal,
+    val larger: Property = large,
+    val huge: Property = larger,
+    val giant: Property = huge,
+    open val none: Property = tiny,
+    val full: Property = giant
 ) {
-    val initial: T = "initial".unsafeCast<T>()
-    val inherit: T = "inherit".unsafeCast<T>()
-    val auto: T = "auto".unsafeCast<T>()
+    val initial: Property = "initial"
+    val inherit: Property = "inherit"
+    val auto: Property = "auto"
 }
 
 /**
  * Defines a value that has different expressions for different weights.
  */
-class WeightedValue<T : Property>(
-    val normal: T,
-    val light: T = normal,
-    val lighter: T = light,
-    val strong: T = normal,
-    val stronger: T = strong,
-    val none: T = lighter,
-    val full: T = strong
+class WeightedValue(
+    val normal: Property,
+    val light: Property = normal,
+    val lighter: Property = light,
+    val strong: Property = normal,
+    val stronger: Property = strong,
+    val none: Property = lighter,
+    val full: Property = strong
 ) {
-    val initial: T = "initial".unsafeCast<T>()
-    val inherit: T = "inherit".unsafeCast<T>()
+    val initial: Property = "initial"
+    val inherit: Property = "inherit"
 }
 
 /**
  * Defines a value that has different expressions for different thicknesses.
  */
-class Thickness<T : Property>(
-    val normal: T,
-    val thin: T = normal,
-    val fat: T = normal,
-    val hair: T = thin,
+class Thickness(
+    val normal: Property,
+    val thin: Property = normal,
+    val fat: Property = normal,
+    val hair: Property = thin,
 ) {
-    val initial: T = "initial".unsafeCast<T>()
-    val inherit: T = "inherit".unsafeCast<T>()
+    val initial: Property = "initial"
+    val inherit: Property = "inherit"
 }
 
 /**
@@ -78,7 +78,7 @@ class Sizes(
     huge: Property = larger,
     giant: Property = huge,
     full: Property = giant
-) : ScaledValue<Property>(normal, small, smaller, tiny, large, larger, huge, giant, full = full) {
+) : ScaledValue(normal, small, smaller, tiny, large, larger, huge, giant, full = full) {
     val borderBox: Property = "border-box"
     val contentBox: Property = "content-box"
     val maxContent: Property = "max-content"

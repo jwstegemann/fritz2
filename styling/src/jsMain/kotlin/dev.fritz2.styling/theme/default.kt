@@ -95,7 +95,7 @@ open class DefaultTheme : Theme {
         full = "100%"
     )
 
-    override val borderWidths = Thickness<Property>(
+    override val borderWidths = Thickness(
         normal = "2px",
         thin = "1px",
         fat = "4px",

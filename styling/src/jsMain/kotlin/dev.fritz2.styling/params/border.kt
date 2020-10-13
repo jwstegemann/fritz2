@@ -130,7 +130,7 @@ class BorderContext(
      * @param value extension function parameter to bring the predefined thickness values ([Thickness]) of the theme
      *              into the scope of the functional expression
      */
-    fun width(value: Thickness<Property>.() -> Property) = property(widthKey, theme().borderWidths, value, target)
+    fun width(value: Thickness.() -> Property) = property(widthKey, theme().borderWidths, value, target)
 
     /**
      * This function is used to set the _style_ of a border for the
