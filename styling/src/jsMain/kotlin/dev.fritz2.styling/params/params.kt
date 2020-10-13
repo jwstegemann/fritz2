@@ -9,12 +9,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 /**
  * shortcut for functions that derive a value from [ScaledValue] defined at the [Theme]
  */
-typealias ScaledValueProperty = ScaledValue<Property>.() -> Property
+typealias ScaledValueProperty = ScaledValue.() -> Property
 
 /**
  * shortcut for functions that derive a value from [WeightedValue] defined at the [Theme]
  */
-typealias WeightedValueProperty = WeightedValue<Property>.() -> Property
+typealias WeightedValueProperty = WeightedValue.() -> Property
 
 /**
  * shortcut for functions that derive a value from [SizesProperty] defined at the [Theme]
