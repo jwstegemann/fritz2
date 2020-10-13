@@ -46,6 +46,11 @@ internal object Styling {
 typealias StyleClass = String
 
 /**
+ * const for no style class
+ */
+const val NoStyle: StyleClass = ""
+
+/**
  * adds a static css-class to your app's dynamic style sheet.
  *
  * @param name of the class to create

@@ -42,7 +42,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                     boxShadow { flat }
                     direction(sm = { column }, md = { row })
                 }) {
-                    Box({
+                    Box {
                         zIndex { layer(1) }
                         margins(
                             {
@@ -52,7 +52,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             md = { left { normal } }
                         )
                         flex { shrink { "0" } }
-                    }) {
+                    }.apply {
                         Image({
                             width(sm = { normal }, md = { tiny })
                             boxShadow { flat }
@@ -62,6 +62,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             alt = const("Woman paying for a purchase")
                         }
                     }
+
                     Box({
                         zIndex { base }
                         //width { "300px" }
