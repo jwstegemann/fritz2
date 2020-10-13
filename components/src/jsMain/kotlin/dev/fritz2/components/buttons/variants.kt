@@ -3,7 +3,7 @@ package dev.fritz2.components.buttons
 import dev.fritz2.styling.params.*
 
 object ButtonVariants {
-    private val basic: Style<BasicStyleParams> = {
+    private val basic: Style<BasicParams> = {
         lineHeight { smaller }
         radius { normal }
         fontWeight { FontWeights.semiBold }
@@ -14,7 +14,7 @@ object ButtonVariants {
     }
 
 
-    val solid: Style<BasicStyleParams> = {
+    val solid: Style<BasicParams> = {
         basic()
 
         background { color { "var(--main-color)" } }
@@ -29,7 +29,7 @@ object ButtonVariants {
         }
     }
 
-    val outline: Style<BasicStyleParams> = {
+    val outline: Style<BasicParams> = {
         basic()
 
         color { "var(--main-color)" }
@@ -44,13 +44,13 @@ object ButtonVariants {
         }
     }
 
-    val ghost: Style<BasicStyleParams> = {
+    val ghost: Style<BasicParams> = {
         basic()
 
         color { "var(--main-color)" }
     }
 
-    val link: Style<BasicStyleParams> = {
+    val link: Style<BasicParams> = {
         basic()
 
         paddings { all { none } }

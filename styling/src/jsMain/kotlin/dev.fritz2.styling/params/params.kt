@@ -181,7 +181,7 @@ fun <T : PropertyValues> StyleParams.property(
  * @property xlProperties collects the properties for extra-large screens
  */
 @ExperimentalCoroutinesApi
-class StyleParamsImpl<X : Theme>(private val theme: X) : BasicStyleParams, Flexbox, GridLayout {
+class ParamsImpl<X : Theme>(private val theme: X) : BasicParams, Flexbox, GridLayout {
     override val smProperties = StringBuilder()
     override val mdProperties = StringBuilder()
     override val lgProperties = StringBuilder()
@@ -212,78 +212,77 @@ inline operator fun <T> Style<T>.plus(crossinline other: Style<T>): Style<T> = {
     other()
 }
 
-
 /**
  * interface combining all the basic style-parameters
  */
 @ExperimentalCoroutinesApi
-interface BasicStyleParams : Space, Color, Border, Typo, Background, Position, Shadow, Layout, Pseudos {
+interface BasicParams : Space, Color, Border, Typo, Background, Position, Shadow, Layout, Pseudos {
     /**
      * allows the usage of predefined styles in this context
      *
      * @receiver [PredefinedBasicStyle] to include
      */
-    operator fun PredefinedBasicStyle.invoke() = this(this@BasicStyleParams)
+    operator fun PredefinedBasicStyle.invoke() = this(this@BasicParams)
 }
 
 /**
  * interface combining flex-style-parameters with the basic style-parameters
  */
 @ExperimentalCoroutinesApi
-interface FlexStyleParams : BasicStyleParams, Flexbox {
+interface FlexParams : BasicParams, Flexbox {
     /**
      * allows the usage of predefined styles in this context
      *
      * @receiver [PredefinedFlexStyle] to include
      */
-    override operator fun PredefinedBasicStyle.invoke() = this(this@FlexStyleParams)
+    override operator fun PredefinedBasicStyle.invoke() = this(this@FlexParams)
 
     /**
      * allows the usage of predefined styles in this context
      *
      * @receiver [PredefinedFlexStyle] to include
      */
-    operator fun PredefinedFlexStyle.invoke() = this(this@FlexStyleParams)
+    operator fun PredefinedFlexStyle.invoke() = this(this@FlexParams)
 }
 
 /**
  * interface combining grid-style-parameters with the basic style-parameters
  */
 @ExperimentalCoroutinesApi
-interface GridStyleParams : BasicStyleParams, GridLayout {
+interface GridParams : BasicParams, GridLayout {
     /**
      * allows the usage of predefined styles in this context
      *
      * @receiver [PredefinedBasicStyle] to include
      */
-    override operator fun PredefinedBasicStyle.invoke() = this(this@GridStyleParams)
+    override operator fun PredefinedBasicStyle.invoke() = this(this@GridParams)
 
     /**
      * allows the usage of predefined styles in this context
      *
      * @receiver [PredefinedGridStyle] to include
      */
-    operator fun PredefinedGridStyle.invoke() = this(this@GridStyleParams)
+    operator fun PredefinedGridStyle.invoke() = this(this@GridParams)
 }
 
 /**
  * interface combining flex-style-parameters with grid and basic style-parameters
  */
 @ExperimentalCoroutinesApi
-interface BoxStyleParams : BasicStyleParams, Flexbox, GridLayout {
+interface BoxParams : BasicParams, Flexbox, GridLayout {
     /**
      * allows the usage of predefined styles in this context
      *
      * @receiver [PredefinedBasicStyle] to include
      */
-    override operator fun PredefinedBasicStyle.invoke() = this(this@BoxStyleParams)
+    override operator fun PredefinedBasicStyle.invoke() = this(this@BoxParams)
 
     /**
      * allows the usage of predefined styles in this context
      *
      * @receiver [PredefinedBoxStyle] to include
      */
-    operator fun PredefinedBoxStyle.invoke() = this(this@BoxStyleParams)
+    operator fun PredefinedBoxStyle.invoke() = this(this@BoxParams)
 }
 
 /**
@@ -295,7 +294,7 @@ interface BoxStyleParams : BasicStyleParams, Flexbox, GridLayout {
  */
 @ExperimentalCoroutinesApi
 inline fun <T : StyleParams> use(styling: Style<T>, prefix: String = "s"): StyleClass =
-    StyleParamsImpl(theme()).let { base ->
+    ParamsImpl(theme()).let { base ->
         (base.unsafeCast<T>()).styling()
         base.toCss().let {
 //            console.log("### $prefix -> $it")

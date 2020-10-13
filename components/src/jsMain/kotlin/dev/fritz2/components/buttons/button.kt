@@ -36,7 +36,7 @@ internal object ButtonFoundation {
     """
     )
 
-    fun color(value: ColorProperty): Style<BasicStyleParams> = {
+    fun color(value: ColorProperty): Style<BasicParams> = {
         css("--main-color: $value;")
     }
 
@@ -44,17 +44,17 @@ internal object ButtonFoundation {
     private const val marginToText = "0.35rem"
     private const val marginToBorder = "-0.2rem"
 
-    val centerIconStyle: Style<BasicStyleParams> = {
+    val centerIconStyle: Style<BasicParams> = {
         width { "1.5em" }
         height { "1.5em" }
     }
 
-    val centerSpinnerStyle: Style<BasicStyleParams> = {
+    val centerSpinnerStyle: Style<BasicParams> = {
         width { iconSize }
         height { iconSize }
     }
 
-    val leftSpinnerStyle: Style<BasicStyleParams> = {
+    val leftSpinnerStyle: Style<BasicParams> = {
         width { "1.0em" }
         height { "1.0em" }
         margins {
@@ -63,7 +63,7 @@ internal object ButtonFoundation {
         }
     }
 
-    val rightSpinnerStyle: Style<BasicStyleParams> = {
+    val rightSpinnerStyle: Style<BasicParams> = {
         width { "1.0em" }
         height { "1.0em" }
         margins {
@@ -72,7 +72,7 @@ internal object ButtonFoundation {
         }
     }
 
-    val leftIconStyle: Style<BasicStyleParams> = {
+    val leftIconStyle: Style<BasicParams> = {
         width { iconSize }
         height { iconSize }
         margins {
@@ -81,7 +81,7 @@ internal object ButtonFoundation {
         }
     }
 
-    val rightIconStyle: Style<BasicStyleParams> = {
+    val rightIconStyle: Style<BasicParams> = {
         width { iconSize }
         height { iconSize }
         margins {
@@ -170,10 +170,10 @@ fun HtmlElements.Button(
 */
 
 fun HtmlElements.Button(
-    styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicParams> = {},
     color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal },
+    variant: ButtonVariants.() -> Style<BasicParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicParams> = { normal },
     init: Button.() -> Any
 ): Button {
     return button(
@@ -192,10 +192,10 @@ fun HtmlElements.Button(
 }
 
 fun HtmlElements.ClickButton(
-    styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicParams> = {},
     color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal },
+    variant: ButtonVariants.() -> Style<BasicParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicParams> = { normal },
     init: Button.() -> Any
 ): Flow<Unit> {
     lateinit var buttonClicks: Flow<Unit>
@@ -232,15 +232,15 @@ internal fun Button.label(text: String, loading: Flow<Boolean>, loadingText: Str
     }.bind()
 }
 
-internal fun Button.icon(iconDefinition: IconDefinition, iconStyle: Style<BasicStyleParams>) {
+internal fun Button.icon(iconDefinition: IconDefinition, iconStyle: Style<BasicParams>) {
     Icon(iconDefinition, iconStyle)
 }
 
 internal fun Button.icon(
     iconDefinition: IconDefinition,
-    iconStyle: Style<BasicStyleParams>,
+    iconStyle: Style<BasicParams>,
     loading: Flow<Boolean>,
-    spinnerStyle: Style<BasicStyleParams>
+    spinnerStyle: Style<BasicParams>
 ) {
     loading.renderAll { running ->
         if (running) Spinner(spinnerStyle)
@@ -251,10 +251,10 @@ internal fun Button.icon(
 
 fun HtmlElements.ClickButton(
     text: String,
-    styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicParams> = {},
     color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal },
+    variant: ButtonVariants.() -> Style<BasicParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicParams> = { normal },
 ): Flow<Unit> {
     return ClickButton(styles, color, variant, size) {
         label(text)
@@ -265,10 +265,10 @@ fun HtmlElements.ClickButton(
     text: String,
     loading: Flow<Boolean>,
     loadingText: String? = null,
-    styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicParams> = {},
     color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal },
+    variant: ButtonVariants.() -> Style<BasicParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicParams> = { normal },
 ): Flow<Unit> {
     return ClickButton(styles, color, variant, size) {
         label(text, loading, loadingText)
@@ -277,10 +277,10 @@ fun HtmlElements.ClickButton(
 
 fun HtmlElements.ClickButton(
     icon: IconDefinition,
-    styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicParams> = {},
     color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal },
+    variant: ButtonVariants.() -> Style<BasicParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicParams> = { normal },
 ): Flow<Unit> {
     return ClickButton(styles, color, variant, size) {
         icon(icon, ButtonFoundation.centerIconStyle)
@@ -290,10 +290,10 @@ fun HtmlElements.ClickButton(
 fun HtmlElements.ClickButton(
     icon: IconDefinition,
     loading: Flow<Boolean>,
-    styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicParams> = {},
     color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal },
+    variant: ButtonVariants.() -> Style<BasicParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicParams> = { normal },
 ): Flow<Unit> {
     return ClickButton(styles, color, variant, size) {
         icon(icon, ButtonFoundation.centerIconStyle, loading, ButtonFoundation.centerSpinnerStyle)
@@ -303,10 +303,10 @@ fun HtmlElements.ClickButton(
 fun HtmlElements.ClickButton(
     iconLeft: IconDefinition,
     text: String,
-    styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicParams> = {},
     color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal },
+    variant: ButtonVariants.() -> Style<BasicParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicParams> = { normal },
 ): Flow<Unit> {
     return ClickButton(styles, color, variant, size) {
         icon(iconLeft, ButtonFoundation.leftIconStyle)
@@ -318,10 +318,10 @@ fun HtmlElements.ClickButton(
     iconLeft: IconDefinition,
     text: String,
     loading: Flow<Boolean>,
-    styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicParams> = {},
     color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal },
+    variant: ButtonVariants.() -> Style<BasicParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicParams> = { normal },
 ): Flow<Unit> {
     return ClickButton(styles, color, variant, size) {
         icon(iconLeft, ButtonFoundation.leftIconStyle, loading, ButtonFoundation.leftSpinnerStyle)
@@ -332,10 +332,10 @@ fun HtmlElements.ClickButton(
 fun HtmlElements.ClickButton(
     text: String,
     iconRight: IconDefinition,
-    styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicParams> = {},
     color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal },
+    variant: ButtonVariants.() -> Style<BasicParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicParams> = { normal },
 ): Flow<Unit> {
     return ClickButton(styles, color, variant, size) {
         label(text)
@@ -347,10 +347,10 @@ fun HtmlElements.ClickButton(
     text: String,
     iconRight: IconDefinition,
     loading: Flow<Boolean>,
-    styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicParams> = {},
     color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal },
+    variant: ButtonVariants.() -> Style<BasicParams> = { solid },
+    size: ButtonSizes.() -> Style<BasicParams> = { normal },
 ): Flow<Unit> {
     return ClickButton(styles, color, variant, size) {
         label(text)

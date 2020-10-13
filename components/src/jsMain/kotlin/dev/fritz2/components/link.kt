@@ -2,7 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.A
 import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.BasicStyleParams
+import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.use
 import dev.fritz2.styling.staticStyle
@@ -33,7 +33,7 @@ val link = staticStyle(
 )
 
 inline fun HtmlElements.Link(
-    styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicParams> = {},
     crossinline init: A.() -> Any
 ): A {
 
