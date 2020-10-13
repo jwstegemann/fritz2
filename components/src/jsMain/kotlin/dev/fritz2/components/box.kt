@@ -2,22 +2,24 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.FlexParams
+import dev.fritz2.styling.params.GridParams
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.use
 import dev.fritz2.styling.staticStyle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
-inline fun HtmlElements.Box(
-    styles: Style<BoxParams> = {},
-    cssClasses: String = "",
-    crossinline init: Div.() -> Unit
-): Div {
 
-    return div(cssClasses + use(styles, "box")) {
-        init()
+//TODO: typealias
+fun HtmlElements.Box(build: BasicComponentContext.() -> Unit = {}): Component<Div> {
+    val context = BasicComponentContext("box").apply(build)
+
+    return Component { init ->
+        div(context.cssClass, content = init)
     }
-
 }
+
+
 
 val flex = staticStyle(
     "flex",

@@ -358,3 +358,76 @@ fun HtmlElements.ClickButton(
     }
 }
 
+
+class MyButtonContext(val renderContext: HtmlElements) {
+    var styles: Style<BasicParams>? = null
+    var variant: Style<BasicParams> = ButtonVariants.solid
+    lateinit var labelBuilder: HtmlElements.() -> Unit
+
+    fun label(text: String): Unit {
+        labelBuilder = { span { +text } }
+    }
+
+    fun radios(build: MyButtonContext.() -> Unit = {}) {
+        val extendedBuild: MyButtonContext.() -> Unit = {
+            build()
+            disabled()
+        }
+
+    }
+
+    fun style(s: Style<BasicParams>) {
+        styles = s
+    }
+
+    fun init(initializator: Button.() -> Unit) {}
+}
+
+fun HtmlElements.MyButton(build: MyButtonContext.() -> Unit) {
+    val context = MyButtonContext(this).apply(build)
+
+    val buttonClasses = context.styles?.let { use(it) }.orEmpty()
+    button(buttonClasses) {
+        context
+    }
+}
+
+fun HtmlElements.MyButton(text: String, build: MyButtonContext.() -> Unit = {}) {
+}
+
+fun HtmlElements.MyButton(icon: Int, build: MyButtonContext.() -> Unit = {}) {
+}
+
+fun HtmlElements.MyButton(icon: String, text: String, build: MyButtonContext.() -> Unit = {}) {
+}
+
+
+fun HtmlElements.foo() {
+    MyButton {
+        style {
+            margins {}
+        }
+        label("hugo")
+        init {
+            clicks handledBy
+        }
+    }
+
+    MyButton("ok") {
+        variant = ButtonVariants.ghost
+    }
+
+    Box() { /* content */ }
+
+    Box MyContext .{
+        style {
+
+        }
+
+        init {
+
+        }
+    }
+
+
+}

@@ -1,0 +1,49 @@
+package dev.fritz2.components
+
+import dev.fritz2.styling.NoStyle
+import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.StyleParams
+import dev.fritz2.styling.params.use
+import dev.fritz2.styling.style
+import dev.fritz2.styling.theme.theme
+
+typealias Context<T> = ComponentContext<T>.() -> Unit
+
+inline class Component<C>(private val factory: (C.() -> Unit) -> Unit) {
+    fun apply(content: C.() -> Unit) = factory
+}
+
+class ComponentContext<P : StyleParams>(val prefix: String) {
+    var style: Style<P>? = null
+
+    fun style(params: P.() -> Unit) {
+        style = params
+    }
+
+    val cssClass: StyleClass
+        get() = style?.let { use(it, prefix) } ?: NoStyle
+}
+
+
+class BasicComponentContext(val prefix: String) : BasicParams {
+    override val smProperties = StringBuilder()
+    override val mdProperties = StringBuilder()
+    override val lgProperties = StringBuilder()
+    override val xlProperties = StringBuilder()
+
+    /**
+     * creates a valid responsive css-rule-body from the content of the screen-size-[StringBuilder]s
+     */
+    fun toCss(): String {
+        if (mdProperties.isNotEmpty()) smProperties.append(theme().mediaQueryMd, "{", mdProperties, "}")
+        if (lgProperties.isNotEmpty()) smProperties.append(theme().mediaQueryLg, "{", lgProperties, "}")
+        if (xlProperties.isNotEmpty()) smProperties.append(theme().mediaQueryXl, "{", xlProperties, "}")
+
+        return smProperties.toString()
+    }
+
+    val cssClass: StyleClass
+        get() = toCss().let { if (it.isNotEmpty()) style(it, prefix) else NoStyle }
+}
