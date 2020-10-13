@@ -2,7 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.BasicStyleParams
+import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.use
 import dev.fritz2.styling.staticStyle
@@ -32,7 +32,7 @@ val iconFoundations = staticStyle(
 )
 
 
-fun HtmlElements.Icon(def: IconDefinition, styles: Style<BasicStyleParams> = {}) {
+fun HtmlElements.Icon(def: IconDefinition, styles: Style<BasicParams> = {}) {
     val classAttribute = "$iconFoundations ${use(styles, "icon")}"
     val element = Svg()
     register(element, {

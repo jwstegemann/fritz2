@@ -2,7 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.BasicStyleParams
+import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.use
 import dev.fritz2.styling.staticStyle
@@ -24,10 +24,10 @@ val spinnerFoundations = staticStyle(
 )
 
 inline fun HtmlElements.Spinner(
-    crossinline styles: Style<BasicStyleParams> = {},
+    crossinline styles: Style<BasicParams> = {},
     size: Property = currentTheme.borderWidths.normal
 ): Div {
-    val spinnerStyles: Style<BasicStyleParams> = {
+    val spinnerStyles: Style<BasicParams> = {
         css("animation: loading 0.6s linear infinite;")
         border { width { size } }
         width { "1rem" }

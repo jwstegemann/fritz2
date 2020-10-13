@@ -3,32 +3,32 @@ package dev.fritz2.styling.theme
 import DefaultTheme
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.BasicStyleParams
-import dev.fritz2.styling.params.BoxStyleParams
-import dev.fritz2.styling.params.FlexStyleParams
-import dev.fritz2.styling.params.GridStyleParams
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.FlexParams
+import dev.fritz2.styling.params.GridParams
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.w3c.dom.Element
 
 /**
- * alias to easily create predefined styles based on [BasicStyleParams]
+ * alias to easily create predefined styles based on [BasicParams]
  */
-typealias PredefinedBasicStyle = BasicStyleParams.() -> Unit
+typealias PredefinedBasicStyle = BasicParams.() -> Unit
 
 /**
- * alias to easily create predefined styles based on [FlexStyleParams]
+ * alias to easily create predefined styles based on [FlexParams]
  */
-typealias PredefinedFlexStyle = FlexStyleParams.() -> Unit
+typealias PredefinedFlexStyle = FlexParams.() -> Unit
 
 /**
- * alias to easily create predefined styles based on [GridStyleParams]
+ * alias to easily create predefined styles based on [GridParams]
  */
-typealias PredefinedGridStyle = GridStyleParams.() -> Unit
+typealias PredefinedGridStyle = GridParams.() -> Unit
 
 /**
- * alias to easily create predefined styles based on [BoxStyleParams]
+ * alias to easily create predefined styles based on [BoxParams]
  */
-typealias PredefinedBoxStyle = BoxStyleParams.() -> Unit
+typealias PredefinedBoxStyle = BoxParams.() -> Unit
 
 /**
  * alias for property values

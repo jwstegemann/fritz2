@@ -5,8 +5,10 @@ import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.values
-import dev.fritz2.styling.params.BasicStyleParams
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.plus
+import dev.fritz2.styling.params.use
 import dev.fritz2.styling.staticStyle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -26,7 +28,7 @@ val inputFoundations = staticStyle(
     """
 )
 
-val basicInputStyles: Style<BasicStyleParams> = {
+val basicInputStyles: Style<BasicParams> = {
     lineHeight { normal }
     radius { normal }
     fontWeight { normal }
@@ -59,7 +61,7 @@ val basicInputStyles: Style<BasicStyleParams> = {
 }
 
 object InputSizes {
-    val normal: Style<BasicStyleParams> = {
+    val normal: Style<BasicParams> = {
         height { "2.5rem" }
         minWidth { "2.5rem" }
         fontSize { normal }
@@ -68,7 +70,7 @@ object InputSizes {
         }
     }
 
-    val large: Style<BasicStyleParams> = {
+    val large: Style<BasicParams> = {
         height { "3rem" }
         minWidth { "2.5rem" }
         fontSize { large }
@@ -77,7 +79,7 @@ object InputSizes {
         }
     }
 
-    val small: Style<BasicStyleParams> = {
+    val small: Style<BasicParams> = {
         height { "2rem" }
         minWidth { "2.5rem" }
         fontSize { small }
@@ -88,12 +90,12 @@ object InputSizes {
 }
 
 object InputVariants {
-    val outline: Style<BasicStyleParams> = {
+    val outline: Style<BasicParams> = {
         // just leave the *foundation* CSS values untouched!
         // But we need a *name* for this variant, so we got to have this val!
     }
 
-    val filled: Style<BasicStyleParams> = {
+    val filled: Style<BasicParams> = {
         background {
             color { light }
         }
@@ -131,10 +133,10 @@ object InputType {
 
 @ExperimentalCoroutinesApi
 inline fun HtmlElements.Input(
-    crossinline styles: Style<BasicStyleParams> = {},
+    crossinline styles: Style<BasicParams> = {},
     crossinline type: InputType.() -> String = { text },
-    variant: InputVariants.() -> Style<BasicStyleParams> = { outline },
-    size: InputSizes.() -> Style<BasicStyleParams> = { normal },
+    variant: InputVariants.() -> Style<BasicParams> = { outline },
+    size: InputSizes.() -> Style<BasicParams> = { normal },
     crossinline init: Input.() -> Unit
 ): Input {
 
@@ -157,10 +159,10 @@ inline fun HtmlElements.Input(
 @ExperimentalCoroutinesApi
 inline fun HtmlElements.Input(
     store: Store<String>,
-    crossinline styles: Style<BasicStyleParams> = {},
+    crossinline styles: Style<BasicParams> = {},
     crossinline type: InputType.() -> String = { text },
-    variant: InputVariants.() -> Style<BasicStyleParams> = { outline },
-    size: InputSizes.() -> Style<BasicStyleParams> = { normal },
+    variant: InputVariants.() -> Style<BasicParams> = { outline },
+    size: InputSizes.() -> Style<BasicParams> = { normal },
     crossinline init: Input.() -> Unit
 ): Input {
     return Input(

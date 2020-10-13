@@ -2,7 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.Select
-import dev.fritz2.styling.params.BasicStyleParams
+import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.use
 import dev.fritz2.styling.staticStyle
@@ -23,7 +23,7 @@ val select = staticStyle(
 )
 
 inline fun HtmlElements.Select(
-    styles: Style<BasicStyleParams> = {},
+    styles: Style<BasicParams> = {},
     crossinline init: Select.() -> Any
 ): Select {
 

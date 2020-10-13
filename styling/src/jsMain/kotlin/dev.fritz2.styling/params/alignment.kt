@@ -73,7 +73,7 @@ object AlignContentValues : PropertyValues {
 /**
  * This _context_ interface offers functions to align or justify elements.
  *
- * It used in [FlexStyleParams] and [GridStyleParams] .
+ * It used in [FlexParams] and [GridParams] .
  *
  * There are overrides for all functions that enable one to define the styling for
  * the different media devices independently.
@@ -245,7 +245,7 @@ object SelfAlignItemsValues : PropertyValues {
 /**
  * This _context_ interface offers functions for self-alignment.
  *
- * It used in [FlexStyleParams] and [GridStyleParams] .
+ * It used in [FlexParams] and [GridParams] .
  *
  * There are overrides for all functions that enable one to define the styling for
  * the different media devices independently.
