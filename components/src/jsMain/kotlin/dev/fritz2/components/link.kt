@@ -7,38 +7,39 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.use
 import dev.fritz2.styling.staticStyle
 
-val link = staticStyle(
-    "link",
-    """
-    transition: all 0.15s ease-out;
-    cursor: pointer;
-    text-decoration: none;
-    outline: none;
-    color: inherit;
-    
-    &:hover {
-        text-decoration: underline;    
+class LinkComponentContext(prefix: String) : BasicComponentContext(prefix) {
+    companion object Foundation {
+        val cssClass = staticStyle(
+            "f2Link",
+            """
+                    transition: all 0.15s ease-out;
+                    cursor: pointer;
+                    text-decoration: none;
+                    outline: none;
+                    color: inherit;
+                    
+                    &:hover {
+                        text-decoration: underline;    
+                    }
+                
+                    &:focus {
+                        box-shadow: outline;
+                    }
+                    
+                    &:disabled {
+                        opacity: 0.4;
+                        cursor: not-allowed;
+                        text-decoration: none;
+                    }
+                """
+        )
     }
+}
 
-    &:focus {
-        box-shadow: outline;
+fun HtmlElements.Link(build: Context<LinkComponentContext> = {}): Component<A> {
+    val context = LinkComponentContext("f2Link").apply(build)
+
+    return Component { init ->
+        a("${LinkComponentContext.cssClass} ${context.cssClass}", content = init)
     }
-    
-    &:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        text-decoration: none;
-    }
-"""
-)
-
-inline fun HtmlElements.Link(
-    styles: Style<BasicParams> = {},
-    crossinline init: A.() -> Any
-): A {
-
-    return a("$link ${use(styles, "link")}") {
-        init()
-    }
-
 }

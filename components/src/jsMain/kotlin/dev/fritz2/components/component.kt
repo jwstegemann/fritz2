@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.NoStyle
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams

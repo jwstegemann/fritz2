@@ -53,11 +53,11 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                         )
                         flex { shrink { "0" } }
                     }.apply {
-                        Image({
+                        f2Image {
                             width(sm = { normal }, md = { tiny })
                             boxShadow { flat }
                             radius { large }
-                        }) {
+                        }.apply() {
                             src = const("https://bit.ly/2jYM25F")
                             alt = const("Woman paying for a purchase")
                         }
@@ -74,20 +74,20 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             md = { left { normal } }
                         )
                     }.apply {
-                        Text(theme.teaserText) { +"Marketing" }
-                        Link({
+                        f2Text { theme.teaserText }.apply() { +"Marketing" }
+                        Link {
                             margins { top { tiny } }
                             fontSize { normal }
                             lineHeight { normal }
                             fontWeight { bold }
-                        }) {
+                        }.apply() {
                             href = const("#")
                             +"Finding customers for your new business"
                         }
-                        Text({
+                        f2Text {
                             margins { top { smaller } }
                             color { dark }
-                        }) {
+                        }.apply() {
                             +"Getting a new business off the ground is a lot of hard work. Here are five ideas you can use to find your first customers."
                         }
                     }
@@ -96,3 +96,4 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
         }.bind()
     }
 }
+

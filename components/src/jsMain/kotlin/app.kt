@@ -28,25 +28,25 @@ fun main() {
                 justifyContent { spaceEvenly }
                 alignItems { center }
             }.apply {
-                Link({
+                Link{
                     flex {
                         //grow { "2" }
                         //order { "1" }
                         //alignSelf { flexStart }
                     }
-                }) {
+                }.apply() {
                     href = const("#")
                     +"flex"
                 }
-                Link {
+                Link().apply() {
                     href = const("#grid")
                     +"grid"
                 }
-                Link {
+                Link().apply() {
                     href = const("#input")
                     +"input"
                 }
-                Link {
+                Link().apply() {
                     href = const("#buttons")
                     +"buttons"
                 }
