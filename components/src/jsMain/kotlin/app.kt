@@ -1,5 +1,5 @@
 import dev.fritz2.binding.const
-import dev.fritz2.components.Flex
+import dev.fritz2.components.f2Flex
 import dev.fritz2.components.Link
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
@@ -21,13 +21,13 @@ fun main() {
 
     render { theme: ExtendedTheme ->
         section {
-            Flex({
+            f2Flex {
                 height { "60px" }
                 wrap { nowrap }
                 direction { row }
                 justifyContent { spaceEvenly }
                 alignItems { center }
-            }) {
+            }.apply {
                 Link({
                     flex {
                         //grow { "2" }

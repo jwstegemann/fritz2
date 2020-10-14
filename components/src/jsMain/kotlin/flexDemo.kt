@@ -30,7 +30,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
 
                     changes.selectedIndex() handledBy themeStore.selectTheme
                 }
-                Flex({
+                f2Flex {
                     margin { small }
                     padding { small }
                     border {
@@ -41,8 +41,8 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                     radius { tiny }
                     boxShadow { flat }
                     direction(sm = { column }, md = { row })
-                }) {
-                    Box {
+                }.apply {
+                    f2Box {
                         zIndex { layer(1) }
                         margins(
                             {
@@ -63,7 +63,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                         }
                     }
 
-                    Box({
+                    f2Box {
                         zIndex { base }
                         //width { "300px" }
                         margins(
@@ -73,7 +73,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             },
                             md = { left { normal } }
                         )
-                    }) {
+                    }.apply {
                         Text(theme.teaserText) { +"Marketing" }
                         Link({
                             margins { top { tiny } }

@@ -1,14 +1,13 @@
 import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.storeOf
-import dev.fritz2.components.Flex
+import dev.fritz2.components.f2Flex
 import dev.fritz2.components.Input
-import dev.fritz2.components.LineUp
+import dev.fritz2.components.f2LineUp
 import dev.fritz2.components.Text
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.values
-import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -17,10 +16,10 @@ fun HtmlElements.inputDemo(): Div {
     val user = storeOf("John Doe")
 
     return div {
-        Flex({
+        f2Flex {
             direction { column }
             padding { normal }
-        }) {
+        }.apply {
             h1 { +"Input Showcase" }
 
             Text { +"Basic" }
@@ -62,11 +61,10 @@ fun HtmlElements.inputDemo(): Div {
                 placeholder = const("Name")
                 changes.values() handledBy user.update
             }
-            LineUp(
-                {
-                    margins { vertical { tiny } }
-                }, spacing = theme().space.tiny
-            ) {
+            f2LineUp {
+                margins { vertical { tiny } }
+                spacing { tiny }
+            }.apply {
                 Text {
                     +"given Name:"
                 }

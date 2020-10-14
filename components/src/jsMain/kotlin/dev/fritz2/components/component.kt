@@ -9,25 +9,13 @@ import dev.fritz2.styling.params.use
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.theme
 
-typealias Context<T> = ComponentContext<T>.() -> Unit
+typealias Context<T> = T.() -> Unit
 
 inline class Component<C>(private val factory: (C.() -> Unit) -> Unit) {
-    fun apply(content: C.() -> Unit) = factory
+    fun apply(content: C.() -> Unit) = factory(content)
 }
 
-class ComponentContext<P : StyleParams>(val prefix: String) {
-    var style: Style<P>? = null
-
-    fun style(params: P.() -> Unit) {
-        style = params
-    }
-
-    val cssClass: StyleClass
-        get() = style?.let { use(it, prefix) } ?: NoStyle
-}
-
-
-class BasicComponentContext(val prefix: String) : BasicParams {
+open class BasicComponentContext(val prefix: String) : BasicParams {
     override val smProperties = StringBuilder()
     override val mdProperties = StringBuilder()
     override val lgProperties = StringBuilder()
