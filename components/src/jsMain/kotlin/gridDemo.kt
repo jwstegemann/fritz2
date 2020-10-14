@@ -1,6 +1,6 @@
 import dev.fritz2.components.f2Box
 import dev.fritz2.components.f2Grid
-import dev.fritz2.components.Text
+import dev.fritz2.components.f2Text
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.params.AreaName
@@ -62,13 +62,13 @@ fun HtmlElements.gridDemo(): Div {
                     color { "lime" }
                 }
             }.apply {
-                Text { +"Header" }
+                f2Text().apply() { +"Header" }
             }
             f2Box {
                 grid { area { grid.SIDEBAR } }
                 background { color { "yellow" } }
             }.apply {
-                Text { +"Sidebar" }
+                f2Text().apply() { +"Sidebar" }
             }
             f2Box {
                 grid(sm = { area { grid.CONTENT } })
@@ -97,13 +97,13 @@ fun HtmlElements.gridDemo(): Div {
                     }
                 )
             }.apply {
-                Text { +"Content" }
+                f2Text().apply() { +"Content" }
             }
             f2Box {
                 grid { area { grid.FOOTER } }
                 background { color { "lime" } }
             }.apply {
-                Text { +"Footer" }
+                f2Text().apply() { +"Footer" }
             }
             f2Box {
                 margin { normal }
@@ -137,7 +137,7 @@ fun HtmlElements.gridDemo(): Div {
                     color { rgba(255, 0, 0, 0.5) }
                 }
             }.apply {
-                Text { +"Overlay" }
+                f2Text().apply() { +"Overlay" }
             }
         }
     }

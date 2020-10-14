@@ -1,10 +1,7 @@
 import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.storeOf
-import dev.fritz2.components.f2Flex
-import dev.fritz2.components.Input
-import dev.fritz2.components.f2LineUp
-import dev.fritz2.components.Text
+import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.values
@@ -22,42 +19,42 @@ fun HtmlElements.inputDemo(): Div {
         }.apply {
             h1 { +"Input Showcase" }
 
-            Text { +"Basic" }
-            Input {
+            f2Text().apply() { +"Basic" }
+            f2Input().apply() {
                 placeholder = const("Placeholder")
             }
 
-            Text { +"Basic + Readonly + Custom Styling" }
-            Input(
-                {
-                    //background { color { "lightgrey" } }
-                    focus {
-                        border {
-                            color { dark }
-                        }
-                        boxShadow { none }
+            f2Text().apply() { +"Basic + Readonly + Custom Styling" }
+            f2Input {
+                //background { color { "lightgrey" } }
+                focus {
+                    border {
+                        color { dark }
                     }
-                },
-                type = { text }
-            ) {
+                    boxShadow { none }
+                }
+                type { text }
+            }.apply() {
                 value = const("Readonly!")
                 readOnly = const(true)
             }
 
 
-            Text { +"Password" }
-            Input(
-                type = { password }
-            ) {
+            f2Text().apply() { +"Password" }
+            f2Input {
+                type { password }
+            }.apply() {
                 placeholder = const("Password")
             }
 
-            Text { +"Basic + Store" }
-            Input(store = user) {
+            f2Text().apply() { +"Basic + Store" }
+            f2Input {
+                store { user }
+            }.apply() {
                 placeholder = const("Name")
             }
-            Text { +"changes manually applied to store's update" }
-            Input {
+            f2Text().apply() { +"changes manually applied to store's update" }
+            f2Input().apply() {
                 placeholder = const("Name")
                 changes.values() handledBy user.update
             }
@@ -65,36 +62,39 @@ fun HtmlElements.inputDemo(): Div {
                 margins { vertical { tiny } }
                 spacing { tiny }
             }.apply {
-                Text {
-                    +"given Name:"
-                }
-                Text({
+                f2Text().apply() { +"given Name:" }
+                f2Text {
                     background { color { "lightgrey" } }
                     radius { normal }
                     paddings { horizontal { tiny } }
-                }) {
+                }.apply() {
                     user.data.bind()
                 }
             }
 
-            Text { +"Sizes" }
-            Input(size = { large }) {
+            f2Text().apply() { +"Sizes" }
+            f2Input { inputSize { large } }.apply() {
                 placeholder = const("large")
             }
-            Input(size = { normal }) {
+            f2Input { inputSize { normal } }.apply() {
                 placeholder = const("normal")
             }
-            Input(size = { small }) {
+            f2Input { inputSize { small } }.apply() {
                 placeholder = const("small")
             }
 
-            Text { +"Variants" }
-            Input(variant = { outline }) {
+            f2Text().apply() { +"Variants" }
+            f2Input {
+                variant { outline }
+            }.apply() {
                 placeholder = const("outline")
             }
-            Input(variant = { filled }) {
+            f2Input {
+                variant { filled }
+            }.apply() {
                 placeholder = const("filled")
             }
         }
     }
 }
+
