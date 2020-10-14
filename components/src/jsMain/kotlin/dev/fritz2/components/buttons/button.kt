@@ -371,7 +371,7 @@ class MyButtonContext(val renderContext: HtmlElements) {
     fun radios(build: MyButtonContext.() -> Unit = {}) {
         val extendedBuild: MyButtonContext.() -> Unit = {
             build()
-            disabled()
+            //disabled()
         }
 
     }
@@ -401,7 +401,7 @@ fun HtmlElements.MyButton(icon: Int, build: MyButtonContext.() -> Unit = {}) {
 fun HtmlElements.MyButton(icon: String, text: String, build: MyButtonContext.() -> Unit = {}) {
 }
 
-
+/*
 fun HtmlElements.foo() {
     MyButton {
         style {
@@ -431,3 +431,5 @@ fun HtmlElements.foo() {
 
 
 }
+
+ */

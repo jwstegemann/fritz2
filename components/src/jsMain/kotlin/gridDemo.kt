@@ -1,5 +1,5 @@
-import dev.fritz2.components.Box
-import dev.fritz2.components.Grid
+import dev.fritz2.components.f2Box
+import dev.fritz2.components.f2Grid
 import dev.fritz2.components.Text
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
@@ -19,7 +19,7 @@ fun HtmlElements.gridDemo(): Div {
             val CONTENT: AreaName = "content"
             val FOOTER: AreaName = "footer"
         }
-        Grid({
+        f2Grid {
             fontSize { normal }
             columns {
                 repeat(9) { "9fr" }
@@ -54,23 +54,23 @@ fun HtmlElements.gridDemo(): Div {
             //raw("place-items: stretch flex-end;")
             //justifyContent { spaceEvenly }
             //alignItems { start }
-        }) {
-            Box({
+        }.apply() {
+            f2Box {
                 grid { area { grid.HEADER } }
                 //bgColor { "green" }
                 background {
                     color { "lime" }
                 }
-            }) {
+            }.apply {
                 Text { +"Header" }
             }
-            Box({
+            f2Box {
                 grid { area { grid.SIDEBAR } }
                 background { color { "yellow" } }
-            }) {
+            }.apply {
                 Text { +"Sidebar" }
             }
-            Box({
+            f2Box {
                 grid(sm = { area { grid.CONTENT } })
                 background(
                     sm = {
@@ -96,16 +96,16 @@ fun HtmlElements.gridDemo(): Div {
                         }
                     }
                 )
-            }) {
+            }.apply {
                 Text { +"Content" }
             }
-            Box({
+            f2Box {
                 grid { area { grid.FOOTER } }
                 background { color { "lime" } }
-            }) {
+            }.apply {
                 Text { +"Footer" }
             }
-            Box({
+            f2Box {
                 margin { normal }
                 grid(
                     sm = {
@@ -136,7 +136,7 @@ fun HtmlElements.gridDemo(): Div {
                     //blendMode { darken }
                     color { rgba(255, 0, 0, 0.5) }
                 }
-            }) {
+            }.apply {
                 Text { +"Overlay" }
             }
         }

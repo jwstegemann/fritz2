@@ -2,58 +2,65 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.FlexParams
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.plus
-import dev.fritz2.styling.theme.Property
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.params.*
 
 
-inline fun HtmlElements.StackUp(
-    crossinline styles: Style<FlexParams> = {},
-    spacing: Property = theme().space.normal,
-    reverse: Boolean = false,
-    crossinline init: Div.() -> Unit
-): Div {
-    val stackStyles: Style<FlexParams> = {
-        if (reverse) {
+abstract class StackComponentContext(prefix: String) : FlexComponentContext(prefix) {
+    var reverse: Boolean = false
+    var spacing: ScaledValueProperty = { normal }
+
+    fun spacing(value: ScaledValueProperty) {
+        spacing = value
+    }
+
+    abstract val stackStyles: Style<FlexParams>
+}
+
+class StackUpComponentContext(prefix: String) : StackComponentContext(prefix) {
+    override val stackStyles: Style<FlexParams> = {
+        if (this@StackUpComponentContext.reverse) {
             direction { columnReverse }
             children(" > :not(:first-child)") {
-                margins { bottom { spacing } }
+                margins { bottom(this@StackUpComponentContext.spacing) }
             }
         } else {
             direction { column }
             children(" > :not(:first-child)") {
-                margins { top { spacing } }
+                margins { top(this@StackUpComponentContext.spacing) }
             }
         }
         alignItems { center }
     }
-
-    return Flex(stackStyles + styles, init)
 }
 
-inline fun HtmlElements.LineUp(
-    crossinline styles: Style<FlexParams> = {},
-    spacing: Property = theme().space.normal,
-    reverse: Boolean = false,
-    crossinline init: Div.() -> Unit
-): Div {
-    val stackStyles: Style<FlexParams> = {
-        if (reverse) {
+class LineUpComponentContext(prefix: String) : StackComponentContext(prefix) {
+    override val stackStyles: Style<FlexParams> = {
+        if (this@LineUpComponentContext.reverse) {
             direction { rowReverse }
             children(" > :not(:first-child)") {
-                margins { right { spacing } }
+                margins { right(this@LineUpComponentContext.spacing) }
             }
         } else {
             direction { row }
             children(" > :not(:first-child)") {
-                margins { left { spacing } }
+                margins { left(this@LineUpComponentContext.spacing) }
             }
         }
         alignItems { center }
     }
-
-    return Flex(stackStyles + styles, init)
 }
 
+fun HtmlElements.f2StackUp(build: Context<StackComponentContext> = {}): Component<Div> {
+    val context = StackUpComponentContext("f2StackUp").apply(build)
+    return f2Flex {
+        context.stackStyles()
+    }
+}
+
+fun HtmlElements.f2LineUp(build: Context<StackComponentContext> = {}): Component<Div> {
+    val context = LineUpComponentContext("f2LineUp").apply(build)
+
+    return f2Flex {
+        context.stackStyles()
+    }
+}
