@@ -19,12 +19,12 @@ fun HtmlElements.inputDemo(): Div {
         }.apply {
             h1 { +"Input Showcase" }
 
-            f2Text().apply() { +"Basic" }
-            f2Input().apply() {
+            f2Text.apply { +"Basic" }
+            f2Input().apply {
                 placeholder = const("Placeholder")
             }
 
-            f2Text().apply() { +"Basic + Readonly + Custom Styling" }
+            f2Text().apply { +"Basic + Readonly + Custom Styling" }
             f2Input {
                 //background { color { "lightgrey" } }
                 focus {
@@ -34,27 +34,27 @@ fun HtmlElements.inputDemo(): Div {
                     boxShadow { none }
                 }
                 type { text }
-            }.apply() {
+            }.apply {
                 value = const("Readonly!")
                 readOnly = const(true)
             }
 
 
-            f2Text().apply() { +"Password" }
+            f2Text().apply { +"Password" }
             f2Input {
                 type { password }
-            }.apply() {
+            }.apply {
                 placeholder = const("Password")
             }
 
-            f2Text().apply() { +"Basic + Store" }
+            f2Text().apply { +"Basic + Store" }
             f2Input {
                 store { user }
             }.apply() {
                 placeholder = const("Name")
             }
-            f2Text().apply() { +"changes manually applied to store's update" }
-            f2Input().apply() {
+            f2Text().apply { +"changes manually applied to store's update" }
+            f2Input().apply {
                 placeholder = const("Name")
                 changes.values() handledBy user.update
             }
@@ -62,17 +62,17 @@ fun HtmlElements.inputDemo(): Div {
                 margins { vertical { tiny } }
                 spacing { tiny }
             }.apply {
-                f2Text().apply() { +"given Name:" }
+                f2Text().apply { +"given Name:" }
                 f2Text {
                     background { color { "lightgrey" } }
                     radius { normal }
                     paddings { horizontal { tiny } }
-                }.apply() {
+                }.apply {
                     user.data.bind()
                 }
             }
 
-            f2Text().apply() { +"Sizes" }
+            f2Text().apply { +"Sizes" }
             f2Input { inputSize { large } }.apply() {
                 placeholder = const("large")
             }
@@ -83,7 +83,7 @@ fun HtmlElements.inputDemo(): Div {
                 placeholder = const("small")
             }
 
-            f2Text().apply() { +"Variants" }
+            f2Text().apply { +"Variants" }
             f2Input {
                 variant { outline }
             }.apply() {
@@ -91,7 +91,7 @@ fun HtmlElements.inputDemo(): Div {
             }
             f2Input {
                 variant { filled }
-            }.apply() {
+            }.apply {
                 placeholder = const("filled")
             }
         }

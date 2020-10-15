@@ -35,4 +35,11 @@ open class BasicComponentContext(val prefix: String) : BasicParams {
 
     val cssClass: StyleClass
         get() = toCss().let { if (it.isNotEmpty()) style(it, prefix) else NoStyle }
+
+    var baseClasses: String? = null
+
+    fun classes(vararg styles: StyleClass) {
+        baseClasses = styles.joinToString(" ")
+    }
+
 }
