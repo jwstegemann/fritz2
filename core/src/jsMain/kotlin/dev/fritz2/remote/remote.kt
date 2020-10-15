@@ -11,7 +11,9 @@ import kotlinx.browser.window as browserWindow
  * @property statusCode the http response status code
  * @property body the body of the error-response
  */
-class FetchException(val statusCode: Short, val body: String, val response: Response) : Throwable()
+class FetchException(val statusCode: Short, val body: String, val response: Response) : Exception(
+    "code=$statusCode, url=${response.url}, body=$body"
+)
 
 /**
  * factory method to create a RequestTemplate
@@ -50,7 +52,12 @@ open class Request(
      * @param init an instance of [RequestInit] defining the attributes of the request
      */
     private suspend fun execute(subUrl: String, init: RequestInit): Response {
-        val url = "${baseUrl.trimEnd('/')}/${subUrl.trimStart('/')}"
+        val url = buildString {
+            append(baseUrl.trimEnd('/'))
+            if (subUrl.isNotEmpty()) {
+                append("/${subUrl.trimStart('/')}")
+            }
+        }
         val response = browserWindow.fetch(url, init).await()
         if (response.ok) return response
         else throw FetchException(response.status, response.getBody(), response)
