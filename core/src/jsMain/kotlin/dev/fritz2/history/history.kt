@@ -1,6 +1,7 @@
 package dev.fritz2.history
 
 import dev.fritz2.binding.Store
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
 import kotlin.math.min
 
@@ -100,6 +101,6 @@ class History<T>(private val maxSize: Int, private val history: MutableStateFlow
     fun sync(upstream: Store<T>): History<T> = this.apply {
         upstream.data.onEach { enqueue(it) }.catch { t ->
             console.error("ERROR[history@${upstream.id}]: ${t.message}", t)
-        }.launchIn(upstream)
+        }.launchIn(MainScope())
     }
 }
