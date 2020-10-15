@@ -57,7 +57,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             width(sm = { normal }, md = { tiny })
                             boxShadow { flat }
                             radius { large }
-                        }.apply() {
+                        }.apply {
                             src = const("https://bit.ly/2jYM25F")
                             alt = const("Woman paying for a purchase")
                         }
@@ -74,20 +74,20 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             md = { left { normal } }
                         )
                     }.apply {
-                        f2Text { theme.teaserText }.apply() { +"Marketing" }
+                        f2Text { theme.teaserText }.apply { +"Marketing" }
                         Link {
                             margins { top { tiny } }
                             fontSize { normal }
                             lineHeight { normal }
                             fontWeight { bold }
-                        }.apply() {
+                        }.apply {
                             href = const("#")
                             +"Finding customers for your new business"
                         }
                         f2Text {
                             margins { top { smaller } }
                             color { dark }
-                        }.apply() {
+                        }.apply {
                             +"Getting a new business off the ground is a lot of hard work. Here are five ideas you can use to find your first customers."
                         }
                     }

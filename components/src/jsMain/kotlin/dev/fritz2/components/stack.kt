@@ -67,10 +67,9 @@ fun HtmlElements.f2StackUp(build: Context<StackComponentContext> = {}): Componen
         }
 
     return Component { init ->
-        div(
-            "${FlexComponentContext.cssClass} ${StackComponentContext.cssClass} ${context.cssClass}",
-            content = init
-        )
+        f2Flex{
+            classes(StackComponentContext.cssClass, context.cssClass)
+        }.apply(init)
     }
 }
 
@@ -82,9 +81,8 @@ fun HtmlElements.f2LineUp(build: Context<StackComponentContext> = {}): Component
         }
 
     return Component { init ->
-        div(
-            "${FlexComponentContext.cssClass} ${StackComponentContext.cssClass} ${context.cssClass}",
-            content = init
-        )
+        f2Flex{
+            classes(StackComponentContext.cssClass, context.cssClass)
+        }.apply(init)
     }
 }

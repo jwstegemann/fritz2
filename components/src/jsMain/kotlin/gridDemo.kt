@@ -54,7 +54,7 @@ fun HtmlElements.gridDemo(): Div {
             //raw("place-items: stretch flex-end;")
             //justifyContent { spaceEvenly }
             //alignItems { start }
-        }.apply() {
+        }.apply {
             f2Box {
                 grid { area { grid.HEADER } }
                 //bgColor { "green" }
@@ -62,13 +62,13 @@ fun HtmlElements.gridDemo(): Div {
                     color { "lime" }
                 }
             }.apply {
-                f2Text().apply() { +"Header" }
+                f2Text().apply { +"Header" }
             }
             f2Box {
                 grid { area { grid.SIDEBAR } }
                 background { color { "yellow" } }
             }.apply {
-                f2Text().apply() { +"Sidebar" }
+                f2Text().apply { +"Sidebar" }
             }
             f2Box {
                 grid(sm = { area { grid.CONTENT } })
@@ -97,13 +97,13 @@ fun HtmlElements.gridDemo(): Div {
                     }
                 )
             }.apply {
-                f2Text().apply() { +"Content" }
+                f2Text().apply { +"Content" }
             }
             f2Box {
                 grid { area { grid.FOOTER } }
                 background { color { "lime" } }
             }.apply {
-                f2Text().apply() { +"Footer" }
+                f2Text().apply { +"Footer" }
             }
             f2Box {
                 margin { normal }
@@ -137,7 +137,7 @@ fun HtmlElements.gridDemo(): Div {
                     color { rgba(255, 0, 0, 0.5) }
                 }
             }.apply {
-                f2Text().apply() { +"Overlay" }
+                f2Text().apply { +"Overlay" }
             }
         }
     }

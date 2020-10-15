@@ -80,7 +80,7 @@ class FormControlComponentContext(prefix: String) : BasicComponentContext(prefix
         label = value()
     }
 
-    // TODO: How to expose boolean values?
+    // TODO: Expose as fun
     var invalid: Boolean = false
     var disabled: Boolean = false
     var required: Boolean = false
@@ -105,9 +105,14 @@ class FormControlComponentContext(prefix: String) : BasicComponentContext(prefix
 
     var control: HtmlElements.() -> Unit? = { null }
 
+    // streichen!
     fun control(value: HtmlElements.() -> Unit) {
         control = value
     }
+
+    // x Funktionen für jede mögliche Control-Komponente
+    // -> "Proxy" für f2Control-Funktionen
+    // Zugriff auf Context -> dispatching für Struktur-Auswahl ohne Zusatzoinfos möglich
 }
 
 interface ControlRenderer {

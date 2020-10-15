@@ -34,23 +34,23 @@ fun main() {
                         //order { "1" }
                         //alignSelf { flexStart }
                     }
-                }.apply() {
+                }.apply {
                     href = const("#")
                     +"flex"
                 }
-                Link().apply() {
+                Link().apply {
                     href = const("#grid")
                     +"grid"
                 }
-                Link().apply() {
+                Link().apply {
                     href = const("#input")
                     +"input"
                 }
-                Link().apply() {
+                Link().apply {
                     href = const("#formcontrol")
                     +"formcontrol"
                 }
-                Link().apply() {
+                Link().apply {
                     href = const("#buttons")
                     +"buttons"
                 }

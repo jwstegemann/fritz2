@@ -30,7 +30,7 @@ fun HtmlElements.f2Flex(build: Context<FlexComponentContext> = {}): Component<Di
     val context = FlexComponentContext("f2Flex").apply(build)
 
     return Component { init ->
-        div("${FlexComponentContext.cssClass} ${context.cssClass}", content = init)
+        div("${FlexComponentContext.cssClass} ${context.baseClasses} ${context.cssClass}", content = init)
     }
 }
 
