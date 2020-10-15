@@ -3,14 +3,12 @@ package dev.fritz2.remote
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.getFreshCrudcrudEndpoint
 import dev.fritz2.test.runTest
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 /**
  * See [Httpbin](https://httpbin.org/) for testing endpoints
  */
+@Ignore
 class RemoteTests {
 
     private val remote = remote("https://httpbin.org")

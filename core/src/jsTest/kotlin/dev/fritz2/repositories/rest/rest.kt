@@ -17,14 +17,12 @@ import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import kotlin.test.fail
+import kotlin.test.*
 
 /*
  * See [crudcrud.com](https://crudcrud.com).
  */
+@Ignore
 class RestTests {
     data class RestPerson(val name: String, val age: Int, val _id: String = "")
 
