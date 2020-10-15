@@ -1,29 +1,24 @@
 package dev.fritz2.remote
 
-import dev.fritz2.test.rest
+import dev.fritz2.identification.uniqueId
+import dev.fritz2.test.getFreshCrudcrudEndpoint
 import dev.fritz2.test.runTest
-import dev.fritz2.test.test
-import dev.fritz2.test.testServer
-import kotlin.random.Random
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 /**
  * See [Httpbin](https://httpbin.org/) for testing endpoints
  */
+@Ignore
 class RemoteTests {
 
-    private val codes = listOf<Short>(400, 401, 403, 404, 429, 500, 501, 503)
+    private val remote = remote("https://httpbin.org")
+    private val codes = listOf<Short>(401, 500)
 
 
     @Test
     fun testHTTPMethods() = runTest {
-        val remote = testServer(test)
         remote.get("get")
         remote.delete("delete")
-        remote.head("head")
         remote.body("").patch("patch")
         remote.body("").post("post")
         remote.body("").put("put")
@@ -32,20 +27,18 @@ class RemoteTests {
 
     @Test
     fun testBasicAuth() = runTest {
-        val remote = testServer(test)
-        val user = "test"
-        val password = "password"
-        remote.basicAuth(user, password).get("basicAuth")
+        val user = "test-user"
+        val password = "awl12@d+aw23"
+        remote.basicAuth(user, password).get("basic-auth/$user/$password")
 
         assertFailsWith(FetchException::class) {
-            remote.basicAuth(user, password+"w").get("basicAuth")
+            remote.basicAuth(user, password).get("basic-auth/$user/${password}a")
         }
     }
 
 
     @Test
-    fun testErrorStatusCodes() = runTest {
-        val remote = testServer(test)
+    fun testGetStatusCodes() = runTest {
         for(code in codes) {
             assertFailsWith(FetchException::class) {
                 remote.get("status/$code")
@@ -53,43 +46,76 @@ class RemoteTests {
         }
     }
 
+
     @Test
-    fun testHeaders() = runTest {
-        val remote = testServer(test)
-        val body: String = remote
-            .acceptJson()
-            .cacheControl("no-cache")
-            .header("test", "this is a test")
-            .get("headers").getBody()
-        assertTrue(body.contains(Regex("""accept.+application/json""")), "Accept header not found")
-        assertTrue(body.contains(Regex("""cache-control.+no-cache""")), "Cache-Control header not found")
-        assertTrue(body.contains(Regex("""test.+this is a test""")), "Test header not found")
+    fun testDeleteStatusCodes() = runTest {
+        for(code in codes) {
+            assertFailsWith(FetchException::class) {
+                remote.delete("status/$code")
+            }
+        }
     }
 
     @Test
-    fun testCRUDMethods() = runTest {
-        val remote = testServer(rest)
-        val texts = mutableListOf<String>()
-        val ids = mutableListOf<String>()
-        for (i in 0..5) {
-            val text = Random.nextLong().toString()
-            texts.add(text)
-            val saved = remote.body("""{"text": "$text"}""")
-                .contentType("application/json").post().getBody()
-            val id = JSON.parse<dynamic>(saved)._id as String
-            ids.add(id)
-            assertTrue(saved.contains(text), "saved entity not like posted")
+    fun testPatchStatusCodes() = runTest {
+        for(code in codes) {
+            assertFailsWith(FetchException::class) {
+                remote.body("").patch("status/$code")
+            }
         }
-        val load = remote.acceptJson().get().getBody()
-        for (text in texts) {
-            assertTrue(load.contains(text), "posted entity is not in list")
+    }
+
+    @Test
+    fun testPostStatusCodes() = runTest {
+        for(code in codes) {
+            assertFailsWith(FetchException::class) {
+                remote.body("").post("status/$code")
+            }
+        }
+    }
+
+    @Test
+    fun testPutStatusCodes() = runTest {
+        for(code in codes) {
+            assertFailsWith(FetchException::class) {
+                remote.body("").put("status/$code")
+            }
+        }
+    }
+
+    @Test
+    fun testGetHeaders() = runTest {
+        val body: String = remote.acceptJson().cacheControl("no-cache").get("headers").getBody()
+        assertTrue(body.contains(Regex("""Accept.+application/json""")), "Accept header not found")
+        assertTrue(body.contains(Regex("""Cache-Control.+no-cache""")), "Cache-Control header not found")
+    }
+
+    /**
+     * See [crudcrud.com](https://crudcrud.com).
+     */
+    @Test
+    fun testCRUDMethods() = runTest {
+        val users = getFreshCrudcrudEndpoint().append("/users")
+        val names = mutableListOf<String>()
+        val ids = mutableListOf<String>()
+        for (i in 1..3) {
+            val name = "name-${uniqueId()}"
+            names.add(name)
+            val saved = users.body("""{"num": $i, "name": "$name"}""").contentType("application/json").post().getBody()
+            val id = JSON.parse<dynamic>(saved)._id
+            if(id != undefined) ids.add(id as String)
+            assertTrue(saved.contains(name), "saved entity not like posted")
+        }
+        val load = users.acceptJson().get().getBody()
+        for(name in names) {
+            assertTrue(load.contains(name), "posted entity is not in list")
         }
         for (id in ids) {
-            remote.delete(id)
+            users.delete(id)
         }
-        val empty = remote.acceptJson().get().getBody()
-        for (text in texts) {
-            assertFalse(empty.contains(text), "deleted entity is in list")
+        val empty = users.acceptJson().get().getBody()
+        for(name in names) {
+            assertFalse(empty.contains(name), "deleted entity is in list")
         }
     }
 
