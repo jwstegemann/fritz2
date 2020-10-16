@@ -1,0 +1,163 @@
+                text {
+                    color { primary }
+                    .. { +"kdjksdfjksdj" }
+                }
+
+                text { // this = F2TextContext
+                    color { primary }
+                    +"ksjdnfkjsdnkj"
+                }
+
+                text { +"skdjfksdjfskdf" }
+                text { bind(myFlow) }
+
+                pushButton {
+                    color { primary }
+                    variant { outline }
+                    label { "ksjdfnskdjfd" }
+                    runningLabel { }
+                    iconLeft { }
+
+                    apply { // this = ButtonContext : WithEvents
+                        clicks handledBy hugo
+                    }
+                }
+
+                // f2CLickButton returs clicks-event-flow
+                f2ClickButton { +"Hallo" } handledBy hugo
+
+                val HtmlElements.oben(option: String) {
+                    f2Text(option)
+                }
+
+                f2Flex {
+                    background { color { light } }
+                    add { f2Icon { arrowUp } }
+
+                    apply { // this = HtmlElements
+                        clicks handledBy hugo
+                    }
+                }
+
+                f2Flex {
+                    add { f2Icon { arrowUp } }
+                    add { f2Icon { arrowUp } }
+                    add { f2Icon { arrowUp } }
+                }
+
+                f2Input {
+                    background { color { light } }
+                    type { password }
+                    variant { filled }
+                    readOnly { true }
+                    value { myDataFlow }
+                    .. { this = InputContext : WithEvents
+                        changes.map {
+                            //....
+                        } handledBy hugo
+                    }
+                }
+
+                fun f2Input(myStore) = f2Input { store { myStore } }
+
+
+
+                f2FormControl {
+                    label { myFlow.bind() } // HtmlElements.() -> Unit
+                    if (...) helperText { "shjdjsdhbfsjdh" }
+                    else helperText { "anders" }
+                    errorText { myErrorFlow }
+                    disabled { true }
+                    input { // function on FormControlComponent
+                        background { color { light } }
+                        store { myStore }
+                    }
+
+                    singleSelect {
+                        variant { radio } // select
+                    }
+                }
+
+                fun FormControl.singleSelect(build: SingleSelectComponent.() -> Unit) {
+
+                    // set or change properties for child component
+                    val augmentedBuild : SingleSelectComponent.() -> Unit = {
+                        build()
+                        disabled { this.disabled }
+                    }
+
+
+                    val x = render {
+                        div {
+                            f2SingleSelect(build).also { // if f2SingleSelect return Component
+                                controlType = if (variant == ....) ...
+                            }
+                        }
+                }
+
+                fun f2FormControl(build: ...): FormControlComponent {
+                    val component = FormControlComponent().apply { build() }
+
+                    div {
+                        div {
+                            component.x.bind()
+                        }
+                    }
+
+                    return component
+
+                }
+
+
+                f2FormControl("Name:", { f2Input(myStore) })
+
+                f2FormControl("Name:", {
+                    f2Input {
+                        background { color { light } }
+                        store { myStore }
+                    }
+                })
+
+                f2InputFormControl("Name:", myStore, "helper", errorFlow)
+
+
+                //Implementation
+
+                class FlexComponent() : BasicComponent {
+                    var content: (HtmlElements.() -> Unit)? = null
+                }
+
+                fun HtmlElements.f2Flex(val build : FlexComponent.() -> Unit) : FlexComponent {
+                    val component = F2FlexComponent().apply { build() }
+
+                    div {
+                        component.content?.invoke()
+                    }
+
+                    return component
+                }
+
+
+                radioButtons(build) {
+                    controlType = group
+                    radioBuild = build.andThen {
+                        disabled { component.diabled }
+                    }
+                }
+
+                if (controlType = group ) {
+                    div {
+                        if (radioBuild != null) f2RadioButtons(augmentedBuild(radioBuild))
+                    }
+                }
+
+                formControlGroup {
+                    radioButtons(build)
+                    checkBoxes
+                }
+
+                formControl {
+                    singleSelect
+                    multiSelect
+                    inputField
+               }
