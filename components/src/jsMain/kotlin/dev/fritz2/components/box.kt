@@ -41,7 +41,7 @@ fun HtmlElements.flexBox(build: FlexBoxComponent.() -> Unit = {}) {
 
 class GridBoxComponent : BaseComponent(prefix), FlexParams, Application<Div> by ApplicationDelegate() {
     companion object {
-        internal const val prefix = "flex-box"
+        internal const val prefix = "grid-box"
         val staticCss = staticStyle(
             prefix,
             "display: grid;"

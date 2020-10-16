@@ -29,7 +29,8 @@ fun main() {
 
                 hugo {
                     anchor {
-                        href("#")
+                        // TODO: Ist noch hässlich!
+                        href.invoke("#")
                         hugo {
                             +"Components"
                         }
