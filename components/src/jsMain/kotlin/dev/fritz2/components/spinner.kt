@@ -1,15 +1,6 @@
 package dev.fritz2.components
 
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.use
-import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.Property
-import dev.fritz2.styling.theme.currentTheme
-
-
+/*
 val spinnerFoundations = staticStyle(
     "spinner",
     """ 
@@ -38,3 +29,5 @@ inline fun HtmlElements.Spinner(
         div("$spinnerFoundations ${use(spinnerStyles, "spinner")}") {}
     }
 }
+
+ */

@@ -1,14 +1,4 @@
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.const
-import dev.fritz2.binding.handledBy
-import dev.fritz2.components.*
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.selectedIndex
-import dev.fritz2.styling.theme.currentTheme
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.map
-
+/*
 @ExperimentalCoroutinesApi
 fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
 
@@ -96,4 +86,4 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
         }.bind()
     }
 }
-
+*/

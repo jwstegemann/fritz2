@@ -1,22 +1,15 @@
 package dev.fritz2.components
 
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.Tag
 import dev.fritz2.styling.NoStyle
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.StyleParams
-import dev.fritz2.styling.params.use
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.theme
+import kotlinx.coroutines.flow.Flow
+import org.w3c.dom.Element
 
-typealias Context<T> = T.() -> Unit
-
-inline class Component<C>(private val factory: (C.() -> Unit) -> Unit) {
-    fun apply(content: C.() -> Unit) = factory(content)
-}
-
-open class BasicComponentContext(val prefix: String) : BasicParams {
+open class BaseComponent(val prefix: String) : BasicParams {
     override val smProperties = StringBuilder()
     override val mdProperties = StringBuilder()
     override val lgProperties = StringBuilder()
@@ -33,13 +26,60 @@ open class BasicComponentContext(val prefix: String) : BasicParams {
         return smProperties.toString()
     }
 
-    val cssClass: StyleClass
-        get() = toCss().let { if (it.isNotEmpty()) style(it, prefix) else NoStyle }
-
-    var baseClasses: String? = null
+    var baseClasses = StringBuilder()
 
     fun classes(vararg styles: StyleClass) {
-        baseClasses = styles.joinToString(" ")
+        baseClasses.append(" ", styles.joinToString(" "))
+    }
+
+    infix fun StyleClass.join(other: StyleClass): StyleClass = "$this $other"
+
+    val cssClasses: StyleClass?
+        get() = (baseClasses.toString() join toCss().let { if (it.isNotEmpty()) style(it, prefix) else NoStyle }).trim()
+            .let {
+                if (it.isEmpty()) null
+                else it
+            }
+
+
+}
+
+interface Application<T> {
+    var application: (T.() -> Unit)?
+
+    fun hugo(application: T.() -> Unit) {
+        this.application = application
+    }
+
+    fun use(receiver: T, vararg params: (T.() -> Unit)?) {
+        params.forEach {
+            it?.let { receiver.it() }
+        }
     }
 
 }
+
+class ApplicationDelegate<T>(override var application: (T.() -> Unit)? = null) : Application<T>
+
+class SimpleDelegate<T>(private val attribute: String) {
+    var value: T? = null
+
+    fun invoke(value: T) {
+        this.value = value
+    }
+}
+
+
+class StringAttributeDelegate<E : Element, T : Tag<E>>(private val attribute: String) {
+    var value: (T.() -> Unit)? = null
+
+    fun invoke(value: String) {
+        this.value = { attr(attribute, value) }
+    }
+
+    fun invoke(value: Flow<String>) {
+        this.value = { value.bindAttr(attribute) }
+    }
+}
+
+

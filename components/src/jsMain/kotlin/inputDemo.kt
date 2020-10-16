@@ -1,12 +1,4 @@
-import dev.fritz2.binding.const
-import dev.fritz2.binding.handledBy
-import dev.fritz2.binding.storeOf
-import dev.fritz2.components.*
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.values
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-
+/*
 @ExperimentalCoroutinesApi
 fun HtmlElements.inputDemo(): Div {
 
@@ -97,4 +89,4 @@ fun HtmlElements.inputDemo(): Div {
         }
     }
 }
-
+ */

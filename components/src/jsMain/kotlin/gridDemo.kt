@@ -1,14 +1,4 @@
-import dev.fritz2.components.f2Box
-import dev.fritz2.components.f2Grid
-import dev.fritz2.components.f2Text
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.AreaName
-import dev.fritz2.styling.params.end
-import dev.fritz2.styling.params.rgba
-import dev.fritz2.styling.params.start
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-
+/*
 @ExperimentalCoroutinesApi
 fun HtmlElements.gridDemo(): Div {
     // example from https://developer.mozilla.org/en/docs/Web/CSS/CSS_Grid_Layout/Layout_using_Named_Grid_Lines
@@ -142,3 +132,6 @@ fun HtmlElements.gridDemo(): Div {
         }
     }
 }
+
+
+ */

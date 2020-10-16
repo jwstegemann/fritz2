@@ -1,9 +1,4 @@
-import dev.fritz2.binding.const
-import dev.fritz2.components.*
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-
+/*
 @ExperimentalCoroutinesApi
 fun HtmlElements.formControlDemo(): Div {
     return div {
@@ -37,3 +32,5 @@ fun HtmlElements.formControlDemo(): Div {
         }
     }
 }
+
+ */

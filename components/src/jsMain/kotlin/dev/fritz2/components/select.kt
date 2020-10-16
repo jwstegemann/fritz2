@@ -1,12 +1,6 @@
 package dev.fritz2.components
 
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.Select
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.use
-import dev.fritz2.styling.staticStyle
-
+/*
 val select = staticStyle(
     "select",
     """
@@ -32,3 +26,6 @@ inline fun HtmlElements.Select(
     }
 
 }
+
+
+ */

@@ -1,17 +1,4 @@
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.handledBy
-import dev.fritz2.binding.watch
-import dev.fritz2.components.f2Flex
-import dev.fritz2.components.f2LineUp
-import dev.fritz2.components.f2StackUp
-import dev.fritz2.components.buttons.ClickButton
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.tracking.tracker
-import kotlinx.browser.window
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-
+/*
 @ExperimentalCoroutinesApi
 fun HtmlElements.buttonDemo(theme: ExtendedTheme): Div {
 
@@ -63,3 +50,5 @@ fun HtmlElements.buttonDemo(theme: ExtendedTheme): Div {
         }
     }
 }
+
+ */

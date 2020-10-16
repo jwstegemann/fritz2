@@ -2,15 +2,16 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.A
 import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.use
 import dev.fritz2.styling.staticStyle
+import org.w3c.dom.HTMLAnchorElement
 
-class LinkComponentContext(prefix: String) : BasicComponentContext(prefix) {
-    companion object Foundation {
-        val cssClass = staticStyle(
-            "f2Link",
+
+class LinkComponent : BaseComponent(prefix), Application<A> by ApplicationDelegate() {
+    companion object {
+        internal const val prefix = "anchor"
+
+        val staticCss = staticStyle(
+            prefix,
             """
                     transition: all 0.15s ease-out;
                     cursor: pointer;
@@ -34,12 +35,22 @@ class LinkComponentContext(prefix: String) : BasicComponentContext(prefix) {
                 """
         )
     }
+
+    val href = StringAttributeDelegate<HTMLAnchorElement, A>("href")
 }
 
-fun HtmlElements.Link(build: Context<LinkComponentContext> = {}): Component<A> {
-    val context = LinkComponentContext("f2Link").apply(build)
 
-    return Component { init ->
-        a("${LinkComponentContext.cssClass} ${context.cssClass}", content = init)
+fun HtmlElements.anchor(build: LinkComponent.() -> Unit = {}) {
+    val component = LinkComponent().apply {
+        classes(LinkComponent.staticCss)
+        build()
+    }
+
+    a(component.cssClasses) {
+        component.use(
+            this,
+            component.href.value,
+            component.application
+        )
     }
 }

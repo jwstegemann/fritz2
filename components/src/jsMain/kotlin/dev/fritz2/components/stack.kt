@@ -1,11 +1,6 @@
 package dev.fritz2.components
 
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.*
-import dev.fritz2.styling.staticStyle
-
-
+/*
 abstract class StackComponentContext(prefix: String) : FlexComponentContext(prefix) {
 
     companion object Foundation {
@@ -86,3 +81,5 @@ fun HtmlElements.f2LineUp(build: Context<StackComponentContext> = {}): Component
         }.apply(init)
     }
 }
+
+ */
