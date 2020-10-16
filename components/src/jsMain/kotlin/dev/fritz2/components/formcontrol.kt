@@ -1,10 +1,5 @@
 package dev.fritz2.components
 
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.theme
-
 /**
  * FormControl: https://chakra-ui.com/formcontrol
  *
@@ -42,6 +37,8 @@ import dev.fritz2.styling.theme.theme
  * </div>
  * -> Man muss beim Rendern wissen, was im Kontext steht!!!
  */
+
+/*
 class FormControlComponentContext(prefix: String) : BasicComponentContext(prefix) {
     companion object Foundation {
         val cssClass = staticStyle(
@@ -192,3 +189,4 @@ fun HtmlElements.f2FormControl(build: Context<FormControlComponentContext> = {})
         })
     }
 }
+*/

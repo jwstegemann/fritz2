@@ -1,17 +1,8 @@
 package dev.fritz2.components
 
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.use
-import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.IconDefinition
-import kotlinx.browser.document
-import org.w3c.dom.svg.SVGElement
-
 const val xmlns = "http://www.w3.org/2000/svg"
 
+/*
 class Svg(
     override val domNode: SVGElement =
         document.createElementNS(xmlns, "svg").unsafeCast<SVGElement>()
@@ -47,5 +38,5 @@ fun HtmlElements.Icon(def: IconDefinition, styles: Style<BasicParams> = {}) {
         it.domNode.appendChild(path)
     })
 }
-
+*/
 

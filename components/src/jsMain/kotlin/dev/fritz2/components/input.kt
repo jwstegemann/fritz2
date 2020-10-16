@@ -1,17 +1,6 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.Store
-import dev.fritz2.binding.handledBy
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.Input
-import dev.fritz2.dom.values
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.plus
-import dev.fritz2.styling.params.use
-import dev.fritz2.styling.staticStyle
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-
+/*
 class InputComponentContext private constructor(prefix: String) : BasicComponentContext(prefix) {
     companion object Foundation {
 
@@ -186,3 +175,5 @@ fun HtmlElements.f2Input(build: Context<InputComponentContext> = {}): Component<
         }
     }
 }
+
+ */

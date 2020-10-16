@@ -1,18 +1,6 @@
 package dev.fritz2.components.buttons
 
-import dev.fritz2.components.Icon
-import dev.fritz2.components.Spinner
-import dev.fritz2.components.hidden
-import dev.fritz2.dom.html.Button
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.renderAll
-import dev.fritz2.styling.params.*
-import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.IconDefinition
-import dev.fritz2.styling.theme.theme
-import kotlinx.coroutines.flow.Flow
-
-
+/*
 internal object ButtonFoundation {
     val css = staticStyle(
         "button",
@@ -91,83 +79,6 @@ internal object ButtonFoundation {
     }
 }
 
-
-/*
-fun HtmlElements.Button(
-    text: String,
-    styles: Style<BasicStyleParams> = {},
-    color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal }
-): Flow<Unit> {
-    lateinit var buttonClicks: Flow<Unit>
-    Button(styles, color, variant, size) {
-        buttonClicks = clicks.map { Unit }
-        +text
-    }
-    return buttonClicks
-}
-
-val hidden = staticStyle(
-    "hidden", """
-    visibility: hidden;
-"""
-)
-
-fun HtmlElements.Button(
-    text: String,
-    loading: Flow<Boolean>,
-    styles: Style<BasicStyleParams> = {},
-    loadingText: String? = null,
-    color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal }
-): Flow<Unit> {
-    lateinit var buttonClicks: Flow<Unit>
-    Button(styles, color, variant, size) {
-        buttonClicks = clicks.map { Unit }
-        }.bind()
-    }
-    return buttonClicks
-}
-
-
-
- fun HtmlElements.Button(
-    text: String,
-    icon: IconDefinition,
-    loading: Flow<Boolean>,
-    styles: Style<BasicStyleParams> = {},
-    loadingText: String? = null,
-    iconRight: Boolean = false,
-    color: ColorProperty = theme().colors.primary,
-    variant: ButtonVariants.() -> Style<BasicStyleParams> = { solid },
-    size: ButtonSizes.() -> Style<BasicStyleParams> = { normal }
-): Flow<Unit> {
-    lateinit var buttonClicks: Flow<Unit>
-    Button(styles, color, variant, size) {
-        buttonClicks = clicks.map { Unit }
-        loading.renderAll { running ->
-            if (!iconRight) {
-                if (running) {
-                    Spinner({
-                        buttonLeftIconStyle()
-                    })
-                } else Icon(icon, buttonLeftIconStyle)
-            }
-            span { +(if (running && loadingText != null) loadingText else text) }
-            if (iconRight) {
-                if (running) {
-                    Spinner({
-                        buttonRightIconStyle()
-                    })
-                } else Icon(icon, buttonRightIconStyle)
-            }
-        }.bind()
-    }
-    return buttonClicks
-}
-*/
 
 fun HtmlElements.Button(
     styles: Style<BasicParams> = {},
@@ -392,44 +303,4 @@ fun HtmlElements.MyButton(build: MyButtonContext.() -> Unit) {
     }
 }
 
-fun HtmlElements.MyButton(text: String, build: MyButtonContext.() -> Unit = {}) {
-}
-
-fun HtmlElements.MyButton(icon: Int, build: MyButtonContext.() -> Unit = {}) {
-}
-
-fun HtmlElements.MyButton(icon: String, text: String, build: MyButtonContext.() -> Unit = {}) {
-}
-
-/*
-fun HtmlElements.foo() {
-    MyButton {
-        style {
-            margins {}
-        }
-        label("hugo")
-        init {
-            clicks handledBy
-        }
-    }
-
-    MyButton("ok") {
-        variant = ButtonVariants.ghost
-    }
-
-    Box() { /* content */ }
-
-    Box MyContext .{
-        style {
-
-        }
-
-        init {
-
-        }
-    }
-
-
-}
-
- */
+*/
