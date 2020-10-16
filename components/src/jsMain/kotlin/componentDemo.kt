@@ -1,6 +1,4 @@
-import dev.fritz2.components.box
-import dev.fritz2.components.flexBox
-import dev.fritz2.components.gridBox
+import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,6 +16,49 @@ fun HtmlElements.componentDemo(theme: ExtendedTheme): Div {
                                 +"Bin da"
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        h1 { +"Stacks"}
+        stackUp {
+            border {
+                width { thin }
+                color { dark }
+                style { solid }
+            }
+            spacing { normal }
+            hugo {
+                lineUp {
+                    border {
+                        width { thin }
+                        color { secondary }
+                        style { solid }
+                    }
+                    width { "100%" }
+                    alignItems { start }
+                    spacing { huge }
+                    reverse { true }
+                    hugo {
+                        p { +"A" }
+                        p { +"B" }
+                        p { +"C" }
+                    }
+                }
+                lineUp {
+                    border {
+                        width { thin }
+                        color { secondary }
+                        style { solid }
+                    }
+                    width { "100%" }
+                    alignItems { start }
+                    spacing { huge }
+                    hugo {
+                        p { +"D" }
+                        p { +"E" }
+                        p { +"F" }
                     }
                 }
             }
