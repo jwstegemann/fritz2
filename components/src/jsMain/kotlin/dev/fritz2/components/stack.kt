@@ -8,9 +8,8 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 
 abstract class StackComponent(prefix: String) : BaseComponent(prefix), FlexParams, Application<Div> by ApplicationDelegate() {
-
     companion object {
-        val cssClass = staticStyle(
+        val staticCss = staticStyle(
             "stack",
             "align-items: center;"
         )
@@ -50,7 +49,7 @@ class StackUpComponent : StackComponent("stack-up") {
 
 fun HtmlElements.stackUp(build: StackUpComponent.() -> Unit = {}) {
     val component = StackUpComponent().apply {
-        classes(StackComponent.cssClass, FlexBoxComponent.staticCss)
+        classes(FlexBoxComponent.staticCss, StackComponent.staticCss)
         build()
         stackStyles()
     }
@@ -79,7 +78,7 @@ class LineUpComponent : StackComponent("line-up") {
 
 fun HtmlElements.lineUp(build: LineUpComponent.() -> Unit = {}) {
     val component = LineUpComponent().apply {
-        classes(StackComponent.cssClass, FlexBoxComponent.staticCss)
+        classes(FlexBoxComponent.staticCss, StackComponent.staticCss)
         build()
         stackStyles()
     }
