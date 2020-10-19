@@ -43,7 +43,7 @@ class IconComponent : BaseComponent(prefix) {
 }
 
 
-fun HtmlElements.Icon(build: IconComponent.() -> Unit) {
+fun HtmlElements.icon(build: IconComponent.() -> Unit) {
     val component = IconComponent().apply {
         classes(IconComponent.staticCss)
     }

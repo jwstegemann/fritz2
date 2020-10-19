@@ -56,7 +56,10 @@ fun HtmlElements.componentDemo(theme: ExtendedTheme): Div {
                     alignItems { start }
                     spacing { huge }
                     hugo {
-                        Icon { fromTheme { arrowUp } }
+                        icon { fromTheme { arrowUp } }
+                        image {
+                            //src { "https://bit.ly/2jYM25F" }
+                        }
                         p { +"D" }
                         p { +"E" }
                         p { +"F" }

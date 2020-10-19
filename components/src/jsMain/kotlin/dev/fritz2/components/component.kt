@@ -73,12 +73,12 @@ class SimpleDelegate<T>(private val attribute: String) {
 class StringAttributeDelegate<E : Element, T : Tag<E>>(private val attribute: String) {
     var value: (T.() -> Unit)? = null
 
-    fun invoke(value: String) {
-        this.value = { attr(attribute, value) }
+    operator fun invoke(value: () -> String) {
+        this.value = { attr(attribute, value()) }
     }
 
-    fun invoke(value: Flow<String>) {
-        this.value = { value.bindAttr(attribute) }
+    operator fun invoke(value: () -> Flow<String>) {
+        this.value = { value().bindAttr(attribute) }
     }
 }
 

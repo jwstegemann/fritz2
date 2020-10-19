@@ -12,7 +12,7 @@ fun HtmlElements.box(build: BoxComponent.() -> Unit = {}) {
     val component = BoxComponent().apply(build)
 
     div(component.cssClasses) {
-        component.application?.let { it(this) }
+        component.use(this, component.application)
     }
 }
 
@@ -34,7 +34,7 @@ fun HtmlElements.flexBox(build: FlexBoxComponent.() -> Unit = {}) {
     }
 
     div(component.cssClasses) {
-        component.application?.let { it(this) }
+        component.use(this, component.application)
     }
 }
 
@@ -56,6 +56,6 @@ fun HtmlElements.gridBox(build: GridBoxComponent.() -> Unit = {}) {
     }
 
     div(component.cssClasses) {
-        component.application?.let { it(this) }
+        component.use(this, component.application)
     }
 }
