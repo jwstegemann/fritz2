@@ -122,6 +122,6 @@ internal fun createDomElement(tagName: String, id: String?, baseClass: String?):
             element.setAttribute("id", it)
         }
         baseClass?.let {
-            element.setAttribute("class", it)
+            if (it.isNotBlank()) element.setAttribute("class", it.trim())
         }
     }

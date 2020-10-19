@@ -1,8 +1,11 @@
-import dev.fritz2.components.anchor
 import dev.fritz2.components.flexBox
+import dev.fritz2.components.styled
+import dev.fritz2.dom.html.A
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
+import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.render
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,6 +15,50 @@ val themes = listOf<Pair<String, ExtendedTheme>>(
     ("large Fonts") to LargeFonts()
 )
 
+
+fun HtmlElements.myLink(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: String? = null,
+    id: String? = null,
+    prefix: String = "my-link",
+    init: A.() -> Unit
+): A =
+    ::a.styled(styling, baseClass, id, prefix) {
+        fontSize { giant }
+    }(init)
+
+
+fun HtmlElements.myRedLink(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: String? = null,
+    id: String? = null,
+    prefix: String = "my-red-link",
+    init: A.() -> Unit
+): A =
+    ::myLink.styled(styling, baseClass, id, prefix) {
+        color { danger }
+    }(init)
+
+
+fun HtmlElements.myBorderedRedLink(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: String? = null,
+    id: String? = null,
+    prefix: String = "mbrl",
+    init: A.() -> Unit
+): A =
+    ::myRedLink.styled(styling, baseClass, id, prefix) {
+        border {
+            width { "1px" }
+        }
+    }(init)
+
+
+//= (HtmlElements::a).styled("myBaseClass", id) {
+//    fontSize { giant }
+//}
+
+
 @ExperimentalCoroutinesApi
 fun main() {
     currentTheme = themes.first().second
@@ -20,21 +67,17 @@ fun main() {
 
     render { theme: ExtendedTheme ->
         section {
-            flexBox {
+            flexBox({
                 height { "60px" }
                 wrap { nowrap }
                 direction { row }
                 justifyContent { spaceEvenly }
                 alignItems { center }
-
-                hugo {
-                    anchor {
-                        // TODO: Ist noch hässlich!
-                        href.invoke("#")
-                        hugo {
-                            +"Components"
-                        }
-                    }
+            }) {
+                (::a.styled {
+                    fontSize { large }
+                }) {
+                    +"components"
                 }
             }
             router.render { site ->

@@ -1,3 +1,4 @@
+import dev.fritz2.binding.const
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
@@ -8,29 +9,24 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun HtmlElements.componentDemo(theme: ExtendedTheme): Div {
     return div {
         box {
-            hugo {
-                flexBox {
-                    hugo {
-                        gridBox {
-                            hugo {
-                                +"Bin da"
-                            }
-                        }
-                    }
+            flexBox {
+                gridBox {
+                    +"Bin da"
                 }
             }
         }
 
-        h1 { +"Stacks"}
-        stackUp {
+        h1 { +"Stacks" }
+        stackUp({
             border {
                 width { thin }
                 color { dark }
                 style { solid }
             }
+        }) {
             spacing { normal }
-            hugo {
-                lineUp {
+            children = {
+                lineUp({
                     border {
                         width { thin }
                         color { secondary }
@@ -38,27 +34,34 @@ fun HtmlElements.componentDemo(theme: ExtendedTheme): Div {
                     }
                     width { "100%" }
                     alignItems { start }
+                }) {
                     spacing { huge }
                     reverse { true }
-                    hugo {
+                    children = {
                         p { +"A" }
                         p { +"B" }
                         p { +"C" }
                     }
                 }
-                lineUp {
+                lineUp({
                     border {
                         width { thin }
                         color { secondary }
                         style { solid }
                     }
                     width { "100%" }
-                    alignItems { start }
+                    alignItems { center }
+                }) {
                     spacing { huge }
-                    hugo {
-                        icon { fromTheme { arrowUp } }
-                        image {
-                            //src { "https://bit.ly/2jYM25F" }
+                    children = {
+                        icon({
+                            size { large }
+                            color { "purple" }
+                        }) { fromTheme { arrowUp } }
+                        (::img.styled {
+                            size { tiny }
+                        }) {
+                            src = const("https://bit.ly/2jYM25F")
                         }
                         p { +"D" }
                         p { +"E" }

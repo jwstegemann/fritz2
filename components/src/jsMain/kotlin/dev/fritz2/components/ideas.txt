@@ -161,3 +161,140 @@
                     multiSelect
                     inputField
                }
+
+
+
+#####
+
+
+typealias ComponentType<E> = (String, String, E.() -> Unit) -> Unit
+
+---
+
+val ourInput: ComponentType<Input> = (::input)
+    .withStyle {
+        variant { }
+        size { }
+    } //ComponentType<E>
+
+
+// Aufruf
+    .variant {} //ComponentType<Input>
+    .size {}
+    .store(sdfsdfsd)
+
+
+ourInput.withStore(sdfjsd)
+("baseClass", "id") {
+
+}
+
+
+val link = a.styled {
+
+}
+
+link.styled ("sdfsdfsdfsd") {
+} ("baseClass", id) {
+
+}
+
+
+-----
+
+PushButton() {
+    width {}
+    variant {}
+
+    iconLeft { }
+
+    label("jshdbfjsdhfsd")
+    label(myFlow)
+    label {
+
+    } // HtmlElements.() -> Unit
+
+    value { }
+    store {
+
+    }
+    init {
+
+    }
+}
+
+---
+
+AppLayout(
+    header() // HtmlElements.() -> Unit
+    sidebar()
+    content()
+    init {
+        sidebarOpen(): Flow<Boolean>
+    }
+)
+
+Box {
+    Button {}
+    Button {}
+    Button {}
+}
+
+
+AppLayout(id) (
+    val header: ComponentType<E> = ourNavbar(id + ".nav")
+)
+
+
+FormControl {
+    width { "50%"}
+}
+
+
+
+pushButton {
+    color { primary }
+
+    label("ksjdbfskdjf")
+    iconLeft(ldjknskdf)
+}
+
+flexBox
+{
+    margin { normal }
+
+    Child1()
+    Child1()
+    Child1()
+}
+
+
+########
+
+
+                    pushButton({
+                        height { }
+                        margin {}
+                    }) { // build: PushButtonComponent.() -> Button
+                        size { }
+                        variant { }
+
+                        lable {
+                            lineUp({
+                                ajksdnka
+                            }) {
+
+                            }
+                        }
+                        add()
+                        events { // PushButtons.() -> Unit
+                            clicks handledBy ...
+                        }
+                    }
+
+
+                    (::myRedLink.styled {
+                        color { "green" }
+                    }) {
+                        +"and greef"
+                    }

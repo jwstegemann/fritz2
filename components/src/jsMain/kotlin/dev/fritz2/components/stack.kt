@@ -1,13 +1,13 @@
 package dev.fritz2.components
 
-import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.ScaledValueProperty
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 
-abstract class StackComponent(prefix: String) : BaseComponent(prefix), FlexParams, Application<Div> by ApplicationDelegate() {
+
+abstract class StackComponent(prefix: String) {
     companion object {
         val staticCss = staticStyle(
             "stack",
@@ -17,7 +17,7 @@ abstract class StackComponent(prefix: String) : BaseComponent(prefix), FlexParam
 
     var reverse: Boolean = false
 
-    fun reverse(value: () ->  Boolean) {
+    fun reverse(value: () -> Boolean) {
         reverse = value()
     }
 
@@ -26,6 +26,8 @@ abstract class StackComponent(prefix: String) : BaseComponent(prefix), FlexParam
     fun spacing(value: ScaledValueProperty) {
         spacing = value
     }
+
+    var children: (HtmlElements.() -> Unit)? = null
 
     abstract val stackStyles: Style<FlexParams>
 }
@@ -47,17 +49,23 @@ class StackUpComponent : StackComponent("stack-up") {
     }
 }
 
-fun HtmlElements.stackUp(build: StackUpComponent.() -> Unit = {}) {
-    val component = StackUpComponent().apply {
-        classes(FlexBoxComponent.staticCss, StackComponent.staticCss)
-        build()
-        stackStyles()
-    }
+fun HtmlElements.stackUp(
+    styling: FlexParams.() -> Unit = {},
+    baseClass: String? = null,
+    id: String? = null,
+    prefix: String = "stack-up",
+    build: StackUpComponent.() -> Unit = {}
+) {
+    val component = StackUpComponent().apply(build)
 
-    div(component.cssClasses) {
-        component.application?.let { it(this) }
+    flexBox({
+        component.stackStyles()
+        styling()
+    }, baseClass = StackComponent.staticCss, prefix = prefix) {
+        component.children?.let { it() }
     }
 }
+
 
 
 class LineUpComponent : StackComponent("line-up") {
@@ -76,14 +84,19 @@ class LineUpComponent : StackComponent("line-up") {
     }
 }
 
-fun HtmlElements.lineUp(build: LineUpComponent.() -> Unit = {}) {
-    val component = LineUpComponent().apply {
-        classes(FlexBoxComponent.staticCss, StackComponent.staticCss)
-        build()
-        stackStyles()
-    }
+fun HtmlElements.lineUp(
+    styling: FlexParams.() -> Unit = {},
+    baseClass: String? = null,
+    id: String? = null,
+    prefix: String = "line-up",
+    build: LineUpComponent.() -> Unit = {}
+) {
+    val component = LineUpComponent().apply(build)
 
-    div(component.cssClasses) {
-        component.application?.let { it(this) }
+    flexBox({
+        component.stackStyles()
+        styling()
+    }, baseClass = StackComponent.staticCss, prefix = prefix) {
+        component.children?.let { it() }
     }
 }
