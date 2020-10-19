@@ -25,7 +25,7 @@ fun HtmlElements.componentDemo(theme: ExtendedTheme): Div {
             }
         }) {
             spacing { normal }
-            children = {
+            children {
                 lineUp({
                     border {
                         width { thin }
@@ -37,7 +37,7 @@ fun HtmlElements.componentDemo(theme: ExtendedTheme): Div {
                 }) {
                     spacing { huge }
                     reverse { true }
-                    children = {
+                    children {
                         p { +"A" }
                         p { +"B" }
                         p { +"C" }
@@ -53,7 +53,7 @@ fun HtmlElements.componentDemo(theme: ExtendedTheme): Div {
                     alignItems { center }
                 }) {
                     spacing { huge }
-                    children = {
+                    children {
                         icon({
                             size { large }
                             color { "purple" }
