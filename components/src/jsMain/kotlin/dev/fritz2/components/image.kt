@@ -1,10 +1,29 @@
 package dev.fritz2.components
 
-/*
-fun HtmlElements.f2Image(build: Context<BasicComponentContext> = {}): Component<Img> {
-    val context = BasicComponentContext("f2Image").apply(build)
+import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.Img
+import org.w3c.dom.HTMLImageElement
 
-    //FIXME: how to deal with attributes we want to add things to from component and init?
-    return Component { init -> img(context.cssClass, content = init) }
+
+class ImageComponent : BaseComponent(prefix), Application<Img> by ApplicationDelegate() {
+    companion object {
+        internal const val prefix = "image"
+    }
+
+    val src = StringAttributeDelegate<HTMLImageElement, Img>("src")
 }
- */
+
+fun HtmlElements.image(build: ImageComponent.() -> Unit = {}) {
+    val component = ImageComponent().apply {
+        build()
+    }
+
+    img(component.cssClasses) {
+        component.use(
+            this,
+            component.src.value,
+            component.application
+        )
+    }
+}
+
