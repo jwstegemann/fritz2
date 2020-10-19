@@ -29,6 +29,10 @@ abstract class StackComponent(prefix: String) {
 
     var children: (HtmlElements.() -> Unit)? = null
 
+    fun children(value: HtmlElements.() -> Unit) {
+        children = value
+    }
+
     abstract val stackStyles: Style<FlexParams>
 }
 
