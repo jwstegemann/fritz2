@@ -269,7 +269,7 @@ interface GridParams : BasicParams, GridLayout {
  * interface combining flex-style-parameters with grid and basic style-parameters
  */
 @ExperimentalCoroutinesApi
-interface BoxParams : BasicParams, Flexbox, GridLayout {
+interface BoxParams : FlexParams, GridParams {
     /**
      * allows the usage of predefined styles in this context
      *

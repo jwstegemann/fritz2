@@ -3,13 +3,13 @@ package dev.fritz2.components
 import dev.fritz2.dom.Tag
 import dev.fritz2.styling.NoStyle
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 
-open class BaseComponent(val prefix: String) : BasicParams {
+open class BaseComponent(val prefix: String) : BoxParams {
     override val smProperties = StringBuilder()
     override val mdProperties = StringBuilder()
     override val lgProperties = StringBuilder()
@@ -73,12 +73,12 @@ class SimpleDelegate<T>(private val attribute: String) {
 class StringAttributeDelegate<E : Element, T : Tag<E>>(private val attribute: String) {
     var value: (T.() -> Unit)? = null
 
-    operator fun invoke(value: () -> String) {
-        this.value = { attr(attribute, value()) }
+    operator fun invoke(value: String) {
+        this.value = { attr(attribute, value) }
     }
 
-    operator fun invoke(value: () -> Flow<String>) {
-        this.value = { value().bindAttr(attribute) }
+    operator fun invoke(value: Flow<String>) {
+        this.value = { value.bindAttr(attribute) }
     }
 }
 

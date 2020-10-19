@@ -2,6 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
@@ -9,16 +10,26 @@ import dev.fritz2.styling.theme.theme
 import kotlinx.browser.document
 import org.w3c.dom.svg.SVGElement
 
+
+//FIXME: move to HtmlElements...
 const val xmlns = "http://www.w3.org/2000/svg"
 
+fun createIconSvgElement(baseClass: String?): SVGElement {
+    val elem = document.createElementNS(xmlns, "svg").unsafeCast<SVGElement>()
+    baseClass?.let { elem.setAttributeNS(null, "class", it) }
+    return elem
+}
 
 class Svg(
-    override val domNode: SVGElement =
-        document.createElementNS(xmlns, "svg").unsafeCast<SVGElement>()
-) : Tag<SVGElement>("", domNode = domNode)
+    id: String? = null, baseClass: String? = null, override val domNode: SVGElement = createIconSvgElement(baseClass)
+) : Tag<SVGElement>(domNode = domNode, tagName = "")
 
 
-class IconComponent : BaseComponent(prefix) {
+fun HtmlElements.svg(baseClass: String?, id: String?, init: Svg.() -> Unit): Svg {
+    return register(Svg(baseClass = baseClass), init)
+}
+
+class IconComponent {
     companion object {
         const val prefix = "icon"
         val staticCss = staticStyle(
@@ -42,26 +53,28 @@ class IconComponent : BaseComponent(prefix) {
     }
 }
 
+fun HtmlElements.icon(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: String? = null,
+    id: String? = null,
+    prefix: String = "icon",
+    build: IconComponent.() -> Unit = {}
+) {
+    val component = IconComponent().apply(build)
 
-fun HtmlElements.icon(build: IconComponent.() -> Unit) {
-    val component = IconComponent().apply {
-        classes(IconComponent.staticCss)
-    }
-
-    component.def?.let { def ->
-        val classAttribute = component.cssClasses
-        val element = Svg()
-        register(element, {
-            it.domNode.setAttributeNS(null, "viewBox", def.viewBox)
-            it.domNode.setAttributeNS(null, "fill", "none")
-            classAttribute?.let { cssClasses -> it.domNode.setAttributeNS(null, "class", cssClasses) }
+    component.def?.let {
+        (::svg.styled(IconComponent.staticCss, id, prefix) {
+            styling()
+        }) {
+            domNode.setAttributeNS(null, "viewBox", it.viewBox)
+            domNode.setAttributeNS(null, "fill", "none")
 
             val path = document.createElementNS(xmlns, "path")
-            path.setAttributeNS(null, "d", def.path)
+            path.setAttributeNS(null, "d", it.path)
             path.setAttributeNS(null, "fill", "currentColor")
 
-            it.domNode.appendChild(path)
-        })
+            domNode.appendChild(path)
+        }
     }
 }
 
