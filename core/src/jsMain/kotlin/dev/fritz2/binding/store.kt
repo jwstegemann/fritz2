@@ -34,7 +34,7 @@ class QueuedUpdate<T>(
 /**
  * The [Store] is the main type for all data binding activities. It the base class of all concrete Stores like [RootStore], [SubStore], etc.
  */
-interface Store<T> : CoroutineScope {
+interface Store<T> {
 
     /**
      * default error handler printing the error an keeping the previous value
@@ -57,7 +57,7 @@ interface Store<T> : CoroutineScope {
         execute: suspend (T, A) -> T
     ) = SimpleHandler<A> {
         it.onEach { enqueue(QueuedUpdate({ t -> execute(t, it) }, errorHandler)) }
-            .launchIn(this)
+            .launchIn(MainScope())
     }
 
     /**
@@ -70,7 +70,7 @@ interface Store<T> : CoroutineScope {
         execute: suspend (T) -> T
     ) = SimpleHandler<Unit> {
         it.onEach { enqueue(QueuedUpdate({ t -> execute(t) }, errorHandler)) }
-            .launchIn(this)
+            .launchIn(MainScope())
     }
 
     /**
@@ -87,7 +87,7 @@ interface Store<T> : CoroutineScope {
     ) =
         OfferingHandler<A, E>(bufferSize) { inFlow, outChannel ->
             inFlow.onEach { enqueue(QueuedUpdate({ t -> outChannel.execute(t, it) }, errorHandler)) }
-                .launchIn(this)
+                .launchIn(MainScope())
         }
 
     /**
@@ -103,7 +103,7 @@ interface Store<T> : CoroutineScope {
     ) =
         OfferingHandler<Unit, E>(bufferSize) { inFlow, outChannel ->
             inFlow.onEach { enqueue(QueuedUpdate({ t -> outChannel.execute(t) }, errorHandler)) }
-                .launchIn(this)
+                .launchIn(MainScope())
         }
 
     /**

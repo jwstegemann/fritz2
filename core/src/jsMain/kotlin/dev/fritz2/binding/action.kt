@@ -17,7 +17,7 @@ fun <A> action(data: A, wait: Long? = null) = Action(data, GlobalScope, wait)
  * @receiver the [Store] that's [CoroutineScope] is used to dispatch the [Action]
  * @param wait optional time to wait before the action is dispatched
  */
-fun <T, A> Store<T>.action(data: A, wait: Long? = null) = Action(data, this, wait)
+fun <T, A> Store<T>.action(data: A, wait: Long? = null) = Action(data, MainScope(), wait)
 
 /**
  * factory-function to create an [Action] without data
@@ -32,7 +32,7 @@ fun action(wait: Long? = null) = Action(Unit, GlobalScope, wait)
  * @receiver the [Store] that's [CoroutineScope] is used to dispatch the [Action]
  * @param wait optional time to wait before the action is dispatched
  */
-fun <T> Store<T>.action(wait: Long? = null) = Action(Unit, this, wait)
+fun <T> Store<T>.action(wait: Long? = null) = Action(Unit, MainScope(), wait)
 
 /**
  * represents some dispatchable that can be processed by a [Store]'s [Handler]
