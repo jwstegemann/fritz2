@@ -1,7 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.dom.Tag
-import dev.fritz2.styling.NoStyle
+import dev.fritz2.styling.StyleClass.Companion.None
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.style
@@ -26,22 +26,8 @@ open class BaseComponent(val prefix: String) : BoxParams {
         return smProperties.toString()
     }
 
-    var baseClasses = StringBuilder()
-
-    fun classes(vararg styles: StyleClass) {
-        baseClasses.append(" ", styles.joinToString(" "))
-    }
-
-    infix fun StyleClass.join(other: StyleClass): StyleClass = "$this $other"
-
     val cssClasses: StyleClass?
-        get() = (baseClasses.toString() join toCss().let { if (it.isNotEmpty()) style(it, prefix) else NoStyle }).trim()
-            .let {
-                if (it.isEmpty()) null
-                else it
-            }
-
-
+        get() = (toCss().let { if (it.isNotEmpty()) style(it, prefix) else None })
 }
 
 interface Application<T> {

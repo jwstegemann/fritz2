@@ -39,7 +39,7 @@ class LinkComponent : BaseComponent(prefix), Application<A> by ApplicationDelega
     val href = StringAttributeDelegate<HTMLAnchorElement, A>("href")
 }
 
-
+/*
 fun HtmlElements.anchor(build: LinkComponent.() -> Unit = {}) {
     val component = LinkComponent().apply {
         classes(LinkComponent.staticCss)
@@ -54,3 +54,5 @@ fun HtmlElements.anchor(build: LinkComponent.() -> Unit = {}) {
         )
     }
 }
+
+ */
