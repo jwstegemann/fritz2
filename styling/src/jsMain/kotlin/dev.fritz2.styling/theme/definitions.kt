@@ -1,7 +1,9 @@
 package dev.fritz2.styling.theme
 
+import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.ColorProperty
 import dev.fritz2.styling.params.ShadowProperty
+import dev.fritz2.styling.params.Style
 
 /**
  * Defines a responsive [Property] that can have different values for different screen sizes.
@@ -207,4 +209,12 @@ class IconDefinition(
  */
 interface Icons {
     val arrowUp: IconDefinition
+}
+
+interface InputFieldStyles {
+    val small: Style<BasicParams>
+    val normal: Style<BasicParams>
+    val large: Style<BasicParams>
+    val outline: Style<BasicParams>
+    val filled: Style<BasicParams>
 }

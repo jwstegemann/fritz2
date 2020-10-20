@@ -1,3 +1,4 @@
+import dev.fritz2.binding.const
 import dev.fritz2.components.flexBox
 import dev.fritz2.components.styled
 import dev.fritz2.dom.html.A
@@ -5,6 +6,7 @@ import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
+import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.render
@@ -18,7 +20,7 @@ val themes = listOf<Pair<String, ExtendedTheme>>(
 
 fun HtmlElements.myLink(
     styling: BasicParams.() -> Unit = {},
-    baseClass: String? = null,
+    baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "my-link",
     init: A.() -> Unit
@@ -30,7 +32,7 @@ fun HtmlElements.myLink(
 
 fun HtmlElements.myRedLink(
     styling: BasicParams.() -> Unit = {},
-    baseClass: String? = null,
+    baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "my-red-link",
     init: A.() -> Unit
@@ -42,7 +44,7 @@ fun HtmlElements.myRedLink(
 
 fun HtmlElements.myBorderedRedLink(
     styling: BasicParams.() -> Unit = {},
-    baseClass: String? = null,
+    baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "mbrl",
     init: A.() -> Unit
@@ -77,13 +79,20 @@ fun main() {
                 (::a.styled {
                     fontSize { large }
                 }) {
+                    +"input"
+                    href = const("#input")
+                }
+                (::a.styled {
+                    fontSize { large }
+                }) {
                     +"components"
+                    href = const("#components")
                 }
             }
             router.render { site ->
                 when (site) {
 //                    "grid" -> gridDemo()
-//                    "input" -> inputDemo()
+                    "input" -> inputDemo()
 //                    "buttons" -> buttonDemo(theme)
 //                    "formcontrol" -> formControlDemo()
                     else -> componentDemo(theme)

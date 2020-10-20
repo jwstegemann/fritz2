@@ -2,6 +2,8 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.IconDefinition
@@ -22,11 +24,11 @@ fun createIconSvgElement(baseClass: String?): SVGElement {
 
 class Svg(
     id: String? = null, baseClass: String? = null, override val domNode: SVGElement = createIconSvgElement(baseClass)
-) : Tag<SVGElement>(domNode = domNode, tagName = "")
+) : Tag<SVGElement>(domNode = domNode, tagName = "", id = id)
 
 
 fun HtmlElements.svg(baseClass: String?, id: String?, init: Svg.() -> Unit): Svg {
-    return register(Svg(baseClass = baseClass), init)
+    return register(Svg(id = id, baseClass = baseClass), init)
 }
 
 class IconComponent {
@@ -55,15 +57,15 @@ class IconComponent {
 
 fun HtmlElements.icon(
     styling: BasicParams.() -> Unit = {},
-    baseClass: String? = null,
+    baseClass: StyleClass? = null,
     id: String? = null,
-    prefix: String = "icon",
+    prefix: String = IconComponent.prefix,
     build: IconComponent.() -> Unit = {}
 ) {
     val component = IconComponent().apply(build)
 
     component.def?.let {
-        (::svg.styled(IconComponent.staticCss, id, prefix) {
+        (::svg.styled(baseClass + IconComponent.staticCss, id, prefix) {
             styling()
         }) {
             domNode.setAttributeNS(null, "viewBox", it.viewBox)

@@ -1,13 +1,15 @@
 package dev.fritz2.components
 
 import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.ScaledValueProperty
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 
 
-abstract class StackComponent(prefix: String) {
+abstract class StackComponent {
     companion object {
         val staticCss = staticStyle(
             "stack",
@@ -37,7 +39,7 @@ abstract class StackComponent(prefix: String) {
 }
 
 
-class StackUpComponent : StackComponent("stack-up") {
+class StackUpComponent : StackComponent() {
     override val stackStyles: Style<FlexParams> = {
         if (this@StackUpComponent.reverse) {
             direction { columnReverse }
@@ -55,7 +57,7 @@ class StackUpComponent : StackComponent("stack-up") {
 
 fun HtmlElements.stackUp(
     styling: FlexParams.() -> Unit = {},
-    baseClass: String? = null,
+    baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "stack-up",
     build: StackUpComponent.() -> Unit = {}
@@ -65,14 +67,13 @@ fun HtmlElements.stackUp(
     flexBox({
         component.stackStyles()
         styling()
-    }, baseClass = StackComponent.staticCss, prefix = prefix) {
+    }, baseClass = baseClass + StackComponent.staticCss, prefix = prefix, id = id) {
         component.children?.let { it() }
     }
 }
 
 
-
-class LineUpComponent : StackComponent("line-up") {
+class LineUpComponent : StackComponent() {
     override val stackStyles: Style<FlexParams> = {
         if (this@LineUpComponent.reverse) {
             direction { rowReverse }
@@ -90,7 +91,7 @@ class LineUpComponent : StackComponent("line-up") {
 
 fun HtmlElements.lineUp(
     styling: FlexParams.() -> Unit = {},
-    baseClass: String? = null,
+    baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "line-up",
     build: LineUpComponent.() -> Unit = {}
@@ -100,7 +101,7 @@ fun HtmlElements.lineUp(
     flexBox({
         component.stackStyles()
         styling()
-    }, baseClass = StackComponent.staticCss, prefix = prefix) {
+    }, baseClass = baseClass + StackComponent.staticCss, prefix = prefix, id = id) {
         component.children?.let { it() }
     }
 }

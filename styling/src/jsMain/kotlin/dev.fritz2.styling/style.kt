@@ -43,12 +43,26 @@ internal object Styling {
 /**
  * alias for CSS class names
  */
-typealias StyleClass = String
+inline class StyleClass(val name: String) {
+    companion object {
+        val None = StyleClass("")
+
+        infix operator fun StyleClass?.plus(other: StyleClass) = StyleClass(this?.name.orEmpty() + " " + other.name)
+
+        infix operator fun StyleClass?.plus(other: StyleClass?) =
+            StyleClass(this?.name.orEmpty() + " " + other?.name.orEmpty())
+    }
+
+    infix operator fun plus(other: StyleClass) = StyleClass(this.name + " " + other.name)
+
+    infix operator fun plus(other: StyleClass?) = StyleClass(this.name + " " + other?.name.orEmpty())
+}
+
 
 /**
  * const for no style class
  */
-const val NoStyle: StyleClass = ""
+//const val NoStyle: StyleClass = ""
 
 /**
  * adds a static css-class to your app's dynamic style sheet.
@@ -61,7 +75,7 @@ fun staticStyle(name: String, css: String): StyleClass {
     ".$name { $css }".let {
         serialize(compile(it), Styling.middleware)
     }
-    return name
+    return StyleClass(name)
 }
 
 /**
@@ -75,10 +89,10 @@ fun staticStyle(name: String, css: String): StyleClass {
  */
 fun style(css: String, prefix: String = "s"): StyleClass {
     val hash = v3(css)
-    return "$prefix-${generateAlphabeticName(hash)}".also {
+    return StyleClass("$prefix-${generateAlphabeticName(hash)}".also {
         if (!Styling.rules.contains(hash)) staticStyle(it, css)
         Styling.rules.add(hash)
-    }
+    })
 }
 
 //FIXME: change return to Flow<StyleClass>
@@ -89,12 +103,12 @@ fun style(css: String, prefix: String = "s"): StyleClass {
  *
  * @receiver css class to apply
  * @param upstream [Flow] that holds the value to check
- * @param lambda defining the rule, when to apply the class
+ * @param mapper defining the rule, when to apply the class
  * @return [Flow] containing the class name if check returns true or nothing
  */
 inline fun <T> StyleClass.whenever(upstream: Flow<T>, crossinline mapper: suspend (T) -> Boolean): Flow<String> =
     upstream.map { value ->
-        if (mapper(value)) this else ""
+        if (mapper(value)) this.name else StyleClass.None.name
     }
 
 

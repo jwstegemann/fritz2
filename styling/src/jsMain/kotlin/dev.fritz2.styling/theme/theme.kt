@@ -148,6 +148,8 @@ interface Theme {
      * definition of theme-icons
      */
     val icons: Icons
+
+    val input: InputFieldStyles
 }
 
 /**

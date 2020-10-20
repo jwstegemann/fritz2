@@ -2,12 +2,13 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.FlexParams
 
 
 fun HtmlElements.box(
     styling: FlexParams.() -> Unit = {},
-    baseClass: String? = null,
+    baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "box",
     init: Div.() -> Unit
@@ -18,7 +19,7 @@ fun HtmlElements.box(
 
 fun HtmlElements.flexBox(
     styling: FlexParams.() -> Unit = {},
-    baseClass: String? = null,
+    baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "flex-box",
     init: Div.() -> Unit
@@ -30,7 +31,7 @@ fun HtmlElements.flexBox(
 
 fun HtmlElements.gridBox(
     styling: FlexParams.() -> Unit = {},
-    baseClass: String? = null,
+    baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "grid-box",
     init: Div.() -> Unit
