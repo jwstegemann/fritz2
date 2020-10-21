@@ -1,24 +1,31 @@
 # Komponenten - Designentscheidungen
 
-- Komponenten beginnen mit großem Buchstaben: ``Button``
-- HTML Attribute-Werte werden nicht geändert oder erweitert
+- Komponenten beginnen als (Factory-)Funktionen mit kleinem Buchstaben, also Koltin konform
+- HTML Attribute-Werte werden nicht geändert oder erweitert, sofern die Komponente auf einem Element basiert
 - keine Benennung anhand der Html-Komponenten, sondern Namen anhand der semantische Schnittstelle einer Komponente
   - Beispiel: ``SingleSelect`` statt ``Radiogroup``
 - wo sinnvoll: _Convenience_ Funktionen für den simplen Standard-Use-Case
   - Beispiel: Aufruf von Komponenten-Factory nur mit Übergabe des ``Store``s, Anbindung an Standard-Handler ``update`` 
   wird dann intern durchgeführt.
 - Parameterreihenfolge bei Komponenten:
-  - Pflichtparameter
   - Style als **erster** optionaler Parameter
+  - Pflichtparameter
   - restliche optionale Parameter
   - ``init`` als letztes
+- **keine** Komponenten für reine Text-Elemente wie <p>, <h>, <span> usw.
+  → viel zu viel Overhead und Pflegeaufwand
+  → aufwendigere Syntax und Namenskollision!
+  → "ad hoc" styling geht mit aktueller Lösung sehr einfach
+- Stattdessen: ``init``-Komponente:
+  - initialisiert das globale CSS
+  - setzt Standard-Sytles basierend auf dem *theme* für alle (Text-)Elemente
+  - implementiert binding für theme-Store, damit Seite bei Theme-Wechsel neu gerendert wird
   
 ## TODOs
 
 - ``none`` bei _Background_ und _Border_ einbauen (Property mit getter)
 - Aufteilung des ``Sizes`` Typs in zwei Unterelemente: ``element`` + ``container`` um Größen für kleine und große 
 Elemente besser anzugeben.
-- Extension Funktion für ``use``, um ``use<BasicStyleParams>(...)`` zu verkürzen
 - Doku: Beispiel + Hinweis, wie man CSS-DSL *ohne* Komponenten nutzt (s. davor)
 - ``attr`` für boolesche Attribute?
 
