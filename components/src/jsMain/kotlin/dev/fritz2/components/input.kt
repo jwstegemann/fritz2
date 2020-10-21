@@ -12,7 +12,7 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 
 
-object InputFieldFoundation {
+object InputFieldComponent {
 
     val staticCss = staticStyle(
         "inputBox",
@@ -71,8 +71,8 @@ fun HtmlElements.inputField(
     prefix: String = "inputField",
     init: Input.() -> Unit
 ) {
-    (::input.styled(styling, baseClass + InputFieldFoundation.staticCss, id, prefix) {
-        InputFieldFoundation.basicInputStyles()
+    (::input.styled(styling, baseClass + InputFieldComponent.staticCss, id, prefix) {
+        InputFieldComponent.basicInputStyles()
     }) {
         init()
         store?.let {

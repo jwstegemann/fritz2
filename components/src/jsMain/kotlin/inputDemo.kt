@@ -2,9 +2,7 @@ import dev.fritz2.binding.Store
 import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.storeOf
-import dev.fritz2.components.flexBox
-import dev.fritz2.components.inputField
-import dev.fritz2.components.lineUp
+import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.Input
@@ -26,13 +24,13 @@ fun HtmlElements.inputDemo(): Div {
         }) {
             h1 { +"Input Showcase" }
 
-            //text.apply { +"Basic" }
+            h4 { +"Basic" }
             inputField {
                 //type = const("text")
                 placeholder = const("Placeholder")
             }
 
-            //f2Text().apply { +"Basic + Readonly + Custom Styling" }
+            h4 { +"Basic + Readonly + Custom Styling" }
             inputField({
                 //background { color { "lightgrey" } }
                 focus {
@@ -48,17 +46,17 @@ fun HtmlElements.inputDemo(): Div {
             }
 
 
-            //f2Text().apply { +"Password" }
+            h4 { +"Password" }
             inputField {
                 type = const("password")
                 placeholder = const("Password")
             }
 
-            //f2Text().apply { +"Basic + Store" }
+            h4 { +"Basic + Store" }
             inputField(store = user) {
                 placeholder = const("Name")
             }
-            //f2Text().apply { +"changes manually applied to store's update" }
+            h4 { +"changes manually applied to store's update" }
             inputField {
                 placeholder = const("Name")
                 changes.values() handledBy user.update
@@ -67,19 +65,19 @@ fun HtmlElements.inputDemo(): Div {
                 margins { vertical { tiny } }
             }) {
                 spacing { tiny }
-                //f2Text().apply { +"given Name:" }
-                /*
-                f2Text {
-                    background { color { "lightgrey" } }
-                    radius { normal }
-                    paddings { horizontal { tiny } }
-                }.apply {
-                    user.data.bind()
+                children {
+                    p { +"given Name:" }
+                    (::p.styled {
+                        background { color { "lightgrey" } }
+                        radius { normal }
+                        paddings { horizontal { tiny } }
+                    }) {
+                        user.data.bind()
+                    }
                 }
-                */
             }
 
-            //f2Text().apply { +"Sizes" }
+            h4 { +"Sizes" }
             inputField({ theme().input.large() }) {
                 placeholder = const("large")
             }
@@ -90,7 +88,7 @@ fun HtmlElements.inputDemo(): Div {
                 placeholder = const("small")
             }
 
-            //f2Text().apply { +"Variants" }
+            h4 { +"Variants" }
             inputField({ theme().input.outline() }) {
                 placeholder = const("outline")
             }
@@ -98,8 +96,7 @@ fun HtmlElements.inputDemo(): Div {
                 placeholder = const("filled")
             }
 
-            // Put it all together:
-
+            h4 { +"Put it all together" }
             // in real life, put it into your theme!
             val ourInputStyle: BasicParams.() -> Unit = {
                 theme().input.large()
@@ -143,7 +140,7 @@ fun HtmlElements.inputDemo(): Div {
             lineUp {
                 spacing { tiny }
                 children {
-
+                    // use our component instead of built-in one!
                     ourInputField {
                         type = const("text")
                         placeholder = const("user")

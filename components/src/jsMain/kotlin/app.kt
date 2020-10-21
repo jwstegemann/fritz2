@@ -56,11 +56,6 @@ fun HtmlElements.myBorderedRedLink(
     }(init)
 
 
-//= (HtmlElements::a).styled("myBaseClass", id) {
-//    fontSize { giant }
-//}
-
-
 @ExperimentalCoroutinesApi
 fun main() {
     currentTheme = themes.first().second
@@ -76,6 +71,12 @@ fun main() {
                 justifyContent { spaceEvenly }
                 alignItems { center }
             }) {
+                (::a.styled {
+                    fontSize { large }
+                }) {
+                    +"text"
+                    href = const("#text")
+                }
                 (::a.styled {
                     fontSize { large }
                 }) {
@@ -95,6 +96,7 @@ fun main() {
                     "input" -> inputDemo()
 //                    "buttons" -> buttonDemo(theme)
 //                    "formcontrol" -> formControlDemo()
+                    "text" -> textDemo()
                     else -> componentDemo(theme)
                 }
             }.bind()
