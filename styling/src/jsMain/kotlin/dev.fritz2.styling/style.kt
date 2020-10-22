@@ -1,6 +1,8 @@
 package dev.fritz2.styling
 
 import dev.fritz2.styling.hash.v3
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.StyleParamsImpl
 import dev.fritz2.styling.stylis.compile
 import dev.fritz2.styling.stylis.middleware
 import dev.fritz2.styling.stylis.serialize
@@ -72,6 +74,14 @@ inline class StyleClass(val name: String) {
  * @return the name of the created class
  */
 fun staticStyle(name: String, css: String): StyleClass {
+    ".$name { $css }".let {
+        serialize(compile(it), Styling.middleware)
+    }
+    return StyleClass(name)
+}
+
+fun staticStyle(name: String, styling: BoxParams.() -> Unit): StyleClass {
+    val css = StyleParamsImpl().apply(styling).toCss()
     ".$name { $css }".let {
         serialize(compile(it), Styling.middleware)
     }

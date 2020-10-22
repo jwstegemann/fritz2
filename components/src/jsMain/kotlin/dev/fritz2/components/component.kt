@@ -9,27 +9,6 @@ import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 
-open class BaseComponent(val prefix: String) : BoxParams {
-    override val smProperties = StringBuilder()
-    override val mdProperties = StringBuilder()
-    override val lgProperties = StringBuilder()
-    override val xlProperties = StringBuilder()
-
-    /**
-     * creates a valid responsive css-rule-body from the content of the screen-size-[StringBuilder]s
-     */
-    fun toCss(): String {
-        if (mdProperties.isNotEmpty()) smProperties.append(theme().mediaQueryMd, "{", mdProperties, "}")
-        if (lgProperties.isNotEmpty()) smProperties.append(theme().mediaQueryLg, "{", lgProperties, "}")
-        if (xlProperties.isNotEmpty()) smProperties.append(theme().mediaQueryXl, "{", xlProperties, "}")
-
-        return smProperties.toString()
-    }
-
-    val cssClasses: StyleClass?
-        get() = (toCss().let { if (it.isNotEmpty()) style(it, prefix) else None })
-}
-
 interface Application<T> {
     var application: (T.() -> Unit)?
 

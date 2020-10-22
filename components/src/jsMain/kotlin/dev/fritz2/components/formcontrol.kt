@@ -1,5 +1,18 @@
 package dev.fritz2.components
 
+import dev.fritz2.binding.Store
+import dev.fritz2.binding.const
+import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.Input
+import dev.fritz2.dom.Tag
+import dev.fritz2.dom.html.renderAll
+import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.whenever
+import kotlinx.coroutines.flow.*
+
 /**
  * FormControl: https://chakra-ui.com/formcontrol
  *
@@ -38,11 +51,11 @@ package dev.fritz2.components
  * -> Man muss beim Rendern wissen, was im Kontext steht!!!
  */
 
-/*
-class FormControlComponentContext(prefix: String) : BasicComponentContext(prefix) {
-    companion object Foundation {
-        val cssClass = staticStyle(
-            "FormControl",
+
+class FormControlComponent {
+    companion object {
+        val staticCss = staticStyle(
+            "formControl",
             """
                 display: inline-flex;
                 position: relative;
@@ -57,18 +70,14 @@ class FormControlComponentContext(prefix: String) : BasicComponentContext(prefix
             """
         )
 
-        // Ich muss wissen, *wie* die Struktur gebaut werden soll.
-        // Das muss aber aus Begriffen / Typen abgeleitet werden, die der Anwender kennt!
-        // Leider überschneiden sich dabei die semantischen Typen mit der notwendigen
-        // Stukturierung!
-        object ControlType {
-            const val input = "input"
-            const val switch = "switch"
-            const val singleSelect = "singleSelect" // Problem CheckBox+Radio <-> Select
-            const val multiSelect = "multiSelect"  // Problem CheckBox+Radio <-> Select
+        val invalidCss = staticStyle("inputField-invalid") {
+            boxShadow {
+                theme().shadows.danger
+            }
+            border {
+                color { danger }
+            }
         }
-
-        val controlRenderer: ControlRenderer = DelegatingControlRenderer()
     }
 
     var label: String = ""
@@ -77,10 +86,15 @@ class FormControlComponentContext(prefix: String) : BasicComponentContext(prefix
         label = value()
     }
 
-    // TODO: Expose as fun
-    var invalid: Boolean = false
+    // TODO: Expose as fun + FLow
+    var invalid: Flow<Boolean> = const(false)
+
     var disabled: Boolean = false
     var required: Boolean = false
+
+    fun invalid(value: () -> Flow<Boolean>) {
+        invalid = value()
+    }
 
     var helperText: String? = null
 
@@ -94,99 +108,111 @@ class FormControlComponentContext(prefix: String) : BasicComponentContext(prefix
         errorMessage = value()
     }
 
-    var type: String = ControlType.input
+    // In Struktur (Map!?) packen -> einfacher prüf- und handlebar!
+    var inputField: (HtmlElements.() -> Unit)? = null
+    var checkbox: (HtmlElements.() -> Unit)? = null
 
-    fun type(value: ControlType.() -> String) {
-        type = ControlType.value()
-    }
+    // in interne Klasse kapseln!
+    var controlOverflows: Map<String, (HtmlElements.() -> Unit)?> = mapOf()
+    var control: Pair<(HtmlElements.() -> Unit), ((renderContext: HtmlElements, control: HtmlElements.() -> Unit) -> Unit)>? =
+        null
 
-    var control: HtmlElements.() -> Unit? = { null }
-
-    // streichen!
-    fun control(value: HtmlElements.() -> Unit) {
-        control = value
-    }
-
-    // x Funktionen für jede mögliche Control-Komponente
-    // -> "Proxy" für f2Control-Funktionen
-    // Zugriff auf Context -> dispatching für Struktur-Auswahl ohne Zusatzoinfos möglich
-}
-
-interface ControlRenderer {
-    fun render(context: FormControlComponentContext, renderContext: HtmlElements)
-}
-
-class DelegatingControlRenderer() : ControlRenderer {
-    private val labelBasedRenderer: ControlRenderer = LabelBasedControlRenderer()
-    private val fieldsetBasedRenderer: ControlRenderer = FieldsetBasedControlRenderer()
-
-    override fun render(context: FormControlComponentContext, renderContext: HtmlElements) {
-        when (context.type) {
-            FormControlComponentContext.Foundation.ControlType.input -> labelBasedRenderer.render(
-                context,
-                renderContext
-            )
-            FormControlComponentContext.Foundation.ControlType.singleSelect -> fieldsetBasedRenderer.render(
-                context,
-                renderContext
-            )
-            else -> LabelBasedControlRenderer().render(context, renderContext)
+    fun inputField(
+        styling: BasicParams.() -> Unit = {},
+        store: Store<String>? = null,
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = "inputField",
+        init: Input.() -> Unit
+    ) {
+        // Besser in Struktur setzen
+        // ggf. über interne private Funktion, die zudem eine Kollisionsstruktur füllt!
+        // ``setControl()``
+        inputField = {
+            inputField({
+                // TODO: ggf. auch intern auslagern, sofern das wiederverwendbar für anderen controls ist!
+                styling()
+            }, store, baseClass, id, prefix) {
+                init()
+                className = invalidCss.whenever(invalid) { it }
+            }
         }
     }
-}
 
-class LabelBasedControlRenderer : ControlRenderer {
-    override fun render(context: FormControlComponentContext, renderContext: HtmlElements) {
-        renderContext.apply {
-            f2StackUp {
-                alignItems { start }
-                spacing { theme().space.tiny }
-            }.apply() {
-                label { +context.label }
-                context.control(this)
-                context.helperText?.let {
-                    f2Text {
+    // TODO: Wrapper-Funktionen für alle anderen Controls!
+
+    // Als Strategien auslagern?
+    // -> neue Strategie kann hinzugefügt werden!
+    fun renderSingleControl(renderContext: HtmlElements, control: HtmlElements.() -> Unit) {
+        renderContext.stackUp({
+            alignItems { start }
+        }) {
+            spacing { theme().space.tiny }
+            items {
+                label { +label }
+                control(this)
+                helperText?.let {
+                    (::p.styled {
                         color { theme().colors.dark }
                         fontSize { small }
                         lineHeight { small }
-                    }.apply() { +it }
+                    }) { +it }
                 }
-                if (context.invalid) {
-                    context.errorMessage?.let {
-                        f2LineUp {
-                            color { theme().colors.danger }
-                            fontSize { small }
-                            lineHeight { small }
-                            spacing { "0" }
-                        }.apply() {
-                            Icon(theme().icons.arrowUp)
-                            f2Text().apply() { +it }
+                div {
+                    invalid.renderAll {
+                        if (it) {
+                            errorMessage?.let {
+                                lineUp({
+                                    color { theme().colors.danger }
+                                    fontSize { small }
+                                    lineHeight { small }
+                                    spacing { "0" }
+                                }) {
+                                    items {
+                                        icon { fromTheme { arrowUp } }
+                                        p { +it }
+                                    }
+                                }
+                            }
                         }
-                    }
+                    }.bind()
                 }
             }
         }
     }
-}
 
-class FieldsetBasedControlRenderer : ControlRenderer {
-    override fun render(context: FormControlComponentContext, renderContext: HtmlElements) {
-        renderContext.apply {
-            f2Text().apply() { +"Placeholder for SingleSelect!" }
-        }
+    fun renderControlGroup(renderContext: HtmlElements, control: HtmlElements.() -> Unit) {
+        renderContext.p { +"Ganz andere Struktur eines formControls!" }
     }
 }
 
-fun HtmlElements.f2FormControl(build: Context<FormControlComponentContext> = {}): Component<Div> {
-    val context = FormControlComponentContext("f2FormControl")
-        .apply(build)
 
-    return Component { init ->
-        div(context.cssClass, content = {
-            attr("role", "group")
-            init()
-            FormControlComponentContext.controlRenderer.render(context, this)
-        })
+fun HtmlElements.formControl(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: StyleClass? = null,
+    id: String? = null,
+    prefix: String = "formControl",
+    build: FormControlComponent.() -> Unit = {}
+) {
+    val component = FormControlComponent().apply(build)
+    // Aus Struktur heraus aufrufen!
+    // -> Mehrfache Belegung kann einfach erkannt werden!
+    if (component.inputField != null) {
+        component.renderSingleControl(this, component.inputField!!)
+    } else if (component.checkbox != null) {
+        component.renderControlGroup(this, component.checkbox!!)
     }
+    // bei weiteren != null -> Exception werfen! (Entwickler können erkennen, dass etwas falsch ist)
+
 }
-*/
+
+/*
+fun HtmlElements.myOwnFormControl(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: StyleClass? = null,
+    id: String? = null,
+    prefix: String = "formControl",
+    build: MyExtendedFormControlComponent.() -> Unit = {}
+) {
+}
+ */

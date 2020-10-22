@@ -86,6 +86,12 @@ fun main() {
                 (::a.styled {
                     fontSize { large }
                 }) {
+                    +"formcontrol"
+                    href = const("#formcontrol")
+                }
+                (::a.styled {
+                    fontSize { large }
+                }) {
                     +"components"
                     href = const("#components")
                 }
@@ -95,7 +101,7 @@ fun main() {
 //                    "grid" -> gridDemo()
                     "input" -> inputDemo()
 //                    "buttons" -> buttonDemo(theme)
-//                    "formcontrol" -> formControlDemo()
+                    "formcontrol" -> formControlDemo()
                     "text" -> textDemo()
                     else -> componentDemo(theme)
                 }

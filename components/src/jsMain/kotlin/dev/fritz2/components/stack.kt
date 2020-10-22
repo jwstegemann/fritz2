@@ -29,10 +29,10 @@ abstract class StackComponent {
         spacing = value
     }
 
-    var children: (HtmlElements.() -> Unit)? = null
+    var items: (HtmlElements.() -> Unit)? = null
 
-    fun children(value: HtmlElements.() -> Unit) {
-        children = value
+    fun items(value: HtmlElements.() -> Unit) {
+        items = value
     }
 
     abstract val stackStyles: Style<FlexParams>
@@ -68,7 +68,7 @@ fun HtmlElements.stackUp(
         component.stackStyles()
         styling()
     }, baseClass = baseClass + StackComponent.staticCss, prefix = prefix, id = id) {
-        component.children?.let { it() }
+        component.items?.let { it() }
     }
 }
 
@@ -102,6 +102,6 @@ fun HtmlElements.lineUp(
         component.stackStyles()
         styling()
     }, baseClass = baseClass + StackComponent.staticCss, prefix = prefix, id = id) {
-        component.children?.let { it() }
+        component.items?.let { it() }
     }
 }

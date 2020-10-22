@@ -7,7 +7,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 interface Pseudos : StyleParams {
     private inline fun pseudo(key: String, content: BasicParams.() -> Unit) {
-        ParamsImpl(theme()).let { base ->
+        StyleParamsImpl().let { base ->
             base.content()
             smProperties.append(
                 " &:",
@@ -20,7 +20,7 @@ interface Pseudos : StyleParams {
     }
 
     private inline fun pseudo(key: String, content: BasicParams.() -> Unit, parameter: Property = "") {
-        ParamsImpl(theme()).let { base ->
+        StyleParamsImpl().let { base ->
             base.content()
             smProperties.append(
                 " &:",
@@ -77,7 +77,7 @@ interface Pseudos : StyleParams {
     fun nthOfType(param: Property, content: BasicParams.() -> Unit) = pseudo("nth-of-type", content, param)
 
     fun children(selector: String, content: BasicParams.() -> Unit) {
-        ParamsImpl(theme()).let { base ->
+        StyleParamsImpl().let { base ->
             base.content()
             smProperties.append(
                 selector,

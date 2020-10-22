@@ -9,7 +9,9 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.shadow
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.theme
 
 
 object InputFieldComponent {
@@ -60,6 +62,7 @@ object InputFieldComponent {
                 color { disabled }
             }
         }
+
     }
 }
 
