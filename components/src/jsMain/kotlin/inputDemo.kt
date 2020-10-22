@@ -65,7 +65,7 @@ fun HtmlElements.inputDemo(): Div {
                 margins { vertical { tiny } }
             }) {
                 spacing { tiny }
-                children {
+                items {
                     p { +"given Name:" }
                     (::p.styled {
                         background { color { "lightgrey" } }
@@ -139,7 +139,7 @@ fun HtmlElements.inputDemo(): Div {
 
             lineUp {
                 spacing { tiny }
-                children {
+                items {
                     // use our component instead of built-in one!
                     ourInputField {
                         type = const("text")

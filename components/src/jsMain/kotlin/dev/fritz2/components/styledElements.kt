@@ -5,6 +5,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.StyleParamsImpl
 
 
 typealias BasicComponent<E> = (String?, String?, E.() -> Unit) -> E
@@ -17,7 +18,7 @@ fun <E> BasicComponent<E>.styled(
     prefix: String = "css",
     styling: BoxParams.() -> Unit
 ): HtmlElements.(E.() -> Unit) -> E {
-    val additionalClass = BaseComponent(prefix).apply(styling).cssClasses
+    val additionalClass = StyleParamsImpl().apply(styling).cssClasses(prefix)
     return { init ->
         this@styled("${baseClass?.name.orEmpty()} ${additionalClass?.name.orEmpty()}", id, init)
     }
@@ -31,10 +32,10 @@ fun <E> BasicComponent<E>.styled(
     prefix: String = "css",
     styling: BoxParams.() -> Unit
 ): HtmlElements.(E.() -> Unit) -> E {
-    val additionalClass = BaseComponent(prefix).apply {
+    val additionalClass = StyleParamsImpl().apply {
         styling()
         parentStyling()
-    }.cssClasses
+    }.cssClasses(prefix)
     return { init ->
         this@styled((baseClass+ additionalClass).name, id, init)
     }
@@ -48,7 +49,7 @@ fun <E> StyledComponent<E>.styled(
     prefix: String = "css",
     styling: BasicParams.() -> Unit
 ): HtmlElements.(E.() -> Unit) -> E {
-    val additionalClass = BaseComponent(prefix).apply(parentStyling).cssClasses
+    val additionalClass = StyleParamsImpl().apply(parentStyling).cssClasses(prefix)
     return { init ->
         this@styled(styling, baseClass + additionalClass, id, prefix, init)
     }

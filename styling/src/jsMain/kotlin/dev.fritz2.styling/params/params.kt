@@ -181,7 +181,7 @@ fun <T : PropertyValues> StyleParams.property(
  * @property xlProperties collects the properties for extra-large screens
  */
 @ExperimentalCoroutinesApi
-class ParamsImpl<X : Theme>(private val theme: X) : BasicParams, Flexbox, GridLayout {
+open class StyleParamsImpl : BoxParams {
     override val smProperties = StringBuilder()
     override val mdProperties = StringBuilder()
     override val lgProperties = StringBuilder()
@@ -191,12 +191,15 @@ class ParamsImpl<X : Theme>(private val theme: X) : BasicParams, Flexbox, GridLa
      * creates a valid responsive css-rule-body from the content of the screen-size-[StringBuilder]s
      */
     fun toCss(): String {
-        if (mdProperties.isNotEmpty()) smProperties.append(theme.mediaQueryMd, "{", mdProperties, "}")
-        if (lgProperties.isNotEmpty()) smProperties.append(theme.mediaQueryLg, "{", lgProperties, "}")
-        if (xlProperties.isNotEmpty()) smProperties.append(theme.mediaQueryXl, "{", xlProperties, "}")
+        if (mdProperties.isNotEmpty()) smProperties.append(theme().mediaQueryMd, "{", mdProperties, "}")
+        if (lgProperties.isNotEmpty()) smProperties.append(theme().mediaQueryLg, "{", lgProperties, "}")
+        if (xlProperties.isNotEmpty()) smProperties.append(theme().mediaQueryXl, "{", xlProperties, "}")
 
         return smProperties.toString()
     }
+
+    fun cssClasses(prefix: String): StyleClass? =
+        toCss().let { if (it.isNotEmpty()) style(it, prefix) else StyleClass.None }
 }
 
 /**
@@ -284,20 +287,3 @@ interface BoxParams : FlexParams, GridParams {
      */
     operator fun PredefinedBoxStyle.invoke() = this(this@BoxParams)
 }
-
-/**
- * creates a dynamic css-rule from the given [StyleParams]
- *
- * @param styling lambda building the [StyleParams]
- * @param prefix used when creating the dynamic css class name
- * @return css class name
- */
-@ExperimentalCoroutinesApi
-inline fun <T : StyleParams> use(styling: Style<T>, prefix: String = "s"): StyleClass =
-    ParamsImpl(theme()).let { base ->
-        (base.unsafeCast<T>()).styling()
-        base.toCss().let {
-            if (it.isNotEmpty()) style(it, prefix)
-            else StyleClass(it)
-        }
-    }

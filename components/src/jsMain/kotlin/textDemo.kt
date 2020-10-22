@@ -9,7 +9,7 @@ fun HtmlElements.textDemo(): Div {
         stackUp({
             alignItems { start }
         }) {
-            children {
+            items {
                 h1 { +"H1 Heading" }
                 h2 { +"H2 Heading" }
                 h3 { +"H3 Heading" }

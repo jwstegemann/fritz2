@@ -1,12 +1,12 @@
 package dev.fritz2.components
 
 import dev.fritz2.dom.html.A
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.styling.params.StyleParamsImpl
 import dev.fritz2.styling.staticStyle
 import org.w3c.dom.HTMLAnchorElement
 
 
-class LinkComponent : BaseComponent(prefix), Application<A> by ApplicationDelegate() {
+class LinkComponent : StyleParamsImpl(), Application<A> by ApplicationDelegate() {
     companion object {
         internal const val prefix = "anchor"
 
