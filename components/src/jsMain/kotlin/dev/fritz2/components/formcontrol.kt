@@ -4,7 +4,6 @@ import dev.fritz2.binding.Store
 import dev.fritz2.binding.const
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.Input
-import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.renderAll
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -13,46 +12,7 @@ import dev.fritz2.styling.theme.theme
 import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.*
 
-/**
- * FormControl: https://chakra-ui.com/formcontrol
- *
- * - role="group" in erstes Element
- * - isDisabled, isInvalid, isRequired werden nach unten durchgereicht
- *   -> muss auf Komponentenebene verarbeitet werden
- *   -> muss also irgendwie in den Kontext hinein gereicht werden, damit die
- *      Sub-Elemente das ggf. abgreifen können!
- *
- * 1.) bei "Text"-Input:
- * <div>
- *     <label>
- *     <input />
- *     <p>Help</p> // <div>Error</div>
- * </div>
- *
- * 2.) bei Radios / Checkbox
- * <fieldset>
- *     <legend>
- *     <div role="radiogroup">
- *         <div einzelnes Radio-Element>
- *         ...
- *     </div>
- *
- * </fieldset>
- *
- * 3.) bei Select
- *
- * <div>
- *     <label>
- *     <div>
- *         <select>
- *         </select>
- *     </div>
- * </div>
- * -> Man muss beim Rendern wissen, was im Kontext steht!!!
- */
-
-
-class FormControlComponent {
+open class FormControlComponent {
     companion object {
         val staticCss = staticStyle(
             "formControl",
@@ -75,10 +35,49 @@ class FormControlComponent {
                 theme().shadows.danger
             }
             border {
+                width { thin }
+                style { solid }
                 color { danger }
             }
         }
+
+        object ControlNames {
+            const val inputField = "inputField"
+            const val singleSelect = "singleSelect"
+            const val multiSelectCheckbox = "multiSelectCheckbox"
+        }
     }
+
+    class Control {
+
+        private val overflows: MutableList<String> = mutableListOf()
+        var assignee: Pair<String, (HtmlElements.() -> Unit)>? = null
+
+        fun set(controlName: String, component: (HtmlElements.() -> Unit)) {
+            if (assignee == null) {
+                assignee = Pair(controlName, component)
+            } else {
+                overflows.add(controlName)
+            }
+        }
+
+        fun assert() {
+            if (overflows.isNotEmpty()) {
+                // FIXME: Why throwing stops application?
+                console.log(
+                    UnsupportedOperationException(
+                        message = "Only one control within a formControl is allowed! Accepted control: ${assignee?.first}"
+                                + " The following controls are not applied and overflow this form: "
+                                + overflows.joinToString(", ")
+                                + " Please remove those!"
+                    )
+                )
+            }
+        }
+    }
+
+    protected val renderStrategies: MutableMap<String, ControlRenderer> = mutableMapOf()
+    protected val control = Control()
 
     var label: String = ""
 
@@ -86,14 +85,22 @@ class FormControlComponent {
         label = value()
     }
 
-    // TODO: Expose as fun + FLow
     var invalid: Flow<Boolean> = const(false)
-
-    var disabled: Boolean = false
-    var required: Boolean = false
 
     fun invalid(value: () -> Flow<Boolean>) {
         invalid = value()
+    }
+
+    var disabled: Flow<Boolean> = const(false)
+
+    fun disabled(value: () -> Flow<Boolean>) {
+        disabled = value()
+    }
+
+    var required: Boolean = false
+
+    fun required(value: Boolean) {
+        required = value
     }
 
     var helperText: String? = null
@@ -102,90 +109,179 @@ class FormControlComponent {
         helperText = value()
     }
 
-    var errorMessage: String? = null
+    var errorMessage: Flow<String> = const("")
 
-    fun errorMessage(value: () -> String) {
+    fun errorMessage(value: () -> Flow<String>) {
         errorMessage = value()
     }
 
-    // In Struktur (Map!?) packen -> einfacher prüf- und handlebar!
-    var inputField: (HtmlElements.() -> Unit)? = null
-    var checkbox: (HtmlElements.() -> Unit)? = null
-
-    // in interne Klasse kapseln!
-    var controlOverflows: Map<String, (HtmlElements.() -> Unit)?> = mapOf()
-    var control: Pair<(HtmlElements.() -> Unit), ((renderContext: HtmlElements, control: HtmlElements.() -> Unit) -> Unit)>? =
-        null
-
-    fun inputField(
+    open fun inputField(
         styling: BasicParams.() -> Unit = {},
         store: Store<String>? = null,
         baseClass: StyleClass? = null,
         id: String? = null,
-        prefix: String = "inputField",
+        prefix: String = ControlNames.inputField,
         init: Input.() -> Unit
     ) {
-        // Besser in Struktur setzen
-        // ggf. über interne private Funktion, die zudem eine Kollisionsstruktur füllt!
-        // ``setControl()``
-        inputField = {
-            inputField({
-                // TODO: ggf. auch intern auslagern, sofern das wiederverwendbar für anderen controls ist!
-                styling()
-            }, store, baseClass, id, prefix) {
-                init()
+        control.set(ControlNames.inputField)
+        {
+            inputField(styling, store, baseClass, id, prefix) {
+                // FIXME: greift zu spät -> Standard Border überschreibt diese Border Infos!
                 className = invalidCss.whenever(invalid) { it }
+                init()
+                // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
+                //disabled.bindAttr("disabled")
             }
         }
     }
 
-    // TODO: Wrapper-Funktionen für alle anderen Controls!
-
-    // Als Strategien auslagern?
-    // -> neue Strategie kann hinzugefügt werden!
-    fun renderSingleControl(renderContext: HtmlElements, control: HtmlElements.() -> Unit) {
-        renderContext.stackUp({
-            alignItems { start }
-        }) {
-            spacing { theme().space.tiny }
-            items {
-                label { +label }
-                control(this)
-                helperText?.let {
-                    (::p.styled {
-                        color { theme().colors.dark }
-                        fontSize { small }
-                        lineHeight { small }
-                    }) { +it }
+    open fun multiSelectCheckbox(
+        styling: BasicParams.() -> Unit = {},
+        store: Store<String>? = null,
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = ControlNames.inputField,
+        init: Input.() -> Unit
+    ) {
+        control.set(ControlNames.multiSelectCheckbox)
+        {
+            box({
+                background {
+                    color { warning }
                 }
-                div {
-                    invalid.renderAll {
-                        if (it) {
-                            errorMessage?.let {
+                border {
+                    width { "3px" }
+                    style { solid }
+                    color { dark }
+                }
+                textAlign { center }
+                color { dark }
+            }) {
+                p { +"Only placeholder for a checkbox group" }
+            }
+        }
+    }
+
+    fun render(
+        styling: BasicParams.() -> Unit = {},
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = "formControl",
+        renderContext: HtmlElements
+    ) {
+        control.assignee?.second?.let {
+            renderStrategies[control.assignee?.first]?.render(
+                styling, baseClass, id, prefix, renderContext, it
+            )
+        }
+        control.assert()
+    }
+
+    init {
+        renderStrategies[ControlNames.inputField] = SingleControlRenderer(this)
+        renderStrategies[ControlNames.multiSelectCheckbox] = ControlGroupRenderer(this)
+    }
+
+    fun renderHelperText(renderContext: HtmlElements) {
+        renderContext.div {
+            helperText?.let {
+                (::p.styled {
+                    color { theme().colors.dark }
+                    fontSize { small }
+                    lineHeight { small }
+                }) { +it }
+            }
+        }
+    }
+
+    fun renderErrorMessage(renderContext: HtmlElements) {
+        renderContext.div {
+            invalid.renderAll { it ->
+                if (it) {
+                    div {
+                        errorMessage.renderAll {
+                            if (it.isNotEmpty()) {
                                 lineUp({
                                     color { theme().colors.danger }
                                     fontSize { small }
                                     lineHeight { small }
-                                    spacing { "0" }
                                 }) {
+                                    spacing { tiny }
                                     items {
                                         icon { fromTheme { arrowUp } }
                                         p { +it }
                                     }
                                 }
                             }
-                        }
-                    }.bind()
+                        }.bind()
+                    }
                 }
+            }.bind()
+        }
+    }
+
+}
+
+interface ControlRenderer {
+    fun render(
+        styling: BasicParams.() -> Unit = {},
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = "formControl",
+        renderContext: HtmlElements,
+        control: HtmlElements.() -> Unit
+    )
+}
+
+class SingleControlRenderer(private val component: FormControlComponent) : ControlRenderer {
+    override fun render(
+        styling: BasicParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String,
+        renderContext: HtmlElements,
+        control: HtmlElements.() -> Unit
+    ) {
+        renderContext.stackUp(
+            {
+                alignItems { start }
+                styling()
+            },
+            baseClass = baseClass,
+            id = id,
+            prefix = prefix
+        ) {
+            spacing { theme().space.tiny }
+            items {
+                label { +component.label }
+                control(this)
+                component.renderHelperText(this)
+                component.renderErrorMessage(this)
             }
         }
     }
 
-    fun renderControlGroup(renderContext: HtmlElements, control: HtmlElements.() -> Unit) {
-        renderContext.p { +"Ganz andere Struktur eines formControls!" }
-    }
 }
 
+class ControlGroupRenderer(private val component: FormControlComponent) : ControlRenderer {
+    override fun render(
+        styling: BasicParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String,
+        renderContext: HtmlElements,
+        control: HtmlElements.() -> Unit
+    ) {
+        renderContext.div {
+            (::fieldset.styled(baseClass, id, prefix, styling)) {
+                legend { +component.label }
+                control(this)
+                component.renderHelperText(this)
+                component.renderErrorMessage(this)
+            }
+        }
+    }
+}
 
 fun HtmlElements.formControl(
     styling: BasicParams.() -> Unit = {},
@@ -195,24 +291,5 @@ fun HtmlElements.formControl(
     build: FormControlComponent.() -> Unit = {}
 ) {
     val component = FormControlComponent().apply(build)
-    // Aus Struktur heraus aufrufen!
-    // -> Mehrfache Belegung kann einfach erkannt werden!
-    if (component.inputField != null) {
-        component.renderSingleControl(this, component.inputField!!)
-    } else if (component.checkbox != null) {
-        component.renderControlGroup(this, component.checkbox!!)
-    }
-    // bei weiteren != null -> Exception werfen! (Entwickler können erkennen, dass etwas falsch ist)
-
+    component.render(styling, baseClass, id, prefix, this)
 }
-
-/*
-fun HtmlElements.myOwnFormControl(
-    styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
-    id: String? = null,
-    prefix: String = "formControl",
-    build: MyExtendedFormControlComponent.() -> Unit = {}
-) {
-}
- */
