@@ -25,6 +25,7 @@ class MyFormControlComponent : FormControlComponent() {
         multiSelectCheckbox(styling, store, baseClass, id, prefix, init)
     }
 
+    // override default implementation to customize control rendering
     override fun multiSelectCheckbox(
         styling: BasicParams.() -> Unit,
         store: Store<String>?,
@@ -113,8 +114,6 @@ fun HtmlElements.formControlDemo(): Div {
     val solution = "fritz2"
     val framework = storeOf("")
 
-    val disabled = flowOf(false)
-
     return div {
         stackUp({
             padding { "1rem" }
@@ -125,10 +124,17 @@ fun HtmlElements.formControlDemo(): Div {
                 h4 { +"FormControl" }
                 formControl {
                     label { "Please input the name of your favorite Kotlin based web framework" }
+                    required { true }
                     helperText { "Hint: You are probably gonna to use it, as you are here ;-)" }
-                    // TODO: Nur ErrorMessage setzen; wenn diese gefüllt ist -> invalid = true!
-                    invalid { framework.data.map { it.isNotEmpty() && it.toLowerCase() != solution } }
-                    errorMessage { framework.data.map { "'$it' is the wrong answer! Even Fritz could do it twice as good as you :-P" } }
+                    errorMessage {
+                        framework.data.map {
+                            // if something is wrong, just send a none empty string to errorMessage!
+                            // the control will handle the rest for you :-)
+                            if (it.isNotEmpty() && it.toLowerCase() != solution) {
+                                "'$it' is the wrong answer! Even Fritz could do it twice as good as you :-P"
+                            } else ""
+                        }
+                    }
                     // just use the appropriate *single element* control with its specific API!
                     inputField(store = framework) {
                         placeholder = const("$solution for example")
@@ -144,10 +150,10 @@ fun HtmlElements.formControlDemo(): Div {
                     multiSelectCheckbox { }
                 }
 
-                // use your own formControl!
+                // use your own formControl! Pay attention to the derived component receiver.
                 myFormControl {
-                    label { "Please choose your favorite Kotlin based web framework" }
-                    helperText { "Choose wisely!" }
+                    label { "The label is placed aside of the control. Just to be different..." }
+                    helperText { "Help is beneath control" }
                     myMultiSelectCheckbox { }
                 }
             }

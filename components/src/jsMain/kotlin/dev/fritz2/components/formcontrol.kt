@@ -85,12 +85,6 @@ open class FormControlComponent {
         label = value()
     }
 
-    var invalid: Flow<Boolean> = const(false)
-
-    fun invalid(value: () -> Flow<Boolean>) {
-        invalid = value()
-    }
-
     var disabled: Flow<Boolean> = const(false)
 
     fun disabled(value: () -> Flow<Boolean>) {
@@ -99,8 +93,8 @@ open class FormControlComponent {
 
     var required: Boolean = false
 
-    fun required(value: Boolean) {
-        required = value
+    fun required(value: () -> Boolean) {
+        required = value()
     }
 
     var helperText: String? = null
@@ -115,6 +109,11 @@ open class FormControlComponent {
         errorMessage = value()
     }
 
+    init {
+        renderStrategies[ControlNames.inputField] = SingleControlRenderer(this)
+        renderStrategies[ControlNames.multiSelectCheckbox] = ControlGroupRenderer(this)
+    }
+
     open fun inputField(
         styling: BasicParams.() -> Unit = {},
         store: Store<String>? = null,
@@ -127,7 +126,7 @@ open class FormControlComponent {
         {
             inputField(styling, store, baseClass, id, prefix) {
                 // FIXME: greift zu spät -> Standard Border überschreibt diese Border Infos!
-                className = invalidCss.whenever(invalid) { it }
+                className = invalidCss.whenever(errorMessage.map { it.isNotEmpty() }) { it }
                 init()
                 // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
                 //disabled.bindAttr("disabled")
@@ -156,6 +155,7 @@ open class FormControlComponent {
                 }
                 textAlign { center }
                 color { dark }
+                radius { small }
             }) {
                 p { +"Only placeholder for a checkbox group" }
             }
@@ -177,11 +177,6 @@ open class FormControlComponent {
         control.assert()
     }
 
-    init {
-        renderStrategies[ControlNames.inputField] = SingleControlRenderer(this)
-        renderStrategies[ControlNames.multiSelectCheckbox] = ControlGroupRenderer(this)
-    }
-
     fun renderHelperText(renderContext: HtmlElements) {
         renderContext.div {
             helperText?.let {
@@ -196,30 +191,23 @@ open class FormControlComponent {
 
     fun renderErrorMessage(renderContext: HtmlElements) {
         renderContext.div {
-            invalid.renderAll { it ->
-                if (it) {
-                    div {
-                        errorMessage.renderAll {
-                            if (it.isNotEmpty()) {
-                                lineUp({
-                                    color { theme().colors.danger }
-                                    fontSize { small }
-                                    lineHeight { small }
-                                }) {
-                                    spacing { tiny }
-                                    items {
-                                        icon { fromTheme { arrowUp } }
-                                        p { +it }
-                                    }
-                                }
-                            }
-                        }.bind()
+            errorMessage.renderAll {
+                if (it.isNotEmpty()) {
+                    lineUp({
+                        color { theme().colors.danger }
+                        fontSize { small }
+                        lineHeight { small }
+                    }) {
+                        spacing { tiny }
+                        items {
+                            icon { fromTheme { arrowUp } }
+                            p { +it }
+                        }
                     }
                 }
             }.bind()
         }
     }
-
 }
 
 interface ControlRenderer {
@@ -253,7 +241,16 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
         ) {
             spacing { theme().space.tiny }
             items {
-                label { +component.label }
+                label {
+                    +component.label
+                    // TODO: Check how to centralize this
+                    if (component.required) {
+                        (::span.styled {
+                            color { danger }
+                            margins { left { tiny } }
+                        }) { +"*" }
+                    }
+                }
                 control(this)
                 component.renderHelperText(this)
                 component.renderErrorMessage(this)
