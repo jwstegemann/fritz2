@@ -1,6 +1,11 @@
 package dev.fritz2.components
 
-/*
+import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.Select
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.staticStyle
+
 val select = staticStyle(
     "select",
     """
@@ -16,16 +21,13 @@ val select = staticStyle(
 """
 )
 
-inline fun HtmlElements.Select(
+inline fun HtmlElements.singleSselect(
     styles: Style<BasicParams> = {},
     crossinline init: Select.() -> Any
 ): Select {
 
-    return select("$select ${use(styles, "select")}") {
+    return select("$select") {
         init()
     }
 
 }
-
-
- */

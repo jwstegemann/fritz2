@@ -4,6 +4,7 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.FlexParams
+import dev.fritz2.styling.params.GridParams
 
 
 fun HtmlElements.box(
@@ -30,7 +31,7 @@ fun HtmlElements.flexBox(
 
 
 fun HtmlElements.gridBox(
-    styling: FlexParams.() -> Unit = {},
+    styling: GridParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "grid-box",

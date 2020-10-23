@@ -80,6 +80,18 @@ fun main() {
                 (::a.styled {
                     fontSize { large }
                 }) {
+                    +"flexBox"
+                    href = const("#flexBoxDemo")
+                }
+                (::a.styled {
+                    fontSize { large }
+                }) {
+                    +"gridBox"
+                    href = const("#gridBoxDemo")
+                }
+                (::a.styled {
+                    fontSize { large }
+                }) {
                     +"input"
                     href = const("#input")
                 }
@@ -92,8 +104,8 @@ fun main() {
                 (::a.styled {
                     fontSize { large }
                 }) {
-                    +"components"
-                    href = const("#components")
+                    +"stack"
+                    href = const("#stack")
                 }
             }
             router.render { site ->
@@ -103,7 +115,9 @@ fun main() {
 //                    "buttons" -> buttonDemo(theme)
                     "formcontrol" -> formControlDemo()
                     "text" -> textDemo()
-                    else -> componentDemo(theme)
+                    "flexBoxDemo" -> flexBoxDemo(theme)
+                    "gridBoxDemo" -> gridBoxDemo()
+                    else -> stackDemo(theme)
                 }
             }.bind()
         }

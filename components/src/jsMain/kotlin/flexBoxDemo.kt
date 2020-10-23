@@ -1,6 +1,19 @@
-/*
+import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.const
+import dev.fritz2.binding.handledBy
+import dev.fritz2.components.box
+import dev.fritz2.components.flexBox
+import dev.fritz2.components.singleSselect
+import dev.fritz2.components.styled
+import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.selectedIndex
+import dev.fritz2.styling.theme.currentTheme
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.map
+
 @ExperimentalCoroutinesApi
-fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
+fun HtmlElements.flexBoxDemo(theme: ExtendedTheme): Div {
 
     val themeStore = object : RootStore<Int>(0) {
         val selectTheme = handle<Int> { _, index ->
@@ -12,7 +25,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
     return div {
         themeStore.data.map {
             div {
-                Select {
+                singleSselect {
                     value = themeStore.data.map { i -> themes[i].first }
                     themes.forEach {
                         option { +it.first }
@@ -20,7 +33,7 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
 
                     changes.selectedIndex() handledBy themeStore.selectTheme
                 }
-                f2Flex {
+                flexBox({
                     margin { small }
                     padding { small }
                     border {
@@ -31,8 +44,8 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                     radius { tiny }
                     boxShadow { flat }
                     direction(sm = { column }, md = { row })
-                }.apply {
-                    f2Box {
+                }) {
+                    box({
                         zIndex { layer(1) }
                         margins(
                             {
@@ -42,18 +55,18 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             md = { left { normal } }
                         )
                         flex { shrink { "0" } }
-                    }.apply {
-                        f2Image {
-                            width(sm = { normal }, md = { tiny })
+                    }) {
+                        (::img.styled {
+                            width(sm = { normal }, md = { smaller })
                             boxShadow { flat }
                             radius { large }
-                        }.apply {
+                        }) {
                             src = const("https://bit.ly/2jYM25F")
                             alt = const("Woman paying for a purchase")
                         }
                     }
 
-                    f2Box {
+                    box({
                         zIndex { base }
                         //width { "300px" }
                         margins(
@@ -63,21 +76,21 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
                             },
                             md = { left { normal } }
                         )
-                    }.apply {
-                        f2Text { theme.teaserText }.apply { +"Marketing" }
-                        Link {
+                    }) {
+                        (::p.styled { theme.teaserText }) { +"Marketing" }
+                        (::a.styled {
                             margins { top { tiny } }
                             fontSize { normal }
                             lineHeight { normal }
                             fontWeight { bold }
-                        }.apply {
+                        }) {
                             href = const("#")
                             +"Finding customers for your new business"
                         }
-                        f2Text {
+                        (::p.styled {
                             margins { top { smaller } }
                             color { dark }
-                        }.apply {
+                        }) {
                             +"Getting a new business off the ground is a lot of hard work. Here are five ideas you can use to find your first customers."
                         }
                     }
@@ -86,4 +99,3 @@ fun HtmlElements.flexDemo(theme: ExtendedTheme): Div {
         }.bind()
     }
 }
-*/

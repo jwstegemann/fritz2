@@ -1,6 +1,15 @@
-/*
+import dev.fritz2.components.box
+import dev.fritz2.components.gridBox
+import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.styling.params.AreaName
+import dev.fritz2.styling.params.end
+import dev.fritz2.styling.params.rgba
+import dev.fritz2.styling.params.start
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+
 @ExperimentalCoroutinesApi
-fun HtmlElements.gridDemo(): Div {
+fun HtmlElements.gridBoxDemo(): Div {
     // example from https://developer.mozilla.org/en/docs/Web/CSS/CSS_Grid_Layout/Layout_using_Named_Grid_Lines
     return div {
         val grid = object {
@@ -9,7 +18,7 @@ fun HtmlElements.gridDemo(): Div {
             val CONTENT: AreaName = "content"
             val FOOTER: AreaName = "footer"
         }
-        f2Grid {
+        gridBox({
             fontSize { normal }
             columns {
                 repeat(9) { "9fr" }
@@ -44,23 +53,23 @@ fun HtmlElements.gridDemo(): Div {
             //raw("place-items: stretch flex-end;")
             //justifyContent { spaceEvenly }
             //alignItems { start }
-        }.apply {
-            f2Box {
+        }) {
+            box({
                 grid { area { grid.HEADER } }
                 //bgColor { "green" }
                 background {
-                    color { "lime" }
+                    color { light }
                 }
-            }.apply {
-                f2Text().apply { +"Header" }
+            }) {
+                p { +"Header" }
             }
-            f2Box {
+            box({
                 grid { area { grid.SIDEBAR } }
-                background { color { "yellow" } }
-            }.apply {
-                f2Text().apply { +"Sidebar" }
+                background { color { secondary } }
+            }) {
+                p { +"Sidebar" }
             }
-            f2Box {
+            box({
                 grid(sm = { area { grid.CONTENT } })
                 background(
                     sm = {
@@ -86,16 +95,16 @@ fun HtmlElements.gridDemo(): Div {
                         }
                     }
                 )
-            }.apply {
-                f2Text().apply { +"Content" }
+            }) {
+                p { +"Content" }
             }
-            f2Box {
+            box({
                 grid { area { grid.FOOTER } }
-                background { color { "lime" } }
-            }.apply {
-                f2Text().apply { +"Footer" }
+                background { color { light } }
+            }) {
+                p { +"Footer" }
             }
-            f2Box {
+            box({
                 margin { normal }
                 grid(
                     sm = {
@@ -126,12 +135,9 @@ fun HtmlElements.gridDemo(): Div {
                     //blendMode { darken }
                     color { rgba(255, 0, 0, 0.5) }
                 }
-            }.apply {
-                f2Text().apply { +"Overlay" }
+            }) {
+                p { +"Overlay" }
             }
         }
     }
 }
-
-
- */
