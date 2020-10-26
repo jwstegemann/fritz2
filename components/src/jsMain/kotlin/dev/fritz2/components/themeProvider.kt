@@ -1,7 +1,6 @@
 package dev.fritz2.components
 
 import DefaultTheme
-import ExtendedTheme
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.Div
@@ -12,6 +11,7 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.theme
@@ -628,9 +628,10 @@ video {
             """.trimIndent()
         )
 
-        val staticCss = staticStyle(
-            "default",
-            """
+        fun defaultCss(): String = """
+                * { 
+                    font-size: ${theme().fontSizes.normal}
+                }
                 h1,
                 h2,
                 h3,
@@ -657,21 +658,10 @@ video {
                 h6 {
                     font-size: 0.75rem;
                 } 
-                ul {
-                    padding-left: 1rem;
-                    list-style-type: disc;
-                }
-                ol {
-                    padding-left: 1rem;
-                    list-style-type: decimal;
+                ul, ol {
+                    padding-left: ${theme().space.normal};
                 }
             """.trimIndent()
-        )
-
-        // TODO: How to apply defaults based upon the *current* theme?
-        val defaultStyle: Style<BasicParams> = {
-            fontSize { theme().fontSizes.normal }
-        }
     }
 
     var resetCss: Boolean = false
@@ -686,28 +676,26 @@ video {
         items = value
     }
 
-    var themes = listOf<Pair<String, Theme>>(
-        ("default") to DefaultTheme()
-    )
+    var themes = listOf<Theme>(DefaultTheme())
 
-    fun theme(value: () -> Pair<String, Theme>) {
+    fun theme(value: () -> Theme) {
         themes = listOf(value())
     }
 
-    fun themes(values: () -> List<Pair<String, Theme>>) {
+    fun themes(values: () -> List<Theme>) {
         themes = values()
     }
 
     // Expose ``ThemeStore`` via build-Block and bind it to a local val for further usage!
     val themeStore: ThemeStore = object : RootStore<Int>(0), ThemeStore {
         override val selectTheme = handle<Int> { _, index ->
-            currentTheme = themes[index].second
+            currentTheme = themes[index]
             index
         }
     }
 
     init {
-        currentTheme = themes.first().second
+        currentTheme = themes.first()
     }
 }
 
@@ -717,19 +705,13 @@ fun HtmlElements.themeProvider(
     id: String? = null,
     prefix: String = "box",
     build: ThemeComponent.() -> Unit = {}
-) : Div {
+): Div {
     val component = ThemeComponent().apply(build)
+    // apply ``ThemeComponent.resetCss`` in a different way; it should be set as global CSS within the html head/style section
     return div {
         component.themeStore.data.map {
             box(
-                {
-                    ThemeComponent.defaultStyle()
-                    styling()
-                }, if (component.resetCss) {
-                    baseClass + ThemeComponent.resetCss + ThemeComponent.staticCss
-                } else {
-                    baseClass + ThemeComponent.staticCss
-                }, id, prefix
+                styling, baseClass + style(ThemeComponent.defaultCss(), "default"), id, prefix
             ) {
                 component.items?.let { it() }
             }

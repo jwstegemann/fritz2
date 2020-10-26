@@ -64,11 +64,9 @@ fun HtmlElements.myBorderedRedLink(
 
 @ExperimentalCoroutinesApi
 fun main() {
-    //currentTheme = themes.first().second
-
-    val themes = listOf<Pair<String, ExtendedTheme>>(
-        ("small Fonts") to SmallFonts(),
-        ("large Fonts") to LargeFonts()
+    val themes = listOf<ExtendedTheme>(
+        SmallFonts(),
+        LargeFonts()
     )
 
     val router = router("")
@@ -134,7 +132,7 @@ fun main() {
 //                    "buttons" -> buttonDemo(theme)
                             "formcontrol" -> formControlDemo()
                             "text" -> textDemo()
-                            "flexBoxDemo" -> flexBoxDemo(store, themes)
+                            "flexBoxDemo" -> flexBoxDemo(store, themes, theme)
                             "gridBoxDemo" -> gridBoxDemo()
                             else -> stackDemo(theme)
                         }

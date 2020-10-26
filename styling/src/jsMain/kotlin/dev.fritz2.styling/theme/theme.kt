@@ -55,6 +55,11 @@ typealias Property = String
  */
 interface Theme {
     /**
+     * an human readable name like ``default`` or ``dark`` for example
+     */
+    val name: String
+
+    /**
      * break points for different screen sizes that apply when working with [ResponsiveValue]s
      */
     val breakPoints: ResponsiveValue

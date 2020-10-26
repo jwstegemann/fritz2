@@ -12,6 +12,7 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.shadow
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.whenever
 
 
 object InputFieldComponent {
@@ -50,19 +51,24 @@ object InputFieldComponent {
             }
         }
 
-        focus {
-            border {
-                color { "#3182ce" } // TODO : Wehre to define? Or ability to provide?
-            }
-            boxShadow { outline }
-        }
-
         disabled {
             background {
                 color { disabled }
             }
         }
 
+        focus {
+            border {
+                color { "#3182ce" } // TODO : Wehre to define? Or ability to provide?
+            }
+            boxShadow { outline }
+        }
+    }
+
+    val readonlyCss = staticStyle("readonly") {
+        background {
+            color { disabled }
+        }
     }
 }
 
@@ -77,6 +83,8 @@ fun HtmlElements.inputField(
     (::input.styled(styling, baseClass + InputFieldComponent.staticCss, id, prefix) {
         InputFieldComponent.basicInputStyles()
     }) {
+        // TODO: Why does this not function?
+        //className = InputFieldComponent.readonlyCss.whenever(readOnly) { it }
         init()
         store?.let {
             value = it.data
