@@ -8,6 +8,7 @@ fun HtmlElements.textDemo(): Div {
     return div {
         stackUp({
             alignItems { start }
+            padding { "1rem" }
         }) {
             items {
                 h1 { +"H1 Heading" }
@@ -26,6 +27,12 @@ fun HtmlElements.textDemo(): Div {
                         fontStyle { italic }
                     }) { +" Span is integrated into a container like a <p> as in this case. " }
                     +" Expedita sit praesentium dolores obcaecati possimus sapiente voluptatem doloribus, ipsum harum in quia, provident corporis nulla corrupti placeat!"
+                }
+                ul {
+                    (1 .. 5).map { li { +"Item $it" } }
+                }
+                ol {
+                    (1 .. 5).map { li { +"Item $it" } }
                 }
             }
         }

@@ -27,6 +27,7 @@ open class FormControlComponent {
                 transition: all 250ms;
                 white-space: nowrap;
                 outline: none;
+                width: 100%;
             """
         )
 

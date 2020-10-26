@@ -121,7 +121,8 @@ fun HtmlElements.formControlDemo(): Div {
         }) {
             spacing { large }
             items {
-                h4 { +"FormControl" }
+                h1 { +"FormControl Showcase" }
+                h4{ +"Form with input control, required flag, passed store and dynamic error message"}
                 formControl {
                     label { "Please input the name of your favorite Kotlin based web framework" }
                     required { true }
@@ -144,6 +145,7 @@ fun HtmlElements.formControlDemo(): Div {
                     }
                 }
 
+                h4{ +"Form with checkbox control"}
                 formControl {
                     label { "Please choose your favorite Kotlin based web framework" }
                     helperText { "Choose wisely!" }
@@ -151,6 +153,11 @@ fun HtmlElements.formControlDemo(): Div {
                 }
 
                 // use your own formControl! Pay attention to the derived component receiver.
+                h4{ +"Custom FormControl"}
+                ul {
+                    li { +"overridden control function to implement a special control element" }
+                    li { +"combined with a hand made renderer for the surrounding, custom structure"}
+                }
                 myFormControl {
                     label { "The label is placed aside of the control. Just to be different..." }
                     helperText { "Help is beneath control" }
