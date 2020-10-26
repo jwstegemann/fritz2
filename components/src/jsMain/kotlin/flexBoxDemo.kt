@@ -11,25 +11,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<Pair<String, ExtendedTheme>>): Div {
-
-    /*
-    val themeStore = object : RootStore<Int>(0) {
-        val selectTheme = handle<Int> { _, index ->
-            currentTheme = themes[index].second
-            index
-        }
-    }
-
-     */
+fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>, theme: ExtendedTheme): Div {
 
     return div {
-        //themeStore.data.map {
         div {
             singleSselect {
-                value = themeStore.data.map { i -> themes[i].first }
+                value = themeStore.data.map { i -> themes[i].name }
                 themes.forEach {
-                    option { +it.first }
+                    option { +it.name }
                 }
 
                 changes.selectedIndex() handledBy themeStore.selectTheme
@@ -78,10 +67,10 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<Pair<String, E
                         md = { left { normal } }
                     )
                 }) {
-                    //(::p.styled { currentTheme.teaserText }) { +"Marketing" }
+                    //(::p.styled { theme.teaserText }) { +"Marketing" }
                     p {
                         // TODO: Way too complicated - needs to get some convenient API! (But how?)
-                        className = themeStore.data.map { i -> staticStyle("foo", themes[i].second.teaserText).name }
+                        className = themeStore.data.map { i -> staticStyle("foo", themes[i].teaserText).name }
                         +"Marketing"
                     }
                     (::a.styled {
@@ -102,6 +91,5 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<Pair<String, E
                 }
             }
         }
-        //}.bind()
     }
 }

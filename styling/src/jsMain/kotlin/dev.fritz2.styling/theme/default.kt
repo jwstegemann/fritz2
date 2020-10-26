@@ -5,6 +5,8 @@ import dev.fritz2.styling.theme.*
  * defines the default values and scales for fritz2
  */
 open class DefaultTheme : Theme {
+    override val name = "default"
+
     final override val breakPoints = ResponsiveValue("30em", "48em", "62em", "80em")
 
     override val mediaQueryMd: String = "@media screen and (min-width: ${breakPoints.md})"

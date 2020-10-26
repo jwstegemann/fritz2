@@ -42,7 +42,9 @@ fun HtmlElements.inputDemo(): Div {
             }) {
                 type = const("text")
                 value = const("Readonly!")
-                readOnly = const(true)
+                // TODO: How to realize this?
+                //readOnly = const(true)
+                disabled = const(true)
             }
 
 

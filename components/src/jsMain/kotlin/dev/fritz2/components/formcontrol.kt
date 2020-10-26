@@ -234,6 +234,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
         renderContext.stackUp(
             {
                 alignItems { start }
+                width { full }
                 styling()
             },
             baseClass = baseClass,
@@ -270,8 +271,14 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
         renderContext: HtmlElements,
         control: HtmlElements.() -> Unit
     ) {
-        renderContext.div {
-            (::fieldset.styled(baseClass, id, prefix, styling)) {
+        // TODO: How to style this outer div? (width = { full })
+        // renderContext.div {
+        renderContext.box({
+            width { full }
+        }) {
+            (::fieldset.styled(baseClass, id, prefix) {
+                styling()
+            }) {
                 legend { +component.label }
                 control(this)
                 component.renderHelperText(this)

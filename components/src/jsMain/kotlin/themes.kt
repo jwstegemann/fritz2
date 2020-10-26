@@ -16,6 +16,8 @@ interface ExtendedTheme : Theme {
 }
 
 open class SmallFonts : ExtendedTheme, DefaultTheme() {
+    override val name = "small Fonts"
+
     override val test = object : ExtendedTheme.MyProp {
         override val a: Property = space.normal
         override val b: Property = "b"
@@ -33,6 +35,8 @@ open class SmallFonts : ExtendedTheme, DefaultTheme() {
 
 
 class LargeFonts : SmallFonts() {
+    override val name = "large Fonts"
+
     override val fontSizes = ScaledValue(
         smaller = "1.125rem",
         small = "1.25rem",
