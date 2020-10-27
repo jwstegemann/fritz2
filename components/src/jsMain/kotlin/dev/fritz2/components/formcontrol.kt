@@ -64,8 +64,7 @@ open class FormControlComponent {
 
         fun assert() {
             if (overflows.isNotEmpty()) {
-                // FIXME: Why throwing stops application?
-                console.log(
+                console.error(
                     UnsupportedOperationException(
                         message = "Only one control within a formControl is allowed! Accepted control: ${assignee?.first}"
                                 + " The following controls are not applied and overflow this form: "
@@ -127,7 +126,7 @@ open class FormControlComponent {
         {
             inputField(styling, store, baseClass, id, prefix) {
                 // FIXME: greift zu spät -> Standard Border überschreibt diese Border Infos!
-                className = invalidCss.whenever(errorMessage.map { it.isNotEmpty() }) { it }
+                //className = invalidCss.whenever(errorMessage.map { it.isNotEmpty() }) { it }
                 init()
                 // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
                 //disabled.bindAttr("disabled")
@@ -209,6 +208,15 @@ open class FormControlComponent {
             }.bind()
         }
     }
+
+    val requiredMarker: HtmlElements.() -> Unit = {
+        if (required) {
+            (::span.styled {
+                color { danger }
+                margins { left { tiny } }
+            }) { +"*" }
+        }
+    }
 }
 
 interface ControlRenderer {
@@ -245,13 +253,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
             items {
                 label {
                     +component.label
-                    // TODO: Check how to centralize this
-                    if (component.required) {
-                        (::span.styled {
-                            color { danger }
-                            margins { left { tiny } }
-                        }) { +"*" }
-                    }
+                    component.requiredMarker(this)
                 }
                 control(this)
                 component.renderHelperText(this)
@@ -271,8 +273,6 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
         renderContext: HtmlElements,
         control: HtmlElements.() -> Unit
     ) {
-        // TODO: How to style this outer div? (width = { full })
-        // renderContext.div {
         renderContext.box({
             width { full }
         }) {
