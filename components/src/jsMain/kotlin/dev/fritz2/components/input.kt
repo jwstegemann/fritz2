@@ -9,9 +9,11 @@ import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.shadow
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.InputFieldStyles
 import dev.fritz2.styling.theme.theme
 import dev.fritz2.styling.whenever
 
@@ -72,6 +74,7 @@ object InputFieldComponent {
         }
     }
 }
+
 
 fun HtmlElements.inputField(
     styling: BasicParams.() -> Unit = {},
