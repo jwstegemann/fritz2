@@ -7,6 +7,8 @@ import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.renderAll
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BorderStyleValues
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.theme
 import dev.fritz2.styling.whenever
@@ -31,7 +33,9 @@ open class FormControlComponent {
             """
         )
 
-        val invalidCss = staticStyle("inputField-invalid") {
+        const val invalidClassName = "invalid"
+
+        val invalidCss: Style<BasicParams> = {
             boxShadow {
                 theme().shadows.danger
             }
@@ -39,6 +43,16 @@ open class FormControlComponent {
                 width { thin }
                 style { solid }
                 color { danger }
+            }
+
+            hover {
+                border {
+                    color { danger }
+                }
+            }
+
+            focus {
+                boxShadow { danger }
             }
         }
 
@@ -125,8 +139,7 @@ open class FormControlComponent {
         control.set(ControlNames.inputField)
         {
             inputField(styling, store, baseClass, id, prefix) {
-                // FIXME: greift zu spät -> Standard Border überschreibt diese Border Infos!
-                //className = invalidCss.whenever(errorMessage.map { it.isNotEmpty() }) { it }
+                className = StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it }
                 init()
                 // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
                 //disabled.bindAttr("disabled")
@@ -170,8 +183,10 @@ open class FormControlComponent {
         renderContext: HtmlElements
     ) {
         control.assignee?.second?.let {
-            renderStrategies[control.assignee?.first]?.render(
-                styling, baseClass, id, prefix, renderContext, it
+            renderStrategies[control.assignee?.first]?.render({
+                children(".$invalidClassName", invalidCss)
+                styling()
+            }, baseClass, id, prefix, renderContext, it
             )
         }
         control.assert()
