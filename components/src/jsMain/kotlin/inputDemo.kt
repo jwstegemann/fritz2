@@ -26,13 +26,11 @@ fun HtmlElements.inputDemo(): Div {
 
             h4 { +"Basic" }
             inputField {
-                //type = const("text")
                 placeholder = const("Placeholder")
             }
 
             h4 { +"Basic + Readonly + Custom Styling" }
             inputField({
-                //background { color { "lightgrey" } }
                 focus {
                     border {
                         color { dark }
@@ -40,13 +38,16 @@ fun HtmlElements.inputDemo(): Div {
                     boxShadow { none }
                 }
             }) {
-                type = const("text")
                 value = const("Readonly!")
-                // TODO: How to realize this?
-                //readOnly = const(true)
-                disabled = const(true)
+                readOnly = const(true)
             }
 
+            h4 { +"Basic + Disabled" }
+            p { +"(tab over to see the difference to readonly variant!)"}
+            inputField {
+                value = const("Disabled!")
+                disabled = const(true)
+            }
 
             h4 { +"Password" }
             inputField {

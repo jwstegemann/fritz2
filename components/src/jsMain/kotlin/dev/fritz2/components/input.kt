@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
+import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.Input
@@ -51,6 +52,12 @@ object InputFieldComponent {
             }
         }
 
+        readOnly {
+            background {
+                color { disabled }
+            }
+        }
+
         disabled {
             background {
                 color { disabled }
@@ -59,15 +66,9 @@ object InputFieldComponent {
 
         focus {
             border {
-                color { "#3182ce" } // TODO : Wehre to define? Or ability to provide?
+                color { "#3182ce" } // TODO : Where to define? Or ability to provide?
             }
             boxShadow { outline }
-        }
-    }
-
-    val readonlyCss = staticStyle("readonly") {
-        background {
-            color { disabled }
         }
     }
 }
@@ -83,8 +84,6 @@ fun HtmlElements.inputField(
     (::input.styled(styling, baseClass + InputFieldComponent.staticCss, id, prefix) {
         InputFieldComponent.basicInputStyles()
     }) {
-        // TODO: Why does this not function?
-        //className = InputFieldComponent.readonlyCss.whenever(readOnly) { it }
         init()
         store?.let {
             value = it.data
