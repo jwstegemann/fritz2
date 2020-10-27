@@ -416,3 +416,9 @@ fun <X : Element> append(targetId: String, vararg tags: Tag<X>) {
         tags.forEach { tag -> element.appendChild(tag.domNode) }
     } ?: throw MountTargetNotFoundException(targetId)
 }
+
+fun <X : Element> appendToBody(vararg tags: Tag<X>) {
+    window.document.getElementsByTagName("body").item(0)?.let { element ->
+        tags.forEach { tag -> element.appendChild(tag.domNode) }
+    } ?: throw MountTargetNotFoundException("body")
+}

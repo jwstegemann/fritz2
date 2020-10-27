@@ -279,4 +279,112 @@ open class DefaultTheme : Theme {
 
     }
 
+    override val modal = object : ModalStyles {
+
+        override val overlay: Style<BasicParams> = {
+            position {
+                fixed {
+                    vertical { none }
+                    horizontal { none }
+                }
+            }
+            background {
+                color { rgba(0, 0, 0, 0.4) }
+            }
+        }
+
+        override val sizes = object : ModalSizes {
+
+            private val basic: Style<BasicParams> = {
+                background {
+                    color { "white" }
+                }
+                padding { normal }
+                radius { tiny }
+                boxShadow { raisedFurther }
+            }
+
+            override val full: Style<BasicParams> = {
+                basic()
+                width { "100%" }
+                height { "100%" }
+                position {
+                    fixed {
+                        horizontal { "0" }
+                        vertical { "0" }
+                    }
+                }
+            }
+
+            override val large: Style<BasicParams> = {
+                basic()
+                position {
+                    fixed {
+                        left { "var(--main-level)" }
+                        top { "var(--main-level)" }
+                        //bottom {normal}
+                        right { normal }
+                    }
+                }
+                minHeight { theme().sizes.smaller }
+            }
+
+            override val normal: Style<BasicParams> = {
+                basic()
+                position {
+                    fixed {
+                        top { "var(--main-level)" }
+                        left { "50%" }
+                    }
+                }
+                minHeight { theme().sizes.smaller }
+                minWidth { "50%" }
+                css("transform: translateX(-50%);")
+            }
+
+            override val small: Style<BasicParams> = {
+                basic()
+                position {
+                    fixed {
+                        top { "var(--main-level)" }
+                        left { "65%" }
+                        bottom { normal }
+                    }
+                }
+                minHeight { theme().sizes.smaller }
+                minWidth { "35%" }
+                css("transform: translateX(-90%);")
+            }
+        }
+
+        override val variants = object : ModalVariants {
+            override val auto: Style<BasicParams> = {
+                position {
+                    fixed {
+                        bottom { auto }
+                    }
+                }
+            }
+
+            override val verticalFilled: Style<BasicParams> = {
+                position {
+                    fixed {
+                        bottom { normal }
+                    }
+                }
+            }
+
+            override val centered: Style<BasicParams> = {
+                position {
+                    fixed {
+                        top { "50%" }
+                    }
+                }
+                // TODO: Geht so nicht! Überschreibt ggf. das durch size gesetzte!
+                // Man braucht aber X + Y!
+                css("transform: translatey(-50%);")
+            }
+        }
+    }
+
 }

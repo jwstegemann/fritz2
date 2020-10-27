@@ -428,7 +428,7 @@ interface Layout : StyleParams {
      *
      * @param value raw CSS code as string
      */
-    fun css(value: Property) = smProperties.append(value)
+    fun css(value: Property) = smProperties.append(value.let { if (it.endsWith(";")) it else "$it;" })
 
     /**
      * This function passes raw CSS code into the underlying model without modification by fritz2 for each media device

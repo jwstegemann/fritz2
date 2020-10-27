@@ -132,23 +132,33 @@ class ZIndices(
      *
      * @param value number of layer the z-index should be calculated for
      */
-    fun layer(value: Int): Property = zIndexFrom(layer, layerStep, value)
+    fun layer(value: Int): Property = zIndexFrom(layer, layerStep, value, 0)
 
     /**
      * creates [Property] for a specific toast z-index
      *
      * @param value number of toast the z-index should be calculated for
      */
-    fun toast(value: Int): Property = zIndexFrom(toast, toastStep, value)
+    fun toast(value: Int): Property = zIndexFrom(toast, toastStep, value, 0)
 
     /**
      * creates [Property] for a specific modals z-index
      *
      * @param value number of modal the z-index should be calculated for
      */
-    fun modal(value: Int): Property = zIndexFrom(modal, modalStep, value)
+    fun modal(value: Int): Property = zIndexFrom(modal, modalStep, value, 0)
 
-    private fun zIndexFrom(level: Int, step: Int, value: Int) = "${level + step * (value - 1)}"
+    /**
+     * creates [Property] for a specific modals z-index shifted by an offset
+     *
+     * @param value number of modal the z-index should be calculated for
+     * @param offset number to add to the final z-index in order to place an element below (negative value!) or on top
+     *               (positive value) of a regularly defined modal.
+     */
+    fun modal(value: Int, offset: Int): Property = zIndexFrom(modal, modalStep, value, offset)
+
+    private fun zIndexFrom(level: Int, step: Int, value: Int, offset: Int) =
+        "${level + step * (value - 1) + offset}"
 }
 
 /**
@@ -232,6 +242,25 @@ interface PushButtonVariants {
 }
 
 interface PushButtonSizes {
+    val small: Style<BasicParams>
+    val normal: Style<BasicParams>
+    val large: Style<BasicParams>
+}
+
+interface  ModalStyles {
+    val overlay: Style<BasicParams>
+    val sizes: ModalSizes
+    val variants: ModalVariants
+}
+
+interface ModalVariants {
+    val auto: Style<BasicParams>
+    val verticalFilled: Style<BasicParams>
+    val centered: Style<BasicParams>
+}
+
+interface ModalSizes {
+    val full: Style<BasicParams>
     val small: Style<BasicParams>
     val normal: Style<BasicParams>
     val large: Style<BasicParams>

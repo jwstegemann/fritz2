@@ -9,7 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.buttonDemo(theme: ExtendedTheme): Div {
+fun HtmlElements.buttonDemo(): Div {
 
     val buttonStore = object : RootStore<String>("") {
         val loading = tracker()

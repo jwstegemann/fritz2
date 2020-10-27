@@ -11,6 +11,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
 fun HtmlElements.inputDemo(): Div {
@@ -43,7 +44,7 @@ fun HtmlElements.inputDemo(): Div {
             }
 
             h4 { +"Basic + Disabled" }
-            p { +"(tab over to see the difference to readonly variant!)"}
+            p { +"(tab over to see the difference to readonly variant!)" }
             inputField {
                 value = const("Disabled!")
                 disabled = const(true)
