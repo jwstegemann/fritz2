@@ -157,6 +157,8 @@ interface Theme {
     val input: InputFieldStyles
 
     val button: PushButtonStyles
+
+    val modal: ModalStyles
 }
 
 /**
