@@ -155,6 +155,8 @@ interface Theme {
     val icons: Icons
 
     val input: InputFieldStyles
+
+    val button: PushButtonStyles
 }
 
 /**

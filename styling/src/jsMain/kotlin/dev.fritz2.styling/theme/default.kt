@@ -187,4 +187,63 @@ open class DefaultTheme : Theme {
         }
     }
 
+    override val button = object : PushButtonStyles {
+        private val basic
+
+        override val solid: Style<BasicParams> = {
+            basic()
+            background { color { "var(--main-color)" } }
+            color { light }
+
+            hover {
+                css("filter: brightness(132%);")
+            }
+
+            active {
+                css("filter: brightness(132%);")
+            }
+        }
+
+        override val outline: Style<BasicParams> = {
+            color { "var(--main-color)" }
+            border {
+                width { thin }
+                style { BorderStyleValues.solid }
+                color { "var(--main-color)" }
+            }
+
+            hover {
+                background { color { light } }
+            }
+        }
+
+        override val ghost: Style<BasicParams> = {
+            color { "var(--main-color)" }
+        }
+
+        override val link: Style<BasicParams> = {
+            paddings { all { none } }
+            height { auto }
+            lineHeight { normal }
+            color { "var(--main-color)" }
+            hover {
+                textDecoration { TextDecorations.underline }
+            }
+            active {
+                color { secondary }
+            }
+        }
+
+        override val normal: Style<BasicParams> = {
+            height { "2.5rem" } //TODO: smallSizes in Theme
+            minWidth { "2.5rem" }
+            fontSize { normal }
+            paddings {
+                horizontal { normal }
+            }
+        }
+        override val small: Style<BasicParams> = normal
+        override val large: Style<BasicParams> = normal
+    }
+
 }
