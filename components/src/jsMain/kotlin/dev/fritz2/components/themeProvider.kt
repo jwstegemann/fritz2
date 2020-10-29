@@ -26,6 +26,7 @@ interface ThemeStore {
 class ThemeComponent {
 
     companion object {
+        /*
         val resetCss = staticStyle(
             "reset",
             """
@@ -627,6 +628,8 @@ video {
 /*# sourceMappingURL=base.css.map */                
             """.trimIndent()
         )
+
+         */
 
         fun defaultCss(): String = """
                 * { 

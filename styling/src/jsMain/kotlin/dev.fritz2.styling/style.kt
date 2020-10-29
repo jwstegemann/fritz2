@@ -80,6 +80,13 @@ fun staticStyle(name: String, css: String): StyleClass {
     return StyleClass(name)
 }
 
+/**
+ * adds a static css-class to your app's dynamic style sheet.
+ *
+ * @param name of the class to create
+ * @param styling styling DSL expression
+ * @return the name of the created class
+ */
 fun staticStyle(name: String, styling: BoxParams.() -> Unit): StyleClass {
     val css = StyleParamsImpl().apply(styling).toCss()
     ".$name { $css }".let {
@@ -98,6 +105,24 @@ fun staticStyle(name: String, styling: BoxParams.() -> Unit): StyleClass {
  * @return the name of the created class
  */
 fun style(css: String, prefix: String = "s"): StyleClass {
+    val hash = v3(css)
+    return StyleClass("$prefix-${generateAlphabeticName(hash)}".also {
+        if (!Styling.rules.contains(hash)) staticStyle(it, css)
+        Styling.rules.add(hash)
+    })
+}
+
+/**
+ * creates a dynamic css-class and add it to your app's dynamic style sheet.
+ * To make the name unique a hash is calculated from your content. This hash is also used to make sure
+ * that no two rules with identical content are created but the already existing class is used in this case.
+ *
+ * @param styling styling DSL expression
+ * @param prefix that is added in front of the created class name
+ * @return the name of the created class
+ */
+fun style(styling: BoxParams.() -> Unit, prefix: String = "s"): StyleClass {
+    val css = StyleParamsImpl().apply(styling).toCss()
     val hash = v3(css)
     return StyleClass("$prefix-${generateAlphabeticName(hash)}".also {
         if (!Styling.rules.contains(hash)) staticStyle(it, css)

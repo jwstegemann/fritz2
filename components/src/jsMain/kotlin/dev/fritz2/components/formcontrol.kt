@@ -7,6 +7,8 @@ import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.renderAll
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BorderStyleValues
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.theme
 import dev.fritz2.styling.whenever
@@ -31,7 +33,9 @@ open class FormControlComponent {
             """
         )
 
-        val invalidCss = staticStyle("inputField-invalid") {
+        const val invalidClassName = "invalid"
+
+        val invalidCss: Style<BasicParams> = {
             boxShadow {
                 theme().shadows.danger
             }
@@ -39,6 +43,16 @@ open class FormControlComponent {
                 width { thin }
                 style { solid }
                 color { danger }
+            }
+
+            hover {
+                border {
+                    color { danger }
+                }
+            }
+
+            focus {
+                boxShadow { danger }
             }
         }
 
@@ -64,8 +78,7 @@ open class FormControlComponent {
 
         fun assert() {
             if (overflows.isNotEmpty()) {
-                // FIXME: Why throwing stops application?
-                console.log(
+                console.error(
                     UnsupportedOperationException(
                         message = "Only one control within a formControl is allowed! Accepted control: ${assignee?.first}"
                                 + " The following controls are not applied and overflow this form: "
@@ -126,8 +139,7 @@ open class FormControlComponent {
         control.set(ControlNames.inputField)
         {
             inputField(styling, store, baseClass, id, prefix) {
-                // FIXME: greift zu spät -> Standard Border überschreibt diese Border Infos!
-                className = invalidCss.whenever(errorMessage.map { it.isNotEmpty() }) { it }
+                className = StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it }
                 init()
                 // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
                 //disabled.bindAttr("disabled")
@@ -171,8 +183,10 @@ open class FormControlComponent {
         renderContext: HtmlElements
     ) {
         control.assignee?.second?.let {
-            renderStrategies[control.assignee?.first]?.render(
-                styling, baseClass, id, prefix, renderContext, it
+            renderStrategies[control.assignee?.first]?.render({
+                children(".$invalidClassName", invalidCss)
+                styling()
+            }, baseClass, id, prefix, renderContext, it
             )
         }
         control.assert()
@@ -207,6 +221,15 @@ open class FormControlComponent {
                     }
                 }
             }.bind()
+        }
+    }
+
+    val requiredMarker: HtmlElements.() -> Unit = {
+        if (required) {
+            (::span.styled {
+                color { danger }
+                margins { left { tiny } }
+            }) { +"*" }
         }
     }
 }
@@ -245,13 +268,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
             items {
                 label {
                     +component.label
-                    // TODO: Check how to centralize this
-                    if (component.required) {
-                        (::span.styled {
-                            color { danger }
-                            margins { left { tiny } }
-                        }) { +"*" }
-                    }
+                    component.requiredMarker(this)
                 }
                 control(this)
                 component.renderHelperText(this)
@@ -271,8 +288,6 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
         renderContext: HtmlElements,
         control: HtmlElements.() -> Unit
     ) {
-        // TODO: How to style this outer div? (width = { full })
-        // renderContext.div {
         renderContext.box({
             width { full }
         }) {
