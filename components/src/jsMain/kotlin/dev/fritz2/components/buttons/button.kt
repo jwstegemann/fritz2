@@ -1,5 +1,63 @@
 package dev.fritz2.components.buttons
 
+import dev.fritz2.components.styled
+import dev.fritz2.dom.WithEvents
+import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.StyleClass.Companion.plus
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.staticStyle
+import org.w3c.dom.HTMLButtonElement
+
+open class PushButtonComponent {
+    companion object {
+        val staticCss = staticStyle(
+            "button",
+            """
+                appearance: none;
+                display: inline-flex;
+                align-items : center;
+                justify-content: center;
+                transition: all 250ms;
+                user-select: none;
+                position: relative;
+                white-space: nowrap;
+                vertical-align: middle;
+                outline: none;
+                
+                &:disabled {
+                    opacity: 0.4;
+                    cursor: not-allowed;
+                    boxShadow: none;
+                }
+            """
+        )
+    }
+
+    var events: (WithEvents<HTMLButtonElement>.() -> Unit)? = null
+
+    fun events(value: WithEvents<HTMLButtonElement>.() -> Unit) {
+        events = value
+    }
+}
+
+fun HtmlElements.pushButton(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: StyleClass? = null,
+    id: String? = null,
+    prefix: String = "push-button",
+    build: PushButtonComponent.() -> Unit = {}
+) {
+    val component = PushButtonComponent().apply(build)
+
+    (::button.styled(styling, baseClass + PushButtonComponent.staticCss, id, prefix) {
+        //InputFieldComponent.basicInputStyles()
+    }) {
+        component.events?.invoke(this)
+    }
+}
+
+
 /*
 internal object ButtonFoundation {
     val css = staticStyle(
