@@ -220,11 +220,19 @@ interface InputFieldStyles {
 }
 
 interface PushButtonStyles {
-    val small: Style<BasicParams>
-    val normal: Style<BasicParams>
-    val large: Style<BasicParams>
+    val variants: PushButtonVariants
+    val sizes: PushButtonSizes
+}
+
+interface PushButtonVariants {
     val outline: Style<BasicParams>
     val solid: Style<BasicParams>
     val ghost: Style<BasicParams>
     val link: Style<BasicParams>
+}
+
+interface PushButtonSizes {
+    val small: Style<BasicParams>
+    val normal: Style<BasicParams>
+    val large: Style<BasicParams>
 }

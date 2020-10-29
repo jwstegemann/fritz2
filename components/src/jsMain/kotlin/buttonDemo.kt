@@ -44,8 +44,7 @@ fun HtmlElements.buttonDemo(theme: ExtendedTheme): Div {
                     lineUp {
                         items {
                             pushButton {
-                                variant { }
-                                size { }
+                                variant { outline }
                                 icon { fromTheme { arrowUp } }
                                 text("save")
                             }

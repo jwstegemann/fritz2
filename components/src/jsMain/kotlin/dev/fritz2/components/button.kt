@@ -5,10 +5,14 @@ import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.ColorProperty
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.plus
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Colors
-import dev.fritz2.styling.theme.PushButtonStyles
+import dev.fritz2.styling.theme.PushButtonSizes
+import dev.fritz2.styling.theme.PushButtonVariants
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
@@ -37,16 +41,6 @@ open class PushButtonComponent {
                 }
             """
         )
-
-        val basicInputStyle: Style<BasicParams> = {
-            lineHeight { smaller }
-            radius { normal }
-            fontWeight { FontWeights.semiBold }
-
-            focus {
-                boxShadow { outline }
-            }
-        }
     }
 
     private val iconSize = "1.15em"
@@ -105,7 +99,7 @@ open class PushButtonComponent {
         events = value
     }
 
-    fun buildColor(value: ColorProperty): Style<BasicParams> = { css("--main-color: $value;") }
+    private fun buildColor(value: ColorProperty): Style<BasicParams> = { css("--main-color: $value;") }
 
     var color: Style<BasicParams> = buildColor(theme().colors.primary)
 
@@ -113,16 +107,16 @@ open class PushButtonComponent {
         color = buildColor(theme().colors.value())
     }
 
-    var variant: PushButtonStyles.() -> Style<BasicParams> = { theme().button.solid }
+    var variant: PushButtonVariants.() -> Style<BasicParams> = { theme().button.variants.solid }
 
-    fun variant(value: PushButtonStyles.() -> Style<BasicParams>) {
+    fun variant(value: PushButtonVariants.() -> Style<BasicParams>) {
         variant = value
     }
 
-    var size: PushButtonStyles.() -> Style<BasicParams> = { theme().button.normal }
+    var size: PushButtonSizes.() -> Style<BasicParams> = { theme().button.sizes.normal }
 
-    fun size(value: PushButtonStyles.() -> Style<BasicParams>) {
-        variant = value
+    fun size(value: PushButtonSizes.() -> Style<BasicParams>) {
+        size = value
     }
 
     var label: (HtmlElements.() -> Unit)? = null
@@ -173,10 +167,9 @@ fun HtmlElements.pushButton(
     val component = PushButtonComponent().apply(build)
 
     (::button.styled(styling, baseClass + PushButtonComponent.staticCss, id, prefix) {
-        PushButtonComponent.basicInputStyle()
         component.color()
-        component.variant.invoke(theme().button)()
-        component.size.invoke(theme().button)()
+        component.variant.invoke(theme().button.variants)()
+        component.size.invoke(theme().button.sizes)()
     }) {
         if (component.label == null) {
             component.renderIcon(this, component.centerIconStyle)
@@ -199,7 +192,7 @@ fun HtmlElements.clickButton(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
-    prefix: String = "click-button",
+    prefix: String = "push-button",
     build: PushButtonComponent.() -> Unit = {}
 ): Listener<MouseEvent, HTMLButtonElement> {
     var clickEvents: Listener<MouseEvent, HTMLButtonElement>? = null
