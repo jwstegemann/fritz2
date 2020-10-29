@@ -1,13 +1,18 @@
-package dev.fritz2.components.buttons
+package dev.fritz2.components
 
-import dev.fritz2.components.styled
+import dev.fritz2.dom.Listener
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
-import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.Colors
+import dev.fritz2.styling.theme.PushButtonStyles
+import dev.fritz2.styling.theme.theme
+import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.events.MouseEvent
 
 open class PushButtonComponent {
     companion object {
@@ -32,12 +37,129 @@ open class PushButtonComponent {
                 }
             """
         )
+
+        val basicInputStyle: Style<BasicParams> = {
+            lineHeight { smaller }
+            radius { normal }
+            fontWeight { FontWeights.semiBold }
+
+            focus {
+                boxShadow { outline }
+            }
+        }
+    }
+
+    private val iconSize = "1.15em"
+    private val marginToText = "0.35rem"
+    private val marginToBorder = "-0.2rem"
+
+    val centerIconStyle: Style<BasicParams> = {
+        width { "1.5em" }
+        height { "1.5em" }
+    }
+
+    val centerSpinnerStyle: Style<BasicParams> = {
+        width { iconSize }
+        height { iconSize }
+    }
+
+    val leftSpinnerStyle: Style<BasicParams> = {
+        width { "1.0em" }
+        height { "1.0em" }
+        margins {
+            left { marginToBorder }
+            right { marginToText }
+        }
+    }
+
+    val rightSpinnerStyle: Style<BasicParams> = {
+        width { "1.0em" }
+        height { "1.0em" }
+        margins {
+            left { marginToText }
+            right { marginToBorder }
+        }
+    }
+
+    val leftIconStyle: Style<BasicParams> = {
+        width { iconSize }
+        height { iconSize }
+        margins {
+            left { marginToBorder }
+            right { marginToText }
+        }
+    }
+
+    val rightIconStyle: Style<BasicParams> = {
+        width { iconSize }
+        height { iconSize }
+        margins {
+            right { marginToBorder }
+            left { marginToText }
+        }
     }
 
     var events: (WithEvents<HTMLButtonElement>.() -> Unit)? = null
 
     fun events(value: WithEvents<HTMLButtonElement>.() -> Unit) {
         events = value
+    }
+
+    fun buildColor(value: ColorProperty): Style<BasicParams> = { css("--main-color: $value;") }
+
+    var color: Style<BasicParams> = buildColor(theme().colors.primary)
+
+    fun color(value: Colors.() -> ColorProperty) {
+        color = buildColor(theme().colors.value())
+    }
+
+    var variant: PushButtonStyles.() -> Style<BasicParams> = { theme().button.solid }
+
+    fun variant(value: PushButtonStyles.() -> Style<BasicParams>) {
+        variant = value
+    }
+
+    var size: PushButtonStyles.() -> Style<BasicParams> = { theme().button.normal }
+
+    fun size(value: PushButtonStyles.() -> Style<BasicParams>) {
+        variant = value
+    }
+
+    var label: (HtmlElements.() -> Unit)? = null
+
+    fun text(value: String) {
+        label = { span { +value } }
+    }
+
+    fun text(value: Flow<String>) {
+        label = { span { value.bind() } }
+    }
+
+    var icon: ((HtmlElements, Style<BasicParams>) -> Unit)? = null
+
+    fun icon(
+        styling: BasicParams.() -> Unit = {},
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = IconComponent.prefix,
+        build: IconComponent.() -> Unit = {}
+    ) {
+        icon = { context, iconStyle ->
+            context.icon(styling + iconStyle, baseClass, id, prefix, build)
+        }
+    }
+
+    var isIconRight: Boolean = false
+    fun iconRight() {
+        isIconRight = true
+    }
+
+    fun renderIcon(renderContext: HtmlElements, iconStyle: Style<BasicParams>) {
+        icon?.invoke(renderContext, iconStyle)
+    }
+
+    fun renderLabel(renderContext: HtmlElements) {
+        label?.invoke(renderContext)
     }
 }
 
@@ -51,10 +173,43 @@ fun HtmlElements.pushButton(
     val component = PushButtonComponent().apply(build)
 
     (::button.styled(styling, baseClass + PushButtonComponent.staticCss, id, prefix) {
-        //InputFieldComponent.basicInputStyles()
+        PushButtonComponent.basicInputStyle()
+        component.color()
+        component.variant.invoke(theme().button)()
+        component.size.invoke(theme().button)()
     }) {
+        if (component.label == null) {
+            component.renderIcon(this, component.centerIconStyle)
+        } else {
+            if (component.icon != null && !component.isIconRight) {
+                component.renderIcon(this, component.leftIconStyle)
+            }
+            component.renderLabel(this)
+            if (component.icon != null && component.isIconRight) {
+                component.renderIcon(this, component.rightIconStyle)
+            }
+        }
+
         component.events?.invoke(this)
     }
+}
+
+
+fun HtmlElements.clickButton(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: StyleClass? = null,
+    id: String? = null,
+    prefix: String = "click-button",
+    build: PushButtonComponent.() -> Unit = {}
+): Listener<MouseEvent, HTMLButtonElement> {
+    var clickEvents: Listener<MouseEvent, HTMLButtonElement>? = null
+    pushButton(styling, baseClass, id, prefix) {
+        build()
+        events {
+            clickEvents = clicks
+        }
+    }
+    return clickEvents!!
 }
 
 

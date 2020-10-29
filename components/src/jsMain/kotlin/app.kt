@@ -1,5 +1,4 @@
 import dev.fritz2.binding.const
-import dev.fritz2.binding.handledBy
 import dev.fritz2.components.flexBox
 import dev.fritz2.components.styled
 import dev.fritz2.components.themeProvider
@@ -10,10 +9,8 @@ import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.render
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
 
 /*
 val themes = listOf<Pair<String, ExtendedTheme>>(
@@ -125,6 +122,12 @@ fun main() {
                             +"stack"
                             href = const("#stack")
                         }
+                        (::a.styled {
+                            fontSize { large }
+                        }) {
+                            +"buttons"
+                            href = const("#buttonDemo")
+                        }
                     }
                     router.render { site ->
                         when (site) {
@@ -134,6 +137,7 @@ fun main() {
                             "text" -> textDemo()
                             "flexBoxDemo" -> flexBoxDemo(store, themes, theme)
                             "gridBoxDemo" -> gridBoxDemo()
+                            "buttonDemo" -> buttonDemo(theme)
                             else -> stackDemo(theme)
                         }
                     }.bind()

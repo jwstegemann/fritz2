@@ -218,3 +218,13 @@ interface InputFieldStyles {
     val outline: Style<BasicParams>
     val filled: Style<BasicParams>
 }
+
+interface PushButtonStyles {
+    val small: Style<BasicParams>
+    val normal: Style<BasicParams>
+    val large: Style<BasicParams>
+    val outline: Style<BasicParams>
+    val solid: Style<BasicParams>
+    val ghost: Style<BasicParams>
+    val link: Style<BasicParams>
+}

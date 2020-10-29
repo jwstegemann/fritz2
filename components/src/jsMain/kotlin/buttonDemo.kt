@@ -1,6 +1,6 @@
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.watch
-import dev.fritz2.components.flexBox
+import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.tracking.tracker
@@ -32,6 +32,35 @@ fun HtmlElements.buttonDemo(theme: ExtendedTheme): Div {
             padding { normal }
         }) {
             h1 { +"Button Showcase" }
+
+            stackUp {
+                items {
+                    lineUp {
+                        items {
+                            clickButton { text("save") } handledBy buttonStore.showMsg
+                        }
+                    }
+
+                    lineUp {
+                        items {
+                            pushButton {
+                                variant { }
+                                size { }
+                                icon { fromTheme { arrowUp } }
+                                text("save")
+                            }
+                        }
+                    }
+
+                    lineUp {
+                        items {
+                            pushButton {
+                                icon { fromTheme { arrowUp } }
+                            }
+                        }
+                    }
+                }
+            }
 
 //            f2StackUp().apply {
 //                f2LineUp().apply {
