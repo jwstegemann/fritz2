@@ -16,7 +16,7 @@ fun HtmlElements.buttonDemo(theme: ExtendedTheme): Div {
 
         val showMsg = handle { model ->
             loading.track("running...") {
-                delay(30000)
+                delay(3000)
                 window.alert("geclickt")
             }
             model
@@ -38,6 +38,15 @@ fun HtmlElements.buttonDemo(theme: ExtendedTheme): Div {
                     lineUp {
                         items {
                             clickButton { text("save") } handledBy buttonStore.showMsg
+                            clickButton {
+                                loading(buttonStore.loading)
+                                text("save")
+                            } handledBy buttonStore.showMsg
+                            clickButton {
+                                loading(buttonStore.loading)
+                                text("save")
+                                loadingText("saving...")
+                            } handledBy buttonStore.showMsg
                         }
                     }
 
@@ -48,6 +57,17 @@ fun HtmlElements.buttonDemo(theme: ExtendedTheme): Div {
                                 icon { fromTheme { arrowUp } }
                                 text("save")
                             }
+                            pushButton {
+                                icon { fromTheme { arrowUp } }
+                                loading(buttonStore.loading)
+                                text("save")
+                            }
+                            pushButton {
+                                icon { fromTheme { arrowUp } }
+                                iconRight()
+                                loading(buttonStore.loading)
+                                text("save")
+                            }
                         }
                     }
 
@@ -55,6 +75,15 @@ fun HtmlElements.buttonDemo(theme: ExtendedTheme): Div {
                         items {
                             pushButton {
                                 icon { fromTheme { arrowUp } }
+                            }
+                            pushButton {
+                                icon { fromTheme { arrowUp } }
+                                loading(buttonStore.loading)
+                            }
+                            pushButton {
+                                variant { ghost }
+                                icon { fromTheme { arrowUp } }
+                                loading(buttonStore.loading)
                             }
                         }
                     }
