@@ -1,12 +1,15 @@
 package dev.fritz2.remote
 
 import kotlinx.coroutines.await
+import org.khronos.webgl.ArrayBuffer
 import org.w3c.fetch.*
+import org.w3c.files.Blob
+import org.w3c.xhr.FormData
 import kotlinx.browser.window as browserWindow
 
 
 /**
- * exception type for handling http exceptions
+ * [Exception] type for handling http exceptions
  *
  * @property statusCode the http response status code
  * @property body the body of the error-response
@@ -16,11 +19,11 @@ class FetchException(val statusCode: Short, val body: String, val response: Resp
 )
 
 /**
- * factory method to create a RequestTemplate
+ * creates a new [Request]
  *
- * @property baseUrl the common base of all urls that you want to call using the template
+ * @param baseUrl the common base of all urls that you want to call using the template
  */
-fun remote(baseUrl: String = "") = Request(baseUrl = baseUrl)
+fun http(baseUrl: String = "") = Request(baseUrl = baseUrl)
 
 /**
  * Represents the common fields an attributes of a given set of http requests.
@@ -33,7 +36,7 @@ fun remote(baseUrl: String = "") = Request(baseUrl = baseUrl)
 open class Request(
     private val baseUrl: String = "",
     private val headers: Map<String, String> = emptyMap(),
-    private val body: String? = undefined,
+    private val body: dynamic = undefined,
     private val referrer: String? = undefined,
     private val referrerPolicy: dynamic = undefined,
     private val mode: RequestMode? = undefined,
@@ -153,17 +156,47 @@ open class Request(
      * @param subUrl url which getting appended to the [baseUrl] with `/`
      */
     fun append(subUrl: String) = Request(
-            "${baseUrl.trimEnd('/')}/${subUrl.trimStart('/')}",
-            headers, body, referrer, referrerPolicy, mode,
-            credentials, cache, redirect, integrity, keepalive, reqWindow
+        "${baseUrl.trimEnd('/')}/${subUrl.trimStart('/')}",
+        headers, body, referrer, referrerPolicy, mode,
+        credentials, cache, redirect, integrity, keepalive, reqWindow
     )
 
     /**
      * sets the body content to the request
      *
-     * @param content body as string
+     * @param content body as [String]
      */
     fun body(content: String) = Request(
+        baseUrl, headers, content, referrer, referrerPolicy, mode,
+        credentials, cache, redirect, integrity, keepalive, reqWindow
+    )
+
+    /**
+     * sets the [ArrayBuffer] content to the request
+     *
+     * @param content body as [ArrayBuffer]
+     */
+    fun arrayBuffer(content: ArrayBuffer) = Request(
+        baseUrl, headers, content, referrer, referrerPolicy, mode,
+        credentials, cache, redirect, integrity, keepalive, reqWindow
+    )
+
+    /**
+     * sets the [FormData] content to the request
+     *
+     * @param content body as [FormData]
+     */
+    fun formData(content: FormData) = Request(
+        baseUrl, headers, content, referrer, referrerPolicy, mode,
+        credentials, cache, redirect, integrity, keepalive, reqWindow
+    )
+
+    /**
+     * sets the [Blob] content to the request
+     *
+     * @param content body as [Blob]
+     */
+    fun blob(content: Blob) = Request(
         baseUrl, headers, content, referrer, referrerPolicy, mode,
         credentials, cache, redirect, integrity, keepalive, reqWindow
     )
@@ -176,7 +209,8 @@ open class Request(
      */
     fun header(name: String, value: String) = Request(
         baseUrl, headers.plus(name to value), body, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow)
+        credentials, cache, redirect, integrity, keepalive, reqWindow
+    )
 
     /**
      * adds the given [Content-Type](https://developer.mozilla.org/de/docs/Web/HTTP/Headers/Content-Type)

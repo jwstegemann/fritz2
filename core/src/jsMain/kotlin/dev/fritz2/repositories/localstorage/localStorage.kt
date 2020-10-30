@@ -37,12 +37,12 @@ class LocalStorageEntity<T, I>(private val resource: Resource<T, I>, private val
             ?: entity
 
     /**
-     * saves the serialized entity to [localStorage] using prefix and id defined in [resource]
+     * adds or updates the serialized entity to [localStorage] using prefix and id defined in [resource]
      *
-     * @param entity entity to save
-     * @return the saved entity
+     * @param entity entity to add or update
+     * @return the added or saved entity
      */
-    override suspend fun saveOrUpdate(entity: T): T {
+    override suspend fun addOrUpdate(entity: T): T {
         window.localStorage.setItem(
             "${prefix}.${resource.serializeId(resource.idProvider(entity))}",
             resource.serializer.write(entity)

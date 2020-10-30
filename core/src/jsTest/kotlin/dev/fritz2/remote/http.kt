@@ -3,16 +3,12 @@ package dev.fritz2.remote
 import dev.fritz2.test.rest
 import dev.fritz2.test.runTest
 import dev.fritz2.test.test
-import dev.fritz2.test.testServer
+import dev.fritz2.test.testHttpServer
+import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.get
 import kotlin.random.Random
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
-/**
- * See [Httpbin](https://httpbin.org/) for testing endpoints
- */
 class RemoteTests {
 
     private val codes = listOf<Short>(400, 401, 403, 404, 429, 500, 501, 503)
@@ -20,7 +16,7 @@ class RemoteTests {
 
     @Test
     fun testHTTPMethods() = runTest {
-        val remote = testServer(test)
+        val remote = testHttpServer(test)
         remote.get("get")
         remote.delete("delete")
         remote.head("head")
@@ -32,7 +28,7 @@ class RemoteTests {
 
     @Test
     fun testBasicAuth() = runTest {
-        val remote = testServer(test)
+        val remote = testHttpServer(test)
         val user = "test"
         val password = "password"
         remote.basicAuth(user, password).get("basicAuth")
@@ -45,7 +41,7 @@ class RemoteTests {
 
     @Test
     fun testErrorStatusCodes() = runTest {
-        val remote = testServer(test)
+        val remote = testHttpServer(test)
         for(code in codes) {
             assertFailsWith(FetchException::class) {
                 remote.get("status/$code")
@@ -55,7 +51,7 @@ class RemoteTests {
 
     @Test
     fun testHeaders() = runTest {
-        val remote = testServer(test)
+        val remote = testHttpServer(test)
         val body: String = remote
             .acceptJson()
             .cacheControl("no-cache")
@@ -68,7 +64,7 @@ class RemoteTests {
 
     @Test
     fun testCRUDMethods() = runTest {
-        val remote = testServer(rest)
+        val remote = testHttpServer(rest)
         val texts = mutableListOf<String>()
         val ids = mutableListOf<String>()
         for (i in 0..5) {
@@ -90,6 +86,19 @@ class RemoteTests {
         val empty = remote.acceptJson().get().getBody()
         for (text in texts) {
             assertFalse(empty.contains(text), "deleted entity is in list")
+        }
+    }
+
+    @Test
+    fun testByteArray() = runTest {
+        val remote = testHttpServer("extra/arraybuffer")
+        val data = Uint8Array(arrayOf(1, 2, 3))
+        val response = remote.arrayBuffer(data.buffer).post()
+        val result = Uint8Array(response.getArrayBuffer())
+        var i = 0
+        while (i < result.length) {
+            assertEquals(data[i], result[i], "binary data is not matched")
+            i++
         }
     }
 
