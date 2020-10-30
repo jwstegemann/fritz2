@@ -2,7 +2,9 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.Listener
 import dev.fritz2.dom.WithEvents
+import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.renderAll
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
@@ -119,14 +121,30 @@ open class PushButtonComponent {
         size = value
     }
 
-    var label: (HtmlElements.() -> Unit)? = null
+    var label: (HtmlElements.(hide: Boolean) -> Unit)? = null
 
     fun text(value: String) {
-        label = { span { +value } }
+        label = { hide -> span(if (hide) hidden.name else null) { +value } }
     }
 
     fun text(value: Flow<String>) {
-        label = { span { value.bind() } }
+        label = { hide -> span(if (hide) hidden.name else null) { value.bind() } }
+    }
+
+    var loadingText: (HtmlElements.() -> Unit)? = null
+
+    fun loadingText(value: String) {
+        loadingText = { span { +value } }
+    }
+
+    fun loadingText(value: Flow<String>) {
+        loadingText = { span { value.bind() } }
+    }
+
+    var loading: Flow<Boolean>? = null
+
+    fun loading(value: Flow<Boolean>) {
+        loading = value
     }
 
     var icon: ((HtmlElements, Style<BasicParams>) -> Unit)? = null
@@ -148,12 +166,44 @@ open class PushButtonComponent {
         isIconRight = true
     }
 
-    fun renderIcon(renderContext: HtmlElements, iconStyle: Style<BasicParams>) {
-        icon?.invoke(renderContext, iconStyle)
+    fun renderIcon(renderContext: Button, iconStyle: Style<BasicParams>, spinnerStyle: Style<BasicParams>) {
+        if (loading == null) {
+            icon?.invoke(renderContext, iconStyle)
+        } else {
+            val x = loading?.renderAll { running ->
+                if (running) {
+                    spinner(spinnerStyle) {}
+                } else {
+                    icon?.invoke(this, iconStyle)
+                }
+            }
+            renderContext.apply { x?.bind(true) }
+        }
     }
 
-    fun renderLabel(renderContext: HtmlElements) {
-        label?.invoke(renderContext)
+    fun renderLabel(renderContext: Button) {
+        if (loading == null || icon != null) {
+            label?.invoke(renderContext, false)
+        } else {
+            val x = loading?.renderAll { running ->
+                if (running) {
+                    spinner({
+                        if (loadingText == null) {
+                            css("position: absolute;")
+                            centerSpinnerStyle()
+                        } else leftSpinnerStyle()
+                    }) {}
+                    if (loadingText != null) {
+                        loadingText!!.invoke(this)
+                    } else {
+                        label?.invoke(this, true)
+                    }
+                } else {
+                    label?.invoke(this, false)
+                }
+            }
+            renderContext.apply { x?.bind() }
+        }
     }
 }
 
@@ -172,14 +222,14 @@ fun HtmlElements.pushButton(
         component.size.invoke(theme().button.sizes)()
     }) {
         if (component.label == null) {
-            component.renderIcon(this, component.centerIconStyle)
+            component.renderIcon(this, component.centerIconStyle, component.centerSpinnerStyle)
         } else {
             if (component.icon != null && !component.isIconRight) {
-                component.renderIcon(this, component.leftIconStyle)
+                component.renderIcon(this, component.leftIconStyle, component.leftSpinnerStyle)
             }
             component.renderLabel(this)
             if (component.icon != null && component.isIconRight) {
-                component.renderIcon(this, component.rightIconStyle)
+                component.renderIcon(this, component.rightIconStyle, component.rightSpinnerStyle)
             }
         }
 
