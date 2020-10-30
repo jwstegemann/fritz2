@@ -74,6 +74,29 @@ fun HtmlElements.buttonDemo(theme: ExtendedTheme): Div {
                     lineUp {
                         items {
                             pushButton {
+                                size { small }
+                                variant { outline }
+                                icon { fromTheme { arrowUp } }
+                                text("save")
+                            }
+                            pushButton {
+                                icon { fromTheme { arrowUp } }
+                                loading(buttonStore.loading)
+                                text("save")
+                            }
+                            pushButton {
+                                size { large }
+                                icon { fromTheme { arrowUp } }
+                                iconRight()
+                                loading(buttonStore.loading)
+                                text("save")
+                            }
+                        }
+                    }
+
+                    lineUp {
+                        items {
+                            pushButton {
                                 icon { fromTheme { arrowUp } }
                             }
                             pushButton {

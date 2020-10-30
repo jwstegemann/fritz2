@@ -249,15 +249,32 @@ open class DefaultTheme : Theme {
 
         override val sizes = object : PushButtonSizes {
             override val normal: Style<BasicParams> = {
-                height { "2.5rem" } //TODO: smallSizes in Theme
+                height { "2.5rem" }
                 minWidth { "2.5rem" }
                 fontSize { normal }
                 paddings {
                     horizontal { normal }
                 }
             }
-            override val small: Style<BasicParams> = normal
-            override val large: Style<BasicParams> = normal
+
+            override val small: Style<BasicParams> = {
+                height { "2rem" }
+                minWidth { "2rem" }
+                fontSize { small }
+                paddings {
+                    horizontal { smaller }
+                }
+            }
+
+            override val large: Style<BasicParams> = {
+                height { "3rem" }
+                minWidth { "3rem" }
+                fontSize { large }
+                paddings {
+                    horizontal { larger }
+                }
+            }
+
         }
 
     }
