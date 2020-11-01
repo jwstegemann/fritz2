@@ -14,33 +14,74 @@ import org.w3c.dom.HTMLStyleElement
 import org.w3c.dom.css.CSSStyleSheet
 
 internal object Styling {
-    private var counter = 0
+    class Sheet(val id: String) {
+        var counter: Int = 0
+        val styleSheet: CSSStyleSheet = create()
+        val middleware = middleware(arrayOf(::stringify, addRuleMiddleware()))
 
-    val rules = mutableSetOf<Int>()
-
-    private val sheet by lazy {
-        val style = document.createElement("style") as HTMLStyleElement
-        // WebKit hack
-        style.appendChild(document.createTextNode(""))
-        document.head!!.appendChild(style)
-        style.sheet!! as CSSStyleSheet
-    }
-
-    private val addRuleMiddleware: (dynamic) -> dynamic = { value ->
-        try {
-            if (value.root == null)
-                with(value["return"] as String?) {
-                    if (this != null && this.isNotBlank()) sheet.insertRule(this as String, counter++)
-                }
-        } catch (e: Throwable) {
-            console.error("unable to insert rule in stylesheet: ${e.message}", e)
-            counter--
+        private fun addRuleMiddleware(): (dynamic) -> dynamic = { value ->
+            try {
+                if (value.root == null)
+                    with(value["return"] as String?) {
+                        if (this != null && this.isNotBlank()) styleSheet.insertRule(this as String, counter++)
+                    }
+            } catch (e: Throwable) {
+                console.error("unable to insert rule in stylesheet: ${e.message}", e)
+                counter--
+            }
+            undefined
         }
-        undefined
+
+
+        private fun create(): CSSStyleSheet {
+            val style = document.createElement("style") as HTMLStyleElement
+            style.setAttribute("id", id)
+            // WebKit hack
+            style.appendChild(document.createTextNode(""))
+            document.head!!.appendChild(style)
+            return style.sheet!! as CSSStyleSheet
+        }
+
+        fun remove() {
+            styleSheet.disabled = true
+            document.getElementById(id)?.let {
+                it.parentNode?.removeChild(it)
+            }
+
+        }
     }
 
-    val middleware = middleware(arrayOf(::stringify, addRuleMiddleware))
+    private const val dynamicStyleSheetId = "fritz2Dynamic"
+    private const val staticStyleSheetId = "fritz2Static"
+
+    private val rules = mutableSetOf<String>()
+
+    private val staticSheet = Sheet(staticStyleSheetId)
+    private var dynamicSheet = Sheet(dynamicStyleSheetId)
+
+    fun resetCss(css: String) {
+        dynamicSheet.remove()
+        rules.clear()
+        dynamicSheet = Sheet(dynamicStyleSheetId)
+        addDynamicCss("reset", css)
+    }
+
+    fun addStaticCss(css: String) {
+        serialize(compile(css), staticSheet.middleware)
+    }
+
+    fun addDynamicCss(key: String, css: String) {
+        if (!rules.contains(key)) {
+            serialize(compile(css), dynamicSheet.middleware)
+            rules.add(key)
+        }
+    }
 }
+
+fun resetCss(css: String) {
+    Styling.resetCss(css)
+}
+
 
 /**
  * alias for CSS class names
@@ -67,6 +108,15 @@ inline class StyleClass(val name: String) {
 //const val NoStyle: StyleClass = ""
 
 /**
+ * adds some static css to your app's dynamic style sheet.
+ *
+ * @param css well formed content of the css-rule to add
+ */
+fun staticStyle(css: String) {
+    Styling.addStaticCss(css)
+}
+
+/**
  * adds a static css-class to your app's dynamic style sheet.
  *
  * @param name of the class to create
@@ -74,9 +124,7 @@ inline class StyleClass(val name: String) {
  * @return the name of the created class
  */
 fun staticStyle(name: String, css: String): StyleClass {
-    ".$name { $css }".let {
-        serialize(compile(it), Styling.middleware)
-    }
+    Styling.addStaticCss(".$name { $css }")
     return StyleClass(name)
 }
 
@@ -89,9 +137,7 @@ fun staticStyle(name: String, css: String): StyleClass {
  */
 fun staticStyle(name: String, styling: BoxParams.() -> Unit): StyleClass {
     val css = StyleParamsImpl().apply(styling).toCss()
-    ".$name { $css }".let {
-        serialize(compile(it), Styling.middleware)
-    }
+    Styling.addStaticCss(".$name { $css }")
     return StyleClass(name)
 }
 
@@ -106,10 +152,9 @@ fun staticStyle(name: String, styling: BoxParams.() -> Unit): StyleClass {
  */
 fun style(css: String, prefix: String = "s"): StyleClass {
     val hash = v3(css)
-    return StyleClass("$prefix-${generateAlphabeticName(hash)}".also {
-        if (!Styling.rules.contains(hash)) staticStyle(it, css)
-        Styling.rules.add(hash)
-    })
+    return StyleClass("$prefix-${generateAlphabeticName(hash)}").also {
+        Styling.addDynamicCss(it.name, ".${it.name} { $css }")
+    }
 }
 
 /**
@@ -123,11 +168,7 @@ fun style(css: String, prefix: String = "s"): StyleClass {
  */
 fun style(styling: BoxParams.() -> Unit, prefix: String = "s"): StyleClass {
     val css = StyleParamsImpl().apply(styling).toCss()
-    val hash = v3(css)
-    return StyleClass("$prefix-${generateAlphabeticName(hash)}".also {
-        if (!Styling.rules.contains(hash)) staticStyle(it, css)
-        Styling.rules.add(hash)
-    })
+    return style(css, prefix)
 }
 
 //FIXME: change return to Flow<StyleClass>

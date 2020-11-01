@@ -5,18 +5,14 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.render
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.StyleClass.Companion.plus
-import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.FlexParams
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.style
+import dev.fritz2.styling.resetCss
 import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 interface ThemeStore {
     val data: Flow<Int>
@@ -24,12 +20,9 @@ interface ThemeStore {
 }
 
 class ThemeComponent {
-
     companion object {
-        /*
-        val resetCss = staticStyle(
-            "reset",
-            """
+        val staticResetCss: String
+            get() = """ 
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 
 /* Document
@@ -625,11 +618,13 @@ video {
   height: auto;
 }
 
+body button span {
+    font-size: ${theme().fontSizes.normal};
+}
+
 /*# sourceMappingURL=base.css.map */                
             """.trimIndent()
-        )
 
-         */
 
         fun defaultCss(): String = """
                 * { 
@@ -710,11 +705,14 @@ fun HtmlElements.themeProvider(
     build: ThemeComponent.() -> Unit = {}
 ): Div {
     val component = ThemeComponent().apply(build)
+
+
     // apply ``ThemeComponent.resetCss`` in a different way; it should be set as global CSS within the html head/style section
     return div {
-        component.themeStore.data.map {
+        component.themeStore.data.render {
+            resetCss(ThemeComponent.staticResetCss)
             box(
-                styling, baseClass + style(ThemeComponent.defaultCss(), "default"), id, prefix
+                styling, baseClass, id, prefix
             ) {
                 component.items?.let { it() }
             }
