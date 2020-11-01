@@ -1,12 +1,9 @@
-import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.selectedIndex
-import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.currentTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
@@ -67,12 +64,12 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>
                         md = { left { normal } }
                     )
                 }) {
-                    //(::p.styled { theme.teaserText }) { +"Marketing" }
-                    p {
-                        // TODO: Way too complicated - needs to get some convenient API! (But how?)
-                        className = themeStore.data.map { i -> staticStyle("foo", themes[i].teaserText).name }
-                        +"Marketing"
-                    }
+                    (::p.styled { theme.teaserText }) { +"Marketing" }
+//                    p {
+//                        // TODO: Way too complicated - needs to get some convenient API! (But how?)
+//                        className = themeStore.data.map { i -> staticStyle("foo", themes[i].teaserText).name }
+//                        +"Marketing"
+//                    }
                     (::a.styled {
                         margins { top { tiny } }
                         fontSize { normal }
