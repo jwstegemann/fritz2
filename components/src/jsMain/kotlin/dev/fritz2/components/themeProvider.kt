@@ -63,7 +63,7 @@ main {
  */
 
 h1 {
-  font-size: 2em;
+  font-size: ${theme().fontSizes.huge};
   margin: 0.67em 0;
 }
 
@@ -88,7 +88,7 @@ hr {
 
 pre {
   font-family: monospace, monospace; /* 1 */
-  font-size: 1em; /* 2 */
+  font-size: ${theme().fontSizes.normal}; /* 2 */
 }
 
 /* Text-level semantics
@@ -132,7 +132,7 @@ code,
 kbd,
 samp {
   font-family: monospace, monospace; /* 1 */
-  font-size: 1em; /* 2 */
+  font-size: ${theme().fontSizes.huge};; /* 2 */
 }
 
 /**
@@ -189,7 +189,7 @@ optgroup,
 select,
 textarea {
   font-family: inherit; /* 1 */
-  font-size: 100%; /* 1 */
+  font-size: ${theme().fontSizes.normal};; /* 1 */
   line-height: 1.15; /* 1 */
   margin: 0; /* 2 */
 }
@@ -442,6 +442,15 @@ ul {
   list-style: none;
   margin: 0;
   padding: 0;
+  padding-left: ${theme().space.normal};
+}
+
+ul {
+  list-style-type: disc
+}
+
+ol {
+  list-style-type: decimal
 }
 
 /**
@@ -533,14 +542,34 @@ table {
   border-collapse: collapse;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
+h1 {
+  font-size: ${theme().fontSizes.huge};;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: ${theme().fontSizes.larger};;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: ${theme().fontSizes.large};;
+  font-weight: bold;
+}
+
+h4 {
+  font-size: ${theme().fontSizes.normal};;
+  font-weight: bold;
+}
+
+h5 {
+  font-size: ${theme().fontSizes.small};;
+  font-weight: bold;
+}
+
 h6 {
-  font-size: inherit;
-  font-weight: inherit;
+  font-size: ${theme().fontSizes.smaller};;
+  font-weight: bold;
 }
 
 /**
@@ -618,48 +647,9 @@ video {
   height: auto;
 }
 
-body button span {
-    font-size: ${theme().fontSizes.normal};
-}
-
 /*# sourceMappingURL=base.css.map */                
             """.trimIndent()
 
-
-        fun defaultCss(): String = """
-                * { 
-                    font-size: ${theme().fontSizes.normal}
-                }
-                h1,
-                h2,
-                h3,
-                h4,
-                h5,
-                h6 {
-                    font-weight: bold;
-                }
-                h1 {
-                    font-size: 2rem;
-                }
-                h2 {
-                    font-size: 1.75rem;
-                }
-                h3 {
-                    font-size: 1.5rem;
-                }
-                h4 {
-                    font-size: 1.25rem;
-                }
-                h5 {
-                    font-size: 1rem;
-                }
-                h6 {
-                    font-size: 0.75rem;
-                } 
-                ul, ol {
-                    padding-left: ${theme().space.normal};
-                }
-            """.trimIndent()
     }
 
     var resetCss: Boolean = false
@@ -706,8 +696,6 @@ fun HtmlElements.themeProvider(
 ): Div {
     val component = ThemeComponent().apply(build)
 
-
-    // apply ``ThemeComponent.resetCss`` in a different way; it should be set as global CSS within the html head/style section
     return div {
         component.themeStore.data.render {
             resetCss(ThemeComponent.staticResetCss)

@@ -95,7 +95,7 @@ Variante / Repräsentation:
 - **kein** Font
 - benannte Varianten ``val safeIcon = ...`` → ``Icon { safeIcon }``
 
-### Modal
+### Modal (Christian)
 
 - basiert auf _z-Index_
 - ganz allgemeines Popup-"Fenster"

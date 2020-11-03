@@ -144,11 +144,17 @@ fun main() {
                             +"buttons"
                             href = const("#buttons")
                         }
+                        (::a.styled {
+                            fontSize { large }
+                        }) {
+                            +"modal"
+                            href = const("#modal")
+                        }
                     }
                     router.render { site ->
                         when (site) {
                             "input" -> inputDemo()
-                            "buttons" -> buttonDemo(theme)
+                            "buttons" -> buttonDemo()
                             "formcontrol" -> formControlDemo()
                             "text" -> textDemo()
                             "flexBox" -> flexBoxDemo(store, themes, theme)
@@ -156,6 +162,7 @@ fun main() {
                             "multiselect" -> multiSelectDemo()
                             "singleselect" -> singleSelectDemo()
                             "stack" -> stackDemo(theme)
+                            "modal" -> modalDemo()
                             else -> textDemo()
                         }
                     }.bind()
