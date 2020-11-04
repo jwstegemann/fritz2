@@ -103,7 +103,7 @@ fun HtmlElements.modalDemo(): Div {
                                         top { normal }
                                     }
                                 }) {
-                                    spacing { tiny }
+                                    spacing { small }
                                     items {
                                         clickButton({
                                             color { info }

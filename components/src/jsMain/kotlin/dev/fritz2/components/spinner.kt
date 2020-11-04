@@ -22,6 +22,10 @@ class SpinnerComponent {
             border-bottom-color: transparent;
             border-left-color: transparent;
             color: currentColor;
+            
+            @keyframes loading {
+              to {transform: rotate(360deg);}
+            }            
         """
         )
     }

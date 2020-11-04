@@ -200,7 +200,7 @@ class Shadows(
     val lowered: ShadowProperty,
     val bottom: ShadowProperty = lowered,
     val outline: ShadowProperty,
-    val glowing: ShadowProperty =outline,
+    val glowing: ShadowProperty = outline,
     val danger: ShadowProperty,
     val none: ShadowProperty = "none"
 )
@@ -211,14 +211,71 @@ class Shadows(
 class IconDefinition(
     val displayName: String,
     val viewBox: String = "0 0 24 24",
-    val path: String
+    val svg: String
 )
 
 /**
  * Definition of standard-icons
  */
 interface Icons {
+    val copy: IconDefinition
+    val search: IconDefinition
+    val search2: IconDefinition
+    val moon: IconDefinition
+    val sun: IconDefinition
+    val add: IconDefinition
+    val smallAdd: IconDefinition
+    val settings: IconDefinition
+    val checkCircle: IconDefinition
+    val lock: IconDefinition
+    val unlock: IconDefinition
+    val view: IconDefinition
+    val viewOff: IconDefinition
+    val download: IconDefinition
+    val delete: IconDefinition
+    val repeat: IconDefinition
+    val repeatClock: IconDefinition
+    val edit: IconDefinition
+    val chevronLeft: IconDefinition
+    val chevronRight: IconDefinition
+    val chevronDown: IconDefinition
+    val chevronUp: IconDefinition
+    val arrowBack: IconDefinition
+    val arrowForward: IconDefinition
     val arrowUp: IconDefinition
+    val arrowUpDown: IconDefinition
+    val arrowDown: IconDefinition
+    val externalLink: IconDefinition
+    val link: IconDefinition
+    val plusSquare: IconDefinition
+    val calendar: IconDefinition
+    val chat: IconDefinition
+    val time: IconDefinition
+    val arrowRight: IconDefinition
+    val arrowLeft: IconDefinition
+    val atSign: IconDefinition
+    val attachment: IconDefinition
+    val upDown: IconDefinition
+    val star: IconDefinition
+    val email: IconDefinition
+    val phone: IconDefinition
+    val dragHandle: IconDefinition
+    val spinner: IconDefinition
+    val close: IconDefinition
+    val smallClose: IconDefinition
+    val notAllowed: IconDefinition
+    val triangleDown: IconDefinition
+    val triangleUp: IconDefinition
+    val infoOutline: IconDefinition
+    val bell: IconDefinition
+    val info: IconDefinition
+    val question: IconDefinition
+    val questionOutline: IconDefinition
+    val warning: IconDefinition
+    val warningTwo: IconDefinition
+    val check: IconDefinition
+    val minus: IconDefinition
+    val hamburger: IconDefinition
 }
 
 interface InputFieldStyles {
@@ -247,7 +304,7 @@ interface PushButtonSizes {
     val large: Style<BasicParams>
 }
 
-interface  ModalStyles {
+interface ModalStyles {
     val overlay: Style<BasicParams>
     val sizes: ModalSizes
     val variants: ModalVariants
