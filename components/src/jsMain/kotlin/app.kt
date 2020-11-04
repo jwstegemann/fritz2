@@ -1,6 +1,7 @@
 import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
 import dev.fritz2.components.flexBox
+import dev.fritz2.components.icon
 import dev.fritz2.components.styled
 import dev.fritz2.components.themeProvider
 import dev.fritz2.dom.html.A
@@ -12,8 +13,11 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.render
+import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlin.js.Promise.Companion.all
 
 /*
 val themes = listOf<Pair<String, ExtendedTheme>>(
@@ -61,6 +65,39 @@ fun HtmlElements.myBorderedRedLink(
         }
     }(init)
 
+fun HtmlElements.simpleAnchorWithBackground(linkText: String): A {
+    return (::a.styled {
+        fontSize { large }
+        color {
+            theme().colors.warning
+        }
+        hover {
+            color {
+                theme().colors.light
+            }
+            background { color { theme().colors.dark } }
+            radius { "1rem" }
+        }
+    }) {
+        +linkText
+        href = const("#$linkText")
+    }
+}
+
+fun HtmlElements.simpleAnchor(linkText: String): A {
+    return (::a.styled {
+        fontSize { large }
+        hover {
+            color {
+                theme().colors.warning
+            }
+        }
+    }) {
+        +linkText
+        href = const("#$linkText")
+    }
+}
+
 
 @ExperimentalCoroutinesApi
 fun main() {
@@ -81,98 +118,84 @@ fun main() {
             // Override default theme by a new list of themes
             themes { themes }
             items {
+
                 section {
-                    flexBox({
-                        height { "60px" }
-                        wrap { nowrap }
+                    flexBox ({
+                        flex {
+                            grow { "0" }
+                            shrink { "1" }
+                            basis { auto }
+                        }
                         direction { row }
-                        justifyContent { spaceEvenly }
-                        alignItems { center }
-                    })
-                    {
-                        (::a.styled {
-                            fontSize { large }
-                        }) {
-                            +"text"
-                            href = const("#text")
+                        minHeight { "100%" }
+                        height { "100%" }
+                    }) {
+                        flexBox({
+                            minHeight { "100%" }
+                            height { "100%" }
+                            padding { "1.0rem" }
+                            width { "200px" }
+                            display { flex }
+                            wrap { nowrap }
+                            direction { column }
+                            alignItems { flexEnd }
+                            background { color { dark } }
+                            color { light }
+                            paddings {
+                                top { "50px" }
+                            }
+                        })
+                        {
+                            simpleAnchor("text")
+                            simpleAnchor("flexbox")
+                            simpleAnchor("gridbox")
+                            simpleAnchor("icons")
+                            simpleAnchor("input")
+                            simpleAnchor("multiselect")
+                            simpleAnchor("singleselect")
+                            simpleAnchor("formcontrol")
+                            simpleAnchor("stack")
+                            simpleAnchor("buttons")
+                            simpleAnchor("modal")
+
+                            br {}
+                            a {
+                                href = const("https://www.fritz2.dev/")
+                                target = const("fritz2")
+                                img {
+                                    src = const("https://www.fritz2.dev/images/fritz2_logo_small_white.svg")
+                                    width = const(35)
+                                    height = const(35)
+                                }
+                            }
                         }
-                        (::a.styled {
-                            fontSize { large }
+                        (::div.styled {
+                            flex {
+                                basis { "60%" }
+                            }
+                            margins {
+                                all { "20px"}
+                            }
                         }) {
-                            +"flexBox"
-                            href = const("#flexBox")
-                        }
-                        (::a.styled {
-                            fontSize { large }
-                        }) {
-                            +"gridBox"
-                            href = const("#gridBox")
-                        }
-                        (::a.styled {
-                            fontSize { large }
-                        }) {
-                            +"icons"
-                            href = const("#iconsDemo")
-                        }
-                        (::a.styled {
-                            fontSize { large }
-                        }) {
-                            +"input"
-                            href = const("#input")
-                        }
-                        (::a.styled {
-                            fontSize { large }
-                        }) {
-                            +"multiselect"
-                            href = const("#multiselect")
-                        }
-                        (::a.styled {
-                            fontSize { large }
-                        }) {
-                            +"singleselect"
-                            href = const("#singleselect")
-                        }
-                        (::a.styled {
-                            fontSize { large }
-                        }) {
-                            +"formcontrol"
-                            href = const("#formcontrol")
-                        }
-                        (::a.styled {
-                            fontSize { large }
-                        }) {
-                            +"stack"
-                            href = const("#stack")
-                        }
-                        (::a.styled {
-                            fontSize { large }
-                        }) {
-                            +"buttons"
-                            href = const("#buttons")
-                        }
-                        (::a.styled {
-                            fontSize { large }
-                        }) {
-                            +"modal"
-                            href = const("#modal")
+
+                            router.render { site ->
+                                when (site) {
+                                    "icons" -> iconsDemo()
+                                    "input" -> inputDemo()
+                                    "buttons" -> buttonDemo()
+                                    "formcontrol" -> formControlDemo()
+                                    "text" -> textDemo()
+                                    "flexbox" -> flexBoxDemo(store, themes, theme)
+                                    "gridbox" -> gridBoxDemo()
+                                    "multiselect" -> multiSelectDemo()
+                                    "singleselect" -> singleSelectDemo()
+                                    "stack" -> stackDemo(theme)
+                                    "modal" -> modalDemo()
+                                    else -> textDemo()
+                                }
+                            }.bind()
                         }
                     }
-                    router.render { site ->
-                        when (site) {
-                            "input" -> inputDemo()
-                            "buttons" -> buttonDemo()
-                            "formcontrol" -> formControlDemo()
-                            "text" -> textDemo()
-                            "flexBox" -> flexBoxDemo(store, themes, theme)
-                            "gridBox" -> gridBoxDemo()
-                            "multiselect" -> multiSelectDemo()
-                            "singleselect" -> singleSelectDemo()
-                            "stack" -> stackDemo(theme)
-                            "modal" -> modalDemo()
-                            "iconsDemo" -> iconsDemo()
-                            else -> textDemo()
-                        }
-                    }.bind()
                 }
             }
         }

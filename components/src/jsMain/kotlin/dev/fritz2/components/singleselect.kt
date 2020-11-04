@@ -3,18 +3,21 @@ package dev.fritz2.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
+import dev.fritz2.components.RadioGroupComponent.Companion.radioGroupStructure
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLInputElement
 
 // todo implement defaultChecked for radio, checkbox
-// todo remove hardcoded color names from checkbox and radio
+// todo add dropdown single select
 
 fun HtmlElements.radioGroup(
     styling: BasicParams.() -> Unit = {},
@@ -23,39 +26,7 @@ fun HtmlElements.radioGroup(
     prefix: String = "radioGroupComponent",
     build: RadioGroupComponent.() -> Unit = {}
 ): Flow<String> {
-
-    val component = RadioGroupComponent().apply(build)
-
-    val selectedStore = RootStore(component.selected)
-
-    (::fieldset.styled(
-        baseClass = baseClass,
-        id = id,
-        prefix = prefix) {
-        styling() // attach user styling to container only
-    }) {
-        component.items.withIndex().forEach { item ->
-            radio(
-                styling = {},
-                id = "$id-radio-${item.index}",
-                prefix = prefix
-            ) {
-                disabled { component.disabled }
-                checked = selectedStore.data.map { selItem ->
-                    item.value == selItem
-                }
-                borderColor { component.borderColor }
-                backgroundColor { component.backgroundColor }
-                checkedBackgroundColor { component.checkedBackgroundColor }
-                radioSize { component.radioSize }
-                events {
-                    changes.values() handledBy selectedStore.update
-                }
-                text = const(item.value)
-            }
-        }
-    }
-    return selectedStore.data
+    return radioGroupStructure(styling, null, baseClass, id, prefix, build)
 }
 
 class RadioGroupComponent {
@@ -90,70 +61,67 @@ class RadioGroupComponent {
         borderColor = value()
     }
 
-    var radioSize: Style<BasicParams> = { RadioGroupSizes.normal } // @label
-    fun radioSize(value: RadioGroupSizes.() -> Style<BasicParams>) {
-        radioSize = RadioGroupSizes.value()
+    var radioSize: Style<BasicParams> = { RadioComponent.Companion.RadioSizes.normal } // @label
+    fun radioSize(value: RadioComponent.Companion.RadioSizes.() -> Style<BasicParams>) {
+        radioSize = RadioComponent.Companion.RadioSizes.value()
     }
 
     companion object {
+        private fun HtmlElements.radioGroupContent(
+            id: String?,
+            component: RadioGroupComponent
+        ): Flow<String> {
 
-        // todo duplicated code in radiocomponent.radiosizes
-        // todo replace px with rem where not explicit (not due for 0.8 snapshot)
-        object RadioGroupSizes {
-            val small: Style<BasicParams> = {
-                fontSize { small }
-                before {
-                    height { "10px" }
-                    width { "10px" }
-                    border {
-                        width { "1px" }
+            val selectedStore = RootStore(component.selected)
+
+            component.items.withIndex().forEach { item ->
+                radio(id = "$id-radio-${item.index}") {
+                    disabled { component.disabled }
+                    checked = selectedStore.data.map { selItem ->
+                        item.value == selItem
                     }
-                    margins {
-                        right { "4px" }
+                    borderColor { component.borderColor }
+                    backgroundColor { component.backgroundColor }
+                    checkedBackgroundColor { component.checkedBackgroundColor }
+                    radioSize { component.radioSize }
+                    events {
+                        changes.values() handledBy selectedStore.update
                     }
-                    position {
-                        relative {
-                            bottom { "1px" }
-                        }
-                    }
+                    text = const(item.value)
                 }
             }
-            val normal: Style<BasicParams> = {
-                fontSize { normal }
-                before {
-                    height { "20px" }
-                    width { "20px" }
-                    border {
-                        width { "2px" }
-                    }
-                    margins {
-                        right { "7px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "2px" }
-                        }
-                    }
+            return selectedStore.data
+        }
+
+        fun HtmlElements.radioGroupStructure(
+            containerStyling: BasicParams.() -> Unit = {},
+            selectedItemStore: RootStore<String>? = null,
+            baseClass: StyleClass? = null,
+            id: String? = null,
+            prefix: String = "radioGroupComponent",
+            build: RadioGroupComponent.() -> Unit = {}
+        ): Flow<String> {
+            val component = RadioGroupComponent().apply(build)
+            var sel: Flow<String> = flowOf("")
+
+            if (null == selectedItemStore) {
+                (::fieldset.styled(
+                    baseClass = baseClass,
+                    id = id,
+                    prefix = prefix
+                ) {
+                    containerStyling()
+                }) {
+                    // outside of form controls, returning the flow works just fine
+                    sel = radioGroupContent(id, component)
                 }
+            } else {
+                // when rendered in a form control, store ensures timely binding
+                radioGroupContent(
+                    id, component
+                ).handledBy(selectedItemStore.update)
             }
-            val large: Style<BasicParams> = {
-                fontSize { larger }
-                before {
-                    height { "30px" }
-                    width { "30px" }
-                    border {
-                        width { "3px" }
-                    }
-                    margins {
-                        right { "10px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "3px" }
-                        }
-                    }
-                }
-            }
+            return sel
         }
     }
 }
@@ -177,7 +145,6 @@ private fun HtmlElements.radio(
             baseClass = RadioComponent.radioInputStaticCss,
             id = "$id-input",
             prefix = prefix) {
-            RadioComponent.radioStyles()
             component.checkedBackgroundColor()
 
         }) {
@@ -243,9 +210,7 @@ class RadioComponent {
 
     // todo: for user, these are only distinguished  from Input.xxx by signature
     var checked: Flow<Boolean> = const(false) // @input
-    fun checked(value: () -> Flow<Boolean>) {
-        checked = value()
-    }
+
     var disabled: Flow<Boolean> = const(false) // @input
     fun disabled(value: () -> Flow<Boolean>) {
         disabled = value()
@@ -253,17 +218,14 @@ class RadioComponent {
 
     companion object {
 
-        // todo when using with checkboxgroup, duplicated css code is passed instead of this
         // todo replace px with rem where not explicit (not due for 0.8 snapshot)
-        object RadioSizes {
+        object RadioSizes { // @label
             val small: Style<BasicParams> = {
                 fontSize { small }
+                lineHeight { small }
                 before {
                     height { "10px" }
                     width { "10px" }
-                    border {
-                        width { "1px" }
-                    }
                     margins {
                         right { "4px" }
                     }
@@ -276,12 +238,10 @@ class RadioComponent {
             }
             val normal: Style<BasicParams> = {
                 fontSize { normal }
+                lineHeight { normal }
                 before {
                     height { "20px" }
                     width { "20px" }
-                    border {
-                        width { "2px" }
-                    }
                     margins {
                         right { "7px" }
                     }
@@ -294,12 +254,10 @@ class RadioComponent {
             }
             val large: Style<BasicParams> = {
                 fontSize { larger }
+                lineHeight { larger }
                 before {
                     height { "30px" }
                     width { "30px" }
-                    border {
-                        width { "3px" }
-                    }
                     margins {
                         right { "10px" }
                     }
@@ -312,7 +270,7 @@ class RadioComponent {
             }
         }
 
-        val radioLabelStyles: Style<BasicParams> = {
+        val radioLabelStyles: Style<BasicParams> = { // @label
             before {
                 radii {
                     right { "50%" }
@@ -320,51 +278,42 @@ class RadioComponent {
                     top { "50%" }
                     bottom { "50%" }
                 }
-            }
-        }
-
-        val radioStyles: Style<BasicParams> = {
-            lineHeight { normal }
-            radius { normal }
-            fontWeight { normal }
-            paddings { horizontal { small } }
-            border {
-                width { thin }
-                style { solid }
-                color { light }
+                border {
+                    style { solid }
+                    width { "0.1rem" }
+                }
+                margins {
+                    right { "1.0rem" }
+                }
             }
         }
 
         val radioInputStaticCss = staticStyle(
             "radioInput",
             """
-                position: absolute;
-                height: 1px; 
-                width: 1px;
-                overflow: hidden;
-                clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
-                clip: rect(1px, 1px, 1px, 1px);
+            position: absolute;
+            height: 1px; 
+            width: 1px;
+            overflow: hidden;
+            clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+            clip: rect(1px, 1px, 1px, 1px);
+            outline: none;
+            &:focus{
                 outline: none;
-                &:checked + label::before {
-                    border-style: solid;
-                    outline: none;
-                }
-                &:focus + label::before {
-                    box-shadow: 0 0px 4px grey;
-                }
-                &:disabled + label {
-                    color: #878787;
-                    cursor: not-allowed;
-                }
-                &:disabled + label::before {
-                    opacity: 0.3;
-                    cursor: not-allowed;
-                    boxShadow: none;
-                    color: #575757;
-                }
-                &:focus{
-                    outline: none;
-                }
+            }
+            &:focus + label::before {
+                box-shadow: 0 0 1px ${theme().colors.dark};
+            }
+            &:disabled + label {
+                color: ${theme().colors.disabled};
+                cursor: not-allowed;
+            }
+            &:disabled + label::before {
+                opacity: 0.3;
+                cursor: not-allowed;
+                boxShadow: none;
+                color: ${theme().colors.disabled};
+            }
             """
         )
 
@@ -373,138 +322,15 @@ class RadioComponent {
             """
             display: block;
             position: relative;
-            margin-right: 1.0rem;
             &::before {
                 content: '';
+                outline: none;
                 position: relative;
                 display: inline-block;
                 vertical-align: middle;
-                box-shadow: 0 0 2px #575757 inset;
+                box-shadow: 0 0 1px ${ theme().colors.dark} inset;
             }
             """
         )
     }
 }
-
-
-// todo add multiselect
-// todo update everything below this line to new concepts
-//
-//class SingleSelectionContext<T>(val selected: Flow<T>)
-//
-//internal object SingleSelectFoundation {
-//    val label = staticStyle(
-//        "singleSelectLabel",
-//        """
-//        margin-right: 0.5rem;
-//        """
-//    )
-//    val select = staticStyle(
-//        "singleSelect",
-//        """
-//        border-width: 1px;
-//        &:disabled {
-//            opacity: 0.5;
-//            cursor: not-allowed;
-//            boxShadow: none;
-//        }
-//        &:focus {
-//            outline: none;
-//        }
-//        &:hover {
-//            outline:none;
-//        }
-//        """
-//    )
-//    val option = staticStyle(
-//        "singleSelectOption",
-//        """
-//        box-shadow: 0 0 1px #444444 inset;
-//        """
-//    )
-//}
-
-//object SingleSelectSizes {
-//    val small: Style<BasicParams> = {
-//        fontSize { smaller }
-//        radii {
-//            top { smaller }
-//            bottom { smaller }
-//            left { smaller }
-//            right { smaller }
-//        }
-//    }
-//    val normal: Style<BasicParams> = {
-//        fontSize { normal }
-//        radii {
-//            top { normal }
-//            bottom { normal }
-//            left { normal }
-//            right { normal }
-//        }
-//    }
-//    val large: Style<BasicParams> = {
-//        fontSize { larger }
-//        radii {
-//            top { larger }
-//            bottom { larger }
-//            left { larger }
-//            right { larger }
-//        }
-//    }
-//}
-//
-//fun <T : Any> HtmlElements.f2SingleSelect(
-//    styles: Style<BasicParams> = {},
-//    legend: Flow<String>? = null,
-//    options: Flow<List<T>>,
-//    selected: Flow<T>,
-//    inactive: Flow<Boolean>,
-//    size: SingleSelectSizes.() -> Style<BasicParams> = { normal },
-//    borderColor: ColorProperty = theme().colors.primary,
-//    backgroundColor: ColorProperty = rgb(255, 255, 255),
-//    selectedBackgroundColor: ColorProperty = theme().colors.secondary,
-//    layoutHorizontally: Boolean = false,
-//    optionToString: T.() -> String = Any::toString,
-//    id: String = uniqueId(),
-//    init: SingleSelectionContext<T>.() -> Any
-//): Div {
-//
-//    return div(id = id) {
-//        if (legend != null) {
-//            label(
-//                id = "label-$id",
-//                `for` = "select-$id"
-//            ) {
-//                legend.bind()
-//            }
-//        }
-//        select(
-//            "select-$id"
-//        ) {
-//            inactive.bindAttr("disabled")
-//            options.map { it.withIndex().toList() }.each().map { indexedT ->
-//                render {
-//                    option(
-//                        "option-$id-${indexedT.index}"
-//                    ) {
-//                        value = const(indexedT.index.toString())
-//                        selected.map { selT ->
-//                            if (indexedT.value == selT)
-//                                this@select.selectedIndex = const(indexedT.index)
-//                        }
-//                        +indexedT.value.optionToString()
-//                    }
-//                }
-//            }.bind()
-//
-//            SingleSelectionContext(
-//                changes.selectedIndex().flatMapLatest { index ->
-//                    options.map { list ->
-//                        list[index]
-//                    }
-//                }
-//            ).init()
-//        }
-//    }
-//}

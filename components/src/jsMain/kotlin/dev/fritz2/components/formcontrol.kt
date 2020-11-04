@@ -1,7 +1,8 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.Store
-import dev.fritz2.binding.const
+import dev.fritz2.binding.*
+import dev.fritz2.components.CheckboxGroupComponent.Companion.checkboxGroupStructure
+import dev.fritz2.components.RadioGroupComponent.Companion.radioGroupStructure
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.renderAll
@@ -58,8 +59,9 @@ open class FormControlComponent {
 
         object ControlNames {
             const val inputField = "inputField"
-            const val singleSelect = "singleSelect"
-            const val multiSelectCheckbox = "multiSelectCheckbox"
+            const val radioGroup = "radioGroup"
+            const val checkbox = "checkbox"
+            const val checkboxGroup = "checkboxGroup"
         }
     }
 
@@ -125,7 +127,9 @@ open class FormControlComponent {
 
     init {
         renderStrategies[ControlNames.inputField] = SingleControlRenderer(this)
-        renderStrategies[ControlNames.multiSelectCheckbox] = ControlGroupRenderer(this)
+        renderStrategies[ControlNames.checkbox] = SingleControlRenderer(this)
+        renderStrategies[ControlNames.checkboxGroup] = ControlGroupRenderer(this)
+        renderStrategies[ControlNames.radioGroup] = ControlGroupRenderer(this)
     }
 
     open fun inputField(
@@ -147,32 +151,66 @@ open class FormControlComponent {
         }
     }
 
-    open fun multiSelectCheckbox(
+    open fun checkbox(
         styling: BasicParams.() -> Unit = {},
-        store: Store<String>? = null,
         baseClass: StyleClass? = null,
         id: String? = null,
-        prefix: String = ControlNames.inputField,
-        init: Input.() -> Unit
+        prefix: String = ControlNames.checkbox,
+        build: CheckboxComponent.() -> Unit
     ) {
-        control.set(ControlNames.multiSelectCheckbox)
+        control.set(ControlNames.checkbox)
         {
-            box({
-                background {
-                    color { warning }
-                }
-                border {
-                    width { "3px" }
-                    style { solid }
-                    color { dark }
-                }
-                textAlign { center }
-                color { dark }
-                radius { small }
-            }) {
-                p { +"Only placeholder for a checkbox group" }
+            checkbox(styling, baseClass, id, prefix) {
+                //className = StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it }
+                build()
+                // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
+                //disabled.bindAttr("disabled")
             }
         }
+    }
+
+    open fun checkboxGroup(
+        styling: BasicParams.() -> Unit = {},
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = ControlNames.checkboxGroup,
+        build: CheckboxGroupComponent.() -> Unit
+    ): Flow<List<String>> {
+
+        val selectedStore = storeOf<List<String>>(emptyList())
+        control.set(ControlNames.checkboxGroup) {
+            checkboxGroupStructure(styling, selectedStore, baseClass, id, prefix) {
+                //className = StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it }
+                build()
+                // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
+                //disabled.bindAttr("disabled")
+            }
+        }
+        return selectedStore.data
+    }
+
+    open fun radioGroup(
+        styling: BasicParams.() -> Unit = {},
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = ControlNames.radioGroup,
+        build: RadioGroupComponent.() -> Unit
+    ): Flow<String> {
+        val selectedStore = storeOf<String>("")
+        control.set(ControlNames.radioGroup)
+        {
+            radioGroupStructure(styling, selectedStore, baseClass, id, prefix) {
+                //className = StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it }
+                build()
+                // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
+                //disabled.bindAttr("disabled")
+            }
+        }
+//        //debug
+//        selectedStore.data.map {
+//            console.log("- selRadio (in formcontrol): $it")
+//        }.watch()
+        return selectedStore.data
     }
 
     fun render(
@@ -183,10 +221,11 @@ open class FormControlComponent {
         renderContext: HtmlElements
     ) {
         control.assignee?.second?.let {
-            renderStrategies[control.assignee?.first]?.render({
-                children(".$invalidClassName", invalidCss)
-                styling()
-            }, baseClass, id, prefix, renderContext, it
+            renderStrategies[control.assignee?.first]?.render(
+                {
+                    children(".$invalidClassName", invalidCss)
+                    styling()
+                }, baseClass, id, prefix, renderContext, it
             )
         }
         control.assert()
@@ -313,3 +352,4 @@ fun HtmlElements.formControl(
     val component = FormControlComponent().apply(build)
     component.render(styling, baseClass, id, prefix, this)
 }
+

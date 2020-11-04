@@ -164,7 +164,7 @@ fun HtmlElements.multiSelectDemo(): Div {
                                 ) {
                                     disabled { const(false) }
                                     items { myItems }
-                                    selectedItems { mySelectedItems }
+                                    initialSelection { mySelectedItems }
                                     checkboxSize { large }
                                     borderColor { "black" }
                                     backgroundColor { "white" }
@@ -206,7 +206,7 @@ fun HtmlElements.multiSelectDemo(): Div {
                                 ) {
                                     disabled { const(false) }
                                     items { myItems }
-                                    selectedItems { mySelectedItems }
+                                    initialSelection { mySelectedItems }
                                     checkboxSize { normal }
                                     borderColor { "black" }
                                     backgroundColor { "white" }
