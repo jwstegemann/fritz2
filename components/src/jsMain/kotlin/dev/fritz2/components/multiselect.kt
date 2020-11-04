@@ -1,14 +1,16 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.const
-import dev.fritz2.binding.handledBy
+import dev.fritz2.binding.*
+import dev.fritz2.components.CheckboxGroupComponent.Companion.checkboxGroupStructure
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+
+// todo add dropdown multi select
 
 fun HtmlElements.checkboxGroup(
     styling: BasicParams.() -> Unit = {},
@@ -17,58 +19,7 @@ fun HtmlElements.checkboxGroup(
     prefix: String = "checkboxGroupComponent",
     build: CheckboxGroupComponent.() -> Unit = {}
 ): Flow<List<String>> {
-
-    val component = CheckboxGroupComponent().apply(build)
-
-    class CheckboxGroupEntry(val value: String, val checked: Boolean)
-
-    val selectedStore = object : RootStore<List<String>>(component.selectedItems) {
-        val modifyList = handle<CheckboxGroupEntry> { list, item ->
-            if (null != list.find { it == item.value }) { // item is in list
-                if (!item.checked) {
-                    list - item.value
-                } else list
-            } else { // item is not in list
-                if (item.checked) {
-                    list + item.value
-                } else list
-            }
-        }
-    }
-
-    (::fieldset.styled(
-        baseClass = baseClass,
-        id = id,
-        prefix = prefix) {
-        styling() // attach user styling to container only
-    }) {
-        component.items.withIndex().forEach { item ->
-
-            val checkThisBox = selectedStore.data.map { selectedItems ->
-                null != selectedItems.find { it == item.value }
-            }
-
-            checkbox(
-                {},
-                id = "$id-checkbox-${item.index}"
-            ) {
-                text = const(item.value)
-                checkboxSize { component.checkboxSize }
-                borderColor { component.borderColor }
-                backgroundColor { component.backgroundColor }
-                checkedBackgroundColor { component.checkedBackgroundColor }
-                checked { checkThisBox }
-                disabled { component.disabled }
-                events {
-                    changes.states().map { checked ->
-                        CheckboxGroupEntry(item.value, checked)
-                    } handledBy selectedStore.modifyList
-                }
-            }
-
-        }
-    }
-    return selectedStore.data
+    return checkboxGroupStructure(styling, null, baseClass, id, prefix, build)
 }
 
 class CheckboxGroupComponent {
@@ -78,9 +29,9 @@ class CheckboxGroupComponent {
         items = value()
     }
 
-    var selectedItems: List<String> = emptyList()
-    fun selectedItems(value: () -> List<String>) {
-        selectedItems = value()
+    var initialSelection: List<String> = emptyList()
+    fun initialSelection(value: () -> List<String>) {
+        initialSelection = value()
     }
 
     var disabled: Flow<Boolean> = const(false) // @input
@@ -103,88 +54,87 @@ class CheckboxGroupComponent {
         borderColor = value()
     }
 
-    var checkboxSize: Style<BasicParams> = { CheckboxGroupSizes.normal } // @label
-    fun checkboxSize(value: CheckboxGroupSizes.() -> Style<BasicParams>) {
-        checkboxSize = CheckboxGroupSizes.value()
+    var checkboxSize: Style<BasicParams> = { CheckboxComponent.Companion.CheckboxSizes.normal } // @label
+    fun checkboxSize(value: CheckboxComponent.Companion.CheckboxSizes.() -> Style<BasicParams>) {
+        checkboxSize = CheckboxComponent.Companion.CheckboxSizes.value()
     }
+
+    private class CheckboxGroupEntry(val value: String, val checked: Boolean)
 
     companion object {
 
-        // todo duplicated code in checkboxcomponent.checkboxsizes
-        // todo replace px with rem where not explicit (not due for 0.8 snapshot)
-        object CheckboxGroupSizes {
-            val small: Style<BasicParams> = {
-                fontSize { small }
-                before {
-                    height { "10px" }
-                    width { "10px" }
-                    border {
-                        width { "1px" }
-                    }
-                    margins {
-                        right { "4px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "1px" }
-                        }
-                    }
-                    radii {
-                        top { smaller }
-                        bottom { smaller }
-                        left { smaller }
-                        right { smaller }
+        private fun HtmlElements.checkboxGroupContent(
+            id: String?,
+            component: CheckboxGroupComponent
+        ): Flow<List<String>> {
+
+            val selectedStore = object : RootStore<List<String>>(component.initialSelection) {
+                val modifyList = handle<CheckboxGroupEntry> { list, item ->
+                    if (null != list.find { it == item.value }) { // item is in list
+                        if (!item.checked) {
+                            list - item.value
+                        } else list
+                    } else { // item is not in list
+                        if (item.checked) {
+                            list + item.value
+                        } else list
                     }
                 }
             }
-            val normal: Style<BasicParams> = {
-                fontSize { normal }
-                before {
-                    height { "20px" }
-                    width { "20px" }
-                    border {
-                        width { "2px" }
-                    }
-                    margins {
-                        right { "7px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "2px" }
-                        }
-                    }
-                    radii {
-                        top { normal }
-                        bottom { normal }
-                        left { normal }
-                        right { normal }
+            component.items.withIndex().forEach { item ->
+
+                val checkThisBox = selectedStore.data.map { selectedItems ->
+                    null != selectedItems.find { it == item.value }
+                }
+
+                checkbox(id = "$id-checkbox-${item.index}") {
+                    text = const(item.value)
+                    checkboxSize { component.checkboxSize }
+                    borderColor { component.borderColor }
+                    backgroundColor { component.backgroundColor }
+                    checkedBackgroundColor { component.checkedBackgroundColor }
+                    checked { checkThisBox }
+                    disabled { component.disabled }
+                    events {
+                        changes.states().map { checked ->
+                            CheckboxGroupEntry(item.value, checked)
+                        } handledBy selectedStore.modifyList
                     }
                 }
             }
-            val large: Style<BasicParams> = {
-                fontSize { larger }
-                before {
-                    height { "30px" }
-                    width { "30px" }
-                    border {
-                        width { "3px" }
-                    }
-                    margins {
-                        right { "10px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "3px" }
-                        }
-                    }
-                    radii {
-                        top { larger }
-                        bottom { larger }
-                        left { larger }
-                        right { larger }
-                    }
+            return selectedStore.data
+        }
+
+        fun HtmlElements.checkboxGroupStructure(
+            containerStyling: BasicParams.() -> Unit = {},
+            selectedItemsStore: RootStore<List<String>>? = null,
+            baseClass: StyleClass? = null,
+            id: String? = null,
+            prefix: String = "checkboxGroupComponent",
+            build: CheckboxGroupComponent.() -> Unit = {}
+        ): Flow<List<String>> {
+
+            val component = CheckboxGroupComponent().apply(build)
+            var selItems: Flow<List<String>> = flowOf(emptyList())
+
+            if (null == selectedItemsStore) { // group is used in form control
+                (::fieldset.styled(
+                    baseClass = baseClass,
+                    id = id,
+                    prefix = prefix
+                ) {
+                    containerStyling()
+                }) {
+                    // outside of form controls, returning the flow works just fine
+                    selItems = checkboxGroupContent(id, component)
                 }
+            } else {
+                // when rendered in a form control, store ensures timely binding
+                checkboxGroupContent(
+                    id, component
+                ).handledBy(selectedItemsStore.update)
             }
+            return selItems
         }
     }
 }

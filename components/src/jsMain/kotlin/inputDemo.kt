@@ -11,154 +11,162 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
 fun HtmlElements.inputDemo(): Div {
 
-    val user = storeOf("John Doe")
+    val user = storeOf("Jon Snoe")
 
     return div {
-        flexBox({
-            direction { column }
-            padding { normal }
+
+        stackUp({
+            alignItems { start }
+            padding { "1rem" }
+
         }) {
-            h1 { +"Input Showcase" }
+            items {
+                h1 { +"Showcase Inputs" }
 
-            h4 { +"Basic" }
-            inputField {
-                placeholder = const("Placeholder")
-            }
+                h3 { +"A basic Input needs no Store" }
+                inputField {
+                    placeholder = const("Placeholder")
+                }
 
-            h4 { +"Basic + Readonly + Custom Styling" }
-            inputField({
-                focus {
+                h3 { +"A disabled component is skipped by the TAB key, but readonly isn't." }
+                lineUp {
+                    items {
+                        inputField {
+                            value = const("disabled")
+                            disabled = const(true)
+                        }
+                        inputField({
+                            focus {
+                                border {
+                                    color { dark }
+                                }
+                                boxShadow { none }
+                            }
+                        }) {
+                            value = const("readonly")
+                            readOnly = const(true)
+                        }
+                    }
+                }
+
+                h3 { +"Password" }
+                inputField {
+                    type = const("password")
+                    placeholder = const("Password")
+                }
+
+                h3 { +"Inputs with store connect events automatically." }
+                inputField(store = user) {
+                    placeholder = const("Name")
+                }
+
+                h3 { +"Inputs without stores need manual event collection." }
+                inputField {
+                    placeholder = const("Name")
+                    changes.values() handledBy user.update
+                }
+
+                (::p.styled {
+                    background { color { light } }
+                    paddings { horizontal { small } }
+                    fontWeight { bold }
+                }) {
+                    +"Name in Store: "
+                    user.data.bind()
+                }
+
+                h3 { +"Sizes" }
+                lineUp {
+                    items {
+                        inputField({ theme().input.large() }) {
+                            placeholder = const("large")
+                        }
+                        inputField({ theme().input.normal() }) {
+                            placeholder = const("normal")
+                        }
+                        inputField({ theme().input.small() }) {
+                            placeholder = const("small")
+                        }
+                    }
+                }
+
+                h3 { +"Variants" }
+                lineUp {
+                    items {
+                        inputField({ theme().input.outline() }) {
+                            placeholder = const("outline")
+                        }
+                        inputField({ theme().input.filled() }) {
+                            placeholder = const("filled")
+                        }
+                    }
+                }
+
+                h2 { +"Input fields go to town" }
+
+                val ourInputStyle: BasicParams.() -> Unit = {
+                    theme().input.large()
+                    theme().input.filled()
                     border {
+                        color { warning }
+                        width { "3px" }
+                        style { double }
+                    }
+                    background {
                         color { dark }
                     }
-                    boxShadow { none }
-                }
-            }) {
-                value = const("Readonly!")
-                readOnly = const(true)
-            }
+                    radius { "1rem" }
+                    color { light }
 
-            h4 { +"Basic + Disabled" }
-            p { +"(tab over to see the difference to readonly variant!)" }
-            inputField {
-                value = const("Disabled!")
-                disabled = const(true)
-            }
-
-            h4 { +"Password" }
-            inputField {
-                type = const("password")
-                placeholder = const("Password")
-            }
-
-            h4 { +"Basic + Store" }
-            inputField(store = user) {
-                placeholder = const("Name")
-            }
-            h4 { +"changes manually applied to store's update" }
-            inputField {
-                placeholder = const("Name")
-                changes.values() handledBy user.update
-            }
-            lineUp({
-                margins { vertical { tiny } }
-            }) {
-                spacing { tiny }
-                items {
-                    p { +"given Name:" }
-                    (::p.styled {
-                        background { color { "lightgrey" } }
-                        radius { normal }
-                        paddings { horizontal { tiny } }
-                    }) {
-                        user.data.bind()
-                    }
-                }
-            }
-
-            h4 { +"Sizes" }
-            inputField({ theme().input.large() }) {
-                placeholder = const("large")
-            }
-            inputField({ theme().input.normal() }) {
-                placeholder = const("normal")
-            }
-            inputField({ theme().input.small() }) {
-                placeholder = const("small")
-            }
-
-            h4 { +"Variants" }
-            inputField({ theme().input.outline() }) {
-                placeholder = const("outline")
-            }
-            inputField({ theme().input.filled() }) {
-                placeholder = const("filled")
-            }
-
-            h4 { +"Put it all together" }
-            // in real life, put it into your theme!
-            val ourInputStyle: BasicParams.() -> Unit = {
-                theme().input.large()
-                theme().input.filled()
-                border {
-                    color { "lime" }
-                    width { "3px" }
-                    style { double }
-                }
-                background {
-                    color { dark }
-                }
-                radius { "1rem" }
-                color { "pink" }
-
-                focus {
-                    background {
-                        color { light }
-                    }
-                    color { "purple" }
-                }
-            }
-
-            // Extend base component
-            fun HtmlElements.ourInputField(
-                styling: BasicParams.() -> Unit = {},
-                store: Store<String>? = null,
-                baseClass: StyleClass? = null,
-                id: String? = null,
-                prefix: String = "ourInputField",
-                init: Input.() -> Unit
-            ) {
-                inputField({
-                    // always use corporate styling automatically!
-                    ourInputStyle()
-                    // still apply call-side defined styling!
-                    styling()
-                }, store, baseClass, id, prefix, init)
-            }
-
-            lineUp {
-                spacing { tiny }
-                items {
-                    // use our component instead of built-in one!
-                    ourInputField {
-                        type = const("text")
-                        placeholder = const("user")
-                    }
-                    ourInputField({
-                        // Passwords are dangerous -> so style ad hoc!!!
-                        border {
-                            color { danger }
+                    focus {
+                        background {
+                            color { light }
                         }
-                    }) {
-                        type = const("password")
-                        placeholder = const("password")
+                        color { warning }
                     }
                 }
+
+                // Extend base component
+                fun HtmlElements.ourInputField(
+                    styling: BasicParams.() -> Unit = {},
+                    store: Store<String>? = null,
+                    baseClass: StyleClass? = null,
+                    id: String? = null,
+                    prefix: String = "ourInputField",
+                    init: Input.() -> Unit
+                ) {
+                    inputField({
+                        // always use corporate styling automatically!
+                        ourInputStyle()
+                        // still apply call-side defined styling!
+                        styling()
+                    }, store, baseClass, id, prefix, init)
+                }
+
+                lineUp {
+                    spacing { tiny }
+                    items {
+                        // use our component instead of built-in one!
+                        ourInputField {
+                            type = const("text")
+                            placeholder = const("user")
+                        }
+                        ourInputField({
+                            // Passwords are dangerous -> so style ad hoc!!!
+                            border {
+                                color { danger }
+                            }
+                        }) {
+                            type = const("password")
+                            placeholder = const("password")
+                        }
+                    }
+                }
+                br {}
             }
         }
     }
