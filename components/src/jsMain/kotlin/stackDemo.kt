@@ -70,7 +70,7 @@ fun HtmlElements.stackDemo(theme: ExtendedTheme): Div {
                                 icon({
                                     size { small }
                                     color { "purple" }
-                                }) { fromTheme { arrowUp } }
+                                }) { fromTheme { star } }
                                 (::img.styled {
                                     size { tiny }
                                 }) {

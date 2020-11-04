@@ -111,6 +111,12 @@ fun main() {
                         (::a.styled {
                             fontSize { large }
                         }) {
+                            +"icons"
+                            href = const("#iconsDemo")
+                        }
+                        (::a.styled {
+                            fontSize { large }
+                        }) {
                             +"input"
                             href = const("#input")
                         }
@@ -163,6 +169,7 @@ fun main() {
                             "singleselect" -> singleSelectDemo()
                             "stack" -> stackDemo(theme)
                             "modal" -> modalDemo()
+                            "iconsDemo" -> iconsDemo()
                             else -> textDemo()
                         }
                     }.bind()

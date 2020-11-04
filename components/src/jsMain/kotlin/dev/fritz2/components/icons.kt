@@ -69,13 +69,9 @@ fun HtmlElements.icon(
             styling()
         }) {
             domNode.setAttributeNS(null, "viewBox", it.viewBox)
-            domNode.setAttributeNS(null, "fill", "none")
-
-            val path = document.createElementNS(xmlns, "path")
-            path.setAttributeNS(null, "d", it.path)
-            path.setAttributeNS(null, "fill", "currentColor")
-
-            domNode.appendChild(path)
+            domNode.setAttributeNS(null, "focusable", "false")
+            domNode.setAttributeNS(null, "role", "presentation")
+            domNode.innerHTML = it.svg
         }
     }
 }

@@ -140,8 +140,7 @@ class ModalComponent {
                 styling()
             }, baseClass, id, prefix) {
                 variant { ghost }
-                // TODO: Use ``Close`` icon!
-                icon { fromTheme { arrowUp } }
+                icon { fromTheme { smallClose } }
                 build()
             }.map { Unit } handledBy close
         }

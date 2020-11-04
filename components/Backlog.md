@@ -12,10 +12,10 @@
   - Pflichtparameter
   - restliche optionale Parameter
   - ``init`` als letztes
-- **keine** Komponenten für reine Text-Elemente wie <p>, <h>, <span> usw.
-  → viel zu viel Overhead und Pflegeaufwand
-  → aufwendigere Syntax und Namenskollision!
-  → "ad hoc" styling geht mit aktueller Lösung sehr einfach
+- **keine** Komponenten für reine Text-Elemente wie ```<p>, <h>, <span>``` usw.
+  - → viel zu viel Overhead und Pflegeaufwand
+  - → aufwendigere Syntax und Namenskollision!
+  - → "ad hoc" styling geht mit aktueller Lösung sehr einfach
 - Stattdessen: ``init``-Komponente:
   - initialisiert das globale CSS
   - setzt Standard-Sytles basierend auf dem *theme* für alle (Text-)Elemente
@@ -25,9 +25,9 @@
 
 - ``none`` bei _Background_ und _Border_ einbauen (Property mit getter)
 - Aufteilung des ``Sizes`` Typs in zwei Unterelemente: ``element`` + ``container`` um Größen für kleine und große 
-Elemente besser anzugeben.
+Elemente besser anzugeben. 
+(Frage dazu: Wir haben ``fontsize`` - das ist doch für kleine Abständen!?)
 - Doku: Beispiel + Hinweis, wie man CSS-DSL *ohne* Komponenten nutzt (s. davor)
-- ``attr`` für boolesche Attribute?
 
 ## Eingabekomponenten
 
