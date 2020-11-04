@@ -2,11 +2,10 @@ import dev.fritz2.binding.*
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.Input
+import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 // extend ControlComponent in order to override or extend functions for controls
@@ -16,43 +15,12 @@ class MyFormControlComponent : FormControlComponent() {
     // simply convenience function as we cannot provide default parameters for overridden functions!
     fun myMultiSelectCheckbox(
         styling: BasicParams.() -> Unit = {},
-        store: Store<String>? = null,
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = Companion.ControlNames.inputField,
-        init: Input.() -> Unit
+        init: CheckboxGroupComponent.() -> Unit
     ) {
-        multiSelectCheckbox(styling, store, baseClass, id, prefix, init)
-    }
-
-    // override default implementation to customize control rendering
-    override fun multiSelectCheckbox(
-        styling: BasicParams.() -> Unit,
-        store: Store<String>?,
-        baseClass: StyleClass?,
-        id: String?,
-        prefix: String,
-        init: Input.() -> Unit
-    ) {
-        control.set(Companion.ControlNames.multiSelectCheckbox)
-        {
-            box({
-                background {
-                    color { light }
-                }
-                border {
-                    width { "2px" }
-                    style { dashed }
-                    color { dark }
-                }
-                textAlign { center }
-                color { dark }
-                radius { small }
-                width { full }
-            }) {
-                p { +"My substitute for the default checkbox component!" }
-            }
-        }
+        checkboxGroup(styling, baseClass, id, prefix, init)
     }
 
     // Define your own renderer
@@ -96,7 +64,7 @@ class MyFormControlComponent : FormControlComponent() {
     init {
         // Overrule default strategy for ``multiSelectCheckbox``
         // You could also add a new *control* function with a corresponding renderer of course
-        renderStrategies[Companion.ControlNames.multiSelectCheckbox] = MySpecialRenderer(this)
+        renderStrategies[Companion.ControlNames.checkboxGroup] = MySpecialRenderer(this)
     }
 }
 
@@ -116,12 +84,21 @@ fun HtmlElements.formControlDemo(): Div {
     val solution = "fritz2"
     val framework = storeOf("")
 
+    val myItems = listOf("Arthur", "Tricia", "Zaphod", "Ford", "Marvin")
+    val mySelectedItems = listOf("Zaphod", "Ford")
+    val mySelectedItem = "Tricia"
+
+    val selectedItemsStore = RootStore(mySelectedItems)
+    val selectedStore = RootStore(mySelectedItem)
+    val checkedStore = RootStore(false)
+
     return div {
         stackUp({
             padding { "1rem" }
             alignItems { start }
         }) {
             spacing { large }
+
             items {
                 h1 { +"FormControl Showcase" }
                 h4 { +"Form with input control, required flag, passed store and dynamic error message" }
@@ -138,21 +115,82 @@ fun HtmlElements.formControlDemo(): Div {
                             } else ""
                         }
                     }
-                    // just use the appropriate *single element* control with its specific API!
+                     //just use the appropriate *single element* control with its specific API!
                     inputField(store = framework) {
                         placeholder = const("$solution for example")
                     }
                     // throws an exception -> only one (and the first) control is allowed!
                     inputField {
+                        placeholder = const("this control throws an exception")
                     }
                 }
 
-                h4 { +"Form with checkbox control" }
+                h4 { +"Form with single checkbox" }
                 formControl {
                     label { "Please choose your favorite Kotlin based web framework" }
                     helperText { "Choose wisely!" }
-                    multiSelectCheckbox { }
+                    checkbox(
+                        {},
+                        id = "check1"
+                    ) {
+                        text = const("I'm single")
+                        checkboxSize { normal }
+                        checked { checkedStore.data }
+                        borderColor { "black" }
+                        backgroundColor { "pink" }
+                        checkedBackgroundColor { "gray" }
+                        events {
+                            changes.states() handledBy checkedStore.update
+                        }
+                    }
                 }
+                div {
+                    checkedStore.data.map { checked ->
+                        b { +"Checked: $checked" }
+                    }.bind()
+                }
+
+                h4 { +"Form with checkbox group" }
+                formControl {
+                    label { "Please choose your favorite Kotlin based web framework" }
+                    helperText { "Choose wisely!" }
+                    checkboxGroup(
+                        {},
+                        id = "checkGroup1"
+                    ) {
+                        items { myItems }
+                        initialSelection { mySelectedItems }
+                        checkboxSize { normal }
+                    } handledBy selectedItemsStore.update
+                }
+                div {
+                    b { +"Selected items:" }
+                    ul {
+                        selectedItemsStore.data.each().render { selectedItem ->
+                            li { +selectedItem }
+                        }.bind()
+                    }
+                }
+
+                h4 { +"Form with radio group" }
+                formControl {
+                    label { "Please choose your favorite Kotlin based web framework" }
+                    helperText { "Choose wisely!" }
+                    radioGroup(
+                        {},
+                        id = "radioGroup1"
+                    ) {
+                        items { myItems }
+                        selected { mySelectedItem }
+                        radioSize { normal }
+                    } handledBy selectedStore.update
+                }
+                div {
+                    selectedStore.data.map { sel ->
+                        b { +"Selected: $sel" }
+                    }.bind()
+                }
+
 
                 // use your own formControl! Pay attention to the derived component receiver.
                 h4 { +"Custom FormControl" }

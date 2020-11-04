@@ -6,10 +6,11 @@ import dev.fritz2.dom.html.*
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLInputElement
 
-// todo add checkmark, alternatively change disabled style
+// todo add checkmark
 
 fun HtmlElements.checkbox(
     styling: BasicParams.() -> Unit = {},
@@ -30,9 +31,7 @@ fun HtmlElements.checkbox(
             baseClass = CheckboxComponent.checkboxInputStaticCss,
             id = "$id-input",
             prefix = prefix) {
-            CheckboxComponent.checkboxStyles()
-            component.checkedBackgroundColor()
-
+                component.checkedBackgroundColor()
         }) {
             type = const("checkbox")
             checked = component.checked
@@ -44,9 +43,10 @@ fun HtmlElements.checkbox(
             id = "$id-label",
             extension = "$id-input", // for
             prefix = prefix) {
-            component.checkboxSize()
-            component.backgroundColor()
-            component.borderColor()
+                CheckboxComponent.checkboxLabelStyles()
+                component.checkboxSize()
+                component.backgroundColor()
+                component.borderColor()
         }) {
             component.text.bind()
         }
@@ -60,7 +60,7 @@ class CheckboxComponent {
         checkboxSize = CheckboxSizes.value()
     }
 
-    var text: Flow<String> = const("") // @label
+    var text: Flow<String> = const("CheckboxLabel") // @label
     fun text(value: Flow<String>) {
         text = value
     }
@@ -103,16 +103,21 @@ class CheckboxComponent {
 
     companion object {
 
-        // todo when using with checkboxgroup, duplicated css code is passed instead of this
-        // todo replace px with rem where not explicit (not due for 0.8 snapshot)
-        object CheckboxSizes {
+         // todo replace px with rem/theme values where not explicit (not due for 0.8 snapshot)
+        object CheckboxSizes { // @ label
             val small: Style<BasicParams> = {
                 fontSize { small }
+                lineHeight { small }
                 before {
                     height { "10px" }
                     width { "10px" }
-                    border {
-                        width { "1px" }
+                    before {
+                        radii {
+                            top { smaller }
+                            bottom { smaller }
+                            left { smaller }
+                            right { smaller }
+                        }
                     }
                     margins {
                         right { "4px" }
@@ -122,22 +127,14 @@ class CheckboxComponent {
                             bottom { "1px" }
                         }
                     }
-                    radii {
-                        top { smaller }
-                        bottom { smaller }
-                        left { smaller }
-                        right { smaller }
-                    }
                 }
             }
             val normal: Style<BasicParams> = {
                 fontSize { normal }
+                lineHeight { normal }
                 before {
                     height { "20px" }
                     width { "20px" }
-                    border {
-                        width { "2px" }
-                    }
                     margins {
                         right { "7px" }
                     }
@@ -146,22 +143,14 @@ class CheckboxComponent {
                             bottom { "2px" }
                         }
                     }
-                    radii {
-                        top { normal }
-                        bottom { normal }
-                        left { normal }
-                        right { normal }
-                    }
                 }
             }
             val large: Style<BasicParams> = {
                 fontSize { larger }
+                lineHeight { larger }
                 before {
                     height { "30px" }
                     width { "30px" }
-                    border {
-                        width { "3px" }
-                    }
                     margins {
                         right { "10px" }
                     }
@@ -170,73 +159,70 @@ class CheckboxComponent {
                             bottom { "3px" }
                         }
                     }
-                    radii {
-                        top { larger }
-                        bottom { larger }
-                        left { larger }
-                        right { larger }
-                    }
                 }
             }
         }
 
-        val checkboxStyles: Style<BasicParams> = {
-            lineHeight { normal }
-            radius { normal }
-            fontWeight { normal }
-            paddings { horizontal { small } }
-            border {
-                width { thin }
-                style { solid }
-                color { light }
+        val checkboxLabelStyles: Style<BasicParams> = { // @label
+            before {
+                radii {// overwritten by CheckboxSizes.small only
+                    top { normal }
+                    bottom { normal }
+                    left { normal }
+                    right { normal }
+                }
+                border {
+                    style { solid }
+                    width { "0.1rem" }
+                }
+            }
+            margins {
+                right { "1.0rem" }
             }
         }
 
-        val checkboxInputStaticCss = staticStyle(
+        // todo using theme colors in static styles probably does not work when changing themes
+        val checkboxInputStaticCss = staticStyle( // @input
             "checkbox",
             """
-                position: absolute;
-                height: 1px;                
-                width: 1px;                
-                overflow: hidden;
-                clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
-                clip: rect(1px, 1px, 1px, 1px);
+            position: absolute;
+            height: 1px;                
+            width: 1px;                
+            overflow: hidden;
+            clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+            clip: rect(1px, 1px, 1px, 1px);
+            outline: none;
+            &:focus + label::before {
+                box-shadow: 0 0 1px ${theme().colors.dark}; 
+            }
+            &:disabled + label {
+                color: ${theme().colors.disabled};
+                cursor: not-allowed;
+            }
+            &:disabled + label::before {
+                color: ${theme().colors.disabled};
+                opacity: 0.3;
+                cursor: not-allowed;
+                boxShadow: none;
+            }
+            &:focus{
                 outline: none;
-                &:checked + label::before {
-                    border-style: solid;
-                    outline: none;
-                }
-                &:focus + label::before {
-                    box-shadow: 0 0px 4px #373737;
-                }
-                &:disabled + label {
-                    color: #878787;
-                    cursor: not-allowed;
-                }
-                &:disabled + label::before {
-                    opacity: 0.3;
-                    cursor: not-allowed;
-                    boxShadow: none;
-                    color: #575757;
-                }
-                &:focus{
-                    outline: none;
-                }
+            }
             """
         )
 
-        val checkboxLabelStaticCss = staticStyle(
+        val checkboxLabelStaticCss = staticStyle( // @input
             "checkboxlabel",
             """
+            position: relative;            
             display: block;
-            position: relative;
-            margin-right: 1.0rem;
             &::before {
                 content: '';
+                outline: none;
                 position: relative;
                 display: inline-block;
+                box-shadow: 0 0 1px ${theme().colors.dark} inset;
                 vertical-align: middle;
-                box-shadow: 0 0 2px #575757 inset;
             }
             """
         )
