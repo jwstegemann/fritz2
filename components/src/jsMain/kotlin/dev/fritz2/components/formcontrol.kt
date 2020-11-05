@@ -161,7 +161,6 @@ open class FormControlComponent {
         control.set(ControlNames.checkbox)
         {
             checkbox(styling, baseClass, id, prefix) {
-                //className = StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it }
                 build()
                 // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
                 //disabled.bindAttr("disabled")
@@ -180,7 +179,6 @@ open class FormControlComponent {
         val selectedStore = storeOf<List<String>>(emptyList())
         control.set(ControlNames.checkboxGroup) {
             checkboxGroupStructure(styling, selectedStore, baseClass, id, prefix) {
-                //className = StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it }
                 build()
                 // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
                 //disabled.bindAttr("disabled")
@@ -200,16 +198,11 @@ open class FormControlComponent {
         control.set(ControlNames.radioGroup)
         {
             radioGroupStructure(styling, selectedStore, baseClass, id, prefix) {
-                //className = StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it }
                 build()
                 // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
                 //disabled.bindAttr("disabled")
             }
         }
-//        //debug
-//        selectedStore.data.map {
-//            console.log("- selRadio (in formcontrol): $it")
-//        }.watch()
         return selectedStore.data
     }
 
@@ -254,7 +247,7 @@ open class FormControlComponent {
                     }) {
                         spacing { tiny }
                         items {
-                            icon { fromTheme { arrowUp } }
+                            icon { fromTheme { warning } }
                             p { +it }
                         }
                     }

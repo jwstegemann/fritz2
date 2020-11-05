@@ -700,7 +700,16 @@ fun HtmlElements.themeProvider(
         component.themeStore.data.render {
             resetCss(ThemeComponent.staticResetCss)
             box(
-                styling, baseClass, id, prefix
+                {
+                    styling()
+                    position {
+                        fixed {
+                            vertical { "0" }
+                            horizontal { "0" }
+                        }
+                    }
+                    overflow { auto }
+                }, baseClass, id, prefix
             ) {
                 component.items?.let { it() }
             }
