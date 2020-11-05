@@ -276,6 +276,7 @@ interface Icons {
     val check: IconDefinition
     val minus: IconDefinition
     val hamburger: IconDefinition
+    val fritz2: IconDefinition
 }
 
 interface InputFieldStyles {

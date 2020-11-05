@@ -70,7 +70,7 @@ fun HtmlElements.stackDemo(theme: ExtendedTheme): Div {
                                 icon({
                                     size { small }
                                     color { "purple" }
-                                }) { fromTheme { star } }
+                                }) { fromTheme { fritz2 } }
                                 (::img.styled {
                                     size { tiny }
                                 }) {
