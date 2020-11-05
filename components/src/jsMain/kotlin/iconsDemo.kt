@@ -68,7 +68,8 @@ fun HtmlElements.iconsDemo(): Div {
         theme().icons.warningTwo,
         theme().icons.check,
         theme().icons.minus,
-        theme().icons.hamburger
+        theme().icons.hamburger,
+        theme().icons.fritz2
     )
 
     return gridBox({
