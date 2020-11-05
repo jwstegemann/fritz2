@@ -1,7 +1,4 @@
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.handledBy
-import dev.fritz2.binding.storeOf
-import dev.fritz2.binding.watch
+import dev.fritz2.binding.*
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
@@ -17,15 +14,28 @@ import kotlinx.coroutines.flow.map
 @ExperimentalCoroutinesApi
 fun HtmlElements.buttonDemo(): Div {
 
+    val modal =  modal({
+        minHeight { "0" }
+    }) {
+        size { theme().modal.sizes.small }
+        closeButton()
+        items {
+            lineUp {
+                items {
+                    icon({ color { "darkgreen" } }) { fromTheme { checkCircle } }
+                    p { +"Your data has been saved successfully." }
+                }
+            }
+        }
+    }
+
     val buttonStore = object : RootStore<String>("") {
         val loading = tracker()
-        val finish = storeOf(false)
 
         val showMsg = handle { model ->
             loading.track("running...") {
-                flowOf(false) handledBy finish.update
                 delay(3000)
-                flowOf(true) handledBy finish.update
+                action() handledBy modal
             }
             model
         }
@@ -38,22 +48,6 @@ fun HtmlElements.buttonDemo(): Div {
             padding { "1rem" }
         }) {
             items {
-
-                buttonStore.finish.data.filter { it }.map { Unit } handledBy modal({
-                    minHeight { "0" }
-                }) {
-                    size { theme().modal.sizes.small }
-                    closeButton()
-                    items {
-                        lineUp {
-                            items {
-                                icon({ color { "darkgreen" } }) { fromTheme { checkCircle } }
-                                p { +"Your data has been saved successfully." }
-                            }
-                        }
-                    }
-                }
-
                 h1 { +"Showcase Buttons" }
 
                 stackUp({alignItems { start }}) {

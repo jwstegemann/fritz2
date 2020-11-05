@@ -5,6 +5,7 @@ import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
+import dev.fritz2.styling.params.AlignItemsValues
 import dev.fritz2.styling.theme.render
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -125,101 +126,97 @@ fun main() {
             // Override default theme by a new list of themes
             themes { themes }
             items {
-
-                section {
-                    lineUp({
-                        minHeight { "100%" }
-                        height { "100%" }
-                        alignItems { flexStart }
-                        color { dark }
-                    }) {
-                        items {
-                            stackUp({
-                                minHeight { "100%" }
-                                height { "100%" }
-                                padding { "1.0rem" }
-                                minWidth { "200px" }
-                                display { flex }
-                                wrap { nowrap }
-                                direction { column }
-                                alignItems { flexEnd }
-                                background { color { dark } }
-                                color { light }
-                                paddings {
-                                    top { "50px" }
-                                }
-                            }, id = "menue-left")
-                            {
-                                items {
-                                    (::p.styled {
-                                        paddings {
-                                            bottom { "2.0rem" }
-                                        }
-                                    }) {
-                                        simpleAnchor("welcome")
+                lineUp({
+                    alignItems { stretch }
+                    color { dark }
+                }) {
+                    items {
+                        stackUp({
+                            padding { "1.0rem" }
+                            minWidth { "200px" }
+                            display { flex }
+                            wrap { nowrap }
+                            direction { column }
+                            alignItems { flexEnd }
+                            background { color { dark } }
+                            color { light }
+                            paddings {
+                                top { "50px" }
+                            }
+                        }, id = "menue-left")
+                        {
+                            items {
+                                (::p.styled {
+                                    paddings {
+                                        bottom { "2.0rem" }
                                     }
+                                }) {
+                                    simpleAnchor("welcome")
+                                }
 
-                                    simpleAnchor("flexbox")
-                                    simpleAnchor("gridbox")
-                                    simpleAnchor("icons")
-                                    simpleAnchor("input")
-                                    simpleAnchor("multiselect")
-                                    simpleAnchor("singleselect")
-                                    simpleAnchor("formcontrol")
-                                    simpleAnchor("stack")
-                                    simpleAnchor("buttons")
-                                    simpleAnchor("modal")
+                                simpleAnchor("flexbox")
+                                simpleAnchor("gridbox")
+                                simpleAnchor("icons")
+                                simpleAnchor("input")
+                                simpleAnchor("multiselect")
+                                simpleAnchor("singleselect")
+                                simpleAnchor("formcontrol")
+                                simpleAnchor("stack")
+                                simpleAnchor("buttons")
+                                simpleAnchor("modal")
 
-                                    (::a.styled {
-                                        paddings {
-                                            top { "1.5rem" }
+                                (::a.styled {
+                                    paddings {
+                                        top { "1.5rem" }
+                                    }
+                                    alignItems { end }
+                                }) {
+                                    href = const("https://www.fritz2.dev/")
+                                    target = const("fritz2")
+                                    title = const("fritz2.dev")
+
+                                    icon({
+                                        size { "3rem" }
+                                        hover {
+                                            color { warning }
                                         }
-                                        //size { large } // todo this does not have an effect on the icon, but alters
-                                                        // the viewbox like it should
-                                        alignItems { end }
                                     }) {
-                                        href = const("https://www.fritz2.dev/")
-                                        target = const("fritz2")
-                                        title = const("fritz2.dev")
-
-                                        icon {
-                                            fromTheme {
-                                                fritz2
-                                            }
+                                        fromTheme {
+                                            fritz2
                                         }
                                     }
                                 }
                             }
-                            (::div.styled(id = "content-right") {
-                                paddings {
-                                    all { "2.0rem" }
-                                }
-                                width {
-                                    "100%"
-                                }
-                            }) {
-
-                                // todo we might want a better flex demo
-                                // todo we might want a dedicated theme demo (or use formcontrol (rename) --> all
-                                    //  together)
-                                router.render { site ->
-                                    when (site) {
-                                        "icons" -> iconsDemo()
-                                        "input" -> inputDemo()
-                                        "buttons" -> buttonDemo()
-                                        "formcontrol" -> formControlDemo()
-                                        // textdemo currently on welcome page, copied, not called
-                                        "flexbox" -> flexBoxDemo(store, themes, theme)
-                                        "gridbox" -> gridBoxDemo()
-                                        "multiselect" -> multiSelectDemo()
-                                        "singleselect" -> singleSelectDemo()
-                                        "stack" -> stackDemo(theme)
-                                        "modal" -> modalDemo()
-                                        "welcome" -> welcome()
-                                        else -> welcome()
-                                    }
-                                }.bind()
+                        }
+                        (::div.styled(id = "content-right") {
+                            paddings {
+                                all { "2.0rem" }
                             }
+                            width {
+                                "100%"
+                            }
+                        }) {
+
+                            // todo we might want a better flex demo
+                            // todo we might want a dedicated theme demo (or use formcontrol (rename) --> all
+                            //  together)
+                            router.render { site ->
+                                when (site) {
+                                    "icons" -> iconsDemo()
+                                    "input" -> inputDemo()
+                                    "buttons" -> buttonDemo()
+                                    "formcontrol" -> formControlDemo()
+                                    // textdemo currently on welcome page, copied, not called
+                                    "flexbox" -> flexBoxDemo(store, themes, theme)
+                                    "gridbox" -> gridBoxDemo()
+                                    "multiselect" -> multiSelectDemo()
+                                    "singleselect" -> singleSelectDemo()
+                                    "stack" -> stackDemo(theme)
+                                    "modal" -> modalDemo()
+                                    "welcome" -> welcome()
+                                    else -> welcome()
+                                }
+                            }.bind()
                         }
                     }
                 }

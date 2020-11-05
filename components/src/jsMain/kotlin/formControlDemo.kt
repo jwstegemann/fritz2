@@ -7,6 +7,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 val myItemList = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "222222")
@@ -22,8 +23,8 @@ class MyFormControlComponent : FormControlComponent() {
         id: String? = null,
         prefix: String = Companion.ControlNames.checkboxGroup,
         init: CheckboxGroupComponent.() -> Unit
-    ) {
-        checkboxGroup(styling, baseClass, id, prefix, init)
+    ): Flow<List<String>> {
+        return checkboxGroup(styling, baseClass, id, prefix, init)
     }
 
     // Define your own renderer
@@ -37,7 +38,7 @@ class MyFormControlComponent : FormControlComponent() {
             control: HtmlElements.() -> Unit
         ) {
             renderContext.lineUp({
-                alignItems { start }
+                alignItems { center }
                 border {
                     width { "1px" }
                     style { solid }
@@ -46,11 +47,17 @@ class MyFormControlComponent : FormControlComponent() {
                 width { full }
                 styling()
             }, baseClass, id, prefix) {
-                spacing { tiny }
+                spacing { normal }
                 items {
-                    p { +component.label }
+                    (::p.styled {
+                        textAlign { right }
+                        flex {
+                            basis { "5em" }
+                        }
+                    }){ +component.label }
                     stackUp({
                         width { full }
+                        alignItems { start }
                     }) {
                         spacing { tiny }
                         items {
@@ -88,7 +95,6 @@ fun HtmlElements.formControlDemo(): Div {
     val framework = storeOf("")
 
     val mySelectedItems = listOf("ffffff", "222222")
-    val mySelectedItem = "iiiiii"
 
     val selectedItemsStore = RootStore(mySelectedItems)
 
@@ -197,7 +203,11 @@ fun HtmlElements.formControlDemo(): Div {
                 myFormControl {
                     label { "Label next to the control for a change" }
                     helperText { "Helper text below control" }
-                    myMultiSelectCheckbox { }
+                    myMultiSelectCheckbox {
+                        items { myItemList }
+                        initialSelection { mySelectedItems }
+                        checkboxSize { normal }
+                    } handledBy selectedItemsStore.update
                 }
             }
         }
