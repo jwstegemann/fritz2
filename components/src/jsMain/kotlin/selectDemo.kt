@@ -27,7 +27,9 @@ fun HtmlElements.singleSelectDemo(): Div {
                 h1 { +"SingleSelect Showcase" }
 
                 p {
-                    +"You can choose from 3 radio sizes. The group will rendererd horizontally or vertically depending only on your surrounding container."
+                    +"You can choose from 3 radio sizes. You may also chose custom colors for the radio background and "
+                            +"border. However, any custom styles you apply to the component will be rendered for the "
+                            +"internal container element only."
                 }
 
                 lineUp({
@@ -154,7 +156,9 @@ fun HtmlElements.multiSelectDemo(): Div {
                 h1 { +"MultiSelect Showcase" }
 
                 p {
-                    +"You can choose from 3 checkbox sizes. The group will rendererd horizontally or vertically depending only on your surrounding container."
+                    +"You can choose from 3 checkbox sizes. You may also chose custom colors for the box background and "
+                    +"border. However, any custom styles you apply to the component will be rendered for the "
+                    +"internal container element only."
                 }
 
                 lineUp({
