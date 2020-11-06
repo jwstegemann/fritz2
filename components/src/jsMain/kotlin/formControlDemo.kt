@@ -5,19 +5,22 @@ import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
+
+val myItemList = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "222222")
 
 // extend ControlComponent in order to override or extend functions for controls
 // and for setting up other renderers!
 class MyFormControlComponent : FormControlComponent() {
 
-    // simply convenience function as we cannot provide default parameters for overridden functions!
+    // simple convenience function as we cannot provide default parameters for overridden functions!
     fun myMultiSelectCheckbox(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,
         id: String? = null,
-        prefix: String = Companion.ControlNames.inputField,
+        prefix: String = Companion.ControlNames.checkboxGroup,
         init: CheckboxGroupComponent.() -> Unit
     ) {
         checkboxGroup(styling, baseClass, id, prefix, init)
@@ -84,13 +87,10 @@ fun HtmlElements.formControlDemo(): Div {
     val solution = "fritz2"
     val framework = storeOf("")
 
-    val myItems = listOf("Arthur", "Tricia", "Zaphod", "Ford", "Marvin")
-    val mySelectedItems = listOf("Zaphod", "Ford")
-    val mySelectedItem = "Tricia"
+    val mySelectedItems = listOf("ffffff", "222222")
+    val mySelectedItem = "iiiiii"
 
     val selectedItemsStore = RootStore(mySelectedItems)
-    val selectedStore = RootStore(mySelectedItem)
-    val checkedStore = RootStore(false)
 
     return div {
         stackUp({
@@ -101,106 +101,102 @@ fun HtmlElements.formControlDemo(): Div {
 
             items {
                 h1 { +"FormControl Showcase" }
-                h4 { +"Form with input control, required flag, passed store and dynamic error message" }
+                p {
+                    +"FormControls take a single form element and take care of styling and validation. You cannot have more than one form element in a FormControl."
+                }
+                h3 { +"Required Input with a store and dynamic error message" }
                 formControl {
-                    label { "Please input the name of your favorite Kotlin based web framework" }
+                    label { "Please input the name of your favorite Kotlin based web framework." }
                     required { true }
-                    helperText { "Hint: You are probably gonna to use it, as you are here ;-)" }
+                    helperText { "You shouldn't need a hint." }
                     errorMessage {
                         framework.data.map {
                             // if something is wrong, just send a none empty string to errorMessage!
                             // the control will handle the rest for you :-)
                             if (it.isNotEmpty() && it.toLowerCase() != solution) {
-                                "'$it' is the wrong answer! Even Fritz could do it twice as good as you :-P"
+                                "'$it' is completely wrong."
                             } else ""
                         }
                     }
-                     //just use the appropriate *single element* control with its specific API!
+                    //just use the appropriate *single element* control with its specific API!
                     inputField(store = framework) {
                         placeholder = const("$solution for example")
                     }
                     // throws an exception -> only one (and the first) control is allowed!
                     inputField {
-                        placeholder = const("this control throws an exception")
+                        placeholder =
+                            const("This control throws an exception because a form control may only contain one control.")
                     }
                 }
 
-                h4 { +"Form with single checkbox" }
+                val loveString = "I love fritz2 with all my heart and I want to have its babies."
+                val hateString = "I hate your guts, fritz2!"
+                val loveStore = object : RootStore<Boolean>(true) {
+                    val changedMyMind = handleAndOffer<Boolean, String> { _, checked ->
+                        if (checked) offer(loveString)
+                        else offer(hateString)
+                        checked
+                    }
+                }
+                val textStore = RootStore<String>(loveString)
+                loveStore.changedMyMind handledBy textStore.update
+
+
+                h3 { +"Form with a single checkbox, custom color, form control label and helpertext" }
                 formControl {
-                    label { "Please choose your favorite Kotlin based web framework" }
-                    helperText { "Choose wisely!" }
+                    label { "Label us interested: How do you feel about fritz2? We would really love to hear your opinion. " }
+                    helperText { "So good to have options." }
                     checkbox(
                         {},
                         id = "check1"
                     ) {
-                        text = const("I'm single")
+                        text = textStore.data
                         checkboxSize { normal }
-                        checked { checkedStore.data }
-                        borderColor { "black" }
-                        backgroundColor { "pink" }
-                        checkedBackgroundColor { "gray" }
+                        borderColor { theme().colors.secondary }
+                        checkedBackgroundColor { theme().colors.warning }
+                        checked { loveStore.data }
                         events {
-                            changes.states() handledBy checkedStore.update
+                            changes.states() handledBy loveStore.changedMyMind
                         }
                     }
                 }
-                div {
-                    checkedStore.data.map { checked ->
-                        b { +"Checked: $checked" }
-                    }.bind()
-                }
 
-                h4 { +"Form with checkbox group" }
+                h3 { +"Form with a checkbox group, no label, no helpertext" }
                 formControl {
-                    label { "Please choose your favorite Kotlin based web framework" }
-                    helperText { "Choose wisely!" }
                     checkboxGroup(
                         {},
                         id = "checkGroup1"
                     ) {
-                        items { myItems }
+                        items { myItemList }
                         initialSelection { mySelectedItems }
                         checkboxSize { normal }
                     } handledBy selectedItemsStore.update
                 }
-                div {
-                    b { +"Selected items:" }
+                (::div.styled {
+                    background {
+                        color { theme().colors.light }
+                    }
+                    paddings {
+                        left { "0.5rem" }
+                        right { "0.5rem" }
+                    }
+                    radius { "5%" }
+                }) {
+                    h4 { +"Selected:" }
                     ul {
                         selectedItemsStore.data.each().render { selectedItem ->
                             li { +selectedItem }
                         }.bind()
                     }
                 }
-
-                h4 { +"Form with radio group" }
-                formControl {
-                    label { "Please choose your favorite Kotlin based web framework" }
-                    helperText { "Choose wisely!" }
-                    radioGroup(
-                        {},
-                        id = "radioGroup1"
-                    ) {
-                        items { myItems }
-                        selected { mySelectedItem }
-                        radioSize { normal }
-                    } handledBy selectedStore.update
-                }
-                div {
-                    selectedStore.data.map { sel ->
-                        b { +"Selected: $sel" }
-                    }.bind()
-                }
-
-
                 // use your own formControl! Pay attention to the derived component receiver.
-                h4 { +"Custom FormControl" }
-                ul {
-                    li { +"overridden control function to implement a special control element" }
-                    li { +"combined with a hand made renderer for the surrounding, custom structure" }
+                h3 { +"Custom FormControl" }
+                p {
+                    +"This control has overridden the control function to implement a special control. It was combined with a hand made renderer for the surrounding custom structure."
                 }
                 myFormControl {
-                    label { "The label is placed aside of the control. Just to be different..." }
-                    helperText { "Help is beneath control" }
+                    label { "Label next to the control for a change" }
+                    helperText { "Helper text below control" }
                     myMultiSelectCheckbox { }
                 }
             }

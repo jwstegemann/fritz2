@@ -1,8 +1,10 @@
 import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
+import dev.fritz2.binding.watch
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.render
 import dev.fritz2.dom.selectedIndex
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
@@ -12,14 +14,8 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>
 
     return div {
         div {
-//            singleSelect {
-//                value = themeStore.data.map { i -> themes[i].name }
-//                themes.forEach {
-//                    option { +it.name }
-//                }
-//
-//                changes.selectedIndex() handledBy themeStore.selectTheme
-//            }
+
+
             flexBox({
                 margin { small }
                 padding { small }
@@ -31,7 +27,9 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>
                 radius { tiny }
                 boxShadow { flat }
                 direction(sm = { column }, md = { row })
+                minHeight { "80%" }
             }) {
+
                 box({
                     zIndex { layer(1) }
                     margins(
@@ -44,12 +42,12 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>
                     flex { shrink { "0" } }
                 }) {
                     (::img.styled {
-                        width(sm = { normal }, md = { smaller })
+                        width(sm = { small }, md = { smaller })
                         boxShadow { flat }
                         radius { large }
                     }) {
-                        src = const("https://bit.ly/2jYM25F")
-                        alt = const("Woman paying for a purchase")
+                        src = const("https://www.fritz2.dev/images/fritz_info_1.jpg")
+                        alt = const("Random image for flex layout demonstration")
                     }
                 }
 
@@ -64,29 +62,45 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>
                         md = { left { normal } }
                     )
                 }) {
-                    (::p.styled { theme.teaserText }) { +"Marketing" }
+                    (::p.styled { theme.teaserText }) { +"Teaser texts can be styled as well" }
 //                    p {
 //                        // TODO: Way too complicated - needs to get some convenient API! (But how?)
 //                        className = themeStore.data.map { i -> staticStyle("foo", themes[i].teaserText).name }
 //                        +"Marketing"
 //                    }
-                    (::a.styled {
-                        margins { top { tiny } }
-                        fontSize { normal }
-                        lineHeight { normal }
-                        fontWeight { bold }
+                    (::h1.styled { theme.sizes.large }) { +"Flex Layouts Showcase" }
+                    (::p.styled {
+                        paddings {
+                            all { "0.8rem" }
+                            left { "0" }
+                        }
+
                     }) {
-                        href = const("#")
-                        +"Finding customers for your new business"
+                        +"Flex layouts provide a better of using space on websites and handle containers of unknown sizes. While we showcase our flex layout, let's use the opportunity to also show off theme selection with this small example:"
                     }
                     (::p.styled {
-                        margins { top { smaller } }
-                        color { dark }
+                        paddings {
+                            all { "0.8rem" }
+                            left { "0" }
+                        }
                     }) {
-                        +"Getting a new business off the ground is a lot of hard work. Here are five ideas you can use to find your first customers."
+                        themeStore.data.map { currentThemeIndex ->
+                            radioGroup {
+                                items { themes.map { it.name } }
+                                selected { themes[currentThemeIndex].name }
+                                radioSize { normal }
+                            }.map { selected ->
+                                themes.indexOf(
+                                    themes.find {
+                                        selected == it.name
+                                    }
+                                )
+                            } handledBy themeStore.selectTheme
+                        }.watch()
                     }
                 }
             }
+
         }
     }
 }

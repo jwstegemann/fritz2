@@ -1,9 +1,7 @@
 import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
+import dev.fritz2.components.*
 import dev.fritz2.components.flexBox
-import dev.fritz2.components.icon
-import dev.fritz2.components.styled
-import dev.fritz2.components.themeProvider
 import dev.fritz2.dom.html.A
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.render
@@ -17,6 +15,7 @@ import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlin.js.Promise
 import kotlin.js.Promise.Companion.all
 
 /*
@@ -120,80 +119,77 @@ fun main() {
             items {
 
                 section {
-                    flexBox ({
-                        flex {
-                            grow { "0" }
-                            shrink { "1" }
-                            basis { auto }
-                        }
-                        direction { row }
+                    lineUp({
                         minHeight { "100%" }
                         height { "100%" }
+                        alignItems { flexStart }
                     }) {
-                        flexBox({
-                            minHeight { "100%" }
-                            height { "100%" }
-                            padding { "1.0rem" }
-                            width { "200px" }
-                            display { flex }
-                            wrap { nowrap }
-                            direction { column }
-                            alignItems { flexEnd }
-                            background { color { dark } }
-                            color { light }
-                            paddings {
-                                top { "50px" }
-                            }
-                        })
-                        {
-                            simpleAnchor("text")
-                            simpleAnchor("flexbox")
-                            simpleAnchor("gridbox")
-                            simpleAnchor("icons")
-                            simpleAnchor("input")
-                            simpleAnchor("multiselect")
-                            simpleAnchor("singleselect")
-                            simpleAnchor("formcontrol")
-                            simpleAnchor("stack")
-                            simpleAnchor("buttons")
-                            simpleAnchor("modal")
+                        items {
+                            stackUp({
+                                minHeight { "100%" }
+                                height { "100%" }
+                                padding { "1.0rem" }
+                                minWidth { "10%" }
+                                display { flex }
+                                wrap { nowrap }
+                                direction { column }
+                                alignItems { flexEnd }
+                                background { color { dark } }
+                                color { light }
+                                paddings {
+                                    top { "50px" }
+                                }
+                            }, id = "menue-left")
+                            {
+                                items {
 
-                            br {}
-                            a {
-                                href = const("https://www.fritz2.dev/")
-                                target = const("fritz2")
-                                img {
-                                    src = const("https://www.fritz2.dev/images/fritz2_logo_small_white.svg")
-                                    width = const(35)
-                                    height = const(35)
+                                    simpleAnchor("text")
+                                    simpleAnchor("flexbox")
+                                    simpleAnchor("gridbox")
+                                    simpleAnchor("icons")
+                                    simpleAnchor("input")
+                                    simpleAnchor("multiselect")
+                                    simpleAnchor("singleselect")
+                                    simpleAnchor("formcontrol")
+                                    simpleAnchor("stack")
+                                    simpleAnchor("buttons")
+                                    simpleAnchor("modal")
+
+                                    br {}
+                                    a {
+                                        href = const("https://www.fritz2.dev/")
+                                        target = const("fritz2")
+                                        img {
+                                            src = const("https://www.fritz2.dev/images/fritz2_logo_small_white.svg")
+                                            width = const(35)
+                                            height = const(35)
+                                        }
+                                    }
                                 }
                             }
-                        }
-                        (::div.styled {
-                            flex {
-                                basis { "60%" }
-                            }
-                            margins {
-                                all { "20px"}
-                            }
-                        }) {
-
-                            router.render { site ->
-                                when (site) {
-                                    "icons" -> iconsDemo()
-                                    "input" -> inputDemo()
-                                    "buttons" -> buttonDemo()
-                                    "formcontrol" -> formControlDemo()
-                                    "text" -> textDemo()
-                                    "flexbox" -> flexBoxDemo(store, themes, theme)
-                                    "gridbox" -> gridBoxDemo()
-                                    "multiselect" -> multiSelectDemo()
-                                    "singleselect" -> singleSelectDemo()
-                                    "stack" -> stackDemo(theme)
-                                    "modal" -> modalDemo()
-                                    else -> textDemo()
+                            (::div.styled(id = "content-right") {
+                                paddings {
+                                    all { "2.0rem" }
                                 }
-                            }.bind()
+                            }) {
+
+                                router.render { site ->
+                                    when (site) {
+                                        "icons" -> iconsDemo()
+                                        "input" -> inputDemo()
+                                        "buttons" -> buttonDemo()
+                                        "formcontrol" -> formControlDemo()
+                                        "text" -> textDemo()
+                                        "flexbox" -> flexBoxDemo(store, themes, theme)
+                                        "gridbox" -> gridBoxDemo()
+                                        "multiselect" -> multiSelectDemo()
+                                        "singleselect" -> singleSelectDemo()
+                                        "stack" -> stackDemo(theme)
+                                        "modal" -> modalDemo()
+                                        else -> textDemo()
+                                    }
+                                }.bind()
+                            }
                         }
                     }
                 }
