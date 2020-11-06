@@ -219,7 +219,7 @@ inline operator fun <T> Style<T>.plus(crossinline other: Style<T>): Style<T> = {
  * interface combining all the basic style-parameters
  */
 @ExperimentalCoroutinesApi
-interface BasicParams : Space, Color, Border, Typo, Background, Position, Shadow, Layout, Pseudos {
+interface BasicParams : Space, Color, Border, Typo, Background, Position, Shadow, Layout, PseudoClasses, PseudoElements {
     /**
      * allows the usage of predefined styles in this context
      *

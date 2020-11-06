@@ -1,12 +1,50 @@
 package dev.fritz2.styling.params
 
 import dev.fritz2.styling.theme.Property
-import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-interface Pseudos : StyleParams {
-    private inline fun pseudo(key: String, content: BasicParams.() -> Unit) {
+interface PseudoElements : StyleParams {
+    private inline fun pseudoElement(key: String, content: BasicParams.() -> Unit) {
+        StyleParamsImpl().let { base ->
+            base.content()
+            smProperties.append(
+                " &::",
+                key,
+                "{",
+                base.toCss(),
+                "} "
+            )
+        }
+    }
+
+    private inline fun pseudoElement(key: String, content: BasicParams.() -> Unit, parameter: Property = "") {
+        StyleParamsImpl().let { base ->
+            base.content()
+            smProperties.append(
+                " &::",
+                key,
+                "($parameter)",
+                "{",
+                base.toCss(),
+                "} "
+            )
+        }
+    }
+
+    fun after(content: BasicParams.() -> Unit) = pseudoElement("after", content)
+    fun before(content: BasicParams.() -> Unit) = pseudoElement("before", content)
+    fun firstLetter(content: BasicParams.() -> Unit) = pseudoElement("first-letter", content)
+    fun firstLine(content: BasicParams.() -> Unit) = pseudoElement("first-line", content)
+    fun grammarError(content: BasicParams.() -> Unit) = pseudoElement("grammar-error", content)
+    fun marker(content: BasicParams.() -> Unit) = pseudoElement("marker", content)
+    fun selection(content: BasicParams.() -> Unit) = pseudoElement("selection", content)
+    fun spellingError(content: BasicParams.() -> Unit) = pseudoElement("spelling-error", content)
+}
+
+@ExperimentalCoroutinesApi
+interface PseudoClasses : StyleParams {
+    private inline fun pseudoClass(key: String, content: BasicParams.() -> Unit) {
         StyleParamsImpl().let { base ->
             base.content()
             smProperties.append(
@@ -19,7 +57,7 @@ interface Pseudos : StyleParams {
         }
     }
 
-    private inline fun pseudo(key: String, content: BasicParams.() -> Unit, parameter: Property = "") {
+    private inline fun pseudoClass(key: String, content: BasicParams.() -> Unit, parameter: Property = "") {
         StyleParamsImpl().let { base ->
             base.content()
             smProperties.append(
@@ -33,49 +71,56 @@ interface Pseudos : StyleParams {
         }
     }
 
-    fun active(content: BasicParams.() -> Unit) = pseudo("active", content)
-    fun before(content: BasicParams.() -> Unit) = pseudo("before", content)
-    fun checked(content: BasicParams.() -> Unit) = pseudo("checked", content)
-    fun default(content: BasicParams.() -> Unit) = pseudo("default", content)
-    fun disabled(content: BasicParams.() -> Unit) = pseudo("disabled", content)
-    fun empty(content: BasicParams.() -> Unit) = pseudo("empty", content)
-    fun enabled(content: BasicParams.() -> Unit) = pseudo("enabled", content)
-    fun first(content: BasicParams.() -> Unit) = pseudo("first", content)
-    fun firstChild(content: BasicParams.() -> Unit) = pseudo("first-child", content)
-    fun firstOfType(content: BasicParams.() -> Unit) = pseudo("first-of-type", content)
-    fun fullscreen(content: BasicParams.() -> Unit) = pseudo("fullscreen", content)
-    fun focus(content: BasicParams.() -> Unit) = pseudo("focus", content)
-    fun hover(content: BasicParams.() -> Unit) = pseudo("hover", content)
-    fun indeterminate(content: BasicParams.() -> Unit) = pseudo("indeterminate", content)
-    fun inRange(content: BasicParams.() -> Unit) = pseudo("in-range", content)
-    fun invalid(content: BasicParams.() -> Unit) = pseudo("invalid", content)
-    fun lastChild(content: BasicParams.() -> Unit) = pseudo("last-child", content)
-    fun lastOfType(content: BasicParams.() -> Unit) = pseudo("last-of-type", content)
-    fun left(content: BasicParams.() -> Unit) = pseudo("left", content)
-    fun link(content: BasicParams.() -> Unit) = pseudo("link", content)
-    fun onlyChild(content: BasicParams.() -> Unit) = pseudo("only-child", content)
-    fun onlyOfType(content: BasicParams.() -> Unit) = pseudo("only-of-type", content)
-    fun optional(content: BasicParams.() -> Unit) = pseudo("optional", content)
-    fun outOfRange(content: BasicParams.() -> Unit) = pseudo("out-of-range", content)
-    fun readOnly(content: BasicParams.() -> Unit) = pseudo("read-only", content)
-    fun readWrite(content: BasicParams.() -> Unit) = pseudo("read-write", content)
-    fun required(content: BasicParams.() -> Unit) = pseudo("required", content)
-    fun right(content: BasicParams.() -> Unit) = pseudo("right", content)
-    fun root(content: BasicParams.() -> Unit) = pseudo("root", content)
-    fun scope(content: BasicParams.() -> Unit) = pseudo("scope", content)
-    fun target(content: BasicParams.() -> Unit) = pseudo("target", content)
-    fun valid(content: BasicParams.() -> Unit) = pseudo("valid", content)
-    fun visited(content: BasicParams.() -> Unit) = pseudo("visited", content)
+    fun active(content: BasicParams.() -> Unit) = pseudoClass("active", content)
+    fun anyLink(content: BasicParams.() -> Unit) = pseudoClass("any-link", content)
+    fun blank(content: BasicParams.() -> Unit) = pseudoClass("blank", content)
+    fun checked(content: BasicParams.() -> Unit) = pseudoClass("checked", content)
+    fun current(content: BasicParams.() -> Unit) = pseudoClass("current", content)
+    fun default(content: BasicParams.() -> Unit) = pseudoClass("default", content)
+    fun disabled(content: BasicParams.() -> Unit) = pseudoClass("disabled", content)
+    fun empty(content: BasicParams.() -> Unit) = pseudoClass("empty", content)
+    fun enabled(content: BasicParams.() -> Unit) = pseudoClass("enabled", content)
+    fun first(content: BasicParams.() -> Unit) = pseudoClass("first", content)
+    fun firstChild(content: BasicParams.() -> Unit) = pseudoClass("first-child", content)
+    fun firstOfType(content: BasicParams.() -> Unit) = pseudoClass("first-of-type", content)
+    // TODO: Check if this is part of the standard!
+    fun fullscreen(content: BasicParams.() -> Unit) = pseudoClass("fullscreen", content)
+    fun focus(content: BasicParams.() -> Unit) = pseudoClass("focus", content)
+    fun focusVisible(content: BasicParams.() -> Unit) = pseudoClass("focus-visible", content)
+    fun focusWithin(content: BasicParams.() -> Unit) = pseudoClass("focus-within", content)
+    fun future(content: BasicParams.() -> Unit) = pseudoClass("future", content)
+    fun hover(content: BasicParams.() -> Unit) = pseudoClass("hover", content)
+    fun indeterminate(content: BasicParams.() -> Unit) = pseudoClass("indeterminate", content)
+    fun inRange(content: BasicParams.() -> Unit) = pseudoClass("in-range", content)
+    fun invalid(content: BasicParams.() -> Unit) = pseudoClass("invalid", content)
+    fun lastChild(content: BasicParams.() -> Unit) = pseudoClass("last-child", content)
+    fun lastOfType(content: BasicParams.() -> Unit) = pseudoClass("last-of-type", content)
+    fun left(content: BasicParams.() -> Unit) = pseudoClass("left", content)
+    fun link(content: BasicParams.() -> Unit) = pseudoClass("link", content)
+    fun localLink(content: BasicParams.() -> Unit) = pseudoClass("local-link", content)
+    fun onlyChild(content: BasicParams.() -> Unit) = pseudoClass("only-child", content)
+    fun onlyOfType(content: BasicParams.() -> Unit) = pseudoClass("only-of-type", content)
+    fun optional(content: BasicParams.() -> Unit) = pseudoClass("optional", content)
+    fun outOfRange(content: BasicParams.() -> Unit) = pseudoClass("out-of-range", content)
+    fun readOnly(content: BasicParams.() -> Unit) = pseudoClass("read-only", content)
+    fun readWrite(content: BasicParams.() -> Unit) = pseudoClass("read-write", content)
+    fun required(content: BasicParams.() -> Unit) = pseudoClass("required", content)
+    fun right(content: BasicParams.() -> Unit) = pseudoClass("right", content)
+    fun root(content: BasicParams.() -> Unit) = pseudoClass("root", content)
+    fun scope(content: BasicParams.() -> Unit) = pseudoClass("scope", content)
+    fun target(content: BasicParams.() -> Unit) = pseudoClass("target", content)
+    fun valid(content: BasicParams.() -> Unit) = pseudoClass("valid", content)
+    fun visited(content: BasicParams.() -> Unit) = pseudoClass("visited", content)
 
-    fun dir(param: Property, content: BasicParams.() -> Unit) = pseudo("dir", content, param)
-    fun lang(param: Property, content: BasicParams.() -> Unit) = pseudo("lang", content, param)
-    fun not(param: Property, content: BasicParams.() -> Unit) = pseudo("not", content, param)
-    fun nthChild(param: Property, content: BasicParams.() -> Unit) = pseudo("nth-child", content, param)
-    fun nthLastChild(param: Property, content: BasicParams.() -> Unit) = pseudo("nth-last-child", content, param)
+    fun dir(param: Property, content: BasicParams.() -> Unit) = pseudoClass("dir", content, param)
+    fun lang(param: Property, content: BasicParams.() -> Unit) = pseudoClass("lang", content, param)
+    fun not(param: Property, content: BasicParams.() -> Unit) = pseudoClass("not", content, param)
+    fun nthChild(param: Property, content: BasicParams.() -> Unit) = pseudoClass("nth-child", content, param)
+    fun nthLastChild(param: Property, content: BasicParams.() -> Unit) = pseudoClass("nth-last-child", content, param)
     fun nthLastOfType(param: Property, content: BasicParams.() -> Unit) =
-        pseudo("nth-last-of-type", content, param)
+        pseudoClass("nth-last-of-type", content, param)
 
-    fun nthOfType(param: Property, content: BasicParams.() -> Unit) = pseudo("nth-of-type", content, param)
+    fun nthOfType(param: Property, content: BasicParams.() -> Unit) = pseudoClass("nth-of-type", content, param)
 
     fun children(selector: String, content: BasicParams.() -> Unit) {
         StyleParamsImpl().let { base ->
