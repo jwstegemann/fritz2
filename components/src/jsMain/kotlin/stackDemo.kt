@@ -18,7 +18,9 @@ fun HtmlElements.stackDemo(theme: ExtendedTheme): Div {
                 h1 { +"StackUps and LineUps Showcase" }
 
                 p {
-                    +"A LineUp is a container which allows you to align its contents horizontally, while a StackUp puts the contents on top of each other. You may also reverse the order of the contents."
+                    +"Our stack containers accept any element. A LineUp allows you to align its contents"
+                    +" horizontally, while a StackUp puts the elements on top of each other. You may also "
+                    +" reverse the order of the contents."
                 }
 
                 lineUp({
@@ -92,6 +94,23 @@ fun HtmlElements.stackDemo(theme: ExtendedTheme): Div {
                                         }) {
                                             +"is reversed"
                                         }
+                                        box({
+                                            margin { normal }
+                                            paddings { all { "0.5rem" } }
+                                            background {
+                                                color { theme().colors.dark }
+                                            }
+                                            color { theme().colors.light }
+                                            radius { "5%" }
+                                        }) {
+                                            icon({
+                                                size { "4rem" }
+                                            }) {
+                                                fromTheme {
+                                                    repeat
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                                 lineUp({
@@ -115,7 +134,7 @@ fun HtmlElements.stackDemo(theme: ExtendedTheme): Div {
                                             }
                                             radius { "5%" }
                                         }) {
-                                            +"These boxes"
+                                            +"These boxes are"
                                         }
 
                                         box({
@@ -126,17 +145,16 @@ fun HtmlElements.stackDemo(theme: ExtendedTheme): Div {
                                             }
                                             radius { "5%" }
                                         }) {
-                                            +"are centered"
+                                            +"next to an image "
                                         }
-                                        box({
-                                            margin { normal }
-                                            paddings { all { "0.5rem" } }
-                                            background {
-                                                color { theme().colors.warning }
-                                            }
-                                            radius { "5%" }
+
+                                        (::img.styled {
+                                            width { smaller }
+                                            boxShadow { flat }
+                                            radius { smaller }
                                         }) {
-                                            +"and in order"
+                                            src = const("https://www.fritz2.dev/images/fritz_info_1.jpg")
+                                            alt = const("Random image for flex layout demonstration")
                                         }
                                     }
                                 }

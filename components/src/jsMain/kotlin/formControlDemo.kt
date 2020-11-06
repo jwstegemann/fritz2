@@ -4,6 +4,7 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.params.AlignContentValues.start
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,26 +39,23 @@ class MyFormControlComponent : FormControlComponent() {
             control: HtmlElements.() -> Unit
         ) {
             renderContext.lineUp({
-                alignItems { center }
-                border {
-                    width { "1px" }
-                    style { solid }
-                    color { light }
-                }
-                width { full }
+                verticalAlign { top }
+                alignItems { start }
                 styling()
             }, baseClass, id, prefix) {
-                spacing { normal }
                 items {
                     (::p.styled {
+                        alignItems { start }
                         textAlign { right }
-                        flex {
-                            basis { "5em" }
-                        }
+                        minHeight { full }
+                        height { full }
+                        verticalAlign { top }
                     }){ +component.label }
+
                     stackUp({
                         width { full }
                         alignItems { start }
+                        verticalAlign { top }
                     }) {
                         spacing { tiny }
                         items {
@@ -207,7 +205,7 @@ fun HtmlElements.formControlDemo(): Div {
                         items { myItemList }
                         initialSelection { mySelectedItems }
                         checkboxSize { normal }
-                    } handledBy selectedItemsStore.update
+                    }
                 }
             }
         }

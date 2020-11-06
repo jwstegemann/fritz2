@@ -71,8 +71,12 @@ fun HtmlElements.inputDemo(): Div {
 
                 (::p.styled {
                     background { color { light } }
-                    paddings { horizontal { small } }
                     fontWeight { bold }
+                    radius { "5%" }
+                    paddings {
+                        left { "0.3rem" }
+                        right { "0.3rem" }
+                    }
                 }) {
                     +"Name in Store: "
                     user.data.bind()
