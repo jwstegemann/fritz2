@@ -28,7 +28,7 @@ fun HtmlElements.welcome(): Div {
                         width { thin }
                     }
                     radius { "15px" }
-
+                    boxShadow { flat }
 
                 }) {
 
