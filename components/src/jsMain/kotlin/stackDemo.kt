@@ -2,6 +2,7 @@ import dev.fritz2.binding.const
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
