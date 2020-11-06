@@ -19,6 +19,7 @@ open class A(id: String? = null, baseClass: String? = null) : Tag<HTMLAnchorElem
     var text: Flow<String> by AttributeDelegate
     var referrerPolicy: Flow<String> by AttributeDelegate
     var href: Flow<String> by AttributeDelegate
+    var title: Flow<String> by AttributeDelegate
     var protocol: Flow<String> by AttributeDelegate
     var username: Flow<String> by AttributeDelegate
     var password: Flow<String> by AttributeDelegate

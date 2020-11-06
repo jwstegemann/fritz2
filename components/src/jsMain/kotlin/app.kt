@@ -1,68 +1,73 @@
 import dev.fritz2.binding.const
-import dev.fritz2.binding.handledBy
 import dev.fritz2.components.*
-import dev.fritz2.components.flexBox
 import dev.fritz2.dom.html.A
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
-import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.render
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlin.js.Promise
-import kotlin.js.Promise.Companion.all
 
-/*
-val themes = listOf<Pair<String, ExtendedTheme>>(
-    ("small Fonts") to SmallFonts(),
-    ("large Fonts") to LargeFonts()
-)
+//fun HtmlElements.myLink(
+//    styling: BasicParams.() -> Unit = {},
+//    baseClass: StyleClass? = null,
+//    id: String? = null,
+//    prefix: String = "my-link",
+//    init: A.() -> Unit
+//): A =
+//    ::a.styled(styling, baseClass, id, prefix) {
+//        fontSize { giant }
+//    }(init)
+//
+//
+//fun HtmlElements.myRedLink(
+//    styling: BasicParams.() -> Unit = {},
+//    baseClass: StyleClass? = null,
+//    id: String? = null,
+//    prefix: String = "my-red-link",
+//    init: A.() -> Unit
+//): A =
+//    ::myLink.styled(styling, baseClass, id, prefix) {
+//        color { danger }
+//    }(init)
+//
+//
+//fun HtmlElements.myBorderedRedLink(
+//    styling: BasicParams.() -> Unit = {},
+//    baseClass: StyleClass? = null,
+//    id: String? = null,
+//    prefix: String = "mbrl",
+//    init: A.() -> Unit
+//): A =
+//    ::myRedLink.styled(styling, baseClass, id, prefix) {
+//        border {
+//            width { "1px" }
+//        }
+//    }(init)
 
- */
-
-
-fun HtmlElements.myLink(
-    styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
-    id: String? = null,
-    prefix: String = "my-link",
-    init: A.() -> Unit
-): A =
-    ::a.styled(styling, baseClass, id, prefix) {
-        fontSize { giant }
-    }(init)
-
-
-fun HtmlElements.myRedLink(
-    styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
-    id: String? = null,
-    prefix: String = "my-red-link",
-    init: A.() -> Unit
-): A =
-    ::myLink.styled(styling, baseClass, id, prefix) {
-        color { danger }
-    }(init)
-
-
-fun HtmlElements.myBorderedRedLink(
-    styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
-    id: String? = null,
-    prefix: String = "mbrl",
-    init: A.() -> Unit
-): A =
-    ::myRedLink.styled(styling, baseClass, id, prefix) {
-        border {
-            width { "1px" }
+fun HtmlElements.simpleLinkWithBackground(linkUri: String, linkText: String): A {
+    return (::a.styled {
+        fontSize { large }
+        color {
+            theme().colors.warning
         }
-    }(init)
+        hover {
+            color {
+                theme().colors.light
+            }
+            background { color { theme().colors.dark } }
+            radius { "5%" }
+        }
+        paddings {
+            left { "0.3rem" }
+            right { "0.3rem" }
+        }
+    }) {
+        +linkText
+        href = const(linkUri)
+    }
+}
 
 fun HtmlElements.simpleAnchorWithBackground(linkText: String): A {
     return (::a.styled {
@@ -75,7 +80,11 @@ fun HtmlElements.simpleAnchorWithBackground(linkText: String): A {
                 theme().colors.light
             }
             background { color { theme().colors.dark } }
-            radius { "1rem" }
+        }
+        radius { "5%" }
+        paddings {
+            left { "0.3rem" }
+            right { "0.3rem" }
         }
     }) {
         +linkText
@@ -96,7 +105,6 @@ fun HtmlElements.simpleAnchor(linkText: String): A {
         href = const("#$linkText")
     }
 }
-
 
 @ExperimentalCoroutinesApi
 fun main() {
@@ -123,13 +131,14 @@ fun main() {
                         minHeight { "100%" }
                         height { "100%" }
                         alignItems { flexStart }
+                        color { dark }
                     }) {
                         items {
                             stackUp({
                                 minHeight { "100%" }
                                 height { "100%" }
                                 padding { "1.0rem" }
-                                minWidth { "10%" }
+                                minWidth { "200px" }
                                 display { flex }
                                 wrap { nowrap }
                                 direction { column }
@@ -142,8 +151,14 @@ fun main() {
                             }, id = "menue-left")
                             {
                                 items {
+                                    (::p.styled {
+                                        paddings {
+                                            bottom { "2.0rem" }
+                                        }
+                                    }) {
+                                        simpleAnchor("welcome")
+                                    }
 
-                                    simpleAnchor("text")
                                     simpleAnchor("flexbox")
                                     simpleAnchor("gridbox")
                                     simpleAnchor("icons")
@@ -155,14 +170,22 @@ fun main() {
                                     simpleAnchor("buttons")
                                     simpleAnchor("modal")
 
-                                    br {}
-                                    a {
+                                    (::a.styled {
+                                        paddings {
+                                            top { "1.5rem" }
+                                        }
+                                        //size { large } // todo this does not have an effect on the icon, but alters
+                                                        // the viewbox like it should
+                                        alignItems { end }
+                                    }) {
                                         href = const("https://www.fritz2.dev/")
                                         target = const("fritz2")
-                                        img {
-                                            src = const("https://www.fritz2.dev/images/fritz2_logo_small_white.svg")
-                                            width = const(35)
-                                            height = const(35)
+                                        title = const("fritz2.dev")
+
+                                        icon {
+                                            fromTheme {
+                                                fritz2
+                                            }
                                         }
                                     }
                                 }
@@ -171,22 +194,29 @@ fun main() {
                                 paddings {
                                     all { "2.0rem" }
                                 }
+                                width {
+                                    "100%"
+                                }
                             }) {
 
+                                // todo we might want a better flex demo
+                                // todo we might want a dedicated theme demo (or use formcontrol (rename) --> all
+                                    //  together)
                                 router.render { site ->
                                     when (site) {
                                         "icons" -> iconsDemo()
                                         "input" -> inputDemo()
                                         "buttons" -> buttonDemo()
                                         "formcontrol" -> formControlDemo()
-                                        "text" -> textDemo()
+                                        // textdemo currently on welcome page, copied, not called
                                         "flexbox" -> flexBoxDemo(store, themes, theme)
                                         "gridbox" -> gridBoxDemo()
                                         "multiselect" -> multiSelectDemo()
                                         "singleselect" -> singleSelectDemo()
                                         "stack" -> stackDemo(theme)
                                         "modal" -> modalDemo()
-                                        else -> textDemo()
+                                        "welcome" -> welcome()
+                                        else -> welcome()
                                     }
                                 }.bind()
                             }
