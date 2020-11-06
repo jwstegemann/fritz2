@@ -129,11 +129,13 @@ fun main() {
                 lineUp({
                     alignItems { stretch }
                     color { dark }
+                    minHeight{ "100%" }
                 }) {
                     items {
                         stackUp({
                             padding { "1.0rem" }
                             minWidth { "200px" }
+                            minHeight{ "100%" }
                             display { flex }
                             wrap { nowrap }
                             direction { column }

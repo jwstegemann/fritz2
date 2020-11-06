@@ -25,7 +25,11 @@ fun HtmlElements.gridBoxDemo(): Div {
         }
 
         h1 { +"Grid Layout Showcase" }
-        p { +"Use the grid layout to display elements on top of other elements." }
+        p {
+            +"Use the grid layout to display elements on top of other elements. Also, this layout transforms with "
+            +"screensize. Try resizing your browser window to see what it does when the available space becomes narrow."
+        }
+
         br {}
 
         p {
