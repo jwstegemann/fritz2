@@ -14,7 +14,7 @@ fun HtmlElements.textDemo(): Div {
         }) {
             items {
 
-                h1 { +"H1: Showcase Text Elements" }
+                h1 { +"H1: Text Elements Showcase" }
                 p { +"These are some examples of text elements." }
                 h2 { +"H2: Paragraph" }
                 p { +"Paragraph: Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum doloribus amet vel? Expedita sit praesentium dolores obcaecati possimus sapiente voluptatem doloribus, ipsum harum in quia, provident corporis nulla corrupti placeat!" }

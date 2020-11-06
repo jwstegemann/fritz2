@@ -3,6 +3,7 @@ import dev.fritz2.binding.handledBy
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.styling.params.AlignItemsValues
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.theme
@@ -15,7 +16,8 @@ fun HtmlElements.modalDemo(): Div {
     //ModalComponent.setOverlayHandler(DefaultOverlay(OverlayMethod.CoveringEach))
 
     return box({
-        margin { normal }
+        alignItems { start }
+        padding { "1rem" }
     }) {
 
         fun createDeepDialogs(count: Int, size: Style<BasicParams>): SimpleHandler<Unit> {
@@ -24,7 +26,7 @@ fun HtmlElements.modalDemo(): Div {
                     closeButton()
                     size { size }
                     items {
-                        h1 { +"Final Dialog!" }
+                        h1 { +"Final Dialog" }
                     }
                 }
             } else {
@@ -35,7 +37,7 @@ fun HtmlElements.modalDemo(): Div {
                     variant { theme().modal.variants.auto }
                     closeButton()
                     items {
-                        h1 { +"Modal Dialog!" }
+                        h1 { +"Modal Dialog" }
                         p { +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." }
                         lineUp({
                             margins { top { normal } }
@@ -44,7 +46,7 @@ fun HtmlElements.modalDemo(): Div {
                             spacing { small }
                             items {
                                 clickButton {
-                                    text("open further")
+                                    text("open another")
                                 } handledBy createDeepDialogs(count - 1, size)
                             }
                         }
@@ -53,25 +55,27 @@ fun HtmlElements.modalDemo(): Div {
             }
         }
 
-        h1 { +"Modal Showcase" }
+        h1 { +"Modal Dialogs Showcase" }
 
-        stackUp {
+        stackUp ({
+            alignItems { start }
+        }) {
             items {
-                h4 { +"Basic Concepts" }
+                h3 { +"Basic Dialog options" }
                 lineUp({
-                    justifyContent { center }
+                    alignItems { start }
                 }) {
                     items {
                         clickButton {
                             variant { outline }
-                            text("blank + closeButton")
+                            text("Blank dialog with closeButton")
                         } handledBy modal {
                             size { theme().modal.sizes.normal }
                             closeButton()
                         }
                         clickButton {
                             variant { outline }
-                            text("blank + custom styled closeButton")
+                            text("Blank dialog with custom-styled closeButton")
                         } handledBy modal {
                             closeButton({
                                 background { color { danger } }
@@ -91,14 +95,14 @@ fun HtmlElements.modalDemo(): Div {
                         }
                         clickButton {
                             variant { outline }
-                            text("content + user defined buttons")
+                            text("Content and user defined buttons")
                         } handledBy modal { close -> /* pass in a handler for custom close management */
                             items {
-                                h1 { +"My simple dialog" }
-                                p { +"You can put arbitrary content and structure within a modal." }
-                                p { +"And of course you can define your own close button or other buttons" }
+                                h1 { +"Simple dialog" }
+                                p { +"You can put any content or structure into a modal." }
+                                p { +"And of course you can define your own close button or other buttons." }
                                 lineUp({
-                                    justifyContent { end }
+                                    alignItems { start }
                                     margins {
                                         top { normal }
                                     }
@@ -113,7 +117,7 @@ fun HtmlElements.modalDemo(): Div {
                                             closeButton()
                                             items {
                                                 h1 { +"Final message" }
-                                                p { +"I am a modal on the next level!" }
+                                                p { +"This is the next level modal dialog." }
                                             }
                                         }
                                         clickButton { text("Abort") } handledBy close // use close handler!
@@ -124,24 +128,27 @@ fun HtmlElements.modalDemo(): Div {
                     }
                 }
 
-                h4 { +"Overlay" }
+                h3 { +"Choosing an overlay" }
+                p {
+                    +"Decide what happens with your background when your modal opens. The options are nothing, create an overlay for each level of dialog opened, or use a styled overlay."
+                }
                 lineUp({
-                    justifyContent { center }
+                    alignItems { start }
                 }) {
                     items {
                         clickButton {
                             variant { outline }
-                            text("Reset standard overlay")
+                            text("Option 1: Reset overlay")
                         }.map { DefaultOverlay() } handledBy ModalComponent.overlay.update
 
                         clickButton {
                             variant { outline }
-                            text("Activate overlay for each nested level")
+                            text("Option 2: Activate overlay for each nested level")
                         }.map { DefaultOverlay(OverlayMethod.CoveringEach) } handledBy ModalComponent.overlay.update
 
                         clickButton {
                             variant { outline }
-                            text("Activate styled overlay")
+                            text("Option 3: Activate styled overlay")
                         }.map {
                             DefaultOverlay(OverlayMethod.CoveringTopMost) {
                                 width { "100%" }
@@ -163,9 +170,9 @@ fun HtmlElements.modalDemo(): Div {
                     }
                 }
 
-                h4 { +"Sizes" }
+                h3 { +"Sizes" }
                 lineUp({
-                    justifyContent { center }
+                    alignItems { start }
                 }) {
                     items {
                         clickButton {
@@ -183,9 +190,9 @@ fun HtmlElements.modalDemo(): Div {
                     }
                 }
 
-                h4 { +"Variants" }
+                h3 { +"Variants" }
                 lineUp({
-                    justifyContent { center }
+                    alignItems { start }
                 }) {
                     items {
                         clickButton {

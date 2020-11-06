@@ -2,83 +2,189 @@ import dev.fritz2.binding.const
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 @ExperimentalCoroutinesApi
 fun HtmlElements.stackDemo(theme: ExtendedTheme): Div {
-    return box({
-        padding { small }
-    }) {
-        h1 { +"Stacks" }
-        lineUp({
-            border {
-                width { fat }
-                color { dark }
-                style { solid }
-            }
-            padding { small }
-            width { "100%" }
-            alignItems { center }
+    return div {
+        stackUp({
+            alignItems { start }
+            padding { "1rem" }
         }) {
             items {
-                (::h4.styled {
-                    fontSize { "1.2em" }
-                    color { primary }
-                    css("writing-mode: vertical-rl")
-                }) { +"stackUp → vertical" }
-                stackUp({
+
+                h1 { +"StackUps and LineUps Showcase" }
+
+                p {
+                    +"A LineUp is a container which allows you to align its contents horizontally, while a StackUp puts the contents on top of each other. You may also reverse the order of the contents."
+                }
+
+                lineUp({
+                    border {
+                        width { normal }
+                        color { dark }
+                        style { solid }
+                    }
                     padding { small }
                     width { "100%" }
+                    alignItems { center }
                 }) {
-                    spacing { normal }
                     items {
                         (::h4.styled {
                             fontSize { "1.2em" }
-                            color { dark }
-                        }) { +"lineUp → horizontal" }
-                        lineUp({
-                            border {
-                                width { fat }
-                                color { dark }
-                                style { solid }
-                            }
+                            color { primary }
+                            css("writing-mode: vertical-rl")
+                        }) { +"stackUp → 3 stacked boxes, each containing a lineUp" }
+                        stackUp({
                             padding { small }
                             width { "100%" }
-                            alignItems { start }
+                            radius { "5%" }
                         }) {
-                            spacing { huge }
-                            reverse { true }
+                            spacing { normal }
                             items {
-                                p { +"A" }
-                                p { +"B" }
-                                p { +"C" }
-                            }
-                        }
-                        lineUp({
-                            border {
-                                width { fat }
-                                color { dark }
-                                style { solid }
-                            }
-                            padding { small }
-                            width { "100%" }
-                            alignItems { center }
-                        }) {
-                            spacing { huge }
-                            items {
-                                icon({
-                                    size { small }
-                                    color { "purple" }
-                                }) { fromTheme { fritz2 } }
-                                (::img.styled {
-                                    size { tiny }
+                                (::h4.styled {
+                                    fontSize { "1.2em" }
+                                    color { dark }
+                                }) { +"lineUp → horizontally arranged items in the boxes below" }
+                                lineUp({
+                                    border {
+                                        width { normal }
+                                        color { dark }
+                                        style { solid }
+                                    }
+                                    padding { small }
+                                    width { "100%" }
+                                    radius { "5%" }
                                 }) {
-                                    src = const("https://bit.ly/2jYM25F")
+                                    spacing { normal }
+                                    reverse { true }
+                                    items {
+                                        box({
+                                            margin { normal }
+                                            paddings { all { "0.5rem" } }
+                                            background {
+                                                color { theme().colors.warning }
+                                            }
+                                            radius { "5%" }
+                                        }) {
+                                            +"The order of"
+                                        }
+
+                                        box({
+                                            margin { normal }
+                                            paddings { all { "0.5rem" } }
+                                            background {
+                                                color { theme().colors.warning }
+                                            }
+                                            radius { "5%" }
+                                        }) {
+                                            +"these boxes"
+                                        }
+                                        box({
+                                            margin { normal }
+                                            paddings { all { "0.5rem" } }
+                                            background {
+                                                color { theme().colors.warning }
+                                            }
+                                            radius { "5%" }
+                                        }) {
+                                            +"is reversed"
+                                        }
+                                    }
                                 }
-                                p { +"D" }
-                                p { +"E" }
-                                p { +"F" }
+                                lineUp({
+                                    border {
+                                        width { normal }
+                                        color { dark }
+                                        style { solid }
+                                    }
+                                    justifyContent { center }
+                                    padding { small }
+                                    width { "100%" }
+                                    radius { "5%" }
+                                }) {
+                                    spacing { normal }
+                                    items {
+                                        box({
+                                            margin { normal }
+                                            paddings { all { "0.5rem" } }
+                                            background {
+                                                color { theme().colors.warning }
+                                            }
+                                            radius { "5%" }
+                                        }) {
+                                            +"These boxes"
+                                        }
+
+                                        box({
+                                            margin { normal }
+                                            paddings { all { "0.5rem" } }
+                                            background {
+                                                color { theme().colors.warning }
+                                            }
+                                            radius { "5%" }
+                                        }) {
+                                            +"are centered"
+                                        }
+                                        box({
+                                            margin { normal }
+                                            paddings { all { "0.5rem" } }
+                                            background {
+                                                color { theme().colors.warning }
+                                            }
+                                            radius { "5%" }
+                                        }) {
+                                            +"and in order"
+                                        }
+                                    }
+                                }
+                                lineUp({
+                                    border {
+                                        width { normal }
+                                        color { dark }
+                                        style { solid }
+                                    }
+                                    padding { small }
+                                    width { "100%" }
+                                    radius { "5%" }
+                                }) {
+                                    spacing { normal }
+                                    items {
+                                        box({
+                                            margin { normal }
+                                            paddings { all { "0.5rem" } }
+                                            background {
+                                                color { theme().colors.warning }
+                                            }
+                                            radius { "5%" }
+                                        }) {
+                                            +"But these lined up"
+                                        }
+
+                                        box({
+                                            margin { normal }
+                                            paddings { all { "0.5rem" } }
+                                            background {
+                                                color { theme().colors.warning }
+                                            }
+                                            radius { "5%" }
+                                        }) {
+                                            +"boxes are in"
+                                        }
+                                        box({
+                                            margin { normal }
+                                            paddings { all { "0.5rem" } }
+                                            background {
+                                                color { theme().colors.warning }
+                                            }
+                                            radius { "5%" }
+                                        }) {
+                                            +"the right order"
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

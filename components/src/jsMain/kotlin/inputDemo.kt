@@ -25,7 +25,7 @@ fun HtmlElements.inputDemo(): Div {
 
         }) {
             items {
-                h1 { +"Showcase Inputs" }
+                h1 { +"Inputs Showcase" }
 
                 h3 { +"A basic Input needs no Store" }
                 inputField {

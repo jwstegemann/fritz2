@@ -16,6 +16,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLInputElement
 
+// todo 2 important fixes
+// todo fix layout, horizontal does not work for groups (cb, r)
+// todo fix no size default
+
+
 // todo implement defaultChecked for radio, checkbox
 // todo add dropdown single select
 
@@ -46,7 +51,7 @@ class RadioGroupComponent {
         disabled = value()
     }
 
-    var checkedBackgroundColor: ColorProperty = "black" // @checkbox @input
+    var checkedBackgroundColor: ColorProperty = "gray" // @checkbox @input
     fun checkedBackgroundColor(value: () -> ColorProperty) {
         checkedBackgroundColor = value()
     }
@@ -56,7 +61,7 @@ class RadioGroupComponent {
         backgroundColor = value()
     }
 
-    var borderColor: ColorProperty = "grey"  // @label
+    var borderColor: ColorProperty = "black"  // @label
     fun borderColor(value: () -> ColorProperty) {
         borderColor = value()
     }
