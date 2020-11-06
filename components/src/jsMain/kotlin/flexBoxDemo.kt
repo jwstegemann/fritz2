@@ -15,19 +15,11 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>
     return div {
         div {
 
-
             flexBox({
                 margin { small }
                 padding { small }
-                border {
-                    style { solid }
-                    width { thin }
-                    color { light }
-                }
-                radius { tiny }
-                boxShadow { flat }
                 direction(sm = { column }, md = { row })
-                minHeight { "80%" }
+                minHeight { "50%" }
             }) {
 
                 box({
@@ -97,6 +89,21 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>
                                 )
                             } handledBy themeStore.selectTheme
                         }.watch()
+                    }
+                    (::h3.styled {
+                        paddings {
+                            all { "0.8rem" }
+                            left { "0" }
+                        }
+                        fontWeight { normal }
+                    }) {
+                        +"Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum doloribus amet vel? Expedita "
+                        +"sit praesentium dolores obcaecati possimus sapiente voluptatem doloribus, ipsum harum in quia, provident corporis nulla corrupti placeat!"
+                        +"Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, "
+                        +"vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
+                        +"Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl"
+                        +" ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. "
+                        +"Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat."
                     }
                 }
             }

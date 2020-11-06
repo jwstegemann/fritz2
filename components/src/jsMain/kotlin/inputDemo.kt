@@ -22,7 +22,6 @@ fun HtmlElements.inputDemo(): Div {
         stackUp({
             alignItems { start }
             padding { "1rem" }
-
         }) {
             items {
                 h1 { +"Inputs Showcase" }

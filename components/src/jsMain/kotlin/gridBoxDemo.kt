@@ -25,8 +25,9 @@ fun HtmlElements.gridBoxDemo(): Div {
         }
 
         h1 { +"Grid Layout Showcase" }
-        p { + "Use the grid layout to display elements on top of other elements."}
+        p { +"Use the grid layout to display elements on top of other elements." }
         br {}
+
         p {
             gridBox({
                 fontSize { normal }
@@ -94,11 +95,11 @@ fun HtmlElements.gridBoxDemo(): Div {
                                 vertical { center }
                             }
                             /*
-            sizes {
-                horizontal { "100%" }
-                vertical { "80%" }
-            }
-             */
+        sizes {
+            horizontal { "100%" }
+            vertical { "80%" }
+        }
+         */
                         },
                         md = {
                             image { "https://via.placeholder.com/300/A9A9A9?text=Gross" }
