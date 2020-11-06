@@ -149,11 +149,11 @@ fun HtmlElements.stackDemo(theme: ExtendedTheme): Div {
                                         }
 
                                         (::img.styled {
-                                            width { smaller }
+                                            width { normal }
                                             boxShadow { flat }
                                             radius { smaller }
                                         }) {
-                                            src = const("https://www.fritz2.dev/images/fritz_info_1.jpg")
+                                            src = const("https://www.fritz2.dev/static/fritz2_state.001.png")
                                             alt = const("Random image for flex layout demonstration")
                                         }
                                     }
