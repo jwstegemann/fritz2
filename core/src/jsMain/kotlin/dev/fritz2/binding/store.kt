@@ -6,9 +6,7 @@ import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.repositories.Resource
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
 
@@ -186,29 +184,23 @@ fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
  *
  * @param initialData: the first current value of this [Store]
  * @param id: the id of this store. ids of [SubStore]s will be concatenated.
- * @param bufferSize: number of values to buffer
  */
 open class RootStore<T>(
     initialData: T,
-    override val id: String = "",
-    dropInitialData: Boolean = false,
-    bufferSize: Int = 1
-) : Store<T>, CoroutineScope by MainScope() {
+    override val id: String = ""
+) : Store<T> {
 
-    private val updates = BroadcastChannel<QueuedUpdate<T>>(bufferSize)
-    private val applyUpdate: suspend (T, QueuedUpdate<T>) -> T = { lastValue, queuedUpdate ->
-        try {
-            queuedUpdate.update(lastValue)
-        } catch (e: Throwable) {
-            queuedUpdate.errorHandler(e, lastValue)
-        }
-    }
+    private val state: MutableStateFlow<T> = MutableStateFlow(initialData)
 
     /**
-     * in a [RootStore] an [Update] is handled by sending it to the internal [updates]-channel.
+     * in a [RootStore] an [Update] is handled by applying it to the internal [StateFlow].
      */
     override suspend fun enqueue(update: QueuedUpdate<T>) {
-        updates.send(update)
+        try {
+            state.value = update.update(state.value)
+        } catch (e: Throwable) {
+            update.errorHandler(e, state.value)
+        }
     }
 
     /**
@@ -216,10 +208,7 @@ open class RootStore<T>(
      * the [Flow] only emits a new value, when the value is differs from the last one to avoid calculations and updates that are not necessary.
      * This has to be a SharedFlow, because the updated should only be applied once, regardless how many depending values or ui-elements or bound to it.
      */
-    override val data = updates.asFlow().scan(initialData, applyUpdate)
-        .drop(if (dropInitialData) 1 else 0)
-        .distinctUntilChanged()
-        .asSharedFlow()
+    override val data = state.asSharedFlow()
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
