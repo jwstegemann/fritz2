@@ -13,12 +13,12 @@ kotlin {
             useKarma {
 //                useSafari()
 //                useFirefox()
-                useChrome()
-//                useChromeHeadless()
+//                useChrome()
+                useChromeHeadless()
 //                usePhantomJS()
             }
             //running test-server in background
-            //dependsOn(":test-server:start")
+            dependsOn(":test-server:start")
         }
         // just to have a place to copy it from...
         /* runTask {
