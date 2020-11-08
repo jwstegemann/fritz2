@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.dokka") version "0.10.1"
 }
 
-val coroutines_version = "1.3.9"
+val coroutines_version = "1.4.1"
 
 kotlin {
     jvm()
@@ -13,12 +13,12 @@ kotlin {
             useKarma {
 //                useSafari()
 //                useFirefox()
-//                useChrome()
-                useChromeHeadless()
+                useChrome()
+//                useChromeHeadless()
 //                usePhantomJS()
             }
             //running test-server in background
-            dependsOn(":test-server:start")
+            //dependsOn(":test-server:start")
         }
         // just to have a place to copy it from...
         /* runTask {

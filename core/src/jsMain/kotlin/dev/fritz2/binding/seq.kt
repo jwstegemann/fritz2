@@ -122,6 +122,8 @@ private suspend inline fun <T> accumulate(accumulator: Pair<List<T>, List<T>>, n
  */
 fun <T, I> Flow<List<T>>.each(idProvider: IdProvider<T, I>): Seq<T> =
     Seq(this.scan(Pair(emptyList<T>(), emptyList<T>()), ::accumulate).flatMapConcat { (old, new) ->
+        console.log("#### diffing $old vs. $new \n")
+
         Myer.diff(old, new, idProvider)
     })
 
