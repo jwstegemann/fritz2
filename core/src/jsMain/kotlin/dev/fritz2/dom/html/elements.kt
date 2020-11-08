@@ -1,7 +1,9 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.dom.*
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 
 
@@ -667,6 +669,17 @@ open class Ul(id: String? = null, baseClass: String? = null) : Tag<HTMLUListElem
 open class TextElement(tagName: String, id: String? = null, baseClass: String? = null) :
     Tag<HTMLElement>(tagName, id, baseClass), WithText<HTMLElement>
 
+
+/**
+ * Context for rendering dynamically DOM-nodes to your page.
+ */
+interface RenderContext {
+    val job: Job
+
+    fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T
+
+    fun <T> Flow<T>.asString() = this.map { it.toString() }
+}
 
 interface HtmlElements {
     fun custom(localName: String, content: Tag<HTMLElement>.() -> Unit): Tag<HTMLElement> =
