@@ -9,14 +9,16 @@ import org.w3c.dom.Node
  */
 interface WithComment<out T : org.w3c.dom.Node> : WithDomNode<T> {
     /**
-     * adds static comment at this position
+     * adds a comment at this position
      *
      * @param value comment-content
      */
     fun comment(value: String): Node = domNode.appendChild(CommentNode(value).domNode)
 
-    /*
-     * Shortcut to create a comment in your HTML by using !"Comment Text"
+    /**
+     * adds a comment in your HTML by using !"Comment Text"
+     *
+     * @receiver comment-content
      */
     operator fun String.not(): Node = domNode.appendChild(CommentNode(this).domNode)
 }
