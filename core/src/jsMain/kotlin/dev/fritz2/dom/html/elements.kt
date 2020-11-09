@@ -141,8 +141,12 @@ open class Br(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTM
  */
 open class Button(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLButtonElement>("button", id, baseClass, job),
     WithText<HTMLButtonElement> {
-    var autofocus: Flow<Boolean> by BooleanAttributeDelegate
-    var disabled: Flow<Boolean> by BooleanAttributeDelegate
+    fun autofocus(value: Boolean, trueValue: String = "") = attr("autofocus", value, trueValue)
+	fun autofocus(value: Flow<Boolean>, trueValue: String = "") = attr("autofocus", value, trueValue)
+
+    fun disabled(value: Boolean, trueValue: String = "") = attr("disabled", value, trueValue)
+	fun disabled(value: Flow<Boolean>, trueValue: String = "") = attr("disabled", value, trueValue)
+
     fun formAction(value: String) = attr("formAction", value)
 	fun formAction(value: Flow<String>) = attr("formAction", value)
 
@@ -152,7 +156,9 @@ open class Button(id: String? = null, baseClass: String? = null, job: Job) : Tag
     fun formMethod(value: String) = attr("formMethod", value)
 	fun formMethod(value: Flow<String>) = attr("formMethod", value)
 
-    var formNoValidate: Flow<Boolean> by BooleanAttributeDelegate
+    fun formNoValidate(value: Boolean, trueValue: String = "") = attr("formNoValidate", value, trueValue)
+	fun formNoValidate(value: Flow<Boolean>, trueValue: String = "") = attr("formNoValidate", value, trueValue)
+
     fun formTarget(value: String) = attr("formTarget", value)
 	fun formTarget(value: Flow<String>) = attr("formTarget", value)
 
@@ -204,7 +210,9 @@ open class DataList(id: String? = null, baseClass: String? = null, job: Job) : T
  */
 open class Details(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLDetailsElement>("details", id, baseClass, job),
     WithText<HTMLDetailsElement> {
-    var open: Flow<Boolean> by BooleanAttributeDelegate
+    fun open(value: Boolean, trueValue: String = "") = attr("open", value, trueValue)
+	fun open(value: Flow<Boolean>, trueValue: String = "") = attr("open", value, trueValue)
+
 }
 
 
@@ -213,7 +221,9 @@ open class Details(id: String? = null, baseClass: String? = null, job: Job) : Ta
  */
 open class Dialog(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLDialogElement>("dialog", id, baseClass, job),
     WithText<HTMLDialogElement> {
-    var open: Flow<Boolean> by BooleanAttributeDelegate
+    fun open(value: Boolean, trueValue: String = "") = attr("open", value, trueValue)
+	fun open(value: Flow<Boolean>, trueValue: String = "") = attr("open", value, trueValue)
+
     fun returnValue(value: String) = attr("returnValue", value)
 	fun returnValue(value: Flow<String>) = attr("returnValue", value)
 
@@ -254,7 +264,9 @@ open class Embed(id: String? = null, baseClass: String? = null, job: Job) : Tag<
  * Exposes the JavaScript [HTMLFieldSetElement](https://developer.mozilla.org/en/docs/Web/API/HTMLFieldSetElement) to Kotlin
  */
 open class FieldSet(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLFieldSetElement>("fieldSet", id, baseClass, job) {
-    var disabled: Flow<Boolean> by BooleanAttributeDelegate
+    fun disabled(value: Boolean, trueValue: String = "") = attr("disabled", value, trueValue)
+	fun disabled(value: Flow<Boolean>, trueValue: String = "") = attr("disabled", value, trueValue)
+
     fun name(value: String) = attr("name", value)
 	fun name(value: Flow<String>) = attr("name", value)
 
@@ -287,7 +299,9 @@ open class Form(id: String? = null, baseClass: String? = null, job: Job) : Tag<H
     fun name(value: String) = attr("name", value)
 	fun name(value: Flow<String>) = attr("name", value)
 
-    var noValidate: Flow<Boolean> by BooleanAttributeDelegate
+    fun noValidate(value: Boolean, trueValue: String = "") = attr("noValidate", value, trueValue)
+	fun noValidate(value: Flow<Boolean>, trueValue: String = "") = attr("noValidate", value, trueValue)
+
     fun target(value: String) = attr("target", value)
 	fun target(value: Flow<String>) = attr("target", value)
 
@@ -321,8 +335,12 @@ open class IFrame(id: String? = null, baseClass: String? = null, job: Job) : Tag
     fun name(value: String) = attr("name", value)
 	fun name(value: Flow<String>) = attr("name", value)
 
-    var allowFullscreen: Flow<Boolean> by BooleanAttributeDelegate
-    var allowUserMedia: Flow<Boolean> by BooleanAttributeDelegate
+    fun allowFullscreen(value: Boolean, trueValue: String = "") = attr("allowFullscreen", value, trueValue)
+	fun allowFullscreen(value: Flow<Boolean>, trueValue: String = "") = attr("allowFullscreen", value, trueValue)
+
+    fun allowUserMedia(value: Boolean, trueValue: String = "") = attr("allowUserMedia", value, trueValue)
+	fun allowUserMedia(value: Flow<Boolean>, trueValue: String = "") = attr("allowUserMedia", value, trueValue)
+
     fun width(value: String) = attr("width", value)
 	fun width(value: Flow<String>) = attr("width", value)
 
@@ -358,7 +376,9 @@ open class Img(id: String? = null, baseClass: String? = null, job: Job) : Tag<HT
     fun useMap(value: String) = attr("useMap", value)
 	fun useMap(value: Flow<String>) = attr("useMap", value)
 
-    var isMap: Flow<Boolean> by BooleanAttributeDelegate
+    fun isMap(value: Boolean, trueValue: String = "") = attr("isMap", value, trueValue)
+	fun isMap(value: Flow<Boolean>, trueValue: String = "") = attr("isMap", value, trueValue)
+
     var width: Flow<Int> by AttributeDelegate
     var height: Flow<Int> by AttributeDelegate
     fun referrerPolicy(value: String) = attr("referrerPolicy", value)
@@ -380,13 +400,19 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun autocomplete(value: String) = attr("autocomplete", value)
 	fun autocomplete(value: Flow<String>) = attr("autocomplete", value)
 
-    var autofocus: Flow<Boolean> by BooleanAttributeDelegate
-    var defaultChecked: Flow<Boolean> by BooleanAttributeDelegate
+    fun autofocus(value: Boolean, trueValue: String = "") = attr("autofocus", value, trueValue)
+	fun autofocus(value: Flow<Boolean>, trueValue: String = "") = attr("autofocus", value, trueValue)
+
+    fun defaultChecked(value: Boolean, trueValue: String = "") = attr("defaultChecked", value, trueValue)
+	fun defaultChecked(value: Flow<Boolean>, trueValue: String = "") = attr("defaultChecked", value, trueValue)
+
     var checked: Flow<Boolean> by CheckedAttributeDelegate
     fun dirName(value: String) = attr("dirName", value)
 	fun dirName(value: Flow<String>) = attr("dirName", value)
 
-    var disabled: Flow<Boolean> by BooleanAttributeDelegate
+    fun disabled(value: Boolean, trueValue: String = "") = attr("disabled", value, trueValue)
+	fun disabled(value: Flow<Boolean>, trueValue: String = "") = attr("disabled", value, trueValue)
+
     fun formAction(value: String) = attr("formAction", value)
 	fun formAction(value: Flow<String>) = attr("formAction", value)
 
@@ -396,12 +422,16 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun formMethod(value: String) = attr("formMethod", value)
 	fun formMethod(value: Flow<String>) = attr("formMethod", value)
 
-    var formNoValidate: Flow<Boolean> by BooleanAttributeDelegate
+    fun formNoValidate(value: Boolean, trueValue: String = "") = attr("formNoValidate", value, trueValue)
+	fun formNoValidate(value: Flow<Boolean>, trueValue: String = "") = attr("formNoValidate", value, trueValue)
+
     fun formTarget(value: String) = attr("formTarget", value)
 	fun formTarget(value: Flow<String>) = attr("formTarget", value)
 
     var height: Flow<Int> by AttributeDelegate
-    var indeterminate: Flow<Boolean> by BooleanAttributeDelegate
+    fun indeterminate(value: Boolean, trueValue: String = "") = attr("indeterminate", value, trueValue)
+	fun indeterminate(value: Flow<Boolean>, trueValue: String = "") = attr("indeterminate", value, trueValue)
+
     fun inputMode(value: String) = attr("inputMode", value)
 	fun inputMode(value: Flow<String>) = attr("inputMode", value)
 
@@ -413,7 +443,9 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
 	fun min(value: Flow<String>) = attr("min", value)
 
     var minLength: Flow<Int> by AttributeDelegate
-    var multiple: Flow<Boolean> by BooleanAttributeDelegate
+    fun multiple(value: Boolean, trueValue: String = "") = attr("multiple", value, trueValue)
+	fun multiple(value: Flow<Boolean>, trueValue: String = "") = attr("multiple", value, trueValue)
+
     fun name(value: String) = attr("name", value)
 	fun name(value: Flow<String>) = attr("name", value)
 
@@ -423,8 +455,12 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun placeholder(value: String) = attr("placeholder", value)
 	fun placeholder(value: Flow<String>) = attr("placeholder", value)
 
-    var readOnly: Flow<Boolean> by BooleanAttributeDelegate
-    var required: Flow<Boolean> by BooleanAttributeDelegate
+    fun readOnly(value: Boolean, trueValue: String = "") = attr("readOnly", value, trueValue)
+	fun readOnly(value: Flow<Boolean>, trueValue: String = "") = attr("readOnly", value, trueValue)
+
+    fun required(value: Boolean, trueValue: String = "") = attr("required", value, trueValue)
+	fun required(value: Flow<Boolean>, trueValue: String = "") = attr("required", value, trueValue)
+
     var size: Flow<Int> by AttributeDelegate
     fun src(value: String) = attr("src", value)
 	fun src(value: Flow<String>) = attr("src", value)
@@ -495,12 +531,22 @@ open class Audio(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     var currentTime: Flow<Double> by AttributeDelegate
     var defaultPlaybackRate: Flow<Double> by AttributeDelegate
     var playbackRate: Flow<Double> by AttributeDelegate
-    var autoplay: Flow<Boolean> by BooleanAttributeDelegate
-    var loop: Flow<Boolean> by BooleanAttributeDelegate
-    var controls: Flow<Boolean> by BooleanAttributeDelegate
+    fun autoplay(value: Boolean, trueValue: String = "") = attr("autoplay", value, trueValue)
+	fun autoplay(value: Flow<Boolean>, trueValue: String = "") = attr("autoplay", value, trueValue)
+
+    fun loop(value: Boolean, trueValue: String = "") = attr("loop", value, trueValue)
+	fun loop(value: Flow<Boolean>, trueValue: String = "") = attr("loop", value, trueValue)
+
+    fun controls(value: Boolean, trueValue: String = "") = attr("controls", value, trueValue)
+	fun controls(value: Flow<Boolean>, trueValue: String = "") = attr("controls", value, trueValue)
+
     var volume: Flow<Double> by AttributeDelegate
-    var muted: Flow<Boolean> by BooleanAttributeDelegate
-    var defaultMuted: Flow<Boolean> by BooleanAttributeDelegate
+    fun muted(value: Boolean, trueValue: String = "") = attr("muted", value, trueValue)
+	fun muted(value: Flow<Boolean>, trueValue: String = "") = attr("muted", value, trueValue)
+
+    fun defaultMuted(value: Boolean, trueValue: String = "") = attr("defaultMuted", value, trueValue)
+	fun defaultMuted(value: Flow<Boolean>, trueValue: String = "") = attr("defaultMuted", value, trueValue)
+
 }
 
 
@@ -514,7 +560,9 @@ open class Video(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun poster(value: String) = attr("poster", value)
 	fun poster(value: Flow<String>) = attr("poster", value)
 
-    var playsInline: Flow<Boolean> by BooleanAttributeDelegate
+    fun playsInline(value: Boolean, trueValue: String = "") = attr("playsInline", value, trueValue)
+	fun playsInline(value: Flow<Boolean>, trueValue: String = "") = attr("playsInline", value, trueValue)
+
     fun src(value: String) = attr("src", value)
 	fun src(value: Flow<String>) = attr("src", value)
 
@@ -524,12 +572,22 @@ open class Video(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     var currentTime: Flow<Double> by AttributeDelegate
     var defaultPlaybackRate: Flow<Double> by AttributeDelegate
     var playbackRate: Flow<Double> by AttributeDelegate
-    var autoplay: Flow<Boolean> by BooleanAttributeDelegate
-    var loop: Flow<Boolean> by BooleanAttributeDelegate
-    var controls: Flow<Boolean> by BooleanAttributeDelegate
+    fun autoplay(value: Boolean, trueValue: String = "") = attr("autoplay", value, trueValue)
+	fun autoplay(value: Flow<Boolean>, trueValue: String = "") = attr("autoplay", value, trueValue)
+
+    fun loop(value: Boolean, trueValue: String = "") = attr("loop", value, trueValue)
+	fun loop(value: Flow<Boolean>, trueValue: String = "") = attr("loop", value, trueValue)
+
+    fun controls(value: Boolean, trueValue: String = "") = attr("controls", value, trueValue)
+	fun controls(value: Flow<Boolean>, trueValue: String = "") = attr("controls", value, trueValue)
+
     var volume: Flow<Double> by AttributeDelegate
-    var muted: Flow<Boolean> by BooleanAttributeDelegate
-    var defaultMuted: Flow<Boolean> by BooleanAttributeDelegate
+    fun muted(value: Boolean, trueValue: String = "") = attr("muted", value, trueValue)
+	fun muted(value: Flow<Boolean>, trueValue: String = "") = attr("muted", value, trueValue)
+
+    fun defaultMuted(value: Boolean, trueValue: String = "") = attr("defaultMuted", value, trueValue)
+	fun defaultMuted(value: Flow<Boolean>, trueValue: String = "") = attr("defaultMuted", value, trueValue)
+
 }
 
 
@@ -580,7 +638,9 @@ open class Del(id: String? = null, baseClass: String? = null, job: Job) : Tag<HT
  */
 open class Ol(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLOListElement>("ol", id, baseClass, job),
     WithText<HTMLOListElement> {
-    var reversed: Flow<Boolean> by BooleanAttributeDelegate
+    fun reversed(value: Boolean, trueValue: String = "") = attr("reversed", value, trueValue)
+	fun reversed(value: Flow<Boolean>, trueValue: String = "") = attr("reversed", value, trueValue)
+
     var start: Flow<Int> by AttributeDelegate
     fun type(value: String) = attr("type", value)
 	fun type(value: Flow<String>) = attr("type", value)
@@ -599,7 +659,9 @@ open class Object(id: String? = null, baseClass: String? = null, job: Job) : Tag
     fun type(value: String) = attr("type", value)
 	fun type(value: Flow<String>) = attr("type", value)
 
-    var typeMustMatch: Flow<Boolean> by BooleanAttributeDelegate
+    fun typeMustMatch(value: Boolean, trueValue: String = "") = attr("typeMustMatch", value, trueValue)
+	fun typeMustMatch(value: Flow<Boolean>, trueValue: String = "") = attr("typeMustMatch", value, trueValue)
+
     fun name(value: String) = attr("name", value)
 	fun name(value: Flow<String>) = attr("name", value)
 
@@ -620,7 +682,9 @@ open class Object(id: String? = null, baseClass: String? = null, job: Job) : Tag
  */
 open class Optgroup(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLOptGroupElement>("optgroup", id, baseClass, job),
     WithText<HTMLOptGroupElement> {
-    var disabled: Flow<Boolean> by BooleanAttributeDelegate
+    fun disabled(value: Boolean, trueValue: String = "") = attr("disabled", value, trueValue)
+	fun disabled(value: Flow<Boolean>, trueValue: String = "") = attr("disabled", value, trueValue)
+
     fun label(value: String) = attr("label", value)
 	fun label(value: Flow<String>) = attr("label", value)
 
@@ -632,12 +696,18 @@ open class Optgroup(id: String? = null, baseClass: String? = null, job: Job) : T
  */
 open class Option(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLOptionElement>("option", id, baseClass, job),
     WithText<HTMLOptionElement> {
-    var disabled: Flow<Boolean> by BooleanAttributeDelegate
+    fun disabled(value: Boolean, trueValue: String = "") = attr("disabled", value, trueValue)
+	fun disabled(value: Flow<Boolean>, trueValue: String = "") = attr("disabled", value, trueValue)
+
     fun label(value: String) = attr("label", value)
 	fun label(value: Flow<String>) = attr("label", value)
 
-    var defaultSelected: Flow<Boolean> by BooleanAttributeDelegate
-    var selected: Flow<Boolean> by BooleanAttributeDelegate
+    fun defaultSelected(value: Boolean, trueValue: String = "") = attr("defaultSelected", value, trueValue)
+	fun defaultSelected(value: Flow<Boolean>, trueValue: String = "") = attr("defaultSelected", value, trueValue)
+
+    fun selected(value: Boolean, trueValue: String = "") = attr("selected", value, trueValue)
+	fun selected(value: Flow<Boolean>, trueValue: String = "") = attr("selected", value, trueValue)
+
     var value: Flow<String> by ValueAttributeDelegate
 
 }
@@ -726,8 +796,12 @@ open class Script(id: String? = null, baseClass: String? = null, job: Job) : Tag
     fun charset(value: String) = attr("charset", value)
 	fun charset(value: Flow<String>) = attr("charset", value)
 
-    var async: Flow<Boolean> by BooleanAttributeDelegate
-    var defer: Flow<Boolean> by BooleanAttributeDelegate
+    fun async(value: Boolean, trueValue: String = "") = attr("async", value, trueValue)
+	fun async(value: Flow<Boolean>, trueValue: String = "") = attr("async", value, trueValue)
+
+    fun defer(value: Boolean, trueValue: String = "") = attr("defer", value, trueValue)
+	fun defer(value: Flow<Boolean>, trueValue: String = "") = attr("defer", value, trueValue)
+
 
     fun nonce(value: String) = attr("nonce", value)
 	fun nonce(value: Flow<String>) = attr("nonce", value)
@@ -748,13 +822,21 @@ open class Select(id: String? = null, baseClass: String? = null, job: Job) : Tag
     fun autocomplete(value: String) = attr("autocomplete", value)
 	fun autocomplete(value: Flow<String>) = attr("autocomplete", value)
 
-    var autofocus: Flow<Boolean> by BooleanAttributeDelegate
-    var disabled: Flow<Boolean> by BooleanAttributeDelegate
-    var multiple: Flow<Boolean> by BooleanAttributeDelegate
+    fun autofocus(value: Boolean, trueValue: String = "") = attr("autofocus", value, trueValue)
+	fun autofocus(value: Flow<Boolean>, trueValue: String = "") = attr("autofocus", value, trueValue)
+
+    fun disabled(value: Boolean, trueValue: String = "") = attr("disabled", value, trueValue)
+	fun disabled(value: Flow<Boolean>, trueValue: String = "") = attr("disabled", value, trueValue)
+
+    fun multiple(value: Boolean, trueValue: String = "") = attr("multiple", value, trueValue)
+	fun multiple(value: Flow<Boolean>, trueValue: String = "") = attr("multiple", value, trueValue)
+
     fun name(value: String) = attr("name", value)
 	fun name(value: Flow<String>) = attr("name", value)
 
-    var required: Flow<Boolean> by BooleanAttributeDelegate
+    fun required(value: Boolean, trueValue: String = "") = attr("required", value, trueValue)
+	fun required(value: Flow<Boolean>, trueValue: String = "") = attr("required", value, trueValue)
+
     var size: Flow<Int> by AttributeDelegate
     var length: Flow<Int> by AttributeDelegate
     var selectedIndex: Flow<Int> by AttributeDelegate
@@ -871,12 +953,16 @@ open class TextArea(id: String? = null, baseClass: String? = null, job: Job) : T
     fun autocomplete(value: String) = attr("autocomplete", value)
 	fun autocomplete(value: Flow<String>) = attr("autocomplete", value)
 
-    var autofocus: Flow<Boolean> by BooleanAttributeDelegate
+    fun autofocus(value: Boolean, trueValue: String = "") = attr("autofocus", value, trueValue)
+	fun autofocus(value: Flow<Boolean>, trueValue: String = "") = attr("autofocus", value, trueValue)
+
     var cols: Flow<Int> by AttributeDelegate
     fun dirName(value: String) = attr("dirName", value)
 	fun dirName(value: Flow<String>) = attr("dirName", value)
 
-    var disabled: Flow<Boolean> by BooleanAttributeDelegate
+    fun disabled(value: Boolean, trueValue: String = "") = attr("disabled", value, trueValue)
+	fun disabled(value: Flow<Boolean>, trueValue: String = "") = attr("disabled", value, trueValue)
+
     fun inputMode(value: String) = attr("inputMode", value)
 	fun inputMode(value: Flow<String>) = attr("inputMode", value)
 
@@ -888,8 +974,12 @@ open class TextArea(id: String? = null, baseClass: String? = null, job: Job) : T
     fun placeholder(value: String) = attr("placeholder", value)
 	fun placeholder(value: Flow<String>) = attr("placeholder", value)
 
-    var readOnly: Flow<Boolean> by BooleanAttributeDelegate
-    var required: Flow<Boolean> by BooleanAttributeDelegate
+    fun readOnly(value: Boolean, trueValue: String = "") = attr("readOnly", value, trueValue)
+	fun readOnly(value: Flow<Boolean>, trueValue: String = "") = attr("readOnly", value, trueValue)
+
+    fun required(value: Boolean, trueValue: String = "") = attr("required", value, trueValue)
+	fun required(value: Flow<Boolean>, trueValue: String = "") = attr("required", value, trueValue)
+
     var rows: Flow<Int> by AttributeDelegate
     fun wrap(value: String) = attr("wrap", value)
 	fun wrap(value: Flow<String>) = attr("wrap", value)
@@ -929,7 +1019,9 @@ open class Track(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun label(value: String) = attr("label", value)
 	fun label(value: Flow<String>) = attr("label", value)
 
-    var default: Flow<Boolean> by BooleanAttributeDelegate
+    fun default(value: Boolean, trueValue: String = "") = attr("default", value, trueValue)
+	fun default(value: Flow<Boolean>, trueValue: String = "") = attr("default", value, trueValue)
+
 }
 
 
