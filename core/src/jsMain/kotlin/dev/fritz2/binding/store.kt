@@ -1,6 +1,5 @@
 package dev.fritz2.binding
 
-import dev.fritz2.flow.asSharedFlow
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
@@ -9,6 +8,8 @@ import dev.fritz2.repositories.Resource
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * defines a type for transforming one value into the next
@@ -191,13 +192,17 @@ open class RootStore<T>(
 ) : Store<T> {
 
     private val state: MutableStateFlow<T> = MutableStateFlow(initialData)
+    private val mutex = Mutex()
+
 
     /**
      * in a [RootStore] an [Update] is handled by applying it to the internal [StateFlow].
      */
     override suspend fun enqueue(update: QueuedUpdate<T>) {
         try {
-            state.value = update.update(state.value)
+            mutex.withLock {
+                state.value = update.update(state.value)
+            }
         } catch (e: Throwable) {
             update.errorHandler(e, state.value)
         }
@@ -208,7 +213,7 @@ open class RootStore<T>(
      * the [Flow] only emits a new value, when the value is differs from the last one to avoid calculations and updates that are not necessary.
      * This has to be a SharedFlow, because the updated should only be applied once, regardless how many depending values or ui-elements or bound to it.
      */
-    override val data = state.asSharedFlow()
+    override val data = state.asStateFlow()
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
