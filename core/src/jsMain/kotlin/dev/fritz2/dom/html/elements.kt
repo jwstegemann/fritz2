@@ -177,8 +177,12 @@ open class Button(id: String? = null, baseClass: String? = null, job: Job) : Tag
  */
 open class Canvas(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLCanvasElement>("canvas", id, baseClass, job),
     WithText<HTMLCanvasElement> {
-    var width: Flow<Int> by AttributeDelegate
-    var height: Flow<Int> by AttributeDelegate
+    fun width(value: Int) = attr("width", value)
+	fun width(value: Flow<Int>) = attr("width", value)
+
+    fun height(value: Int) = attr("height", value)
+	fun height(value: Flow<Int>) = attr("height", value)
+
 }
 
 
@@ -379,8 +383,12 @@ open class Img(id: String? = null, baseClass: String? = null, job: Job) : Tag<HT
     fun isMap(value: Boolean, trueValue: String = "") = attr("isMap", value, trueValue)
 	fun isMap(value: Flow<Boolean>, trueValue: String = "") = attr("isMap", value, trueValue)
 
-    var width: Flow<Int> by AttributeDelegate
-    var height: Flow<Int> by AttributeDelegate
+    fun width(value: Int) = attr("width", value)
+	fun width(value: Flow<Int>) = attr("width", value)
+
+    fun height(value: Int) = attr("height", value)
+	fun height(value: Flow<Int>) = attr("height", value)
+
     fun referrerPolicy(value: String) = attr("referrerPolicy", value)
 	fun referrerPolicy(value: Flow<String>) = attr("referrerPolicy", value)
 
@@ -428,7 +436,9 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun formTarget(value: String) = attr("formTarget", value)
 	fun formTarget(value: Flow<String>) = attr("formTarget", value)
 
-    var height: Flow<Int> by AttributeDelegate
+    fun height(value: Int) = attr("height", value)
+	fun height(value: Flow<Int>) = attr("height", value)
+
     fun indeterminate(value: Boolean, trueValue: String = "") = attr("indeterminate", value, trueValue)
 	fun indeterminate(value: Flow<Boolean>, trueValue: String = "") = attr("indeterminate", value, trueValue)
 
@@ -438,11 +448,15 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun max(value: String) = attr("max", value)
 	fun max(value: Flow<String>) = attr("max", value)
 
-    var maxLength: Flow<Int> by AttributeDelegate
+    fun maxLength(value: Int) = attr("maxLength", value)
+	fun maxLength(value: Flow<Int>) = attr("maxLength", value)
+
     fun min(value: String) = attr("min", value)
 	fun min(value: Flow<String>) = attr("min", value)
 
-    var minLength: Flow<Int> by AttributeDelegate
+    fun minLength(value: Int) = attr("minLength", value)
+	fun minLength(value: Flow<Int>) = attr("minLength", value)
+
     fun multiple(value: Boolean, trueValue: String = "") = attr("multiple", value, trueValue)
 	fun multiple(value: Flow<Boolean>, trueValue: String = "") = attr("multiple", value, trueValue)
 
@@ -461,7 +475,9 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun required(value: Boolean, trueValue: String = "") = attr("required", value, trueValue)
 	fun required(value: Flow<Boolean>, trueValue: String = "") = attr("required", value, trueValue)
 
-    var size: Flow<Int> by AttributeDelegate
+    fun size(value: Int) = attr("size", value)
+	fun size(value: Flow<Int>) = attr("size", value)
+
     fun src(value: String) = attr("src", value)
 	fun src(value: Flow<String>) = attr("src", value)
 
@@ -475,7 +491,9 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
 	fun defaultValue(value: Flow<String>) = attr("defaultValue", value)
 
     var value: Flow<String> by ValueAttributeDelegate
-    var width: Flow<Int> by AttributeDelegate
+    fun width(value: Int) = attr("width", value)
+	fun width(value: Flow<Int>) = attr("width", value)
+
 }
 
 
@@ -484,7 +502,9 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
  */
 open class Li(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLLIElement>("li", id, baseClass, job),
     WithText<HTMLLIElement> {
-    var value: Flow<Int> by AttributeDelegate
+    fun value(value: Int) = attr("value", value)
+	fun value(value: Flow<Int>) = attr("value", value)
+
 }
 
 
@@ -555,8 +575,12 @@ open class Audio(id: String? = null, baseClass: String? = null, job: Job) : Tag<
  */
 open class Video(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLVideoElement>("video", id, baseClass, job),
     WithText<HTMLVideoElement> {
-    var width: Flow<Int> by AttributeDelegate
-    var height: Flow<Int> by AttributeDelegate
+    fun width(value: Int) = attr("width", value)
+	fun width(value: Flow<Int>) = attr("width", value)
+
+    fun height(value: Int) = attr("height", value)
+	fun height(value: Flow<Int>) = attr("height", value)
+
     fun poster(value: String) = attr("poster", value)
 	fun poster(value: Flow<String>) = attr("poster", value)
 
@@ -641,7 +665,9 @@ open class Ol(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTM
     fun reversed(value: Boolean, trueValue: String = "") = attr("reversed", value, trueValue)
 	fun reversed(value: Flow<Boolean>, trueValue: String = "") = attr("reversed", value, trueValue)
 
-    var start: Flow<Int> by AttributeDelegate
+    fun start(value: Int) = attr("start", value)
+	fun start(value: Flow<Int>) = attr("start", value)
+
     fun type(value: String) = attr("type", value)
 	fun type(value: Flow<String>) = attr("type", value)
 
@@ -837,9 +863,15 @@ open class Select(id: String? = null, baseClass: String? = null, job: Job) : Tag
     fun required(value: Boolean, trueValue: String = "") = attr("required", value, trueValue)
 	fun required(value: Flow<Boolean>, trueValue: String = "") = attr("required", value, trueValue)
 
-    var size: Flow<Int> by AttributeDelegate
-    var length: Flow<Int> by AttributeDelegate
-    var selectedIndex: Flow<Int> by AttributeDelegate
+    fun size(value: Int) = attr("size", value)
+	fun size(value: Flow<Int>) = attr("size", value)
+
+    fun length(value: Int) = attr("length", value)
+	fun length(value: Flow<Int>) = attr("length", value)
+
+    fun selectedIndex(value: Int) = attr("selectedIndex", value)
+	fun selectedIndex(value: Flow<Int>) = attr("selectedIndex", value)
+
     var value: Flow<String> by ValueAttributeDelegate
 }
 
@@ -863,8 +895,12 @@ open class Caption(id: String? = null, baseClass: String? = null, job: Job) : Ta
  */
 open class Th(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableCellElement>("th", id, baseClass, job),
     WithText<HTMLTableCellElement> {
-    var colSpan: Flow<Int> by AttributeDelegate
-    var rowSpan: Flow<Int> by AttributeDelegate
+    fun colSpan(value: Int) = attr("colSpan", value)
+	fun colSpan(value: Flow<Int>) = attr("colSpan", value)
+
+    fun rowSpan(value: Int) = attr("rowSpan", value)
+	fun rowSpan(value: Flow<Int>) = attr("rowSpan", value)
+
     fun headers(value: String) = attr("headers", value)
 	fun headers(value: Flow<String>) = attr("headers", value)
 
@@ -882,8 +918,12 @@ open class Th(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTM
  */
 open class Td(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableCellElement>("td", id, baseClass, job),
     WithText<HTMLTableCellElement> {
-    var colSpan: Flow<Int> by AttributeDelegate
-    var rowSpan: Flow<Int> by AttributeDelegate
+    fun colSpan(value: Int) = attr("colSpan", value)
+	fun colSpan(value: Flow<Int>) = attr("colSpan", value)
+
+    fun rowSpan(value: Int) = attr("rowSpan", value)
+	fun rowSpan(value: Flow<Int>) = attr("rowSpan", value)
+
     fun headers(value: String) = attr("headers", value)
 	fun headers(value: Flow<String>) = attr("headers", value)
 
@@ -901,7 +941,9 @@ open class Td(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTM
  */
 open class Col(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableColElement>("col", id, baseClass, job),
     WithText<HTMLTableColElement> {
-    var span: Flow<Int> by AttributeDelegate
+    fun span(value: Int) = attr("span", value)
+	fun span(value: Flow<Int>) = attr("span", value)
+
 }
 
 
@@ -910,7 +952,9 @@ open class Col(id: String? = null, baseClass: String? = null, job: Job) : Tag<HT
  */
 open class Colgroup(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableColElement>("colgroup", id, baseClass, job),
     WithText<HTMLTableColElement> {
-    var span: Flow<Int> by AttributeDelegate
+    fun span(value: Int) = attr("span", value)
+	fun span(value: Flow<Int>) = attr("span", value)
+
 }
 
 
@@ -956,7 +1000,9 @@ open class TextArea(id: String? = null, baseClass: String? = null, job: Job) : T
     fun autofocus(value: Boolean, trueValue: String = "") = attr("autofocus", value, trueValue)
 	fun autofocus(value: Flow<Boolean>, trueValue: String = "") = attr("autofocus", value, trueValue)
 
-    var cols: Flow<Int> by AttributeDelegate
+    fun cols(value: Int) = attr("cols", value)
+	fun cols(value: Flow<Int>) = attr("cols", value)
+
     fun dirName(value: String) = attr("dirName", value)
 	fun dirName(value: Flow<String>) = attr("dirName", value)
 
@@ -966,8 +1012,12 @@ open class TextArea(id: String? = null, baseClass: String? = null, job: Job) : T
     fun inputMode(value: String) = attr("inputMode", value)
 	fun inputMode(value: Flow<String>) = attr("inputMode", value)
 
-    var maxLength: Flow<Int> by AttributeDelegate
-    var minLength: Flow<Int> by AttributeDelegate
+    fun maxLength(value: Int) = attr("maxLength", value)
+	fun maxLength(value: Flow<Int>) = attr("maxLength", value)
+
+    fun minLength(value: Int) = attr("minLength", value)
+	fun minLength(value: Flow<Int>) = attr("minLength", value)
+
     fun name(value: String) = attr("name", value)
 	fun name(value: Flow<String>) = attr("name", value)
 
@@ -980,7 +1030,9 @@ open class TextArea(id: String? = null, baseClass: String? = null, job: Job) : T
     fun required(value: Boolean, trueValue: String = "") = attr("required", value, trueValue)
 	fun required(value: Flow<Boolean>, trueValue: String = "") = attr("required", value, trueValue)
 
-    var rows: Flow<Int> by AttributeDelegate
+    fun rows(value: Int) = attr("rows", value)
+	fun rows(value: Flow<Int>) = attr("rows", value)
+
     fun wrap(value: String) = attr("wrap", value)
 	fun wrap(value: Flow<String>) = attr("wrap", value)
 
