@@ -1,6 +1,8 @@
 package dev.fritz2.dom.html
 
-import dev.fritz2.dom.*
+import dev.fritz2.dom.Tag
+import dev.fritz2.dom.WithDomNode
+import dev.fritz2.dom.WithText
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -12,24 +14,57 @@ import org.w3c.dom.*
  */
 open class A(id: String? = null, baseClass: String? = null) : Tag<HTMLAnchorElement>("a", id, baseClass),
     WithText<HTMLAnchorElement> {
-    var target: Flow<String> by AttributeDelegate
-    var download: Flow<String> by AttributeDelegate
-    var ping: Flow<String> by AttributeDelegate
-    var rel: Flow<String> by AttributeDelegate
-    var hreflang: Flow<String> by AttributeDelegate
-    var type: Flow<String> by AttributeDelegate
-    var text: Flow<String> by AttributeDelegate
-    var referrerPolicy: Flow<String> by AttributeDelegate
-    var href: Flow<String> by AttributeDelegate
-    var protocol: Flow<String> by AttributeDelegate
-    var username: Flow<String> by AttributeDelegate
-    var password: Flow<String> by AttributeDelegate
-    var host: Flow<String> by AttributeDelegate
-    var hostname: Flow<String> by AttributeDelegate
-    var port: Flow<String> by AttributeDelegate
-    var pathname: Flow<String> by AttributeDelegate
-    var search: Flow<String> by AttributeDelegate
-    var hash: Flow<String> by AttributeDelegate
+    fun target(value: String) = attr("target", value)
+	fun target(value: Flow<String>) = attr("target", value)
+
+    fun download(value: String) = attr("download", value)
+	fun download(value: Flow<String>) = attr("download", value)
+
+    fun ping(value: String) = attr("ping", value)
+	fun ping(value: Flow<String>) = attr("ping", value)
+
+    fun rel(value: String) = attr("rel", value)
+	fun rel(value: Flow<String>) = attr("rel", value)
+
+    fun hreflang(value: String) = attr("hreflang", value)
+	fun hreflang(value: Flow<String>) = attr("hreflang", value)
+
+    fun type(value: String) = attr("type", value)
+	fun type(value: Flow<String>) = attr("type", value)
+
+    fun referrerPolicy(value: String) = attr("referrerPolicy", value)
+	fun referrerPolicy(value: Flow<String>) = attr("referrerPolicy", value)
+
+    fun href(value: String) = attr("href", value)
+	fun href(value: Flow<String>) = attr("href", value)
+
+    fun protocol(value: String) = attr("protocol", value)
+	fun protocol(value: Flow<String>) = attr("protocol", value)
+
+    fun username(value: String) = attr("username", value)
+	fun username(value: Flow<String>) = attr("username", value)
+
+    fun password(value: String) = attr("password", value)
+	fun password(value: Flow<String>) = attr("password", value)
+
+    fun host(value: String) = attr("host", value)
+	fun host(value: Flow<String>) = attr("host", value)
+
+    fun hostname(value: String) = attr("hostname", value)
+	fun hostname(value: Flow<String>) = attr("hostname", value)
+
+    fun port(value: String) = attr("port", value)
+	fun port(value: Flow<String>) = attr("port", value)
+
+    fun pathname(value: String) = attr("pathname", value)
+	fun pathname(value: Flow<String>) = attr("pathname", value)
+
+    fun search(value: String) = attr("search", value)
+	fun search(value: Flow<String>) = attr("search", value)
+
+    fun hash(value: String) = attr("hash", value)
+	fun hash(value: Flow<String>) = attr("hash", value)
+
 }
 
 
@@ -38,24 +73,60 @@ open class A(id: String? = null, baseClass: String? = null) : Tag<HTMLAnchorElem
  */
 open class Area(id: String? = null, baseClass: String? = null) : Tag<HTMLAreaElement>("area", id, baseClass),
     WithText<HTMLAreaElement> {
-    var alt: Flow<String> by AttributeDelegate
-    var coords: Flow<String> by AttributeDelegate
-    var shape: Flow<String> by AttributeDelegate
-    var target: Flow<String> by AttributeDelegate
-    var download: Flow<String> by AttributeDelegate
-    var ping: Flow<String> by AttributeDelegate
-    var rel: Flow<String> by AttributeDelegate
-    var referrerPolicy: Flow<String> by AttributeDelegate
-    var href: Flow<String> by AttributeDelegate
-    var protocol: Flow<String> by AttributeDelegate
-    var username: Flow<String> by AttributeDelegate
-    var password: Flow<String> by AttributeDelegate
-    var host: Flow<String> by AttributeDelegate
-    var hostname: Flow<String> by AttributeDelegate
-    var port: Flow<String> by AttributeDelegate
-    var pathname: Flow<String> by AttributeDelegate
-    var search: Flow<String> by AttributeDelegate
-    var hash: Flow<String> by AttributeDelegate
+    fun alt(value: String) = attr("alt", value)
+	fun alt(value: Flow<String>) = attr("alt", value)
+
+    fun coords(value: String) = attr("coords", value)
+	fun coords(value: Flow<String>) = attr("coords", value)
+
+    fun shape(value: String) = attr("shape", value)
+	fun shape(value: Flow<String>) = attr("shape", value)
+
+    fun target(value: String) = attr("target", value)
+	fun target(value: Flow<String>) = attr("target", value)
+
+    fun download(value: String) = attr("download", value)
+	fun download(value: Flow<String>) = attr("download", value)
+
+    fun ping(value: String) = attr("ping", value)
+	fun ping(value: Flow<String>) = attr("ping", value)
+
+    fun rel(value: String) = attr("rel", value)
+	fun rel(value: Flow<String>) = attr("rel", value)
+
+    fun referrerPolicy(value: String) = attr("referrerPolicy", value)
+	fun referrerPolicy(value: Flow<String>) = attr("referrerPolicy", value)
+
+    fun href(value: String) = attr("href", value)
+	fun href(value: Flow<String>) = attr("href", value)
+
+    fun protocol(value: String) = attr("protocol", value)
+	fun protocol(value: Flow<String>) = attr("protocol", value)
+
+    fun username(value: String) = attr("username", value)
+	fun username(value: Flow<String>) = attr("username", value)
+
+    fun password(value: String) = attr("password", value)
+	fun password(value: Flow<String>) = attr("password", value)
+
+    fun host(value: String) = attr("host", value)
+	fun host(value: Flow<String>) = attr("host", value)
+
+    fun hostname(value: String) = attr("hostname", value)
+	fun hostname(value: Flow<String>) = attr("hostname", value)
+
+    fun port(value: String) = attr("port", value)
+	fun port(value: Flow<String>) = attr("port", value)
+
+    fun pathname(value: String) = attr("pathname", value)
+	fun pathname(value: Flow<String>) = attr("pathname", value)
+
+    fun search(value: String) = attr("search", value)
+	fun search(value: Flow<String>) = attr("search", value)
+
+    fun hash(value: String) = attr("hash", value)
+	fun hash(value: Flow<String>) = attr("hash", value)
+
 }
 
 
@@ -72,13 +143,25 @@ open class Button(id: String? = null, baseClass: String? = null) : Tag<HTMLButto
     WithText<HTMLButtonElement> {
     var autofocus: Flow<Boolean> by BooleanAttributeDelegate
     var disabled: Flow<Boolean> by BooleanAttributeDelegate
-    var formAction: Flow<String> by AttributeDelegate
-    var formEnctype: Flow<String> by AttributeDelegate
-    var formMethod: Flow<String> by AttributeDelegate
+    fun formAction(value: String) = attr("formAction", value)
+	fun formAction(value: Flow<String>) = attr("formAction", value)
+
+    fun formEnctype(value: String) = attr("formEnctype", value)
+	fun formEnctype(value: Flow<String>) = attr("formEnctype", value)
+
+    fun formMethod(value: String) = attr("formMethod", value)
+	fun formMethod(value: Flow<String>) = attr("formMethod", value)
+
     var formNoValidate: Flow<Boolean> by BooleanAttributeDelegate
-    var formTarget: Flow<String> by AttributeDelegate
-    var name: Flow<String> by AttributeDelegate
-    var type: Flow<String> by AttributeDelegate
+    fun formTarget(value: String) = attr("formTarget", value)
+	fun formTarget(value: Flow<String>) = attr("formTarget", value)
+
+    fun name(value: String) = attr("name", value)
+	fun name(value: Flow<String>) = attr("name", value)
+
+    fun type(value: String) = attr("type", value)
+	fun type(value: Flow<String>) = attr("type", value)
+
     var value: Flow<String> by ValueAttributeDelegate
 }
 
@@ -131,7 +214,9 @@ open class Details(id: String? = null, baseClass: String? = null) : Tag<HTMLDeta
 open class Dialog(id: String? = null, baseClass: String? = null) : Tag<HTMLDialogElement>("dialog", id, baseClass),
     WithText<HTMLDialogElement> {
     var open: Flow<Boolean> by BooleanAttributeDelegate
-    var returnValue: Flow<String> by AttributeDelegate
+    fun returnValue(value: String) = attr("returnValue", value)
+	fun returnValue(value: Flow<String>) = attr("returnValue", value)
+
 }
 
 
@@ -140,7 +225,9 @@ open class Dialog(id: String? = null, baseClass: String? = null) : Tag<HTMLDialo
  */
 open class Div(id: String? = null, baseClass: String? = null) : Tag<HTMLDivElement>("div", id, baseClass),
     WithText<HTMLDivElement> {
-    var align: Flow<String> by AttributeDelegate
+    fun align(value: String) = attr("align", value)
+	fun align(value: Flow<String>) = attr("align", value)
+
 }
 
 
@@ -148,10 +235,18 @@ open class Div(id: String? = null, baseClass: String? = null) : Tag<HTMLDivEleme
  * Exposes the JavaScript [HTMLDivElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDivElement) to Kotlin
  */
 open class Embed(id: String? = null, baseClass: String? = null) : Tag<HTMLEmbedElement>("embed", id, baseClass) {
-    var src: Flow<String> by AttributeDelegate
-    var type: Flow<String> by AttributeDelegate
-    var width: Flow<String> by AttributeDelegate
-    var height: Flow<String> by AttributeDelegate
+    fun src(value: String) = attr("src", value)
+	fun src(value: Flow<String>) = attr("src", value)
+
+    fun type(value: String) = attr("type", value)
+	fun type(value: Flow<String>) = attr("type", value)
+
+    fun width(value: String) = attr("width", value)
+	fun width(value: Flow<String>) = attr("width", value)
+
+    fun height(value: String) = attr("height", value)
+	fun height(value: Flow<String>) = attr("height", value)
+
 }
 
 
@@ -160,7 +255,9 @@ open class Embed(id: String? = null, baseClass: String? = null) : Tag<HTMLEmbedE
  */
 open class FieldSet(id: String? = null, baseClass: String? = null) : Tag<HTMLFieldSetElement>("fieldSet", id, baseClass) {
     var disabled: Flow<Boolean> by BooleanAttributeDelegate
-    var name: Flow<String> by AttributeDelegate
+    fun name(value: String) = attr("name", value)
+	fun name(value: Flow<String>) = attr("name", value)
+
 }
 
 
@@ -169,15 +266,31 @@ open class FieldSet(id: String? = null, baseClass: String? = null) : Tag<HTMLFie
  */
 open class Form(id: String? = null, baseClass: String? = null) : Tag<HTMLFormElement>("form", id, baseClass),
     WithText<HTMLFormElement> {
-    var acceptCharset: Flow<String> by AttributeDelegate
-    var action: Flow<String> by AttributeDelegate
-    var autocomplete: Flow<String> by AttributeDelegate
-    var enctype: Flow<String> by AttributeDelegate
-    var encoding: Flow<String> by AttributeDelegate
-    var method: Flow<String> by AttributeDelegate
-    var name: Flow<String> by AttributeDelegate
+    fun acceptCharset(value: String) = attr("acceptCharset", value)
+	fun acceptCharset(value: Flow<String>) = attr("acceptCharset", value)
+
+    fun action(value: String) = attr("action", value)
+	fun action(value: Flow<String>) = attr("action", value)
+
+    fun autocomplete(value: String) = attr("autocomplete", value)
+	fun autocomplete(value: Flow<String>) = attr("autocomplete", value)
+
+    fun enctype(value: String) = attr("enctype", value)
+	fun enctype(value: Flow<String>) = attr("enctype", value)
+
+    fun encoding(value: String) = attr("encoding", value)
+	fun encoding(value: Flow<String>) = attr("encoding", value)
+
+    fun method(value: String) = attr("method", value)
+	fun method(value: Flow<String>) = attr("method", value)
+
+    fun name(value: String) = attr("name", value)
+	fun name(value: Flow<String>) = attr("name", value)
+
     var noValidate: Flow<Boolean> by BooleanAttributeDelegate
-    var target: Flow<String> by AttributeDelegate
+    fun target(value: String) = attr("target", value)
+	fun target(value: Flow<String>) = attr("target", value)
+
 }
 
 
@@ -199,14 +312,26 @@ open class H(num: Int, id: String? = null, baseClass: String? = null) : Tag<HTML
  */
 open class IFrame(id: String? = null, baseClass: String? = null) : Tag<HTMLIFrameElement>("iframe", id, baseClass),
     WithText<HTMLIFrameElement> {
-    var src: Flow<String> by AttributeDelegate
-    var srcdoc: Flow<String> by AttributeDelegate
-    var name: Flow<String> by AttributeDelegate
+    fun src(value: String) = attr("src", value)
+	fun src(value: Flow<String>) = attr("src", value)
+
+    fun srcdoc(value: String) = attr("srcdoc", value)
+	fun srcdoc(value: Flow<String>) = attr("srcdoc", value)
+
+    fun name(value: String) = attr("name", value)
+	fun name(value: Flow<String>) = attr("name", value)
+
     var allowFullscreen: Flow<Boolean> by BooleanAttributeDelegate
     var allowUserMedia: Flow<Boolean> by BooleanAttributeDelegate
-    var width: Flow<String> by AttributeDelegate
-    var height: Flow<String> by AttributeDelegate
-    var referrerPolicy: Flow<String> by AttributeDelegate
+    fun width(value: String) = attr("width", value)
+	fun width(value: Flow<String>) = attr("width", value)
+
+    fun height(value: String) = attr("height", value)
+	fun height(value: Flow<String>) = attr("height", value)
+
+    fun referrerPolicy(value: String) = attr("referrerPolicy", value)
+	fun referrerPolicy(value: Flow<String>) = attr("referrerPolicy", value)
+
 }
 
 
@@ -215,16 +340,30 @@ open class IFrame(id: String? = null, baseClass: String? = null) : Tag<HTMLIFram
  */
 open class Img(id: String? = null, baseClass: String? = null) : Tag<HTMLImageElement>("img", id, baseClass),
     WithText<HTMLImageElement> {
-    var alt: Flow<String> by AttributeDelegate
-    var src: Flow<String> by AttributeDelegate
-    var srcset: Flow<String> by AttributeDelegate
-    var sizes: Flow<String> by AttributeDelegate
-    var crossOrigin: Flow<String> by AttributeDelegate
-    var useMap: Flow<String> by AttributeDelegate
+    fun alt(value: String) = attr("alt", value)
+	fun alt(value: Flow<String>) = attr("alt", value)
+
+    fun src(value: String) = attr("src", value)
+	fun src(value: Flow<String>) = attr("src", value)
+
+    fun srcset(value: String) = attr("srcset", value)
+	fun srcset(value: Flow<String>) = attr("srcset", value)
+
+    fun sizes(value: String) = attr("sizes", value)
+	fun sizes(value: Flow<String>) = attr("sizes", value)
+
+    fun crossOrigin(value: String) = attr("crossOrigin", value)
+	fun crossOrigin(value: Flow<String>) = attr("crossOrigin", value)
+
+    fun useMap(value: String) = attr("useMap", value)
+	fun useMap(value: Flow<String>) = attr("useMap", value)
+
     var isMap: Flow<Boolean> by BooleanAttributeDelegate
     var width: Flow<Int> by AttributeDelegate
     var height: Flow<Int> by AttributeDelegate
-    var referrerPolicy: Flow<String> by AttributeDelegate
+    fun referrerPolicy(value: String) = attr("referrerPolicy", value)
+	fun referrerPolicy(value: Flow<String>) = attr("referrerPolicy", value)
+
 }
 
 
@@ -232,37 +371,73 @@ open class Img(id: String? = null, baseClass: String? = null) : Tag<HTMLImageEle
  * Exposes the JavaScript [HTMLInputElement](https://developer.mozilla.org/en/docs/Web/API/HTMLInputElement) to Kotlin
  */
 open class Input(id: String? = null, baseClass: String? = null) : Tag<HTMLInputElement>("input", id, baseClass) {
-    var accept: Flow<String> by AttributeDelegate
-    var alt: Flow<String> by AttributeDelegate
-    var autocomplete: Flow<String> by AttributeDelegate
+    fun accept(value: String) = attr("accept", value)
+	fun accept(value: Flow<String>) = attr("accept", value)
+
+    fun alt(value: String) = attr("alt", value)
+	fun alt(value: Flow<String>) = attr("alt", value)
+
+    fun autocomplete(value: String) = attr("autocomplete", value)
+	fun autocomplete(value: Flow<String>) = attr("autocomplete", value)
+
     var autofocus: Flow<Boolean> by BooleanAttributeDelegate
     var defaultChecked: Flow<Boolean> by BooleanAttributeDelegate
     var checked: Flow<Boolean> by CheckedAttributeDelegate
-    var dirName: Flow<String> by AttributeDelegate
+    fun dirName(value: String) = attr("dirName", value)
+	fun dirName(value: Flow<String>) = attr("dirName", value)
+
     var disabled: Flow<Boolean> by BooleanAttributeDelegate
-    var formAction: Flow<String> by AttributeDelegate
-    var formEnctype: Flow<String> by AttributeDelegate
-    var formMethod: Flow<String> by AttributeDelegate
+    fun formAction(value: String) = attr("formAction", value)
+	fun formAction(value: Flow<String>) = attr("formAction", value)
+
+    fun formEnctype(value: String) = attr("formEnctype", value)
+	fun formEnctype(value: Flow<String>) = attr("formEnctype", value)
+
+    fun formMethod(value: String) = attr("formMethod", value)
+	fun formMethod(value: Flow<String>) = attr("formMethod", value)
+
     var formNoValidate: Flow<Boolean> by BooleanAttributeDelegate
-    var formTarget: Flow<String> by AttributeDelegate
+    fun formTarget(value: String) = attr("formTarget", value)
+	fun formTarget(value: Flow<String>) = attr("formTarget", value)
+
     var height: Flow<Int> by AttributeDelegate
     var indeterminate: Flow<Boolean> by BooleanAttributeDelegate
-    var inputMode: Flow<String> by AttributeDelegate
-    var max: Flow<String> by AttributeDelegate
+    fun inputMode(value: String) = attr("inputMode", value)
+	fun inputMode(value: Flow<String>) = attr("inputMode", value)
+
+    fun max(value: String) = attr("max", value)
+	fun max(value: Flow<String>) = attr("max", value)
+
     var maxLength: Flow<Int> by AttributeDelegate
-    var min: Flow<String> by AttributeDelegate
+    fun min(value: String) = attr("min", value)
+	fun min(value: Flow<String>) = attr("min", value)
+
     var minLength: Flow<Int> by AttributeDelegate
     var multiple: Flow<Boolean> by BooleanAttributeDelegate
-    var name: Flow<String> by AttributeDelegate
-    var pattern: Flow<String> by AttributeDelegate
-    var placeholder: Flow<String> by AttributeDelegate
+    fun name(value: String) = attr("name", value)
+	fun name(value: Flow<String>) = attr("name", value)
+
+    fun pattern(value: String) = attr("pattern", value)
+	fun pattern(value: Flow<String>) = attr("pattern", value)
+
+    fun placeholder(value: String) = attr("placeholder", value)
+	fun placeholder(value: Flow<String>) = attr("placeholder", value)
+
     var readOnly: Flow<Boolean> by BooleanAttributeDelegate
     var required: Flow<Boolean> by BooleanAttributeDelegate
     var size: Flow<Int> by AttributeDelegate
-    var src: Flow<String> by AttributeDelegate
-    var step: Flow<String> by AttributeDelegate
-    var type: Flow<String> by AttributeDelegate
-    var defaultValue: Flow<String> by AttributeDelegate
+    fun src(value: String) = attr("src", value)
+	fun src(value: Flow<String>) = attr("src", value)
+
+    fun step(value: String) = attr("step", value)
+	fun step(value: Flow<String>) = attr("step", value)
+
+    fun type(value: String) = attr("type", value)
+	fun type(value: Flow<String>) = attr("type", value)
+
+    fun defaultValue(value: String) = attr("defaultValue", value)
+	fun defaultValue(value: Flow<String>) = attr("defaultValue", value)
+
     var value: Flow<String> by ValueAttributeDelegate
     var width: Flow<Int> by AttributeDelegate
 }
@@ -282,7 +457,9 @@ open class Li(id: String? = null, baseClass: String? = null) : Tag<HTMLLIElement
  */
 open class Label(id: String? = null, baseClass: String? = null) : Tag<HTMLLabelElement>("label", id, baseClass),
     WithText<HTMLLabelElement> {
-    var `for`: Flow<String> by AttributeDelegate
+    fun `for`(value: String) = attr("`for`", value)
+	fun `for`(value: Flow<String>) = attr("`for`", value)
+
 }
 
 
@@ -298,7 +475,9 @@ open class Legend(id: String? = null, baseClass: String? = null) : Tag<HTMLLegen
  */
 open class Map(id: String? = null, baseClass: String? = null) : Tag<HTMLMapElement>("map", id, baseClass),
     WithText<HTMLMapElement> {
-    var name: Flow<String> by AttributeDelegate
+    fun name(value: String) = attr("name", value)
+	fun name(value: Flow<String>) = attr("name", value)
+
 }
 
 
@@ -307,8 +486,12 @@ open class Map(id: String? = null, baseClass: String? = null) : Tag<HTMLMapEleme
  */
 open class Audio(id: String? = null, baseClass: String? = null) : Tag<HTMLAudioElement>("audio", id, baseClass),
     WithText<HTMLAudioElement> {
-    var src: Flow<String> by AttributeDelegate
-    var preload: Flow<String> by AttributeDelegate
+    fun src(value: String) = attr("src", value)
+	fun src(value: Flow<String>) = attr("src", value)
+
+    fun preload(value: String) = attr("preload", value)
+	fun preload(value: Flow<String>) = attr("preload", value)
+
     var currentTime: Flow<Double> by AttributeDelegate
     var defaultPlaybackRate: Flow<Double> by AttributeDelegate
     var playbackRate: Flow<Double> by AttributeDelegate
@@ -328,10 +511,16 @@ open class Video(id: String? = null, baseClass: String? = null) : Tag<HTMLVideoE
     WithText<HTMLVideoElement> {
     var width: Flow<Int> by AttributeDelegate
     var height: Flow<Int> by AttributeDelegate
-    var poster: Flow<String> by AttributeDelegate
+    fun poster(value: String) = attr("poster", value)
+	fun poster(value: Flow<String>) = attr("poster", value)
+
     var playsInline: Flow<Boolean> by BooleanAttributeDelegate
-    var src: Flow<String> by AttributeDelegate
-    var preload: Flow<String> by AttributeDelegate
+    fun src(value: String) = attr("src", value)
+	fun src(value: Flow<String>) = attr("src", value)
+
+    fun preload(value: String) = attr("preload", value)
+	fun preload(value: Flow<String>) = attr("preload", value)
+
     var currentTime: Flow<Double> by AttributeDelegate
     var defaultPlaybackRate: Flow<Double> by AttributeDelegate
     var playbackRate: Flow<Double> by AttributeDelegate
@@ -363,8 +552,12 @@ open class Meter(id: String? = null, baseClass: String? = null) : Tag<HTMLMeterE
  */
 open class Ins(id: String? = null, baseClass: String? = null) : Tag<HTMLModElement>("ins", id, baseClass),
     WithText<HTMLModElement> {
-    var cite: Flow<String> by AttributeDelegate
-    var dateTime: Flow<String> by AttributeDelegate
+    fun cite(value: String) = attr("cite", value)
+	fun cite(value: Flow<String>) = attr("cite", value)
+
+    fun dateTime(value: String) = attr("dateTime", value)
+	fun dateTime(value: Flow<String>) = attr("dateTime", value)
+
 }
 
 
@@ -373,8 +566,12 @@ open class Ins(id: String? = null, baseClass: String? = null) : Tag<HTMLModEleme
  */
 open class Del(id: String? = null, baseClass: String? = null) : Tag<HTMLModElement>("del", id, baseClass),
     WithText<HTMLModElement> {
-    var cite: Flow<String> by AttributeDelegate
-    var dateTime: Flow<String> by AttributeDelegate
+    fun cite(value: String) = attr("cite", value)
+	fun cite(value: Flow<String>) = attr("cite", value)
+
+    fun dateTime(value: String) = attr("dateTime", value)
+	fun dateTime(value: Flow<String>) = attr("dateTime", value)
+
 }
 
 
@@ -385,7 +582,9 @@ open class Ol(id: String? = null, baseClass: String? = null) : Tag<HTMLOListElem
     WithText<HTMLOListElement> {
     var reversed: Flow<Boolean> by BooleanAttributeDelegate
     var start: Flow<Int> by AttributeDelegate
-    var type: Flow<String> by AttributeDelegate
+    fun type(value: String) = attr("type", value)
+	fun type(value: Flow<String>) = attr("type", value)
+
 }
 
 
@@ -394,13 +593,25 @@ open class Ol(id: String? = null, baseClass: String? = null) : Tag<HTMLOListElem
  */
 open class Object(id: String? = null, baseClass: String? = null) : Tag<HTMLObjectElement>("object", id, baseClass),
     WithText<HTMLObjectElement> {
-    var data: Flow<String> by AttributeDelegate
-    var type: Flow<String> by AttributeDelegate
+    fun data(value: String) = attr("data", value)
+	fun data(value: Flow<String>) = attr("data", value)
+
+    fun type(value: String) = attr("type", value)
+	fun type(value: Flow<String>) = attr("type", value)
+
     var typeMustMatch: Flow<Boolean> by BooleanAttributeDelegate
-    var name: Flow<String> by AttributeDelegate
-    var useMap: Flow<String> by AttributeDelegate
-    var width: Flow<String> by AttributeDelegate
-    var height: Flow<String> by AttributeDelegate
+    fun name(value: String) = attr("name", value)
+	fun name(value: Flow<String>) = attr("name", value)
+
+    fun useMap(value: String) = attr("useMap", value)
+	fun useMap(value: Flow<String>) = attr("useMap", value)
+
+    fun width(value: String) = attr("width", value)
+	fun width(value: Flow<String>) = attr("width", value)
+
+    fun height(value: String) = attr("height", value)
+	fun height(value: Flow<String>) = attr("height", value)
+
 }
 
 
@@ -410,7 +621,9 @@ open class Object(id: String? = null, baseClass: String? = null) : Tag<HTMLObjec
 open class Optgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLOptGroupElement>("optgroup", id, baseClass),
     WithText<HTMLOptGroupElement> {
     var disabled: Flow<Boolean> by BooleanAttributeDelegate
-    var label: Flow<String> by AttributeDelegate
+    fun label(value: String) = attr("label", value)
+	fun label(value: Flow<String>) = attr("label", value)
+
 }
 
 
@@ -420,11 +633,13 @@ open class Optgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLOpt
 open class Option(id: String? = null, baseClass: String? = null) : Tag<HTMLOptionElement>("option", id, baseClass),
     WithText<HTMLOptionElement> {
     var disabled: Flow<Boolean> by BooleanAttributeDelegate
-    var label: Flow<String> by AttributeDelegate
+    fun label(value: String) = attr("label", value)
+	fun label(value: Flow<String>) = attr("label", value)
+
     var defaultSelected: Flow<Boolean> by BooleanAttributeDelegate
     var selected: Flow<Boolean> by BooleanAttributeDelegate
     var value: Flow<String> by ValueAttributeDelegate
-    var text: Flow<String> by AttributeDelegate
+
 }
 
 
@@ -433,8 +648,12 @@ open class Option(id: String? = null, baseClass: String? = null) : Tag<HTMLOptio
  */
 open class Output(id: String? = null, baseClass: String? = null) : Tag<HTMLOutputElement>("output", id, baseClass),
     WithText<HTMLOutputElement> {
-    var name: Flow<String> by AttributeDelegate
-    var defaultValue: Flow<String> by AttributeDelegate
+    fun name(value: String) = attr("name", value)
+	fun name(value: Flow<String>) = attr("name", value)
+
+    fun defaultValue(value: String) = attr("defaultValue", value)
+	fun defaultValue(value: Flow<String>) = attr("defaultValue", value)
+
     var value: Flow<String> by ValueAttributeDelegate
 }
 
@@ -451,7 +670,9 @@ open class P(id: String? = null, baseClass: String? = null) : Tag<HTMLParagraphE
  */
 open class Param(id: String? = null, baseClass: String? = null) : Tag<HTMLParamElement>("param", id, baseClass),
     WithText<HTMLParamElement> {
-    var name: Flow<String> by AttributeDelegate
+    fun name(value: String) = attr("name", value)
+	fun name(value: Flow<String>) = attr("name", value)
+
     var value: Flow<String> by ValueAttributeDelegate
 }
 
@@ -485,23 +706,38 @@ open class Progress(id: String? = null, baseClass: String? = null) : Tag<HTMLPro
  */
 open class Quote(id: String? = null, baseClass: String? = null) : Tag<HTMLQuoteElement>("quote", id, baseClass),
     WithText<HTMLQuoteElement> {
-    var cite: Flow<String> by AttributeDelegate
+    fun cite(value: String) = attr("cite", value)
+	fun cite(value: Flow<String>) = attr("cite", value)
+
 }
 
 
 /**
  * Exposes the JavaScript [HTMLScriptElement](https://developer.mozilla.org/en/docs/Web/API/HTMLScriptElement) to Kotlin
  */
-open class Script(id: String? = null, baseClass: String? = null) : Tag<HTMLScriptElement>("script", id, baseClass) {
-    var src: Flow<String> by AttributeDelegate
-    var type: Flow<String> by AttributeDelegate
-    var charset: Flow<String> by AttributeDelegate
+open class Script(id: String? = null, baseClass: String? = null) : Tag<HTMLScriptElement>("script", id, baseClass),
+    WithText<HTMLScriptElement> {
+    fun src(value: String) = attr("src", value)
+	fun src(value: Flow<String>) = attr("src", value)
+
+    fun type(value: String) = attr("type", value)
+	fun type(value: Flow<String>) = attr("type", value)
+
+    fun charset(value: String) = attr("charset", value)
+	fun charset(value: Flow<String>) = attr("charset", value)
+
     var async: Flow<Boolean> by BooleanAttributeDelegate
     var defer: Flow<Boolean> by BooleanAttributeDelegate
-    var text: Flow<String> by AttributeDelegate
-    var nonce: Flow<String> by AttributeDelegate
-    var event: Flow<String> by AttributeDelegate
-    var `for`: Flow<String> by AttributeDelegate
+
+    fun nonce(value: String) = attr("nonce", value)
+	fun nonce(value: Flow<String>) = attr("nonce", value)
+
+    fun event(value: String) = attr("event", value)
+	fun event(value: Flow<String>) = attr("event", value)
+
+    fun `for`(value: String) = attr("`for`", value)
+	fun `for`(value: Flow<String>) = attr("`for`", value)
+
 }
 
 
@@ -509,11 +745,15 @@ open class Script(id: String? = null, baseClass: String? = null) : Tag<HTMLScrip
  * Exposes the JavaScript [HTMLSelectElement](https://developer.mozilla.org/en/docs/Web/API/HTMLSelectElement) to Kotlin
  */
 open class Select(id: String? = null, baseClass: String? = null) : Tag<HTMLSelectElement>("select", id, baseClass) {
-    var autocomplete: Flow<String> by AttributeDelegate
+    fun autocomplete(value: String) = attr("autocomplete", value)
+	fun autocomplete(value: Flow<String>) = attr("autocomplete", value)
+
     var autofocus: Flow<Boolean> by BooleanAttributeDelegate
     var disabled: Flow<Boolean> by BooleanAttributeDelegate
     var multiple: Flow<Boolean> by BooleanAttributeDelegate
-    var name: Flow<String> by AttributeDelegate
+    fun name(value: String) = attr("name", value)
+	fun name(value: Flow<String>) = attr("name", value)
+
     var required: Flow<Boolean> by BooleanAttributeDelegate
     var size: Flow<Int> by AttributeDelegate
     var length: Flow<Int> by AttributeDelegate
@@ -543,9 +783,15 @@ open class Th(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCell
     WithText<HTMLTableCellElement> {
     var colSpan: Flow<Int> by AttributeDelegate
     var rowSpan: Flow<Int> by AttributeDelegate
-    var headers: Flow<String> by AttributeDelegate
-    var scope: Flow<String> by AttributeDelegate
-    var abbr: Flow<String> by AttributeDelegate
+    fun headers(value: String) = attr("headers", value)
+	fun headers(value: Flow<String>) = attr("headers", value)
+
+    fun scope(value: String) = attr("scope", value)
+	fun scope(value: Flow<String>) = attr("scope", value)
+
+    fun abbr(value: String) = attr("abbr", value)
+	fun abbr(value: Flow<String>) = attr("abbr", value)
+
 }
 
 
@@ -556,9 +802,15 @@ open class Td(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCell
     WithText<HTMLTableCellElement> {
     var colSpan: Flow<Int> by AttributeDelegate
     var rowSpan: Flow<Int> by AttributeDelegate
-    var headers: Flow<String> by AttributeDelegate
-    var scope: Flow<String> by AttributeDelegate
-    var abbr: Flow<String> by AttributeDelegate
+    fun headers(value: String) = attr("headers", value)
+	fun headers(value: Flow<String>) = attr("headers", value)
+
+    fun scope(value: String) = attr("scope", value)
+	fun scope(value: Flow<String>) = attr("scope", value)
+
+    fun abbr(value: String) = attr("abbr", value)
+	fun abbr(value: Flow<String>) = attr("abbr", value)
+
 }
 
 
@@ -616,21 +868,35 @@ open class TBody(id: String? = null, baseClass: String? = null) : Tag<HTMLTableS
  */
 open class TextArea(id: String? = null, baseClass: String? = null) : Tag<HTMLTextAreaElement>("textarea", id, baseClass),
     WithText<HTMLTextAreaElement> {
-    var autocomplete: Flow<String> by AttributeDelegate
+    fun autocomplete(value: String) = attr("autocomplete", value)
+	fun autocomplete(value: Flow<String>) = attr("autocomplete", value)
+
     var autofocus: Flow<Boolean> by BooleanAttributeDelegate
     var cols: Flow<Int> by AttributeDelegate
-    var dirName: Flow<String> by AttributeDelegate
+    fun dirName(value: String) = attr("dirName", value)
+	fun dirName(value: Flow<String>) = attr("dirName", value)
+
     var disabled: Flow<Boolean> by BooleanAttributeDelegate
-    var inputMode: Flow<String> by AttributeDelegate
+    fun inputMode(value: String) = attr("inputMode", value)
+	fun inputMode(value: Flow<String>) = attr("inputMode", value)
+
     var maxLength: Flow<Int> by AttributeDelegate
     var minLength: Flow<Int> by AttributeDelegate
-    var name: Flow<String> by AttributeDelegate
-    var placeholder: Flow<String> by AttributeDelegate
+    fun name(value: String) = attr("name", value)
+	fun name(value: Flow<String>) = attr("name", value)
+
+    fun placeholder(value: String) = attr("placeholder", value)
+	fun placeholder(value: Flow<String>) = attr("placeholder", value)
+
     var readOnly: Flow<Boolean> by BooleanAttributeDelegate
     var required: Flow<Boolean> by BooleanAttributeDelegate
     var rows: Flow<Int> by AttributeDelegate
-    var wrap: Flow<String> by AttributeDelegate
-    var defaultValue: Flow<String> by AttributeDelegate
+    fun wrap(value: String) = attr("wrap", value)
+	fun wrap(value: Flow<String>) = attr("wrap", value)
+
+    fun defaultValue(value: String) = attr("defaultValue", value)
+	fun defaultValue(value: Flow<String>) = attr("defaultValue", value)
+
     var value: Flow<String> by ValueAttributeDelegate
 }
 
@@ -640,7 +906,9 @@ open class TextArea(id: String? = null, baseClass: String? = null) : Tag<HTMLTex
  */
 open class Time(id: String? = null, baseClass: String? = null) : Tag<HTMLTimeElement>("time", id, baseClass),
     WithText<HTMLTimeElement> {
-    var dateTime: Flow<String> by AttributeDelegate
+    fun dateTime(value: String) = attr("dateTime", value)
+	fun dateTime(value: Flow<String>) = attr("dateTime", value)
+
 }
 
 
@@ -649,10 +917,18 @@ open class Time(id: String? = null, baseClass: String? = null) : Tag<HTMLTimeEle
  */
 open class Track(id: String? = null, baseClass: String? = null) : Tag<HTMLTrackElement>("track", id, baseClass),
     WithText<HTMLTrackElement> {
-    var kind: Flow<String> by AttributeDelegate
-    var src: Flow<String> by AttributeDelegate
-    var srclang: Flow<String> by AttributeDelegate
-    var label: Flow<String> by AttributeDelegate
+    fun kind(value: String) = attr("kind", value)
+	fun kind(value: Flow<String>) = attr("kind", value)
+
+    fun src(value: String) = attr("src", value)
+	fun src(value: Flow<String>) = attr("src", value)
+
+    fun srclang(value: String) = attr("srclang", value)
+	fun srclang(value: Flow<String>) = attr("srclang", value)
+
+    fun label(value: String) = attr("label", value)
+	fun label(value: Flow<String>) = attr("label", value)
+
     var default: Flow<Boolean> by BooleanAttributeDelegate
 }
 
