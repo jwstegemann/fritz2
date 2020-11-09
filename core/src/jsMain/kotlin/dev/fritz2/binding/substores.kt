@@ -1,6 +1,5 @@
 package dev.fritz2.binding
 
-import dev.fritz2.flow.asSharedFlow
 import dev.fritz2.lenses.Lens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -19,11 +18,14 @@ class SubStore<R, P, T>(
     internal val rootLens: Lens<R, T>
 ) : Store<T>, CoroutineScope by MainScope() {
 
-
     /**
      * defines how to infer the id of the sub-part from the parent's id.
      */
     override val id: String by lazy { "${parent.id}.${lens.id}".trimEnd('.') }
+
+    //TODO: comment
+    override val current: T
+        get() = lens.get(parent.current)
 
     /**
      * Since a [SubStore] is just a view on a [RootStore] holding the real value, it forwards the [Update] to it, using it's [Lens] to transform it.
@@ -48,7 +50,16 @@ class SubStore<R, P, T>(
      */
     override val data: Flow<T> = parent.data.map {
         lens.get(it)
-    }.distinctUntilChanged().asSharedFlow()
+    }.distinctUntilChanged()
+    //TODO: sharedFlow
+
+    /**
+     * the current value of the [SubStore] is derived from the data of it's parent using the given [Lens].
+     */
+//    override val value : T
+//        get() = parent.data.map {
+//        lens.get(it)
+//    }.distinctUntilChanged()
 
     /**
      * creates a new [SubStore] using this one as it's parent.

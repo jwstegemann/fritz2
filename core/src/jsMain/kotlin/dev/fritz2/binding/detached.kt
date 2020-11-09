@@ -1,6 +1,5 @@
 package dev.fritz2.binding
 
-import dev.fritz2.flow.asSharedFlow
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.elementLens
@@ -48,6 +47,10 @@ class DetachedStore<T, P>(private val initialData: T, private val parent: Store<
      */
     override val id: String by lazy { "${parent.id}.${lens.id}".trimEnd('.') }
 
+    //TODO: comment
+    override val current: T
+        get() = state.value
+
     /**
      * Since a [SubStore] is just a view on a [RootStore] holding the real value, it forwards the [Update] to it, using it's [Lens] to transform it.
      */
@@ -65,7 +68,8 @@ class DetachedStore<T, P>(private val initialData: T, private val parent: Store<
      */
     override val data: Flow<T> = parent.data.map {
         lens.get(it)
-    }.distinctUntilChanged().asSharedFlow()
+    }.distinctUntilChanged()
+    //TODO: sharedFlow
 
     /**
      * creates a new [SubStore] using this one as it's parent.

@@ -6,7 +6,6 @@ import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.repositories.Resource
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -84,13 +83,12 @@ interface Store<T> {
      */
     fun <A, E> handleAndOffer(
         errorHandler: ErrorHandler<T> = ::errorHandler,
-        bufferSize: Int = 1,
-        execute: suspend SendChannel<E>.(T, A) -> T
+        execute: suspend FlowCollector<E>.(T, A) -> T
     ) =
-        OfferingHandler<A, E>(bufferSize) { inFlow, outChannel ->
-            inFlow.onEach { enqueue(QueuedUpdate({ t -> outChannel.execute(t, it) }, errorHandler)) }
+        OfferingHandler<A, E>({ inFlow, outFlow ->
+            inFlow.onEach { enqueue(QueuedUpdate({ t -> outFlow.execute(t, it) }, errorHandler)) }
                 .launchIn(MainScope())
-        }
+        })
 
     /**
      * factory method to create an [OfferingHandler] that does not take an action in it's [execute]-lambda.
@@ -100,13 +98,12 @@ interface Store<T> {
      */
     fun <E> handleAndOffer(
         errorHandler: ErrorHandler<T> = ::errorHandler,
-        bufferSize: Int = 1,
-        execute: suspend SendChannel<E>.(T) -> T
+        execute: suspend FlowCollector<E>.(T) -> T
     ) =
-        OfferingHandler<Unit, E>(bufferSize) { inFlow, outChannel ->
-            inFlow.onEach { enqueue(QueuedUpdate({ t -> outChannel.execute(t) }, errorHandler)) }
+        OfferingHandler<Unit, E>({ inFlow, outFlow ->
+            inFlow.onEach { enqueue(QueuedUpdate({ t -> outFlow.execute(t) }, errorHandler)) }
                 .launchIn(MainScope())
-        }
+        })
 
     /**
      * abstract method defining, how this [Store] handles an [Update]
@@ -124,6 +121,11 @@ interface Store<T> {
      * the [Flow] representing the current value of the [Store]. Use this to bind it to ui-elements or derive calculated values by using [map] for example.
      */
     val data: Flow<T>
+
+    /**
+     * TODO: comment
+     */
+    val current: T
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
@@ -194,6 +196,8 @@ open class RootStore<T>(
     private val state: MutableStateFlow<T> = MutableStateFlow(initialData)
     private val mutex = Mutex()
 
+    override val current: T
+        get() = state.value
 
     /**
      * in a [RootStore] an [Update] is handled by applying it to the internal [StateFlow].

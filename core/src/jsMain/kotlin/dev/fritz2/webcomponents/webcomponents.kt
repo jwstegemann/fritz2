@@ -1,7 +1,6 @@
 package dev.fritz2.webcomponents
 
 import dev.fritz2.dom.Tag
-import dev.fritz2.flow.asSharedFlow
 import kotlinx.browser.window
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
@@ -82,7 +81,8 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
                 offer(Pair(name, value))
             }
             awaitClose {}
-        }.distinctUntilChanged().asSharedFlow()
+        }.distinctUntilChanged()
+        //TODO: sharedFlow
     } else {
         flowOf()
     }

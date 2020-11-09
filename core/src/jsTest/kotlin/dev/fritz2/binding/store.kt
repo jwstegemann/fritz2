@@ -28,7 +28,7 @@ class StoreTests {
         val store1 = object : RootStore<String>("start") {
 
             val finish = handleAndOffer<Int> { _ ->
-                offer(5)
+                emit(5)
                 "finish"
             }
         }
@@ -79,14 +79,14 @@ class StoreTests {
         val s1 = object : RootStore<String>("s1.start") {
 
             val finish = handleAndOffer<String> {
-                offer("s1.finish")
+                emit("s1.finish")
                 "s1.finish"
             }
         }
 
         val s2 = object : RootStore<String>("s2.start") {
             val finish = handleAndOffer<String, String> { _, action ->
-                offer("s2.finish")
+                emit("s2.finish")
                 action
             }
         }
