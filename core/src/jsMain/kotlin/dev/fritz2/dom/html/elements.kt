@@ -12,7 +12,7 @@ import org.w3c.dom.*
 /**
  * Exposes the JavaScript [HTMLAnchorElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAnchorElement) to Kotlin
  */
-open class A(id: String? = null, baseClass: String? = null) : Tag<HTMLAnchorElement>("a", id, baseClass),
+open class A(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLAnchorElement>("a", id, baseClass, job),
     WithText<HTMLAnchorElement> {
     fun target(value: String) = attr("target", value)
 	fun target(value: Flow<String>) = attr("target", value)
@@ -71,7 +71,7 @@ open class A(id: String? = null, baseClass: String? = null) : Tag<HTMLAnchorElem
 /**
  * Exposes the JavaScript [HTMLAreaElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAreaElement) to Kotlin
  */
-open class Area(id: String? = null, baseClass: String? = null) : Tag<HTMLAreaElement>("area", id, baseClass),
+open class Area(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLAreaElement>("area", id, baseClass, job),
     WithText<HTMLAreaElement> {
     fun alt(value: String) = attr("alt", value)
 	fun alt(value: Flow<String>) = attr("alt", value)
@@ -133,13 +133,13 @@ open class Area(id: String? = null, baseClass: String? = null) : Tag<HTMLAreaEle
 /**
  * Exposes the JavaScript [HTMLBRElement](https://developer.mozilla.org/en/docs/Web/API/HTMLBRElement) to Kotlin
  */
-open class Br(id: String? = null, baseClass: String? = null) : Tag<HTMLBRElement>("br", id, baseClass)
+open class Br(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLBRElement>("br", id, baseClass, job)
 
 
 /**
  * Exposes the JavaScript [HTMLButtonElement](https://developer.mozilla.org/en/docs/Web/API/HTMLButtonElement) to Kotlin
  */
-open class Button(id: String? = null, baseClass: String? = null) : Tag<HTMLButtonElement>("button", id, baseClass),
+open class Button(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLButtonElement>("button", id, baseClass, job),
     WithText<HTMLButtonElement> {
     var autofocus: Flow<Boolean> by BooleanAttributeDelegate
     var disabled: Flow<Boolean> by BooleanAttributeDelegate
@@ -169,7 +169,7 @@ open class Button(id: String? = null, baseClass: String? = null) : Tag<HTMLButto
 /**
  * Exposes the JavaScript [HTMLCanvasElement](https://developer.mozilla.org/en/docs/Web/API/HTMLCanvasElement) to Kotlin
  */
-open class Canvas(id: String? = null, baseClass: String? = null) : Tag<HTMLCanvasElement>("canvas", id, baseClass),
+open class Canvas(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLCanvasElement>("canvas", id, baseClass, job),
     WithText<HTMLCanvasElement> {
     var width: Flow<Int> by AttributeDelegate
     var height: Flow<Int> by AttributeDelegate
@@ -179,14 +179,14 @@ open class Canvas(id: String? = null, baseClass: String? = null) : Tag<HTMLCanva
 /**
  * Exposes the JavaScript [HTMLDListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDListElement) to Kotlin
  */
-open class Dl(id: String? = null, baseClass: String? = null) : Tag<HTMLDListElement>("dl", id, baseClass),
+open class Dl(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLDListElement>("dl", id, baseClass, job),
     WithText<HTMLDListElement>
 
 
 /**
  * Exposes the JavaScript [HTMLDataElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDataElement) to Kotlin
  */
-open class Data(id: String? = null, baseClass: String? = null) : Tag<HTMLDataElement>("data", id, baseClass),
+open class Data(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLDataElement>("data", id, baseClass, job),
     WithText<HTMLDataElement> {
     var value: Flow<String> by ValueAttributeDelegate
 }
@@ -195,14 +195,14 @@ open class Data(id: String? = null, baseClass: String? = null) : Tag<HTMLDataEle
 /**
  * Exposes the JavaScript [HTMLDataListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDataListElement) to Kotlin
  */
-open class DataList(id: String? = null, baseClass: String? = null) : Tag<HTMLDataListElement>("datalist", id, baseClass),
+open class DataList(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLDataListElement>("datalist", id, baseClass, job),
     WithText<HTMLDataListElement>
 
 
 /**
  * Exposes the JavaScript [HTMLDetailsElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDetailsElement) to Kotlin
  */
-open class Details(id: String? = null, baseClass: String? = null) : Tag<HTMLDetailsElement>("details", id, baseClass),
+open class Details(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLDetailsElement>("details", id, baseClass, job),
     WithText<HTMLDetailsElement> {
     var open: Flow<Boolean> by BooleanAttributeDelegate
 }
@@ -211,7 +211,7 @@ open class Details(id: String? = null, baseClass: String? = null) : Tag<HTMLDeta
 /**
  * Exposes the JavaScript [HTMLDialogElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDialogElement) to Kotlin
  */
-open class Dialog(id: String? = null, baseClass: String? = null) : Tag<HTMLDialogElement>("dialog", id, baseClass),
+open class Dialog(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLDialogElement>("dialog", id, baseClass, job),
     WithText<HTMLDialogElement> {
     var open: Flow<Boolean> by BooleanAttributeDelegate
     fun returnValue(value: String) = attr("returnValue", value)
@@ -223,7 +223,7 @@ open class Dialog(id: String? = null, baseClass: String? = null) : Tag<HTMLDialo
 /**
  * Exposes the JavaScript [HTMLDivElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDivElement) to Kotlin
  */
-open class Div(id: String? = null, baseClass: String? = null) : Tag<HTMLDivElement>("div", id, baseClass),
+open class Div(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLDivElement>("div", id, baseClass, job),
     WithText<HTMLDivElement> {
     fun align(value: String) = attr("align", value)
 	fun align(value: Flow<String>) = attr("align", value)
@@ -234,7 +234,7 @@ open class Div(id: String? = null, baseClass: String? = null) : Tag<HTMLDivEleme
 /**
  * Exposes the JavaScript [HTMLDivElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDivElement) to Kotlin
  */
-open class Embed(id: String? = null, baseClass: String? = null) : Tag<HTMLEmbedElement>("embed", id, baseClass) {
+open class Embed(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLEmbedElement>("embed", id, baseClass, job) {
     fun src(value: String) = attr("src", value)
 	fun src(value: Flow<String>) = attr("src", value)
 
@@ -253,7 +253,7 @@ open class Embed(id: String? = null, baseClass: String? = null) : Tag<HTMLEmbedE
 /**
  * Exposes the JavaScript [HTMLFieldSetElement](https://developer.mozilla.org/en/docs/Web/API/HTMLFieldSetElement) to Kotlin
  */
-open class FieldSet(id: String? = null, baseClass: String? = null) : Tag<HTMLFieldSetElement>("fieldSet", id, baseClass) {
+open class FieldSet(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLFieldSetElement>("fieldSet", id, baseClass, job) {
     var disabled: Flow<Boolean> by BooleanAttributeDelegate
     fun name(value: String) = attr("name", value)
 	fun name(value: Flow<String>) = attr("name", value)
@@ -264,7 +264,7 @@ open class FieldSet(id: String? = null, baseClass: String? = null) : Tag<HTMLFie
 /**
  * Exposes the JavaScript [HTMLFormElement](https://developer.mozilla.org/en/docs/Web/API/`for`mElement) to Kotlin
  */
-open class Form(id: String? = null, baseClass: String? = null) : Tag<HTMLFormElement>("form", id, baseClass),
+open class Form(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLFormElement>("form", id, baseClass, job),
     WithText<HTMLFormElement> {
     fun acceptCharset(value: String) = attr("acceptCharset", value)
 	fun acceptCharset(value: Flow<String>) = attr("acceptCharset", value)
@@ -297,20 +297,20 @@ open class Form(id: String? = null, baseClass: String? = null) : Tag<HTMLFormEle
 /**
  * Exposes the JavaScript [HTMLHRElement](https://developer.mozilla.org/en/docs/Web/API/HTMLHRElement) to Kotlin
  */
-open class Hr(id: String? = null, baseClass: String? = null) : Tag<HTMLHRElement>("hr", id, baseClass)
+open class Hr(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLHRElement>("hr", id, baseClass, job)
 
 
 /**
  * Exposes the JavaScript [HTMLHeadingElement](https://developer.mozilla.org/en/docs/Web/API/HTMLHeadingElement) to Kotlin
  */
-open class H(num: Int, id: String? = null, baseClass: String? = null) : Tag<HTMLHeadingElement>("h$num", id, baseClass),
+open class H(num: Int, id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLHeadingElement>("h$num", id, baseClass, job),
     WithText<HTMLHeadingElement>
 
 
 /**
  * Exposes the JavaScript [HTMLIFrameElement](https://developer.mozilla.org/en/docs/Web/API/HTMLIFrameElement) to Kotlin
  */
-open class IFrame(id: String? = null, baseClass: String? = null) : Tag<HTMLIFrameElement>("iframe", id, baseClass),
+open class IFrame(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLIFrameElement>("iframe", id, baseClass, job),
     WithText<HTMLIFrameElement> {
     fun src(value: String) = attr("src", value)
 	fun src(value: Flow<String>) = attr("src", value)
@@ -338,7 +338,7 @@ open class IFrame(id: String? = null, baseClass: String? = null) : Tag<HTMLIFram
 /**
  * Exposes the JavaScript [HTMLImageElement](https://developer.mozilla.org/en/docs/Web/API/HTMLImageElement) to Kotlin
  */
-open class Img(id: String? = null, baseClass: String? = null) : Tag<HTMLImageElement>("img", id, baseClass),
+open class Img(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLImageElement>("img", id, baseClass, job),
     WithText<HTMLImageElement> {
     fun alt(value: String) = attr("alt", value)
 	fun alt(value: Flow<String>) = attr("alt", value)
@@ -370,7 +370,7 @@ open class Img(id: String? = null, baseClass: String? = null) : Tag<HTMLImageEle
 /**
  * Exposes the JavaScript [HTMLInputElement](https://developer.mozilla.org/en/docs/Web/API/HTMLInputElement) to Kotlin
  */
-open class Input(id: String? = null, baseClass: String? = null) : Tag<HTMLInputElement>("input", id, baseClass) {
+open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLInputElement>("input", id, baseClass, job) {
     fun accept(value: String) = attr("accept", value)
 	fun accept(value: Flow<String>) = attr("accept", value)
 
@@ -446,7 +446,7 @@ open class Input(id: String? = null, baseClass: String? = null) : Tag<HTMLInputE
 /**
  * Exposes the JavaScript [HTMLLIElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLIElement) to Kotlin
  */
-open class Li(id: String? = null, baseClass: String? = null) : Tag<HTMLLIElement>("li", id, baseClass),
+open class Li(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLLIElement>("li", id, baseClass, job),
     WithText<HTMLLIElement> {
     var value: Flow<Int> by AttributeDelegate
 }
@@ -455,7 +455,7 @@ open class Li(id: String? = null, baseClass: String? = null) : Tag<HTMLLIElement
 /**
  * Exposes the JavaScript [HTMLLabelElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLabelElement) to Kotlin
  */
-open class Label(id: String? = null, baseClass: String? = null) : Tag<HTMLLabelElement>("label", id, baseClass),
+open class Label(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLLabelElement>("label", id, baseClass, job),
     WithText<HTMLLabelElement> {
     fun `for`(value: String) = attr("`for`", value)
 	fun `for`(value: Flow<String>) = attr("`for`", value)
@@ -466,14 +466,14 @@ open class Label(id: String? = null, baseClass: String? = null) : Tag<HTMLLabelE
 /**
  * Exposes the JavaScript [HTMLLegendElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLegendElement) to Kotlin
  */
-open class Legend(id: String? = null, baseClass: String? = null) : Tag<HTMLLegendElement>("legend", id, baseClass),
+open class Legend(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLLegendElement>("legend", id, baseClass, job),
     WithText<HTMLLegendElement>
 
 
 /**
  * Exposes the JavaScript [HTMLMapElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMapElement) to Kotlin
  */
-open class Map(id: String? = null, baseClass: String? = null) : Tag<HTMLMapElement>("map", id, baseClass),
+open class Map(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLMapElement>("map", id, baseClass, job),
     WithText<HTMLMapElement> {
     fun name(value: String) = attr("name", value)
 	fun name(value: Flow<String>) = attr("name", value)
@@ -484,7 +484,7 @@ open class Map(id: String? = null, baseClass: String? = null) : Tag<HTMLMapEleme
 /**
  * Exposes the JavaScript [HTMLAudioElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAudioElement) to Kotlin
  */
-open class Audio(id: String? = null, baseClass: String? = null) : Tag<HTMLAudioElement>("audio", id, baseClass),
+open class Audio(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLAudioElement>("audio", id, baseClass, job),
     WithText<HTMLAudioElement> {
     fun src(value: String) = attr("src", value)
 	fun src(value: Flow<String>) = attr("src", value)
@@ -507,7 +507,7 @@ open class Audio(id: String? = null, baseClass: String? = null) : Tag<HTMLAudioE
 /**
  * Exposes the JavaScript [HTMLVideoElement](https://developer.mozilla.org/en/docs/Web/API/HTMLVideoElement) to Kotlin
  */
-open class Video(id: String? = null, baseClass: String? = null) : Tag<HTMLVideoElement>("video", id, baseClass),
+open class Video(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLVideoElement>("video", id, baseClass, job),
     WithText<HTMLVideoElement> {
     var width: Flow<Int> by AttributeDelegate
     var height: Flow<Int> by AttributeDelegate
@@ -536,7 +536,7 @@ open class Video(id: String? = null, baseClass: String? = null) : Tag<HTMLVideoE
 /**
  * Exposes the JavaScript [HTMLMeterElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMeterElement) to Kotlin
  */
-open class Meter(id: String? = null, baseClass: String? = null) : Tag<HTMLMeterElement>("meter", id, baseClass),
+open class Meter(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLMeterElement>("meter", id, baseClass, job),
     WithText<HTMLMeterElement> {
     var value: Flow<Double> by AttributeDelegate
     var min: Flow<Double> by AttributeDelegate
@@ -550,7 +550,7 @@ open class Meter(id: String? = null, baseClass: String? = null) : Tag<HTMLMeterE
 /**
  * Exposes the JavaScript [HTMLModElement](https://developer.mozilla.org/en/docs/Web/API/HTMLModElement) to Kotlin
  */
-open class Ins(id: String? = null, baseClass: String? = null) : Tag<HTMLModElement>("ins", id, baseClass),
+open class Ins(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLModElement>("ins", id, baseClass, job),
     WithText<HTMLModElement> {
     fun cite(value: String) = attr("cite", value)
 	fun cite(value: Flow<String>) = attr("cite", value)
@@ -564,7 +564,7 @@ open class Ins(id: String? = null, baseClass: String? = null) : Tag<HTMLModEleme
 /**
  * Exposes the JavaScript [HTMLModElement](https://developer.mozilla.org/en/docs/Web/API/HTMLModElement) to Kotlin
  */
-open class Del(id: String? = null, baseClass: String? = null) : Tag<HTMLModElement>("del", id, baseClass),
+open class Del(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLModElement>("del", id, baseClass, job),
     WithText<HTMLModElement> {
     fun cite(value: String) = attr("cite", value)
 	fun cite(value: Flow<String>) = attr("cite", value)
@@ -578,7 +578,7 @@ open class Del(id: String? = null, baseClass: String? = null) : Tag<HTMLModEleme
 /**
  * Exposes the JavaScript [HTMLOListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOListElement) to Kotlin
  */
-open class Ol(id: String? = null, baseClass: String? = null) : Tag<HTMLOListElement>("ol", id, baseClass),
+open class Ol(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLOListElement>("ol", id, baseClass, job),
     WithText<HTMLOListElement> {
     var reversed: Flow<Boolean> by BooleanAttributeDelegate
     var start: Flow<Int> by AttributeDelegate
@@ -591,7 +591,7 @@ open class Ol(id: String? = null, baseClass: String? = null) : Tag<HTMLOListElem
 /**
  * Exposes the JavaScript [HTMLObjectElement](https://developer.mozilla.org/en/docs/Web/API/HTMLObjectElement) to Kotlin
  */
-open class Object(id: String? = null, baseClass: String? = null) : Tag<HTMLObjectElement>("object", id, baseClass),
+open class Object(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLObjectElement>("object", id, baseClass, job),
     WithText<HTMLObjectElement> {
     fun data(value: String) = attr("data", value)
 	fun data(value: Flow<String>) = attr("data", value)
@@ -618,7 +618,7 @@ open class Object(id: String? = null, baseClass: String? = null) : Tag<HTMLObjec
 /**
  * Exposes the JavaScript [HTMLOptGroupElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOptGroupElement) to Kotlin
  */
-open class Optgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLOptGroupElement>("optgroup", id, baseClass),
+open class Optgroup(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLOptGroupElement>("optgroup", id, baseClass, job),
     WithText<HTMLOptGroupElement> {
     var disabled: Flow<Boolean> by BooleanAttributeDelegate
     fun label(value: String) = attr("label", value)
@@ -630,7 +630,7 @@ open class Optgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLOpt
 /**
  * Exposes the JavaScript [HTMLOptionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOptionElement) to Kotlin
  */
-open class Option(id: String? = null, baseClass: String? = null) : Tag<HTMLOptionElement>("option", id, baseClass),
+open class Option(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLOptionElement>("option", id, baseClass, job),
     WithText<HTMLOptionElement> {
     var disabled: Flow<Boolean> by BooleanAttributeDelegate
     fun label(value: String) = attr("label", value)
@@ -646,7 +646,7 @@ open class Option(id: String? = null, baseClass: String? = null) : Tag<HTMLOptio
 /**
  * Exposes the JavaScript [HTMLOutputElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOutputElement) to Kotlin
  */
-open class Output(id: String? = null, baseClass: String? = null) : Tag<HTMLOutputElement>("output", id, baseClass),
+open class Output(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLOutputElement>("output", id, baseClass, job),
     WithText<HTMLOutputElement> {
     fun name(value: String) = attr("name", value)
 	fun name(value: Flow<String>) = attr("name", value)
@@ -661,14 +661,14 @@ open class Output(id: String? = null, baseClass: String? = null) : Tag<HTMLOutpu
 /**
  * Exposes the JavaScript [HTMLParagraphElement](https://developer.mozilla.org/en/docs/Web/API/HTMLParagraphElement) to Kotlin
  */
-open class P(id: String? = null, baseClass: String? = null) : Tag<HTMLParagraphElement>("p", id, baseClass),
+open class P(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLParagraphElement>("p", id, baseClass, job),
     WithText<HTMLParagraphElement>
 
 
 /**
  * Exposes the JavaScript [HTMLParamElement](https://developer.mozilla.org/en/docs/Web/API/HTMLParamElement) to Kotlin
  */
-open class Param(id: String? = null, baseClass: String? = null) : Tag<HTMLParamElement>("param", id, baseClass),
+open class Param(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLParamElement>("param", id, baseClass, job),
     WithText<HTMLParamElement> {
     fun name(value: String) = attr("name", value)
 	fun name(value: Flow<String>) = attr("name", value)
@@ -680,21 +680,21 @@ open class Param(id: String? = null, baseClass: String? = null) : Tag<HTMLParamE
 /**
  * Exposes the JavaScript [HTMLPictureElement](https://developer.mozilla.org/en/docs/Web/API/HTMLPictureElement) to Kotlin
  */
-open class Picture(id: String? = null, baseClass: String? = null) : Tag<HTMLPictureElement>("picture", id, baseClass),
+open class Picture(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLPictureElement>("picture", id, baseClass, job),
     WithText<HTMLPictureElement>
 
 
 /**
  * Exposes the JavaScript [HTMLPreElement](https://developer.mozilla.org/en/docs/Web/API/HTMLPreElement) to Kotlin
  */
-open class Pre(id: String? = null, baseClass: String? = null) : Tag<HTMLPreElement>("pre", id, baseClass),
+open class Pre(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLPreElement>("pre", id, baseClass, job),
     WithText<HTMLPreElement>
 
 
 /**
  * Exposes the JavaScript [HTMLProgressElement](https://developer.mozilla.org/en/docs/Web/API/HTMLProgressElement) to Kotlin
  */
-open class Progress(id: String? = null, baseClass: String? = null) : Tag<HTMLProgressElement>("progress", id, baseClass),
+open class Progress(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLProgressElement>("progress", id, baseClass, job),
     WithText<HTMLProgressElement> {
     var value: Flow<Double> by AttributeDelegate
     var max: Flow<Double> by AttributeDelegate
@@ -704,7 +704,7 @@ open class Progress(id: String? = null, baseClass: String? = null) : Tag<HTMLPro
 /**
  * Exposes the JavaScript [HTMLQuoteElement](https://developer.mozilla.org/en/docs/Web/API/HTMLQuoteElement) to Kotlin
  */
-open class Quote(id: String? = null, baseClass: String? = null) : Tag<HTMLQuoteElement>("quote", id, baseClass),
+open class Quote(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLQuoteElement>("quote", id, baseClass, job),
     WithText<HTMLQuoteElement> {
     fun cite(value: String) = attr("cite", value)
 	fun cite(value: Flow<String>) = attr("cite", value)
@@ -715,7 +715,7 @@ open class Quote(id: String? = null, baseClass: String? = null) : Tag<HTMLQuoteE
 /**
  * Exposes the JavaScript [HTMLScriptElement](https://developer.mozilla.org/en/docs/Web/API/HTMLScriptElement) to Kotlin
  */
-open class Script(id: String? = null, baseClass: String? = null) : Tag<HTMLScriptElement>("script", id, baseClass),
+open class Script(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLScriptElement>("script", id, baseClass, job),
     WithText<HTMLScriptElement> {
     fun src(value: String) = attr("src", value)
 	fun src(value: Flow<String>) = attr("src", value)
@@ -744,7 +744,7 @@ open class Script(id: String? = null, baseClass: String? = null) : Tag<HTMLScrip
 /**
  * Exposes the JavaScript [HTMLSelectElement](https://developer.mozilla.org/en/docs/Web/API/HTMLSelectElement) to Kotlin
  */
-open class Select(id: String? = null, baseClass: String? = null) : Tag<HTMLSelectElement>("select", id, baseClass) {
+open class Select(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLSelectElement>("select", id, baseClass, job) {
     fun autocomplete(value: String) = attr("autocomplete", value)
 	fun autocomplete(value: Flow<String>) = attr("autocomplete", value)
 
@@ -765,21 +765,21 @@ open class Select(id: String? = null, baseClass: String? = null) : Tag<HTMLSelec
 /**
  * Exposes the JavaScript [HTMLSpanElement](https://developer.mozilla.org/en/docs/Web/API/HTMLSpanElement) to Kotlin
  */
-open class Span(id: String? = null, baseClass: String? = null) : Tag<HTMLSpanElement>("span", id, baseClass),
+open class Span(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLSpanElement>("span", id, baseClass, job),
     WithText<HTMLSpanElement>
 
 
 /**
  * Exposes the JavaScript [HTMLTableCaptionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableCaptionElement) to Kotlin
  */
-open class Caption(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCaptionElement>("caption", id, baseClass),
+open class Caption(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableCaptionElement>("caption", id, baseClass, job),
     WithText<HTMLTableCaptionElement>
 
 
 /**
  * Exposes the JavaScript [HTMLTableCellElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableCellElement) to Kotlin
  */
-open class Th(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCellElement>("th", id, baseClass),
+open class Th(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableCellElement>("th", id, baseClass, job),
     WithText<HTMLTableCellElement> {
     var colSpan: Flow<Int> by AttributeDelegate
     var rowSpan: Flow<Int> by AttributeDelegate
@@ -798,7 +798,7 @@ open class Th(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCell
 /**
  * Exposes the JavaScript [HTMLTableCellElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableCellElement) to Kotlin
  */
-open class Td(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCellElement>("td", id, baseClass),
+open class Td(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableCellElement>("td", id, baseClass, job),
     WithText<HTMLTableCellElement> {
     var colSpan: Flow<Int> by AttributeDelegate
     var rowSpan: Flow<Int> by AttributeDelegate
@@ -817,7 +817,7 @@ open class Td(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCell
 /**
  * Exposes the JavaScript [HTMLTableColElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableColElement) to Kotlin
  */
-open class Col(id: String? = null, baseClass: String? = null) : Tag<HTMLTableColElement>("col", id, baseClass),
+open class Col(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableColElement>("col", id, baseClass, job),
     WithText<HTMLTableColElement> {
     var span: Flow<Int> by AttributeDelegate
 }
@@ -826,7 +826,7 @@ open class Col(id: String? = null, baseClass: String? = null) : Tag<HTMLTableCol
 /**
  * Exposes the JavaScript [HTMLTableColElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableColElement) to Kotlin
  */
-open class Colgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLTableColElement>("colgroup", id, baseClass),
+open class Colgroup(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableColElement>("colgroup", id, baseClass, job),
     WithText<HTMLTableColElement> {
     var span: Flow<Int> by AttributeDelegate
 }
@@ -835,38 +835,38 @@ open class Colgroup(id: String? = null, baseClass: String? = null) : Tag<HTMLTab
 /**
  * Exposes the JavaScript [HTMLTableElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableElement) to Kotlin
  */
-open class Table(id: String? = null, baseClass: String? = null) : Tag<HTMLTableElement>("table", id, baseClass)
+open class Table(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableElement>("table", id, baseClass, job)
 
 
 /**
  * Exposes the JavaScript [HTMLTableRowElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableRowElement) to Kotlin
  */
-open class Tr(id: String? = null, baseClass: String? = null) : Tag<HTMLTableRowElement>("tr", id, baseClass),
+open class Tr(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableRowElement>("tr", id, baseClass, job),
     WithText<HTMLTableRowElement>
 
 
 /**
  * Exposes the JavaScript [HTMLTableSectionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableSectionElement) to Kotlin
  */
-open class TFoot(id: String? = null, baseClass: String? = null) : Tag<HTMLTableSectionElement>("tfoot", id, baseClass)
+open class TFoot(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableSectionElement>("tfoot", id, baseClass, job)
 
 
 /**
  * Exposes the JavaScript [HTMLTableSectionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableSectionElement) to Kotlin
  */
-open class THead(id: String? = null, baseClass: String? = null) : Tag<HTMLTableSectionElement>("thead", id, baseClass)
+open class THead(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableSectionElement>("thead", id, baseClass, job)
 
 
 /**
  * Exposes the JavaScript [HTMLTableSectionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableSectionElement) to Kotlin
  */
-open class TBody(id: String? = null, baseClass: String? = null) : Tag<HTMLTableSectionElement>("tbody", id, baseClass)
+open class TBody(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTableSectionElement>("tbody", id, baseClass, job)
 
 
 /**
  * Exposes the JavaScript [HTMLTextAreaElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTextAreaElement) to Kotlin
  */
-open class TextArea(id: String? = null, baseClass: String? = null) : Tag<HTMLTextAreaElement>("textarea", id, baseClass),
+open class TextArea(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTextAreaElement>("textarea", id, baseClass, job),
     WithText<HTMLTextAreaElement> {
     fun autocomplete(value: String) = attr("autocomplete", value)
 	fun autocomplete(value: Flow<String>) = attr("autocomplete", value)
@@ -904,7 +904,7 @@ open class TextArea(id: String? = null, baseClass: String? = null) : Tag<HTMLTex
 /**
  * Exposes the JavaScript [HTMLTimeElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTimeElement) to Kotlin
  */
-open class Time(id: String? = null, baseClass: String? = null) : Tag<HTMLTimeElement>("time", id, baseClass),
+open class Time(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTimeElement>("time", id, baseClass, job),
     WithText<HTMLTimeElement> {
     fun dateTime(value: String) = attr("dateTime", value)
 	fun dateTime(value: Flow<String>) = attr("dateTime", value)
@@ -915,7 +915,7 @@ open class Time(id: String? = null, baseClass: String? = null) : Tag<HTMLTimeEle
 /**
  * Exposes the JavaScript [HTMLTrackElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTrackElement) to Kotlin
  */
-open class Track(id: String? = null, baseClass: String? = null) : Tag<HTMLTrackElement>("track", id, baseClass),
+open class Track(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTrackElement>("track", id, baseClass, job),
     WithText<HTMLTrackElement> {
     fun kind(value: String) = attr("kind", value)
 	fun kind(value: Flow<String>) = attr("kind", value)
@@ -936,14 +936,14 @@ open class Track(id: String? = null, baseClass: String? = null) : Tag<HTMLTrackE
 /**
  * Exposes the JavaScript [HTMLUListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLUListElement) to Kotlin
  */
-open class Ul(id: String? = null, baseClass: String? = null) : Tag<HTMLUListElement>("ul", id, baseClass)
+open class Ul(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLUListElement>("ul", id, baseClass, job)
 
 
 /**
  * General class for standard html5 elements
  */
-open class TextElement(tagName: String, id: String? = null, baseClass: String? = null) :
-    Tag<HTMLElement>(tagName, id, baseClass), WithText<HTMLElement>
+open class TextElement(tagName: String, id: String? = null, baseClass: String? = null, job: Job) :
+    Tag<HTMLElement>(tagName, id, baseClass, job), WithText<HTMLElement>
 
 
 /**
@@ -952,327 +952,325 @@ open class TextElement(tagName: String, id: String? = null, baseClass: String? =
 interface RenderContext {
     val job: Job
 
-    fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T
+    fun custom(tagName: String, content: Tag<HTMLElement>.() -> Unit): Tag<HTMLElement> =
+        register(Tag(tagName, job = job), content)
 
     fun <T> Flow<T>.asString() = this.map { it.toString() }
-}
 
-interface HtmlElements {
-    fun custom(localName: String, content: Tag<HTMLElement>.() -> Unit): Tag<HTMLElement> =
-        register(Tag(localName), content)
+    fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T
 
-    fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T
-    fun a(baseClass: String? = null, id: String? = null, content: A.() -> Unit): A = register(A(id, baseClass), content)
+    fun a(baseClass: String? = null, id: String? = null, content: A.() -> Unit): A =
+        register(A(id, baseClass, job), content)
+
     fun area(baseClass: String? = null, id: String? = null, content: Area.() -> Unit): Area =
-        register(Area(id, baseClass), content)
+        register(Area(id, baseClass, job), content)
 
     fun br(baseClass: String? = null, id: String? = null, content: Br.() -> Unit): Br =
-        register(Br(id, baseClass), content)
+        register(Br(id, baseClass, job), content)
 
     fun button(baseClass: String? = null, id: String? = null, content: Button.() -> Unit): Button =
-        register(Button(id, baseClass), content)
+        register(Button(id, baseClass, job), content)
 
     fun canvas(baseClass: String? = null, id: String? = null, content: Canvas.() -> Unit): Canvas =
-        register(Canvas(id, baseClass), content)
+        register(Canvas(id, baseClass, job), content)
 
     fun dl(baseClass: String? = null, id: String? = null, content: Dl.() -> Unit): Dl =
-        register(Dl(id, baseClass), content)
+        register(Dl(id, baseClass, job), content)
 
     fun dt(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("dt", id, baseClass), content)
+        register(TextElement("dt", id, baseClass, job), content)
 
     fun dd(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("dd", id, baseClass), content)
+        register(TextElement("dd", id, baseClass, job), content)
 
     fun data(baseClass: String? = null, id: String? = null, content: Data.() -> Unit): Data =
-        register(Data(id, baseClass), content)
+        register(Data(id, baseClass, job), content)
 
     fun datalist(baseClass: String? = null, id: String? = null, content: DataList.() -> Unit): DataList =
-        register(DataList(id, baseClass), content)
+        register(DataList(id, baseClass, job), content)
 
     fun details(baseClass: String? = null, id: String? = null, content: Details.() -> Unit): Details =
-        register(Details(id, baseClass), content)
+        register(Details(id, baseClass, job), content)
 
     fun dialog(baseClass: String? = null, id: String? = null, content: Dialog.() -> Unit): Dialog =
-        register(Dialog(id, baseClass), content)
+        register(Dialog(id, baseClass, job), content)
 
     fun div(baseClass: String? = null, id: String? = null, content: Div.() -> Unit): Div =
-        register(Div(id, baseClass), content)
+        register(Div(id, baseClass, job), content)
 
     fun embed(baseClass: String? = null, id: String? = null, content: Embed.() -> Unit): Embed =
-        register(Embed(id, baseClass), content)
+        register(Embed(id, baseClass, job), content)
 
     fun fieldset(baseClass: String? = null, id: String? = null, content: FieldSet.() -> Unit): FieldSet =
-        register(FieldSet(id, baseClass), content)
+        register(FieldSet(id, baseClass, job), content)
 
     fun form(baseClass: String? = null, id: String? = null, content: Form.() -> Unit): Form =
-        register(Form(id, baseClass), content)
+        register(Form(id, baseClass, job), content)
 
     fun hr(baseClass: String? = null, id: String? = null, content: Hr.() -> Unit): Hr =
-        register(Hr(id, baseClass), content)
+        register(Hr(id, baseClass, job), content)
 
     fun h1(baseClass: String? = null, id: String? = null, content: H.() -> Unit): H =
-        register(H(1, id, baseClass), content)
+        register(H(1, id, baseClass, job), content)
 
     fun h2(baseClass: String? = null, id: String? = null, content: H.() -> Unit): H =
-        register(H(2, id, baseClass), content)
+        register(H(2, id, baseClass, job), content)
 
     fun h3(baseClass: String? = null, id: String? = null, content: H.() -> Unit): H =
-        register(H(3, id, baseClass), content)
+        register(H(3, id, baseClass, job), content)
 
     fun h4(baseClass: String? = null, id: String? = null, content: H.() -> Unit): H =
-        register(H(4, id, baseClass), content)
+        register(H(4, id, baseClass, job), content)
 
     fun h5(baseClass: String? = null, id: String? = null, content: H.() -> Unit): H =
-        register(H(5, id, baseClass), content)
+        register(H(5, id, baseClass, job), content)
 
     fun h6(baseClass: String? = null, id: String? = null, content: H.() -> Unit): H =
-        register(H(6, id, baseClass), content)
+        register(H(6, id, baseClass, job), content)
 
     fun iframe(baseClass: String? = null, id: String? = null, content: IFrame.() -> Unit): IFrame =
-        register(IFrame(id, baseClass), content)
+        register(IFrame(id, baseClass, job), content)
 
     fun img(baseClass: String? = null, id: String? = null, content: Img.() -> Unit): Img =
-        register(Img(id, baseClass), content)
+        register(Img(id, baseClass, job), content)
 
     fun input(baseClass: String? = null, id: String? = null, content: Input.() -> Unit): Input =
-        register(Input(id, baseClass), content)
+        register(Input(id, baseClass, job), content)
 
     fun li(baseClass: String? = null, id: String? = null, content: Li.() -> Unit): Li =
-        register(Li(id, baseClass), content)
+        register(Li(id, baseClass, job), content)
 
-    fun label(baseClass: String? = null, id: String? = null, `for`: String? = null, content: Label.() -> Unit): Label {
-        val label = Label(id, baseClass)
-        if (`for` != null) label.domNode.setAttribute("for", `for`)
-        return register(label, content)
-    }
+    fun label(baseClass: String? = null, id: String? = null, content: Label.() -> Unit): Label =
+        register(Label(id, baseClass, job), content)
 
     fun legend(baseClass: String? = null, id: String? = null, content: Legend.() -> Unit): Legend =
-        register(Legend(id, baseClass), content)
+        register(Legend(id, baseClass, job), content)
 
     fun map(baseClass: String? = null, id: String? = null, content: Map.() -> Unit): Map =
-        register(Map(id, baseClass), content)
+        register(Map(id, baseClass, job), content)
 
     fun audio(baseClass: String? = null, id: String? = null, content: Audio.() -> Unit): Audio =
-        register(Audio(id, baseClass), content)
+        register(Audio(id, baseClass, job), content)
 
     fun video(baseClass: String? = null, id: String? = null, content: Video.() -> Unit): Video =
-        register(Video(id, baseClass), content)
+        register(Video(id, baseClass, job), content)
 
     fun meter(baseClass: String? = null, id: String? = null, content: Meter.() -> Unit): Meter =
-        register(Meter(id, baseClass), content)
+        register(Meter(id, baseClass, job), content)
 
     fun ins(baseClass: String? = null, id: String? = null, content: Ins.() -> Unit): Ins =
-        register(Ins(id, baseClass), content)
+        register(Ins(id, baseClass, job), content)
 
     fun del(baseClass: String? = null, id: String? = null, content: Del.() -> Unit): Del =
-        register(Del(id, baseClass), content)
+        register(Del(id, baseClass, job), content)
 
     fun ol(baseClass: String? = null, id: String? = null, content: Ol.() -> Unit): Ol =
-        register(Ol(id, baseClass), content)
+        register(Ol(id, baseClass, job), content)
 
     fun `object`(baseClass: String? = null, id: String? = null, content: Object.() -> Unit): Object =
-        register(Object(id, baseClass), content)
+        register(Object(id, baseClass, job), content)
 
     fun optgroup(baseClass: String? = null, id: String? = null, content: Optgroup.() -> Unit): Optgroup =
-        register(Optgroup(id, baseClass), content)
+        register(Optgroup(id, baseClass, job), content)
 
     fun option(baseClass: String? = null, id: String? = null, content: Option.() -> Unit): Option =
-        register(Option(id, baseClass), content)
+        register(Option(id, baseClass, job), content)
 
     fun output(baseClass: String? = null, id: String? = null, content: Output.() -> Unit): Output =
-        register(Output(id, baseClass), content)
+        register(Output(id, baseClass, job), content)
 
-    fun p(baseClass: String? = null, id: String? = null, content: P.() -> Unit): P = register(P(id, baseClass), content)
+    fun p(baseClass: String? = null, id: String? = null, content: P.() -> Unit): P =
+        register(P(id, baseClass, job), content)
+
     fun param(baseClass: String? = null, id: String? = null, content: Param.() -> Unit): Param =
-        register(Param(id, baseClass), content)
+        register(Param(id, baseClass, job), content)
 
     fun picture(baseClass: String? = null, id: String? = null, content: Picture.() -> Unit): Picture =
-        register(Picture(id, baseClass), content)
+        register(Picture(id, baseClass, job), content)
 
     fun pre(baseClass: String? = null, id: String? = null, content: Pre.() -> Unit): Pre =
-        register(Pre(id, baseClass), content)
+        register(Pre(id, baseClass, job), content)
 
     fun progress(baseClass: String? = null, id: String? = null, content: Progress.() -> Unit): Progress =
-        register(Progress(id, baseClass), content)
+        register(Progress(id, baseClass, job), content)
 
     fun quote(baseClass: String? = null, id: String? = null, content: Quote.() -> Unit): Quote =
-        register(Quote(id, baseClass), content)
+        register(Quote(id, baseClass, job), content)
 
     fun script(baseClass: String? = null, id: String? = null, content: Script.() -> Unit): Script =
-        register(Script(id, baseClass), content)
+        register(Script(id, baseClass, job), content)
 
     fun select(baseClass: String? = null, id: String? = null, content: Select.() -> Unit): Select =
-        register(Select(id, baseClass), content)
+        register(Select(id, baseClass, job), content)
 
     fun span(baseClass: String? = null, id: String? = null, content: Span.() -> Unit): Span =
-        register(Span(id, baseClass), content)
+        register(Span(id, baseClass, job), content)
 
     fun caption(baseClass: String? = null, id: String? = null, content: Caption.() -> Unit): Caption =
-        register(Caption(id, baseClass), content)
+        register(Caption(id, baseClass, job), content)
 
     fun th(baseClass: String? = null, id: String? = null, content: Th.() -> Unit): Th =
-        register(Th(id, baseClass), content)
+        register(Th(id, baseClass, job), content)
 
     fun td(baseClass: String? = null, id: String? = null, content: Td.() -> Unit): Td =
-        register(Td(id, baseClass), content)
+        register(Td(id, baseClass, job), content)
 
     fun col(baseClass: String? = null, id: String? = null, content: Col.() -> Unit): Col =
-        register(Col(id, baseClass), content)
+        register(Col(id, baseClass, job), content)
 
     fun colgroup(baseClass: String? = null, id: String? = null, content: Colgroup.() -> Unit): Colgroup =
-        register(Colgroup(id, baseClass), content)
+        register(Colgroup(id, baseClass, job), content)
 
     fun table(baseClass: String? = null, id: String? = null, content: Table.() -> Unit): Table =
-        register(Table(id, baseClass), content)
+        register(Table(id, baseClass, job), content)
 
     fun tr(baseClass: String? = null, id: String? = null, content: Tr.() -> Unit): Tr =
-        register(Tr(id, baseClass), content)
+        register(Tr(id, baseClass, job), content)
 
     fun tfoot(baseClass: String? = null, id: String? = null, content: TFoot.() -> Unit): TFoot =
-        register(TFoot(id, baseClass), content)
+        register(TFoot(id, baseClass, job), content)
 
     fun thead(baseClass: String? = null, id: String? = null, content: THead.() -> Unit): THead =
-        register(THead(id, baseClass), content)
+        register(THead(id, baseClass, job), content)
 
     fun tbody(baseClass: String? = null, id: String? = null, content: TBody.() -> Unit): TBody =
-        register(TBody(id, baseClass), content)
+        register(TBody(id, baseClass, job), content)
 
     fun textarea(baseClass: String? = null, id: String? = null, content: TextArea.() -> Unit): TextArea =
-        register(TextArea(id, baseClass), content)
+        register(TextArea(id, baseClass, job), content)
 
     fun time(baseClass: String? = null, id: String? = null, content: Time.() -> Unit): Time =
-        register(Time(id, baseClass), content)
+        register(Time(id, baseClass, job), content)
 
     fun track(baseClass: String? = null, id: String? = null, content: Track.() -> Unit): Track =
-        register(Track(id, baseClass), content)
+        register(Track(id, baseClass, job), content)
 
     fun ul(baseClass: String? = null, id: String? = null, content: Ul.() -> Unit): Ul =
-        register(Ul(id, baseClass), content)
+        register(Ul(id, baseClass, job), content)
 
     fun address(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("address", id, baseClass), content)
+        register(TextElement("address", id, baseClass, job), content)
 
     fun article(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("article", id, baseClass), content)
+        register(TextElement("article", id, baseClass, job), content)
 
     fun aside(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("aside", id, baseClass), content)
+        register(TextElement("aside", id, baseClass, job), content)
 
     fun bdi(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("bdi", id, baseClass), content)
+        register(TextElement("bdi", id, baseClass, job), content)
 
     fun details(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("details", id, baseClass), content)
+        register(TextElement("details", id, baseClass, job), content)
 
     fun dialog(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("dialog", id, baseClass), content)
+        register(TextElement("dialog", id, baseClass, job), content)
 
     fun figcaption(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("figcaption", id, baseClass), content)
+        register(TextElement("figcaption", id, baseClass, job), content)
 
     fun figure(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("figure", id, baseClass), content)
+        register(TextElement("figure", id, baseClass, job), content)
 
     fun footer(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("footer", id, baseClass), content)
+        register(TextElement("footer", id, baseClass, job), content)
 
     fun header(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("header", id, baseClass), content)
+        register(TextElement("header", id, baseClass, job), content)
 
     fun main(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("main", id, baseClass), content)
+        register(TextElement("main", id, baseClass, job), content)
 
     fun mark(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("mark", id, baseClass), content)
+        register(TextElement("mark", id, baseClass, job), content)
 
     fun nav(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("nav", id, baseClass), content)
+        register(TextElement("nav", id, baseClass, job), content)
 
     fun noscript(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("noscript", id, baseClass), content)
+        register(TextElement("noscript", id, baseClass, job), content)
 
     fun progress(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("progress", id, baseClass), content)
+        register(TextElement("progress", id, baseClass, job), content)
 
     fun rp(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("rp", id, baseClass), content)
+        register(TextElement("rp", id, baseClass, job), content)
 
     fun rt(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("rt", id, baseClass), content)
+        register(TextElement("rt", id, baseClass, job), content)
 
     fun ruby(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("ruby", id, baseClass), content)
+        register(TextElement("ruby", id, baseClass, job), content)
 
     fun section(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("section", id, baseClass), content)
+        register(TextElement("section", id, baseClass, job), content)
 
     fun summary(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("summary", id, baseClass), content)
+        register(TextElement("summary", id, baseClass, job), content)
 
     fun time(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("time", id, baseClass), content)
+        register(TextElement("time", id, baseClass, job), content)
 
     fun wbr(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("wbr", id, baseClass), content)
+        register(TextElement("wbr", id, baseClass, job), content)
 
     fun blockquote(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("blockquote", id, baseClass), content)
+        register(TextElement("blockquote", id, baseClass, job), content)
 
     fun em(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("em", id, baseClass), content)
+        register(TextElement("em", id, baseClass, job), content)
 
     fun strong(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("strong", id, baseClass), content)
+        register(TextElement("strong", id, baseClass, job), content)
 
     fun small(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("small", id, baseClass), content)
+        register(TextElement("small", id, baseClass, job), content)
 
     fun s(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("s", id, baseClass), content)
+        register(TextElement("s", id, baseClass, job), content)
 
     fun cite(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("cite", id, baseClass), content)
+        register(TextElement("cite", id, baseClass, job), content)
 
     fun q(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("q", id, baseClass), content)
+        register(TextElement("q", id, baseClass, job), content)
 
     fun dfn(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("dfn", id, baseClass), content)
+        register(TextElement("dfn", id, baseClass, job), content)
 
     fun abbr(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("abbr", id, baseClass), content)
+        register(TextElement("abbr", id, baseClass, job), content)
 
     fun code(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("code", id, baseClass), content)
+        register(TextElement("code", id, baseClass, job), content)
 
     fun `var`(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("var", id, baseClass), content)
+        register(TextElement("var", id, baseClass, job), content)
 
     fun samp(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("samp", id, baseClass), content)
+        register(TextElement("samp", id, baseClass, job), content)
 
     fun kbd(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("kbd", id, baseClass), content)
+        register(TextElement("kbd", id, baseClass, job), content)
 
     fun sub(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("sub", id, baseClass), content)
+        register(TextElement("sub", id, baseClass, job), content)
 
     fun sup(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("sup", id, baseClass), content)
+        register(TextElement("sup", id, baseClass, job), content)
 
     fun i(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("i", id, baseClass), content)
+        register(TextElement("i", id, baseClass, job), content)
 
     fun b(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("b", id, baseClass), content)
+        register(TextElement("b", id, baseClass, job), content)
 
     fun u(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("u", id, baseClass), content)
+        register(TextElement("u", id, baseClass, job), content)
 
     fun bdo(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("bdo", id, baseClass), content)
+        register(TextElement("bdo", id, baseClass, job), content)
 
     fun command(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("command", id, baseClass), content)
+        register(TextElement("command", id, baseClass, job), content)
 }
