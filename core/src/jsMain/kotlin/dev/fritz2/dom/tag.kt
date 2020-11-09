@@ -1,8 +1,6 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.*
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.P
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.elementLens

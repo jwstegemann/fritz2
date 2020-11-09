@@ -1,9 +1,11 @@
 package dev.fritz2.dom.html
 
+import dev.fritz2.binding.mountSingle
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
 import dev.fritz2.dom.WithText
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
@@ -416,7 +418,19 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun defaultChecked(value: Boolean, trueValue: String = "") = attr("defaultChecked", value, trueValue)
 	fun defaultChecked(value: Flow<Boolean>, trueValue: String = "") = attr("defaultChecked", value, trueValue)
 
-    var checked: Flow<Boolean> by CheckedAttributeDelegate
+    fun checked(value: Boolean, trueValue: String = "") {
+        domNode.checked = value
+        domNode.defaultChecked = value
+        if(value) domNode.setAttribute("checked", trueValue)
+        else domNode.removeAttribute("checked")
+    }
+    fun checked(value: Flow<Boolean>, trueValue: String = "") {
+        mountSingle(job, { childJob ->
+            childJob.cancelChildren()
+            value
+        }) { v, _ -> checked(v, trueValue) }
+    }
+
     fun dirName(value: String) = attr("dirName", value)
 	fun dirName(value: Flow<String>) = attr("dirName", value)
 
@@ -492,7 +506,18 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun defaultValue(value: String) = attr("defaultValue", value)
 	fun defaultValue(value: Flow<String>) = attr("defaultValue", value)
 
-    var value: Flow<String> by ValueAttributeDelegate
+    fun value(value: String) {
+        domNode.value = value
+        domNode.defaultValue = value
+        domNode.setAttribute("value", value)
+    }
+    fun value(value: Flow<String>) {
+        mountSingle(job, { childJob ->
+            childJob.cancelChildren()
+            value
+        }) { v, _ -> value(v) }
+    }
+
     fun width(value: Int) = attr("width", value)
 	fun width(value: Flow<Int>) = attr("width", value)
 
@@ -556,8 +581,17 @@ open class Audio(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun defaultPlaybackRate(value: Double) = attr("defaultPlaybackRate", value)
 	fun defaultPlaybackRate(value: Flow<Double>) = attr("defaultPlaybackRate", value)
 
-    fun playbackRate(value: Double) = attr("playbackRate", value)
-	fun playbackRate(value: Flow<Double>) = attr("playbackRate", value)
+    fun playbackRate(value: Double) {
+        domNode.playbackRate = value
+        domNode.defaultPlaybackRate = value
+        domNode.setAttribute("playbackRate", value.toString())
+    }
+    fun playbackRate(value: Flow<Double>) {
+        mountSingle(job, { childJob ->
+            childJob.cancelChildren()
+            value
+        }) { v, _ -> playbackRate(v) }
+    }
 
     fun autoplay(value: Boolean, trueValue: String = "") = attr("autoplay", value, trueValue)
 	fun autoplay(value: Flow<Boolean>, trueValue: String = "") = attr("autoplay", value, trueValue)
@@ -571,12 +605,21 @@ open class Audio(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun volume(value: Double) = attr("volume", value)
 	fun volume(value: Flow<Double>) = attr("volume", value)
 
-    fun muted(value: Boolean, trueValue: String = "") = attr("muted", value, trueValue)
-	fun muted(value: Flow<Boolean>, trueValue: String = "") = attr("muted", value, trueValue)
-
     fun defaultMuted(value: Boolean, trueValue: String = "") = attr("defaultMuted", value, trueValue)
 	fun defaultMuted(value: Flow<Boolean>, trueValue: String = "") = attr("defaultMuted", value, trueValue)
 
+    fun muted(value: Boolean, trueValue: String = "") {
+        domNode.muted = value
+        domNode.defaultMuted = value
+        if(value) domNode.setAttribute("muted", trueValue)
+        else domNode.removeAttribute("muted")
+    }
+    fun muted(value: Flow<Boolean>, trueValue: String = "") {
+        mountSingle(job, { childJob ->
+            childJob.cancelChildren()
+            value
+        }) { v, _ -> muted(v, trueValue) }
+    }
 }
 
 
@@ -609,8 +652,17 @@ open class Video(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun defaultPlaybackRate(value: Double) = attr("defaultPlaybackRate", value)
 	fun defaultPlaybackRate(value: Flow<Double>) = attr("defaultPlaybackRate", value)
 
-    fun playbackRate(value: Double) = attr("playbackRate", value)
-	fun playbackRate(value: Flow<Double>) = attr("playbackRate", value)
+    fun playbackRate(value: Double) {
+        domNode.playbackRate = value
+        domNode.defaultPlaybackRate = value
+        domNode.setAttribute("playbackRate", value.toString())
+    }
+    fun playbackRate(value: Flow<Double>) {
+        mountSingle(job, { childJob ->
+            childJob.cancelChildren()
+            value
+        }) { v, _ -> playbackRate(v) }
+    }
 
     fun autoplay(value: Boolean, trueValue: String = "") = attr("autoplay", value, trueValue)
 	fun autoplay(value: Flow<Boolean>, trueValue: String = "") = attr("autoplay", value, trueValue)
@@ -624,12 +676,21 @@ open class Video(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun volume(value: Double) = attr("volume", value)
 	fun volume(value: Flow<Double>) = attr("volume", value)
 
-    fun muted(value: Boolean, trueValue: String = "") = attr("muted", value, trueValue)
-	fun muted(value: Flow<Boolean>, trueValue: String = "") = attr("muted", value, trueValue)
-
     fun defaultMuted(value: Boolean, trueValue: String = "") = attr("defaultMuted", value, trueValue)
 	fun defaultMuted(value: Flow<Boolean>, trueValue: String = "") = attr("defaultMuted", value, trueValue)
 
+    fun muted(value: Boolean, trueValue: String = "") {
+        domNode.muted = value
+        domNode.defaultMuted = value
+        if(value) domNode.setAttribute("muted", trueValue)
+        else domNode.removeAttribute("muted")
+    }
+    fun muted(value: Flow<Boolean>, trueValue: String = "") {
+        mountSingle(job, { childJob ->
+            childJob.cancelChildren()
+            value
+        }) { v, _ -> muted(v, trueValue) }
+    }
 }
 
 
@@ -761,9 +822,18 @@ open class Option(id: String? = null, baseClass: String? = null, job: Job) : Tag
     fun defaultSelected(value: Boolean, trueValue: String = "") = attr("defaultSelected", value, trueValue)
 	fun defaultSelected(value: Flow<Boolean>, trueValue: String = "") = attr("defaultSelected", value, trueValue)
 
-    //FIXME mount
-    fun selected(value: Boolean, trueValue: String = "") = attr("selected", value, trueValue)
-	fun selected(value: Flow<Boolean>, trueValue: String = "") = attr("selected", value, trueValue)
+    fun selected(value: Boolean, trueValue: String = "") {
+        domNode.selected = value
+        domNode.defaultSelected = value
+        if(value) domNode.setAttribute("selected", trueValue)
+        else domNode.removeAttribute("selected")
+    }
+    fun selected(value: Flow<Boolean>, trueValue: String = "") {
+        mountSingle(job, { childJob ->
+            childJob.cancelChildren()
+            value
+        }) { v, _ -> selected(v, trueValue) }
+    }
 
     fun value(value: String) = attr("value", value)
     fun value(value: Flow<String>) = attr("value", value)
@@ -781,7 +851,17 @@ open class Output(id: String? = null, baseClass: String? = null, job: Job) : Tag
     fun defaultValue(value: String) = attr("defaultValue", value)
 	fun defaultValue(value: Flow<String>) = attr("defaultValue", value)
 
-    var value: Flow<String> by ValueAttributeDelegate
+    fun value(value: String) {
+        domNode.value = value
+        domNode.defaultValue = value
+        domNode.setAttribute("value", value)
+    }
+    fun value(value: Flow<String>) {
+        mountSingle(job, { childJob ->
+            childJob.cancelChildren()
+            value
+        }) { v, _ -> value(v) }
+    }
 }
 
 
@@ -1076,7 +1156,17 @@ open class TextArea(id: String? = null, baseClass: String? = null, job: Job) : T
     fun defaultValue(value: String) = attr("defaultValue", value)
 	fun defaultValue(value: Flow<String>) = attr("defaultValue", value)
 
-    var value: Flow<String> by ValueAttributeDelegate
+    fun value(value: String) {
+        domNode.value = value
+        domNode.defaultValue = value
+        domNode.setAttribute("value", value)
+    }
+    fun value(value: Flow<String>) {
+        mountSingle(job, { childJob ->
+            childJob.cancelChildren()
+            value
+        }) { v, _ -> value(v) }
+    }
 }
 
 
