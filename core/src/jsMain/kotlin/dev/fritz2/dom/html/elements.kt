@@ -548,9 +548,15 @@ open class Audio(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun preload(value: String) = attr("preload", value)
 	fun preload(value: Flow<String>) = attr("preload", value)
 
-    var currentTime: Flow<Double> by AttributeDelegate
-    var defaultPlaybackRate: Flow<Double> by AttributeDelegate
-    var playbackRate: Flow<Double> by AttributeDelegate
+    fun currentTime(value: Double) = attr("currentTime", value)
+	fun currentTime(value: Flow<Double>) = attr("currentTime", value)
+
+    fun defaultPlaybackRate(value: Double) = attr("defaultPlaybackRate", value)
+	fun defaultPlaybackRate(value: Flow<Double>) = attr("defaultPlaybackRate", value)
+
+    fun playbackRate(value: Double) = attr("playbackRate", value)
+	fun playbackRate(value: Flow<Double>) = attr("playbackRate", value)
+
     fun autoplay(value: Boolean, trueValue: String = "") = attr("autoplay", value, trueValue)
 	fun autoplay(value: Flow<Boolean>, trueValue: String = "") = attr("autoplay", value, trueValue)
 
@@ -560,7 +566,9 @@ open class Audio(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun controls(value: Boolean, trueValue: String = "") = attr("controls", value, trueValue)
 	fun controls(value: Flow<Boolean>, trueValue: String = "") = attr("controls", value, trueValue)
 
-    var volume: Flow<Double> by AttributeDelegate
+    fun volume(value: Double) = attr("volume", value)
+	fun volume(value: Flow<Double>) = attr("volume", value)
+
     fun muted(value: Boolean, trueValue: String = "") = attr("muted", value, trueValue)
 	fun muted(value: Flow<Boolean>, trueValue: String = "") = attr("muted", value, trueValue)
 
@@ -593,9 +601,15 @@ open class Video(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun preload(value: String) = attr("preload", value)
 	fun preload(value: Flow<String>) = attr("preload", value)
 
-    var currentTime: Flow<Double> by AttributeDelegate
-    var defaultPlaybackRate: Flow<Double> by AttributeDelegate
-    var playbackRate: Flow<Double> by AttributeDelegate
+    fun currentTime(value: Double) = attr("currentTime", value)
+	fun currentTime(value: Flow<Double>) = attr("currentTime", value)
+
+    fun defaultPlaybackRate(value: Double) = attr("defaultPlaybackRate", value)
+	fun defaultPlaybackRate(value: Flow<Double>) = attr("defaultPlaybackRate", value)
+
+    fun playbackRate(value: Double) = attr("playbackRate", value)
+	fun playbackRate(value: Flow<Double>) = attr("playbackRate", value)
+
     fun autoplay(value: Boolean, trueValue: String = "") = attr("autoplay", value, trueValue)
 	fun autoplay(value: Flow<Boolean>, trueValue: String = "") = attr("autoplay", value, trueValue)
 
@@ -605,7 +619,9 @@ open class Video(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun controls(value: Boolean, trueValue: String = "") = attr("controls", value, trueValue)
 	fun controls(value: Flow<Boolean>, trueValue: String = "") = attr("controls", value, trueValue)
 
-    var volume: Flow<Double> by AttributeDelegate
+    fun volume(value: Double) = attr("volume", value)
+	fun volume(value: Flow<Double>) = attr("volume", value)
+
     fun muted(value: Boolean, trueValue: String = "") = attr("muted", value, trueValue)
 	fun muted(value: Flow<Boolean>, trueValue: String = "") = attr("muted", value, trueValue)
 
@@ -620,12 +636,24 @@ open class Video(id: String? = null, baseClass: String? = null, job: Job) : Tag<
  */
 open class Meter(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLMeterElement>("meter", id, baseClass, job),
     WithText<HTMLMeterElement> {
-    var value: Flow<Double> by AttributeDelegate
-    var min: Flow<Double> by AttributeDelegate
-    var max: Flow<Double> by AttributeDelegate
-    var low: Flow<Double> by AttributeDelegate
-    var high: Flow<Double> by AttributeDelegate
-    var optimum: Flow<Double> by AttributeDelegate
+    fun value(value: Double) = attr("value", value)
+	fun value(value: Flow<Double>) = attr("value", value)
+
+    fun min(value: Double) = attr("min", value)
+	fun min(value: Flow<Double>) = attr("min", value)
+
+    fun max(value: Double) = attr("max", value)
+	fun max(value: Flow<Double>) = attr("max", value)
+
+    fun low(value: Double) = attr("low", value)
+	fun low(value: Flow<Double>) = attr("low", value)
+
+    fun high(value: Double) = attr("high", value)
+	fun high(value: Flow<Double>) = attr("high", value)
+
+    fun optimum(value: Double) = attr("optimum", value)
+	fun optimum(value: Flow<Double>) = attr("optimum", value)
+
 }
 
 
@@ -792,8 +820,12 @@ open class Pre(id: String? = null, baseClass: String? = null, job: Job) : Tag<HT
  */
 open class Progress(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLProgressElement>("progress", id, baseClass, job),
     WithText<HTMLProgressElement> {
-    var value: Flow<Double> by AttributeDelegate
-    var max: Flow<Double> by AttributeDelegate
+    fun value(value: Double) = attr("value", value)
+	fun value(value: Flow<Double>) = attr("value", value)
+
+    fun max(value: Double) = attr("max", value)
+	fun max(value: Flow<Double>) = attr("max", value)
+
 }
 
 
