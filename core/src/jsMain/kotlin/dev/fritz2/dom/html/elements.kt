@@ -168,7 +168,8 @@ open class Button(id: String? = null, baseClass: String? = null, job: Job) : Tag
     fun type(value: String) = attr("type", value)
 	fun type(value: Flow<String>) = attr("type", value)
 
-    var value: Flow<String> by ValueAttributeDelegate
+    fun value(value: String) = attr("value", value)
+    fun value(value: Flow<String>) = attr("value", value)
 }
 
 
@@ -198,7 +199,8 @@ open class Dl(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTM
  */
 open class Data(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLDataElement>("data", id, baseClass, job),
     WithText<HTMLDataElement> {
-    var value: Flow<String> by ValueAttributeDelegate
+    fun value(value: String) = attr("value", value)
+    fun value(value: Flow<String>) = attr("value", value)
 }
 
 
@@ -759,11 +761,12 @@ open class Option(id: String? = null, baseClass: String? = null, job: Job) : Tag
     fun defaultSelected(value: Boolean, trueValue: String = "") = attr("defaultSelected", value, trueValue)
 	fun defaultSelected(value: Flow<Boolean>, trueValue: String = "") = attr("defaultSelected", value, trueValue)
 
+    //FIXME mount
     fun selected(value: Boolean, trueValue: String = "") = attr("selected", value, trueValue)
 	fun selected(value: Flow<Boolean>, trueValue: String = "") = attr("selected", value, trueValue)
 
-    var value: Flow<String> by ValueAttributeDelegate
-
+    fun value(value: String) = attr("value", value)
+    fun value(value: Flow<String>) = attr("value", value)
 }
 
 
@@ -797,7 +800,8 @@ open class Param(id: String? = null, baseClass: String? = null, job: Job) : Tag<
     fun name(value: String) = attr("name", value)
 	fun name(value: Flow<String>) = attr("name", value)
 
-    var value: Flow<String> by ValueAttributeDelegate
+    fun value(value: String) = attr("value", value)
+    fun value(value: Flow<String>) = attr("value", value)
 }
 
 
@@ -904,7 +908,8 @@ open class Select(id: String? = null, baseClass: String? = null, job: Job) : Tag
     fun selectedIndex(value: Int) = attr("selectedIndex", value)
 	fun selectedIndex(value: Flow<Int>) = attr("selectedIndex", value)
 
-    var value: Flow<String> by ValueAttributeDelegate
+    fun value(value: String) = attr("value", value)
+    fun value(value: Flow<String>) = attr("value", value)
 }
 
 
