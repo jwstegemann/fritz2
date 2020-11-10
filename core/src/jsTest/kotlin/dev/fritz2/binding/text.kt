@@ -25,7 +25,7 @@ class TextTests {
         render {
             div {
                 p(id = id1) {
-                    text("Hello World1!")
+                    +"Hello World1!"
                 }
                 p(id = id2) {
                     +"Hello World2!"

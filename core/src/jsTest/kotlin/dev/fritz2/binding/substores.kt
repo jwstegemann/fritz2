@@ -10,7 +10,6 @@ import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,11 +20,11 @@ class SubStoreTests {
     data class Address(val street: String = "", val postalCode: PostalCode)
     data class PostalCode(val code: Int)
 
-    val nameLens = buildLens("name", Person::name) { p, v -> p.copy(name = v) }
-    val addressLens = buildLens("address", Person::address) { p, v -> p.copy(address = v) }
-    val streetLens = buildLens("street", Address::street) { p, v -> p.copy(street = v) }
-    val postalCodeLens = buildLens("postalCode", Address::postalCode) { p, v -> p.copy(postalCode = v) }
-    val codeLens = buildLens("code", PostalCode::code) { p, v -> p.copy(code = v) }
+    private val nameLens = buildLens("name", Person::name) { p, v -> p.copy(name = v) }
+    private val addressLens = buildLens("address", Person::address) { p, v -> p.copy(address = v) }
+    private val streetLens = buildLens("street", Address::street) { p, v -> p.copy(street = v) }
+    private val postalCodeLens = buildLens("postalCode", Address::postalCode) { p, v -> p.copy(postalCode = v) }
+    private val codeLens = buildLens("code", PostalCode::code) { p, v -> p.copy(code = v) }
 
     @Test
     fun testSubStore() = runTest {
@@ -48,15 +47,15 @@ class SubStoreTests {
             div {
                 label {
                     +"Name: "
-                    div(id = nameId) { nameSub.data.bind() }
+                    div(id = nameId) { nameSub.data.asText() }
                 }
                 label {
                     +"Street: "
-                    div(id = streetId) { streetSub.data.bind() }
+                    div(id = streetId) { streetSub.data.asText() }
                 }
                 label {
                     +"Postal code: "
-                    div(id = postalCodeId) { codeSub.data.map { it.toString() }.bind() }
+                    div(id = postalCodeId) { codeSub.data.asText() }
                 }
             }
         }.mount(targetId)
@@ -107,7 +106,7 @@ class SubStoreTests {
             div {
                 label {
                     +"Person: "
-                    div(id = completeSub.id) { completeSub.data.bind() }
+                    div(id = completeSub.id) { completeSub.data.asText() }
                 }
             }
         }.mount(targetId)

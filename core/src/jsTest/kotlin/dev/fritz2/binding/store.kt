@@ -8,7 +8,6 @@ import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
@@ -27,7 +26,7 @@ class StoreTests {
 
         val store1 = object : RootStore<String>("start") {
 
-            val finish = handleAndOffer<Int> { _ ->
+            val finish = handleAndOffer<Int> {
                 emit(5)
                 "finish"
             }
@@ -40,10 +39,10 @@ class StoreTests {
         render {
             section {
                 div(id = id1) {
-                    store1.data.bind()
+                    store1.data.asText()
                 }
                 div(id = id2) {
-                    store2.data.map { it.toString() }.bind()
+                    store2.data.asText()
                 }
                 button(id = buttonId) {
                     clicks handledBy store1.finish
@@ -99,13 +98,13 @@ class StoreTests {
         render {
             section {
                 div(id = id1) {
-                    s1.data.bind()
+                    s1.data.asText()
                 }
                 div(id = id2) {
-                    s2.data.bind()
+                    s2.data.asText()
                 }
                 div(id = id3) {
-                    s3.data.bind()
+                    s3.data.asText()
                 }
                 button(id = buttonId) {
                     clicks handledBy s1.finish
@@ -157,7 +156,7 @@ class StoreTests {
 
         render {
             div {
-                span(id = valueId) { store.data.bind() }
+                span(id = valueId) { store.data.asText() }
                 button(id = buttonId) {
                     clicks handledBy store.testHandler
                 }
