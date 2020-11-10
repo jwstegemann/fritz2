@@ -17,12 +17,8 @@ class HtmlTests {
 
         assertFailsWith(MultipleRootElementsException::class) {
             render {
-                div {
-                    text("div1")
-                }
-                div {
-                    text("div2")
-                }
+                div { +"div1" }
+                div { +"div2" }
             }.mount(targetId)
             delay(250)
         }

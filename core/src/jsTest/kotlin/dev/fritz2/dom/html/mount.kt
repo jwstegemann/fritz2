@@ -2,7 +2,6 @@ package dev.fritz2.dom.html
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.action
-import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.MountTargetNotFoundException
 import dev.fritz2.dom.append
@@ -39,8 +38,8 @@ class MountTests {
         render {
             div {
                 input(id = id) {
-                    type = const("text")
-                    value = store.data
+                    type("text")
+                    value(store.data)
                     clicks handledBy store.modify
                 }
             }
@@ -74,8 +73,8 @@ class MountTests {
         render {
             div {
                 input(id = id) {
-                    type = const("checkbox")
-                    checked = store.data
+                    type("checkbox")
+                    checked(store.data)
                     clicks handledBy store.modify
                 }
             }
@@ -112,12 +111,12 @@ class MountTests {
             div {
                 select (id = id) {
                     option(id = option1Id) {
-                        text("option1")
-                        selected = store.data.map { it == "option1" }
+                        +"option1"
+                        selected(store.data.map { it == "option1" })
                     }
                     option(id = option2Id) {
-                        text("option2")
-                        selected = store.data.map { it == "option2" }
+                        +"option2"
+                        selected(store.data.map { it == "option2" })
                     }
                     changes.selectedText() handledBy store.select
                 }
@@ -160,7 +159,7 @@ class MountTests {
         assertFailsWith(MountTargetNotFoundException::class) {
             render {
                 div {
-                    text("div1")
+                    +"div1"
                 }
             }.mount(targetId + "error")
             delay(100)
@@ -169,7 +168,7 @@ class MountTests {
         assertFailsWith(MountTargetNotFoundException::class) {
             val dom = render {
                 div {
-                    text("div1")
+                    +"div1"
                 }
             }
             append(targetId + "error", dom)

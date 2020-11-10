@@ -25,7 +25,7 @@ class CommentTests {
         render {
             section {
                 div(id = id1) {
-                    comment(comment)
+                    comment.asComment()
                 }
                 div(id = id2) {
                     !comment
