@@ -4,9 +4,11 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.checkFlow
+import dev.fritz2.test.checkSingleFlow
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
@@ -33,7 +35,9 @@ class MountTests {
             "1-2-3-4"
         )
 
-        val mp = checkFlow(store.data) { _, value, _ ->
+
+        val done = CompletableDeferred<Boolean>()
+        checkSingleFlow(done, store.data) { _, value, _ ->
             assertTrue(values.contains(value))
             value == values.last()
         }
@@ -44,7 +48,7 @@ class MountTests {
             values.forEach { value ->
                 store.enqueue(QueuedUpdate({ value }, store::errorHandler))
             }
-            mp.await()
+            done.await()
         }
     }
 
@@ -129,6 +133,5 @@ class MountTests {
 
         val div = document.getElementById(id) as HTMLDivElement
         assertEquals("start-test-end", div.innerText, "order of text does not match")
-//        assertEquals("start--endtest", div.innerText, "order of text does not match")
     }
 }
