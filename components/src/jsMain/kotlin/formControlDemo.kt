@@ -154,7 +154,7 @@ fun HtmlElements.formControlDemo(): Div {
                         {},
                         id = "check1"
                     ) {
-                        text = textStore.data
+                        text(textStore.data)
                         checkboxSize { normal }
                         borderColor { theme().colors.secondary }
                         checkedBackgroundColor { theme().colors.warning }
