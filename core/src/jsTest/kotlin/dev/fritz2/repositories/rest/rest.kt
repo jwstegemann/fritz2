@@ -2,7 +2,6 @@ package dev.fritz2.repositories.rest
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.action
-import dev.fritz2.binding.each
 import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
@@ -84,9 +83,9 @@ class RestTests {
 
         render {
             div {
-                div(id = idId) { idSubStore.data.bind() }
-                div(id = nameId) { nameSubStore.data.bind() }
-                div(id = ageId) { ageSubStore.data.map { it.toString() }.bind() }
+                div(id = idId) { idSubStore.data.asText() }
+                div(id = nameId) { nameSubStore.data.asText() }
+                div(id = ageId) { ageSubStore.data.asText() }
             }
         }.mount(targetId)
 
@@ -160,15 +159,15 @@ class RestTests {
         render {
             div {
                 ul(id = listId) {
-                    queryStore.each(RestPerson::_id).render { p ->
-                        li { p.data.map { it.name }.bind() }
-                    }.bind()
+                    queryStore.renderEach(RestPerson::_id) { p ->
+                        li { p.data.map { it.name }.asText() }
+                    }
                 }
                 span(id = firstPersonId) {
                     queryStore.data.map {
                         if (it.isEmpty()) ""
                         else it.first()._id
-                    }.bind()
+                    }.asText()
                 }
             }
         }.mount(targetId)
@@ -246,13 +245,11 @@ class RestTests {
         render {
             div {
                 ul(id = listId) {
-                    queryStore.each(RestPerson::_id).render { p ->
+                    queryStore.renderEach(RestPerson::_id) { p ->
                         li {
-                            p.data.map {
-                                it.name
-                            }.bind()
+                            p.data.map { it.name }.asText()
                         }
-                    }.bind()
+                    }
                 }
             }
         }.mount(targetId)

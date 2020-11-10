@@ -37,9 +37,9 @@ class HistoryTests {
 
         render {
             div {
-                span(id = valueId) { store.data.bind() }
-                span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.bind() }
-                span(id = availableId) { store.hist.available.map { it.toString() }.bind() }
+                span(id = valueId) { store.data.asText() }
+                span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.asText() }
+                span(id = availableId) { store.hist.available.map { it.toString() }.asText() }
             }
         }.mount(targetId)
 
@@ -102,8 +102,8 @@ class HistoryTests {
 
         render {
             div {
-                span(id = valueId) { store.data.bind() }
-                span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.bind() }
+                span(id = valueId) { store.data.asText() }
+                span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.asText() }
             }
         }.mount(targetId)
 
@@ -142,8 +142,8 @@ class HistoryTests {
 
         render {
             div {
-                span(id = valueId) { store.data.bind() }
-                span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.bind() }
+                span(id = valueId) { store.data.asText() }
+                span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.asText() }
             }
         }.mount(targetId)
 

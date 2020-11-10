@@ -207,9 +207,9 @@ class WebSocketTests {
 
         render {
             div {
-                div(id = idId) { idSubStore.data.bind() }
-                div(id = nameId) { nameSubStore.data.bind() }
-                div(id = ageId) { ageSubStore.data.map { it.toString() }.bind() }
+                div(id = idId) { idSubStore.data.asText() }
+                div(id = nameId) { nameSubStore.data.asText() }
+                div(id = ageId) { ageSubStore.data.asText() }
             }
         }.mount(targetId)
 

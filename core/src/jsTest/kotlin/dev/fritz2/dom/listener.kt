@@ -35,11 +35,11 @@ class ListenerTest {
         render {
             section {
                 input(id = inputId) {
-                    value = store.data
+                    value(store.data)
                     changes.values() handledBy store.update
                 }
                 div(id = resultId) {
-                    store.data.bind()
+                    store.data.asText()
                 }
             }
         }.mount(targetId)
@@ -81,7 +81,7 @@ class ListenerTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.bind()
+                    store.data.asText()
                 }
                 button(id = buttonId) {
                     clicks handledBy store.addADot
@@ -138,7 +138,7 @@ class ListenerTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.bind()
+                    store.data.asText()
                 }
                 button(id = buttonId) {
                     clicks handledBy store.addDot
@@ -199,7 +199,7 @@ class ListenerTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.bind()
+                    store.data.asText()
                 }
                 input(id = inputId) {
                     keydowns.key() handledBy store.keyPressed

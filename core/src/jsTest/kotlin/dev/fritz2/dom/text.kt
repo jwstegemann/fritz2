@@ -1,6 +1,5 @@
 package dev.fritz2.dom
 
-import dev.fritz2.binding.const
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
@@ -8,6 +7,7 @@ import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -26,7 +26,7 @@ class TextTests {
         render {
             section {
                 div(id = id1) {
-                    text(text)
+                    +text
                 }
                 div(id = id2) {
                     +text
@@ -56,7 +56,7 @@ class TextTests {
 
         render {
             div(id = testId) {
-                const(text).bind()
+                flowOf(text).asText()
             }
         }.mount(targetId)
 
