@@ -16,7 +16,7 @@ class HtmlTests {
         initDocument()
 
         assertFailsWith(MultipleRootElementsException::class) {
-            render {
+            renderElement {
                 div { +"div1" }
                 div { +"div2" }
             }.mount(targetId)

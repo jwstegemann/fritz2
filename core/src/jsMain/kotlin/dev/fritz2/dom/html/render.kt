@@ -50,6 +50,7 @@ fun <E : Element> renderElement(
                 throw MultipleRootElementsException("You can have only one root-tag per html-context!")
             } else {
                 content(element)
+                alreadyRegistered = true
                 return element
             }
         }

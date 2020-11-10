@@ -26,11 +26,11 @@ class RenderTests {
 
         render {
             section {
-                store.data.render { value ->
+                store.data.renderElement { value ->
                     div(id = divId) {
                         +if (value) "on" else "off"
                     }
-                }.bind()
+                }
             }
         }.mount(targetId)
 

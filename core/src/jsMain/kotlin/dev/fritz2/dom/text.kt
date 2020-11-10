@@ -16,7 +16,7 @@ import org.w3c.dom.Text
 interface WithText<N : Node> : WithDomNode<N>, RenderContext {
 
     /**
-     * adds text-content of a [Flow] at this position
+     * Adds text-content of a [Flow] at this position
      *
      * @receiver text-content
      */
@@ -28,7 +28,7 @@ interface WithText<N : Node> : WithDomNode<N>, RenderContext {
     }
 
     /**
-     * adds text-content of a [Flow] at this position
+     * Adds text-content of a [Flow] at this position
      *
      * @receiver text-content
      */
@@ -40,7 +40,7 @@ interface WithText<N : Node> : WithDomNode<N>, RenderContext {
     }
 
     /**
-     * adds static text-content at this position
+     * Adds static text-content at this position
      *
      * @receiver text-content
      */

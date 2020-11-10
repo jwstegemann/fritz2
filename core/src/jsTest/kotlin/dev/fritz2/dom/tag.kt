@@ -1,6 +1,5 @@
 package dev.fritz2.dom
 
-import dev.fritz2.binding.const
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
@@ -71,7 +70,7 @@ class TagTests {
 
         render {
             ul(id = "list") {
-                (const(testIds)).renderEach() {
+                (flowOf(testIds)).renderEach {
                     li(id = it) {
                         classList(flowOf(testClasses))
                     }

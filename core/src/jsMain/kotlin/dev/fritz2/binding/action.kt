@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.flowOf
  */
 fun <A> action(data: A, wait: Long? = null) = Action(data, GlobalScope, wait)
 
+//TODO: investigate
 /**
  * factory-function to create an [Action]
  *
@@ -26,6 +27,7 @@ fun <T, A> Store<T>.action(data: A, wait: Long? = null) = Action(data, MainScope
  */
 fun action(wait: Long? = null) = Action(Unit, GlobalScope, wait)
 
+//TODO: investigate
 /**
  * factory-function to create an [Action] without data
  *
@@ -43,6 +45,7 @@ fun <T> Store<T>.action(wait: Long? = null) = Action(Unit, MainScope(), wait)
  */
 class Action<T>(val data: T, val scope: CoroutineScope, val wait: Long?)
 
+//TODO: investigate
 /**
  * Connects a single [Action] to a [Handler].
  *
