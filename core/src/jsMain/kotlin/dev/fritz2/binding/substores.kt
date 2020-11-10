@@ -26,7 +26,9 @@ class SubStore<R, P, T>(
      */
     override val id: String by lazy { "${parent.id}.${lens.id}".trimEnd('.') }
 
-    //TODO: comment
+    /**
+     * represents the current value of the [Store]
+     */
     override val current: T
         get() = lens.get(parent.current)
 

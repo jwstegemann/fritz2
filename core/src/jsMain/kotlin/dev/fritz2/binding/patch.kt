@@ -69,35 +69,3 @@ sealed class Patch<out T> {
      */
     abstract fun <R> map(mapping: (T) -> R): Patch<R>
 }
-
-//TODO: remove
-///**
-// * Defines a sequence of values
-// *
-// * @param data the upstream-[Flow] defining the current state of the [Seq] by [Patch]es
-// */
-//inline class Seq<T>(val data: Flow<Patch<T>>) {
-//
-//    /**
-//     * convenience-method to easily map each value in the [Seq]
-//     */
-//    fun <X> map(mapper: (T) -> X): Seq<X> {
-//        return Seq(data.map {
-//            it.map(mapper)
-//        })
-//    }
-//
-//    /**
-//     * convenience-method to easily map each value in the [Seq] to a [Tag]
-//     */
-//    fun <X : Element> render(mapper: HtmlElements.(T) -> Tag<X>): Seq<Tag<X>> {
-//        return Seq(data.map { patch ->
-//            patch.map {
-//                globalRender {
-//                    mapper(it)
-//                }
-//            }
-//        })
-//    }
-//}
-

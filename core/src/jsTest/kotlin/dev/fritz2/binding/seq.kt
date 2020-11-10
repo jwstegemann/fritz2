@@ -9,7 +9,6 @@ import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,9 +42,9 @@ class SeqTests {
         render {
             div {
                 ul(id = listId) {
-                    store.data.each().render {
-                        li { text(it) }
-                    }.bind()
+                    store.data.renderEach {
+                        li { +it }
+                    }
                 }
                 button(id = appendBtnId) { clicks handledBy store.append }
                 button(id = changeBtnId) { clicks handledBy store.change }
@@ -90,18 +89,16 @@ class SeqTests {
         render {
             div {
                 ul(id = listId) {
-                    store.each().map {
-                        render {
-                            li { it.data.bind() }
-                        }
-                    }.bind()
+                    store.renderEach {
+                        li { it.data.asText() }
+                    }
                 }
                 button(id = appendBtnId) { clicks handledBy store.append }
                 button(id = changeBtnId) { clicks handledBy store.change }
                 button(id = insertBtnId) { clicks handledBy store.insert }
                 button(id = deleteBtnId) { clicks handledBy store.delete }
 
-                div(id = "hugo") { store.data.map { it.toString() }.bind() }
+                div(id = "hugo") { store.data.asText() }
             }
         }.mount(targetId)
 
@@ -158,9 +155,9 @@ class SeqTests {
         render {
             div {
                 ul(id = listId) {
-                    store.data.each(Entity::id).render {
-                        li { text(it.value) }
-                    }.bind()
+                    store.data.renderEach(Entity::id) {
+                        li { +it.value }
+                    }
                 }
                 button(id = appendBtnId) { clicks handledBy store.append }
                 button(id = changeBtnId) { clicks handledBy store.change }
@@ -205,12 +202,10 @@ class SeqTests {
         render {
             div {
                 ul(id = listId) {
-                    store.each(Entity::id).map {
+                    store.renderEach(Entity::id) {
                         val valueStore = it.sub(valueLens)
-                        render {
-                            li { valueStore.data.bind() }
-                        }
-                    }.bind()
+                        li { valueStore.data.asText() }
+                    }
                 }
                 button(id = appendBtnId) { clicks handledBy store.append }
                 button(id = changeBtnId) { clicks handledBy store.change }

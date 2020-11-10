@@ -110,7 +110,7 @@ open class Tag<out E : Element>(
      * @param [idProvider] to identify the element in the list (i.e. when it's content changes over time)
      */
     inline fun <V, I> Flow<List<V>>.renderEach(
-        noinline idProvider: IdProvider<V, I>? = null,
+        noinline idProvider: IdProvider<V, I>,
         crossinline renderContext: RenderContext.(V) -> Tag<HTMLElement>
     ) {
         mountDomNodePatch(job, domNode) { childJob ->
@@ -126,9 +126,35 @@ open class Tag<out E : Element>(
     }
 
     //TODO: comment
+    /**
+     * Creates a [Seq] from a [Flow] of a [List].
+     * Call it for example on the data-[Flow] of your (Sub-)Store.
+     * The [Patch]es are determined using Myer's diff-algorithm.
+     * Elements with the same id, provided by the [idProvider], are considered the same element.
+     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
+     * when an element stays the same, but changes it's internal values.
+     *
+     * @param [idProvider] to identify the element in the list (i.e. when it's content changes over time)
+     */
+    inline fun <V> Flow<List<V>>.renderEach(
+        crossinline renderContext: RenderContext.(V) -> Tag<HTMLElement>
+    ) {
+        mountDomNodePatch(job, domNode) { childJob ->
+            childJob.cancelChildren()
+            this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
+                Myer.diff(old, new)
+            }.map {
+                it.map { value ->
+                    renderContext(value)
+                }
+            }
+        }
+    }
+
+    //TODO: comment
     inline fun <V, I> RootStore<List<V>>.renderEach(
         noinline idProvider: IdProvider<V, I>,
-        crossinline renderContext: RenderContext.(Store<V>) -> Tag<HTMLElement>
+        crossinline renderContext: RenderContext.(SubStore<List<V>, List<V>, V>) -> Tag<HTMLElement>
     ) {
         mountDomNodePatch(job, domNode) { childJob ->
             childJob.cancelChildren()
@@ -161,7 +187,7 @@ open class Tag<out E : Element>(
     //TODO: comment
     inline fun <R, P, V, I> SubStore<R, P, List<V>>.renderEach(
         noinline idProvider: IdProvider<V, I>,
-        crossinline renderContext: RenderContext.(Store<V>) -> Tag<HTMLElement>
+        crossinline renderContext: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
     ) {
         mountDomNodePatch(job, domNode) { childJob ->
             childJob.cancelChildren()

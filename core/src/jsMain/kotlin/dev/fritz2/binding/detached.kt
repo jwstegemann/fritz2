@@ -47,7 +47,9 @@ class DetachedStore<T, P>(private val initialData: T, private val parent: Store<
      */
     override val id: String by lazy { "${parent.id}.${lens.id}".trimEnd('.') }
 
-    //TODO: comment
+    /**
+     * represents the current value of the [Store]
+     */
     override val current: T
         get() = state.value
 

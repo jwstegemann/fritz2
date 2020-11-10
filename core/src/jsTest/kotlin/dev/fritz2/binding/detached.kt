@@ -21,7 +21,7 @@ class DetachedStoreTests {
 
     data class Person(val name: String, val id: String = uniqueId())
 
-    val nameLens = buildLens("name", Person::name) { p, v -> p.copy(name = v) }
+    private val nameLens = buildLens("name", Person::name) { p, v -> p.copy(name = v) }
 
     @Test
     fun testDetachStore() = runTest {

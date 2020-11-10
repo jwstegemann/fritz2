@@ -8,10 +8,8 @@ import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.asPromise
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.promise
 import org.w3c.dom.HTMLDivElement
 import kotlin.js.Promise
@@ -23,7 +21,7 @@ import kotlin.test.assertTrue
 class MountTests {
 
     @Test
-    fun testSingleMountPoint(): Promise<Boolean> {
+    fun testStore(): Promise<Boolean> {
 
         val store = RootStore("")
 
@@ -50,21 +48,6 @@ class MountTests {
         }
     }
 
-    @Test
-    fun testMultiMountPoint(): Promise<Boolean> {
-        val listToTest = listOf(1, 2, 3, 4, 5)
-
-        val store = RootStore<List<Int>>(listToTest)
-
-        val mp = checkFlow(store.data.each().data) { _, patch ->
-            val expected = Patch.InsertMany(listToTest.reversed(), 0)
-            assertEquals(expected, patch, "set wrong value in MultiMountPoint")
-            true
-        }
-
-        store.data.watch()
-        return mp.asPromise()
-    }
 
     @Test
     fun testOrderOfSingleMountPointCreation() = runTest {
@@ -78,15 +61,15 @@ class MountTests {
 
         render {
             div(id = outer) {
-                text.map {
+                text.render {
                     render {
                         div(id = inner1) {
-                            text(it)
+                            +it
                         }
                     }
-                }.bind(preserveOrder = true)
+                }
                 div(id = inner2) {
-                    text("hallo")
+                    +"hallo"
                 }
             }
         }.mount("target")
@@ -111,11 +94,9 @@ class MountTests {
 
         render {
             div(id = outer) {
-                text.each().map {
-                    render {
-                        div(id = it) {}
-                    }
-                }.bind()
+                text.renderEach {
+                    div(id = it) {}
+                }
                 div(id = inner3) {}
             }
         }.mount("target")
@@ -138,9 +119,9 @@ class MountTests {
 
         render {
             div(id = id) {
-                text("start-")
-                text.bind(preserveOrder = true)
-                text("-end")
+                +"start-"
+                text.asText()
+                +"-end"
             }
         }.mount("target")
 

@@ -123,7 +123,7 @@ interface Store<T> {
     val data: Flow<T>
 
     /**
-     * TODO: comment
+     * represents the current value of the [Store]
      */
     val current: T
 
