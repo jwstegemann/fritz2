@@ -3,6 +3,7 @@ package dev.fritz2.components
 import DefaultTheme
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.render
@@ -19,6 +20,72 @@ interface ThemeStore {
     val selectTheme: SimpleHandler<Int>
 }
 
+
+/**
+ * This class offers the configuration of the [themeProvider] component.
+ *
+ * The component offers some configurable features:
+ * - to set one or a [list][List] of themes; if given a list, the first theme of the list will be taken as current theme
+ *   automatically.
+ * - to enable or disable the resetting of the browser's default styling (it is highly recommended to stick with the
+ *   default of resetting!) The reset procedure uses theme specific values already, so the basic look and feel of the app
+ *   will comply to the theme.
+ * - to pass in arbitrary content of course, as this component acts as the root of all UI
+ * - it offers access to the [themeStore] in order to enable the _dynamic_ switching between different [themes][Theme]
+ *   at runtime.
+ *
+ * The pattern to integrate a [themeProvider] into an app resembles always the following examples:
+ * ```
+ * // minimal integration: Stick to the default theme and reset the browser's CSS
+ * render { theme: Theme -> // gain access to the specific (sub-)*type* of your theme and the initial theme
+ *     themeProvider { // configure the provider itself -> nothing theme specific here, so the [DefaultTheme] will be used
+ *          items {
+ *              // your UI goes here
+ *          }
+ *     }.mount("target")
+ * ```
+ *
+ * Sometimes you want to set a theme that differs from the _default_ theme:
+ * ```
+ * render { theme: ExtendedTheme -> // gain access to the specific (sub-)*type* of your theme and the initial theme
+ *     themeProvider {
+ *          theme { myThemeInstance } // set the desired theme
+ *          items {
+ *              // your UI goes here
+ *          }
+ *     }.mount("target")
+ * ```
+ * If you want to enable active switching between two themes, you have to _grab_ the theme store in order to pass a
+ * fitting flow (of a selection component probably) into it
+ * ```
+ * // prepare some collection of themes:
+ * val themes = listOf<ExtendedTheme>(
+ *      Light(),
+ *      Dark()
+ * )
+ *
+ * // set the themes!
+ * render { theme: ExtendedTheme -> // gain access to the specific (sub-)*type* of your theme and the initial theme
+ *     themeProvider {
+ *          themes { themes } // set the desired themes
+ *          items {
+ *              // use the exposed ``themeStore`` to dynamically select the current theme
+ *              themeStore.data.map { currentThemeIndex -> // grab the current index to deduce the name later on
+ *                  radioGroup {
+ *                      items { themes.map { it.name } } // provide a list of names
+ *                      selected { themes[currentThemeIndex].name } // set the selected name
+ *                  }.map { selected -> // derive the index of the selected theme via its name
+ *                      themes.indexOf(
+ *                          themes.find {
+ *                              selected == it.name
+ *                          }
+ *                      )
+ *                  } handledBy themeStore.selectTheme // use the exposed ``themeStore`` as handler
+ *              }
+ *          }.watch() // must be watched, as there is nothing bound!
+ *     }.mount("target")
+ * ```
+ */
 class ThemeComponent {
     companion object {
         val staticResetCss: String
@@ -652,7 +719,7 @@ video {
 
     }
 
-    var resetCss: Boolean = false
+    var resetCss: Boolean = true
 
     fun resetCss(value: () -> Boolean) {
         resetCss = value()
@@ -687,6 +754,40 @@ video {
     }
 }
 
+
+/**
+ * This component realizes an outer wrapper for the whole UI in order to set and initialize the actual theme
+ * and to expose the [ThemeStore] in order to enable the _dynamic_ switching between different [themes][Theme]
+ * at runtime.
+ *
+ * The component offers some configurable features:
+ * - to set one or a [list][List] of themes
+ * - to enable or disable the resetting of the browser's default styling (it is highly recommended to stick with the
+ *   default of resetting!) The reset procedure uses theme specific values already, so the basic look and feel of the app
+ *   will comply to the theme.
+ * - to pass in arbitrary content of course, as this component acts as the root of all UI
+ *
+ * The pattern to integrate a [themeProvider] into an app resembles always the following examples:
+ * ```
+ * // minimal integration: Stick to the default theme and reset the browser's CSS
+ * render { theme: ExtendedTheme -> // gain access to the specific (sub-)*type* of your theme and the initial theme
+ *     themeProvider { // configure the provider itself -> nothing theme specific here, so the [DefaultTheme] will be used
+ *          items {
+ *              // your UI goes here
+ *          }
+ *     }.mount("target")
+ * ```
+ *
+ * For a detailed overview of the configuration options have a look at [ThemeComponent]
+ *
+ * @see ThemeComponent
+ *
+ * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the element
+ * @param id the ID of the element
+ * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param build a lambda expression for setting up the component itself. Details in [ThemeComponent]
+ */
 fun HtmlElements.themeProvider(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass? = null,
@@ -698,7 +799,9 @@ fun HtmlElements.themeProvider(
 
     return div {
         component.themeStore.data.render {
-            resetCss(ThemeComponent.staticResetCss)
+            if (component.resetCss) {
+                resetCss(ThemeComponent.staticResetCss)
+            }
             box(
                 {
                     styling()

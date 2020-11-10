@@ -15,6 +15,38 @@ import dev.fritz2.styling.theme.theme
 import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.*
 
+/**
+ * This component class manages the _configuration_ of a [formControl] and some render centric functionalities.
+ * The former are important for clients of a [formControl], the latter for extending or changing the default behaviours.
+ *
+ * A [formControl] can be configured in different aspects:
+ * - a label for a description of the control as a whole
+ * - mark the control as _required_
+ * - an optional helper text
+ * - provide an error message as a [Flow<String>]]; if it is none empty, the message will get rendered.
+ * - disable the control
+ *
+ * In order to customize the control, there are different seams to use:
+ *
+ * To add a new control, extend this class and add a new control function that wraps the desired control component
+ * factory function like [FormControlComponent.inputField], [FormControlComponent.checkbox],
+ * [FormControlComponent.checkboxGroup] and [FormControlComponent.radioGroup] do.
+ *
+ * In order to just _change_ the target of some of the default control wrapping function to a different control
+ * component, extend this class and override the desired function. Be aware that you cannot provide default arguments
+ * for an overridden function, so probably offer a new function with default arguments that just direct to
+ * the overridden one.
+ *
+ * Be aware of how the control should be integrated in the component structure in either way.
+ * Currently there are two _strategies_ implemented:
+ * - [SingleControlRenderer] for a control that consists of only _one_ element
+ * - [ControlGroupRenderer] for a control that consists of multiple parts (like checkBoxes or alike)
+ *
+ * If those do not fit, just implement the [ControlRenderer] interface and pair it with the string based key of the
+ * related control wrapping function. Have a look at the init block, [renderStrategies] field and [Control.assignee]
+ * field to grasp, how the mapping between a control and a rendering strategie is done.
+ *
+ */
 open class FormControlComponent {
     companion object {
         val staticCss = staticStyle(
@@ -362,6 +394,72 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
     }
 }
 
+
+/**
+ * This component wraps different kind of input elements like [inputField], [checkbox], [checkboxGroup], [radioGroup].
+ * It enriches those controls with a describing text or label, an optional helper message and also an optional
+ * error message. On top it marks a control as _required_ if that should be exposed.
+ *
+ * The controls themselves offer the same API as if used stand alone. They must be just declared within the build
+ * parameter expression of this factory function.
+ *
+ * Be aware that only one control within a formControl is allowed! If more than one are configured, only the first will
+ * get rendered; the remaining ones will be reported as errors in the log.
+ *
+ * This component can be customized in different ways and thus is quite flexible to...
+ * - ... adapt to new input elements
+ * - ... get rendered in a new way.
+ * In order to achieve this, one can provide new implementations of the rendering strategies or override the control
+ * wrapping functions as well. For details have a look at the [ControlRenderer] interface and the four control functions
+ * [FormControlComponent.inputField], [FormControlComponent.checkbox], [FormControlComponent.checkboxGroup] and
+ * [FormControlComponent.radioGroup].
+ *
+ * Have a look at some example calls
+ * ```
+ * // wrap a simple input field
+ * formControl {
+ *     label { "Some describing label" }
+ *     required { true } // mark the above label with a small red star
+ *     helperText { "You can provide a hint here" }
+ *     // provide a Flow<String> where each none empty content will lead to the display of the error
+ *     errorMessage { const("Sorry, always wrong in this case") }
+ *     // just use the appropriate control with its specific API!
+ *     inputField(store = someStore) {
+ *         placeholder = const("Some text to type")
+ *     }
+ * }
+ *
+ * // provide more than one control:
+ * // - the first will get rendered
+ * // - starting with the second all others will be logged as errors
+ * formControl {
+ *     // leave out label and so on
+ *     // ...
+ *     // first control function called -> ok, will get rendered
+ *     inputField(store = someStore) {
+ *         placeholder = const("Some text to type")
+ *     }
+ *     // second call -> more than one control -> will not get rendered, but instead be logged as error!
+ *     checkBox {
+ *          checked { someStore.data }
+ *          events {
+ *              changes.states() handledBy someStore.someHandler
+ *          }
+ *     }
+ *     // probably more calls to controls -> also reported as errors!
+ * }
+ * ```
+ *
+ * For details about the configuration possibilities have a look at [FormControlComponent].
+ *
+ * @see FormControlComponent
+ *
+ * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the element
+ * @param id the ID of the element
+ * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param build a lambda expression for setting up the component itself. Details in [FormControlComponent]
+ */
 fun HtmlElements.formControl(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
