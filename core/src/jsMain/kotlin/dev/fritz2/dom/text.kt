@@ -14,22 +14,28 @@ import org.w3c.dom.Text
  * Interface providing functionality to handle text-content
  */
 interface WithText<N : Node> : WithDomNode<N>, RenderContext {
-    /**
-     * adds static text-content at this position
-     *
-     * @param content text-content
-     */
-    fun text(content: String): Node = domNode.appendChild(document.createTextNode(content))
 
     /**
      * adds text-content of a [Flow] at this position
      *
-     * @param content text-content
+     * @receiver text-content
      */
-    fun text(content: Flow<String>) {
+    fun Flow<String>.asText() {
         mountDomNode(job, domNode) { childJob ->
             childJob.cancelChildren()
-            content.map { TextNode(it) }
+            this.map { TextNode(it) }
+        }
+    }
+
+    /**
+     * adds text-content of a [Flow] at this position
+     *
+     * @receiver text-content
+     */
+    fun <T> Flow<T>.asText() {
+        mountDomNode(job, domNode) { childJob ->
+            childJob.cancelChildren()
+            this.map { TextNode(it.toString()) }
         }
     }
 
@@ -38,7 +44,7 @@ interface WithText<N : Node> : WithDomNode<N>, RenderContext {
      *
      * @receiver text-content
      */
-    operator fun String.unaryPlus(): Node = text(this)
+    operator fun String.unaryPlus(): Node = domNode.appendChild(document.createTextNode(this))
 }
 
 /**

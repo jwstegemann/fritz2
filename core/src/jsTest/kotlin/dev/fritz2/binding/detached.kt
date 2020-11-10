@@ -43,14 +43,14 @@ class DetachedStoreTests {
             section {
 
                 div(id = rootNameId) {
-                    store.data.map { it.name }.bind()
+                    store.data.map { it.name }.asText()
                 }
 
                 val nameSub = store.detach(nameLens, "")
 
                 div {
-                    div(id = nameId) { nameSub.data.bind() }
-                    div(id = detachedId) { nameSub.detached.bind() }
+                    div(id = nameId) { nameSub.data.asText() }
+                    div(id = detachedId) { nameSub.detached.asText() }
                     button(id = btnId) {
                         clicks.map { "Foo Bar" } handledBy nameSub.update
                     }
@@ -126,24 +126,24 @@ class DetachedStoreTests {
         render {
             section {
                 div(id = rootNameId) {
-                    store.data.map { it[0].name }.bind()
+                    store.data.map { it[0].name }.asText()
                 }
 
-                store.data.each(Person::id).render { person ->
+                store.data.renderEach(Person::id) { person ->
 
                     val personStore = store.detach(person, Person::id)
                     val nameSub = personStore.sub(nameLens)
 
                     div {
-                        div(id = nameId) { nameSub.data.bind() }
-                        div(id = detachedId) { personStore.detached.map { it.name }.bind() }
+                        div(id = nameId) { nameSub.data.asText() }
+                        div(id = detachedId) { personStore.detached.map { it.name }.asText() }
                         button(id = btnId) {
                             clicks.map {
                                 "Foo Bar"
                             } handledBy nameSub.update
                         }
                     }
-                }.bind()
+                }
             }
         }.mount(targetId)
 

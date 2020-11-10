@@ -1226,8 +1226,6 @@ interface RenderContext {
     fun custom(tagName: String, content: Tag<HTMLElement>.() -> Unit): Tag<HTMLElement> =
         register(Tag(tagName, job = job), content)
 
-    fun <T> Flow<T>.asString() = this.map { it.toString() }
-
     fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T
 
     fun a(baseClass: String? = null, id: String? = null, content: A.() -> Unit): A =

@@ -29,7 +29,7 @@ class DispatchTests {
 
         render {
             div {
-                span(id = valueId) { store.data.bind() }
+                span(id = valueId) { store.data.asText() }
             }
         }.mount(targetId)
 
@@ -50,7 +50,7 @@ class DispatchTests {
 
         render {
             div {
-                span(id = valueId) { store.data.bind() }
+                span(id = valueId) { store.data.asText() }
             }
         }.mount(targetId)
 
