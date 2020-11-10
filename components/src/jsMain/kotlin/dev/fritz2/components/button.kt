@@ -318,6 +318,7 @@ fun HtmlElements.pushButton(
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
+ * @return a listener (think of a flow!) that offers the clicks of the button
  */
 fun HtmlElements.clickButton(
     styling: BasicParams.() -> Unit = {},

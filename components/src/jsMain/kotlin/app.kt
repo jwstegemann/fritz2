@@ -80,12 +80,6 @@ fun main() {
 
     render { theme: ExtendedTheme ->
         themeProvider {
-            // grab the ThemeStore to pass it down towards components, that need to access either the
-            // data or to change the selected theme
-            val store = themeStore
-            // could be the default? (So only need to set it to ``false`` actively?)
-            resetCss { true }
-            // Override default theme by a new list of themes
             themes { themes }
             items {
                 lineUp({
@@ -172,7 +166,7 @@ fun main() {
                                     "buttons" -> buttonDemo()
                                     "formcontrol" -> formControlDemo()
                                     // textdemo currently on welcome page, copied, not called
-                                    "flexbox" -> flexBoxDemo(store, themes, theme)
+                                    "flexbox" -> flexBoxDemo(themeStore, themes, theme)
                                     "gridbox" -> gridBoxDemo()
                                     "multiselect" -> multiSelectDemo()
                                     "singleselect" -> singleSelectDemo()
