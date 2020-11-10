@@ -1,6 +1,8 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.*
+import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.MultipleRootElementsException
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.elementLens
@@ -20,13 +22,14 @@ import org.w3c.dom.events.Event
 annotation class HtmlTagMarker
 
 /**
- * represents a tag in the resulting HTML.
+ * Represents a tag in the resulting HTML.
  * Sorry for the name, but we needed to delimit it from the [Element] it is wrapping.
  *
  * @param tagName name of the tag. Used to create the corresponding [Element]
  * @param id the DOM-id of the element to be created
  * @param baseClass a static base value for the class-attribute.
  * All dynamic values for this attribute will be concatenated to this base-value.
+ * @param job used for launching coroutines in
  * @param domNode the [Element]-instance that is wrapped by this [Tag]
  * (you should never have to pass this by yourself, just let it be created by the default)
  */
@@ -43,7 +46,7 @@ open class Tag<out E : Element>(
 ) : WithDomNode<E>, WithComment<E>, WithEvents<E>(), RenderContext {
 
     /**
-     * creates the content of the [Tag] and appends it as a child to the wrapped [Element]
+     * Creates the content of the [Tag] and appends it as a child to the wrapped [Element]
      *
      * @param element the parent element of the new content
      * @param content lambda building the content (following the type-safe-builder pattern)
@@ -54,7 +57,13 @@ open class Tag<out E : Element>(
         return element
     }
 
-    //TODO: comment
+    /**
+     * Creates a new [RenderContext] for transferring the data inside the [Flow] to [Tag]s which are
+     * visible in the browser.
+     *
+     * @receiver [Flow] containing the data
+     * @param renderContext new [RenderContext] for rendering the data to the DOM
+     */
     inline fun <V> Flow<V>.render(crossinline renderContext: RenderContext.(V) -> Unit) {
         mountDomNodeList(job, domNode) { childJob ->
             this.map { data ->
@@ -66,7 +75,16 @@ open class Tag<out E : Element>(
         }
     }
 
-    //TODO: comment
+    /**
+     * Creates a new [RenderContext] for transferring the data inside the [Flow] to [Tag]s which are
+     * visible in the browser. It should only contain one root [Tag] like a [Div] otherwise a
+     * [MultipleRootElementsException] will be thrown.
+     *
+     * @receiver [Flow] containing the data
+     * @param preserveOrder decides to keep the order of the rendered [Tag]s when they are a the same level as
+     * static [Tag]s. (default true)
+     * @param renderContext new [RenderContext] for rendering the data to the DOM
+     */
     inline fun <V> Flow<V>.renderElement(
         preserveOrder: Boolean = true,
         crossinline renderContext: RenderContext.(V) -> Tag<HTMLElement>
@@ -92,22 +110,27 @@ open class Tag<out E : Element>(
         }
     }
 
+    /**
+     * Accumulates a [Pair] and a [List] to a new [Pair] of [List]s
+     *
+     * @param accumulator [Pair] of two [List]s
+     * @param newValue new [List] to accumulate
+     */
     suspend inline fun <T> accumulate(
         accumulator: Pair<List<T>, List<T>>,
         newValue: List<T>
     ): Pair<List<T>, List<T>> = Pair(accumulator.second, newValue)
 
 
-    //TODO: comment
     /**
-     * Creates a [Seq] from a [Flow] of a [List].
-     * Call it for example on the data-[Flow] of your (Sub-)Store.
-     * The [Patch]es are determined using Myer's diff-algorithm.
+     * Creates a new [RenderContext] for a [Flow] of [List].
+     * Internally the [Patch]es are determined using Myer's diff-algorithm.
      * Elements with the same id, provided by the [idProvider], are considered the same element.
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
      * when an element stays the same, but changes it's internal values.
      *
      * @param [idProvider] to identify the element in the list (i.e. when it's content changes over time)
+     * @param renderContext new [RenderContext] for rendering the data to the DOM
      */
     inline fun <V, I> Flow<List<V>>.renderEach(
         noinline idProvider: IdProvider<V, I>,
@@ -125,16 +148,14 @@ open class Tag<out E : Element>(
         }
     }
 
-    //TODO: comment
+
     /**
-     * Creates a [Seq] from a [Flow] of a [List].
-     * Call it for example on the data-[Flow] of your (Sub-)Store.
-     * The [Patch]es are determined using Myer's diff-algorithm.
-     * Elements with the same id, provided by the [idProvider], are considered the same element.
+     * Creates a new [RenderContext] for a [Flow] of [List].
+     * Internally the [Patch]es are determined using Myer's diff-algorithm.
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
      * when an element stays the same, but changes it's internal values.
      *
-     * @param [idProvider] to identify the element in the list (i.e. when it's content changes over time)
+     * @param renderContext new [RenderContext] for rendering the data to the DOM
      */
     inline fun <V> Flow<List<V>>.renderEach(
         crossinline renderContext: RenderContext.(V) -> Tag<HTMLElement>
@@ -152,6 +173,10 @@ open class Tag<out E : Element>(
     }
 
     //TODO: comment
+    /**
+     * Creates a new [RenderContext] for a [Flow] of [List].
+     * (do not use this, if you want to manipulate the list itself (add or move elements, filter, etc.).
+     */
     inline fun <V, I> RootStore<List<V>>.renderEach(
         noinline idProvider: IdProvider<V, I>,
         crossinline renderContext: RenderContext.(SubStore<List<V>, List<V>, V>) -> Tag<HTMLElement>
@@ -224,16 +249,16 @@ open class Tag<out E : Element>(
         }
 
     /**
-     * convenience method to connecting [Event]s to a [Handler].
+     * Connects [Event]s to a [Handler].
      *
-     * @param handler [SimpleHandler] that will handle the [Event]s
-     * @receiver [Listener]
+     * @receiver [Listener] which contains the [Event]
+     * @param handler that will handle the fired [Event]
      */
     infix fun <E : Event, X : Element> Listener<E, X>.handledBy(handler: Handler<Unit>) =
         handler.collect(this.events.map { Unit })
 
     /**
-     * sets an attribute.
+     * Sets an attribute.
      *
      * @param name to use
      * @param value to use
@@ -243,7 +268,7 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * sets an attribute.
+     * Sets an attribute.
      *
      * @param name to use
      * @param value to use
@@ -256,7 +281,7 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * sets an attribute.
+     * Sets an attribute.
      *
      * @param name to use
      * @param value to use
@@ -266,7 +291,7 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * sets an attribute.
+     * Sets an attribute.
      *
      * @param name to use
      * @param value to use
@@ -279,7 +304,7 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * sets an attribute when [value] is true other removes it.
+     * Sets an attribute when [value] is true other removes it.
      *
      * @param name to use
      * @param value for decision
@@ -291,7 +316,7 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * sets an attribute when [value] is true other removes it.
+     * Sets an attribute when [value] is true other removes it.
      *
      * @param name to use
      * @param value for decision
@@ -305,7 +330,7 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * sets an attribute from a [List] of [String]s.
+     * Sets an attribute from a [List] of [String]s.
      * Therefore it concatenates the [String]s to the final value [String].
      *
      * @param name to use
@@ -317,7 +342,7 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * sets an attribute from a [List] of [String]s.
+     * Sets an attribute from a [List] of [String]s.
      * Therefore it concatenates the [String]s to the final value [String].
      *
      * @param name to use
@@ -332,7 +357,7 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * sets an attribute from a [Map] of [String]s and [Boolean]s.
+     * Sets an attribute from a [Map] of [String]s and [Boolean]s.
      * The key inside the [Map] getting only set when the corresponding value
      * is true. Otherwise they get removed from the resulting [String].
      *
@@ -345,7 +370,7 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * sets an attribute from a [Map] of [String]s and [Boolean]s.
+     * Sets an attribute from a [Map] of [String]s and [Boolean]s.
      * The key inside the [Map] getting only set when the corresponding value
      * is true. Otherwise they get removed from the resulting [String].
      *
@@ -361,32 +386,87 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * sets the *class* attribute.
+     * Sets the *class* attribute.
      *
-     * @param value to use
+     * @param value [Flow] with [String]
      */
     fun className(value: Flow<String>) {
         attr("class", baseClass?.let { value.map { "$baseClass $it" } } ?: value)
     }
 
-    //TODO: comment
+    /**
+     * Sets the *class* attribute from a [List] of [String]s.
+     *
+     * @param values [Flow] with [List] of [String]s
+     */
     fun classList(values: Flow<List<String>>) {
         attr("class", (if (baseClass != null) values.map { it + baseClass } else values))
     }
 
 
-    //TODO: comment
+    /**
+     * Sets the *class* attribute from a [Map] of [String] to [Boolean].
+     * If the value of the [Map]-entry is true, the key will be used inside the resulting [String].
+     *
+     * @param values [Flow] of [Map] with key to set and corresponding values to decide
+     */
     fun classMap(values: Flow<Map<String, Boolean>>) {
         attr("class", if (baseClass != null) values.map { it + (baseClass to true) } else values)
     }
 
-    //TODO: comment
-    fun inlineStyle(value: String) = attr("style", value)
-    fun inlineStyle(value: List<String>) = attr("style", value, separator = "; ")
-    fun inlineStyle(value: Map<String, Boolean>) = attr("style", value, separator = "; ")
-    fun inlineStyle(value: Flow<String>) = attr("style", value)
-    fun inlineStyle(value: Flow<List<String>>) = attr("style", value, separator = "; ")
-    fun inlineStyle(value: Flow<Map<String, Boolean>>) = attr("style", value, separator = "; ")
+    /**
+     * Sets the *style* attribute.
+     *
+     * @param value [String] to set
+     */
+    fun inlineStyle(value: String) {
+        attr("style", value)
+    }
 
+    /**
+     * Sets the *style* attribute.
+     *
+     * @param value [Flow] with [String]
+     */
+    fun inlineStyle(value: Flow<String>) {
+        attr("style", value)
+    }
 
+    /**
+     * Sets the *style* attribute from a [List] of [String]s.
+     *
+     * @param values [List] of [String]s
+     */
+    fun inlineStyle(values: List<String>) {
+        attr("style", values, separator = "; ")
+    }
+
+    /**
+     * Sets the *style* attribute from a [List] of [String]s.
+     *
+     * @param values [Flow] with [List] of [String]s
+     */
+    fun inlineStyle(values: Flow<List<String>>) {
+        attr("style", values, separator = "; ")
+    }
+
+    /**
+     * Sets the *style* attribute from a [Map] of [String] to [Boolean].
+     * If the value of the [Map]-entry is true, the key will be used inside the resulting [String].
+     *
+     * @param values [Map] with key to set and corresponding values to decide
+     */
+    fun inlineStyle(values: Map<String, Boolean>) {
+        attr("style", values, separator = "; ")
+    }
+
+    /**
+     * Sets the *style* attribute from a [Map] of [String] to [Boolean].
+     * If the value of the [Map]-entry is true, the key will be used inside the resulting [String].
+     *
+     * @param values [Flow] of [Map] with key to set and corresponding values to decide
+     */
+    fun inlineStyle(values: Flow<Map<String, Boolean>>) {
+        attr("style", values, separator = "; ")
+    }
 }

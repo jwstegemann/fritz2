@@ -22,7 +22,7 @@ interface Handler<A> {
 class SimpleHandler<A>(override inline val collect: (Flow<A>) -> Unit) : Handler<A>
 
 /**
- * bind a [Flow] of actions/events to an [Handler]
+ * Connects a [Flow] to a [Handler].
  *
  * @param handler [Handler] that will be called for each action/event on the [Flow]
  * @receiver [Flow] of action/events to bind to an [Handler]

@@ -7,7 +7,6 @@ import dev.fritz2.dom.WithText
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 
 
@@ -1211,7 +1210,7 @@ open class Ul(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTM
 
 
 /**
- * General class for standard html5 elements
+ * Special [Tag] for html5 with no attributes
  */
 open class TextElement(tagName: String, id: String? = null, baseClass: String? = null, job: Job) :
     Tag<HTMLElement>(tagName, id, baseClass, job), WithText<HTMLElement>

@@ -12,7 +12,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 
 /**
- * mounts the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * Mounts the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
  *
  * @param job to collect values
  * @param target DOM mounting target
@@ -38,7 +38,7 @@ inline fun <N : Node> mountDomNode(
 }
 
 /**
- * mounts the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * Mounts the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
  * It is fast then [mountDomNode], but if you mix constant [Tag]s with one or more of mounted [Flow]s,
  * the order ist not guaranteed. Wrap your mounted elements in a constant [Tag] or use
  * [mountDomNode] function instead (for example by setting preserveOrder when binding).
@@ -62,7 +62,7 @@ inline fun <N : Node> mountDomNodeUnordered(
 }
 
 /**
- * mounts the a [List] of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * Mounts the a [List] of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
  *
  * @param job to collect values
  * @param target DOM mounting target
@@ -95,7 +95,13 @@ inline fun <N : Node> mountDomNodeList(
     }
 }
 
-//TODO: comment
+/**
+ * Mounts [Patch]es of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ *
+ * @param job to collect values
+ * @param target DOM mounting target
+ * @param upstream returns the [Flow] with the [Patch]es of [WithDomNode]s that should be mounted at this point
+ */
 inline fun <N : Node> mountDomNodePatch(
     job: Job,
     target: N,
@@ -111,7 +117,13 @@ inline fun <N : Node> mountDomNodePatch(
     }
 }
 
-//TODO: comment
+/**
+ * Inserts or appends elements to the DOM.
+ *
+ * @receiver target DOM-Node
+ * @param child Node to insert or append
+ * @param index place to insert or append
+ */
 fun <N: Node> N.insertOrAppend(child: Node, index: Int): Unit {
     if (index == childNodes.length) appendChild(child)
     else childNodes.item(index)?.let {
@@ -119,10 +131,22 @@ fun <N: Node> N.insertOrAppend(child: Node, index: Int): Unit {
     }
 }
 
-//TODO: comment
+/**
+ * Inserts or appends elements to the DOM.
+ *
+ * @receiver target DOM-Node
+ * @param element from type [WithDomNode]
+ * @param index place to insert or append
+ */
 fun <N: Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrAppend(element.domNode, index)
 
-//TODO: comment
+/**
+ * Inserts a [List] of elements to the DOM.
+ *
+ * @receiver target DOM-Node
+ * @param elements [List] of [WithDomNode]s elements to insert
+ * @param index place to insert or append
+ */
 fun <N: Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
     if (index == childNodes.length) {
         for (child in elements.reversed()) appendChild(child.domNode)
@@ -135,7 +159,13 @@ fun <N: Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
     }
 }
 
-//TODO: comment
+/**
+ * Deletes elements from the DOM.
+ *
+ * @receiver target DOM-Node
+ * @param start position for deleting
+ * @param count of elements to delete
+ */
 fun <N: Node> N.delete(start: Int, count: Int) {
     var itemToDelete = childNodes.item(start)
     repeat(count) {
@@ -146,14 +176,20 @@ fun <N: Node> N.delete(start: Int, count: Int) {
     }
 }
 
-//TODO: comment
+/**
+ * Moves elements from on place to another in the DOM.
+ *
+ * @receiver target DOM-Node
+ * @param from position index
+ * @param to position index
+ */
 fun <N: Node> N.move(from: Int, to: Int) {
     val itemToMove = childNodes.item(from)
     if (itemToMove != null) insertOrAppend(itemToMove, to)
 }
 
 /**
- * [MountTargetNotFoundException] occurs when the targeted html element is not present in document.
+ * Occurs when the targeted html element is not present in document.
  *
  * @param targetId id which used for mounting
  */
@@ -161,7 +197,7 @@ class MountTargetNotFoundException(targetId: String) :
     Exception("html document contains no element with id: $targetId")
 
 /**
- * mounts a [List] of [Tag]s to a constant element in the static html file.
+ * Mounts a [List] of [Tag]s to a constant element in the static html file.
  *
  * @param targetId id of the element to mount to
  * @receiver the [Flow] to mount to this element
@@ -175,7 +211,7 @@ fun List<Tag<HTMLElement>>.mount(targetId: String) {
 }
 
 /**
- * mounts a [Tag] to a constant element in the static html file.
+ * Mounts a [Tag] to a constant element in the static html file.
  *
  * @param targetId id of the element to mount to
  * @receiver the [Tag] to mount to this element
@@ -189,7 +225,7 @@ fun <E: Element> Tag<E>.mount(targetId: String) {
 }
 
 /**
- * appends one or more [Flow]s of [Tag]s to the content of a constant element.
+ * Appends one or more [List]s of [Tag]s to the content of a constant element.
  *
  * @param targetId id of the element to mount to
  * @param tagLists the [List]s of [Tag]s to mount to this element
@@ -203,7 +239,7 @@ fun append(targetId: String, vararg tagLists: List<Tag<HTMLElement>>) {
 }
 
 /**
- * appends one or more static [Tag]s to an elements content.
+ * Appends one or more static [Tag]s to an elements content.
  *
  * @param targetId id of the element to mount to
  */

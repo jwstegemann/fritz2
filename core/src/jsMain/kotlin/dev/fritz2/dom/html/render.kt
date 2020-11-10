@@ -7,7 +7,7 @@ import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 
 /**
- * creates a render context for [Tag]s.
+ * Creates a render context for [Tag]s.
  *
  * @param parentJob used when launching new coroutines
  * @param content html [Tag] elements to render
@@ -28,7 +28,7 @@ fun render(
 }
 
 /**
- * creates a render context for [Tag]s. It should only contain
+ * Creates a render context for [Tag]s. It should only contain
  * one root [Tag] like [Div] otherwise a [MultipleRootElementsException]
  * will be thrown.
  *
@@ -56,7 +56,7 @@ fun <E : Element> renderElement(
     })
 
 /**
- * occurs when more then one root [Tag] is defined in a [render] context
+ * Occurs when more then one root [Tag] is defined in a [render] context.
  *
  * @param message exception message text
  */

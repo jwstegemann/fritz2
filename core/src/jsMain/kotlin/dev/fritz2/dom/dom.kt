@@ -5,7 +5,7 @@ import org.w3c.dom.Node
 import org.w3c.dom.get
 
 /**
- * base-interface for everything that represents a node in the DOM.
+ * Base-interface for everything that represents a node in the DOM.
  *
  * @property domNode the wrapped [Node]
  */
@@ -19,7 +19,3 @@ internal fun Element.removeChildren() {
         children[i]?.let { this.removeChild(it) }
     }
 }
-
-
-
-

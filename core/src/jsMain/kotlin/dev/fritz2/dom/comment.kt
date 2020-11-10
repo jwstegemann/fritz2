@@ -4,12 +4,12 @@ import kotlinx.browser.document
 import org.w3c.dom.Node
 
 /**
- * provides functionality to handle comments.
+ * Provides functionality to handle comments.
  */
 interface WithComment<out T : Node> : WithDomNode<T> {
 
     /**
-     * adds a comment at this position.
+     * Adds a comment at this position.
      *
      * @receiver comment-content
      */
@@ -18,7 +18,7 @@ interface WithComment<out T : Node> : WithDomNode<T> {
     }
 
     /**
-     * adds a comment in your HTML by using !"Comment Text".
+     * Adds a comment in your HTML by using !"Comment Text".
      *
      * @receiver comment-content
      */

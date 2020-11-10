@@ -35,7 +35,7 @@ fun action(wait: Long? = null) = Action(Unit, GlobalScope, wait)
 fun <T> Store<T>.action(wait: Long? = null) = Action(Unit, MainScope(), wait)
 
 /**
- * represents some dispatchable that can be processed by a [Store]'s [Handler]
+ * represents some disputable that can be processed by a [Store]'s [Handler]
  *
  * @property data payload of this action
  * @property scope [CoroutineScope] the action will run in
@@ -44,7 +44,7 @@ fun <T> Store<T>.action(wait: Long? = null) = Action(Unit, MainScope(), wait)
 class Action<T>(val data: T, val scope: CoroutineScope, val wait: Long?)
 
 /**
- * binds a single [Action] to a [Handler]
+ * Connects a single [Action] to a [Handler].
  *
  * @receiver the [Action] that will be bound
  * @param handler the [Handler] that will process the [Action]'s data
