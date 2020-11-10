@@ -42,8 +42,8 @@ class TrackingTests {
 
         render {
             div {
-                span(id = transactionId) { store.running.map { it.orEmpty() }.bind() }
-                span(id = valueId) { store.data.bind() }
+                span(id = transactionId) { store.running.map { it.orEmpty() }.asText() }
+                span(id = valueId) { store.data.asText() }
             }
         }.mount(targetId)
         delay(200)

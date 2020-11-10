@@ -2,7 +2,6 @@ package dev.fritz2.validation
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.action
-import dev.fritz2.binding.each
 import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
@@ -44,14 +43,14 @@ class ValidationJSTests {
         render {
             div {
                 div(id = idData) {
-                    store.data.map { it.name }.bind()
+                    store.data.map { it.name }.asText()
                 }
                 div(id = idMessages) {
-                    carValidator.msgs.each(Message::text).render {
+                    carValidator.msgs.renderEach(Message::text) {
                         p {
                             +it.text
                         }
-                    }.bind()
+                    }
                 }
             }
         }.mount(targetId)
