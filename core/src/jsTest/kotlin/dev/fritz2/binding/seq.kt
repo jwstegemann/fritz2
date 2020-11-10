@@ -20,7 +20,7 @@ class SeqTests {
         (document.getElementById(id) as HTMLButtonElement).click()
     }
 
-    class TestListStore() : RootStore<List<String>>(listOf("a", "b", "c", "d")) {
+    class TestListStore : RootStore<List<String>>(listOf("a", "b", "c", "d")) {
         val append = handle { model -> model + "e" }
         val change = handle { model -> listOf(model.first(), "x") + model.takeLast(3) }
         val insert = handle { model -> listOf("y") + model }
@@ -124,9 +124,9 @@ class SeqTests {
 
     data class Entity(val id: String, val value: String)
 
-    val valueLens = buildLens("value", Entity::value) { p, v -> p.copy(value = v) }
+    private val valueLens = buildLens("value", Entity::value) { p, v -> p.copy(value = v) }
 
-    class TestEntityListStore() : RootStore<List<Entity>>(
+    class TestEntityListStore : RootStore<List<Entity>>(
         listOf(
             Entity("1", "a"),
             Entity("2", "b"),
