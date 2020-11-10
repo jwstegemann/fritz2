@@ -4,8 +4,6 @@ import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.elementLens
 import dev.fritz2.lenses.positionLens
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -19,7 +17,7 @@ class SubStore<R, P, T>(
     private val lens: Lens<P, T>,
     val root: Store<R>,
     internal val rootLens: Lens<R, T>
-) : Store<T>, CoroutineScope by MainScope() {
+) : Store<T> {
 
     /**
      * defines how to infer the id of the sub-part from the parent's id.

@@ -6,8 +6,6 @@ import dev.fritz2.lenses.elementLens
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.repositories.Resource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
 
 /**
@@ -39,7 +37,7 @@ fun <T, I> Store<List<T>>.detach(element: T, idProvider: IdProvider<T, I>, initi
  * @property lens definition, which sub-model is represented by this [Store]
  */
 class DetachedStore<T, P>(private val initialData: T, private val parent: Store<P>, private val lens: Lens<P, T>) :
-    Store<T>, CoroutineScope by MainScope() {
+    Store<T> {
     private val state = MutableStateFlow(initialData)
 
     /**
