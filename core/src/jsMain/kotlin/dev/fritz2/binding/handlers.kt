@@ -3,6 +3,7 @@ package dev.fritz2.binding
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flowOf
 
 /**
  * Base-interface of the different types of handlers
@@ -11,7 +12,12 @@ import kotlinx.coroutines.flow.MutableSharedFlow
  */
 interface Handler<A> {
     val collect: (Flow<A>) -> Unit
+    //TODO: comment
+    operator fun invoke(data: A) = this.collect(flowOf(data))
 }
+
+//TODO: comment
+operator fun Handler<Unit>.invoke() = this.collect(flowOf(Unit))
 
 /**
  * Defines, how to handle actions in your [Store]. Each Handler accepts actions of a defined type.
