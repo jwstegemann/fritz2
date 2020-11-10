@@ -33,7 +33,7 @@ class RoutingTests {
 
         render {
             div(id = testId) {
-                router.bind()
+                router.asText()
                 ul {
                     buttons.forEach { (id, page) ->
                         li {
