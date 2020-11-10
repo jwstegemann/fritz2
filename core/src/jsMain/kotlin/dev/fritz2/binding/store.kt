@@ -183,7 +183,8 @@ fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
 }
 
 /**
- * A [Store] can be initialized with a given value. Use a [RootStore] to "store" your model and create [SubStore]s from here.
+ * A [Store] can be initialized with a given value.
+ * Use a [RootStore] to "store" your model and create [SubStore]s from here.
  *
  * @param initialData: the first current value of this [Store]
  * @param id: the id of this store. ids of [SubStore]s will be concatenated.
