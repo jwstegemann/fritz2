@@ -1,33 +1,26 @@
 package dev.fritz2.dom
 
-import kotlinx.browser.window
-import org.w3c.dom.Comment
+import kotlinx.browser.document
 import org.w3c.dom.Node
 
 /**
- * Interface providing functionality to handle comments
+ * provides functionality to handle comments.
  */
-interface WithComment<out T : org.w3c.dom.Node> : WithDomNode<T> {
-    /**
-     * adds a comment at this position
-     *
-     * @param value comment-content
-     */
-    fun comment(value: String): Node = domNode.appendChild(CommentNode(value).domNode)
+interface WithComment<out T : Node> : WithDomNode<T> {
 
     /**
-     * adds a comment in your HTML by using !"Comment Text"
+     * adds a comment at this position.
      *
      * @receiver comment-content
      */
-    operator fun String.not(): Node = domNode.appendChild(CommentNode(this).domNode)
-}
+    fun String.asComment() {
+        domNode.appendChild(document.createComment(this))
+    }
 
-/**
- * Represents a DOM-Comment
- *
- * @param content comment-content
- * @param domNode wrapped domNode (created by default)
- */
-class CommentNode(private val content: String, override val domNode: Comment = window.document.createComment(content)) :
-    WithDomNode<Comment>
+    /**
+     * adds a comment in your HTML by using !"Comment Text".
+     *
+     * @receiver comment-content
+     */
+    operator fun String.not(): Node = domNode.appendChild(document.createComment(this))
+}
