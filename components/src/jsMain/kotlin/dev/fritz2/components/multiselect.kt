@@ -6,6 +6,8 @@ import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.*
+import dev.fritz2.styling.theme.CheckboxSizes
+import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -39,6 +41,11 @@ class CheckboxGroupComponent {
         disabled = value()
     }
 
+    var direction: Style<BasicParams> = { CheckboxGroupLayouts.column } // @fieldset
+    fun direction(value: CheckboxGroupLayouts.() -> Style<BasicParams>) {
+        direction =  CheckboxGroupLayouts.value()
+    }
+
     var checkedBackgroundColor: ColorProperty = "gray" // @checkbox @input
     fun checkedBackgroundColor(value: () -> ColorProperty) {
         checkedBackgroundColor = value()
@@ -54,14 +61,33 @@ class CheckboxGroupComponent {
         borderColor = value()
     }
 
-    var checkboxSize: Style<BasicParams> = { CheckboxComponent.Companion.CheckboxSizes.normal } // @label
-    fun checkboxSize(value: CheckboxComponent.Companion.CheckboxSizes.() -> Style<BasicParams>) {
-        checkboxSize = CheckboxComponent.Companion.CheckboxSizes.value()
+    var size: CheckboxSizes.() -> Style<BasicParams> = { theme().checkbox.sizes.normal }
+    fun size(value: CheckboxSizes.() -> Style<BasicParams>) {
+        size = value
     }
 
     private class CheckboxGroupEntry(val value: String, val checked: Boolean)
 
     companion object {
+
+        object CheckboxGroupLayouts { // @ fieldset
+            val column: Style<BasicParams> = {
+                display {
+                    block
+                }
+                flex {
+                    DirectionValues.column
+                }
+            }
+            val row: Style<BasicParams> = {
+                display {
+                    inlineFlex
+                }
+                flex {
+                    DirectionValues.row
+                }
+            }
+        }
 
         private fun HtmlElements.checkboxGroupContent(
             id: String?,
@@ -89,7 +115,8 @@ class CheckboxGroupComponent {
 
                 checkbox(id = "$id-checkbox-${item.index}") {
                     text = const(item.value)
-                    checkboxSize { component.checkboxSize }
+                    component.size.invoke(theme().checkbox.sizes)
+                    size { component.size.invoke(theme().checkbox.sizes) }
                     borderColor { component.borderColor }
                     backgroundColor { component.backgroundColor }
                     checkedBackgroundColor { component.checkedBackgroundColor }
@@ -117,14 +144,16 @@ class CheckboxGroupComponent {
             val component = CheckboxGroupComponent().apply(build)
             var selItems: Flow<List<String>> = flowOf(emptyList())
 
-            if (null == selectedItemsStore) { // group is used in form control
+            if (null == selectedItemsStore) { // group is not used in form control
                 (::fieldset.styled(
                     baseClass = baseClass,
                     id = id,
                     prefix = prefix
                 ) {
                     containerStyling()
+                    component.direction()
                 }) {
+
                     // outside of form controls, returning the flow works just fine
                     selItems = checkboxGroupContent(id, component)
                 }

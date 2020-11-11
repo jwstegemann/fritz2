@@ -1,12 +1,12 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.*
-import dev.fritz2.dom.Listener
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.*
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.CheckboxSizes
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLInputElement
@@ -44,67 +44,6 @@ import org.w3c.dom.HTMLInputElement
  */
 class CheckboxComponent {
     companion object {
-
-        // todo replace px with rem/theme values where not explicit (not due for 0.8 snapshot)
-        object CheckboxSizes { // @ label
-            val small: Style<BasicParams> = {
-                fontSize { small }
-                lineHeight { small }
-                before {
-                    height { "10px" }
-                    width { "10px" }
-                    before {
-                        radii {
-                            top { smaller }
-                            bottom { smaller }
-                            left { smaller }
-                            right { smaller }
-                        }
-                    }
-                    margins {
-                        right { "4px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "1px" }
-                        }
-                    }
-                }
-            }
-            val normal: Style<BasicParams> = {
-                fontSize { normal }
-                lineHeight { normal }
-                before {
-                    height { "20px" }
-                    width { "20px" }
-                    margins {
-                        right { "7px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "2px" }
-                        }
-                    }
-                }
-            }
-            val large: Style<BasicParams> = {
-                fontSize { larger }
-                lineHeight { larger }
-                before {
-                    height { "30px" }
-                    width { "30px" }
-                    margins {
-                        right { "10px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "3px" }
-                        }
-                    }
-                }
-            }
-        }
-
         val checkboxLabelStyles: Style<BasicParams> = { // @label
             before {
                 radii {// overwritten by CheckboxSizes.small only
@@ -123,6 +62,7 @@ class CheckboxComponent {
             }
         }
 
+        // todo replace px in sizes (in default theme) with rem/theme values where not explicit
         // todo using theme colors in static styles probably does not work when changing themes
         val checkboxInputStaticCss = staticStyle( // @input
             "checkbox",
@@ -170,24 +110,20 @@ class CheckboxComponent {
         )
     }
 
-    var checkboxSize: Style<BasicParams> = { CheckboxSizes.small } // @label
-
-    fun checkboxSize(value: CheckboxSizes.() -> Style<BasicParams>) {
-        checkboxSize = CheckboxSizes.value()
+    var size: CheckboxSizes.() -> Style<BasicParams> = { theme().checkbox.sizes.normal }
+    fun size(value: CheckboxSizes.() -> Style<BasicParams>) {
+        size = value
     }
 
     var text: Flow<String> = const("CheckboxLabel") // @label
-
     fun text(value: String) {
         text = const(value)
     }
-
     fun text(value: Flow<String>) {
         text = value
     }
 
     var backgroundColor: Style<BasicParams> = {} // @label
-
     fun backgroundColor(value: () -> ColorProperty) {
         backgroundColor = {
             css("&::before { background-color: ${value()};}")
@@ -195,7 +131,6 @@ class CheckboxComponent {
     }
 
     var borderColor: Style<BasicParams> = {} // @label
-
     fun borderColor(value: () -> ColorProperty) {
         borderColor = {
             css("&::before { border-color: ${value()};}")
@@ -203,7 +138,6 @@ class CheckboxComponent {
     }
 
     var checkedBackgroundColor: Style<BasicParams> = {} // @input
-
     fun checkedBackgroundColor(value: () -> ColorProperty) {
         checkedBackgroundColor = {
             css("&:checked + label::before { background-color: ${value()}; }")
@@ -211,20 +145,16 @@ class CheckboxComponent {
     }
 
     var events: (WithEvents<HTMLInputElement>.() -> Unit)? = null // @input
-
     fun events(value: WithEvents<HTMLInputElement>.() -> Unit) {
         events = value
     }
 
-    // todo: for user, these are only distinguished  from Input.xxx by signature
     var checked: Flow<Boolean> = const(false) // @input
-
     fun checked(value: () -> Flow<Boolean>) {
         checked = value()
     }
 
     var disabled: Flow<Boolean> = const(false) // @input
-
     fun disabled(value: () -> Flow<Boolean>) {
         disabled = value()
     }
@@ -271,6 +201,7 @@ fun HtmlElements.checkbox(
 ) {
     val component = CheckboxComponent().apply(build)
 
+
     (::div.styled(
         baseClass = baseClass,
         id = id,
@@ -297,7 +228,8 @@ fun HtmlElements.checkbox(
             prefix = prefix
         ) {
             CheckboxComponent.checkboxLabelStyles()
-            component.checkboxSize()
+            component.size.invoke(theme().checkbox.sizes)()
+            component.size
             component.backgroundColor()
             component.borderColor()
         }) {

@@ -4,8 +4,6 @@ import dev.fritz2.binding.watch
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.render
-import dev.fritz2.dom.selectedIndex
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
@@ -80,7 +78,6 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>
                             radioGroup {
                                 items { themes.map { it.name } }
                                 selected { themes[currentThemeIndex].name }
-                                radioSize { normal }
                             }.map { selected ->
                                 themes.indexOf(
                                     themes.find {

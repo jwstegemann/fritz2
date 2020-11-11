@@ -8,7 +8,7 @@ import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.renderAll
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.BorderStyleValues
+import dev.fritz2.styling.params.DirectionValues
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.theme
@@ -57,6 +57,25 @@ open class FormControlComponent {
             }
         }
 
+        object FormControlLayouts { // @ fieldset
+            val column: Style<BasicParams> = {
+                display {
+                    block
+                }
+                flex {
+                    DirectionValues.column
+                }
+            }
+            val row: Style<BasicParams> = {
+                display {
+                    inlineFlex
+                }
+                flex {
+                    DirectionValues.row
+                }
+            }
+        }
+
         object ControlNames {
             const val inputField = "inputField"
             const val radioGroup = "radioGroup"
@@ -99,6 +118,13 @@ open class FormControlComponent {
 
     fun label(value: () -> String) {
         label = value()
+    }
+
+
+    var direction: Style<BasicParams> = { FormControlLayouts.column } // @fieldset
+
+    fun direction(value: FormControlLayouts.() -> Style<BasicParams>) {
+        direction =  FormControlLayouts.value()
     }
 
     var disabled: Flow<Boolean> = const(false)
@@ -325,6 +351,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
         }) {
             (::fieldset.styled(baseClass, id, prefix) {
                 styling()
+                component.direction()
             }) {
                 legend { +component.label }
                 control(this)

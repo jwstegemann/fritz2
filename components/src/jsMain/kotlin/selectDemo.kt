@@ -60,7 +60,7 @@ fun HtmlElements.singleSelectDemo(): Div {
                                         ) {
                                             items { myItems }
                                             selected { mySelectedItem }
-                                            radioSize { large }
+                                            size { large }
                                         } handledBy selectedItemStore.update
                                     }
                                 }
@@ -93,7 +93,6 @@ fun HtmlElements.singleSelectDemo(): Div {
                                             disabled { const(true) }
                                             items { myItems }
                                             selected { mySelectedItem }
-                                            radioSize { normal }
                                         } handledBy selectedItemStore.update
                                     }
                                 }
@@ -113,7 +112,7 @@ fun HtmlElements.singleSelectDemo(): Div {
                             val selectedItemStore = RootStore(mySelectedItem)
 
                             items {
-                                h3 { +"SingleSelect small, custom colors" }
+                                h3 { +"SingleSelect small, custom colors, horizontal" }
                                 stackUp({
                                     margins { bottom { "2.0rem" } }
                                     alignItems { baseline }
@@ -125,8 +124,10 @@ fun HtmlElements.singleSelectDemo(): Div {
                                         ) {
                                             items { myItems }
                                             selected { mySelectedItem }
-                                            radioSize { small }
+                                            direction { row }
+                                            size { small }
                                             checkedBackgroundColor { theme().colors.warning }
+                                            backgroundColor { theme().colors.tertiary }
                                         } handledBy selectedItemStore.update
                                     }
                                 }
@@ -175,7 +176,7 @@ fun HtmlElements.multiSelectDemo(): Div {
                             }
                         }) {
                             items {
-                                h3 { +"MultiSelect large" }
+                                h3 { +"MultiSelect large, vertical" }
                                 stackUp({
                                     margins { bottom { "2.0rem" } }
                                     alignItems { baseline }
@@ -192,8 +193,8 @@ fun HtmlElements.multiSelectDemo(): Div {
                                         ) {
                                             disabled { const(false) }
                                             items { myItems }
+                                            size { large }
                                             initialSelection { mySelectedItems }
-                                            checkboxSize { large }
                                         } handledBy selectedItemsStore.update
 
                                         (::div.styled {
@@ -223,7 +224,7 @@ fun HtmlElements.multiSelectDemo(): Div {
                             margins { all { "1.5rem" } }
                         }) {
                             items {
-                                h3 { +"MultiSelect normal" }
+                                h3 { +"MultiSelect normal, horizontal" }
                                 stackUp({
                                     margins { bottom { "2.0rem" } }
                                     alignItems { baseline }
@@ -240,7 +241,7 @@ fun HtmlElements.multiSelectDemo(): Div {
                                             disabled { const(false) }
                                             items { myItems }
                                             initialSelection { mySelectedItems }
-                                            checkboxSize { normal }
+                                            direction { row }
                                         } handledBy selectedItemsStore.update
 
                                         (::div.styled {
@@ -284,10 +285,11 @@ fun HtmlElements.multiSelectDemo(): Div {
                                             id = "check1"
                                         ) {
                                             text = const("small")
-                                            checkboxSize { small }
+                                            size { small }
                                             checked { checkedStore1.data }
                                             borderColor { theme().colors.tertiary }
                                             checkedBackgroundColor { theme().colors.warning }
+                                            backgroundColor { theme().colors.tertiary }
                                             events {
                                                 changes.states() handledBy checkedStore1.update
                                             }
@@ -313,11 +315,11 @@ fun HtmlElements.multiSelectDemo(): Div {
                                             id = "check2"
                                         ) {
                                             text = const("normal, disabled")
-                                            checkboxSize { normal }
                                             checked { checkedStore2.data }
                                             disabled { const(true) }
                                             borderColor { theme().colors.info }
                                             checkedBackgroundColor { theme().colors.warning }
+                                            backgroundColor { theme().colors.tertiary }
                                             events {
                                                 changes.states() handledBy checkedStore2.update
                                             }
@@ -343,11 +345,12 @@ fun HtmlElements.multiSelectDemo(): Div {
                                             id = "check3"
                                         ) {
                                             text = const("large, disabled")
-                                            checkboxSize { large }
                                             checked { checkedStore3.data }
                                             disabled { const(true) }
                                             borderColor { "orange" }
+                                            size { large }
                                             checkedBackgroundColor { "yellow" }
+                                            backgroundColor { theme().colors.tertiary }
                                             events {
                                                 changes.states() handledBy checkedStore3.update
                                             }

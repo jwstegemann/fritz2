@@ -10,17 +10,14 @@ import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.RadioSizes
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLInputElement
 
-// todo 2 important fixes
-// todo fix layout, horizontal does not work for groups (cb, r)
 // todo fix no size default
-
-
 // todo implement defaultChecked for radio, checkbox
 // todo add dropdown single select
 
@@ -35,6 +32,11 @@ fun HtmlElements.radioGroup(
 }
 
 class RadioGroupComponent {
+
+    var direction: Style<BasicParams> = { RadioGroupLayouts.column } // @fieldset
+    fun direction(value: RadioGroupLayouts.() -> Style<BasicParams>) {
+        direction =  RadioGroupLayouts.value()
+    }
 
     var items: List<String> = emptyList()
     fun items(value: () -> List<String>) {
@@ -66,12 +68,32 @@ class RadioGroupComponent {
         borderColor = value()
     }
 
-    var radioSize: Style<BasicParams> = { RadioComponent.Companion.RadioSizes.normal } // @label
-    fun radioSize(value: RadioComponent.Companion.RadioSizes.() -> Style<BasicParams>) {
-        radioSize = RadioComponent.Companion.RadioSizes.value()
+    var size: RadioSizes.() -> Style<BasicParams> = { theme().radio.sizes.normal }
+    fun size(value: RadioSizes.() -> Style<BasicParams>) {
+        size = value
     }
 
     companion object {
+
+        object RadioGroupLayouts { // @ fieldset
+            val column: Style<BasicParams> = {
+                display {
+                    block
+                }
+                flex {
+                    DirectionValues.column
+                }
+            }
+            val row: Style<BasicParams> = {
+                display {
+                    inlineFlex
+                }
+                flex {
+                    DirectionValues.row
+                }
+            }
+        }
+
         private fun HtmlElements.radioGroupContent(
             id: String?,
             component: RadioGroupComponent
@@ -88,7 +110,7 @@ class RadioGroupComponent {
                     borderColor { component.borderColor }
                     backgroundColor { component.backgroundColor }
                     checkedBackgroundColor { component.checkedBackgroundColor }
-                    radioSize { component.radioSize }
+                    size { component.size.invoke(theme().radio.sizes) }
                     events {
                         changes.values() handledBy selectedStore.update
                     }
@@ -116,6 +138,7 @@ class RadioGroupComponent {
                     prefix = prefix
                 ) {
                     containerStyling()
+                    component.direction()
                 }) {
                     // outside of form controls, returning the flow works just fine
                     sel = radioGroupContent(id, component)
@@ -166,7 +189,7 @@ private fun HtmlElements.radio(
             extension = "$id-input", // for
             prefix = prefix) {
             RadioComponent.radioLabelStyles()
-            component.radioSize()
+            component.size.invoke(theme().radio.sizes)()
             component.backgroundColor()
             component.borderColor()
         }) {
@@ -177,9 +200,9 @@ private fun HtmlElements.radio(
 
 class RadioComponent {
 
-    var radioSize: Style<BasicParams> = { RadioSizes.small } // @label
-    fun radioSize(value: RadioSizes.() -> Style<BasicParams>) {
-        radioSize = RadioSizes.value()
+    var size: RadioSizes.() -> Style<BasicParams> = { theme().radio.sizes.normal }
+    fun size(value: RadioSizes.() -> Style<BasicParams>) {
+        size = value
     }
 
     var text: Flow<String> = const("") // @label
@@ -222,59 +245,6 @@ class RadioComponent {
     }
 
     companion object {
-
-        // todo replace px with rem where not explicit (not due for 0.8 snapshot)
-        object RadioSizes { // @label
-            val small: Style<BasicParams> = {
-                fontSize { small }
-                lineHeight { small }
-                before {
-                    height { "10px" }
-                    width { "10px" }
-                    margins {
-                        right { "4px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "1px" }
-                        }
-                    }
-                }
-            }
-            val normal: Style<BasicParams> = {
-                fontSize { normal }
-                lineHeight { normal }
-                before {
-                    height { "20px" }
-                    width { "20px" }
-                    margins {
-                        right { "7px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "2px" }
-                        }
-                    }
-                }
-            }
-            val large: Style<BasicParams> = {
-                fontSize { larger }
-                lineHeight { larger }
-                before {
-                    height { "30px" }
-                    width { "30px" }
-                    margins {
-                        right { "10px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "3px" }
-                        }
-                    }
-                }
-            }
-        }
-
         val radioLabelStyles: Style<BasicParams> = { // @label
             before {
                 radii {
@@ -287,9 +257,9 @@ class RadioComponent {
                     style { solid }
                     width { "0.1rem" }
                 }
-                margins {
-                    right { "1.0rem" }
-                }
+            }
+            margins {
+                right { "1.0rem" }
             }
         }
 

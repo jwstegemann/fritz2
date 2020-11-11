@@ -4,7 +4,6 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.AlignContentValues.start
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -155,7 +154,7 @@ fun HtmlElements.formControlDemo(): Div {
                         id = "check1"
                     ) {
                         text(textStore.data)
-                        checkboxSize { normal }
+                        size { large }
                         borderColor { theme().colors.secondary }
                         checkedBackgroundColor { theme().colors.warning }
                         checked { loveStore.data }
@@ -165,15 +164,16 @@ fun HtmlElements.formControlDemo(): Div {
                     }
                 }
 
-                h3 { +"Form with a checkbox group, no label, no helpertext" }
+                h3 { +"Form with a small checkbox group, no label, no helpertext, formlayout horizontal" }
                 formControl {
+                    direction { row } // must be applied to formcontrol instead of checkboxGroup
                     checkboxGroup(
                         {},
                         id = "checkGroup1"
                     ) {
                         items { myItemList }
+                        size { small }
                         initialSelection { mySelectedItems }
-                        checkboxSize { normal }
                     } handledBy selectedItemsStore.update
                 }
                 (::div.styled {
@@ -204,7 +204,6 @@ fun HtmlElements.formControlDemo(): Div {
                     myMultiSelectCheckbox {
                         items { myItemList }
                         initialSelection { mySelectedItems }
-                        checkboxSize { normal }
                     }
                 }
             }
