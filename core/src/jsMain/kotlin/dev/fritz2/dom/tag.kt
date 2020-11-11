@@ -123,14 +123,12 @@ open class Tag<out E : Element>(
 
 
     /**
-     * Creates a new [RenderContext] for a [Flow] of [List].
+     * Renders each element of a list.
      * Internally the [Patch]es are determined using Myer's diff-algorithm.
-     * Elements with the same id, provided by the [idProvider], are considered the same element.
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
      * when an element stays the same, but changes it's internal values.
      *
-     * @param [idProvider] to identify the element in the list (i.e. when it's content changes over time)
-     * @param renderContext new [RenderContext] for rendering the data to the DOM
+     * @param content lamdba defining the representation of a list-item as [Tag]s
      */
     inline fun <V, I> Flow<List<V>>.renderEach(
         noinline idProvider: IdProvider<V, I>,
@@ -150,15 +148,15 @@ open class Tag<out E : Element>(
 
 
     /**
-     * Creates a new [RenderContext] for a [Flow] of [List].
-     * Internally the [Patch]es are determined using Myer's diff-algorithm.
+     * Renders each element of a list.
+     * Internally the [Patch]es are determined using instance comparison.
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
      * when an element stays the same, but changes it's internal values.
      *
-     * @param renderContext new [RenderContext] for rendering the data to the DOM
+     * @param content lamdba defining the representation of a list-item as [Tag]s
      */
     inline fun <V> Flow<List<V>>.renderEach(
-        crossinline renderContext: RenderContext.(V) -> Tag<HTMLElement>
+        crossinline content: RenderContext.(V) -> Tag<HTMLElement>
     ) {
         mountDomNodePatch(job, domNode) { childJob ->
             childJob.cancelChildren()
@@ -166,20 +164,24 @@ open class Tag<out E : Element>(
                 Myer.diff(old, new)
             }.map {
                 it.map { value ->
-                    renderContext(value)
+                    content(value)
                 }
             }
         }
     }
 
-    //TODO: comment
     /**
-     * Creates a new [RenderContext] for a [Flow] of [List].
-     * (do not use this, if you want to manipulate the list itself (add or move elements, filter, etc.).
+     * Renders each element of a [Store]s list content.
+     * Internally the [Patch]es are determined using Myer's diff-algorithm.
+     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
+     * when an element stays the same, but changes it's internal values.
+     *
+     * @param idProvider function to identify a unique entity in the list
+     * @param content lamdba defining the representation of a list-item as [Tag]s given a [Store] of the list's item-type
      */
     inline fun <V, I> RootStore<List<V>>.renderEach(
         noinline idProvider: IdProvider<V, I>,
-        crossinline renderContext: RenderContext.(SubStore<List<V>, List<V>, V>) -> Tag<HTMLElement>
+        crossinline content: RenderContext.(SubStore<List<V>, List<V>, V>) -> Tag<HTMLElement>
     ) {
         mountDomNodePatch(job, domNode) { childJob ->
             childJob.cancelChildren()
@@ -187,16 +189,18 @@ open class Tag<out E : Element>(
                 Myer.diff(old, new, idProvider)
             }.map {
                 it.map { value ->
-                    renderContext(sub(elementLens(value, idProvider)))
+                    content(sub(elementLens(value, idProvider)))
                 }
             }
         }
     }
 
-    //TODO: comment
     /**
-     * creates a [Seq] of [SubStore]s, one for each element of the [List] without [IdProvider]
-     * using the index in the list (do not use this, if you want to manipulate the list itself (add or move elements, filter, etc.).
+     * Renders each element of a [Store]s list content.
+     * Internally the [Patch]es are determined using the position of an item in the list.
+     * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
+     *
+     * @param content lamdba defining the representation of a list-item as [Tag]s given a [Store] of the list's item-type
      */
     inline fun <V> RootStore<List<V>>.renderEach(
         crossinline renderContext: RenderContext.(Store<V>) -> Tag<HTMLElement>
@@ -209,7 +213,15 @@ open class Tag<out E : Element>(
         }
     }
 
-    //TODO: comment
+    /**
+     * Renders each element of a [Store]s list content.
+     * Internally the [Patch]es are determined using Myer's diff-algorithm.
+     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
+     * when an element stays the same, but changes it's internal values.
+     *
+     * @param idProvider function to identify a unique entity in the list
+     * @param content lamdba defining the representation of a list-item as [Tag]s given a [Store] of the list's item-type
+     */
     inline fun <R, P, V, I> SubStore<R, P, List<V>>.renderEach(
         noinline idProvider: IdProvider<V, I>,
         crossinline renderContext: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
@@ -226,7 +238,13 @@ open class Tag<out E : Element>(
         }
     }
 
-    //TODO: comment
+    /**
+     * Renders each element of a [Store]s list content.
+     * Internally the [Patch]es are determined using the position of an item in the list.
+     * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
+     *
+     * @param content lamdba defining the representation of a list-item as [Tag]s given a [Store] of the list's item-type
+     */
     inline fun <R, P, V> SubStore<R, P, List<V>>.renderEach(
         crossinline renderContext: RenderContext.(Store<V>) -> Tag<HTMLElement>
     ) {
@@ -238,7 +256,12 @@ open class Tag<out E : Element>(
         }
     }
 
-    //TODO: comment
+    /**
+     * Creates a [Flow] of [Patches] representing the changes between the current list in a [Flow] and it's predecessor.
+     *
+     * @receiver [Flow] of lists to create [Patch]es for
+     * @return [Flow] of patches
+     */
     fun <V> Flow<List<V>>.eachIndex(): Flow<Patch<V>> =
         this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
             val oldSize = old.size

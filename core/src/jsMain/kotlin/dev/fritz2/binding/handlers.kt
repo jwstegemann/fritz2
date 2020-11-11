@@ -14,11 +14,17 @@ import kotlinx.coroutines.flow.flowOf
 interface Handler<A> {
     val collect: (Flow<A>, Job) -> Unit
 
-    //TODO: comment
+    /**
+     * calls this handler once
+     *
+     * @param data parameter forwarded to the handler
+     */
     operator fun invoke(data: A) = this.collect(flowOf(data), Job())
 }
 
-//TODO: comment
+/**
+ * calls this handler exactly once
+ */
 operator fun Handler<Unit>.invoke() = this.collect(flowOf(Unit), Job())
 
 /**
