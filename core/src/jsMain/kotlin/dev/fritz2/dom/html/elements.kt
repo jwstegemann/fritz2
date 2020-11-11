@@ -1223,9 +1223,22 @@ open class TextElement(tagName: String, id: String? = null, baseClass: String? =
  */
 interface RenderContext : WithJob {
 
+    /**
+     * Creates a custom [Tag] with the provided [content].
+     *
+     * @param tagName Name of the [Tag] in DOM
+     * @param content content scope for inner [Tag]s
+     * @return custom [Tag] of type [HTMLElement]
+     */
     fun custom(tagName: String, content: Tag<HTMLElement>.() -> Unit): Tag<HTMLElement> =
         register(Tag(tagName, job = job), content)
 
+    /**
+     * Converts the content of a [Flow] to [String] by using [toString] method.
+     *
+     * @receiver [Flow] with content
+     * @return [Flow] with content as [String]
+     */
     fun <T> Flow<T>.asString(): Flow<String> = this.map { it.toString() }
 
     fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T
