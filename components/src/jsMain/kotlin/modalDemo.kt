@@ -1,5 +1,6 @@
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.handledBy
+import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
@@ -8,6 +9,7 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
 fun HtmlElements.modalDemo(): Div {
@@ -57,7 +59,7 @@ fun HtmlElements.modalDemo(): Div {
 
         h1 { +"Modal Dialogs Showcase" }
 
-        stackUp ({
+        stackUp({
             alignItems { start }
         }) {
             items {
@@ -130,45 +132,35 @@ fun HtmlElements.modalDemo(): Div {
 
                 h3 { +"Choosing an overlay" }
                 p {
-                    +"Decide what happens with your background when your modal opens. The options are nothing, create an overlay for each level of dialog opened, or use a styled overlay."
+                    +"Decide what happens with your background when your modal opens. The options are default, create an overlay for each level of dialog opened, or use a styled overlay."
                 }
-                lineUp({
-                    alignItems { start }
-                }) {
-                    items {
-                        clickButton {
-                            variant { outline }
-                            text("Option 1: Reset overlay")
-                        }.map { DefaultOverlay() } handledBy ModalComponent.overlay.update
 
-                        clickButton {
-                            variant { outline }
-                            text("Option 2: Activate overlay for each nested level")
-                        }.map { DefaultOverlay(OverlayMethod.CoveringEach) } handledBy ModalComponent.overlay.update
-
-                        clickButton {
-                            variant { outline }
-                            text("Option 3: Activate styled overlay")
-                        }.map {
-                            DefaultOverlay(OverlayMethod.CoveringTopMost) {
-                                width { "100%" }
-                                height { "100%" }
-                                position {
-                                    absolute {
-                                        horizontal { "0" }
-                                        vertical { "0" }
-                                    }
-                                }
-                                background {
-                                    image { "https://via.placeholder.com/150x50/?text=BACKGROUND" }
-                                    repeat { repeat }
-                                }
-                                css("transform: rotate(-30deg) translateX(-.5rem) scale(200%)")
-                                opacity { "0.8" }
+                val overlayVariants = mapOf(
+                    Pair("Activate default overlay", DefaultOverlay()),
+                    Pair("Activate overlay for each nested level", DefaultOverlay(OverlayMethod.CoveringEach)),
+                    Pair("Activate styled overlay", DefaultOverlay(OverlayMethod.CoveringTopMost) {
+                        width { "100%" }
+                        height { "100%" }
+                        position {
+                            absolute {
+                                horizontal { "0" }
+                                vertical { "0" }
                             }
-                        } handledBy ModalComponent.overlay.update
-                    }
-                }
+                        }
+                        background {
+                            image { "https://via.placeholder.com/150x50/?text=BACKGROUND" }
+                            repeat { repeat }
+                        }
+                        css("transform: rotate(-30deg) translateX(-.5rem) scale(200%)")
+                        opacity { "0.8" }
+                    })
+                )
+
+                radioGroup {
+                    direction { row }
+                    items { overlayVariants.keys.toList() }
+                    selected { "Activate default overlay" }
+                }.map { overlayVariants[it] as Overlay } handledBy ModalComponent.overlay.update
 
                 h3 { +"Sizes" }
                 lineUp({

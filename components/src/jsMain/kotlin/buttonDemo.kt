@@ -42,6 +42,7 @@ fun HtmlElements.buttonDemo(): Div {
     }
     buttonStore.watch()
 
+    // TODO: Check why ``handledBy`` does not work without enclosing ``div``! (only with ``stackUp``)
     return div {
         stackUp({
             alignItems { start }

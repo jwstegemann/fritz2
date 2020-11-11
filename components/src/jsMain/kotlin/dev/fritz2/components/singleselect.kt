@@ -193,6 +193,7 @@ private fun HtmlElements.radio(
  *  - some predefined styling variants
  *  - offer a list of items ([String])
  *  - offer [String] of pre selected item
+ *  - choose the direction of radio elements (row vs column)
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
  *  ``build``. It offers an initialized instance of this [RadioGroupComponent] class as receiver, so every mutating
@@ -272,6 +273,8 @@ class RadioGroupComponent {
 
     companion object {
 
+        // TODO: Check how to *centralize* this (compare multiselect and formcontrol)
+        // TODO: Change names to ``horizontal`` and ``vertical``?
         object RadioGroupLayouts { // @ fieldset
             val column: Style<BasicParams> = {
                 display {
