@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.map
  *  - some predefined styling variants
  *  - offer a list of items ([String])
  *  - offer a list of pre checked items
+ *  - choose the direction of checkbox elements (row vs column)
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
  *  ``build``. It offers an initialized instance of this [CheckboxGroupComponent] class as receiver, so every mutating
@@ -108,6 +109,8 @@ class CheckboxGroupComponent {
 
     companion object {
 
+        // TODO: Check how to *centralize* this (compare singleselect and formcontrol)
+        // TODO: Change names to ``horizontal`` and ``vertical``?
         object CheckboxGroupLayouts { // @ fieldset
             val column: Style<BasicParams> = {
                 display {

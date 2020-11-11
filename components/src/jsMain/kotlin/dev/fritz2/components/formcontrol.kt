@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.*
  * - an optional helper text
  * - provide an error message as a [Flow<String>]]; if it is none empty, the message will get rendered.
  * - disable the control
+ * - choose the direction of group control elements (row vs column)
  *
  * In order to customize the control, there are different seams to use:
  *
@@ -89,6 +90,8 @@ open class FormControlComponent {
             }
         }
 
+        // TODO: Check how to *centralize* this (compare multiselect and multiselect)
+        // TODO: Change names to ``horizontal`` and ``vertical``?
         object FormControlLayouts { // @ fieldset
             val column: Style<BasicParams> = {
                 display {
@@ -151,7 +154,6 @@ open class FormControlComponent {
     fun label(value: () -> String) {
         label = value()
     }
-
 
     var direction: Style<BasicParams> = { FormControlLayouts.column } // @fieldset
 

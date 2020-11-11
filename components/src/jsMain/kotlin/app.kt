@@ -114,15 +114,15 @@ fun main() {
 
                                 simpleAnchor("flexbox")
                                 simpleAnchor("gridbox")
+                                simpleAnchor("stack")
                                 simpleAnchor("icons")
+                                simpleAnchor("buttons")
+                                simpleAnchor("popover")
+                                simpleAnchor("modal")
                                 simpleAnchor("input")
                                 simpleAnchor("multiselect")
                                 simpleAnchor("singleselect")
                                 simpleAnchor("formcontrol")
-                                simpleAnchor("stack")
-                                simpleAnchor("buttons")
-                                simpleAnchor("modal")
-                                simpleAnchor("popover")
 
                                 (::a.styled {
                                     paddings {
@@ -165,12 +165,11 @@ fun main() {
                                     "input" -> inputDemo()
                                     "buttons" -> buttonDemo()
                                     "formcontrol" -> formControlDemo()
-                                    // textdemo currently on welcome page, copied, not called
                                     "flexbox" -> flexBoxDemo(themeStore, themes, theme)
                                     "gridbox" -> gridBoxDemo()
                                     "multiselect" -> multiSelectDemo()
                                     "singleselect" -> singleSelectDemo()
-                                    "stack" -> stackDemo(theme)
+                                    "stack" -> stackDemo()
                                     "modal" -> modalDemo()
                                     "popover" -> popoverDemo()
                                     "welcome" -> welcome()

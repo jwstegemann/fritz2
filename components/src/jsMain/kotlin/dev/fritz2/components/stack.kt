@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.dom.Listener
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
@@ -145,6 +146,8 @@ class StackUpComponent : StackComponent() {
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [StackComponent]
+ * @return a [Div] element in order to use this component as top level element of an UI part. This way it can be
+ *         directly integrated into one of the _render_ functions!
  */
 fun HtmlElements.stackUp(
     styling: FlexParams.() -> Unit = {},
@@ -152,10 +155,10 @@ fun HtmlElements.stackUp(
     id: String? = null,
     prefix: String = "stack-up",
     build: StackUpComponent.() -> Unit = {}
-) {
+): Div {
     val component = StackUpComponent().apply(build)
 
-    flexBox({
+    return flexBox({
         component.stackStyles()
         styling()
     }, baseClass = baseClass + StackComponent.staticCss, prefix = prefix, id = id) {
@@ -216,6 +219,8 @@ class LineUpComponent : StackComponent() {
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [StackComponent]
+ * @return a [Div] element in order to use this component as top level element of an UI part. This way it can be
+ *         directly integrated into one of the _render_ functions!
  */
 fun HtmlElements.lineUp(
     styling: FlexParams.() -> Unit = {},
@@ -223,10 +228,10 @@ fun HtmlElements.lineUp(
     id: String? = null,
     prefix: String = "line-up",
     build: LineUpComponent.() -> Unit = {}
-) {
+): Div {
     val component = LineUpComponent().apply(build)
 
-    flexBox({
+    return flexBox({
         component.stackStyles()
         styling()
     }, baseClass = baseClass + StackComponent.staticCss, prefix = prefix, id = id) {
