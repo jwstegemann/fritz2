@@ -158,6 +158,10 @@ interface Theme {
 
     val button: PushButtonStyles
 
+    val radio: RadioStyles
+
+    val checkbox: CheckboxStyles
+
     val modal: ModalStyles
 
     /**

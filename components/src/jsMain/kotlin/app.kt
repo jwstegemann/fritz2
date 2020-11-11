@@ -5,47 +5,9 @@ import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
-import dev.fritz2.styling.params.AlignItemsValues
 import dev.fritz2.styling.theme.render
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-
-//fun HtmlElements.myLink(
-//    styling: BasicParams.() -> Unit = {},
-//    baseClass: StyleClass? = null,
-//    id: String? = null,
-//    prefix: String = "my-link",
-//    init: A.() -> Unit
-//): A =
-//    ::a.styled(styling, baseClass, id, prefix) {
-//        fontSize { giant }
-//    }(init)
-//
-//
-//fun HtmlElements.myRedLink(
-//    styling: BasicParams.() -> Unit = {},
-//    baseClass: StyleClass? = null,
-//    id: String? = null,
-//    prefix: String = "my-red-link",
-//    init: A.() -> Unit
-//): A =
-//    ::myLink.styled(styling, baseClass, id, prefix) {
-//        color { danger }
-//    }(init)
-//
-//
-//fun HtmlElements.myBorderedRedLink(
-//    styling: BasicParams.() -> Unit = {},
-//    baseClass: StyleClass? = null,
-//    id: String? = null,
-//    prefix: String = "mbrl",
-//    init: A.() -> Unit
-//): A =
-//    ::myRedLink.styled(styling, baseClass, id, prefix) {
-//        border {
-//            width { "1px" }
-//        }
-//    }(init)
 
 fun HtmlElements.simpleLinkWithBackground(linkUri: String, linkText: String): A {
     return (::a.styled {

@@ -656,6 +656,120 @@ open class DefaultTheme : Theme {
         }
     }
 
+    override val radio = object : RadioStyles {
+        override val sizes = object : RadioSizes {
+            override val small: Style<BasicParams> = {
+                fontSize { small }
+                lineHeight { small }
+                before {
+                    height { "10px" }
+                    width { "10px" }
+                    margins {
+                        right { "4px" }
+                    }
+                    position {
+                        relative {
+                            bottom { "1px" }
+                        }
+                    }
+                }
+            }
+            override val normal: Style<BasicParams> = {
+                fontSize { normal }
+                lineHeight { normal }
+                before {
+                    height { "20px" }
+                    width { "20px" }
+                    margins {
+                        right { "7px" }
+                    }
+                    position {
+                        relative {
+                            bottom { "2px" }
+                        }
+                    }
+                }
+            }
+            override val large: Style<BasicParams> = {
+                fontSize { larger }
+                lineHeight { larger }
+                before {
+                    height { "30px" }
+                    width { "30px" }
+                    margins {
+                        right { "10px" }
+                    }
+                    position {
+                        relative {
+                            bottom { "3px" }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override val checkbox = object : CheckboxStyles {
+        override val sizes = object : CheckboxSizes {
+            override val small: Style<BasicParams> = {
+                fontSize { small }
+                lineHeight { small }
+                before {
+                    height { "10px" }
+                    width { "10px" }
+                    before {
+                        radii {
+                            top { smaller }
+                            bottom { smaller }
+                            left { smaller }
+                            right { smaller }
+                        }
+                    }
+                    margins {
+                        right { "4px" }
+                    }
+                    position {
+                        relative {
+                            bottom { "1px" }
+                        }
+                    }
+                }
+            }
+            override val normal: Style<BasicParams> = {
+                fontSize { normal }
+                lineHeight { normal }
+                before {
+                    height { "20px" }
+                    width { "20px" }
+                    margins {
+                        right { "7px" }
+                    }
+                    position {
+                        relative {
+                            bottom { "2px" }
+                        }
+                    }
+                }
+            }
+            override val large: Style<BasicParams> = {
+                fontSize { larger }
+                lineHeight { larger }
+                before {
+                    height { "30px" }
+                    width { "30px" }
+                    margins {
+                        right { "10px" }
+                    }
+                    position {
+                        relative {
+                            bottom { "3px" }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     override val button = object : PushButtonStyles {
         override val variants = object : PushButtonVariants {
             private val basic: Style<BasicParams> = {
