@@ -4,6 +4,7 @@ import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.elementLens
 import dev.fritz2.lenses.positionLens
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -18,6 +19,11 @@ class SubStore<R, P, T>(
     val root: Store<R>,
     internal val rootLens: Lens<R, T>
 ) : Store<T> {
+    /**
+     * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
+     */
+    override val job: Job = Job()
+
 
     /**
      * defines how to infer the id of the sub-part from the parent's id.

@@ -5,6 +5,7 @@ import dev.fritz2.dom.html.Events
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 import org.w3c.dom.events.Event
 
 /**
@@ -135,8 +136,8 @@ class Router<T>(
     /**
      * Handler for setting a new [Route] based on given Flow.
      */
-    val navTo: SimpleHandler<T> = SimpleHandler { flow ->
-        flow.onEach { setRoute(it) }.launchIn(MainScope())
+    val navTo: SimpleHandler<T> = SimpleHandler { flow, job ->
+        flow.onEach { setRoute(it) }.launchIn(MainScope() + job)
     }
 
     init {

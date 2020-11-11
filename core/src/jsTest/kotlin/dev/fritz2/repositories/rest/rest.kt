@@ -1,8 +1,7 @@
 package dev.fritz2.repositories.rest
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.action
-import dev.fritz2.binding.handledBy
+import dev.fritz2.binding.invoke
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
@@ -89,33 +88,33 @@ class RestTests {
             }
         }.mount(targetId)
 
-        action(startPerson) handledBy entityStore.update
+        entityStore.update(startPerson)
         delay(100)
 
         val nameAfterStart = document.getElementById(nameId)?.textContent
         assertEquals(startPerson.name, nameAfterStart, "no name after start")
 
-        action() handledBy entityStore.saveOrUpdate
+        entityStore.saveOrUpdate()
         delay(100)
 
         val idAfterSave = document.getElementById(idId)?.textContent
         assertTrue(idAfterSave?.length ?: 0 > 10, "no id after save")
 
-        action(data = changedAge) handledBy ageSubStore.update
-        action() handledBy entityStore.saveOrUpdate
+        ageSubStore.update(data = changedAge)
+        entityStore.saveOrUpdate()
         delay(100)
 
         val ageAfterUpdate = document.getElementById(ageId)?.textContent
         assertEquals(changedAge.toString(), ageAfterUpdate, "wrong age after update")
 
-        action(data = 0) handledBy ageSubStore.update
-        action(idAfterSave.orEmpty()) handledBy entityStore.load
+        ageSubStore.update(data = 0)
+        entityStore.load(idAfterSave.orEmpty())
         delay(100)
 
         val ageAfterLoad = document.getElementById(ageId)?.textContent
         assertEquals(changedAge.toString(), ageAfterLoad, "wrong age after load")
 
-        action() handledBy entityStore.delete
+        entityStore.delete()
         delay(100)
 
         val idAfterDelete = document.getElementById(idId)?.textContent
@@ -173,13 +172,13 @@ class RestTests {
         }.mount(targetId)
 
         testList.forEach {
-            action(it) handledBy queryStore.addOrUpdate
+            queryStore.addOrUpdate(it)
             delay(1)
         }
 
         delay(200)
 
-        action() handledBy queryStore.query
+        queryStore.query()
         delay(200)
 
         val listAfterQuery = document.getElementById(listId)?.textContent
@@ -188,15 +187,15 @@ class RestTests {
         val firstId = document.getElementById(firstPersonId)?.textContent
         assertTrue(firstId != null && firstId.length > 10)
 
-        action(firstId) handledBy queryStore.delete
+        queryStore.delete(firstId)
         delay(100)
 
         val listAfterDelete = document.getElementById(listId)?.textContent
         assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDelete, "wrong list after delete")
 
-        action(emptyList<RestPerson>()) handledBy queryStore.update
+        queryStore.update(emptyList<RestPerson>())
         delay(1)
-        action() handledBy queryStore.query
+        queryStore.query()
         delay(200)
 
         val listAfterDeleteAndQuery = document.getElementById(listId)?.textContent
@@ -255,7 +254,7 @@ class RestTests {
         }.mount(targetId)
 
         testList.forEach {
-            action(it) handledBy queryStore.addOrUpdate
+            queryStore.addOrUpdate(it)
             delay(1)
         }
 
@@ -264,13 +263,13 @@ class RestTests {
         assertEquals(testList.joinToString("") { it.name }, listAfterAdd, "wrong list after adding")
 
 //        val updatedTestList = testList.map { it.copy(name = "${it.name}2") }
-//        action() handledBy queryStore.updateMany
+//        queryStore.updateMany()
 //        delay(400)
 //
 //        val listAfterUpdateMany = document.getElementById(listId)?.textContent
 //        assertEquals(updatedTestList.joinToString("") { it.name }, listAfterUpdateMany, "wrong list after update many")
 //
-//        action() handledBy queryStore.updateSingle
+//        queryStore.updateSingle()
 //        delay(200)
 //        val listAfterUpdate = document.getElementById(listId)?.textContent
 //        assertEquals(updatedTestList.map { if (it.name == "C2") it.copy(name = "C3") else it }

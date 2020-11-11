@@ -24,17 +24,19 @@ class StoreTests {
         val id2 = uniqueId()
         val buttonId = uniqueId()
 
+        val store2 = object : RootStore<Int>(0) {}
+
         val store1 = object : RootStore<String>("start") {
 
-            val finish = handleAndOffer<Int> {
+            val finish = handleAndEmit<Int> {
                 emit(5)
                 "finish"
             }
+
+            init {
+                finish handledBy store2.update
+            }
         }
-
-        val store2 = object : RootStore<Int>(0) {}
-
-        store1.finish handledBy store2.update
 
         render {
             section {
@@ -75,25 +77,30 @@ class StoreTests {
         val id3 = uniqueId()
         val buttonId = uniqueId()
 
-        val s1 = object : RootStore<String>("s1.start") {
-
-            val finish = handleAndOffer<String> {
-                emit("s1.finish")
-                "s1.finish"
-            }
-        }
+        val s3 = object : RootStore<String>("s3.start") {}
 
         val s2 = object : RootStore<String>("s2.start") {
-            val finish = handleAndOffer<String, String> { _, action ->
+            val finish = handleAndEmit<String, String> { _, action ->
                 emit("s2.finish")
                 action
             }
+
+            init {
+                finish handledBy s3.update
+            }
         }
 
-        val s3 = object : RootStore<String>("s3.start") {}
+        val s1 = object : RootStore<String>("s1.start") {
 
-        s1.finish handledBy s2.finish
-        s2.finish handledBy s3.update
+            val finish = handleAndEmit<String> {
+                emit("s1.finish")
+                "s1.finish"
+            }
+
+            init {
+                finish handledBy s2.finish
+            }
+        }
 
         render {
             section {

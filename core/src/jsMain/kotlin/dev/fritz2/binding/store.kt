@@ -5,8 +5,10 @@ import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.repositories.Resource
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -35,7 +37,7 @@ class QueuedUpdate<T>(
 /**
  * The [Store] is the main type for all data binding activities. It the base class of all concrete Stores like [RootStore], [SubStore], etc.
  */
-interface Store<T> {
+interface Store<T> : WithJob {
 
     /**
      * default error handler printing the error an keeping the previous value
@@ -56,9 +58,9 @@ interface Store<T> {
     fun <A> handle(
         errorHandler: ErrorHandler<T> = ::errorHandler,
         execute: suspend (T, A) -> T
-    ) = SimpleHandler<A> {
-        it.onEach { enqueue(QueuedUpdate({ t -> execute(t, it) }, errorHandler)) }
-            .launchIn(MainScope())
+    ) = SimpleHandler<A> { flow, job ->
+        flow.onEach { enqueue(QueuedUpdate({ t -> execute(t, it) }, errorHandler)) }
+            .launchIn(MainScope() + job)
     }
 
     /**
@@ -69,40 +71,40 @@ interface Store<T> {
     fun handle(
         errorHandler: ErrorHandler<T> = ::errorHandler,
         execute: suspend (T) -> T
-    ) = SimpleHandler<Unit> {
-        it.onEach { enqueue(QueuedUpdate({ t -> execute(t) }, errorHandler)) }
-            .launchIn(MainScope())
+    ) = SimpleHandler<Unit> { flow, job ->
+        flow.onEach { enqueue(QueuedUpdate({ t -> execute(t) }, errorHandler)) }
+            .launchIn(MainScope() + job)
     }
 
     /**
-     * factory method to create a [OfferingHandler] taking an action-value and the current store value to derive the new value.
-     * An [OfferingHandler] is a [Flow] by itself and can therefore be connected to other [SimpleHandler]s even in other [Store]s.
+     * factory method to create a [EmittingHandler] taking an action-value and the current store value to derive the new value.
+     * An [EmittingHandler] is a [Flow] by itself and can therefore be connected to other [SimpleHandler]s even in other [Store]s.
      *
      * @param bufferSize number of values to buffer
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
-    fun <A, E> handleAndOffer(
+    fun <A, E> handleAndEmit(
         errorHandler: ErrorHandler<T> = ::errorHandler,
         execute: suspend FlowCollector<E>.(T, A) -> T
     ) =
-        OfferingHandler<A, E>({ inFlow, outFlow ->
+        EmittingHandler<A, E>({ inFlow, outFlow, job ->
             inFlow.onEach { enqueue(QueuedUpdate({ t -> outFlow.execute(t, it) }, errorHandler)) }
-                .launchIn(MainScope())
+                .launchIn(MainScope() + job)
         })
 
     /**
-     * factory method to create an [OfferingHandler] that does not take an action in it's [execute]-lambda.
+     * factory method to create an [EmittingHandler] that does not take an action in it's [execute]-lambda.
      *
      * @param bufferSize number of values to buffer
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
-    fun <E> handleAndOffer(
+    fun <E> handleAndEmit(
         errorHandler: ErrorHandler<T> = ::errorHandler,
         execute: suspend FlowCollector<E>.(T) -> T
     ) =
-        OfferingHandler<Unit, E>({ inFlow, outFlow ->
+        EmittingHandler<Unit, E>({ inFlow, outFlow, job ->
             inFlow.onEach { enqueue(QueuedUpdate({ t -> outFlow.execute(t) }, errorHandler)) }
-                .launchIn(MainScope())
+                .launchIn(MainScope() + job)
         })
 
     /**
@@ -196,6 +198,11 @@ open class RootStore<T>(
 
     private val state: MutableStateFlow<T> = MutableStateFlow(initialData)
     private val mutex = Mutex()
+
+    /**
+     * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
+     */
+    override val job: Job = Job()
 
     override val current: T
         get() = state.value

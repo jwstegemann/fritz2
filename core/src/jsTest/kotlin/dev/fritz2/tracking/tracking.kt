@@ -1,8 +1,7 @@
 package dev.fritz2.tracking
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.action
-import dev.fritz2.binding.handledBy
+import dev.fritz2.binding.invoke
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
@@ -48,7 +47,7 @@ class TrackingTests {
         }.mount(targetId)
         delay(200)
 
-        action() handledBy store.longRunningHandler
+        store.longRunningHandler()
 
         val valueBeforeTransaction = document.getElementById(valueId)?.textContent
         assertEquals(startValue, valueBeforeTransaction)

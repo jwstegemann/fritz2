@@ -63,7 +63,7 @@ class DetachedStoreTests {
         assertEquals(person.name, (document.getElementById(nameId) as HTMLDivElement).innerText, "name is not correct")
 
         val newPerson = Person("Bar")
-        action(newPerson) handledBy store.update
+        store.update(newPerson)
 
         delay(200)
 
@@ -152,7 +152,7 @@ class DetachedStoreTests {
         assertEquals(person.name, (document.getElementById(nameId) as HTMLDivElement).innerText, "name is not correct")
 
         val newPerson = Person("Bar")
-        action(newPerson) handledBy store.replace
+        store.replace(newPerson)
 
         delay(200)
 

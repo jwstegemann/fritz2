@@ -1,7 +1,6 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.render

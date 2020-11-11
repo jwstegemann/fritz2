@@ -71,9 +71,9 @@ class SubStoreTests {
         assertEquals(person.address.postalCode.code.toString(), postalCodeDiv.innerText, "postalCode is not correct")
 
         val newPerson = Person("Bar", Address("Foo St. 9", PostalCode(1111)))
-        action(newPerson.name) handledBy nameSub.update
-        action(newPerson.address.street) handledBy streetSub.update
-        action(newPerson.address.postalCode.code) handledBy codeSub.update
+        nameSub.update(newPerson.name)
+        streetSub.update(newPerson.address.street)
+        codeSub.update(newPerson.address.postalCode.code)
 
         delay(200)
 
@@ -119,7 +119,7 @@ class SubStoreTests {
         assertEquals(personFormatLens.get(person), completeDiv.innerText, "formatting is not working")
 
         val newPerson = Person("Bar", Address("Foo St. 9", PostalCode(1111)))
-        action(personFormatLens.get(newPerson)) handledBy completeSub.update
+        completeSub.update(personFormatLens.get(newPerson))
 
         delay(200)
 

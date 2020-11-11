@@ -1,5 +1,6 @@
 package dev.fritz2.dom.html
 
+import dev.fritz2.binding.WithJob
 import dev.fritz2.binding.mountSingle
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
@@ -1219,8 +1220,7 @@ open class TextElement(tagName: String, id: String? = null, baseClass: String? =
 /**
  * Context for rendering dynamically DOM-nodes to your page.
  */
-interface RenderContext {
-    val job: Job
+interface RenderContext : WithJob {
 
     fun custom(tagName: String, content: Tag<HTMLElement>.() -> Unit): Tag<HTMLElement> =
         register(Tag(tagName, job = job), content)

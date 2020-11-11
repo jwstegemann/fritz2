@@ -1,8 +1,6 @@
 package dev.fritz2.remote
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.action
-import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.watch
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
@@ -213,19 +211,19 @@ class WebSocketTests {
             }
         }.mount(targetId)
 
-        action(startPerson) handledBy entityStore.update
+        entityStore.update(startPerson)
         delay(100)
 
         val nameAfterStart = document.getElementById(nameId)?.textContent
         assertEquals(startPerson.name, nameAfterStart, "no name after start")
 
-        action(data = changedAge) handledBy ageSubStore.update
+        ageSubStore.update(data = changedAge)
         delay(200)
 
         val ageAfterUpdate = document.getElementById(ageId)?.textContent
         assertEquals(changedAge.toString(), ageAfterUpdate, "wrong age after update")
 
-        action(data = testId) handledBy idSubStore.update
+        idSubStore.update(data = testId)
         delay(200)
 
         val nameAfterUpdate = document.getElementById(nameId)?.textContent

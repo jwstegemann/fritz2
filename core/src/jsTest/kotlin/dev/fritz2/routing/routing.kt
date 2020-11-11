@@ -1,6 +1,5 @@
 package dev.fritz2.routing
 
-import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId

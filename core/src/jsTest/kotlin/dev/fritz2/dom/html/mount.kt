@@ -1,8 +1,6 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.action
-import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.MountTargetNotFoundException
 import dev.fritz2.dom.append
 import dev.fritz2.dom.mount
@@ -134,7 +132,7 @@ class MountTests {
         assertEquals(false, option2.selected, "initial second option.selected is not false")
         assertEquals(null, option2.getAttribute("selected"), "initial second option.getAttribute(\"selected\") is not empty")
 
-        action("option2") handledBy store.select
+        store.select("option2")
         delay(250)
 
         assertEquals(1, select.selectedIndex, "modified second option is not selected")

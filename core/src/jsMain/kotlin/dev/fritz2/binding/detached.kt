@@ -6,6 +6,7 @@ import dev.fritz2.lenses.elementLens
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.repositories.Resource
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 
 /**
@@ -39,6 +40,11 @@ fun <T, I> Store<List<T>>.detach(element: T, idProvider: IdProvider<T, I>, initi
 class DetachedStore<T, P>(private val initialData: T, private val parent: Store<P>, private val lens: Lens<P, T>) :
     Store<T> {
     private val state = MutableStateFlow(initialData)
+
+    /**
+     * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
+     */
+    override val job: Job = Job()
 
     /**
      * defines how to infer the id of the sub-part from the parent's id.
