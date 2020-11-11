@@ -8,6 +8,7 @@ import dev.fritz2.dom.WithText
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 
 
@@ -540,8 +541,8 @@ open class Li(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTM
  */
 open class Label(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLLabelElement>("label", id, baseClass, job),
     WithText<HTMLLabelElement> {
-    fun `for`(value: String) = attr("`for`", value)
-	fun `for`(value: Flow<String>) = attr("`for`", value)
+    fun `for`(value: String) = attr("for", value)
+	fun `for`(value: Flow<String>) = attr("for", value)
 
 }
 
@@ -951,8 +952,8 @@ open class Script(id: String? = null, baseClass: String? = null, job: Job) : Tag
     fun event(value: String) = attr("event", value)
 	fun event(value: Flow<String>) = attr("event", value)
 
-    fun `for`(value: String) = attr("`for`", value)
-	fun `for`(value: Flow<String>) = attr("`for`", value)
+    fun `for`(value: String) = attr("for", value)
+	fun `for`(value: Flow<String>) = attr("for", value)
 
 }
 
@@ -1224,6 +1225,8 @@ interface RenderContext : WithJob {
 
     fun custom(tagName: String, content: Tag<HTMLElement>.() -> Unit): Tag<HTMLElement> =
         register(Tag(tagName, job = job), content)
+
+    fun <T> Flow<T>.asString(): Flow<String> = this.map { it.toString() }
 
     fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T
 
