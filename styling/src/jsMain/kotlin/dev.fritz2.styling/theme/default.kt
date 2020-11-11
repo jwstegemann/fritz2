@@ -1,4 +1,7 @@
 import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BackgroundAttachments.inherit
+import dev.fritz2.styling.params.FlexBasisValues.content
+import dev.fritz2.styling.params.VerticalAlignValues.top
 import dev.fritz2.styling.theme.*
 
 /**
@@ -853,4 +856,187 @@ open class DefaultTheme : Theme {
         }
     }
 
+    override val popover = object: PopoverStyles {
+       override val size: PopoverSizes = object : PopoverSizes {
+            private val basic: Style<BasicParams> = {
+                background {
+                    color { "white" }
+                }
+                paddings {
+                  top { tiny }
+                  bottom{ tiny }
+                  left {small }
+                  right  { small }
+                }
+                radius { tiny }
+                boxShadow { flat }
+                zIndex { "20" }
+
+            }
+            override val auto: Style<BasicParams> = {
+                basic()
+            }
+            override val normal: Style<BasicParams> = {
+                basic()
+                width { "250px" }
+            }
+        }
+       override val trigger: Style<BasicParams> = {
+            display {"inline-block"}
+        }
+       override val header: Style<BasicParams> = {
+            fontWeight { semiBold }
+            borders{
+                bottom {
+                    width { thin }
+                    style { solid }
+                }
+            }
+        }
+       override val section: Style<BasicParams> = {
+            paddings {
+                top{tiny}
+                bottom{tiny}
+            }
+       }
+       override val footer: Style<BasicParams> = {
+            borders{
+                top {
+                    width { thin }
+                    style { solid }
+                }
+            }
+        }
+       override val placement = object : PopoverPlacements  {
+            private val basic: Style<BasicParams> = {
+                css("transition: transform .2s;")
+                zIndex{"50"}
+            }
+            override val top: Style<BasicParams> = {
+                basic()
+                position{
+                    absolute{
+                        left { "50%" }
+                        top {"-1rem"}
+                    }
+                }
+                css("transform: translate(-50%, -100%) scale(1);")
+            }
+            override val right: Style<BasicParams> = {
+                margins { top{"1rem"} }
+                position{
+                    absolute{
+                        left { "calc(100% + 1rem)" }
+                        top {"50%"}
+                    }
+                }
+                css("transform: translate(0, -50%) scale(1);")
+            }
+            override val bottom: Style<BasicParams> = {
+                position{
+                    absolute{
+                        left { "50%" }
+                        top {"calc(100% + 1rem)"}
+                    }
+                }
+                css("transform: translate(-50%, 0) scale(1);")
+            }
+            override val left: Style<BasicParams> = {
+                margins { top{"1rem"} }
+                position{
+                    absolute{
+                        left{"-1rem"}
+                        top{"50%"}
+                    }
+                }
+                css("transform: translate(-100%, -50%) scale(1);")
+            }
+        }
+       override val arrowPlacement = object : PopoverArrowPlacements  {
+            private val basic: Style<BasicParams> = {
+                css("transform: rotate(45deg);")
+                width{"1rem"}
+                height{"1rem"}
+                position {
+                    absolute{}
+                }
+                background {
+                   color { inherit }
+                }
+                before {
+                    zIndex{"-1"}
+                    css("content:\"\";")
+                    width{"1rem"}
+                    height{"1rem"}
+                    position {
+                        absolute{
+                        }
+                    }
+                }
+            }
+            override val top: Style<BasicParams> = {
+                basic()
+                css("left:calc(50% - 0.5rem);")
+                position {
+                    absolute{top{"-0.5rem"}}
+                }
+                before{
+                    boxShadow {
+                        "rgba(0, 0, 0, 0.1) -1px -1px 1px 0px"
+                    }
+                }
+            }
+            override val right: Style<BasicParams> = {
+                basic()
+                css("top: calc(50% - 1.5rem);")
+                css("right: calc(-0.5rem - 0.5px);")
+                position {
+                    absolute{}
+                }
+                before{
+                    boxShadow {
+                        "rgba(0, 0, 0, 0.1) -1px 1px 1px 0px inset"
+                    }
+                }
+            }
+            override val bottom: Style<BasicParams> = {
+                basic()
+                css("left:calc(50% - 0.5rem);")
+                position {
+                    absolute{bottom{"-0.5rem"}}
+                }
+                before{
+                    boxShadow {
+                        "rgba(0, 0, 0, 0.1) -1px -1px 1px 0px inset"
+                    }
+                }
+            }
+            override val left: Style<BasicParams> = {
+                basic()
+                css("top:calc(50% - 1.5rem);")
+                position {
+                    absolute{left{"-0.5rem"}}
+                }
+                before{
+                    boxShadow {
+                        "rgba(0, 0, 0, 0.1) -1px 1px 1px 0px"
+                    }
+                }
+            }
+        }
+       override val closeButton: Style<BasicParams> = {
+           position {
+               absolute {
+                   right { "0.5rem" }
+                   top { "0.5rem" }
+               }
+           }
+           padding {tiny}
+           width{"1rem"}
+           height{"1rem"}
+           minWidth { "1rem" }
+           fontWeight { semiBold }
+           lineHeight { "1rem" }
+       }
+    }
 }

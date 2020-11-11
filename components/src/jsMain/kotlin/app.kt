@@ -166,6 +166,7 @@ fun main() {
                                 simpleAnchor("stack")
                                 simpleAnchor("buttons")
                                 simpleAnchor("modal")
+                                simpleAnchor("popover")
 
                                 (::a.styled {
                                     paddings {
@@ -215,6 +216,7 @@ fun main() {
                                     "singleselect" -> singleSelectDemo()
                                     "stack" -> stackDemo(theme)
                                     "modal" -> modalDemo()
+                                    "popover" -> popoverDemo()
                                     "welcome" -> welcome()
                                     else -> welcome()
                                 }

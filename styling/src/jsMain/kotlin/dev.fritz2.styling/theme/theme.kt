@@ -159,6 +159,11 @@ interface Theme {
     val button: PushButtonStyles
 
     val modal: ModalStyles
+
+    /**
+     * definition of the theme's popover
+     */
+    val popover: PopoverStyles
 }
 
 /**
