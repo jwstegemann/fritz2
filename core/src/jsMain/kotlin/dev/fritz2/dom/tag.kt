@@ -26,11 +26,11 @@ annotation class HtmlTagMarker
  * Sorry for the name, but we needed to delimit it from the [Element] it is wrapping.
  *
  * @param tagName name of the tag. Used to create the corresponding [Element]
- * @param id the DOM-id of the element to be created
- * @param baseClass a static base value for the class-attribute.
+ * @property id the DOM-id of the element to be created
+ * @property baseClass a static base value for the class-attribute.
  * All dynamic values for this attribute will be concatenated to this base-value.
- * @param job used for launching coroutines in
- * @param domNode the [Element]-instance that is wrapped by this [Tag]
+ * @property job used for launching coroutines in
+ * @property domNode the [Element]-instance that is wrapped by this [Tag]
  * (you should never have to pass this by yourself, just let it be created by the default)
  */
 @HtmlTagMarker
@@ -46,7 +46,7 @@ open class Tag<out E : Element>(
 ) : WithDomNode<E>, WithComment<E>, WithEvents<E>(), RenderContext {
 
     /**
-     * Creates the content of the [Tag] and appends it as a child to the wrapped [Element]
+     * Creates the content of the [Tag] and appends it as a child to the wrapped [Element].
      *
      * @param element the parent element of the new content
      * @param content lambda building the content (following the type-safe-builder pattern)
@@ -58,43 +58,42 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * Creates a new [RenderContext] for transferring the data inside the [Flow] to [Tag]s which are
-     * visible in the browser.
+     * Renders the data of a [Flow] as [Tag]s to the DOM.
      *
      * @receiver [Flow] containing the data
-     * @param renderContext new [RenderContext] for rendering the data to the DOM
+     * @param content [RenderContext] for rendering the data to the DOM
      */
-    inline fun <V> Flow<V>.render(crossinline renderContext: RenderContext.(V) -> Unit) {
+    inline fun <V> Flow<V>.render(crossinline content: RenderContext.(V) -> Unit) {
         mountDomNodeList(job, domNode) { childJob ->
             this.map { data ->
                 childJob.cancelChildren()
                 dev.fritz2.dom.html.render(childJob) {
-                    renderContext(data)
+                    content(data)
                 }
             }
         }
     }
 
     /**
-     * Creates a new [RenderContext] for transferring the data inside the [Flow] to [Tag]s which are
-     * visible in the browser. It should only contain one root [Tag] like a [Div] otherwise a
+     * Renders the data of a [Flow] as [Tag]s to the DOM.
+     * It should only create one root [Tag] like a [Div] otherwise a
      * [MultipleRootElementsException] will be thrown.
      *
      * @receiver [Flow] containing the data
-     * @param preserveOrder decides to keep the order of the rendered [Tag]s when they are a the same level as
-     * static [Tag]s. (default true)
-     * @param renderContext new [RenderContext] for rendering the data to the DOM
+     * @param preserveOrder use a placeholder to keep the rendered [Tag]s in order with static [Tag]s at
+     * the same level (default true)
+     * @param content [RenderContext] for rendering the data to the DOM
      */
     inline fun <V> Flow<V>.renderElement(
         preserveOrder: Boolean = true,
-        crossinline renderContext: RenderContext.(V) -> Tag<HTMLElement>
+        crossinline content: RenderContext.(V) -> Tag<HTMLElement>
     ) {
         if (preserveOrder) {
             mountDomNode(job, domNode) { childJob ->
                 this.map { data ->
                     childJob.cancelChildren()
                     dev.fritz2.dom.html.renderElement(job) {
-                        renderContext(data)
+                        content(data)
                     }
                 }
             }
@@ -103,7 +102,7 @@ open class Tag<out E : Element>(
                 this.map { data ->
                     childJob.cancelChildren()
                     dev.fritz2.dom.html.renderElement(job) {
-                        renderContext(data)
+                        content(data)
                     }
                 }
             }
@@ -123,16 +122,16 @@ open class Tag<out E : Element>(
 
 
     /**
-     * Renders each element of a list.
+     * Renders each element of a [List].
      * Internally the [Patch]es are determined using Myer's diff-algorithm.
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
      * when an element stays the same, but changes it's internal values.
      *
-     * @param content lamdba defining the representation of a list-item as [Tag]s
+     * @param content [RenderContext] for rendering the data to the DOM
      */
     inline fun <V, I> Flow<List<V>>.renderEach(
         noinline idProvider: IdProvider<V, I>,
-        crossinline renderContext: RenderContext.(V) -> Tag<HTMLElement>
+        crossinline content: RenderContext.(V) -> Tag<HTMLElement>
     ) {
         mountDomNodePatch(job, domNode) { childJob ->
             childJob.cancelChildren()
@@ -140,7 +139,7 @@ open class Tag<out E : Element>(
                 Myer.diff(old, new, idProvider)
             }.map {
                 it.map { value ->
-                    renderContext(value)
+                    content(value)
                 }
             }
         }
@@ -148,12 +147,12 @@ open class Tag<out E : Element>(
 
 
     /**
-     * Renders each element of a list.
+     * Renders each element of a [List].
      * Internally the [Patch]es are determined using instance comparison.
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
      * when an element stays the same, but changes it's internal values.
      *
-     * @param content lamdba defining the representation of a list-item as [Tag]s
+     * @param content [RenderContext] for rendering the data to the DOM
      */
     inline fun <V> Flow<List<V>>.renderEach(
         crossinline content: RenderContext.(V) -> Tag<HTMLElement>
@@ -171,13 +170,13 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * Renders each element of a [Store]s list content.
+     * Renders each element of a [Store]s [List] content.
      * Internally the [Patch]es are determined using Myer's diff-algorithm.
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
      * when an element stays the same, but changes it's internal values.
      *
      * @param idProvider function to identify a unique entity in the list
-     * @param content lamdba defining the representation of a list-item as [Tag]s given a [Store] of the list's item-type
+     * @param content [RenderContext] for rendering the data to the DOM
      */
     inline fun <V, I> RootStore<List<V>>.renderEach(
         noinline idProvider: IdProvider<V, I>,
@@ -200,15 +199,15 @@ open class Tag<out E : Element>(
      * Internally the [Patch]es are determined using the position of an item in the list.
      * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
      *
-     * @param content lamdba defining the representation of a list-item as [Tag]s given a [Store] of the list's item-type
+     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
     inline fun <V> RootStore<List<V>>.renderEach(
-        crossinline renderContext: RenderContext.(Store<V>) -> Tag<HTMLElement>
+        crossinline content: RenderContext.(Store<V>) -> Tag<HTMLElement>
     ) {
         mountDomNodePatch(job, domNode) { childJob ->
             childJob.cancelChildren()
             this.data.map { it.withIndex().toList() }.eachIndex().map {
-                it.map { (i, _) -> renderContext(sub(i)) }
+                it.map { (i, _) -> content(sub(i)) }
             }
         }
     }
@@ -220,11 +219,11 @@ open class Tag<out E : Element>(
      * when an element stays the same, but changes it's internal values.
      *
      * @param idProvider function to identify a unique entity in the list
-     * @param content lamdba defining the representation of a list-item as [Tag]s given a [Store] of the list's item-type
+     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
     inline fun <R, P, V, I> SubStore<R, P, List<V>>.renderEach(
         noinline idProvider: IdProvider<V, I>,
-        crossinline renderContext: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
+        crossinline content: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
     ) {
         mountDomNodePatch(job, domNode) { childJob ->
             childJob.cancelChildren()
@@ -232,7 +231,7 @@ open class Tag<out E : Element>(
                 Myer.diff(old, new, idProvider)
             }.map {
                 it.map { value ->
-                    renderContext(sub(elementLens(value, idProvider)))
+                    content(sub(elementLens(value, idProvider)))
                 }
             }
         }
@@ -243,21 +242,21 @@ open class Tag<out E : Element>(
      * Internally the [Patch]es are determined using the position of an item in the list.
      * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
      *
-     * @param content lamdba defining the representation of a list-item as [Tag]s given a [Store] of the list's item-type
+     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
     inline fun <R, P, V> SubStore<R, P, List<V>>.renderEach(
-        crossinline renderContext: RenderContext.(Store<V>) -> Tag<HTMLElement>
+        crossinline content: RenderContext.(Store<V>) -> Tag<HTMLElement>
     ) {
         mountDomNodePatch(job, domNode) { childJob ->
             childJob.cancelChildren()
             this.data.map { it.withIndex().toList() }.eachIndex().map {
-                it.map { (i, _) -> renderContext(sub(i)) }
+                it.map { (i, _) -> content(sub(i)) }
             }
         }
     }
 
     /**
-     * Creates a [Flow] of [Patches] representing the changes between the current list in a [Flow] and it's predecessor.
+     * Creates a [Flow] of [Patch]es representing the changes between the current list in a [Flow] and it's predecessor.
      *
      * @receiver [Flow] of lists to create [Patch]es for
      * @return [Flow] of patches

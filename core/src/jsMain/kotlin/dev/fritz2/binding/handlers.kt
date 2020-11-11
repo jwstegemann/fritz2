@@ -9,21 +9,23 @@ import kotlinx.coroutines.flow.flowOf
 /**
  * Base-interface of the different types of handlers
  *
- * @property collect function describing how this handler collects a flow when connected by [handledBy]
+ * @property collect function describing how this handler collects a flow when called
  */
 interface Handler<A> {
     val collect: (Flow<A>, Job) -> Unit
-
-    /**
-     * calls this handler once
-     *
-     * @param data parameter forwarded to the handler
-     */
-    operator fun invoke(data: A) = this.collect(flowOf(data), Job())
 }
 
 /**
- * calls this handler exactly once
+ * Calls this handler exactly once.
+ *
+ * @param data parameter forwarded to the handler
+ */
+operator fun <A> Handler<A>.invoke(data: A) = this.collect(flowOf(data), Job())
+
+/**
+ * Calls this handler exactly once.
+ *
+ * @receiver [Handler] which gets called
  */
 operator fun Handler<Unit>.invoke() = this.collect(flowOf(Unit), Job())
 

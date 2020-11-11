@@ -13,17 +13,17 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 /**
- * defines a type for transforming one value into the next
+ * Defines a type for transforming one value into the next
  */
 typealias Update<T> = suspend (T) -> T
 
 /**
- * defines a type for handling errors in updates
+ * Defines a type for handling errors in updates
  */
 typealias ErrorHandler<T> = (Throwable, T) -> T
 
 /**
- * type of elements in the update-queue of a [Store]
+ * Type of elements in the update-queue of a [Store]
  *
  * @property update function describing the step from the old value to the new
  * @property errorHandler describes the handling of errors during an update and the new value in case of error
@@ -40,7 +40,7 @@ class QueuedUpdate<T>(
 interface Store<T> : WithJob {
 
     /**
-     * default error handler printing the error an keeping the previous value
+     * Default error handler printing the error to console and keeping the previous value.
      *
      * @param exception Exception to handle
      * @param oldValue previous value of the [Store]
@@ -51,7 +51,7 @@ interface Store<T> : WithJob {
     }
 
     /**
-     * factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
+     * Factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
      *
      * @param execute lambda that is executed whenever a new action-value appears on the connected event-[Flow].
      */
@@ -64,8 +64,9 @@ interface Store<T> : WithJob {
     }
 
     /**
-     * factory method to create a [SimpleHandler] that does not take an Action
+     * Factory method to create a [SimpleHandler] that does not take an Action
      *
+     * @param errorHandler handles error during update
      * @param execute lambda that is execute for each event on the connected [Flow]
      */
     fun handle(
@@ -77,10 +78,10 @@ interface Store<T> : WithJob {
     }
 
     /**
-     * factory method to create a [EmittingHandler] taking an action-value and the current store value to derive the new value.
+     * Factory method to create a [EmittingHandler] taking an action-value and the current store value to derive the new value.
      * An [EmittingHandler] is a [Flow] by itself and can therefore be connected to other [SimpleHandler]s even in other [Store]s.
      *
-     * @param bufferSize number of values to buffer
+     * @param errorHandler handles error during update
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
     fun <A, E> handleAndEmit(
@@ -95,7 +96,7 @@ interface Store<T> : WithJob {
     /**
      * factory method to create an [EmittingHandler] that does not take an action in it's [execute]-lambda.
      *
-     * @param bufferSize number of values to buffer
+     * @param errorHandler handles error during update
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
     fun <E> handleAndEmit(
