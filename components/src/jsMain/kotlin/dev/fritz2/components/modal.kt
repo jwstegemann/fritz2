@@ -93,7 +93,13 @@ class ModalComponent {
                     component.variant.invoke(theme().modal)()
                     styling()
                 }, baseClass, id, prefix) {
-                    component.closeButton?.let { it(this, close) }
+                    if( component.hasCloseButton ) {
+                        if( component.closeButton == null ) {
+                            component.closeButton()
+                        }
+                        component.closeButton?.let { it(this, close) }
+                    }
+
                     component.items?.let { it() }
                 }
             }
@@ -120,8 +126,12 @@ class ModalComponent {
         variant = value
     }
 
-    var closeButton: (HtmlElements.(SimpleHandler<Unit>) -> Unit)? = null
+    var hasCloseButton: Boolean = true
+    fun hasCloseButton(value: Boolean ) {
+        hasCloseButton = value
+    }
 
+    var closeButton: (HtmlElements.(SimpleHandler<Unit>) -> Unit)? = null
     fun closeButton(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,

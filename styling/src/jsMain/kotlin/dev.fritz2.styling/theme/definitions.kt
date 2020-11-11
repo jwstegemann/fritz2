@@ -200,7 +200,7 @@ class Shadows(
     val lowered: ShadowProperty,
     val bottom: ShadowProperty = lowered,
     val outline: ShadowProperty,
-    val glowing: ShadowProperty = outline,
+    val glowing: ShadowProperty =outline,
     val danger: ShadowProperty,
     val none: ShadowProperty = "none"
 )
@@ -322,4 +322,39 @@ interface ModalSizes {
     val small: Style<BasicParams>
     val normal: Style<BasicParams>
     val large: Style<BasicParams>
+}
+
+
+/**
+ * definition of the theme's Popover
+ */
+
+interface PopoverStyles {
+    val size: PopoverSizes
+    val trigger: Style<BasicParams>
+    val header: Style<BasicParams>
+    val section: Style<BasicParams>
+    val footer: Style<BasicParams>
+    val placement: PopoverPlacements
+    val arrowPlacement: PopoverArrowPlacements
+    val closeButton: Style<BasicParams>
+}
+
+interface PopoverPlacements {
+    val top: Style<BasicParams>
+    val right: Style<BasicParams>
+    val bottom: Style<BasicParams>
+    val left: Style<BasicParams>
+}
+
+interface PopoverArrowPlacements {
+    val top: Style<BasicParams>
+    val right: Style<BasicParams>
+    val bottom: Style<BasicParams>
+    val left: Style<BasicParams>
+}
+
+interface PopoverSizes {
+    val auto: Style<BasicParams>
+    val normal: Style<BasicParams>
 }
