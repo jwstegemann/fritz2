@@ -22,7 +22,7 @@ annotation class HtmlTagMarker
  * @param baseClass a static base value for the class-attribute. All dynamic values for this attribute will be concatenated to this base-value.
  * @param domNode the [Element]-instance that is wrapped by this [Tag] (you should never have to pass this by yourself, just let it be created by the default)
  */
-//TODO: remove unnecassary default-arguments
+//TODO: remove unnecessary default-arguments
 @HtmlTagMarker
 open class Tag<out T : Element>(
     tagName: String,
@@ -35,7 +35,7 @@ open class Tag<out T : Element>(
      * creates the content of the [Tag] and appends it as a child to the wrapped [Element]
      *
      * @param element the parent element of the new content
-     * @param content lamda building the content (following the type-safe-builder pattern)
+     * @param content lambda building the content (following the type-safe-builder pattern)
      */
     override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
         content(element)
@@ -51,6 +51,17 @@ open class Tag<out T : Element>(
     fun <X : Element> Flow<Tag<X>>.bind(preserveOrder: Boolean = false): SingleMountPoint<WithDomNode<Element>> =
         if (preserveOrder) DomMountPointPreserveOrder(this, domNode)
         else DomMountPoint(this, domNode)
+
+    /**
+     * binds a [Flow] of nullable [Tag]s at this position (creates a DomMountPoint as a placeholder and adds it to the builder)
+     *
+     */
+    fun <X : Element> Flow<Tag<X>?>.bind(): SingleMountPoint<WithDomNode<Element>?> =
+        NullableDomMountPointPreserveOrder(this, domNode)
+
+    fun <X : Element> Flow<List<Tag<X>>>.bind(preserveOrder: Boolean = false): SingleMountPoint<List<WithDomNode<Element>>> =
+        if (preserveOrder) DomListMountPointPreserveOrder(this, domNode)
+        else DomListMountPoint(this, domNode)
 
     /**
      * binds a [Seq] of [Tag]s at this position (creates a [DomMultiMountPoint] as a placeholder and adds it to the builder)
@@ -111,6 +122,6 @@ internal fun createDomElement(tagName: String, id: String?, baseClass: String?):
             element.setAttribute("id", it)
         }
         baseClass?.let {
-            element.setAttribute("class", it)
+            if (it.isNotBlank()) element.setAttribute("class", it.trim())
         }
     }

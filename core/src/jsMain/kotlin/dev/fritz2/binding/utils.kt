@@ -13,8 +13,16 @@ import kotlinx.coroutines.flow.launchIn
  */
 fun <T> const(value: T): Flow<T> = flowOf(value)
 
-
 /**
  * If a [Store]'s data-[Flow] is never mounted, use this method to start the updating of derived values.
  */
 fun <T> Flow<T>.watch(scope: CoroutineScope = MainScope()): Job = this.catch {}.launchIn(scope)
+
+/**
+ * watches the data-[Flow] of a [Store].
+ * You have to use this, if you never bind your [Store]'s data flow but want to run it's [Handler]s anyway.
+ */
+fun <T> Store<T>.watch(scope: CoroutineScope = MainScope()): Store<T> {
+    data.watch(scope)
+    return this
+}
