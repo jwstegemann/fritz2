@@ -202,7 +202,7 @@ open class Tag<out E : Element>(
      * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
     inline fun <V> RootStore<List<V>>.renderEach(
-        crossinline content: RenderContext.(Store<V>) -> Tag<HTMLElement>
+        crossinline content: RenderContext.(SubStore<List<V>, List<V>, V>) -> Tag<HTMLElement>
     ) {
         mountDomNodePatch(job, domNode) { childJob ->
             childJob.cancelChildren()
@@ -245,7 +245,7 @@ open class Tag<out E : Element>(
      * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
     inline fun <R, P, V> SubStore<R, P, List<V>>.renderEach(
-        crossinline content: RenderContext.(Store<V>) -> Tag<HTMLElement>
+        crossinline content: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
     ) {
         mountDomNodePatch(job, domNode) { childJob ->
             childJob.cancelChildren()
