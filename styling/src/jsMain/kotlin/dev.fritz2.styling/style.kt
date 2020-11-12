@@ -23,7 +23,7 @@ internal object Styling {
             try {
                 if (value.root == null)
                     with(value["return"] as String?) {
-                        if (this != null && this.isNotBlank()) styleSheet.insertRule(this as String, counter++)
+                        if (this != null && this.isNotBlank()) styleSheet.insertRule(this, counter++)
                     }
             } catch (e: Throwable) {
                 console.error("unable to insert rule in stylesheet: ${e.message}", e)
