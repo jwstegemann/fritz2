@@ -15,6 +15,7 @@ import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.theme
 import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 /**
@@ -205,7 +206,7 @@ open class FormControlComponent {
         control.set(ControlNames.inputField)
         {
             inputField(styling, store, baseClass, id, prefix) {
-                className = StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it }
+                className(StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it })
                 init()
                 // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
                 //disabled.bindAttr("disabled")
@@ -273,7 +274,7 @@ open class FormControlComponent {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = "formControl",
-        renderContext: HtmlElements
+        renderContext: RenderContext
     ) {
         control.assignee?.second?.let {
             renderStrategies[control.assignee?.first]?.render(
@@ -286,7 +287,7 @@ open class FormControlComponent {
         control.assert()
     }
 
-    fun renderHelperText(renderContext: RenderContext. {
+    fun renderHelperText(renderContext: RenderContext) {
         renderContext.div {
             helperText?.let {
                 (::p.styled {
@@ -298,7 +299,7 @@ open class FormControlComponent {
         }
     }
 
-    fun renderErrorMessage(renderContext: RenderContext. {
+    fun renderErrorMessage(renderContext: RenderContext) {
         renderContext.div {
             errorMessage.render {
                 if (it.isNotEmpty()) {
@@ -314,7 +315,7 @@ open class FormControlComponent {
                         }
                     }
                 }
-            }()
+            }
         }
     }
 
@@ -334,7 +335,7 @@ interface ControlRenderer {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = "formControl",
-        renderContext: RenderContext.
+        renderContext: RenderContext,
         control: RenderContext.() -> Unit
     )
 }
@@ -345,7 +346,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
         baseClass: StyleClass?,
         id: String?,
         prefix: String,
-        renderContext: RenderContext.
+        renderContext: RenderContext,
         control: RenderContext.() -> Unit
     ) {
         renderContext.stackUp(
@@ -379,7 +380,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
         baseClass: StyleClass?,
         id: String?,
         prefix: String,
-        renderContext: RenderContext.
+        renderContext: RenderContext,
         control: RenderContext.() -> Unit
     ) {
         renderContext.box({

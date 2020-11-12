@@ -208,14 +208,15 @@ open class PushButtonComponent {
         if (loading == null) {
             icon?.invoke(renderContext, iconStyle)
         } else {
-            val x = loading?.render(renderContext) { running ->
-                if (running) {
-                    spinner(spinnerStyle) {}
-                } else {
-                    icon?.invoke(this, iconStyle)
+            renderContext.apply {
+                loading?.render { running ->
+                    if (running) {
+                        spinner(spinnerStyle) {}
+                    } else {
+                        icon?.invoke(this, iconStyle)
+                    }
                 }
             }
-            renderContext.apply { x?.bind(true) }
         }
     }
 
@@ -223,24 +224,25 @@ open class PushButtonComponent {
         if (loading == null || icon != null) {
             label?.invoke(renderContext, false)
         } else {
-            val x = loading?.render { running ->
-                if (running) {
-                    spinner({
-                        if (loadingText == null) {
-                            css("position: absolute;")
-                            centerSpinnerStyle()
-                        } else leftSpinnerStyle()
-                    }) {}
-                    if (loadingText != null) {
-                        loadingText!!.invoke(this)
+            renderContext.apply {
+                loading?.render { running ->
+                    if (running) {
+                        spinner({
+                            if (loadingText == null) {
+                                css("position: absolute;")
+                                centerSpinnerStyle()
+                            } else leftSpinnerStyle()
+                        }) {}
+                        if (loadingText != null) {
+                            loadingText!!.invoke(this)
+                        } else {
+                            label?.invoke(this, true)
+                        }
                     } else {
-                        label?.invoke(this, true)
+                        label?.invoke(this, false)
                     }
-                } else {
-                    label?.invoke(this, false)
                 }
             }
-            renderContext.apply { x?.bind() }
         }
     }
 }

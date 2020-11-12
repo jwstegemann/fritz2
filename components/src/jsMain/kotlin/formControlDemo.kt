@@ -35,7 +35,7 @@ class MyFormControlComponent : FormControlComponent() {
             baseClass: StyleClass?,
             id: String?,
             prefix: String,
-            renderContext: RenderContext.
+            renderContext: RenderContext,
             control: RenderContext.() -> Unit
         ) {
             renderContext.lineUp({
@@ -134,21 +134,19 @@ fun RenderContext.formControlDemo(): Div {
                 }
                 //just use the appropriate *single element* control with its specific API!
                 inputField(store = framework) {
-                    placeholder = const("$solution for example")
+                    placeholder("$solution for example")
                 }
                 // throws an exception -> only one (and the first) control is allowed!
                 inputField {
-                    placeholder =
-                        const("This control throws an exception because a form control may only contain one control.")
+                    placeholder("This control throws an exception because a form control may only contain one control.")
                 }
             }
 
             val loveString = "I love fritz2 with all my heart and I want to have its babies."
             val hateString = "I hate your guts, fritz2!"
             val loveStore = object : RootStore<Boolean>(true) {
-                val changedMyMind = handleAndOffer<Boolean, String> { _, checked ->
-                    if (checked) offer(loveString)
-                    else offer(hateString)
+                val changedMyMind = handleAndEmit<Boolean, String> { _, checked ->
+                    emit(if (checked) loveString else hateString)
                     checked
                 }
             }
@@ -199,9 +197,9 @@ fun RenderContext.formControlDemo(): Div {
             }) {
                 h4 { +"Selected:" }
                 ul {
-                    selectedItemsStore.data.each().render { selectedItem ->
+                    selectedItemsStore.data.renderEach { selectedItem ->
                         li { +selectedItem }
-                    }.bind()
+                    }
                 }
             }
             // use your own formControl! Pay attention to the derived component receiver.

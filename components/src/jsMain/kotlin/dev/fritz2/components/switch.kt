@@ -1,8 +1,7 @@
 package dev.fritz2.components
 
+
 import dev.fritz2.binding.RootStore
-
-
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
@@ -13,7 +12,6 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 
 // todo on hold, will be revisited after context redesign
@@ -45,11 +43,11 @@ fun RenderContext.f2NewSwitch(
 //        }",
         id = "switch-label-$id"
     ) {
-        state.take(1).map { initialState ->
+        state.take(1).render { initialState ->
             div {
                 val stateStore = RootStore(initialState)
                 //stateStore.data.map { isChecked ->
-                    div {
+                div {
 //                        var styleFun = use(
 //                            SwitchVariants.variant().input +
 //                                    styles,
@@ -68,7 +66,7 @@ fun RenderContext.f2NewSwitch(
                         ) {
                             name("input-$id")
                             type("checkbox")
-                            checked = state
+                            checked(state)
                             changes.states() handledBy stateStore.update
                         }
 
@@ -95,7 +93,7 @@ fun RenderContext.f2NewSwitch(
                     }
                 //}() // stateStore data map
             }
-        }()
+        }
     }
 }
 

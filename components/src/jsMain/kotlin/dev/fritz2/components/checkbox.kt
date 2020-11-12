@@ -10,6 +10,7 @@ import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.CheckboxSizes
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLInputElement
 
 /**
@@ -218,14 +219,13 @@ fun RenderContext.checkbox(
             component.checkedBackgroundColor()
         }) {
             type("checkbox")
-            checked = component.checked
-            disabled = component.disabled
+            checked(component.checked)
+            disabled(component.disabled)
             component.events?.invoke(this)
         }
         (::label.styled(
             baseClass = CheckboxComponent.checkboxLabelStaticCss,
             id = "$id-label",
-            extension = "$id-input", // for
             prefix = prefix
         ) {
             CheckboxComponent.checkboxLabelStyles()
@@ -234,7 +234,8 @@ fun RenderContext.checkbox(
             component.backgroundColor()
             component.borderColor()
         }) {
-            component.text.bind()
+            `for`("$id-input")
+            component.text.asText()
         }
     }
 }

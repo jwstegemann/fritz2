@@ -1,6 +1,4 @@
 import dev.fritz2.binding.Store
-import dev.fritz2.binding.const
-import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.inputField
 import dev.fritz2.components.lineUp
@@ -29,15 +27,15 @@ fun RenderContext.inputDemo(): Div {
 
             h3 { +"A basic Input needs no Store" }
             inputField {
-                placeholder = const("Placeholder")
+                placeholder("Placeholder")
             }
 
             h3 { +"A disabled component is skipped by the TAB key, but readonly isn't." }
             lineUp {
                 items {
                     inputField {
-                        value = const("disabled")
-                        disabled = const(true)
+                        value("disabled")
+                        disabled(true)
                     }
                     inputField({
                         focus {
@@ -47,26 +45,26 @@ fun RenderContext.inputDemo(): Div {
                             boxShadow { none }
                         }
                     }) {
-                        value = const("readonly")
-                        readOnly = const(true)
+                        value("readonly")
+                        readOnly(true)
                     }
                 }
             }
 
             h3 { +"Password" }
             inputField {
-                type = const("password")
-                placeholder = const("Password")
+                type("password")
+                placeholder("Password")
             }
 
             h3 { +"Inputs with store connect events automatically." }
             inputField(store = user) {
-                placeholder = const("Name")
+                placeholder("Name")
             }
 
             h3 { +"Inputs without stores need manual event collection." }
             inputField {
-                placeholder = const("Name")
+                placeholder("Name")
                 changes.values() handledBy user.update
             }
 
@@ -80,20 +78,20 @@ fun RenderContext.inputDemo(): Div {
                 }
             }) {
                 +"Name in Store: "
-                user.data.bind()
+                user.data.asText()
             }
 
             h3 { +"Sizes" }
             lineUp {
                 items {
                     inputField({ theme().input.large() }) {
-                        placeholder = const("large")
+                        placeholder("large")
                     }
                     inputField({ theme().input.normal() }) {
-                        placeholder = const("normal")
+                        placeholder("normal")
                     }
                     inputField({ theme().input.small() }) {
-                        placeholder = const("small")
+                        placeholder("small")
                     }
                 }
             }
@@ -102,10 +100,10 @@ fun RenderContext.inputDemo(): Div {
             lineUp {
                 items {
                     inputField({ theme().input.outline() }) {
-                        placeholder = const("outline")
+                        placeholder("outline")
                     }
                     inputField({ theme().input.filled() }) {
-                        placeholder = const("filled")
+                        placeholder("filled")
                     }
                 }
             }
@@ -156,8 +154,8 @@ fun RenderContext.inputDemo(): Div {
                 items {
                     // use our component instead of built-in one!
                     ourInputField {
-                        type = const("text")
-                        placeholder = const("user")
+                        type("text")
+                        placeholder("user")
                     }
                     ourInputField({
                         // Passwords are dangerous -> so style ad hoc!!!
@@ -165,8 +163,8 @@ fun RenderContext.inputDemo(): Div {
                             color { danger }
                         }
                     }) {
-                        type = const("password")
-                        placeholder = const("password")
+                        type("password")
+                        placeholder("password")
                     }
                 }
             }

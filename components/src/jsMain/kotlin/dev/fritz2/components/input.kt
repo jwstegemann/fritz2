@@ -120,7 +120,7 @@ fun RenderContext.inputField(
     }) {
         init()
         store?.let {
-            value = it.data
+            value(it.data)
             changes.values() handledBy it.update
         }
     }

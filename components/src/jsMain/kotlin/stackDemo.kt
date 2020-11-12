@@ -1,4 +1,3 @@
-import dev.fritz2.binding.const
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
@@ -153,8 +152,8 @@ fun RenderContext.stackDemo(): Div {
                                         boxShadow { flat }
                                         radius { smaller }
                                     }) {
-                                        src = const("https://www.fritz2.dev/static/fritz2_state.001.png")
-                                        alt = const("Random image for flex layout demonstration")
+                                        src("https://www.fritz2.dev/static/fritz2_state.001.png")
+                                        alt("Random image for flex layout demonstration")
                                     }
                                 }
                             }

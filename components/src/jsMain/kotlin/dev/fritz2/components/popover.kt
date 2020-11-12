@@ -13,6 +13,7 @@ import dev.fritz2.styling.theme.PopoverPlacements
 import dev.fritz2.styling.theme.PopoverSizes
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 /**
@@ -104,7 +105,7 @@ class PopoverComponent {
         header = {
             (::header.styled(prefix = "popover-header") {
                 theme().popover.header()
-            }){ value.bind() }
+            }){ value.asText() }
         }
     }
 
@@ -125,7 +126,7 @@ class PopoverComponent {
         footer = {
             (::footer.styled(prefix = "popover-footer") {
                 theme().popover.footer()
-            }){ value.bind() }
+            }){ value.asText() }
         }
     }
 
@@ -146,10 +147,11 @@ class PopoverComponent {
         content = {
             (::section.styled(prefix = "popover-content") {
                 theme().popover.section()
-        }){value.bind()} }
+            }){ value.asText() }
+        }
     }
 
-    private fun renderArrow(renderContext: RenderContext. {
+    private fun renderArrow(renderContext: RenderContext) {
         renderContext.apply {
             (::div.styled(prefix = "popover-arrow") {
                 arrowPlacement.invoke(theme().popover.arrowPlacement)()
@@ -157,7 +159,7 @@ class PopoverComponent {
         }
     }
 
-    fun renderPopover(renderContext: RenderContext.closeHandler: SimpleHandler<Unit>) {
+    fun renderPopover(renderContext: RenderContext, closeHandler: SimpleHandler<Unit>) {
         renderContext.apply {
             (::div.styled(baseClass = StyleClass("popoverWrapper"), prefix = "popover") {
                 positionStyle.invoke(theme().popover.placement)()
@@ -237,6 +239,6 @@ fun RenderContext.popover(
             if (it) {
                 component.renderPopover(this, clickStore.toggle)
             }
-        }()
+        }
     }
 }

@@ -163,22 +163,22 @@ private fun RenderContext.radio(
         }) {
             type("radio")
             name("$id-groupname")
-            checked = component.checked
-            disabled = component.disabled
-            value = component.text
+            checked(component.checked)
+            disabled(component.disabled)
+            value(component.text)
             component.events?.invoke(this)
         }
         (::label.styled(
             baseClass = RadioComponent.radioLabelStaticCss,
             id = "$id-label",
-            extension = "$id-input", // for
             prefix = prefix) {
             RadioComponent.radioLabelStyles()
             component.size.invoke(theme().radio.sizes)()
             component.backgroundColor()
             component.borderColor()
         }) {
-            component.text.bind()
+            `for`("$id-input")
+            component.text.asText()
         }
     }
 }
@@ -318,7 +318,7 @@ class RadioGroupComponent {
                     events {
                         changes.values() handledBy selectedStore.update
                     }
-                    text(item.value)
+                    text(flowOf(item.value))
                 }
             }
             return selectedStore.data

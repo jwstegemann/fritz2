@@ -484,6 +484,6 @@ fun RenderContext.themeProvider(
             ) {
                 component.items?.let { it() }
             }
-        }()
+        }
     }
 }

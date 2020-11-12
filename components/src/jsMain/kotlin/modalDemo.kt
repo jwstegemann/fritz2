@@ -1,5 +1,4 @@
 import dev.fritz2.binding.SimpleHandler
-import dev.fritz2.binding.handledBy
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext

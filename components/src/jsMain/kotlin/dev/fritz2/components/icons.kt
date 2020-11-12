@@ -10,10 +10,9 @@ import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.theme
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import org.w3c.dom.svg.SVGElement
 
-
-//FIXME: move to RenderContext...
 const val xmlns = "http://www.w3.org/2000/svg"
 
 fun createIconSvgElement(baseClass: String?): SVGElement {
@@ -23,12 +22,15 @@ fun createIconSvgElement(baseClass: String?): SVGElement {
 }
 
 class Svg(
-    id: String? = null, baseClass: String? = null, override val domNode: SVGElement = createIconSvgElement(baseClass)
-) : Tag<SVGElement>(domNode = domNode, tagName = "", id = id)
+    id: String? = null,
+    baseClass: String? = null,
+    override val domNode: SVGElement = createIconSvgElement(baseClass),
+    job: Job
+) : Tag<SVGElement>(domNode = domNode, tagName = "", id = id, job = job)
 
 
 fun RenderContext.svg(baseClass: String?, id: String?, init: Svg.() -> Unit): Svg {
-    return register(Svg(id = id, baseClass = baseClass), init)
+    return register(Svg(id = id, baseClass = baseClass, job = job), init)
 }
 
 /**
