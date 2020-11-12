@@ -1,13 +1,15 @@
 import dev.fritz2.binding.const
-import dev.fritz2.components.*
+import dev.fritz2.components.icon
+import dev.fritz2.components.lineUp
+import dev.fritz2.components.popover
+import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.AlignItemsValues
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.popoverDemo(): Div {
+fun RenderContext.popoverDemo(): Div {
     return stackUp({
         alignItems { start }
         padding { "1rem" }

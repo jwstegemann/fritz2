@@ -88,25 +88,17 @@ open class Tag<out E : Element>(
         preserveOrder: Boolean = true,
         crossinline content: RenderContext.(V) -> Tag<HTMLElement>
     ) {
-        if (preserveOrder) {
-            mountDomNode(job, domNode) { childJob ->
-                this.map { data ->
-                    childJob.cancelChildren()
-                    dev.fritz2.dom.html.renderElement(job) {
-                        content(data)
-                    }
-                }
-            }
-        } else {
-            mountDomNodeUnordered(job, domNode) { childJob ->
-                this.map { data ->
-                    childJob.cancelChildren()
-                    dev.fritz2.dom.html.renderElement(job) {
-                        content(data)
-                    }
+        val upstream: (Job) -> Flow<WithDomNode<Element>> = { childJob ->
+            this.map { data ->
+                childJob.cancelChildren()
+                dev.fritz2.dom.html.renderElement(job) {
+                    content(data)
                 }
             }
         }
+
+        if (preserveOrder) mountDomNode(job, domNode, upstream)
+        else mountDomNodeUnordered(job, domNode, upstream)
     }
 
     /**

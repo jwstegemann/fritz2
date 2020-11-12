@@ -1,14 +1,15 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.*
 import dev.fritz2.dom.WithEvents
-import dev.fritz2.dom.html.*
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.ColorProperty
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.CheckboxSizes
 import dev.fritz2.styling.theme.theme
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLInputElement
 
 /**
@@ -115,9 +116,9 @@ class CheckboxComponent {
         size = value
     }
 
-    var text: Flow<String> = const("CheckboxLabel") // @label
+    var text: Flow<String> = flowOf("CheckboxLabel") // @label
     fun text(value: String) {
-        text = const(value)
+        text(value)
     }
     fun text(value: Flow<String>) {
         text = value
@@ -149,12 +150,12 @@ class CheckboxComponent {
         events = value
     }
 
-    var checked: Flow<Boolean> = const(false) // @input
+    var checked: Flow<Boolean> = flowOf(false) // @input
     fun checked(value: () -> Flow<Boolean>) {
         checked = value()
     }
 
-    var disabled: Flow<Boolean> = const(false) // @input
+    var disabled: Flow<Boolean> = flowOf(false) // @input
     fun disabled(value: () -> Flow<Boolean>) {
         disabled = value()
     }
@@ -192,7 +193,7 @@ class CheckboxComponent {
  * @param build a lambda expression for setting up the component itself. Details in [CheckboxComponent]
  */
 // todo add checkmark
-fun HtmlElements.checkbox(
+fun RenderContext.checkbox(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -216,7 +217,7 @@ fun HtmlElements.checkbox(
         ) {
             component.checkedBackgroundColor()
         }) {
-            type = const("checkbox")
+            type("checkbox")
             checked = component.checked
             disabled = component.disabled
             component.events?.invoke(this)

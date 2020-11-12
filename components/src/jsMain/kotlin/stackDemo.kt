@@ -1,14 +1,13 @@
 import dev.fritz2.binding.const
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.theme.IconDefinition
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.stackDemo(): Div {
+fun RenderContext.stackDemo(): Div {
     return stackUp({
         alignItems { start }
         padding { "1rem" }

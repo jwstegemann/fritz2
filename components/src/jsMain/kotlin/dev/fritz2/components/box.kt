@@ -1,7 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.GridParams
@@ -32,7 +32,7 @@ import dev.fritz2.styling.params.GridParams
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param init a lambda expression for setting up the content and events of the ``div`` element itself
  */
-fun HtmlElements.box(
+fun RenderContext.box(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -71,7 +71,7 @@ fun HtmlElements.box(
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param init a lambda expression for setting up the content and events of the ``div`` element itself
  */
-fun HtmlElements.flexBox(
+fun RenderContext.flexBox(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -115,7 +115,7 @@ fun HtmlElements.flexBox(
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param init a lambda expression for setting up the content and events of the ``div`` element itself
  */
-fun HtmlElements.gridBox(
+fun RenderContext.gridBox(
     styling: GridParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

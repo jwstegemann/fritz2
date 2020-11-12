@@ -242,9 +242,21 @@ fun append(targetId: String, vararg tagLists: List<Tag<HTMLElement>>) {
  * Appends one or more static [Tag]s to an elements content.
  *
  * @param targetId id of the element to mount to
+ * @param tags [Tag]s to append
  */
 fun <X : Element> append(targetId: String, vararg tags: Tag<X>) {
     window.document.getElementById(targetId)?.let { parent ->
         tags.forEach { tag -> parent.appendChild(tag.domNode) }
     } ?: throw MountTargetNotFoundException(targetId)
+}
+
+/**
+ * Appends one or more static [Tag]s to the document's body.
+ *
+ * @param tags [Tag]s to append
+ */
+fun <X : Element> appendToBody(vararg tags: Tag<X>) {
+    window.document.getElementsByTagName("body").item(0)?.let { element ->
+        tags.forEach { tag -> element.appendChild(tag.domNode) }
+    } ?: throw MountTargetNotFoundException("body")
 }

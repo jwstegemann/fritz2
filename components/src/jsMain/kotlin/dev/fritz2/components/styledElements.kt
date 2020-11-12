@@ -1,7 +1,6 @@
 package dev.fritz2.components
 
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.Label
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
@@ -10,7 +9,7 @@ import dev.fritz2.styling.params.StyleParamsImpl
 
 
 /**
- * Typealias for the common function signature of [HtmlElements] methods.
+ * Typealias for the common function signature of [RenderContext. methods.
  * It is used for defining a generic extension method for styling basic HTML elements.
  *
  * @see BasicComponent.styled
@@ -54,7 +53,7 @@ typealias BasicComponent<E> = (String?, String?, E.() -> Unit) -> E
  *         width { "5px" }
  *     }
  *     margin { huge }
- * }) { /* content parameter of ``HtmlElements.div``-method */
+ * }) { /* content parameter of ``RenderContext.div``-method */
  *     h1 { +"Some heading" }
  *     p { +"Some content" }
  * }
@@ -70,7 +69,7 @@ fun <E> BasicComponent<E>.styled(
     id: String? = null,
     prefix: String = "css",
     styling: BoxParams.() -> Unit
-): HtmlElements.(E.() -> Unit) -> E {
+): RenderContext.(E.() -> Unit) -> E {
     val additionalClass = StyleParamsImpl().apply(styling).cssClasses(prefix)
     return { init ->
         this@styled("${baseClass?.name.orEmpty()} ${additionalClass?.name.orEmpty()}", id, init)
@@ -91,7 +90,7 @@ fun <E> BasicComponent<E>.styled(
  * If the component consists of an HTML element (at least at the top level), the here provided variant of
  * a ``styled`` extension method is needed. With this function you can pass dynamic CSS into a basic HTML element:
  * ```
- * fun HtmlElements.myComponent(
+ * fun RenderContext.myComponent(
  *    // provide a styling DSL expression as parameter
  *    styling: BasicParams.() -> Unit = {},
  *     // just offer the "basic params" in order to simply pass them by
@@ -144,20 +143,20 @@ fun <E> BasicComponent<E>.styled(
     id: String? = null,
     prefix: String = "css",
     styling: BoxParams.() -> Unit
-): HtmlElements.(E.() -> Unit) -> E {
+): RenderContext.(E.() -> Unit) -> E {
     val additionalClass = StyleParamsImpl().apply {
         styling()
         parentStyling()
     }.cssClasses(prefix)
     return { init ->
-        this@styled((baseClass+ additionalClass).name, id, init)
+        this@styled((baseClass + additionalClass).name, id, init)
     }
 }
 
 /**
  * WARNING: This will be removed for the 0.8 release
  *
- * Typealias for the extended function signatures of *some* [HtmlElements] methods, that require an additional
+ * Typealias for the extended function signatures of *some* [RenderContext. methods, that require an additional
  * parameter compared to [BasicComponent]
  * It is used for defining a generic extension method for styling corresponding basic HTML elements.
  *
@@ -180,7 +179,7 @@ fun <E> ExtendedComponent<E>.styled(
     prefix: String = "css",
     extension: String? = null,
     styling: BoxParams.() -> Unit
-): HtmlElements.(E.() -> Unit) -> E {
+): RenderContext.(E.() -> Unit) -> E {
     val additionalClass = StyleParamsImpl().apply(styling).cssClasses(prefix)
     return { init ->
         this@styled("${baseClass?.name.orEmpty()} ${additionalClass?.name.orEmpty()}", id, extension, init)
@@ -205,7 +204,7 @@ fun <E> StyledComponent<E>.styled(
     id: String? = null,
     prefix: String = "css",
     styling: BasicParams.() -> Unit
-): HtmlElements.(E.() -> Unit) -> E {
+): RenderContext.(E.() -> Unit) -> E {
     val additionalClass = StyleParamsImpl().apply(parentStyling).cssClasses(prefix)
     return { init ->
         this@styled(styling, baseClass + additionalClass, id, prefix, init)

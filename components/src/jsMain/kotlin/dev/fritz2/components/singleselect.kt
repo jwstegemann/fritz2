@@ -1,14 +1,17 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.const
-import dev.fritz2.binding.handledBy
+
+
 import dev.fritz2.components.RadioGroupComponent.Companion.radioGroupStructure
 import dev.fritz2.dom.WithEvents
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.ColorProperty
+import dev.fritz2.styling.params.DirectionValues
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.RadioSizes
 import dev.fritz2.styling.theme.theme
@@ -28,7 +31,7 @@ class RadioComponent {
         size = value
     }
 
-    var text: Flow<String> = const("") // @label
+    var text: Flow<String> = flowOf("") // @label
     fun text(value: Flow<String>) {
         text = value
     }
@@ -60,9 +63,9 @@ class RadioComponent {
     }
 
     // todo: for user, these are only distinguished  from Input.xxx by signature
-    var checked: Flow<Boolean> = const(false) // @input
+    var checked: Flow<Boolean> = flowOf(false) // @input
 
-    var disabled: Flow<Boolean> = const(false) // @input
+    var disabled: Flow<Boolean> = flowOf(false) // @input
     fun disabled(value: () -> Flow<Boolean>) {
         disabled = value()
     }
@@ -135,7 +138,7 @@ class RadioComponent {
 
 // TODO: Check if this is the best encapsulation - possible to integrate into a companion object of some component?
 // TODO: Check if signature is really necessary? If only internally used, some parameters might be obsolete?
-private fun HtmlElements.radio(
+private fun RenderContext.radio(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -147,7 +150,8 @@ private fun HtmlElements.radio(
     (::div.styled(
         baseClass = baseClass,
         id = id,
-        prefix = prefix) {
+        prefix = prefix
+    ) {
         styling() // attach user styling to container only
     }) {
         (::input.styled(
@@ -157,8 +161,8 @@ private fun HtmlElements.radio(
             component.checkedBackgroundColor()
 
         }) {
-            type = const("radio")
-            name = const("$id-groupname")
+            type("radio")
+            name("$id-groupname")
             checked = component.checked
             disabled = component.disabled
             value = component.text
@@ -246,7 +250,7 @@ class RadioGroupComponent {
         selected = value()
     }
 
-    var disabled: Flow<Boolean> = const(false) // @input
+    var disabled: Flow<Boolean> = flowOf(false) // @input
     fun disabled(value: () -> Flow<Boolean>) {
         disabled = value()
     }
@@ -294,7 +298,7 @@ class RadioGroupComponent {
             }
         }
 
-        private fun HtmlElements.radioGroupContent(
+        private fun RenderContext.radioGroupContent(
             id: String?,
             component: RadioGroupComponent
         ): Flow<String> {
@@ -314,13 +318,13 @@ class RadioGroupComponent {
                     events {
                         changes.values() handledBy selectedStore.update
                     }
-                    text = const(item.value)
+                    text(item.value)
                 }
             }
             return selectedStore.data
         }
 
-        fun HtmlElements.radioGroupStructure(
+        fun RenderContext.radioGroupStructure(
             containerStyling: BasicParams.() -> Unit = {},
             selectedItemStore: RootStore<String>? = null,
             baseClass: StyleClass? = null,
@@ -383,7 +387,7 @@ class RadioGroupComponent {
  * @param build a lambda expression for setting up the component itself. Details in [RadioGroupComponent]
  * @return a flow of the _selected_ item
  */
-fun HtmlElements.radioGroup(
+fun RenderContext.radioGroup(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

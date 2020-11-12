@@ -1,12 +1,15 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.const
-import dev.fritz2.binding.handledBy
-import dev.fritz2.dom.html.*
+
+
+import dev.fritz2.dom.html.Label
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.ColorProperty
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +26,7 @@ internal object SwitchFoundation {
     )
 }
 
-fun HtmlElements.f2NewSwitch(
+fun RenderContext.f2NewSwitch(
     state: Flow<Boolean>,
     styles: Style<BasicParams> = {},
     color: ColorProperty = theme().colors.primary,
@@ -63,8 +66,8 @@ fun HtmlElements.f2NewSwitch(
                             //styleFun,
                             id = "switch-input-$id"
                         ) {
-                            name = const("input-$id")
-                            type = const("checkbox")
+                            name("input-$id")
+                            type("checkbox")
                             checked = state
                             changes.states() handledBy stateStore.update
                         }
@@ -82,7 +85,7 @@ fun HtmlElements.f2NewSwitch(
 //                            )
 //                        }
                         span(
-                           // styleFun,
+                            // styleFun,
                             id = "switch-span-$id"
                         ) {}
 
@@ -90,9 +93,9 @@ fun HtmlElements.f2NewSwitch(
                             stateStore.data
                         ).init()
                     }
-                //}.bind() // stateStore data map
+                //}() // stateStore data map
             }
-        }.bind()
+        }()
     }
 }
 
@@ -189,7 +192,7 @@ class SwitchContext(val state: Flow<Boolean>)
 // todo label, inactive, einbauen
 // todo chakra benutzt controlbox zum styling
 
-//fun HtmlElements.f2Switch(
+//fun RenderContext.f2Switch(
 //    styles: Style<BasicParams> = {},
 //    state: Flow<Boolean>,
 //    variant: SwitchVariants.() -> SwitchVariantsInterface = { toggle },
@@ -220,8 +223,8 @@ class SwitchContext(val state: Flow<Boolean>)
 //                            styleFun,
 //                            id = "switch-input-$id"
 //                        ) {
-//                            name = const("input-$id")
-//                            type = const("checkbox")
+//                            name("input-$id")
+//                            type("checkbox")
 //                            checked = state
 //                            changes.states() handledBy stateStore.update
 //                        }
@@ -246,8 +249,8 @@ class SwitchContext(val state: Flow<Boolean>)
 //                            stateStore.data
 //                        ).init()
 //                    }
-//                }.bind()
+//                }()
 //            }
-//        }.bind()
+//        }()
 //    }
 //}

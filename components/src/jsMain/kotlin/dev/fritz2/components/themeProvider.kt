@@ -4,8 +4,7 @@ import DefaultTheme
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.render
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.resetCss
@@ -394,9 +393,9 @@ video {
         resetCss = value()
     }
 
-    var items: (HtmlElements.() -> Unit)? = null
+    var items: (RenderContext.() -> Unit)? = null
 
-    fun items(value: HtmlElements.() -> Unit) {
+    fun items(value: RenderContext.() -> Unit) {
         items = value
     }
 
@@ -457,7 +456,7 @@ video {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [ThemeComponent]
  */
-fun HtmlElements.themeProvider(
+fun RenderContext.themeProvider(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -485,6 +484,6 @@ fun HtmlElements.themeProvider(
             ) {
                 component.items?.let { it() }
             }
-        }.bind()
+        }()
     }
 }

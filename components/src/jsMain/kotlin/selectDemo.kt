@@ -4,8 +4,7 @@ import dev.fritz2.binding.each
 import dev.fritz2.binding.handledBy
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.render
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.map
 val myItems = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "222222")
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.singleSelectDemo(): Div {
+fun RenderContext.singleSelectDemo(): Div {
 
     return stackUp({
         alignItems { start }
@@ -143,7 +142,7 @@ fun HtmlElements.singleSelectDemo(): Div {
 }
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.multiSelectDemo(): Div {
+fun RenderContext.multiSelectDemo(): Div {
     return stackUp({
         alignItems { start }
         padding { "1rem" }

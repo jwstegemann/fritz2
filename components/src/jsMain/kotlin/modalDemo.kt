@@ -1,10 +1,8 @@
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.handledBy
-import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.AlignItemsValues
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.theme
@@ -12,7 +10,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.modalDemo(): Div {
+fun RenderContext.modalDemo(): Div {
 
     // Call this once, if you don't need to *dynamically* change overlay!
     //ModalComponent.setOverlayHandler(DefaultOverlay(OverlayMethod.CoveringEach))

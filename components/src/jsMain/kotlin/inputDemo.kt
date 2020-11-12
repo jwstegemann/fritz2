@@ -2,10 +2,13 @@ import dev.fritz2.binding.Store
 import dev.fritz2.binding.const
 import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.storeOf
-import dev.fritz2.components.*
+import dev.fritz2.components.inputField
+import dev.fritz2.components.lineUp
+import dev.fritz2.components.stackUp
+import dev.fritz2.components.styled
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.Input
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -13,7 +16,7 @@ import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.inputDemo(): Div {
+fun RenderContext.inputDemo(): Div {
 
     val user = storeOf("Jon Snoe")
 
@@ -132,7 +135,7 @@ fun HtmlElements.inputDemo(): Div {
             }
 
             // Extend base component
-            fun HtmlElements.ourInputField(
+            fun RenderContext.ourInputField(
                 styling: BasicParams.() -> Unit = {},
                 store: Store<String>? = null,
                 baseClass: StyleClass? = null,

@@ -1,7 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
@@ -13,7 +13,7 @@ import kotlinx.browser.document
 import org.w3c.dom.svg.SVGElement
 
 
-//FIXME: move to HtmlElements...
+//FIXME: move to RenderContext...
 const val xmlns = "http://www.w3.org/2000/svg"
 
 fun createIconSvgElement(baseClass: String?): SVGElement {
@@ -27,7 +27,7 @@ class Svg(
 ) : Tag<SVGElement>(domNode = domNode, tagName = "", id = id)
 
 
-fun HtmlElements.svg(baseClass: String?, id: String?, init: Svg.() -> Unit): Svg {
+fun RenderContext.svg(baseClass: String?, id: String?, init: Svg.() -> Unit): Svg {
     return register(Svg(id = id, baseClass = baseClass), init)
 }
 
@@ -139,7 +139,7 @@ class IconComponent {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [IconComponent]
  */
-fun HtmlElements.icon(
+fun RenderContext.icon(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

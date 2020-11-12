@@ -1,14 +1,12 @@
-import dev.fritz2.binding.const
-import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.watch
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>, theme: ExtendedTheme): Div {
+fun RenderContext.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>, theme: ExtendedTheme): Div {
 
     return flexBox({
         margin { small }
@@ -33,8 +31,8 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>
                 boxShadow { flat }
                 radius { large }
             }) {
-                src = const("https://www.fritz2.dev/images/fritz_info_1.jpg")
-                alt = const("Random image for flex layout demonstration")
+                src("https://www.fritz2.dev/images/fritz_info_1.jpg")
+                alt("Random image for flex layout demonstration")
             }
         }
 

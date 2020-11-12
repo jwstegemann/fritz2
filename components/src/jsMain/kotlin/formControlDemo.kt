@@ -1,7 +1,8 @@
-import dev.fritz2.binding.*
+import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -34,8 +35,8 @@ class MyFormControlComponent : FormControlComponent() {
             baseClass: StyleClass?,
             id: String?,
             prefix: String,
-            renderContext: HtmlElements,
-            control: HtmlElements.() -> Unit
+            renderContext: RenderContext.
+            control: RenderContext.() -> Unit
         ) {
             renderContext.lineUp({
                 verticalAlign { top }
@@ -86,7 +87,7 @@ class MyFormControlComponent : FormControlComponent() {
     }
 }
 
-fun HtmlElements.myFormControl(
+fun RenderContext.myFormControl(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -98,7 +99,7 @@ fun HtmlElements.myFormControl(
 }
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.formControlDemo(): Div {
+fun RenderContext.formControlDemo(): Div {
     val solution = "fritz2"
     val framework = storeOf("")
 
