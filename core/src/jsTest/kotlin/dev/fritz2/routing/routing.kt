@@ -9,6 +9,7 @@ import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
@@ -80,7 +81,7 @@ class RoutingTests {
                     router.select(pageKey, "").asText()
                 }
                 div(id = btnId) {
-                    router.select(btnKey) { it.first ?: "" }.asText()
+                    router.select(btnKey).map { it.first ?: "" }.asText()
                 }
                 ul {
                     buttons.forEach { (id, page) ->
