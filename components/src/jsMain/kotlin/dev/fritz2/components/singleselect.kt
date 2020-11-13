@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLInputElement
 
-// todo fix no size default
 // todo implement defaultChecked for radio, checkbox
 // todo add dropdown single select
 
@@ -278,7 +277,7 @@ class RadioGroupComponent {
     companion object {
 
         // TODO: Check how to *centralize* this (compare multiselect and formcontrol)
-        // TODO: Change names to ``horizontal`` and ``vertical``?
+        // TODO: Change names to ``horizontal`` and ``vertical``?  Row and column is widely used in fritz2 for directions
         object RadioGroupLayouts { // @ fieldset
             val column: Style<BasicParams> = {
                 display {

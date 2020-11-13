@@ -113,7 +113,7 @@ class CheckboxGroupComponent {
     companion object {
 
         // TODO: Check how to *centralize* this (compare singleselect and formcontrol)
-        // TODO: Change names to ``horizontal`` and ``vertical``?
+        // TODO: Change names to ``horizontal`` and ``vertical``?  Row and column is widely used in fritz2 for directions
         object CheckboxGroupLayouts { // @ fieldset
             val column: Style<BasicParams> = {
                 display {

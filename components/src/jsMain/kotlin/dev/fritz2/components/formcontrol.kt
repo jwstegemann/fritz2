@@ -94,7 +94,7 @@ open class FormControlComponent {
         }
 
         // TODO: Check how to *centralize* this (compare multiselect and multiselect)
-        // TODO: Change names to ``horizontal`` and ``vertical``?
+        // TODO: Change names to ``horizontal`` and ``vertical``? Row and column is widely used in fritz2 for directions
         object FormControlLayouts { // @ fieldset
             val column: Style<BasicParams> = {
                 display {
@@ -208,8 +208,6 @@ open class FormControlComponent {
             inputField(styling, store, baseClass, id, prefix) {
                 className(StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it })
                 init()
-                // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
-                //disabled.bindAttr("disabled")
             }
         }
     }
@@ -225,8 +223,6 @@ open class FormControlComponent {
         {
             checkbox(styling, baseClass, id, prefix) {
                 build()
-                // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
-                //disabled.bindAttr("disabled")
             }
         }
     }
@@ -243,8 +239,6 @@ open class FormControlComponent {
         control.set(ControlNames.checkboxGroup) {
             checkboxGroupStructure(styling, selectedStore, baseClass, id, prefix) {
                 build()
-                // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
-                //disabled.bindAttr("disabled")
             }
         }
         return selectedStore.data
@@ -262,8 +256,6 @@ open class FormControlComponent {
         {
             radioGroupStructure(styling, selectedStore, baseClass, id, prefix) {
                 build()
-                // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
-                //disabled.bindAttr("disabled")
             }
         }
         return selectedStore.data
