@@ -142,7 +142,7 @@ fun RenderContext.formControlDemo(): Div {
                 }
             }
 
-            val loveString = "I love fritz2 with all my heart and I want to have its babies."
+            val loveString = "I love fritz2 with all my heart."
             val hateString = "I hate your guts, fritz2!"
             val loveStore = object : RootStore<Boolean>(true) {
                 val changedMyMind = handleAndEmit<Boolean, String> { _, checked ->
