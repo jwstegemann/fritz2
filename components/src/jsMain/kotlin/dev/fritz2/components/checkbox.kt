@@ -119,7 +119,7 @@ class CheckboxComponent {
 
     var text: Flow<String> = flowOf("CheckboxLabel") // @label
     fun text(value: String) {
-        text(value)
+        text(flowOf(value))
     }
     fun text(value: Flow<String>) {
         text = value
