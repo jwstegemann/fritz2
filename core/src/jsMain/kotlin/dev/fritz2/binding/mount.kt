@@ -1,9 +1,10 @@
 package dev.fritz2.binding
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.NonCancellable.cancel
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.scan
 
 /**
  * collects the values of a given [Flow] one by one.
@@ -13,9 +14,10 @@ import kotlinx.coroutines.flow.*
  * @param upstream returns the Flow that should be mounted at this point
  * @param set function which getting called when values are changing (rerender)
  */
-inline fun <T> mountSingle(parentJob: Job, crossinline upstream: (Job) -> Flow<T>, crossinline set: suspend (T, T?) -> Unit) {
+//TODO: inline?
+fun <T> mountSingle(parentJob: Job, upstream: Flow<T>, set: suspend (T, T?) -> Unit) {
     (MainScope() + parentJob).launch {
-        upstream(currentCoroutineContext()[Job]!!).scan(null) { last: T?, value: T ->
+        upstream.scan(null) { last: T?, value: T ->
             set(value, last)
             value
         }.catch {

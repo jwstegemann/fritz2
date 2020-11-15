@@ -32,7 +32,7 @@ fun <T> checkSingleFlow(
     check: (Int, T, T?) -> Boolean
 ) {
     var count = 0
-    mountSingle(Job(), { upstream }) { value, last ->
+    mountSingle(Job(), upstream) { value, last ->
         val result = check(count, value, last)
         count++;
         if (result) done.complete(true)

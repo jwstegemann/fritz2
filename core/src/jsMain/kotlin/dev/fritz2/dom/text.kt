@@ -3,7 +3,6 @@ package dev.fritz2.dom
 import dev.fritz2.dom.html.RenderContext
 import kotlinx.browser.document
 import kotlinx.browser.window
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.Node
@@ -21,10 +20,7 @@ interface WithText<N : Node> : WithDomNode<N>, RenderContext {
      * @receiver text-content
      */
     fun Flow<String>.asText() {
-        mountDomNode(job, domNode) { childJob ->
-            childJob.cancelChildren()
-            this.map { TextNode(it) }
-        }
+        mountDomNode(job, domNode, this.map { TextNode(it) })
     }
 
     /**
@@ -33,10 +29,7 @@ interface WithText<N : Node> : WithDomNode<N>, RenderContext {
      * @receiver text-content
      */
     fun <T> Flow<T>.asText() {
-        mountDomNode(job, domNode) { childJob ->
-            childJob.cancelChildren()
-            this.map { TextNode(it.toString()) }
-        }
+        mountDomNode(job, domNode, this.map { TextNode(it.toString()) })
     }
 
     /**

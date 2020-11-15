@@ -63,15 +63,14 @@ open class Tag<out E : Element>(
      * @receiver [Flow] containing the data
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    inline fun <V> Flow<V>.render(crossinline content: RenderContext.(V) -> Unit) {
-        mountDomNodeList(job, domNode) { childJob ->
-            this.map { data ->
-                childJob.cancelChildren()
-                dev.fritz2.dom.html.render(childJob) {
-                    content(data)
-                }
+    fun <V> Flow<V>.render(content: RenderContext.(V) -> Unit) {
+        val newJob = Job(job)
+        mountDomNodeList(job, domNode, this.map { data ->
+            newJob.cancelChildren()
+            dev.fritz2.dom.html.render(newJob) {
+                content(data)
             }
-        }
+        })
     }
 
     /**
@@ -84,16 +83,16 @@ open class Tag<out E : Element>(
      * the same level (default true)
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    inline fun <V> Flow<V>.renderElement(
+    fun <V> Flow<V>.renderElement(
         preserveOrder: Boolean = true,
-        crossinline content: RenderContext.(V) -> Tag<HTMLElement>
+        content: RenderContext.(V) -> Tag<HTMLElement>
     ) {
-        val upstream: (Job) -> Flow<WithDomNode<Element>> = { childJob ->
-            this.map { data ->
-                childJob.cancelChildren()
-                dev.fritz2.dom.html.renderElement(job) {
-                    content(data)
-                }
+        val newJob = Job(job)
+
+        val upstream = this.map { data ->
+            newJob.cancelChildren()
+            dev.fritz2.dom.html.renderElement(newJob) {
+                content(data)
             }
         }
 
@@ -121,20 +120,20 @@ open class Tag<out E : Element>(
      *
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    inline fun <V, I> Flow<List<V>>.renderEach(
-        noinline idProvider: IdProvider<V, I>,
-        crossinline content: RenderContext.(V) -> Tag<HTMLElement>
+    fun <V, I> Flow<List<V>>.renderEach(
+        idProvider: IdProvider<V, I>,
+        content: RenderContext.(V) -> Tag<HTMLElement>
     ) {
-        mountDomNodePatch(job, domNode) { childJob ->
-            childJob.cancelChildren()
+        val newJob = Job(job)
+        mountDomNodePatch(job, domNode,
             this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
                 Myer.diff(old, new, idProvider)
             }.map {
                 it.map { value ->
-                    content(value)
+                    //FIXME: cancel children, forward new Job
+                    dev.fritz2.dom.html.renderElement(newJob) { content(value) }
                 }
-            }
-        }
+            })
     }
 
 
@@ -146,19 +145,17 @@ open class Tag<out E : Element>(
      *
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    inline fun <V> Flow<List<V>>.renderEach(
-        crossinline content: RenderContext.(V) -> Tag<HTMLElement>
+    fun <V> Flow<List<V>>.renderEach(
+        content: RenderContext.(V) -> Tag<HTMLElement>
     ) {
-        mountDomNodePatch(job, domNode) { childJob ->
-            childJob.cancelChildren()
+        mountDomNodePatch(job, domNode,
             this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
                 Myer.diff(old, new)
             }.map {
                 it.map { value ->
                     content(value)
                 }
-            }
-        }
+            })
     }
 
     /**
@@ -174,16 +171,14 @@ open class Tag<out E : Element>(
         noinline idProvider: IdProvider<V, I>,
         crossinline content: RenderContext.(SubStore<List<V>, List<V>, V>) -> Tag<HTMLElement>
     ) {
-        mountDomNodePatch(job, domNode) { childJob ->
-            childJob.cancelChildren()
+        mountDomNodePatch(job, domNode,
             this.data.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
                 Myer.diff(old, new, idProvider)
             }.map {
                 it.map { value ->
                     content(sub(elementLens(value, idProvider)))
                 }
-            }
-        }
+            })
     }
 
     /**
@@ -196,12 +191,10 @@ open class Tag<out E : Element>(
     inline fun <V> RootStore<List<V>>.renderEach(
         crossinline content: RenderContext.(SubStore<List<V>, List<V>, V>) -> Tag<HTMLElement>
     ) {
-        mountDomNodePatch(job, domNode) { childJob ->
-            childJob.cancelChildren()
+        mountDomNodePatch(job, domNode,
             this.data.map { it.withIndex().toList() }.eachIndex().map {
                 it.map { (i, _) -> content(sub(i)) }
-            }
-        }
+            })
     }
 
     /**
@@ -213,20 +206,18 @@ open class Tag<out E : Element>(
      * @param idProvider function to identify a unique entity in the list
      * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
-    inline fun <R, P, V, I> SubStore<R, P, List<V>>.renderEach(
-        noinline idProvider: IdProvider<V, I>,
-        crossinline content: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
+    fun <R, P, V, I> SubStore<R, P, List<V>>.renderEach(
+        idProvider: IdProvider<V, I>,
+        content: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
     ) {
-        mountDomNodePatch(job, domNode) { childJob ->
-            childJob.cancelChildren()
+        mountDomNodePatch(job, domNode,
             this.data.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
                 Myer.diff(old, new, idProvider)
             }.map {
                 it.map { value ->
                     content(sub(elementLens(value, idProvider)))
                 }
-            }
-        }
+            })
     }
 
     /**
@@ -236,15 +227,13 @@ open class Tag<out E : Element>(
      *
      * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
-    inline fun <R, P, V> SubStore<R, P, List<V>>.renderEach(
-        crossinline content: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
+    fun <R, P, V> SubStore<R, P, List<V>>.renderEach(
+        content: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
     ) {
-        mountDomNodePatch(job, domNode) { childJob ->
-            childJob.cancelChildren()
+        mountDomNodePatch(job, domNode,
             this.data.map { it.withIndex().toList() }.eachIndex().map {
                 it.map { (i, _) -> content(sub(i)) }
-            }
-        }
+            })
     }
 
     /**
@@ -288,10 +277,7 @@ open class Tag<out E : Element>(
      * @param value to use
      */
     fun attr(name: String, value: Flow<String>) {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            value
-        }) { v, _ -> attr(name, v) }
+        mountSingle(job, value) { v, _ -> attr(name, v) }
     }
 
     /**
@@ -311,10 +297,7 @@ open class Tag<out E : Element>(
      * @param value to use
      */
     fun <T> attr(name: String, value: Flow<T>) {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            value.map { it.toString() }
-        }) { v, _ -> attr(name, v) }
+        mountSingle(job, value.map { it.toString() }) { v, _ -> attr(name, v) }
     }
 
     /**
@@ -337,10 +320,7 @@ open class Tag<out E : Element>(
      * @param trueValue value to use if attribute is set (default "")
      */
     fun attr(name: String, value: Flow<Boolean>, trueValue: String = "") {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            value
-        }) { v, _ -> attr(name, v, trueValue) }
+        mountSingle(job, value) { v, _ -> attr(name, v, trueValue) }
     }
 
     /**
@@ -364,10 +344,7 @@ open class Tag<out E : Element>(
      * @param separator [String] for separation
      */
     fun attr(name: String, values: Flow<List<String>>, separator: String = " ") {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            values
-        }) { v, _ -> attr(name, v, separator) }
+        mountSingle(job, values) { v, _ -> attr(name, v, separator) }
     }
 
     /**
@@ -393,10 +370,7 @@ open class Tag<out E : Element>(
      * @param separator [String] for separation
      */
     fun attr(name: String, values: Flow<Map<String, Boolean>>, separator: String = " ") {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            values
-        }) { v, _ -> attr(name, v, separator) }
+        mountSingle(job, values) { v, _ -> attr(name, v, separator) }
     }
 
     /**

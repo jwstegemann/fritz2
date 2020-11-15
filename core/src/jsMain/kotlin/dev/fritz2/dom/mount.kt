@@ -18,10 +18,10 @@ import org.w3c.dom.Node
  * @param target DOM mounting target
  * @param upstream returns the [Flow] that should be mounted at this point
  */
-inline fun <N : Node> mountDomNode(
+fun <N : Node> mountDomNode(
     job: Job,
     target: N,
-    crossinline upstream: (Job) -> Flow<WithDomNode<N>>
+    upstream: Flow<WithDomNode<N>>
 ) {
     var placeholder: Comment? = document.createComment("")
 
@@ -47,10 +47,10 @@ inline fun <N : Node> mountDomNode(
  * @param target DOM mounting target
  * @param upstream returns the [Flow] that should be mounted at this point
  */
-inline fun <N : Node> mountDomNodeUnordered(
+fun <N : Node> mountDomNodeUnordered(
     job: Job,
     target: N,
-    crossinline upstream: (Job) -> Flow<WithDomNode<N>>
+    upstream: Flow<WithDomNode<N>>
 ) {
     mountSingle(job, upstream) { value, last ->
         if (last?.domNode != null) {
@@ -68,10 +68,10 @@ inline fun <N : Node> mountDomNodeUnordered(
  * @param target DOM mounting target
  * @param upstream returns the [Flow] with the [List] of [WithDomNode]s that should be mounted at this point
  */
-inline fun <N : Node> mountDomNodeList(
+fun <N : Node> mountDomNodeList(
     job: Job,
     target: N,
-    crossinline upstream: (Job) -> Flow<List<WithDomNode<N>>>
+    upstream: Flow<List<WithDomNode<N>>>
 ) {
     val placeholder: Comment = document.createComment("")
     target.appendChild(placeholder)
@@ -102,10 +102,10 @@ inline fun <N : Node> mountDomNodeList(
  * @param target DOM mounting target
  * @param upstream returns the [Flow] with the [Patch]es of [WithDomNode]s that should be mounted at this point
  */
-inline fun <N : Node> mountDomNodePatch(
+fun <N : Node> mountDomNodePatch(
     job: Job,
     target: N,
-    crossinline upstream: (Job) -> Flow<Patch<WithDomNode<N>>>
+    upstream: Flow<Patch<WithDomNode<N>>>
 ) {
     mountSingle(job, upstream) { patch, _ ->
         when (patch) {
@@ -124,7 +124,7 @@ inline fun <N : Node> mountDomNodePatch(
  * @param child Node to insert or append
  * @param index place to insert or append
  */
-fun <N: Node> N.insertOrAppend(child: Node, index: Int): Unit {
+fun <N : Node> N.insertOrAppend(child: Node, index: Int) {
     if (index == childNodes.length) appendChild(child)
     else childNodes.item(index)?.let {
         insertBefore(child, it)

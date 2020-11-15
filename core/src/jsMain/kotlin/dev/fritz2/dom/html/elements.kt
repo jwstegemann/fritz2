@@ -6,7 +6,6 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
 import dev.fritz2.dom.WithText
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
@@ -426,10 +425,7 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
         else domNode.removeAttribute("checked")
     }
     fun checked(value: Flow<Boolean>, trueValue: String = "") {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            value
-        }) { v, _ -> checked(v, trueValue) }
+        mountSingle(job, value) { v, _ -> checked(v, trueValue) }
     }
 
     fun dirName(value: String) = attr("dirName", value)
@@ -513,10 +509,7 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job) : Tag<
         domNode.setAttribute("value", value)
     }
     fun value(value: Flow<String>) {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            value
-        }) { v, _ -> value(v) }
+        mountSingle(job, value) { v, _ -> value(v) }
     }
 
     fun width(value: Int) = attr("width", value)
@@ -588,10 +581,7 @@ open class Audio(id: String? = null, baseClass: String? = null, job: Job) : Tag<
         domNode.setAttribute("playbackRate", value.toString())
     }
     fun playbackRate(value: Flow<Double>) {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            value
-        }) { v, _ -> playbackRate(v) }
+        mountSingle(job, value) { v, _ -> playbackRate(v) }
     }
 
     fun autoplay(value: Boolean, trueValue: String = "") = attr("autoplay", value, trueValue)
@@ -616,10 +606,7 @@ open class Audio(id: String? = null, baseClass: String? = null, job: Job) : Tag<
         else domNode.removeAttribute("muted")
     }
     fun muted(value: Flow<Boolean>, trueValue: String = "") {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            value
-        }) { v, _ -> muted(v, trueValue) }
+        mountSingle(job, value) { v, _ -> muted(v, trueValue) }
     }
 }
 
@@ -659,10 +646,7 @@ open class Video(id: String? = null, baseClass: String? = null, job: Job) : Tag<
         domNode.setAttribute("playbackRate", value.toString())
     }
     fun playbackRate(value: Flow<Double>) {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            value
-        }) { v, _ -> playbackRate(v) }
+        mountSingle(job, value) { v, _ -> playbackRate(v) }
     }
 
     fun autoplay(value: Boolean, trueValue: String = "") = attr("autoplay", value, trueValue)
@@ -687,10 +671,7 @@ open class Video(id: String? = null, baseClass: String? = null, job: Job) : Tag<
         else domNode.removeAttribute("muted")
     }
     fun muted(value: Flow<Boolean>, trueValue: String = "") {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            value
-        }) { v, _ -> muted(v, trueValue) }
+        mountSingle(job, value) { v, _ -> muted(v, trueValue) }
     }
 }
 
@@ -830,10 +811,7 @@ open class Option(id: String? = null, baseClass: String? = null, job: Job) : Tag
         else domNode.removeAttribute("selected")
     }
     fun selected(value: Flow<Boolean>, trueValue: String = "") {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            value
-        }) { v, _ -> selected(v, trueValue) }
+        mountSingle(job, value) { v, _ -> selected(v, trueValue) }
     }
 
     fun value(value: String) = attr("value", value)
@@ -858,10 +836,7 @@ open class Output(id: String? = null, baseClass: String? = null, job: Job) : Tag
         domNode.setAttribute("value", value)
     }
     fun value(value: Flow<String>) {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            value
-        }) { v, _ -> value(v) }
+        mountSingle(job, value) { v, _ -> value(v) }
     }
 }
 
@@ -1163,10 +1138,7 @@ open class TextArea(id: String? = null, baseClass: String? = null, job: Job) : T
         domNode.setAttribute("value", value)
     }
     fun value(value: Flow<String>) {
-        mountSingle(job, { childJob ->
-            childJob.cancelChildren()
-            value
-        }) { v, _ -> value(v) }
+        mountSingle(job, value) { v, _ -> value(v) }
     }
 }
 

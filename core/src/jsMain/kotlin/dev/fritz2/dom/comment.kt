@@ -3,12 +3,10 @@ package dev.fritz2.dom
 import dev.fritz2.dom.html.RenderContext
 import kotlinx.browser.document
 import kotlinx.browser.window
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.Comment
 import org.w3c.dom.Node
-import org.w3c.dom.Text
 
 /**
  * Provides functionality to handle comments.
@@ -21,10 +19,7 @@ interface WithComment<out T : Node> : WithDomNode<T>, RenderContext {
      * @receiver comment-content
      */
     fun Flow<String>.asComment() {
-        mountDomNode(job, domNode) { childJob ->
-            childJob.cancelChildren()
-            this.map { CommentNode(it) }
-        }
+        mountDomNode(job, domNode, this.map { CommentNode(it) })
     }
 
     /**
@@ -33,10 +28,7 @@ interface WithComment<out T : Node> : WithDomNode<T>, RenderContext {
      * @receiver comment-content
      */
     fun <T> Flow<T>.asComment() {
-        mountDomNode(job, domNode) { childJob ->
-            childJob.cancelChildren()
-            this.map { CommentNode(it.toString()) }
-        }
+        mountDomNode(job, domNode, this.map { CommentNode(it.toString()) })
     }
 
     /**
