@@ -105,13 +105,14 @@ fun <N : Node> mountDomNodeList(
 fun <N : Node> mountDomNodePatch(
     job: Job,
     target: N,
-    upstream: Flow<Patch<WithDomNode<N>>>
+    upstream: Flow<Patch<WithDomNode<N>>>,
+    cancelJob: (Node) -> Unit
 ) {
     mountSingle(job, upstream) { patch, _ ->
         when (patch) {
             is Patch.Insert -> target.insert(patch.element, patch.index)
             is Patch.InsertMany -> target.insertMany(patch.elements, patch.index)
-            is Patch.Delete -> target.delete(patch.start, patch.count)
+            is Patch.Delete -> target.delete(patch.start, patch.count, cancelJob)
             is Patch.Move -> target.move(patch.from, patch.to)
         }
     }
@@ -138,7 +139,7 @@ fun <N : Node> N.insertOrAppend(child: Node, index: Int) {
  * @param element from type [WithDomNode]
  * @param index place to insert or append
  */
-fun <N: Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrAppend(element.domNode, index)
+fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrAppend(element.domNode, index)
 
 /**
  * Inserts a [List] of elements to the DOM.
@@ -147,7 +148,7 @@ fun <N: Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrAppe
  * @param elements [List] of [WithDomNode]s elements to insert
  * @param index place to insert or append
  */
-fun <N: Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
+fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
     if (index == childNodes.length) {
         for (child in elements.reversed()) appendChild(child.domNode)
     } else {
@@ -166,10 +167,11 @@ fun <N: Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
  * @param start position for deleting
  * @param count of elements to delete
  */
-fun <N: Node> N.delete(start: Int, count: Int) {
+fun <N : Node> N.delete(start: Int, count: Int, cancelJob: (Node) -> Unit) {
     var itemToDelete = childNodes.item(start)
     repeat(count) {
         itemToDelete?.let {
+            cancelJob(it)
             itemToDelete = it.nextSibling
             removeChild(it)
         }
@@ -183,7 +185,7 @@ fun <N: Node> N.delete(start: Int, count: Int) {
  * @param from position index
  * @param to position index
  */
-fun <N: Node> N.move(from: Int, to: Int) {
+fun <N : Node> N.move(from: Int, to: Int) {
     val itemToMove = childNodes.item(from)
     if (itemToMove != null) insertOrAppend(itemToMove, to)
 }
@@ -217,7 +219,7 @@ fun List<Tag<HTMLElement>>.mount(targetId: String) {
  * @receiver the [Tag] to mount to this element
  * @throws MountTargetNotFoundException if target element with [targetId] not found
  */
-fun <E: Element> Tag<E>.mount(targetId: String) {
+fun <E : Element> Tag<E>.mount(targetId: String) {
     document.getElementById(targetId)?.let { parent ->
         parent.removeChildren()
         parent.appendChild(this.domNode)
@@ -233,8 +235,8 @@ fun <E: Element> Tag<E>.mount(targetId: String) {
  */
 fun append(targetId: String, vararg tagLists: List<Tag<HTMLElement>>) {
     window.document.getElementById(targetId)?.let { parent ->
-        for(tagList in tagLists)
-            for(tag in tagList) parent.appendChild(tag.domNode)
+        for (tagList in tagLists)
+            for (tag in tagList) parent.appendChild(tag.domNode)
     } ?: throw MountTargetNotFoundException(targetId)
 }
 

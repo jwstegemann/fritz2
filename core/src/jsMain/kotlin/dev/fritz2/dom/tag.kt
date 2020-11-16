@@ -13,6 +13,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.Node
 import org.w3c.dom.events.Event
 
 /**
@@ -124,16 +125,23 @@ open class Tag<out E : Element>(
         idProvider: IdProvider<V, I>,
         content: RenderContext.(V) -> Tag<HTMLElement>
     ) {
-        val newJob = Job(job)
+        val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
             this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
                 Myer.diff(old, new, idProvider)
-            }.map {
-                it.map { value ->
-                    //FIXME: cancel children, forward new Job
-                    dev.fritz2.dom.html.renderElement(newJob) { content(value) }
+            }.map { patch ->
+                patch.map(job) { value, newJob ->
+                    dev.fritz2.dom.html.renderElement(newJob) {
+                        content(value)
+                    }.also {
+                        jobs[it.domNode] = newJob
+                    }
                 }
-            })
+            }) { node ->
+            val job = jobs.remove(node)
+            if (job != null) job.cancelChildren()
+            else console.error("could not cancel renderEach-jobs!")
+        }
     }
 
 
@@ -148,14 +156,23 @@ open class Tag<out E : Element>(
     fun <V> Flow<List<V>>.renderEach(
         content: RenderContext.(V) -> Tag<HTMLElement>
     ) {
+        val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
             this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
                 Myer.diff(old, new)
-            }.map {
-                it.map { value ->
-                    content(value)
+            }.map { patch ->
+                patch.map(job) { value, newJob ->
+                    dev.fritz2.dom.html.renderElement(newJob) {
+                        content(value)
+                    }.also {
+                        jobs[it.domNode] = newJob
+                    }
                 }
-            })
+            }) { node ->
+            val job = jobs.remove(node)
+            if (job != null) job.cancelChildren()
+            else console.error("could not cancel renderEach-jobs!")
+        }
     }
 
     /**
@@ -171,14 +188,24 @@ open class Tag<out E : Element>(
         noinline idProvider: IdProvider<V, I>,
         crossinline content: RenderContext.(SubStore<List<V>, List<V>, V>) -> Tag<HTMLElement>
     ) {
+        val jobs = mutableMapOf<Node, Job>()
+
         mountDomNodePatch(job, domNode,
             this.data.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
                 Myer.diff(old, new, idProvider)
-            }.map {
-                it.map { value ->
-                    content(sub(elementLens(value, idProvider)))
+            }.map { patch ->
+                patch.map(job) { value, newJob ->
+                    dev.fritz2.dom.html.renderElement(newJob) {
+                        content(sub(elementLens(value, idProvider)))
+                    }.also {
+                        jobs[it.domNode] = newJob
+                    }
                 }
-            })
+            }) { node ->
+            val job = jobs.remove(node)
+            if (job != null) job.cancelChildren()
+            else console.error("could not cancel renderEach-jobs!")
+        }
     }
 
     /**
@@ -191,10 +218,21 @@ open class Tag<out E : Element>(
     inline fun <V> RootStore<List<V>>.renderEach(
         crossinline content: RenderContext.(SubStore<List<V>, List<V>, V>) -> Tag<HTMLElement>
     ) {
+        val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
-            this.data.map { it.withIndex().toList() }.eachIndex().map {
-                it.map { (i, _) -> content(sub(i)) }
-            })
+            this.data.map { it.withIndex().toList() }.eachIndex().map { patch ->
+                patch.map(job) { (i, _), newJob ->
+                    dev.fritz2.dom.html.renderElement(newJob) {
+                        content(sub(i))
+                    }.also {
+                        jobs[it.domNode] = newJob
+                    }
+                }
+            }) { node ->
+            val job = jobs.remove(node)
+            if (job != null) job.cancelChildren()
+            else console.error("could not cancel renderEach-jobs!")
+        }
     }
 
     /**
@@ -210,14 +248,23 @@ open class Tag<out E : Element>(
         idProvider: IdProvider<V, I>,
         content: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
     ) {
+        val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
             this.data.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
                 Myer.diff(old, new, idProvider)
-            }.map {
-                it.map { value ->
-                    content(sub(elementLens(value, idProvider)))
+            }.map { patch ->
+                patch.map(job) { value, newJob ->
+                    dev.fritz2.dom.html.renderElement(newJob) {
+                        content(sub(elementLens(value, idProvider)))
+                    }.also {
+                        jobs[it.domNode] = newJob
+                    }
                 }
-            })
+            }) { node ->
+            val job = jobs.remove(node)
+            if (job != null) job.cancelChildren()
+            else console.error("could not cancel renderEach-jobs!")
+        }
     }
 
     /**
@@ -230,10 +277,21 @@ open class Tag<out E : Element>(
     fun <R, P, V> SubStore<R, P, List<V>>.renderEach(
         content: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
     ) {
+        val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
-            this.data.map { it.withIndex().toList() }.eachIndex().map {
-                it.map { (i, _) -> content(sub(i)) }
-            })
+            this.data.map { it.withIndex().toList() }.eachIndex().map { patch ->
+                patch.map(job) { (i, _), newJob ->
+                    dev.fritz2.dom.html.renderElement(newJob) {
+                        content(sub(i))
+                    }.also {
+                        jobs[it.domNode] = newJob
+                    }
+                }
+            }) { node ->
+            val job = jobs.remove(node)
+            if (job != null) job.cancelChildren()
+            else console.error("could not cancel renderEach-jobs!")
+        }
     }
 
     /**

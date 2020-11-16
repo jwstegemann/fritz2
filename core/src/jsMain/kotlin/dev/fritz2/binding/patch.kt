@@ -1,6 +1,7 @@
 package dev.fritz2.binding
 
 import dev.fritz2.lenses.IdProvider
+import kotlinx.coroutines.Job
 
 /**
  * A [Patch] describes the changes made to a [List].
@@ -18,7 +19,8 @@ sealed class Patch<out T> {
          *
          * @param mapping defines, how to map the value of the patch
          */
-        override fun <R> map(mapping: (T) -> R): Patch<R> = Insert(mapping(element), index)
+        override fun <R> map(parentJob: Job, mapping: (T, Job) -> R): Patch<R> =
+            Insert(mapping(element, Job(parentJob)), index)
     }
 
     /**
@@ -33,7 +35,9 @@ sealed class Patch<out T> {
          *
          * @param mapping defines, how to map the values of the patch
          */
-        override fun <R> map(mapping: (T) -> R): Patch<R> = InsertMany(elements.map(mapping), index)
+        override fun <R> map(parentJob: Job, mapping: (T, Job) -> R): Patch<R> = InsertMany(elements.map {
+            mapping(it, Job(parentJob))
+        }, index)
     }
     /**
      * A [Patch] saying, that one or more elements have been deleted
@@ -45,7 +49,7 @@ sealed class Patch<out T> {
         /**
          * nothing to be mapped here...
          */
-        override fun <R> map(mapping: (T) -> R): Patch<R> = this.unsafeCast<Patch<R>>()
+        override fun <R> map(parentJob: Job, mapping: (T, Job) -> R): Patch<R> = this.unsafeCast<Patch<R>>()
     }
 
     /**
@@ -59,7 +63,7 @@ sealed class Patch<out T> {
         /**
          * nothing to be mapped here...
          */
-        override fun <R> map(mapping: (T) -> R): Patch<R> = this.unsafeCast<Patch<R>>()
+        override fun <R> map(parentJob: Job, mapping: (T, Job) -> R): Patch<R> = this.unsafeCast<Patch<R>>()
     }
 
     /**
@@ -67,5 +71,5 @@ sealed class Patch<out T> {
      *
      * @param mapping defines, how to map the values of the patch
      */
-    abstract fun <R> map(mapping: (T) -> R): Patch<R>
+    abstract fun <R> map(parentJob: Job, mapping: (T, Job) -> R): Patch<R>
 }
