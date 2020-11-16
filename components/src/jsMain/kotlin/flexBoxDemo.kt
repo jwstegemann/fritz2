@@ -47,21 +47,20 @@ fun RenderContext.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme
                 md = { left { normal } }
             )
         }) {
-            (::p.styled { theme.teaserText }) { +"Teaser texts can be styled as well" }
-//                    p {
-//                        // TODO: Way too complicated - needs to get some convenient API! (But how?)
-//                        className = themeStore.data.map { i -> staticStyle("foo", themes[i].teaserText).name }
-//                        +"Marketing"
-//                    }
+            themeStore.data.render { currentThemeIndex ->
+                (::p.styled { themes[currentThemeIndex].teaserText() }) {
+                    +"Teaser texts can be styled as well"
+                }
+            }
             (::h1.styled { theme.sizes.large }) { +"Flex Layouts Showcase" }
             (::p.styled {
                 paddings {
                     all { "0.8rem" }
                     left { "0" }
                 }
-
             }) {
-                +"Flex layouts provide a better of using space on websites and handle containers of unknown sizes. While we showcase our flex layout, let's use the opportunity to also show off theme selection with this small example:"
+                +"Flex layouts provide a better of using space on websites and handle containers of unknown sizes. "
+                +"While we showcase our flex layout, let's use the opportunity to also show off theme selection with this small example:"
             }
             (::p.styled {
                 paddings {

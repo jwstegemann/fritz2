@@ -114,6 +114,7 @@ fun main() {
                                 simpleAnchor("gridbox")
                                 simpleAnchor("stack")
                                 simpleAnchor("icons")
+                                simpleAnchor("spinner")
                                 simpleAnchor("buttons")
                                 simpleAnchor("popover")
                                 simpleAnchor("modal")
@@ -165,6 +166,7 @@ fun main() {
                             router.render { site ->
                                 when (site) {
                                     "icons" -> iconsDemo()
+                                    "spinner" -> spinnerDemo()
                                     "input" -> inputDemo()
                                     "buttons" -> buttonDemo()
                                     "formcontrol" -> formControlDemo()
