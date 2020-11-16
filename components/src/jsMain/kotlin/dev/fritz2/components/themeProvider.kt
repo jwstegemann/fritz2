@@ -174,19 +174,6 @@ button,
 [type="submit"] {
   -webkit-appearance: button;
 }
-button::-moz-focus-inner,
-[type="button"]::-moz-focus-inner,
-[type="reset"]::-moz-focus-inner,
-[type="submit"]::-moz-focus-inner {
-  border-style: none;
-  padding: 0;
-}
-button:-moz-focusring,
-[type="button"]:-moz-focusring,
-[type="reset"]:-moz-focusring,
-[type="submit"]:-moz-focusring {
-  outline: 1px dotted ButtonText;
-}
 fieldset {
   padding: 0.35em 0.75em 0.625em;
 }
@@ -266,7 +253,6 @@ button {
 }
 button:focus {
   outline: 1px dotted;
-  outline: 5px auto -webkit-focus-ring-color;
 }
 fieldset {
   margin: 0;
@@ -304,14 +290,6 @@ img {
 }
 textarea {
   resize: vertical;
-}
-input:-ms-input-placeholder,
-textarea:-ms-input-placeholder {
-  color: #a0aec0;
-}
-input::-ms-input-placeholder,
-textarea::-ms-input-placeholder {
-  color: #a0aec0;
 }
 input::placeholder,
 textarea::placeholder {

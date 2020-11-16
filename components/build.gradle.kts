@@ -4,7 +4,6 @@ plugins {
     id("org.jetbrains.dokka") version "0.10.1"
 }
 
-//FIXME: move to parent
 val coroutines_version = "1.3.9"
 
 kotlin {

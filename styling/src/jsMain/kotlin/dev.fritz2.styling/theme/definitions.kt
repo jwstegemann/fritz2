@@ -260,7 +260,6 @@ interface Icons {
     val email: IconDefinition
     val phone: IconDefinition
     val dragHandle: IconDefinition
-    val spinner: IconDefinition
     val close: IconDefinition
     val smallClose: IconDefinition
     val notAllowed: IconDefinition

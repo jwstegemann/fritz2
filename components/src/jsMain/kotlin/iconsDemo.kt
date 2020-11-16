@@ -52,7 +52,6 @@ fun RenderContext.iconsDemo(): Div {
         theme().icons.email,
         theme().icons.phone,
         theme().icons.dragHandle,
-        theme().icons.spinner,
         theme().icons.close,
         theme().icons.smallClose,
         theme().icons.notAllowed,
