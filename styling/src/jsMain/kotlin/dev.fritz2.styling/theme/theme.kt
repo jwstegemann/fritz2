@@ -169,6 +169,8 @@ interface Theme {
      * definition of the theme's popover
      */
     val popover: PopoverStyles
+
+    val tooltip: Tooltip
 }
 
 /**

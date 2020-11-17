@@ -123,6 +123,12 @@ fun main() {
                                 simpleAnchor("formcontrol")
 
                                 (::a.styled {
+                                    theme().tooltip.write("visit us on", "www.fritz2.dev"){left}()
+                                    after {
+                                        textAlign { center }
+                                        background { color { warning } }
+                                        color { dark }
+                                    }
                                     paddings {
                                         top { "1.5rem" }
                                     }

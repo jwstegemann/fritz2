@@ -1,5 +1,7 @@
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.params.BackgroundAttachments.inherit
+import dev.fritz2.styling.params.FlexBasisValues.content
+import dev.fritz2.styling.params.VerticalAlignValues.top
 import dev.fritz2.styling.theme.*
 
 /**
@@ -447,6 +449,33 @@ open class DefaultTheme : Theme {
                 """.trimIndent()
         )
 
+        // TODO: Shows not up as expected!
+        override val spinner = IconDefinition(
+            "spinner",
+            svg = """ 
+                  <defs>
+                    <linearGradient
+                      x1="28.154%"
+                      y1="63.74%"
+                      x2="74.629%"
+                      y2="17.783%"
+                      id="a"
+                    >
+                      <stop stopColor="currentColor" offset="0%" />
+                      <stop stopColor="#fff" stopOpacity="0" offset="100%" />
+                    </linearGradient>
+                  </defs>
+                  <g transform="translate(2)" fill="none">
+                    <circle stroke="url(#a)" strokeWidth="4" cx="10" cy="12" r="10" />
+                    <path
+                      d="M10 2C4.477 2 0 6.477 0 12"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <rect fill="currentColor" x="8" width="4" height="4" rx="8" />
+                  </g>
+                """.trimIndent()
+        )
         override val close = IconDefinition(
             "close",
             svg = """ 
@@ -975,6 +1004,7 @@ open class DefaultTheme : Theme {
                 bottom {
                     width { thin }
                     style { solid }
+                    color { inherit }
                 }
             }
         }
@@ -989,6 +1019,7 @@ open class DefaultTheme : Theme {
                 top {
                     width { thin }
                     style { solid }
+                    color { inherit }
                 }
             }
         }
@@ -1124,4 +1155,138 @@ open class DefaultTheme : Theme {
            lineHeight { "1rem" }
        }
     }
+
+    override val tooltip = object : Tooltip {
+
+        override fun write(vararg value: String) : Style<BasicParams>{
+            return write(*value){ top }
+        }
+        override fun write(vararg value: String, tooltipPlacement: TooltipPlacements.() -> Style<BasicParams>) : Style<BasicParams>{
+            return {
+                position{
+                    relative{}
+                }
+                after {
+                    css("content:\"${value.asList().joinToString("\\A")}\";")
+                    background { color{ dark } }
+                    color{ light }
+                    display { block }
+                    overflow { hidden }
+                    opacity { "0" }
+                    zIndex { "20" }
+                    position {
+                        absolute {
+                            left{"50%"}
+                            bottom{"100%"}
+                        }
+                    }
+                    padding{tiny}
+                    fontSize { smaller }
+                    lineHeight { smaller }
+                    css("text-overflow: ellipsis;")
+                    css("transition: opacity .2s, transform .2s;")
+                    css("white-space: pre;")
+                }
+                focus{
+                    after{
+                        opacity { "1" }
+                    }
+
+                }
+                hover {
+                   after{
+                       opacity { "1" }
+                   }
+                }
+                tooltipPlacement.invoke(placement)()
+            }
+        }
+        override val placement = object : TooltipPlacements  {
+            override val top: Style<BasicParams> = {
+                after {
+                    css("transform: translate(-50%, 0.5rem);")
+                }
+                focus{
+                    after{
+                        css("transform: translate(-50%, -.5rem);")
+                    }
+                }
+                hover {
+                    after{
+                        css("transform: translate(-50%, -.5rem);")
+                    }
+                }
+            }
+            override val right: Style<BasicParams> = {
+                after{
+                    position {
+                        absolute {
+                            bottom{"50%"}
+                            left{"100%"}
+                        }
+                    }
+                    css("transform: translate(-0.5rem, 50%);")
+                }
+                focus{
+                   after{
+                       css("transform: translate(0.5rem, 50%);")
+                   }
+
+                }
+                hover {
+                    after{
+                        css("transform: translate(0.5rem, 50%);")
+                    }
+                }
+            }
+            override val bottom: Style<BasicParams> = {
+                after{
+                    position {
+                        absolute {
+                            bottom{auto}
+                            top{"100%"}
+                        }
+                    }
+                    css("transform: translate(-50%, -.5rem);")
+                }
+                focus{
+                   after{
+                       css("transform: translate(-50%, .5rem);")
+                   }
+                }
+                hover {
+                    after{
+                        css("transform: translate(-50%, .5rem);")
+                    }
+
+                }
+            }
+            override val left: Style<BasicParams> = {
+                after {
+                    position {
+                        absolute {
+                            bottom{"50%"}
+                            left{auto}
+                            right{"100%"}
+                        }
+                    }
+                    css("transform: translate(0.5rem, 50%);")
+                }
+                focus{
+                    after {
+                       css("transform: translate(-0.5rem, 50%);")
+                    }
+
+                }
+                hover {
+                    after {
+                        css("transform: translate(-0.5rem, 50%);")
+                    }
+                }
+            }
+        }
+    }
+
+
+
 }

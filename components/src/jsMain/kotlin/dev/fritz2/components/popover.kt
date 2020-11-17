@@ -159,9 +159,15 @@ class PopoverComponent {
         }
     }
 
-    fun renderPopover(renderContext: RenderContext, closeHandler: SimpleHandler<Unit>) {
+    fun renderPopover(
+        styling: BasicParams.() -> Unit = {},
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = "popover",
+        renderContext: RenderContext,
+        closeHandler: SimpleHandler<Unit>) {
         renderContext.apply {
-            (::div.styled(baseClass = StyleClass("popoverWrapper"), prefix = "popover") {
+            (::div.styled(styling, baseClass, id, prefix) {
                 positionStyle.invoke(theme().popover.placement)()
                 size.invoke(theme().popover.size)()
             }){
@@ -227,7 +233,7 @@ fun RenderContext.popover(
             !it
         }
     }
-    (::div.styled(styling , baseClass + PopoverComponent.staticCss,id, prefix){
+    (::div.styled({ }, PopoverComponent.staticCss, null, prefix){
     }){
         (::div.styled(prefix = "popover-trigger") {
             theme().popover.trigger()
@@ -237,7 +243,7 @@ fun RenderContext.popover(
         }
         clickStore.data.render {
             if (it) {
-                component.renderPopover(this, clickStore.toggle)
+                component.renderPopover(styling, baseClass,id, prefix, this, clickStore.toggle)
             }
         }
     }
