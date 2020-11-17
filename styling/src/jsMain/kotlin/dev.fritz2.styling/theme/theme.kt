@@ -1,6 +1,5 @@
 package dev.fritz2.styling.theme
 
-import DefaultTheme
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.params.BasicParams

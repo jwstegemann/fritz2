@@ -1,8 +1,7 @@
+package dev.fritz2.styling.theme
+
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.params.BackgroundAttachments.inherit
-import dev.fritz2.styling.params.FlexBasisValues.content
-import dev.fritz2.styling.params.VerticalAlignValues.top
-import dev.fritz2.styling.theme.*
 
 /**
  * defines the default values and scales for fritz2
@@ -775,7 +774,7 @@ open class DefaultTheme : Theme {
             private val basic: Style<BasicParams> = {
                 lineHeight { smaller }
                 radius { normal }
-                fontWeight { FontWeights.semiBold }
+                fontWeight { semiBold }
 
                 focus {
                     boxShadow { outline }
@@ -801,7 +800,7 @@ open class DefaultTheme : Theme {
                 color { "var(--main-color)" }
                 border {
                     width { thin }
-                    style { BorderStyleValues.solid }
+                    style { solid }
                     color { "var(--main-color)" }
                 }
 
@@ -822,7 +821,7 @@ open class DefaultTheme : Theme {
                 lineHeight { normal }
                 color { "var(--main-color)" }
                 hover {
-                    textDecoration { TextDecorations.underline }
+                    textDecoration { underline }
                 }
                 active {
                     color { secondary }

@@ -1,6 +1,5 @@
 package dev.fritz2.components
 
-import DefaultTheme
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.Div
@@ -8,6 +7,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.resetCss
+import dev.fritz2.styling.theme.DefaultTheme
 import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.theme
