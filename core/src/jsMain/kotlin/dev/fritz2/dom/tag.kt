@@ -304,9 +304,11 @@ open class Tag<out E : Element>(
         this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
             val oldSize = old.size
             val newSize = new.size
-            if (oldSize < newSize) flowOf<Patch<V>>(Patch.InsertMany(new.subList(oldSize, newSize).reversed(), oldSize))
-            else if (oldSize > newSize) flowOf<Patch<V>>(Patch.Delete(newSize, (oldSize - newSize)))
-            else emptyFlow()
+            when {
+                oldSize < newSize -> flowOf<Patch<V>>(Patch.InsertMany(new.subList(oldSize, newSize).reversed(), oldSize))
+                oldSize > newSize -> flowOf<Patch<V>>(Patch.Delete(newSize, (oldSize - newSize)))
+                else -> emptyFlow()
+            }
         }
 
     /**

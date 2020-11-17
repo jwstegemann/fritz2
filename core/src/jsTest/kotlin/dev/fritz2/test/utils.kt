@@ -13,7 +13,7 @@ fun <T> runTest(block: suspend () -> T): dynamic = GlobalScope.promise {
     delay(50)
 }
 
-val targetId = "target"
+const val targetId = "target"
 
 fun initDocument() {
     document.clear()

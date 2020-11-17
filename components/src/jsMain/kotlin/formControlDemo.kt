@@ -72,7 +72,7 @@ class MyFormControlComponent : FormControlComponent() {
         {
             radioGroupStructure(styling, returnStore.selectedStore, baseClass, id, prefix) {
                 build()
-                items = items + "custom"
+                items += "custom"
             }
             inputField({
                 theme().input.small()
