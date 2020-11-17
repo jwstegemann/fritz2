@@ -49,6 +49,8 @@ fun RenderContext.popoverDemo(): Div {
                     }
 
                     popover({
+                        background { color { warning } }
+                        border { color { dark }}
                         margins { right { small } }
                     }) {
                         trigger {
@@ -57,13 +59,19 @@ fun RenderContext.popoverDemo(): Div {
                         placement { bottom }
                         hasArrow(false)
                         hasCloseButton(false)
-                        header("Without CloseButton...")
+                        header("Customized")
                         content {
                             div {
-                                +"At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. "
+                                +"background-color"
+                                br{}
+                                +"border-color"
+                                br{}
+                                +"hidden close Button"
+                                br{}
+                                +"and hidden arrow"
                             }
                         }
-                        footer("... and arrow")
+                        footer("Use the Trigger to close the popover ;-)")
                     }
                     popover({
                         margins { right { small } }

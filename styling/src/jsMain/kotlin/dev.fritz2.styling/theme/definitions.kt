@@ -200,7 +200,7 @@ class Shadows(
     val lowered: ShadowProperty,
     val bottom: ShadowProperty = lowered,
     val outline: ShadowProperty,
-    val glowing: ShadowProperty =outline,
+    val glowing: ShadowProperty = outline,
     val danger: ShadowProperty,
     val none: ShadowProperty = "none"
 )
@@ -260,6 +260,7 @@ interface Icons {
     val email: IconDefinition
     val phone: IconDefinition
     val dragHandle: IconDefinition
+    val spinner: IconDefinition
     val close: IconDefinition
     val smallClose: IconDefinition
     val notAllowed: IconDefinition
@@ -376,4 +377,21 @@ interface PopoverArrowPlacements {
 interface PopoverSizes {
     val auto: Style<BasicParams>
     val normal: Style<BasicParams>
+}
+
+/**
+ * definition of the theme's Popover
+ */
+
+interface Tooltip {
+    fun write(vararg value: String): Style<BasicParams>
+    fun write(vararg value: String, tooltipPlacement: TooltipPlacements.() -> Style<BasicParams>): Style<BasicParams>
+    val placement: TooltipPlacements
+}
+
+interface TooltipPlacements {
+    val top: Style<BasicParams>
+    val right: Style<BasicParams>
+    val bottom: Style<BasicParams>
+    val left: Style<BasicParams>
 }

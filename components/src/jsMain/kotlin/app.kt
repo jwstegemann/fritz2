@@ -114,6 +114,7 @@ fun main() {
                                 simpleAnchor("gridbox")
                                 simpleAnchor("stack")
                                 simpleAnchor("icons")
+                                simpleAnchor("spinner")
                                 simpleAnchor("buttons")
                                 simpleAnchor("popover")
                                 simpleAnchor("modal")
@@ -123,6 +124,12 @@ fun main() {
                                 simpleAnchor("formcontrol")
 
                                 (::a.styled {
+                                    theme().tooltip.write("visit us on", "www.fritz2.dev"){left}()
+                                    after {
+                                        textAlign { center }
+                                        background { color { warning } }
+                                        color { dark }
+                                    }
                                     paddings {
                                         top { "1.5rem" }
                                     }
@@ -159,6 +166,7 @@ fun main() {
                             router.render { site ->
                                 when (site) {
                                     "icons" -> iconsDemo()
+                                    "spinner" -> spinnerDemo()
                                     "input" -> inputDemo()
                                     "buttons" -> buttonDemo()
                                     "formcontrol" -> formControlDemo()

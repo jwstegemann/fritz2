@@ -96,6 +96,7 @@ fun RenderContext.modalDemo(): Div {
                             variant { outline }
                             text("Content and user defined buttons")
                         } handledBy modal { close -> /* pass in a handler for custom close management */
+                            hasCloseButton(false)
                             items {
                                 h1 { +"Simple dialog" }
                                 p { +"You can put any content or structure into a modal." }
@@ -113,7 +114,6 @@ fun RenderContext.modalDemo(): Div {
                                             background { color { light } }
                                         }) { text("Give me more!") } handledBy modal {
                                             size { theme().modal.sizes.small }
-                                            closeButton()
                                             items {
                                                 h1 { +"Final message" }
                                                 p { +"This is the next level modal dialog." }

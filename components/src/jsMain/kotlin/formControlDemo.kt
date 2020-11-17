@@ -1,9 +1,11 @@
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
+import dev.fritz2.components.RadioGroupComponent.Companion.radioGroupStructure
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
+import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.theme.theme
@@ -18,14 +20,70 @@ val myItemList = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "22222
 class MyFormControlComponent : FormControlComponent() {
 
     // simple convenience function as we cannot provide default parameters for overridden functions!
-    fun myMultiSelectCheckbox(
+    fun mySingleSelectComponent(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = Companion.ControlNames.checkboxGroup,
-        init: CheckboxGroupComponent.() -> Unit
-    ): Flow<List<String>> {
-        return checkboxGroup(styling, baseClass, id, prefix, init)
+        build: RadioGroupComponent.() -> Unit
+    ): Flow<String> {
+        return radioGroup(styling, baseClass, id, prefix, build)
+    }
+
+    // override default implementation of a radio group within a form control
+    override fun radioGroup(
+        styling: BasicParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String,
+        build: RadioGroupComponent.() -> Unit
+    ): Flow<String> {
+        val returnStore = object : RootStore<String>("") {
+
+            val syncHandlerSelect = handleAndEmit<String, String> { value, new ->
+                if (new == "custom") ""
+                else {
+                    emit("")
+                    new
+                }
+            }
+
+            val selectedStore = storeOf("")
+
+            val inputStore = object : RootStore<String>("") {
+
+                val syncInput = handleAndEmit<String, String> { _, new ->
+                    if (selectedStore.current == "custom") {
+                        emit(new)
+                    }
+                    new
+                }
+
+            }
+
+            init {
+                selectedStore.syncBy(syncHandlerSelect)
+                inputStore.syncInput handledBy update
+                syncHandlerSelect handledBy inputStore.update
+            }
+        }
+
+        control.set(Companion.ControlNames.radioGroup)
+        {
+            radioGroupStructure(styling, returnStore.selectedStore, baseClass, id, prefix) {
+                build()
+                items = items + "custom"
+            }
+            inputField({
+                theme().input.small()
+            }) {
+                disabled(returnStore.selectedStore.data.map { it != "custom" })
+                changes.values() handledBy returnStore.inputStore.syncInput
+                value(returnStore.inputStore.data)
+                placeholder("custom choice")
+            }
+        }
+        return returnStore.data
     }
 
     // Define your own renderer
@@ -83,7 +141,7 @@ class MyFormControlComponent : FormControlComponent() {
     init {
         // Overrule default strategy for ``multiSelectCheckbox``
         // You could also add a new *control* function with a corresponding renderer of course
-        renderStrategies[Companion.ControlNames.checkboxGroup] = MySpecialRenderer(this)
+        renderStrategies[Companion.ControlNames.radioGroup] = MySpecialRenderer(this)
     }
 }
 
@@ -205,16 +263,31 @@ fun RenderContext.formControlDemo(): Div {
             // use your own formControl! Pay attention to the derived component receiver.
             h3 { +"Custom FormControl" }
             p {
-                +"This control has overridden the control function to implement a special control. It was combined with a hand made renderer for the surrounding custom structure."
+                +"""This control has overridden the control function to implement a special control. 
+                    |It is combined with a hand made renderer for the surrounding custom structure.""".trimMargin()
             }
+            val customValueSelected = storeOf("")
             myFormControl {
-                label { "Label next to the control for a change" }
+                label { "Label next to the control just to be different" }
                 helperText { "Helper text below control" }
                 direction { row }
-                myMultiSelectCheckbox {
-                    items { myItemList }
-                    initialSelection { mySelectedItems }
+                mySingleSelectComponent {
+                    items { listOf("some", "predefined", "options") }
+                    selected { "some" }
+                } handledBy customValueSelected.update
+            }
+            (::div.styled {
+                background {
+                    color { theme().colors.light }
                 }
+                paddings {
+                    left { "0.5rem" }
+                    right { "0.5rem" }
+                }
+                radius { "5%" }
+            }) {
+                h4 { +"Selected:" }
+                customValueSelected.data.render { p { +it } }
             }
         }
     }
