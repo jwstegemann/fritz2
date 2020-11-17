@@ -1,7 +1,6 @@
 package dev.fritz2
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -16,7 +15,9 @@ import io.ktor.routing.*
 import io.ktor.server.netty.*
 import io.ktor.util.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.withContext
 import org.slf4j.event.Level
 import java.util.*
 
@@ -247,12 +248,17 @@ fun Application.main() {
                 try {
                     when (frame) {
                         is Frame.Text -> {
-                            val body = objectMapper.readValue(frame.readText(), jacksonTypeRef<MutableMap<String, Any>>())
-                            log.info("[ws-json] receiving: $body")
-                            if(body["_id"] == "test") {
-                                body["name"] = "Hans"
-                                log.info("[ws-json] sending: $body")
-                                outgoing.send(Frame.Text(objectMapper.writeValueAsString(body)))
+                            val bodyIn = withContext(Dispatchers.IO) {
+                                objectMapper.readValue(frame.readText(), jacksonTypeRef<MutableMap<String, Any>>())
+                            }
+                            log.info("[ws-json] receiving: $bodyIn")
+                            if(bodyIn["_id"] == "test") {
+                                bodyIn["name"] = "Hans"
+                                log.info("[ws-json] sending: $bodyIn")
+                                val bodyOut = withContext(Dispatchers.IO) {
+                                    objectMapper.writeValueAsString(bodyIn)
+                                }
+                                outgoing.send(Frame.Text(bodyOut))
                             }
                         }
                         is Frame.Close -> {
