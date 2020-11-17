@@ -1,7 +1,6 @@
 package dev.fritz2.remote
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.invoke
 import dev.fritz2.binding.watch
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount

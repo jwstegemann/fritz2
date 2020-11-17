@@ -51,12 +51,12 @@ class ListenerTest {
         assertEquals("start", result.textContent, "wrong dom content of result-node")
 
         input.value = "test1"
-        input.dispatchEvent(Event("change"));
+        input.dispatchEvent(Event("change"))
         delay(100)
         assertEquals("test1", result.textContent, "wrong dom content of result-node")
 
         input.value = "test2"
-        input.dispatchEvent(Event("change"));
+        input.dispatchEvent(Event("change"))
         delay(100)
         assertEquals("test2", result.textContent, "wrong dom content of result-node")
     }

@@ -1,6 +1,5 @@
 package dev.fritz2.dom.html
 
-import dev.fritz2.binding.invoke
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId

@@ -10,7 +10,7 @@ actual fun uniqueId(): String {
     inline fun createChar(dt: Int) = (dt + Random.nextInt(16)).toString(16)  //toString(16)
     inline fun createOther(dt: Int) = ((dt + Random.nextInt(16)) and 0x3 or 0x8).toString(16)
 
-    var dt = Date().getUTCMilliseconds();
+    var dt = Date().getUTCMilliseconds()
     val sb = StringBuilder(36)
 
     repeat(8) {
@@ -45,5 +45,5 @@ actual fun uniqueId(): String {
         dt /= 16
     }
 
-    return sb.toString();
+    return sb.toString()
 }

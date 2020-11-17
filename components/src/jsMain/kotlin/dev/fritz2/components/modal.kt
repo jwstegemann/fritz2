@@ -2,7 +2,6 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
-import dev.fritz2.binding.invoke
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.appendToBody
 import dev.fritz2.dom.html.Div
@@ -13,7 +12,6 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.ModalStyles
 import dev.fritz2.styling.theme.theme
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 typealias ModalRenderContext = RenderContext.(level: Int) -> Div

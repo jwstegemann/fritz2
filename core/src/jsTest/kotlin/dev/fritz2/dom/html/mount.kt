@@ -1,7 +1,6 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.invoke
 import dev.fritz2.dom.MountTargetNotFoundException
 import dev.fritz2.dom.append
 import dev.fritz2.dom.mount
@@ -29,7 +28,7 @@ class MountTests {
         val id = uniqueId()
 
         val store = object : RootStore<String>("test") {
-            val modify = handle { _ ->
+            val modify = handle {
                 "modified"
             }
         }

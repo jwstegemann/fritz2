@@ -34,7 +34,7 @@ fun <T> checkSingleFlow(
     var count = 0
     mountSingle(Job(), upstream) { value, last ->
         val result = check(count, value, last)
-        count++;
+        count++
         if (result) done.complete(true)
     }
 }

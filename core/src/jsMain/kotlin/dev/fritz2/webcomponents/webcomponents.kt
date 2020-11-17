@@ -93,7 +93,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
      * @param shadowRoot the shadowRoot the link is added to
      * @param url the URL of your stylesheet
      */
-    fun linkStylesheet(shadowRoot: ShadowRoot, url: String): Unit {
+    fun linkStylesheet(shadowRoot: ShadowRoot, url: String) {
         shadowRoot.ownerDocument?.let {
             shadowRoot.appendChild(it.createElement("link").unsafeCast<HTMLLinkElement>().apply {
                 rel = "stylesheet"
@@ -108,7 +108,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
      * @param shadowRoot the shadowRoot the style is added to
      * @param text your css
      */
-    fun setStylesheet(shadowRoot: ShadowRoot, text: String): Unit {
+    fun setStylesheet(shadowRoot: ShadowRoot, text: String) {
         shadowRoot.ownerDocument?.let {
             shadowRoot.appendChild(it.createElement("style").unsafeCast<HTMLStyleElement>().apply {
                 innerText = text
@@ -129,7 +129,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
      * @param element of the instance
      */
     @JsName("connectedCallback")
-    open fun connectedCallback(element: HTMLElement): Unit {
+    open fun connectedCallback(element: HTMLElement) {
     }
 
     /**
@@ -138,7 +138,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
      * @param element of the instance
      */
     @JsName("disconnectedCallback")
-    open fun disconnectedCallback(element: HTMLElement): Unit {
+    open fun disconnectedCallback(element: HTMLElement) {
     }
 
     /**
@@ -147,7 +147,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
      * @param element of the instance
      */
     @JsName("adoptedCallback")
-    open fun adoptedCallback(element: HTMLElement): Unit {
+    open fun adoptedCallback(element: HTMLElement) {
     }
 }
 
