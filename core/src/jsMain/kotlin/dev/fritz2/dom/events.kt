@@ -9,12 +9,12 @@ import org.w3c.dom.events.Event
 
 
 /**
- * this interfaces offers [Listener]s for all DOM-events available
+ * Offers [Listener]s for all DOM-events available.
  */
 abstract class WithEvents<out T : Element> : WithDomNode<T> {
 
     /**
-     * factory-method to create a [Listener] on a DOM-element
+     * Creates a [Listener] on a DOM-element.
      *
      * @param type [EventType] to listen for
      */

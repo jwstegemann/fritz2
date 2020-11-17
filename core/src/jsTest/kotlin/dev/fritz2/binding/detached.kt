@@ -21,7 +21,7 @@ class DetachedStoreTests {
 
     data class Person(val name: String, val id: String = uniqueId())
 
-    val nameLens = buildLens("name", Person::name) { p, v -> p.copy(name = v) }
+    private val nameLens = buildLens("name", Person::name) { p, v -> p.copy(name = v) }
 
     @Test
     fun testDetachStore() = runTest {
@@ -43,14 +43,14 @@ class DetachedStoreTests {
             section {
 
                 div(id = rootNameId) {
-                    store.data.map { it.name }.bind()
+                    store.data.map { it.name }.asText()
                 }
 
                 val nameSub = store.detach(nameLens, "")
 
                 div {
-                    div(id = nameId) { nameSub.data.bind() }
-                    div(id = detachedId) { nameSub.detached.bind() }
+                    div(id = nameId) { nameSub.data.asText() }
+                    div(id = detachedId) { nameSub.detached.asText() }
                     button(id = btnId) {
                         clicks.map { "Foo Bar" } handledBy nameSub.update
                     }
@@ -63,7 +63,7 @@ class DetachedStoreTests {
         assertEquals(person.name, (document.getElementById(nameId) as HTMLDivElement).innerText, "name is not correct")
 
         val newPerson = Person("Bar")
-        action(newPerson) handledBy store.update
+        store.update(newPerson)
 
         delay(200)
 
@@ -126,24 +126,24 @@ class DetachedStoreTests {
         render {
             section {
                 div(id = rootNameId) {
-                    store.data.map { it[0].name }.bind()
+                    store.data.map { it[0].name }.asText()
                 }
 
-                store.data.each(Person::id).render { person ->
+                store.data.renderEach(Person::id) { person ->
 
                     val personStore = store.detach(person, Person::id)
                     val nameSub = personStore.sub(nameLens)
 
                     div {
-                        div(id = nameId) { nameSub.data.bind() }
-                        div(id = detachedId) { personStore.detached.map { it.name }.bind() }
+                        div(id = nameId) { nameSub.data.asText() }
+                        div(id = detachedId) { personStore.detached.map { it.name }.asText() }
                         button(id = btnId) {
                             clicks.map {
                                 "Foo Bar"
                             } handledBy nameSub.update
                         }
                     }
-                }.bind()
+                }
             }
         }.mount(targetId)
 
@@ -152,7 +152,7 @@ class DetachedStoreTests {
         assertEquals(person.name, (document.getElementById(nameId) as HTMLDivElement).innerText, "name is not correct")
 
         val newPerson = Person("Bar")
-        action(newPerson) handledBy store.replace
+        store.replace(newPerson)
 
         delay(200)
 

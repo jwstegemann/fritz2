@@ -7,6 +7,7 @@ import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -25,7 +26,7 @@ class CommentTests {
         render {
             section {
                 div(id = id1) {
-                    comment(comment)
+                    flowOf(comment).asComment()
                 }
                 div(id = id2) {
                     !comment

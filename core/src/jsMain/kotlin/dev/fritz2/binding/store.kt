@@ -1,29 +1,29 @@
 package dev.fritz2.binding
 
-import dev.fritz2.flow.asSharedFlow
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.repositories.Resource
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
- * defines a type for transforming one value into the next
+ * Defines a type for transforming one value into the next
  */
 typealias Update<T> = suspend (T) -> T
 
 /**
- * defines a type for handling errors in updates
+ * Defines a type for handling errors in updates
  */
 typealias ErrorHandler<T> = (Throwable, T) -> T
 
 /**
- * type of elements in the update-queue of a [Store]
+ * Type of elements in the update-queue of a [Store]
  *
  * @property update function describing the step from the old value to the new
  * @property errorHandler describes the handling of errors during an update and the new value in case of error
@@ -37,10 +37,10 @@ class QueuedUpdate<T>(
 /**
  * The [Store] is the main type for all data binding activities. It the base class of all concrete Stores like [RootStore], [SubStore], etc.
  */
-interface Store<T> {
+interface Store<T> : WithJob {
 
     /**
-     * default error handler printing the error an keeping the previous value
+     * Default error handler printing the error to console and keeping the previous value.
      *
      * @param exception Exception to handle
      * @param oldValue previous value of the [Store]
@@ -51,63 +51,62 @@ interface Store<T> {
     }
 
     /**
-     * factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
+     * Factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
      *
      * @param execute lambda that is executed whenever a new action-value appears on the connected event-[Flow].
      */
     fun <A> handle(
         errorHandler: ErrorHandler<T> = ::errorHandler,
         execute: suspend (T, A) -> T
-    ) = SimpleHandler<A> {
-        it.onEach { enqueue(QueuedUpdate({ t -> execute(t, it) }, errorHandler)) }
-            .launchIn(MainScope())
+    ) = SimpleHandler<A> { flow, job ->
+        flow.onEach { enqueue(QueuedUpdate({ t -> execute(t, it) }, errorHandler)) }
+            .launchIn(MainScope() + job)
     }
 
     /**
-     * factory method to create a [SimpleHandler] that does not take an Action
+     * Factory method to create a [SimpleHandler] that does not take an Action
      *
+     * @param errorHandler handles error during update
      * @param execute lambda that is execute for each event on the connected [Flow]
      */
     fun handle(
         errorHandler: ErrorHandler<T> = ::errorHandler,
         execute: suspend (T) -> T
-    ) = SimpleHandler<Unit> {
-        it.onEach { enqueue(QueuedUpdate({ t -> execute(t) }, errorHandler)) }
-            .launchIn(MainScope())
+    ) = SimpleHandler<Unit> { flow, job ->
+        flow.onEach { enqueue(QueuedUpdate({ t -> execute(t) }, errorHandler)) }
+            .launchIn(MainScope() + job)
     }
 
     /**
-     * factory method to create a [OfferingHandler] taking an action-value and the current store value to derive the new value.
-     * An [OfferingHandler] is a [Flow] by itself and can therefore be connected to other [SimpleHandler]s even in other [Store]s.
+     * Factory method to create a [EmittingHandler] taking an action-value and the current store value to derive the new value.
+     * An [EmittingHandler] is a [Flow] by itself and can therefore be connected to other [SimpleHandler]s even in other [Store]s.
      *
-     * @param bufferSize number of values to buffer
+     * @param errorHandler handles error during update
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
-    fun <A, E> handleAndOffer(
+    fun <A, E> handleAndEmit(
         errorHandler: ErrorHandler<T> = ::errorHandler,
-        bufferSize: Int = 1,
-        execute: suspend SendChannel<E>.(T, A) -> T
+        execute: suspend FlowCollector<E>.(T, A) -> T
     ) =
-        OfferingHandler<A, E>(bufferSize) { inFlow, outChannel ->
-            inFlow.onEach { enqueue(QueuedUpdate({ t -> outChannel.execute(t, it) }, errorHandler)) }
-                .launchIn(MainScope())
-        }
+        EmittingHandler<A, E>({ inFlow, outFlow, job ->
+            inFlow.onEach { enqueue(QueuedUpdate({ t -> outFlow.execute(t, it) }, errorHandler)) }
+                .launchIn(MainScope() + job)
+        })
 
     /**
-     * factory method to create an [OfferingHandler] that does not take an action in it's [execute]-lambda.
+     * factory method to create an [EmittingHandler] that does not take an action in it's [execute]-lambda.
      *
-     * @param bufferSize number of values to buffer
+     * @param errorHandler handles error during update
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
-    fun <E> handleAndOffer(
+    fun <E> handleAndEmit(
         errorHandler: ErrorHandler<T> = ::errorHandler,
-        bufferSize: Int = 1,
-        execute: suspend SendChannel<E>.(T) -> T
+        execute: suspend FlowCollector<E>.(T) -> T
     ) =
-        OfferingHandler<Unit, E>(bufferSize) { inFlow, outChannel ->
-            inFlow.onEach { enqueue(QueuedUpdate({ t -> outChannel.execute(t) }, errorHandler)) }
-                .launchIn(MainScope())
-        }
+        EmittingHandler<Unit, E>({ inFlow, outFlow, job ->
+            inFlow.onEach { enqueue(QueuedUpdate({ t -> outFlow.execute(t) }, errorHandler)) }
+                .launchIn(MainScope() + job)
+        })
 
     /**
      * abstract method defining, how this [Store] handles an [Update]
@@ -125,6 +124,11 @@ interface Store<T> {
      * the [Flow] representing the current value of the [Store]. Use this to bind it to ui-elements or derive calculated values by using [map] for example.
      */
     val data: Flow<T>
+
+    /**
+     * represents the current value of the [Store]
+     */
+    val current: T
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
@@ -182,33 +186,39 @@ fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
 }
 
 /**
- * A [Store] can be initialized with a given value. Use a [RootStore] to "store" your model and create [SubStore]s from here.
+ * A [Store] can be initialized with a given value.
+ * Use a [RootStore] to "store" your model and create [SubStore]s from here.
  *
  * @param initialData: the first current value of this [Store]
  * @param id: the id of this store. ids of [SubStore]s will be concatenated.
- * @param bufferSize: number of values to buffer
  */
 open class RootStore<T>(
     initialData: T,
-    override val id: String = "",
-    dropInitialData: Boolean = false,
-    bufferSize: Int = 1
-) : Store<T>, CoroutineScope by MainScope() {
+    override val id: String = ""
+) : Store<T> {
 
-    private val updates = BroadcastChannel<QueuedUpdate<T>>(bufferSize)
-    private val applyUpdate: suspend (T, QueuedUpdate<T>) -> T = { lastValue, queuedUpdate ->
-        try {
-            queuedUpdate.update(lastValue)
-        } catch (e: Throwable) {
-            queuedUpdate.errorHandler(e, lastValue)
-        }
-    }
+    private val state: MutableStateFlow<T> = MutableStateFlow(initialData)
+    private val mutex = Mutex()
 
     /**
-     * in a [RootStore] an [Update] is handled by sending it to the internal [updates]-channel.
+     * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
+     */
+    override val job: Job = Job()
+
+    override val current: T
+        get() = state.value
+
+    /**
+     * in a [RootStore] an [Update] is handled by applying it to the internal [StateFlow].
      */
     override suspend fun enqueue(update: QueuedUpdate<T>) {
-        updates.send(update)
+        try {
+            mutex.withLock {
+                state.value = update.update(state.value)
+            }
+        } catch (e: Throwable) {
+            update.errorHandler(e, state.value)
+        }
     }
 
     /**
@@ -216,10 +226,7 @@ open class RootStore<T>(
      * the [Flow] only emits a new value, when the value is differs from the last one to avoid calculations and updates that are not necessary.
      * This has to be a SharedFlow, because the updated should only be applied once, regardless how many depending values or ui-elements or bound to it.
      */
-    override val data = updates.asFlow().scan(initialData, applyUpdate)
-        .drop(if (dropInitialData) 1 else 0)
-        .distinctUntilChanged()
-        .asSharedFlow()
+    override val data = state.asStateFlow()
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].

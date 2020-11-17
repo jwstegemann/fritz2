@@ -1,10 +1,7 @@
 import dev.fritz2.binding.SimpleHandler
-import dev.fritz2.binding.handledBy
-import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.AlignItemsValues
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.theme
@@ -12,7 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.modalDemo(): Div {
+fun RenderContext.modalDemo(): Div {
 
     // Call this once, if you don't need to *dynamically* change overlay!
     //ModalComponent.setOverlayHandler(DefaultOverlay(OverlayMethod.CoveringEach))
@@ -99,6 +96,7 @@ fun HtmlElements.modalDemo(): Div {
                             variant { outline }
                             text("Content and user defined buttons")
                         } handledBy modal { close -> /* pass in a handler for custom close management */
+                            hasCloseButton(false)
                             items {
                                 h1 { +"Simple dialog" }
                                 p { +"You can put any content or structure into a modal." }
@@ -116,7 +114,6 @@ fun HtmlElements.modalDemo(): Div {
                                             background { color { light } }
                                         }) { text("Give me more!") } handledBy modal {
                                             size { theme().modal.sizes.small }
-                                            closeButton()
                                             items {
                                                 h1 { +"Final message" }
                                                 p { +"This is the next level modal dialog." }

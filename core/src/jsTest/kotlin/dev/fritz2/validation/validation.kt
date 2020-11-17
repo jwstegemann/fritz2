@@ -1,9 +1,6 @@
 package dev.fritz2.validation
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.action
-import dev.fritz2.binding.each
-import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
@@ -44,14 +41,14 @@ class ValidationJSTests {
         render {
             div {
                 div(id = idData) {
-                    store.data.map { it.name }.bind()
+                    store.data.map { it.name }.asText()
                 }
                 div(id = idMessages) {
-                    carValidator.msgs.each(Message::text).render {
+                    carValidator.msgs.renderEach(Message::text) {
                         p {
                             +it.text
                         }
-                    }.bind()
+                    }
                 }
             }
         }.mount(targetId)
@@ -63,7 +60,7 @@ class ValidationJSTests {
         assertEquals(carName, divData.textContent, "initial car name is wrong")
         assertEquals(0, divMessages.childElementCount, "there are messages")
 
-        action(c1) handledBy store.update
+        store.update(c1)
         delay(100)
 
         assertEquals(carName, divData.innerText, "c1: car name has changed")
@@ -74,7 +71,7 @@ class ValidationJSTests {
             "c1: there is not expected message"
         )
 
-        action(c2) handledBy store.update
+        store.update(c2)
         delay(100)
 
         assertEquals(carName, divData.innerText, "c2: car name has changed")
@@ -85,7 +82,7 @@ class ValidationJSTests {
             "c2: there is not expected message"
         )
 
-        action(c3) handledBy store.update
+        store.update(c3)
         delay(100)
 
         assertEquals(carName, divData.innerText, "c3: car name has changed")
@@ -96,7 +93,7 @@ class ValidationJSTests {
             "c3: there is not expected message"
         )
 
-        action(c4) handledBy store.update
+        store.update(c4)
         delay(100)
 
         assertEquals(carName, divData.innerText, "c4: car name has changed")

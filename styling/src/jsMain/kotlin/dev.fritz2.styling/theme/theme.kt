@@ -1,14 +1,14 @@
 package dev.fritz2.styling.theme
 
-import DefaultTheme
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.GridParams
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
 
 /**
  * alias to easily create predefined styles based on [BasicParams]
@@ -168,6 +168,8 @@ interface Theme {
      * definition of the theme's popover
      */
     val popover: PopoverStyles
+
+    val tooltip: Tooltip
 }
 
 /**
@@ -193,8 +195,12 @@ inline fun <reified T : Theme> theme(): Theme = currentTheme.unsafeCast<T>()
  */
 //TODO: add for Flow.render and each().render
 @ExperimentalCoroutinesApi
-inline fun <E : Element, reified T : Theme> render(crossinline content: HtmlElements.(T) -> Tag<E>): Tag<E> =
+inline fun <reified T : Theme> render(crossinline content: RenderContext.(T) -> List<Tag<HTMLElement>>) =
     dev.fritz2.dom.html.render {
         content(currentTheme.unsafeCast<T>())
     }
 
+inline fun <E : Element, reified T : Theme> renderElement(crossinline content: RenderContext.(T) -> Tag<E>) =
+    dev.fritz2.dom.html.renderElement {
+        content(currentTheme.unsafeCast<T>())
+    }

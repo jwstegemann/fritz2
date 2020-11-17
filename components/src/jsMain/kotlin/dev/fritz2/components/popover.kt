@@ -1,15 +1,18 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.*
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.renderAll
+import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.*
+import dev.fritz2.styling.theme.PopoverArrowPlacements
+import dev.fritz2.styling.theme.PopoverPlacements
+import dev.fritz2.styling.theme.PopoverSizes
+import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 /**
@@ -31,7 +34,7 @@ class PopoverComponent {
         hasCloseButton = value
     }
 
-    var closeButton: (HtmlElements.(SimpleHandler<Unit>) -> Unit)? = null
+    var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
     fun closeButton(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,
@@ -74,62 +77,80 @@ class PopoverComponent {
         hasArrow = value
     }
 
-    var arrowPlacement:  (PopoverArrowPlacements.() -> Style<BasicParams>) = { theme().popover.arrowPlacement.bottom }
+    var arrowPlacement: (PopoverArrowPlacements.() -> Style<BasicParams>) = { theme().popover.arrowPlacement.bottom }
     fun arrowPlacement(value: PopoverArrowPlacements.() -> Style<BasicParams>) {
         arrowPlacement = value
     }
 
-    var trigger: (HtmlElements.() -> Unit)? = null
-    fun trigger(value: (HtmlElements.() -> Unit)) {
+    var trigger: (RenderContext.() -> Unit)? = null
+    fun trigger(value: (RenderContext.() -> Unit)) {
         trigger = value
     }
 
-    var header: (HtmlElements.() -> Unit)? = null
-    fun header(value: (HtmlElements.() -> Unit)) {
-        header = { (::header.styled(prefix = "popover-header"){
-            theme().popover.header()
-        }){value()} }
+    var header: (RenderContext.() -> Unit)? = null
+    fun header(value: (RenderContext.() -> Unit)) {
+        header = {
+            (::header.styled(prefix = "popover-header") {
+                theme().popover.header()
+            }){ value() }
+        }
     }
+
     fun header(value: String) {
-        this.header(const(value))
+        this.header(flowOf(value))
     }
+
     fun header(value: Flow<String>) {
-        header =  { (::header.styled(prefix = "popover-header"){
-            theme().popover.header()
-        }){value.bind()} }
+        header = {
+            (::header.styled(prefix = "popover-header") {
+                theme().popover.header()
+            }){ value.asText() }
+        }
     }
 
-    var footer: (HtmlElements.() -> Unit)? = null
-    fun footer(value: (HtmlElements.() -> Unit)) {
-        footer = { (::footer.styled(prefix = "popover-footer"){
-            theme().popover.footer()
-        }){value()} }
+    var footer: (RenderContext.() -> Unit)? = null
+    fun footer(value: (RenderContext.() -> Unit)) {
+        footer = {
+            (::footer.styled(prefix = "popover-footer") {
+                theme().popover.footer()
+            }){ value() }
+        }
     }
+
     fun footer(value: String) {
-        this.footer(const(value))
+        this.footer(flowOf(value))
     }
+
     fun footer(value: Flow<String>) {
-        footer =  { (::footer.styled(prefix = "popover-footer"){
-           theme().popover.footer()
-        }){value.bind()} }
+        footer = {
+            (::footer.styled(prefix = "popover-footer") {
+                theme().popover.footer()
+            }){ value.asText() }
+        }
     }
 
-    var content: (HtmlElements.() -> Unit)? = null
-    fun content(value: (HtmlElements.() -> Unit)) {
-        content = { (::section.styled(prefix = "popover-content"){
-            theme().popover.section()
-        }){value()} }
+    var content: (RenderContext.() -> Unit)? = null
+    fun content(value: (RenderContext.() -> Unit)) {
+        content = {
+            (::section.styled(prefix = "popover-content") {
+                theme().popover.section()
+            }){ value() }
+        }
     }
+
     fun content(value: String) {
-        this.content(const(value))
-    }
-    fun content(value: Flow<String>) {
-        content =  { (::section.styled(prefix = "popover-content"){
-            theme().popover.section()
-        }){value.bind()} }
+        this.content(flowOf(value))
     }
 
-    private fun renderArrow(renderContext: HtmlElements) {
+    fun content(value: Flow<String>) {
+        content = {
+            (::section.styled(prefix = "popover-content") {
+                theme().popover.section()
+            }){ value.asText() }
+        }
+    }
+
+    private fun renderArrow(renderContext: RenderContext) {
         renderContext.apply {
             (::div.styled(prefix = "popover-arrow") {
                 arrowPlacement.invoke(theme().popover.arrowPlacement)()
@@ -137,17 +158,23 @@ class PopoverComponent {
         }
     }
 
-    fun renderPopover(renderContext: HtmlElements, closeHandler: SimpleHandler<Unit>) {
+    fun renderPopover(
+        styling: BasicParams.() -> Unit = {},
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = "popover",
+        renderContext: RenderContext,
+        closeHandler: SimpleHandler<Unit>) {
         renderContext.apply {
-            (::div.styled(baseClass = StyleClass("popoverWrapper"), prefix = "popover") {
+            (::div.styled(styling, baseClass, id, prefix) {
                 positionStyle.invoke(theme().popover.placement)()
                 size.invoke(theme().popover.size)()
             }){
-                if( hasArrow) {
+                if (hasArrow) {
                     renderArrow(this)
                 }
-                if( hasCloseButton ) {
-                    if( closeButton == null ) {
+                if (hasCloseButton) {
+                    if (closeButton == null) {
                         closeButton()
                     }
                     closeButton?.invoke(this, closeHandler)
@@ -175,7 +202,7 @@ class PopoverComponent {
  *      icon { fromTheme { theme().icons.arrowForward } }
  *   }
  *   placement{right}
- *   header(const("Our simple Popover"))
+ *   header(flowOf("Our simple Popover"))
  *   content {
  *   div{
  *      text("My Text in a HTMLTag")
@@ -191,8 +218,8 @@ class PopoverComponent {
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [PopoverComponent]
-*/
-fun HtmlElements.popover(
+ */
+fun RenderContext.popover(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -200,12 +227,12 @@ fun HtmlElements.popover(
     build: PopoverComponent.() -> Unit = {}
 ) {
     val component = PopoverComponent().apply(build)
-    val clickStore = object: RootStore<Boolean>(false) {
+    val clickStore = object : RootStore<Boolean>(false) {
         val toggle = handle {
-           !it
+            !it
         }
     }
-    (::div.styled(styling , baseClass + PopoverComponent.staticCss,id, prefix){
+    (::div.styled({ }, PopoverComponent.staticCss, null, prefix){
     }){
         (::div.styled(prefix = "popover-trigger") {
             theme().popover.trigger()
@@ -213,10 +240,10 @@ fun HtmlElements.popover(
             clicks.events.map { Unit } handledBy clickStore.toggle
             component.trigger?.invoke(this)
         }
-        clickStore.data.renderAll {
-            if( it ) {
-                component.renderPopover(this, clickStore.toggle)
+        clickStore.data.render {
+            if (it) {
+                component.renderPopover(styling, baseClass,id, prefix, this, clickStore.toggle)
             }
-        }.bind()
+        }
     }
 }

@@ -1,9 +1,7 @@
 package dev.fritz2.repositories.localstorage
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.action
-import dev.fritz2.binding.each
-import dev.fritz2.binding.handledBy
+import dev.fritz2.binding.invoke
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
@@ -79,39 +77,39 @@ class LocalStorageTests {
 
         render {
             div {
-                div(id = idId) { idSubStore.data.bind() }
-                div(id = nameId) { nameSubStore.data.bind() }
-                div(id = ageId) { ageSubStore.data.map { it.toString() }.bind() }
+                div(id = idId) { idSubStore.data.asText() }
+                div(id = nameId) { nameSubStore.data.asText() }
+                div(id = ageId) { ageSubStore.data.asText() }
             }
         }.mount(targetId)
 
-        action(startPerson) handledBy entityStore.update
+        entityStore.update(startPerson)
         delay(100)
 
         val nameAfterStart = document.getElementById(nameId)?.textContent
         assertEquals(startPerson.name, nameAfterStart, "no name after start")
 
-        action() handledBy entityStore.saveOrUpdate
+        entityStore.saveOrUpdate()
         delay(200)
 
         val idAfterSave = document.getElementById(idId)?.textContent
         assertTrue(idAfterSave?.length ?: 0 > 10, "no id after save")
 
-        action(data = changedAge) handledBy ageSubStore.update
-        action() handledBy entityStore.saveOrUpdate
+        ageSubStore.update(data = changedAge)
+        entityStore.saveOrUpdate()
         delay(200)
 
         val ageAfterUpdate = document.getElementById(ageId)?.textContent
         assertEquals(changedAge.toString(), ageAfterUpdate, "wrong age after update")
 
-        action(data = 0) handledBy ageSubStore.update
-        action(idAfterSave.orEmpty()) handledBy entityStore.load
+        ageSubStore.update(data = 0)
+        entityStore.load(idAfterSave.orEmpty())
         delay(200)
 
         val ageAfterLoad = document.getElementById(ageId)?.textContent
         assertEquals("99", ageAfterLoad, "wrong age after load")
 
-        action() handledBy entityStore.delete
+        entityStore.delete()
         delay(200)
 
         val nameAfterDelete = document.getElementById(nameId)?.textContent
@@ -157,15 +155,15 @@ class LocalStorageTests {
         render {
             div {
                 ul(id = listId) {
-                    queryStore.each(LocalPerson::_id).render { p ->
-                        li { p.data.map { it.name }.bind() }
-                    }.bind()
+                    queryStore.renderEach(LocalPerson::_id) { p ->
+                        li { p.data.map { it.name }.asText() }
+                    }
                 }
                 span(id = firstPersonId) {
                     queryStore.data.map {
                         if (it.isEmpty()) ""
                         else it.first()._id
-                    }.bind()
+                    }.asText()
                 }
             }
         }.mount(targetId)
@@ -173,13 +171,13 @@ class LocalStorageTests {
         delay(100)
 
         testList.forEach {
-            action(it) handledBy queryStore.addOrUpdate
+            queryStore.addOrUpdate(it)
             delay(1)
         }
 
         delay(250)
 
-        action() handledBy queryStore.query
+        queryStore.query()
         delay(250)
 
         val listAfterQuery = document.getElementById(listId)?.textContent
@@ -188,15 +186,15 @@ class LocalStorageTests {
         val firstId = document.getElementById(firstPersonId)?.textContent
         assertTrue(firstId != null && firstId.length > 10)
 
-        action(firstId) handledBy queryStore.delete
+        queryStore.delete(firstId)
         delay(250)
 
         val listAfterDelete = document.getElementById(listId)?.textContent
         assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDelete, "wrong list after query")
 
-        action(emptyList<LocalPerson>()) handledBy queryStore.update
+        queryStore.update(emptyList<LocalPerson>())
         delay(1)
-        action() handledBy queryStore.query
+        queryStore.query()
         delay(250)
 
         val listAfterDeleteAndQuery = document.getElementById(listId)?.textContent
@@ -237,15 +235,15 @@ class LocalStorageTests {
         render {
             div {
                 ul(id = listId) {
-                    queryStore.each(LocalPerson::_id).render { p ->
-                        li { p.data.map { it.name }.bind() }
-                    }.bind()
+                    queryStore.renderEach(LocalPerson::_id) { p ->
+                        li { p.data.map { it.name }.asText() }
+                    }
                 }
             }
         }.mount(targetId)
 
         testList.forEach {
-            action(it) handledBy queryStore.addOrUpdate
+            queryStore.addOrUpdate(it)
             delay(1)
         }
 
@@ -255,13 +253,13 @@ class LocalStorageTests {
         assertEquals(testList.joinToString("") { it.name }, listAfterAdd, "wrong list after adding")
 
         val updatedTestList = testList.map { it.copy(name = "${it.name}2") }
-        action(updatedTestList) handledBy queryStore.updateMany
+        queryStore.updateMany(updatedTestList)
         delay(250)
 
         val listAfterUpdateMany = document.getElementById(listId)?.textContent
         assertEquals(updatedTestList.joinToString("") { it.name }, listAfterUpdateMany, "wrong list after update many")
 
-        action(updatedTestList[2].copy(name = "C3")) handledBy queryStore.addOrUpdate
+        queryStore.addOrUpdate(updatedTestList[2].copy(name = "C3"))
         delay(250)
         val listAfterUpdate = document.getElementById(listId)?.textContent
         assertEquals(updatedTestList.map { if(it.name == "C2") it.copy(name = "C3") else it }.joinToString("") { it.name }, listAfterUpdate, "wrong list after update")

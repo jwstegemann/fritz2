@@ -1,7 +1,6 @@
 package dev.fritz2.webcomponents
 
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.render
+import dev.fritz2.dom.html.renderElement
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
@@ -14,10 +13,10 @@ import kotlin.test.assertEquals
 class WebComponentTests {
 
     class MyComponent : WebComponent<HTMLParagraphElement>() {
-        override fun init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<HTMLParagraphElement> =
-            render {
+        override fun init(element: HTMLElement, shadowRoot: ShadowRoot) =
+            renderElement {
                 p(id = "paragraph-in-web-component") {
-                    text("I am a WebComponent")
+                    +"I am a WebComponent"
                 }
             }
     }

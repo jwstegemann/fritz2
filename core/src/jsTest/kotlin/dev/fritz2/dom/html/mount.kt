@@ -1,9 +1,6 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.action
-import dev.fritz2.binding.const
-import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.MountTargetNotFoundException
 import dev.fritz2.dom.append
 import dev.fritz2.dom.mount
@@ -31,7 +28,7 @@ class MountTests {
         val id = uniqueId()
 
         val store = object : RootStore<String>("test") {
-            val modify = handle { _ ->
+            val modify = handle {
                 "modified"
             }
         }
@@ -39,8 +36,8 @@ class MountTests {
         render {
             div {
                 input(id = id) {
-                    type = const("text")
-                    value = store.data
+                    type("text")
+                    value(store.data)
                     clicks handledBy store.modify
                 }
             }
@@ -74,8 +71,8 @@ class MountTests {
         render {
             div {
                 input(id = id) {
-                    type = const("checkbox")
-                    checked = store.data
+                    type("checkbox")
+                    checked(store.data)
                     clicks handledBy store.modify
                 }
             }
@@ -112,12 +109,12 @@ class MountTests {
             div {
                 select (id = id) {
                     option(id = option1Id) {
-                        text("option1")
-                        selected = store.data.map { it == "option1" }
+                        +"option1"
+                        selected(store.data.map { it == "option1" })
                     }
                     option(id = option2Id) {
-                        text("option2")
-                        selected = store.data.map { it == "option2" }
+                        +"option2"
+                        selected(store.data.map { it == "option2" })
                     }
                     changes.selectedText() handledBy store.select
                 }
@@ -135,7 +132,7 @@ class MountTests {
         assertEquals(false, option2.selected, "initial second option.selected is not false")
         assertEquals(null, option2.getAttribute("selected"), "initial second option.getAttribute(\"selected\") is not empty")
 
-        action("option2") handledBy store.select
+        store.select("option2")
         delay(250)
 
         assertEquals(1, select.selectedIndex, "modified second option is not selected")
@@ -160,7 +157,7 @@ class MountTests {
         assertFailsWith(MountTargetNotFoundException::class) {
             render {
                 div {
-                    text("div1")
+                    +"div1"
                 }
             }.mount(targetId + "error")
             delay(100)
@@ -169,7 +166,7 @@ class MountTests {
         assertFailsWith(MountTargetNotFoundException::class) {
             val dom = render {
                 div {
-                    text("div1")
+                    +"div1"
                 }
             }
             append(targetId + "error", dom)

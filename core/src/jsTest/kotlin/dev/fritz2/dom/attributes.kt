@@ -1,6 +1,5 @@
 package dev.fritz2.dom
 
-import dev.fritz2.binding.const
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
@@ -8,6 +7,7 @@ import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,15 +32,15 @@ class AttributeTests {
         render {
             div(id = testId) {
                 attr(name0, value0)
-                const(value1).bindAttr(name1)
+                attr(name1, flowOf(value1))
                 attr("data-$name0", value0)
-                const(value1).bindAttr("data-$name1")
+                attr("data-$name1", flowOf(value1))
                 attr(name2, values2)
-                const(values3).bindAttr(name3)
+                attr(name3, flowOf(values3))
 
-                const(true).bindAttr("test4")
-                const(false).bindAttr("test5")
-                const(true).bindAttr("test6", "foo")
+                attr("test4", flowOf(true))
+                attr("test5", flowOf(false))
+                attr("test6", flowOf(true), "foo")
             }
         }.mount(targetId)
 

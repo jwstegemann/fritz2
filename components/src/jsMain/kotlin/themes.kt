@@ -1,7 +1,4 @@
-import dev.fritz2.styling.theme.PredefinedBasicStyle
-import dev.fritz2.styling.theme.Property
-import dev.fritz2.styling.theme.ScaledValue
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.theme.*
 
 
 interface ExtendedTheme : Theme {

@@ -1,56 +1,27 @@
 package dev.fritz2.binding
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.NonCancellable.cancel
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.scan
 
 /**
- * A [SingleMountPoint] collects the values of a given [Flow] one by one. Use this for data-types that represent a single (simple or complex) value.
+ * collects the values of a given [Flow] one by one.
+ * Use this for data-types that represent a single (simple or complex) value.
  *
- * @param upstream the Flow that should be mounted at this point.
+ * @param parentJob parent Job for starting a new coroutine
+ * @param upstream returns the Flow that should be mounted at this point
+ * @param set function which getting called when values are changing (rerender)
  */
-abstract class SingleMountPoint<T>(upstream: Flow<T>) {
-    init {
-        upstream.onEach {
-            set(it, last)
-            last = it
+//TODO: inline?
+fun <T> mountSingle(parentJob: Job, upstream: Flow<T>, set: suspend (T, T?) -> Unit) {
+    (MainScope() + parentJob).launch {
+        upstream.scan(null) { last: T?, value: T ->
+            set(value, last)
+            value
         }.catch {
-            cancel()
-        }.launchIn(MainScope())
+            cancel("error mounting", it)
+        }.collect()
     }
-
-    private var last: T? = null
-
-    /**
-     * this method is called for each new value on the upstream-[Flow]
-     *
-     * @param value new value on the [Flow]
-     * @param last old value of the [Flow] (before the last update)
-     */
-    abstract fun set(value: T, last: T?): Unit
-}
-
-/**
- * A [MultiMountPoint] collects the values of a given [Flow] one by one. Use this for data-types that represent a sequence of values.
- *
- * @param upstream the Flow that should be mounted at this point.
- */
-abstract class MultiMountPoint<T>(upstream: Flow<Patch<T>>) : CoroutineScope by MainScope() {
-    init {
-        upstream.onEach { patch(it) }
-            .catch { cancel() }
-            .launchIn(MainScope())
-    }
-
-    /**
-     * this method is called for each new value on the upstream-[Flow]
-     *
-     * @param patch a [Patch] describing the changes made by the last update.
-     */
-    abstract fun patch(patch: Patch<T>)
 }

@@ -1,11 +1,14 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.*
+import dev.fritz2.binding.RootStore
 import dev.fritz2.components.CheckboxGroupComponent.Companion.checkboxGroupStructure
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.ColorProperty
+import dev.fritz2.styling.params.DirectionValues
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.CheckboxSizes
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
@@ -75,7 +78,7 @@ class CheckboxGroupComponent {
         initialSelection = value()
     }
 
-    var disabled: Flow<Boolean> = const(false) // @input
+    var disabled: Flow<Boolean> = flowOf(false) // @input
     fun disabled(value: () -> Flow<Boolean>) {
         disabled = value()
     }
@@ -110,7 +113,7 @@ class CheckboxGroupComponent {
     companion object {
 
         // TODO: Check how to *centralize* this (compare singleselect and formcontrol)
-        // TODO: Change names to ``horizontal`` and ``vertical``?
+        // TODO: Change names to ``horizontal`` and ``vertical``?  Row and column is widely used in fritz2 for directions
         object CheckboxGroupLayouts { // @ fieldset
             val column: Style<BasicParams> = {
                 display {
@@ -130,7 +133,7 @@ class CheckboxGroupComponent {
             }
         }
 
-        private fun HtmlElements.checkboxGroupContent(
+        private fun RenderContext.checkboxGroupContent(
             id: String?,
             component: CheckboxGroupComponent
         ): Flow<List<String>> {
@@ -155,7 +158,7 @@ class CheckboxGroupComponent {
                 }
 
                 checkbox(id = "$id-checkbox-${item.index}") {
-                    text = const(item.value)
+                    text(item.value)
                     component.size.invoke(theme().checkbox.sizes)
                     size { component.size.invoke(theme().checkbox.sizes) }
                     borderColor { component.borderColor }
@@ -173,7 +176,7 @@ class CheckboxGroupComponent {
             return selectedStore.data
         }
 
-        fun HtmlElements.checkboxGroupStructure(
+        fun RenderContext.checkboxGroupStructure(
             containerStyling: BasicParams.() -> Unit = {},
             selectedItemsStore: RootStore<List<String>>? = null,
             baseClass: StyleClass? = null,
@@ -238,7 +241,7 @@ class CheckboxGroupComponent {
  * @return a flow of the _checked_ items
  */
 // todo add dropdown multi select
-fun HtmlElements.checkboxGroup(
+fun RenderContext.checkboxGroup(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

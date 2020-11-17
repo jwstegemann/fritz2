@@ -1,14 +1,12 @@
-import dev.fritz2.binding.const
-import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.watch
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>, theme: ExtendedTheme): Div {
+fun RenderContext.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>, theme: ExtendedTheme): Div {
 
     return flexBox({
         margin { small }
@@ -33,8 +31,8 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>
                 boxShadow { flat }
                 radius { large }
             }) {
-                src = const("https://www.fritz2.dev/images/fritz_info_1.jpg")
-                alt = const("Random image for flex layout demonstration")
+                src("https://www.fritz2.dev/images/fritz_info_1.jpg")
+                alt("Random image for flex layout demonstration")
             }
         }
 
@@ -49,21 +47,20 @@ fun HtmlElements.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>
                 md = { left { normal } }
             )
         }) {
-            (::p.styled { theme.teaserText }) { +"Teaser texts can be styled as well" }
-//                    p {
-//                        // TODO: Way too complicated - needs to get some convenient API! (But how?)
-//                        className = themeStore.data.map { i -> staticStyle("foo", themes[i].teaserText).name }
-//                        +"Marketing"
-//                    }
+            themeStore.data.render { currentThemeIndex ->
+                (::p.styled { themes[currentThemeIndex].teaserText() }) {
+                    +"Teaser texts can be styled as well"
+                }
+            }
             (::h1.styled { theme.sizes.large }) { +"Flex Layouts Showcase" }
             (::p.styled {
                 paddings {
                     all { "0.8rem" }
                     left { "0" }
                 }
-
             }) {
-                +"Flex layouts provide a better of using space on websites and handle containers of unknown sizes. While we showcase our flex layout, let's use the opportunity to also show off theme selection with this small example:"
+                +"Flex layouts provide a better of using space on websites and handle containers of unknown sizes. "
+                +"While we showcase our flex layout, let's use the opportunity to also show off theme selection with this small example:"
             }
             (::p.styled {
                 paddings {

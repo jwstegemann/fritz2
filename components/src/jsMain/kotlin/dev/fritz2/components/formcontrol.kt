@@ -1,11 +1,12 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.*
+import dev.fritz2.binding.Store
+import dev.fritz2.binding.storeOf
 import dev.fritz2.components.CheckboxGroupComponent.Companion.checkboxGroupStructure
+import dev.fritz2.components.FormControlComponent.Control
 import dev.fritz2.components.RadioGroupComponent.Companion.radioGroupStructure
-import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.Input
-import dev.fritz2.dom.html.renderAll
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.DirectionValues
@@ -13,7 +14,9 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.theme
 import dev.fritz2.styling.whenever
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 
 /**
  * This component class manages the _configuration_ of a [formControl] and some render centric functionalities.
@@ -91,7 +94,7 @@ open class FormControlComponent {
         }
 
         // TODO: Check how to *centralize* this (compare multiselect and multiselect)
-        // TODO: Change names to ``horizontal`` and ``vertical``?
+        // TODO: Change names to ``horizontal`` and ``vertical``? Row and column is widely used in fritz2 for directions
         object FormControlLayouts { // @ fieldset
             val column: Style<BasicParams> = {
                 display {
@@ -122,9 +125,9 @@ open class FormControlComponent {
     class Control {
 
         private val overflows: MutableList<String> = mutableListOf()
-        var assignee: Pair<String, (HtmlElements.() -> Unit)>? = null
+        var assignee: Pair<String, (RenderContext.() -> Unit)>? = null
 
-        fun set(controlName: String, component: (HtmlElements.() -> Unit)) {
+        fun set(controlName: String, component: (RenderContext.() -> Unit)) {
             if (assignee == null) {
                 assignee = Pair(controlName, component)
             } else {
@@ -161,7 +164,7 @@ open class FormControlComponent {
         direction =  FormControlLayouts.value()
     }
 
-    var disabled: Flow<Boolean> = const(false)
+    var disabled: Flow<Boolean> = flowOf(false)
 
     fun disabled(value: () -> Flow<Boolean>) {
         disabled = value()
@@ -179,7 +182,7 @@ open class FormControlComponent {
         helperText = value()
     }
 
-    var errorMessage: Flow<String> = const("")
+    var errorMessage: Flow<String> = flowOf("")
 
     fun errorMessage(value: () -> Flow<String>) {
         errorMessage = value()
@@ -203,10 +206,8 @@ open class FormControlComponent {
         control.set(ControlNames.inputField)
         {
             inputField(styling, store, baseClass, id, prefix) {
-                className = StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it }
+                className(StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it })
                 init()
-                // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
-                //disabled.bindAttr("disabled")
             }
         }
     }
@@ -222,8 +223,6 @@ open class FormControlComponent {
         {
             checkbox(styling, baseClass, id, prefix) {
                 build()
-                // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
-                //disabled.bindAttr("disabled")
             }
         }
     }
@@ -240,8 +239,6 @@ open class FormControlComponent {
         control.set(ControlNames.checkboxGroup) {
             checkboxGroupStructure(styling, selectedStore, baseClass, id, prefix) {
                 build()
-                // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
-                //disabled.bindAttr("disabled")
             }
         }
         return selectedStore.data
@@ -259,8 +256,6 @@ open class FormControlComponent {
         {
             radioGroupStructure(styling, selectedStore, baseClass, id, prefix) {
                 build()
-                // FIXME: Hängt App aktuell auf; nach Patch der Bindings (Speicherleck) anpassen und austesten!
-                //disabled.bindAttr("disabled")
             }
         }
         return selectedStore.data
@@ -271,7 +266,7 @@ open class FormControlComponent {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = "formControl",
-        renderContext: HtmlElements
+        renderContext: RenderContext
     ) {
         control.assignee?.second?.let {
             renderStrategies[control.assignee?.first]?.render(
@@ -284,7 +279,7 @@ open class FormControlComponent {
         control.assert()
     }
 
-    fun renderHelperText(renderContext: HtmlElements) {
+    fun renderHelperText(renderContext: RenderContext) {
         renderContext.div {
             helperText?.let {
                 (::p.styled {
@@ -296,9 +291,9 @@ open class FormControlComponent {
         }
     }
 
-    fun renderErrorMessage(renderContext: HtmlElements) {
+    fun renderErrorMessage(renderContext: RenderContext) {
         renderContext.div {
-            errorMessage.renderAll {
+            errorMessage.render {
                 if (it.isNotEmpty()) {
                     lineUp({
                         color { theme().colors.danger }
@@ -312,11 +307,11 @@ open class FormControlComponent {
                         }
                     }
                 }
-            }.bind()
+            }
         }
     }
 
-    val requiredMarker: HtmlElements.() -> Unit = {
+    val requiredMarker: RenderContext.() -> Unit = {
         if (required) {
             (::span.styled {
                 color { danger }
@@ -332,8 +327,8 @@ interface ControlRenderer {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = "formControl",
-        renderContext: HtmlElements,
-        control: HtmlElements.() -> Unit
+        renderContext: RenderContext,
+        control: RenderContext.() -> Unit
     )
 }
 
@@ -343,8 +338,8 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
         baseClass: StyleClass?,
         id: String?,
         prefix: String,
-        renderContext: HtmlElements,
-        control: HtmlElements.() -> Unit
+        renderContext: RenderContext,
+        control: RenderContext.() -> Unit
     ) {
         renderContext.stackUp(
             {
@@ -377,8 +372,8 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
         baseClass: StyleClass?,
         id: String?,
         prefix: String,
-        renderContext: HtmlElements,
-        control: HtmlElements.() -> Unit
+        renderContext: RenderContext,
+        control: RenderContext.() -> Unit
     ) {
         renderContext.box({
             width { full }
@@ -427,7 +422,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
  *     errorMessage { const("Sorry, always wrong in this case") }
  *     // just use the appropriate control with its specific API!
  *     inputField(store = someStore) {
- *         placeholder = const("Some text to type")
+ *         placeholder("Some text to type")
  *     }
  * }
  *
@@ -439,7 +434,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
  *     // ...
  *     // first control function called -> ok, will get rendered
  *     inputField(store = someStore) {
- *         placeholder = const("Some text to type")
+ *         placeholder("Some text to type")
  *     }
  *     // second call -> more than one control -> will not get rendered, but instead be logged as error!
  *     checkBox {
@@ -462,7 +457,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [FormControlComponent]
  */
-fun HtmlElements.formControl(
+fun RenderContext.formControl(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

@@ -2,14 +2,14 @@ import dev.fritz2.components.box
 import dev.fritz2.components.gridBox
 import dev.fritz2.components.styled
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.params.AreaName
 import dev.fritz2.styling.params.end
 import dev.fritz2.styling.params.start
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.gridBoxDemo(): Div {
+fun RenderContext.gridBoxDemo(): Div {
     // example from https://developer.mozilla.org/en/docs/Web/CSS/CSS_Grid_Layout/Layout_using_Named_Grid_Lines
 
     return (::div.styled {

@@ -8,7 +8,6 @@ import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
@@ -25,25 +24,27 @@ class StoreTests {
         val id2 = uniqueId()
         val buttonId = uniqueId()
 
-        val store1 = object : RootStore<String>("start") {
-
-            val finish = handleAndOffer<Int> { _ ->
-                offer(5)
-                "finish"
-            }
-        }
-
         val store2 = object : RootStore<Int>(0) {}
 
-        store1.finish handledBy store2.update
+        val store1 = object : RootStore<String>("start") {
+
+            val finish = handleAndEmit<Int> {
+                emit(5)
+                "finish"
+            }
+
+            init {
+                finish handledBy store2.update
+            }
+        }
 
         render {
             section {
                 div(id = id1) {
-                    store1.data.bind()
+                    store1.data.asText()
                 }
                 div(id = id2) {
-                    store2.data.map { it.toString() }.bind()
+                    store2.data.asText()
                 }
                 button(id = buttonId) {
                     clicks handledBy store1.finish
@@ -76,36 +77,41 @@ class StoreTests {
         val id3 = uniqueId()
         val buttonId = uniqueId()
 
-        val s1 = object : RootStore<String>("s1.start") {
-
-            val finish = handleAndOffer<String> {
-                offer("s1.finish")
-                "s1.finish"
-            }
-        }
-
-        val s2 = object : RootStore<String>("s2.start") {
-            val finish = handleAndOffer<String, String> { _, action ->
-                offer("s2.finish")
-                action
-            }
-        }
-
         val s3 = object : RootStore<String>("s3.start") {}
 
-        s1.finish handledBy s2.finish
-        s2.finish handledBy s3.update
+        val s2 = object : RootStore<String>("s2.start") {
+            val finish = handleAndEmit<String, String> { _, action ->
+                emit("s2.finish")
+                action
+            }
+
+            init {
+                finish handledBy s3.update
+            }
+        }
+
+        val s1 = object : RootStore<String>("s1.start") {
+
+            val finish = handleAndEmit<String> {
+                emit("s1.finish")
+                "s1.finish"
+            }
+
+            init {
+                finish handledBy s2.finish
+            }
+        }
 
         render {
             section {
                 div(id = id1) {
-                    s1.data.bind()
+                    s1.data.asText()
                 }
                 div(id = id2) {
-                    s2.data.bind()
+                    s2.data.asText()
                 }
                 div(id = id3) {
-                    s3.data.bind()
+                    s3.data.asText()
                 }
                 button(id = buttonId) {
                     clicks handledBy s1.finish
@@ -157,7 +163,7 @@ class StoreTests {
 
         render {
             div {
-                span(id = valueId) { store.data.bind() }
+                span(id = valueId) { store.data.asText() }
                 button(id = buttonId) {
                     clicks handledBy store.testHandler
                 }

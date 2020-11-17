@@ -5,6 +5,7 @@ import dev.fritz2.dom.html.Events
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 import org.w3c.dom.events.Event
 
 /**
@@ -30,24 +31,20 @@ fun router(default: Map<String, String>): Router<Map<String, String>> = Router(M
 fun <T> router(default: Route<T>): Router<T> = Router(default)
 
 /**
- * Selects with the given key a [Pair] of the value
- * and the complete routing [Map] into the [transform] function.
+ * Selects with the given [key] a [Pair] of the value
+ * and all routing parameters as [Map].
  *
- * @param key for looking in [Map]
- * @param transform mapping function to run on selected [Pair] of the value and routing [Map]
- * @return new [Flow] of the result by calling the [transform] function
+ * @param key for getting the value from the parameter [Map]
+ * @return [Flow] of the resulting [Pair]
  */
-fun <X> Router<Map<String, String>>.select(
-    key: String,
-    transform: suspend (Pair<String?, Map<String, String>>) -> X
-): Flow<X> =
-    this.map { m -> transform((m[key]) to m) }
+fun Router<Map<String, String>>.select(key: String): Flow<Pair<String?, Map<String, String>>> =
+    this.map { m -> m[key] to m }
 
 /**
- * Returns the value for the given key.
+ * Returns the value for the given [key] from the routing parameters.
  *
- * @param key for looking in [Map]
- * @param orElse if key not in [Map]
+ * @param key for getting the value from the parameter [Map]
+ * @param orElse if [key] is not in [Map]
  * @return [Flow] of [String] with the value
  */
 fun Router<Map<String, String>>.select(key: String, orElse: String): Flow<String> =
@@ -135,8 +132,8 @@ class Router<T>(
     /**
      * Handler for setting a new [Route] based on given Flow.
      */
-    val navTo: SimpleHandler<T> = SimpleHandler { flow ->
-        flow.onEach { setRoute(it) }.launchIn(MainScope())
+    val navTo: SimpleHandler<T> = SimpleHandler { flow, job ->
+        flow.onEach { setRoute(it) }.launchIn(MainScope() + job)
     }
 
     init {

@@ -1,20 +1,18 @@
-import dev.fritz2.binding.*
+import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.invoke
+import dev.fritz2.binding.watch
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.theme.theme
 import dev.fritz2.tracking.tracker
-import kotlinx.browser.window
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.buttonDemo(): Div {
+fun RenderContext.buttonDemo(): Div {
 
-    val modal =  modal({
+    val modal = modal({
         minHeight { "0" }
     }) {
         size { theme().modal.sizes.small }
@@ -35,7 +33,7 @@ fun HtmlElements.buttonDemo(): Div {
         val showMsg = handle { model ->
             loading.track("running...") {
                 delay(3000)
-                action() handledBy modal
+                modal()
             }
             model
         }

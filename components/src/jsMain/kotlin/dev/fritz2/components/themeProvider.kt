@@ -1,14 +1,13 @@
 package dev.fritz2.components
 
-import DefaultTheme
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.render
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.resetCss
+import dev.fritz2.styling.theme.DefaultTheme
 import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.currentTheme
 import dev.fritz2.styling.theme.theme
@@ -175,19 +174,6 @@ button,
 [type="submit"] {
   -webkit-appearance: button;
 }
-button::-moz-focus-inner,
-[type="button"]::-moz-focus-inner,
-[type="reset"]::-moz-focus-inner,
-[type="submit"]::-moz-focus-inner {
-  border-style: none;
-  padding: 0;
-}
-button:-moz-focusring,
-[type="button"]:-moz-focusring,
-[type="reset"]:-moz-focusring,
-[type="submit"]:-moz-focusring {
-  outline: 1px dotted ButtonText;
-}
 fieldset {
   padding: 0.35em 0.75em 0.625em;
 }
@@ -267,7 +253,6 @@ button {
 }
 button:focus {
   outline: 1px dotted;
-  outline: 5px auto -webkit-focus-ring-color;
 }
 fieldset {
   margin: 0;
@@ -305,14 +290,6 @@ img {
 }
 textarea {
   resize: vertical;
-}
-input:-ms-input-placeholder,
-textarea:-ms-input-placeholder {
-  color: #a0aec0;
-}
-input::-ms-input-placeholder,
-textarea::-ms-input-placeholder {
-  color: #a0aec0;
 }
 input::placeholder,
 textarea::placeholder {
@@ -394,9 +371,9 @@ video {
         resetCss = value()
     }
 
-    var items: (HtmlElements.() -> Unit)? = null
+    var items: (RenderContext.() -> Unit)? = null
 
-    fun items(value: HtmlElements.() -> Unit) {
+    fun items(value: RenderContext.() -> Unit) {
         items = value
     }
 
@@ -457,7 +434,7 @@ video {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [ThemeComponent]
  */
-fun HtmlElements.themeProvider(
+fun RenderContext.themeProvider(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -485,6 +462,6 @@ fun HtmlElements.themeProvider(
             ) {
                 component.items?.let { it() }
             }
-        }.bind()
+        }
     }
 }

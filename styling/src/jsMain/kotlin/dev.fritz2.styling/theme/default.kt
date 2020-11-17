@@ -1,8 +1,7 @@
+package dev.fritz2.styling.theme
+
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.params.BackgroundAttachments.inherit
-import dev.fritz2.styling.params.FlexBasisValues.content
-import dev.fritz2.styling.params.VerticalAlignValues.top
-import dev.fritz2.styling.theme.*
 
 /**
  * defines the default values and scales for fritz2
@@ -775,7 +774,7 @@ open class DefaultTheme : Theme {
             private val basic: Style<BasicParams> = {
                 lineHeight { smaller }
                 radius { normal }
-                fontWeight { FontWeights.semiBold }
+                fontWeight { semiBold }
 
                 focus {
                     boxShadow { outline }
@@ -801,7 +800,7 @@ open class DefaultTheme : Theme {
                 color { "var(--main-color)" }
                 border {
                     width { thin }
-                    style { BorderStyleValues.solid }
+                    style { solid }
                     color { "var(--main-color)" }
                 }
 
@@ -822,7 +821,7 @@ open class DefaultTheme : Theme {
                 lineHeight { normal }
                 color { "var(--main-color)" }
                 hover {
-                    textDecoration { TextDecorations.underline }
+                    textDecoration { underline }
                 }
                 active {
                     color { secondary }
@@ -1004,6 +1003,7 @@ open class DefaultTheme : Theme {
                 bottom {
                     width { thin }
                     style { solid }
+                    color { inherit }
                 }
             }
         }
@@ -1018,6 +1018,7 @@ open class DefaultTheme : Theme {
                 top {
                     width { thin }
                     style { solid }
+                    color { inherit }
                 }
             }
         }
@@ -1153,4 +1154,138 @@ open class DefaultTheme : Theme {
            lineHeight { "1rem" }
        }
     }
+
+    override val tooltip = object : Tooltip {
+
+        override fun write(vararg value: String) : Style<BasicParams>{
+            return write(*value){ top }
+        }
+        override fun write(vararg value: String, tooltipPlacement: TooltipPlacements.() -> Style<BasicParams>) : Style<BasicParams>{
+            return {
+                position{
+                    relative{}
+                }
+                after {
+                    css("content:\"${value.asList().joinToString("\\A")}\";")
+                    background { color{ dark } }
+                    color{ light }
+                    display { block }
+                    overflow { hidden }
+                    opacity { "0" }
+                    zIndex { "20" }
+                    position {
+                        absolute {
+                            left{"50%"}
+                            bottom{"100%"}
+                        }
+                    }
+                    padding{tiny}
+                    fontSize { smaller }
+                    lineHeight { smaller }
+                    css("text-overflow: ellipsis;")
+                    css("transition: opacity .2s, transform .2s;")
+                    css("white-space: pre;")
+                }
+                focus{
+                    after{
+                        opacity { "1" }
+                    }
+
+                }
+                hover {
+                   after{
+                       opacity { "1" }
+                   }
+                }
+                tooltipPlacement.invoke(placement)()
+            }
+        }
+        override val placement = object : TooltipPlacements  {
+            override val top: Style<BasicParams> = {
+                after {
+                    css("transform: translate(-50%, 0.5rem);")
+                }
+                focus{
+                    after{
+                        css("transform: translate(-50%, -.5rem);")
+                    }
+                }
+                hover {
+                    after{
+                        css("transform: translate(-50%, -.5rem);")
+                    }
+                }
+            }
+            override val right: Style<BasicParams> = {
+                after{
+                    position {
+                        absolute {
+                            bottom{"50%"}
+                            left{"100%"}
+                        }
+                    }
+                    css("transform: translate(-0.5rem, 50%);")
+                }
+                focus{
+                   after{
+                       css("transform: translate(0.5rem, 50%);")
+                   }
+
+                }
+                hover {
+                    after{
+                        css("transform: translate(0.5rem, 50%);")
+                    }
+                }
+            }
+            override val bottom: Style<BasicParams> = {
+                after{
+                    position {
+                        absolute {
+                            bottom{auto}
+                            top{"100%"}
+                        }
+                    }
+                    css("transform: translate(-50%, -.5rem);")
+                }
+                focus{
+                   after{
+                       css("transform: translate(-50%, .5rem);")
+                   }
+                }
+                hover {
+                    after{
+                        css("transform: translate(-50%, .5rem);")
+                    }
+
+                }
+            }
+            override val left: Style<BasicParams> = {
+                after {
+                    position {
+                        absolute {
+                            bottom{"50%"}
+                            left{auto}
+                            right{"100%"}
+                        }
+                    }
+                    css("transform: translate(0.5rem, 50%);")
+                }
+                focus{
+                    after {
+                       css("transform: translate(-0.5rem, 50%);")
+                    }
+
+                }
+                hover {
+                    after {
+                        css("transform: translate(-0.5rem, 50%);")
+                    }
+                }
+            }
+        }
+    }
+
+
+
 }

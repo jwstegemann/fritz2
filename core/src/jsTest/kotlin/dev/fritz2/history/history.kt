@@ -1,8 +1,6 @@
 package dev.fritz2.history
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.action
-import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
@@ -37,9 +35,9 @@ class HistoryTests {
 
         render {
             div {
-                span(id = valueId) { store.data.bind() }
-                span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.bind() }
-                span(id = availableId) { store.hist.available.map { it.toString() }.bind() }
+                span(id = valueId) { store.data.asText() }
+                span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.asText() }
+                span(id = availableId) { store.hist.available.map { it.toString() }.asText() }
             }
         }.mount(targetId)
 
@@ -48,30 +46,30 @@ class HistoryTests {
         assertEquals("", getHistory())
         assertEquals(false, getAvailable())
 
-        action(values[1]) handledBy store.update
+        store.update(values[1])
         delay(100)
         assertEquals(values[1], getValue())
         assertEquals(values[0], getHistory())
         assertEquals(true, getAvailable())
 
-        action(values[2]) handledBy store.update
+        store.update(values[2])
         delay(100)
         assertEquals(values[2], getValue())
         assertEquals(values.slice(0..1).reversed().joinToString(), getHistory())
 
-        action(values[3]) handledBy store.update
+        store.update(values[3])
         delay(100)
         assertEquals(values[3], getValue())
         assertEquals(values.slice(0..2).reversed().joinToString(), getHistory())
 
-        action(store.hist.back()) handledBy store.update
+        store.update(store.hist.back())
         delay(100)
         assertEquals(values[2], getValue())
         assertEquals(values.slice(0..1).reversed().joinToString(), getHistory())
 
         assertEquals(store.hist.last(), values[1])
 
-        action(store.hist.back()) handledBy store.update
+        store.update(store.hist.back())
         delay(100)
         assertEquals(values[1], getValue())
         assertEquals(values[0], getHistory())
@@ -102,8 +100,8 @@ class HistoryTests {
 
         render {
             div {
-                span(id = valueId) { store.data.bind() }
-                span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.bind() }
+                span(id = valueId) { store.data.asText() }
+                span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.asText() }
             }
         }.mount(targetId)
 
@@ -112,7 +110,7 @@ class HistoryTests {
         assertEquals("", getHistory())
 
         values.forEach { value ->
-            action(value) handledBy store.update
+            store.update(value)
             delay(1)
         }
         delay(200)
@@ -142,8 +140,8 @@ class HistoryTests {
 
         render {
             div {
-                span(id = valueId) { store.data.bind() }
-                span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.bind() }
+                span(id = valueId) { store.data.asText() }
+                span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.asText() }
             }
         }.mount(targetId)
 
@@ -159,17 +157,17 @@ class HistoryTests {
 
         assertEquals(values.reversed().joinToString(), getHistory())
 
-        action(store.hist.back()) handledBy store.update
+        store.update(store.hist.back())
         delay(100)
         assertEquals(values[2], getValue())
         assertEquals(values.slice(0..1).reversed().joinToString(), getHistory())
 
-        action(store.hist.back()) handledBy store.update
+        store.update(store.hist.back())
         delay(100)
         assertEquals(values[1], getValue())
         assertEquals(values[0], getHistory())
 
-        action(store.hist.back()) handledBy store.update
+        store.update(store.hist.back())
         delay(100)
         assertEquals(values[0], getValue())
         assertEquals("", getHistory())

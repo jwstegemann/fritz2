@@ -1,7 +1,6 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.render
@@ -35,11 +34,11 @@ class ListenerTest {
         render {
             section {
                 input(id = inputId) {
-                    value = store.data
+                    value(store.data)
                     changes.values() handledBy store.update
                 }
                 div(id = resultId) {
-                    store.data.bind()
+                    store.data.asText()
                 }
             }
         }.mount(targetId)
@@ -52,12 +51,12 @@ class ListenerTest {
         assertEquals("start", result.textContent, "wrong dom content of result-node")
 
         input.value = "test1"
-        input.dispatchEvent(Event("change"));
+        input.dispatchEvent(Event("change"))
         delay(100)
         assertEquals("test1", result.textContent, "wrong dom content of result-node")
 
         input.value = "test2"
-        input.dispatchEvent(Event("change"));
+        input.dispatchEvent(Event("change"))
         delay(100)
         assertEquals("test2", result.textContent, "wrong dom content of result-node")
     }
@@ -81,7 +80,7 @@ class ListenerTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.bind()
+                    store.data.asText()
                 }
                 button(id = buttonId) {
                     clicks handledBy store.addADot
@@ -138,7 +137,7 @@ class ListenerTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.bind()
+                    store.data.asText()
                 }
                 button(id = buttonId) {
                     clicks handledBy store.addDot
@@ -199,7 +198,7 @@ class ListenerTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.bind()
+                    store.data.asText()
                 }
                 input(id = inputId) {
                     keydowns.key() handledBy store.keyPressed

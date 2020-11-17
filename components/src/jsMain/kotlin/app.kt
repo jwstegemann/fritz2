@@ -1,15 +1,13 @@
-import dev.fritz2.binding.const
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.A
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.render
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
-import dev.fritz2.styling.theme.render
+import dev.fritz2.styling.theme.renderElement
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-fun HtmlElements.simpleLinkWithBackground(linkUri: String, linkText: String): A {
+fun RenderContext.simpleLinkWithBackground(linkUri: String, linkText: String): A {
     return (::a.styled {
         fontSize { large }
         color {
@@ -28,11 +26,11 @@ fun HtmlElements.simpleLinkWithBackground(linkUri: String, linkText: String): A 
         }
     }) {
         +linkText
-        href = const(linkUri)
+        href(linkUri)
     }
 }
 
-fun HtmlElements.simpleAnchorWithBackground(linkText: String): A {
+fun RenderContext.simpleAnchorWithBackground(linkText: String): A {
     return (::a.styled {
         fontSize { large }
         color {
@@ -51,11 +49,11 @@ fun HtmlElements.simpleAnchorWithBackground(linkText: String): A {
         }
     }) {
         +linkText
-        href = const("#$linkText")
+        href("#$linkText")
     }
 }
 
-fun HtmlElements.simpleAnchor(linkText: String): A {
+fun RenderContext.simpleAnchor(linkText: String): A {
     return (::a.styled {
         fontSize { large }
         hover {
@@ -65,7 +63,7 @@ fun HtmlElements.simpleAnchor(linkText: String): A {
         }
     }) {
         +linkText
-        href = const("#$linkText")
+        href("#$linkText")
     }
 }
 
@@ -78,20 +76,20 @@ fun main() {
 
     val router = router("")
 
-    render { theme: ExtendedTheme ->
+    renderElement { theme: ExtendedTheme ->
         themeProvider {
             themes { themes }
             items {
                 lineUp({
                     alignItems { stretch }
                     color { dark }
-                    minHeight{ "100%" }
+                    minHeight { "100%" }
                 }) {
                     items {
                         stackUp({
                             padding { "1.0rem" }
                             minWidth { "200px" }
-                            minHeight{ "100%" }
+                            minHeight { "100%" }
                             display { flex }
                             wrap { nowrap }
                             direction { column }
@@ -116,6 +114,7 @@ fun main() {
                                 simpleAnchor("gridbox")
                                 simpleAnchor("stack")
                                 simpleAnchor("icons")
+                                simpleAnchor("spinner")
                                 simpleAnchor("buttons")
                                 simpleAnchor("popover")
                                 simpleAnchor("modal")
@@ -125,14 +124,19 @@ fun main() {
                                 simpleAnchor("formcontrol")
 
                                 (::a.styled {
+                                    theme().tooltip.write("visit us on", "www.fritz2.dev"){left}()
+                                    after {
+                                        textAlign { center }
+                                        background { color { warning } }
+                                        color { dark }
+                                    }
                                     paddings {
                                         top { "1.5rem" }
                                     }
                                     alignItems { end }
                                 }) {
-                                    href = const("https://www.fritz2.dev/")
-                                    target = const("fritz2")
-                                    title = const("fritz2.dev")
+                                    href("https://www.fritz2.dev/")
+                                    target("fritz2")
 
                                     icon({
                                         size { "3rem" }
@@ -162,6 +166,7 @@ fun main() {
                             router.render { site ->
                                 when (site) {
                                     "icons" -> iconsDemo()
+                                    "spinner" -> spinnerDemo()
                                     "input" -> inputDemo()
                                     "buttons" -> buttonDemo()
                                     "formcontrol" -> formControlDemo()
@@ -175,7 +180,7 @@ fun main() {
                                     "welcome" -> welcome()
                                     else -> welcome()
                                 }
-                            }.bind()
+                            }
                         }
                     }
                 }

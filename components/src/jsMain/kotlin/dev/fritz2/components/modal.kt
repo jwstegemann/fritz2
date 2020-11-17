@@ -1,18 +1,20 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.*
+import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.appendToBody
-import dev.fritz2.dom.html.render
+import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.renderElement
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.ModalStyles
 import dev.fritz2.styling.theme.theme
-import kotlinx.coroutines.flow.combine
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.renderAll
+import kotlinx.coroutines.flow.map
 
-typealias ModalRenderContext = HtmlElements.(level: Int) -> Unit
+typealias ModalRenderContext = RenderContext.(level: Int) -> Div
 
 enum class OverlayMethod {
     CoveringTopMost,
@@ -22,14 +24,14 @@ enum class OverlayMethod {
 interface Overlay {
     val method: OverlayMethod
     val styling: Style<BasicParams>
-    fun render(renderContext: HtmlElements, level: Int)
+    fun render(renderContext: RenderContext, level: Int)
 }
 
 class DefaultOverlay(
     override val method: OverlayMethod = OverlayMethod.CoveringTopMost,
     override val styling: Style<BasicParams> = theme().modal.overlay
 ) : Overlay {
-    override fun render(renderContext: HtmlElements, level: Int) {
+    override fun render(renderContext: RenderContext, level: Int) {
         renderContext.box({
             zIndex { modal(level, offset = -1) }
             styling()
@@ -81,23 +83,44 @@ class ModalComponent {
         val overlay = storeOf<Overlay>(DefaultOverlay())
 
         fun setOverlayHandler(overlay: Overlay) {
-            action(overlay) handledBy ModalComponent.overlay.update
+            ModalComponent.overlay.update(overlay)
         }
 
         init {
-            appendToBody(render {
+            appendToBody(renderElement {
                 div(id = "modals") {
-                    overlay.data.combine(stack.data) { o, m -> Pair(m, o) }.renderAll {
-                        if (it.second.method == OverlayMethod.CoveringTopMost && it.first.isNotEmpty()) {
-                            it.second.render(this, it.first.size)
+                    // TODO: Check whether this stopped working (new solution is idiomatically much better anyways!)
+                    /*
+                    overlay.data.combine(stack.data) { o, m -> Pair(m, o) }.render { (modal, overlay) ->
+                        if (overlay.method == OverlayMethod.CoveringTopMost && modal.isNotEmpty()) {
+                            overlay.render(this, modal.size)
                         }
-                        for ((index, modal) in it.first.withIndex()) {
-                            if (it.second.method == OverlayMethod.CoveringEach) {
-                                it.second.render(this, index + 1)
+                        for ((index, modal) in modal.withIndex()) {
+                            if (overlay.method == OverlayMethod.CoveringEach) {
+                                overlay.render(this, index + 1)
                             }
                             modal(index + 1)
                         }
-                    }.bind()
+                    }
+                     */
+
+                    stack.data.map { it.size }.render { size ->
+                        val currentOverlay = overlay.current
+                        if (currentOverlay.method == OverlayMethod.CoveringTopMost && size > 0) {
+                            currentOverlay.render(this, size)
+                        }
+                    }
+                    stack.data.map { it.withIndex().toList() }.renderEach { (index, modal) ->
+                        val currentOverlay = overlay.current
+                        if (currentOverlay.method == OverlayMethod.CoveringEach) {
+                            div {
+                                currentOverlay.render(this, index + 1)
+                                modal(index + 1)
+                            }
+                        } else {
+                            modal(index + 1)
+                        }
+                    }
                 }
             })
         }
@@ -120,8 +143,8 @@ class ModalComponent {
                     component.variant.invoke(theme().modal)()
                     styling()
                 }, baseClass, id, prefix) {
-                    if( component.hasCloseButton ) {
-                        if( component.closeButton == null ) {
+                    if (component.hasCloseButton) {
+                        if (component.closeButton == null) {
                             component.closeButton()
                         }
                         component.closeButton?.let { it(this, close) }
@@ -135,9 +158,9 @@ class ModalComponent {
         }
     }
 
-    var items: (HtmlElements.() -> Unit)? = null
+    var items: (RenderContext.() -> Unit)? = null
 
-    fun items(value: HtmlElements.() -> Unit) {
+    fun items(value: RenderContext.() -> Unit) {
         items = value
     }
 
@@ -154,11 +177,11 @@ class ModalComponent {
     }
 
     var hasCloseButton: Boolean = true
-    fun hasCloseButton(value: Boolean ) {
+    fun hasCloseButton(value: Boolean) {
         hasCloseButton = value
     }
 
-    var closeButton: (HtmlElements.(SimpleHandler<Unit>) -> Unit)? = null
+    var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
     fun closeButton(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,

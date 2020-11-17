@@ -1,71 +1,53 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.dom.Tag
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import dev.fritz2.dom.WithDomNode
+import kotlinx.coroutines.Job
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 
 /**
- *  creates a render context for [Tag]s. It should only contain
- *  one root [Tag] like [Div] otherwise a [MultipleRootElementsException]
- *  will be thrown.
+ * Creates a render context for [Tag]s.
  *
- *  @throws MultipleRootElementsException if more then one root [Tag] is defined in [content]
- *  @param content html [Tag] elements to render
+ * @param parentJob used when launching new coroutines
+ * @param content html [Tag] elements to render
  */
-fun <E : Element> render(content: HtmlElements.() -> Tag<E>) =
-    content(object : HtmlElements {
+fun render(
+    parentJob: Job = Job(),
+    content: RenderContext.() -> Unit
+): List<Tag<HTMLElement>> = buildList {
+    content(object : RenderContext {
+        override val job = parentJob
 
-        var alreadyRegistered: Boolean = false
-
-        override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
-            if (alreadyRegistered) {
-                throw MultipleRootElementsException(
-                    "You can have only one root-tag per html-context!"
-                )
-            } else {
-                content(element)
-                alreadyRegistered = true
-                return element
-            }
-        }
-    })
-
-fun renderAll(content: HtmlElements.() -> Unit): List<Tag<HTMLElement>> {
-    val children = mutableListOf<Tag<HTMLElement>>()
-
-    content(object : HtmlElements {
-        override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
+        override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
             content(element)
-            children.add(element.unsafeCast<Tag<HTMLElement>>())
+            add(element.unsafeCast<Tag<HTMLElement>>())
             return element
         }
     })
-
-    return children
 }
 
-
-
 /**
- *  creates a render context for [Tag]s. It should only contain
- *  one root [Tag] like [Div] otherwise a [MultipleRootElementsException]
- *  will be thrown.
+ * Creates a render context for [Tag]s. It should only contain
+ * one root [Tag] like [Div] otherwise a [MultipleRootElementsException]
+ * will be thrown.
  *
- *  @throws MultipleRootElementsException if more then one root [Tag] is defined in [content]
- *  @param content html [Tag] elements to render
+ * @param parentJob
+ * @param content html [Tag] elements to render
+ * @throws MultipleRootElementsException if more then one root [Tag] is defined in [content]
  */
-fun <E : Element> renderNotNull(content: HtmlElements.() -> Tag<E>?) =
-    content(object : HtmlElements {
+fun <E : Element> renderElement(
+    parentJob: Job = Job(),
+    content: RenderContext.() -> Tag<E>
+): Tag<E> =
+    content(object : RenderContext {
+        override val job = parentJob
 
         var alreadyRegistered: Boolean = false
 
-        override fun <X : Element, T : Tag<X>> register(element: T, content: (T) -> Unit): T {
+        override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
             if (alreadyRegistered) {
-                throw MultipleRootElementsException(
-                    "You can have only one root-tag per html-context!"
-                )
+                throw MultipleRootElementsException("You can have only one root-tag per html-context!")
             } else {
                 content(element)
                 alreadyRegistered = true
@@ -75,48 +57,7 @@ fun <E : Element> renderNotNull(content: HtmlElements.() -> Tag<E>?) =
     })
 
 /**
- * convenience-method to easily map each value to a [Tag]
- *
- * @param mapper maps a value to a [Tag]
- */
-fun <X, E : Element> Flow<X>.render(mapper: HtmlElements.(X) -> Tag<E>): Flow<Tag<E>> {
-    return this.map { data ->
-        dev.fritz2.dom.html.render {
-            mapper(data)
-        }
-    }
-}
-
-/**
- * convenience-method to easily map each non-null-value to a [Tag]
- * Use this function, if you want to conditionally render a [Tag].
- * Returning null will render nothing (removes the last rendered [Tag] if necessary).
- *
- * @param mapper maps a value to a [Tag]
- */
-fun <X, E : Element> Flow<X>.renderNotNull(mapper: HtmlElements.(X) -> Tag<E>?): Flow<Tag<E>?> {
-    return this.map { data ->
-        dev.fritz2.dom.html.renderNotNull {
-            mapper(data)
-        }
-    }
-}
-
-/**
- * convenience-method to easily map a value to a [List] of [Tag]s.
- *
- * @param mapper maps a value to a [Tag]
- */
-fun <X> Flow<X>.renderAll(mapper: HtmlElements.(X) -> Unit): Flow<List<Tag<HTMLElement>>> {
-    return this.map { data ->
-        dev.fritz2.dom.html.renderAll {
-            mapper(data)
-        }
-    }
-}
-
-/**
- * occurs when more then one root [Tag] is defined in a [render] context
+ * Occurs when more then one root [Tag] is defined in a [render] context.
  *
  * @param message exception message text
  */

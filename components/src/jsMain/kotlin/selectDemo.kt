@@ -1,20 +1,16 @@
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.const
-import dev.fritz2.binding.each
-import dev.fritz2.binding.handledBy
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.render
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flowOf
 
 val myItems = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "222222")
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.singleSelectDemo(): Div {
+fun RenderContext.singleSelectDemo(): Div {
 
     return stackUp({
         alignItems { start }
@@ -65,7 +61,7 @@ fun HtmlElements.singleSelectDemo(): Div {
                             div {
                                 selectedItemStore.data.render { selectedItem ->
                                     p { +"Selected: $selectedItem" }
-                                }.bind()
+                                }
                             }
                         }
                     }
@@ -88,7 +84,7 @@ fun HtmlElements.singleSelectDemo(): Div {
                                         {},
                                         id = "radioGroup2"
                                     ) {
-                                        disabled { const(true) }
+                                        disabled { flowOf(true) }
                                         items { myItems }
                                         selected { mySelectedItem }
                                     } handledBy selectedItemStore.update
@@ -97,7 +93,7 @@ fun HtmlElements.singleSelectDemo(): Div {
                             div {
                                 selectedItemStore.data.render { selectedItem ->
                                     p { +"Selected: $selectedItem" }
-                                }.bind()
+                                }
                             }
                         }
                     }
@@ -132,7 +128,7 @@ fun HtmlElements.singleSelectDemo(): Div {
                             div {
                                 selectedItemStore.data.render { selectedItem ->
                                     p { +"Selected: $selectedItem" }
-                                }.bind()
+                                }
                             }
                         }
                     }
@@ -143,7 +139,7 @@ fun HtmlElements.singleSelectDemo(): Div {
 }
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.multiSelectDemo(): Div {
+fun RenderContext.multiSelectDemo(): Div {
     return stackUp({
         alignItems { start }
         padding { "1rem" }
@@ -186,7 +182,7 @@ fun HtmlElements.multiSelectDemo(): Div {
                                         {},
                                         id = "checkGroup1"
                                     ) {
-                                        disabled { const(false) }
+                                        disabled { flowOf(false) }
                                         items { myItems }
                                         size { large }
                                         initialSelection { mySelectedItems }
@@ -204,9 +200,9 @@ fun HtmlElements.multiSelectDemo(): Div {
                                     }) {
                                         h4 { +"Selected:" }
                                         ul {
-                                            selectedItemsStore.data.each().render { selectedItem ->
+                                            selectedItemsStore.data.renderEach { selectedItem ->
                                                 li { +selectedItem }
-                                            }.bind()
+                                            }
                                         }
                                     }
                                 }
@@ -233,7 +229,7 @@ fun HtmlElements.multiSelectDemo(): Div {
                                         {},
                                         id = "checkGroup2"
                                     ) {
-                                        disabled { const(false) }
+                                        disabled { flowOf(false) }
                                         items { myItems }
                                         initialSelection { mySelectedItems }
                                         direction { row }
@@ -251,9 +247,9 @@ fun HtmlElements.multiSelectDemo(): Div {
                                     }) {
                                         h4 { +"Selected:" }
                                         ul {
-                                            selectedItemsStore.data.each().render { selectedItem ->
+                                            selectedItemsStore.data.renderEach { selectedItem ->
                                                 li { +selectedItem }
-                                            }.bind()
+                                            }
                                         }
                                     }
                                 }
@@ -279,7 +275,7 @@ fun HtmlElements.multiSelectDemo(): Div {
                                         {},
                                         id = "check1"
                                     ) {
-                                        text = const("small")
+                                        text = flowOf("small")
                                         size { small }
                                         checked { checkedStore1.data }
                                         borderColor { theme().colors.tertiary }
@@ -290,7 +286,7 @@ fun HtmlElements.multiSelectDemo(): Div {
                                         }
                                     }
                                     div {
-                                        checkedStore1.data.map {
+                                        checkedStore1.data.render {
                                             (::p.styled {
                                                 background {
                                                     color { theme().colors.light }
@@ -303,15 +299,15 @@ fun HtmlElements.multiSelectDemo(): Div {
                                             }) {
                                                 +"$it"
                                             }
-                                        }.bind()
+                                        }
                                     }
                                     checkbox(
                                         {},
                                         id = "check2"
                                     ) {
-                                        text = const("normal, disabled")
+                                        text = flowOf("normal, disabled")
                                         checked { checkedStore2.data }
-                                        disabled { const(true) }
+                                        disabled { flowOf(true) }
                                         borderColor { theme().colors.info }
                                         checkedBackgroundColor { theme().colors.warning }
                                         backgroundColor { theme().colors.tertiary }
@@ -320,7 +316,7 @@ fun HtmlElements.multiSelectDemo(): Div {
                                         }
                                     }
                                     div {
-                                        checkedStore2.data.map {
+                                        checkedStore2.data.render {
                                             (::p.styled {
                                                 background {
                                                     color { theme().colors.light }
@@ -333,15 +329,15 @@ fun HtmlElements.multiSelectDemo(): Div {
                                             }) {
                                                 +"$it"
                                             }
-                                        }.bind()
+                                        }
                                     }
                                     checkbox(
                                         {},
                                         id = "check3"
                                     ) {
-                                        text = const("large, disabled")
+                                        text = flowOf("large, disabled")
                                         checked { checkedStore3.data }
-                                        disabled { const(true) }
+                                        disabled { flowOf(true) }
                                         borderColor { "orange" }
                                         size { large }
                                         checkedBackgroundColor { "yellow" }
@@ -351,7 +347,7 @@ fun HtmlElements.multiSelectDemo(): Div {
                                         }
                                     }
                                     div {
-                                        checkedStore3.data.map {
+                                        checkedStore3.data.render {
                                             (::p.styled {
                                                 background {
                                                     color { theme().colors.light }
@@ -364,7 +360,7 @@ fun HtmlElements.multiSelectDemo(): Div {
                                             }) {
                                                 +"$it"
                                             }
-                                        }.bind()
+                                        }
                                     }
                                 }
                             }

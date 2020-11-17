@@ -3,8 +3,7 @@ package dev.fritz2.components
 import dev.fritz2.dom.Listener
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Button
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.dom.html.renderAll
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
@@ -160,24 +159,24 @@ open class PushButtonComponent {
         size = value
     }
 
-    var label: (HtmlElements.(hide: Boolean) -> Unit)? = null
+    var label: (RenderContext.(hide: Boolean) -> Unit)? = null
 
     fun text(value: String) {
         label = { hide -> span(if (hide) hidden.name else null) { +value } }
     }
 
     fun text(value: Flow<String>) {
-        label = { hide -> span(if (hide) hidden.name else null) { value.bind() } }
+        label = { hide -> span(if (hide) hidden.name else null) { value.asText() } }
     }
 
-    var loadingText: (HtmlElements.() -> Unit)? = null
+    var loadingText: (RenderContext.() -> Unit)? = null
 
     fun loadingText(value: String) {
         loadingText = { span { +value } }
     }
 
     fun loadingText(value: Flow<String>) {
-        loadingText = { span { value.bind() } }
+        loadingText = { span { value.asText() } }
     }
 
     var loading: Flow<Boolean>? = null
@@ -186,7 +185,7 @@ open class PushButtonComponent {
         loading = value
     }
 
-    var icon: ((HtmlElements, Style<BasicParams>) -> Unit)? = null
+    var icon: ((RenderContext, Style<BasicParams>) -> Unit)? = null
 
     fun icon(
         styling: BasicParams.() -> Unit = {},
@@ -209,14 +208,15 @@ open class PushButtonComponent {
         if (loading == null) {
             icon?.invoke(renderContext, iconStyle)
         } else {
-            val x = loading?.renderAll { running ->
-                if (running) {
-                    spinner(spinnerStyle) {}
-                } else {
-                    icon?.invoke(this, iconStyle)
+            renderContext.apply {
+                loading?.render { running ->
+                    if (running) {
+                        spinner(spinnerStyle) {}
+                    } else {
+                        icon?.invoke(this, iconStyle)
+                    }
                 }
             }
-            renderContext.apply { x?.bind(true) }
         }
     }
 
@@ -224,24 +224,25 @@ open class PushButtonComponent {
         if (loading == null || icon != null) {
             label?.invoke(renderContext, false)
         } else {
-            val x = loading?.renderAll { running ->
-                if (running) {
-                    spinner({
-                        if (loadingText == null) {
-                            css("position: absolute;")
-                            centerSpinnerStyle()
-                        } else leftSpinnerStyle()
-                    }) {}
-                    if (loadingText != null) {
-                        loadingText!!.invoke(this)
+            renderContext.apply {
+                loading?.render { running ->
+                    if (running) {
+                        spinner({
+                            if (loadingText == null) {
+                                css("position: absolute;")
+                                centerSpinnerStyle()
+                            } else leftSpinnerStyle()
+                        }) {}
+                        if (loadingText != null) {
+                            loadingText!!.invoke(this)
+                        } else {
+                            label?.invoke(this, true)
+                        }
                     } else {
-                        label?.invoke(this, true)
+                        label?.invoke(this, false)
                     }
-                } else {
-                    label?.invoke(this, false)
                 }
             }
-            renderContext.apply { x?.bind() }
         }
     }
 }
@@ -264,7 +265,7 @@ open class PushButtonComponent {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
  */
-fun HtmlElements.pushButton(
+fun RenderContext.pushButton(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -320,7 +321,7 @@ fun HtmlElements.pushButton(
  * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
  * @return a listener (think of a flow!) that offers the clicks of the button
  */
-fun HtmlElements.clickButton(
+fun RenderContext.clickButton(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

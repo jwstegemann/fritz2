@@ -1,17 +1,15 @@
 plugins {
     kotlin("multiplatform")
     id("maven-publish")
-    id("org.jetbrains.dokka") version "0.10.1"
+    id("org.jetbrains.dokka")
 }
 
-//FIXME: move to parent
-val coroutines_version = "1.3.9"
-val stylis_version = "4.0.2"
-val murmurhash_version = "1.0.0"
+val stylisVersion = "4.0.2"
+val murmurhashVersion = "1.0.0"
 
 kotlin {
-    jvm()
-    js().browser {
+//    jvm()
+    js(LEGACY).browser {
         testTask {
             useKarma {
 //                useSafari()
@@ -51,15 +49,13 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
-                implementation(npm("stylis", stylis_version))
-                implementation(npm("murmurhash", murmurhash_version))
+                implementation(npm("stylis", stylisVersion))
+                implementation(npm("murmurhash", murmurhashVersion))
             }
         }
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
             }
         }
     }

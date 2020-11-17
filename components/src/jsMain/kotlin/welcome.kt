@@ -1,16 +1,12 @@
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.handledBy
-import dev.fritz2.binding.storeOf
-import dev.fritz2.binding.watch
-import dev.fritz2.components.*
+import dev.fritz2.components.stackUp
+import dev.fritz2.components.styled
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlin.js.Promise.Companion.all
 
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.welcome(): Div {
+fun RenderContext.welcome(): Div {
 
     return stackUp({
         alignItems { start }

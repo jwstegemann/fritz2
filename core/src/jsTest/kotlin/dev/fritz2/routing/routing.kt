@@ -1,8 +1,5 @@
 package dev.fritz2.routing
 
-import dev.fritz2.binding.const
-import dev.fritz2.binding.each
-import dev.fritz2.binding.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
@@ -12,6 +9,7 @@ import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
@@ -35,17 +33,15 @@ class RoutingTests {
 
         render {
             div(id = testId) {
-                router.bind()
+                router.asText()
                 ul {
-                    const(buttons).each().map { (id, page) ->
-                        render {
-                            li {
-                                button(id = id) {
-                                    clicks.map { page } handledBy router.navTo
-                                }
+                    buttons.forEach { (id, page) ->
+                        li {
+                            button(id = id) {
+                                clicks.map { page } handledBy router.navTo
                             }
                         }
-                    }.bind()
+                    }
                 }
             }
         }.mount(targetId)
@@ -82,20 +78,20 @@ class RoutingTests {
         render {
             div {
                 div(id = pageId) {
-                    router.select(pageKey, "").bind()
+                    router.select(pageKey, "").asText()
                 }
                 div(id = btnId) {
-                    router.select(btnKey) { it.first ?: "" }.bind()
+                    router.select(btnKey).map { it.first ?: "" }.asText()
                 }
                 ul {
-                    const(buttons).each().render { (id, page) ->
+                    buttons.forEach { (id, page) ->
                         li {
                             button(id = id) {
                                 +page
                                 clicks.map { mapOf(pageKey to page, btnKey to id) } handledBy router.navTo
                             }
                         }
-                    }.bind()
+                    }
                 }
             }
         }.mount(targetId)
@@ -128,7 +124,7 @@ class RoutingTests {
 
         render {
             div(id = divId) {
-                router.select("fail", "error").bind()
+                router.select("fail", "error").asText()
             }
         }.mount(targetId)
 

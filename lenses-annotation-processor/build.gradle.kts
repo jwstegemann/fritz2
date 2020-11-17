@@ -4,7 +4,7 @@ plugins {
     id("maven-publish")
 }
 
-val kotlinpoet_version = "1.6.0"
+val kotlinpoetVersion = "1.6.0"
 //val incap_version = "0.3"
 
 kotlin {
@@ -12,10 +12,10 @@ kotlin {
         api(kotlin("stdlib"))
         api(project(":core"))
         api(kotlin("stdlib-jdk8"))
-        api("com.squareup:kotlinpoet:$kotlinpoet_version")
-        api("com.squareup:kotlinpoet-classinspector-elements:$kotlinpoet_version")
-        api("com.squareup:kotlinpoet-metadata:$kotlinpoet_version")
-        api("com.squareup:kotlinpoet-metadata-specs:$kotlinpoet_version")
+        api("com.squareup:kotlinpoet:$kotlinpoetVersion")
+        api("com.squareup:kotlinpoet-classinspector-elements:$kotlinpoetVersion")
+        api("com.squareup:kotlinpoet-metadata:$kotlinpoetVersion")
+        api("com.squareup:kotlinpoet-metadata-specs:$kotlinpoetVersion")
 //                    compileOnly("net.ltgt.gradle.incap:incap:${incap_version}")
 //                    configurations.get("kapt").dependencies.add(compileOnly("net.ltgt.gradle.incap:incap-processor:${incap_version}"))
 //                    implementation(kotlin("compiler-embeddable"))

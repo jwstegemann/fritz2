@@ -1,15 +1,13 @@
 package dev.fritz2.components
 
-import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.ScaledValueProperty
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
-import kotlinx.coroutines.flow.Flow
 
 /**
  * This base component class for stacking components offer some _configuration_ properties.
@@ -84,9 +82,9 @@ abstract class StackComponent {
         spacing = value
     }
 
-    var items: (HtmlElements.() -> Unit)? = null
+    var items: (RenderContext.() -> Unit)? = null
 
-    fun items(value: HtmlElements.() -> Unit) {
+    fun items(value: RenderContext.() -> Unit) {
         items = value
     }
 
@@ -149,7 +147,7 @@ class StackUpComponent : StackComponent() {
  * @return a [Div] element in order to use this component as top level element of an UI part. This way it can be
  *         directly integrated into one of the _render_ functions!
  */
-fun HtmlElements.stackUp(
+fun RenderContext.stackUp(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -222,7 +220,7 @@ class LineUpComponent : StackComponent() {
  * @return a [Div] element in order to use this component as top level element of an UI part. This way it can be
  *         directly integrated into one of the _render_ functions!
  */
-fun HtmlElements.lineUp(
+fun RenderContext.lineUp(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

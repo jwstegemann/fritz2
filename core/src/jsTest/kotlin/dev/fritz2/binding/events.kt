@@ -37,15 +37,15 @@ class EventTests {
         render {
             section {
                 input {
-                    value = store.data
+                    value(store.data)
                     changes.values() handledBy store.update
                 }
                 div(id = resultId) {
-                    text("value: ")
-                    store.data.bind()
+                    +"value: "
+                    store.data.asText()
                 }
                 button(id = buttonId) {
-                    text("add one more little dot")
+                    +"add one more little dot"
                     clicks handledBy store.addADot
                 }
             }

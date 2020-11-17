@@ -1,23 +1,17 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
-import dev.fritz2.binding.const
-import dev.fritz2.binding.handledBy
-import dev.fritz2.dom.Listener
-import dev.fritz2.dom.html.HtmlElements
+
+
 import dev.fritz2.dom.html.Input
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.shadow
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.InputFieldStyles
-import dev.fritz2.styling.theme.theme
-import dev.fritz2.styling.whenever
-import kotlinx.coroutines.flow.Flow
 
 /**
  * This component object for inputFields just defines and holds basic styling information applied to every inputField.
@@ -100,7 +94,7 @@ object InputFieldComponent {
  * },
  * // pass in a store of type [String]
  * store = dataStore) {
- *      placeholder = const("Placeholder") // render a placeholder text for empty field
+ *      placeholder("Placeholder") // render a placeholder text for empty field
  * }
  * ```
  *
@@ -113,7 +107,7 @@ object InputFieldComponent {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [InputFieldComponent]
  */
-fun HtmlElements.inputField(
+fun RenderContext.inputField(
     styling: BasicParams.() -> Unit = {},
     store: Store<String>? = null,
     baseClass: StyleClass? = null,
@@ -126,7 +120,7 @@ fun HtmlElements.inputField(
     }) {
         init()
         store?.let {
-            value = it.data
+            value(it.data)
             changes.values() handledBy it.update
         }
     }

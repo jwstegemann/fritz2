@@ -6,12 +6,12 @@ import org.w3c.dom.events.*
 import org.w3c.xhr.ProgressEvent
 
 /**
- * [EventType] contains the javascript related name and actual type of the [Event].
+ * Contains the javascript related name and actual type of the [Event].
  */
 class EventType<T : Event>(val name: String)
 
 /**
- * [Events] contains all javascript event types.
+ * Contains all javascript event types.
  * Take a look [here](https://www.w3schools.com/jsref/dom_obj_event.asp).
  */
 object Events {

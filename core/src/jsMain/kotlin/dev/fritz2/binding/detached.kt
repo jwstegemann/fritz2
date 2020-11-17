@@ -1,14 +1,12 @@
 package dev.fritz2.binding
 
-import dev.fritz2.flow.asSharedFlow
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.elementLens
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.repositories.Resource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 
 /**
@@ -40,13 +38,24 @@ fun <T, I> Store<List<T>>.detach(element: T, idProvider: IdProvider<T, I>, initi
  * @property lens definition, which sub-model is represented by this [Store]
  */
 class DetachedStore<T, P>(private val initialData: T, private val parent: Store<P>, private val lens: Lens<P, T>) :
-    Store<T>, CoroutineScope by MainScope() {
+    Store<T> {
     private val state = MutableStateFlow(initialData)
+
+    /**
+     * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
+     */
+    override val job: Job = Job()
 
     /**
      * defines how to infer the id of the sub-part from the parent's id.
      */
     override val id: String by lazy { "${parent.id}.${lens.id}".trimEnd('.') }
+
+    /**
+     * represents the current value of the [Store]
+     */
+    override val current: T
+        get() = state.value
 
     /**
      * Since a [SubStore] is just a view on a [RootStore] holding the real value, it forwards the [Update] to it, using it's [Lens] to transform it.
@@ -65,7 +74,8 @@ class DetachedStore<T, P>(private val initialData: T, private val parent: Store<
      */
     override val data: Flow<T> = parent.data.map {
         lens.get(it)
-    }.distinctUntilChanged().asSharedFlow()
+    }.distinctUntilChanged()
+    //TODO: sharedFlow
 
     /**
      * creates a new [SubStore] using this one as it's parent.

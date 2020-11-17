@@ -1,13 +1,14 @@
-import dev.fritz2.binding.const
-import dev.fritz2.components.*
+import dev.fritz2.components.icon
+import dev.fritz2.components.lineUp
+import dev.fritz2.components.popover
+import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
-import dev.fritz2.styling.params.AlignItemsValues
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-fun HtmlElements.popoverDemo(): Div {
+fun RenderContext.popoverDemo(): Div {
     return stackUp({
         alignItems { start }
         padding { "1rem" }
@@ -37,10 +38,10 @@ fun HtmlElements.popoverDemo(): Div {
                                 icon({ size { "2.5rem" } }) { fromTheme { icon } }
                             }
                             placement { placement }
-                            header(const("Our simple Popover"))
+                            header("Our simple Popover")
                             content {
                                 div {
-                                    text("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ")
+                                    +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
                                 }
                             }
                             footer("Footercontent")
@@ -48,6 +49,8 @@ fun HtmlElements.popoverDemo(): Div {
                     }
 
                     popover({
+                        background { color { warning } }
+                        border { color { dark }}
                         margins { right { small } }
                     }) {
                         trigger {
@@ -56,13 +59,19 @@ fun HtmlElements.popoverDemo(): Div {
                         placement { bottom }
                         hasArrow(false)
                         hasCloseButton(false)
-                        header(const("Without CloseButton..."))
+                        header("Customized")
                         content {
                             div {
-                                text("At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. ")
+                                +"background-color"
+                                br{}
+                                +"border-color"
+                                br{}
+                                +"hidden close Button"
+                                br{}
+                                +"and hidden arrow"
                             }
                         }
-                        footer("... and arrow")
+                        footer("Use the Trigger to close the popover ;-)")
                     }
                     popover({
                         margins { right { small } }
@@ -77,10 +86,10 @@ fun HtmlElements.popoverDemo(): Div {
                                 fontSize { tiny }
                             }) { fromTheme { viewOff } }
                         }
-                        header(const("Custom Close Button..."))
+                        header("Custom Close Button...")
                         content {
                             div {
-                                text("At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. ")
+                                +"At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. "
                             }
                         }
                     }

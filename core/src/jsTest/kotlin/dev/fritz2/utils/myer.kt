@@ -14,7 +14,7 @@ import kotlin.time.measureTime
 @ExperimentalTime
 class MyerTests {
 
-    private fun <T> MutableList<T>.applyPatch(patch: Patch<T>): Unit {
+    private fun <T> MutableList<T>.applyPatch(patch: Patch<T>) {
         when (patch) {
             is Patch.Insert<T> -> {
                 add(patch.index, patch.element)
@@ -76,7 +76,7 @@ class MyerTests {
     }
 
 
-    suspend fun runTestCase(old: MutableList<String>, new: MutableList<String>): Unit {
+    suspend fun runTestCase(old: MutableList<String>, new: MutableList<String>) {
 
 //        console.log("old: $old \n")
 //        console.log("new: $new \n")

@@ -1,9 +1,9 @@
 package dev.fritz2.dom
 
-import dev.fritz2.binding.SingleMountPoint
+import dev.fritz2.dom.html.RenderContext
+import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.Node
 import org.w3c.dom.Text
@@ -12,30 +12,32 @@ import org.w3c.dom.Text
 /**
  * Interface providing functionality to handle text-content
  */
-interface WithText<T : org.w3c.dom.Node> : WithDomNode<T> {
-    /**
-     * adds static text-content at this position
-     *
-     * @param value text-content
-     */
-    fun text(value: String): Node = domNode.appendChild(TextNode(value).domNode)
-
-    operator fun String.unaryPlus(): Node = domNode.appendChild(TextNode(this).domNode)
+interface WithText<N : Node> : WithDomNode<N>, RenderContext {
 
     /**
-     * binds a [Flow] of [String]s at this position (creates a [DomMountPoint] here as a placeholder)
+     * Adds text-content of a [Flow] at this position
      *
-     * @param value text-content
+     * @receiver text-content
      */
-    //conflate because updates that occur faster than dom-manipulation should be ommitted
-    fun Flow<String>.bind(preserveOrder: Boolean = false): SingleMountPoint<WithDomNode<Text>> {
-        val upstream = this.map {
-            TextNode(it)
-        }.distinctUntilChanged()
-
-        return if (preserveOrder) DomMountPointPreserveOrder(upstream, domNode)
-        else DomMountPoint(upstream, domNode)
+    fun Flow<String>.asText() {
+        mountDomNode(job, domNode, this.map { TextNode(it) })
     }
+
+    /**
+     * Adds text-content of a [Flow] at this position
+     *
+     * @receiver text-content
+     */
+    fun <T> Flow<T>.asText() {
+        mountDomNode(job, domNode, this.map { TextNode(it.toString()) })
+    }
+
+    /**
+     * Adds static text-content at this position
+     *
+     * @receiver text-content
+     */
+    operator fun String.unaryPlus(): Node = domNode.appendChild(document.createTextNode(this))
 }
 
 /**

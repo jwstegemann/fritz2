@@ -1,10 +1,10 @@
 plugins {
     kotlin("multiplatform")
     id("maven-publish")
-    id("org.jetbrains.dokka") version "0.10.1"
+    id("org.jetbrains.dokka")
 }
 
-val coroutines_version = "1.3.9"
+val coroutinesVersion = "1.4.1"
 
 kotlin {
     jvm()
@@ -60,13 +60,13 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutinesVersion")
             }
         }
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutinesVersion")
             }
         }
     }

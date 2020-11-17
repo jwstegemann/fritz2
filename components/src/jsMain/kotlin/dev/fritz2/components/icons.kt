@@ -1,7 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
@@ -10,10 +10,9 @@ import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.theme
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import org.w3c.dom.svg.SVGElement
 
-
-//FIXME: move to HtmlElements...
 const val xmlns = "http://www.w3.org/2000/svg"
 
 fun createIconSvgElement(baseClass: String?): SVGElement {
@@ -23,12 +22,15 @@ fun createIconSvgElement(baseClass: String?): SVGElement {
 }
 
 class Svg(
-    id: String? = null, baseClass: String? = null, override val domNode: SVGElement = createIconSvgElement(baseClass)
-) : Tag<SVGElement>(domNode = domNode, tagName = "", id = id)
+    id: String? = null,
+    baseClass: String? = null,
+    override val domNode: SVGElement = createIconSvgElement(baseClass),
+    job: Job
+) : Tag<SVGElement>(domNode = domNode, tagName = "", id = id, job = job)
 
 
-fun HtmlElements.svg(baseClass: String?, id: String?, init: Svg.() -> Unit): Svg {
-    return register(Svg(id = id, baseClass = baseClass), init)
+fun RenderContext.svg(baseClass: String?, id: String?, init: Svg.() -> Unit): Svg {
+    return register(Svg(id = id, baseClass = baseClass, job = job), init)
 }
 
 /**
@@ -139,7 +141,7 @@ class IconComponent {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [IconComponent]
  */
-fun HtmlElements.icon(
+fun RenderContext.icon(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

@@ -1,7 +1,5 @@
 package dev.fritz2.dom.html
 
-import dev.fritz2.binding.action
-import dev.fritz2.binding.handledBy
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
@@ -26,11 +24,11 @@ class RenderTests {
 
         render {
             section {
-                store.data.render { value ->
+                store.data.renderElement { value ->
                     div(id = divId) {
                         +if (value) "on" else "off"
                     }
-                }.bind()
+                }
             }
         }.mount(targetId)
 
@@ -40,7 +38,7 @@ class RenderTests {
 
         assertEquals("on", div.textContent)
 
-        action(false) handledBy store.update
+        store.update(false)
         delay(200)
 
         val div2 = document.getElementById(divId) as HTMLDivElement
