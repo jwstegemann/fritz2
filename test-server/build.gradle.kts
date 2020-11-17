@@ -5,9 +5,6 @@ plugins {
     id("com.github.hesch.execfork") version "0.1.14"
 }
 
-group = "dev.fritz2"
-version = "0.0.1-SNAPSHOT"
-
 application {
     mainClassName = "io.ktor.server.netty.EngineMain"
 }
@@ -18,18 +15,18 @@ repositories {
     maven { url = uri("https://kotlin.bintray.com/ktor") }
 }
 
-val logback_version = "1.2.1"
-val ktor_version = "1.4.0"
+val logbackVersion = "1.2.1"
+val ktorVersion = "1.4.0"
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("io.ktor:ktor-server-core:$ktor_version")
-    implementation("io.ktor:ktor-auth:$ktor_version")
-    implementation("io.ktor:ktor-jackson:$ktor_version")
-    implementation("io.ktor:ktor-websockets:$ktor_version")
-    testImplementation("io.ktor:ktor-server-tests:$ktor_version")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("io.ktor:ktor-server-core:$ktorVersion")
+    implementation("io.ktor:ktor-auth:$ktorVersion")
+    implementation("io.ktor:ktor-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-websockets:$ktorVersion")
+    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 
 tasks.register<com.github.psxpaul.task.JavaExecFork>("start") {
