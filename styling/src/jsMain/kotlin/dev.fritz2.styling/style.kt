@@ -1,5 +1,6 @@
 package dev.fritz2.styling
 
+import dev.fritz2.dom.Tag
 import dev.fritz2.styling.hash.v3
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.StyleParamsImpl
@@ -10,6 +11,7 @@ import dev.fritz2.styling.stylis.stringify
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.Element
 import org.w3c.dom.HTMLStyleElement
 import org.w3c.dom.css.CSSStyleSheet
 
@@ -101,6 +103,17 @@ inline class StyleClass(val name: String) {
     infix operator fun plus(other: StyleClass?) = StyleClass(this.name + " " + other?.name.orEmpty())
 }
 
+fun <E : Element> Tag<E>.className(values: Flow<StyleClass>) {
+    className(values.map { it.name })
+}
+
+fun <E : Element> Tag<E>.classList(values: Flow<List<StyleClass>>) {
+    classList(values.map { it.map { styleClass -> styleClass.name } })
+}
+
+fun <E : Element> Tag<E>.classMap(values: Flow<Map<StyleClass, Boolean>>) {
+    classMap(values.map { it.mapKeys { (k, _) -> k.name } })
+}
 
 /**
  * const for no style class
