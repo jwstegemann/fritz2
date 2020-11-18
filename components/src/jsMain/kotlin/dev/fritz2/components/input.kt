@@ -85,7 +85,8 @@ object InputFieldComponent {
  * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Input). To manually set the value or
  * react to a change refer also to its event's.
  *
- * There are some predefined stylings avaliable via the [Theme]. Have a look at [Theme.input] or [InputFieldStyles]
+ * There are some predefined stylings avaliable via the [dev.fritz2.styling.theme.Theme]. Have a look at
+ * [dev.fritz2.styling.theme.Theme.input] or [InputFieldStyles]
  *
  * ```
  * inputField({ // just style it like any other component:
@@ -105,7 +106,7 @@ object InputFieldComponent {
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself. Details in [InputFieldComponent]
+ * @param init a lambda expression for setting up the component itself. Details in [InputFieldComponent]
  */
 fun RenderContext.inputField(
     styling: BasicParams.() -> Unit = {},

@@ -181,7 +181,7 @@ interface Alignment : StyleParams {
      * align-content { flexStart }
      * ```
      *
-     * @param sm extension function parameter for small media devices, recommended to use
+     * @param value extension function parameter for small media devices, recommended to use
      *           predefined values from [AlignContentValues]
      */
     fun alignContent(value: AlignContentValues.() -> AlignContentProperty) =

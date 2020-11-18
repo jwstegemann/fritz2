@@ -39,8 +39,8 @@ fun RenderContext.svg(baseClass: String?, id: String?, init: Svg.() -> Unit): Sv
  * An [IconDefinition] _must_ be provided in order to render an icon. This definition wraps the pure SVG markup together
  * with additional properties like the display-name and the viewbox.
  *
- * In order to provide a comfortable way to use the predefined icons from the [Theme], use the [IconComponent.fromTheme]
- * method.
+ * In order to provide a comfortable way to use the predefined icons from the [dev.fritz2.styling.theme.Theme],
+ * use the [IconComponent.fromTheme] method.
  */
 class IconComponent {
     companion object {
@@ -70,7 +70,7 @@ class IconComponent {
 /**
  * This component enables to render an icon. It basically wraps raw SVG images into a nicer API.
  *
- * fritz2's default theme offers some basic predefined icons, have a look at [Theme.icons].
+ * fritz2's default theme offers some basic predefined icons, have a look at [dev.fritz2.styling.theme.Theme.icons].
  *
  * Every icon must be wrapped inside an [IconDefinition], that acts as a value class for the raw SVG markup.
  *

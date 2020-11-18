@@ -200,10 +200,10 @@ internal const val columnGapKey = "column-gap: "
  *
  * It does **not** create a grid layout though!
  *
- * This is done by a special [dev.fritz2.styling.components.grid] fabric function that creates a component
+ * This is done by a special ``dev.fritz2.components.gridBox`` fabric function that creates a component
  * with the [display](https://developer.mozilla.org/en/docs/Web/CSS/display) property already set to ``grid``.
  *
- * So it is recommended to use the provided functions within the styles parameter of [dev.fritz2.components.grid].
+ * So it is recommended to use the provided functions within the styles parameter of ``dev.fritz2.components.gridBox``.
  *
  * This interface offers all the inherited functions of [Alignment] that corresponds to the
  * [CSS alignment module](https://www.w3.org/TR/css-align-3/).
@@ -529,7 +529,7 @@ interface GridLayout : StyleParams, Alignment {
      * - tedious to type (no autocompletion)
      * - not safe for refactorings (only search + replace is possible)
      * - easy to introduce typos
-     * - easy to misspell the name in the related [dev.fritz2.components.box] component and therefore break the
+     * - easy to misspell the name in the related ``dev.fritz2.components.box`` component and therefore break the
      *   relation!
      *
      * That is why it is recommended to use some sort of _container_ for the area names!

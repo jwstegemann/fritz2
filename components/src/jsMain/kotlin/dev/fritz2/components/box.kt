@@ -11,7 +11,7 @@ import dev.fritz2.styling.params.GridParams
  * for arbitrary content.
  *
  * In fact it is more or less a shorthand for styling a ``div`` manually and so to avoid the cumbersome syntax
- * of [BasicComponent.styled]
+ * of ``BasicComponent.styled``
  *
  * Example usage:
  * ```
@@ -63,7 +63,7 @@ fun RenderContext.box(
  *      p { +"Some content in the box" }
  * }
  * ```
- * @see Flexbox for a detailed overview about how to define flexBox layouts
+ * @see [dev.fritz2.styling.params.Flexbox] for a detailed overview about how to define flexBox layouts
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
@@ -107,7 +107,7 @@ fun RenderContext.flexBox(
  * }
  * ```
  *
- * @see GridLayout for a detailed overview about how to define grid layouts
+ * @see [dev.fritz2.styling.params.GridLayout] for a detailed overview about how to define grid layouts
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element

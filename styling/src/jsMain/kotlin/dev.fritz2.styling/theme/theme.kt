@@ -173,7 +173,9 @@ interface Theme {
 }
 
 /**
- * [StateFlow] that holds the current selected [Theme]
+ * global variable that holds the currently selected [Theme]
+ *
+ * In order to *dynamically* change the theme, have a look at ``dev.fritz2.components.themeProvider``.
  */
 @ExperimentalCoroutinesApi
 var currentTheme: Theme = DefaultTheme()
