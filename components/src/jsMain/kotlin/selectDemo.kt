@@ -278,10 +278,7 @@ fun RenderContext.multiSelectDemo(): Div {
                                         text = flowOf("small")
                                         size { small }
                                         checked { checkedStore1.data }
-                                        borderColor { theme().colors.tertiary }
-                                        checkedBackgroundColor { theme().colors.warning }
-                                        backgroundColor { theme().colors.tertiary }
-                                        events {
+                                         events {
                                             changes.states() handledBy checkedStore1.update
                                         }
                                     }
@@ -308,9 +305,6 @@ fun RenderContext.multiSelectDemo(): Div {
                                         text = flowOf("normal, disabled")
                                         checked { checkedStore2.data }
                                         disabled { flowOf(true) }
-                                        borderColor { theme().colors.info }
-                                        checkedBackgroundColor { theme().colors.warning }
-                                        backgroundColor { theme().colors.tertiary }
                                         events {
                                             changes.states() handledBy checkedStore2.update
                                         }
@@ -332,16 +326,15 @@ fun RenderContext.multiSelectDemo(): Div {
                                         }
                                     }
                                     checkbox(
-                                        {},
+                                        {
+
+                                        },
                                         id = "check3"
                                     ) {
                                         text = flowOf("large, disabled")
                                         checked { checkedStore3.data }
                                         disabled { flowOf(true) }
-                                        borderColor { "orange" }
-                                        size { large }
-                                        checkedBackgroundColor { "yellow" }
-                                        backgroundColor { theme().colors.tertiary }
+                                         size { large }
                                         events {
                                             changes.states() handledBy checkedStore3.update
                                         }

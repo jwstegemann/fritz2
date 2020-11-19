@@ -709,64 +709,58 @@ open class DefaultTheme : Theme {
     }
 
     override val checkbox = object : CheckboxStyles {
-        override val sizes = object : CheckboxSizes {
+       override val sizes = object : CheckboxSizes {
             override val small: Style<BasicParams> = {
+                display {inlineFlex}
                 fontSize { small }
                 lineHeight { small }
-                before {
-                    height { "10px" }
-                    width { "10px" }
-                    before {
-                        radii {
-                            top { smaller }
-                            bottom { smaller }
-                            left { smaller }
-                            right { smaller }
-                        }
-                    }
-                    margins {
-                        right { "4px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "1px" }
-                        }
-                    }
-                }
             }
             override val normal: Style<BasicParams> = {
+                display {inlineFlex}
                 fontSize { normal }
                 lineHeight { normal }
-                before {
-                    height { "20px" }
-                    width { "20px" }
-                    margins {
-                        right { "7px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "2px" }
-                        }
-                    }
-                }
             }
             override val large: Style<BasicParams> = {
+                display {inlineFlex}
                 fontSize { larger }
                 lineHeight { larger }
-                before {
-                    height { "30px" }
-                    width { "30px" }
-                    margins {
-                        right { "10px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "3px" }
-                        }
-                    }
-                }
             }
         }
+
+        override val icon : Style<BasicParams> = {
+            width { ".75rem" }
+            height {" .75rem" }
+            lineHeight { "0.75rem" }
+            margins {
+                top {"0.05rem"}
+                left {"0.05rem"}
+            }
+        }
+        override val label: Style<BasicParams> = {
+            margins { left { tiny } }
+            display { block }
+        }
+        override val default: Style<BasicParams> = {
+            display { inlineFlex }
+            flex {
+                shrink { "0" }
+            }
+            width { "1rem" }
+            height { "1rem" }
+            margins { top { "0.188rem" } }
+            background { color { "white" } }
+            border {
+                width { "1px" }
+                style { solid }
+                color { dark }
+            }
+
+        }
+        override val checked: Style<BasicParams> = {
+            background { color { warning } }
+            color { dark }
+        }
+
     }
 
     override val button = object : PushButtonStyles {

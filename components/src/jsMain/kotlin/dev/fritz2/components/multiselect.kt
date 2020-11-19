@@ -161,9 +161,6 @@ class CheckboxGroupComponent {
                     text(item.value)
                     component.size.invoke(theme().checkbox.sizes)
                     size { component.size.invoke(theme().checkbox.sizes) }
-                    borderColor { component.borderColor }
-                    backgroundColor { component.backgroundColor }
-                    checkedBackgroundColor { component.checkedBackgroundColor }
                     checked { checkThisBox }
                     disabled { component.disabled }
                     events {

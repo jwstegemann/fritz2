@@ -222,8 +222,6 @@ fun RenderContext.formControlDemo(): Div {
                 ) {
                     text(textStore.data)
                     size { large }
-                    borderColor { theme().colors.secondary }
-                    checkedBackgroundColor { theme().colors.warning }
                     checked { loveStore.data }
                     events {
                         changes.states() handledBy loveStore.changedMyMind

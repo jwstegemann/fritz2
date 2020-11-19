@@ -291,6 +291,10 @@ interface RadioSizes {
 
 interface CheckboxStyles {
     val sizes: CheckboxSizes
+    val icon: Style<BasicParams>
+    val label: Style<BasicParams>
+    val default: Style<BasicParams>
+    val checked: Style<BasicParams>
 }
 
 interface CheckboxSizes {
