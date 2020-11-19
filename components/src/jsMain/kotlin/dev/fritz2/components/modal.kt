@@ -60,12 +60,12 @@ class DefaultOverlay(
  * The actual rendering of the overlay is done within a separate interface called [Overlay].
  * There is currently one implementation [DefaultOverlay] that offers the possibility to freely inject the styling,
  * so for most use cases it might be sufficient to just use the former.
- * If there is a need to render a _different structure_ or to bypass the [Theme.zIndices] management, a custom
- * implementation is the way to go.
+ * If there is a need to render a _different structure_ or to bypass the [dev.fritz2.styling.theme.Theme.zIndices]
+ * management, a custom implementation is the way to go.
  * The interface also enforces to pass the rendering strategy identifier via the [Overlay.method] property.
  *
  * For a detailed understanding have a look into the [ModalComponent.show] function and the
- * [ModalComponent.Companion.init] block.
+ * ``ModalComponent.Companion.init`` block.
  */
 class ModalComponent {
 
@@ -212,7 +212,8 @@ class ModalComponent {
 /**
  * This component provides some modal dialog or messagebox. Basically it just offers a ``div`` that is rendered on a
  * higher [z-index](https://developer.mozilla.org/en-US/docs/Web/CSS/z-index) than the rest of the application.
- * It uses the reserved segments provided by the [ZIndices.modal] function that are initialized by [Theme.zIndices].
+ * It uses the reserved segments provided by the [dev.fritz2.styling.theme.ZIndices.modal] function that are
+ * initialized by [dev.fritz2.styling.theme.Theme.zIndices].
  * That way the top modal will always have the highest ``z-index`` and therefore be on top of the screen.
  *
  * The content and structure within the modal are completely free to model. Further more there are predefined styles
@@ -221,7 +222,7 @@ class ModalComponent {
  * with a custom solution, as a [SimpleHandler<Unit>] is injected as parameter into the [build] expression.
  *
  * As this factory function also returns a [SimpleHandler<Unit>], it is easy to combine it directly with some other
- * component that offers some sort of [Flow], like a [clickButton].
+ * component that offers some sort of Flow, like a [clickButton].
  *
  * Have a look at some example calls
  * ```

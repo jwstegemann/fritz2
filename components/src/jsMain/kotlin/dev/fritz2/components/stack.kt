@@ -15,7 +15,7 @@ import dev.fritz2.styling.staticStyle
  * It enables to configure the following features:
  *  - switching the default order of rendering (top -> bottom to bottom -> top for stackUps and left -> right to
  *    right -> left for lineUps)
- *  - defining the spacing between the items. For details have a look at [Theme.space]
+ *  - defining the spacing between the items. For details have a look at [dev.fritz2.styling.theme.Theme.space]
  *  - adding arbitrary items like HTML elements or other components
  *
  *  You can combine both kind of stacking components to realize a simple layou for example:

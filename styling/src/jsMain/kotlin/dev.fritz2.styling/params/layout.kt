@@ -728,8 +728,8 @@ interface Layout : StyleParams {
      * This function sets the [display](https://developer.mozilla.org/en/docs/Web/CSS/display) property of a component
      * for all media devices.
      *
-     * If you want to create a flex- or grid-layout prefer to use the specialized [dev.fritz2.styling.components.flex]
-     * and [dev.fritz2.styling.components.grid] factory functions in order to create a box, that has this property
+     * If you want to create a flex- or grid-layout prefer to use the specialized ``dev.fritz2.styling.components.flexBox``
+     * and ``dev.fritz2.styling.components.gridBox`` factory functions in order to create a box, that has this property
      * already set.
      *
      * example calls:
@@ -749,8 +749,8 @@ interface Layout : StyleParams {
      * This function sets the [display](https://developer.mozilla.org/en/docs/Web/CSS/display) property of a component
      * for each media device independently.
      *
-     * If you want to create a flex- or grid-layout prefer to use the specialized [dev.fritz2.components.flex]
-     * and [dev.fritz2.components.grid] factory functions in order to create a box, that has this property
+     * If you want to create a flex- or grid-layout prefer to use the specialized ``dev.fritz2.components.flexBox``
+     * and ``dev.fritz2.components.gridBox`` factory functions in order to create a box, that has this property
      * already set.
      *
      * example calls:
