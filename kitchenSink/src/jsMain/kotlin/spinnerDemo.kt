@@ -74,7 +74,7 @@ fun RenderContext.spinnerDemo(): Div {
                     stackUp {
                         items {
                             spinner {
-                                icon { star }
+                                icon { favorite }
                                 speed { "1s" }
                             }
                             p { +"choose any icon" }

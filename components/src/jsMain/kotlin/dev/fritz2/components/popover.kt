@@ -42,16 +42,16 @@ class PopoverComponent {
         prefix: String = "popover-close-button",
         build: PushButtonComponent.() -> Unit = {}
     ) {
-        closeButton = { close ->
+        closeButton = { closeHandle ->
             clickButton({
                 theme().popover.closeButton()
                 styling()
 
             }, baseClass, id, prefix) {
                 variant { ghost }
-                icon{ fromTheme { smallClose } }
+                icon{ fromTheme { close } }
                 build()
-            }.map { Unit } handledBy close
+            }.map { Unit } handledBy closeHandle
         }
     }
 

@@ -20,7 +20,7 @@ fun RenderContext.buttonDemo(): Div {
         items {
             lineUp {
                 items {
-                    icon({ color { "darkgreen" } }) { fromTheme { checkCircle } }
+                    icon({ color { "darkgreen" } }) { fromTheme { circleCheck } }
                     p { +"Your data has been saved successfully." }
                 }
             }
