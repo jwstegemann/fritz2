@@ -135,6 +135,13 @@ open class DefaultTheme : Theme {
 
     override val icons = object : Icons {
 
+        /*
+         * Most of our provided icons are taken from the [MONO Icons](https://icons.mono.company/) Projekt, that
+         * provides a solid set of useful icons. Some icons might be slightly modified and some icons
+         * (like the outstanding fritz2 logo itself) are made by ourselves.
+         */
+
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val add = IconDefinition(
             "add",
             svg = """
@@ -142,6 +149,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val all = IconDefinition(
             "all",
             svg = """
@@ -149,6 +157,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val archive = IconDefinition(
             "archive",
             svg = """
@@ -156,6 +165,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val arrowDown = IconDefinition(
             "arrowDown",
             svg = """
@@ -163,6 +173,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val arrowLeftDown = IconDefinition(
             "arrowLeftDown",
             svg = """
@@ -170,6 +181,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val arrowLeftUp = IconDefinition(
             "arrowLeftUp",
             svg = """
@@ -177,6 +189,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val arrowLeft = IconDefinition(
             "arrowLeft",
             svg = """
@@ -184,6 +197,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val arrowRightDown = IconDefinition(
             "arrowRightDown",
             svg = """
@@ -191,6 +205,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val arrowRightUp = IconDefinition(
             "arrowRightUp",
             svg = """
@@ -198,6 +213,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val arrowRight = IconDefinition(
             "arrowRight",
             svg = """
@@ -205,6 +221,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val arrowUp = IconDefinition(
             "arrowUp",
             svg = """
@@ -212,6 +229,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val attachment = IconDefinition(
             "attachment",
             svg = """
@@ -219,6 +237,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val ban = IconDefinition(
             "ban",
             svg = """
@@ -226,6 +245,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val barChartAlt = IconDefinition(
             "barChartAlt",
             svg = """
@@ -233,6 +253,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val barChart = IconDefinition(
             "barChart",
             svg = """
@@ -240,6 +261,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val board = IconDefinition(
             "board",
             svg = """
@@ -247,6 +269,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val book = IconDefinition(
             "book",
             svg = """
@@ -254,6 +277,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val bookmark = IconDefinition(
             "bookmark",
             svg = """
@@ -261,6 +285,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val calendar = IconDefinition(
             "calendar",
             svg = """
@@ -268,6 +293,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val call = IconDefinition(
             "call",
             svg = """
@@ -275,6 +301,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val camera = IconDefinition(
             "camera",
             svg = """
@@ -282,6 +309,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val caretDown = IconDefinition(
             "caretDown",
             svg = """
@@ -289,6 +317,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val caretLeft = IconDefinition(
             "caretLeft",
             svg = """
@@ -296,6 +325,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val caretRight = IconDefinition(
             "caretRight",
             svg = """
@@ -303,6 +333,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val caretUp = IconDefinition(
             "caretUp",
             svg = """
@@ -310,6 +341,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val check = IconDefinition(
             "check",
             svg = """
@@ -317,6 +349,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val chevronDoubleDown = IconDefinition(
             "chevronDoubleDown",
             svg = """
@@ -324,6 +357,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val chevronDoubleLeft = IconDefinition(
             "chevronDoubleLeft",
             svg = """
@@ -331,6 +365,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val chevronDoubleRight = IconDefinition(
             "chevronDoubleRight",
             svg = """
@@ -338,6 +373,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val chevronDoubleUp = IconDefinition(
             "chevronDoubleUp",
             svg = """
@@ -345,6 +381,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val chevronDown = IconDefinition(
             "chevronDown",
             svg = """
@@ -352,6 +389,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val chevronLeft = IconDefinition(
             "chevronLeft",
             svg = """
@@ -359,6 +397,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val chevronRight = IconDefinition(
             "chevronRight",
             svg = """
@@ -366,6 +405,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val chevronUp = IconDefinition(
             "chevronUp",
             svg = """
@@ -373,6 +413,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val circleAdd = IconDefinition(
             "circleAdd",
             svg = """
@@ -380,6 +421,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val circleArrowDown = IconDefinition(
             "circleArrowDown",
             svg = """
@@ -387,6 +429,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val circleArrowLeft = IconDefinition(
             "circleArrowLeft",
             svg = """
@@ -394,6 +437,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val circleArrowRight = IconDefinition(
             "circleArrowRight",
             svg = """
@@ -401,6 +445,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val circleArrowUp = IconDefinition(
             "circleArrowUp",
             svg = """
@@ -408,6 +453,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val circleCheck = IconDefinition(
             "circleCheck",
             svg = """
@@ -415,6 +461,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val circleError = IconDefinition(
             "circleError",
             svg = """
@@ -422,25 +469,28 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val circleHelp = IconDefinition(
             "circleHelp",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4ZM2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M12 14C11.4477 14 11 13.5523 11 13V12C11 11.4477 11.4477 11 12 11C12.5523 11 13 11.4477 13 12V13C13 13.5523 12.5523 14 12 14Z" fill="currentColor"/>
-<path d="M10.5 16.5C10.5 15.6716 11.1716 15 12 15C12.8284 15 13.5 15.6716 13.5 16.5C13.5 17.3284 12.8284 18 12 18C11.1716 18 10.5 17.3284 10.5 16.5Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M12.3899 7.81137C11.4329 7.7658 10.6304 8.3004 10.4864 9.1644C10.3956 9.70917 9.88037 10.0772 9.3356 9.9864C8.79083 9.8956 8.42281 9.38037 8.51361 8.8356C8.86961 6.69961 10.8171 5.73421 12.4851 5.81363C13.3395 5.85432 14.2176 6.16099 14.8937 6.79278C15.5866 7.44027 16 8.36777 16 9.5C16 10.7913 15.4919 11.7489 14.6172 12.3321C13.8141 12.8675 12.8295 13 12 13C11.4477 13 11 12.5523 11 12C11 11.4477 11.4477 11 12 11C12.6705 11 13.1859 10.8825 13.5078 10.668C13.7581 10.5011 14 10.2087 14 9.5C14 8.88224 13.7884 8.49723 13.5282 8.2541C13.2512 7.99526 12.848 7.83318 12.3899 7.81137Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 14C11.4477 14 11 13.5523 11 13V12C11 11.4477 11.4477 11 12 11C12.5523 11 13 11.4477 13 12V13C13 13.5523 12.5523 14 12 14Z" fill="currentColor"/>
+                <path d="M10.5 16.5C10.5 15.6716 11.1716 15 12 15C12.8284 15 13.5 15.6716 13.5 16.5C13.5 17.3284 12.8284 18 12 18C11.1716 18 10.5 17.3284 10.5 16.5Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12.3899 7.81137C11.4329 7.7658 10.6304 8.3004 10.4864 9.1644C10.3956 9.70917 9.88037 10.0772 9.3356 9.9864C8.79083 9.8956 8.42281 9.38037 8.51361 8.8356C8.86961 6.69961 10.8171 5.73421 12.4851 5.81363C13.3395 5.85432 14.2176 6.16099 14.8937 6.79278C15.5866 7.44027 16 8.36777 16 9.5C16 10.7913 15.4919 11.7489 14.6172 12.3321C13.8141 12.8675 12.8295 13 12 13C11.4477 13 11 12.5523 11 12C11 11.4477 11.4477 11 12 11C12.6705 11 13.1859 10.8825 13.5078 10.668C13.7581 10.5011 14 10.2087 14 9.5C14 8.88224 13.7884 8.49723 13.5282 8.2541C13.2512 7.99526 12.848 7.83318 12.3899 7.81137Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val circleInformation = IconDefinition(
             "circleInformation",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4ZM2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M12 10C12.5523 10 13 10.4477 13 11V17C13 17.5523 12.5523 18 12 18C11.4477 18 11 17.5523 11 17V11C11 10.4477 11.4477 10 12 10Z" fill="currentColor"/>
-<path d="M13.5 7.5C13.5 8.32843 12.8284 9 12 9C11.1716 9 10.5 8.32843 10.5 7.5C10.5 6.67157 11.1716 6 12 6C12.8284 6 13.5 6.67157 13.5 7.5Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 10C12.5523 10 13 10.4477 13 11V17C13 17.5523 12.5523 18 12 18C11.4477 18 11 17.5523 11 17V11C11 10.4477 11.4477 10 12 10Z" fill="currentColor"/>
+                <path d="M13.5 7.5C13.5 8.32843 12.8284 9 12 9C11.1716 9 10.5 8.32843 10.5 7.5C10.5 6.67157 11.1716 6 12 6C12.8284 6 13.5 6.67157 13.5 7.5Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val circleRemove = IconDefinition(
             "circleRemove",
             svg = """
@@ -448,15 +498,17 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val circleWarning = IconDefinition(
             "circleWarning",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4ZM2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M12 14C11.4477 14 11 13.5523 11 13L11 7C11 6.44772 11.4477 6 12 6C12.5523 6 13 6.44772 13 7L13 13C13 13.5523 12.5523 14 12 14Z" fill="currentColor"/>
-<path d="M10.5 16.5C10.5 15.6716 11.1716 15 12 15C12.8284 15 13.5 15.6716 13.5 16.5C13.5 17.3284 12.8284 18 12 18C11.1716 18 10.5 17.3284 10.5 16.5Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 14C11.4477 14 11 13.5523 11 13L11 7C11 6.44772 11.4477 6 12 6C12.5523 6 13 6.44772 13 7L13 13C13 13.5523 12.5523 14 12 14Z" fill="currentColor"/>
+                <path d="M10.5 16.5C10.5 15.6716 11.1716 15 12 15C12.8284 15 13.5 15.6716 13.5 16.5C13.5 17.3284 12.8284 18 12 18C11.1716 18 10.5 17.3284 10.5 16.5Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val clipboardCheck = IconDefinition(
             "clipboardCheck",
             svg = """
@@ -464,20 +516,22 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val clipboardList = IconDefinition(
             "clipboardList",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M11 16.5C11 15.9477 11.4477 15.5 12 15.5H15C15.5523 15.5 16 15.9477 16 16.5C16 17.0523 15.5523 17.5 15 17.5H12C11.4477 17.5 11 17.0523 11 16.5Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M11 13.5C11 12.9477 11.4477 12.5 12 12.5H15C15.5523 12.5 16 12.9477 16 13.5C16 14.0523 15.5523 14.5 15 14.5H12C11.4477 14.5 11 14.0523 11 13.5Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M11 10.5C11 9.94772 11.4477 9.5 12 9.5H15C15.5523 9.5 16 9.94772 16 10.5C16 11.0523 15.5523 11.5 15 11.5H12C11.4477 11.5 11 11.0523 11 10.5Z" fill="currentColor"/>
-<path d="M10 10.5C10 11.0523 9.55228 11.5 9 11.5C8.44772 11.5 8 11.0523 8 10.5C8 9.94772 8.44772 9.5 9 9.5C9.55228 9.5 10 9.94772 10 10.5Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M4 5C4 3.89543 4.89543 3 6 3H9C9.55228 3 10 3.44772 10 4C10 4.55228 9.55228 5 9 5H6V20H18V5H15C14.4477 5 14 4.55228 14 4C14 3.44772 14.4477 3 15 3H18C19.1046 3 20 3.89543 20 5V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V5Z" fill="currentColor"/>
-<path d="M10 13.5C10 14.0523 9.55228 14.5 9 14.5C8.44772 14.5 8 14.0523 8 13.5C8 12.9477 8.44772 12.5 9 12.5C9.55228 12.5 10 12.9477 10 13.5Z" fill="currentColor"/>
-<path d="M10 16.5C10 17.0523 9.55228 17.5 9 17.5C8.44772 17.5 8 17.0523 8 16.5C8 15.9477 8.44772 15.5 9 15.5C9.55228 15.5 10 15.9477 10 16.5Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M8 3C8 2.44772 8.44772 2 9 2H15C15.5523 2 16 2.44772 16 3V6C16 6.55228 15.5523 7 15 7H9C8.44772 7 8 6.55228 8 6V3ZM10 4V5H14V4H10Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M11 13.5C11 12.9477 11.4477 12.5 12 12.5H15C15.5523 12.5 16 12.9477 16 13.5C16 14.0523 15.5523 14.5 15 14.5H12C11.4477 14.5 11 14.0523 11 13.5Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M11 10.5C11 9.94772 11.4477 9.5 12 9.5H15C15.5523 9.5 16 9.94772 16 10.5C16 11.0523 15.5523 11.5 15 11.5H12C11.4477 11.5 11 11.0523 11 10.5Z" fill="currentColor"/>
+                <path d="M10 10.5C10 11.0523 9.55228 11.5 9 11.5C8.44772 11.5 8 11.0523 8 10.5C8 9.94772 8.44772 9.5 9 9.5C9.55228 9.5 10 9.94772 10 10.5Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M4 5C4 3.89543 4.89543 3 6 3H9C9.55228 3 10 3.44772 10 4C10 4.55228 9.55228 5 9 5H6V20H18V5H15C14.4477 5 14 4.55228 14 4C14 3.44772 14.4477 3 15 3H18C19.1046 3 20 3.89543 20 5V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V5Z" fill="currentColor"/>
+                <path d="M10 13.5C10 14.0523 9.55228 14.5 9 14.5C8.44772 14.5 8 14.0523 8 13.5C8 12.9477 8.44772 12.5 9 12.5C9.55228 12.5 10 12.9477 10 13.5Z" fill="currentColor"/>
+                <path d="M10 16.5C10 17.0523 9.55228 17.5 9 17.5C8.44772 17.5 8 17.0523 8 16.5C8 15.9477 8.44772 15.5 9 15.5C9.55228 15.5 10 15.9477 10 16.5Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M8 3C8 2.44772 8.44772 2 9 2H15C15.5523 2 16 2.44772 16 3V6C16 6.55228 15.5523 7 15 7H9C8.44772 7 8 6.55228 8 6V3ZM10 4V5H14V4H10Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val clipboard = IconDefinition(
             "clipboard",
             svg = """
@@ -485,6 +539,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val clock = IconDefinition(
             "clock",
             svg = """
@@ -492,6 +547,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val close = IconDefinition(
             "close",
             svg = """
@@ -499,6 +555,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val cloudDownload = IconDefinition(
             "cloudDownload",
             svg = """
@@ -506,6 +563,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val cloudUpload = IconDefinition(
             "cloudUpload",
             svg = """
@@ -513,6 +571,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val cloud = IconDefinition(
             "cloud",
             svg = """
@@ -520,6 +579,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val computer = IconDefinition(
             "computer",
             svg = """
@@ -527,6 +587,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val copy = IconDefinition(
             "copy",
             svg = """
@@ -534,6 +595,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val creditCard = IconDefinition(
             "creditCard",
             svg = """
@@ -541,6 +603,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val delete = IconDefinition(
             "delete",
             svg = """
@@ -548,6 +611,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val documentAdd = IconDefinition(
             "documentAdd",
             svg = """
@@ -555,6 +619,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val documentCheck = IconDefinition(
             "documentCheck",
             svg = """
@@ -562,6 +627,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val documentDownload = IconDefinition(
             "documentDownload",
             svg = """
@@ -569,6 +635,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val documentEmpty = IconDefinition(
             "documentEmpty",
             svg = """
@@ -576,6 +643,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val documentRemove = IconDefinition(
             "documentRemove",
             svg = """
@@ -583,6 +651,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val document = IconDefinition(
             "document",
             svg = """
@@ -590,6 +659,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val download = IconDefinition(
             "download",
             svg = """
@@ -597,6 +667,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val drag = IconDefinition(
             "drag",
             svg = """
@@ -604,6 +675,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val editAlt = IconDefinition(
             "editAlt",
             svg = """
@@ -611,6 +683,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val edit = IconDefinition(
             "edit",
             svg = """
@@ -618,6 +691,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val email = IconDefinition(
             "email",
             svg = """
@@ -625,6 +699,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val expand = IconDefinition(
             "expand",
             svg = """
@@ -632,6 +707,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val export = IconDefinition(
             "export",
             svg = """
@@ -639,6 +715,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val externalLink = IconDefinition(
             "externalLink",
             svg = """
@@ -646,22 +723,25 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val eyeOff = IconDefinition(
             "eyeOff",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M4.70711 3.29289C4.31658 2.90237 3.68342 2.90237 3.29289 3.29289C2.90237 3.68342 2.90237 4.31658 3.29289 4.70711L5.71706 7.13127C4.28639 8.20737 3.03925 9.68543 2.10557 11.5528C1.96481 11.8343 1.96481 12.1657 2.10557 12.4472C4.26379 16.7637 8.09687 19 12 19C13.5552 19 15.0992 18.645 16.5306 17.9448L19.2929 20.7071C19.6834 21.0976 20.3166 21.0976 20.7071 20.7071C21.0976 20.3166 21.0976 19.6834 20.7071 19.2929L4.70711 3.29289ZM15.0138 16.428L13.2934 14.7076C12.9018 14.8951 12.4631 15 12 15C10.3431 15 9 13.6569 9 12C9 11.5369 9.10495 11.0982 9.29237 10.7066L7.14838 8.56259C5.98778 9.3794 4.94721 10.5214 4.12966 12C5.99806 15.3792 9.03121 17 12 17C13.0134 17 14.0343 16.8112 15.0138 16.428Z" fill="#0D0D0D"/>
-<path d="M18.5523 13.8955C19.0353 13.3402 19.4784 12.7088 19.8703 12C18.0019 8.62078 14.9687 7 12 7C11.888 7 11.7759 7.00231 11.6637 7.00693L9.87939 5.22258C10.5774 5.07451 11.2875 5 12 5C15.9031 5 19.7362 7.23635 21.8944 11.5528C22.0352 11.8343 22.0352 12.1657 21.8944 12.4472C21.3504 13.5352 20.7 14.491 19.9689 15.3121L18.5523 13.8955Z" fill="#0D0D0D"/>
+                <path d="M18.5523 13.8955C19.0353 13.3402 19.4784 12.7088 19.8703 12C18.0019 8.62078 14.9687 7 12 7C11.888 7 11.7759 7.00231 11.6637 7.00693L9.87939 5.22258C10.5774 5.07451 11.2875 5 12 5C15.9031 5 19.7362 7.23635 21.8944 11.5528C22.0352 11.8343 22.0352 12.1657 21.8944 12.4472C21.3504 13.5352 20.7 14.491 19.9689 15.3121L18.5523 13.8955Z" fill="#0D0D0D"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val eye = IconDefinition(
             "eye",
             svg = """
                 <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M21.8944 11.5528C19.7362 7.23635 15.9031 5 12 5C8.09687 5 4.26379 7.23635 2.10557 11.5528C1.96481 11.8343 1.96481 12.1657 2.10557 12.4472C4.26379 16.7637 8.09687 19 12 19C15.9031 19 19.7362 16.7637 21.8944 12.4472C22.0352 12.1657 22.0352 11.8343 21.8944 11.5528ZM12 17C9.03121 17 5.99806 15.3792 4.12966 12C5.99806 8.62078 9.03121 7 12 7C14.9688 7 18.0019 8.62078 19.8703 12C18.0019 15.3792 14.9688 17 12 17Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8944 11.5528C19.7362 7.23635 15.9031 5 12 5C8.09687 5 4.26379 7.23635 2.10557 11.5528C1.96481 11.8343 1.96481 12.1657 2.10557 12.4472C4.26379 16.7637 8.09687 19 12 19C15.9031 19 19.7362 16.7637 21.8944 12.4472C22.0352 12.1657 22.0352 11.8343 21.8944 11.5528ZM12 17C9.03121 17 5.99806 15.3792 4.12966 12C5.99806 8.62078 9.03121 7 12 7C14.9688 7 18.0019 8.62078 19.8703 12C18.0019 15.3792 14.9688 17 12 17Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val favorite = IconDefinition(
             "favorite",
             svg = """
@@ -669,6 +749,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val filterAlt = IconDefinition(
             "filterAlt",
             svg = """
@@ -676,6 +757,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val filter = IconDefinition(
             "filter",
             svg = """
@@ -683,6 +765,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val folderAdd = IconDefinition(
             "folderAdd",
             svg = """
@@ -690,6 +773,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val folderCheck = IconDefinition(
             "folderCheck",
             svg = """
@@ -697,6 +781,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val folderDownload = IconDefinition(
             "folderDownload",
             svg = """
@@ -704,6 +789,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val folderRemove = IconDefinition(
             "folderRemove",
             svg = """
@@ -711,6 +797,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val folder = IconDefinition(
             "folder",
             svg = """
@@ -718,6 +805,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val grid = IconDefinition(
             "grid",
             svg = """
@@ -725,6 +813,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val heart = IconDefinition(
             "heart",
             svg = """
@@ -732,6 +821,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val home = IconDefinition(
             "home",
             svg = """
@@ -739,15 +829,17 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val image = IconDefinition(
             "image",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M2.99998 5C2.99998 3.89543 3.89541 3 4.99998 3H19C20.1045 3 21 3.89543 21 5V19C21 20.1046 20.1045 21 19 21H4.99998C3.89541 21 2.99998 20.1046 2.99998 19V5ZM19 5H4.99998V19H19V5Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M8.37528 10.2191C8.7405 9.92696 9.25945 9.92696 9.62467 10.2191L13.9258 13.66L15.2929 12.2929C15.6834 11.9024 16.3166 11.9024 16.7071 12.2929L20.7071 16.2929C21.0976 16.6834 21.0976 17.3166 20.7071 17.7071C20.3166 18.0976 19.6834 18.0976 19.2929 17.7071L16 14.4142L14.7071 15.7071C14.3468 16.0674 13.7732 16.0992 13.3753 15.7809L8.99998 12.2806L4.62467 15.7809C4.19341 16.1259 3.56412 16.056 3.21911 15.6247C2.8741 15.1934 2.94402 14.5641 3.37528 14.2191L8.37528 10.2191Z" fill="currentColor"/>
-<path d="M17 8.5C17 9.32843 16.3284 10 15.5 10C14.6715 10 14 9.32843 14 8.5C14 7.67157 14.6715 7 15.5 7C16.3284 7 17 7.67157 17 8.5Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.37528 10.2191C8.7405 9.92696 9.25945 9.92696 9.62467 10.2191L13.9258 13.66L15.2929 12.2929C15.6834 11.9024 16.3166 11.9024 16.7071 12.2929L20.7071 16.2929C21.0976 16.6834 21.0976 17.3166 20.7071 17.7071C20.3166 18.0976 19.6834 18.0976 19.2929 17.7071L16 14.4142L14.7071 15.7071C14.3468 16.0674 13.7732 16.0992 13.3753 15.7809L8.99998 12.2806L4.62467 15.7809C4.19341 16.1259 3.56412 16.056 3.21911 15.6247C2.8741 15.1934 2.94402 14.5641 3.37528 14.2191L8.37528 10.2191Z" fill="currentColor"/>
+                <path d="M17 8.5C17 9.32843 16.3284 10 15.5 10C14.6715 10 14 9.32843 14 8.5C14 7.67157 14.6715 7 15.5 7C16.3284 7 17 7.67157 17 8.5Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val inbox = IconDefinition(
             "inbox",
             svg = """
@@ -755,14 +847,16 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val laptop = IconDefinition(
             "laptop",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M2 5C2 3.89543 2.89543 3 4 3H20C21.1046 3 22 3.89543 22 5V16C22 17.1046 21.1046 18 20 18H4C2.89543 18 2 17.1046 2 16V5ZM20 5H4V16H20V5Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M22 20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20C2 19.4477 2.44772 19 3 19L21 19C21.5523 19 22 19.4477 22 20Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M22 20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20C2 19.4477 2.44772 19 3 19L21 19C21.5523 19 22 19.4477 22 20Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val linkAlt = IconDefinition(
             "linkAlt",
             svg = """
@@ -770,6 +864,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val link = IconDefinition(
             "link",
             svg = """
@@ -777,6 +872,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val list = IconDefinition(
             "list",
             svg = """
@@ -784,6 +880,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val location = IconDefinition(
             "location",
             svg = """
@@ -791,6 +888,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val lock = IconDefinition(
             "lock",
             svg = """
@@ -798,6 +896,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val logOut = IconDefinition(
             "logOut",
             svg = """
@@ -805,6 +904,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val map = IconDefinition(
             "map",
             svg = """
@@ -812,6 +912,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val megaphone = IconDefinition(
             "megaphone",
             svg = """
@@ -819,6 +920,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val menu = IconDefinition(
             "menu",
             svg = """
@@ -826,16 +928,18 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val messageAlt = IconDefinition(
             "messageAlt",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M2 6C2 4.89543 2.89543 4 4 4H20C21.1046 4 22 4.89543 22 6V17C22 18.1046 21.1046 19 20 19H15.4142L12.7071 21.7071C12.3166 22.0976 11.6834 22.0976 11.2929 21.7071L8.58579 19H4C2.89543 19 2 18.1046 2 17V6ZM20 6H4V17H9C9.26522 17 9.51957 17.1054 9.70711 17.2929L12 19.5858L14.2929 17.2929C14.4804 17.1054 14.7348 17 15 17H20V6Z" fill="currentColor"/>
-<path d="M13.5 11.5C13.5 12.3284 12.8284 13 12 13C11.1716 13 10.5 12.3284 10.5 11.5C10.5 10.6716 11.1716 10 12 10C12.8284 10 13.5 10.6716 13.5 11.5Z" fill="currentColor"/>
-<path d="M17.5 11.5C17.5 12.3284 16.8284 13 16 13C15.1716 13 14.5 12.3284 14.5 11.5C14.5 10.6716 15.1716 10 16 10C16.8284 10 17.5 10.6716 17.5 11.5Z" fill="currentColor"/>
-<path d="M9.5 11.5C9.5 12.3284 8.82843 13 8 13C7.17157 13 6.5 12.3284 6.5 11.5C6.5 10.6716 7.17157 10 8 10C8.82843 10 9.5 10.6716 9.5 11.5Z" fill="currentColor"/>
+                <path d="M13.5 11.5C13.5 12.3284 12.8284 13 12 13C11.1716 13 10.5 12.3284 10.5 11.5C10.5 10.6716 11.1716 10 12 10C12.8284 10 13.5 10.6716 13.5 11.5Z" fill="currentColor"/>
+                <path d="M17.5 11.5C17.5 12.3284 16.8284 13 16 13C15.1716 13 14.5 12.3284 14.5 11.5C14.5 10.6716 15.1716 10 16 10C16.8284 10 17.5 10.6716 17.5 11.5Z" fill="currentColor"/>
+                <path d="M9.5 11.5C9.5 12.3284 8.82843 13 8 13C7.17157 13 6.5 12.3284 6.5 11.5C6.5 10.6716 7.17157 10 8 10C8.82843 10 9.5 10.6716 9.5 11.5Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val message = IconDefinition(
             "message",
             svg = """
@@ -843,14 +947,16 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val mobile = IconDefinition(
             "mobile",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M6 5C6 3.89543 6.89543 3 8 3H16C17.1046 3 18 3.89543 18 5V19C18 20.1046 17.1046 21 16 21H8C6.89543 21 6 20.1046 6 19V5ZM16 5H8V19H16V5Z" fill="currentColor"/>
-<path d="M13 17C13 17.5523 12.5523 18 12 18C11.4477 18 11 17.5523 11 17C11 16.4477 11.4477 16 12 16C12.5523 16 13 16.4477 13 17Z" fill="currentColor"/>
+                <path d="M13 17C13 17.5523 12.5523 18 12 18C11.4477 18 11 17.5523 11 17C11 16.4477 11.4477 16 12 16C12.5523 16 13 16.4477 13 17Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val moon = IconDefinition(
             "moon",
             svg = """
@@ -858,14 +964,16 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val notificationOff = IconDefinition(
             "notificationOff",
             svg = """
                 <path d="M19 10C19 6.77579 16.8202 4.06072 13.8539 3.24812C13.5567 2.51616 12.8386 2 12 2C11.1614 2 10.4433 2.51616 10.1461 3.24812C9.58605 3.40155 9.054 3.62281 8.55937 3.90252L10.051 5.39411C10.6499 5.14035 11.3086 5 12 5C14.7614 5 17 7.23858 17 10V12.3431L19 14.3431V10Z" fill="#0D0D0D"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M3.1753 17.4343L5 14.6972V9.99999C5 8.94987 5.23124 7.95375 5.64557 7.05978L3.29289 4.70711C2.90237 4.31658 2.90237 3.68342 3.29289 3.29289C3.68342 2.90237 4.31658 2.90237 4.70711 3.29289L20.7071 19.2929C21.0976 19.6834 21.0976 20.3166 20.7071 20.7071C20.3166 21.0976 19.6834 21.0976 19.2929 20.7071L17.5858 19H15.4646C15.2219 20.6961 13.7632 22 12 22C10.2368 22 8.77806 20.6961 8.53544 19H4.01296C3.91555 19.0014 3.81743 18.9885 3.72186 18.9608C3.59602 18.9244 3.48038 18.864 3.38026 18.7849C3.16669 18.616 3.02368 18.3618 3.00268 18.0738C2.9935 17.9509 3.0069 17.8258 3.04421 17.7051C3.07424 17.6076 3.11878 17.5165 3.1753 17.4343ZM5.86851 17H15.5858L7.19575 8.60997C7.0683 9.05126 7 9.51765 7 9.99999V15C7 15.1974 6.94156 15.3904 6.83205 15.5547L5.86851 17ZM10.5854 19C10.7913 19.5826 11.3469 20 12 20C12.6531 20 13.2087 19.5826 13.4146 19H10.5854Z" fill="#0D0D0D"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M3.1753 17.4343L5 14.6972V9.99999C5 8.94987 5.23124 7.95375 5.64557 7.05978L3.29289 4.70711C2.90237 4.31658 2.90237 3.68342 3.29289 3.29289C3.68342 2.90237 4.31658 2.90237 4.70711 3.29289L20.7071 19.2929C21.0976 19.6834 21.0976 20.3166 20.7071 20.7071C20.3166 21.0976 19.6834 21.0976 19.2929 20.7071L17.5858 19H15.4646C15.2219 20.6961 13.7632 22 12 22C10.2368 22 8.77806 20.6961 8.53544 19H4.01296C3.91555 19.0014 3.81743 18.9885 3.72186 18.9608C3.59602 18.9244 3.48038 18.864 3.38026 18.7849C3.16669 18.616 3.02368 18.3618 3.00268 18.0738C2.9935 17.9509 3.0069 17.8258 3.04421 17.7051C3.07424 17.6076 3.11878 17.5165 3.1753 17.4343ZM5.86851 17H15.5858L7.19575 8.60997C7.0683 9.05126 7 9.51765 7 9.99999V15C7 15.1974 6.94156 15.3904 6.83205 15.5547L5.86851 17ZM10.5854 19C10.7913 19.5826 11.3469 20 12 20C12.6531 20 13.2087 19.5826 13.4146 19H10.5854Z" fill="#0D0D0D"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val notification = IconDefinition(
             "notification",
             svg = """
@@ -873,24 +981,27 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val optionsHorizontal = IconDefinition(
             "optionsHorizontal",
             svg = """
                 <path d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14Z" fill="currentColor"/>
-<path d="M6 14C7.10457 14 8 13.1046 8 12C8 10.8954 7.10457 10 6 10C4.89543 10 4 10.8954 4 12C4 13.1046 4.89543 14 6 14Z" fill="currentColor"/>
-<path d="M18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12C16 13.1046 16.8954 14 18 14Z" fill="currentColor"/>
+                <path d="M6 14C7.10457 14 8 13.1046 8 12C8 10.8954 7.10457 10 6 10C4.89543 10 4 10.8954 4 12C4 13.1046 4.89543 14 6 14Z" fill="currentColor"/>
+                <path d="M18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12C16 13.1046 16.8954 14 18 14Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val optionsVertical = IconDefinition(
             "optionsVertical",
             svg = """
                 <path d="M10 12C10 13.1046 10.8954 14 12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12Z" fill="currentColor"/>
-<path d="M10 6C10 7.10457 10.8954 8 12 8C13.1046 8 14 7.10457 14 6C14 4.89543 13.1046 4 12 4C10.8954 4 10 4.89543 10 6Z" fill="currentColor"/>
-<path d="M10 18C10 19.1046 10.8954 20 12 20C13.1046 20 14 19.1046 14 18C14 16.8954 13.1046 16 12 16C10.8954 16 10 16.8954 10 18Z" fill="currentColor"/>
+                <path d="M10 6C10 7.10457 10.8954 8 12 8C13.1046 8 14 7.10457 14 6C14 4.89543 13.1046 4 12 4C10.8954 4 10 4.89543 10 6Z" fill="currentColor"/>
+                <path d="M10 18C10 19.1046 10.8954 20 12 20C13.1046 20 14 19.1046 14 18C14 16.8954 13.1046 16 12 16C10.8954 16 10 16.8954 10 18Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val pause = IconDefinition(
             "pause",
             svg = """
@@ -898,15 +1009,17 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val percentage = IconDefinition(
             "percentage",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289Z" fill="currentColor"/>
-<path d="M17 19C18.1046 19 19 18.1046 19 17C19 15.8954 18.1046 15 17 15C15.8954 15 15 15.8954 15 17C15 18.1046 15.8954 19 17 19Z" fill="currentColor"/>
-<path d="M7 9C8.10457 9 9 8.10457 9 7C9 5.89543 8.10457 5 7 5C5.89543 5 5 5.89543 5 7C5 8.10457 5.89543 9 7 9Z" fill="currentColor"/>
+                <path d="M17 19C18.1046 19 19 18.1046 19 17C19 15.8954 18.1046 15 17 15C15.8954 15 15 15.8954 15 17C15 18.1046 15.8954 19 17 19Z" fill="currentColor"/>
+                <path d="M7 9C8.10457 9 9 8.10457 9 7C9 5.89543 8.10457 5 7 5C5.89543 5 5 5.89543 5 7C5 8.10457 5.89543 9 7 9Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val pin = IconDefinition(
             "pin",
             svg = """
@@ -914,6 +1027,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val play = IconDefinition(
             "play",
             svg = """
@@ -921,6 +1035,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val refresh = IconDefinition(
             "refresh",
             svg = """
@@ -928,6 +1043,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val remove = IconDefinition(
             "remove",
             svg = """
@@ -935,6 +1051,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val search = IconDefinition(
             "search",
             svg = """
@@ -942,6 +1059,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val select = IconDefinition(
             "select",
             svg = """
@@ -949,6 +1067,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val send = IconDefinition(
             "send",
             svg = """
@@ -956,14 +1075,16 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val settings = IconDefinition(
             "settings",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M12 4C11.4477 4 11 4.44772 11 5C11 6.69226 8.95399 7.53974 7.75738 6.34314C7.36686 5.95261 6.73369 5.95261 6.34317 6.34314C5.95265 6.73366 5.95265 7.36683 6.34317 7.75735C7.53982 8.954 6.69223 11 5 11C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13C6.69236 13 7.53964 15.0461 6.34311 16.2426C5.95258 16.6332 5.95258 17.2663 6.34311 17.6569C6.73363 18.0474 7.3668 18.0474 7.75732 17.6569C8.9539 16.4603 11 17.3077 11 19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19C13 17.3077 15.046 16.4602 16.2427 17.6568C16.6332 18.0474 17.2664 18.0474 17.6569 17.6568C18.0474 17.2663 18.0474 16.6332 17.6569 16.2426C16.4603 15.0461 17.3077 13 19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C17.3078 11 16.4601 8.95405 17.6568 7.75737C18.0473 7.36684 18.0473 6.73368 17.6568 6.34315C17.2663 5.95263 16.6331 5.95263 16.2426 6.34315C15.046 7.53979 13 6.69219 13 5C13 4.44772 12.5523 4 12 4ZM9.00816 4.77703C9.12224 3.2243 10.4181 2 12 2C13.5819 2 14.8778 3.2243 14.9918 4.77703C16.1704 3.75977 17.9525 3.8104 19.071 4.92894C20.1896 6.04748 20.2402 7.82955 19.2229 9.00816C20.7757 9.12221 22 10.4181 22 12C22 13.5819 20.7757 14.8778 19.223 14.9918C20.2403 16.1704 20.1896 17.9525 19.0711 19.0711C17.9525 20.1896 16.1705 20.2402 14.9918 19.2229C14.8778 20.7757 13.5819 22 12 22C10.4181 22 9.12221 20.7757 9.00816 19.2229C7.82955 20.2402 6.04745 20.1896 4.92889 19.0711C3.81034 17.9525 3.75972 16.1704 4.77702 14.9918C3.2243 14.8778 2 13.5819 2 12C2 10.4181 3.22433 9.12221 4.77709 9.00816C3.75978 7.82955 3.81041 6.04747 4.92896 4.92892C6.0475 3.81038 7.82955 3.75975 9.00816 4.77703Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M12 10C11.4696 10 10.9609 10.2107 10.5858 10.5858C10.2107 10.9609 10 11.4696 10 12C10 12.5304 10.2107 13.0391 10.5858 13.4142C10.9609 13.7893 11.4696 14 12 14C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12C14 11.4696 13.7893 10.9609 13.4142 10.5858C13.0391 10.2107 12.5304 10 12 10ZM9.17157 9.17157C9.92172 8.42143 10.9391 8 12 8C13.0609 8 14.0783 8.42143 14.8284 9.17157C15.5786 9.92172 16 10.9391 16 12C16 13.0609 15.5786 14.0783 14.8284 14.8284C14.0783 15.5786 13.0609 16 12 16C10.9391 16 9.92172 15.5786 9.17157 14.8284C8.42143 14.0783 8 13.0609 8 12C8 10.9391 8.42143 9.92172 9.17157 9.17157Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 10C11.4696 10 10.9609 10.2107 10.5858 10.5858C10.2107 10.9609 10 11.4696 10 12C10 12.5304 10.2107 13.0391 10.5858 13.4142C10.9609 13.7893 11.4696 14 12 14C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12C14 11.4696 13.7893 10.9609 13.4142 10.5858C13.0391 10.2107 12.5304 10 12 10ZM9.17157 9.17157C9.92172 8.42143 10.9391 8 12 8C13.0609 8 14.0783 8.42143 14.8284 9.17157C15.5786 9.92172 16 10.9391 16 12C16 13.0609 15.5786 14.0783 14.8284 14.8284C14.0783 15.5786 13.0609 16 12 16C10.9391 16 9.92172 15.5786 9.17157 14.8284C8.42143 14.0783 8 13.0609 8 12C8 10.9391 8.42143 9.92172 9.17157 9.17157Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val share = IconDefinition(
             "share",
             svg = """
@@ -971,25 +1092,28 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val shoppingCartAdd = IconDefinition(
             "shoppingCartAdd",
             svg = """
                 <path d="M6.00913 16.1357L4.1421 4H3C2.44772 4 2 3.55228 2 3C2 2.44772 2.44772 2 3 2H4.9847C5.0806 1.99841 5.17434 2.01066 5.26367 2.03513C5.40561 2.07382 5.53497 2.143 5.64429 2.23519C5.76213 2.33437 5.85751 2.4609 5.91981 2.60698C5.95413 2.6872 5.97826 2.77281 5.99058 2.86219L6.31948 5H14V7H6.62717L7.85794 15H17.256L18.756 10H20.844L18.9578 16.2873C18.8309 16.7103 18.4416 17 18 17H7.01578C6.92133 17.0016 6.82899 16.9898 6.74088 16.9661C6.59074 16.9259 6.45453 16.8517 6.34104 16.7522C6.2371 16.6612 6.15157 16.5485 6.0921 16.4198C6.05113 16.3313 6.02271 16.2358 6.00913 16.1357Z" fill="#0D0D0D"/>
-<path d="M10 20C10 21.1046 9.10457 22 8 22C6.89543 22 6 21.1046 6 20C6 18.8954 6.89543 18 8 18C9.10457 18 10 18.8954 10 20Z" fill="#0D0D0D"/>
-<path d="M19 20C19 21.1046 18.1046 22 17 22C15.8954 22 15 21.1046 15 20C15 18.8954 15.8954 18 17 18C18.1046 18 19 18.8954 19 20Z" fill="#0D0D0D"/>
-<path d="M19 2C19.5523 2 20 2.44772 20 3V4H21C21.5523 4 22 4.44772 22 5C22 5.55228 21.5523 6 21 6H20V7C20 7.55228 19.5523 8 19 8C18.4477 8 18 7.55228 18 7V6H17C16.4477 6 16 5.55228 16 5C16 4.44772 16.4477 4 17 4H18V3C18 2.44772 18.4477 2 19 2Z" fill="#0D0D0D"/>
+                <path d="M10 20C10 21.1046 9.10457 22 8 22C6.89543 22 6 21.1046 6 20C6 18.8954 6.89543 18 8 18C9.10457 18 10 18.8954 10 20Z" fill="#0D0D0D"/>
+                <path d="M19 20C19 21.1046 18.1046 22 17 22C15.8954 22 15 21.1046 15 20C15 18.8954 15.8954 18 17 18C18.1046 18 19 18.8954 19 20Z" fill="#0D0D0D"/>
+                <path d="M19 2C19.5523 2 20 2.44772 20 3V4H21C21.5523 4 22 4.44772 22 5C22 5.55228 21.5523 6 21 6H20V7C20 7.55228 19.5523 8 19 8C18.4477 8 18 7.55228 18 7V6H17C16.4477 6 16 5.55228 16 5C16 4.44772 16.4477 4 17 4H18V3C18 2.44772 18.4477 2 19 2Z" fill="#0D0D0D"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val shoppingCart = IconDefinition(
             "shoppingCart",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M4.15291 4L6.01064 15.1464C6.02538 15.2469 6.05505 15.3425 6.09733 15.4309C6.15592 15.5538 6.23834 15.6615 6.33774 15.7493C6.45342 15.8516 6.59297 15.9276 6.74698 15.9677C6.83358 15.9904 6.92416 16.0017 7.01669 16H18C18.4304 16 18.8126 15.7246 18.9487 15.3162L21.9487 6.31623C22.0503 6.01128 21.9992 5.67606 21.8112 5.41529C21.6233 5.15452 21.3214 5 21 5H6.34716L5.98881 2.84987C5.97616 2.76586 5.95306 2.68527 5.92087 2.60947C5.85636 2.45701 5.75593 2.32588 5.63168 2.22473C5.45299 2.07926 5.22503 1.99578 4.98379 2H3C2.44772 2 2 2.44772 2 3C2 3.55228 2.44772 4 3 4H4.15291ZM7.84716 14L6.68049 7H19.6126L17.2792 14H7.84716Z" fill="#0D0D0D"/>
-<path d="M10 20C10 21.1046 9.10457 22 8 22C6.89543 22 6 21.1046 6 20C6 18.8954 6.89543 18 8 18C9.10457 18 10 18.8954 10 20Z" fill="#0D0D0D"/>
-<path d="M19 20C19 21.1046 18.1046 22 17 22C15.8954 22 15 21.1046 15 20C15 18.8954 15.8954 18 17 18C18.1046 18 19 18.8954 19 20Z" fill="#0D0D0D"/>
+                <path d="M10 20C10 21.1046 9.10457 22 8 22C6.89543 22 6 21.1046 6 20C6 18.8954 6.89543 18 8 18C9.10457 18 10 18.8954 10 20Z" fill="#0D0D0D"/>
+                <path d="M19 20C19 21.1046 18.1046 22 17 22C15.8954 22 15 21.1046 15 20C15 18.8954 15.8954 18 17 18C18.1046 18 19 18.8954 19 20Z" fill="#0D0D0D"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val sort = IconDefinition(
             "sort",
             svg = """
@@ -997,15 +1121,17 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val speakers = IconDefinition(
             "speakers",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M4 4C4 2.89543 4.89543 2 6 2H18C19.1046 2 20 2.89543 20 4V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4ZM18 4L6 4V20H18V4Z" fill="#0D0D0D"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M12 12C10.8954 12 10 12.8954 10 14C10 15.1046 10.8954 16 12 16C13.1046 16 14 15.1046 14 14C14 12.8954 13.1046 12 12 12ZM8 14C8 11.7909 9.79086 10 12 10C14.2091 10 16 11.7909 16 14C16 16.2091 14.2091 18 12 18C9.79086 18 8 16.2091 8 14Z" fill="#0D0D0D"/>
-<path d="M13.5 7.5C13.5 8.32843 12.8284 9 12 9C11.1716 9 10.5 8.32843 10.5 7.5C10.5 6.67157 11.1716 6 12 6C12.8284 6 13.5 6.67157 13.5 7.5Z" fill="#0D0D0D"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 12C10.8954 12 10 12.8954 10 14C10 15.1046 10.8954 16 12 16C13.1046 16 14 15.1046 14 14C14 12.8954 13.1046 12 12 12ZM8 14C8 11.7909 9.79086 10 12 10C14.2091 10 16 11.7909 16 14C16 16.2091 14.2091 18 12 18C9.79086 18 8 16.2091 8 14Z" fill="#0D0D0D"/>
+                <path d="M13.5 7.5C13.5 8.32843 12.8284 9 12 9C11.1716 9 10.5 8.32843 10.5 7.5C10.5 6.67157 11.1716 6 12 6C12.8284 6 13.5 6.67157 13.5 7.5Z" fill="#0D0D0D"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val stop = IconDefinition(
             "stop",
             svg = """
@@ -1013,6 +1139,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val sun = IconDefinition(
             "sun",
             svg = """
@@ -1020,6 +1147,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val switch = IconDefinition(
             "switch",
             svg = """
@@ -1027,6 +1155,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val table = IconDefinition(
             "table",
             svg = """
@@ -1034,22 +1163,25 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val tablet = IconDefinition(
             "tablet",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M4 4C4 2.89543 4.89543 2 6 2H18C19.1046 2 20 2.89543 20 4V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4ZM18 4L6 4V20H18V4Z" fill="currentColor"/>
-<path d="M13 18C13 18.5523 12.5523 19 12 19C11.4477 19 11 18.5523 11 18C11 17.4477 11.4477 17 12 17C12.5523 17 13 17.4477 13 18Z" fill="currentColor"/>
+                <path d="M13 18C13 18.5523 12.5523 19 12 19C11.4477 19 11 18.5523 11 18C11 17.4477 11.4477 17 12 17C12.5523 17 13 17.4477 13 18Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val tag = IconDefinition(
             "tag",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M2 3C2 2.44772 2.44772 2 3 2H11C11.2652 2 11.5196 2.10536 11.7071 2.29289L21.7071 12.2929C22.0976 12.6834 22.0976 13.3166 21.7071 13.7071L13.7071 21.7071C13.3166 22.0976 12.6834 22.0976 12.2929 21.7071L2.29289 11.7071C2.10536 11.5196 2 11.2652 2 11V3ZM4 4V10.5858L13 19.5858L19.5858 13L10.5858 4H4Z" fill="#0D0D0D"/>
-<path d="M9 7.5C9 8.32843 8.32843 9 7.5 9C6.67157 9 6 8.32843 6 7.5C6 6.67157 6.67157 6 7.5 6C8.32843 6 9 6.67157 9 7.5Z" fill="#0D0D0D"/>
+                <path d="M9 7.5C9 8.32843 8.32843 9 7.5 9C6.67157 9 6 8.32843 6 7.5C6 6.67157 6.67157 6 7.5 6C8.32843 6 9 6.67157 9 7.5Z" fill="#0D0D0D"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val undo = IconDefinition(
             "undo",
             svg = """
@@ -1057,6 +1189,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val unlock = IconDefinition(
             "unlock",
             svg = """
@@ -1064,6 +1197,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val userAdd = IconDefinition(
             "userAdd",
             svg = """
@@ -1071,6 +1205,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val userCheck = IconDefinition(
             "userCheck",
             svg = """
@@ -1078,6 +1213,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val userRemove = IconDefinition(
             "userRemove",
             svg = """
@@ -1085,6 +1221,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val user = IconDefinition(
             "user",
             svg = """
@@ -1092,6 +1229,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val users = IconDefinition(
             "users",
             svg = """
@@ -1099,6 +1237,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val volumeOff = IconDefinition(
             "volumeOff",
             svg = """
@@ -1106,6 +1245,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val volumeUp = IconDefinition(
             "volumeUp",
             svg = """
@@ -1113,15 +1253,17 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val warning = IconDefinition(
             "warning",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M12 14C11.4477 14 11 13.5523 11 13V10C11 9.44772 11.4477 9 12 9C12.5523 9 13 9.44772 13 10V13C13 13.5523 12.5523 14 12 14Z" fill="currentColor"/>
-<path d="M10.5 16.5C10.5 15.6716 11.1716 15 12 15C12.8284 15 13.5 15.6716 13.5 16.5C13.5 17.3284 12.8284 18 12 18C11.1716 18 10.5 17.3284 10.5 16.5Z" fill="currentColor"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M10.2301 3.2156C10.98 1.79093 13.02 1.79092 13.7698 3.2156L22.1135 19.0685C22.8144 20.4003 21.8486 22 20.3436 22H3.65635C2.15133 22 1.18556 20.4003 1.88651 19.0685L10.2301 3.2156ZM20.3436 20L12 4.1471L3.65635 20L20.3436 20Z" fill="currentColor"/>
+                <path d="M10.5 16.5C10.5 15.6716 11.1716 15 12 15C12.8284 15 13.5 15.6716 13.5 16.5C13.5 17.3284 12.8284 18 12 18C11.1716 18 10.5 17.3284 10.5 16.5Z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.2301 3.2156C10.98 1.79093 13.02 1.79092 13.7698 3.2156L22.1135 19.0685C22.8144 20.4003 21.8486 22 20.3436 22H3.65635C2.15133 22 1.18556 20.4003 1.88651 19.0685L10.2301 3.2156ZM20.3436 20L12 4.1471L3.65635 20L20.3436 20Z" fill="currentColor"/>
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val zoomIn = IconDefinition(
             "zoomIn",
             svg = """
@@ -1129,6 +1271,7 @@ open class DefaultTheme : Theme {
             """.trimIndent()
         )
 
+        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val zoomOut = IconDefinition(
             "zoomOut",
             svg = """
