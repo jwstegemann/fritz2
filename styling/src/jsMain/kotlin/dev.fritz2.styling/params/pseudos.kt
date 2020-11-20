@@ -83,7 +83,6 @@ interface PseudoClasses : StyleParams {
     fun first(content: BasicParams.() -> Unit) = pseudoClass("first", content)
     fun firstChild(content: BasicParams.() -> Unit) = pseudoClass("first-child", content)
     fun firstOfType(content: BasicParams.() -> Unit) = pseudoClass("first-of-type", content)
-    // TODO: Check if this is part of the standard!
     fun fullscreen(content: BasicParams.() -> Unit) = pseudoClass("fullscreen", content)
     fun focus(content: BasicParams.() -> Unit) = pseudoClass("focus", content)
     fun focusVisible(content: BasicParams.() -> Unit) = pseudoClass("focus-visible", content)

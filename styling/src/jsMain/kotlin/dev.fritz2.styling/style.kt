@@ -184,9 +184,9 @@ fun style(styling: BoxParams.() -> Unit, prefix: String = "s"): StyleClass {
     return style(css, prefix)
 }
 
-//FIXME: change return to Flow<StyleClass>
-//FIXME: use StyleClass in fritz2-functions
-//FIXME: offer + for concatenating StyleClass Flows
+//TODO: change return to Flow<StyleClass>
+//TODO: use StyleClass in fritz2-functions
+//TODO: offer + for concatenating StyleClass Flows
 /**
  * function to apply a given class only when a condition is fullfiled.
  *

@@ -119,7 +119,6 @@ internal const val lineHeightKey = "line-height: "
  * There are overrides for all functions that enable one to define the styling for
  * the different media devices independently.
  */
-//FIXME: make abstract class to allow inline?
 @ExperimentalCoroutinesApi
 interface Typo : StyleParams {
 

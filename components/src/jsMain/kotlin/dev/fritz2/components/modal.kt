@@ -90,21 +90,6 @@ class ModalComponent {
         init {
             appendToBody(renderElement {
                 div(id = "modals") {
-                    // TODO: Check whether this stopped working (new solution is idiomatically much better anyways!)
-                    /*
-                    overlay.data.combine(stack.data) { o, m -> Pair(m, o) }.render { (modal, overlay) ->
-                        if (overlay.method == OverlayMethod.CoveringTopMost && modal.isNotEmpty()) {
-                            overlay.render(this, modal.size)
-                        }
-                        for ((index, modal) in modal.withIndex()) {
-                            if (overlay.method == OverlayMethod.CoveringEach) {
-                                overlay.render(this, index + 1)
-                            }
-                            modal(index + 1)
-                        }
-                    }
-                     */
-
                     stack.data.map { it.size }.render { size ->
                         val currentOverlay = overlay.current
                         if (currentOverlay.method == OverlayMethod.CoveringTopMost && size > 0) {

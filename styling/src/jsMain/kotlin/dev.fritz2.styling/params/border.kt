@@ -308,7 +308,6 @@ class BordersContext(
  * @param styleParams basic context scope interface
  * @param target the defined output [StringBuilder] to write the generated CSS into
  */
-//FIXME: inline funs?
 @ExperimentalCoroutinesApi
 class RadiiContext(
     val styleParams: StyleParams,

@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.scan
  * @param upstream returns the Flow that should be mounted at this point
  * @param set function which getting called when values are changing (rerender)
  */
-//TODO: inline?
 fun <T> mountSingle(parentJob: Job, upstream: Flow<T>, set: suspend (T, T?) -> Unit) {
     (MainScope() + parentJob).launch {
         upstream.scan(null) { last: T?, value: T ->

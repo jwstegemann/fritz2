@@ -1644,8 +1644,7 @@ open class DefaultTheme : Theme {
                         top { "50%" }
                     }
                 }
-                // TODO: Geht so nicht! Überschreibt ggf. das durch size gesetzte!
-                // Man braucht aber X + Y!
+                // TODO: Does not work! Needs X + Y!
                 css("transform: translatey(-50%);")
             }
         }

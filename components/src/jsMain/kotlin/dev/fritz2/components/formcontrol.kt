@@ -94,7 +94,6 @@ open class FormControlComponent {
         }
 
         // TODO: Check how to *centralize* this (compare multiselect and multiselect)
-        // TODO: Change names to ``horizontal`` and ``vertical``? Row and column is widely used in fritz2 for directions
         object FormControlLayouts { // @ fieldset
             val column: Style<BasicParams> = {
                 display {

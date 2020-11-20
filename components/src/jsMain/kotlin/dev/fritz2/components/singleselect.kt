@@ -277,7 +277,6 @@ class RadioGroupComponent {
     companion object {
 
         // TODO: Check how to *centralize* this (compare multiselect and formcontrol)
-        // TODO: Change names to ``horizontal`` and ``vertical``?  Row and column is widely used in fritz2 for directions
         object RadioGroupLayouts { // @ fieldset
             val column: Style<BasicParams> = {
                 display {

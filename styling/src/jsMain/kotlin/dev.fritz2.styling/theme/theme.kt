@@ -195,7 +195,7 @@ inline fun <reified T : Theme> theme(): Theme = currentTheme.unsafeCast<T>()
 /**
  * convenience function to create a render-context that provides a specialized theme correctly typed
  */
-//TODO: add for Flow.render and each().render
+//TODO: add for Flow.render and each().render @STE
 @ExperimentalCoroutinesApi
 inline fun <reified T : Theme> render(crossinline content: RenderContext.(T) -> List<Tag<HTMLElement>>) =
     dev.fritz2.dom.html.render {

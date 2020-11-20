@@ -68,7 +68,7 @@ object InputFieldComponent {
 
         focus {
             border {
-                color { "#3182ce" } // TODO : Where to define? Or ability to provide?
+                color { "#3182ce" } // TODO : Where to define? Or ability to provide? (see buttons & checkBox + radionBox)
             }
             boxShadow { outline }
         }

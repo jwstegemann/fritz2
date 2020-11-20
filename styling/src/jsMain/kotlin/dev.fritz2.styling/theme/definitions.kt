@@ -85,6 +85,7 @@ class Sizes(
     val contentBox: Property = "content-box"
     val maxContent: Property = "max-content"
     val minContent: Property = "min-content"
+    val fitContent: Property = "fit-content"
     val available: Property = "available"
     val unset: Property = "unset"
 
