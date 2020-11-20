@@ -106,7 +106,7 @@ fun RenderContext.stackDemo(): Div {
                                             color { warning }
                                         }) {
                                             fromTheme {
-                                                repeat
+                                                refresh
                                             }
                                         }
                                     }

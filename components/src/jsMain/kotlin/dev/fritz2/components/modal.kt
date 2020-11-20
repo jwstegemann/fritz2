@@ -10,6 +10,7 @@ import dev.fritz2.dom.html.renderElement
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.ModalStyles
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.map
@@ -189,7 +190,7 @@ class ModalComponent {
         prefix: String = "modal-close-button",
         build: PushButtonComponent.() -> Unit = {}
     ) {
-        closeButton = { close ->
+        closeButton = { closeHandle ->
             clickButton({
                 position {
                     absolute {
@@ -200,9 +201,9 @@ class ModalComponent {
                 styling()
             }, baseClass, id, prefix) {
                 variant { ghost }
-                icon { fromTheme { smallClose } }
+                icon { fromTheme { close } }
                 build()
-            }.map { Unit } handledBy close
+            }.map { Unit } handledBy closeHandle
         }
     }
 
