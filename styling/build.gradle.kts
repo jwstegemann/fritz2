@@ -4,11 +4,7 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
-val stylisVersion = "4.0.2"
-val murmurhashVersion = "1.0.0"
-
 kotlin {
-//    jvm()
     js(LEGACY).browser {
         testTask {
             useKarma {
@@ -18,8 +14,6 @@ kotlin {
                 useChromeHeadless()
 //                usePhantomJS()
             }
-            //running test-server in background
-//            dependsOn(":test-server:start")
         }
     }
     sourceSets {
@@ -49,8 +43,8 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                implementation(npm("stylis", stylisVersion))
-                implementation(npm("murmurhash", murmurhashVersion))
+                implementation(npm("stylis", rootProject.ext["stylisVersion"] as String))
+                implementation(npm("murmurhash", rootProject.ext["murmurhashVersion"] as String))
             }
         }
         val jsTest by getting {
@@ -77,22 +71,6 @@ publishing {
             credentials {
                 username = "jwstegemann"
                 password = System.getenv("BINTRAY_API_KEY")
-            }
-        }
-    }
-}
-
-tasks {
-    val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
-        impliedPlatforms = mutableListOf("common")
-        outputFormat = "markdown"
-        outputDirectory = "$projectDir/api/dokka"
-        multiplatform {
-            val js by creating {
-                impliedPlatforms = mutableListOf("js")
-            }
-            val jvm by creating {
-                impliedPlatforms = mutableListOf("jvm")
             }
         }
     }

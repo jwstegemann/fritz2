@@ -1,11 +1,9 @@
 plugins {
     kotlin("multiplatform")
     id("maven-publish")
-    id("org.jetbrains.dokka")
 }
 
 kotlin {
-//    jvm()
     js(LEGACY).browser {
         testTask {
             useKarma {
@@ -15,8 +13,6 @@ kotlin {
                 useChromeHeadless()
 //                usePhantomJS()
             }
-            //running test-server in background
-//            dependsOn(":test-server:start")
         }
     }
     sourceSets {

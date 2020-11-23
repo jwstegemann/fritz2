@@ -5,7 +5,6 @@ plugins {
 }
 
 kotlin {
-//    jvm()
     js(LEGACY).browser {
         testTask {
             useKarma {
@@ -15,8 +14,6 @@ kotlin {
                 useChromeHeadless()
 //                usePhantomJS()
             }
-            //running test-server in background
-//            dependsOn(":test-server:start")
         }
     }
     sourceSets {
@@ -74,22 +71,6 @@ publishing {
             credentials {
                 username = "jwstegemann"
                 password = System.getenv("BINTRAY_API_KEY")
-            }
-        }
-    }
-}
-
-tasks {
-    val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
-        impliedPlatforms = mutableListOf("common")
-        outputFormat = "markdown"
-        outputDirectory = "$projectDir/api/dokka"
-        multiplatform {
-            val js by creating {
-                impliedPlatforms = mutableListOf("js")
-            }
-            val jvm by creating {
-                impliedPlatforms = mutableListOf("jvm")
             }
         }
     }

@@ -15,18 +15,15 @@ repositories {
     maven { url = uri("https://kotlin.bintray.com/ktor") }
 }
 
-val logbackVersion = "1.2.1"
-val ktorVersion = "1.4.0"
-
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation("io.ktor:ktor-server-core:$ktorVersion")
-    implementation("io.ktor:ktor-auth:$ktorVersion")
-    implementation("io.ktor:ktor-jackson:$ktorVersion")
-    implementation("io.ktor:ktor-websockets:$ktorVersion")
-    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:${rootProject.ext["ktorVersion"]}")
+    implementation("ch.qos.logback:logback-classic:${rootProject.ext["logbackVersion"]}")
+    implementation("io.ktor:ktor-server-core:${rootProject.ext["ktorVersion"]}")
+    implementation("io.ktor:ktor-auth:${rootProject.ext["ktorVersion"]}")
+    implementation("io.ktor:ktor-jackson:${rootProject.ext["ktorVersion"]}")
+    implementation("io.ktor:ktor-websockets:${rootProject.ext["ktorVersion"]}")
+    testImplementation("io.ktor:ktor-server-tests:${rootProject.ext["ktorVersion"]}")
 }
 
 tasks.register<com.github.psxpaul.task.JavaExecFork>("start") {
