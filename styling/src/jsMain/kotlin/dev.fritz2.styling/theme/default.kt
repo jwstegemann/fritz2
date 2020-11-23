@@ -43,6 +43,7 @@ open class DefaultTheme : Theme {
         full = "4rem"
     )
 
+
     override val colors = object : Colors {
         override val primary = "#3d405b"
         override val secondary = "#e07a5f"
@@ -84,6 +85,7 @@ open class DefaultTheme : Theme {
         larger = "0.05em",
         huge = "0.1em"
     )
+
 
     override val sizes = Sizes(
         tiny = "5rem",
