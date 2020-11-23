@@ -38,7 +38,7 @@ open class DefaultTheme : Theme {
         normal = "1rem",
         large = "1.25rem",
         larger = "1.5rem",
-        huge = "2rem",
+        huge = "1.875rem",
         giant = "3rem",
         full = "4rem"
     )

@@ -304,7 +304,9 @@ table {
 }
 h1 {
   font-size: ${theme().fontSizes.huge};;
-  font-weight: bold;
+  font-weight: 700;
+  
+  
 }
 h2 {
   font-size: ${theme().fontSizes.larger};;
