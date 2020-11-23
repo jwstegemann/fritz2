@@ -29,6 +29,5 @@ subprojects {
 }
 
 tasks.dokkaHtmlMultiModule.configure {
-    outputDirectory.set(buildDir.resolve("api"))
-//    documentationFileName.set("README.md")
+    outputDirectory.set(buildDir.resolve("dokka"))
 }
