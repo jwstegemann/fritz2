@@ -21,8 +21,7 @@ class ResponsiveValue(val sm: Property, val md: Property = sm, val lg: Property 
  * Defines a value that has different expressions for different scales.
  */
 open class ScaledValue(
-    val
-    normal: Property,
+    val normal: Property,
     val small: Property = normal,
     val smaller: Property = small,
     val tiny: Property = smaller,
@@ -185,6 +184,7 @@ interface Colors {
     val info: ColorProperty
     val light: ColorProperty
     val dark: ColorProperty
+    val white: ColorProperty
     val disabled: ColorProperty
 }
 

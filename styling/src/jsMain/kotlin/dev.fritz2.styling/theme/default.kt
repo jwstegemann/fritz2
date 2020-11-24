@@ -39,40 +39,40 @@ open class DefaultTheme : Theme {
         large = "1.25rem",
         larger = "1.5rem",
         huge = "1.875rem",
-        giant = "3rem",
+        giant = "1.875rem",
         full = "4rem"
     )
-
 
     override val colors = object : Colors {
         override val primary = "#3d405b"
         override val secondary = "#e07a5f"
-        override val tertiary = "#81b29a"
+        override val tertiary = "#b2f5ea"
         override val success = "#28a745"
         override val danger = "#dc3545"
         override val warning = "#ffc107"
         override val info = "#17a2b8"
         override val light = "#e2e8f0"
         override val dark = "#2d3748"
+        override val white = "#ffffff"
         val alert = "feebc8"
         override val disabled = light
     }
 
     override val fonts = object : Fonts {
         override val body =
-            """-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" """
+            """Inter, sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" """
         override val heading =
-            """-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" """
+            """Inter, sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" """
         override val mono = """SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace"""
     }
 
     override val lineHeights = ScaledValue(
         normal = "normal",
-        tiny = "1",
+        tiny = "1.2",
         smaller = "1.25",
-        small = "1.375",
+        small = "1.3",
         large = "1.5",
-        larger = "1.625",
+        larger = "1.7",
         huge = "2",
         giant = "2.25",
         full = "3"

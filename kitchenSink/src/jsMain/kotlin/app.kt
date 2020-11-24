@@ -1,8 +1,10 @@
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.A
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
+import dev.fritz2.styling.params.RadiiContext
 import dev.fritz2.styling.theme.renderElement
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -67,6 +69,39 @@ fun RenderContext.simpleAnchor(linkText: String): A {
     }
 }
 
+fun RenderContext.menuAnchor(linkText: String): Div {
+    return (::div.styled {
+        radius { ".5rem" }
+        border {
+            width { "0" }
+        }
+        hover {
+            background {
+                color { light }
+            }
+        }
+        paddings{
+            top { tiny }
+            bottom { tiny }
+            left { small }
+            right { small }
+        }
+    }) {
+        nonHoverAnchor("$linkText")
+    }
+}
+
+
+
+fun RenderContext.nonHoverAnchor(linkText: String): A {
+    return (::a.styled {
+        fontSize { small }
+    }) {
+        +linkText
+        href("#$linkText")
+    }
+}
+
 @ExperimentalCoroutinesApi
 fun main() {
     val themes = listOf<ExtendedTheme>(
@@ -87,17 +122,23 @@ fun main() {
                 }) {
                     items {
                         stackUp({
-                            padding { "1.0rem" }
+                            padding { "1rem" }
                             minWidth { "200px" }
                             minHeight { "100%" }
                             display { flex }
                             wrap { nowrap }
                             direction { column }
-                            alignItems { flexEnd }
-                            background { color { dark } }
-                            color { light }
+                            alignItems { flexStart }
+                            background { color { white } }
+                            color { dark }
                             paddings {
                                 top { "50px" }
+                            }
+                            borders {
+                                right {
+                                    width { "2px" }
+                                    color { light }
+                                }
                             }
                         }, id = "menue-left")
                         {
@@ -107,21 +148,24 @@ fun main() {
                                         bottom { "2.0rem" }
                                     }
                                 }) {
-                                    simpleAnchor("welcome")
+                                    simpleAnchor("Welcome")
                                 }
 
-                                simpleAnchor("flexbox")
-                                simpleAnchor("gridbox")
-                                simpleAnchor("stack")
-                                simpleAnchor("icons")
-                                simpleAnchor("spinner")
-                                simpleAnchor("buttons")
-                                simpleAnchor("popover")
-                                simpleAnchor("modal")
-                                simpleAnchor("input")
-                                simpleAnchor("multiselect")
-                                simpleAnchor("singleselect")
-                                simpleAnchor("formcontrol")
+
+
+
+                                menuAnchor("Flexbox")
+                                menuAnchor("Gridbox")
+                                menuAnchor("Stack")
+                                menuAnchor("Icons")
+                                menuAnchor("Spinner")
+                                menuAnchor("Buttons")
+                                menuAnchor("Popover")
+                                menuAnchor("Modal")
+                                menuAnchor("Input")
+                                menuAnchor("Multiselect")
+                                menuAnchor("Singleselect")
+                                menuAnchor("Formcontrol")
 
                                 (::a.styled {
                                     theme().tooltip.write("visit us on", "www.fritz2.dev"){left}()
@@ -165,19 +209,19 @@ fun main() {
                             //  together)
                             router.render { site ->
                                 when (site) {
-                                    "icons" -> iconsDemo()
-                                    "spinner" -> spinnerDemo()
-                                    "input" -> inputDemo()
-                                    "buttons" -> buttonDemo()
-                                    "formcontrol" -> formControlDemo()
-                                    "flexbox" -> flexBoxDemo(themeStore, themes, theme)
-                                    "gridbox" -> gridBoxDemo()
-                                    "multiselect" -> multiSelectDemo()
-                                    "singleselect" -> singleSelectDemo()
-                                    "stack" -> stackDemo()
-                                    "modal" -> modalDemo()
-                                    "popover" -> popoverDemo()
-                                    "welcome" -> welcome()
+                                    "Icons" -> iconsDemo()
+                                    "Spinner" -> spinnerDemo()
+                                    "Input" -> inputDemo()
+                                    "Buttons" -> buttonDemo()
+                                    "Formcontrol" -> formControlDemo()
+                                    "Flexbox" -> flexBoxDemo(themeStore, themes, theme)
+                                    "Gridbox" -> gridBoxDemo()
+                                    "Multiselect" -> multiSelectDemo()
+                                    "Singleselect" -> singleSelectDemo()
+                                    "Stack" -> stackDemo()
+                                    "Modal" -> modalDemo()
+                                    "Popover" -> popoverDemo()
+                                    "Welcome" -> welcome()
                                     else -> welcome()
                                 }
                             }

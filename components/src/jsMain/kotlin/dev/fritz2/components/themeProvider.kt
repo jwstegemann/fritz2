@@ -89,6 +89,7 @@ class ThemeComponent {
         val staticResetCss: String
             get() = """
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+
 html {
   line-height: 1.15; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
@@ -96,8 +97,8 @@ html {
 }
 body {
   margin: 0;
-  line-height: 1.5;
-  font-family: Inter, sans-serif;
+  line-height: ${theme().lineHeights.large};
+  font-family: Inter , sans-serif;
   font-feature-settings: "kern";
 }
 main {
@@ -116,6 +117,7 @@ pre {
   font-size: ${theme().fontSizes.normal}; /* 2 */
 }
 a {
+  font-size: ${theme().fontSizes.small}
   background-color: transparent;
 }
 abbr[title] {
@@ -159,7 +161,7 @@ select,
 textarea {
   font-family: inherit; /* 1 */
   font-size: ${theme().fontSizes.normal};; /* 1 */
-  line-height: 1.2; /* 1 */
+  line-height: ${theme().lineHeights.tiny}; /* 1 */
   margin: 0; /* 2 */
 }
 button,
@@ -247,8 +249,9 @@ pre {
   margin: 0;
 }
 p {
+  font-size: ${theme().fontSizes.normal};
   margin-top: 1.25rem;
-  line-height: 1.7;
+  line-height: ${theme().lineHeights.larger};
 }
 button {
   background: transparent;
@@ -307,23 +310,23 @@ table {
 h1 {
   margin-top: 2rem;
   margin-bottom: .25rem;
-  line-height: 1.2;
+  line-height: ${theme().lineHeights.tiny};
   font-weight: 700;
   font-size: ${theme().fontSizes.huge};
-  letter-spacing: -.025em;
+  letter-spacing: ${theme().letterSpacings.small};
   outline: 0;
 }
 h2 {
   margin-top: 4rem;
   margin-bottom: 0.5rem;
-  line-height: 1.3;
+  line-height: ${theme().lineHeights.small};
   font-weight: 600;
   font-size: ${theme().fontSizes.larger};
-  letter-spacing: -.025em;
+  letter-spacing: ${theme().letterSpacings.small};
 }
 h3 {
   margin-top: 3rem;
-  line-height: 1.25;
+  line-height: smaller;
   font-weight: 600;
   font-size: ${theme().fontSizes.large};
   letter-spacing: -.025em;
@@ -341,6 +344,7 @@ h6 {
   font-weight: bold;
 }
 a {
+  font-size: ${theme().fontSizes.small};
   color: inherit;
   text-decoration: inherit;
 }
