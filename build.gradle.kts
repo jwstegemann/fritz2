@@ -29,9 +29,5 @@ subprojects {
 }
 
 tasks.dokkaHtmlMultiModule.configure {
-    outputDirectory.set(buildDir.resolve("dokka/html"))
-}
-
-tasks.dokkaJekyllMultiModule.configure {
-    outputDirectory.set(buildDir.resolve("dokka/jekyll"))
+    outputDirectory.set(rootDir.resolve("api"))
 }

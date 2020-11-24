@@ -1,6 +1,8 @@
 *.iml
 .idea
 .gradle
+api/*/**
+api/-modules.html
+api/navigation.html
 **/build/
 **/src/generated/
-**/api/dokka/*/**

@@ -20,7 +20,7 @@ jobs:
         env: # Or as an environment variable
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
       - name: Generating API docs
-        run: ./gradlew core:dokka
+        run: ./gradlew dokkaHtmlMultiModule
       - name: Updating Github Pages
         if: success()
         uses: crazy-max/ghaction-github-pages@v1.3.0
@@ -28,6 +28,6 @@ jobs:
           repo: jwstegemann/fritz2-api 
           target_branch: master
           keep_history: false
-          build_dir: core/api/dokka
+          build_dir: api
         env:
           GITHUB_PAT: ${{ secrets.FRITZ2_DOKKA_TOKEN }}
