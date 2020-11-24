@@ -8,7 +8,7 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import org.w3c.dom.svg.SVGElement
@@ -62,7 +62,7 @@ class IconComponent {
     var def: IconDefinition? = null
 
     fun fromTheme(value: Icons.() -> IconDefinition) {
-        def = theme().icons.value()
+        def = Theme().icons.value()
     }
 }
 

@@ -4,7 +4,7 @@ import dev.fritz2.components.popover
 import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -26,10 +26,10 @@ fun RenderContext.popoverDemo(): Div {
                 spacing { large }
                 items {
                     listOf(
-                        Pair(theme().popover.placement.right, theme().icons.arrowRight),
-                        Pair(theme().popover.placement.top, theme().icons.arrowUp),
-                        Pair(theme().popover.placement.bottom, theme().icons.arrowDown),
-                        Pair(theme().popover.placement.left, theme().icons.arrowLeft)
+                        Pair(Theme().popover.placement.right, Theme().icons.arrowRight),
+                        Pair(Theme().popover.placement.top, Theme().icons.arrowUp),
+                        Pair(Theme().popover.placement.bottom, Theme().icons.arrowDown),
+                        Pair(Theme().popover.placement.left, Theme().icons.arrowLeft)
                     ).forEach { (placement, icon) ->
                         popover({
                             margins { right { small } }
@@ -54,7 +54,7 @@ fun RenderContext.popoverDemo(): Div {
                         margins { right { small } }
                     }) {
                         trigger {
-                            icon({ size { "2rem" } }) { fromTheme { theme().icons.circleInformation } }
+                            icon({ size { "2rem" } }) { fromTheme { Theme().icons.circleInformation } }
                         }
                         placement { bottom }
                         hasArrow(false)
@@ -77,7 +77,7 @@ fun RenderContext.popoverDemo(): Div {
                         margins { right { small } }
                     }) {
                         trigger {
-                            icon({ size { "2rem" } }) { fromTheme { theme().icons.eye } }
+                            icon({ size { "2rem" } }) { fromTheme { Theme().icons.eye } }
                         }
                         placement { bottom }
                         hasArrow(false)

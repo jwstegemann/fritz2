@@ -1,23 +1,20 @@
+import dev.fritz2.binding.RootStore
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.A
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
+import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.renderElement
-import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 fun RenderContext.simpleLinkWithBackground(linkUri: String, linkText: String): A {
     return (::a.styled {
         fontSize { large }
-        color {
-            theme().colors.warning
-        }
+        color { warning }
         hover {
-            color {
-                theme().colors.light
-            }
-            background { color { theme().colors.dark } }
+            color { light }
+            background { color { dark } }
             radius { "5%" }
         }
         paddings {
@@ -33,14 +30,10 @@ fun RenderContext.simpleLinkWithBackground(linkUri: String, linkText: String): A
 fun RenderContext.simpleAnchorWithBackground(linkText: String): A {
     return (::a.styled {
         fontSize { large }
-        color {
-            theme().colors.warning
-        }
+        color { warning }
         hover {
-            color {
-                theme().colors.light
-            }
-            background { color { theme().colors.dark } }
+            color { light }
+            background { color { dark } }
         }
         radius { "5%" }
         paddings {
@@ -57,9 +50,7 @@ fun RenderContext.simpleAnchor(linkText: String): A {
     return (::a.styled {
         fontSize { large }
         hover {
-            color {
-                theme().colors.warning
-            }
+            color { warning }
         }
     }) {
         +linkText
@@ -67,19 +58,24 @@ fun RenderContext.simpleAnchor(linkText: String): A {
     }
 }
 
+val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
+
+object ThemeStore : RootStore<Int>(0) {
+    val selectTheme = handle<Int> { _, index ->
+        Theme.use(themes[index])
+        index
+    }
+}
+
+
 @ExperimentalCoroutinesApi
 fun main() {
-    val themes = listOf<ExtendedTheme>(
-        SmallFonts(),
-        LargeFonts()
-    )
-
     val router = router("")
 
     renderElement { theme: ExtendedTheme ->
         themeProvider {
-            themes { themes }
-            items {
+            theme(themes.first())
+            content {
                 lineUp({
                     alignItems { stretch }
                     color { dark }
@@ -124,7 +120,7 @@ fun main() {
                                 simpleAnchor("formcontrol")
 
                                 (::a.styled {
-                                    theme().tooltip.write("visit us on", "www.fritz2.dev"){left}()
+                                    tooltip("visit us on", "www.fritz2.dev") { left }()
                                     after {
                                         textAlign { center }
                                         background { color { warning } }
@@ -170,7 +166,7 @@ fun main() {
                                     "input" -> inputDemo()
                                     "buttons" -> buttonDemo()
                                     "formcontrol" -> formControlDemo()
-                                    "flexbox" -> flexBoxDemo(themeStore, themes, theme)
+                                    "flexbox" -> flexBoxDemo(ThemeStore.selectTheme, themes, theme)
                                     "gridbox" -> gridBoxDemo()
                                     "multiselect" -> multiSelectDemo()
                                     "singleselect" -> singleSelectDemo()

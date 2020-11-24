@@ -15,7 +15,8 @@ import kotlinx.coroutines.flow.*
  * @param lens describes, which part of the parent's model a [DetachedStore] is created for
  * @param initialData start value of the new [Store]
  */
-fun <T, X> Store<T>.detach(lens: Lens<T, X>, initialData: X) = DetachedStore(initialData, this, lens)
+fun <T, X> Store<T>.detach(lens: Lens<T, X>, initialData: X = lens.get(this.current)) =
+    DetachedStore(initialData, this, lens)
 
 /**
  * creates a new [DetachedStore]s

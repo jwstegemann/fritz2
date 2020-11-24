@@ -1,43 +1,27 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.resetCss
-import dev.fritz2.styling.theme.DefaultTheme
 import dev.fritz2.styling.theme.Theme
-import dev.fritz2.styling.theme.currentTheme
-import dev.fritz2.styling.theme.theme
-import kotlinx.coroutines.flow.Flow
-
-interface ThemeStore {
-    val data: Flow<Int>
-    val selectTheme: SimpleHandler<Int>
-}
-
 
 /**
  * This class offers the configuration of the [themeProvider] component.
  *
  * The component offers some configurable features:
- * - to set one or a [list][List] of themes; if given a list, the first theme of the list will be taken as current theme
- *   automatically.
  * - to enable or disable the resetting of the browser's default styling (it is highly recommended to stick with the
  *   default of resetting!) The reset procedure uses theme specific values already, so the basic look and feel of the app
  *   will comply to the theme.
  * - to pass in arbitrary content of course, as this component acts as the root of all UI
- * - it offers access to the [themeStore] in order to enable the _dynamic_ switching between different [themes][Theme]
- *   at runtime.
  *
  * The pattern to integrate a [themeProvider] into an app resembles always the following examples:
  * ```
  * // minimal integration: Stick to the default theme and reset the browser's CSS
  * render { theme: Theme -> // gain access to the specific (sub-)*type* of your theme and the initial theme
  *     themeProvider { // configure the provider itself -> nothing theme specific here, so the [DefaultTheme] will be used
- *          items {
+ *          import dev.fritz2.styling.theme.Theme {
  *              // your UI goes here
  *          }
  *     }.mount("target")
@@ -47,322 +31,44 @@ interface ThemeStore {
  * ```
  * render { theme: ExtendedTheme -> // gain access to the specific (sub-)*type* of your theme and the initial theme
  *     themeProvider {
- *          theme { myThemeInstance } // set the desired theme
- *          items {
+ *          theme(myThemeInstance) // set the desired theme
+ *          import dev.fritz2.styling.theme.Theme {
  *              // your UI goes here
  *          }
- *     }.mount("target")
- * ```
- * If you want to enable active switching between two themes, you have to _grab_ the theme store in order to pass a
- * fitting flow (of a selection component probably) into it
- * ```
- * // prepare some collection of themes:
- * val themes = listOf<ExtendedTheme>(
- *      Light(),
- *      Dark()
- * )
- *
- * // set the themes!
- * render { theme: ExtendedTheme -> // gain access to the specific (sub-)*type* of your theme and the initial theme
- *     themeProvider {
- *          themes { themes } // set the desired themes
- *          items {
- *              // use the exposed ``themeStore`` to dynamically select the current theme
- *              themeStore.data.map { currentThemeIndex -> // grab the current index to deduce the name later on
- *                  radioGroup {
- *                      items { themes.map { it.name } } // provide a list of names
- *                      selected { themes[currentThemeIndex].name } // set the selected name
- *                  }.map { selected -> // derive the index of the selected theme via its name
- *                      themes.indexOf(
- *                          themes.find {
- *                              selected == it.name
- *                          }
- *                      )
- *                  } handledBy themeStore.selectTheme // use the exposed ``themeStore`` as handler
- *              }
- *          }.watch() // must be watched, as there is nothing bound!
  *     }.mount("target")
  * ```
  */
 class ThemeComponent {
     companion object {
-        val staticResetCss: String
-            get() = """ 
-/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
-html {
-  line-height: 1.15; /* 1 */
-  -webkit-text-size-adjust: 100%; /* 2 */
-}
-body {
-  margin: 0;
-}
-main {
-  display: block;
-}
-h1 {
-  font-size: ${theme().fontSizes.huge};
-  margin: 0.67em 0;
-}
-hr {
-  box-sizing: content-box; /* 1 */
-  height: 0; /* 1 */
-  overflow: visible; /* 2 */
-}
-pre {
-  font-family: monospace, monospace; /* 1 */
-  font-size: ${theme().fontSizes.normal}; /* 2 */
-}
-a {
-  background-color: transparent;
-}
-abbr[title] {
-  border-bottom: none; /* 1 */
-  text-decoration: underline; /* 2 */
-  -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted; /* 2 */
-}
-b,
-strong {
-  font-weight: bolder;
-}
-code,
-kbd,
-samp {
-  font-family: monospace, monospace; /* 1 */
-  font-size: ${theme().fontSizes.huge};; /* 2 */
-}
-small {
-  font-size: 80%;
-}
-sub,
-sup {
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}
-sub {
-  bottom: -0.25em;
-}
-sup {
-  top: -0.5em;
-}
-img {
-  border-style: none;
-}
-button,
-input,
-optgroup,
-select,
-textarea {
-  font-family: inherit; /* 1 */
-  font-size: ${theme().fontSizes.normal};; /* 1 */
-  line-height: 1.15; /* 1 */
-  margin: 0; /* 2 */
-}
-button,
-input { /* 1 */
-  overflow: visible;
-}
-button,
-select { /* 1 */
-  text-transform: none;
-}
-button,
-[type="button"],
-[type="reset"],
-[type="submit"] {
-  -webkit-appearance: button;
-}
-fieldset {
-  padding: 0.35em 0.75em 0.625em;
-}
-legend {
-  box-sizing: border-box; /* 1 */
-  color: inherit; /* 2 */
-  display: table; /* 1 */
-  max-width: 100%; /* 1 */
-  padding: 0; /* 3 */
-  white-space: normal; /* 1 */
-}
-progress {
-  vertical-align: baseline;
-}
-textarea {
-  overflow: auto;
-}
-[type="checkbox"],
-[type="radio"] {
-  box-sizing: border-box; /* 1 */
-  padding: 0; /* 2 */
-}
-[type="number"]::-webkit-inner-spin-button,
-[type="number"]::-webkit-outer-spin-button {
-  height: auto;
-}
-[type="search"] {
-  -webkit-appearance: textfield; /* 1 */
-  outline-offset: -2px; /* 2 */
-}
-[type="search"]::-webkit-search-decoration {
-  -webkit-appearance: none;
-}
-::-webkit-file-upload-button {
-  -webkit-appearance: button; /* 1 */
-  font: inherit; /* 2 */
-}
-details {
-  display: block;
-}
-summary {
-  display: list-item;
-}
-template {
-  display: none;
-}
-[hidden] {
-  display: none;
-}
-html {
-  box-sizing: border-box; /* 1 */
-  font-family: sans-serif; /* 2 */
-}
-*,
-*::before,
-*::after {
-  box-sizing: inherit;
-}
-blockquote,
-dl,
-dd,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-hr,
-figure,
-p,
-pre {
-  margin: 0;
-}
-button {
-  background: transparent;
-  padding: 0;
-}
-button:focus {
-  outline: 1px dotted;
-}
-fieldset {
-  margin: 0;
-  padding: 0;
-}
-ol,
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  padding-left: ${theme().space.normal};
-}
-ul {
-  list-style-type: disc
-}
-ol {
-  list-style-type: decimal
-}
-html {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 1 */
-  line-height: 1.5; /* 2 */
-}
-*,
-*::before,
-*::after {
-  border-width: 0;
-  border-style: solid;
-  border-color: #e2e8f0;
-}
-hr {
-  border-top-width: 1px;
-}
-img {
-  border-style: solid;
-}
-textarea {
-  resize: vertical;
-}
-input::placeholder,
-textarea::placeholder {
-  color: #a0aec0;
-}
-button,
-[role="button"] {
-  cursor: pointer;
-}
-table {
-  border-collapse: collapse;
-}
-h1 {
-  font-size: ${theme().fontSizes.huge};;
-  font-weight: bold;
-}
-h2 {
-  font-size: ${theme().fontSizes.larger};;
-  font-weight: bold;
-}
-h3 {
-  font-size: ${theme().fontSizes.large};;
-  font-weight: bold;
-}
-h4 {
-  font-size: ${theme().fontSizes.normal};;
-  font-weight: bold;
-}
-h5 {
-  font-size: ${theme().fontSizes.small};;
-  font-weight: bold;
-}
-h6 {
-  font-size: ${theme().fontSizes.smaller};;
-  font-weight: bold;
-}
-a {
-  color: inherit;
-  text-decoration: inherit;
-}
-button,
-input,
-optgroup,
-select,
-textarea {
-  padding: 0;
-  line-height: inherit;
-  color: inherit;
-}
-pre,
-code,
-kbd,
-samp {
-  font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
-img,
-svg,
-video,
-canvas,
-audio,
-iframe,
-embed,
-object {
-  display: block;
-  vertical-align: middle;
-}
-img,
-video {
-  max-width: 100%;
-  height: auto;
-}
-/*# sourceMappingURL=base.css.map */""".trimIndent()
-
+        val dynamicResetCss: String
+            get() =
+                //modern-normalize v1.0.0 | MIT License | https://github.com/sindresorhus/modern-normalize
+                """*,*::before,*::after{box-sizing:border-box}:root{-moz-tab-size:4;tab-size:4}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}button,[type='button'],[type='reset'],[type='submit']{-webkit-appearance:button}::-moz-focus-inner{border-style:none;padding:0}:-moz-focusring{outline:1px dotted ButtonText}:-moz-ui-invalid{box-shadow:none}legend{padding:0}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type='search']{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}button{background-color:transparent;background-image:none}button:focus{outline:1px dotted;outline:5px auto -webkit-focus-ring-color}fieldset{margin:0;padding:0}ol,ul{list-style:none;margin:0;padding:0}html{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";line-height:1.5}body{font-family:inherit;line-height:inherit}*,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}img{border-style:solid}textarea{resize:vertical}input::placeholder,textarea::placeholder{color:#9ca3af}button,[role="button"]{cursor:pointer}table{border-collapse:collapse}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}button,input,optgroup,select,textarea{padding:0;line-height:inherit;color:inherit}pre,code,kbd,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}""" + """
+                h1 {
+                  font-size: ${Theme().fontSizes.huge};
+                  font-weight: bold;
+                }
+                h2 {
+                  font-size: ${Theme().fontSizes.larger};
+                  font-weight: bold;
+                }
+                h3 {
+                  font-size: ${Theme().fontSizes.large};
+                  font-weight: bold;
+                }
+                h4 {
+                  font-size: ${Theme().fontSizes.normal};
+                  font-weight: bold;
+                }
+                h5 {
+                  font-size: ${Theme().fontSizes.small};
+                  font-weight: bold;
+                }
+                h6 {
+                  font-size: ${Theme().fontSizes.smaller};
+                  font-weight: bold;
+                }
+            """.trimIndent()
     }
 
     var resetCss: Boolean = true
@@ -371,43 +77,24 @@ video {
         resetCss = value()
     }
 
-    var items: (RenderContext.() -> Unit)? = null
+    var content: (RenderContext.() -> Unit)? = null
 
-    fun items(value: RenderContext.() -> Unit) {
-        items = value
+    fun content(value: RenderContext.() -> Unit) {
+        content = value
     }
 
-    var themes = listOf<Theme>(DefaultTheme())
-
-    fun theme(value: () -> Theme) {
-        themes = listOf(value())
-    }
-
-    fun themes(values: () -> List<Theme>) {
-        themes = values()
-    }
-
-    // Expose ``ThemeStore`` via build-Block and bind it to a local val for further usage!
-    val themeStore: ThemeStore = object : RootStore<Int>(0), ThemeStore {
-        override val selectTheme = handle<Int> { _, index ->
-            currentTheme = themes[index]
-            index
-        }
-    }
-
-    init {
-        currentTheme = themes.first()
+    fun theme(value: Theme) {
+        Theme.use(value)
     }
 }
 
 
 /**
- * This component realizes an outer wrapper for the whole UI in order to set and initialize the actual theme
- * and to expose the [ThemeStore] in order to enable the _dynamic_ switching between different [themes][Theme]
- * at runtime.
+ * This component realizes an outer wrapper for the whole UI in order to initialize theming, reset browser css-defaults
+ * (if you want) and rerender the content if the current theme changes in order to enable the _dynamic_ switching
+ * between different [themes][Theme] at runtime.
  *
  * The component offers some configurable features:
- * - to set one or a [list][List] of themes
  * - to enable or disable the resetting of the browser's default styling (it is highly recommended to stick with the
  *   default of resetting!) The reset procedure uses theme specific values already, so the basic look and feel of the app
  *   will comply to the theme.
@@ -444,9 +131,9 @@ fun RenderContext.themeProvider(
     val component = ThemeComponent().apply(build)
 
     return div {
-        component.themeStore.data.render {
+        Theme.data.render {
             if (component.resetCss) {
-                resetCss(ThemeComponent.staticResetCss)
+                resetCss(ThemeComponent.dynamicResetCss)
             }
             box(
                 {
@@ -460,7 +147,7 @@ fun RenderContext.themeProvider(
                     overflow { auto }
                 }, baseClass, id, prefix
             ) {
-                component.items?.let { it() }
+                component.content?.let { it() }
             }
         }
     }

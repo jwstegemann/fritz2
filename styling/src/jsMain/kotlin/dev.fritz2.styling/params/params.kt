@@ -191,9 +191,9 @@ open class StyleParamsImpl : BoxParams {
      * creates a valid responsive css-rule-body from the content of the screen-size-[StringBuilder]s
      */
     fun toCss(): String {
-        if (mdProperties.isNotEmpty()) smProperties.append(theme().mediaQueryMd, "{", mdProperties, "}")
-        if (lgProperties.isNotEmpty()) smProperties.append(theme().mediaQueryLg, "{", lgProperties, "}")
-        if (xlProperties.isNotEmpty()) smProperties.append(theme().mediaQueryXl, "{", xlProperties, "}")
+        if (mdProperties.isNotEmpty()) smProperties.append(Theme().mediaQueryMd, "{", mdProperties, "}")
+        if (lgProperties.isNotEmpty()) smProperties.append(Theme().mediaQueryLg, "{", lgProperties, "}")
+        if (xlProperties.isNotEmpty()) smProperties.append(Theme().mediaQueryXl, "{", xlProperties, "}")
 
         return smProperties.toString()
     }

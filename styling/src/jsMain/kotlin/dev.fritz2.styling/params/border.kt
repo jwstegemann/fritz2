@@ -2,8 +2,8 @@ package dev.fritz2.styling.params
 
 import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.Property
+import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.Thickness
-import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -130,7 +130,7 @@ class BorderContext(
      * @param value extension function parameter to bring the predefined thickness values ([Thickness]) of the theme
      *              into the scope of the functional expression
      */
-    fun width(value: Thickness.() -> Property) = property(widthKey, theme().borderWidths, value, target)
+    fun width(value: Thickness.() -> Property) = property(widthKey, Theme().borderWidths, value, target)
 
     /**
      * This function is used to set the _style_ of a border for the
@@ -167,7 +167,7 @@ class BorderContext(
      * @param value extension function parameter to bring the predefined color values of the theme ([Colors])
      *              into the scope of the functional expression
      */
-    fun color(value: Colors.() -> Property) = property(colorKey, theme().colors, value, target)
+    fun color(value: Colors.() -> Property) = property(colorKey, Theme().colors, value, target)
 }
 
 /**
@@ -328,7 +328,7 @@ class RadiiContext(
      *
      * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
-    fun topLeft(value: ScaledValueProperty) = property(borderTopLeftRadiusKey, theme().radii, value, target)
+    fun topLeft(value: ScaledValueProperty) = property(borderTopLeftRadiusKey, Theme().radii, value, target)
 
     /**
      * This function enables the definition of the border radius for the _top right_ corner of a block via the
@@ -343,7 +343,7 @@ class RadiiContext(
      *
      * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
-    fun topRight(value: ScaledValueProperty) = property(borderTopRightRadiusKey, theme().radii, value, target)
+    fun topRight(value: ScaledValueProperty) = property(borderTopRightRadiusKey, Theme().radii, value, target)
 
     /**
      * This function enables the definition of the border radius for the _bottom right_ corner of a block via the
@@ -358,7 +358,7 @@ class RadiiContext(
      *
      * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
-    fun bottomRight(value: ScaledValueProperty) = property(borderBottomRightRadiusKey, theme().radii, value, target)
+    fun bottomRight(value: ScaledValueProperty) = property(borderBottomRightRadiusKey, Theme().radii, value, target)
 
     /**
      * This function enables the definition of the border radius for the _bottom left_ corner of a block via the
@@ -373,7 +373,7 @@ class RadiiContext(
      *
      * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
-    fun bottomLeft(value: ScaledValueProperty) = property(borderBottomLeftRadiusKey, theme().radii, value, target)
+    fun bottomLeft(value: ScaledValueProperty) = property(borderBottomLeftRadiusKey, Theme().radii, value, target)
 
     /**
      * This _convenience_ function enables the definition of the border radius for the _top left_ and _top right_
@@ -596,7 +596,7 @@ interface Border : StyleParams {
      * @param value scale value, recommended to use predefined values via [dev.fritz2.styling.theme.Theme.radii]
      */
     fun radius(value: ScaledValueProperty) =
-        property(borderRadiusKey, theme().radii, value, smProperties)
+        property(borderRadiusKey, Theme().radii, value, smProperties)
 
     /**
      * This function sets the radius property for each media device independently.
@@ -620,10 +620,10 @@ interface Border : StyleParams {
         lg: (ScaledValueProperty)? = null,
         xl: (ScaledValueProperty)? = null
     ) {
-        if (sm != null) property(borderRadiusKey, theme().radii, sm, smProperties)
-        if (md != null) property(borderRadiusKey, theme().radii, md, mdProperties)
-        if (lg != null) property(borderRadiusKey, theme().radii, lg, lgProperties)
-        if (xl != null) property(borderRadiusKey, theme().radii, xl, xlProperties)
+        if (sm != null) property(borderRadiusKey, Theme().radii, sm, smProperties)
+        if (md != null) property(borderRadiusKey, Theme().radii, md, mdProperties)
+        if (lg != null) property(borderRadiusKey, Theme().radii, lg, lgProperties)
+        if (xl != null) property(borderRadiusKey, Theme().radii, xl, xlProperties)
     }
 
     /**

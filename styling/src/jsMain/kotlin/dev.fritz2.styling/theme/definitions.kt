@@ -379,9 +379,17 @@ interface CheckboxSizes {
 }
 
 interface InputFieldStyles {
+    val variants: InputFieldVariants
+    val sizes: InputFieldSizes
+}
+
+interface InputFieldSizes {
     val small: Style<BasicParams>
     val normal: Style<BasicParams>
     val large: Style<BasicParams>
+}
+
+interface InputFieldVariants {
     val outline: Style<BasicParams>
     val filled: Style<BasicParams>
 }

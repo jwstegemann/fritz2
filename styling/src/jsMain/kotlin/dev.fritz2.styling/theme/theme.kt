@@ -7,6 +7,8 @@ import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.GridParams
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 
@@ -53,7 +55,21 @@ typealias Property = String
  * ```
  *
  */
+
+@ExperimentalCoroutinesApi
 interface Theme {
+    companion object {
+        private val currentTheme = MutableStateFlow<Theme>(DefaultTheme())
+
+        val data: Flow<Theme> = currentTheme
+
+        operator fun invoke() = currentTheme.value
+
+        fun use(theme: Theme) {
+            currentTheme.value = theme
+        }
+    }
+
     /**
      * an human readable name like ``default`` or ``dark`` for example
      */
@@ -173,36 +189,16 @@ interface Theme {
 }
 
 /**
- * global variable that holds the currently selected [Theme]
- *
- * In order to *dynamically* change the theme, have a look at ``dev.fritz2.components.themeProvider``.
- */
-@ExperimentalCoroutinesApi
-var currentTheme: Theme = DefaultTheme()
-
-/**
- * get the currently selected [Theme]
- */
-@ExperimentalCoroutinesApi
-fun theme(): Theme = currentTheme
-
-/**
- * get the currently selected [Theme] correctly casted
- */
-@ExperimentalCoroutinesApi
-inline fun <reified T : Theme> theme(): Theme = currentTheme.unsafeCast<T>()
-
-/**
  * convenience function to create a render-context that provides a specialized theme correctly typed
  */
 //TODO: add for Flow.render and each().render
 @ExperimentalCoroutinesApi
 inline fun <reified T : Theme> render(crossinline content: RenderContext.(T) -> List<Tag<HTMLElement>>) =
     dev.fritz2.dom.html.render {
-        content(currentTheme.unsafeCast<T>())
+        content(Theme().unsafeCast<T>())
     }
 
 inline fun <E : Element, reified T : Theme> renderElement(crossinline content: RenderContext.(T) -> Tag<E>) =
     dev.fritz2.dom.html.renderElement {
-        content(currentTheme.unsafeCast<T>())
+        content(Theme().unsafeCast<T>())
     }

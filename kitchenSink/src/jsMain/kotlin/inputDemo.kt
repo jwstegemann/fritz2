@@ -1,16 +1,12 @@
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
-import dev.fritz2.components.inputField
-import dev.fritz2.components.lineUp
-import dev.fritz2.components.stackUp
-import dev.fritz2.components.styled
+import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -27,15 +23,19 @@ fun RenderContext.inputDemo(): Div {
 
             h3 { +"A basic Input needs no Store" }
             inputField {
-                placeholder("Placeholder")
+                content {
+                    placeholder("Placeholder")
+                }
             }
 
             h3 { +"A disabled component is skipped by the TAB key, but readonly isn't." }
             lineUp {
                 items {
                     inputField {
-                        value("disabled")
-                        disabled(true)
+                        content {
+                            value("disabled")
+                            disabled(true)
+                        }
                     }
                     inputField({
                         focus {
@@ -45,27 +45,35 @@ fun RenderContext.inputDemo(): Div {
                             boxShadow { none }
                         }
                     }) {
-                        value("readonly")
-                        readOnly(true)
+                        content {
+                            value("readonly")
+                            readOnly(true)
+                        }
                     }
                 }
             }
 
             h3 { +"Password" }
             inputField {
-                type("password")
-                placeholder("Password")
+                content {
+                    type("password")
+                    placeholder("Password")
+                }
             }
 
             h3 { +"Inputs with store connect events automatically." }
             inputField(store = user) {
-                placeholder("Name")
+                content {
+                    placeholder("Name")
+                }
             }
 
             h3 { +"Inputs without stores need manual event collection." }
             inputField {
-                placeholder("Name")
-                changes.values() handledBy user.update
+                content {
+                    placeholder("Name")
+                    changes.values() handledBy user.update
+                }
             }
 
             (::p.styled {
@@ -84,14 +92,23 @@ fun RenderContext.inputDemo(): Div {
             h3 { +"Sizes" }
             lineUp {
                 items {
-                    inputField({ theme().input.large() }) {
-                        placeholder("large")
+                    inputField {
+                        size { large }
+                        content {
+                            placeholder("large")
+                        }
                     }
-                    inputField({ theme().input.normal() }) {
-                        placeholder("normal")
+                    inputField {
+                        size { normal }
+                        content {
+                            placeholder("normal")
+                        }
                     }
-                    inputField({ theme().input.small() }) {
-                        placeholder("small")
+                    inputField {
+                        size { small }
+                        content {
+                            placeholder("small")
+                        }
                     }
                 }
             }
@@ -99,11 +116,17 @@ fun RenderContext.inputDemo(): Div {
             h3 { +"Variants" }
             lineUp {
                 items {
-                    inputField({ theme().input.outline() }) {
-                        placeholder("outline")
+                    inputField {
+                        variant { outline }
+                        content {
+                            placeholder("outline")
+                        }
                     }
-                    inputField({ theme().input.filled() }) {
-                        placeholder("filled")
+                    inputField {
+                        variant { filled }
+                        content {
+                            placeholder("filled")
+                        }
                     }
                 }
             }
@@ -111,8 +134,8 @@ fun RenderContext.inputDemo(): Div {
             h2 { +"Input fields go to town" }
 
             val ourInputStyle: BasicParams.() -> Unit = {
-                theme().input.large()
-                theme().input.filled()
+                Theme().input.sizes.large()
+                Theme().input.variants.filled()
                 border {
                     color { warning }
                     width { "3px" }
@@ -139,7 +162,7 @@ fun RenderContext.inputDemo(): Div {
                 baseClass: StyleClass? = null,
                 id: String? = null,
                 prefix: String = "ourInputField",
-                init: Input.() -> Unit
+                init: InputFieldComponent.() -> Unit
             ) {
                 inputField({
                     // always use corporate styling automatically!
@@ -154,8 +177,10 @@ fun RenderContext.inputDemo(): Div {
                 items {
                     // use our component instead of built-in one!
                     ourInputField {
-                        type("text")
-                        placeholder("user")
+                        content {
+                            type("text")
+                            placeholder("user")
+                        }
                     }
                     ourInputField({
                         // Passwords are dangerous -> so style ad hoc!!!
@@ -163,8 +188,10 @@ fun RenderContext.inputDemo(): Div {
                             color { danger }
                         }
                     }) {
-                        type("password")
-                        placeholder("password")
+                        content {
+                            type("password")
+                            placeholder("password")
+                        }
                     }
                 }
             }

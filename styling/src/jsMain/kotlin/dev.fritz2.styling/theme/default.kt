@@ -1289,49 +1289,54 @@ open class DefaultTheme : Theme {
     }
 
     override val input = object : InputFieldStyles {
-        override val small: Style<BasicParams> = {
-            height { "2rem" }
-            minWidth { "2.5rem" }
-            fontSize { small }
-            paddings {
-                horizontal { tiny }
+        override val sizes = object : InputFieldSizes {
+            override val small: Style<BasicParams> = {
+                height { "2rem" }
+                minWidth { "2.5rem" }
+                fontSize { small }
+                paddings {
+                    horizontal { tiny }
+                }
             }
-        }
-        override val normal: Style<BasicParams> = {
-            height { "2.5rem" }
-            minWidth { "2.5rem" }
-            fontSize { normal }
-            paddings {
-                horizontal { small }
-            }
-        }
-
-        override val large: Style<BasicParams> = {
-            height { "3rem" }
-            minWidth { "2.5rem" }
-            fontSize { large }
-            paddings {
-                horizontal { small }
-            }
-        }
-        override val outline: Style<BasicParams> = {
-            // just leave the *foundation* CSS values untouched!
-            // But we need a *name* for this variant, so we got to have this val!
-        }
-
-        override val filled: Style<BasicParams> = {
-            background {
-                color { light }
+            override val normal: Style<BasicParams> = {
+                height { "2.5rem" }
+                minWidth { "2.5rem" }
+                fontSize { normal }
+                paddings {
+                    horizontal { small }
+                }
             }
 
-            hover {
-                css("filter: brightness(90%);")
+            override val large: Style<BasicParams> = {
+                height { "3rem" }
+                minWidth { "2.5rem" }
+                fontSize { large }
+                paddings {
+                    horizontal { small }
+                }
+            }
+        }
+
+        override val variants = object : InputFieldVariants {
+            override val outline: Style<BasicParams> = {
+                // just leave the *foundation* CSS values untouched!
+                // But we need a *name* for this variant, so we got to have this val!
             }
 
-            focus {
-                zIndex { "1" }
+            override val filled: Style<BasicParams> = {
                 background {
-                    color { "transparent" }
+                    color { light }
+                }
+
+                hover {
+                    css("filter: brightness(90%);")
+                }
+
+                focus {
+                    zIndex { "1" }
+                    background {
+                        color { "transparent" }
+                    }
                 }
             }
         }
@@ -1590,7 +1595,7 @@ open class DefaultTheme : Theme {
                         right { normal }
                     }
                 }
-                minHeight { theme().sizes.smaller }
+                minHeight { Theme().sizes.smaller }
             }
 
             override val normal: Style<BasicParams> = {
@@ -1601,7 +1606,7 @@ open class DefaultTheme : Theme {
                         left { "50%" }
                     }
                 }
-                minHeight { theme().sizes.smaller }
+                minHeight { Theme().sizes.smaller }
                 minWidth { "50%" }
                 css("transform: translateX(-50%);")
             }
@@ -1615,7 +1620,7 @@ open class DefaultTheme : Theme {
                         bottom { normal }
                     }
                 }
-                minHeight { theme().sizes.smaller }
+                minHeight { Theme().sizes.smaller }
                 minWidth { "35%" }
                 css("transform: translateX(-90%);")
             }

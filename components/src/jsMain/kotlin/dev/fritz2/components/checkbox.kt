@@ -8,7 +8,8 @@ import dev.fritz2.styling.params.ColorProperty
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.CheckboxSizes
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Colors
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLInputElement
@@ -35,8 +36,8 @@ import org.w3c.dom.HTMLInputElement
  * checkbox {
  *      text("with extra cheese") // set the label
  *      checkboxSize { normal } // choose a predefined size
- *      borderColor { theme().colors.secondary } // set up the border color of the box itself
- *      checkedBackgroundColor { theme().colors.warning } // set the color of the checked state
+ *      borderColor { Theme().colors.secondary } // set up the border color of the box itself
+ *      checkedBackgroundColor { Theme().colors.warning } // set the color of the checked state
  *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
@@ -77,14 +78,14 @@ class CheckboxComponent {
             clip: rect(1px, 1px, 1px, 1px);
             outline: none;
             &:focus + label::before {
-                box-shadow: 0 0 1px ${theme().colors.dark}; 
+                box-shadow: 0 0 1px ${Theme().colors.dark}; 
             }
             &:disabled + label {
-                color: ${theme().colors.disabled};
+                color: ${Theme().colors.disabled};
                 cursor: not-allowed;
             }
             &:disabled + label::before {
-                color: ${theme().colors.disabled};
+                color: ${Theme().colors.disabled};
                 opacity: 0.3;
                 cursor: not-allowed;
                 boxShadow: none;
@@ -105,14 +106,14 @@ class CheckboxComponent {
                 outline: none;
                 position: relative;
                 display: inline-block;
-                box-shadow: 0 0 1px ${theme().colors.dark} inset;
+                box-shadow: 0 0 1px ${Theme().colors.dark} inset;
                 vertical-align: middle;
             }
             """
         )
     }
 
-    var size: CheckboxSizes.() -> Style<BasicParams> = { theme().checkbox.sizes.normal }
+    var size: CheckboxSizes.() -> Style<BasicParams> = { Theme().checkbox.sizes.normal }
     fun size(value: CheckboxSizes.() -> Style<BasicParams>) {
         size = value
     }
@@ -126,23 +127,23 @@ class CheckboxComponent {
     }
 
     var backgroundColor: Style<BasicParams> = {} // @label
-    fun backgroundColor(value: () -> ColorProperty) {
+    fun backgroundColor(value: Colors.() -> ColorProperty) {
         backgroundColor = {
-            css("&::before { background-color: ${value()};}")
+            css("&::before { background-color: ${Theme().colors.value()};}")
         }
     }
 
     var borderColor: Style<BasicParams> = {} // @label
-    fun borderColor(value: () -> ColorProperty) {
+    fun borderColor(value: Colors.() -> ColorProperty) {
         borderColor = {
-            css("&::before { border-color: ${value()};}")
+            css("&::before { border-color: ${Theme().colors.value()};}")
         }
     }
 
     var checkedBackgroundColor: Style<BasicParams> = {} // @input
-    fun checkedBackgroundColor(value: () -> ColorProperty) {
+    fun checkedBackgroundColor(value: Colors.() -> ColorProperty) {
         checkedBackgroundColor = {
-            css("&:checked + label::before { background-color: ${value()}; }")
+            css("&:checked + label::before { background-color: ${Theme().colors.value()}; }")
         }
     }
 
@@ -176,8 +177,8 @@ class CheckboxComponent {
  * checkbox {
  *      text("with extra cheese") // set the label
  *      checkboxSize { normal } // choose a predefined size
- *      borderColor { theme().colors.secondary } // set up the border color of the box itself
- *      checkedBackgroundColor { theme().colors.warning } // set the color of the checked state
+ *      borderColor { Theme().colors.secondary } // set up the border color of the box itself
+ *      checkedBackgroundColor { Theme().colors.warning } // set the color of the checked state
  *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
@@ -229,7 +230,7 @@ fun RenderContext.checkbox(
             prefix = prefix
         ) {
             CheckboxComponent.checkboxLabelStyles()
-            component.size.invoke(theme().checkbox.sizes)()
+            component.size.invoke(Theme().checkbox.sizes)()
             component.size
             component.backgroundColor()
             component.borderColor()

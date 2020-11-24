@@ -12,7 +12,7 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.DirectionValues
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -74,7 +74,7 @@ open class FormControlComponent {
 
         val invalidCss: Style<BasicParams> = {
             boxShadow {
-                theme().shadows.danger
+                Theme().shadows.danger
             }
             border {
                 width { thin }
@@ -206,8 +206,10 @@ open class FormControlComponent {
         control.set(ControlNames.inputField)
         {
             inputField(styling, store, baseClass, id, prefix) {
-                className(StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it })
-                init()
+                content {
+                    className(StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it })
+                    init()
+                }
             }
         }
     }
@@ -283,7 +285,7 @@ open class FormControlComponent {
         renderContext.div {
             helperText?.let {
                 (::p.styled {
-                    color { theme().colors.dark }
+                    color { Theme().colors.dark }
                     fontSize { small }
                     lineHeight { small }
                 }) { +it }
@@ -296,7 +298,7 @@ open class FormControlComponent {
             errorMessage.render {
                 if (it.isNotEmpty()) {
                     lineUp({
-                        color { theme().colors.danger }
+                        color { Theme().colors.danger }
                         fontSize { small }
                         lineHeight { small }
                     }) {
@@ -351,7 +353,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
             id = id,
             prefix = prefix
         ) {
-            spacing { theme().space.tiny }
+            spacing { Theme().space.tiny }
             items {
                 label {
                     +component.label
