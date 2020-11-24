@@ -87,21 +87,25 @@ interface ThemeStore {
 class ThemeComponent {
     companion object {
         val staticResetCss: String
-            get() = """ 
+            get() = """
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 html {
   line-height: 1.15; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
+  font-rendering: optimizeLegibilty;
 }
 body {
   margin: 0;
+  line-height: 1.5;
+  font-family: Inter, sans-serif;
+  font-feature-settings: "kern";
 }
 main {
   display: block;
 }
 h1 {
   font-size: ${theme().fontSizes.huge};
-  margin: 0.67em 0;
+  margin: 2rem .25rem;
 }
 hr {
   box-sizing: content-box; /* 1 */
@@ -109,7 +113,6 @@ hr {
   overflow: visible; /* 2 */
 }
 pre {
-  font-family: monospace, monospace; /* 1 */
   font-size: ${theme().fontSizes.normal}; /* 2 */
 }
 a {
@@ -128,7 +131,6 @@ strong {
 code,
 kbd,
 samp {
-  font-family: monospace, monospace; /* 1 */
   font-size: ${theme().fontSizes.huge};; /* 2 */
 }
 small {
@@ -157,7 +159,7 @@ select,
 textarea {
   font-family: inherit; /* 1 */
   font-size: ${theme().fontSizes.normal};; /* 1 */
-  line-height: 1.15; /* 1 */
+  line-height: 1.2; /* 1 */
   margin: 0; /* 2 */
 }
 button,
@@ -223,10 +225,7 @@ template {
 [hidden] {
   display: none;
 }
-html {
-  box-sizing: border-box; /* 1 */
-  font-family: sans-serif; /* 2 */
-}
+
 *,
 *::before,
 *::after {
@@ -246,6 +245,10 @@ figure,
 p,
 pre {
   margin: 0;
+}
+p {
+  margin-top: 1.25rem;
+  line-height: 1.7;
 }
 button {
   background: transparent;
@@ -271,16 +274,15 @@ ul {
 ol {
   list-style-type: decimal
 }
-html {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 1 */
-  line-height: 1.5; /* 2 */
-}
+
 *,
 *::before,
 *::after {
   border-width: 0;
   border-style: solid;
   border-color: #e2e8f0;
+  border-sizing: border-box;
+  overflow-wrap: break-word;
 }
 hr {
   border-top-width: 1px;
@@ -303,29 +305,39 @@ table {
   border-collapse: collapse;
 }
 h1 {
-  font-size: ${theme().fontSizes.huge};;
+  margin-top: 2rem;
+  margin-bottom: .25rem;
+  line-height: 1.2;
   font-weight: 700;
-  
-  
+  font-size: ${theme().fontSizes.huge};
+  letter-spacing: -.025em;
+  outline: 0;
 }
 h2 {
-  font-size: ${theme().fontSizes.larger};;
-  font-weight: bold;
+  margin-top: 4rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+  font-weight: 600;
+  font-size: ${theme().fontSizes.larger};
+  letter-spacing: -.025em;
 }
 h3 {
-  font-size: ${theme().fontSizes.large};;
-  font-weight: bold;
+  margin-top: 3rem;
+  line-height: 1.25;
+  font-weight: 600;
+  font-size: ${theme().fontSizes.large};
+  letter-spacing: -.025em;
 }
 h4 {
-  font-size: ${theme().fontSizes.normal};;
+  font-size: ${theme().fontSizes.normal};
   font-weight: bold;
 }
 h5 {
-  font-size: ${theme().fontSizes.small};;
+  font-size: ${theme().fontSizes.small};
   font-weight: bold;
 }
 h6 {
-  font-size: ${theme().fontSizes.smaller};;
+  font-size: ${theme().fontSizes.smaller};
   font-weight: bold;
 }
 a {

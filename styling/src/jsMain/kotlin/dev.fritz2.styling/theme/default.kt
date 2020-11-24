@@ -53,7 +53,8 @@ open class DefaultTheme : Theme {
         override val warning = "#ffc107"
         override val info = "#17a2b8"
         override val light = "#e2e8f0"
-        override val dark = "#343a40"
+        override val dark = "#2d3748"
+        val alert = "feebc8"
         override val disabled = light
     }
 
