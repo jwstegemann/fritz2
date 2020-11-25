@@ -9,17 +9,13 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Span
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.ColorProperty
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.CheckboxSizes
 import dev.fritz2.styling.theme.IconDefinition
-import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 
 /**
@@ -92,7 +88,7 @@ class CheckboxComponent {
         size = value
     }
 
-    var icon: IconDefinition = theme().icons.check
+    var icon: IconDefinition = Theme().icons.check
     fun icon(value: () -> IconDefinition ) {
         icon = value()
     }
@@ -112,11 +108,11 @@ class CheckboxComponent {
         label = value
     }
 
-    var labelStyle: Style<BasicParams> = { theme().checkbox.label() }
+    var labelStyle: Style<BasicParams> = { Theme().checkbox.label() }
     fun labelStyle(value: () -> Style<BasicParams>) {
         labelStyle = value()
     }
-    var checkedStyle: Style<BasicParams> = { theme().checkbox.checked() }
+    var checkedStyle: Style<BasicParams> = { Theme().checkbox.checked() }
     fun checkedStyle(value: () -> Style<BasicParams>) {
         checkedStyle = value()
     }
@@ -189,7 +185,7 @@ fun RenderContext.checkbox(
         id = id,
         prefix = prefix
     ) {
-        component.size.invoke(theme().checkbox.sizes)()
+       component.size.invoke(Theme().checkbox.sizes)()
     }) {
         inputId?.let {
             `for`(inputId)
@@ -211,22 +207,22 @@ fun RenderContext.checkbox(
         component.checked.render { checked ->
             if (checked) {
                 (::div.styled(checkboxIconStaticCss){
-                    theme().checkbox.default()
+                    Theme().checkbox.default()
                     styling()
                     component.checkedStyle()
                 }) {
                     attr("data-disabled", component.disabled)
-                    icon(theme().checkbox.icon) { fromTheme { component.icon } }
+                    icon(Theme().checkbox.icon) { fromTheme { component.icon } }
                 }
             } else {
                 (::div.styled(checkboxIconStaticCss){
-                    theme().checkbox.default()
+                    Theme().checkbox.default()
                     styling()
                 }
                 ){
                     attr("data-disabled", component.disabled)
                     icon({
-                        theme().checkbox.icon()
+                        Theme().checkbox.icon()
                         css("visibility:hidden;")
                     }
                     ) { fromTheme { component.icon } }

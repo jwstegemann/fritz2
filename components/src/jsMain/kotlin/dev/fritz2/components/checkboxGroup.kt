@@ -1,23 +1,19 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.Store
-import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.ColorProperty
-import dev.fritz2.styling.params.DirectionValues
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.CheckboxSizes
 import dev.fritz2.styling.theme.IconDefinition
-import dev.fritz2.styling.theme.theme
-import kotlinx.coroutines.flow.*
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLInputElement
+import dev.fritz2.styling.theme.Theme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 
 
 /**
@@ -91,7 +87,7 @@ class CheckboxGroupComponent<T> {
         items = value()
     }
 
-    var icon: IconDefinition = theme().icons.check
+    var icon: IconDefinition = Theme().icons.check
     fun icon(value: () -> IconDefinition) {
         icon = value()
     }
@@ -114,7 +110,7 @@ class CheckboxGroupComponent<T> {
         direction =  CheckboxGroupLayouts.value()
     }
 
-    var size: CheckboxSizes.() -> Style<BasicParams> = { theme().checkbox.sizes.normal }
+    var size: CheckboxSizes.() -> Style<BasicParams> = { Theme().checkbox.sizes.normal }
     fun size(value: CheckboxSizes.() -> Style<BasicParams>) {
         size = value
     }
@@ -175,7 +171,7 @@ fun <T>RenderContext.checkboxGroup(
         component.items.renderEach { item ->
             val checkedFlow = store.data.map { it.contains(item) }.distinctUntilChanged()
             checkbox(id = grpId + "-grp-item-" + uniqueId()) {
-                size { component.size.invoke(theme().checkbox.sizes) }
+                size { component.size.invoke(Theme().checkbox.sizes) }
                 icon { component.icon }
                 label(component.label(item))
                 checked { checkedFlow }

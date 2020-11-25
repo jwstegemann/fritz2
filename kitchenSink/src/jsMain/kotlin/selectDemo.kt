@@ -3,9 +3,9 @@ import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 
 val myItems = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "222222")
 val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
@@ -252,7 +252,8 @@ fun RenderContext.multiSelectDemo(): Div {
                                         id = "checkGroup2"
                                     ) {
                                         items { flowOf(myItems) }
-                                        icon {  theme().icons.bell  }
+                                        //TODO: @Transpi like Button?
+                                        icon { Theme().icons.call }
                                         direction { row }
                                     }
 
