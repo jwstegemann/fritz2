@@ -19,7 +19,7 @@ import kotlin.test.assertEquals
 class RoutingTests {
 
     @Test
-    fun testStringRouter() = runTest {
+    fun  testStringRouter() = runTest {
         initDocument()
 
         window.location.hash = ""
@@ -33,7 +33,7 @@ class RoutingTests {
 
         render {
             div(id = testId) {
-                router.asText()
+                router.data.asText()
                 ul {
                     buttons.forEach { (id, page) ->
                         li {
@@ -50,11 +50,13 @@ class RoutingTests {
 
         val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
         assertEquals(defaultRoute, element.textContent)
+        assertEquals(defaultRoute, router.current)
 
         for ((id, page) in buttons) {
             document.getElementById(id).unsafeCast<HTMLButtonElement>().click()
             delay(100)
             assertEquals(page, element.textContent)
+            assertEquals(page, router.current)
         }
     }
 

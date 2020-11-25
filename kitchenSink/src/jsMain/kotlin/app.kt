@@ -156,7 +156,7 @@ fun main() {
                     // todo we might want a better flex demo
                     // todo we might want a dedicated theme demo (or use formcontrol (rename) --> all
                     //  together)
-                    router.render { site ->
+                    router.data.render { site ->
                         when (site) {
                             "icons" -> iconsDemo()
                             "spinner" -> spinnerDemo()
