@@ -53,6 +53,7 @@ import org.w3c.dom.events.MouseEvent
  *  }
  *  ```
  */
+@ComponentMarker
 open class PushButtonComponent {
     companion object {
         val staticCss = staticStyle(

@@ -28,6 +28,7 @@ import dev.fritz2.styling.theme.Theme
  *
  * @see InputFieldStyles
  */
+@ComponentMarker
 open class InputFieldComponent {
     companion object {
 

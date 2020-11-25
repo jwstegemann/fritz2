@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -21,6 +22,7 @@ fun createIconSvgElement(baseClass: String?): SVGElement {
     return elem
 }
 
+@HtmlTagMarker
 class Svg(
     id: String? = null,
     baseClass: String? = null,

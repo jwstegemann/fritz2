@@ -38,6 +38,7 @@ import dev.fritz2.styling.theme.Theme
  *     }.mount("target")
  * ```
  */
+@ComponentMarker
 class ThemeComponent {
     companion object {
         val dynamicResetCss: String

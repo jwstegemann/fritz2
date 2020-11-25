@@ -51,6 +51,7 @@ import kotlinx.coroutines.flow.map
  * field to grasp, how the mapping between a control and a rendering strategie is done.
  *
  */
+@ComponentMarker
 open class FormControlComponent {
     companion object {
         val staticCss = staticStyle(
@@ -203,11 +204,12 @@ open class FormControlComponent {
         prefix: String = ControlNames.inputField,
         init: Input.() -> Unit
     ) {
+        val msg = errorMessage.map { it.isNotEmpty() }
         control.set(ControlNames.inputField)
         {
             inputField(styling, store, baseClass, id, prefix) {
                 content {
-                    className(StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it })
+                    className(StyleClass(invalidClassName).whenever(msg) { it })
                     init()
                 }
             }

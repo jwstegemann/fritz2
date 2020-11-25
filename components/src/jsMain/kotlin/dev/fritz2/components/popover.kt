@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.map
 /**
  * Class for configuring the appearance of a PopoverComponent.
  */
+@ComponentMarker
 class PopoverComponent {
     companion object {
         val staticCss = staticStyle(

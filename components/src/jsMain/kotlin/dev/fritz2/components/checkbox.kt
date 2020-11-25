@@ -45,6 +45,7 @@ import org.w3c.dom.HTMLInputElement
  * }
  * ```
  */
+@ComponentMarker
 class CheckboxComponent {
     companion object {
         val checkboxLabelStyles: Style<BasicParams> = { // @label

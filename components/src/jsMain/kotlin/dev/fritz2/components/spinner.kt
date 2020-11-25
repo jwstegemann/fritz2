@@ -43,6 +43,7 @@ import dev.fritz2.styling.theme.*
  * ```
  *
  */
+@ComponentMarker
 class SpinnerComponent {
     companion object {
         val staticCss = staticStyle(

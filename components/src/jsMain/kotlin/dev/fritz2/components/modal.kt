@@ -68,6 +68,7 @@ class DefaultOverlay(
  * For a detailed understanding have a look into the [ModalComponent.show] function and the
  * ``ModalComponent.Companion.init`` block.
  */
+@ComponentMarker
 class ModalComponent {
 
     class ModalsStack : RootStore<List<ModalRenderContext>>(listOf()) {

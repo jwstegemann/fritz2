@@ -233,6 +233,7 @@ private fun RenderContext.radio(
  * } handledBy selectedItemStore.update // combine the Flow<String> with a fitting handler
  * ```
  */
+@ComponentMarker
 class RadioGroupComponent {
 
     var direction: Style<BasicParams> = { RadioGroupLayouts.column } // @fieldset

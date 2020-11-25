@@ -65,6 +65,7 @@ import kotlinx.coroutines.flow.map
  * } handledBy selectedItemsStore.update // combine the Flow<List<String>> with a fitting handler
  * ```
  */
+@ComponentMarker
 class CheckboxGroupComponent {
 
     var items: List<String> = emptyList()
