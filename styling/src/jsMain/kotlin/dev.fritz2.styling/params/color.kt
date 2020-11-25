@@ -2,7 +2,7 @@ package dev.fritz2.styling.params
 
 import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.Property
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 internal const val colorKey = "color: "
@@ -61,7 +61,7 @@ interface Color : StyleParams {
      *              recommended to use predefined values via [dev.fritz2.styling.theme.Theme.colors] that offer the
      *              properties of [Colors]
      */
-    fun color(value: Colors.() -> ColorProperty) = property(colorKey, theme().colors, value)
+    fun color(value: Colors.() -> ColorProperty) = property(colorKey, Theme().colors, value)
 
     /**
      * This function sets the [color](https://developer.mozilla.org/en/docs/Web/CSS/color) property
@@ -90,7 +90,7 @@ interface Color : StyleParams {
         lg: (Colors.() -> ColorProperty)? = null,
         xl: (Colors.() -> ColorProperty)? = null
     ) =
-        property(colorKey, theme().colors, sm, md, lg, xl)
+        property(colorKey, Theme().colors, sm, md, lg, xl)
 
 
     /**
@@ -106,7 +106,7 @@ interface Color : StyleParams {
      * @param value provide a value of type [WeightedValueProperty] that defines the opacity,
      *              recommended to use predefined values via [dev.fritz2.styling.theme.Theme.opacities]
      */
-    fun opacity(value: WeightedValueProperty) = property(opacityKey, theme().opacities, value)
+    fun opacity(value: WeightedValueProperty) = property(opacityKey, Theme().opacities, value)
 
     /**
      * This function sets the [opacity](https://developer.mozilla.org/en/docs/Web/CSS/opacity) property
@@ -135,6 +135,6 @@ interface Color : StyleParams {
         lg: WeightedValueProperty? = null,
         xl: WeightedValueProperty? = null
     ) =
-        property(opacityKey, theme().opacities, sm, md, lg, xl)
+        property(opacityKey, Theme().opacities, sm, md, lg, xl)
 
 }

@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -8,7 +9,7 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import org.w3c.dom.svg.SVGElement
@@ -21,6 +22,7 @@ fun createIconSvgElement(baseClass: String?): SVGElement {
     return elem
 }
 
+@HtmlTagMarker
 class Svg(
     id: String? = null,
     baseClass: String? = null,
@@ -62,7 +64,7 @@ class IconComponent {
     var def: IconDefinition? = null
 
     fun fromTheme(value: Icons.() -> IconDefinition) {
-        def = theme().icons.value()
+        def = Theme().icons.value()
     }
 }
 

@@ -62,6 +62,7 @@ import dev.fritz2.styling.staticStyle
  * }
  *  ```
  */
+@ComponentMarker
 abstract class StackComponent {
     companion object {
         val staticCss = staticStyle(
@@ -98,6 +99,7 @@ abstract class StackComponent {
  *
  * @see StackComponent
  */
+@ComponentMarker
 class StackUpComponent : StackComponent() {
     override val stackStyles: Style<FlexParams> = {
         if (this@StackUpComponent.reverse) {
@@ -170,6 +172,7 @@ fun RenderContext.stackUp(
  *
  * @see StackComponent
  */
+@ComponentMarker
 class LineUpComponent : StackComponent() {
     override val stackStyles: Style<FlexParams> = {
         if (this@LineUpComponent.reverse) {

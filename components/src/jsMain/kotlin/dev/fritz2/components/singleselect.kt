@@ -13,8 +13,9 @@ import dev.fritz2.styling.params.ColorProperty
 import dev.fritz2.styling.params.DirectionValues
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.RadioSizes
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -25,7 +26,7 @@ import org.w3c.dom.HTMLInputElement
 
 class RadioComponent {
 
-    var size: RadioSizes.() -> Style<BasicParams> = { theme().radio.sizes.normal }
+    var size: RadioSizes.() -> Style<BasicParams> = { Theme().radio.sizes.normal }
     fun size(value: RadioSizes.() -> Style<BasicParams>) {
         size = value
     }
@@ -102,17 +103,17 @@ class RadioComponent {
                 outline: none;
             }
             &:focus + label::before {
-                box-shadow: 0 0 1px ${theme().colors.dark};
+                box-shadow: 0 0 1px ${Theme().colors.dark};
             }
             &:disabled + label {
-                color: ${theme().colors.disabled};
+                color: ${Theme().colors.disabled};
                 cursor: not-allowed;
             }
             &:disabled + label::before {
                 opacity: 0.3;
                 cursor: not-allowed;
                 boxShadow: none;
-                color: ${theme().colors.disabled};
+                color: ${Theme().colors.disabled};
             }
             """
         )
@@ -128,7 +129,7 @@ class RadioComponent {
                 position: relative;
                 display: inline-block;
                 vertical-align: middle;
-                box-shadow: 0 0 1px ${ theme().colors.dark} inset;
+                box-shadow: 0 0 1px ${Theme().colors.dark} inset;
             }
             """
         )
@@ -172,7 +173,7 @@ private fun RenderContext.radio(
             id = "$id-label",
             prefix = prefix) {
             RadioComponent.radioLabelStyles()
-            component.size.invoke(theme().radio.sizes)()
+            component.size.invoke(Theme().radio.sizes)()
             component.backgroundColor()
             component.borderColor()
         }) {
@@ -225,13 +226,14 @@ private fun RenderContext.radio(
  * }) {
  *      // those predefined styles are applied especially to specific inner elements!
  *      radioSize { normal }
- *      borderColor { theme().colors.secondary }
- *      checkedBackgroundColor { theme().colors.warning }
+ *      borderColor { Theme().colors.secondary }
+ *      checkedBackgroundColor { Theme().colors.warning }
  *      items { options } // provide a list of items
  *      selected { options[1] } // pre select "B"
  * } handledBy selectedItemStore.update // combine the Flow<String> with a fitting handler
  * ```
  */
+@ComponentMarker
 class RadioGroupComponent {
 
     var direction: Style<BasicParams> = { RadioGroupLayouts.column } // @fieldset
@@ -245,7 +247,7 @@ class RadioGroupComponent {
     }
 
     var selected: String = ""
-    fun selected(value: () ->  String) {
+    fun selected(value: () -> String) {
         selected = value()
     }
 
@@ -254,22 +256,25 @@ class RadioGroupComponent {
         disabled = value()
     }
 
+    // TODO: Consider a color from the theme!
     var checkedBackgroundColor: ColorProperty = "gray" // @checkbox @input
-    fun checkedBackgroundColor(value: () -> ColorProperty) {
-        checkedBackgroundColor = value()
+    fun checkedBackgroundColor(value: Colors.() -> ColorProperty) {
+        checkedBackgroundColor = Theme().colors.value()
     }
 
+    // TODO: Consider a color from the theme!
     var backgroundColor: ColorProperty = "white" // @label
-    fun backgroundColor(value: () -> ColorProperty) {
-        backgroundColor = value()
+    fun backgroundColor(value: Colors.() -> ColorProperty) {
+        backgroundColor = Theme().colors.value()
     }
 
+    // TODO: Consider a color from the theme!
     var borderColor: ColorProperty = "black"  // @label
-    fun borderColor(value: () -> ColorProperty) {
-        borderColor = value()
+    fun borderColor(value: Colors.() -> ColorProperty) {
+        borderColor = Theme().colors.value()
     }
 
-    var size: RadioSizes.() -> Style<BasicParams> = { theme().radio.sizes.normal }
+    var size: RadioSizes.() -> Style<BasicParams> = { Theme().radio.sizes.normal }
     fun size(value: RadioSizes.() -> Style<BasicParams>) {
         size = value
     }
@@ -313,7 +318,7 @@ class RadioGroupComponent {
                     borderColor { component.borderColor }
                     backgroundColor { component.backgroundColor }
                     checkedBackgroundColor { component.checkedBackgroundColor }
-                    size { component.size.invoke(theme().radio.sizes) }
+                    size { component.size.invoke(Theme().radio.sizes) }
                     events {
                         changes.values() handledBy selectedStore.update
                     }
