@@ -6,8 +6,10 @@ import dev.fritz2.dom.states
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 
 val myItems = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "222222")
+val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
 
 @ExperimentalCoroutinesApi
 fun RenderContext.singleSelectDemo(): Div {
@@ -173,20 +175,32 @@ fun RenderContext.multiSelectDemo(): Div {
                                 alignItems { baseline }
                                 verticalAlign { top }
                             }) {
-                                val mySelectedItems = listOf("222222")
+                                val mySelectedItems = flowOf(listOf(1 to "222222"))
 
-                                val selectedItemsStore = RootStore(mySelectedItems)
+                                val selectedItemsStore = object: RootStore<List<Pair<Int, String>>>(emptyList()) {
+                                    val toggle = handle<Pair<Int, String>> { list, item ->
+                                        if( list.contains(item) ) {
+                                            list.filter { it != item }
+                                        } else {
+                                            list + item
+                                        }
+
+                                    }
+                                }
 
                                 items {
-                                    checkboxGroup(
+                                    checkboxGroup<Pair<Int,String>>(
                                         {},
+                                        store = selectedItemsStore,
                                         id = "checkGroup1"
                                     ) {
-                                        disabled { flowOf(false) }
-                                        items { myItems }
+                                        disabled(flowOf(false))
+                                        label {
+                                            it.second
+                                        }
+                                        items { flowOf(myPairs) }
                                         size { large }
-                                        initialSelection { mySelectedItems }
-                                    } handledBy selectedItemsStore.update
+                                    }
 
                                     (::div.styled {
                                         background {
@@ -201,7 +215,7 @@ fun RenderContext.multiSelectDemo(): Div {
                                         h4 { +"Selected:" }
                                         ul {
                                             selectedItemsStore.data.renderEach { selectedItem ->
-                                                li { +selectedItem }
+                                                li { +selectedItem.second }
                                             }
                                         }
                                     }
@@ -222,18 +236,26 @@ fun RenderContext.multiSelectDemo(): Div {
                             }) {
                                 val mySelectedItems = listOf("ffffff", "222222")
 
-                                val selectedItemsStore = RootStore(mySelectedItems)
+                                val selectedItemsStore = object: RootStore<List<String>>(mySelectedItems) {
+                                    val toggle = handle<String>{ list, item ->
+                                        if( list.contains(item) ) {
+                                            list.filter { it != item }
+                                        } else {
+                                            list + item
+                                        }
+
+                                    }
+                                }
 
                                 items {
-                                    checkboxGroup(
-                                        {},
+                                    checkboxGroup<String>(
+                                        store = selectedItemsStore,
                                         id = "checkGroup2"
                                     ) {
-                                        disabled { flowOf(false) }
-                                        items { myItems }
-                                        initialSelection { mySelectedItems }
+                                        items { flowOf(myItems) }
+                                        icon {  theme().icons.bell  }
                                         direction { row }
-                                    } handledBy selectedItemsStore.update
+                                    }
 
                                     (::div.styled {
                                         background {
@@ -272,11 +294,21 @@ fun RenderContext.multiSelectDemo(): Div {
                             }) {
                                 items {
                                     checkbox(
-                                        {},
+                                        {
+                                            background { color { "red" } }
+                                        },
                                         id = "check1"
                                     ) {
-                                        text = flowOf("small")
+                                        label {
+                                            +"small text incl. custom labelcontent"
+                                            icon { fromTheme { arrowLeft } }
+                                        }
                                         size { small }
+                                        checkedStyle {
+                                            {
+                                               background { color {"green"}}
+                                            }
+                                        }
                                         checked { checkedStore1.data }
                                          events {
                                             changes.states() handledBy checkedStore1.update
@@ -302,7 +334,7 @@ fun RenderContext.multiSelectDemo(): Div {
                                         {},
                                         id = "check2"
                                     ) {
-                                        text = flowOf("normal, disabled")
+                                        label( flowOf("normal, disabled") )
                                         checked { checkedStore2.data }
                                         disabled { flowOf(true) }
                                         events {
@@ -331,7 +363,7 @@ fun RenderContext.multiSelectDemo(): Div {
                                         },
                                         id = "check3"
                                     ) {
-                                        text = flowOf("large, disabled")
+                                        label(flowOf("large, disabled"))
                                         checked { checkedStore3.data }
                                         disabled { flowOf(true) }
                                          size { large }

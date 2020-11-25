@@ -1,7 +1,12 @@
 package dev.fritz2.components
 
+import dev.fritz2.components.CheckboxComponent.Companion.checkboxIconStaticCss
+import dev.fritz2.components.CheckboxComponent.Companion.checkboxInputStaticCss
+import dev.fritz2.components.CheckboxComponent.Companion.checkboxLabel
 import dev.fritz2.dom.WithEvents
+import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Span
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.ColorProperty
@@ -12,6 +17,8 @@ import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 
 /**
@@ -47,27 +54,9 @@ import org.w3c.dom.HTMLInputElement
  */
 class CheckboxComponent {
     companion object {
-        val checkboxLabelStyles: Style<BasicParams> = { // @label
-            before {
-                radii {// overwritten by CheckboxSizes.small only
-                    top { normal }
-                    bottom { normal }
-                    left { normal }
-                    right { normal }
-                }
-                border {
-                    style { solid }
-                    width { "0.1rem" }
-                }
-            }
-            margins {
-                right { "1.0rem" }
-            }
-        }
-
         // todo replace px in sizes (in default theme) with rem/theme values where not explicit
         // todo using theme colors in static styles probably does not work when changing themes
-        val checkboxInputStaticCss = staticStyle( // @input
+        val checkboxInputStaticCss = staticStyle(
             "checkbox",
             """
             position: absolute;
@@ -76,40 +65,23 @@ class CheckboxComponent {
             overflow: hidden;
             clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
             clip: rect(1px, 1px, 1px, 1px);
-            outline: none;
-            &:focus + label::before {
-                box-shadow: 0 0 1px ${theme().colors.dark}; 
-            }
-            &:disabled + label {
-                color: ${theme().colors.disabled};
-                cursor: not-allowed;
-            }
-            &:disabled + label::before {
-                color: ${theme().colors.disabled};
-                opacity: 0.3;
-                cursor: not-allowed;
-                boxShadow: none;
-            }
+            outline: none;           
             &:focus{
                 outline: none;
             }
             """
         )
-
-        val checkboxLabelStaticCss = staticStyle( // @input
-            "checkboxlabel",
-            """
-            position: relative;            
-            display: block;
-            &::before {
-                content: '';
-                outline: none;
-                position: relative;
-                display: inline-block;
-                box-shadow: 0 0 1px ${theme().colors.dark} inset;
-                vertical-align: middle;
+        val checkboxLabel = staticStyle("checkboxComponent", """
+            &[data-disabled] {
+                opacity: .5    
             }
-            """
+        """)
+        val checkboxIconStaticCss = staticStyle("checkboxIcon",
+        """
+            &[data-disabled] {
+                background-color:var(--cb-disabled) !important;
+            }
+        """
         )
     }
 
@@ -123,12 +95,19 @@ class CheckboxComponent {
         icon = value()
     }
 
-    var text: Flow<String>? = null
-    fun text(value: String) {
-        text(flowOf(value))
+    var label: (Span.() -> Unit)? = null
+    fun label(value: String) {
+        label = {
+           +value
+        }
     }
-    fun text(value: Flow<String>) {
-        text = value
+    fun label(value: Flow<String>) {
+        label = {
+            value.asText()
+        }
+    }
+    fun label(value: (Span.() -> Unit)) {
+        label = value
     }
 
     var labelStyle: Style<BasicParams> = { theme().checkbox.label() }
@@ -187,31 +166,35 @@ class CheckboxComponent {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [CheckboxComponent]
  */
-// todo add checkmark
 fun RenderContext.checkbox(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "checkboxComponent",
     build: CheckboxComponent.() -> Unit = {}
-) {
+): Label {
     val component = CheckboxComponent().apply(build)
     val inputId = id?.let { "$it-input" }
 
-    (::label.styled(
-        baseClass = baseClass,
+    val labelClass = if( baseClass == null ) {
+        checkboxLabel
+    } else {
+        baseClass + checkboxLabel
+    }
+
+   return (::label.styled(
+        baseClass = labelClass,
         id = id,
         prefix = prefix
     ) {
         component.size.invoke(theme().checkbox.sizes)()
-        styling()
     }) {
         inputId?.let {
             `for`(inputId)
         }
-
+       attr("data-disabled", component.disabled)
         (::input.styled(
-            baseClass = CheckboxComponent.checkboxInputStaticCss,
+            baseClass = checkboxInputStaticCss,
             prefix = prefix,
             id = inputId
         ) {
@@ -225,21 +208,21 @@ fun RenderContext.checkbox(
 
         component.checked.render { checked ->
             if (checked) {
-                (::div.styled({
-                    component.size.invoke(theme().checkbox.sizes)()
+                (::div.styled(checkboxIconStaticCss){
                     theme().checkbox.default()
                     styling()
                     component.checkedStyle()
-                }) {}) {
+                }) {
+                    attr("data-disabled", component.disabled)
                     icon(theme().checkbox.icon) { fromTheme { component.icon } }
                 }
             } else {
-                (::div.styled({
-                    component.size.invoke(theme().checkbox.sizes)()
+                (::div.styled(checkboxIconStaticCss){
                     theme().checkbox.default()
                     styling()
                 }
-                ) {}) {
+                ){
+                    attr("data-disabled", component.disabled)
                     icon({
                         theme().checkbox.icon()
                         css("visibility:hidden;")
@@ -248,11 +231,11 @@ fun RenderContext.checkbox(
                 }
             }
         }
-        component.text?.let {
+        component.label?.let {
             (::span.styled() {
                 component.labelStyle()
             }){
-                it.asText()
+                it(this)
             }
         }
     }

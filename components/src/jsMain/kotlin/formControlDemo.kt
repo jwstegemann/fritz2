@@ -11,6 +11,7 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 val myItemList = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "222222")
@@ -220,7 +221,7 @@ fun RenderContext.formControlDemo(): Div {
                     {},
                     id = "check1"
                 ) {
-                    text(textStore.data)
+                    label(textStore.data)
                     size { large }
                     checked { loveStore.data }
                     events {
@@ -232,14 +233,13 @@ fun RenderContext.formControlDemo(): Div {
             h3 { +"Form with a small checkbox group, no label, no helpertext, formlayout horizontal" }
             formControl {
                 direction { row } // must be applied to formcontrol instead of checkboxGroup
-                checkboxGroup(
-                    {},
+                checkboxGroup<String>(
+                    store = selectedItemsStore,
                     id = "checkGroup1"
                 ) {
-                    items { myItemList }
+                    items { flowOf(myItemList) }
                     size { small }
-                    initialSelection { mySelectedItems }
-                } handledBy selectedItemsStore.update
+                }
             }
             (::div.styled {
                 background {

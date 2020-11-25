@@ -711,29 +711,53 @@ open class DefaultTheme : Theme {
     override val checkbox = object : CheckboxStyles {
        override val sizes = object : CheckboxSizes {
             override val small: Style<BasicParams> = {
+                css("--cb-disabled: ${colors.disabled}")
+                css("--cb-size: .75rem")
+                css("--cb-svg-size: .50rem")
+                css("--cb-radius:  ${radii.smaller}")
                 display {inlineFlex}
+                css("align-items: center;")
                 fontSize { small }
                 lineHeight { small }
+                margins { right {tiny} }
             }
             override val normal: Style<BasicParams> = {
+                css("--cb-disabled: ${colors.disabled}")
+                css("--cb-size: 1.0rem")
+                css("--cb-svg-size: .75rem")
+                css("--cb-radius:  ${radii.small}")
                 display {inlineFlex}
+                css("align-items: center;")
                 fontSize { normal }
                 lineHeight { normal }
+                margins { right {smaller} }
             }
             override val large: Style<BasicParams> = {
+                css("--cb-disabled: ${colors.disabled}")
+                css("--cb-size: 1.5rem")
+                css("--cb-svg-size: 1.25rem")
+                css("--cb-radius:  ${radii.normal}")
                 display {inlineFlex}
+                css("align-items: center;")
                 fontSize { larger }
                 lineHeight { larger }
+                margins { right {small} }
             }
         }
 
         override val icon : Style<BasicParams> = {
-            width { ".75rem" }
-            height {" .75rem" }
-            lineHeight { "0.75rem" }
+            width { "var(--cb-svg-size)" }
+            height { "var(--cb-svg-size)" }
+            lineHeight { "var(--cb-svg-size)" }
             margins {
-                top {"0.05rem"}
-                left {"0.05rem"}
+                top {".0625rem"}
+                left {".0625rem"}
+            }
+            focus {
+                border {
+                    color { "#3182ce" } //@TODO default like outline, disabled
+                }
+                boxShadow { outline }
             }
         }
         override val label: Style<BasicParams> = {
@@ -745,22 +769,20 @@ open class DefaultTheme : Theme {
             flex {
                 shrink { "0" }
             }
-            width { "1rem" }
-            height { "1rem" }
-            margins { top { "0.188rem" } }
+            width { "var(--cb-size)" }
+            height { "var(--cb-size)" }
             background { color { "white" } }
             border {
                 width { "1px" }
                 style { solid }
                 color { dark }
             }
-
+            radius {"var(--cb-radius)" }
         }
         override val checked: Style<BasicParams> = {
             background { color { warning } }
             color { dark }
         }
-
     }
 
     override val button = object : PushButtonStyles {

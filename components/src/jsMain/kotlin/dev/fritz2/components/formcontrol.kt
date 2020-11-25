@@ -2,7 +2,6 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
-import dev.fritz2.components.CheckboxGroupComponent.Companion.checkboxGroupStructure
 import dev.fritz2.components.FormControlComponent.Control
 import dev.fritz2.components.RadioGroupComponent.Companion.radioGroupStructure
 import dev.fritz2.dom.html.Input
@@ -227,22 +226,22 @@ open class FormControlComponent {
         }
     }
 
-    open fun checkboxGroup(
+/*    open fun <T>checkboxGroup(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.checkboxGroup,
-        build: CheckboxGroupComponent.() -> Unit
+        build: CheckboxGroupComponent<T>.() -> Unit
     ): Flow<List<String>> {
 
         val selectedStore = storeOf<List<String>>(emptyList())
         control.set(ControlNames.checkboxGroup) {
-            checkboxGroupStructure(styling, selectedStore, baseClass, id, prefix) {
+            *//*checkboxGroupStructure(styling, selectedStore, baseClass, id, prefix) {
                 build()
-            }
+            }*//*
         }
         return selectedStore.data
-    }
+    }*/
 
     open fun radioGroup(
         styling: BasicParams.() -> Unit = {},
