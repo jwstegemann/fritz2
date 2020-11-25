@@ -2,7 +2,7 @@ package dev.fritz2.styling.params
 
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Shadows
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 
 const val textShadowKey = "text-shadow: "
 const val boxShadowKey = "box-shadow: "
@@ -64,7 +64,7 @@ interface Shadow : StyleParams {
      * @param value extension function parameter for small media devices, recommended to use
      *           predefined values via [dev.fritz2.styling.theme.Theme.shadows] that offer the properties of [Shadows]
      */
-    fun textShadow(value: Shadows.() -> Property) = property(textShadowKey, theme().shadows, value)
+    fun textShadow(value: Shadows.() -> Property) = property(textShadowKey, Theme().shadows, value)
 
     /**
      * This function sets the [text-shadow](https://developer.mozilla.org/en/docs/Web/CSS/text-shadow) property
@@ -93,7 +93,7 @@ interface Shadow : StyleParams {
         lg: (Shadows.() -> Property)? = null,
         xl: (Shadows.() -> Property)? = null
     ) =
-        property(textShadowKey, theme().shadows, sm, md, lg, xl)
+        property(textShadowKey, Theme().shadows, sm, md, lg, xl)
 
     /**
      * This function sets the [box-shadow](https://developer.mozilla.org/en/docs/Web/CSS/box-shadow) property.
@@ -106,7 +106,7 @@ interface Shadow : StyleParams {
      * @param value extension function parameter for small media devices, recommended to use
      *           predefined values via [dev.fritz2.styling.theme.Theme.shadows] that offer the properties of [Shadows]
      */
-    fun boxShadow(value: Shadows.() -> Property) = property(boxShadowKey, theme().shadows, value)
+    fun boxShadow(value: Shadows.() -> Property) = property(boxShadowKey, Theme().shadows, value)
 
     /**
      * This function sets the [box-shadow](https://developer.mozilla.org/en/docs/Web/CSS/box-shadow) property
@@ -135,5 +135,5 @@ interface Shadow : StyleParams {
         lg: (Shadows.() -> Property)? = null,
         xl: (Shadows.() -> Property)? = null
     ) =
-        property(boxShadowKey, theme().shadows, sm, md, lg, xl)
+        property(boxShadowKey, Theme().shadows, sm, md, lg, xl)
 }

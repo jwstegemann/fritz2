@@ -10,7 +10,7 @@ import dev.fritz2.styling.params.ColorProperty
 import dev.fritz2.styling.params.DirectionValues
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.CheckboxSizes
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -58,13 +58,14 @@ import kotlinx.coroutines.flow.map
  * }) {
  *      // those predefined styles are applied especially to specific inner elements!
  *      checkboxSize { normal }
- *      borderColor { theme().colors.secondary }
- *      checkedBackgroundColor { theme().colors.warning }
+ *      borderColor { Theme().colors.secondary }
+ *      checkedBackgroundColor { Theme().colors.warning }
  *      items { options } // provide a list of items
  *      initialSelection { listOf(options[0] + options[1]) } // pre check "A" and "C"
  * } handledBy selectedItemsStore.update // combine the Flow<List<String>> with a fitting handler
  * ```
  */
+@ComponentMarker
 class CheckboxGroupComponent {
 
     var items: List<String> = emptyList()
@@ -103,7 +104,7 @@ class CheckboxGroupComponent {
         borderColor = value()
     }
 
-    var size: CheckboxSizes.() -> Style<BasicParams> = { theme().checkbox.sizes.normal }
+    var size: CheckboxSizes.() -> Style<BasicParams> = { Theme().checkbox.sizes.normal }
     fun size(value: CheckboxSizes.() -> Style<BasicParams>) {
         size = value
     }
@@ -159,8 +160,8 @@ class CheckboxGroupComponent {
 
                 checkbox(id = "$id-checkbox-${item.index}") {
                     text(item.value)
-                    component.size.invoke(theme().checkbox.sizes)
-                    size { component.size.invoke(theme().checkbox.sizes) }
+                    component.size.invoke(Theme().checkbox.sizes)
+                    size { component.size.invoke(Theme().checkbox.sizes) }
                     borderColor { component.borderColor }
                     backgroundColor { component.backgroundColor }
                     checkedBackgroundColor { component.checkedBackgroundColor }

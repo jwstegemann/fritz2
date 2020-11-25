@@ -3,7 +3,6 @@ import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 
@@ -120,8 +119,8 @@ fun RenderContext.singleSelectDemo(): Div {
                                         selected { mySelectedItem }
                                         direction { row }
                                         size { small }
-                                        checkedBackgroundColor { theme().colors.warning }
-                                        backgroundColor { theme().colors.tertiary }
+                                        checkedBackgroundColor { warning }
+                                        backgroundColor { tertiary }
                                     } handledBy selectedItemStore.update
                                 }
                             }
@@ -190,7 +189,7 @@ fun RenderContext.multiSelectDemo(): Div {
 
                                     (::div.styled {
                                         background {
-                                            color { theme().colors.light }
+                                            color { light }
                                         }
                                         paddings {
                                             left { "0.5rem" }
@@ -237,7 +236,7 @@ fun RenderContext.multiSelectDemo(): Div {
 
                                     (::div.styled {
                                         background {
-                                            color { theme().colors.light }
+                                            color { light }
                                         }
                                         paddings {
                                             left { "0.5rem" }
@@ -278,9 +277,9 @@ fun RenderContext.multiSelectDemo(): Div {
                                         text = flowOf("small")
                                         size { small }
                                         checked { checkedStore1.data }
-                                        borderColor { theme().colors.tertiary }
-                                        checkedBackgroundColor { theme().colors.warning }
-                                        backgroundColor { theme().colors.tertiary }
+                                        borderColor { tertiary }
+                                        checkedBackgroundColor { warning }
+                                        backgroundColor { tertiary }
                                         events {
                                             changes.states() handledBy checkedStore1.update
                                         }
@@ -289,7 +288,7 @@ fun RenderContext.multiSelectDemo(): Div {
                                         checkedStore1.data.render {
                                             (::p.styled {
                                                 background {
-                                                    color { theme().colors.light }
+                                                    color { light }
                                                 }
                                                 paddings {
                                                     left { "0.5rem" }
@@ -308,9 +307,9 @@ fun RenderContext.multiSelectDemo(): Div {
                                         text = flowOf("normal, disabled")
                                         checked { checkedStore2.data }
                                         disabled { flowOf(true) }
-                                        borderColor { theme().colors.info }
-                                        checkedBackgroundColor { theme().colors.warning }
-                                        backgroundColor { theme().colors.tertiary }
+                                        borderColor { info }
+                                        checkedBackgroundColor { warning }
+                                        backgroundColor { tertiary }
                                         events {
                                             changes.states() handledBy checkedStore2.update
                                         }
@@ -319,7 +318,7 @@ fun RenderContext.multiSelectDemo(): Div {
                                         checkedStore2.data.render {
                                             (::p.styled {
                                                 background {
-                                                    color { theme().colors.light }
+                                                    color { light }
                                                 }
                                                 paddings {
                                                     left { "0.5rem" }
@@ -341,7 +340,7 @@ fun RenderContext.multiSelectDemo(): Div {
                                         borderColor { "orange" }
                                         size { large }
                                         checkedBackgroundColor { "yellow" }
-                                        backgroundColor { theme().colors.tertiary }
+                                        backgroundColor { tertiary }
                                         events {
                                             changes.states() handledBy checkedStore3.update
                                         }
@@ -350,7 +349,7 @@ fun RenderContext.multiSelectDemo(): Div {
                                         checkedStore3.data.render {
                                             (::p.styled {
                                                 background {
-                                                    color { theme().colors.light }
+                                                    color { light }
                                                 }
                                                 paddings {
                                                     left { "0.5rem" }

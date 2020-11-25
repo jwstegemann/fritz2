@@ -1,4 +1,9 @@
-import dev.fritz2.styling.theme.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.theme.DefaultTheme
+import dev.fritz2.styling.theme.Property
+import dev.fritz2.styling.theme.ScaledValue
+import dev.fritz2.styling.theme.Theme
 
 
 interface ExtendedTheme : Theme {
@@ -9,7 +14,7 @@ interface ExtendedTheme : Theme {
 
     val test: MyProp
 
-    val teaserText: PredefinedBasicStyle
+    val teaserText: Style<BasicParams>
 }
 
 open class SmallFonts : ExtendedTheme, DefaultTheme() {
@@ -20,7 +25,7 @@ open class SmallFonts : ExtendedTheme, DefaultTheme() {
         override val b: Property = "b"
     }
 
-    override val teaserText: PredefinedBasicStyle = {
+    override val teaserText: Style<BasicParams> = {
         fontWeight { semiBold }
         textTransform { uppercase }
         fontSize { smaller }

@@ -10,7 +10,7 @@ import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.PopoverArrowPlacements
 import dev.fritz2.styling.theme.PopoverPlacements
 import dev.fritz2.styling.theme.PopoverSizes
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.map
 /**
  * Class for configuring the appearance of a PopoverComponent.
  */
+@ComponentMarker
 class PopoverComponent {
     companion object {
         val staticCss = staticStyle(
@@ -44,7 +45,7 @@ class PopoverComponent {
     ) {
         closeButton = { closeHandle ->
             clickButton({
-                theme().popover.closeButton()
+                Theme().popover.closeButton()
                 styling()
 
             }, baseClass, id, prefix) {
@@ -55,19 +56,19 @@ class PopoverComponent {
         }
     }
 
-    var size: PopoverSizes.() -> Style<BasicParams> =  { theme().popover.size.normal }
+    var size: PopoverSizes.() -> Style<BasicParams> = { Theme().popover.size.normal }
     fun size(value: PopoverSizes.() -> Style<BasicParams>) {
         size = value
     }
 
-    var positionStyle: PopoverPlacements.() -> Style<BasicParams> =  { theme().popover.placement.top }
+    var positionStyle: PopoverPlacements.() -> Style<BasicParams> = { Theme().popover.placement.top }
     fun placement(value: PopoverPlacements.() -> Style<BasicParams>) {
 
-        when (value.invoke(theme().popover.placement)) {
-            theme().popover.placement.top -> arrowPlacement{ bottom }
-            theme().popover.placement.right -> arrowPlacement{ left }
-            theme().popover.placement.bottom -> arrowPlacement{ top }
-            theme().popover.placement.left -> arrowPlacement{ right }
+        when (value.invoke(Theme().popover.placement)) {
+            Theme().popover.placement.top -> arrowPlacement { bottom }
+            Theme().popover.placement.right -> arrowPlacement { left }
+            Theme().popover.placement.bottom -> arrowPlacement { top }
+            Theme().popover.placement.left -> arrowPlacement { right }
         }
         positionStyle = value
     }
@@ -77,7 +78,7 @@ class PopoverComponent {
         hasArrow = value
     }
 
-    var arrowPlacement: (PopoverArrowPlacements.() -> Style<BasicParams>) = { theme().popover.arrowPlacement.bottom }
+    var arrowPlacement: (PopoverArrowPlacements.() -> Style<BasicParams>) = { Theme().popover.arrowPlacement.bottom }
     fun arrowPlacement(value: PopoverArrowPlacements.() -> Style<BasicParams>) {
         arrowPlacement = value
     }
@@ -91,7 +92,7 @@ class PopoverComponent {
     fun header(value: (RenderContext.() -> Unit)) {
         header = {
             (::header.styled(prefix = "popover-header") {
-                theme().popover.header()
+                Theme().popover.header()
             }){ value() }
         }
     }
@@ -103,7 +104,7 @@ class PopoverComponent {
     fun header(value: Flow<String>) {
         header = {
             (::header.styled(prefix = "popover-header") {
-                theme().popover.header()
+                Theme().popover.header()
             }){ value.asText() }
         }
     }
@@ -112,7 +113,7 @@ class PopoverComponent {
     fun footer(value: (RenderContext.() -> Unit)) {
         footer = {
             (::footer.styled(prefix = "popover-footer") {
-                theme().popover.footer()
+                Theme().popover.footer()
             }){ value() }
         }
     }
@@ -124,7 +125,7 @@ class PopoverComponent {
     fun footer(value: Flow<String>) {
         footer = {
             (::footer.styled(prefix = "popover-footer") {
-                theme().popover.footer()
+                Theme().popover.footer()
             }){ value.asText() }
         }
     }
@@ -133,7 +134,7 @@ class PopoverComponent {
     fun content(value: (RenderContext.() -> Unit)) {
         content = {
             (::section.styled(prefix = "popover-content") {
-                theme().popover.section()
+                Theme().popover.section()
             }){ value() }
         }
     }
@@ -145,7 +146,7 @@ class PopoverComponent {
     fun content(value: Flow<String>) {
         content = {
             (::section.styled(prefix = "popover-content") {
-                theme().popover.section()
+                Theme().popover.section()
             }){ value.asText() }
         }
     }
@@ -153,7 +154,7 @@ class PopoverComponent {
     private fun renderArrow(renderContext: RenderContext) {
         renderContext.apply {
             (::div.styled(prefix = "popover-arrow") {
-                arrowPlacement.invoke(theme().popover.arrowPlacement)()
+                arrowPlacement.invoke(Theme().popover.arrowPlacement)()
             }){}
         }
     }
@@ -167,8 +168,8 @@ class PopoverComponent {
         closeHandler: SimpleHandler<Unit>) {
         renderContext.apply {
             (::div.styled(styling, baseClass, id, prefix) {
-                positionStyle.invoke(theme().popover.placement)()
-                size.invoke(theme().popover.size)()
+                positionStyle.invoke(Theme().popover.placement)()
+                size.invoke(Theme().popover.size)()
             }){
                 if (hasArrow) {
                     renderArrow(this)
@@ -197,19 +198,21 @@ class PopoverComponent {
  * The popover has a default close Button, you can hide it or you can use your own custom Button.
  * The trigger is marked by an arrow, you can hide the arrow.
  *
- * popover(}) {
+ * ```
+ * popover {
  *   trigger {
- *      icon { fromTheme { theme().icons.arrowForward } }
+ *      icon { fromTheme { arrowForward } }
  *   }
- *   placement{right}
+ *   placement { right }
  *   header(flowOf("Our simple Popover"))
  *   content {
- *   div{
- *      text("My Text in a HTMLTag")
- *   }
+ *      div {
+ *          text("My Text in a HTMLTag")
+ *      }
  *   }
  *   footer("Footercontent")
- *   }
+ * }
+ * ```
  *
  * @see PopoverComponent
  *
@@ -235,7 +238,7 @@ fun RenderContext.popover(
     (::div.styled({ }, PopoverComponent.staticCss, null, prefix){
     }){
         (::div.styled(prefix = "popover-trigger") {
-            theme().popover.trigger()
+            Theme().popover.trigger()
         }) {
             clicks.events.map { Unit } handledBy clickStore.toggle
             component.trigger?.invoke(this)

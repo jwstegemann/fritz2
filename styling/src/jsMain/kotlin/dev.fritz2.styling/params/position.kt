@@ -1,8 +1,8 @@
 package dev.fritz2.styling.params
 
 import dev.fritz2.styling.theme.Property
+import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.ZIndices
-import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 internal const val positionKey = "position: "
@@ -43,7 +43,7 @@ class PositioningContext(
      * @param value positional value; recommended to use the predefined properties of the
      *              [theme][dev.fritz2.styling.theme.Theme.space]
      */
-    fun top(value: ScaledValueProperty) = property("top: ", theme().space, value, target)
+    fun top(value: ScaledValueProperty) = property("top: ", Theme().space, value, target)
 
     /**
      * This function is used to define the positional behaviour of an element by the
@@ -58,7 +58,7 @@ class PositioningContext(
      * @param value positional value; recommended to use the predefined properties of the
      *              [theme][dev.fritz2.styling.theme.Theme.space]
      */
-    fun left(value: ScaledValueProperty) = property("left: ", theme().space, value, target)
+    fun left(value: ScaledValueProperty) = property("left: ", Theme().space, value, target)
 
     /**
      * This function is used to define the positional behaviour of an element by the
@@ -73,7 +73,7 @@ class PositioningContext(
      * @param value positional value; recommended to use the predefined properties of the
      *              [theme][dev.fritz2.styling.theme.Theme.space]
      */
-    fun bottom(value: ScaledValueProperty) = property("bottom: ", theme().space, value, target)
+    fun bottom(value: ScaledValueProperty) = property("bottom: ", Theme().space, value, target)
 
     /**
      * This function is used to define the positional behaviour of an element by the
@@ -88,7 +88,7 @@ class PositioningContext(
      * @param value positional value; recommended to use the predefined properties of the
      *              [theme][dev.fritz2.styling.theme.Theme.space]
      */
-    fun right(value: ScaledValueProperty) = property("right: ", theme().space, value, target)
+    fun right(value: ScaledValueProperty) = property("right: ", Theme().space, value, target)
 
     /**
      * This _convenience_ function is used to define the _vertical_ positional behaviour of an element by the
@@ -105,8 +105,8 @@ class PositioningContext(
      *              [theme][dev.fritz2.styling.theme.Theme.space]
      */
     fun vertical(value: ScaledValueProperty) {
-        property("top: ", theme().space, value, target)
-        property("bottom: ", theme().space, value, target)
+        property("top: ", Theme().space, value, target)
+        property("bottom: ", Theme().space, value, target)
     }
 
     /**
@@ -124,8 +124,8 @@ class PositioningContext(
      *              [theme][dev.fritz2.styling.theme.Theme.space]
      */
     fun horizontal(value: ScaledValueProperty) {
-        property("left: ", theme().space, value, target)
-        property("right: ", theme().space, value, target)
+        property("left: ", Theme().space, value, target)
+        property("right: ", Theme().space, value, target)
     }
 }
 
@@ -234,7 +234,7 @@ interface Position : StyleParams {
      *
      * @param value extension function parameter in order to bring [dev.fritz2.styling.theme.ZIndices] functions into scope.
      */
-    fun zIndex(value: ZIndicesProperty) = property(ZIndices.key, theme().zIndices, value)
+    fun zIndex(value: ZIndicesProperty) = property(ZIndices.key, Theme().zIndices, value)
 
     /**
      * This function sets the [z-index](https://developer.mozilla.org/en/docs/Web/CSS/z-index) CSS property of an element
@@ -265,7 +265,7 @@ interface Position : StyleParams {
         lg: ZIndicesProperty? = null,
         xl: ZIndicesProperty? = null
     ) =
-        property(ZIndices.key, theme().zIndices, sm, md, lg, xl)
+        property(ZIndices.key, Theme().zIndices, sm, md, lg, xl)
 
     /**
      * This function sets the [position](https://developer.mozilla.org/en/docs/Web/CSS/position) CSS property of an element
