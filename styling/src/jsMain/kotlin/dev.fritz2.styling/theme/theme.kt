@@ -2,6 +2,7 @@ package dev.fritz2.styling.theme
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.styling.resetCss
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,16 +36,22 @@ typealias Property = String
 @ExperimentalCoroutinesApi
 interface Theme {
     companion object {
-        private val currentTheme = MutableStateFlow<Theme>(DefaultTheme())
+        val currentTheme = MutableStateFlow<Theme>(DefaultTheme())
 
         val data: Flow<Theme> = currentTheme
 
         operator fun invoke() = currentTheme.value
 
         fun use(theme: Theme) {
+            resetCss(theme.reset)
             currentTheme.value = theme
         }
     }
+
+    /**
+     * css to reset browser's defaults and set your own
+     */
+    val reset: String
 
     /**
      * an human readable name like ``default`` or ``dark`` for example
@@ -169,7 +176,7 @@ interface Theme {
  */
 //TODO: add for Flow.render and each().render
 @ExperimentalCoroutinesApi
-inline fun <reified T : Theme> render(crossinline content: RenderContext.(T) -> List<Tag<HTMLElement>>) =
+inline fun <reified T : Theme> render(crossinline content: RenderContext.(T) -> Unit): List<Tag<HTMLElement>> =
     dev.fritz2.dom.html.render {
         content(Theme().unsafeCast<T>())
     }
@@ -178,3 +185,18 @@ inline fun <E : Element, reified T : Theme> renderElement(crossinline content: R
     dev.fritz2.dom.html.renderElement {
         content(Theme().unsafeCast<T>())
     }
+
+@ExperimentalCoroutinesApi
+inline fun <reified T : Theme> render(
+    theme: T,
+    crossinline content: RenderContext.(T) -> Unit
+): List<Tag<HTMLElement>> {
+    Theme.use(theme)
+    return render { currentTheme: T ->
+        div {
+            Theme.data.render {
+                content(currentTheme)
+            }
+        }
+    }
+}

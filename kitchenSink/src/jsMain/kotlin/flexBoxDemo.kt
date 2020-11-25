@@ -1,16 +1,10 @@
-import dev.fritz2.binding.SimpleHandler
-import dev.fritz2.binding.watch
-import dev.fritz2.components.box
-import dev.fritz2.components.flexBox
-import dev.fritz2.components.radioGroup
-import dev.fritz2.components.styled
+import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
-fun RenderContext.flexBoxDemo(selectTheme: SimpleHandler<Int>, themes: List<ExtendedTheme>, theme: ExtendedTheme): Div {
+fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
 
     return flexBox({
         margin { small }
@@ -70,18 +64,12 @@ fun RenderContext.flexBoxDemo(selectTheme: SimpleHandler<Int>, themes: List<Exte
                     left { "0" }
                 }
             }) {
-                ThemeStore.data.map { currentThemeIndex ->
-                    radioGroup {
-                        items { themes.map { it.name } }
-                        selected { themes[currentThemeIndex].name }
-                    }.map { selected ->
-                        themes.indexOf(
-                            themes.find {
-                                selected == it.name
-                            }
-                        )
-                    } handledBy selectTheme
-                }.watch()
+                lineUp {
+                    items {
+                        clickButton { text("use small Fonts") }.map { 0 } handledBy ThemeStore.selectTheme
+                        clickButton { text("use large Fonts") }.map { 1 } handledBy ThemeStore.selectTheme
+                    }
+                }
             }
             (::h3.styled {
                 paddings {
