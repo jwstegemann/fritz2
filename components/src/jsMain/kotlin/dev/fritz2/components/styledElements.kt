@@ -12,7 +12,7 @@ import dev.fritz2.styling.params.StyleParamsImpl
  * Typealias for the common function signature of [RenderContext. methods.
  * It is used for defining a generic extension method for styling basic HTML elements.
  *
- * @see BasicComponent.styled
+ * @see ``BasicComponent.styled``
  */
 typealias BasicComponent<E> = (String?, String?, E.() -> Unit) -> E
 
@@ -81,7 +81,7 @@ fun <E> BasicComponent<E>.styled(
  * This method is used for HTML elements that should apply an additional dynamic styling provided as
  * external parameter. This is needed and extremely useful for implementing _components_!
  *
- * A component should behave in a similar way as a basic HTML element. So like the basic [BasicComponent.styled]
+ * A component should behave in a similar way as a basic HTML element. So like the basic ``BasicComponent.styled``
  * version you should be able to call a component like this:
  * ```
  * myComponent({ /* styling */}) { /* content and events */}
@@ -160,7 +160,7 @@ fun <E> BasicComponent<E>.styled(
  * parameter compared to [BasicComponent]
  * It is used for defining a generic extension method for styling corresponding basic HTML elements.
  *
- * @see BasicComponent.styled
+ * @see ``BasicComponent.styled``
  */
 // TODO: will be removed with 0.8 because extra parameters like label's "for" will not be in signature any more
 typealias ExtendedComponent<E> = (String?, String?, String?, E.() -> Unit) -> E
@@ -170,7 +170,7 @@ typealias ExtendedComponent<E> = (String?, String?, String?, E.() -> Unit) -> E
  *
  * Temporary variant of a styling extension function for basic HTML elements with *extended* parameter signature.
  * @see ExtendedComponent
- * @see BasicComponent.styled
+ * @see ``BasicComponent.styled``
  */
 // TODO: will be removed with 0.8 because extra parameters like label's "for" will not be in signature any more
 fun <E> ExtendedComponent<E>.styled(
@@ -190,7 +190,7 @@ fun <E> ExtendedComponent<E>.styled(
  * Typealias for the common function signature of s styled component method.
  * It is used for defining a generic extension method for styling _components_.
  *
- * @see BasicComponent.styled
+ * @see ``BasicComponent.styled``
  */
 // TODO: Are we really gonna need this? You can apply the styling easily within the allready provided component parameter
 // so this variant isn't really needed - and nobody has been used this besides the earliest exmaples of ``myRedLink``

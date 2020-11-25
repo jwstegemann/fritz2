@@ -8,7 +8,6 @@ import dev.fritz2.dom.states
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -41,7 +40,7 @@ class MyFormControlComponent : FormControlComponent() {
     ): Flow<String> {
         val returnStore = object : RootStore<String>("") {
 
-            val syncHandlerSelect = handleAndEmit<String, String> { value, new ->
+            val syncHandlerSelect = handleAndEmit<String, String> { _, new ->
                 if (new == "custom") ""
                 else {
                     emit("")
@@ -75,13 +74,14 @@ class MyFormControlComponent : FormControlComponent() {
                 build()
                 items += "custom"
             }
-            inputField({
-                theme().input.small()
-            }) {
-                disabled(returnStore.selectedStore.data.map { it != "custom" })
-                changes.values() handledBy returnStore.inputStore.syncInput
-                value(returnStore.inputStore.data)
-                placeholder("custom choice")
+            inputField {
+                size { small }
+                base {
+                    disabled(returnStore.selectedStore.data.map { it != "custom" })
+                    changes.values() handledBy returnStore.inputStore.syncInput
+                    value(returnStore.inputStore.data)
+                    placeholder("custom choice")
+                }
             }
         }
         return returnStore.data
@@ -243,7 +243,7 @@ fun RenderContext.formControlDemo(): Div {
             }
             (::div.styled {
                 background {
-                    color { theme().colors.light }
+                    color { light }
                 }
                 paddings {
                     left { "0.5rem" }
@@ -276,7 +276,7 @@ fun RenderContext.formControlDemo(): Div {
             }
             (::div.styled {
                 background {
-                    color { theme().colors.light }
+                    color { light }
                 }
                 paddings {
                     left { "0.5rem" }

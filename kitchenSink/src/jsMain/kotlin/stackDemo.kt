@@ -1,7 +1,6 @@
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
@@ -65,7 +64,7 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { theme().colors.warning }
+                                            color { warning }
                                         }
                                         radius { "5%" }
                                     }) {
@@ -76,7 +75,7 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { theme().colors.warning }
+                                            color { warning }
                                         }
                                         radius { "5%" }
                                     }) {
@@ -86,7 +85,7 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { theme().colors.warning }
+                                            color { warning }
                                         }
                                         radius { "5%" }
                                     }) {
@@ -96,9 +95,9 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { theme().colors.dark }
+                                            color { dark }
                                         }
-                                        color { theme().colors.light }
+                                        color { light }
                                         radius { "5%" }
                                     }) {
                                         icon({
@@ -106,7 +105,7 @@ fun RenderContext.stackDemo(): Div {
                                             color { warning }
                                         }) {
                                             fromTheme {
-                                                repeat
+                                                refresh
                                             }
                                         }
                                     }
@@ -129,7 +128,7 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { theme().colors.warning }
+                                            color { warning }
                                         }
                                         radius { "5%" }
                                     }) {
@@ -140,7 +139,7 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { theme().colors.warning }
+                                            color { warning }
                                         }
                                         radius { "5%" }
                                     }) {
@@ -173,7 +172,7 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { theme().colors.warning }
+                                            color { warning }
                                         }
                                         radius { "5%" }
                                     }) {
@@ -184,7 +183,7 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { theme().colors.warning }
+                                            color { warning }
                                         }
                                         radius { "5%" }
                                     }) {
@@ -194,7 +193,7 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { theme().colors.warning }
+                                            color { warning }
                                         }
                                         radius { "5%" }
                                     }) {

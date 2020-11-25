@@ -15,7 +15,8 @@ include(
     "lenses-annotation-processor",
     "test-server",
     "styling",
-    "components"
+    "components",
+    "kitchenSink"
 )
 
 enableFeaturePreview("GRADLE_METADATA")

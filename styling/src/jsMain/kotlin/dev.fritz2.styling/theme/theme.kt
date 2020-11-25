@@ -2,33 +2,12 @@ package dev.fritz2.styling.theme
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.FlexParams
-import dev.fritz2.styling.params.GridParams
+import dev.fritz2.styling.resetCss
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
-
-/**
- * alias to easily create predefined styles based on [BasicParams]
- */
-typealias PredefinedBasicStyle = BasicParams.() -> Unit
-
-/**
- * alias to easily create predefined styles based on [FlexParams]
- */
-typealias PredefinedFlexStyle = FlexParams.() -> Unit
-
-/**
- * alias to easily create predefined styles based on [GridParams]
- */
-typealias PredefinedGridStyle = GridParams.() -> Unit
-
-/**
- * alias to easily create predefined styles based on [BoxParams]
- */
-typealias PredefinedBoxStyle = BoxParams.() -> Unit
 
 /**
  * alias for property values
@@ -53,7 +32,27 @@ typealias Property = String
  * ```
  *
  */
+
+@ExperimentalCoroutinesApi
 interface Theme {
+    companion object {
+        val currentTheme = MutableStateFlow<Theme>(DefaultTheme())
+
+        val data: Flow<Theme> = currentTheme
+
+        operator fun invoke() = currentTheme.value
+
+        fun use(theme: Theme) {
+            resetCss(theme.reset)
+            currentTheme.value = theme
+        }
+    }
+
+    /**
+     * css to reset browser's defaults and set your own
+     */
+    val reset: String
+
     /**
      * an human readable name like ``default`` or ``dark`` for example
      */
@@ -173,34 +172,31 @@ interface Theme {
 }
 
 /**
- * [StateFlow] that holds the current selected [Theme]
- */
-@ExperimentalCoroutinesApi
-var currentTheme: Theme = DefaultTheme()
-
-/**
- * get the currently selected [Theme]
- */
-@ExperimentalCoroutinesApi
-fun theme(): Theme = currentTheme
-
-/**
- * get the currently selected [Theme] correctly casted
- */
-@ExperimentalCoroutinesApi
-inline fun <reified T : Theme> theme(): Theme = currentTheme.unsafeCast<T>()
-
-/**
  * convenience function to create a render-context that provides a specialized theme correctly typed
  */
 //TODO: add for Flow.render and each().render
 @ExperimentalCoroutinesApi
-inline fun <reified T : Theme> render(crossinline content: RenderContext.(T) -> List<Tag<HTMLElement>>) =
+inline fun <reified T : Theme> render(crossinline content: RenderContext.(T) -> Unit): List<Tag<HTMLElement>> =
     dev.fritz2.dom.html.render {
-        content(currentTheme.unsafeCast<T>())
+        content(Theme().unsafeCast<T>())
     }
 
 inline fun <E : Element, reified T : Theme> renderElement(crossinline content: RenderContext.(T) -> Tag<E>) =
     dev.fritz2.dom.html.renderElement {
-        content(currentTheme.unsafeCast<T>())
+        content(Theme().unsafeCast<T>())
     }
+
+@ExperimentalCoroutinesApi
+inline fun <reified T : Theme> render(
+    theme: T,
+    crossinline content: RenderContext.(T) -> Unit
+): List<Tag<HTMLElement>> {
+    Theme.use(theme)
+    return render { currentTheme: T ->
+        div {
+            Theme.data.render {
+                content(currentTheme)
+            }
+        }
+    }
+}

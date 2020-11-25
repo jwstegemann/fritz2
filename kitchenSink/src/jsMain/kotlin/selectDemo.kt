@@ -3,7 +3,6 @@ import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -122,8 +121,8 @@ fun RenderContext.singleSelectDemo(): Div {
                                         selected { mySelectedItem }
                                         direction { row }
                                         size { small }
-                                        checkedBackgroundColor { theme().colors.warning }
-                                        backgroundColor { theme().colors.tertiary }
+                                        checkedBackgroundColor { warning }
+                                        backgroundColor { tertiary }
                                     } handledBy selectedItemStore.update
                                 }
                             }
@@ -204,7 +203,7 @@ fun RenderContext.multiSelectDemo(): Div {
 
                                     (::div.styled {
                                         background {
-                                            color { theme().colors.light }
+                                            color { light }
                                         }
                                         paddings {
                                             left { "0.5rem" }
@@ -259,7 +258,7 @@ fun RenderContext.multiSelectDemo(): Div {
 
                                     (::div.styled {
                                         background {
-                                            color { theme().colors.light }
+                                            color { light }
                                         }
                                         paddings {
                                             left { "0.5rem" }
@@ -318,7 +317,7 @@ fun RenderContext.multiSelectDemo(): Div {
                                         checkedStore1.data.render {
                                             (::p.styled {
                                                 background {
-                                                    color { theme().colors.light }
+                                                    color { light }
                                                 }
                                                 paddings {
                                                     left { "0.5rem" }
@@ -345,7 +344,7 @@ fun RenderContext.multiSelectDemo(): Div {
                                         checkedStore2.data.render {
                                             (::p.styled {
                                                 background {
-                                                    color { theme().colors.light }
+                                                    color { light }
                                                 }
                                                 paddings {
                                                     left { "0.5rem" }
@@ -375,7 +374,7 @@ fun RenderContext.multiSelectDemo(): Div {
                                         checkedStore3.data.render {
                                             (::p.styled {
                                                 background {
-                                                    color { theme().colors.light }
+                                                    color { light }
                                                 }
                                                 paddings {
                                                     left { "0.5rem" }

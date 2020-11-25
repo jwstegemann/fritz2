@@ -3,7 +3,7 @@ package dev.fritz2.styling.params
 import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.Property
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 
 /**
  * Alias for the specific [BackgroundRepeats] properties
@@ -412,7 +412,7 @@ class BackgroundContext(
      *
      * @param value function parameter in order to return an arbitrary [String]
      */
-    fun color(value: Colors.() -> Property): Unit = property(backgroundColorKey, theme().colors, value)
+    fun color(value: Colors.() -> Property): Unit = property(backgroundColorKey, Theme().colors, value)
 }
 
 /**

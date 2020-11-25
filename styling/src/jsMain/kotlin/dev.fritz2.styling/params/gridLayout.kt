@@ -1,7 +1,7 @@
 package dev.fritz2.styling.params
 
 import dev.fritz2.styling.theme.Property
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -200,10 +200,10 @@ internal const val columnGapKey = "column-gap: "
  *
  * It does **not** create a grid layout though!
  *
- * This is done by a special [dev.fritz2.styling.components.grid] fabric function that creates a component
+ * This is done by a special ``dev.fritz2.components.gridBox`` fabric function that creates a component
  * with the [display](https://developer.mozilla.org/en/docs/Web/CSS/display) property already set to ``grid``.
  *
- * So it is recommended to use the provided functions within the styles parameter of [dev.fritz2.components.grid].
+ * So it is recommended to use the provided functions within the styles parameter of ``dev.fritz2.components.gridBox``.
  *
  * This interface offers all the inherited functions of [Alignment] that corresponds to the
  * [CSS alignment module](https://www.w3.org/TR/css-align-3/).
@@ -529,7 +529,7 @@ interface GridLayout : StyleParams, Alignment {
      * - tedious to type (no autocompletion)
      * - not safe for refactorings (only search + replace is possible)
      * - easy to introduce typos
-     * - easy to misspell the name in the related [dev.fritz2.components.box] component and therefore break the
+     * - easy to misspell the name in the related ``dev.fritz2.components.box`` component and therefore break the
      *   relation!
      *
      * That is why it is recommended to use some sort of _container_ for the area names!
@@ -630,7 +630,7 @@ interface GridLayout : StyleParams, Alignment {
      * @param value provide a value of type [ScaledValueProperty] that defines the gap of the column,
      *              recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      */
-    fun columnGap(value: ScaledValueProperty) = property(columnGapKey, theme().gaps, value)
+    fun columnGap(value: ScaledValueProperty) = property(columnGapKey, Theme().gaps, value)
 
     /**
      * This function sets the [column-gap](https://developer.mozilla.org/en/docs/Web/CSS/column-gap) property
@@ -661,7 +661,7 @@ interface GridLayout : StyleParams, Alignment {
         lg: ScaledValueProperty? = null,
         xl: ScaledValueProperty? = null
     ) =
-        property(columnGapKey, theme().gaps, sm, md, lg, xl)
+        property(columnGapKey, Theme().gaps, sm, md, lg, xl)
 
     /**
      * This function sets the [row-gap](https://developer.mozilla.org/en/docs/Web/CSS/row-gap) property
@@ -677,7 +677,7 @@ interface GridLayout : StyleParams, Alignment {
      * @param value provide a value of type [ScaledValueProperty] that defines the gap of the row,
      *              recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      */
-    fun rowGap(value: ScaledValueProperty) = property(rowGapKey, theme().gaps, value)
+    fun rowGap(value: ScaledValueProperty) = property(rowGapKey, Theme().gaps, value)
 
     /**
      * This function sets the [row-gap](https://developer.mozilla.org/en/docs/Web/CSS/row-gap) property
@@ -708,7 +708,7 @@ interface GridLayout : StyleParams, Alignment {
         lg: ScaledValueProperty? = null,
         xl: ScaledValueProperty? = null
     ) =
-        property(rowGapKey, theme().gaps, sm, md, lg, xl)
+        property(rowGapKey, Theme().gaps, sm, md, lg, xl)
 
     /**
      * This _convenience_ function sets the gap for the rows and columns in a grid all at once.

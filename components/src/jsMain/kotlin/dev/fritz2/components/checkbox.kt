@@ -14,7 +14,8 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.CheckboxSizes
 import dev.fritz2.styling.theme.IconDefinition
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Colors
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -43,8 +44,8 @@ import org.w3c.dom.HTMLInputElement
  * checkbox {
  *      text("with extra cheese") // set the label
  *      checkboxSize { normal } // choose a predefined size
- *      borderColor { theme().colors.secondary } // set up the border color of the box itself
- *      checkedBackgroundColor { theme().colors.warning } // set the color of the checked state
+ *      borderColor { Theme().colors.secondary } // set up the border color of the box itself
+ *      checkedBackgroundColor { Theme().colors.warning } // set the color of the checked state
  *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
@@ -52,6 +53,7 @@ import org.w3c.dom.HTMLInputElement
  * }
  * ```
  */
+@ComponentMarker
 class CheckboxComponent {
     companion object {
         // todo replace px in sizes (in default theme) with rem/theme values where not explicit
@@ -85,7 +87,7 @@ class CheckboxComponent {
         )
     }
 
-    var size: CheckboxSizes.() -> Style<BasicParams> = { theme().checkbox.sizes.normal }
+    var size: CheckboxSizes.() -> Style<BasicParams> = { Theme().checkbox.sizes.normal }
     fun size(value: CheckboxSizes.() -> Style<BasicParams>) {
         size = value
     }
@@ -149,8 +151,8 @@ class CheckboxComponent {
  * checkbox {
  *      text("with extra cheese") // set the label
  *      checkboxSize { normal } // choose a predefined size
- *      borderColor { theme().colors.secondary } // set up the border color of the box itself
- *      checkedBackgroundColor { theme().colors.warning } // set the color of the checked state
+ *      borderColor { Theme().colors.secondary } // set up the border color of the box itself
+ *      checkedBackgroundColor { Theme().colors.warning } // set the color of the checked state
  *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store

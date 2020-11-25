@@ -10,8 +10,9 @@ import dev.fritz2.dom.html.renderElement
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.ModalStyles
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.ModalSizes
+import dev.fritz2.styling.theme.ModalVariants
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.map
 
 typealias ModalRenderContext = RenderContext.(level: Int) -> Div
@@ -29,7 +30,7 @@ interface Overlay {
 
 class DefaultOverlay(
     override val method: OverlayMethod = OverlayMethod.CoveringTopMost,
-    override val styling: Style<BasicParams> = theme().modal.overlay
+    override val styling: Style<BasicParams> = Theme().modal.overlay
 ) : Overlay {
     override fun render(renderContext: RenderContext, level: Int) {
         renderContext.box({
@@ -60,13 +61,14 @@ class DefaultOverlay(
  * The actual rendering of the overlay is done within a separate interface called [Overlay].
  * There is currently one implementation [DefaultOverlay] that offers the possibility to freely inject the styling,
  * so for most use cases it might be sufficient to just use the former.
- * If there is a need to render a _different structure_ or to bypass the [Theme.zIndices] management, a custom
- * implementation is the way to go.
+ * If there is a need to render a _different structure_ or to bypass the [dev.fritz2.styling.theme.Theme.zIndices]
+ * management, a custom implementation is the way to go.
  * The interface also enforces to pass the rendering strategy identifier via the [Overlay.method] property.
  *
  * For a detailed understanding have a look into the [ModalComponent.show] function and the
- * [ModalComponent.Companion.init] block.
+ * ``ModalComponent.Companion.init`` block.
  */
+@ComponentMarker
 class ModalComponent {
 
     class ModalsStack : RootStore<List<ModalRenderContext>>(listOf()) {
@@ -139,8 +141,8 @@ class ModalComponent {
                 box({
                     css("--main-level: ${level}rem;")
                     zIndex { modal(level) }
-                    component.size.invoke(theme().modal)()
-                    component.variant.invoke(theme().modal)()
+                    component.size.invoke(Theme().modal.sizes)()
+                    component.variant.invoke(Theme().modal.variants)()
                     styling()
                 }, baseClass, id, prefix) {
                     if (component.hasCloseButton) {
@@ -150,7 +152,7 @@ class ModalComponent {
                         component.closeButton?.let { it(this, close) }
                     }
 
-                    component.items?.let { it() }
+                    component.content?.let { it() }
                 }
             }
 
@@ -158,21 +160,21 @@ class ModalComponent {
         }
     }
 
-    var items: (RenderContext.() -> Unit)? = null
+    var content: (RenderContext.() -> Unit)? = null
 
-    fun items(value: RenderContext.() -> Unit) {
-        items = value
+    fun content(value: RenderContext.() -> Unit) {
+        content = value
     }
 
-    var size: ModalStyles.() -> Style<BasicParams> = { theme().modal.sizes.normal }
+    var size: ModalSizes.() -> Style<BasicParams> = { Theme().modal.sizes.normal }
 
-    fun size(value: ModalStyles.() -> Style<BasicParams>) {
+    fun size(value: ModalSizes.() -> Style<BasicParams>) {
         size = value
     }
 
-    var variant: ModalStyles.() -> Style<BasicParams> = { theme().modal.variants.auto }
+    var variant: ModalVariants.() -> Style<BasicParams> = { Theme().modal.variants.auto }
 
-    fun variant(value: ModalStyles.() -> Style<BasicParams>) {
+    fun variant(value: ModalVariants.() -> Style<BasicParams>) {
         variant = value
     }
 
@@ -189,7 +191,7 @@ class ModalComponent {
         prefix: String = "modal-close-button",
         build: PushButtonComponent.() -> Unit = {}
     ) {
-        closeButton = { close ->
+        closeButton = { closeHandle ->
             clickButton({
                 position {
                     absolute {
@@ -200,9 +202,9 @@ class ModalComponent {
                 styling()
             }, baseClass, id, prefix) {
                 variant { ghost }
-                icon { fromTheme { smallClose } }
+                icon { fromTheme { close } }
                 build()
-            }.map { Unit } handledBy close
+            }.map { Unit } handledBy closeHandle
         }
     }
 
@@ -212,7 +214,8 @@ class ModalComponent {
 /**
  * This component provides some modal dialog or messagebox. Basically it just offers a ``div`` that is rendered on a
  * higher [z-index](https://developer.mozilla.org/en-US/docs/Web/CSS/z-index) than the rest of the application.
- * It uses the reserved segments provided by the [ZIndices.modal] function that are initialized by [Theme.zIndices].
+ * It uses the reserved segments provided by the [dev.fritz2.styling.theme.ZIndices.modal] function that are
+ * initialized by [dev.fritz2.styling.theme.Theme.zIndices].
  * That way the top modal will always have the highest ``z-index`` and therefore be on top of the screen.
  *
  * The content and structure within the modal are completely free to model. Further more there are predefined styles
@@ -221,7 +224,7 @@ class ModalComponent {
  * with a custom solution, as a [SimpleHandler<Unit>] is injected as parameter into the [build] expression.
  *
  * As this factory function also returns a [SimpleHandler<Unit>], it is easy to combine it directly with some other
- * component that offers some sort of [Flow], like a [clickButton].
+ * component that offers some sort of Flow, like a [clickButton].
  *
  * Have a look at some example calls
  * ```

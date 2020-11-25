@@ -218,64 +218,143 @@ class IconDefinition(
  * Definition of standard-icons
  */
 interface Icons {
-    val copy: IconDefinition
-    val search: IconDefinition
-    val search2: IconDefinition
-    val moon: IconDefinition
-    val sun: IconDefinition
     val add: IconDefinition
-    val smallAdd: IconDefinition
-    val settings: IconDefinition
-    val checkCircle: IconDefinition
-    val lock: IconDefinition
-    val unlock: IconDefinition
-    val view: IconDefinition
-    val viewOff: IconDefinition
-    val download: IconDefinition
-    val delete: IconDefinition
-    val repeat: IconDefinition
-    val repeatClock: IconDefinition
-    val edit: IconDefinition
+    val all: IconDefinition
+    val archive: IconDefinition
+    val arrowDown: IconDefinition
+    val arrowLeftDown: IconDefinition
+    val arrowLeftUp: IconDefinition
+    val arrowLeft: IconDefinition
+    val arrowRightDown: IconDefinition
+    val arrowRightUp: IconDefinition
+    val arrowRight: IconDefinition
+    val arrowUp: IconDefinition
+    val attachment: IconDefinition
+    val ban: IconDefinition
+    val barChartAlt: IconDefinition
+    val barChart: IconDefinition
+    val board: IconDefinition
+    val book: IconDefinition
+    val bookmark: IconDefinition
+    val calendar: IconDefinition
+    val call: IconDefinition
+    val camera: IconDefinition
+    val caretDown: IconDefinition
+    val caretLeft: IconDefinition
+    val caretRight: IconDefinition
+    val caretUp: IconDefinition
+    val check: IconDefinition
+    val chevronDoubleDown: IconDefinition
+    val chevronDoubleLeft: IconDefinition
+    val chevronDoubleRight: IconDefinition
+    val chevronDoubleUp: IconDefinition
+    val chevronDown: IconDefinition
     val chevronLeft: IconDefinition
     val chevronRight: IconDefinition
-    val chevronDown: IconDefinition
     val chevronUp: IconDefinition
-    val arrowBack: IconDefinition
-    val arrowForward: IconDefinition
-    val arrowUp: IconDefinition
-    val arrowUpDown: IconDefinition
-    val arrowDown: IconDefinition
-    val externalLink: IconDefinition
-    val link: IconDefinition
-    val plusSquare: IconDefinition
-    val calendar: IconDefinition
-    val chat: IconDefinition
-    val time: IconDefinition
-    val arrowRight: IconDefinition
-    val arrowLeft: IconDefinition
-    val atSign: IconDefinition
-    val attachment: IconDefinition
-    val upDown: IconDefinition
-    val star: IconDefinition
-    val email: IconDefinition
-    val phone: IconDefinition
-    val dragHandle: IconDefinition
-    val spinner: IconDefinition
+    val circleAdd: IconDefinition
+    val circleArrowDown: IconDefinition
+    val circleArrowLeft: IconDefinition
+    val circleArrowRight: IconDefinition
+    val circleArrowUp: IconDefinition
+    val circleCheck: IconDefinition
+    val circleError: IconDefinition
+    val circleHelp: IconDefinition
+    val circleInformation: IconDefinition
+    val circleRemove: IconDefinition
+    val circleWarning: IconDefinition
+    val clipboardCheck: IconDefinition
+    val clipboardList: IconDefinition
+    val clipboard: IconDefinition
+    val clock: IconDefinition
     val close: IconDefinition
-    val smallClose: IconDefinition
-    val notAllowed: IconDefinition
-    val triangleDown: IconDefinition
-    val triangleUp: IconDefinition
-    val infoOutline: IconDefinition
-    val bell: IconDefinition
-    val info: IconDefinition
-    val question: IconDefinition
-    val questionOutline: IconDefinition
+    val cloudDownload: IconDefinition
+    val cloudUpload: IconDefinition
+    val cloud: IconDefinition
+    val computer: IconDefinition
+    val copy: IconDefinition
+    val creditCard: IconDefinition
+    val delete: IconDefinition
+    val documentAdd: IconDefinition
+    val documentCheck: IconDefinition
+    val documentDownload: IconDefinition
+    val documentEmpty: IconDefinition
+    val documentRemove: IconDefinition
+    val document: IconDefinition
+    val download: IconDefinition
+    val drag: IconDefinition
+    val editAlt: IconDefinition
+    val edit: IconDefinition
+    val email: IconDefinition
+    val expand: IconDefinition
+    val export: IconDefinition
+    val externalLink: IconDefinition
+    val eyeOff: IconDefinition
+    val eye: IconDefinition
+    val favorite: IconDefinition
+    val filterAlt: IconDefinition
+    val filter: IconDefinition
+    val folderAdd: IconDefinition
+    val folderCheck: IconDefinition
+    val folderDownload: IconDefinition
+    val folderRemove: IconDefinition
+    val folder: IconDefinition
+    val grid: IconDefinition
+    val heart: IconDefinition
+    val home: IconDefinition
+    val image: IconDefinition
+    val inbox: IconDefinition
+    val laptop: IconDefinition
+    val linkAlt: IconDefinition
+    val link: IconDefinition
+    val list: IconDefinition
+    val location: IconDefinition
+    val lock: IconDefinition
+    val logOut: IconDefinition
+    val map: IconDefinition
+    val megaphone: IconDefinition
+    val menu: IconDefinition
+    val messageAlt: IconDefinition
+    val message: IconDefinition
+    val mobile: IconDefinition
+    val moon: IconDefinition
+    val notificationOff: IconDefinition
+    val notification: IconDefinition
+    val optionsHorizontal: IconDefinition
+    val optionsVertical: IconDefinition
+    val pause: IconDefinition
+    val percentage: IconDefinition
+    val pin: IconDefinition
+    val play: IconDefinition
+    val refresh: IconDefinition
+    val remove: IconDefinition
+    val search: IconDefinition
+    val select: IconDefinition
+    val send: IconDefinition
+    val settings: IconDefinition
+    val share: IconDefinition
+    val shoppingCartAdd: IconDefinition
+    val shoppingCart: IconDefinition
+    val sort: IconDefinition
+    val speakers: IconDefinition
+    val stop: IconDefinition
+    val sun: IconDefinition
+    val switch: IconDefinition
+    val table: IconDefinition
+    val tablet: IconDefinition
+    val tag: IconDefinition
+    val undo: IconDefinition
+    val unlock: IconDefinition
+    val userAdd: IconDefinition
+    val userCheck: IconDefinition
+    val userRemove: IconDefinition
+    val user: IconDefinition
+    val users: IconDefinition
+    val volumeOff: IconDefinition
+    val volumeUp: IconDefinition
     val warning: IconDefinition
-    val warningTwo: IconDefinition
-    val check: IconDefinition
-    val minus: IconDefinition
-    val hamburger: IconDefinition
+    val zoomIn: IconDefinition
+    val zoomOut: IconDefinition
     val fritz2: IconDefinition
 }
 
@@ -304,9 +383,17 @@ interface CheckboxSizes {
 }
 
 interface InputFieldStyles {
+    val variants: InputFieldVariants
+    val sizes: InputFieldSizes
+}
+
+interface InputFieldSizes {
     val small: Style<BasicParams>
     val normal: Style<BasicParams>
     val large: Style<BasicParams>
+}
+
+interface InputFieldVariants {
     val outline: Style<BasicParams>
     val filled: Style<BasicParams>
 }

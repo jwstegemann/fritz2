@@ -19,7 +19,7 @@ fun RenderContext.spinnerDemo(): Div {
             p { +"There are two flavours of spinner built into fritz2:" }
             h2 { +"Pure CSS based" }
             lineUp({
-                alignItems { end }
+                alignItems { flexEnd }
             }) {
                 items {
                     stackUp {
@@ -68,13 +68,13 @@ fun RenderContext.spinnerDemo(): Div {
             }
             h2 { +"Icon based" }
             lineUp({
-                alignItems { end }
+                alignItems { flexEnd }
             }) {
                 items {
                     stackUp {
                         items {
                             spinner {
-                                icon { star }
+                                icon { favorite }
                                 speed { "1s" }
                             }
                             p { +"choose any icon" }

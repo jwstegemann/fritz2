@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -8,7 +9,7 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import org.w3c.dom.svg.SVGElement
@@ -21,6 +22,7 @@ fun createIconSvgElement(baseClass: String?): SVGElement {
     return elem
 }
 
+@HtmlTagMarker
 class Svg(
     id: String? = null,
     baseClass: String? = null,
@@ -39,8 +41,8 @@ fun RenderContext.svg(baseClass: String?, id: String?, init: Svg.() -> Unit): Sv
  * An [IconDefinition] _must_ be provided in order to render an icon. This definition wraps the pure SVG markup together
  * with additional properties like the display-name and the viewbox.
  *
- * In order to provide a comfortable way to use the predefined icons from the [Theme], use the [IconComponent.fromTheme]
- * method.
+ * In order to provide a comfortable way to use the predefined icons from the [dev.fritz2.styling.theme.Theme],
+ * use the [IconComponent.fromTheme] method.
  */
 class IconComponent {
     companion object {
@@ -62,7 +64,7 @@ class IconComponent {
     var def: IconDefinition? = null
 
     fun fromTheme(value: Icons.() -> IconDefinition) {
-        def = theme().icons.value()
+        def = Theme().icons.value()
     }
 }
 
@@ -70,7 +72,7 @@ class IconComponent {
 /**
  * This component enables to render an icon. It basically wraps raw SVG images into a nicer API.
  *
- * fritz2's default theme offers some basic predefined icons, have a look at [Theme.icons].
+ * fritz2's default theme offers some basic predefined icons, have a look at [dev.fritz2.styling.theme.Theme.icons].
  *
  * Every icon must be wrapped inside an [IconDefinition], that acts as a value class for the raw SVG markup.
  *
