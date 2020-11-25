@@ -2,35 +2,11 @@ package dev.fritz2.styling.theme
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.FlexParams
-import dev.fritz2.styling.params.GridParams
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
-
-/**
- * alias to easily create predefined styles based on [BasicParams]
- */
-typealias PredefinedBasicStyle = BasicParams.() -> Unit
-
-/**
- * alias to easily create predefined styles based on [FlexParams]
- */
-typealias PredefinedFlexStyle = FlexParams.() -> Unit
-
-/**
- * alias to easily create predefined styles based on [GridParams]
- */
-typealias PredefinedGridStyle = GridParams.() -> Unit
-
-/**
- * alias to easily create predefined styles based on [BoxParams]
- */
-typealias PredefinedBoxStyle = BoxParams.() -> Unit
 
 /**
  * alias for property values
