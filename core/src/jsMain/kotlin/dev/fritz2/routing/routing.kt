@@ -151,6 +151,8 @@ class Router<T>(
         window.addEventListener(Events.hashchange.name, listener)
     }
 
+
+
     private fun setRoute(newRoute: T) {
         window.location.hash = prefix + defaultRoute.marshal(newRoute)
     }

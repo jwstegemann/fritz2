@@ -8,6 +8,8 @@ import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.ScaledValueProperty
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.ScaledValue
+import dev.fritz2.styling.theme.theme
 
 /**
  * This base component class for stacking components offer some _configuration_ properties.
@@ -76,7 +78,7 @@ abstract class StackComponent {
         reverse = value()
     }
 
-    var spacing: ScaledValueProperty = { normal }
+    var spacing: ScaledValueProperty = { normal } //was normal, changed for stacking sidebar elements
 
     fun spacing(value: ScaledValueProperty) {
         spacing = value
@@ -98,7 +100,7 @@ abstract class StackComponent {
  *
  * @see StackComponent
  */
-class StackUpComponent : StackComponent() {
+class StackUpComponent(isMenu : Boolean = false) : StackComponent() {
     override val stackStyles: Style<FlexParams> = {
         if (this@StackUpComponent.reverse) {
             direction { columnReverse }
@@ -108,6 +110,9 @@ class StackUpComponent : StackComponent() {
         } else {
             direction { column }
             children(" > :not(:first-child)") {
+                if (isMenu) {
+                    margins { top({smaller}) }
+                }
                 margins { top(this@StackUpComponent.spacing) }
             }
         }

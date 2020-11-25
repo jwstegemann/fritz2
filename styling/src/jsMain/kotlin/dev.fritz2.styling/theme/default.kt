@@ -1,5 +1,6 @@
 package dev.fritz2.styling.theme
 
+import dev.fritz2.dom.html.Div
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.params.BackgroundAttachments.inherit
 
@@ -44,9 +45,9 @@ open class DefaultTheme : Theme {
     )
 
     override val colors = object : Colors {
+        override val tertiary = "#b2f5ea"
         override val primary = "#3d405b"
         override val secondary = "#e07a5f"
-        override val tertiary = "#b2f5ea"
         override val success = "#28a745"
         override val danger = "#dc3545"
         override val warning = "#ffc107"
@@ -101,6 +102,7 @@ open class DefaultTheme : Theme {
     )
 
     override val borderWidths = Thickness(
+        none = "0px",
         normal = "2px",
         thin = "1px",
         fat = "4px",
@@ -110,8 +112,9 @@ open class DefaultTheme : Theme {
     override val radii = ScaledValue(
         none = "0",
         small = "0.125rem",
-        normal = "0.25rem",
+        normal = "0.375rem",
         large = "0.5rem",
+        larger = "12px",
         full = "9999px"
     )
 
@@ -1970,7 +1973,5 @@ open class DefaultTheme : Theme {
             }
         }
     }
-
-
 
 }

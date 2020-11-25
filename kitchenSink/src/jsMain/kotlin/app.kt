@@ -3,11 +3,41 @@ import dev.fritz2.dom.html.A
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.mount
+import dev.fritz2.routing.Router
 import dev.fritz2.routing.router
+import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.RadiiContext
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.renderElement
 import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.single
+
+val componentFrame: Style<BasicParams> = { // Auslagerung von Style
+    width { "100%"}
+    border {
+        width { thin}
+        color { light }
+    }
+    radius { larger }
+    padding{ normal }
+}
+
+fun RenderContext.componentFrame(init: Div.() -> Unit): Div { //Auslagerung von Komponente
+    return (::div.styled {
+        width { "100%"}
+        border {
+            width { thin}
+            color { light }
+        }
+        radius { larger }
+        padding{ normal }
+    }){
+        init()
+    }
+}
 
 fun RenderContext.simpleLinkWithBackground(linkUri: String, linkText: String): A {
     return (::a.styled {
@@ -69,12 +99,14 @@ fun RenderContext.simpleAnchor(linkText: String): A {
     }
 }
 
-fun RenderContext.menuAnchor(linkText: String): Div {
+fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
     return (::div.styled {
-        radius { ".5rem" }
+        width { "90%" }
+        radius { normal }
         border {
-            width { "0" }
+            width { none }
         }
+        // TODO: Hintergrund auf tertiary wenn Seite ausgewählt
         hover {
             background {
                 color { light }
@@ -96,6 +128,7 @@ fun RenderContext.menuAnchor(linkText: String): Div {
 fun RenderContext.nonHoverAnchor(linkText: String): A {
     return (::a.styled {
         fontSize { small }
+        fontWeight { "500" }
     }) {
         +linkText
         href("#$linkText")
@@ -122,6 +155,9 @@ fun main() {
                 }) {
                     items {
                         stackUp({
+                            margins {
+                                top { smaller }
+                            }
                             padding { "1rem" }
                             minWidth { "200px" }
                             minHeight { "100%" }
@@ -148,27 +184,27 @@ fun main() {
                                         bottom { "2.0rem" }
                                     }
                                 }) {
-                                    simpleAnchor("Welcome")
+                                    menuAnchor("Welcome", router)
                                 }
 
 
 
 
-                                menuAnchor("Flexbox")
-                                menuAnchor("Gridbox")
-                                menuAnchor("Stack")
-                                menuAnchor("Icons")
-                                menuAnchor("Spinner")
-                                menuAnchor("Buttons")
-                                menuAnchor("Popover")
-                                menuAnchor("Modal")
-                                menuAnchor("Input")
-                                menuAnchor("Multiselect")
-                                menuAnchor("Singleselect")
-                                menuAnchor("Formcontrol")
+                                menuAnchor("Flexbox", router)
+                                menuAnchor("Gridbox", router)
+                                menuAnchor("Stack", router)
+                                menuAnchor("Icons", router)
+                                menuAnchor("Spinner", router)
+                                menuAnchor("Buttons", router)
+                                menuAnchor("Popover", router)
+                                menuAnchor("Modal", router)
+                                menuAnchor("Input", router)
+                                menuAnchor("Multiselect", router)
+                                menuAnchor("Singleselect", router)
+                                menuAnchor("Formcontrol", router)
 
                                 (::a.styled {
-                                    theme().tooltip.write("visit us on", "www.fritz2.dev"){left}()
+                                    theme().tooltip.write("visit us on", "www.fritz2.dev"){right}()
                                     after {
                                         textAlign { center }
                                         background { color { warning } }

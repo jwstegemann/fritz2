@@ -57,6 +57,7 @@ class WeightedValue(
  * Defines a value that has different expressions for different thicknesses.
  */
 class Thickness(
+    val none: Property,
     val normal: Property,
     val thin: Property = normal,
     val fat: Property = normal,

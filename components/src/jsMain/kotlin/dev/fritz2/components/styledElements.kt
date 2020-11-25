@@ -6,6 +6,7 @@ import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.StyleParamsImpl
+import dev.fritz2.styling.params.plus
 
 
 /**
@@ -152,6 +153,7 @@ fun <E> BasicComponent<E>.styled(
         this@styled((baseClass + additionalClass).name, id, init)
     }
 }
+
 
 /**
  * WARNING: This will be removed for the 0.8 release
