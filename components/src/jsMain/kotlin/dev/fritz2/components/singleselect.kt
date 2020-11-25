@@ -255,16 +255,19 @@ class RadioGroupComponent {
         disabled = value()
     }
 
+    // TODO: Consider a color from the theme!
     var checkedBackgroundColor: ColorProperty = "gray" // @checkbox @input
     fun checkedBackgroundColor(value: Colors.() -> ColorProperty) {
         checkedBackgroundColor = Theme().colors.value()
     }
 
+    // TODO: Consider a color from the theme!
     var backgroundColor: ColorProperty = "white" // @label
     fun backgroundColor(value: Colors.() -> ColorProperty) {
         backgroundColor = Theme().colors.value()
     }
 
+    // TODO: Consider a color from the theme!
     var borderColor: ColorProperty = "black"  // @label
     fun borderColor(value: Colors.() -> ColorProperty) {
         borderColor = Theme().colors.value()

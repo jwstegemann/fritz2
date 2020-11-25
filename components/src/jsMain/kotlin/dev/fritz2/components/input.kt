@@ -16,7 +16,15 @@ import dev.fritz2.styling.theme.InputFieldVariants
 import dev.fritz2.styling.theme.Theme
 
 /**
- * This component object for inputFields just defines and holds basic styling information applied to every inputField.
+ * This class deals with the _configuration_ of an input element.
+ *
+ * The inputField can be configured for the following aspects:
+ *  - the size of the element
+ *  - some predefined styling variants
+ *  - the core options of the HTML input element can be set.
+ *    [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes)
+ *
+ *  * For a detailed explanation and examples of usage have a look at the [inputField] function!
  *
  * @see InputFieldStyles
  */
@@ -109,6 +117,29 @@ open class InputFieldComponent {
  *
  * ```
  * inputField(store = dataStore) {
+ *      content {
+ *          placeholder("Placeholder") // render a placeholder text for empty field
+ *      }
+ * }
+ *
+ * // apply predefined size and variant
+ * inputField(store = dataStore) {
+ *      size { small } // render a smaller input
+ *      variant { filled } // fill the background with ``light`` color
+ *      content {
+ *          placeholder("Placeholder") // render a placeholder text for empty field
+ *      }
+ * }
+ *
+ * // Of course you can apply custom styling as well
+ * inputField({ // just use the ``styling`` parameter!
+ *      background {
+ *          color { dark }
+ *      }
+ *      radius { "1rem" }
+ * },
+ * store = dataStore) {
+ *      size { small } // render a smaller input
  *      content {
  *          placeholder("Placeholder") // render a placeholder text for empty field
  *      }

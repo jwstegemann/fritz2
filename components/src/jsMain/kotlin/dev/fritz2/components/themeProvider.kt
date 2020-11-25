@@ -21,7 +21,7 @@ import dev.fritz2.styling.theme.Theme
  * // minimal integration: Stick to the default theme and reset the browser's CSS
  * render { theme: Theme -> // gain access to the specific (sub-)*type* of your theme and the initial theme
  *     themeProvider { // configure the provider itself -> nothing theme specific here, so the [DefaultTheme] will be used
- *          import dev.fritz2.styling.theme.Theme {
+ *          content {
  *              // your UI goes here
  *          }
  *     }.mount("target")
@@ -32,7 +32,7 @@ import dev.fritz2.styling.theme.Theme
  * render { theme: ExtendedTheme -> // gain access to the specific (sub-)*type* of your theme and the initial theme
  *     themeProvider {
  *          theme(myThemeInstance) // set the desired theme
- *          import dev.fritz2.styling.theme.Theme {
+ *          content {
  *              // your UI goes here
  *          }
  *     }.mount("target")
@@ -105,7 +105,7 @@ class ThemeComponent {
  * // minimal integration: Stick to the default theme and reset the browser's CSS
  * render { theme: ExtendedTheme -> // gain access to the specific (sub-)*type* of your theme and the initial theme
  *     themeProvider { // configure the provider itself -> nothing theme specific here, so the [DefaultTheme] will be used
- *          items {
+ *          content {
  *              // your UI goes here
  *          }
  *     }.mount("target")

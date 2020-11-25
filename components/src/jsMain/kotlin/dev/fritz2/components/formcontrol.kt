@@ -285,7 +285,7 @@ open class FormControlComponent {
         renderContext.div {
             helperText?.let {
                 (::p.styled {
-                    color { Theme().colors.dark }
+                    color { dark }
                     fontSize { small }
                     lineHeight { small }
                 }) { +it }
@@ -298,7 +298,7 @@ open class FormControlComponent {
             errorMessage.render {
                 if (it.isNotEmpty()) {
                     lineUp({
-                        color { Theme().colors.danger }
+                        color { danger }
                         fontSize { small }
                         lineHeight { small }
                     }) {
@@ -353,7 +353,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
             id = id,
             prefix = prefix
         ) {
-            spacing { Theme().space.tiny }
+            spacing { tiny }
             items {
                 label {
                     +component.label

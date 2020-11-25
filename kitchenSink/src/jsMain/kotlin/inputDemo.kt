@@ -162,14 +162,14 @@ fun RenderContext.inputDemo(): Div {
                 baseClass: StyleClass? = null,
                 id: String? = null,
                 prefix: String = "ourInputField",
-                init: InputFieldComponent.() -> Unit
+                build: InputFieldComponent.() -> Unit
             ) {
                 inputField({
                     // always use corporate styling automatically!
                     ourInputStyle()
                     // still apply call-side defined styling!
                     styling()
-                }, store, baseClass, id, prefix, init)
+                }, store, baseClass, id, prefix, build)
             }
 
             lineUp {
