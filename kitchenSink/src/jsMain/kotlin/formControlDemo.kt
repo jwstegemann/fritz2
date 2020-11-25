@@ -75,7 +75,7 @@ class MyFormControlComponent : FormControlComponent() {
             }
             inputField {
                 size { small }
-                content {
+                base {
                     disabled(returnStore.selectedStore.data.map { it != "custom" })
                     changes.values() handledBy returnStore.inputStore.syncInput
                     value(returnStore.inputStore.data)

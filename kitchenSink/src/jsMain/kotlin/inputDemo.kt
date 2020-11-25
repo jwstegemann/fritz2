@@ -23,7 +23,7 @@ fun RenderContext.inputDemo(): Div {
 
             h3 { +"A basic Input needs no Store" }
             inputField {
-                content {
+                base {
                     placeholder("Placeholder")
                 }
             }
@@ -32,7 +32,7 @@ fun RenderContext.inputDemo(): Div {
             lineUp {
                 items {
                     inputField {
-                        content {
+                        base {
                             value("disabled")
                             disabled(true)
                         }
@@ -45,7 +45,7 @@ fun RenderContext.inputDemo(): Div {
                             boxShadow { none }
                         }
                     }) {
-                        content {
+                        base {
                             value("readonly")
                             readOnly(true)
                         }
@@ -55,7 +55,7 @@ fun RenderContext.inputDemo(): Div {
 
             h3 { +"Password" }
             inputField {
-                content {
+                base {
                     type("password")
                     placeholder("Password")
                 }
@@ -63,14 +63,14 @@ fun RenderContext.inputDemo(): Div {
 
             h3 { +"Inputs with store connect events automatically." }
             inputField(store = user) {
-                content {
+                base {
                     placeholder("Name")
                 }
             }
 
             h3 { +"Inputs without stores need manual event collection." }
             inputField {
-                content {
+                base {
                     placeholder("Name")
                     changes.values() handledBy user.update
                 }
@@ -94,19 +94,19 @@ fun RenderContext.inputDemo(): Div {
                 items {
                     inputField {
                         size { large }
-                        content {
+                        base {
                             placeholder("large")
                         }
                     }
                     inputField {
                         size { normal }
-                        content {
+                        base {
                             placeholder("normal")
                         }
                     }
                     inputField {
                         size { small }
-                        content {
+                        base {
                             placeholder("small")
                         }
                     }
@@ -118,13 +118,13 @@ fun RenderContext.inputDemo(): Div {
                 items {
                     inputField {
                         variant { outline }
-                        content {
+                        base {
                             placeholder("outline")
                         }
                     }
                     inputField {
                         variant { filled }
-                        content {
+                        base {
                             placeholder("filled")
                         }
                     }
@@ -177,7 +177,7 @@ fun RenderContext.inputDemo(): Div {
                 items {
                     // use our component instead of built-in one!
                     ourInputField {
-                        content {
+                        base {
                             type("text")
                             placeholder("user")
                         }
@@ -188,7 +188,7 @@ fun RenderContext.inputDemo(): Div {
                             color { danger }
                         }
                     }) {
-                        content {
+                        base {
                             type("password")
                             placeholder("password")
                         }

@@ -21,7 +21,7 @@ import dev.fritz2.styling.theme.Theme
  * The inputField can be configured for the following aspects:
  *  - the size of the element
  *  - some predefined styling variants
- *  - the core options of the HTML input element can be set.
+ *  - the base options of the HTML input element can be set.
  *    [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes)
  *
  *  * For a detailed explanation and examples of usage have a look at the [inputField] function!
@@ -99,10 +99,10 @@ open class InputFieldComponent {
         size = value
     }
 
-    var content: (Input.() -> Unit)? = null
+    var base: (Input.() -> Unit)? = null
 
-    fun content(value: Input.() -> Unit) {
-        content = value
+    fun base(value: Input.() -> Unit) {
+        base = value
     }
 }
 
@@ -112,13 +112,15 @@ open class InputFieldComponent {
  *
  * You can optionally pass in a store in order to set the value and react to updates _automatically_.
  *
+ * There are options to choose from predefined sizes and some variants from the Theme.
+ *
  * To enable or disable it or to make it readOnly just use the well known attributes of the HTML
  * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Input). To manually set the value or
- * react to a change refer also to its event's.
+ * react to a change refer also to its event's. All that can be achieved via the [InputFieldComponent.base] property!
  *
  * ```
  * inputField(store = dataStore) {
- *      content {
+ *      base {
  *          placeholder("Placeholder") // render a placeholder text for empty field
  *      }
  * }
@@ -127,7 +129,7 @@ open class InputFieldComponent {
  * inputField(store = dataStore) {
  *      size { small } // render a smaller input
  *      variant { filled } // fill the background with ``light`` color
- *      content {
+ *      base {
  *          placeholder("Placeholder") // render a placeholder text for empty field
  *      }
  * }
@@ -141,7 +143,7 @@ open class InputFieldComponent {
  * },
  * store = dataStore) {
  *      size { small } // render a smaller input
- *      content {
+ *      base {
  *          placeholder("Placeholder") // render a placeholder text for empty field
  *      }
  * }
@@ -171,7 +173,7 @@ fun RenderContext.inputField(
         component.variant.invoke(Theme().input.variants)()
         InputFieldComponent.basicInputStyles()
     }) {
-        component.content?.invoke(this)
+        component.base?.invoke(this)
         store?.let {
             value(it.data)
             changes.values() handledBy it.update
