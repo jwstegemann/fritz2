@@ -1605,7 +1605,7 @@ open class DefaultTheme : Theme {
                         right { normal }
                     }
                 }
-                minHeight { Theme().sizes.smaller }
+                minHeight { wide.smaller }
             }
 
             override val normal: Style<BasicParams> = {
@@ -1616,7 +1616,7 @@ open class DefaultTheme : Theme {
                         left { "50%" }
                     }
                 }
-                minHeight { Theme().sizes.smaller }
+                minHeight { wide.smaller }
                 minWidth { "50%" }
                 css("transform: translateX(-50%);")
             }
@@ -1630,7 +1630,7 @@ open class DefaultTheme : Theme {
                         bottom { normal }
                     }
                 }
-                minHeight { Theme().sizes.smaller }
+                minHeight { wide.smaller }
                 minWidth { "35%" }
                 css("transform: translateX(-90%);")
             }
