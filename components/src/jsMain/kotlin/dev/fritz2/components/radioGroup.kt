@@ -7,46 +7,43 @@ import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.CheckboxSizes
-import dev.fritz2.styling.theme.IconDefinition
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
-
 /**
- * This class combines the _configuration_ and the core styling of a checkbox group.
+ * This class combines the _configuration_ and the core styling of a radio button group.
  * The rendering itself is also done within the companion object.
  *
- * In order to render a checkbox group use the [checkboxGroup] factory function!
+ * In order to render a radio button group use the [radioGroup] factory function!
  *
  * This class offers the following _configuration_ features:
- *  - the text label of a checkbox (static or dynamic via a [Flow<String>])
- *  - the background color of the box
- *  - the background color for the checked state
+ *  - the text label of a radio button (static or dynamic via a [Flow<String>])
+ *  - the background color of the radio
+ *  - the background color for the selected radio
  *  - some predefined styling variants
  *  - offer a list of items ([String])
- *  - offer a list of pre checked items
- *  - choose the direction of checkbox elements (row vs column)
+ *  - offer [String] of pre selected item
+ *  - choose the direction of radio elements (row vs column)
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
- *  ``build``. It offers an initialized instance of this [CheckboxGroupComponent] class as receiver, so every mutating
- *  method can be called for configuring the desired state for rendering the checkbox.
+ *  ``build``. It offers an initialized instance of this [RadioGroupComponent] class as receiver, so every mutating
+ *  method can be called for configuring the desired state for rendering the radio button group.
  *
  * Example usage
  * ```
  * // simple use case showing the core functionality
  * val options = listOf("A", "B", "C")
- * checkboxGroup {
- *      items { options } // provide a list of items
- *      initialSelection { listOf(options[0] + options[1]) } // pre check "A" and "C"
- * } handledBy selectedItemsStore.update // combine the Flow<List<String>> with a fitting handler
+ * radioGroup {
+ *     items { options } // provide a list of items
+ *     selected { options[1] } // pre select "B"
+ * } handledBy selectedItemStore.update // combine the Flow<String> with a fitting handler
  *
  * // use case showing some styling options
  * val options = listOf("A", "B", "C")
- * checkboxGroup({ // this styling is only applied to the enclosing container element!
+ * radioGroup({ // this styling is only applied to the enclosing container element!
  *      background {
  *          color { "deeppink" }
  *      }
@@ -57,17 +54,17 @@ import kotlinx.coroutines.flow.map
  *      }
  * }) {
  *      // those predefined styles are applied especially to specific inner elements!
- *      checkboxSize { normal }
- *      borderColor { theme().colors.secondary }
- *      checkedBackgroundColor { theme().colors.warning }
+ *      radioSize { normal }
+ *      borderColor { Theme().colors.secondary }
+ *      checkedBackgroundColor { Theme().colors.warning }
  *      items { options } // provide a list of items
- *      initialSelection { listOf(options[0] + options[1]) } // pre check "A" and "C"
- * } handledBy selectedItemsStore.update // combine the Flow<List<String>> with a fitting handler
+ *      selected { options[1] } // pre select "B"
+ * } handledBy selectedItemStore.update // combine the Flow<String> with a fitting handler
  * ```
  */
-class CheckboxGroupComponent<T> {
+class RadioGroupComponent<T> {
     companion object {
-        object CheckboxGroupLayouts {
+        object RadioGroupLayouts {
             val column: Style<BasicParams> = {
                 display {
                     inlineGrid
@@ -80,7 +77,6 @@ class CheckboxGroupComponent<T> {
             }
         }
     }
-
     var items: Flow<List<T>> = flowOf(emptyList())
     fun items(value: () -> Flow<List<T>>) {
         items = value()
@@ -104,98 +100,91 @@ class CheckboxGroupComponent<T> {
         disabled = flowOf(value)
     }
 
-    var direction: Style<BasicParams> = CheckboxGroupLayouts.column
-    fun direction(value: CheckboxGroupLayouts.() -> Style<BasicParams>) {
-        direction =  CheckboxGroupLayouts.value()
+    var direction: Style<BasicParams> = RadioGroupLayouts.column
+    fun direction(value: RadioGroupLayouts.() -> Style<BasicParams>) {
+        direction =  RadioGroupLayouts.value()
     }
 
-    var size: CheckboxSizes.() -> Style<BasicParams> = { Theme().checkbox.sizes.normal }
-    fun size(value: CheckboxSizes.() -> Style<BasicParams>) {
+    var size: RadioSizes.() -> Style<BasicParams> = { Theme().radio.sizes.normal }
+    fun size(value: RadioSizes.() -> Style<BasicParams>) {
         size = value
     }
 
-    var itemStyle: Style<BasicParams> = { Theme().checkbox.default() }
+    var itemStyle: Style<BasicParams> = { Theme().radio.default() }
     fun itemStyle(value: () -> Style<BasicParams>) {
         itemStyle = value()
     }
-    var labelStyle: Style<BasicParams> = { Theme().checkbox.label() }
+
+    var labelStyle: Style<BasicParams> = { Theme().radio.label() }
     fun labelStyle(value: () -> Style<BasicParams>) {
         labelStyle = value()
     }
 
-    var checkedStyle: Style<BasicParams> = { Theme().checkbox.checked() }
-    fun checkedStyle(value: () -> Style<BasicParams>) {
-        checkedStyle = value()
+    var selectedStyle: Style<BasicParams> = { Theme().radio.selected() }
+    fun selectedStyle(value: () -> Style<BasicParams>) {
+        selectedStyle = value()
     }
+
 }
 
 
 
+
 /**
- * This component generates a *group* of checkboxes.
+ * This component generates a *group* of radio buttons.
  *
  * You can set different kind of properties like the labeltext or different styling aspects like the colors of the
- * background, the label or the checked state. Further more there are configuration functions for accessing the checked
- * state of each box or totally disable it.
+ * background, the label or the selected item. It returns a [Flow<String>] with the currently selected item, so it
+ * can be easily passed to an appropriate handler like the update handler of a store.
+ *
  * For a detailed overview about the possible properties of the component object itself, have a look at
- * [CheckboxGroupComponent]
+ * [RadioGroupComponent]
  *
  * Example usage
  * ```
  * val options = listOf("A", "B", "C")
- * checkboxGroup {
+ * radioGroup {
  *     items { options } // provide a list of items
- *     initialSelection { listOf(options[0] + options[1]) } // pre check "A" and "C"
- * } handledBy selectedItemsStore.update // combine the Flow<List<String>> with a fitting handler
+ *     selected { options[1] } // pre select "B"
+ * } handledBy selectedItemStore.update // combine the Flow<String> with a fitting handler
  * ```
  *
- * @see CheckboxGroupComponent
+ * @see RadioGroupComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself. Details in [CheckboxGroupComponent]
- * @return a flow of the _checked_ items
+ * @param build a lambda expression for setting up the component itself. Details in [RadioGroupComponent]
+ * @return a flow of the _selected_ item
  */
-fun <T>RenderContext.checkboxGroup(
+fun <T>RenderContext.radioGroup(
     styling: BasicParams.() -> Unit = {},
-    store: Store<List<T>>,
+    store: Store<T>,
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "checkboxGroupComponent",
-    build: CheckboxGroupComponent<T>.() -> Unit = {}
+    build: RadioGroupComponent<T>.() -> Unit = {}
 ) {
-    val component = CheckboxGroupComponent<T>().apply(build)
-
-    val toggle = store.handle<T> { list, item ->
-        if( list.contains(item) ) {
-            list - item
-        } else {
-            list + item
-        }
-    }
-
+    val component = RadioGroupComponent<T>().apply(build)
 
     val grpId = id ?: uniqueId()
     (::div.styled(styling, baseClass, id, prefix) {
         component.direction()
     }) {
         component.items.renderEach { item ->
-            val checkedFlow = store.data.map { it.contains(item) }.distinctUntilChanged()
-            checkbox(styling = component.itemStyle, id = grpId + "-grp-item-" + uniqueId()){
-                size { component.size.invoke(Theme().checkbox.sizes) }
-                icon { component.icon }
+            val checkedFlow = store.data.map { it == item }.distinctUntilChanged()
+            radio(styling = component.itemStyle, id = grpId + "-grp-item-" + uniqueId()) {
+                size { component.size.invoke(Theme().radio.sizes) }
                 labelStyle { component.labelStyle }
-                checkedStyle { component.checkedStyle }
+                selectedStyle { component.selectedStyle }
                 label(component.label(item))
-                checked { checkedFlow }
+                selected { checkedFlow }
                 disabled { component.disabled }
                 events {
-                   changes.states().map{ item } handledBy toggle
+                    changes.states().map{ item } handledBy store.update
                 }
             }
         }
     }
 }
-

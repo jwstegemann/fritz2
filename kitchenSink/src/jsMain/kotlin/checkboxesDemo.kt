@@ -7,11 +7,11 @@ import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 
-val myItems = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "222222")
-val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
 
 @ExperimentalCoroutinesApi
-fun RenderContext.singleSelectDemo(): Div {
+fun RenderContext.checkboxesDemo(): Div {
+    val myItems = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "222222")
+    val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
 
     return stackUp({
         alignItems { start }
@@ -19,135 +19,7 @@ fun RenderContext.singleSelectDemo(): Div {
     }) {
         items {
 
-            h1 { +"SingleSelect Showcase" }
-
-            p {
-                +"You can choose from 3 radio sizes. You may also chose custom colors for the radio background and"
-                +" border. However, any custom styles you apply to the component will be rendered for the"
-                +" internal container element only. Also keep in mind that the default styling of our"
-                +" components is not done yet."
-            }
-
-            lineUp({
-                alignItems { baseline }
-            }) {
-                items {
-                    stackUp({
-                        alignItems { baseline }
-                        margins {
-                            all { "1.5rem" }
-                            left { "0" }
-                        }
-                    }) {
-                        val mySelectedItem = "ffffff"
-                        val selectedItemStore = RootStore(mySelectedItem)
-
-                        items {
-                            h3 { +"SingleSelect large" }
-                            lineUp({
-                                margins { bottom { "2.0rem" } }
-                                alignItems { baseline }
-                            }) {
-                                items {
-                                    radioGroup(
-                                        {},
-                                        id = "radioGroup1"
-                                    ) {
-                                        items { myItems }
-                                        selected { mySelectedItem }
-                                        size { large }
-                                    } handledBy selectedItemStore.update
-                                }
-                            }
-                            div {
-                                selectedItemStore.data.render { selectedItem ->
-                                    p { +"Selected: $selectedItem" }
-                                }
-                            }
-                        }
-                    }
-
-                    stackUp({
-                        alignItems { baseline }
-                        margins { all { "1.5rem" } }
-                    }) {
-                        val mySelectedItem = "iiiiii"
-                        val selectedItemStore = RootStore(mySelectedItem)
-
-                        items {
-                            h3 { +"SingleSelect normal, disabled" }
-                            stackUp({
-                                margins { bottom { "2.0rem" } }
-                                alignItems { baseline }
-                            }) {
-                                items {
-                                    radioGroup(
-                                        {},
-                                        id = "radioGroup2"
-                                    ) {
-                                        disabled { flowOf(true) }
-                                        items { myItems }
-                                        selected { mySelectedItem }
-                                    } handledBy selectedItemStore.update
-                                }
-                            }
-                            div {
-                                selectedItemStore.data.render { selectedItem ->
-                                    p { +"Selected: $selectedItem" }
-                                }
-                            }
-                        }
-                    }
-
-                    stackUp({
-                        alignItems { baseline }
-                        margins { all { "1.5rem" } }
-                    }) {
-                        val mySelectedItem = "ffffff"
-                        val selectedItemStore = RootStore(mySelectedItem)
-
-                        items {
-                            h3 { +"SingleSelect small, custom colors, horizontal" }
-                            stackUp({
-                                margins { bottom { "2.0rem" } }
-                                alignItems { baseline }
-                            }) {
-                                items {
-                                    radioGroup(
-                                        {},
-                                        id = "radioGroup3"
-                                    ) {
-                                        items { myItems }
-                                        selected { mySelectedItem }
-                                        direction { row }
-                                        size { small }
-                                        checkedBackgroundColor { warning }
-                                        backgroundColor { tertiary }
-                                    } handledBy selectedItemStore.update
-                                }
-                            }
-                            div {
-                                selectedItemStore.data.render { selectedItem ->
-                                    p { +"Selected: $selectedItem" }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@ExperimentalCoroutinesApi
-fun RenderContext.multiSelectDemo(): Div {
-    return stackUp({
-        alignItems { start }
-        padding { "1rem" }
-    }) {
-        items {
-
-            h1 { +"MultiSelect Showcase" }
+            h1 { +"Checkbox Showcase" }
 
             p {
                 +"You can choose from 3 checkbox sizes. You may also chose custom colors for the box background and"

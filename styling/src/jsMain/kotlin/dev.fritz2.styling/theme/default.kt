@@ -1342,90 +1342,47 @@ open class DefaultTheme : Theme {
         }
     }
 
-    override val radio = object : RadioStyles {
-        override val sizes = object : RadioSizes {
-            override val small: Style<BasicParams> = {
-                fontSize { small }
-                lineHeight { small }
-                before {
-                    height { "10px" }
-                    width { "10px" }
-                    margins {
-                        right { "4px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "1px" }
-                        }
-                    }
-                }
-            }
-            override val normal: Style<BasicParams> = {
-                fontSize { normal }
-                lineHeight { normal }
-                before {
-                    height { "20px" }
-                    width { "20px" }
-                    margins {
-                        right { "7px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "2px" }
-                        }
-                    }
-                }
-            }
-            override val large: Style<BasicParams> = {
-                fontSize { larger }
-                lineHeight { larger }
-                before {
-                    height { "30px" }
-                    width { "30px" }
-                    margins {
-                        right { "10px" }
-                    }
-                    position {
-                        relative {
-                            bottom { "3px" }
-                        }
-                    }
-                }
-            }
-        }
-    }
+
 
     override val checkbox = object : CheckboxStyles {
        override val sizes = object : CheckboxSizes {
-            override val small: Style<BasicParams> = {
-                css("--cb-disabled: ${colors.disabled}")
+           private val basic: Style<BasicParams> = {
+               css("--cb-disabled: ${colors.disabled}")
+               display {inlineFlex}
+               css("align-items: center;")
+
+               //@TODO doesn't work / why?
+               children("&:focus + div") {
+                   border {
+                       color { "#3182ce" }
+                   }
+                   boxShadow { outline }
+               }
+           }
+           override val small: Style<BasicParams> = {
+                basic()
                 css("--cb-size: .75rem")
                 css("--cb-svg-size: .50rem")
                 css("--cb-radius:  ${radii.smaller}")
-                display {inlineFlex}
-                css("align-items: center;")
                 fontSize { small }
                 lineHeight { small }
                 margins { right {tiny} }
             }
             override val normal: Style<BasicParams> = {
-                css("--cb-disabled: ${colors.disabled}")
+                basic()
                 css("--cb-size: 1.0rem")
                 css("--cb-svg-size: .75rem")
                 css("--cb-radius:  ${radii.small}")
-                display {inlineFlex}
-                css("align-items: center;")
                 fontSize { normal }
                 lineHeight { normal }
                 margins { right {smaller} }
             }
             override val large: Style<BasicParams> = {
+                basic()
                 css("--cb-disabled: ${colors.disabled}")
                 css("--cb-size: 1.5rem")
                 css("--cb-svg-size: 1.25rem")
                 css("--cb-radius:  ${radii.normal}")
-                display {inlineFlex}
-                css("align-items: center;")
                 fontSize { larger }
                 lineHeight { larger }
                 margins { right {small} }
@@ -1439,12 +1396,6 @@ open class DefaultTheme : Theme {
             margins {
                 top {".0625rem"}
                 left {".0625rem"}
-            }
-            focus {
-                border {
-                    color { "#3182ce" } //@TODO default like outline, disabled
-                }
-                boxShadow { outline }
             }
         }
         override val label: Style<BasicParams> = {
@@ -1469,6 +1420,158 @@ open class DefaultTheme : Theme {
         override val checked: Style<BasicParams> = {
             background { color { warning } }
             color { dark }
+        }
+    }
+
+    override val radio = object : RadioStyles {
+        override val sizes = object : RadioSizes {
+            private val basic: Style<BasicParams> = {
+                css("--rb-disabled: ${colors.disabled}")
+                display {inlineFlex}
+                css("align-items: center;")
+
+                //@TODO doesn't work / why?
+                children("&:focus + div") {
+                    border {
+                        color { "#3182ce" }
+                    }
+                    boxShadow { outline }
+                }
+            }
+            override val small: Style<BasicParams> = {
+                basic()
+                css("--rb-size: .75rem")
+                fontSize { small }
+                lineHeight { small }
+                margins { right {tiny} }
+            }
+            override val normal: Style<BasicParams> = {
+                basic()
+                css("--rb-size: 1.0rem")
+                fontSize { normal }
+                lineHeight { normal }
+                margins { right {smaller} }
+            }
+            override val large: Style<BasicParams> = {
+                basic()
+                css("--rb-size: 1.5rem")
+                fontSize { larger }
+                lineHeight { larger }
+                margins { right {small} }
+            }
+        }
+        override val label: Style<BasicParams> = {
+            margins { left { tiny } }
+            display { block }
+        }
+        override val default: Style<BasicParams> = {
+            display { inlineFlex }
+            flex {
+                shrink { "0" }
+            }
+            css("align-items:center;")
+            css("justify-content:center;")
+            width { "var(--rb-size)" }
+            height { "var(--rb-size)" }
+            background { color { "white" } }
+            border {
+                width { "2px" }
+                style { solid }
+                color { inherit }
+            }
+            radius { "9999px" }
+        }
+        override val selected: Style<BasicParams> = {
+            background { color { info } }
+            color { light }
+            before {
+                css("content:\"\";" )
+                display {
+                    inlineBlock
+                }
+                position {
+                    relative {  }
+                }
+                width { "50%" }
+                height { "50%" }
+                radius { "50%" }
+                background {
+                    color { "currentColor" }
+                }
+            }
+        }
+    }
+
+    override val switch = object : SwitchStyles {
+        override val sizes = object : SwitchSizes {
+            private val basic: Style<BasicParams> = {
+                css("--sw-disabled: ${colors.disabled}")
+                display {inlineFlex}
+                css("align-items: center;")
+
+                //@TODO doesn't work / why?
+                children("&:focus + div") {
+                    border {
+                        color { "#3182ce" }
+                    }
+                    boxShadow { outline }
+                }
+            }
+            override val small: Style<BasicParams> = {
+                basic()
+                css("--sw-width: 1.35rem")
+                css("--sw-height: .75rem")
+                fontSize { small }
+                lineHeight { small }
+                margins { right {tiny} }
+            }
+            override val normal: Style<BasicParams> = {
+                basic()
+                css("--sw-width: 1.85rem")
+                css("--sw-height: 1rem")
+                fontSize { normal }
+                lineHeight { normal }
+                margins { right {smaller} }
+            }
+            override val large: Style<BasicParams> = {
+                basic()
+                css("--sw-width: 2.875rem")
+                css("--sw-height: 1.5rem")
+                fontSize { larger }
+                lineHeight { larger }
+                margins { right {small} }
+            }
+        }
+        override val dot : Style<BasicParams> = {
+            width { "var(--sw-height)" }
+            height { "var(--sw-height)" }
+            radius { "9999px" }
+            background {
+                color { "white" }
+            }
+            css("transition: transform 250ms ease 0s;")
+        }
+        override val label: Style<BasicParams> = {
+            margins { left { tiny } }
+            display { block }
+        }
+        override val default: Style<BasicParams> = {
+            display { inlineFlex }
+            flex {
+                shrink { "0" }
+            }
+            padding { "2px" }
+            width { "var(--sw-width)" }
+            height { "var(--sw-height)" }
+            background { color { disabled } }
+            radius { "9999px" }
+            css("justify-content: flex-start;")
+            css("box-sizing: content-box;")
+            css("align-items: center;")
+            css("transition: all 120ms ease 0s;")
+        }
+        override val checked: Style<BasicParams> = {
+            background { color { success } }
         }
     }
 

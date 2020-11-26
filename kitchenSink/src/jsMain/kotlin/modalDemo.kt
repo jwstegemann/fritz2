@@ -153,11 +153,11 @@ fun RenderContext.modalDemo(): Div {
                     })
                 )
 
-                radioGroup {
+            /*    radioGroup {
                     direction { row }
                     items { overlayVariants.keys.toList() }
                     selected { "Activate default overlay" }
-                }.map { overlayVariants[it] as Overlay } handledBy ModalComponent.overlay.update
+                }.map { overlayVariants[it] as Overlay } handledBy ModalComponent.overlay.update*/
 
                 h3 { +"Sizes" }
                 lineUp({

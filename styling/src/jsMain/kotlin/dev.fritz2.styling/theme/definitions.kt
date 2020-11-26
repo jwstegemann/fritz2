@@ -358,16 +358,6 @@ interface Icons {
     val fritz2: IconDefinition
 }
 
-interface RadioStyles {
-    val sizes: RadioSizes
-}
-
-interface RadioSizes {
-    val small: Style<BasicParams>
-    val normal: Style<BasicParams>
-    val large: Style<BasicParams>
-}
-
 interface CheckboxStyles {
     val sizes: CheckboxSizes
     val icon: Style<BasicParams>
@@ -381,6 +371,34 @@ interface CheckboxSizes {
     val normal: Style<BasicParams>
     val large: Style<BasicParams>
 }
+
+interface RadioStyles {
+    val sizes: RadioSizes
+    val label: Style<BasicParams>
+    val default: Style<BasicParams>
+    val selected: Style<BasicParams>
+}
+
+interface RadioSizes {
+    val small: Style<BasicParams>
+    val normal: Style<BasicParams>
+    val large: Style<BasicParams>
+}
+
+interface SwitchStyles {
+    val sizes: SwitchSizes
+    val dot: Style<BasicParams>
+    val label: Style<BasicParams>
+    val default: Style<BasicParams>
+    val checked: Style<BasicParams>
+}
+
+interface SwitchSizes {
+    val small: Style<BasicParams>
+    val normal: Style<BasicParams>
+    val large: Style<BasicParams>
+}
+
 
 interface InputFieldStyles {
     val variants: InputFieldVariants

@@ -3,7 +3,6 @@ package dev.fritz2.components
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.FormControlComponent.Control
-import dev.fritz2.components.RadioGroupComponent.Companion.radioGroupStructure
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -247,22 +246,7 @@ open class FormControlComponent {
         return selectedStore.data
     }*/
 
-    open fun radioGroup(
-        styling: BasicParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
-        id: String? = null,
-        prefix: String = ControlNames.radioGroup,
-        build: RadioGroupComponent.() -> Unit
-    ): Flow<String> {
-        val selectedStore = storeOf<String>("")
-        control.set(ControlNames.radioGroup)
-        {
-            radioGroupStructure(styling, selectedStore, baseClass, id, prefix) {
-                build()
-            }
-        }
-        return selectedStore.data
-    }
+
 
     fun render(
         styling: BasicParams.() -> Unit = {},

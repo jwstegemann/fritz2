@@ -1,15 +1,12 @@
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
-import dev.fritz2.components.RadioGroupComponent.Companion.radioGroupStructure
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
@@ -19,7 +16,7 @@ val myItemList = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "22222
 // and for setting up other renderers!
 class MyFormControlComponent : FormControlComponent() {
 
-    // simple convenience function as we cannot provide default parameters for overridden functions!
+/*    // simple convenience function as we cannot provide default parameters for overridden functions!
     fun mySingleSelectComponent(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,
@@ -85,7 +82,7 @@ class MyFormControlComponent : FormControlComponent() {
             }
         }
         return returnStore.data
-    }
+    }*/
 
     // Define your own renderer
     class MySpecialRenderer(private val component: FormControlComponent) : ControlRenderer {
@@ -269,10 +266,10 @@ fun RenderContext.formControlDemo(): Div {
                 label { "Label next to the control just to be different" }
                 helperText { "Helper text below control" }
                 direction { row }
-                mySingleSelectComponent {
+               /* mySingleSelectComponent {
                     items { listOf("some", "predefined", "options") }
                     selected { "some" }
-                } handledBy customValueSelected.update
+                } handledBy customValueSelected.update*/
             }
             (::div.styled {
                 background {

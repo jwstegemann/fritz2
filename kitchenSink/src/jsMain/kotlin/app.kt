@@ -112,8 +112,9 @@ fun main() {
                         simpleAnchor("popover")
                         simpleAnchor("modal")
                         simpleAnchor("input")
-                        simpleAnchor("multiselect")
-                        simpleAnchor("singleselect")
+                        simpleAnchor("checkboxes")
+                        simpleAnchor("radios")
+                        simpleAnchor("switch")
                         simpleAnchor("formcontrol")
 
                         (::a.styled {
@@ -165,8 +166,9 @@ fun main() {
                             "formcontrol" -> formControlDemo()
                             "flexbox" -> flexBoxDemo(theme)
                             "gridbox" -> gridBoxDemo()
-                            "multiselect" -> multiSelectDemo()
-                            "singleselect" -> singleSelectDemo()
+                            "checkboxes" -> checkboxesDemo()
+                            "radios" -> radiosDemo()
+                            "switch" -> switchDemo()
                             "stack" -> stackDemo()
                             "modal" -> modalDemo()
                             "popover" -> popoverDemo()
