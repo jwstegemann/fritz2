@@ -25,7 +25,7 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
             flex { shrink { "0" } }
         }) {
             (::img.styled {
-                width(sm = { small }, md = { smaller })
+                width(sm = { wide.small }, md = { wide.smaller })
                 boxShadow { flat }
                 radius { large }
             }) {

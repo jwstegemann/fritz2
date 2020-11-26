@@ -86,15 +86,25 @@ open class DefaultTheme : Theme {
     )
 
     override val sizes = Sizes(
-        tiny = "5rem",
-        smaller = "8rem",
-        small = "13rem",
-        normal = "auto",
-        large = "21rem",
-        larger = "34rem",
-        huge = "55rem",
-        giant = "89rem",
-        full = "100%"
+        tiny = "0.25rem",
+        smaller = "0.5rem",
+        small = "0.75rem",
+        normal = "1",
+        large = "1.25",
+        larger = "1.5",
+        huge = "1.75",
+        giant = "2",
+        full = "100%",
+        wide = ScaledValue(
+            tiny = "5rem",
+            smaller = "8rem",
+            small = "13rem",
+            normal = "auto",
+            large = "21rem",
+            larger = "34rem",
+            huge = "55rem",
+            giant = "89rem",
+        )
     )
 
     override val borderWidths = Thickness(
@@ -1595,7 +1605,7 @@ open class DefaultTheme : Theme {
                         right { normal }
                     }
                 }
-                minHeight { Theme().sizes.smaller }
+                minHeight { wide.smaller }
             }
 
             override val normal: Style<BasicParams> = {
@@ -1606,7 +1616,7 @@ open class DefaultTheme : Theme {
                         left { "50%" }
                     }
                 }
-                minHeight { Theme().sizes.smaller }
+                minHeight { wide.smaller }
                 minWidth { "50%" }
                 css("transform: translateX(-50%);")
             }
@@ -1620,7 +1630,7 @@ open class DefaultTheme : Theme {
                         bottom { normal }
                     }
                 }
-                minHeight { Theme().sizes.smaller }
+                minHeight { wide.smaller }
                 minWidth { "35%" }
                 css("transform: translateX(-90%);")
             }
