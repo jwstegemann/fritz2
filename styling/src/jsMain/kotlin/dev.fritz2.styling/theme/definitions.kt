@@ -79,7 +79,8 @@ class Sizes(
     larger: Property = large,
     huge: Property = larger,
     giant: Property = huge,
-    full: Property = giant
+    full: Property = giant,
+    val wide: ScaledValue
 ) : ScaledValue(normal, small, smaller, tiny, large, larger, huge, giant, full = full) {
     val borderBox: Property = "border-box"
     val contentBox: Property = "content-box"
