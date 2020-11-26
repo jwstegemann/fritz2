@@ -69,6 +69,13 @@ class Thickness(
 
 /**
  * Defines a value that has different expressions for different sizes.
+ *
+ * There is a special sub-range for "bigger" sizes called ``wide``. "Bigger" really means sizes that reach dimensions up
+ * to the whole screen and have to _scale_ much different (much wider steps obviously) than the basic ones.
+ *
+ * We believe that in most of the cases one would like to define rather *small* sizes, ranging between a fraction of
+ * an ``rem`` and at most ``2rem``. This is why those are _intentionally_ the basic properties of this type and the
+ * more wider scaled ones need the ``wide`` "prefix"!
  */
 class Sizes(
     normal: Property,
