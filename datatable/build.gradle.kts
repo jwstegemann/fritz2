@@ -4,10 +4,6 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
-repositories {
-    maven(url = "https://kotlin.bintray.com/kotlinx/") // soon will be just jcenter()
-}
-
 kotlin {
 //    jvm()
     js(LEGACY).browser {
@@ -38,7 +34,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core"))
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.1.0")
             }
         }
 
@@ -54,12 +49,48 @@ kotlin {
             dependencies {
                 implementation(project(":styling"))
                 implementation(project(":components"))
-                implementation(project(":datatable"))
             }
         }
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
+            }
+        }
+    }
+}
+
+
+publishing {
+    repositories {
+        maven {
+            name = "bintray"
+            val releaseUrl = "https://api.bintray.com/maven/jwstegemann/fritz2/${project.name}/;" +
+                    "publish=0;" + // Never auto-publish to allow override.
+                    "override=1"
+            val snapshotUrl = "https://oss.jfrog.org/artifactory/oss-snapshot-local"
+            val isRelease = System.getenv("GITHUB_EVENT_NAME").equals("release", true)
+
+            url = uri(if (isRelease && !version.toString().endsWith("SNAPSHOT")) releaseUrl else snapshotUrl)
+
+            credentials {
+                username = "jwstegemann"
+                password = System.getenv("BINTRAY_API_KEY")
+            }
+        }
+    }
+}
+
+tasks {
+    val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
+        impliedPlatforms = mutableListOf("common")
+        outputFormat = "markdown"
+        outputDirectory = "$projectDir/api/dokka"
+        multiplatform {
+            val js by creating {
+                impliedPlatforms = mutableListOf("js")
+            }
+            val jvm by creating {
+                impliedPlatforms = mutableListOf("jvm")
             }
         }
     }

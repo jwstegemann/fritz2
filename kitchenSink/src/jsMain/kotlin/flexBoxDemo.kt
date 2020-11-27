@@ -1,6 +1,10 @@
-import dev.fritz2.components.*
+import dev.fritz2.components.box
+import dev.fritz2.components.clickButton
+import dev.fritz2.components.flexBox
+import dev.fritz2.components.lineUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -25,7 +29,7 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
             flex { shrink { "0" } }
         }) {
             (::img.styled {
-                width(sm = { small }, md = { smaller })
+                width(sm = { wide.small }, md = { wide.smaller })
                 boxShadow { flat }
                 radius { large }
             }) {

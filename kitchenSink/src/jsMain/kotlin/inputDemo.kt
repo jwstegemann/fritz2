@@ -1,11 +1,15 @@
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
-import dev.fritz2.components.*
+import dev.fritz2.components.InputFieldComponent
+import dev.fritz2.components.inputField
+import dev.fritz2.components.lineUp
+import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
