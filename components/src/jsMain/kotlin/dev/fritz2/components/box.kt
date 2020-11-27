@@ -5,6 +5,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.GridParams
+import dev.fritz2.styling.params.styled
 
 /**
  * This component represents the simplest layout component possible: A simple ``div`` that acts as a container

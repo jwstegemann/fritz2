@@ -36,15 +36,30 @@ typealias Property = String
 @ExperimentalCoroutinesApi
 interface Theme {
     companion object {
-        val currentTheme = MutableStateFlow<Theme>(DefaultTheme())
+        private val currentTheme = MutableStateFlow<Theme>(DefaultTheme())
 
+        /**
+         * exposes the current [Theme] as a [Flow]
+         */
         val data: Flow<Theme> = currentTheme
 
+        /**
+         * gets the current active [Theme]
+         */
         operator fun invoke() = currentTheme.value
 
+        /**
+         * sets the current active theme
+         *
+         * @param theme [Theme] to activate
+         */
         fun use(theme: Theme) {
             resetCss(theme.reset)
             currentTheme.value = theme
+        }
+
+        init {
+            resetCss(currentTheme.value.reset)
         }
     }
 

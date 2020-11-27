@@ -5,10 +5,7 @@ import dev.fritz2.components.CheckboxGroupComponent.Companion.checkboxGroupStruc
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.ColorProperty
-import dev.fritz2.styling.params.DirectionValues
-import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.*
 import dev.fritz2.styling.theme.CheckboxSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
