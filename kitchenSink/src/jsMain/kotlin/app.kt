@@ -115,6 +115,7 @@ fun main() {
                         simpleAnchor("multiselect")
                         simpleAnchor("singleselect")
                         simpleAnchor("formcontrol")
+                        simpleAnchor("datatable")
 
                         (::a.styled {
                             tooltip("visit us on", "www.fritz2.dev") { left }()
@@ -171,6 +172,7 @@ fun main() {
                             "modal" -> modalDemo()
                             "popover" -> popoverDemo()
                             "welcome" -> welcome()
+                            "datatable" -> tableDemo()
                             else -> welcome()
                         }
                     }

@@ -16,6 +16,7 @@ include(
     "test-server",
     "styling",
     "components",
+    "datatable",
     "kitchenSink"
 )
 
