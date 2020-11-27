@@ -1,3 +1,4 @@
+import dev.fritz2.binding.RootStore
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.A
 import dev.fritz2.dom.html.Div
@@ -10,6 +11,7 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.RadiiContext
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.style
+import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.renderElement
 import dev.fritz2.styling.theme.theme
 import dev.fritz2.styling.whenever
@@ -100,6 +102,29 @@ fun RenderContext.simpleAnchor(linkText: String): A {
     }
 }
 
+fun RenderContext.navAnchor(linkText: String, href: String): A {
+    return (::a.styled {
+        fontSize { normal }
+        fontWeight { semiBold }
+        color { warning }
+        hover {
+            color { secondary }
+        }
+    }) {
+        +linkText
+        href(href)
+    }
+}
+
+val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
+
+object ThemeStore : RootStore<Int>(0) {
+    val selectTheme = handle<Int> { _, index ->
+        Theme.use(themes[index])
+        index
+    }
+}
+
 
 fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
 
@@ -180,6 +205,45 @@ fun main() {
         themeProvider {
             themes { themes }
             items {
+                navBar {
+                    brand {
+                        (::a.styled {
+                            tooltip("visit us on", "www.fritz2.dev") { right }()
+                            after {
+                                textAlign { center }
+                                background { color { primary } }
+                                color { light }
+                            }
+                            alignItems { end }
+                        }) {
+                            href("https://www.fritz2.dev/")
+                            target("fritz2")
+
+                            icon({
+                                size { "2.5rem" }
+                                color { primary }
+                            }) { fromTheme { fritz2 } }
+
+                            (::span.styled {
+                                margins { left { normal } }
+                                verticalAlign { sub }
+                                fontSize { larger }
+                                fontWeight { lighter }
+                            }) { +"fritz2 - component library" }
+                        }
+                    }
+
+                    actions {
+                        lineUp {
+                            items {
+                                navAnchor("Documentation", "https://fritz2.dev")
+                                navAnchor("API", "https://fritz2.dev")
+                                navAnchor("Examples", "https://fritz2.dev")
+                                navAnchor("Github", "https://fritz2.dev")
+                            }
+                        }
+                    }
+                }
                 lineUp({
                     alignItems { stretch }
                     color { dark }
