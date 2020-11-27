@@ -22,14 +22,16 @@ import org.w3c.dom.HTMLInputElement
 /**
  * This class combines the _configuration_ and the core styling of a checkbox.
  *
- * In order to render a checkbox use the [checkbox] factory function!
  *
  * This class offers the following _configuration_ features:
- *  - the text label of a checkbox (static or dynamic via a [Flow<String>])
- *  - the background color of the box
- *  - the background color for the checked state
- *  - some predefined styling variants
+ *  - the label of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext )
+ *  - some predefined styling variants (size)
+ *  - the style of the checkbox
+ *  - the style checked state
+ *  - the style of the label
+ *  - the checked icon ( use our icon library of our theme )
  *  - link an external boolean flow to set the checked state of the box
+ *  - link an external boolean flow to set the disabled state of the box
  *  - link events of the checkbox like ``changes`` with external handlers
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
@@ -39,10 +41,8 @@ import org.w3c.dom.HTMLInputElement
  * Example usage
  * ```
  * checkbox {
- *      text("with extra cheese") // set the label
- *      checkboxSize { normal } // choose a predefined size
- *      borderColor { Theme().colors.secondary } // set up the border color of the box itself
- *      checkedBackgroundColor { Theme().colors.warning } // set the color of the checked state
+ *      label("with extra cheese") // set the label
+ *      size { normal } // choose a predefined size
  *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
@@ -53,9 +53,7 @@ import org.w3c.dom.HTMLInputElement
 @ComponentMarker
 class CheckboxComponent {
     companion object {
-        // todo replace px in sizes (in default theme) with rem/theme values where not explicit
-        // todo using theme colors in static styles probably does not work when changing themes
-        val checkboxInputStaticCss = staticStyle(
+       val checkboxInputStaticCss = staticStyle(
             "checkbox",
             """
             position: absolute;
@@ -147,10 +145,8 @@ class CheckboxComponent {
  * Example usage
  * ```
  * checkbox {
- *      text("with extra cheese") // set the label
- *      checkboxSize { normal } // choose a predefined size
- *      borderColor { Theme().colors.secondary } // set up the border color of the box itself
- *      checkedBackgroundColor { Theme().colors.warning } // set the color of the checked state
+ *      label("with extra cheese") // set the label
+ *      size { normal } // choose a predefined size
  *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store

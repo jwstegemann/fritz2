@@ -14,54 +14,50 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 /**
- * This class combines the _configuration_ and the core styling of a radio button group.
+ * This class combines the _configuration_ and the core styling of a radio group.
  * The rendering itself is also done within the companion object.
  *
- * In order to render a radio button group use the [radioGroup] factory function!
+ * In order to render a checkbox group use the [radioGroup] factory function!
  *
  * This class offers the following _configuration_ features:
- *  - the text label of a radio button (static or dynamic via a [Flow<String>])
- *  - the background color of the radio
- *  - the background color for the selected radio
- *  - some predefined styling variants
- *  - offer a list of items ([String])
- *  - offer [String] of pre selected item
- *  - choose the direction of radio elements (row vs column)
+ *  - the items as a flowOf(List<T>)
+ *  - the label(mapping) of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext ) the the example below
+ *  - some predefined styling variants (size)
+ *  - the style of the items (radio)
+ *  - the style selected state
+ *  - the style of the label
+ *  - link an external boolean flow to set the disabled state of the box
+ *  - choose the direction of checkbox elements (row vs column)
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
  *  ``build``. It offers an initialized instance of this [RadioGroupComponent] class as receiver, so every mutating
- *  method can be called for configuring the desired state for rendering the radio button group.
+ *  method can be called for configuring the desired state for rendering the checkbox.
  *
  * Example usage
  * ```
  * // simple use case showing the core functionality
  * val options = listOf("A", "B", "C")
- * radioGroup {
- *     items { options } // provide a list of items
- *     selected { options[1] } // pre select "B"
- * } handledBy selectedItemStore.update // combine the Flow<String> with a fitting handler
+ * val myStore = storeOf(<String>)
+ * radioGroup(store = myStore) {
+ *      items { flowOf(options) } or use items(options) // provide a list of items you can
+ * }
  *
- * // use case showing some styling options
- * val options = listOf("A", "B", "C")
- * radioGroup({ // this styling is only applied to the enclosing container element!
- *      background {
- *          color { "deeppink" }
+ * // use case showing some styling options and a store of List<Pair<Int,String>>
+ *   val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
+ *  val myStore = storeOf(<List<Pair<Int,String>>)
+ * radioGroup(store = myStore) {
+ *      label {
+ *          it.second
  *      }
- *      border {
- *          color { dark }
- *          style { solid }
- *          size { normal }
- *      }
- * }) {
- *      // those predefined styles are applied especially to specific inner elements!
- *      radioSize { normal }
- *      borderColor { Theme().colors.secondary }
- *      checkedBackgroundColor { Theme().colors.warning }
- *      items { options } // provide a list of items
- *      selected { options[1] } // pre select "B"
- * } handledBy selectedItemStore.update // combine the Flow<String> with a fitting handler
+ *      size { large }
+ *      items { flowOf(options) } or use items(options) // provide a list of items you can
+ *      selectedStyle {{
+ *           background { color {"green"}}
+ *      }}
+ * }
  * ```
  */
+@ComponentMarker
 class RadioGroupComponent<T> {
     companion object {
         object RadioGroupLayouts {
@@ -166,7 +162,7 @@ fun <T>RenderContext.radioGroup(
     store: Store<T>,
     baseClass: StyleClass? = null,
     id: String? = null,
-    prefix: String = "checkboxGroupComponent",
+    prefix: String = "radioGroupComponent",
     build: RadioGroupComponent<T>.() -> Unit = {}
 ) {
     val component = RadioGroupComponent<T>().apply(build)
