@@ -12,6 +12,7 @@ fun RenderContext.switchDemo(): Div {
     val checkedStore1 = RootStore(false)
     val checkedStore2 = RootStore(false)
     val checkedStore3 = RootStore(true)
+    val checkedStore4 = RootStore(false)
 
     return stackUp({
         alignItems { start }
@@ -53,6 +54,22 @@ fun RenderContext.switchDemo(): Div {
                 }}
                 events {
                     changes.states() handledBy checkedStore3.update
+                }
+            }
+            switch(styling = {
+                background {
+                    color { dark }
+                }
+            }){
+                label("more customizing")
+                checked { checkedStore4.data }
+                dotStyle {{
+                    background {
+                        color { danger }
+                    }
+                }}
+                events {
+                    changes.states() handledBy checkedStore4.update
                 }
             }
         }

@@ -229,22 +229,23 @@ open class FormControlComponent {
         }
     }
 
-/*    open fun <T>checkboxGroup(
+    open fun checkboxGroup(
         styling: BasicParams.() -> Unit = {},
+        store: Store<String>,
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.checkboxGroup,
-        build: CheckboxGroupComponent<T>.() -> Unit
-    ): Flow<List<String>> {
-
-        val selectedStore = storeOf<List<String>>(emptyList())
+        build: CheckboxGroupComponent<String>.() -> Unit
+    ) {
         control.set(ControlNames.checkboxGroup) {
-            *//*checkboxGroupStructure(styling, selectedStore, baseClass, id, prefix) {
-                build()
-            }*//*
+            (::fieldset.styled() {
+            }){
+                checkboxGroup(styling, store, baseClass, id, prefix) {
+                    build()
+                }
+            }
         }
-        return selectedStore.data
-    }*/
+    }
 
 
 

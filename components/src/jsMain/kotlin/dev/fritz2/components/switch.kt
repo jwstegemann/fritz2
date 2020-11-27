@@ -115,6 +115,12 @@ class SwitchComponent {
         labelStyle = value()
     }
 
+    var dotStyle: Style<BasicParams> = { }
+    fun dotStyle(value: () -> Style<BasicParams>) {
+        dotStyle = value()
+
+    }
+
     var checkedStyle: Style<BasicParams> = { Theme().switch.checked() }
     fun checkedStyle(value: () -> Style<BasicParams>) {
         checkedStyle = value()
@@ -219,6 +225,7 @@ fun RenderContext.switch(
                     attr("data-disabled", component.disabled)
                     (::div.styled() {
                         Theme().switch.dot()
+                        component.dotStyle()
                        if( checked ) {
                            css("transform:translateX(calc(var(--sw-width) - var(--sw-height)));")
                        }

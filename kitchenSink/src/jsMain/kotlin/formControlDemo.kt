@@ -1,9 +1,11 @@
 import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
+import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,25 +18,27 @@ val myItemList = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "22222
 // and for setting up other renderers!
 class MyFormControlComponent : FormControlComponent() {
 
-/*    // simple convenience function as we cannot provide default parameters for overridden functions!
+    // simple convenience function as we cannot provide default parameters for overridden functions!
     fun mySingleSelectComponent(
         styling: BasicParams.() -> Unit = {},
+        store: Store<String>,
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = Companion.ControlNames.checkboxGroup,
-        build: RadioGroupComponent.() -> Unit
-    ): Flow<String> {
-        return radioGroup(styling, baseClass, id, prefix, build)
+        build: RadioGroupComponent<String>.() -> Unit
+    ) {
+        return radioGroup(styling, store, baseClass, id, prefix, build)
     }
 
     // override default implementation of a radio group within a form control
-    override fun radioGroup(
+    fun radioGroup(
         styling: BasicParams.() -> Unit,
+        store: Store<String>,
         baseClass: StyleClass?,
         id: String?,
         prefix: String,
-        build: RadioGroupComponent.() -> Unit
-    ): Flow<String> {
+        build: RadioGroupComponent<String>.() -> Unit
+    ){
         val returnStore = object : RootStore<String>("") {
 
             val syncHandlerSelect = handleAndEmit<String, String> { _, new ->
@@ -67,9 +71,9 @@ class MyFormControlComponent : FormControlComponent() {
 
         control.set(Companion.ControlNames.radioGroup)
         {
-            radioGroupStructure(styling, returnStore.selectedStore, baseClass, id, prefix) {
+            radioGroup(styling, returnStore.selectedStore, baseClass, id, prefix) {
                 build()
-                items += "custom"
+                items.map { it + "custom" }
             }
             inputField {
                 size { small }
@@ -81,8 +85,7 @@ class MyFormControlComponent : FormControlComponent() {
                 }
             }
         }
-        return returnStore.data
-    }*/
+    }
 
     // Define your own renderer
     class MySpecialRenderer(private val component: FormControlComponent) : ControlRenderer {
@@ -230,7 +233,7 @@ fun RenderContext.formControlDemo(): Div {
             h3 { +"Form with a small checkbox group, no label, no helpertext, formlayout horizontal" }
             formControl {
                 direction { row } // must be applied to formcontrol instead of checkboxGroup
-                checkboxGroup<String>(
+                checkboxGroup(
                     store = selectedItemsStore,
                     id = "checkGroup1"
                 ) {
@@ -261,15 +264,14 @@ fun RenderContext.formControlDemo(): Div {
                 +"""This control has overridden the control function to implement a special control. 
                     |It is combined with a hand made renderer for the surrounding custom structure.""".trimMargin()
             }
-            val customValueSelected = storeOf("")
+            val customValueSelected = storeOf("some")
             myFormControl {
                 label { "Label next to the control just to be different" }
                 helperText { "Helper text below control" }
                 direction { row }
-               /* mySingleSelectComponent {
-                    items { listOf("some", "predefined", "options") }
-                    selected { "some" }
-                } handledBy customValueSelected.update*/
+                mySingleSelectComponent(store = customValueSelected) {
+                    items { flowOf(listOf("some", "predefined", "options")) }
+                }
             }
             (::div.styled {
                 background {

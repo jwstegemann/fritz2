@@ -82,6 +82,9 @@ class CheckboxGroupComponent<T> {
     }
 
     var items: Flow<List<T>> = flowOf(emptyList())
+    fun items(value: List<T>) {
+        items = flowOf(value)
+    }
     fun items(value: () -> Flow<List<T>>) {
         items = value()
     }

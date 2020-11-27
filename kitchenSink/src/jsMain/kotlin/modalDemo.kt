@@ -1,3 +1,4 @@
+import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
@@ -6,6 +7,7 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
@@ -133,31 +135,35 @@ fun RenderContext.modalDemo(): Div {
                 }
 
                 val overlayVariants = mapOf(
-                    Pair("Activate default overlay", DefaultOverlay()),
-                    Pair("Activate overlay for each nested level", DefaultOverlay(OverlayMethod.CoveringEach)),
-                    Pair("Activate styled overlay", DefaultOverlay(OverlayMethod.CoveringTopMost) {
-                        width { "100%" }
-                        height { "100%" }
-                        position {
-                            absolute {
-                                horizontal { "0" }
-                                vertical { "0" }
+                        Pair("Activate default overlay", DefaultOverlay()),
+                        Pair("Activate overlay for each nested level", DefaultOverlay(OverlayMethod.CoveringEach)),
+                        Pair("Activate styled overlay", DefaultOverlay(OverlayMethod.CoveringTopMost) {
+                            width { "100%" }
+                            height { "100%" }
+                            position {
+                                absolute {
+                                    horizontal { "0" }
+                                    vertical { "0" }
+                                }
                             }
-                        }
-                        background {
-                            image { "https://via.placeholder.com/150x50/?text=BACKGROUND" }
-                            repeat { repeat }
-                        }
-                        css("transform: rotate(-30deg) translateX(-.5rem) scale(200%)")
-                        opacity { "0.8" }
-                    })
+                            background {
+                                image { "https://via.placeholder.com/150x50/?text=BACKGROUND" }
+                                repeat { repeat }
+                            }
+                            css("transform: rotate(-30deg) translateX(-.5rem) scale(200%)")
+                            opacity { "0.8" }
+                        })
                 )
 
-            /*    radioGroup {
+                radioGroup(store = ModalComponent.overlay) {
                     direction { row }
-                    items { overlayVariants.keys.toList() }
-                    selected { "Activate default overlay" }
-                }.map { overlayVariants[it] as Overlay } handledBy ModalComponent.overlay.update*/
+                    label { overlay ->
+                        overlayVariants.filter { it.value == overlay  }.map {
+                            it.key
+                        }[0]
+                    }
+                    items(overlayVariants.values.toList())
+                }
 
                 h3 { +"Sizes" }
                 lineUp({
