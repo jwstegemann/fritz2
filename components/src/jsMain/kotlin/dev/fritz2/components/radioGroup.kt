@@ -1,0 +1,196 @@
+package dev.fritz2.components
+
+import dev.fritz2.binding.Store
+import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.states
+import dev.fritz2.identification.uniqueId
+import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.styled
+import dev.fritz2.styling.theme.IconDefinition
+import dev.fritz2.styling.theme.RadioSizes
+import dev.fritz2.styling.theme.Theme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+
+/**
+ * This class combines the _configuration_ and the core styling of a radio button group.
+ * The rendering itself is also done within the companion object.
+ *
+ * In order to render a radio button group use the [radioGroup] factory function!
+ *
+ * This class offers the following _configuration_ features:
+ *  - the text label of a radio button (static or dynamic via a [Flow<String>])
+ *  - the background color of the radio
+ *  - the background color for the selected radio
+ *  - some predefined styling variants
+ *  - offer a list of items ([String])
+ *  - offer [String] of pre selected item
+ *  - choose the direction of radio elements (row vs column)
+ *
+ *  This can be done within a functional expression that is the last parameter of the factory function, called
+ *  ``build``. It offers an initialized instance of this [RadioGroupComponent] class as receiver, so every mutating
+ *  method can be called for configuring the desired state for rendering the radio button group.
+ *
+ * Example usage
+ * ```
+ * // simple use case showing the core functionality
+ * val options = listOf("A", "B", "C")
+ * radioGroup {
+ *     items { options } // provide a list of items
+ *     selected { options[1] } // pre select "B"
+ * } handledBy selectedItemStore.update // combine the Flow<String> with a fitting handler
+ *
+ * // use case showing some styling options
+ * val options = listOf("A", "B", "C")
+ * radioGroup({ // this styling is only applied to the enclosing container element!
+ *      background {
+ *          color { "deeppink" }
+ *      }
+ *      border {
+ *          color { dark }
+ *          style { solid }
+ *          size { normal }
+ *      }
+ * }) {
+ *      // those predefined styles are applied especially to specific inner elements!
+ *      radioSize { normal }
+ *      borderColor { Theme().colors.secondary }
+ *      checkedBackgroundColor { Theme().colors.warning }
+ *      items { options } // provide a list of items
+ *      selected { options[1] } // pre select "B"
+ * } handledBy selectedItemStore.update // combine the Flow<String> with a fitting handler
+ * ```
+ */
+class RadioGroupComponent<T> {
+    companion object {
+        object RadioGroupLayouts {
+            val column: Style<BasicParams> = {
+                display {
+                    inlineGrid
+                }
+            }
+            val row: Style<BasicParams> = {
+                display {
+                    inlineFlex
+                }
+            }
+        }
+    }
+    var items: Flow<List<T>> = flowOf(emptyList())
+    fun items(value: List<T>) {
+        items = flowOf(value)
+    }
+    fun items(value: () -> Flow<List<T>>) {
+        items = value()
+    }
+
+    var icon: IconDefinition = Theme().icons.check
+    fun icon(value: () -> IconDefinition) {
+        icon = value()
+    }
+
+    var label: ((item: T)  -> String) =  {it.toString()}
+    fun label (value: (item: T)  -> String) {
+        label = value
+    }
+
+    var disabled: Flow<Boolean> = flowOf(false)
+    fun disabled(value: Flow<Boolean>) {
+        disabled = value
+    }
+    fun disabled(value:  Boolean) {
+        disabled = flowOf(value)
+    }
+
+    var direction: Style<BasicParams> = RadioGroupLayouts.column
+    fun direction(value: RadioGroupLayouts.() -> Style<BasicParams>) {
+        direction =  RadioGroupLayouts.value()
+    }
+
+    var size: RadioSizes.() -> Style<BasicParams> = { Theme().radio.sizes.normal }
+    fun size(value: RadioSizes.() -> Style<BasicParams>) {
+        size = value
+    }
+
+    var itemStyle: Style<BasicParams> = { Theme().radio.default() }
+    fun itemStyle(value: () -> Style<BasicParams>) {
+        itemStyle = value()
+    }
+
+    var labelStyle: Style<BasicParams> = { Theme().radio.label() }
+    fun labelStyle(value: () -> Style<BasicParams>) {
+        labelStyle = value()
+    }
+
+    var selectedStyle: Style<BasicParams> = { Theme().radio.selected() }
+    fun selectedStyle(value: () -> Style<BasicParams>) {
+        selectedStyle = value()
+    }
+
+}
+
+
+
+
+/**
+ * This component generates a *group* of radio buttons.
+ *
+ * You can set different kind of properties like the labeltext or different styling aspects like the colors of the
+ * background, the label or the selected item. It returns a [Flow<String>] with the currently selected item, so it
+ * can be easily passed to an appropriate handler like the update handler of a store.
+ *
+ * For a detailed overview about the possible properties of the component object itself, have a look at
+ * [RadioGroupComponent]
+ *
+ * Example usage
+ * ```
+ * val options = listOf("A", "B", "C")
+ * radioGroup {
+ *     items { options } // provide a list of items
+ *     selected { options[1] } // pre select "B"
+ * } handledBy selectedItemStore.update // combine the Flow<String> with a fitting handler
+ * ```
+ *
+ * @see RadioGroupComponent
+ *
+ * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the element
+ * @param id the ID of the element
+ * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param build a lambda expression for setting up the component itself. Details in [RadioGroupComponent]
+ * @return a flow of the _selected_ item
+ */
+fun <T>RenderContext.radioGroup(
+    styling: BasicParams.() -> Unit = {},
+    store: Store<T>,
+    baseClass: StyleClass? = null,
+    id: String? = null,
+    prefix: String = "checkboxGroupComponent",
+    build: RadioGroupComponent<T>.() -> Unit = {}
+) {
+    val component = RadioGroupComponent<T>().apply(build)
+
+    val grpId = id ?: uniqueId()
+    (::div.styled(styling, baseClass, id, prefix) {
+        component.direction()
+    }) {
+        component.items.renderEach { item ->
+            val checkedFlow = store.data.map { it == item }.distinctUntilChanged()
+            radio(styling = component.itemStyle, id = grpId + "-grp-item-" + uniqueId()) {
+                size { component.size.invoke(Theme().radio.sizes) }
+                labelStyle { component.labelStyle }
+                selectedStyle { component.selectedStyle }
+                label(component.label(item))
+                selected { checkedFlow }
+                disabled { component.disabled }
+                events {
+                    changes.states().map{ item } handledBy store.update
+                }
+            }
+        }
+    }
+}

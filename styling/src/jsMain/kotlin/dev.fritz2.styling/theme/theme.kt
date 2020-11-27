@@ -176,6 +176,8 @@ interface Theme {
 
     val checkbox: CheckboxStyles
 
+    val switch: SwitchStyles
+
     val modal: ModalStyles
 
     /**
