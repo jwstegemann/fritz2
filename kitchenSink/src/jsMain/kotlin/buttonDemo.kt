@@ -89,8 +89,7 @@ fun RenderContext.buttonDemo(): Div {
                                 }
                             }
                         }
-                            h3 { +"The button sizes work for all variants, of course." }
-
+                        h3 { +"The button sizes work for all variants, of course." }
                         componentFrame {
                             lineUp {
                                 items {

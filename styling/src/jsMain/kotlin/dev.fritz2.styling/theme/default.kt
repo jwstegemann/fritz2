@@ -45,17 +45,18 @@ open class DefaultTheme : Theme {
     )
 
     override val colors = object : Colors {
-        override val tertiary = "#b2f5ea"
-        override val primary = "#3d405b"
-        override val secondary = "#e07a5f"
-        override val success = "#28a745"
-        override val danger = "#dc3545"
-        override val warning = "#ffc107"
-        override val info = "#17a2b8"
-        override val light = "#e2e8f0"
-        override val dark = "#2d3748"
-        override val white = "#ffffff"
-        val alert = "feebc8"
+        override val secondary = "#b2f5ea" // rgb(178,245,234) new
+        override val tertiary = "#3d405b" // rgb(61,64,92) formerly primary
+        override val primary = "#319795" // rgb(49,151,149) formerly "#e07a5f" // rgb(224,122,95)
+        override val success = "#28a745" // rgb(40,167,69)
+        override val danger = "#dc3545" // rgb(220,53,69)
+        override val warning = "#ffc107" // rgb(225,193,7)
+        override val info = "#17a2b8" // rgb(23,162,184)
+        override val light = "#e2e8f0" // rgb(226,232,240)
+        override val dark = "#2d3748" // rgb(45,55,72)
+        override val base = "#ffffff" // rgb(255,255,255)
+        override val menuSelect = "#b2f5ea"
+        val alert = "feebc8" // rgb(254,235,200)
         override val disabled = light
     }
 
@@ -1472,14 +1473,12 @@ open class DefaultTheme : Theme {
             override val solid: Style<BasicParams> = {
                 basic()
                 background { color { "var(--main-color)" } }
-                color { light }
-
+                color { base }
                 hover {
-                    css("filter: brightness(132%);")
+                        css("filter: brightness(80%);") //132%
                 }
-
                 active {
-                    css("filter: brightness(132%);")
+                    css("filter: brightness(80%);")
                 }
             }
 
@@ -1491,9 +1490,12 @@ open class DefaultTheme : Theme {
                     style { solid }
                     color { "var(--main-color)" }
                 }
-
                 hover {
-                    background { color { light } }
+                    css("background-opacity: 0.2;")
+                    background {
+                        color { toRGBA(primary, 0.2)}
+                    }
+
                 }
             }
 
@@ -1974,4 +1976,34 @@ open class DefaultTheme : Theme {
         }
     }
 
+    override fun toRGBA(color: ColorProperty, opacity: Double): ColorProperty {
+        val r: Int = convertHexCharToDecimal(color[1])*16 + convertHexCharToDecimal(color[2])
+        val g: Int = convertHexCharToDecimal(color[3])*16 + convertHexCharToDecimal(color[4])
+        val b: Int = convertHexCharToDecimal(color[5])*16 + convertHexCharToDecimal(color[6])
+        return "rgb($r,$g,$b,$opacity)"
+        // "# 31 -> 865    97 -> 967    95 -> 965"
+    }
+
+    private fun convertHexCharToDecimal(c:Char) : Int {
+        var i = when (c) {
+            '0' -> 0
+            '1' -> 1
+            '2' -> 2
+            '3' -> 3
+            '4' -> 4
+            '5' -> 5
+            '6' -> 6
+            '7' -> 7
+            '8' -> 8
+            '9' -> 9
+            'a' -> 10
+            'b' -> 11
+            'c' -> 12
+            'd' -> 13
+            'e' -> 14
+            'f' -> 15
+            else -> -1
+        }
+        return i
+    }
 }

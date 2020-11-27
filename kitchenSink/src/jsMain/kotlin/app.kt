@@ -5,15 +5,16 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.Router
 import dev.fritz2.routing.router
+import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.RadiiContext
 import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.renderElement
 import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.*
 
 val componentFrame: Style<BasicParams> = { // Auslagerung von Style
     width { "100%"}
@@ -99,7 +100,36 @@ fun RenderContext.simpleAnchor(linkText: String): A {
     }
 }
 
+
 fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
+
+    val selected = style ({
+            width { "90%" }
+            radius { normal }
+            border {
+                width { none }
+            }
+            // TODO: Hintergrund auf tertiary wenn Seite ausgewählt
+
+
+            background {
+                color { theme().toRGBA(primary, 0.3) }
+            }
+
+            paddings {
+                top { tiny }
+                bottom { tiny }
+                left { small }
+                right { small }
+            }
+        },"prefix")
+
+
+    val isActive = router.map { hash ->
+        console.log(hash)  //druckt in die Konsole im Browser
+        hash == linkText //map den reinkommenden Wert des Flow auf einen Boolean
+    }.distinctUntilChanged()
+
     return (::div.styled {
         width { "90%" }
         radius { normal }
@@ -107,9 +137,10 @@ fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
             width { none }
         }
         // TODO: Hintergrund auf tertiary wenn Seite ausgewählt
+
         hover {
             background {
-                color { light }
+                color { theme().toRGBA(light, 0.5) }
             }
         }
         paddings{
@@ -119,7 +150,8 @@ fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
             right { small }
         }
     }) {
-        nonHoverAnchor("$linkText")
+        className ( selected.whenever(isActive){ it }) // der Name der StyleClass wird das zu stylende Element (in diesem Fall der Div-Container) angehängt
+        nonHoverAnchor(linkText)
     }
 }
 
@@ -165,17 +197,18 @@ fun main() {
                             wrap { nowrap }
                             direction { column }
                             alignItems { flexStart }
-                            background { color { white } }
+                            background { color { base } }
                             color { dark }
                             paddings {
                                 top { "50px" }
                             }
+                            /*
                             borders {
                                 right {
                                     width { "2px" }
                                     color { light }
                                 }
-                            }
+                            }*/
                         }, id = "menue-left")
                         {
                             items {
@@ -186,9 +219,6 @@ fun main() {
                                 }) {
                                     menuAnchor("Welcome", router)
                                 }
-
-
-
 
                                 menuAnchor("Flexbox", router)
                                 menuAnchor("Gridbox", router)
@@ -202,6 +232,7 @@ fun main() {
                                 menuAnchor("Multiselect", router)
                                 menuAnchor("Singleselect", router)
                                 menuAnchor("Formcontrol", router)
+
 
                                 (::a.styled {
                                     theme().tooltip.write("visit us on", "www.fritz2.dev"){right}()

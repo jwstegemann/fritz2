@@ -2,10 +2,7 @@ package dev.fritz2.styling.theme
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.FlexParams
-import dev.fritz2.styling.params.GridParams
+import dev.fritz2.styling.params.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
@@ -170,6 +167,9 @@ interface Theme {
     val popover: PopoverStyles
 
     val tooltip: Tooltip
+
+    fun toRGBA(color: ColorProperty, opacity: Double): ColorProperty
+
 }
 
 /**
