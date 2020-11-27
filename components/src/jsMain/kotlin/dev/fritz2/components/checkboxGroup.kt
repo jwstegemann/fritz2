@@ -7,6 +7,7 @@ import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.CheckboxSizes
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Theme

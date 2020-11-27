@@ -16,7 +16,6 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Property
-import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.*
 
 
@@ -521,9 +520,7 @@ fun <T, I> RenderContext.table(
                     maxWidth = "50px",
                     contentHead = {
                         checkbox({ display { inlineBlock } }, id = uniqueId()) {
-                            text("")
-                            borderColor { Theme().colors.secondary }
-                            checkedBackgroundColor { Theme().colors.warning }
+                            label("")
                             events {
                                 component.selectedAllRowEvents?.let {
                                     changes.states().combine(component.tableStore.data) { selected, list ->
@@ -543,11 +540,9 @@ fun <T, I> RenderContext.table(
                                 { display { inlineBlock } },
                                 id = uniqueId()
                             ) {
-                                text("")
-                                checkedBackgroundColor { Theme().colors.warning }
+                                label("")
                                 if (rowStore != null) {
                                     checked {
-
                                         component.selectedRows.combine(rowStore.data) { selectedRows, thisRow ->
                                             selectedRows.contains(thisRow)
                                         }
@@ -577,8 +572,7 @@ fun <T, I> RenderContext.table(
                             { display { inlineBlock } },
                             id = uniqueId()
                         ) {
-                            text("")
-                            checkedBackgroundColor { Theme().colors.warning }
+                            label("")
                             if (rowStore != null) {
                                 checked {
 
