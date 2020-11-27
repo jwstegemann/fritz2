@@ -184,7 +184,6 @@ fun style(prefix: String = "s", styling: BoxParams.() -> Unit): StyleClass {
     return style(css, prefix)
 }
 
-//FIXME: change return to Flow<StyleClass>
 /**
  * function to apply a given class only when a condition is fullfiled.
  *

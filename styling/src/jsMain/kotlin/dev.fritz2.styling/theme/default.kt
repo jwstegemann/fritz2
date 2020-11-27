@@ -1659,8 +1659,7 @@ open class DefaultTheme : Theme {
                         top { "50%" }
                     }
                 }
-                // TODO: Geht so nicht! Überschreibt ggf. das durch size gesetzte!
-                // Man braucht aber X + Y!
+                // FIXME: does not work! overrides size-settings!
                 css("transform: translatey(-50%);")
             }
         }
