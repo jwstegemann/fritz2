@@ -1,11 +1,11 @@
 import dev.fritz2.components.box
 import dev.fritz2.components.gridBox
-import dev.fritz2.components.styled
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.params.AreaName
 import dev.fritz2.styling.params.end
 import dev.fritz2.styling.params.start
+import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi

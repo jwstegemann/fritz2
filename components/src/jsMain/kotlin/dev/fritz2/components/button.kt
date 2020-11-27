@@ -6,10 +6,7 @@ import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.ColorProperty
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.plus
+import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.PushButtonSizes

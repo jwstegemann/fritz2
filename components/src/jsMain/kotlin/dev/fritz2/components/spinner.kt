@@ -4,6 +4,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
 
