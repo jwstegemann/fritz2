@@ -98,7 +98,7 @@ typealias TextDecorationProperty = Property
 object TextDecorations : PropertyValues {
     override val key = "text-decoration: "
 
-    const val none: TextDecorationProperty = "normal"
+    const val none: TextDecorationProperty = "none"
     const val underline: TextDecorationProperty = "underline"
     const val inherit: TextDecorationProperty = "inherit"
     const val initial: TextDecorationProperty = "initial"
