@@ -1,7 +1,7 @@
 package dev.fritz2.styling.params
 
 import dev.fritz2.styling.theme.Property
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 internal const val widthKey = "width: "
@@ -509,7 +509,7 @@ interface Layout : StyleParams {
      * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
-    fun width(value: SizesProperty) = property(widthKey, theme().sizes, value)
+    fun width(value: SizesProperty) = property(widthKey, Theme().sizes, value)
 
     /**
      * This function sets the [width](https://developer.mozilla.org/en/docs/Web/CSS/width) property of a component
@@ -532,7 +532,7 @@ interface Layout : StyleParams {
         lg: SizesProperty? = null,
         xl: SizesProperty? = null
     ) =
-        property(widthKey, theme().sizes, sm, md, lg, xl)
+        property(widthKey, Theme().sizes, sm, md, lg, xl)
 
     /**
      * This function sets the [height](https://developer.mozilla.org/en/docs/Web/CSS/height) property of a component
@@ -547,7 +547,7 @@ interface Layout : StyleParams {
      * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
-    fun height(value: SizesProperty) = property(heightKey, theme().sizes, value)
+    fun height(value: SizesProperty) = property(heightKey, Theme().sizes, value)
 
     /**
      * This function sets the [height](https://developer.mozilla.org/en/docs/Web/CSS/height) property of a component
@@ -570,7 +570,7 @@ interface Layout : StyleParams {
         lg: SizesProperty? = null,
         xl: SizesProperty? = null
     ) =
-        property(heightKey, theme().sizes, sm, md, lg, xl)
+        property(heightKey, Theme().sizes, sm, md, lg, xl)
 
     /**
      * This function sets the [min-width](https://developer.mozilla.org/en/docs/Web/CSS/min-width) property of a component
@@ -585,7 +585,7 @@ interface Layout : StyleParams {
      * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
-    fun minWidth(value: SizesProperty) = property(minWidthKey, theme().sizes, value)
+    fun minWidth(value: SizesProperty) = property(minWidthKey, Theme().sizes, value)
 
     /**
      * This function sets the [min-width](https://developer.mozilla.org/en/docs/Web/CSS/min-width) property of a component
@@ -608,7 +608,7 @@ interface Layout : StyleParams {
         lg: SizesProperty? = null,
         xl: SizesProperty? = null
     ) =
-        property(minWidthKey, theme().sizes, sm, md, lg, xl)
+        property(minWidthKey, Theme().sizes, sm, md, lg, xl)
 
     /**
      * This function sets the [max-width](https://developer.mozilla.org/en/docs/Web/CSS/max-width) property of a component
@@ -623,7 +623,7 @@ interface Layout : StyleParams {
      * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
-    fun maxWidth(value: SizesProperty) = property(maxWidthKey, theme().sizes, value)
+    fun maxWidth(value: SizesProperty) = property(maxWidthKey, Theme().sizes, value)
 
     /**
      * This function sets the [max-width](https://developer.mozilla.org/en/docs/Web/CSS/max-width) property of a component
@@ -646,7 +646,7 @@ interface Layout : StyleParams {
         lg: SizesProperty? = null,
         xl: SizesProperty? = null
     ) =
-        property(maxWidthKey, theme().sizes, sm, md, lg, xl)
+        property(maxWidthKey, Theme().sizes, sm, md, lg, xl)
 
     /**
      * This function sets the [min-height](https://developer.mozilla.org/en/docs/Web/CSS/min-height) property of a component
@@ -661,7 +661,7 @@ interface Layout : StyleParams {
      * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
-    fun minHeight(value: SizesProperty) = property(minHeightKey, theme().sizes, value)
+    fun minHeight(value: SizesProperty) = property(minHeightKey, Theme().sizes, value)
 
     /**
      * This function sets the [min-height](https://developer.mozilla.org/en/docs/Web/CSS/min-height) property of a component
@@ -684,7 +684,7 @@ interface Layout : StyleParams {
         lg: SizesProperty? = null,
         xl: SizesProperty? = null
     ) =
-        property(minHeightKey, theme().sizes, sm, md, lg, xl)
+        property(minHeightKey, Theme().sizes, sm, md, lg, xl)
 
     /**
      * This function sets the [max-height](https://developer.mozilla.org/en/docs/Web/CSS/max-height) property of a component
@@ -699,7 +699,7 @@ interface Layout : StyleParams {
      * @param value custom property or predefined symbol by [dev.fritz2.styling.theme.Sizes] like [dev.fritz2.styling.theme.Sizes.normal]
      *             or alike.
      */
-    fun maxHeight(value: SizesProperty) = property(maxHeightKey, theme().sizes, value)
+    fun maxHeight(value: SizesProperty) = property(maxHeightKey, Theme().sizes, value)
 
     /**
      * This function sets the [max-height](https://developer.mozilla.org/en/docs/Web/CSS/max-height) property of a component
@@ -722,7 +722,7 @@ interface Layout : StyleParams {
         lg: SizesProperty? = null,
         xl: SizesProperty? = null
     ) =
-        property(maxHeightKey, theme().sizes, sm, md, lg, xl)
+        property(maxHeightKey, Theme().sizes, sm, md, lg, xl)
 
     /**
      * This function sets the [display](https://developer.mozilla.org/en/docs/Web/CSS/display) property of a component

@@ -10,9 +10,9 @@ import dev.fritz2.dom.html.renderElement
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.Icons
-import dev.fritz2.styling.theme.ModalStyles
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.ModalSizes
+import dev.fritz2.styling.theme.ModalVariants
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.map
 
 typealias ModalRenderContext = RenderContext.(level: Int) -> Div
@@ -30,7 +30,7 @@ interface Overlay {
 
 class DefaultOverlay(
     override val method: OverlayMethod = OverlayMethod.CoveringTopMost,
-    override val styling: Style<BasicParams> = theme().modal.overlay
+    override val styling: Style<BasicParams> = Theme().modal.overlay
 ) : Overlay {
     override fun render(renderContext: RenderContext, level: Int) {
         renderContext.box({
@@ -68,6 +68,7 @@ class DefaultOverlay(
  * For a detailed understanding have a look into the [ModalComponent.show] function and the
  * ``ModalComponent.Companion.init`` block.
  */
+@ComponentMarker
 class ModalComponent {
 
     class ModalsStack : RootStore<List<ModalRenderContext>>(listOf()) {
@@ -140,8 +141,8 @@ class ModalComponent {
                 box({
                     css("--main-level: ${level}rem;")
                     zIndex { modal(level) }
-                    component.size.invoke(theme().modal)()
-                    component.variant.invoke(theme().modal)()
+                    component.size.invoke(Theme().modal.sizes)()
+                    component.variant.invoke(Theme().modal.variants)()
                     styling()
                 }, baseClass, id, prefix) {
                     if (component.hasCloseButton) {
@@ -151,7 +152,7 @@ class ModalComponent {
                         component.closeButton?.let { it(this, close) }
                     }
 
-                    component.items?.let { it() }
+                    component.content?.let { it() }
                 }
             }
 
@@ -159,21 +160,21 @@ class ModalComponent {
         }
     }
 
-    var items: (RenderContext.() -> Unit)? = null
+    var content: (RenderContext.() -> Unit)? = null
 
-    fun items(value: RenderContext.() -> Unit) {
-        items = value
+    fun content(value: RenderContext.() -> Unit) {
+        content = value
     }
 
-    var size: ModalStyles.() -> Style<BasicParams> = { theme().modal.sizes.normal }
+    var size: ModalSizes.() -> Style<BasicParams> = { Theme().modal.sizes.normal }
 
-    fun size(value: ModalStyles.() -> Style<BasicParams>) {
+    fun size(value: ModalSizes.() -> Style<BasicParams>) {
         size = value
     }
 
-    var variant: ModalStyles.() -> Style<BasicParams> = { theme().modal.variants.auto }
+    var variant: ModalVariants.() -> Style<BasicParams> = { Theme().modal.variants.auto }
 
-    fun variant(value: ModalStyles.() -> Style<BasicParams>) {
+    fun variant(value: ModalVariants.() -> Style<BasicParams>) {
         variant = value
     }
 

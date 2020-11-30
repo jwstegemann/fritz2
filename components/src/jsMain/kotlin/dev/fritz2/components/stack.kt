@@ -8,8 +8,6 @@ import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.ScaledValueProperty
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.ScaledValue
-import dev.fritz2.styling.theme.theme
 
 /**
  * This base component class for stacking components offer some _configuration_ properties.
@@ -64,6 +62,7 @@ import dev.fritz2.styling.theme.theme
  * }
  *  ```
  */
+@ComponentMarker
 abstract class StackComponent {
     companion object {
         val staticCss = staticStyle(
@@ -78,7 +77,7 @@ abstract class StackComponent {
         reverse = value()
     }
 
-    var spacing: ScaledValueProperty = { normal } //was normal, changed for stacking sidebar elements
+    var spacing: ScaledValueProperty = { normal }
 
     fun spacing(value: ScaledValueProperty) {
         spacing = value
@@ -100,7 +99,8 @@ abstract class StackComponent {
  *
  * @see StackComponent
  */
-class StackUpComponent(isMenu : Boolean = false) : StackComponent() {
+@ComponentMarker
+class StackUpComponent : StackComponent() {
     override val stackStyles: Style<FlexParams> = {
         if (this@StackUpComponent.reverse) {
             direction { columnReverse }
@@ -110,9 +110,6 @@ class StackUpComponent(isMenu : Boolean = false) : StackComponent() {
         } else {
             direction { column }
             children(" > :not(:first-child)") {
-                if (isMenu) {
-                    margins { top({smaller}) }
-                }
                 margins { top(this@StackUpComponent.spacing) }
             }
         }
@@ -175,6 +172,7 @@ fun RenderContext.stackUp(
  *
  * @see StackComponent
  */
+@ComponentMarker
 class LineUpComponent : StackComponent() {
     override val stackStyles: Style<FlexParams> = {
         if (this@LineUpComponent.reverse) {

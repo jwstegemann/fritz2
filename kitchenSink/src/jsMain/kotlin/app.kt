@@ -12,8 +12,7 @@ import dev.fritz2.styling.params.RadiiContext
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.Theme
-import dev.fritz2.styling.theme.renderElement
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.render
 import dev.fritz2.styling.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -45,14 +44,10 @@ fun RenderContext.componentFrame(init: Div.() -> Unit): Div { //Auslagerung von 
 fun RenderContext.simpleLinkWithBackground(linkUri: String, linkText: String): A {
     return (::a.styled {
         fontSize { large }
-        color {
-            theme().colors.warning
-        }
+        color { warning }
         hover {
-            color {
-                theme().colors.light
-            }
-            background { color { theme().colors.dark } }
+            color { light }
+            background { color { dark } }
             radius { "5%" }
         }
         paddings {
@@ -68,14 +63,10 @@ fun RenderContext.simpleLinkWithBackground(linkUri: String, linkText: String): A
 fun RenderContext.simpleAnchorWithBackground(linkText: String): A {
     return (::a.styled {
         fontSize { large }
-        color {
-            theme().colors.warning
-        }
+        color { warning }
         hover {
-            color {
-                theme().colors.light
-            }
-            background { color { theme().colors.dark } }
+            color { light }
+            background { color { dark } }
         }
         radius { "5%" }
         paddings {
@@ -92,9 +83,7 @@ fun RenderContext.simpleAnchor(linkText: String): A {
     return (::a.styled {
         fontSize { large }
         hover {
-            color {
-                theme().colors.warning
-            }
+            color { warning }
         }
     }) {
         +linkText
@@ -138,7 +127,7 @@ fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
 
 
             background {
-                color { theme().toRGBA(primary, 0.3) }
+                color { Theme().toRGBA(primary, 0.3) }
             }
 
             paddings {
@@ -150,7 +139,8 @@ fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
         },"prefix")
 
 
-    val isActive = router.map { hash ->
+    // TODO check with router. function map() has been replaced. check replacing function
+    val isActive = router.data.map { hash ->
         console.log(hash)  //druckt in die Konsole im Browser
         hash == linkText //map den reinkommenden Wert des Flow auf einen Boolean
     }.distinctUntilChanged()
@@ -165,7 +155,7 @@ fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
 
         hover {
             background {
-                color { theme().toRGBA(light, 0.5) }
+                color { Theme().toRGBA(light, 0.5) }
             }
         }
         paddings{
@@ -194,25 +184,112 @@ fun RenderContext.nonHoverAnchor(linkText: String): A {
 
 @ExperimentalCoroutinesApi
 fun main() {
-    val themes = listOf<ExtendedTheme>(
-        SmallFonts(),
-        LargeFonts()
-    )
-
     val router = router("")
 
-    renderElement { theme: ExtendedTheme ->
-        themeProvider {
-            themes { themes }
+    render(themes.first()) { theme ->
+        navBar {
+            brand {
+                (::a.styled {
+                    tooltip("visit us on", "www.fritz2.dev") { right }()
+                    after {
+                        textAlign { center }
+                        background { color { primary } }
+                        color { light }
+                    }
+                    alignItems { end }
+                }) {
+                    href("https://www.fritz2.dev/")
+                    target("fritz2")
+
+                    icon({
+                        size { "2.5rem" }
+                        color { primary }
+                    }) { fromTheme { fritz2 } }
+
+                    (::span.styled {
+                        margins { left { normal } }
+                        verticalAlign { sub }
+                        fontSize { larger }
+                        fontWeight { lighter }
+                    }) { +"fritz2 - component library" }
+                }
+            }
+
+            actions {
+                lineUp {
+                    items {
+                        navAnchor("Documentation", "https://fritz2.dev")
+                        navAnchor("API", "https://fritz2.dev")
+                        navAnchor("Examples", "https://fritz2.dev")
+                        navAnchor("Github", "https://fritz2.dev")
+                    }
+                }
+            }
+        }
+
+        lineUp({
+            alignItems { stretch }
+            color { dark }
+            minHeight { "100%" }
+        }) {
             items {
-                navBar {
-                    brand {
+                stackUp({
+                    margins {
+                        top { smaller }
+                    }
+                    padding { "1rem" }
+                    minWidth { "200px" }
+                    minHeight { "100%" }
+                    display { flex }
+                    wrap { nowrap }
+                    direction { column }
+                    alignItems { flexStart }
+                    background { color { base } }
+                    color { dark }
+                    paddings {
+                        top { "50px" }
+                    }
+                    /*
+                    borders {
+                        right {
+                            width { "2px" }
+                            color { light }
+                        }
+                    }*/
+                }, id = "menue-left")
+                {
+                    items {
+                        (::p.styled {
+                            paddings {
+                                bottom { "2.0rem" }
+                            }
+                        }) {
+                            menuAnchor("Welcome", router)
+                        }
+
+                        menuAnchor("Flexbox", router)
+                        menuAnchor("Gridbox", router)
+                        menuAnchor("Stack", router)
+                        menuAnchor("Icons", router)
+                        menuAnchor("Spinner", router)
+                        menuAnchor("Buttons", router)
+                        menuAnchor("Popover", router)
+                        menuAnchor("Modal", router)
+                        menuAnchor("Input", router)
+                        menuAnchor("Multiselect", router)
+                        menuAnchor("Singleselect", router)
+                        menuAnchor("Formcontrol", router)
+
+
                         (::a.styled {
-                            tooltip("visit us on", "www.fritz2.dev") { right }()
+                            theme.tooltip.write("visit us on", "www.fritz2.dev"){right}()
                             after {
                                 textAlign { center }
-                                background { color { primary } }
-                                color { light }
+                                background { color { warning } }
+                                color { dark }
+                            }
+                            paddings {
+                                top { "1.5rem" }
                             }
                             alignItems { end }
                         }) {
@@ -220,142 +297,46 @@ fun main() {
                             target("fritz2")
 
                             icon({
-                                size { "2.5rem" }
-                                color { primary }
-                            }) { fromTheme { fritz2 } }
-
-                            (::span.styled {
-                                margins { left { normal } }
-                                verticalAlign { sub }
-                                fontSize { larger }
-                                fontWeight { lighter }
-                            }) { +"fritz2 - component library" }
-                        }
-                    }
-
-                    actions {
-                        lineUp {
-                            items {
-                                navAnchor("Documentation", "https://fritz2.dev")
-                                navAnchor("API", "https://fritz2.dev")
-                                navAnchor("Examples", "https://fritz2.dev")
-                                navAnchor("Github", "https://fritz2.dev")
+                                size { "3rem" }
+                                hover {
+                                    color { warning }
+                                }
+                            }) {
+                                fromTheme {
+                                    fritz2
+                                }
                             }
                         }
                     }
                 }
-                lineUp({
-                    alignItems { stretch }
-                    color { dark }
-                    minHeight { "100%" }
+                (::div.styled(id = "content-right") {
+                    paddings {
+                        all { "2.0rem" }
+                    }
+                    width {
+                        "100%"
+                    }
                 }) {
-                    items {
-                        stackUp({
-                            margins {
-                                top { smaller }
-                            }
-                            padding { "1rem" }
-                            minWidth { "200px" }
-                            minHeight { "100%" }
-                            display { flex }
-                            wrap { nowrap }
-                            direction { column }
-                            alignItems { flexStart }
-                            background { color { base } }
-                            color { dark }
-                            paddings {
-                                top { "50px" }
-                            }
-                            /*
-                            borders {
-                                right {
-                                    width { "2px" }
-                                    color { light }
-                                }
-                            }*/
-                        }, id = "menue-left")
-                        {
-                            items {
-                                (::p.styled {
-                                    paddings {
-                                        bottom { "2.0rem" }
-                                    }
-                                }) {
-                                    menuAnchor("Welcome", router)
-                                }
 
-                                menuAnchor("Flexbox", router)
-                                menuAnchor("Gridbox", router)
-                                menuAnchor("Stack", router)
-                                menuAnchor("Icons", router)
-                                menuAnchor("Spinner", router)
-                                menuAnchor("Buttons", router)
-                                menuAnchor("Popover", router)
-                                menuAnchor("Modal", router)
-                                menuAnchor("Input", router)
-                                menuAnchor("Multiselect", router)
-                                menuAnchor("Singleselect", router)
-                                menuAnchor("Formcontrol", router)
-
-
-                                (::a.styled {
-                                    theme().tooltip.write("visit us on", "www.fritz2.dev"){right}()
-                                    after {
-                                        textAlign { center }
-                                        background { color { warning } }
-                                        color { dark }
-                                    }
-                                    paddings {
-                                        top { "1.5rem" }
-                                    }
-                                    alignItems { end }
-                                }) {
-                                    href("https://www.fritz2.dev/")
-                                    target("fritz2")
-
-                                    icon({
-                                        size { "3rem" }
-                                        hover {
-                                            color { warning }
-                                        }
-                                    }) {
-                                        fromTheme {
-                                            fritz2
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        (::div.styled(id = "content-right") {
-                            paddings {
-                                all { "2.0rem" }
-                            }
-                            width {
-                                "100%"
-                            }
-                        }) {
-
-                            // todo we might want a better flex demo
-                            // todo we might want a dedicated theme demo (or use formcontrol (rename) --> all
-                            //  together)
-                            router.render { site ->
-                                when (site) {
-                                    "Icons" -> iconsDemo()
-                                    "Spinner" -> spinnerDemo()
-                                    "Input" -> inputDemo()
-                                    "Buttons" -> buttonDemo()
-                                    "Formcontrol" -> formControlDemo()
-                                    "Flexbox" -> flexBoxDemo(themeStore, themes, theme)
-                                    "Gridbox" -> gridBoxDemo()
-                                    "Multiselect" -> multiSelectDemo()
-                                    "Singleselect" -> singleSelectDemo()
-                                    "Stack" -> stackDemo()
-                                    "Modal" -> modalDemo()
-                                    "Popover" -> popoverDemo()
-                                    "Welcome" -> welcome()
-                                    else -> welcome()
-                                }
-                            }
+                    // todo we might want a better flex demo
+                    // todo we might want a dedicated theme demo (or use formcontrol (rename) --> all
+                    //  together)
+                    router.data.render { site ->
+                        when (site) {
+                            "Icons" -> iconsDemo()
+                            "Spinner" -> spinnerDemo()
+                            "Input" -> inputDemo()
+                            "Buttons" -> buttonDemo()
+                            "Formcontrol" -> formControlDemo()
+                            "Flexbox" -> flexBoxDemo(theme)
+                            "Gridbox" -> gridBoxDemo()
+                            "Multiselect" -> multiSelectDemo()
+                            "Singleselect" -> singleSelectDemo()
+                            "Stack" -> stackDemo()
+                            "Modal" -> modalDemo()
+                            "Popover" -> popoverDemo()
+                            "Welcome" -> welcome()
+                            else -> welcome()
                         }
                     }
                 }

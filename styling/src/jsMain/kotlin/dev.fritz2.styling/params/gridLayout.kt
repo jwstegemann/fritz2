@@ -1,7 +1,7 @@
 package dev.fritz2.styling.params
 
 import dev.fritz2.styling.theme.Property
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -630,7 +630,7 @@ interface GridLayout : StyleParams, Alignment {
      * @param value provide a value of type [ScaledValueProperty] that defines the gap of the column,
      *              recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      */
-    fun columnGap(value: ScaledValueProperty) = property(columnGapKey, theme().gaps, value)
+    fun columnGap(value: ScaledValueProperty) = property(columnGapKey, Theme().gaps, value)
 
     /**
      * This function sets the [column-gap](https://developer.mozilla.org/en/docs/Web/CSS/column-gap) property
@@ -661,7 +661,7 @@ interface GridLayout : StyleParams, Alignment {
         lg: ScaledValueProperty? = null,
         xl: ScaledValueProperty? = null
     ) =
-        property(columnGapKey, theme().gaps, sm, md, lg, xl)
+        property(columnGapKey, Theme().gaps, sm, md, lg, xl)
 
     /**
      * This function sets the [row-gap](https://developer.mozilla.org/en/docs/Web/CSS/row-gap) property
@@ -677,7 +677,7 @@ interface GridLayout : StyleParams, Alignment {
      * @param value provide a value of type [ScaledValueProperty] that defines the gap of the row,
      *              recommended to use predefined values of the [theme][dev.fritz2.styling.theme.Theme.gaps].
      */
-    fun rowGap(value: ScaledValueProperty) = property(rowGapKey, theme().gaps, value)
+    fun rowGap(value: ScaledValueProperty) = property(rowGapKey, Theme().gaps, value)
 
     /**
      * This function sets the [row-gap](https://developer.mozilla.org/en/docs/Web/CSS/row-gap) property
@@ -708,7 +708,7 @@ interface GridLayout : StyleParams, Alignment {
         lg: ScaledValueProperty? = null,
         xl: ScaledValueProperty? = null
     ) =
-        property(rowGapKey, theme().gaps, sm, md, lg, xl)
+        property(rowGapKey, Theme().gaps, sm, md, lg, xl)
 
     /**
      * This _convenience_ function sets the gap for the rows and columns in a grid all at once.

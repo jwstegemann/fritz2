@@ -191,9 +191,9 @@ open class StyleParamsImpl : BoxParams {
      * creates a valid responsive css-rule-body from the content of the screen-size-[StringBuilder]s
      */
     fun toCss(): String {
-        if (mdProperties.isNotEmpty()) smProperties.append(theme().mediaQueryMd, "{", mdProperties, "}")
-        if (lgProperties.isNotEmpty()) smProperties.append(theme().mediaQueryLg, "{", lgProperties, "}")
-        if (xlProperties.isNotEmpty()) smProperties.append(theme().mediaQueryXl, "{", xlProperties, "}")
+        if (mdProperties.isNotEmpty()) smProperties.append(Theme().mediaQueryMd, "{", mdProperties, "}")
+        if (lgProperties.isNotEmpty()) smProperties.append(Theme().mediaQueryLg, "{", lgProperties, "}")
+        if (xlProperties.isNotEmpty()) smProperties.append(Theme().mediaQueryXl, "{", xlProperties, "}")
 
         return smProperties.toString()
     }
@@ -225,7 +225,7 @@ interface BasicParams : Space, Color, Border, Typo, Background, Position, Shadow
      *
      * @receiver [PredefinedBasicStyle] to include
      */
-    operator fun PredefinedBasicStyle.invoke() = this(this@BasicParams)
+    operator fun Style<BasicParams>.invoke() = this(this@BasicParams)
 }
 
 /**
@@ -238,14 +238,14 @@ interface FlexParams : BasicParams, Flexbox {
      *
      * @receiver [PredefinedFlexStyle] to include
      */
-    override operator fun PredefinedBasicStyle.invoke() = this(this@FlexParams)
+    override operator fun Style<BasicParams>.invoke() = this(this@FlexParams)
 
     /**
      * allows the usage of predefined styles in this context
      *
      * @receiver [PredefinedFlexStyle] to include
      */
-    operator fun PredefinedFlexStyle.invoke() = this(this@FlexParams)
+    operator fun Style<FlexParams>.invoke() = this(this@FlexParams)
 }
 
 /**
@@ -258,14 +258,14 @@ interface GridParams : BasicParams, GridLayout {
      *
      * @receiver [PredefinedBasicStyle] to include
      */
-    override operator fun PredefinedBasicStyle.invoke() = this(this@GridParams)
+    override operator fun Style<BasicParams>.invoke() = this(this@GridParams)
 
     /**
      * allows the usage of predefined styles in this context
      *
      * @receiver [PredefinedGridStyle] to include
      */
-    operator fun PredefinedGridStyle.invoke() = this(this@GridParams)
+    operator fun Style<GridParams>.invoke() = this(this@GridParams)
 }
 
 /**
@@ -278,12 +278,12 @@ interface BoxParams : FlexParams, GridParams {
      *
      * @receiver [PredefinedBasicStyle] to include
      */
-    override operator fun PredefinedBasicStyle.invoke() = this(this@BoxParams)
+    override operator fun Style<BasicParams>.invoke() = this(this@BoxParams)
 
     /**
      * allows the usage of predefined styles in this context
      *
      * @receiver [PredefinedBoxStyle] to include
      */
-    operator fun PredefinedBoxStyle.invoke() = this(this@BoxParams)
+    operator fun Style<BoxParams>.invoke() = this(this@BoxParams)
 }

@@ -1,6 +1,7 @@
 package dev.fritz2.routing
 
 import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.binding.Store
 import dev.fritz2.dom.html.Events
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
@@ -38,7 +39,7 @@ fun <T> router(default: Route<T>): Router<T> = Router(default)
  * @return [Flow] of the resulting [Pair]
  */
 fun Router<Map<String, String>>.select(key: String): Flow<Pair<String?, Map<String, String>>> =
-    this.map { m -> m[key] to m }
+    this.data.map { m -> m[key] to m }
 
 /**
  * Returns the value for the given [key] from the routing parameters.
@@ -48,7 +49,7 @@ fun Router<Map<String, String>>.select(key: String): Flow<Pair<String?, Map<Stri
  * @return [Flow] of [String] with the value
  */
 fun Router<Map<String, String>>.select(key: String, orElse: String): Flow<String> =
-    this.map { m -> m[key] ?: orElse }
+    this.data.map { m -> m[key] ?: orElse }
 
 /**
  * A Route is a abstraction for routes
@@ -123,11 +124,22 @@ open class MapRoute(override val default: Map<String, String>) : Route<Map<Strin
  * @property defaultRoute default route to use when page is called and no hash is set
  */
 class Router<T>(
-    private val defaultRoute: Route<T>,
-    state: MutableStateFlow<T> = MutableStateFlow(defaultRoute.default)
-) : Flow<T> by state {
+    private val defaultRoute: Route<T>
+) {
 
+    private val state: MutableStateFlow<T> = MutableStateFlow(defaultRoute.default)
     private val prefix = "#"
+
+    /**
+     * Gives a [Flow] of [T] for rendering the site depending on the current route.
+     */
+    val data = state.asStateFlow()
+
+    /**
+     * Represents the current route of the [Router].
+     */
+    val current: T
+        get() = state.value
 
     /**
      * Handler for setting a new [Route] based on given Flow.
@@ -139,7 +151,6 @@ class Router<T>(
     init {
         if (window.location.hash.isBlank()) {
             setRoute(defaultRoute.default)
-            state.value = defaultRoute.default
         } else {
             state.value = defaultRoute.unmarshal(window.location.hash.removePrefix(prefix))
         }
@@ -151,9 +162,8 @@ class Router<T>(
         window.addEventListener(Events.hashchange.name, listener)
     }
 
-
-
     private fun setRoute(newRoute: T) {
+        state.value = newRoute
         window.location.hash = prefix + defaultRoute.marshal(newRoute)
     }
 }

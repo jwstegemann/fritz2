@@ -245,6 +245,7 @@ open class Div(id: String? = null, baseClass: String? = null, job: Job) : Tag<HT
     WithText<HTMLDivElement> {
     fun align(value: String) = attr("align", value)
 	fun align(value: Flow<String>) = attr("align", value)
+
 }
 
 

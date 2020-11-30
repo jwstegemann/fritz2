@@ -1,14 +1,10 @@
-import dev.fritz2.binding.watch
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.theme.theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
-fun RenderContext.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme>, theme: ExtendedTheme): Div {
+fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
 
     return flexBox({
         margin { small }
@@ -29,7 +25,7 @@ fun RenderContext.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme
             flex { shrink { "0" } }
         }) {
             (::img.styled {
-                width(sm = { small }, md = { smaller })
+                width(sm = { wide.small }, md = { wide.smaller })
                 boxShadow { flat }
                 radius { large }
             }) {
@@ -49,12 +45,10 @@ fun RenderContext.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme
                 md = { left { normal } }
             )
         }) {
-            themeStore.data.render { currentThemeIndex ->
-                (::p.styled { themes[currentThemeIndex].teaserText() }) {
-                    +"Teaser texts can be styled as well"
-                }
+            (::p.styled { theme.teaserText() }) {
+                +"Teaser texts can be styled as well"
             }
-            (::h1.styled { theme.sizes.large }) { +"Flex Layouts Showcase" }
+            (::h1.styled { fontSize { large } }) { +"Flex Layouts Showcase" }
             (::p.styled {
                 paddings {
                     all { "0.8rem" }
@@ -70,18 +64,12 @@ fun RenderContext.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme
                     left { "0" }
                 }
             }) {
-                themeStore.data.map { currentThemeIndex ->
-                    radioGroup {
-                        items { themes.map { it.name } }
-                        selected { themes[currentThemeIndex].name }
-                    }.map { selected ->
-                        themes.indexOf(
-                            themes.find {
-                                selected == it.name
-                            }
-                        )
-                    } handledBy themeStore.selectTheme
-                }.watch()
+                lineUp {
+                    items {
+                        clickButton { text("use small Fonts") }.map { 0 } handledBy ThemeStore.selectTheme
+                        clickButton { text("use large Fonts") }.map { 1 } handledBy ThemeStore.selectTheme
+                    }
+                }
             }
             (::h3.styled {
                 paddings {
@@ -100,5 +88,4 @@ fun RenderContext.flexBoxDemo(themeStore: ThemeStore, themes: List<ExtendedTheme
             }
         }
     }
-
 }

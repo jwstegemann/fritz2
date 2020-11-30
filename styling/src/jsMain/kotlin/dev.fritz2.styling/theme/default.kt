@@ -99,7 +99,17 @@ open class DefaultTheme : Theme {
         larger = "34rem",
         huge = "55rem",
         giant = "89rem",
-        full = "100%"
+        full = "100%",
+        wide = ScaledValue(
+                tiny = "5rem",
+                smaller = "8rem",
+                small = "13rem",
+                normal = "auto",
+                large = "21rem",
+                larger = "34rem",
+                huge = "55rem",
+                giant = "89rem",
+        )
     )
 
     override val borderWidths = Thickness(
@@ -1296,49 +1306,54 @@ open class DefaultTheme : Theme {
     }
 
     override val input = object : InputFieldStyles {
-        override val small: Style<BasicParams> = {
-            height { "2rem" }
-            minWidth { "2.5rem" }
-            fontSize { small }
-            paddings {
-                horizontal { tiny }
+        override val sizes = object : InputFieldSizes {
+            override val small: Style<BasicParams> = {
+                height { "2rem" }
+                minWidth { "2.5rem" }
+                fontSize { small }
+                paddings {
+                    horizontal { tiny }
+                }
             }
-        }
-        override val normal: Style<BasicParams> = {
-            height { "2.5rem" }
-            minWidth { "2.5rem" }
-            fontSize { normal }
-            paddings {
-                horizontal { small }
-            }
-        }
-
-        override val large: Style<BasicParams> = {
-            height { "3rem" }
-            minWidth { "2.5rem" }
-            fontSize { large }
-            paddings {
-                horizontal { small }
-            }
-        }
-        override val outline: Style<BasicParams> = {
-            // just leave the *foundation* CSS values untouched!
-            // But we need a *name* for this variant, so we got to have this val!
-        }
-
-        override val filled: Style<BasicParams> = {
-            background {
-                color { light }
+            override val normal: Style<BasicParams> = {
+                height { "2.5rem" }
+                minWidth { "2.5rem" }
+                fontSize { normal }
+                paddings {
+                    horizontal { small }
+                }
             }
 
-            hover {
-                css("filter: brightness(90%);")
+            override val large: Style<BasicParams> = {
+                height { "3rem" }
+                minWidth { "2.5rem" }
+                fontSize { large }
+                paddings {
+                    horizontal { small }
+                }
+            }
+        }
+
+        override val variants = object : InputFieldVariants {
+            override val outline: Style<BasicParams> = {
+                // just leave the *foundation* CSS values untouched!
+                // But we need a *name* for this variant, so we got to have this val!
             }
 
-            focus {
-                zIndex { "1" }
+            override val filled: Style<BasicParams> = {
                 background {
-                    color { "transparent" }
+                    color { light }
+                }
+
+                hover {
+                    css("filter: brightness(90%);")
+                }
+
+                focus {
+                    zIndex { "1" }
+                    background {
+                        color { "transparent" }
+                    }
                 }
             }
         }
@@ -1598,7 +1613,7 @@ open class DefaultTheme : Theme {
                         right { normal }
                     }
                 }
-                minHeight { theme().sizes.smaller }
+                minHeight { Theme().sizes.smaller }
             }
 
             override val normal: Style<BasicParams> = {
@@ -1609,7 +1624,7 @@ open class DefaultTheme : Theme {
                         left { "50%" }
                     }
                 }
-                minHeight { theme().sizes.smaller }
+                minHeight { Theme().sizes.smaller }
                 minWidth { "50%" }
                 css("transform: translateX(-50%);")
             }
@@ -1623,7 +1638,7 @@ open class DefaultTheme : Theme {
                         bottom { normal }
                     }
                 }
-                minHeight { theme().sizes.smaller }
+                minHeight { Theme().sizes.smaller }
                 minWidth { "35%" }
                 css("transform: translateX(-90%);")
             }
@@ -1974,6 +1989,76 @@ open class DefaultTheme : Theme {
                 }
             }
         }
+    }
+
+    override val reset: String by lazy {
+        //from modern-normalize v1.0.0 | MIT License | https://github.com/sindresorhus/modern-normalize
+        """
+            *,::after,::before{box-sizing:border-box}:root{-moz-tab-size:4;tab-size:4}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}legend{padding:0}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}button{background-color:transparent;background-image:none}fieldset{margin:0;padding:0}ol,ul{list-style:none;margin:0;padding:0}html{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";line-height:1.5}body{font-family:inherit;line-height:inherit}*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}img{border-style:solid}textarea{resize:vertical}input::placeholder,textarea::placeholder{color:#9ca3af}[role=button],button{cursor:pointer}table{border-collapse:collapse}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}button,input,optgroup,select,textarea{padding:0;line-height:inherit;color:inherit}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}
+        """ + """
+            html {
+              font-rendering: optimizeLegibilty;
+              color: ${colors.dark}
+            }
+            body {
+              margin: 0;
+              line-height: ${lineHeights.large}
+              font-family: Inter, sans-serif;
+              font-feature-settings: "kern";
+            }
+            textarea {
+              line-height: ${lineHeights.tiny}; /* 1 */
+            }
+            a {
+              font-weight: 600;
+              font-size: ${fontSizes.small}
+            }
+            p {
+              font-size: ${fontSizes.normal};
+              margin-top: 1.25rem;
+              line-height: ${lineHeights.larger};
+            }
+            *::after {
+              border-sizing: border-box;
+              overflow-wrap: break-word;
+            }
+            h1 {
+              margin-top: 2rem;
+              margin-bottom: .25rem;
+              line-height: ${lineHeights.tiny};
+              font-weight: 700;
+              font-size: ${fontSizes.huge};
+              letter-spacing: ${letterSpacings.small};
+              outline: 0;
+            }
+            h2 {
+              margin-top: 4rem;
+              margin-bottom: 0.5rem;
+              line-height: ${lineHeights.small};
+              font-weight: 600;
+              font-size: ${fontSizes.larger};
+              letter-spacing: ${letterSpacings.small};
+            }
+            h3 {
+              margin-top: 3rem;
+              line-height: smaller;
+              font-weight: 600;
+              font-size: ${fontSizes.large};
+              letter-spacing: -.025em;
+            }
+            h4 {
+              font-size: ${fontSizes.normal};
+              font-weight: bold;
+            }
+            h5 {
+              font-size: ${fontSizes.small};
+              font-weight: bold;
+            }
+            h6 {
+              font-size: ${fontSizes.smaller};
+              font-weight: bold;
+            }
+        """.trimIndent()
     }
 
     override fun toRGBA(color: ColorProperty, opacity: Double): ColorProperty {

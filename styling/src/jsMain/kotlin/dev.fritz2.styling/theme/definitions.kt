@@ -79,7 +79,8 @@ class Sizes(
     larger: Property = large,
     huge: Property = larger,
     giant: Property = huge,
-    full: Property = giant
+    full: Property = giant,
+    val wide: ScaledValue
 ) : ScaledValue(normal, small, smaller, tiny, large, larger, huge, giant, full = full) {
     val borderBox: Property = "border-box"
     val contentBox: Property = "content-box"
@@ -381,9 +382,17 @@ interface CheckboxSizes {
 }
 
 interface InputFieldStyles {
+    val variants: InputFieldVariants
+    val sizes: InputFieldSizes
+}
+
+interface InputFieldSizes {
     val small: Style<BasicParams>
     val normal: Style<BasicParams>
     val large: Style<BasicParams>
+}
+
+interface InputFieldVariants {
     val outline: Style<BasicParams>
     val filled: Style<BasicParams>
 }
