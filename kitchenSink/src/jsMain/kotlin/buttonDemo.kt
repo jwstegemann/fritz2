@@ -63,7 +63,7 @@ fun RenderContext.buttonDemo(): Div {
 
                         showcaseSection("Usage")
                         p {
-                            +"Define your button by adding text and / or an icon to its content. A"
+                            +"Define your button by adding text and / or an icon to its content and setting the color. A"
                             c("pushButton")
                             +"gives you full controll over the underlying HTML-button. The"
                             c("clickButton")
@@ -77,12 +77,14 @@ fun RenderContext.buttonDemo(): Div {
 
                                     pushButton {
                                         icon { fromTheme { arrowLeft } }
+                                        color { danger }
                                         text("previous")
                                     }
 
                                     pushButton {
                                         icon { fromTheme { arrowRight } }
                                         iconRight()
+                                        color { warning }
                                         text("next")
                                     }
 
