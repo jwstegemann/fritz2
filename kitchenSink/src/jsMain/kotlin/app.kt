@@ -10,12 +10,35 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.RadiiContext
 import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.render
 import dev.fritz2.styling.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+
+fun RenderContext.showcaseHeader(text: String) {
+    (::h1.styled {
+    }) { +text }
+}
+
+fun RenderContext.showcaseSection(text: String) {
+    (::h3.styled {
+        borders {
+            left {
+                width { "6px" }
+                style { solid }
+                color { primary }
+            }
+        }
+        margins { top { "3rem !important" } }
+        paddings { left { smaller } }
+    }) { +text }
+}
+
 
 val componentFrame: Style<BasicParams> = { // Auslagerung von Style
     width { "100%"}
