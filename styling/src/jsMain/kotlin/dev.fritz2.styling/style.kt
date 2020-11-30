@@ -175,18 +175,15 @@ fun style(css: String, prefix: String = "s"): StyleClass {
  * To make the name unique a hash is calculated from your content. This hash is also used to make sure
  * that no two rules with identical content are created but the already existing class is used in this case.
  *
- * @param styling styling DSL expression
  * @param prefix that is added in front of the created class name
+ * @param styling styling DSL expression
  * @return the name of the created class
  */
-fun style(styling: BoxParams.() -> Unit, prefix: String = "s"): StyleClass {
+fun style(prefix: String = "s", styling: BoxParams.() -> Unit): StyleClass {
     val css = StyleParamsImpl().apply(styling).toCss()
     return style(css, prefix)
 }
 
-//FIXME: change return to Flow<StyleClass>
-//FIXME: use StyleClass in fritz2-functions
-//FIXME: offer + for concatenating StyleClass Flows
 /**
  * function to apply a given class only when a condition is fullfiled.
  *
@@ -195,9 +192,27 @@ fun style(styling: BoxParams.() -> Unit, prefix: String = "s"): StyleClass {
  * @param mapper defining the rule, when to apply the class
  * @return [Flow] containing the class name if check returns true or nothing
  */
-inline fun <T> StyleClass.whenever(upstream: Flow<T>, crossinline mapper: suspend (T) -> Boolean): Flow<String> =
+inline fun <T> StyleClass.whenever(upstream: Flow<T>, crossinline mapper: suspend (T) -> Boolean): Flow<StyleClass> =
     upstream.map { value ->
-        if (mapper(value)) this.name else StyleClass.None.name
+        if (mapper(value)) this else StyleClass.None
     }
 
 
+/**
+ * function to apply a given class only when a condition is fullfiled.
+ *
+ * @receiver css class to apply
+ * @param upstream [Flow] that holds the value to check
+ * @return [Flow] containing the class name if check returns true or nothing
+ */
+fun StyleClass.whenever(upstream: Flow<Boolean>): Flow<StyleClass> =
+    upstream.map { value ->
+        if (value) this else StyleClass.None
+    }
+
+
+/**
+ * use name on a Flow<StyleClass> just as you do on StyleClass to apply it whereever class-names are required as Strings
+ */
+val Flow<StyleClass>.name: Flow<String>
+    get() = this.map { it.name }

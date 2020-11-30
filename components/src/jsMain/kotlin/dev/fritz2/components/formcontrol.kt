@@ -5,14 +5,17 @@ import dev.fritz2.components.FormControlComponent.Control
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+
 
 /**
  * This component class manages the _configuration_ of a [formControl] and some render centric functionalities.
@@ -177,7 +180,7 @@ open class FormControlComponent {
         {
             inputField(styling, store, baseClass, id, prefix) {
                 base {
-                    className(StyleClass(invalidClassName).whenever(msg) { it })
+                    className(StyleClass(invalidClassName).whenever(msg))
                     init()
                 }
             }
