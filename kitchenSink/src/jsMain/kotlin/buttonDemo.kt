@@ -113,13 +113,15 @@ fun RenderContext.buttonDemo(): Div {
 
                         showcaseSection("Variants")
                         p {
-                            +"""
-                                fritz2 offers three different flavours of buttons for the various use cases.
-                            """.trimIndent()
-
+                            +"fritz2 offers three different flavours of buttons for the various use cases: "
+                            c("solid")
+                            +", "
+                            c("outline")
+                            +", "
+                            c("ghost")
+                            +" and "
+                            c("link")
                         }
-
-                        h3 { +"Choose from variants like outline, ghost and more. Icons can be on either side of the text." }
                         componentFrame {
                             lineUp {
                                 items {
@@ -170,9 +172,13 @@ fun RenderContext.buttonDemo(): Div {
 
                         showcaseSection("Sizes")
                         p {
-                            +"""
-                                Buttons are available in three predefined sizes.
-                            """.trimIndent()
+                            +"choose from on three predefined sizes ("
+                            c("small")
+                            +", "
+                            c("normal")
+                            +" or  "
+                            c("large")
+                            +") or scale your button to your needs using the styling parameter."
                         }
                         componentFrame {
                             lineUp {
@@ -213,10 +219,9 @@ fun RenderContext.buttonDemo(): Div {
 
                         showcaseSection("Loading State")
                         p {
-                            +"""
-                                Connect the Button to a Tracker to show it's loading state. 
-                                You can specify a different text that is shown while loading.
-                            """.trimIndent()
+                            +"Connect a button to a "
+                            c("Tracker")
+                            +" to show its loading state. You can specify a different text that is shown while loading."
                         }
                         componentFrame {
                             lineUp {
@@ -280,9 +285,6 @@ fun RenderContext.buttonDemo(): Div {
                         }
                     }
                 }
-
-                showcaseSection("Configuration")
-                span { +" add link to dokka (iframe?) " }
             }
         }
     }

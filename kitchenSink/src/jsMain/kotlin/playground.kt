@@ -86,6 +86,7 @@ fun RenderContext.playground(
             attr("auto-indent", "true")
             attr("lines", "false")
             attr("output-size", component.size)
+//            attr("data-js-libs", "./core.js")
 
             +component.source
         }
