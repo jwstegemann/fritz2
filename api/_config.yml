@@ -1,0 +1,20 @@
+remote_theme: pmarsceill/just-the-docs
+theme: "just-the-docs"
+title: fritz2 API
+logo: "fritz_logo_black.svg"
+search_enabled: false
+# Aux links for the upper right navigation
+aux_links:
+  "Home":
+    - "//www.fritz2.dev"
+  "Documentation":
+    - "//docs.fritz2.dev"
+  "Examples":
+    - "//www.fritz2.dev/examples.html"
+  "Api":
+    - "//api.fritz2.dev"
+  "Github":
+    - "//www.github.com/jwstegemann/fritz2"
+
+# Footer content appears at the bottom of every page's main content
+footer_content: "Distributed by a MIT license."

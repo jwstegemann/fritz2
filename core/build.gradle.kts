@@ -4,8 +4,6 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
-val coroutinesVersion = "1.4.1"
-
 kotlin {
     jvm()
     js(LEGACY).browser {
@@ -60,18 +58,17 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutinesVersion")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${rootProject.ext["coroutinesVersion"]}")
             }
         }
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutinesVersion")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${rootProject.ext["coroutinesVersion"]}")
             }
         }
     }
 }
-
 
 publishing {
     repositories {
@@ -88,22 +85,6 @@ publishing {
             credentials {
                 username = "jwstegemann"
                 password = System.getenv("BINTRAY_API_KEY")
-            }
-        }
-    }
-}
-
-tasks {
-    val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
-        impliedPlatforms = mutableListOf("common")
-        outputFormat = "markdown"
-        outputDirectory = "$projectDir/api/dokka"
-        multiplatform {
-            val js by creating {
-                impliedPlatforms = mutableListOf("js")
-            }
-            val jvm by creating {
-                impliedPlatforms = mutableListOf("jvm")
             }
         }
     }
