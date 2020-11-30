@@ -4,6 +4,8 @@ import dev.fritz2.binding.watch
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.styling.params.styled
+import dev.fritz2.styling.theme.Theme
 import dev.fritz2.tracking.tracker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -40,17 +42,15 @@ fun RenderContext.buttonDemo(): Div {
     buttonStore.watch()
 
     // TODO: Check why ``handledBy`` does not work without enclosing ``div``! (only with ``stackUp``)
-    return stackUp({
-            maxWidth { "48rem" }
-            margins { top { huge } }
+    return contentFrame {
+        stackUp({
             alignItems { start }
             padding { "1rem" }
         }) {
             items {
-                showcaseHeader("Buttons Showcase")
+                showcaseHeader("Buttons")
 
                 stackUp({
-                    maxWidth { "48rem" }
                     alignItems { start }
                 }) {
                     items {
@@ -62,7 +62,7 @@ fun RenderContext.buttonDemo(): Div {
                         }
 
                         showcaseSection("Usage")
-                        p {
+                        paragraph{
                             +"Define your button by adding text and / or an icon to its content. A"
                             c("pushButton")
                             +"gives you full controll over the underlying HTML-button. The"
@@ -112,14 +112,13 @@ fun RenderContext.buttonDemo(): Div {
                         }
 
                         showcaseSection("Variants")
-                        p {
-                            +"""
+                        paragraph {
+                            """
                                 fritz2 offers three different flavours of buttons for the various use cases.
                             """.trimIndent()
-
                         }
 
-                        h3 { +"Choose from variants like outline, ghost and more. Icons can be on either side of the text." }
+                        showcaseSection("Choose from variants like outline, ghost and more. Icons can be on either side of the text." )
                         componentFrame {
                             lineUp {
                                 items {
@@ -169,8 +168,8 @@ fun RenderContext.buttonDemo(): Div {
                         }
 
                         showcaseSection("Sizes")
-                        p {
-                            +"""
+                        paragraph {
+                            """
                                 Buttons are available in three predefined sizes.
                             """.trimIndent()
                         }
@@ -212,8 +211,8 @@ fun RenderContext.buttonDemo(): Div {
                         }
 
                         showcaseSection("Loading State")
-                        p {
-                            +"""
+                        paragraph {
+                            """
                                 Connect the Button to a Tracker to show it's loading state. 
                                 You can specify a different text that is shown while loading.
                             """.trimIndent()
@@ -286,3 +285,4 @@ fun RenderContext.buttonDemo(): Div {
             }
         }
     }
+}

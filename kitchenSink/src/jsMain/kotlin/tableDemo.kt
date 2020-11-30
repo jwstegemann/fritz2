@@ -112,7 +112,7 @@ fun RenderContext.tableDemo(): Div {
 
     defaultList.sortedWith(compareBy { it.fullName })
 
-    return div {
+    return contentFrame  {
         h1 { +"Table Showcase" }
 
         val selectedStore = object : RootStore<List<Person>>(emptyList()) {

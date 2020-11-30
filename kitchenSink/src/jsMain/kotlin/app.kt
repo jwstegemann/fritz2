@@ -2,6 +2,7 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.A
 import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.P
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.Router
@@ -20,11 +21,40 @@ import kotlinx.coroutines.flow.onEach
 
 fun RenderContext.showcaseHeader(text: String) {
     (::h1.styled {
+        fontFamily { "Inter, sans-serif" }
+        margins {
+            top { "2rem" }
+            bottom { ".25rem" }
+        }
+        lineHeight { Theme().lineHeights.tiny }
+        fontWeight { "700" }
+        fontSize { Theme().fontSizes.huge }
+        letterSpacing { Theme().letterSpacings.small }
     }) { +text }
+}
+
+fun RenderContext.showcaseSubHeader(text: String) {
+    (::h2.styled {
+        fontFamily { "Inter, sans-serif" }
+        margins {
+            top { "4rem" }
+            bottom { ".5rem" }
+        }
+        lineHeight { Theme().lineHeights.small }
+        fontWeight { "600" }
+        fontSize { Theme().fontSizes.larger }
+        letterSpacing { Theme().letterSpacings.small }
+    }) { +text}
 }
 
 fun RenderContext.showcaseSection(text: String) {
     (::h3.styled {
+        fontFamily { "Inter, sans-serif" }
+        lineHeight { Theme().lineHeights.smaller }
+        fontWeight { "600" }
+        fontSize { Theme().fontSizes.large }
+        letterSpacing { Theme().letterSpacings.small }
+
         borders {
             left {
                 width { "6px" }
@@ -35,6 +65,32 @@ fun RenderContext.showcaseSection(text: String) {
         margins { top { "3rem !important" } }
         paddings { left { smaller } }
     }) { +text }
+}
+
+fun RenderContext.paragraph(init: P.() -> Unit): P {
+    return (::p.styled {
+        fontFamily { "Inter, sans-serif" }
+        margins {
+            top { "1.25rem" }
+        }
+        lineHeight { Theme().lineHeights.larger }
+        fontWeight { "400" }
+        fontSize { Theme().fontSizes.normal }
+        letterSpacing { Theme().letterSpacings.small }
+    })  {
+        init()
+    }
+}
+
+fun RenderContext.contentFrame(init: Div.() -> Unit): Div {
+    return (::div.styled {
+        maxWidth { "48rem" }
+        paddings {
+            top { huge }
+        }
+    }){
+        init()
+    }
 }
 
 
@@ -130,6 +186,23 @@ fun RenderContext.navAnchor(linkText: String, href: String): Div {
 }
 
 val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
+
+val welcome_ = "Welcome"
+val icons_ = "Icons"
+val spinner_ = "Spinner"
+val input_ = "Input"
+val buttons_ = "Buttons"
+val formcontrol_ = "Formcontrol"
+val flexbox_ = "Flexbox"
+val gridbox_ = "Gridbox"
+val checkboxes_ = "Checkboxes"
+val radios_ = "Radios"
+val switch_ = "Switch"
+val stack_ = "Stack"
+val modal_ = "Modal"
+val popover_ = "Popover"
+val datatable_ = "Datatable"
+
 
 object ThemeStore : RootStore<Int>(0) {
     val selectTheme = handle<Int> { _, index ->
@@ -289,27 +362,28 @@ fun main() {
                     items {
                         (::p.styled {
                             //width { "100%" }
+                            margins { top{ huge } }
                             paddings {
                                 bottom { "2.0rem" }
                             }
                         }) {
-                            menuAnchor("Welcome", router)
+                            menuAnchor(welcome_, router)
                         }
 
-                        menuAnchor("flexbox", router)
-                        menuAnchor("gridbox", router)
-                        menuAnchor("stack", router)
-                        menuAnchor("icons", router)
-                        menuAnchor("spinner", router)
-                        menuAnchor("buttons", router)
-                        menuAnchor("popover", router)
-                        menuAnchor("modal", router)
-                        menuAnchor("input", router)
-                        menuAnchor("checkboxes", router)
-                        menuAnchor("radios", router)
-                        menuAnchor("switch", router)
-                        menuAnchor("formcontrol", router)
-                        menuAnchor("datatable", router)
+                        menuAnchor(flexbox_, router)
+                        menuAnchor(gridbox_, router)
+                        menuAnchor(stack_, router)
+                        menuAnchor(icons_, router)
+                        menuAnchor(spinner_, router)
+                        menuAnchor(buttons_, router)
+                        menuAnchor(popover_, router)
+                        menuAnchor(modal_, router)
+                        menuAnchor(input_, router)
+                        menuAnchor(checkboxes_, router)
+                        menuAnchor(radios_, router)
+                        menuAnchor(switch_, router)
+                        menuAnchor(formcontrol_, router)
+                        menuAnchor(datatable_, router)
                     }
                 }
                 (::div.styled(id = "content-right") {
@@ -326,21 +400,21 @@ fun main() {
                     //  together)
                     router.data.render { site ->
                         when (site) {
-                            "icons" -> iconsDemo()
-                            "spinner" -> spinnerDemo()
-                            "input" -> inputDemo()
-                            "buttons" -> buttonDemo()
-                            "formcontrol" -> formControlDemo()
-                            "flexbox" -> flexBoxDemo(theme)
-                            "gridbox" -> gridBoxDemo()
-                            "checkboxes" -> checkboxesDemo()
-                            "radios" -> radiosDemo()
-                            "switch" -> switchDemo()
-                            "stack" -> stackDemo()
-                            "modal" -> modalDemo()
-                            "popover" -> popoverDemo()
-                            "welcome" -> welcome()
-                            "datatable" -> tableDemo()
+                            icons_ -> iconsDemo()
+                            spinner_ -> spinnerDemo()
+                            input_ -> inputDemo()
+                            buttons_ -> buttonDemo()
+                            formcontrol_ -> formControlDemo()
+                            flexbox_ -> flexBoxDemo(theme)
+                            gridbox_ -> gridBoxDemo()
+                            checkboxes_ -> checkboxesDemo()
+                            radios_ -> radiosDemo()
+                            switch_ -> switchDemo()
+                            stack_ -> stackDemo()
+                            modal_ -> modalDemo()
+                            popover_ -> popoverDemo()
+                            welcome_ -> welcome()
+                            datatable_ -> tableDemo()
                             else -> welcome()
                         }
                     }

@@ -8,99 +8,100 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 fun RenderContext.spinnerDemo(): Div {
-    return stackUp({
-        margins { top { huge } }
-        alignItems { start }
-        padding { "1rem" }
-    }) {
-        spacing { large }
-        items {
-            h1 { +"Spinner Showcase" }
-            p { +"A spinner is an animated element, that is used to signalize a long running process." }
-            p { +"There are two flavours of spinner built into fritz2:" }
-            h2 { +"Pure CSS based" }
-            componentFrame {
-                lineUp({
-                    alignItems { flexEnd }
-                }) {
-                    items {
-                        stackUp {
-                            items {
-                                spinner { }
-                                p { +"vanilla" }
-                            }
-                        }
-                        stackUp {
-                            items {
-                                spinner {
-                                    size { fat }
+    return contentFrame {
+        stackUp({
+            alignItems { start }
+            padding { "1rem" }
+        }) {
+            spacing { large }
+            items {
+                h1 { +"Spinner Showcase" }
+                p { +"A spinner is an animated element, that is used to signalize a long running process." }
+                p { +"There are two flavours of spinner built into fritz2:" }
+                h2 { +"Pure CSS based" }
+                componentFrame {
+                    lineUp({
+                        alignItems { flexEnd }
+                    }) {
+                        items {
+                            stackUp {
+                                items {
+                                    spinner { }
+                                    p { +"vanilla" }
                                 }
-                                p { +"fat" }
                             }
-                        }
-                        stackUp {
-                            items {
-                                spinner {
-                                    size { thin }
+                            stackUp {
+                                items {
+                                    spinner {
+                                        size { fat }
+                                    }
+                                    p { +"fat" }
                                 }
-                                p { +"thin" }
                             }
-                        }
-                        stackUp {
-                            items {
-                                spinner {
-                                    speed { "2s" }
+                            stackUp {
+                                items {
+                                    spinner {
+                                        size { thin }
+                                    }
+                                    p { +"thin" }
                                 }
-                                p { +"configure turning speed" }
                             }
-                        }
-                        stackUp {
-                            items {
-                                spinner({
-                                    color { primary }
-                                    size { "3em" }
-                                }) {
-                                    size { fat }
-                                    speed { "1.5s" }
+                            stackUp {
+                                items {
+                                    spinner {
+                                        speed { "2s" }
+                                    }
+                                    p { +"configure turning speed" }
                                 }
-                                p { +"custom styleable too" }
+                            }
+                            stackUp {
+                                items {
+                                    spinner({
+                                        color { primary }
+                                        size { "3em" }
+                                    }) {
+                                        size { fat }
+                                        speed { "1.5s" }
+                                    }
+                                    p { +"custom styleable too" }
+                                }
                             }
                         }
                     }
                 }
-            }
-            h2 { +"Icon based" }
-            componentFrame {
-                lineUp({
-                    alignItems { flexEnd }
-                }) {
-                    items {
-                        stackUp {
-                            items {
-                                spinner ({
-                                   color { "#FF1080" }
-                                }) {
-                                    icon { heart }
-                                    speed { "1s" }
-                                }
-                                p { +"choose any icon" }
-                            }
-                        }
-                        stackUp {
-                            items {
-                                box({
-                                    background { color { primary } }
-                                    padding { normal }
-                                }) {
-                                    spinner({
-                                        color { base }
-                                        size { "5em" }
+                h2 { +"Icon based" }
+                componentFrame {
+                    lineUp({
+                        alignItems { flexEnd }
+                    }) {
+                        items {
+                            stackUp {
+                                items {
+                                    spinner ({
+                                        color { "#FF1080" }
                                     }) {
-                                        icon { fritz2 }
-                                        speed { "1.5s" }
+                                        icon { heart }
+                                        speed { "1s" }
                                     }
+                                    p { +"choose any icon" }
                                 }
-                                p { +"completly customizable too!" }
+                            }
+                            stackUp {
+                                items {
+                                    box({
+                                        background { color { primary } }
+                                        padding { normal }
+                                    }) {
+                                        spinner({
+                                            color { base }
+                                            size { "5em" }
+                                        }) {
+                                            icon { fritz2 }
+                                            speed { "1.5s" }
+                                        }
+                                    }
+                                    p { +"completly customizable too!" }
+                                }
                             }
                         }
                     }

@@ -16,128 +16,128 @@ fun RenderContext.modalDemo(): Div {
     // Call this once, if you don't need to *dynamically* change overlay!
     //ModalComponent.setOverlayHandler(DefaultOverlay(OverlayMethod.CoveringEach))
 
-    return box({
-        margins { top { huge } }
-        alignItems { start }
-        padding { "1rem" }
-    }) {
+    return contentFrame {
+        box({
+            alignItems { start }
+            padding { "1rem" }
+        }) {
 
-        fun createDeepDialogs(count: Int, size: Style<BasicParams>): SimpleHandler<Unit> {
-            if (count < 2) {
-                return modal {
-                    closeButton()
-                    size { size }
-                    content {
-                        h1 { +"Final Dialog" }
+            fun createDeepDialogs(count: Int, size: Style<BasicParams>): SimpleHandler<Unit> {
+                if (count < 2) {
+                    return modal {
+                        closeButton()
+                        size { size }
+                        content {
+                            h1 { +"Final Dialog" }
+                        }
                     }
-                }
-            } else {
-                return modal({
-                    background { color { "snow" } }
-                }) {
-                    size { size }
-                    variant { auto }
-                    closeButton()
-                    content {
-                        h1 { +"Modal Dialog" }
-                        p { +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." }
-                        lineUp({
-                            margins { top { normal } }
-                            justifyContent { end }
-                        }) {
-                            spacing { small }
-                            items {
-                                clickButton {
-                                    text("open another")
-                                } handledBy createDeepDialogs(count - 1, size)
+                } else {
+                    return modal({
+                        background { color { "snow" } }
+                    }) {
+                        size { size }
+                        variant { auto }
+                        closeButton()
+                        content {
+                            h1 { +"Modal Dialog" }
+                            p { +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." }
+                            lineUp({
+                                margins { top { normal } }
+                                justifyContent { end }
+                            }) {
+                                spacing { small }
+                                items {
+                                    clickButton {
+                                        text("open another")
+                                    } handledBy createDeepDialogs(count - 1, size)
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        h1 { +"Modal Dialogs Showcase" }
+            h1 { +"Modal Dialogs Showcase" }
 
-        stackUp({
-            alignItems { start }
-        }) {
-            items {
-                h3 { +"Basic Dialog options" }
-                componentFrame {
-                    lineUp({
-                        alignItems { start }
-                    }) {
-                        items {
-                            clickButton {
-                                variant { outline }
-                                text("Blank dialog with closeButton")
-                            } handledBy modal {
-                                size { normal }
-                                closeButton()
-                            }
-                            clickButton {
-                                variant { outline }
-                                text("Blank dialog with custom-styled closeButton")
-                            } handledBy modal {
-                                closeButton({
-                                    background { color { danger } }
-                                    color { "snow" }
-                                    position {
-                                        absolute {
-                                            left { normal }
-                                            top { normal }
-                                        }
-                                    }
-                                    css("transform: rotate(-30deg) translateX(-.5rem)")
-                                }) {
-                                    size { small }
-                                    text("Close")
-                                    iconRight()
+            stackUp({
+                alignItems { start }
+            }) {
+                items {
+                    h3 { +"Basic Dialog options" }
+                    componentFrame {
+                        lineUp({
+                            alignItems { start }
+                        }) {
+                            items {
+                                clickButton {
+                                    variant { outline }
+                                    text("Blank dialog with closeButton")
+                                } handledBy modal {
+                                    size { normal }
+                                    closeButton()
                                 }
-                            }
-                            clickButton {
-                                variant { outline }
-                                text("Content and user defined buttons")
-                            } handledBy modal { close -> /* pass in a handler for custom close management */
-                                hasCloseButton(false)
-                                content {
-                                    h1 { +"Simple dialog" }
-                                    p { +"You can put any content or structure into a modal." }
-                                    p { +"And of course you can define your own close button or other buttons." }
-                                    lineUp({
-                                        alignItems { start }
-                                        margins {
-                                            top { normal }
-                                        }
-                                    }) {
-                                        spacing { small }
-                                        items {
-                                            clickButton({
-                                                color { dark }
-                                                background { color { light } }
-                                            }) { text("Give me more!") } handledBy modal {
-                                                size { small }
-                                                content {
-                                                    h1 { +"Final message" }
-                                                    p { +"This is the next level modal dialog." }
-                                                }
+                                clickButton {
+                                    variant { outline }
+                                    text("Blank dialog with custom-styled closeButton")
+                                } handledBy modal {
+                                    closeButton({
+                                        background { color { danger } }
+                                        color { "snow" }
+                                        position {
+                                            absolute {
+                                                left { normal }
+                                                top { normal }
                                             }
-                                            clickButton { text("Abort") } handledBy close // use close handler!
+                                        }
+                                        css("transform: rotate(-30deg) translateX(-.5rem)")
+                                    }) {
+                                        size { small }
+                                        text("Close")
+                                        iconRight()
+                                    }
+                                }
+                                clickButton {
+                                    variant { outline }
+                                    text("Content and user defined buttons")
+                                } handledBy modal { close -> /* pass in a handler for custom close management */
+                                    hasCloseButton(false)
+                                    content {
+                                        h1 { +"Simple dialog" }
+                                        p { +"You can put any content or structure into a modal." }
+                                        p { +"And of course you can define your own close button or other buttons." }
+                                        lineUp({
+                                            alignItems { start }
+                                            margins {
+                                                top { normal }
+                                            }
+                                        }) {
+                                            spacing { small }
+                                            items {
+                                                clickButton({
+                                                    color { dark }
+                                                    background { color { light } }
+                                                }) { text("Give me more!") } handledBy modal {
+                                                    size { small }
+                                                    content {
+                                                        h1 { +"Final message" }
+                                                        p { +"This is the next level modal dialog." }
+                                                    }
+                                                }
+                                                clickButton { text("Abort") } handledBy close // use close handler!
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
 
-                h3 { +"Choosing an overlay" }
-                p {
-                    +"Decide what happens with your background when your modal opens. The options are default, create an overlay for each level of dialog opened, or use a styled overlay."
-                }
+                    h3 { +"Choosing an overlay" }
+                    p {
+                        +"Decide what happens with your background when your modal opens. The options are default, create an overlay for each level of dialog opened, or use a styled overlay."
+                    }
 
-                componentFrame {val overlayVariants = mapOf(
+                    componentFrame {val overlayVariants = mapOf(
                         Pair("Activate default overlay", DefaultOverlay()),
                         Pair("Activate overlay for each nested level", DefaultOverlay(OverlayMethod.CoveringEach)),
                         Pair("Activate styled overlay", DefaultOverlay(OverlayMethod.CoveringTopMost) {
@@ -156,55 +156,56 @@ fun RenderContext.modalDemo(): Div {
                             css("transform: rotate(-30deg) translateX(-.5rem) scale(200%)")
                             opacity { "0.8" }
                         })
-                )
+                    )
 
-                    radioGroup(store = ModalComponent.overlay) {
-                        direction { row }
-                        label { overlay ->
-                        overlayVariants.filter { it.value == overlay  }.map {
-                            it.key
-                        }[0]
-                    }
-                    items(overlayVariants.values.toList())
-                }
-                }
-                h3 { +"Sizes" }
-                componentFrame {
-                    lineUp({
-                        alignItems { start }
-                    }) {
-                        items {
-                            clickButton {
-                                text("full")
-                            } handledBy createDeepDialogs(30, Theme().modal.sizes.full)
-                            clickButton {
-                                text("large")
-                            } handledBy createDeepDialogs(30, Theme().modal.sizes.large)
-                            clickButton {
-                                text("normal")
-                            } handledBy createDeepDialogs(30, Theme().modal.sizes.normal)
-                            clickButton {
-                                text("small")
-                            } handledBy createDeepDialogs(30, Theme().modal.sizes.small)
+                        radioGroup(store = ModalComponent.overlay) {
+                            direction { row }
+                            label { overlay ->
+                                overlayVariants.filter { it.value == overlay  }.map {
+                                    it.key
+                                }[0]
+                            }
+                            items(overlayVariants.values.toList())
                         }
                     }
-                }
+                    h3 { +"Sizes" }
+                    componentFrame {
+                        lineUp({
+                            alignItems { start }
+                        }) {
+                            items {
+                                clickButton {
+                                    text("full")
+                                } handledBy createDeepDialogs(30, Theme().modal.sizes.full)
+                                clickButton {
+                                    text("large")
+                                } handledBy createDeepDialogs(30, Theme().modal.sizes.large)
+                                clickButton {
+                                    text("normal")
+                                } handledBy createDeepDialogs(30, Theme().modal.sizes.normal)
+                                clickButton {
+                                    text("small")
+                                } handledBy createDeepDialogs(30, Theme().modal.sizes.small)
+                            }
+                        }
+                    }
 
-                h3 { +"Variants" }
-                componentFrame {
-                    lineUp({
-                        alignItems { start }
-                    }) {
-                        items {
-                            clickButton {
-                                text("verticalFilled")
-                            } handledBy modal {
-                                closeButton()
-                                size { normal }
-                                variant { verticalFilled }
-                                content {
-                                    h1 { +"Dialog takes all vertical space within the viewport" }
-                                    p { +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." }
+                    h3 { +"Variants" }
+                    componentFrame {
+                        lineUp({
+                            alignItems { start }
+                        }) {
+                            items {
+                                clickButton {
+                                    text("verticalFilled")
+                                } handledBy modal {
+                                    closeButton()
+                                    size { normal }
+                                    variant { verticalFilled }
+                                    content {
+                                        h1 { +"Dialog takes all vertical space within the viewport" }
+                                        p { +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." }
+                                    }
                                 }
                             }
                         }

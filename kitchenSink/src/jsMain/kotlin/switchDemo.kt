@@ -14,62 +14,68 @@ fun RenderContext.switchDemo(): Div {
     val checkedStore3 = RootStore(true)
     val checkedStore4 = RootStore(false)
 
-    return stackUp({
-        alignItems { start }
-        padding { "1rem" }
-    }) {
-        spacing { large }
-        items {
-            h1 { +"Switch Showcase" }
-            p {
-                +"A checkbox like a switch Button"
-            }
-            switch(){
-                label("Small size")
-                size { small }
-                checked { checkedStore1.data }
-                events {
-                    changes.states() handledBy checkedStore1.update
+    return contentFrame {
+        stackUp({
+            alignItems { start }
+            padding { "1rem" }
+        }) {
+            spacing { large }
+            items {
+                h1 { +"Switch Showcase" }
+                p {
+                    +"A checkbox like a switch Button"
                 }
-            }
-            switch(styling = {
-                background {
-                    color { dark }
-                }
-            }){
-                label("Normal size, custom default(background) color")
-                checked { checkedStore2.data }
-                events {
-                    changes.states() handledBy checkedStore2.update
-                }
-            }
-            switch(){
-                label("Large size, custom checked(background) color")
-                checked { checkedStore3.data }
-                size { large }
-                checkedStyle{{
-                    background {
-                        color { warning }
+                switch() {
+                    label("Small size")
+                    size { small }
+                    checked { checkedStore1.data }
+                    events {
+                        changes.states() handledBy checkedStore1.update
                     }
-                }}
-                events {
-                    changes.states() handledBy checkedStore3.update
                 }
-            }
-            switch(styling = {
-                background {
-                    color { dark }
-                }
-            }){
-                label("more customizing")
-                checked { checkedStore4.data }
-                dotStyle {{
+                switch(styling = {
                     background {
-                        color { danger }
+                        color { dark }
                     }
-                }}
-                events {
-                    changes.states() handledBy checkedStore4.update
+                }) {
+                    label("Normal size, custom default(background) color")
+                    checked { checkedStore2.data }
+                    events {
+                        changes.states() handledBy checkedStore2.update
+                    }
+                }
+                switch() {
+                    label("Large size, custom checked(background) color")
+                    checked { checkedStore3.data }
+                    size { large }
+                    checkedStyle {
+                        {
+                            background {
+                                color { warning }
+                            }
+                        }
+                    }
+                    events {
+                        changes.states() handledBy checkedStore3.update
+                    }
+                }
+                switch(styling = {
+                    background {
+                        color { dark }
+                    }
+                }) {
+                    label("more customizing")
+                    checked { checkedStore4.data }
+                    dotStyle {
+                        {
+                            background {
+                                color { danger }
+                            }
+                        }
+                    }
+                    events {
+                        changes.states() handledBy checkedStore4.update
+                    }
                 }
             }
         }

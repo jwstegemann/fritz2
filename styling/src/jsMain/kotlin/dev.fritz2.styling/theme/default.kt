@@ -2137,7 +2137,6 @@ open class DefaultTheme : Theme {
             p {
               font-family: Inter, sans-serif;
               font-size: ${fontSizes.normal};
-              margin-top: 1.25rem;
               line-height: ${lineHeights.larger};
             }
             *::after {
@@ -2146,8 +2145,6 @@ open class DefaultTheme : Theme {
             }
             h1 {
               font-family: Inter, sans-serif;
-              margin-top: 2rem;
-              margin-bottom: .25rem;
               line-height: ${lineHeights.tiny};
               font-weight: 700;
               font-size: ${fontSizes.huge};
@@ -2156,8 +2153,6 @@ open class DefaultTheme : Theme {
             }
             h2 {
               font-family: Inter, sans-serif;
-              margin-top: 4rem;
-              margin-bottom: 0.5rem;
               line-height: ${lineHeights.small};
               font-weight: 600;
               font-size: ${fontSizes.larger};
@@ -2165,11 +2160,10 @@ open class DefaultTheme : Theme {
             }
             h3 {
               font-family: Inter, sans-serif;
-              margin-top: 3rem;
               line-height: smaller;
               font-weight: 600;
               font-size: ${fontSizes.large};
-              letter-spacing: -.025em;
+              letter-spacing: ${letterSpacings.small};
             }
             h4 {
               font-family: Inter, sans-serif;
