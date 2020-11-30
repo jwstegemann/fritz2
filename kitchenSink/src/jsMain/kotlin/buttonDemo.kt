@@ -47,7 +47,7 @@ fun RenderContext.buttonDemo(): Div {
             padding { "1rem" }
         }) {
             items {
-                h1 { +"Showcase Buttons" }
+                showcaseHeader("Buttons Showcase")
 
                 stackUp({
                     maxWidth { "48rem" }
@@ -64,9 +64,9 @@ fun RenderContext.buttonDemo(): Div {
                         showcaseSection("Usage")
                         p {
                             +"Define your button by adding text and / or an icon to its content. A"
-                            code{"pushButton"}
+                            c("pushButton")
                             +"gives you full controll over the underlying HTML-button. The"
-                            code{"clickButton"}
+                            c("clickButton")
                             +"exposes the Flow of click-events, so you can connect it conveniently to a Handler or another component."
                         }
 

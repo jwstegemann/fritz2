@@ -18,7 +18,7 @@ open class NavbarComponent {
                 transition: box-shadow 0.2s;
                 position: fixed;
                 top: 0;
-                z-index: 1;
+                z-index: 199;
                 background: #FFFFFF;
                 left: 0;
                 right: 0;

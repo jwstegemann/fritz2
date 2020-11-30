@@ -173,7 +173,7 @@ fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
     val isActive = router.data.map { hash ->
         console.log(hash)  //druckt in die Konsole im Browser
         hash == linkText //map den reinkommenden Wert des Flow auf einen Boolean
-    }.distinctUntilChanged()
+    }.distinctUntilChanged().onEach { if (it) PlaygroundComponent.update() }
 
     return (::div.styled {
         width { "90%" }
@@ -198,8 +198,6 @@ fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
     }
 }
 
-
-
 fun RenderContext.nonHoverAnchor(linkText: String): A {
     return (::a.styled {
         fontSize { small }
@@ -209,6 +207,22 @@ fun RenderContext.nonHoverAnchor(linkText: String): A {
         href("#$linkText")
     }
 }
+
+val showcaseCode = staticStyle(
+    "showcase-code", """
+            padding: 2px 0.25rem;
+            font-size: 0.875em;
+            white-space: nowrap;
+            line-height: normal;
+            color: rgb(128, 90, 213);
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    """
+)
+
+fun RenderContext.c(text: String) {
+    span(showcaseCode.name) { +text }
+}
+
 
 @ExperimentalCoroutinesApi
 fun main() {
@@ -308,34 +322,6 @@ fun main() {
                         menuAnchor("Multiselect", router)
                         menuAnchor("Singleselect", router)
                         menuAnchor("Formcontrol", router)
-
-
-                        (::a.styled {
-                            theme.tooltip.write("visit us on", "www.fritz2.dev"){right}()
-                            after {
-                                textAlign { center }
-                                background { color { primary } }
-                                color { dark }
-                            }
-                            paddings {
-                                top { "1.5rem" }
-                            }
-                            alignItems { end }
-                        }) {
-                            href("https://www.fritz2.dev/")
-                            target("fritz2")
-
-                            icon({
-                                size { "3rem" }
-                                hover {
-                                    color { primary }
-                                }
-                            }) {
-                                fromTheme {
-                                    fritz2
-                                }
-                            }
-                        }
                     }
                 }
                 (::div.styled(id = "content-right") {
