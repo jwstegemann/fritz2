@@ -89,8 +89,9 @@ fun RenderContext.navBar(
                 top {
                     width { "6px" }
                     style { solid }
-                    color { secondary }
+                    color { primary }
                 }
+
 
                 bottom {
                     width { "2px" }

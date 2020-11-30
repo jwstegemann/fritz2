@@ -89,7 +89,7 @@ class CheckboxGroupComponent {
         direction =  CheckboxGroupLayouts.value()
     }
 
-    var checkedBackgroundColor: ColorProperty = "gray" // @checkbox @input
+    var checkedBackgroundColor: ColorProperty = Theme().colors.primary // @checkbox @input
     fun checkedBackgroundColor(value: () -> ColorProperty) {
         checkedBackgroundColor = value()
     }

@@ -9,6 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun RenderContext.welcome(): Div {
 
     return stackUp({
+        margins { top { huge } }
         alignItems { start }
         padding { "1rem" }
     }) {
@@ -116,7 +117,7 @@ fun RenderContext.welcome(): Div {
                 background {
                     color { dark }
                 }
-                color { warning }
+                color { secondary }
                 radius { "5px" }
             }) {
                 (1..5).map { li { +"List item $it" } }

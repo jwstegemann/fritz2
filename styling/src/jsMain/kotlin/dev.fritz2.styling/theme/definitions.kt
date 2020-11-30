@@ -187,8 +187,9 @@ interface Colors {
     val light: ColorProperty
     val dark: ColorProperty
     val base: ColorProperty
+    val primary_hover: ColorProperty
+    val light_hover: ColorProperty
     val disabled: ColorProperty
-    val menuSelect: ColorProperty
 }
 
 /**

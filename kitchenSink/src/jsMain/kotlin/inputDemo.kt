@@ -15,6 +15,8 @@ fun RenderContext.inputDemo(): Div {
     val user = storeOf("Jon Snoe")
 
     return stackUp({
+        maxWidth { "48rem" }
+        margins { top { huge } }
         alignItems { start }
         padding { "1rem" }
     }) {

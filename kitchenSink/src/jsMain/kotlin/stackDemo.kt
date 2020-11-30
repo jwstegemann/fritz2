@@ -7,6 +7,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 fun RenderContext.stackDemo(): Div {
     return stackUp({
+        margins { top { huge } }
         alignItems { start }
         padding { "1rem" }
     }) {
@@ -128,8 +129,9 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { warning }
+                                            color { danger }
                                         }
+                                        color { base }
                                         radius { "5%" }
                                     }) {
                                         +"These boxes are"
@@ -139,8 +141,9 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { warning }
+                                            color { danger }
                                         }
+                                        color { base }
                                         radius { "5%" }
                                     }) {
                                         +"next to an image "
@@ -172,8 +175,9 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { warning }
+                                            color { info }
                                         }
+                                        color { base }
                                         radius { "5%" }
                                     }) {
                                         +"But these lined up"
@@ -183,8 +187,9 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { warning }
+                                            color { info }
                                         }
+                                        color { base }
                                         radius { "5%" }
                                     }) {
                                         +"boxes are in"
@@ -193,8 +198,9 @@ fun RenderContext.stackDemo(): Div {
                                         margin { normal }
                                         paddings { all { "0.5rem" } }
                                         background {
-                                            color { warning }
+                                            color { info }
                                         }
+                                        color { base }
                                         radius { "5%" }
                                     }) {
                                         +"the right order"

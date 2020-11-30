@@ -12,6 +12,7 @@ val myItems = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "222222")
 fun RenderContext.singleSelectDemo(): Div {
 
     return stackUp({
+        margins { top { huge } }
         alignItems { start }
         padding { "1rem" }
     }) {
@@ -119,8 +120,8 @@ fun RenderContext.singleSelectDemo(): Div {
                                         selected { mySelectedItem }
                                         direction { row }
                                         size { small }
-                                        checkedBackgroundColor { warning }
-                                        backgroundColor { tertiary }
+                                        checkedBackgroundColor { danger }
+                                        backgroundColor { secondary }
                                     } handledBy selectedItemStore.update
                                 }
                             }
@@ -140,6 +141,7 @@ fun RenderContext.singleSelectDemo(): Div {
 @ExperimentalCoroutinesApi
 fun RenderContext.multiSelectDemo(): Div {
     return stackUp({
+        margins { top { huge } }
         alignItems { start }
         padding { "1rem" }
     }) {
@@ -278,8 +280,8 @@ fun RenderContext.multiSelectDemo(): Div {
                                         size { small }
                                         checked { checkedStore1.data }
                                         borderColor { tertiary }
-                                        checkedBackgroundColor { warning }
-                                        backgroundColor { tertiary }
+                                        checkedBackgroundColor { danger }
+                                        backgroundColor { secondary }
                                         events {
                                             changes.states() handledBy checkedStore1.update
                                         }

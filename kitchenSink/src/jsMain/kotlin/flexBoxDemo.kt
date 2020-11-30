@@ -7,7 +7,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
 
     return flexBox({
+        maxWidth { "48rem" }
         margin { small }
+        margins { top { huge } }
         padding { small }
         direction(sm = { column }, md = { row })
         minHeight { "50%" }
@@ -17,7 +19,7 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
             zIndex { layer(1) }
             margins(
                 {
-                    top { small }
+                    top { huge }
                     bottom { large }
                 },
                 md = { left { normal } }
@@ -64,10 +66,12 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
                     left { "0" }
                 }
             }) {
-                lineUp {
-                    items {
-                        clickButton { text("use small Fonts") }.map { 0 } handledBy ThemeStore.selectTheme
-                        clickButton { text("use large Fonts") }.map { 1 } handledBy ThemeStore.selectTheme
+                componentFrame {
+                    lineUp {
+                        items {
+                            clickButton { text("use small Fonts") }.map { 0 } handledBy ThemeStore.selectTheme
+                            clickButton { text("use large Fonts") }.map { 1 } handledBy ThemeStore.selectTheme
+                        }
                     }
                 }
             }

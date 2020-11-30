@@ -55,9 +55,11 @@ open class DefaultTheme : Theme {
         override val light = "#e2e8f0" // rgb(226,232,240)
         override val dark = "#2d3748" // rgb(45,55,72)
         override val base = "#ffffff" // rgb(255,255,255)
-        override val menuSelect = "#b2f5ea"
+        override val primary_hover = "rgb(49,151,149, 0.3)"
+        override val light_hover = "rgb(226,232,240, 0.5)"
         val alert = "feebc8" // rgb(254,235,200)
         override val disabled = light
+        //color of focus of input elements: inner: #3182ce / rgb(49,130,206) outer: #acd2f2 / rgb(172,210,242)
     }
 
     override val fonts = object : Fonts {
@@ -140,7 +142,7 @@ open class DefaultTheme : Theme {
                 and shadow("0", "15px", "12px", rgba(0, 0, 0, 0.22)),
         lowered = shadow("0", "2px", "4px", color = rgba(0, 0, 0, 0.06), inset = true),
         glowing = shadow("0", "0", "2px", color = rgba(0, 0, 255, 0.5)),
-        outline = shadow("0", "0", "0", "3px", color = rgba(66, 153, 225, 0.6)),
+        outline = shadow("0", "0", "0", "3px", color = colors.secondary), // changed by mkempa-np: formerly rgba(66, 153, 225, 0.6)
         danger = shadow("0", "0", "0", "1px", color = colors.danger)
     )
 
@@ -1508,7 +1510,7 @@ open class DefaultTheme : Theme {
                 hover {
                     css("background-opacity: 0.2;")
                     background {
-                        color { toRGBA(primary, 0.2)}
+                        color { primary_hover }
                     }
 
                 }
@@ -2007,13 +2009,16 @@ open class DefaultTheme : Theme {
               font-feature-settings: "kern";
             }
             textarea {
+              font-family: Inter, sans-serif;
               line-height: ${lineHeights.tiny}; /* 1 */
             }
             a {
+              font-family: Inter, sans-serif;
               font-weight: 600;
               font-size: ${fontSizes.small}
             }
             p {
+              font-family: Inter, sans-serif;
               font-size: ${fontSizes.normal};
               margin-top: 1.25rem;
               line-height: ${lineHeights.larger};
@@ -2023,6 +2028,7 @@ open class DefaultTheme : Theme {
               overflow-wrap: break-word;
             }
             h1 {
+              font-family: Inter, sans-serif;
               margin-top: 2rem;
               margin-bottom: .25rem;
               line-height: ${lineHeights.tiny};
@@ -2032,6 +2038,7 @@ open class DefaultTheme : Theme {
               outline: 0;
             }
             h2 {
+              font-family: Inter, sans-serif;
               margin-top: 4rem;
               margin-bottom: 0.5rem;
               line-height: ${lineHeights.small};
@@ -2040,6 +2047,7 @@ open class DefaultTheme : Theme {
               letter-spacing: ${letterSpacings.small};
             }
             h3 {
+              font-family: Inter, sans-serif;
               margin-top: 3rem;
               line-height: smaller;
               font-weight: 600;
@@ -2047,48 +2055,20 @@ open class DefaultTheme : Theme {
               letter-spacing: -.025em;
             }
             h4 {
+              font-family: Inter, sans-serif;
               font-size: ${fontSizes.normal};
               font-weight: bold;
             }
             h5 {
+              font-family: Inter, sans-serif;
               font-size: ${fontSizes.small};
               font-weight: bold;
             }
             h6 {
+              font-family: Inter, sans-serif;
               font-size: ${fontSizes.smaller};
               font-weight: bold;
             }
         """.trimIndent()
-    }
-
-    override fun toRGBA(color: ColorProperty, opacity: Double): ColorProperty {
-        val r: Int = convertHexCharToDecimal(color[1])*16 + convertHexCharToDecimal(color[2])
-        val g: Int = convertHexCharToDecimal(color[3])*16 + convertHexCharToDecimal(color[4])
-        val b: Int = convertHexCharToDecimal(color[5])*16 + convertHexCharToDecimal(color[6])
-        return "rgb($r,$g,$b,$opacity)"
-        // "# 31 -> 865    97 -> 967    95 -> 965"
-    }
-
-    private fun convertHexCharToDecimal(c:Char) : Int {
-        var i = when (c) {
-            '0' -> 0
-            '1' -> 1
-            '2' -> 2
-            '3' -> 3
-            '4' -> 4
-            '5' -> 5
-            '6' -> 6
-            '7' -> 7
-            '8' -> 8
-            '9' -> 9
-            'a' -> 10
-            'b' -> 11
-            'c' -> 12
-            'd' -> 13
-            'e' -> 14
-            'f' -> 15
-            else -> -1
-        }
-        return i
     }
 }

@@ -13,6 +13,8 @@ fun RenderContext.gridBoxDemo(): Div {
     // example from https://developer.mozilla.org/en/docs/Web/CSS/CSS_Grid_Layout/Layout_using_Named_Grid_Lines
 
     return (::div.styled {
+        maxWidth { "48rem" }
+        margins { top { huge } }
         alignItems { start }
         padding { "1rem" }
     }) {
@@ -77,7 +79,9 @@ fun RenderContext.gridBoxDemo(): Div {
                     }
                     paddings { all { "0.2rem" } }
                 }) {
-                    p { +"Header" }
+                    (::p.styled {
+                        padding { "1rem" }
+                    }) { +"Header" }
                 }
                 box({
                     grid { area { grid.SIDEBAR } }
@@ -85,7 +89,9 @@ fun RenderContext.gridBoxDemo(): Div {
                     color { light }
                     paddings { all { "0.2rem" } }
                 }) {
-                    p { +"Sidebar" }
+                    (::p.styled {
+                        padding { "1rem" }
+                    }) { +"Sidebar" }
                 }
                 box({
                     paddings { all { "0.2rem" } }
@@ -116,14 +122,18 @@ fun RenderContext.gridBoxDemo(): Div {
 
                     )
                 }) {
-                    p { +"Content" }
+                    (::p.styled {
+                        padding { "1rem" }
+                    }){+"Content" }
                 }
                 box({
                     grid { area { grid.FOOTER } }
                     background { color { light } }
                     paddings { all { "0.2rem" } }
                 }) {
-                    p { +"Footer" }
+                    (::p.styled {
+                        padding { "1rem" }
+                    }) { +"Footer" }
                 }
                 box({
                     margin { normal }
@@ -155,11 +165,13 @@ fun RenderContext.gridBoxDemo(): Div {
                     //bgColor { "rgba(255, 0, 0, 0.5)" }
                     background {
                         //blendMode { darken }
-                        color { warning }
+                        color { primary_hover }
                     }
                     paddings { all { "0.2rem" } }
                 }) {
-                    p { +"Overlay" }
+                    (::p.styled {
+                        padding { "1rem" }
+                    }) { +"Overlay" }
                 }
             }
         }

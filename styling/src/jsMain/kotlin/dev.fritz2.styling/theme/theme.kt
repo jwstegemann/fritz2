@@ -191,8 +191,6 @@ interface Theme {
 
     val tooltip: Tooltip
 
-    fun toRGBA(color: ColorProperty, opacity: Double): ColorProperty
-
 }
 
 /**

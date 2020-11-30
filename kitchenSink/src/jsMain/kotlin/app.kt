@@ -31,7 +31,7 @@ fun RenderContext.componentFrame(init: Div.() -> Unit): Div { //Auslagerung von 
     return (::div.styled {
         width { "100%"}
         border {
-            width { thin}
+            width { thin }
             color { light }
         }
         radius { larger }
@@ -44,9 +44,9 @@ fun RenderContext.componentFrame(init: Div.() -> Unit): Div { //Auslagerung von 
 fun RenderContext.simpleLinkWithBackground(linkUri: String, linkText: String): A {
     return (::a.styled {
         fontSize { large }
-        color { warning }
+        color { primary }
         hover {
-            color { light }
+            color { secondary }
             background { color { dark } }
             radius { "5%" }
         }
@@ -63,9 +63,9 @@ fun RenderContext.simpleLinkWithBackground(linkUri: String, linkText: String): A
 fun RenderContext.simpleAnchorWithBackground(linkText: String): A {
     return (::a.styled {
         fontSize { large }
-        color { warning }
+        color { primary }
         hover {
-            color { light }
+            color { secondary }
             background { color { dark } }
         }
         radius { "5%" }
@@ -83,7 +83,7 @@ fun RenderContext.simpleAnchor(linkText: String): A {
     return (::a.styled {
         fontSize { large }
         hover {
-            color { warning }
+            color { primary }
         }
     }) {
         +linkText
@@ -91,17 +91,32 @@ fun RenderContext.simpleAnchor(linkText: String): A {
     }
 }
 
-fun RenderContext.navAnchor(linkText: String, href: String): A {
-    return (::a.styled {
-        fontSize { normal }
-        fontWeight { semiBold }
-        color { warning }
-        hover {
-            color { secondary }
+fun RenderContext.navAnchor(linkText: String, href: String): Div {
+    return (::div.styled {
+            radius { normal }
+            border {
+                width { none }
+            }
+            hover {
+                background {
+                    color { light_hover }
+                }
+            }
+            paddings{
+                top { tiny }
+                bottom { tiny }
+                left { small }
+                right { small }
+            }
+        }){
+        (::a.styled {
+            fontSize { normal }
+            fontWeight { semiBold }
+            color { dark }
+        }) {
+            +linkText
+            href(href)
         }
-    }) {
-        +linkText
-        href(href)
     }
 }
 
@@ -123,13 +138,7 @@ fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
             border {
                 width { none }
             }
-            // TODO: Hintergrund auf tertiary wenn Seite ausgewählt
-
-
-            background {
-                color { Theme().toRGBA(primary, 0.3) }
-            }
-
+            background { color { secondary } }
             paddings {
                 top { tiny }
                 bottom { tiny }
@@ -138,8 +147,6 @@ fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
             }
         },"prefix")
 
-
-    // TODO check with router. function map() has been replaced. check replacing function
     val isActive = router.data.map { hash ->
         console.log(hash)  //druckt in die Konsole im Browser
         hash == linkText //map den reinkommenden Wert des Flow auf einen Boolean
@@ -151,11 +158,9 @@ fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
         border {
             width { none }
         }
-        // TODO: Hintergrund auf tertiary wenn Seite ausgewählt
-
         hover {
             background {
-                color { Theme().toRGBA(light, 0.5) }
+                color { light_hover }
             }
         }
         paddings{
@@ -235,7 +240,7 @@ fun main() {
             items {
                 stackUp({
                     margins {
-                        top { smaller }
+                        top { larger }
                     }
                     padding { "1rem" }
                     minWidth { "200px" }
@@ -260,6 +265,7 @@ fun main() {
                 {
                     items {
                         (::p.styled {
+                            //width { "100%" }
                             paddings {
                                 bottom { "2.0rem" }
                             }
@@ -285,7 +291,7 @@ fun main() {
                             theme.tooltip.write("visit us on", "www.fritz2.dev"){right}()
                             after {
                                 textAlign { center }
-                                background { color { warning } }
+                                background { color { primary } }
                                 color { dark }
                             }
                             paddings {
@@ -299,7 +305,7 @@ fun main() {
                             icon({
                                 size { "3rem" }
                                 hover {
-                                    color { warning }
+                                    color { primary }
                                 }
                             }) {
                                 fromTheme {

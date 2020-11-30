@@ -166,6 +166,8 @@ fun RenderContext.formControlDemo(): Div {
     val selectedItemsStore = RootStore(mySelectedItems)
 
     return stackUp({
+        maxWidth { "48rem" }
+        margins { top { huge } }
         padding { "1rem" }
         alignItems { start }
     }) {
@@ -223,7 +225,7 @@ fun RenderContext.formControlDemo(): Div {
                     text(textStore.data)
                     size { large }
                     borderColor { secondary }
-                    checkedBackgroundColor { warning }
+                    checkedBackgroundColor { primary }
                     checked { loveStore.data }
                     events {
                         changes.states() handledBy loveStore.changedMyMind

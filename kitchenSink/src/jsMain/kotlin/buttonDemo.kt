@@ -40,15 +40,19 @@ fun RenderContext.buttonDemo(): Div {
     buttonStore.watch()
 
     // TODO: Check why ``handledBy`` does not work without enclosing ``div``! (only with ``stackUp``)
-    return div {
-        stackUp({
+    return stackUp({
+            maxWidth { "48rem" }
+            margins { top { huge } }
             alignItems { start }
             padding { "1rem" }
         }) {
             items {
                 h1 { +"Showcase Buttons" }
 
-                stackUp({alignItems { start }}) {
+                stackUp({
+                    maxWidth { "48rem" }
+                    alignItems { start }
+                }) {
                     items {
 
                         h3 { +"Buttons have different clicked-animations: text, icon, and text with icon." }
@@ -123,4 +127,4 @@ fun RenderContext.buttonDemo(): Div {
             }
         }
     }
-}
+
