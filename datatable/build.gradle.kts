@@ -79,19 +79,3 @@ publishing {
         }
     }
 }
-
-tasks {
-    val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
-        impliedPlatforms = mutableListOf("common")
-        outputFormat = "markdown"
-        outputDirectory = "$projectDir/api/dokka"
-        multiplatform {
-            val js by creating {
-                impliedPlatforms = mutableListOf("js")
-            }
-            val jvm by creating {
-                impliedPlatforms = mutableListOf("jvm")
-            }
-        }
-    }
-}
