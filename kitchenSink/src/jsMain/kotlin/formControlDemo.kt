@@ -28,7 +28,7 @@ class MyFormControlComponent : FormControlComponent() {
         prefix: String = Companion.ControlNames.checkboxGroup,
         build: RadioGroupComponent<String>.() -> Unit
     ) {
-        return radioGroup(styling, store, baseClass, id, prefix, build)
+        return radioGroup(styling,store, baseClass, id, prefix, build)
     }
 
     // override default implementation of a radio group within a form control
@@ -41,7 +41,6 @@ class MyFormControlComponent : FormControlComponent() {
         build: RadioGroupComponent<String>.() -> Unit
     ){
         val returnStore = object : RootStore<String>("") {
-
             val syncHandlerSelect = handleAndEmit<String, String> { _, new ->
                 if (new == "custom") ""
                 else {
@@ -67,23 +66,32 @@ class MyFormControlComponent : FormControlComponent() {
                 selectedStore.syncBy(syncHandlerSelect)
                 inputStore.syncInput handledBy update
                 syncHandlerSelect handledBy inputStore.update
+                this.data handledBy store.update
             }
         }
 
         control.set(Companion.ControlNames.radioGroup)
         {
-            radioGroup(styling, returnStore.selectedStore, baseClass, id, prefix) {
-                build()
-                items.map { it + "custom" }
-            }
-            inputField {
-                size { small }
-                base {
-                    disabled(returnStore.selectedStore.data.map { it != "custom" })
-                    changes.values() handledBy returnStore.inputStore.syncInput
-                    value(returnStore.inputStore.data)
-                    placeholder("custom choice")
+            lineUp {
+                items {
+                    radioGroup(styling, returnStore.selectedStore, baseClass, id, prefix) {
+                        build()
+                        direction { row }
+                        items {
+                            items.map { it + "custom" }
+                        }
+                    }
+                    inputField {
+                        size { small }
+                        base {
+                            disabled(returnStore.selectedStore.data.map { it != "custom" })
+                            changes.values() handledBy returnStore.inputStore.syncInput
+                            value(returnStore.inputStore.data)
+                            placeholder("custom choice")
+                        }
+                    }
                 }
+
             }
         }
     }
@@ -128,7 +136,7 @@ class MyFormControlComponent : FormControlComponent() {
                     }) {
                         spacing { tiny }
                         items {
-                            (::fieldset.styled { component.direction() }) {
+                            fieldset {
                                 control(this)
                             }
                             component.renderHelperText(this)
@@ -165,7 +173,7 @@ fun RenderContext.formControlDemo(): Div {
 
     val mySelectedItems = listOf("ffffff", "222222")
 
-    val selectedItemsStore = RootStore(mySelectedItems)
+    val selectedItemsStore = storeOf<List<String>>(mySelectedItems)
 
     return stackUp({
         maxWidth { "48rem" }
@@ -235,12 +243,15 @@ fun RenderContext.formControlDemo(): Div {
 
             h3 { +"Form with a small checkbox group, no label, no helpertext, formlayout horizontal" }
             formControl {
-                direction { row } // must be applied to formcontrol instead of checkboxGroup
+                label {"Choose one or more"}
+                helperText { "..." }
+
                 checkboxGroup(
                     store = selectedItemsStore,
                     id = "checkGroup1"
                 ) {
                     items { flowOf(myItemList) }
+                    direction { row }
                     size { small }
                 }
             }
@@ -271,9 +282,8 @@ fun RenderContext.formControlDemo(): Div {
             myFormControl {
                 label { "Label next to the control just to be different" }
                 helperText { "Helper text below control" }
-                direction { row }
                 mySingleSelectComponent(store = customValueSelected) {
-                    items { flowOf(listOf("some", "predefined", "options")) }
+                    items((listOf("some", "predefined", "options")))
                 }
             }
             (::div.styled {

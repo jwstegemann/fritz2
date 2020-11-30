@@ -13,7 +13,6 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.SwitchSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
@@ -23,14 +22,16 @@ import org.w3c.dom.HTMLInputElement
 /**
  * This class combines the _configuration_ and the core styling of a switch.
  *
- * In order to render a switch use the [switch] factory function!
  *
  * This class offers the following _configuration_ features:
- *  - the text label of a switch (static or dynamic via a [Flow<String>])
- *  - the background color of the box
- *  - the background color for the checked state
- *  - some predefined styling variants
+ *  - the optional label of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext )
+ *  - some predefined styling variants (size)
+ *  - the style of the switch
+ *  - the style checked state
+ *  - the style of the dot
+ *  - the style of the label
  *  - link an external boolean flow to set the checked state of the box
+ *  - link an external boolean flow to set the disabled state of the box
  *  - link events of the switch like ``changes`` with external handlers
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
@@ -40,10 +41,8 @@ import org.w3c.dom.HTMLInputElement
  * Example usage
  * ```
  * switch {
- *      text("with extra cheese") // set the label
- *      switchSize { normal } // choose a predefined size
- *      borderColor { Theme().colors.secondary } // set up the border color of the box itself
- *      checkedBackgroundColor { Theme().colors.warning } // set the color of the checked state
+ *      label("with extra cheese") // set the label
+ *      size { normal } // choose a predefined size
  *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
@@ -54,8 +53,6 @@ import org.w3c.dom.HTMLInputElement
 @ComponentMarker
 class SwitchComponent {
     companion object {
-        // todo replace px in sizes (in default theme) with rem/theme values where not explicit
-        // todo using theme colors in static styles probably does not work when changing themes
         val switchInputStaticCss = staticStyle(
             "switch",
             """
@@ -88,11 +85,6 @@ class SwitchComponent {
     var size: SwitchSizes.() -> Style<BasicParams> = { Theme().switch.sizes.normal }
     fun size(value: SwitchSizes.() -> Style<BasicParams>) {
         size = value
-    }
-
-    var icon: IconDefinition = Theme().icons.check
-    fun icon(value: () -> IconDefinition ) {
-        icon = value()
     }
 
     var label: (Div.() -> Unit)? = null
@@ -154,16 +146,13 @@ class SwitchComponent {
  * Example usage
  * ```
  * switch {
- *      text("with extra cheese") // set the label
- *      switchSize { normal } // choose a predefined size
- *      borderColor { Theme().colors.secondary } // set up the border color of the box itself
- *      checkedBackgroundColor { Theme().colors.warning } // set the color of the checked state
+ *      label("with extra cheese") // set the label
+ *      size { normal } // choose a predefined size
  *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
  *      }
  * }
- * ```
  *
  * @see SwitchComponent
  *

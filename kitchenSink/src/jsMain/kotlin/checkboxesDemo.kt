@@ -120,7 +120,7 @@ fun RenderContext.checkboxesDemo(): Div {
                                 }
 
                                 items {
-                                    checkboxGroup<String>(
+                                    checkboxGroup(
                                         store = selectedItemsStore,
                                         id = "checkGroup2"
                                     ) {

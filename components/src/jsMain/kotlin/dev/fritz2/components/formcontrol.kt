@@ -1,14 +1,12 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
-import dev.fritz2.binding.storeOf
 import dev.fritz2.components.FormControlComponent.Control
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.DirectionValues
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
@@ -29,7 +27,6 @@ import kotlinx.coroutines.flow.map
  * - an optional helper text
  * - provide an error message as a [Flow<String>]]; if it is none empty, the message will get rendered.
  * - disable the control
- * - choose the direction of group control elements (row vs column)
  *
  * In order to customize the control, there are different seams to use:
  *
@@ -95,27 +92,6 @@ open class FormControlComponent {
             }
         }
 
-        // TODO: Check how to *centralize* this (compare multiselect and multiselect)
-        // TODO: Change names to ``horizontal`` and ``vertical``? Row and column is widely used in fritz2 for directions
-        object FormControlLayouts { // @ fieldset
-            val column: Style<BasicParams> = {
-                display {
-                    block
-                }
-                flex {
-                    DirectionValues.column
-                }
-            }
-            val row: Style<BasicParams> = {
-                display {
-                    inlineFlex
-                }
-                flex {
-                    DirectionValues.row
-                }
-            }
-        }
-
         object ControlNames {
             const val inputField = "inputField"
             const val radioGroup = "radioGroup"
@@ -158,12 +134,6 @@ open class FormControlComponent {
 
     fun label(value: () -> String) {
         label = value()
-    }
-
-    var direction: Style<BasicParams> = { FormControlLayouts.column } // @fieldset
-
-    fun direction(value: FormControlLayouts.() -> Style<BasicParams>) {
-        direction =  FormControlLayouts.value()
     }
 
     var disabled: Flow<Boolean> = flowOf(false)
@@ -224,33 +194,36 @@ open class FormControlComponent {
         prefix: String = ControlNames.checkbox,
         build: CheckboxComponent.() -> Unit
     ) {
-        control.set(ControlNames.checkbox)
-        {
-            checkbox(styling, baseClass, id, prefix) {
-                build()
+        //val msg = errorMessage.map { it.isNotEmpty() }
+        val msg = flowOf(true)
+
+            control.set(ControlNames.checkbox)
+            {
+                checkbox({
+                    styling()
+                    StyleClass(invalidClassName).whenever(msg) { it }
+                }, baseClass, id, prefix) {
+                    build()
+                }
             }
-        }
+
+
     }
 
     open fun checkboxGroup(
         styling: BasicParams.() -> Unit = {},
-        store: Store<String>,
+        store: Store<List<String>>,
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.checkboxGroup,
         build: CheckboxGroupComponent<String>.() -> Unit
     ) {
         control.set(ControlNames.checkboxGroup) {
-            (::fieldset.styled() {
-            }){
-                checkboxGroup(styling, store, baseClass, id, prefix) {
-                    build()
-                }
+            checkboxGroup(styling, store, baseClass, id, prefix) {
+                build()
             }
         }
     }
-
-
 
     fun render(
         styling: BasicParams.() -> Unit = {},
@@ -371,7 +344,6 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
         }) {
             (::fieldset.styled(baseClass, id, prefix) {
                 styling()
-                component.direction()
             }) {
                 legend { +component.label }
                 control(this)

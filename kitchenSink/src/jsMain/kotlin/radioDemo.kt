@@ -48,7 +48,6 @@ fun RenderContext.radiosDemo(): Div {
                             }) {
                                 items {
                                     radioGroup(
-                                        {},
                                         store = selectedItemStore,
                                         id = "radioGroup1"
                                     ) {
@@ -80,7 +79,6 @@ fun RenderContext.radiosDemo(): Div {
                             }) {
                                 items {
                                     radioGroup(
-                                        {},
                                         store  = selectedItemStore,
                                         id = "radioGroup2"
                                     ) {
@@ -112,7 +110,6 @@ fun RenderContext.radiosDemo(): Div {
                             }) {
                                 items {
                                     radioGroup(
-                                        {},
                                         store = selectedItemStore,
                                         id = "radioGroup3"
                                     ) {
