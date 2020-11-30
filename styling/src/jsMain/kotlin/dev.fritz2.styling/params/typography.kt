@@ -2,7 +2,7 @@ package dev.fritz2.styling.params
 
 import dev.fritz2.styling.theme.Fonts
 import dev.fritz2.styling.theme.Property
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -98,7 +98,7 @@ typealias TextDecorationProperty = Property
 object TextDecorations : PropertyValues {
     override val key = "text-decoration: "
 
-    const val none: TextDecorationProperty = "normal"
+    const val none: TextDecorationProperty = "none"
     const val underline: TextDecorationProperty = "underline"
     const val inherit: TextDecorationProperty = "inherit"
     const val initial: TextDecorationProperty = "initial"
@@ -119,7 +119,6 @@ internal const val lineHeightKey = "line-height: "
  * There are overrides for all functions that enable one to define the styling for
  * the different media devices independently.
  */
-//FIXME: make abstract class to allow inline?
 @ExperimentalCoroutinesApi
 interface Typo : StyleParams {
 
@@ -134,7 +133,7 @@ interface Typo : StyleParams {
      * @param value extension function parameter for small media devices, recommended to use
      *           predefined values via [dev.fritz2.styling.theme.Theme.fonts] that offer the properties of [Fonts]
      */
-    fun fontFamily(value: Fonts.() -> Property) = property(fontSizeKey, theme().fonts, value)
+    fun fontFamily(value: Fonts.() -> Property) = property(fontSizeKey, Theme().fonts, value)
 
     /**
      * This function sets the [font-family](https://developer.mozilla.org/en/docs/Web/CSS/font-family) property
@@ -163,7 +162,7 @@ interface Typo : StyleParams {
         lg: (Fonts.() -> Property)? = null,
         xl: (Fonts.() -> Property)? = null
     ) =
-        property(fontSizeKey, theme().fonts, sm, md, lg, xl)
+        property(fontSizeKey, Theme().fonts, sm, md, lg, xl)
 
     /**
      * This function sets the [font-size](https://developer.mozilla.org/en/docs/Web/CSS/font-size) property
@@ -176,7 +175,7 @@ interface Typo : StyleParams {
      * @param value extension function parameter for small media devices, recommended to use
      *           predefined values via [dev.fritz2.styling.theme.Theme.fontSizes] that offer the properties of [ScaledValue]
      */
-    fun fontSize(value: ScaledValueProperty) = property(fontSizeKey, theme().fontSizes, value)
+    fun fontSize(value: ScaledValueProperty) = property(fontSizeKey, Theme().fontSizes, value)
 
     /**
      * This function sets the [font-size](https://developer.mozilla.org/en/docs/Web/CSS/font-size) property
@@ -205,7 +204,7 @@ interface Typo : StyleParams {
         lg: ScaledValueProperty? = null,
         xl: ScaledValueProperty? = null
     ) =
-        property(fontSizeKey, theme().fontSizes, sm, md, lg, xl)
+        property(fontSizeKey, Theme().fontSizes, sm, md, lg, xl)
 
     /**
      * This function sets the [font-weight](https://developer.mozilla.org/en/docs/Web/CSS/font-weight) property
@@ -302,7 +301,7 @@ interface Typo : StyleParams {
      * @param value extension function parameter for small media devices, recommended to use
      *           predefined values via [dev.fritz2.styling.theme.Theme.lineHeights] that offer the properties of [ScaledValue]
      */
-    fun lineHeight(value: ScaledValueProperty) = property(lineHeightKey, theme().lineHeights, value)
+    fun lineHeight(value: ScaledValueProperty) = property(lineHeightKey, Theme().lineHeights, value)
 
     /**
      * This function sets the [line-height](https://developer.mozilla.org/en/docs/Web/CSS/line-height) property
@@ -331,7 +330,7 @@ interface Typo : StyleParams {
         lg: ScaledValueProperty? = null,
         xl: ScaledValueProperty? = null
     ) =
-        property(lineHeightKey, theme().lineHeights, sm, md, lg, xl)
+        property(lineHeightKey, Theme().lineHeights, sm, md, lg, xl)
 
     /**
      * This function sets the [letter-spacing](https://developer.mozilla.org/en/docs/Web/CSS/letter-spacing) property
@@ -344,7 +343,7 @@ interface Typo : StyleParams {
      * @param value extension function parameter for small media devices, recommended to use
      *           predefined values via [dev.fritz2.styling.theme.Theme.letterSpacings] that offer the properties of [ScaledValue]
      */
-    fun letterSpacing(value: ScaledValueProperty) = property(letterSpacingKey, theme().letterSpacings, value)
+    fun letterSpacing(value: ScaledValueProperty) = property(letterSpacingKey, Theme().letterSpacings, value)
 
     /**
      * This function sets the [letter-spacing](https://developer.mozilla.org/en/docs/Web/CSS/letter-spacing) property
@@ -373,7 +372,7 @@ interface Typo : StyleParams {
         lg: ScaledValueProperty? = null,
         xl: ScaledValueProperty? = null
     ) =
-        property(letterSpacingKey, theme().letterSpacings, sm, md, lg, xl)
+        property(letterSpacingKey, Theme().letterSpacings, sm, md, lg, xl)
 
     /**
      * This function sets the [text-align](https://developer.mozilla.org/en/docs/Web/CSS/text-align) property

@@ -6,15 +6,12 @@ import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.ColorProperty
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.plus
+import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.PushButtonSizes
 import dev.fritz2.styling.theme.PushButtonVariants
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.MouseEvent
@@ -53,6 +50,7 @@ import org.w3c.dom.events.MouseEvent
  *  }
  *  ```
  */
+@ComponentMarker
 open class PushButtonComponent {
     companion object {
         val staticCss = staticStyle(
@@ -141,19 +139,19 @@ open class PushButtonComponent {
 
     private fun buildColor(value: ColorProperty): Style<BasicParams> = { css("--main-color: $value;") }
 
-    var color: Style<BasicParams> = buildColor(theme().colors.primary)
+    var color: Style<BasicParams> = buildColor(Theme().colors.primary)
 
     fun color(value: Colors.() -> ColorProperty) {
-        color = buildColor(theme().colors.value())
+        color = buildColor(Theme().colors.value())
     }
 
-    var variant: PushButtonVariants.() -> Style<BasicParams> = { theme().button.variants.solid }
+    var variant: PushButtonVariants.() -> Style<BasicParams> = { Theme().button.variants.solid }
 
     fun variant(value: PushButtonVariants.() -> Style<BasicParams>) {
         variant = value
     }
 
-    var size: PushButtonSizes.() -> Style<BasicParams> = { theme().button.sizes.normal }
+    var size: PushButtonSizes.() -> Style<BasicParams> = { Theme().button.sizes.normal }
 
     fun size(value: PushButtonSizes.() -> Style<BasicParams>) {
         size = value
@@ -276,8 +274,8 @@ fun RenderContext.pushButton(
 
     (::button.styled(styling, baseClass + PushButtonComponent.staticCss, id, prefix) {
         component.color()
-        component.variant.invoke(theme().button.variants)()
-        component.size.invoke(theme().button.sizes)()
+        component.variant.invoke(Theme().button.variants)()
+        component.size.invoke(Theme().button.sizes)()
     }) {
         if (component.label == null) {
             component.renderIcon(this, component.centerIconStyle, component.centerSpinnerStyle)

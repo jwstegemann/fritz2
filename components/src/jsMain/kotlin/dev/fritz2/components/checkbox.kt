@@ -1,14 +1,21 @@
 package dev.fritz2.components
 
+import dev.fritz2.components.CheckboxComponent.Companion.checkboxIconStaticCss
+import dev.fritz2.components.CheckboxComponent.Companion.checkboxInputStaticCss
+import dev.fritz2.components.CheckboxComponent.Companion.checkboxLabel
 import dev.fritz2.dom.WithEvents
+import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Span
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.ColorProperty
 import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.CheckboxSizes
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.IconDefinition
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLInputElement
@@ -35,8 +42,8 @@ import org.w3c.dom.HTMLInputElement
  * checkbox {
  *      text("with extra cheese") // set the label
  *      checkboxSize { normal } // choose a predefined size
- *      borderColor { theme().colors.secondary } // set up the border color of the box itself
- *      checkedBackgroundColor { theme().colors.warning } // set the color of the checked state
+ *      borderColor { Theme().colors.secondary } // set up the border color of the box itself
+ *      checkedBackgroundColor { Theme().colors.warning } // set the color of the checked state
  *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
@@ -44,29 +51,12 @@ import org.w3c.dom.HTMLInputElement
  * }
  * ```
  */
+@ComponentMarker
 class CheckboxComponent {
     companion object {
-        val checkboxLabelStyles: Style<BasicParams> = { // @label
-            before {
-                radii {// overwritten by CheckboxSizes.small only
-                    top { normal }
-                    bottom { normal }
-                    left { normal }
-                    right { normal }
-                }
-                border {
-                    style { solid }
-                    width { "0.1rem" }
-                }
-            }
-            margins {
-                right { "1.0rem" }
-            }
-        }
-
         // todo replace px in sizes (in default theme) with rem/theme values where not explicit
         // todo using theme colors in static styles probably does not work when changing themes
-        val checkboxInputStaticCss = staticStyle( // @input
+        val checkboxInputStaticCss = staticStyle(
             "checkbox",
             """
             position: absolute;
@@ -75,75 +65,59 @@ class CheckboxComponent {
             overflow: hidden;
             clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
             clip: rect(1px, 1px, 1px, 1px);
-            outline: none;
-            &:focus + label::before {
-                box-shadow: 0 0 1px ${theme().colors.dark}; 
-            }
-            &:disabled + label {
-                color: ${theme().colors.disabled};
-                cursor: not-allowed;
-            }
-            &:disabled + label::before {
-                color: ${theme().colors.disabled};
-                opacity: 0.3;
-                cursor: not-allowed;
-                boxShadow: none;
-            }
+            outline: none;           
             &:focus{
                 outline: none;
-            }
+            }           
             """
         )
-
-        val checkboxLabelStaticCss = staticStyle( // @input
-            "checkboxlabel",
-            """
-            position: relative;            
-            display: block;
-            &::before {
-                content: '';
-                outline: none;
-                position: relative;
-                display: inline-block;
-                box-shadow: 0 0 1px ${theme().colors.dark} inset;
-                vertical-align: middle;
+        val checkboxLabel = staticStyle("checkboxComponent", """
+            &[data-disabled] {
+                opacity: .5    
             }
-            """
+        """)
+        val checkboxIconStaticCss = staticStyle("checkboxIcon",
+        """
+            &[data-disabled] {
+                background-color:var(--cb-disabled) !important;
+            }
+        """
         )
     }
 
-    var size: CheckboxSizes.() -> Style<BasicParams> = { theme().checkbox.sizes.normal }
+    var size: CheckboxSizes.() -> Style<BasicParams> = { Theme().checkbox.sizes.normal }
     fun size(value: CheckboxSizes.() -> Style<BasicParams>) {
         size = value
     }
 
-    var text: Flow<String> = flowOf("CheckboxLabel") // @label
-    fun text(value: String) {
-        text(flowOf(value))
-    }
-    fun text(value: Flow<String>) {
-        text = value
+    var icon: IconDefinition = Theme().icons.check
+    fun icon(value: () -> IconDefinition ) {
+        icon = value()
     }
 
-    var backgroundColor: Style<BasicParams> = {} // @label
-    fun backgroundColor(value: () -> ColorProperty) {
-        backgroundColor = {
-            css("&::before { background-color: ${value()};}")
+    var label: (Div.() -> Unit)? = null
+    fun label(value: String) {
+        label = {
+           +value
         }
     }
-
-    var borderColor: Style<BasicParams> = {} // @label
-    fun borderColor(value: () -> ColorProperty) {
-        borderColor = {
-            css("&::before { border-color: ${value()};}")
+    fun label(value: Flow<String>) {
+        label = {
+            value.asText()
         }
     }
+    fun label(value: (Div.() -> Unit)) {
+        label = value
+    }
 
-    var checkedBackgroundColor: Style<BasicParams> = {} // @input
-    fun checkedBackgroundColor(value: () -> ColorProperty) {
-        checkedBackgroundColor = {
-            css("&:checked + label::before { background-color: ${value()}; }")
-        }
+    var labelStyle: Style<BasicParams> = { Theme().checkbox.label() }
+    fun labelStyle(value: () -> Style<BasicParams>) {
+        labelStyle = value()
+    }
+
+    var checkedStyle: Style<BasicParams> = { Theme().checkbox.checked() }
+    fun checkedStyle(value: () -> Style<BasicParams>) {
+        checkedStyle = value()
     }
 
     var events: (WithEvents<HTMLInputElement>.() -> Unit)? = null // @input
@@ -176,8 +150,8 @@ class CheckboxComponent {
  * checkbox {
  *      text("with extra cheese") // set the label
  *      checkboxSize { normal } // choose a predefined size
- *      borderColor { theme().colors.secondary } // set up the border color of the box itself
- *      checkedBackgroundColor { theme().colors.warning } // set the color of the checked state
+ *      borderColor { Theme().colors.secondary } // set up the border color of the box itself
+ *      checkedBackgroundColor { Theme().colors.warning } // set the color of the checked state
  *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
@@ -193,49 +167,72 @@ class CheckboxComponent {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [CheckboxComponent]
  */
-// todo add checkmark
 fun RenderContext.checkbox(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "checkboxComponent",
     build: CheckboxComponent.() -> Unit = {}
-) {
+): Label {
     val component = CheckboxComponent().apply(build)
+    val inputId = id?.let { "$it-input" }
 
+    val labelClass = if( baseClass == null ) {
+        checkboxLabel
+    } else {
+        baseClass + checkboxLabel
+    }
 
-    (::div.styled(
-        baseClass = baseClass,
+   return (::label.styled(
+        baseClass = labelClass,
         id = id,
         prefix = prefix
     ) {
-        styling() // attach user styling to container only
+       component.size.invoke(Theme().checkbox.sizes)()
     }) {
+        inputId?.let {
+            `for`(inputId)
+        }
+       attr("data-disabled", component.disabled)
         (::input.styled(
-            baseClass = CheckboxComponent.checkboxInputStaticCss,
-            id = "$id-input",
-            prefix = prefix
-        ) {
-            component.checkedBackgroundColor()
-        }) {
+            baseClass = checkboxInputStaticCss,
+            prefix = prefix,
+            id = inputId
+        ){ children("&:focus + div") {
+            border {
+                color { "#3182ce" }
+            }
+            boxShadow { outline }
+        }}) {
             type("checkbox")
             checked(component.checked)
             disabled(component.disabled)
             component.events?.invoke(this)
         }
-        (::label.styled(
-            baseClass = CheckboxComponent.checkboxLabelStaticCss,
-            id = "$id-label",
-            prefix = prefix
-        ) {
-            CheckboxComponent.checkboxLabelStyles()
-            component.size.invoke(theme().checkbox.sizes)()
-            component.size
-            component.backgroundColor()
-            component.borderColor()
-        }) {
-            `for`("$id-input")
-            component.text.asText()
+
+        component.checked.render { checked ->
+                (::div.styled(checkboxIconStaticCss){
+                    Theme().checkbox.default()
+                    styling()
+                    component.checkedStyle()
+                }) {
+                    attr("data-disabled", component.disabled)
+                    icon({
+                        Theme().checkbox.icon()
+                        if( !checked ) {
+                            css("visibility:hidden;")
+                        }
+                    }
+                    ) { fromTheme { component.icon } }
+                }
+
+        }
+        component.label?.let {
+            (::div.styled() {
+                component.labelStyle()
+            }){
+                it(this)
+            }
         }
     }
 }

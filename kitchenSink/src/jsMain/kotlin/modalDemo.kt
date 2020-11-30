@@ -1,11 +1,13 @@
+import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
@@ -24,7 +26,7 @@ fun RenderContext.modalDemo(): Div {
                 return modal {
                     closeButton()
                     size { size }
-                    items {
+                    content {
                         h1 { +"Final Dialog" }
                     }
                 }
@@ -33,9 +35,9 @@ fun RenderContext.modalDemo(): Div {
                     background { color { "snow" } }
                 }) {
                     size { size }
-                    variant { theme().modal.variants.auto }
+                    variant { auto }
                     closeButton()
-                    items {
+                    content {
                         h1 { +"Modal Dialog" }
                         p { +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." }
                         lineUp({
@@ -69,7 +71,7 @@ fun RenderContext.modalDemo(): Div {
                             variant { outline }
                             text("Blank dialog with closeButton")
                         } handledBy modal {
-                            size { theme().modal.sizes.normal }
+                            size { normal }
                             closeButton()
                         }
                         clickButton {
@@ -97,7 +99,7 @@ fun RenderContext.modalDemo(): Div {
                             text("Content and user defined buttons")
                         } handledBy modal { close -> /* pass in a handler for custom close management */
                             hasCloseButton(false)
-                            items {
+                            content {
                                 h1 { +"Simple dialog" }
                                 p { +"You can put any content or structure into a modal." }
                                 p { +"And of course you can define your own close button or other buttons." }
@@ -113,8 +115,8 @@ fun RenderContext.modalDemo(): Div {
                                             color { info }
                                             background { color { light } }
                                         }) { text("Give me more!") } handledBy modal {
-                                            size { theme().modal.sizes.small }
-                                            items {
+                                            size { small }
+                                            content {
                                                 h1 { +"Final message" }
                                                 p { +"This is the next level modal dialog." }
                                             }
@@ -133,31 +135,35 @@ fun RenderContext.modalDemo(): Div {
                 }
 
                 val overlayVariants = mapOf(
-                    Pair("Activate default overlay", DefaultOverlay()),
-                    Pair("Activate overlay for each nested level", DefaultOverlay(OverlayMethod.CoveringEach)),
-                    Pair("Activate styled overlay", DefaultOverlay(OverlayMethod.CoveringTopMost) {
-                        width { "100%" }
-                        height { "100%" }
-                        position {
-                            absolute {
-                                horizontal { "0" }
-                                vertical { "0" }
+                        Pair("Activate default overlay", DefaultOverlay()),
+                        Pair("Activate overlay for each nested level", DefaultOverlay(OverlayMethod.CoveringEach)),
+                        Pair("Activate styled overlay", DefaultOverlay(OverlayMethod.CoveringTopMost) {
+                            width { "100%" }
+                            height { "100%" }
+                            position {
+                                absolute {
+                                    horizontal { "0" }
+                                    vertical { "0" }
+                                }
                             }
-                        }
-                        background {
-                            image { "https://via.placeholder.com/150x50/?text=BACKGROUND" }
-                            repeat { repeat }
-                        }
-                        css("transform: rotate(-30deg) translateX(-.5rem) scale(200%)")
-                        opacity { "0.8" }
-                    })
+                            background {
+                                image { "https://via.placeholder.com/150x50/?text=BACKGROUND" }
+                                repeat { repeat }
+                            }
+                            css("transform: rotate(-30deg) translateX(-.5rem) scale(200%)")
+                            opacity { "0.8" }
+                        })
                 )
 
-                radioGroup {
+                radioGroup(store = ModalComponent.overlay) {
                     direction { row }
-                    items { overlayVariants.keys.toList() }
-                    selected { "Activate default overlay" }
-                }.map { overlayVariants[it] as Overlay } handledBy ModalComponent.overlay.update
+                    label { overlay ->
+                        overlayVariants.filter { it.value == overlay  }.map {
+                            it.key
+                        }[0]
+                    }
+                    items(overlayVariants.values.toList())
+                }
 
                 h3 { +"Sizes" }
                 lineUp({
@@ -166,16 +172,16 @@ fun RenderContext.modalDemo(): Div {
                     items {
                         clickButton {
                             text("full")
-                        } handledBy createDeepDialogs(30, theme().modal.sizes.full)
+                        } handledBy createDeepDialogs(30, Theme().modal.sizes.full)
                         clickButton {
                             text("large")
-                        } handledBy createDeepDialogs(30, theme().modal.sizes.large)
+                        } handledBy createDeepDialogs(30, Theme().modal.sizes.large)
                         clickButton {
                             text("normal")
-                        } handledBy createDeepDialogs(30, theme().modal.sizes.normal)
+                        } handledBy createDeepDialogs(30, Theme().modal.sizes.normal)
                         clickButton {
                             text("small")
-                        } handledBy createDeepDialogs(30, theme().modal.sizes.small)
+                        } handledBy createDeepDialogs(30, Theme().modal.sizes.small)
                     }
                 }
 
@@ -188,9 +194,9 @@ fun RenderContext.modalDemo(): Div {
                             text("verticalFilled")
                         } handledBy modal {
                             closeButton()
-                            size { theme().modal.sizes.normal }
-                            variant { theme().modal.variants.verticalFilled }
-                            items {
+                            size { normal }
+                            variant { verticalFilled }
+                            content {
                                 h1 { +"Dialog takes all vertical space within the viewport" }
                                 p { +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." }
                             }

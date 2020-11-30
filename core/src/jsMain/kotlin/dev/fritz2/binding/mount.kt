@@ -21,6 +21,7 @@ fun <T> mountSingle(parentJob: Job, upstream: Flow<T>, set: suspend (T, T?) -> U
             set(value, last)
             value
         }.catch {
+            console.error("error mounting: ${it.message}", it)
             cancel("error mounting", it)
         }.collect()
     }

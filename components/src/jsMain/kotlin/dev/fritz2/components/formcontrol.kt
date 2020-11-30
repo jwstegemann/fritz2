@@ -2,21 +2,22 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
-import dev.fritz2.components.CheckboxGroupComponent.Companion.checkboxGroupStructure
 import dev.fritz2.components.FormControlComponent.Control
-import dev.fritz2.components.RadioGroupComponent.Companion.radioGroupStructure
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.DirectionValues
 import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+
 
 /**
  * This component class manages the _configuration_ of a [formControl] and some render centric functionalities.
@@ -51,6 +52,7 @@ import kotlinx.coroutines.flow.map
  * field to grasp, how the mapping between a control and a rendering strategie is done.
  *
  */
+@ComponentMarker
 open class FormControlComponent {
     companion object {
         val staticCss = staticStyle(
@@ -74,7 +76,7 @@ open class FormControlComponent {
 
         val invalidCss: Style<BasicParams> = {
             boxShadow {
-                theme().shadows.danger
+                Theme().shadows.danger
             }
             border {
                 width { thin }
@@ -203,11 +205,14 @@ open class FormControlComponent {
         prefix: String = ControlNames.inputField,
         init: Input.() -> Unit
     ) {
+        val msg = errorMessage.map { it.isNotEmpty() }
         control.set(ControlNames.inputField)
         {
             inputField(styling, store, baseClass, id, prefix) {
-                className(StyleClass(invalidClassName).whenever(errorMessage.map { it.isNotEmpty() }) { it })
-                init()
+                base {
+                    className(StyleClass(invalidClassName).whenever(msg))
+                    init()
+                }
             }
         }
     }
@@ -229,37 +234,23 @@ open class FormControlComponent {
 
     open fun checkboxGroup(
         styling: BasicParams.() -> Unit = {},
+        store: Store<String>,
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.checkboxGroup,
-        build: CheckboxGroupComponent.() -> Unit
-    ): Flow<List<String>> {
-
-        val selectedStore = storeOf<List<String>>(emptyList())
+        build: CheckboxGroupComponent<String>.() -> Unit
+    ) {
         control.set(ControlNames.checkboxGroup) {
-            checkboxGroupStructure(styling, selectedStore, baseClass, id, prefix) {
-                build()
+            (::fieldset.styled() {
+            }){
+                checkboxGroup(styling, store, baseClass, id, prefix) {
+                    build()
+                }
             }
         }
-        return selectedStore.data
     }
 
-    open fun radioGroup(
-        styling: BasicParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
-        id: String? = null,
-        prefix: String = ControlNames.radioGroup,
-        build: RadioGroupComponent.() -> Unit
-    ): Flow<String> {
-        val selectedStore = storeOf<String>("")
-        control.set(ControlNames.radioGroup)
-        {
-            radioGroupStructure(styling, selectedStore, baseClass, id, prefix) {
-                build()
-            }
-        }
-        return selectedStore.data
-    }
+
 
     fun render(
         styling: BasicParams.() -> Unit = {},
@@ -283,7 +274,7 @@ open class FormControlComponent {
         renderContext.div {
             helperText?.let {
                 (::p.styled {
-                    color { theme().colors.dark }
+                    color { dark }
                     fontSize { small }
                     lineHeight { small }
                 }) { +it }
@@ -296,7 +287,7 @@ open class FormControlComponent {
             errorMessage.render {
                 if (it.isNotEmpty()) {
                     lineUp({
-                        color { theme().colors.danger }
+                        color { danger }
                         fontSize { small }
                         lineHeight { small }
                     }) {
@@ -351,7 +342,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
             id = id,
             prefix = prefix
         ) {
-            spacing { theme().space.tiny }
+            spacing { tiny }
             items {
                 label {
                     +component.label

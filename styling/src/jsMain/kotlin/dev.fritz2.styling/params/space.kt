@@ -1,6 +1,6 @@
 package dev.fritz2.styling.params
 
-import dev.fritz2.styling.theme.theme
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 internal const val marginKey = "margin: "
@@ -66,7 +66,7 @@ class SpacesContext(
      * @param value extension function parameter to bring the predefined space values of the theme
      *              into the scope of the functional expression
      */
-    fun top(value: ScaledValueProperty) = property(topKey, theme().space, value, target)
+    fun top(value: ScaledValueProperty) = property(topKey, Theme().space, value, target)
 
     /**
      * This function is used to set the _left_ padding or margin
@@ -82,7 +82,7 @@ class SpacesContext(
      * @param value extension function parameter to bring the predefined space values of the theme
      *              into the scope of the functional expression
      */
-    fun left(value: ScaledValueProperty) = property(leftKey, theme().space, value, target)
+    fun left(value: ScaledValueProperty) = property(leftKey, Theme().space, value, target)
 
     /**
      * This function is used to set the bottom padding or margin
@@ -98,7 +98,7 @@ class SpacesContext(
      * @param value extension function parameter to bring the predefined space values of the theme
      *              into the scope of the functional expression
      */
-    fun bottom(value: ScaledValueProperty) = property(bottomKey, theme().space, value, target)
+    fun bottom(value: ScaledValueProperty) = property(bottomKey, Theme().space, value, target)
 
     /**
      * This function is used to set the _right_ padding or margin
@@ -114,7 +114,7 @@ class SpacesContext(
      * @param value extension function parameter to bring the predefined space values of the theme
      *              into the scope of the functional expression
      */
-    fun right(value: ScaledValueProperty) = property(rightKey, theme().space, value, target)
+    fun right(value: ScaledValueProperty) = property(rightKey, Theme().space, value, target)
 
     /**
      * This function is used to set the _vertical_ padding or margin
@@ -131,8 +131,8 @@ class SpacesContext(
      *              into the scope of the functional expression
      */
     fun vertical(value: ScaledValueProperty) {
-        property(topKey, theme().space, value, target)
-        property(bottomKey, theme().space, value, target)
+        property(topKey, Theme().space, value, target)
+        property(bottomKey, Theme().space, value, target)
     }
 
     /**
@@ -150,8 +150,8 @@ class SpacesContext(
      *              into the scope of the functional expression
      */
     fun horizontal(value: ScaledValueProperty) {
-        property(leftKey, theme().space, value, target)
-        property(rightKey, theme().space, value, target)
+        property(leftKey, Theme().space, value, target)
+        property(rightKey, Theme().space, value, target)
     }
 
     /**
@@ -169,10 +169,10 @@ class SpacesContext(
      *              into the scope of the functional expression
      */
     fun all(value: ScaledValueProperty) {
-        property(leftKey, theme().space, value, target)
-        property(rightKey, theme().space, value, target)
-        property(topKey, theme().space, value, target)
-        property(bottomKey, theme().space, value, target)
+        property(leftKey, Theme().space, value, target)
+        property(rightKey, Theme().space, value, target)
+        property(topKey, Theme().space, value, target)
+        property(bottomKey, Theme().space, value, target)
     }
 }
 
@@ -197,7 +197,7 @@ interface Space : StyleParams {
      * @param value extension function parameter for small media devices, recommended to use
      *           predefined values via [dev.fritz2.styling.theme.Theme.spaces] that offer the properties of [ScaledValue]
      */
-    fun margin(value: ScaledValueProperty) = property(marginKey, theme().space, value)
+    fun margin(value: ScaledValueProperty) = property(marginKey, Theme().space, value)
 
     /**
      * This function sets the [margin](https://developer.mozilla.org/en/docs/Web/CSS/margin) property
@@ -226,7 +226,7 @@ interface Space : StyleParams {
         lg: ScaledValueProperty? = null,
         xl: ScaledValueProperty? = null
     ) =
-        property(marginKey, theme().space, sm, md, lg, xl)
+        property(marginKey, Theme().space, sm, md, lg, xl)
 
     /**
      * This function opens the context for defining the margin related properties.
@@ -323,7 +323,7 @@ interface Space : StyleParams {
      * @param value extension function parameter for small media devices, recommended to use
      *           predefined values via [dev.fritz2.styling.theme.Theme.spaces] that offer the properties of [ScaledValue]
      */
-    fun padding(value: ScaledValueProperty) = property(paddingKey, theme().space, value)
+    fun padding(value: ScaledValueProperty) = property(paddingKey, Theme().space, value)
 
     /**
      * This function sets the [padding](https://developer.mozilla.org/en/docs/Web/CSS/padding) property
@@ -352,7 +352,7 @@ interface Space : StyleParams {
         lg: ScaledValueProperty? = null,
         xl: ScaledValueProperty? = null
     ) =
-        property(paddingKey, theme().space, sm, md, lg, xl)
+        property(paddingKey, Theme().space, sm, md, lg, xl)
 
     /**
      * This function opens the context for defining the padding related properties.

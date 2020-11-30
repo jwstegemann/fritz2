@@ -3,6 +3,10 @@ plugins {
     id("maven-publish")
 }
 
+repositories {
+    maven(url = "https://kotlin.bintray.com/kotlinx/") // soon will be just jcenter()
+}
+
 kotlin {
     js(LEGACY).browser {
         testTask {
@@ -30,6 +34,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core"))
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.1.0")
             }
         }
 
@@ -45,6 +50,7 @@ kotlin {
             dependencies {
                 implementation(project(":styling"))
                 implementation(project(":components"))
+                implementation(project(":datatable"))
             }
         }
         val jsTest by getting {

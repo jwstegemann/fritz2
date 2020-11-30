@@ -4,6 +4,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
 
@@ -43,6 +44,7 @@ import dev.fritz2.styling.theme.*
  * ```
  *
  */
+@ComponentMarker
 class SpinnerComponent {
     companion object {
         val staticCss = staticStyle(
@@ -66,7 +68,7 @@ class SpinnerComponent {
     var icon: IconDefinition? = null
 
     fun icon(value: Icons.() -> IconDefinition) {
-        icon = theme().icons.value()
+        icon = Theme().icons.value()
     }
 
     var speed: String = "0.6s"
@@ -75,10 +77,10 @@ class SpinnerComponent {
         speed = value()
     }
 
-    var size: Property = theme().borderWidths.normal
+    var size: Property = Theme().borderWidths.normal
 
     fun size(value: Thickness.() -> Property) {
-        size = theme().borderWidths.value()
+        size = Theme().borderWidths.value()
     }
 }
 

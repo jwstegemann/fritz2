@@ -1,7 +1,7 @@
 import dev.fritz2.components.stackUp
-import dev.fritz2.components.styled
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 

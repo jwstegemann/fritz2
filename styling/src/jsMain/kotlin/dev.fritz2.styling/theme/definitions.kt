@@ -69,6 +69,13 @@ class Thickness(
 
 /**
  * Defines a value that has different expressions for different sizes.
+ *
+ * There is a special sub-range for "bigger" sizes called ``wide``. "Bigger" really means sizes that reach dimensions up
+ * to the whole screen and have to _scale_ much different (much wider steps obviously) than the basic ones.
+ *
+ * We believe that in most of the cases one would like to define rather *small* sizes, ranging between a fraction of
+ * an ``rem`` and at most ``2rem``. This is why those are _intentionally_ the basic properties of this type and the
+ * more wider scaled ones need the ``wide`` "prefix"!
  */
 class Sizes(
     normal: Property,
@@ -79,7 +86,8 @@ class Sizes(
     larger: Property = large,
     huge: Property = larger,
     giant: Property = huge,
-    full: Property = giant
+    full: Property = giant,
+    val wide: ScaledValue
 ) : ScaledValue(normal, small, smaller, tiny, large, larger, huge, giant, full = full) {
     val borderBox: Property = "border-box"
     val contentBox: Property = "content-box"
@@ -358,18 +366,12 @@ interface Icons {
     val fritz2: IconDefinition
 }
 
-interface RadioStyles {
-    val sizes: RadioSizes
-}
-
-interface RadioSizes {
-    val small: Style<BasicParams>
-    val normal: Style<BasicParams>
-    val large: Style<BasicParams>
-}
-
 interface CheckboxStyles {
     val sizes: CheckboxSizes
+    val icon: Style<BasicParams>
+    val label: Style<BasicParams>
+    val default: Style<BasicParams>
+    val checked: Style<BasicParams>
 }
 
 interface CheckboxSizes {
@@ -378,10 +380,46 @@ interface CheckboxSizes {
     val large: Style<BasicParams>
 }
 
-interface InputFieldStyles {
+interface RadioStyles {
+    val sizes: RadioSizes
+    val label: Style<BasicParams>
+    val default: Style<BasicParams>
+    val selected: Style<BasicParams>
+}
+
+interface RadioSizes {
     val small: Style<BasicParams>
     val normal: Style<BasicParams>
     val large: Style<BasicParams>
+}
+
+interface SwitchStyles {
+    val sizes: SwitchSizes
+    val dot: Style<BasicParams>
+    val label: Style<BasicParams>
+    val default: Style<BasicParams>
+    val checked: Style<BasicParams>
+}
+
+interface SwitchSizes {
+    val small: Style<BasicParams>
+    val normal: Style<BasicParams>
+    val large: Style<BasicParams>
+}
+
+
+interface InputFieldStyles {
+    val variants: InputFieldVariants
+    val sizes: InputFieldSizes
+}
+
+interface InputFieldSizes {
+    val small: Style<BasicParams>
+    val normal: Style<BasicParams>
+    val large: Style<BasicParams>
+}
+
+interface InputFieldVariants {
     val outline: Style<BasicParams>
     val filled: Style<BasicParams>
 }
