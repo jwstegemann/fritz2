@@ -81,7 +81,7 @@ open class InputFieldComponent {
 
             focus {
                 border {
-                    color { "#3182ce" } // TODO : Where to define? Or ability to provide?
+                    color { primary } // TODO : Where to define? Or ability to provide? (changed by mkempa-np: formerly "#3182ce")
                 }
                 boxShadow { outline }
             }

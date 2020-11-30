@@ -168,6 +168,8 @@ fun RenderContext.formControlDemo(): Div {
     val selectedItemsStore = RootStore(mySelectedItems)
 
     return stackUp({
+        maxWidth { "48rem" }
+        margins { top { huge } }
         padding { "1rem" }
         alignItems { start }
     }) {
