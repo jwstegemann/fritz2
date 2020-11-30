@@ -1,7 +1,6 @@
 import dev.fritz2.components.gridBox
 import dev.fritz2.components.icon
 import dev.fritz2.components.stackUp
-import dev.fritz2.components.styled
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.theme.Theme
@@ -166,7 +165,7 @@ fun RenderContext.iconsDemo(): Div {
 
             gridBox({
                 columns {
-                    repeat(7) { "1fr" }
+                    repeat(5) { "1fr" }
                 }
                 gap { normal }
                 margin { small }

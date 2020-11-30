@@ -1361,6 +1361,86 @@ open class DefaultTheme : Theme {
         }
     }
 
+
+    override val checkbox = object : CheckboxStyles {
+       override val sizes = object : CheckboxSizes {
+           private val basic: Style<BasicParams> = {
+               css("--cb-disabled: ${colors.disabled}")
+               display {inlineFlex}
+               css("align-items: center;")
+
+               //@TODO doesn't work / why?
+               children("&:focus + div") {
+                   border {
+                       color { "#3182ce" }
+                   }
+                   boxShadow { outline }
+               }
+           }
+           override val small: Style<BasicParams> = {
+                basic()
+                css("--cb-size: .75rem")
+                css("--cb-svg-size: .50rem")
+                css("--cb-radius:  ${radii.smaller}")
+                fontSize { small }
+                lineHeight { small }
+                margins { right {tiny} }
+            }
+            override val normal: Style<BasicParams> = {
+                basic()
+                css("--cb-size: 1.0rem")
+                css("--cb-svg-size: .75rem")
+                css("--cb-radius:  ${radii.small}")
+                fontSize { normal }
+                lineHeight { normal }
+                margins { right {smaller} }
+            }
+            override val large: Style<BasicParams> = {
+                basic()
+                css("--cb-disabled: ${colors.disabled}")
+                css("--cb-size: 1.5rem")
+                css("--cb-svg-size: 1.25rem")
+                css("--cb-radius:  ${radii.normal}")
+                fontSize { larger }
+                lineHeight { larger }
+                margins { right {small} }
+            }
+        }
+
+        override val icon : Style<BasicParams> = {
+            width { "var(--cb-svg-size)" }
+            height { "var(--cb-svg-size)" }
+            lineHeight { "var(--cb-svg-size)" }
+            margins {
+                top {".0625rem"}
+                left {".0625rem"}
+            }
+        }
+        override val label: Style<BasicParams> = {
+            margins { left { tiny } }
+            display { block }
+        }
+        override val default: Style<BasicParams> = {
+            display { inlineFlex }
+            flex {
+                shrink { "0" }
+            }
+            width { "var(--cb-size)" }
+            height { "var(--cb-size)" }
+            background { color { "white" } }
+            border {
+                width { "1px" }
+                style { solid }
+                color { dark }
+            }
+            radius {"var(--cb-radius)" }
+        }
+        override val checked: Style<BasicParams> = {
+            background { color { warning } }
+            color { dark }
+        }
+    }
+
     override val radio = object : RadioStyles {
         override val sizes = object : RadioSizes {
             private val basic: Style<BasicParams> = {
