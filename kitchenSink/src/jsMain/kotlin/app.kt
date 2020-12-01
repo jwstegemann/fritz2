@@ -9,7 +9,6 @@ import dev.fritz2.routing.Router
 import dev.fritz2.routing.router
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.RadiiContext
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.Theme
@@ -372,13 +371,8 @@ fun main() {
                     paddings {
                         top { "50px" }
                     }
-                    /*
-                    borders {
-                        right {
-                            width { "2px" }
-                            color { light }
-                        }
-                    }*/
+                    //TODO: tiny does not affect 'spacing' in stack
+                    spacing{tiny}
                 }, id = "menue-left")
                 {
                     items {
