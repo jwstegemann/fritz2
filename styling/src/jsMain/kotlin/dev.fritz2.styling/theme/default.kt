@@ -50,7 +50,7 @@ open class DefaultTheme : Theme {
         override val success = "#28a745" // rgb(40,167,69)
         override val danger = "#dc3545" // rgb(220,53,69)
         override val warning = "#ffc107" // rgb(225,193,7)
-        override val info = "#17a2b8" // rgb(23,162,184)
+        override val info = "#3182ce" // rgb(23,162,184)
         override val light = "#e2e8f0" // rgb(226,232,240)
         override val dark = "#2d3748" // rgb(45,55,72)
         override val base = "#ffffff" // rgb(255,255,255)
@@ -1426,7 +1426,7 @@ open class DefaultTheme : Theme {
             }
             width { "var(--cb-size)" }
             height { "var(--cb-size)" }
-            background { color { "white" } }
+            background { color { base } }
             border {
                 width { "1px" }
                 style { solid }
@@ -1435,8 +1435,8 @@ open class DefaultTheme : Theme {
             radius {"var(--cb-radius)" }
         }
         override val checked: Style<BasicParams> = {
-            background { color { warning } }
-            color { dark }
+            background { color { info } }
+            color { base }
         }
     }
 

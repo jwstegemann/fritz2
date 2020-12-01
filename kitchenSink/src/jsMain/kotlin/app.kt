@@ -375,10 +375,9 @@ fun main() {
                     paddings {
                         top { "50px" }
                     }
-                    //TODO: tiny does not affect 'spacing' in stack
-                    spacing{tiny}
                 }, id = "menue-left")
                 {
+                    spacing{tiny}
                     items {
                         (::p.styled {
                             width { "100%" }

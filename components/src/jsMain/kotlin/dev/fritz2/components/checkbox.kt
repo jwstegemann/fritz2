@@ -189,7 +189,7 @@ fun RenderContext.checkbox(
         inputId?.let {
             `for`(inputId)
         }
-       attr("data-disabled", component.disabled)
+        attr("data-disabled", component.disabled)
         (::input.styled(
             baseClass = checkboxInputStaticCss,
             prefix = prefix,
@@ -210,7 +210,9 @@ fun RenderContext.checkbox(
                 (::div.styled(checkboxIconStaticCss){
                     Theme().checkbox.default()
                     styling()
-                    component.checkedStyle()
+                    if ( checked ) {
+                        component.checkedStyle()
+                    }
                 }) {
                     attr("data-disabled", component.disabled)
                     icon({
