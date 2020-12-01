@@ -24,63 +24,68 @@ fun RenderContext.inputDemo(): Div {
             padding { "1rem" }
         }) {
             items {
-                h1 { +"Inputs Showcase" }
+                showcaseHeader("Inputs" )
 
-                h3 { +"A basic Input needs no Store" }
-                inputField {
-                    base {
-                        placeholder("Placeholder")
+                showcaseSection("A basic Input needs no Store" )
+                componentFrame {
+                    inputField {
+                        base {
+                            placeholder("Placeholder")
+                        }
                     }
                 }
-
-                h3 { +"A disabled component is skipped by the TAB key, but readonly isn't." }
-                lineUp {
-                    items {
-                        inputField {
-                            base {
-                                value("disabled")
-                                disabled(true)
-                            }
-                        }
-                        inputField({
-                            focus {
-                                border {
-                                    color { dark }
+                showcaseSection("A disabled component is skipped by the TAB key, but readonly isn't." )
+                componentFrame {
+                    lineUp {
+                        items {
+                            inputField {
+                                base {
+                                    value("disabled")
+                                    disabled(true)
                                 }
-                                boxShadow { none }
                             }
-                        }) {
-                            base {
-                                value("readonly")
-                                readOnly(true)
+                            inputField({
+                                focus {
+                                    border {
+                                        color { dark }
+                                    }
+                                    boxShadow { none }
+                                }
+                            }) {
+                                base {
+                                    value("readonly")
+                                    readOnly(true)
+                                }
                             }
                         }
                     }
                 }
-
-                h3 { +"Password" }
-                inputField {
-                    base {
-                        type("password")
-                        placeholder("Password")
+                showcaseSection("Password" )
+                componentFrame {
+                    inputField {
+                        base {
+                            type("password")
+                            placeholder("Password")
+                        }
                     }
                 }
-
-                h3 { +"Inputs with store connect events automatically." }
-                inputField(store = user) {
-                    base {
-                        placeholder("Name")
+                showcaseSection("Inputs with store connect events automatically." )
+                componentFrame {
+                    inputField(store = user) {
+                        base {
+                            placeholder("Name")
+                        }
                     }
                 }
-
-                h3 { +"Inputs without stores need manual event collection." }
-                inputField {
-                    base {
-                        placeholder("Name")
-                        changes.values() handledBy user.update
+                showcaseSection("Inputs without stores need manual event collection." )
+                componentFrame {
+                    inputField {
+                        base {
+                            placeholder("Name")
+                            changes.values() handledBy user.update
+                        }
                     }
                 }
-
                 (::p.styled {
                     background { color { light } }
                     fontWeight { bold }
@@ -94,113 +99,117 @@ fun RenderContext.inputDemo(): Div {
                     user.data.asText()
                 }
 
-                h3 { +"Sizes" }
-                lineUp {
-                    items {
-                        inputField {
-                            size { large }
-                            base {
-                                placeholder("large")
+                showcaseSection("Sizes" )
+                componentFrame {
+                    lineUp {
+                        items {
+                            inputField {
+                                size { large }
+                                base {
+                                    placeholder("large")
+                                }
                             }
-                        }
-                        inputField {
-                            size { normal }
-                            base {
-                                placeholder("normal")
+                            inputField {
+                                size { normal }
+                                base {
+                                    placeholder("normal")
+                                }
                             }
-                        }
-                        inputField {
-                            size { small }
-                            base {
-                                placeholder("small")
-                            }
-                        }
-                    }
-                }
-
-                h3 { +"Variants" }
-                lineUp {
-                    items {
-                        inputField {
-                            variant { outline }
-                            base {
-                                placeholder("outline")
-                            }
-                        }
-                        inputField {
-                            variant { filled }
-                            base {
-                                placeholder("filled")
+                            inputField {
+                                size { small }
+                                base {
+                                    placeholder("small")
+                                }
                             }
                         }
                     }
                 }
-
-                h2 { +"Input fields go to town" }
-
-                val ourInputStyle: BasicParams.() -> Unit = {
-                    Theme().input.sizes.large()
-                    Theme().input.variants.filled()
-                    border {
-                        color { warning }
-                        width { "3px" }
-                        style { double }
+                showcaseSection("Variants" )
+                componentFrame {
+                    lineUp {
+                        items {
+                            inputField {
+                                variant { outline }
+                                base {
+                                    placeholder("outline")
+                                }
+                            }
+                            inputField {
+                                variant { filled }
+                                base {
+                                    placeholder("filled")
+                                }
+                            }
+                        }
                     }
-                    background {
-                        color { dark }
-                    }
-                    radius { "1rem" }
-                    color { light }
+                }
+                showcaseSubHeader("Input fields go to town" )
+                componentFrame {
 
-                    focus {
+                    val ourInputStyle: BasicParams.() -> Unit = {
+                        Theme().input.sizes.large()
+                        Theme().input.variants.filled()
+                        border {
+                            color { warning }
+                            width { "3px" }
+                            style { double }
+                        }
                         background {
-                            color { light }
+                            color { dark }
                         }
-                        color { warning }
-                    }
-                }
+                        radius { "1rem" }
+                        color { light }
 
-                // Extend base component
-                fun RenderContext.ourInputField(
-                    styling: BasicParams.() -> Unit = {},
-                    store: Store<String>? = null,
-                    baseClass: StyleClass? = null,
-                    id: String? = null,
-                    prefix: String = "ourInputField",
-                    build: InputFieldComponent.() -> Unit
-                ) {
-                    inputField({
-                        // always use corporate styling automatically!
-                        ourInputStyle()
-                        // still apply call-side defined styling!
-                        styling()
-                    }, store, baseClass, id, prefix, build)
-                }
-
-                lineUp {
-                    spacing { tiny }
-                    items {
-                        // use our component instead of built-in one!
-                        ourInputField {
-                            base {
-                                type("text")
-                                placeholder("user")
+                        focus {
+                            background {
+                                color { light }
                             }
-                        }
-                        ourInputField({
-                            // Passwords are dangerous -> so style ad hoc!!!
-                            border {
-                                color { danger }
-                            }
-                        }) {
-                            base {
-                                type("password")
-                                placeholder("password")
-                            }
+                            color { warning }
                         }
                     }
+
+                    // Extend base component
+                    fun RenderContext.ourInputField(
+                        styling: BasicParams.() -> Unit = {},
+                        store: Store<String>? = null,
+                        baseClass: StyleClass? = null,
+                        id: String? = null,
+                        prefix: String = "ourInputField",
+                        build: InputFieldComponent.() -> Unit
+                    ) {
+                        inputField({
+                            // always use corporate styling automatically!
+                            ourInputStyle()
+                            // still apply call-side defined styling!
+                            styling()
+                        }, store, baseClass, id, prefix, build)
+                    }
+
+                    lineUp {
+                        spacing { tiny }
+                        items {
+                            // use our component instead of built-in one!
+                            ourInputField {
+                                base {
+                                    type("text")
+                                    placeholder("user")
+                                }
+                            }
+                            ourInputField({
+                                // Passwords are dangerous -> so style ad hoc!!!
+                                border {
+                                    color { danger }
+                                }
+                            }) {
+                                base {
+                                    type("password")
+                                    placeholder("password")
+                                }
+                            }
+                        }
+                    }
+                    br {}
                 }
-                br {}
             }
         }
     }

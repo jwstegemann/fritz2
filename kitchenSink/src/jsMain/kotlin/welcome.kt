@@ -80,12 +80,12 @@ fun RenderContext.welcome(): Div {
                         right { "0.3rem" }
                     }
                     background {
-                        color { warning }
+                        color { primary }
                     }
                     color { "white" }
                     radius { "10px" }
                 }) { +"H2 styled and a paragraph" }
-                p { +"Paragraph: Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum doloribus amet vel? Expedita sit praesentium dolores obcaecati possimus sapiente voluptatem doloribus, ipsum harum in quia, provident corporis nulla corrupti placeat!" }
+                paragraph { +"Paragraph: Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum doloribus amet vel? Expedita sit praesentium dolores obcaecati possimus sapiente voluptatem doloribus, ipsum harum in quia, provident corporis nulla corrupti placeat!" }
                 h3 { +"H3: Paragraph with inner Span" }
                 p {
                     +"Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum doloribus amet vel? Cum doloribus amet vel? "

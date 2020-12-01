@@ -84,7 +84,7 @@ fun RenderContext.paragraph(init: P.() -> Unit): P {
 
 fun RenderContext.contentFrame(init: Div.() -> Unit): Div {
     return (::div.styled {
-        maxWidth { "48rem" }
+        maxWidth { "60rem" }
         paddings {
             top { huge }
         }
@@ -361,7 +361,7 @@ fun main() {
                 {
                     items {
                         (::p.styled {
-                            //width { "100%" }
+                            width { "100%" }
                             margins { top{ huge } }
                             paddings {
                                 bottom { "2.0rem" }

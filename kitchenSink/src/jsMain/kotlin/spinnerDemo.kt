@@ -15,10 +15,10 @@ fun RenderContext.spinnerDemo(): Div {
         }) {
             spacing { large }
             items {
-                h1 { +"Spinner Showcase" }
-                p { +"A spinner is an animated element, that is used to signalize a long running process." }
-                p { +"There are two flavours of spinner built into fritz2:" }
-                h2 { +"Pure CSS based" }
+                showcaseHeader("Spinner" )
+                paragraph { +"A spinner is an animated element, that is used to signalize a long running process." }
+                paragraph { +"There are two flavours of spinner built into fritz2:" }
+                showcaseSection( "Pure CSS based" )
                 componentFrame {
                     lineUp({
                         alignItems { flexEnd }
@@ -69,7 +69,7 @@ fun RenderContext.spinnerDemo(): Div {
                         }
                     }
                 }
-                h2 { +"Icon based" }
+                showcaseSection("Icon based" )
                 componentFrame {
                     lineUp({
                         alignItems { flexEnd }

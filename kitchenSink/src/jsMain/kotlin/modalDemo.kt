@@ -57,13 +57,13 @@ fun RenderContext.modalDemo(): Div {
                 }
             }
 
-            h1 { +"Modal Dialogs Showcase" }
+            showcaseHeader("Modal Dialogs" )
 
             stackUp({
                 alignItems { start }
             }) {
                 items {
-                    h3 { +"Basic Dialog options" }
+                    showcaseSection("Basic Dialog options" )
                     componentFrame {
                         lineUp({
                             alignItems { start }
@@ -132,8 +132,8 @@ fun RenderContext.modalDemo(): Div {
                         }
                     }
 
-                    h3 { +"Choosing an overlay" }
-                    p {
+                    showcaseSection("Choosing an overlay" )
+                    paragraph {
                         +"Decide what happens with your background when your modal opens. The options are default, create an overlay for each level of dialog opened, or use a styled overlay."
                     }
 
@@ -168,7 +168,7 @@ fun RenderContext.modalDemo(): Div {
                             items(overlayVariants.values.toList())
                         }
                     }
-                    h3 { +"Sizes" }
+                    showcaseSection("Sizes" )
                     componentFrame {
                         lineUp({
                             alignItems { start }
@@ -190,7 +190,7 @@ fun RenderContext.modalDemo(): Div {
                         }
                     }
 
-                    h3 { +"Variants" }
+                    showcaseSection("Variants" )
                     componentFrame {
                         lineUp({
                             alignItems { start }

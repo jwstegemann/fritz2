@@ -158,9 +158,7 @@ fun RenderContext.iconsDemo(): Div {
             items {
 
 
-                h1 {
-                    +"Icons Showcase"
-                }
+                showcaseHeader("Icons")
 
                 gridBox({
                     columns {

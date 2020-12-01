@@ -16,9 +16,9 @@ fun RenderContext.popoverDemo(): Div {
         }) {
             spacing { large }
             items {
-                h1 { +"Popover Showcase" }
-                p { +"Popover is a non-modal dialog that floats around a trigger. It's used to display contextual information to the user, and should be paired with a clickable trigger element." }
-                p {
+                showcaseHeader("Popover" )
+                paragraph { +"Popover is a non-modal dialog that floats around a trigger. It's used to display contextual information to the user, and should be paired with a clickable trigger element." }
+                paragraph {
                     +"Click the following icons to open the examples"
                 }
                 componentFrame {

@@ -184,33 +184,34 @@ fun RenderContext.formControlDemo(): Div {
 
             items {
                 showcaseHeader("FormControl" )
-                p {
+                paragraph {
                     +"FormControls take a single form element and take care of styling and validation. You cannot have more than one form element in a FormControl."
                 }
-                h3 { +"Required Input with a store and dynamic error message" }
-                formControl {
-                    label { "Please input the name of your favorite Kotlin based web framework." }
-                    required { true }
-                    helperText { "You shouldn't need a hint." }
-                    errorMessage {
-                        framework.data.map {
-                            // if something is wrong, just send a none empty string to errorMessage!
-                            // the control will handle the rest for you :-)
-                            if (it.isNotEmpty() && it.toLowerCase() != solution) {
-                                "'$it' is completely wrong."
-                            } else ""
+                showcaseSection("Required Input with a store and dynamic error message" )
+                componentFrame {
+                    formControl {
+                        label { "Please input the name of your favorite Kotlin based web framework." }
+                        required { true }
+                        helperText { "You shouldn't need a hint." }
+                        errorMessage {
+                            framework.data.map {
+                                // if something is wrong, just send a none empty string to errorMessage!
+                                // the control will handle the rest for you :-)
+                                if (it.isNotEmpty() && it.toLowerCase() != solution) {
+                                    "'$it' is completely wrong."
+                                } else ""
+                            }
+                        }
+                        //just use the appropriate *single element* control with its specific API!
+                        inputField(store = framework) {
+                            placeholder("$solution for example")
+                        }
+                        // throws an exception -> only one (and the first) control is allowed!
+                        inputField {
+                            placeholder("This control throws an exception because a form control may only contain one control.")
                         }
                     }
-                    //just use the appropriate *single element* control with its specific API!
-                    inputField(store = framework) {
-                        placeholder("$solution for example")
-                    }
-                    // throws an exception -> only one (and the first) control is allowed!
-                    inputField {
-                        placeholder("This control throws an exception because a form control may only contain one control.")
-                    }
                 }
-
                 val loveString = "I love fritz2 with all my heart."
                 val hateString = "I hate your guts, fritz2!"
                 val loveStore = object : RootStore<Boolean>(true) {
@@ -223,35 +224,38 @@ fun RenderContext.formControlDemo(): Div {
                 loveStore.changedMyMind handledBy textStore.update
 
 
-                h3 { +"Form with a single checkbox, custom color, form control label and helpertext" }
-                formControl {
-                    label { "Label us interested: How do you feel about fritz2? We would really love to hear your opinion. " }
-                    helperText { "So good to have options." }
-                    checkbox(
-                        {},
-                        id = "check1"
-                    ) {
-                        label(textStore.data)
-                        size { large }
-                        checked { loveStore.data }
-                        events {
-                            changes.states() handledBy loveStore.changedMyMind
+                showcaseSection("Form with a single checkbox, custom color, form control label and helpertext" )
+                componentFrame {
+                    formControl {
+                        label { "Label us interested: How do you feel about fritz2? We would really love to hear your opinion. " }
+                        helperText { "So good to have options." }
+                        checkbox(
+                            {},
+                            id = "check1"
+                        ) {
+                            label(textStore.data)
+                            size { large }
+                            checked { loveStore.data }
+                            events {
+                                changes.states() handledBy loveStore.changedMyMind
+                            }
                         }
                     }
                 }
+                showcaseSection("Form with a small checkbox group, no label, no helpertext, formlayout horizontal" )
+                componentFrame {
+                    formControl {
+                        label { "Choose one or more" }
+                        helperText { "..." }
 
-                h3 { +"Form with a small checkbox group, no label, no helpertext, formlayout horizontal" }
-                formControl {
-                    label {"Choose one or more"}
-                    helperText { "..." }
-
-                    checkboxGroup(
-                        store = selectedItemsStore,
-                        id = "checkGroup1"
-                    ) {
-                        items { flowOf(myItemList) }
-                        direction { row }
-                        size { small }
+                        checkboxGroup(
+                            store = selectedItemsStore,
+                            id = "checkGroup1"
+                        ) {
+                            items { flowOf(myItemList) }
+                            direction { row }
+                            size { small }
+                        }
                     }
                 }
                 (::div.styled {
@@ -272,17 +276,19 @@ fun RenderContext.formControlDemo(): Div {
                     }
                 }
                 // use your own formControl! Pay attention to the derived component receiver.
-                h3 { +"Custom FormControl" }
-                p {
+                showcaseSection("Custom FormControl" )
+                paragraph {
                     +"""This control has overridden the control function to implement a special control. 
                     |It is combined with a hand made renderer for the surrounding custom structure.""".trimMargin()
                 }
                 val customValueSelected = storeOf("some")
-                myFormControl {
-                    label { "Label next to the control just to be different" }
-                    helperText { "Helper text below control" }
-                    mySingleSelectComponent(store = customValueSelected) {
-                        items((listOf("some", "predefined", "options")))
+                componentFrame {
+                    myFormControl {
+                        label { "Label next to the control just to be different" }
+                        helperText { "Helper text below control" }
+                        mySingleSelectComponent(store = customValueSelected) {
+                            items((listOf("some", "predefined", "options")))
+                        }
                     }
                 }
                 (::div.styled {

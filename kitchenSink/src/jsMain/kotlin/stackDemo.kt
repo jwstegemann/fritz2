@@ -17,9 +17,9 @@ fun RenderContext.stackDemo(): Div {
         }) {
             items {
 
-                h1 { +"StackUps and LineUps Showcase" }
+                showcaseHeader("StackUps and LineUps" )
 
-                p {
+                paragraph {
                     +"Our stack containers accept any element. A LineUp allows you to align its contents"
                     +" horizontally, while a StackUp puts the elements on top of each other. You may also "
                     +" reverse the order of the contents."

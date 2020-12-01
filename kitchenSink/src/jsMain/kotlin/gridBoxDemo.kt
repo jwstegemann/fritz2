@@ -25,15 +25,15 @@ fun RenderContext.gridBoxDemo(): Div {
                 val FOOTER: AreaName = "footer"
             }
 
-            h1 { +"Grid Layout Showcase" }
-            p {
+            showcaseHeader("Grid Layout" )
+            paragraph {
                 +"Use the grid layout to display elements on top of other elements. Also, this layout transforms with "
                 +"screensize. Try resizing your browser window to see what it does when the available space becomes narrow."
             }
 
             br {}
 
-            p {
+            paragraph {
                 gridBox({
                     fontSize { normal }
                     columns {

@@ -11,6 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate
 import dev.fritz2.kitchenSink.model.*
+import dev.fritz2.styling.params.AlignItemsValues
 import kotlinx.coroutines.flow.combine
 
 val defaultList = listOf(
@@ -112,138 +113,144 @@ fun RenderContext.tableDemo(): Div {
 
     defaultList.sortedWith(compareBy { it.fullName })
 
-    return contentFrame  {
-        h1 { +"Table Showcase" }
+    return contentFrame {
+        stackUp ({
+            alignItems { AlignItemsValues.start }
+            padding { "1rem" }
+        }) {
+            showcaseHeader("Tables")
 
-        val selectedStore = object : RootStore<List<Person>>(emptyList()) {
+            val selectedStore = object : RootStore<List<Person>>(emptyList()) {
 
-            val add = handle<Person> { list, selected ->
-                if (!list.contains(selected)) {
-                    list + selected
-                } else {
-                    list
-                }
-            }
-
-            val toggle = handle<Person> { list, item ->
-                console.info(item)
-                if (!list.contains(item)) {
-                    list + item
-                } else {
-                    list.filter { it != item }
-                }
-            }
-
-            val clearList = handle {
-                emptyList()
-            }
-
-        }
-
-        val selectionModeStore = storeOf(TableComponent.Companion.SelectionMode.NONE)
-        lineUp {
-            items {
-                TableComponent.Companion.SelectionMode.values().toList().map { mode ->
-                    clickButton { text(mode.toString()) }.events.map { mode } handledBy selectionModeStore.update
-                }
-            }
-        }
-
-
-        selectedStore.data.render { list ->
-            p { +"Aktuell sind ${list.size} Zeilen ausgewählt!" }
-        }
-
-
-
-        table<Person, Int>(rowIdProvider = Person::id) {
-            caption(selectionModeStore.data.map { mode ->
-                "Table with \"${mode.name}\" Selection Mode "
-            })
-            tableStore(TableStore)
-            selectedRows(selectedStore.data)
-            selectedAllRowEvents = selectedStore.update
-            selectedRowEvent = selectedStore.toggle
-            selectionMode(selectionModeStore.data)
-
-            defaultThStyle {
-                {
-                    background { color { "#1fd257" } }
-                }
-            }
-
-            columns {
-                column("ID") {
-                    lens { personIdLens + Formats.intFormat }
-                    width { minmax { "80px" } }
-                }
-                column("Name") {
-                    lens { fullNameLens }
-                    width { minmax { "1.33fr" } }
-                }
-                column("Birthday") {
-                    lens { birthdayLens + Formats.dateFormat }
-                    width { minmax { "120px" } }
-                    styling {
-                        color { danger }
+                val add = handle<Person> { list, selected ->
+                    if (!list.contains(selected)) {
+                        list + selected
+                    } else {
+                        list
                     }
-                    sortBy {
-                        compareBy { person ->
-                            person.birthday
+                }
+
+                val toggle = handle<Person> { list, item ->
+                    console.info(item)
+                    if (!list.contains(item)) {
+                        list + item
+                    } else {
+                        list.filter { it != item }
+                    }
+                }
+
+                val clearList = handle {
+                    emptyList()
+                }
+
+            }
+
+            val selectionModeStore = storeOf(TableComponent.Companion.SelectionMode.NONE)
+            componentFrame {
+                lineUp {
+                    items {
+                        TableComponent.Companion.SelectionMode.values().toList().map { mode ->
+                            clickButton { text(mode.toString()) }.events.map { mode } handledBy selectionModeStore.update
                         }
                     }
                 }
-                column {
-                    // lens can be omitted! It's purely optional and totally ok to have columns that hide its relation to
-                    // the data from the table itself!
-                    // ``header`` oder ``head``?
-                    header {
-                        title { "Address" }
+            }
+
+            selectedStore.data.render { list ->
+                paragraph { +"Aktuell sind ${list.size} Zeilen ausgewählt!" }
+            }
+
+
+
+            table<Person, Int>(rowIdProvider = Person::id) {
+                caption(selectionModeStore.data.map { mode ->
+                    "Table with \"${mode.name}\" Selection Mode "
+                })
+                tableStore(TableStore)
+                selectedRows(selectedStore.data)
+                selectedAllRowEvents = selectedStore.update
+                selectedRowEvent = selectedStore.toggle
+                selectionMode(selectionModeStore.data)
+
+                defaultThStyle {
+                    {
+                        background { color { "#1fd257" } }
+                    }
+                }
+
+                columns {
+                    column("ID") {
+                        lens { personIdLens + Formats.intFormat }
+                        width { minmax { "80px" } }
+                    }
+                    column("Name") {
+                        lens { fullNameLens }
+                        width { minmax { "1.33fr" } }
+                    }
+                    column("Birthday") {
+                        lens { birthdayLens + Formats.dateFormat }
+                        width { minmax { "120px" } }
                         styling {
-                            background { color { "purple" } }
-                            fontWeight { bold }
+                            color { danger }
                         }
-                        content { config ->
-                            +config.headerName
-                            icon { fromTheme { fritz2 } }
-                        }
-                    }
-                    width { max { "2fr" } }
-                    content { ctx, _, rowStore ->
-                        rowStore?.let { person ->
-                            val street = person.sub(personAddressLens + streetLens)
-                            val houseNumber = person.sub(personAddressLens + houseNumberLens)
-                            val postalCode = person.sub(personAddressLens + postalCodeLens)
-                            val city = person.sub(personAddressLens + cityLens)
-                            ctx.apply {
-                                street.data.combine(houseNumber.data) { s, h ->
-                                    "$s $h"
-                                }.combine(postalCode.data) { a, p ->
-                                    "$a ,$p"
-                                }.combine(city.data) { a, c ->
-                                    "$a $c"
-                                }.asText()
+                        sortBy {
+                            compareBy { person ->
+                                person.birthday
                             }
+                        }
+                    }
+                    column {
+                        // lens can be omitted! It's purely optional and totally ok to have columns that hide its relation to
+                        // the data from the table itself!
+                        // ``header`` oder ``head``?
+                        header {
+                            title { "Address" }
+                            styling {
+                                background { color { "purple" } }
+                                fontWeight { bold }
+                            }
+                            content { config ->
+                                +config.headerName
+                                icon { fromTheme { fritz2 } }
+                            }
+                        }
+                        width { max { "2fr" } }
+                        content { ctx, _, rowStore ->
+                            rowStore?.let { person ->
+                                val street = person.sub(personAddressLens + streetLens)
+                                val houseNumber = person.sub(personAddressLens + houseNumberLens)
+                                val postalCode = person.sub(personAddressLens + postalCodeLens)
+                                val city = person.sub(personAddressLens + cityLens)
+                                ctx.apply {
+                                    street.data.combine(houseNumber.data) { s, h ->
+                                        "$s $h"
+                                    }.combine(postalCode.data) { a, p ->
+                                        "$a ,$p"
+                                    }.combine(city.data) { a, c ->
+                                        "$a $c"
+                                    }.asText()
+                                }
 
+                            }
+                        }
+                        sortBy {
+                            compareBy<Person> { person ->
+                                person.address.city
+                            }.thenBy { person ->
+                                person.address.street
+                            }
                         }
                     }
-                    sortBy {
-                        compareBy<Person> { person ->
-                            person.address.city
-                        }.thenBy { person ->
-                            person.address.street
-                        }
+                    column("Phone") {
+                        lens { phoneLens }
+                        // TODO: Ugly -> Enum must be receiver; but how?
+                        sorting { TableComponent.Companion.Sorting.DISABLED }
                     }
+                    column("Mobile") { lens { mobileLens } }
+                    column("E-Mail") { lens { emailLens } }
                 }
-                column("Phone") {
-                    lens { phoneLens }
-                    // TODO: Ugly -> Enum must be receiver; but how?
-                    sorting { TableComponent.Companion.Sorting.DISABLED }
-                }
-                column("Mobile") { lens { mobileLens } }
-                column("E-Mail") { lens { emailLens } }
+                sorter = NaiveSorter()
             }
-            sorter = NaiveSorter()
         }
     }
 }

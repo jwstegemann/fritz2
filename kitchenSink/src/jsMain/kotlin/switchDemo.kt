@@ -21,8 +21,8 @@ fun RenderContext.switchDemo(): Div {
         }) {
             spacing { large }
             items {
-                h1 { +"Switch Showcase" }
-                p {
+                showcaseHeader("Switch" )
+                paragraph {
                     +"A checkbox like a switch Button"
                 }
                 switch() {

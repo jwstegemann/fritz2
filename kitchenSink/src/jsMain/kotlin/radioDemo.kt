@@ -18,9 +18,9 @@ fun RenderContext.radiosDemo(): Div {
         }) {
             items {
 
-                h1 { +"SingleSelect Showcase" }
+                showcaseHeader("SingleSelect" )
 
-                p {
+                paragraph {
                     +"You can choose from 3 radio sizes. You may also chose custom colors for the radio background and"
                     +" border. However, any custom styles you apply to the component will be rendered for the"
                     +" internal container element only. Also keep in mind that the default styling of our"
@@ -42,7 +42,7 @@ fun RenderContext.radiosDemo(): Div {
                             val selectedItemStore = RootStore(mySelectedItem)
 
                             items {
-                                h3 { +"SingleSelect large" }
+                                showcaseSection("SingleSelect large" )
                                 lineUp({
                                     margins { bottom { "2.0rem" } }
                                     alignItems { baseline }
@@ -73,7 +73,7 @@ fun RenderContext.radiosDemo(): Div {
                             val selectedItemStore = RootStore(mySelectedItem)
 
                             items {
-                                h3 { +"SingleSelect normal, disabled" }
+                                showcaseSection("SingleSelect normal, disabled" )
                                 stackUp({
                                     margins { bottom { "2.0rem" } }
                                     alignItems { baseline }
@@ -104,7 +104,7 @@ fun RenderContext.radiosDemo(): Div {
                             val selectedItemStore = RootStore(mySelectedItem)
 
                             items {
-                                h3 { +"SingleSelect small, custom colors, horizontal" }
+                                showcaseSection("SingleSelect small, custom colors, horizontal" )
                                 stackUp({
                                     margins { bottom { "2.0rem" } }
                                     alignItems { baseline }
