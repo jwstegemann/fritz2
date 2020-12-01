@@ -158,7 +158,7 @@ fun RenderContext.iconsDemo(): Div {
                 repeat(5) { "1fr" }
             }
             gap { normal }
-            margin { small }
+            margins { top { "3rem" } }
             maxWidth { "80%" }
         }) {
             icons.forEach {

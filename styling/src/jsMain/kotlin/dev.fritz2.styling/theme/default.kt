@@ -39,9 +39,8 @@ open class DefaultTheme : Theme {
         normal = "1rem",
         large = "1.25rem",
         larger = "1.5rem",
-        // TODO: MK: Why same value?
         huge = "1.875rem",
-        giant = "1.875rem",
+        giant = "3rem",
         full = "4rem"
     )
 
