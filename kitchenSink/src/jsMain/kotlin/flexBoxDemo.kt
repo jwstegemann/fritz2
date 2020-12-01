@@ -14,28 +14,6 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
             direction(sm = { column }, md = { row })
             minHeight { "50%" }
         }) {
-
-            box({
-                zIndex { layer(1) }
-                margins(
-                    {
-                        top { huge }
-                        bottom { large }
-                    },
-                    md = { left { normal } }
-                )
-                flex { shrink { "0" } }
-            }) {
-                (::img.styled {
-                    width(sm = { wide.small }, md = { wide.smaller })
-                    boxShadow { flat }
-                    radius { large }
-                }) {
-                    src("https://www.fritz2.dev/images/fritz_info_1.jpg")
-                    alt("Random image for flex layout demonstration")
-                }
-            }
-
             box({
                 zIndex { base }
                 //width { "300px" }
@@ -89,6 +67,26 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
                     +"Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl"
                     +" ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. "
                     +"Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat."
+                }
+            }
+            box({
+                zIndex { layer(1) }
+                margins(
+                    {
+                        top { huge }
+                        bottom { large }
+                    },
+                    md = { left { normal } }
+                )
+                flex { shrink { "0" } }
+            }) {
+                (::img.styled {
+                    width(sm = { wide.small }, md = { wide.smaller })
+                    boxShadow { flat }
+                    radius { large }
+                }) {
+                    src("https://www.fritz2.dev/images/fritz_info_1.jpg")
+                    alt("Random image for flex layout demonstration")
                 }
             }
         }

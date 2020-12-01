@@ -84,9 +84,13 @@ fun RenderContext.paragraph(init: P.() -> Unit): P {
 
 fun RenderContext.contentFrame(init: Div.() -> Unit): Div {
     return (::div.styled {
-        maxWidth { "60rem" }
+        margins {
+            top { "2rem" }
+        }
+        maxWidth { "48rem" }
         paddings {
             top { huge }
+            left { normal }
         }
     }){
         init()
@@ -107,6 +111,9 @@ val componentFrame: Style<BasicParams> = { // Auslagerung von Style
 fun RenderContext.componentFrame(init: Div.() -> Unit): Div { //Auslagerung von Komponente
     return (::div.styled {
         width { "100%" }
+        margins {
+            top { "1.25rem" }
+        }
         border {
             width { thin }
             color { light }
@@ -208,6 +215,21 @@ object ThemeStore : RootStore<Int>(0) {
     val selectTheme = handle<Int> { _, index ->
         Theme.use(themes[index])
         index
+    }
+}
+
+fun RenderContext.menuHeader(init: P.() -> Unit): P {
+    return (::p.styled {
+        paddings {
+            top { large }
+            left { small }
+            right { small }
+        }
+        fontSize{small}
+        fontWeight { "700" }
+        color { tertiary }
+    })  {
+        init()
     }
 }
 
@@ -364,26 +386,34 @@ fun main() {
                             width { "100%" }
                             margins { top{ huge } }
                             paddings {
-                                bottom { "2.0rem" }
+                                bottom { "1rem" }
                             }
                         }) {
                             menuAnchor(welcome_, router)
                         }
-
+                        menuHeader { +"LAYOUT" }
                         menuAnchor(flexbox_, router)
                         menuAnchor(gridbox_, router)
                         menuAnchor(stack_, router)
-                        menuAnchor(icons_, router)
-                        menuAnchor(spinner_, router)
+
+                        menuHeader { +"FORMS" }
                         menuAnchor(buttons_, router)
-                        menuAnchor(popover_, router)
-                        menuAnchor(modal_, router)
-                        menuAnchor(input_, router)
                         menuAnchor(checkboxes_, router)
+                        menuAnchor(formcontrol_, router)
+                        menuAnchor(input_, router)
                         menuAnchor(radios_, router)
                         menuAnchor(switch_, router)
-                        menuAnchor(formcontrol_, router)
                         menuAnchor(datatable_, router)
+
+                        menuHeader { +"FEEDBACK" }
+                        menuAnchor(spinner_, router)
+
+                        menuHeader { +"OVERLAY" }
+                        menuAnchor(modal_, router)
+                        menuAnchor(popover_, router)
+
+                        menuHeader { +"ICONS" }
+                        menuAnchor(icons_, router)
                     }
                 }
                 (::div.styled(id = "content-right") {

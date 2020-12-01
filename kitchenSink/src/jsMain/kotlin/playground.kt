@@ -73,21 +73,27 @@ fun RenderContext.playground(
 ) {
     val component = PlaygroundComponent().apply(build)
 
-    box({
-        background { color { "#2B2B2B" } }
-        radius { "12px" }
-        width { full }
-        padding { small }
-    }) {
-        code(playgroundMarker) {
-            attr("data-target-platform", "js")
-            attr("data-highlight-only", true)
-            attr("theme", "darcula")
-            attr("auto-indent", "true")
-            attr("lines", "false")
-            attr("output-size", component.size)
+    stackUp ({
+        margins { top { "1.25rem" } }
+    }){
+        items {
+            box({
+                background { color { "#2B2B2B" } }
+                radius { "12px" }
+                width { full }
+                padding { small }
+            }) {
+                code(playgroundMarker) {
+                    attr("data-target-platform", "js")
+                    attr("data-highlight-only", true)
+                    attr("theme", "darcula")
+                    attr("auto-indent", "true")
+                    attr("lines", "false")
+                    attr("output-size", component.size)
 
-            +component.source
+                    +component.source
+                }
+            }
         }
     }
 }

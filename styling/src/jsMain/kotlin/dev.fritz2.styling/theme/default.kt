@@ -47,7 +47,7 @@ open class DefaultTheme : Theme {
 
     override val colors = object : Colors {
         override val secondary = "#b2f5ea" // rgb(178,245,234) new
-        override val tertiary = "#3d405b" // rgb(61,64,92) formerly primary
+        override val tertiary = "#718096" // rgb(61,64,92) formerly primary
         override val primary = "#319795" // rgb(49,151,149) formerly "#e07a5f" // rgb(224,122,95)
         override val success = "#28a745" // rgb(40,167,69)
         override val danger = "#dc3545" // rgb(220,53,69)
