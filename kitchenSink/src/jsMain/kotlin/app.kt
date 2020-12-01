@@ -7,12 +7,15 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.Router
 import dev.fritz2.routing.router
-import dev.fritz2.styling.*
+import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
+import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.render
+import dev.fritz2.styling.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -61,6 +64,7 @@ fun RenderContext.showcaseSection(text: String) {
                 color { primary }
             }
         }
+        radii { left { small } }
         margins { top { "3rem !important" } }
         paddings { left { smaller } }
     }) { +text }

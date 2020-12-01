@@ -1,6 +1,5 @@
 package dev.fritz2.styling.theme
 
-import dev.fritz2.dom.html.Div
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.params.BackgroundAttachments.inherit
 
@@ -123,7 +122,8 @@ open class DefaultTheme : Theme {
 
     override val radii = ScaledValue(
         none = "0",
-        small = "0.125rem",
+        smaller = "0.125rem",
+        small = "0.225rem",
         normal = "0.375rem",
         large = "0.5rem",
         larger = "12px",

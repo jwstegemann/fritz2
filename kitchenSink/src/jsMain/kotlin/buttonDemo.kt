@@ -4,8 +4,6 @@ import dev.fritz2.binding.watch
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.theme.Theme
 import dev.fritz2.tracking.tracker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -54,7 +52,7 @@ fun RenderContext.buttonDemo(): Div {
 
         showcaseSection("Usage")
         paragraph {
-            +"Define your button by adding text and / or an icon to its content. A"
+            +"Define your button by adding text and / or an icon to its content and setting the color. A"
             c("pushButton")
             +"gives you full controll over the underlying HTML-button. The"
             c("clickButton")
@@ -68,12 +66,14 @@ fun RenderContext.buttonDemo(): Div {
 
                     pushButton {
                         icon { fromTheme { arrowLeft } }
+                        color { danger }
                         text("previous")
                     }
 
                     pushButton {
                         icon { fromTheme { arrowRight } }
                         iconRight()
+                        color { warning }
                         text("next")
                     }
 
@@ -104,12 +104,15 @@ fun RenderContext.buttonDemo(): Div {
 
         showcaseSection("Variants")
         paragraph {
-            +"""
-                    fritz2 offers three different flavours of buttons for the various use cases.
-                """.trimIndent()
+            +"fritz2 offers three different flavours of buttons for the various use cases: "
+            c("solid")
+            +", "
+            c("outline")
+            +", "
+            c("ghost")
+            +" and "
+            c("link")
         }
-
-        showcaseSection("Choose from variants like outline, ghost and more. Icons can be on either side of the text.")
         componentFrame {
             lineUp {
                 items {
@@ -135,34 +138,38 @@ fun RenderContext.buttonDemo(): Div {
         playground {
             source(
                 """
-                    clickButton { 
-                        text("solid")
-                        variant { solid }
-                    }
-                    
-                    clickButton {
-                        text("outline")
-                        variant { outline } // default
-                    }
-                    
-                    clickButton {
-                        text("ghost")
-                        variant { ghost } 
-                    }
-                    
-                    clickButton {
-                        text("link")
-                        variant { link } 
-                    }
-                """
+                                    clickButton { 
+                                        text("solid")
+                                        variant { solid }
+                                    }
+                                    
+                                    clickButton {
+                                        text("outline")
+                                        variant { outline } // default
+                                    }
+                                    
+                                    clickButton {
+                                        text("ghost")
+                                        variant { ghost } 
+                                    }
+                                    
+                                    clickButton {
+                                        text("link")
+                                        variant { link } 
+                                    }
+                                """
             )
         }
 
         showcaseSection("Sizes")
         paragraph {
-            +"""
-                                Buttons are available in three predefined sizes.
-                            """.trimIndent()
+            +"choose from on three predefined sizes ("
+            c("small")
+            +", "
+            c("normal")
+            +" or  "
+            c("large")
+            +") or scale your button to your needs using the styling parameter."
         }
         componentFrame {
             lineUp {
@@ -185,28 +192,27 @@ fun RenderContext.buttonDemo(): Div {
         playground {
             source(
                 """
-                   clickButton {
-                        text("small")
-                        size { small }
-                    }
-                    clickButton {
-                        text("normal")
-                        size { normal } // default
-                    }
-                    clickButton {
-                        text("large")
-                        size { large }
-                    }
-                """
+                                   clickButton {
+                                        text("small")
+                                        size { small }
+                                    }
+                                    clickButton {
+                                        text("normal")
+                                        size { normal } // default
+                                    }
+                                    clickButton {
+                                        text("large")
+                                        size { large }
+                                    }
+                                """
             )
         }
 
         showcaseSection("Loading State")
         paragraph {
-            +"""
-                    Connect the Button to a Tracker to show it's loading state. 
-                    You can specify a different text that is shown while loading.
-                """.trimIndent()
+            +"Connect a button to a "
+            c("Tracker")
+            +" to show its loading state. You can specify a different text that is shown while loading."
         }
         componentFrame {
             lineUp {
@@ -260,17 +266,16 @@ fun RenderContext.buttonDemo(): Div {
                         loadingText("playing")
                     } handledBy buttonStore.showMsg
 
-                    clickButton {
-                        icon { fromTheme { play } }
-                        loading(buttonStore.loading)
-                        variant { outline }
-                    } handledBy buttonStore.showMsg
-                """
+                                    clickButton {
+                                        icon { fromTheme { play } }
+                                        loading(buttonStore.loading)
+                                        variant { outline }
+                                    } handledBy buttonStore.showMsg
+                                """
             )
         }
-
-        showcaseSection("Configuration")
-        span { +" add link to dokka (iframe?) " }
     }
 }
+
+
 
