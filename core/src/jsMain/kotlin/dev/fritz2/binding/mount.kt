@@ -21,7 +21,8 @@ fun <T> mountSingle(parentJob: Job, upstream: Flow<T>, set: suspend (T, T?) -> U
             set(value, last)
             value
         }.catch {
-            console.error("error mounting: ${it.message}", it)
+            // do not do anything here but canceling the coroutine, because this is an expected
+            // behaviour when dealing with filtering, renderEach and idProvider
             cancel("error mounting", it)
         }.collect()
     }
