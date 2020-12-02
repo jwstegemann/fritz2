@@ -42,6 +42,7 @@ const val styling_ = "Styling"
 const val theme_ = "Theme"
 const val tooltip_ = "Tooltip"
 const val responsive_ = "Responsiveness"
+const val textarea_ = "Textarea"
 const val color_ = "Color"
 
 val router = router(welcome_)
@@ -102,7 +103,7 @@ fun RenderContext.showcaseSubHeader(text: String) {
         fontWeight { "600" }
         fontSize { Theme().fontSizes.larger }
         letterSpacing { Theme().letterSpacings.small }
-    }) { +text}
+    }) { +text }
 }
 
 fun RenderContext.showcaseSection(text: String) {
@@ -335,7 +336,7 @@ fun RenderContext.menuHeader(init: P.() -> Unit): P {
             left { small }
             right { small }
         }
-        fontSize{ small }
+        fontSize { small }
         fontWeight { bold }
         color { tertiary }
     })  {
@@ -502,7 +503,7 @@ fun main() {
                     }
                 }, id = "menu-left")
                 {
-                    spacing{tiny}
+                    spacing { tiny }
                     items {
                         (::p.styled {
                             width { "100%" }
@@ -533,6 +534,7 @@ fun main() {
                         menuAnchor(radios_)
                         menuAnchor(switch_)
                         menuAnchor(datatable_)
+                        menuAnchor(textarea_)
 
                         menuHeader { +"FEEDBACK" }
                         menuAnchor(spinner_)
@@ -582,6 +584,7 @@ fun main() {
                             theme_ -> themeDemo()
                             responsive_ -> responsiveDemo()
                             color_ -> colorDemo()
+                            textarea_ -> textAreaDemo()
                             else -> welcome()
                         }
                     }
