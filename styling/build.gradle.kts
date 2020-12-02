@@ -30,7 +30,7 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                implementation(project(":core"))
+                api(project(":core"))
             }
         }
         val commonTest by getting {
