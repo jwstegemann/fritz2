@@ -134,10 +134,10 @@ fun main() {
             actions {
                 lineUp {
                     items {
-                        navAnchor("Documentation", "https://fritz2.dev")
-                        navAnchor("API", "https://fritz2.dev")
-                        navAnchor("Examples", "https://fritz2.dev")
-                        navAnchor("Github", "https://fritz2.dev")
+                        navAnchor("Documentation", "https://docs.fritz2.dev/")
+                        navAnchor("API", "https://api.fritz2.dev")
+                        navAnchor("Examples", "https://www.fritz2.dev/examples.html")
+                        navAnchor("Github", "https://github.com/jwstegemann/fritz2")
                     }
                 }
             }
