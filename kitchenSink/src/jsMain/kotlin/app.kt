@@ -5,7 +5,6 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.P
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.mount
-import dev.fritz2.routing.Router
 import dev.fritz2.routing.router
 import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
@@ -20,6 +19,35 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+
+
+val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
+
+val welcome_ = "Welcome"
+val gettingStarted_ = "Getting Started"
+val icons_ = "Icons"
+val spinner_ = "Spinner"
+val input_ = "Input"
+val buttons_ = "Buttons"
+val formcontrol_ = "Formcontrol"
+val flexbox_ = "Flexbox"
+val gridbox_ = "Gridbox"
+val checkboxes_ = "Checkboxes"
+val radios_ = "Radios"
+val switch_ = "Switch"
+val stack_ = "Stack"
+val modal_ = "Modal"
+val popover_ = "Popover"
+val datatable_ = "Datatable"
+
+val router = router(welcome_)
+
+object ThemeStore : RootStore<Int>(0) {
+    val selectTheme = handle<Int> { _, index ->
+        Theme.use(themes[index])
+        index
+    }
+}
 
 fun RenderContext.showcaseHeader(text: String) {
     (::h1.styled {
@@ -97,6 +125,36 @@ fun RenderContext.contentFrame(init: Div.() -> Unit): Div {
         }
     }){
         init()
+    }
+}
+
+fun RenderContext.warningBox(init: P.() -> Unit): Div {
+    return (::div.styled {
+        margins {
+            top { larger }
+            bottom { larger }
+        }
+        paddings {
+            top { small }
+            left { small }
+            bottom { small }
+            right { normal }
+        }
+        borders {
+            left {
+                width{ "4px" }
+                style { solid }
+                color { danger }
+            }
+        }
+        radius { normal }
+        background {
+            color { "rgb(254, 235, 200)" }
+        }
+    }){
+        p {
+            init()
+        }
     }
 }
 
@@ -195,32 +253,6 @@ fun RenderContext.navAnchor(linkText: String, href: String): Div {
     }
 }
 
-val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
-
-val welcome_ = "Welcome"
-val icons_ = "Icons"
-val spinner_ = "Spinner"
-val input_ = "Input"
-val buttons_ = "Buttons"
-val formcontrol_ = "Formcontrol"
-val flexbox_ = "Flexbox"
-val gridbox_ = "Gridbox"
-val checkboxes_ = "Checkboxes"
-val radios_ = "Radios"
-val switch_ = "Switch"
-val stack_ = "Stack"
-val modal_ = "Modal"
-val popover_ = "Popover"
-val datatable_ = "Datatable"
-
-
-object ThemeStore : RootStore<Int>(0) {
-    val selectTheme = handle<Int> { _, index ->
-        Theme.use(themes[index])
-        index
-    }
-}
-
 fun RenderContext.menuHeader(init: P.() -> Unit): P {
     return (::p.styled {
         paddings {
@@ -237,7 +269,7 @@ fun RenderContext.menuHeader(init: P.() -> Unit): P {
 }
 
 
-fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
+fun RenderContext.menuAnchor(linkText: String): Div {
 
     val selected = style("prefix") {
         width { "90%" }
@@ -288,7 +320,7 @@ fun RenderContext.nonHoverAnchor(linkText: String): A {
         fontWeight { "500" }
     }) {
         +linkText
-        href("#$linkText")
+        clicks.map { linkText } handledBy router.navTo
     }
 }
 
@@ -310,13 +342,11 @@ fun RenderContext.c(text: String) {
 
 @ExperimentalCoroutinesApi
 fun main() {
-    val router = router("")
 
     render(themes.first()) { theme ->
         navBar {
             brand {
                 (::a.styled {
-                    tooltip("visit us on", "www.fritz2.dev") { right }()
                     after {
                         textAlign { center }
                         background { color { primary } }
@@ -337,7 +367,7 @@ fun main() {
                         verticalAlign { sub }
                         fontSize { larger }
                         fontWeight { lighter }
-                    }) { +"fritz2 - component library" }
+                    }) { +"fritz2 - components" }
                 }
             }
 
@@ -375,7 +405,7 @@ fun main() {
                     paddings {
                         top { "50px" }
                     }
-                }, id = "menue-left")
+                }, id = "menu-left")
                 {
                     spacing{tiny}
                     items {
@@ -386,31 +416,32 @@ fun main() {
                                 bottom { "1rem" }
                             }
                         }) {
-                            menuAnchor(welcome_, router)
+                            menuAnchor(welcome_)
+                            menuAnchor(gettingStarted_)
                         }
                         menuHeader { +"LAYOUT" }
-                        menuAnchor(flexbox_, router)
-                        menuAnchor(gridbox_, router)
-                        menuAnchor(stack_, router)
+                        menuAnchor(flexbox_)
+                        menuAnchor(gridbox_)
+                        menuAnchor(stack_)
 
                         menuHeader { +"FORMS" }
-                        menuAnchor(buttons_, router)
-                        menuAnchor(checkboxes_, router)
-                        menuAnchor(formcontrol_, router)
-                        menuAnchor(input_, router)
-                        menuAnchor(radios_, router)
-                        menuAnchor(switch_, router)
-                        menuAnchor(datatable_, router)
+                        menuAnchor(buttons_)
+                        menuAnchor(checkboxes_)
+                        menuAnchor(formcontrol_)
+                        menuAnchor(input_)
+                        menuAnchor(radios_)
+                        menuAnchor(switch_)
+                        menuAnchor(datatable_)
 
                         menuHeader { +"FEEDBACK" }
-                        menuAnchor(spinner_, router)
+                        menuAnchor(spinner_)
 
                         menuHeader { +"OVERLAY" }
-                        menuAnchor(modal_, router)
-                        menuAnchor(popover_, router)
+                        menuAnchor(modal_)
+                        menuAnchor(popover_)
 
                         menuHeader { +"ICONS" }
-                        menuAnchor(icons_, router)
+                        menuAnchor(icons_)
                     }
                 }
                 (::div.styled(id = "content-right") {
@@ -427,6 +458,7 @@ fun main() {
                     //  together)
                     router.data.render { site ->
                         when (site) {
+                            gettingStarted_ -> gettingStarted()
                             icons_ -> iconsDemo()
                             spinner_ -> spinnerDemo()
                             input_ -> inputDemo()
