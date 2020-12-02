@@ -20,7 +20,7 @@ fun RenderContext.textAreaDemo(): Div {
 
         paragraph {
             +"""
-            The Textarea component offers you the possibility to easily create multi-line text inputs
+            The Textarea component lets you easily create multi-line text inputs.
         """.trimIndent()
         }
 
@@ -30,17 +30,17 @@ fun RenderContext.textAreaDemo(): Div {
         paragraph {
             +"""
                 Just define a textarea. 
-                You can give it a
+                You can provide it with a
             """.trimIndent()
 
             +""
             c("placeholder")
-            +"if you want. "
+            +" if you want."
             br { }
-            +"A basic textarea has a custom size of"
+            +"A basic textarea has a"
             c("normal")
-            +"and is resizeable "
-            c("vertical.")
+            +" size and is resizeable "
+            c("vertically.")
 
         }
 
@@ -51,7 +51,7 @@ fun RenderContext.textAreaDemo(): Div {
 
                     }
                     textArea {
-                        placeholder("Here we have our placeholder")
+                        placeholder("This is a placeholder.")
                     }
                 }
             }
@@ -62,7 +62,7 @@ fun RenderContext.textAreaDemo(): Div {
                 """
                 textArea { }
                 textArea {
-                        placeholder("Here we have our placeholder")
+                        placeholder("This is a placeholder.")
                     }
                 
 
@@ -72,33 +72,27 @@ fun RenderContext.textAreaDemo(): Div {
 
         showcaseSection("Sizes")
         paragraph {
-            +"fritz2 offers three different sizes of textareas :"
+            +"fritz2 offers three different sizes of textareas:"
             c("small")
             +"|"
             c("normal")
-            +"|"
-            c("large.")
-
-            br { }
-            +"As mentioned earlier,"
-            c("normal")
-            +"is the default value."
+            +" (default)|"
+            c("large")
         }
 
         componentFrame {
             lineUp {
                 items {
                     textArea {
-                        placeholder("I am a small textarea")
+                        placeholder("A small textarea")
                         size { small }
 
                     }
                     textArea {
-                        placeholder("I am a normal textarea")
-                        size { normal }
+                        placeholder("A normal textarea")
                     }
                     textArea {
-                        placeholder("I am a large textarea")
+                        placeholder("A large textarea")
                         size { large }
                     }
                 }
@@ -109,16 +103,15 @@ fun RenderContext.textAreaDemo(): Div {
             source(
                 """
                  textArea {
-                        placeholder("i am a small textarea")
+                        placeholder("A small textarea")
                         size { small }
 
                     }
                     textArea {
-                        placeholder("i am a normal textarea")
-                        size { normal }
+                        placeholder("A normal textarea")
                     }
                     textArea {
-                        placeholder("i am a large textarea")
+                        placeholder("A large textarea")
                         size { large }
                     }
             """.trimIndent()
@@ -127,7 +120,7 @@ fun RenderContext.textAreaDemo(): Div {
 
         showcaseSection("Resize behavior")
         paragraph {
-            +"fritz2 offers you the  well known behavior of resizing a textarea : "
+            +"fritz2 offers the well known behavior of resizing a textarea by using one of these resizing options: "
             c("vertical")
             +"|"
             c("horizontal")
@@ -203,13 +196,13 @@ fun RenderContext.textAreaDemo(): Div {
             )
         }
 
-        showcaseSection("Set an initial value ")
-        paragraph { +"if you need you can set an initial value on the textarea" }
+        showcaseSection("Set an initial value")
+        paragraph { +"You can optionally set an initial value for the textarea." }
         componentFrame {
             lineUp {
                 items {
                     textArea {
-                        placeholder("textarea with initial value")
+                        placeholder("Textarea with initial value")
                         value { flowOf("My initial Value") }
 
                     }
@@ -221,7 +214,7 @@ fun RenderContext.textAreaDemo(): Div {
             source(
                 """
                  textArea {
-                        placeholder("textarea with initial value")
+                        placeholder("Textarea with initial value")
                         value { flowOf("My initial Value") }
                     }
             """.trimIndent()
@@ -230,19 +223,20 @@ fun RenderContext.textAreaDemo(): Div {
 
         showcaseSection("Store")
         paragraph {
-            +"You have the possibility to handle events of an textarea automatically or manually."
+            +"You can handle events of a textarea automatically or manually."
             br {}
-            +"A Textarea with a store connects events automatically while without a store you have to  do it manually."
+            +"Without a store, you have to connect your events manually, while it's done automatically when a"
+            +"store is provided."
             br {}
-            +"If you decide to handle events manually you can do it by using the "
+            +"If you decide to handle events manually, you can do it by using the "
             c("base")
-            +"tag of the textarea."
+            +" tag of the textarea which provides the context for all events."
         }
 
         componentFrame {
             stackUp {
                 p {
-                    b { +"Current value in store : " }
+                    b { +"Current value in store: " }
 
                     dataStore.data.asText()
                 }
@@ -276,7 +270,7 @@ fun RenderContext.textAreaDemo(): Div {
                  val dataStore = storeOf("Initial store value")
                  
                    p {
-                        b { +"Current value in store : " }
+                        b { +"Current value in store: " }
                         dataStore.data.asText()
                      }
 

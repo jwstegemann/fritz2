@@ -11,11 +11,11 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
 
         showcaseHeader("Flex Layouts")
         paragraph {
-            +"A Flex Layout is a box with "
+            +"The main idea behind the flex layout is to give a container the ability to alter its items' width,"
+            +" height, and order to best fill the available space. The container is basically a box which has the css"
+            +" property"
             c("display: flex")
-            br {}
-
-            +"The main idea behind the flex layout is to give the container the ability to alter its items’ width , height and order to best fill the available space"
+            +" attached."
 
         }
         componentFrame {
@@ -37,8 +37,6 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
                                     color { light }
                                     textAlign { center }
                                     margin { smaller }
-
-
                                 }) {
                                     +"Box ${index + 1}"
                                 }
@@ -61,8 +59,6 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
                                     height { "50px" }
                                     color { light }
                                     textAlign { center }
-
-
                                 }) {
                                     +"Box (index + 1)"
                                 }
@@ -74,7 +70,7 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
 
         showcaseSection("Flex-Direction")
         paragraph {
-            +"We provide the well known flex-direction properties : "
+            +"fritz2 provides these well known flex-direction properties : "
             c("row")
             +"|"
             c("row-reverse")
@@ -204,7 +200,7 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
                 """
                  flexBox({
                         width { full }
-                        direction { row } // set your direction property here !!!
+                        direction { row } // set your direction property here
                     }) {
                         listOf("gold", "tomato", "lightseagreen")
                             .forEachIndexed { index, value ->
@@ -228,7 +224,7 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
 
         showcaseSection("Justify Content")
         paragraph {
-            +"Justify Content defines the alignment along the main axis. Our flexbox provides the default properites:"
+            +"Justify Content defines the alignment along the main axis. Our flexbox provides the default properties:"
             c("flext-start")
             +"|"
             c("flex-end")
@@ -413,7 +409,7 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
                 """
              flexBox({
                         width { full }
-                        justifyContent { spaceEvenly } // set your justifyContent property here !!!
+                        justifyContent { spaceEvenly } // set your justifyContent property here
                         border {
                             width { thin }
                             style { solid }
@@ -444,8 +440,9 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
 
         showcaseSection("Flex Wrap")
         paragraph {
-            +"Flex items,by default, try to fit onto one line. With flex wrap, you can change this behavior and allow the items to wrap as needed."
-            +"We provide the general properties for flex-wrap: "
+            +"Flex items, by default, try to fit into one line. With flex wrap, you can change this behavior and"
+            +" allow the items to wrap as needed."
+            +"fritz2 provides these common properties for flex-wrap: "
             c("nowrap")
             +"|"
             c("wrap")

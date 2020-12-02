@@ -13,11 +13,11 @@ fun RenderContext.popoverDemo(): Div {
 
         showcaseSection("Usage")
         paragraph {
-            +"To define a popover follow these steps :"
+            +"To define a popover, follow these steps :"
             br { }
-            +" 1. add a trigger : this can be a simple HTMLElement or a fritz2 component, e.g an icon or button"
+            +" 1. Add a trigger : this can be a simple HTMLElement or a fritz2 component, e.g an icon or button"
             br { }
-            +"2. add at least one or more of the following \"areas\" : "
+            +"2. Add at least one or more of the following \"areas\" : "
             c("header")
             +"|"
             c("content")
@@ -25,11 +25,11 @@ fun RenderContext.popoverDemo(): Div {
             c("footer")
             br { }
             br { }
-            +"Here we are using a"
+            +"The following example uses a"
             c("Pushbutton ")
-            +"as a trigger and the "
+            +" as trigger and a"
             c("content")
-            +"area. "
+            +" area. "
 
 
         }
@@ -75,7 +75,7 @@ fun RenderContext.popoverDemo(): Div {
         showcaseSection("Trigger")
         paragraph {
             +"""
-            As mentioned before, a trigger can be a simple HTMLElement or a fritz2 component.
+            As mentioned before, a trigger can be a simple HTML element or a fritz2 component.
             By default, the trigger is marked by an arrow. You can disable this arrow if you wish.
         """.trimIndent()
         }
@@ -123,14 +123,15 @@ fun RenderContext.popoverDemo(): Div {
 
         showcaseSection("Areas")
         paragraph {
-            +"A popover can consist of 3 areas "
+            +"A popover can consist of the 3 areas "
             c("header")
-            +"|"
+            +", "
             c("content")
-            +"|"
+            +", and"
             c("footer")
+            +"."
             br {}
-            +"You must define at least one of them"
+            +"You must define at least one of them."
 
             componentFrame {
                 lineUp {
@@ -148,7 +149,6 @@ fun RenderContext.popoverDemo(): Div {
                                 }
                             }
                             footer("My footer area")
-
                         }
                     }
                 }
@@ -178,7 +178,7 @@ fun RenderContext.popoverDemo(): Div {
 
         showcaseSection("Placement")
         paragraph {
-            +"The placement of your popover is configurable and fritz2 offers you 4 predefined placements : "
+            +"The placement of your popover can be configured. fritz2 offers four predefined placements: "
             c("right")
             +"|"
             c("top")
@@ -186,9 +186,9 @@ fun RenderContext.popoverDemo(): Div {
             c("bottom")
             +"|"
             c("left")
-            +"where "
+            +", where "
             c("top")
-            +" is the default value"
+            +" is the default value."
         }
 
         componentFrame {
@@ -267,14 +267,14 @@ fun RenderContext.popoverDemo(): Div {
         playground {
             source(
                 """
-                
+
                    popover({
                         margins { right { small } }
                     }) {
                         trigger {
                             icon({ size { "2.5rem" } }) { fromTheme { arrowRight } }
                         }
-                        placement { right } // set your placement here !
+                        placement { right } // set your placement here
                         header("Our simple Popover")
                         content {
                             div {
@@ -283,22 +283,20 @@ fun RenderContext.popoverDemo(): Div {
                         }
                         footer("Footercontent")
                     }
+                    // other examples omitted for legibility
 
-                
             """.trimIndent()
             )
         }
-
-        paragraph { +"... other examples omitted for legibility " }
 
         showcaseSection("Close button")
 
 
         paragraph {
 
-            +" The popover has a default close button - you can hide it or you can use your own custom button."
+            +" The popover has a default close button - you can hide it, or use your own custom button."
             br { }
-            +"With a disabled close button you can close the popover only by push the trigger again."
+            +"Without a close button, the popover can only be closed by pushing the trigger again."
 
         }
         componentFrame {
@@ -343,7 +341,7 @@ fun RenderContext.popoverDemo(): Div {
                                 fontSize { tiny }
                             }) { fromTheme { eyeOff } }
                         }
-                        header("Custom Close Button...")
+                        header("Custom Close Button")
                         content {
                             div {
                                 +"At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. "
