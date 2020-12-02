@@ -1,4 +1,5 @@
 import dev.fritz2.binding.RootStore
+import dev.fritz2.components.playground
 import dev.fritz2.components.stackUp
 import dev.fritz2.components.switch
 import dev.fritz2.dom.html.Div
@@ -10,63 +11,64 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 fun RenderContext.switchDemo(): Div {
     val checkedStore1 = RootStore(false)
-    val checkedStore2 = RootStore(false)
-    val checkedStore3 = RootStore(true)
+    val checkedStore2 = RootStore(true)
+    val checkedStore3 = RootStore(false)
     val checkedStore4 = RootStore(false)
+    val checkedStore5 = RootStore(true)
+    val checkedStore6 = RootStore(false)
 
     return contentFrame {
         showcaseHeader("Switch")
         paragraph {
-            +"A checkbox like a switch Button"
+            +"A switch button works like a checkbox. It can be used to set a property in your application."
         }
-        componentFrame{
+        showcaseSection("Usage")
+        paragraph {
+            +"Create a switch with your own label and size. You can set the background color for the unchecked and checked status, and even cusomize the color of the dot."
+        }
+
+        componentFrame {
             switch() {
-                label("Small size")
-                size { small }
+                label("Default optics")
                 checked { checkedStore1.data }
                 events {
                     changes.states() handledBy checkedStore1.update
                 }
             }
         }
-        componentFrame{
+        componentFrame {
             switch(styling = {
                 background {
-                    color { dark }
+                    color { danger }
                 }
             }) {
-                label("Normal size, custom default(background) color")
+                label("Changing background color")
                 checked { checkedStore2.data }
+                dotStyle {
+                    {
+                        background { color { base } }
+                    }
+                }
                 events {
                     changes.states() handledBy checkedStore2.update
                 }
             }
         }
-        componentFrame{
-            switch() {
-                label("Large size, custom checked(background) color")
+        componentFrame {
+            switch(styling = {
+                background {
+                    color { info }
+                }
+            }) {
+                label("Different dot color")
                 checked { checkedStore3.data }
-                size { large }
                 checkedStyle {
                     {
                         background {
-                            color { warning }
+                            color { "pink" }
                         }
                     }
                 }
-                events {
-                    changes.states() handledBy checkedStore3.update
-                }
-            }
-        }
-        componentFrame{
-            switch(styling = {
-                background {
-                    color { dark }
-                }
-            }) {
-                label("more customizing")
-                checked { checkedStore4.data }
                 dotStyle {
                     {
                         background {
@@ -75,9 +77,112 @@ fun RenderContext.switchDemo(): Div {
                     }
                 }
                 events {
+                    changes.states() handledBy checkedStore3.update
+                }
+            }
+        }
+        playground {
+            source(
+                """
+                    switch(styling = {
+                        background {
+                            color { info }
+                        }
+                    }) {
+                        label("Different dot color")
+                        checked { checkedStore3.data }
+                        checkedStyle {
+                            {
+                                background {
+                                    color { "pink" }
+                                }
+                            }
+                        }
+                        dotStyle {
+                            {
+                                background {
+                                    color { danger }
+                                }
+                            }
+                        }
+                        events {
+                            changes.states() handledBy checkedStore3.update
+                        }
+                    }
+                """
+            )
+        }
+
+        showcaseSection("Sizes")
+        paragraph {
+            +"Choose from the available sizes "
+            c("small")
+            +", "
+            c("normal")
+            +" and "
+            c("large")
+            +". "
+        }
+
+        componentFrame {
+            switch() {
+                label("Small size")
+                size { small }
+                checked { checkedStore4.data }
+                events {
                     changes.states() handledBy checkedStore4.update
                 }
             }
+        }
+        componentFrame {
+            switch() {
+                label("Normal size")
+                size { normal }
+                checked { checkedStore5.data }
+                events {
+                    changes.states() handledBy checkedStore5.update
+                }
+            }
+        }
+        componentFrame {
+            switch() {
+                label("Large size")
+                size { large }
+                checked { checkedStore6.data }
+                events {
+                    changes.states() handledBy checkedStore6.update
+                }
+            }
+        }
+        playground {
+            source(
+                """
+                    switch() {
+                        label("Small size")
+                        size { small }
+                        checked { checkedStore4.data }
+                        events {
+                            changes.states() handledBy checkedStore4.update
+                        }
+                    }
+                    switch() {
+                        label("Normal size")
+                        size { normal }
+                        checked { checkedStore5.data }
+                        events {
+                            changes.states() handledBy checkedStore5.update
+                        }
+                    }
+                    switch() {
+                        label("Large size")
+                        size { large }
+                        checked { checkedStore6.data }
+                        events {
+                            changes.states() handledBy checkedStore6.update
+                        }
+                    }
+                """
+            )
         }
     }
 }
