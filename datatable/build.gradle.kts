@@ -33,7 +33,7 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                implementation(project(":core"))
+                api(project(":components"))
             }
         }
 
@@ -47,8 +47,6 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                implementation(project(":styling"))
-                implementation(project(":components"))
             }
         }
         val jsTest by getting {
