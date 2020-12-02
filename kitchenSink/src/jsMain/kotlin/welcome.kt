@@ -39,16 +39,16 @@ fun RenderContext.welcome(): Div {
                         top { "1.5rem" }
                         bottom { ".5rem" }
                     }
-                }) { +"Welcome to this preview" }
+                }) { +"Welcome to our components demo!" }
 
 
                 p { +"This demo shows the component library we added to fritz2 with the release v0.8."
-                    +" Remember this is a preview release, so some of these"
-                    +" components might still need some work while others are not implemented yet. "
+                    +" Remember that this is a preview release, so some of these"
+                    +" components might still need some work, while others are not implemented yet. "
                 }
-                p { +"At this time our library consists of a basic set of components only."
-                    +" We are working hard to improve the existing components, the styling and the documentation."
-                    +" Some new components are already under development or in our pipeline."
+                p { +"At this time, our library consists of a basic set of components only."
+                    +" We are working hard to improve the existing components, the styling, and the documentation -"
+                    +" some new components are already in our development pipeline."
                     +" Please note that there may be changes to the api in future versions towards beta."
                 }
                 (::p.styled {
