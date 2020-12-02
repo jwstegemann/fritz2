@@ -55,7 +55,7 @@ fun RenderContext.highlight(
                 paddings { left{ "22px" } }
                 fontSize { "0.8em" }
             }) {
-                pre("dev.fritz2.kitchensink.base.highlight", id = id) {
+                pre("highlight", id = id) {
                     code {
                         +component.source
                     }

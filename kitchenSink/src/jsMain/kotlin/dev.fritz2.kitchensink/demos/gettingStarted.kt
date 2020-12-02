@@ -34,15 +34,15 @@ fun RenderContext.gettingStarted(): Div {
         highlight {
             source(
                 """
-                 // build.gradle.kts
-                 dependencies {
-                    implementation("dev.fritz2:components:0.8")
-                 }
-                 // build.gradle
-                 dependencies {
-                    implementation 'dev.fritz2:components:0.8'
-                 }
-                """
+                 |// build.gradle.kts
+                 |dependencies {
+                 |   implementation("dev.fritz2:components:0.8")
+                 |}
+                 |// build.gradle
+                 |dependencies {
+                 |   implementation 'dev.fritz2:components:0.8'
+                 |}
+                """.trimMargin()
             )
         }
 
