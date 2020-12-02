@@ -1,6 +1,9 @@
 import dev.fritz2.binding.RootStore
 import dev.fritz2.components.*
-import dev.fritz2.dom.html.*
+import dev.fritz2.dom.html.A
+import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.P
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
 import dev.fritz2.styling.name
@@ -391,7 +394,7 @@ fun main() {
                     alignItems { end }
                 }) {
                     href("https://www.fritz2.dev/")
-                    target("fritz2")
+                    target("_new")
 
                     icon({
                         size { "2.5rem" }
@@ -405,6 +408,31 @@ fun main() {
                         fontWeight { lighter }
                     }) { +"fritz2 - components" }
                 }
+                //FIXME: convert to styles
+                (::span.styled {
+                    css("""
+                    display: inline-flex;
+                    vertical-align: top;
+                    -moz-box-align: center;
+                    align-items: center;
+                    max-width: 100%;
+                    font-weight: 500;
+                    line-height: 1.2;
+                    min-height: 1.5rem;
+                    min-width: 1.5rem;
+                    font-size: 0.875rem;
+                    border-radius: 0.375rem;
+                    padding-left: 0.5rem;
+                    padding-right: 0.5rem;
+                    background: none repeat scroll 0% 0%;
+                    """.trimIndent())
+                    background {
+                        color { warning }
+                    }
+                    margins {
+                        left { small }
+                    }
+                }) { +"Preview" }
             }
 
             actions {
@@ -484,7 +512,7 @@ fun main() {
                 }
                 (::div.styled(id = "content-right") {
                     paddings {
-                        all { "2.0rem" }
+                        all { huge }
                     }
                     width {
                         "100%"
