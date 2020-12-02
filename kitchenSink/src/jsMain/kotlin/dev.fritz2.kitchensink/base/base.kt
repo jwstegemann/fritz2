@@ -6,8 +6,6 @@ import dev.fritz2.dom.html.P
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.kitchensink.router
 import dev.fritz2.styling.name
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.style
@@ -156,17 +154,6 @@ fun RenderContext.infoBox(init: P.() -> Unit): Div {
     }
 }
 
-
-val componentFrame: Style<BasicParams> = { // Auslagerung von Style
-    width { "100%" }
-    border {
-        width { thin }
-        color { light }
-    }
-    radius { larger }
-    padding { normal }
-}
-
 fun RenderContext.componentFrame(padding: Boolean = true, init: Div.() -> Unit): Div { //Auslagerung von Komponente
     return (::div.styled {
         width { "100%" }
@@ -216,25 +203,6 @@ fun RenderContext.externalLink(text: String, url: String, newTab: Boolean = true
         +text
         href(url)
         if(newTab) target("_new")
-    }
-}
-
-fun RenderContext.simpleAnchorWithBackground(linkText: String): A {
-    return (::a.styled {
-        fontSize { large }
-        color { primary }
-        hover {
-            color { secondary }
-            background { color { dark } }
-        }
-        radius { "5%" }
-        paddings {
-            left { "0.3rem" }
-            right { "0.3rem" }
-        }
-    }) {
-        +linkText
-        href("#$linkText")
     }
 }
 
