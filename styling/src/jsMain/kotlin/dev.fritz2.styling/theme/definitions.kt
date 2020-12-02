@@ -519,3 +519,20 @@ interface TooltipPlacements {
     val bottom: Style<BasicParams>
     val left: Style<BasicParams>
 }
+
+interface TextAreaStyles {
+    val resize: TextAreaResize
+    val size: TextAreaSize
+}
+
+interface TextAreaResize {
+    val none: Style<BasicParams>
+    val vertical: Style<BasicParams>
+    val horizontal: Style<BasicParams>
+}
+
+interface TextAreaSize {
+    val small: Style<BasicParams>
+    val normal: Style<BasicParams>
+    val large: Style<BasicParams>
+}

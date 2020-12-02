@@ -66,6 +66,7 @@ open class PushButtonComponent {
                 white-space: nowrap;
                 vertical-align: middle;
                 outline: none;
+                text-overflow: ellipsis;
                 
                 &:disabled {
                     opacity: 0.4;

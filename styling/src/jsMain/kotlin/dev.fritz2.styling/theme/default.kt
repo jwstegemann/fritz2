@@ -95,11 +95,11 @@ open class DefaultTheme : Theme {
         tiny = "0.25rem",
         smaller = "0.5rem",
         small = "0.75rem",
-        normal = "1",
-        large = "1.25",
-        larger = "1.5",
-        huge = "1.75",
-        giant = "2",
+        normal = "1rem",
+        large = "1.25rem",
+        larger = "1.5rem",
+        huge = "1.75rem",
+        giant = "2rem",
         full = "100%",
         wide = ScaledValue(
             tiny = "5rem",
@@ -142,7 +142,13 @@ open class DefaultTheme : Theme {
                 and shadow("0", "15px", "12px", rgba(0, 0, 0, 0.22)),
         lowered = shadow("0", "2px", "4px", color = rgba(0, 0, 0, 0.06), inset = true),
         glowing = shadow("0", "0", "2px", color = rgba(0, 0, 255, 0.5)),
-        outline = shadow("0", "0", "0", "3px", color = colors.secondary), // changed by mkempa-np: formerly rgba(66, 153, 225, 0.6)
+        outline = shadow(
+            "0",
+            "0",
+            "0",
+            "3px",
+            color = colors.secondary
+        ), // changed by mkempa-np: formerly rgba(66, 153, 225, 0.6)
         danger = shadow("0", "0", "0", "1px", color = colors.danger)
     )
 
@@ -1364,18 +1370,21 @@ open class DefaultTheme : Theme {
 
     override val checkbox = object : CheckboxStyles {
         override val sizes = object : CheckboxSizes {
-           private val basic: Style<BasicParams> = {
-               display {inlineFlex}
-               css("align-items: center;")
-           }
-           override val small: Style<BasicParams> = {
+            private val basic: Style<BasicParams> = {
+
+                display { inlineFlex }
+                css("align-items: center;")
+
+
+            }
+            override val small: Style<BasicParams> = {
                 basic()
                 css("--cb-size: .75rem")
                 css("--cb-svg-size: .50rem")
                 css("--cb-radius:  ${radii.smaller}")
                 fontSize { small }
                 lineHeight { small }
-                margins { right {tiny} }
+                margins { right { tiny } }
             }
             override val normal: Style<BasicParams> = {
                 basic()
@@ -1384,7 +1393,7 @@ open class DefaultTheme : Theme {
                 css("--cb-radius:  ${radii.small}")
                 fontSize { normal }
                 lineHeight { normal }
-                margins { right {smaller} }
+                margins { right { smaller } }
             }
             override val large: Style<BasicParams> = {
                 basic()
@@ -1393,7 +1402,7 @@ open class DefaultTheme : Theme {
                 css("--cb-radius:  ${radii.normal}")
                 fontSize { larger }
                 lineHeight { larger }
-                margins { right {small} }
+                margins { right { small } }
             }
         }
         override val input: Style<BasicParams> = {
@@ -1415,13 +1424,13 @@ open class DefaultTheme : Theme {
                 css("visibility:hidden;")
             }
         }
-        override val icon : Style<BasicParams> = {
+        override val icon: Style<BasicParams> = {
             width { "var(--cb-svg-size)" }
             height { "var(--cb-svg-size)" }
             lineHeight { "var(--cb-svg-size)" }
             margins {
-                top {".0625rem"}
-                left {".0625rem"}
+                top { ".0625rem" }
+                left { ".0625rem" }
             }
         }
         override val label: Style<BasicParams> = {
@@ -1441,7 +1450,7 @@ open class DefaultTheme : Theme {
                 style { solid }
                 color { dark }
             }
-            radius {"var(--cb-radius)" }
+            radius { "var(--cb-radius)" }
         }
         override val checked: Style<BasicParams> = {
             background { color { info } }
@@ -1452,7 +1461,7 @@ open class DefaultTheme : Theme {
     override val radio = object : RadioStyles {
         override val sizes = object : RadioSizes {
             private val basic: Style<BasicParams> = {
-                display {inlineFlex}
+                display { inlineFlex }
                 css("align-items: center;")
             }
             override val small: Style<BasicParams> = {
@@ -1460,21 +1469,21 @@ open class DefaultTheme : Theme {
                 css("--rb-size: .75rem")
                 fontSize { small }
                 lineHeight { small }
-                margins { right {tiny} }
+                margins { right { tiny } }
             }
             override val normal: Style<BasicParams> = {
                 basic()
                 css("--rb-size: 1.0rem")
                 fontSize { normal }
                 lineHeight { normal }
-                margins { right {smaller} }
+                margins { right { smaller } }
             }
             override val large: Style<BasicParams> = {
                 basic()
                 css("--rb-size: 1.5rem")
                 fontSize { larger }
                 lineHeight { larger }
-                margins { right {small} }
+                margins { right { small } }
             }
         }
         override val input: Style<BasicParams> = {
@@ -1518,12 +1527,12 @@ open class DefaultTheme : Theme {
             background { color { info } }
             color { light }
             before {
-                css("content:\"\";" )
+                css("content:\"\";")
                 display {
                     inlineBlock
                 }
                 position {
-                    relative {  }
+                    relative { }
                 }
                 width { "50%" }
                 height { "50%" }
@@ -1538,7 +1547,7 @@ open class DefaultTheme : Theme {
     override val switch = object : SwitchStyles {
         override val sizes = object : SwitchSizes {
             private val basic: Style<BasicParams> = {
-                display {inlineFlex}
+                display { inlineFlex }
                 css("align-items: center;")
             }
             override val small: Style<BasicParams> = {
@@ -1547,7 +1556,7 @@ open class DefaultTheme : Theme {
                 css("--sw-height: .75rem")
                 fontSize { small }
                 lineHeight { small }
-                margins { right {tiny} }
+                margins { right { tiny } }
             }
             override val normal: Style<BasicParams> = {
                 basic()
@@ -1555,7 +1564,7 @@ open class DefaultTheme : Theme {
                 css("--sw-height: 1rem")
                 fontSize { normal }
                 lineHeight { normal }
-                margins { right {smaller} }
+                margins { right { smaller } }
             }
             override val large: Style<BasicParams> = {
                 basic()
@@ -1563,7 +1572,7 @@ open class DefaultTheme : Theme {
                 css("--sw-height: 1.5rem")
                 fontSize { larger }
                 lineHeight { larger }
-                margins { right {small} }
+                margins { right { small } }
             }
         }
         override val input: Style<BasicParams> = {
@@ -1588,7 +1597,7 @@ open class DefaultTheme : Theme {
                 opacity {".5"}
             }
         }
-        override val dot : Style<BasicParams> = {
+        override val dot: Style<BasicParams> = {
             width { "var(--sw-height)" }
             height { "var(--sw-height)" }
             radius { "9999px" }
@@ -1641,7 +1650,7 @@ open class DefaultTheme : Theme {
                 background { color { "var(--main-color)" } }
                 color { base }
                 hover {
-                        css("filter: brightness(80%);") //132%
+                    css("filter: brightness(80%);") //132%
                 }
                 active {
                     css("filter: brightness(80%);")
@@ -1824,17 +1833,17 @@ open class DefaultTheme : Theme {
         }
     }
 
-    override val popover = object: PopoverStyles {
-       override val size: PopoverSizes = object : PopoverSizes {
+    override val popover = object : PopoverStyles {
+        override val size: PopoverSizes = object : PopoverSizes {
             private val basic: Style<BasicParams> = {
                 background {
                     color { "white" }
                 }
                 paddings {
-                  top { tiny }
-                  bottom{ tiny }
-                  left {small }
-                  right  { small }
+                    top { tiny }
+                    bottom { tiny }
+                    left { small }
+                    right { small }
                 }
                 radius { tiny }
                 boxShadow { flat }
@@ -1849,12 +1858,12 @@ open class DefaultTheme : Theme {
                 width { "250px" }
             }
         }
-       override val trigger: Style<BasicParams> = {
-            display {"inline-block"}
+        override val trigger: Style<BasicParams> = {
+            display { "inline-block" }
         }
-       override val header: Style<BasicParams> = {
+        override val header: Style<BasicParams> = {
             fontWeight { semiBold }
-            borders{
+            borders {
                 bottom {
                     width { thin }
                     style { solid }
@@ -1862,14 +1871,14 @@ open class DefaultTheme : Theme {
                 }
             }
         }
-       override val section: Style<BasicParams> = {
+        override val section: Style<BasicParams> = {
             paddings {
-                top{tiny}
-                bottom{tiny}
+                top { tiny }
+                bottom { tiny }
             }
-       }
-       override val footer: Style<BasicParams> = {
-            borders{
+        }
+        override val footer: Style<BasicParams> = {
+            borders {
                 top {
                     width { thin }
                     style { solid }
@@ -1877,69 +1886,69 @@ open class DefaultTheme : Theme {
                 }
             }
         }
-       override val placement = object : PopoverPlacements  {
+        override val placement = object : PopoverPlacements {
             private val basic: Style<BasicParams> = {
                 css("transition: transform .2s;")
-                zIndex{"50"}
+                zIndex { "50" }
             }
             override val top: Style<BasicParams> = {
                 basic()
-                position{
-                    absolute{
+                position {
+                    absolute {
                         left { "50%" }
-                        top {"-1rem"}
+                        top { "-1rem" }
                     }
                 }
                 css("transform: translate(-50%, -100%) scale(1);")
             }
             override val right: Style<BasicParams> = {
-                margins { top{"1rem"} }
-                position{
-                    absolute{
+                margins { top { "1rem" } }
+                position {
+                    absolute {
                         left { "calc(100% + 1rem)" }
-                        top {"50%"}
+                        top { "50%" }
                     }
                 }
                 css("transform: translate(0, -50%) scale(1);")
             }
             override val bottom: Style<BasicParams> = {
-                position{
-                    absolute{
+                position {
+                    absolute {
                         left { "50%" }
-                        top {"calc(100% + 1rem)"}
+                        top { "calc(100% + 1rem)" }
                     }
                 }
                 css("transform: translate(-50%, 0) scale(1);")
             }
             override val left: Style<BasicParams> = {
-                margins { top{"1rem"} }
-                position{
-                    absolute{
-                        left{"-1rem"}
-                        top{"50%"}
+                margins { top { "1rem" } }
+                position {
+                    absolute {
+                        left { "-1rem" }
+                        top { "50%" }
                     }
                 }
                 css("transform: translate(-100%, -50%) scale(1);")
             }
         }
-       override val arrowPlacement = object : PopoverArrowPlacements  {
+        override val arrowPlacement = object : PopoverArrowPlacements {
             private val basic: Style<BasicParams> = {
                 css("transform: rotate(45deg);")
-                width{"1rem"}
-                height{"1rem"}
+                width { "1rem" }
+                height { "1rem" }
                 position {
-                    absolute{}
+                    absolute {}
                 }
                 background {
-                   color { inherit }
+                    color { inherit }
                 }
                 before {
-                    zIndex{"-1"}
+                    zIndex { "-1" }
                     css("content:\"\";")
-                    width{"1rem"}
-                    height{"1rem"}
+                    width { "1rem" }
+                    height { "1rem" }
                     position {
-                        absolute{
+                        absolute {
                         }
                     }
                 }
@@ -1948,9 +1957,9 @@ open class DefaultTheme : Theme {
                 basic()
                 css("left:calc(50% - 0.5rem);")
                 position {
-                    absolute{top{"-0.5rem"}}
+                    absolute { top { "-0.5rem" } }
                 }
-                before{
+                before {
                     boxShadow {
                         "rgba(0, 0, 0, 0.1) -1px -1px 1px 0px"
                     }
@@ -1961,9 +1970,9 @@ open class DefaultTheme : Theme {
                 css("top: calc(50% - 1.5rem);")
                 css("right: calc(-0.5rem - 0.5px);")
                 position {
-                    absolute{}
+                    absolute {}
                 }
-                before{
+                before {
                     boxShadow {
                         "rgba(0, 0, 0, 0.1) -1px 1px 1px 0px inset"
                     }
@@ -1973,9 +1982,9 @@ open class DefaultTheme : Theme {
                 basic()
                 css("left:calc(50% - 0.5rem);")
                 position {
-                    absolute{bottom{"-0.5rem"}}
+                    absolute { bottom { "-0.5rem" } }
                 }
-                before{
+                before {
                     boxShadow {
                         "rgba(0, 0, 0, 0.1) -1px -1px 1px 0px inset"
                     }
@@ -1985,133 +1994,139 @@ open class DefaultTheme : Theme {
                 basic()
                 css("top:calc(50% - 1.5rem);")
                 position {
-                    absolute{left{"-0.5rem"}}
+                    absolute { left { "-0.5rem" } }
                 }
-                before{
+                before {
                     boxShadow {
                         "rgba(0, 0, 0, 0.1) -1px 1px 1px 0px"
                     }
                 }
             }
         }
-       override val closeButton: Style<BasicParams> = {
-           position {
-               absolute {
-                   right { "0.5rem" }
-                   top { "0.5rem" }
-               }
-           }
-           padding {tiny}
-           width{"1rem"}
-           height{"1rem"}
-           minWidth { "1rem" }
-           fontWeight { semiBold }
-           lineHeight { "1rem" }
-       }
+        override val closeButton: Style<BasicParams> = {
+            position {
+                absolute {
+                    right { "0.5rem" }
+                    top { "0.5rem" }
+                }
+            }
+            padding { tiny }
+            width { "1rem" }
+            height { "1rem" }
+            minWidth { "1rem" }
+            fontWeight { semiBold }
+            lineHeight { "1rem" }
+        }
     }
 
     override val tooltip = object : Tooltip {
 
-        override fun write(vararg value: String) : Style<BasicParams>{
-            return write(*value){ top }
+        override fun write(vararg value: String): Style<BasicParams> {
+            return write(*value) { top }
         }
-        override fun write(vararg value: String, tooltipPlacement: TooltipPlacements.() -> Style<BasicParams>) : Style<BasicParams>{
+
+        override fun write(
+            vararg value: String,
+            tooltipPlacement: TooltipPlacements.() -> Style<BasicParams>
+        ): Style<BasicParams> {
             return {
-                position{
-                    relative{}
+                position {
+                    relative {}
                 }
                 after {
                     css("content:\"${value.asList().joinToString("\\A")}\";")
-                    background { color{ dark } }
-                    color{ light }
+                    background { color { dark } }
+                    radius { small }
+                    color { light }
                     display { none }
                     overflow { hidden }
                     opacity { "0" }
                     zIndex { "20" }
                     position {
                         absolute {
-                            left{"50%"}
-                            bottom{"100%"}
+                            left { "50%" }
+                            bottom { "100%" }
                         }
                     }
-                    padding{tiny}
+                    padding { tiny }
                     fontSize { smaller }
                     lineHeight { smaller }
                     css("text-overflow: ellipsis;")
                     css("transition: opacity .2s, transform .2s;")
                     css("white-space: pre;")
                 }
-                focus{
-                    after{
+                focus {
+                    after {
                         display { block }
                         opacity { "1" }
                     }
 
                 }
                 hover {
-                   after{
-                       display { block }
-                       opacity { "1" }
-                   }
+                    after {
+                        display { block }
+                        opacity { "1" }
+                    }
                 }
                 tooltipPlacement.invoke(placement)()
             }
         }
-        override val placement = object : TooltipPlacements  {
+
+        override val placement = object : TooltipPlacements {
             override val top: Style<BasicParams> = {
                 after {
                     css("transform: translate(-50%, 0.5rem);")
                 }
-                focus{
-                    after{
+                focus {
+                    after {
                         css("transform: translate(-50%, -.5rem);")
                     }
                 }
                 hover {
-                    after{
+                    after {
                         css("transform: translate(-50%, -.5rem);")
                     }
                 }
             }
             override val right: Style<BasicParams> = {
-                after{
+                after {
                     position {
                         absolute {
-                            bottom{"50%"}
-                            left{"100%"}
+                            bottom { "50%" }
+                            left { "100%" }
                         }
                     }
                     css("transform: translate(-0.5rem, 50%);")
                 }
-                focus{
-                   after{
-                       css("transform: translate(0.5rem, 50%);")
-                   }
+                focus {
+                    after {
+                        css("transform: translate(0.5rem, 50%);")
+                    }
 
                 }
                 hover {
-                    after{
+                    after {
                         css("transform: translate(0.5rem, 50%);")
                     }
                 }
             }
             override val bottom: Style<BasicParams> = {
-                after{
+                after {
                     position {
                         absolute {
-                            bottom{auto}
-                            top{"100%"}
+                            bottom { auto }
+                            top { "100%" }
                         }
                     }
                     css("transform: translate(-50%, -.5rem);")
                 }
-                focus{
-                   after{
-                       css("transform: translate(-50%, .5rem);")
-                   }
+                focus {
+                    after {
+                        css("transform: translate(-50%, .5rem);")
+                    }
                 }
                 hover {
-                    after{
+                    after {
                         css("transform: translate(-50%, .5rem);")
                     }
 
@@ -2121,16 +2136,16 @@ open class DefaultTheme : Theme {
                 after {
                     position {
                         absolute {
-                            bottom{"50%"}
-                            left{auto}
-                            right{"100%"}
+                            bottom { "50%" }
+                            left { auto }
+                            right { "100%" }
                         }
                     }
                     css("transform: translate(0.5rem, 50%);")
                 }
-                focus{
+                focus {
                     after {
-                       css("transform: translate(-0.5rem, 50%);")
+                        css("transform: translate(-0.5rem, 50%);")
                     }
 
                 }
@@ -2215,4 +2230,57 @@ open class DefaultTheme : Theme {
             }
         """.trimIndent()
     }
+
+    override val textarea = object : TextAreaStyles {
+        override val resize = object : TextAreaResize {
+            override val none: Style<BasicParams> = {
+                css("resize:none")
+            }
+
+            override val vertical: Style<BasicParams> = {
+                css("resize:vertical")
+            }
+
+            override val horizontal: Style<BasicParams> = {
+                css("resize:horizontal")
+            }
+        }
+
+        override val size = object : TextAreaSize {
+
+            override val small: Style<BasicParams> = {
+                lineHeight { normal }
+                height { "1rem" }
+                width { "25%" }
+
+                paddings {
+                    vertical { "4px" }
+                    horizontal { "0.5rem" }
+                }
+            }
+            override val normal: Style<BasicParams> = {
+                lineHeight { normal }
+                height { "2rem" }
+                width { "50%" }
+
+                paddings {
+                    vertical { "8px" }
+                    horizontal { "0.75rem" }
+                }
+            }
+            override val large: Style<BasicParams> = {
+                lineHeight { normal }
+                height { "2.5rem" }
+                width { "100%" }
+
+                paddings {
+                    vertical { "8px" }
+                    horizontal { "0.75rem" }
+                }
+            }
+        }
+
+    }
 }
+
+
