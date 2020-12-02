@@ -24,7 +24,7 @@ fun RenderContext.responsiveDemo(): Div {
             c("md")
             +","
             c("lg")
-            +","
+            +", and"
             c("xl")
             +"""). You can set each property independently for these viewport-sizes:""".trimIndent()
         }

@@ -18,12 +18,12 @@ fun RenderContext.stylingDemo(): Div {
 
         paragraph {
             +"""
-            fritz2 allows you to style its components as well as standard HTML-elements using a type-safe DSL that 
+            fritz2 allows you to style its components, as well as standard HTML-elements, using a type-safe DSL that 
             enables you to conveniently set the most common style properties.""".trimIndent()
         }
 
         paragraph {
-            +"""These style properties are connected to sets or scales of predefined values that are grouped in 
+            +"""These style properties are connected to sets or scales of predefined values which are grouped in 
             a """
             a {
                 href("#Theme")
@@ -41,7 +41,7 @@ fun RenderContext.stylingDemo(): Div {
         paragraph {
             +"To style an existing HTML-element like"
             c("span")
-            +"define your properties using the"
+            +", define your properties using the"
             c("styled()")
             +" function"
         }
@@ -75,15 +75,15 @@ fun RenderContext.stylingDemo(): Div {
             c("String")
             +"s, like"
             c("""width { "75%" } """)
-            +". Additionally, you can set any other property, that is not part of the DSL by using"
+            +". Additionally, you can set any other property that is not part of the DSL by using"
             c("""css()""")
         }
 
         showcaseSection("Styling Components")
         paragraph {
-            +"Every component like"
+            +"Every component, like"
             c("icon")
-            +"can easily be styled by using the first parameter of its factory-function:"
+            +" for example, can easily be styled by using the first parameter of its factory-function:"
         }
         componentFrame {
             lineUp {

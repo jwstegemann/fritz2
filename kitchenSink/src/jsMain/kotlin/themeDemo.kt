@@ -18,16 +18,16 @@ fun RenderContext.themeDemo(): Div {
             +"A"
             c("Theme")
             +"""
-            groups predefined sets of values and scales to implement a consistend constraint-based design system.
+            groups predefined sets of values and scales to implement a consistent constraint-based design system.
             """.trimIndent()
         }
 
         paragraph {
-            +"fritz2's componentes come with a predefined"
+            +"fritz2's components come with a predefined"
             c("DefaultTheme")
-            +""" and can be used directly to start styling your app. Of course you can define custom themes based on
-                this one to change values or even extend the theme by your own definitions from simple property values
-                to complex predefined styles.""".trimIndent()
+            +""" and can be used to start styling your app. Of course you can derive custom themes 
+                from this one to change values, or even extend the theme by your own definitions, from simple property 
+                values to complex predefined styles.""".trimIndent()
         }
 
         showcaseSection("Content")
@@ -47,7 +47,7 @@ fun RenderContext.themeDemo(): Div {
                 tr {
                     td { +"name" }
                     td { c("String") }
-                    td { +"an human readable name like" }
+                    td { +"an human readable name" }
                 }
                 tr {
                     td { +"breakPoints" }
