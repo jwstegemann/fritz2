@@ -180,7 +180,8 @@ fun RenderContext.formControlDemo(): Div {
         paragraph {
             +"FormControls take a single form element and take care of styling and validation. You cannot have more than one form element in a FormControl."
         }
-        showcaseSection("Required Input with a store and dynamic error message")
+        showcaseSection("Input formcontrol")
+        paragraph { +"A simple formcontrol with required input, with catches wrong inputs and allows you to create a custom alert message." }
         componentFrame {
             formControl {
                 label { "Please input the name of your favorite Kotlin based web framework." }
@@ -205,6 +206,31 @@ fun RenderContext.formControlDemo(): Div {
                 }
             }
         }
+        // TODO: cannot put $ in source code at <put dollarsign here>
+        playground {
+            source("""
+                label { "Please input the name of your favorite Kotlin based web framework." }
+                required { true }
+                helperText { "You shouldn't need a hint." }
+                errorMessage {
+                    framework.data.map {
+                        // if something is wrong, just send a none empty string to errorMessage!
+                        // the control will handle the rest for you :-)
+                        if (it.isNotEmpty() && it.toLowerCase() != solution) {
+                            "'<put dollarsign here>it' is completely wrong."
+                        } else ""
+                    }
+                }
+                //just use the appropriate *single element* control with its specific API!
+                inputField(store = framework) {
+                    placeholder("$solution for example")
+                }
+                // throws an exception -> only one (and the first) control is allowed!
+                inputField {
+                    placeholder("This control throws an exception because a form control may only contain one control.")
+                }
+            """.trimIndent())
+        }
         val loveString = "I love fritz2 with all my heart."
         val hateString = "I hate your guts, fritz2!"
         val loveStore = object : RootStore<Boolean>(true) {
@@ -217,7 +243,8 @@ fun RenderContext.formControlDemo(): Div {
         loveStore.changedMyMind handledBy textStore.update
 
 
-        showcaseSection("Form with a single checkbox, custom color, form control label and helpertext")
+        showcaseSection("Checkbox formcontrol")
+        paragraph { +"Form with a single checkbox, custom color, form control label and helpertext" }
         componentFrame {
             formControl {
                 label { "Label us interested: How do you feel about fritz2? We would really love to hear your opinion. " }
@@ -235,7 +262,27 @@ fun RenderContext.formControlDemo(): Div {
                 }
             }
         }
-        showcaseSection("Form with a small checkbox group, no label, no helpertext, formlayout horizontal")
+        playground {
+            source("""
+                formControl {
+                label { "Label us interested: How do you feel about fritz2? We would really love to hear your opinion. " }
+                helperText { "So good to have options." }
+                checkbox(
+                    {},
+                    id = "check1"
+                ) {
+                    label(textStore.data)
+                    size { large }
+                    checked { loveStore.data }
+                    events {
+                        changes.states() handledBy loveStore.changedMyMind
+                    }
+                }
+            }
+            """.trimIndent())
+        }
+        showcaseSection("Show selected input")
+        paragraph { +"Form with a small checkbox group, no label, no helpertext, formlayout horizontal" }
         componentFrame {
             formControl {
                 label { "Choose one or more" }
@@ -271,6 +318,45 @@ fun RenderContext.formControlDemo(): Div {
                 }
             }
         }
+        playground {
+            source("""
+            componentFrame {
+                formControl {
+                    label { "Choose one or more" }
+                    helperText { "..." }
+    
+                    checkboxGroup(
+                        store = selectedItemsStore,
+                        id = "checkGroup1"
+                    ) {
+                        items { flowOf(myItemList) }
+                        direction { row }
+                        size { small }
+                    }
+                }
+            }
+            (::div.styled {
+                background {
+                    color { light }
+                }
+                margins {
+                    top { "1.25rem" }
+                }
+                paddings {
+                    left { "0.5rem" }
+                    right { "0.5rem" }
+                }
+                radius { "5%" }
+            }) {
+                h4 { +"Selected:" }
+                ul {
+                    selectedItemsStore.data.renderEach { selectedItem ->
+                        li { +selectedItem }
+                    }
+                }
+            }
+            """.trimIndent())
+        }
         // use your own formControl! Pay attention to the derived component receiver.
         showcaseSection("Custom FormControl")
         paragraph {
@@ -303,6 +389,36 @@ fun RenderContext.formControlDemo(): Div {
         }) {
             h4 { +"Selected:" }
             customValueSelected.data.render { p { +it } }
+        }
+        playground {
+            source("""
+                componentFrame {
+                    myFormControl {
+                        label { "Label next to the control just to be different" }
+                        helperText { "Helper text below control" }
+                        mySingleSelectComponent(store = customValueSelected) {
+                            items((listOf("some", "predefined", "options")))
+                        }
+                    }
+                }
+                (::div.styled {
+                    background {
+                        color { light }
+                    }
+                    margins {
+                        top { "1.25rem" }
+                    }
+                    paddings {
+                        left { "0.5rem" }
+                        right { "0.5rem" }
+                    }
+                    radius { "5%" }
+        
+                }) {
+                    h4 { +"Selected:" }
+                    customValueSelected.data.render { p { +it } }
+                }
+            """.trimIndent())
         }
     }
 }
