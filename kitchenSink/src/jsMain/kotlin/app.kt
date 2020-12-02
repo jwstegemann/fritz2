@@ -22,24 +22,27 @@ import kotlinx.coroutines.flow.onEach
 
 val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
 
-val welcome_ = "Welcome"
-val gettingStarted_ = "Getting Started"
-val icons_ = "Icons"
-val spinner_ = "Spinner"
-val input_ = "Input"
-val buttons_ = "Buttons"
-val formcontrol_ = "Formcontrol"
-val flexbox_ = "Flexbox"
-val gridbox_ = "Gridbox"
-val checkboxes_ = "Checkboxes"
-val radios_ = "Radios"
-val switch_ = "Switch"
-val stack_ = "Stacks"
-val modal_ = "Modal"
-val popover_ = "Popover"
-val tooltip_ = "Tooltip"
-val datatable_ = "Datatable"
-var color_ = "Color"
+const val welcome_ = "Welcome"
+const val gettingStarted_ = "Getting Started"
+const val icons_ = "Icons"
+const val spinner_ = "Spinner"
+const val input_ = "Input"
+const val buttons_ = "Buttons"
+const val formcontrol_ = "Formcontrol"
+const val flexbox_ = "Flexbox"
+const val gridbox_ = "Gridbox"
+const val checkboxes_ = "Checkboxes"
+const val radios_ = "Radios"
+const val switch_ = "Switch"
+const val stack_ = "Stack"
+const val modal_ = "Modal"
+const val popover_ = "Popover"
+const val datatable_ = "Datatable"
+const val styling_ = "Styling"
+const val theme_ = "Theme"
+const val tooltip_ = "Tooltip"
+const val responsive_ = "Responsiveness"
+const val color_ = "Color"
 
 val router = router(welcome_)
 
@@ -49,6 +52,30 @@ object ThemeStore : RootStore<Int>(0) {
         index
     }
 }
+
+const val settingsTableStaticCss = """
+        font-family: Inter, sans-serif;
+        color: rgb(45, 55, 72);
+        text-align: left;
+        margin-top: 32px;
+        width: 100%;
+        border-collapse: collapse;
+        
+        & > tr > th {
+            background: #F7FAFC;
+            font-weight: 600;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        & > tr > td {
+            padding: 0.5rem;
+            border-top-width: 1px;
+            border-color: lightgray;
+            font-size: 0.875rem;
+            white-space: normal;
+        }
+"""
 
 fun RenderContext.showcaseHeader(text: String) {
     (::h1.styled {
@@ -200,7 +227,7 @@ val componentFrame: Style<BasicParams> = { // Auslagerung von Style
     padding { normal }
 }
 
-fun RenderContext.componentFrame(init: Div.() -> Unit): Div { //Auslagerung von Komponente
+fun RenderContext.componentFrame(padding: Boolean = true, init: Div.() -> Unit): Div { //Auslagerung von Komponente
     return (::div.styled {
         width { "100%" }
         margins {
@@ -211,7 +238,7 @@ fun RenderContext.componentFrame(init: Div.() -> Unit): Div { //Auslagerung von 
             color { light }
         }
         radius { larger }
-        padding { normal }
+        if (padding) padding { normal }
     }){
         init()
     }
@@ -300,6 +327,7 @@ fun RenderContext.navAnchor(linkText: String, href: String): Div {
     }
 }
 
+
 fun RenderContext.menuHeader(init: P.() -> Unit): P {
     return (::p.styled {
         paddings {
@@ -318,7 +346,7 @@ fun RenderContext.menuHeader(init: P.() -> Unit): P {
 
 fun RenderContext.menuAnchor(linkText: String): P {
 
-    val selected = style("prefix") {
+    val selected = style {
         width { "90%" }
         radius { normal }
         border {
@@ -381,6 +409,9 @@ fun RenderContext.c(text: String) {
 
 @ExperimentalCoroutinesApi
 fun main() {
+    staticStyle("settings-table", settingsTableStaticCss)
+
+    val router = router("")
 
     render(themes.first()) { theme ->
         navBar {
@@ -475,7 +506,7 @@ fun main() {
                     items {
                         (::p.styled {
                             width { "100%" }
-                            margins { top{ huge } }
+                            margins { top { huge } }
                             paddings {
                                 bottom { "1rem" }
                             }
@@ -483,6 +514,12 @@ fun main() {
                             menuAnchor(welcome_)
                             menuAnchor(gettingStarted_)
                         }
+                        menuHeader { +"FEATURES" }
+                        menuAnchor(styling_)
+                        menuAnchor(theme_)
+                        menuAnchor(responsive_)
+
+
                         menuHeader { +"LAYOUT" }
                         menuAnchor(flexbox_)
                         menuAnchor(gridbox_)
@@ -541,6 +578,9 @@ fun main() {
                             tooltip_ -> tooltipDemo()
                             welcome_ -> welcome()
                             datatable_ -> tableDemo()
+                            styling_ -> stylingDemo()
+                            theme_ -> themeDemo()
+                            responsive_ -> responsiveDemo()
                             color_ -> colorDemo()
                             else -> welcome()
                         }
