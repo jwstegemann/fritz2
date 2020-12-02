@@ -448,10 +448,10 @@ interface Layout : StyleParams {
         lg: Property? = null,
         xl: Property? = null
     ) {
-        if (sm != null) smProperties.append(sm)
-        if (md != null) mdProperties.append(sm)
-        if (lg != null) lgProperties.append(sm)
-        if (xl != null) xlProperties.append(sm)
+        if (sm != null) smProperties.append(sm.let { if (it.endsWith(";")) it else "$it;" })
+        if (md != null) mdProperties.append(md.let { if (it.endsWith(";")) it else "$it;" })
+        if (lg != null) lgProperties.append(lg.let { if (it.endsWith(";")) it else "$it;" })
+        if (xl != null) xlProperties.append(xl.let { if (it.endsWith(";")) it else "$it;" })
     }
 
 
