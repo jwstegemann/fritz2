@@ -15,7 +15,7 @@ class PlaygroundComponent {
             staticStyle(
                 """
                 .CodeMirror {
-                  font-size: 0.8em !important;
+                  font-size: 0.85em !important;
                 }
                 
                 .executable-fragment-wrapper {

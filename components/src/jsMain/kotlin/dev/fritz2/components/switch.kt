@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.binding.Store
 import dev.fritz2.components.SwitchComponent.Companion.switchInputStaticCss
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Div
@@ -203,5 +204,21 @@ fun RenderContext.switch(
                 it(this)
             }
         }
+    }
+}
+
+fun RenderContext.switch(
+    styling: BasicParams.() -> Unit = {},
+    store: Store<Boolean>,
+    baseClass: StyleClass? = null,
+    prefix: String = "switchComponent",
+    build: SwitchComponent.() -> Unit = {}
+) {
+    switch(styling, baseClass, store.id, prefix) {
+        checked { store.data }
+        events {
+            checked handledBy store.update
+        }
+        build()
     }
 }
