@@ -63,6 +63,69 @@ fun RenderContext.spinnerDemo(): Div {
                 }
                 """.trimIndent())
         }
+        showcaseSection("Speed")
+        paragraph {
+            +"Let your spinner spin as fast as you like. Simply choose the time it takes the spinner to complete on round."
+        }
+        componentFrame {
+            lineUp({
+                alignItems { flexEnd }
+            }) {
+                items {
+                    stackUp {
+                        items {
+                            spinner({
+                                color { dark }
+                                size { "3em" }
+                            }) {
+                                size { fat }
+                                speed { ".5s" }
+                            }
+                            p { +"0.5s" }
+                        }
+                    }
+                    stackUp {
+                        items {
+                            spinner({
+                                color { dark }
+                                size { "3em" }
+                            }) {
+                                size { fat }
+                                speed { "1s" }
+                            }
+                            p { +"1s" }
+                        }
+                    }
+                    stackUp {
+                        items {
+                            spinner({
+                                color { dark }
+                                size { "3em" }
+                            }) {
+                                size { fat }
+                                speed { "3s" }
+                            }
+                            p { +"3s" }
+                        }
+                    }
+                }
+            }
+        }
+        playground {
+            source("""
+                stackUp {
+                    items {
+                        spinner({
+                            color { dark }
+                            size { "3em" }
+                        }) {
+                            size { fat }
+                            speed { ".5s" }
+                        }
+                    }
+                }
+            """.trimIndent())
+        }
         showcaseSection("Size")
         paragraph {
             +"You can change the size using the size property within the fritz2 design language."
@@ -196,69 +259,7 @@ fun RenderContext.spinnerDemo(): Div {
             """.trimIndent())
         }
 
-        showcaseSection("Speed")
-        paragraph {
-            +"Let your spinner spin as fast as you like. Simply choose the time it takes the spinner to complete on round."
-        }
-        componentFrame {
-            lineUp({
-                alignItems { flexEnd }
-            }) {
-                items {
-                    stackUp {
-                        items {
-                            spinner({
-                                color { dark }
-                                size { "3em" }
-                            }) {
-                                size { fat }
-                                speed { ".5s" }
-                            }
-                            p { +"0.5s" }
-                        }
-                    }
-                    stackUp {
-                        items {
-                            spinner({
-                                color { dark }
-                                size { "3em" }
-                            }) {
-                                size { fat }
-                                speed { "1s" }
-                            }
-                            p { +"1s" }
-                        }
-                    }
-                    stackUp {
-                        items {
-                            spinner({
-                                color { dark }
-                                size { "3em" }
-                            }) {
-                                size { fat }
-                                speed { "3s" }
-                            }
-                            p { +"3s" }
-                        }
-                    }
-                }
-            }
-        }
-        playground {
-            source("""
-                stackUp {
-                    items {
-                        spinner({
-                            color { dark }
-                            size { "3em" }
-                        }) {
-                            size { fat }
-                            speed { ".5s" }
-                        }
-                    }
-                }
-            """.trimIndent())
-        }
+
         showcaseSection("Icon based")
         paragraph {
             +"You can choose an icon instead of a spinner to signalize a running process aswell."

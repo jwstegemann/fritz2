@@ -212,6 +212,7 @@ val stack_ = "Stack"
 val modal_ = "Modal"
 val popover_ = "Popover"
 val datatable_ = "Datatable"
+var color_ = "Color"
 
 
 object ThemeStore : RootStore<Int>(0) {
@@ -411,6 +412,7 @@ fun main() {
 
                         menuHeader { +"ICONS" }
                         menuAnchor(icons_, router)
+                        menuAnchor(color_, router)
                     }
                 }
                 (::div.styled(id = "content-right") {
@@ -442,6 +444,7 @@ fun main() {
                             popover_ -> popoverDemo()
                             welcome_ -> welcome()
                             datatable_ -> tableDemo()
+                            color_ -> colorDemo()
                             else -> welcome()
                         }
                     }
