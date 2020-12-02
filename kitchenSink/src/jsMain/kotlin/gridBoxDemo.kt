@@ -139,7 +139,7 @@ fun RenderContext.gridBoxDemo(): Div {
                     grid(sm = { area { grid.CONTENT } })
                     background(
                         sm = {
-                            image { "https://via.placeholder.com/150/?text=small%20sized%20 device" }
+                            image { "https://via.placeholder.com/300/?text=small%20sized%20device" }
                             repeat { repeat }
                             positions {
                                 horizontal { center }
