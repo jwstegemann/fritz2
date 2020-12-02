@@ -6,7 +6,6 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.kitchensink.base.*
-import dev.fritz2.styling.params.rgb
 import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -363,29 +362,7 @@ fun RenderContext.formControlDemo(): Div {
 
         showcaseSection("Embed custom control")
 
-        // TODO: infoBox Auslagern
-        (::blockquote.styled {
-            borders {
-                left {
-                    color { rgb(221, 107, 32) }
-                    width { "4px" }
-                    style { solid }
-                }
-            }
-            radius { "4px" }
-            background {
-                color { rgb(254, 235, 200) }
-            }
-            margins {
-                top { normal }
-            }
-            paddings {
-                right { normal }
-                left { small }
-                top { small }
-                bottom { small }
-            }
-        }) {
+        warningBox {
             p {
                 strong { +"Todo:" }
                 +" Add an example of a custom control and its integration into the FormControl including a custom "

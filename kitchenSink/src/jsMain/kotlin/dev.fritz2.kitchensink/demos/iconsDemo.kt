@@ -4,8 +4,6 @@ import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.kitchensink.base.*
-import dev.fritz2.styling.params.rgb
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Theme
 import kotlinx.browser.window
@@ -170,29 +168,7 @@ fun RenderContext.iconsDemo(): Div {
             +" icon."
         }
 
-        // TODO: move dev.fritz2.kitchensink.infoBox
-        (::blockquote.styled {
-            borders {
-                left {
-                    color { rgb(221, 107, 32) }
-                    width { "4px" }
-                    style { solid }
-                }
-            }
-            radius { "4px" }
-            background {
-                color { rgb(254, 235, 200) }
-            }
-            margins {
-                top { normal }
-            }
-            paddings {
-                right { normal }
-                left { small }
-                top { small }
-                bottom { small }
-            }
-        }) {
+        warningBox {
             p { +"Most of our included icons are taken from the excellent mono icons project." }
             p {
                 +"Please have look at their "

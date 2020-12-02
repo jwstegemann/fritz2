@@ -8,8 +8,6 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.kitchensink.base.*
 import dev.fritz2.kitchensink.flexbox_
 import dev.fritz2.kitchensink.gridbox_
-import dev.fritz2.styling.params.rgb
-import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
@@ -177,29 +175,7 @@ fun RenderContext.stackDemo(): Div {
 
         showcaseSection("Other layout techniques")
 
-        // TODO: dev.fritz2.kitchensink.infoBox Auslagern
-        (::blockquote.styled {
-            borders {
-                left {
-                    color { rgb(221, 107, 32) }
-                    width { "4px" }
-                    style { solid }
-                }
-            }
-            radius { "4px" }
-            background {
-                color { rgb(254, 235, 200) }
-            }
-            margins {
-                top { normal }
-            }
-            paddings {
-                right { normal }
-                left { small }
-                top { small }
-                bottom { small }
-            }
-        }) {
+        warningBox {
             p {
                 strong { +"Tip:" }
                 +" Favor the application of a "
