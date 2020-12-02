@@ -179,7 +179,7 @@ fun RenderContext.textAreaDemo(): Div {
         }
 
         showcaseSection("Disable a textarea")
-        paragraph { +"Of course it is possible to disable a textarea" }
+        paragraph { +"Of course it is possible to disable a textarea." }
         componentFrame {
             lineUp {
                 items {
