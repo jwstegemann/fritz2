@@ -7,8 +7,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun RenderContext.spinnerDemo(): Div {
     return contentFrame {
         showcaseHeader("Spinner")
-        paragraph { +"A spinner is an animated element, that is used to signalize a long running process." }
-        paragraph { +"There are two flavours of spinner built into fritz2:" }
+        paragraph { +"A spinner is an animated element that is used to indicate a long running process." }
 
         showcaseSection("Thickness")
         paragraph {
@@ -16,9 +15,9 @@ fun RenderContext.spinnerDemo(): Div {
             c("thin")
             +", "
             c("normal")
-            +" and "
+            +", and "
             c("fat")
-            +", or use an own size. "
+            +", or use a custom size."
         }
         componentFrame {
             lineUp({
@@ -65,7 +64,8 @@ fun RenderContext.spinnerDemo(): Div {
         }
         showcaseSection("Speed")
         paragraph {
-            +"Let your spinner spin as fast as you like. Simply choose the time it takes the spinner to complete on round."
+            +"Let your spinner turn as fast as you like. Simply choose the time it should take the spinner to "
+            +" complete one round."
         }
         componentFrame {
             lineUp({
@@ -128,7 +128,7 @@ fun RenderContext.spinnerDemo(): Div {
         }
         showcaseSection("Size")
         paragraph {
-            +"You can change the size using the size property within the fritz2 design language."
+            +"You can change the size using the size property offered by the fritz2 design language."
         }
         componentFrame {
             lineUp({
@@ -183,7 +183,8 @@ fun RenderContext.spinnerDemo(): Div {
         }
         showcaseSection("Color")
         paragraph {
-            +"Choose the color of your spinner. You can use a  custom color or choose from one of the fritz2 theme colors. There are "
+            +"Choose the color of your spinner. You can use a custom color, or choose from one of the fritz2 theme "
+            +" colors. There are "
             c("primary")
             +", "
             c("secondary")
@@ -199,7 +200,7 @@ fun RenderContext.spinnerDemo(): Div {
             c("dark")
             +", "
             c("warning")
-            +" and "
+            +", and "
             c("danger")
             +" to choose from."
         }
@@ -262,7 +263,7 @@ fun RenderContext.spinnerDemo(): Div {
 
         showcaseSection("Icon based")
         paragraph {
-            +"You can choose an icon instead of a spinner to signalize a running process aswell."
+            +"You can choose an icon instead of a spinner to indicate a running process as well."
         }
         componentFrame {
             lineUp({
@@ -278,7 +279,7 @@ fun RenderContext.spinnerDemo(): Div {
                                 icon { heart }
                                 speed { "2s" }
                             }
-                            p { +"choose any icon" }
+                            p { +"Choose any icon" }
                         }
                     }
                     stackUp {
@@ -295,7 +296,7 @@ fun RenderContext.spinnerDemo(): Div {
                                     speed { "1.5s" }
                                 }
                             }
-                            p { +"completly customizable too!" }
+                            p { +"Completely customizable, too!" }
                         }
                     }
                 }

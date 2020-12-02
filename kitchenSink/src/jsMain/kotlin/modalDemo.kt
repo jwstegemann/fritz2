@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 @ExperimentalCoroutinesApi
 fun RenderContext.modalDemo(): Div {
 
-    // Call this once, if you don't need to *dynamically* change overlay!
+    // Call this once if you don't need to dynamically change overlay.
     //ModalComponent.setOverlayHandler(DefaultOverlay(OverlayMethod.CoveringEach))
 
     return contentFrame {
@@ -53,10 +53,13 @@ fun RenderContext.modalDemo(): Div {
         }
 
         showcaseHeader("Modal Dialogs")
-        paragraph { +"Use a modal to support the user with more information about a specific component of your application." }
+        paragraph {
+            +"Use a modal dialog to support the user with more information about a specific component of your"
+            +" application."
+        }
 
         showcaseSection("Usage")
-        paragraph { +"A modals can be layered and stacked one after another." }
+        paragraph { +"Modals can be layered and stacked over one another." }
         componentFrame {
             lineUp({
                 alignItems { start }
@@ -81,16 +84,16 @@ fun RenderContext.modalDemo(): Div {
                                 margins { top { "1.25rem" } }
                                 color { dark }
                                 background { color { light } }
-                            }) { text("Another modal!!!") } handledBy modal {
+                            }) { text("Another modal!") } handledBy modal {
                                 size { small }
                                 content {
                                     h1 { +"One more to go!" }
-                                    paragraph { +"You can stack as many as you like!" }
+                                    paragraph { +"You can stack as many as you like." }
                                     clickButton({
                                         margins { top { "1.25rem" } }
                                         color { dark }
                                         background { color { light } }
-                                    }) { text("And another modal!!!") } handledBy modal {
+                                    }) { text("And another modal!") } handledBy modal {
                                         size { small }
                                         content {
                                             h1 { +"Final message" }
@@ -128,16 +131,16 @@ fun RenderContext.modalDemo(): Div {
                             margins { top { "1.25rem" } }
                             color { dark }
                             background { color { light } }
-                        }) { text("Another modal!!!") } handledBy modal {
+                        }) { text("Another modal!") } handledBy modal {
                             size { small }
                             content {
                                 h1 { +"One more to go!" }
-                                paragraph { +"You can stack as many as you like!" }
+                                paragraph { +"You can stack as many as you like." }
                                 clickButton({
                                     margins { top { "1.25rem" } }
                                     color { dark }
                                     background { color { light } }
-                                }) { text("And another modal!!!") } handledBy modal {
+                                }) { text("And another modal!") } handledBy modal {
                                     size { small }
                                     content {
                                         h1 { +"Final message" }
@@ -153,9 +156,9 @@ fun RenderContext.modalDemo(): Div {
             """.trimIndent())
         }
 
-        showcaseSection("Closebutton variants")
+        showcaseSection("CloseButton variants")
         paragraph {
-            +"You can customize your close button or even define an own button that does the job."
+            +"You can customize the close button or even define your own button to do the job."
         }
         componentFrame {
             lineUp({

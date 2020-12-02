@@ -20,16 +20,17 @@ fun RenderContext.switchDemo(): Div {
     return contentFrame {
         showcaseHeader("Switch")
         paragraph {
-            +"A switch button works like a checkbox. It can be used to set a property in your application."
+            +"A switch button works like a checkbox. It can be used to set a single property in your application."
         }
         showcaseSection("Usage")
         paragraph {
-            +"Create a switch with your own label and size. You can set the background color for the unchecked and checked status, and even cusomize the color of the dot."
+            +"Create a switch with your own label and size. You can set the background color for the unchecked and"
+            +" checked state, and even customize the color of the dot."
         }
 
         componentFrame {
             switch() {
-                label("Default optics")
+                label("Default style")
                 checked { checkedStore1.data }
                 events {
                     changes.states() handledBy checkedStore1.update
@@ -42,7 +43,7 @@ fun RenderContext.switchDemo(): Div {
                     color { danger }
                 }
             }) {
-                label("Changing background color")
+                label("Custom background color")
                 checked { checkedStore2.data }
                 dotStyle {
                     {
@@ -119,7 +120,7 @@ fun RenderContext.switchDemo(): Div {
             c("small")
             +", "
             c("normal")
-            +" and "
+            +", and "
             c("large")
             +". "
         }
