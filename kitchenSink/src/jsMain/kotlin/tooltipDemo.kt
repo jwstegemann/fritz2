@@ -15,14 +15,14 @@ fun RenderContext.tooltipDemo(): Div {
         showcaseHeader("Tooltip")
 
         paragraph {
-            +"The "
+            +"The"
             c("tooltip")
-            +"is more beautiful than a standard title that appears when a user interacts with an element."
+            +"is more beautiful than the standard title that appears when a user interacts with an element."
         }
 
         showcaseSection("Usage")
         paragraph {
-            +"In fritz2, tooltips can be added on each styleable element. Its possible to use multiline."
+            +"In fritz2, tooltips can be added to each stylable element. It's possible to use multiline."
         }
         componentFrame {
             lineUp {
@@ -58,13 +58,13 @@ fun RenderContext.tooltipDemo(): Div {
         paragraph {
             +"The"
             c("tooltip")
-            +" can display on "
+            +" can be displayed on the"
             c("top")
             +","
             c("right")
             +","
             c("bottom")
-            +","
+            +", and"
             c("left")
             +" side of the styled element."
         }
