@@ -6,6 +6,8 @@ import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.kitchensink.base.*
+import dev.fritz2.kitchensink.flexbox_
+import dev.fritz2.kitchensink.gridbox_
 import dev.fritz2.styling.params.rgb
 import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,7 +40,7 @@ fun RenderContext.stackDemo(): Div {
         }
         paragraph {
             +"They are basically specialized "
-            simpleLinkWithBackground("/#Flexbox", "Flexboxes")
+            internalLink("Flexboxes", flexbox_)
             +" which expose a built-in way to set the alignment direction and define the spacing "
             +" between the items."
         }
@@ -201,14 +203,14 @@ fun RenderContext.stackDemo(): Div {
             p {
                 strong { +"Tip:" }
                 +" Favor the application of a "
-                simpleLinkWithBackground("/#Gridbox", "Gridbox")
+                internalLink("Gridbox", gridbox_)
                 +" over complex styling for stack components."
             }
             p {
                 +"The "
-                simpleLinkWithBackground(
-                    "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout",
-                    "CSS grid model "
+                externalLink(
+                    "CSS grid model ",
+                    "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout"
                 )
                 +" offers much more control over the layout than flexbox approaches."
             }

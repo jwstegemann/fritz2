@@ -171,27 +171,8 @@ fun RenderContext.componentFrame(padding: Boolean = true, init: Div.() -> Unit):
     }
 }
 
-fun RenderContext.simpleLinkWithBackground(linkUri: String, linkText: String): A {
-    return (::a.styled {
-        fontSize { large }
-        color { primary }
-        hover {
-            color { secondary }
-            background { color { dark } }
-            radius { "5%" }
-        }
-        paddings {
-            left { "0.3rem" }
-            right { "0.3rem" }
-        }
-    }) {
-        +linkText
-        href(linkUri)
-    }
-}
-
-fun RenderContext.externalLink(text: String, url: String, newTab: Boolean = true): A {
-    return (::a.styled {
+val RenderContext.link
+    get() = (::a.styled {
         fontSize { normal }
         color { primary }
         hover {
@@ -199,10 +180,21 @@ fun RenderContext.externalLink(text: String, url: String, newTab: Boolean = true
             background { color { light_hover } }
             radius { normal }
         }
-    }) {
+        css("cursor: pointer")
+    })
+
+fun RenderContext.externalLink(text: String, url: String, newTab: Boolean = true): A {
+    return link {
         +text
         href(url)
         if(newTab) target("_new")
+    }
+}
+
+fun RenderContext.internalLink(text: String, page: String): A {
+    return link {
+        +text
+        clicks.map { page } handledBy router.navTo
     }
 }
 

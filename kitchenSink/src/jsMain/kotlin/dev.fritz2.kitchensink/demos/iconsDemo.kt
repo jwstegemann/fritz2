@@ -196,12 +196,12 @@ fun RenderContext.iconsDemo(): Div {
             p { +"Most of our included icons are taken from the excellent mono icons project." }
             p {
                 +"Please have look at their "
-                simpleLinkWithBackground("https://icons.mono.company/", "project page")
+                externalLink("project page", "https://icons.mono.company/")
                 +"."
             }
             p{
                 +"The icons are licensed under the "
-                simpleLinkWithBackground("https://github.com/mono-company/mono-icons/blob/master/LICENSE.md", "MIT license")
+                externalLink("MIT license", "https://github.com/mono-company/mono-icons/blob/master/LICENSE.md")
                 +"."
             }
         }
@@ -262,7 +262,7 @@ fun RenderContext.iconsDemo(): Div {
         }
         paragraph {
             +"For example, include the "
-            simpleLinkWithBackground("https://github.com/logos", "github mark")
+            externalLink("github mark", "https://github.com/logos")
             +" to create a nice button:"
         }
         componentFrame {

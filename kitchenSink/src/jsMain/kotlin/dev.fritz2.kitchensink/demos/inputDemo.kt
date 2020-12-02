@@ -7,6 +7,10 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
 import dev.fritz2.kitchensink.base.*
+import dev.fritz2.kitchensink.buttons_
+import dev.fritz2.kitchensink.checkboxes_
+import dev.fritz2.kitchensink.formcontrol_
+import dev.fritz2.kitchensink.radios_
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -27,10 +31,7 @@ fun RenderContext.inputDemo(): Div {
 
         paragraph {
             +"""Please note: Should you require labels or validation, use an input field with a """
-            simpleLinkWithBackground(
-            "#FormControl",
-            "FormControl"
-            )
+            internalLink("FormControl", formcontrol_)
             +"""
              component. A standalone input field does not offer those functions.
             """.trimIndent()
@@ -228,19 +229,19 @@ fun RenderContext.inputDemo(): Div {
         showcaseSection("Input types")
         paragraph {
             +"You can also specify any input type for the component. ("
-            simpleLinkWithBackground(
-                "#Radios",
-                "radios"
+            internalLink(
+                "radios",
+                radios_
             )
             +", "
-            simpleLinkWithBackground(
-                "#Checkboxes",
-                "checkboxes"
+            internalLink(
+                "checkboxes",
+                checkboxes_
             )
             +", and "
-            simpleLinkWithBackground(
-                "#Buttons",
-                "buttons"
+            internalLink(
+                "buttons",
+                buttons_
             )
             +" however are different components). Some examples for password, date, and number inputs:"
 

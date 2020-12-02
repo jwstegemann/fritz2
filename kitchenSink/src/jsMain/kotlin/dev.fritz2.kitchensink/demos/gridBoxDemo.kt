@@ -26,9 +26,9 @@ fun RenderContext.gridBoxDemo(): Div {
         paragraph {
             +"Use a Gridbox to create arbitrary complex layouts."
             +" It does not offer special component properties, but instead relies on the "
-            simpleLinkWithBackground(
-                "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout",
-                "CSS based grid-layout"
+            externalLink(
+                "CSS based grid-layout",
+                "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout"
             )
             +"styling options."
         }

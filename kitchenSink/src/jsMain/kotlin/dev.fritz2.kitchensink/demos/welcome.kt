@@ -5,6 +5,7 @@ import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.kitchensink.base.contentFrame
+import dev.fritz2.kitchensink.base.externalLink
 import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -34,7 +35,7 @@ fun RenderContext.welcome(): Div {
                         top { "1.5rem" }
                         bottom { "1.5rem" }
                     }
-                }) { +"fritz2 component library" }
+                }) { +"fritz2 component" }
                 (::p.styled {
                     fontSize { "1.5rem" }
                     fontWeight { bold }
@@ -59,22 +60,15 @@ fun RenderContext.welcome(): Div {
                         bottom { "3rem" }
                     }
                 }) {
-                    +"Your opinions and comments are very dev.fritz2.kitchensink.demos.welcome. Please visit "
-                    a {
-                        href("http://fritz2.dev")
-                        + "fritz.dev" }
+                    +"Your opinions and comments are very welcome. Please visit "
+                    externalLink("fritz.dev", "http://fritz2.dev")
                     +" for further information, or go to our github page at "
-                    a {
-                        href("https://github.com/jwstegemann/fritz2")
-                        + "https://github.com/jwstegemann/fritz2" }
+                    externalLink("https://github.com/jwstegemann/fritz2", "https://github.com/jwstegemann/fritz2")
                     +" to open issues or check out the code."
                 }
 
                 p { +"The design of the fritz2 component library is highly inspired by "
-                    a {
-                        href("https://chakra-ui.com/")
-                        + "Chakra UI"
-                    }
+                    externalLink("Chakra UI", "https://chakra-ui.com/")
                     +" ."
                 }
             }
