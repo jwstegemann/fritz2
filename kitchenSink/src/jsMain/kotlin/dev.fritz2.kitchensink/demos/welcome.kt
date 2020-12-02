@@ -1,7 +1,10 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.components.icon
 import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.kitchensink.contentFrame
 import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -56,7 +59,7 @@ fun RenderContext.welcome(): Div {
                         bottom { "3rem" }
                     }
                 }) {
-                    +"Your opinions and comments are very welcome. Please visit "
+                    +"Your opinions and comments are very dev.fritz2.kitchensink.demos.welcome. Please visit "
                     a {
                         href("http://fritz2.dev")
                         + "fritz.dev" }

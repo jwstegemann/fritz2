@@ -1,14 +1,15 @@
-import dev.fritz2.binding.RootStore
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.kitchensink.*
+import dev.fritz2.kitchensink.base.playground
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
 fun RenderContext.modalDemo(): Div {
@@ -126,7 +127,7 @@ fun RenderContext.modalDemo(): Div {
                     size { normal }
                     content {
                         h1 { +"Simple dialog" }
-                        paragraph { +"You can put any content or structure into a modal." }
+                        dev.fritz2.kitchensink.paragraph { +"You can put any content or structure into a modal." }
                         clickButton({
                             margins { top { "1.25rem" } }
                             color { dark }
@@ -135,7 +136,7 @@ fun RenderContext.modalDemo(): Div {
                             size { small }
                             content {
                                 h1 { +"One more to go!" }
-                                paragraph { +"You can stack as many as you like." }
+                                dev.fritz2.kitchensink.paragraph { +"You can stack as many as you like." }
                                 clickButton({
                                     margins { top { "1.25rem" } }
                                     color { dark }
@@ -144,7 +145,7 @@ fun RenderContext.modalDemo(): Div {
                                     size { small }
                                     content {
                                         h1 { +"Final message" }
-                                        paragraph { +"This is the next level modal dialog." }
+                                        dev.fritz2.kitchensink.paragraph { +"This is the next level modal dialog." }
                                     }
                                 }
                             }
@@ -388,7 +389,7 @@ fun RenderContext.modalDemo(): Div {
                     variant { verticalFilled }
                     content {
                         h1 { +"Dialog takes all vertical space within the viewport" }
-                        paragraph { +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." }
+                        dev.fritz2.kitchensink.paragraph { +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." }
                     }
                 }
             """.trimIndent())

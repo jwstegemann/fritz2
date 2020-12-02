@@ -1,6 +1,10 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.kitchensink.*
+import dev.fritz2.kitchensink.base.playground
 import dev.fritz2.styling.params.rgb
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.IconDefinition
@@ -167,7 +171,7 @@ fun RenderContext.iconsDemo(): Div {
             +" icon."
         }
 
-        // TODO: move infoBox
+        // TODO: move dev.fritz2.kitchensink.infoBox
         (::blockquote.styled {
             borders {
                 left {

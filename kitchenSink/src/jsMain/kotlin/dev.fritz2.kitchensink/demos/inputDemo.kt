@@ -1,10 +1,12 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
-import dev.fritz2.dom.html.A
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
-import dev.fritz2.styling.params.styled
+import dev.fritz2.kitchensink.*
+import dev.fritz2.kitchensink.base.playground
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi

@@ -1,12 +1,14 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.lineUp
-import dev.fritz2.components.playground
 import dev.fritz2.components.stackUp
 import dev.fritz2.components.textArea
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
-import dev.fritz2.styling.params.AlignItemsValues
+import dev.fritz2.kitchensink.*
+import dev.fritz2.kitchensink.base.playground
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 

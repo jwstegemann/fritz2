@@ -1,6 +1,10 @@
-import dev.fritz2.components.*
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.kitchensink.*
+import dev.fritz2.kitchensink.base.highlight
+import dev.fritz2.kitchensink.base.playground
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -70,7 +74,7 @@ fun RenderContext.gettingStarted(): Div {
 
         paragraph {
             +"Next step is to add your code into a Kotlin file (e.g. "
-            c("app.kt")
+            c("dev.fritz2.kitchensink/app.kt")
             +") which contains a "
             c("fun main() {...}")
             +" function. In this function you call the "
@@ -81,20 +85,20 @@ fun RenderContext.gettingStarted(): Div {
         }
         playground { source(
             """fun main() {
-                    val router = router(welcome)
+                    val dev.fritz2.kitchensink.getRouter = dev.fritz2.kitchensink.getRouter(dev.fritz2.kitchensink.demos.welcome)
                 
-                    render(themes.first()) { theme ->
+                    render(dev.fritz2.kitchensink.getThemes.first()) { theme ->
                         div("header") {
                             ...
                         }
                         div("content") {
                             ...
-                            router.data.render { site ->
+                            dev.fritz2.kitchensink.getRouter.data.render { site ->
                                 when (site) {
-                                    welcome -> welcome()
+                                    dev.fritz2.kitchensink.demos.welcome -> dev.fritz2.kitchensink.demos.welcome()
                                     pageA -> pageA()
                                     pageB -> pageB()
-                                    else -> welcome()
+                                    else -> dev.fritz2.kitchensink.demos.welcome()
                                 }
                             }
                             ...
@@ -106,9 +110,9 @@ fun RenderContext.gettingStarted(): Div {
                 }
             """.trimIndent()
         ) }
-//        infoBox {
+//        dev.fritz2.kitchensink.infoBox {
 //            +"To write a multi-page application like this one. It is a good practice to create your "
-//            c("router")
+//            c("dev.fritz2.kitchensink.getRouter")
 //            +" and handle your routes here."
 //        }
 

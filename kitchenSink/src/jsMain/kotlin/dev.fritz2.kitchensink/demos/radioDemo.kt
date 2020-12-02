@@ -1,9 +1,12 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.binding.RootStore
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.kitchensink.*
+import dev.fritz2.kitchensink.base.playground
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 
@@ -320,9 +323,9 @@ fun RenderContext.radiosDemo(): Div {
     val myPairs =
         listOf((1 to "ffffff"), (2 to "rrrrrr"), (3 to "iiiiii"), (4 to "tttttt"), (5 to "zzzzzz"), (6 to "222222"))
 
-    return contentFrame {
-        showcaseHeader("SingleSelect")
-        paragraph {
+    return dev.fritz2.kitchensink.contentFrame {
+        dev.fritz2.kitchensink.showcaseHeader("SingleSelect")
+        dev.fritz2.kitchensink.paragraph {
             +"You can choose from 3 radio sizes. You may also chose custom colors for the radio background and"
             +" border. However, any custom styles you apply to the component will be rendered for the"
             +" internal container element only. Also keep in mind that the default styling of our"
@@ -344,7 +347,7 @@ fun RenderContext.radiosDemo(): Div {
                     val selectedItemStore = RootStore(mySelectedItem)
 
                     items {
-                        showcaseSection("SingleSelect large")
+                        dev.fritz2.kitchensink.showcaseSection("SingleSelect large")
                         lineUp({
                             margins { bottom { "2.0rem" } }
                             alignItems { baseline }
@@ -379,7 +382,7 @@ fun RenderContext.radiosDemo(): Div {
                     val selectedItemStore = RootStore(mySelectedItem)
 
                     items {
-                        showcaseSection("SingleSelect normal, disabled")
+                        dev.fritz2.kitchensink.showcaseSection("SingleSelect normal, disabled")
                         stackUp({
                             margins { bottom { "2.0rem" } }
                             alignItems { baseline }
@@ -414,7 +417,7 @@ fun RenderContext.radiosDemo(): Div {
                     val selectedItemStore = RootStore(mySelectedItem)
 
                     items {
-                        showcaseSection("SingleSelect small, custom colors, horizontal")
+                        dev.fritz2.kitchensink.showcaseSection("SingleSelect small, custom colors, horizontal")
                         stackUp({
                             margins { bottom { "2.0rem" } }
                             alignItems { baseline }

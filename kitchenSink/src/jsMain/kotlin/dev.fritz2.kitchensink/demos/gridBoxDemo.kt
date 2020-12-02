@@ -1,7 +1,11 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.kitchensink.*
+import dev.fritz2.kitchensink.base.playground
 import dev.fritz2.styling.params.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
@@ -223,7 +227,7 @@ fun RenderContext.gridBoxDemo(): Div {
             }
         }
 
-        // TODO: infoBox Auslagern
+        // TODO: dev.fritz2.kitchensink.infoBox Auslagern
         (::blockquote.styled {
             borders {
                 left {

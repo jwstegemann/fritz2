@@ -1,3 +1,5 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
@@ -6,6 +8,8 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.dom.values
+import dev.fritz2.kitchensink.*
+import dev.fritz2.kitchensink.base.playground
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.styled
@@ -320,7 +324,7 @@ fun RenderContext.formControlDemo(): Div {
         }
         playground {
             source("""
-            componentFrame {
+            dev.fritz2.kitchensink.getComponentFrame {
                 formControl {
                     label { "Choose one or more" }
                     helperText { "..." }
@@ -329,7 +333,7 @@ fun RenderContext.formControlDemo(): Div {
                         store = selectedItemsStore,
                         id = "checkGroup1"
                     ) {
-                        items { flowOf(myItemList) }
+                        items { flowOf(dev.fritz2.kitchensink.demos.getMyItemList) }
                         direction { row }
                         size { small }
                     }
@@ -392,8 +396,8 @@ fun RenderContext.formControlDemo(): Div {
         }
         playground {
             source("""
-                componentFrame {
-                    myFormControl {
+                dev.fritz2.kitchensink.getComponentFrame {
+                    dev.fritz2.kitchensink.demos.myFormControl {
                         label { "Label next to the control just to be different" }
                         helperText { "Helper text below control" }
                         mySingleSelectComponent(store = customValueSelected) {

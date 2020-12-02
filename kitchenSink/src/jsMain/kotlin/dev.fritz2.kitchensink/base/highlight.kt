@@ -1,3 +1,5 @@
+package dev.fritz2.kitchensink.base
+
 import dev.fritz2.components.box
 import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.RenderContext
@@ -12,7 +14,7 @@ class HighlightComponent {
     init {
         window.setTimeout({
             try {
-                js("""document.querySelectorAll('.highlight').forEach(function(block) {
+                js("""document.querySelectorAll('.dev.fritz2.kitchensink.base.highlight').forEach(function(block) {
                             hljs.highlightBlock(block);
                         });""")
             } catch (t: Throwable) {
@@ -53,7 +55,7 @@ fun RenderContext.highlight(
                 paddings { left{ "22px" } }
                 fontSize { "0.8em" }
             }) {
-                pre("highlight", id = id) {
+                pre("dev.fritz2.kitchensink.base.highlight", id = id) {
                     code {
                         +component.source
                     }

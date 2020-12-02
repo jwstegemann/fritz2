@@ -1,9 +1,12 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.components.lineUp
-import dev.fritz2.components.playground
 import dev.fritz2.components.switch
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
+import dev.fritz2.kitchensink.*
+import dev.fritz2.kitchensink.base.playground
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
@@ -25,7 +28,7 @@ fun RenderContext.themeDemo(): Div {
         paragraph {
             +"fritz2's components come with a predefined"
             c("DefaultTheme")
-            +""" and can be used to start styling your app. Of course you can derive custom themes 
+            +""" and can be used to start styling your app. Of course you can derive custom dev.fritz2.kitchensink.getThemes 
                 from this one to change values, or even extend the theme by your own definitions, from simple property 
                 values to complex predefined styles.""".trimIndent()
         }
@@ -69,7 +72,7 @@ fun RenderContext.themeDemo(): Div {
         playground {
             source(
                 """
-                    class LargeFonts : DefaultTheme() {
+                    class dev.fritz2.kitchensink.base.LargeFonts : DefaultTheme() {
                         override val name = "large Fonts"
                     
                         override val fontSizes = ScaledValue(
@@ -109,24 +112,24 @@ fun RenderContext.themeDemo(): Div {
         playground {
             source(
                 """
-                    val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
+                    val dev.fritz2.kitchensink.getThemes = listOf<dev.fritz2.kitchensink.base.ExtendedTheme>(dev.fritz2.kitchensink.base.SmallFonts(), dev.fritz2.kitchensink.base.LargeFonts())
 
-                    object ThemeStore : RootStore<Int>(0) {
+                    object dev.fritz2.kitchensink.ThemeStore : RootStore<Int>(0) {
                         val selectTheme = handle<Int> { _, index ->
-                            Theme.use(themes[index])
+                            Theme.use(dev.fritz2.kitchensink.getThemes[index])
                             index
                         }
                     }
                         
                     //set your default theme    
-                    render(themes.first()) { theme ->
+                    render(dev.fritz2.kitchensink.getThemes.first()) { theme ->
                         //...
 
                         switch {
                             label("use large Fonts")
-                            checked { ThemeStore.data.map {it == 1} }
+                            checked { dev.fritz2.kitchensink.ThemeStore.data.map {it == 1} }
                             events {
-                                changes.states().map { if (it) 1 else 0 } handledBy ThemeStore.update
+                                changes.states().map { if (it) 1 else 0 } handledBy dev.fritz2.kitchensink.ThemeStore.update
                             }
                         }
                     }

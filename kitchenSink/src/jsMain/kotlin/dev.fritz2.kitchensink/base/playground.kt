@@ -1,5 +1,7 @@
-package dev.fritz2.components
+package dev.fritz2.kitchensink.base
 
+import dev.fritz2.components.box
+import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -85,7 +87,7 @@ fun RenderContext.playground(
             }) {
                 code(playgroundMarker) {
                     attr("data-target-platform", "js")
-                    attr("data-highlight-only", true)
+                    attr("data-dev.fritz2.kitchensink.base.highlight-only", true)
                     attr("theme", "darcula")
                     attr("auto-indent", "true")
                     attr("lines", "false")
