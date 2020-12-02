@@ -1,135 +1,80 @@
+import dev.fritz2.components.icon
 import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-
 @ExperimentalCoroutinesApi
 fun RenderContext.welcome(): Div {
 
     return contentFrame {
-        (::p.styled {
-            paddings {
-                all { "1.0rem" }
-            }
-            border {
-                width { thin }
-            }
-            radius { "15px" }
-            boxShadow { flat }
 
+        stackUp({
+            width { "100%" }
+            justifyContent { center }
         }) {
+            spacing { normal }
+            items {
+                icon ({
+                    size { "10rem" }
+                    margins {
+                        top { "2.5rem" }
+                    }
+                    color { primary }
+                }) {
+                    fromTheme {fritz2}
+                }
+                (::p.styled {
+                    fontSize { "2rem" }
+                    margins {
+                        top { "1.5rem" }
+                        bottom { "1.5rem" }
+                    }
+                }) { +"fritz2 component library" }
+                (::p.styled {
+                    fontSize { "1.5rem" }
+                    fontWeight { bold }
+                    margins {
+                        top { "1.5rem" }
+                        bottom { ".5rem" }
+                    }
+                }) { +"Welcome to our components demo!" }
 
-            paragraph {
-                showcaseHeader( "Welcome to the fritz2 components demo" )
 
-                +"This demo showcases the components we added to the fritz2 v0.8 so far. Remember"
-                +" that this is a snapshot, so some of these"
-                +" components might still need some work while others are not implemented yet. "
-                +" The styling of our components is not finished, and the final 0.8 release will contain"
-                +" a better styling and theme changing demonstration."
-                b { +".. we're on it!" }
-
-                showcaseSection("Hoping for your feedback!" )
-
+                p { +"This demo shows the component library we added to fritz2 with the release v0.8."
+                    +" Remember that this is a preview release, so some of these"
+                    +" components might still need some work, while others are not implemented yet. "
+                }
+                p { +"At this time, our library consists of a basic set of components only."
+                    +" We are working hard to improve the existing components, the styling, and the documentation -"
+                    +" some new components are already in our development pipeline."
+                    +" Please note that there may be changes to the api in future versions towards beta."
+                }
                 (::p.styled {
                     margins {
-                        all { "1.0rem" }
-                        top { "0" }
-                        left { "0" }
+                        bottom { "3rem" }
                     }
                 }) {
-                    +"We value your opinions, praise and criticism. Please visit "
-                    simpleLinkWithBackground("fritz2.dev", "http://fritz2.dev")
+                    +"Your opinions and comments are very welcome. Please visit "
+                    a {
+                        href("http://fritz2.dev")
+                        + "fritz.dev" }
                     +" for further information, or go to our github page at "
-                    simpleLinkWithBackground(
-                        "https://github.com/jwstegemann/fritz2",
-                        "https://github.com/jwstegemann/fritz2"
-                    )
-                    +" to open issues or check out the code. Now, let's start with our simple text elements."
+                    a {
+                        href("https://github.com/jwstegemann/fritz2")
+                        + "https://github.com/jwstegemann/fritz2" }
+                    +" to open issues or check out the code."
                 }
-            }
 
-        }
-
-        showcaseHeader("H1: Text Elements Showcase" )
-        paragraph {
-            +"These are some examples of text elements. Text elements are not components - they are simple "
-            +"HTML elements that can be customized using our new styling methods."
-        }
-        (::h2.styled {
-            margins { top { "1.25rem" } }
-            paddings {
-                left { "0.3rem" }
-                right { "0.3rem" }
-            }
-            background {
-                color { primary }
-            }
-            width { maxContent }
-            color { "white" }
-            radius { "10px" }
-        }) { +"H2 styled and a paragraph" }
-        paragraph { +"Paragraph: Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum doloribus amet vel? Expedita sit praesentium dolores obcaecati possimus sapiente voluptatem doloribus, ipsum harum in quia, provident corporis nulla corrupti placeat!" }
-        showcaseSection("H3: Paragraph with inner Span" )
-        paragraph {
-            +"Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum doloribus amet vel? Cum doloribus amet vel? "
-            (::span.styled {
-                background {
-                    color { light }
+                p { +"The design of the fritz2 component library is highly inspired by "
+                    a {
+                        href("https://chakra-ui.com/")
+                        + "Chakra UI"
+                    }
+                    +" ."
                 }
-                fontStyle { italic }
-                paddings {
-                    left { "0.3rem" }
-                    right { "0.3rem" }
-                }
-            }) { +"Span inside Paragraph." }
-            +" Expedita sit praesentium dolores obcaecati possimus sapiente voluptatem doloribus, ipsum harum"
-            +" in quia, provident corporis nulla corrupti placeat!"
-        }
-        (::h4.styled {
-            margins {
-                top { "1.25rem" }
             }
-        }) { +"H4: Paragraph with Link" }
-        paragraph {
-            +"Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum doloribus amet vel? "
-            simpleAnchorWithBackground("Quo Vadis?")
-            +" Expedita sit praesentium dolores obcaecati possimus sapiente voluptatem doloribus, ipsum harum in quia, provident corporis nulla corrupti placeat."
-        }
-        (::h5.styled {
-            margins {
-                top { "1.25rem" }
-            }
-        }) { +"H5: U-List" }
-        (::ul.styled {
-            paddings {
-                right { "0.3rem" }
-                left { "0.3rem" }
-            }
-            margins {
-                top { "1.25rem" }
-            }
-            background {
-                color { dark }
-            }
-            color { secondary }
-            radius { "5px" }
-        }) {
-            (1..5).map { li { +"List item $it" } }
-        }
-        (::h6.styled {
-            margins {
-                top { "1.25rem" }
-            }
-        }) { +"H6: Styled O-List" }
-        (::ol.styled {
-            margins {
-                top { "1.25rem" }
-            }
-        }) {
-            (1..5).map { li { +"Numbered list item $it" } }
         }
     }
 }
