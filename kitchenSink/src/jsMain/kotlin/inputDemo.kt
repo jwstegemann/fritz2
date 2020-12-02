@@ -18,21 +18,19 @@ fun RenderContext.inputDemo(): Div {
 
     val user = storeOf("Jon Snoe")
 
-    return stackUp({
-        alignItems { start }
-        padding { "1rem" }
-    }) {
-        items {
-            h1 { +"Inputs Showcase" }
+    return contentFrame {
+        showcaseHeader("Inputs")
 
-            h3 { +"A basic Input needs no Store" }
+        showcaseSection("A basic Input needs no Store")
+        componentFrame {
             inputField {
                 base {
                     placeholder("Placeholder")
                 }
             }
-
-            h3 { +"A disabled component is skipped by the TAB key, but readonly isn't." }
+        }
+        showcaseSection("A disabled component is skipped by the TAB key, but readonly isn't.")
+        componentFrame {
             lineUp {
                 items {
                     inputField {
@@ -56,44 +54,48 @@ fun RenderContext.inputDemo(): Div {
                     }
                 }
             }
-
-            h3 { +"Password" }
+        }
+        showcaseSection("Password")
+        componentFrame {
             inputField {
                 base {
                     type("password")
                     placeholder("Password")
                 }
             }
-
-            h3 { +"Inputs with store connect events automatically." }
+        }
+        showcaseSection("Inputs with store connect events automatically.")
+        componentFrame {
             inputField(store = user) {
                 base {
                     placeholder("Name")
                 }
             }
-
-            h3 { +"Inputs without stores need manual event collection." }
+        }
+        showcaseSection("Inputs without stores need manual event collection.")
+        componentFrame {
             inputField {
                 base {
                     placeholder("Name")
                     changes.values() handledBy user.update
                 }
             }
-
-            (::p.styled {
-                background { color { light } }
-                fontWeight { bold }
-                radius { "5%" }
-                paddings {
-                    left { "0.3rem" }
-                    right { "0.3rem" }
-                }
-            }) {
-                +"Name in Store: "
-                user.data.asText()
+        }
+        (::p.styled {
+            background { color { light } }
+            fontWeight { bold }
+            radius { "5%" }
+            paddings {
+                left { "0.3rem" }
+                right { "0.3rem" }
             }
+        }) {
+            +"Name in Store: "
+            user.data.asText()
+        }
 
-            h3 { +"Sizes" }
+        showcaseSection("Sizes")
+        componentFrame {
             lineUp {
                 items {
                     inputField {
@@ -116,8 +118,9 @@ fun RenderContext.inputDemo(): Div {
                     }
                 }
             }
-
-            h3 { +"Variants" }
+        }
+        showcaseSection("Variants")
+        componentFrame {
             lineUp {
                 items {
                     inputField {
@@ -134,8 +137,9 @@ fun RenderContext.inputDemo(): Div {
                     }
                 }
             }
-
-            h2 { +"Input fields go to town" }
+        }
+        showcaseSubHeader("Input fields go to town")
+        componentFrame {
 
             val ourInputStyle: BasicParams.() -> Unit = {
                 Theme().input.sizes.large()

@@ -8,16 +8,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 fun RenderContext.spinnerDemo(): Div {
-    return stackUp({
-        alignItems { start }
-        padding { "1rem" }
-    }) {
-        spacing { large }
-        items {
-            h1 { +"Spinner Showcase" }
-            p { +"A spinner is an animated element, that is used to signalize a long running process." }
-            p { +"There are two flavours of spinner built into fritz2:" }
-            h2 { +"Pure CSS based" }
+    return contentFrame {
+        showcaseHeader("Spinner")
+        paragraph { +"A spinner is an animated element, that is used to signalize a long running process." }
+        paragraph { +"There are two flavours of spinner built into fritz2:" }
+        showcaseSection("Pure CSS based")
+        componentFrame {
             lineUp({
                 alignItems { flexEnd }
             }) {
@@ -55,7 +51,7 @@ fun RenderContext.spinnerDemo(): Div {
                     stackUp {
                         items {
                             spinner({
-                                color { warning }
+                                color { primary }
                                 size { "3em" }
                             }) {
                                 size { fat }
@@ -66,15 +62,19 @@ fun RenderContext.spinnerDemo(): Div {
                     }
                 }
             }
-            h2 { +"Icon based" }
+        }
+        showcaseSection("Icon based")
+        componentFrame {
             lineUp({
                 alignItems { flexEnd }
             }) {
                 items {
                     stackUp {
                         items {
-                            spinner {
-                                icon { favorite }
+                            spinner({
+                                color { "#FF1080" }
+                            }) {
+                                icon { heart }
                                 speed { "1s" }
                             }
                             p { +"choose any icon" }
@@ -83,18 +83,18 @@ fun RenderContext.spinnerDemo(): Div {
                     stackUp {
                         items {
                             box({
-                                background { color { dark } }
+                                background { color { primary } }
                                 padding { normal }
                             }) {
                                 spinner({
-                                    color { warning }
+                                    color { base }
                                     size { "5em" }
                                 }) {
                                     icon { fritz2 }
                                     speed { "1.5s" }
                                 }
                             }
-                            p { +"completly cutomizable too!" }
+                            p { +"completly customizable too!" }
                         }
                     }
                 }

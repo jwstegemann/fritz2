@@ -39,9 +39,8 @@ class MyFormControlComponent : FormControlComponent() {
         id: String?,
         prefix: String,
         build: RadioGroupComponent<String>.() -> Unit
-    ){
+    ) {
         val returnStore = object : RootStore<String>("") {
-
             val syncHandlerSelect = handleAndEmit<String, String> { _, new ->
                 if (new == "custom") ""
                 else {
@@ -67,23 +66,32 @@ class MyFormControlComponent : FormControlComponent() {
                 selectedStore.syncBy(syncHandlerSelect)
                 inputStore.syncInput handledBy update
                 syncHandlerSelect handledBy inputStore.update
+                this.data handledBy store.update
             }
         }
 
         control.set(Companion.ControlNames.radioGroup)
         {
-            radioGroup(styling, returnStore.selectedStore, baseClass, id, prefix) {
-                build()
-                items.map { it + "custom" }
-            }
-            inputField {
-                size { small }
-                base {
-                    disabled(returnStore.selectedStore.data.map { it != "custom" })
-                    changes.values() handledBy returnStore.inputStore.syncInput
-                    value(returnStore.inputStore.data)
-                    placeholder("custom choice")
+            lineUp {
+                items {
+                    radioGroup(styling, returnStore.selectedStore, baseClass, id, prefix) {
+                        build()
+                        direction { row }
+                        items {
+                            items.map { it + "custom" }
+                        }
+                    }
+                    inputField {
+                        size { small }
+                        base {
+                            disabled(returnStore.selectedStore.data.map { it != "custom" })
+                            changes.values() handledBy returnStore.inputStore.syncInput
+                            value(returnStore.inputStore.data)
+                            placeholder("custom choice")
+                        }
+                    }
                 }
+
             }
         }
     }
@@ -128,7 +136,7 @@ class MyFormControlComponent : FormControlComponent() {
                     }) {
                         spacing { tiny }
                         items {
-                            (::fieldset.styled { component.direction() }) {
+                            fieldset {
                                 control(this)
                             }
                             component.renderHelperText(this)
@@ -165,20 +173,15 @@ fun RenderContext.formControlDemo(): Div {
 
     val mySelectedItems = listOf("ffffff", "222222")
 
-    val selectedItemsStore = RootStore(mySelectedItems)
+    val selectedItemsStore = storeOf<List<String>>(mySelectedItems)
 
-    return stackUp({
-        padding { "1rem" }
-        alignItems { start }
-    }) {
-        spacing { large }
-
-        items {
-            h1 { +"FormControl Showcase" }
-            p {
-                +"FormControls take a single form element and take care of styling and validation. You cannot have more than one form element in a FormControl."
-            }
-            h3 { +"Required Input with a store and dynamic error message" }
+    return contentFrame {
+        showcaseHeader("FormControl")
+        paragraph {
+            +"FormControls take a single form element and take care of styling and validation. You cannot have more than one form element in a FormControl."
+        }
+        showcaseSection("Required Input with a store and dynamic error message")
+        componentFrame {
             formControl {
                 label { "Please input the name of your favorite Kotlin based web framework." }
                 required { true }
@@ -201,20 +204,21 @@ fun RenderContext.formControlDemo(): Div {
                     placeholder("This control throws an exception because a form control may only contain one control.")
                 }
             }
-
-            val loveString = "I love fritz2 with all my heart."
-            val hateString = "I hate your guts, fritz2!"
-            val loveStore = object : RootStore<Boolean>(true) {
-                val changedMyMind = handleAndEmit<Boolean, String> { _, checked ->
-                    emit(if (checked) loveString else hateString)
-                    checked
-                }
+        }
+        val loveString = "I love fritz2 with all my heart."
+        val hateString = "I hate your guts, fritz2!"
+        val loveStore = object : RootStore<Boolean>(true) {
+            val changedMyMind = handleAndEmit<Boolean, String> { _, checked ->
+                emit(if (checked) loveString else hateString)
+                checked
             }
-            val textStore = RootStore<String>(loveString)
-            loveStore.changedMyMind handledBy textStore.update
+        }
+        val textStore = RootStore<String>(loveString)
+        loveStore.changedMyMind handledBy textStore.update
 
 
-            h3 { +"Form with a single checkbox, custom color, form control label and helpertext" }
+        showcaseSection("Form with a single checkbox, custom color, form control label and helpertext")
+        componentFrame {
             formControl {
                 label { "Label us interested: How do you feel about fritz2? We would really love to hear your opinion. " }
                 helperText { "So good to have options." }
@@ -230,63 +234,75 @@ fun RenderContext.formControlDemo(): Div {
                     }
                 }
             }
-
-            h3 { +"Form with a small checkbox group, no label, no helpertext, formlayout horizontal" }
+        }
+        showcaseSection("Form with a small checkbox group, no label, no helpertext, formlayout horizontal")
+        componentFrame {
             formControl {
-                direction { row } // must be applied to formcontrol instead of checkboxGroup
+                label { "Choose one or more" }
+                helperText { "..." }
+
                 checkboxGroup(
                     store = selectedItemsStore,
                     id = "checkGroup1"
                 ) {
                     items { flowOf(myItemList) }
+                    direction { row }
                     size { small }
                 }
             }
-            (::div.styled {
-                background {
-                    color { light }
-                }
-                paddings {
-                    left { "0.5rem" }
-                    right { "0.5rem" }
-                }
-                radius { "5%" }
-            }) {
-                h4 { +"Selected:" }
-                ul {
-                    selectedItemsStore.data.renderEach { selectedItem ->
-                        li { +selectedItem }
-                    }
+        }
+        (::div.styled {
+            background {
+                color { light }
+            }
+            margins {
+                top { "1.25rem" }
+            }
+            paddings {
+                left { "0.5rem" }
+                right { "0.5rem" }
+            }
+            radius { "5%" }
+        }) {
+            h4 { +"Selected:" }
+            ul {
+                selectedItemsStore.data.renderEach { selectedItem ->
+                    li { +selectedItem }
                 }
             }
-            // use your own formControl! Pay attention to the derived component receiver.
-            h3 { +"Custom FormControl" }
-            p {
-                +"""This control has overridden the control function to implement a special control. 
+        }
+        // use your own formControl! Pay attention to the derived component receiver.
+        showcaseSection("Custom FormControl")
+        paragraph {
+            +"""This control has overridden the control function to implement a special control. 
                     |It is combined with a hand made renderer for the surrounding custom structure.""".trimMargin()
-            }
-            val customValueSelected = storeOf("some")
+        }
+        val customValueSelected = storeOf("some")
+        componentFrame {
             myFormControl {
                 label { "Label next to the control just to be different" }
                 helperText { "Helper text below control" }
-                direction { row }
                 mySingleSelectComponent(store = customValueSelected) {
-                    items { flowOf(listOf("some", "predefined", "options")) }
+                    items((listOf("some", "predefined", "options")))
                 }
             }
-            (::div.styled {
-                background {
-                    color { light }
-                }
-                paddings {
-                    left { "0.5rem" }
-                    right { "0.5rem" }
-                }
-                radius { "5%" }
-            }) {
-                h4 { +"Selected:" }
-                customValueSelected.data.render { p { +it } }
+        }
+        (::div.styled {
+            background {
+                color { light }
             }
+            margins {
+                top { "1.25rem" }
+            }
+            paddings {
+                left { "0.5rem" }
+                right { "0.5rem" }
+            }
+            radius { "5%" }
+
+        }) {
+            h4 { +"Selected:" }
+            customValueSelected.data.render { p { +it } }
         }
     }
 }

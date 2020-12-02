@@ -9,20 +9,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 fun RenderContext.popoverDemo(): Div {
-    return stackUp({
-        alignItems { start }
-        padding { "1rem" }
-    }) {
-        spacing { large }
-        items {
-            h1 { +"Popover Showcase" }
-            p { +"Popover is a non-modal dialog that floats around a trigger. It's used to display contextual information to the user, and should be paired with a clickable trigger element." }
-            p {
-                +"Click the following icons to open the examples"
-            }
-            lineUp({
-                paddings { top { "2rem" } }
-            }) {
+    return contentFrame {
+        showcaseHeader("Popover")
+        paragraph { +"Popover is a non-modal dialog that floats around a trigger. It's used to display contextual information to the user, and should be paired with a clickable trigger element." }
+        paragraph {
+            +"Click the following icons to open the examples"
+        }
+        componentFrame {
+            lineUp {
                 spacing { large }
                 items {
                     listOf(
@@ -49,9 +43,10 @@ fun RenderContext.popoverDemo(): Div {
                     }
 
                     popover({
-                        background { color { warning } }
-                        border { color { dark }}
+                        background { color { primary } }
+                        border { color { base } }
                         margins { right { small } }
+                        color { base }
                     }) {
                         trigger {
                             icon({ size { "2rem" } }) { fromTheme { Theme().icons.circleInformation } }
@@ -63,11 +58,11 @@ fun RenderContext.popoverDemo(): Div {
                         content {
                             div {
                                 +"background-color"
-                                br{}
+                                br {}
                                 +"border-color"
-                                br{}
+                                br {}
                                 +"hidden close Button"
-                                br{}
+                                br {}
                                 +"and hidden arrow"
                             }
                         }

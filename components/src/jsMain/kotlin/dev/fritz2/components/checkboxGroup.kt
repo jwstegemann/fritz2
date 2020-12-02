@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
@@ -24,12 +25,14 @@ import kotlinx.coroutines.flow.map
  * In order to render a checkbox group use the [checkboxGroup] factory function!
  *
  * This class offers the following _configuration_ features:
- *  - the text label of a checkbox (static or dynamic via a [Flow<String>])
- *  - the background color of the box
- *  - the background color for the checked state
- *  - some predefined styling variants
- *  - offer a list of items ([String])
- *  - offer a list of pre checked items
+ *  - the items as a flowOf(List<T>)
+ *  - the label(mapping) of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext ) the the example below
+ *  - some predefined styling variants (size)
+ *  - the style of the items (checkbox)
+ *  - the style checked state
+ *  - the style of the label
+ *  - the checked icon ( use our icon library of our theme )
+ *  - link an external boolean flow to set the disabled state of the box *
  *  - choose the direction of checkbox elements (row vs column)
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
@@ -40,30 +43,24 @@ import kotlinx.coroutines.flow.map
  * ```
  * // simple use case showing the core functionality
  * val options = listOf("A", "B", "C")
- * checkboxGroup {
- *      items { options } // provide a list of items
- *      initialSelection { listOf(options[0] + options[1]) } // pre check "A" and "C"
- * } handledBy selectedItemsStore.update // combine the Flow<List<String>> with a fitting handler
+ * val myStore = storeOf(<List<String>>)
+ * checkboxGroup(store = myStore) {
+ *      items { flowOf(options) } or use items(options) // provide a list of items you can
+ * }
  *
- * // use case showing some styling options
- * val options = listOf("A", "B", "C")
- * checkboxGroup({ // this styling is only applied to the enclosing container element!
- *      background {
- *          color { "deeppink" }
+ * // use case showing some styling options and a store of List<Pair<Int,String>>
+ *   val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
+ *  val myStore = storeOf(<List<Pair<Int,String>>)
+ * checkboxGroup(store = myStore) {
+ *      label {
+ *          it.second
  *      }
- *      border {
- *          color { dark }
- *          style { solid }
- *          size { normal }
- *      }
- * }) {
- *      // those predefined styles are applied especially to specific inner elements!
- *      checkboxSize { normal }
- *      borderColor { theme().colors.secondary }
- *      checkedBackgroundColor { theme().colors.warning }
- *      items { options } // provide a list of items
- *      initialSelection { listOf(options[0] + options[1]) } // pre check "A" and "C"
- * } handledBy selectedItemsStore.update // combine the Flow<List<String>> with a fitting handler
+ *      size { large }
+ *      items { flowOf(options) } or use items(options) // provide a list of items you can
+ *      checkedStyle {{
+ *           background { color {"green"}}
+ *      }}
+ * }
  * ```
  */
 class CheckboxGroupComponent<T> {
@@ -146,21 +143,36 @@ class CheckboxGroupComponent<T> {
  *
  * Example usage
  * ```
+ * // simple use case showing the core functionality
  * val options = listOf("A", "B", "C")
- * checkboxGroup {
- *     items { options } // provide a list of items
- *     initialSelection { listOf(options[0] + options[1]) } // pre check "A" and "C"
- * } handledBy selectedItemsStore.update // combine the Flow<List<String>> with a fitting handler
+ * val myStore = storeOf(<List<String>>)
+ * checkboxGroup(store = myStore) {
+ *      items { flowOf(options) } or use items(options) // provide a list of items you can
+ * }
+ *
+ * // use case showing some styling options and a store of List<Pair<Int,String>>
+ *   val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
+ *  val myStore = storeOf(<List<Pair<Int,String>>)
+ * checkboxGroup(store = myStore) {
+ *      label {
+ *          it.second
+ *      }
+ *      size { large }
+ *      items { flowOf(options) } or use items(options) // provide a list of items you can
+ *      checkedStyle {{
+ *           background { color {"green"}}
+ *      }}
+ * }
  * ```
  *
  * @see CheckboxGroupComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param store a store of List<T>
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [CheckboxGroupComponent]
- * @return a flow of the _checked_ items
  */
 fun <T>RenderContext.checkboxGroup(
     styling: BasicParams.() -> Unit = {},

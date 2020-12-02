@@ -38,39 +38,44 @@ open class DefaultTheme : Theme {
         normal = "1rem",
         large = "1.25rem",
         larger = "1.5rem",
-        huge = "2rem",
+        huge = "1.875rem",
         giant = "3rem",
         full = "4rem"
     )
 
     override val colors = object : Colors {
-        override val primary = "#3d405b"
-        override val secondary = "#e07a5f"
-        override val tertiary = "#81b29a"
-        override val success = "#28a745"
-        override val danger = "#dc3545"
-        override val warning = "#ffc107"
-        override val info = "#17a2b8"
-        override val light = "#e2e8f0"
-        override val dark = "#343a40"
+        override val secondary = "#b2f5ea" // rgb(178,245,234) new
+        override val tertiary = "#718096" // rgb(61,64,92) formerly primary
+        override val primary = "#319795" // rgb(49,151,149) formerly "#e07a5f" // rgb(224,122,95)
+        override val success = "#28a745" // rgb(40,167,69)
+        override val danger = "#dc3545" // rgb(220,53,69)
+        override val warning = "#ffc107" // rgb(225,193,7)
+        override val info = "#3182ce" // rgb(23,162,184)
+        override val light = "#e2e8f0" // rgb(226,232,240)
+        override val dark = "#2d3748" // rgb(45,55,72)
+        override val base = "#ffffff" // rgb(255,255,255)
+        override val primary_hover = "rgb(49,151,149, 0.3)"
+        override val light_hover = "rgb(226,232,240, 0.5)"
+        val alert = "feebc8" // rgb(254,235,200)
         override val disabled = light
+        //color of focus of input elements: inner: #3182ce / rgb(49,130,206) outer: #acd2f2 / rgb(172,210,242)
     }
 
     override val fonts = object : Fonts {
         override val body =
-            """-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" """
+            """Inter, sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" """
         override val heading =
-            """-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" """
+            """Inter, sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" """
         override val mono = """SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace"""
     }
 
     override val lineHeights = ScaledValue(
         normal = "normal",
-        tiny = "1",
+        tiny = "1.2",
         smaller = "1.25",
-        small = "1.375",
+        small = "1.3",
         large = "1.5",
-        larger = "1.625",
+        larger = "1.7",
         huge = "2",
         giant = "2.25",
         full = "3"
@@ -108,6 +113,7 @@ open class DefaultTheme : Theme {
     )
 
     override val borderWidths = Thickness(
+        none = "0px",
         normal = "2px",
         thin = "1px",
         fat = "4px",
@@ -116,9 +122,11 @@ open class DefaultTheme : Theme {
 
     override val radii = ScaledValue(
         none = "0",
-        small = "0.125rem",
-        normal = "0.25rem",
+        smaller = "0.125rem",
+        small = "0.225rem",
+        normal = "0.375rem",
         large = "0.5rem",
+        larger = "12px",
         full = "9999px"
     )
 
@@ -133,7 +141,7 @@ open class DefaultTheme : Theme {
                 and shadow("0", "15px", "12px", rgba(0, 0, 0, 0.22)),
         lowered = shadow("0", "2px", "4px", color = rgba(0, 0, 0, 0.06), inset = true),
         glowing = shadow("0", "0", "2px", color = rgba(0, 0, 255, 0.5)),
-        outline = shadow("0", "0", "0", "3px", color = rgba(66, 153, 225, 0.6)),
+        outline = shadow("0", "0", "0", "3px", color = colors.secondary), // changed by mkempa-np: formerly rgba(66, 153, 225, 0.6)
         danger = shadow("0", "0", "0", "1px", color = colors.danger)
     )
 
@@ -1353,7 +1361,6 @@ open class DefaultTheme : Theme {
     }
 
 
-
     override val checkbox = object : CheckboxStyles {
        override val sizes = object : CheckboxSizes {
            private val basic: Style<BasicParams> = {
@@ -1419,7 +1426,7 @@ open class DefaultTheme : Theme {
             }
             width { "var(--cb-size)" }
             height { "var(--cb-size)" }
-            background { color { "white" } }
+            background { color { base } }
             border {
                 width { "1px" }
                 style { solid }
@@ -1428,8 +1435,8 @@ open class DefaultTheme : Theme {
             radius {"var(--cb-radius)" }
         }
         override val checked: Style<BasicParams> = {
-            background { color { warning } }
-            color { dark }
+            background { color { info } }
+            color { base }
         }
     }
 
@@ -1600,14 +1607,12 @@ open class DefaultTheme : Theme {
             override val solid: Style<BasicParams> = {
                 basic()
                 background { color { "var(--main-color)" } }
-                color { light }
-
+                color { base }
                 hover {
-                    css("filter: brightness(132%);")
+                        css("filter: brightness(80%);") //132%
                 }
-
                 active {
-                    css("filter: brightness(132%);")
+                    css("filter: brightness(80%);")
                 }
             }
 
@@ -1619,9 +1624,12 @@ open class DefaultTheme : Theme {
                     style { solid }
                     color { "var(--main-color)" }
                 }
-
                 hover {
-                    background { color { light } }
+                    css("background-opacity: 0.2;")
+                    background {
+                        color { primary_hover }
+                    }
+
                 }
             }
 
@@ -2106,27 +2114,68 @@ open class DefaultTheme : Theme {
         """
             *,::after,::before{box-sizing:border-box}:root{-moz-tab-size:4;tab-size:4}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}legend{padding:0}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}button{background-color:transparent;background-image:none}fieldset{margin:0;padding:0}ol,ul{list-style:none;margin:0;padding:0}html{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";line-height:1.5}body{font-family:inherit;line-height:inherit}*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}img{border-style:solid}textarea{resize:vertical}input::placeholder,textarea::placeholder{color:#9ca3af}[role=button],button{cursor:pointer}table{border-collapse:collapse}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}button,input,optgroup,select,textarea{padding:0;line-height:inherit;color:inherit}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}
         """ + """
+            html {
+              font-rendering: optimizeLegibilty;
+              color: ${colors.dark}
+            }
+            body {
+              margin: 0;
+              line-height: ${lineHeights.large}
+              font-family: Inter, sans-serif;
+              font-feature-settings: "kern";
+            }
+            textarea {
+              font-family: Inter, sans-serif;
+              line-height: ${lineHeights.tiny}; /* 1 */
+            }
+            a {
+              font-family: Inter, sans-serif;
+              font-weight: 600;
+              font-size: ${fontSizes.small}
+            }
+            p {
+              font-family: Inter, sans-serif;
+              font-size: ${fontSizes.normal};
+              line-height: ${lineHeights.larger};
+            }
+            *::after {
+              border-sizing: border-box;
+              overflow-wrap: break-word;
+            }
             h1 {
+              font-family: Inter, sans-serif;
+              line-height: ${lineHeights.tiny};
+              font-weight: 700;
               font-size: ${fontSizes.huge};
-              font-weight: bold;
+              letter-spacing: ${letterSpacings.small};
+              outline: 0;
             }
             h2 {
+              font-family: Inter, sans-serif;
+              line-height: ${lineHeights.small};
+              font-weight: 600;
               font-size: ${fontSizes.larger};
-              font-weight: bold;
+              letter-spacing: ${letterSpacings.small};
             }
             h3 {
+              font-family: Inter, sans-serif;
+              line-height: smaller;
+              font-weight: 600;
               font-size: ${fontSizes.large};
-              font-weight: bold;
+              letter-spacing: ${letterSpacings.small};
             }
             h4 {
+              font-family: Inter, sans-serif;
               font-size: ${fontSizes.normal};
               font-weight: bold;
             }
             h5 {
+              font-family: Inter, sans-serif;
               font-size: ${fontSizes.small};
               font-weight: bold;
             }
             h6 {
+              font-family: Inter, sans-serif;
               font-size: ${fontSizes.smaller};
               font-weight: bold;
             }

@@ -150,45 +150,35 @@ fun RenderContext.iconsDemo(): Div {
         Theme().icons.fritz2
     )
 
-    return stackUp({
-        alignItems { start }
-        padding { "1rem" }
-    }) {
-        items {
+    return contentFrame {
+        showcaseHeader("Icons")
 
-
-            h1 {
-                +"Icons Showcase"
+        gridBox({
+            columns {
+                repeat(5) { "1fr" }
             }
-
-            gridBox({
-                columns {
-                    repeat(7) { "1fr" }
-                }
-                gap { normal }
-                margin { small }
-                maxWidth { "80%" }
-            }) {
-                icons.forEach {
-                    stackUp({
-                        alignItems { center }
-                        border {
-                            style { solid }
-                            color { light }
-                            width { normal }
-                        }
-                        padding { small }
-                        fontSize { small }
-                    }) {
-                        spacing { tiny }
-                        items {
-                            icon { fromTheme { it } }
-                            p { +it.displayName }
-                        }
+            gap { normal }
+            margins { top { "3rem" } }
+            maxWidth { "80%" }
+        }) {
+            icons.forEach {
+                stackUp({
+                    alignItems { center }
+                    border {
+                        style { solid }
+                        color { light }
+                        width { normal }
+                    }
+                    padding { small }
+                    fontSize { small }
+                }) {
+                    spacing { tiny }
+                    items {
+                        icon { fromTheme { it } }
+                        p { +it.displayName }
                     }
                 }
             }
         }
     }
 }
-

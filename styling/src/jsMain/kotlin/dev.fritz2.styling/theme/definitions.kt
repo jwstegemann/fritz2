@@ -21,8 +21,7 @@ class ResponsiveValue(val sm: Property, val md: Property = sm, val lg: Property 
  * Defines a value that has different expressions for different scales.
  */
 open class ScaledValue(
-    val
-    normal: Property,
+    val normal: Property,
     val small: Property = normal,
     val smaller: Property = small,
     val tiny: Property = smaller,
@@ -58,6 +57,7 @@ class WeightedValue(
  * Defines a value that has different expressions for different thicknesses.
  */
 class Thickness(
+    val none: Property,
     val normal: Property,
     val thin: Property = normal,
     val fat: Property = normal,
@@ -193,6 +193,9 @@ interface Colors {
     val info: ColorProperty
     val light: ColorProperty
     val dark: ColorProperty
+    val base: ColorProperty
+    val primary_hover: ColorProperty
+    val light_hover: ColorProperty
     val disabled: ColorProperty
 }
 

@@ -11,6 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate
 import dev.fritz2.kitchenSink.model.*
+import dev.fritz2.styling.params.AlignItemsValues
 import kotlinx.coroutines.flow.combine
 
 val defaultList = listOf(
@@ -112,8 +113,8 @@ fun RenderContext.tableDemo(): Div {
 
     defaultList.sortedWith(compareBy { it.fullName })
 
-    return div {
-        h1 { +"Table Showcase" }
+    return contentFrame {
+        showcaseHeader("Tables")
 
         val selectedStore = object : RootStore<List<Person>>(emptyList()) {
 
@@ -141,17 +142,18 @@ fun RenderContext.tableDemo(): Div {
         }
 
         val selectionModeStore = storeOf(TableComponent.Companion.SelectionMode.NONE)
-        lineUp {
-            items {
-                TableComponent.Companion.SelectionMode.values().toList().map { mode ->
-                    clickButton { text(mode.toString()) }.events.map { mode } handledBy selectionModeStore.update
+        componentFrame {
+            lineUp {
+                items {
+                    TableComponent.Companion.SelectionMode.values().toList().map { mode ->
+                        clickButton { text(mode.toString()) }.events.map { mode } handledBy selectionModeStore.update
+                    }
                 }
             }
         }
 
-
         selectedStore.data.render { list ->
-            p { +"Aktuell sind ${list.size} Zeilen ausgewählt!" }
+            paragraph { +"Aktuell sind ${list.size} Zeilen ausgewählt!" }
         }
 
 
