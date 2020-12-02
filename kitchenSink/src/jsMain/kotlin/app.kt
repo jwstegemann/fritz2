@@ -1,9 +1,6 @@
 import dev.fritz2.binding.RootStore
 import dev.fritz2.components.*
-import dev.fritz2.dom.html.A
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.P
-import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.*
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
 import dev.fritz2.styling.name
@@ -158,6 +155,36 @@ fun RenderContext.warningBox(init: P.() -> Unit): Div {
     }
 }
 
+fun RenderContext.infoBox(init: P.() -> Unit): Div {
+    return (::div.styled {
+        margins {
+            top { larger }
+            bottom { larger }
+        }
+        paddings {
+            top { small }
+            left { small }
+            bottom { small }
+            right { normal }
+        }
+        borders {
+            left {
+                width{ "4px" }
+                style { solid }
+                color { info }
+            }
+        }
+        radius { normal }
+        background {
+            color { "rgb(201 255 208)" }
+        }
+    }){
+        p {
+            init()
+        }
+    }
+}
+
 
 val componentFrame: Style<BasicParams> = { // Auslagerung von Style
     width { "100%" }
@@ -202,6 +229,22 @@ fun RenderContext.simpleLinkWithBackground(linkUri: String, linkText: String): A
     }) {
         +linkText
         href(linkUri)
+    }
+}
+
+fun RenderContext.externalLink(text: String, url: String, newTab: Boolean = true): A {
+    return (::a.styled {
+        fontSize { normal }
+        color { primary }
+        hover {
+            color { tertiary }
+            background { color { light_hover } }
+            radius { normal }
+        }
+    }) {
+        +text
+        href(url)
+        if(newTab) target("_new")
     }
 }
 
@@ -260,8 +303,8 @@ fun RenderContext.menuHeader(init: P.() -> Unit): P {
             left { small }
             right { small }
         }
-        fontSize{small}
-        fontWeight { "700" }
+        fontSize{ small }
+        fontWeight { bold }
         color { tertiary }
     })  {
         init()
@@ -269,7 +312,7 @@ fun RenderContext.menuHeader(init: P.() -> Unit): P {
 }
 
 
-fun RenderContext.menuAnchor(linkText: String): Div {
+fun RenderContext.menuAnchor(linkText: String): P {
 
     val selected = style("prefix") {
         width { "90%" }
@@ -286,13 +329,11 @@ fun RenderContext.menuAnchor(linkText: String): Div {
         }
     }
 
-    val isActive = router.data.map { hash ->
-        console.log(hash)  //druckt in die Konsole im Browser
-        hash == linkText //map den reinkommenden Wert des Flow auf einen Boolean
-    }.distinctUntilChanged().onEach { if (it) PlaygroundComponent.update() }
+    val isActive = router.data.map { hash -> hash == linkText }
+        .distinctUntilChanged().onEach { if (it) PlaygroundComponent.update() }
 
-    return (::div.styled {
-        width { "90%" }
+    return (::p.styled {
+        width { full }
         radius { normal }
         border {
             width { none }
@@ -308,19 +349,13 @@ fun RenderContext.menuAnchor(linkText: String): Div {
             left { small }
             right { small }
         }
+//        fontSize { small }
+        fontWeight { medium }
+        css("cursor: pointer")
     }) {
         className(selected.whenever(isActive).name) // der Name der StyleClass wird das zu stylende Element (in diesem Fall der Div-Container) angehängt
-        nonHoverAnchor(linkText)
-    }
-}
-
-fun RenderContext.nonHoverAnchor(linkText: String): A {
-    return (::a.styled {
-        fontSize { small }
-        fontWeight { "500" }
-    }) {
-        +linkText
         clicks.map { linkText } handledBy router.navTo
+        +linkText
     }
 }
 
