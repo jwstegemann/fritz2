@@ -2036,6 +2036,7 @@ open class DefaultTheme : Theme {
                 after {
                     css("content:\"${value.asList().joinToString("\\A")}\";")
                     background { color { dark } }
+                    radius { small }
                     color { light }
                     display { none }
                     overflow { hidden }
@@ -2063,7 +2064,8 @@ open class DefaultTheme : Theme {
                 }
                 hover {
                     after {
-                        display { block }opacity { "1" }
+                        display { block }
+                        opacity { "1" }
                     }
                 }
                 tooltipPlacement.invoke(placement)()

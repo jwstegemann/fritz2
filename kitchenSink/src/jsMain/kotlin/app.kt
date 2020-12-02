@@ -1,6 +1,9 @@
 import dev.fritz2.binding.RootStore
 import dev.fritz2.components.*
-import dev.fritz2.dom.html.*
+import dev.fritz2.dom.html.A
+import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.P
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.mount
 import dev.fritz2.routing.router
 import dev.fritz2.styling.name
@@ -39,6 +42,7 @@ const val styling_ = "Styling"
 const val theme_ = "Theme"
 const val tooltip_ = "Tooltip"
 const val responsive_ = "Responsiveness"
+const val textarea_ = "Textarea"
 const val color_ = "Color"
 
 val router = router(welcome_)
@@ -505,7 +509,7 @@ fun main() {
                         menuAnchor(radios_)
                         menuAnchor(switch_)
                         menuAnchor(datatable_)
-                        menuAnchor(textarea_, router)
+                        menuAnchor(textarea_)
 
                         menuHeader { +"FEEDBACK" }
                         menuAnchor(spinner_)
