@@ -1992,7 +1992,7 @@ open class DefaultTheme : Theme {
                     css("content:\"${value.asList().joinToString("\\A")}\";")
                     background { color{ dark } }
                     color{ light }
-                    display { block }
+                    display { none }
                     overflow { hidden }
                     opacity { "0" }
                     zIndex { "20" }
@@ -2011,12 +2011,14 @@ open class DefaultTheme : Theme {
                 }
                 focus{
                     after{
+                        display { block }
                         opacity { "1" }
                     }
 
                 }
                 hover {
                    after{
+                       display { block }
                        opacity { "1" }
                    }
                 }
