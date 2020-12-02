@@ -49,6 +49,8 @@ import kotlinx.coroutines.flow.map
  * field to grasp, how the mapping between a control and a rendering strategie is done.
  *
  */
+// TODO: Add support for disable
+// TODO: Add support for invalid for every control! (currently only works for inputField)
 @ComponentMarker
 open class FormControlComponent {
     companion object {
@@ -224,6 +226,24 @@ open class FormControlComponent {
             }
         }
     }
+
+    open fun radioGroup(
+        styling: BasicParams.() -> Unit = {},
+        store: Store<String>,
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = ControlNames.radioGroup,
+        build: RadioGroupComponent<String>.() -> Unit
+    ) {
+        control.set(ControlNames.radioGroup) {
+            radioGroup(styling, store, baseClass, id, prefix) {
+                build()
+            }
+        }
+    }
+
+    // TODO: Add support for ``textArea``
+    // TODO: Add support for ``switch``
 
     fun render(
         styling: BasicParams.() -> Unit = {},

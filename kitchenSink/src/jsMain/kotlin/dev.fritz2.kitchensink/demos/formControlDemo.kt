@@ -1,22 +1,24 @@
 package dev.fritz2.kitchensink.demos
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
-import dev.fritz2.components.*
+import dev.fritz2.components.formControl
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.dom.values
 import dev.fritz2.kitchensink.base.*
-import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.rgb
 import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
-val myItemList = listOf("ffffff", "rrrrrr", "iiiiii", "tttttt", "zzzzzz", "222222")
+/*
+*
+* Just leave this out of the demo for now.
+* Needs to be reworked after 0.8 release!
+* (It does work and looks quite nice, but no time for documenting this in an enlightening way for the
+* demo application!)
+*
 
 // extend ControlComponent in order to override or extend functions for controls
 // and for setting up other renderers!
@@ -169,23 +171,31 @@ fun RenderContext.myFormControl(
     component.render(styling, baseClass, id, prefix, this)
 }
 
+ */
+
 @ExperimentalCoroutinesApi
 fun RenderContext.formControlDemo(): Div {
-    val solution = "fritz2"
-    val framework = storeOf("")
-
-    val mySelectedItems = listOf("ffffff", "222222")
-
-    val selectedItemsStore = storeOf<List<String>>(mySelectedItems)
-
     return contentFrame {
         showcaseHeader("FormControl")
         paragraph {
-            +"FormControls take a single form element and take care of styling and validation. You cannot have more than one form element in a FormControl."
+            +"FormControls take a single form element and take care of wrapping it with..."
+            ul {
+                li { +"a label" }
+                li { +"an optional marker if input is required " }
+                li { +"an optional helper-text" }
+                li { +"an error message and marker if input is invalid" }
+            }
         }
-        showcaseSection("Input formcontrol")
-        paragraph { +"A simple formcontrol with required input, with catches wrong inputs and allows you to create a custom alert message." }
+
+        showcaseSection("Usage")
+        paragraph {
+            +"Let's start with a complete FormControl wrapping an InputField, "
+            +"that catches wrong inputs and shows a custom error message, mark the input as required and provides"
+            +"an helper-text:"
+        }
         componentFrame {
+            val solution = "fritz2"
+            val framework = storeOf("")
             formControl {
                 label { "Please input the name of your favorite Kotlin based web framework." }
                 required { true }
@@ -209,95 +219,107 @@ fun RenderContext.formControlDemo(): Div {
                 }
             }
         }
-        // TODO: cannot put $ in source code at <put dollarsign here>
         playground {
-            source("""
-                label { "Please input the name of your favorite Kotlin based web framework." }
-                required { true }
-                helperText { "You shouldn't need a hint." }
-                errorMessage {
-                    framework.data.map {
-                        // if something is wrong, just send a none empty string to errorMessage!
-                        // the control will handle the rest for you :-)
-                        if (it.isNotEmpty() && it.toLowerCase() != solution) {
-                            "'<put dollarsign here>it' is completely wrong."
-                        } else ""
-                    }
-                }
-                //just use the appropriate *single element* control with its specific API!
-                inputField(store = framework) {
-                    placeholder("$solution for example")
-                }
-                // throws an exception -> only one (and the first) control is allowed!
-                inputField {
-                    placeholder("This control throws an exception because a form control may only contain one control.")
-                }
-            """.trimIndent())
-        }
-        val loveString = "I love fritz2 with all my heart."
-        val hateString = "I hate your guts, fritz2!"
-        val loveStore = object : RootStore<Boolean>(true) {
-            val changedMyMind = handleAndEmit<Boolean, String> { _, checked ->
-                emit(if (checked) loveString else hateString)
-                checked
-            }
-        }
-        val textStore = RootStore<String>(loveString)
-        loveStore.changedMyMind handledBy textStore.update
-
-
-        showcaseSection("Checkbox formcontrol")
-        paragraph { +"Form with a single checkbox, custom color, form control label and helpertext" }
-        componentFrame {
-            formControl {
-                label { "Label us interested: How do you feel about fritz2? We would really love to hear your opinion. " }
-                helperText { "So good to have options." }
-                checkbox(
-                    {},
-                    id = "check1"
-                ) {
-                    label(textStore.data)
-                    size { large }
-                    checked { loveStore.data }
-                    events {
-                        changes.states() handledBy loveStore.changedMyMind
-                    }
-                }
-            }
-        }
-        playground {
-            source("""
+            source(
+                """
+                val solution = "fritz2"
+                val framework = storeOf("")
+                    
                 formControl {
-                label { "Label us interested: How do you feel about fritz2? We would really love to hear your opinion. " }
+                    label { "Please input the name of your favorite Kotlin based web framework." }
+                    required { true }
+                    helperText { "You shouldn't need a hint." }
+                    errorMessage {
+                        framework.data.map {
+                            // if something is wrong, just send a none empty string to errorMessage!
+                            if (it.isNotEmpty() && it.toLowerCase() != solution) {
+                                "'${'$'}it' is completely wrong."
+                            } else ""
+                        }
+                    }
+                    // embed the desired control with its _specific_ API!
+                    inputField(store = framework) {
+                        placeholder("${'$'}solution for example")
+                    }
+                }
+            """.trimIndent()
+            )
+        }
+
+        showcaseSection("Use other controls")
+        paragraph {
+            +"A FromControl can wrap lots of different types of form elements."
+            +"At the moment the following controls are supported out-of-the-box:"
+            ul {
+                li { +"InputField" }
+                li { +"Checkbox" }
+                li { +"CheckboxGroup" }
+                li { +"RadioGroup" }
+            }
+        }
+        paragraph {
+            +"We would like to show you two more examples with other controls:"
+        }
+
+        showcaseSubHeader("Checkbox")
+        componentFrame {
+            val loveStore = storeOf(true)
+            val labels = mapOf(
+                true to "I love fritz2 with all my heart.",
+                false to "I hate your guts, fritz2!"
+            )
+
+            formControl {
+                label { "Label us interested: How do you feel about fritz2? We would really love to hear your opinion." }
                 helperText { "So good to have options." }
-                checkbox(
-                    {},
-                    id = "check1"
-                ) {
-                    label(textStore.data)
-                    size { large }
+                // embed a single checkbox and use its specific API!
+                checkbox {
+                    label(loveStore.data.map { labels[it]!! })
                     checked { loveStore.data }
                     events {
-                        changes.states() handledBy loveStore.changedMyMind
+                        changes.states() handledBy loveStore.update
                     }
                 }
             }
-            """.trimIndent())
         }
-        showcaseSection("Show selected input")
-        paragraph { +"Form with a small checkbox group, no label, no helpertext, formlayout horizontal" }
+        playground {
+            source(
+                """
+                val loveStore = storeOf(true)
+                val labels = mapOf(
+                    true to "I love fritz2 with all my heart.",
+                    false to "I hate your guts, fritz2!"
+                )
+    
+                formControl {
+                    label { "Label us interested: How do you feel about fritz2? We would really love to hear your opinion." }
+                    helperText { "So good to have options." }
+                    // embed a single checkbox and use its specific API!
+                    checkbox {
+                        label(loveStore.data.map{ labels[it]!! })
+                        checked { loveStore.data }
+                        events {
+                            changes.states() handledBy loveStore.update
+                        }
+                    }
+                }
+            """.trimIndent()
+            )
+        }
+        showcaseSubHeader("CheckboxGroup")
+
+        val myItemList = "fritz2".toCharArray().map { it.toString() }
+        val mySelectedItems = myItemList.take(2)
+        val selectedItemsStore = storeOf(mySelectedItems)
+
+        paragraph { +"FormControl with a small checkbox group, no label, no helper-text, but horizontal checkboxes:" }
         componentFrame {
+
             formControl {
                 label { "Choose one or more" }
-                helperText { "..." }
-
-                checkboxGroup(
-                    store = selectedItemsStore,
-                    id = "checkGroup1"
-                ) {
+                checkboxGroup(store = selectedItemsStore) {
                     items { flowOf(myItemList) }
                     direction { row }
-                    size { small }
                 }
             }
         }
@@ -315,57 +337,75 @@ fun RenderContext.formControlDemo(): Div {
             radius { "5%" }
         }) {
             h4 { +"Selected:" }
-            ul {
-                selectedItemsStore.data.renderEach { selectedItem ->
-                    li { +selectedItem }
+            selectedItemsStore.data.render {
+                p {
+                    +it.joinToString("")
                 }
             }
         }
         playground {
-            source("""
-            dev.fritz2.kitchensink.getComponentFrame {
+            source(
+                """
+            val myItemList = "fritz2".toCharArray().map { it.toString() }
+            val mySelectedItems = myItemList.take(2)
+            val selectedItemsStore = storeOf(mySelectedItems)
+                                
                 formControl {
                     label { "Choose one or more" }
-                    helperText { "..." }
-    
-                    checkboxGroup(
-                        store = selectedItemsStore,
-                        id = "checkGroup1"
-                    ) {
-                        items { flowOf(dev.fritz2.kitchensink.demos.getMyItemList) }
+                    checkboxGroup(store = selectedItemsStore) {
+                        items { flowOf(myItemList) }
                         direction { row }
-                        size { small }
                     }
                 }
-            }
-            (::div.styled {
-                background {
-                    color { light }
-                }
-                margins {
-                    top { "1.25rem" }
-                }
-                paddings {
-                    left { "0.5rem" }
-                    right { "0.5rem" }
-                }
-                radius { "5%" }
-            }) {
-                h4 { +"Selected:" }
-                ul {
-                    selectedItemsStore.data.renderEach { selectedItem ->
-                        li { +selectedItem }
-                    }
-                }
-            }
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
+
+        showcaseSection("Embed custom control")
+
+        // TODO: infoBox Auslagern
+        (::blockquote.styled {
+            borders {
+                left {
+                    color { rgb(221, 107, 32) }
+                    width { "4px" }
+                    style { solid }
+                }
+            }
+            radius { "4px" }
+            background {
+                color { rgb(254, 235, 200) }
+            }
+            margins {
+                top { normal }
+            }
+            paddings {
+                right { normal }
+                left { small }
+                top { small }
+                bottom { small }
+            }
+        }) {
+            p {
+                strong { +"Todo:" }
+                +" Add an example of a custom control and its integration into the FormControl including a custom "
+                +"surrounding HTML structure."
+            }
+        }
+
+        /*
+        *
+        * Needs to be reactivated after 0.8 release.
+        * See top of this file for further information!
+        *
+
         // use your own formControl! Pay attention to the derived component receiver.
         showcaseSection("Custom FormControl")
         paragraph {
             +"""This control has overridden the control function to implement a special control. 
                     |It is combined with a hand made renderer for the surrounding custom structure.""".trimMargin()
         }
+
         val customValueSelected = storeOf("some")
         componentFrame {
             myFormControl {
@@ -394,9 +434,10 @@ fun RenderContext.formControlDemo(): Div {
             customValueSelected.data.render { p { +it } }
         }
         playground {
-            source("""
-                dev.fritz2.kitchensink.getComponentFrame {
-                    dev.fritz2.kitchensink.demos.myFormControl {
+            source(
+                """
+                componentFrame {
+                    myFormControl {
                         label { "Label next to the control just to be different" }
                         helperText { "Helper text below control" }
                         mySingleSelectComponent(store = customValueSelected) {
@@ -421,7 +462,10 @@ fun RenderContext.formControlDemo(): Div {
                     h4 { +"Selected:" }
                     customValueSelected.data.render { p { +it } }
                 }
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
+
+         */
     }
 }
