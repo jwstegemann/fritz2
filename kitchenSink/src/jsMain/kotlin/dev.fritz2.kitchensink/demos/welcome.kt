@@ -48,16 +48,16 @@ fun RenderContext.welcome(): Div {
 
                 paragraph {
                     +"""
-            This is a set of ready to go components to build reactive themable web-apps using fritz2
-            following a consistent design system.
-            """.trimIndent()
+                        This is a set of ready to go components to build reactive themable web-apps using fritz2
+                        following a consistent design system.
+                    """.trimIndent()
                 }
 
                 paragraph {
                     +"""
-            While the components can be used out of the box with the default theme they are designed to be
-            customizable and can easily be styled and composed to fit your needs.
-            """.trimIndent()
+                        While the components can be used out of the box with the default theme they are designed to be
+                        customizable and can easily be styled and composed to fit your needs.
+                    """.trimIndent()
                 }
 
                 warningBox {
