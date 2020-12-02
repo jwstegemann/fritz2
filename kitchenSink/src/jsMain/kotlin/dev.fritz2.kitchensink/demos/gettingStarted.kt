@@ -25,22 +25,23 @@ fun RenderContext.gettingStarted(): Div {
 
         showcaseSection("Installation")
         paragraph {
-            +"Inside your Kotlin multiplatform project add the following to your "
+            +"To see how to create a new fritz2 Multiplatform project take a look "
+            externalLink("here", "https://docs.fritz2.dev/ProjectSetup.html")
+            +" ."
+        }
+        paragraph {
+            +"Add the following to your "
             c("build.gradle.kts")
-            +" or "
-            c("build.gradle")
             +" file in the dependencies section:"
         }
         highlight {
             source(
                 """
-                 |// build.gradle.kts
-                 |dependencies {
-                 |   implementation("dev.fritz2:components:0.8")
-                 |}
-                 |// build.gradle
-                 |dependencies {
-                 |   implementation 'dev.fritz2:components:0.8'
+                 |val commonMain by getting {
+                 |  dependencies {
+                 |      implementation(kotlin("stdlib"))
+                 |      implementation("dev.fritz2:components:0.8")
+                 |  }
                  |}
                 """.trimMargin()
             )
