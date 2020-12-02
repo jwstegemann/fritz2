@@ -21,6 +21,30 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
+const val settingsTableStaticCss = """
+        font-family: Inter, sans-serif;
+        color: rgb(45, 55, 72);
+        text-align: left;
+        margin-top: 32px;
+        width: 100%;
+        border-collapse: collapse;
+        
+        & > tr > th {
+            background: #F7FAFC;
+            font-weight: 600;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        & > tr > td {
+            padding: 0.5rem;
+            border-top-width: 1px;
+            border-color: lightgray;
+            font-size: 0.875rem;
+            white-space: normal;
+        }
+"""
+
 fun RenderContext.showcaseHeader(text: String) {
     (::h1.styled {
         fontFamily { "Inter, sans-serif" }
@@ -111,7 +135,7 @@ val componentFrame: Style<BasicParams> = { // Auslagerung von Style
     padding { normal }
 }
 
-fun RenderContext.componentFrame(init: Div.() -> Unit): Div { //Auslagerung von Komponente
+fun RenderContext.componentFrame(padding: Boolean = true, init: Div.() -> Unit): Div { //Auslagerung von Komponente
     return (::div.styled {
         width { "100%" }
         margins {
@@ -122,7 +146,7 @@ fun RenderContext.componentFrame(init: Div.() -> Unit): Div { //Auslagerung von 
             color { light }
         }
         radius { larger }
-        padding { normal }
+        if (padding) padding { normal }
     }){
         init()
     }
@@ -197,21 +221,24 @@ fun RenderContext.navAnchor(linkText: String, href: String): Div {
 
 val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
 
-val welcome_ = "Welcome"
-val icons_ = "Icons"
-val spinner_ = "Spinner"
-val input_ = "Input"
-val buttons_ = "Buttons"
-val formcontrol_ = "Formcontrol"
-val flexbox_ = "Flexbox"
-val gridbox_ = "Gridbox"
-val checkboxes_ = "Checkboxes"
-val radios_ = "Radios"
-val switch_ = "Switch"
-val stack_ = "Stack"
-val modal_ = "Modal"
-val popover_ = "Popover"
-val datatable_ = "Datatable"
+const val welcome_ = "Welcome"
+const val icons_ = "Icons"
+const val spinner_ = "Spinner"
+const val input_ = "Input"
+const val buttons_ = "Buttons"
+const val formcontrol_ = "Formcontrol"
+const val flexbox_ = "Flexbox"
+const val gridbox_ = "Gridbox"
+const val checkboxes_ = "Checkboxes"
+const val radios_ = "Radios"
+const val switch_ = "Switch"
+const val stack_ = "Stack"
+const val modal_ = "Modal"
+const val popover_ = "Popover"
+const val datatable_ = "Datatable"
+const val styling_ = "Styling"
+const val theme_ = "Theme"
+const val responsive_ = "Responsiveness"
 
 
 object ThemeStore : RootStore<Int>(0) {
@@ -310,6 +337,8 @@ fun RenderContext.c(text: String) {
 
 @ExperimentalCoroutinesApi
 fun main() {
+    staticStyle("settings-table", settingsTableStaticCss)
+
     val router = router("")
 
     render(themes.first()) { theme ->
@@ -381,13 +410,19 @@ fun main() {
                     items {
                         (::p.styled {
                             width { "100%" }
-                            margins { top{ huge } }
+                            margins { top { huge } }
                             paddings {
                                 bottom { "1rem" }
                             }
                         }) {
                             menuAnchor(welcome_, router)
                         }
+                        menuHeader { +"FEATURES" }
+                        menuAnchor(styling_, router)
+                        menuAnchor(theme_, router)
+                        menuAnchor(responsive_, router)
+
+
                         menuHeader { +"LAYOUT" }
                         menuAnchor(flexbox_, router)
                         menuAnchor(gridbox_, router)
@@ -442,6 +477,9 @@ fun main() {
                             popover_ -> popoverDemo()
                             welcome_ -> welcome()
                             datatable_ -> tableDemo()
+                            styling_ -> stylingDemo()
+                            theme_ -> themeDemo()
+                            responsive_ -> responsiveDemo()
                             else -> welcome()
                         }
                     }

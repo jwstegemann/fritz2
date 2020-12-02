@@ -88,12 +88,14 @@ fun RenderContext.buttonDemo(): Div {
 
                     pushButton {
                         icon { fromTheme { arrowLeft } }
+                        color { danger }
                         text("previous")
                     }
 
                     pushButton {
                         icon { fromTheme { arrowRight } }
                         iconRight()
+                        color { warning }
                         text("next")
                     }
 
@@ -248,7 +250,7 @@ fun RenderContext.buttonDemo(): Div {
                 """
                     val buttonStore = object : RootStore<Int>(0) {
                         val loading = tracker()
-                
+                    
                         val showMsg = handle { model ->
                             loading.track("running...") {
                                 delay(3000)

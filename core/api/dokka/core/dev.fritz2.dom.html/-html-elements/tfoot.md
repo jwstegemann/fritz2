@@ -1,0 +1,5 @@
+[core](../../index.md) / [dev.fritz2.dom.html](../index.md) / [HtmlElements](index.md) / [tfoot](./tfoot.md)
+
+# tfoot
+
+(js) `open fun tfoot(baseClass: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, id: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`? = null, content: `[`TFoot`](../-t-foot/index.md)`.() -> `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)`): `[`TFoot`](../-t-foot/index.md)
