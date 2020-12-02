@@ -46,7 +46,7 @@ fun RenderContext.showcaseSubHeader(text: String) {
         fontWeight { "600" }
         fontSize { Theme().fontSizes.larger }
         letterSpacing { Theme().letterSpacings.small }
-    }) { +text}
+    }) { +text }
 }
 
 fun RenderContext.showcaseSection(text: String) {
@@ -212,6 +212,7 @@ val stack_ = "Stack"
 val modal_ = "Modal"
 val popover_ = "Popover"
 val datatable_ = "Datatable"
+val textarea_ = "Textarea"
 
 
 object ThemeStore : RootStore<Int>(0) {
@@ -228,7 +229,7 @@ fun RenderContext.menuHeader(init: P.() -> Unit): P {
             left { small }
             right { small }
         }
-        fontSize{small}
+        fontSize { small }
         fontWeight { "700" }
         color { tertiary }
     })  {
@@ -377,11 +378,11 @@ fun main() {
                     }
                 }, id = "menue-left")
                 {
-                    spacing{tiny}
+                    spacing { tiny }
                     items {
                         (::p.styled {
                             width { "100%" }
-                            margins { top{ huge } }
+                            margins { top { huge } }
                             paddings {
                                 bottom { "1rem" }
                             }
@@ -401,6 +402,7 @@ fun main() {
                         menuAnchor(radios_, router)
                         menuAnchor(switch_, router)
                         menuAnchor(datatable_, router)
+                        menuAnchor(textarea_, router)
 
                         menuHeader { +"FEEDBACK" }
                         menuAnchor(spinner_, router)
@@ -442,6 +444,7 @@ fun main() {
                             popover_ -> popoverDemo()
                             welcome_ -> welcome()
                             datatable_ -> tableDemo()
+                            textarea_ -> textAreaDemo()
                             else -> welcome()
                         }
                     }
