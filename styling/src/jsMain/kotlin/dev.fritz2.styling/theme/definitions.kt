@@ -197,6 +197,7 @@ interface Colors {
     val primary_hover: ColorProperty
     val light_hover: ColorProperty
     val disabled: ColorProperty
+    val focus: ColorProperty
 }
 
 /**
@@ -371,6 +372,7 @@ interface Icons {
 
 interface CheckboxStyles {
     val sizes: CheckboxSizes
+    val input: Style<BasicParams>
     val icon: Style<BasicParams>
     val label: Style<BasicParams>
     val default: Style<BasicParams>
@@ -385,6 +387,7 @@ interface CheckboxSizes {
 
 interface RadioStyles {
     val sizes: RadioSizes
+    val input: Style<BasicParams>
     val label: Style<BasicParams>
     val default: Style<BasicParams>
     val selected: Style<BasicParams>
@@ -398,6 +401,7 @@ interface RadioSizes {
 
 interface SwitchStyles {
     val sizes: SwitchSizes
+    val input: Style<BasicParams>
     val dot: Style<BasicParams>
     val label: Style<BasicParams>
     val default: Style<BasicParams>

@@ -1,8 +1,6 @@
 package dev.fritz2.components
 
-import dev.fritz2.components.SwitchComponent.Companion.switchIconStaticCss
 import dev.fritz2.components.SwitchComponent.Companion.switchInputStaticCss
-import dev.fritz2.components.SwitchComponent.Companion.switchLabel
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Label
@@ -67,18 +65,6 @@ class SwitchComponent {
                 outline: none;
             }           
             """
-        )
-        val switchLabel = staticStyle("switchComponent", """
-            &[data-disabled] {
-                opacity: .5    
-            }
-        """)
-        val switchIconStaticCss = staticStyle("switchIcon",
-            """
-            &[data-disabled] {
-                background-color:var(--cb-disabled) !important;
-            }
-        """
         )
     }
 
@@ -172,57 +158,44 @@ fun RenderContext.switch(
     val component = SwitchComponent().apply(build)
     val inputId = (id ?: uniqueId()) + "-input"
 
-    val labelClass = if( baseClass == null ) {
-        switchLabel
-    } else {
-        baseClass + switchLabel
-    }
 
     return (::label.styled(
-        baseClass = labelClass,
+        baseClass = baseClass,
         id = id,
         prefix = prefix
     ) {
         component.size.invoke(Theme().switch.sizes)()
     }) {
        `for`(inputId)
-        attr("data-disabled", component.disabled)
         (::input.styled(
             baseClass = switchInputStaticCss,
             prefix = prefix,
             id = inputId
-        ){ children("&:focus + div") {
-            border {
-                color { "#3182ce" }
+        ){
+            Theme().switch.input()
+            children("&[checked] + div") {
+                component.checkedStyle()
             }
-            boxShadow { outline }
-        }}) {
+        }) {
             type("checkbox")
             checked(component.checked)
             disabled(component.disabled)
             component.events?.invoke(this)
         }
 
-        component.checked.render { checked ->
-                (::div.styled(switchIconStaticCss){
-                    Theme().switch.default()
-                    styling()
-                    if( checked ) {
-                        component.checkedStyle()
-                    }
-                }) {
-                    attr("data-disabled", component.disabled)
-                    (::div.styled() {
-                        Theme().switch.dot()
-                        component.dotStyle()
-                       if( checked ) {
-                           css("transform:translateX(calc(var(--sw-width) - var(--sw-height)));")
-                       }
-                    }) {
 
-                    }
+            (::div.styled(){
+                Theme().switch.default()
+                styling()
+            }) {
+                (::div.styled() {
+                    Theme().switch.dot()
+                    component.dotStyle()
+                }) {
+
                 }
-        }
+            }
+
         component.label?.let {
             (::div.styled() {
                 component.labelStyle()
