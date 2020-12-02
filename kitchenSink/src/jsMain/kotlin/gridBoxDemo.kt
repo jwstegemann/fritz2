@@ -25,13 +25,13 @@ fun RenderContext.gridBoxDemo(): Div {
                 "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout",
                 "CSS based grid-layout"
             )
-            +"styling possibilities."
+            +"styling options."
         }
         showcaseSection("Usage")
         paragraph {
-            +"In order to create a Gridbox just pass some specialized grid styling information."
-            +" In this simple case we define a five column based grid layout and insert seven items, thus"
-            +" two items will be rendered upon a second row:"
+            +"In order to create a Gridbox, just pass some specialized grid styling information."
+            +" In this simple example, a five column based grid layout was defined, but seven items where inserted."
+            +" The surplus items will be rendered into a second row:"
         }
         componentFrame {
             gridBox({
@@ -76,10 +76,10 @@ fun RenderContext.gridBoxDemo(): Div {
 
         showcaseSection("Complex layout")
         paragraph {
-            +"Now we want to show a rather complex layout (including responsive behaviour), in order to "
-            +"present a very helpful technique based upon Kotlins"
+            +"Now have a look at this rather complex layout (including responsive behaviour), in order to "
+            +"learn about a very helpful technique based on Kotlin's"
             c("objects")
-            +" for defining the overall column layout."
+            +", for defining the overall column layout."
         }
         componentFrame {
             val toggle = storeOf(false)
@@ -247,19 +247,19 @@ fun RenderContext.gridBoxDemo(): Div {
             }
         }) {
             p {
-                strong { +"Note:" }
-                +" Also, this layout transforms with screensize. Try resizing your browser window to see "
-                +"that the sidebar will gain its own row when the space becomes narrow."
-                +"The content appears on a separate row below then."
+                strong { +"Please note:" }
+                +" This layout also transforms with screen size. Try resizing your browser window to see "
+                +"how the sidebar is replaced into its own row when the space becomes narrow."
+                +"The content then appears on a separate row below that."
             }
         }
 
         showcaseSubHeader("Column layout")
         paragraph {
-            +"We use a plain old Kotlin object in order to define the "
+            +"Use a simple Kotlin object in order to define the "
             strong { +"types" }
             +" of columns."
-            +" Then we can refer to its properties later within the column definitions:"
+            +" Then you can refer to its properties later within the column definitions:"
         }
         playground {
             source(
@@ -290,7 +290,7 @@ fun RenderContext.gridBoxDemo(): Div {
             )
         }
         paragraph {
-            +"For defining the content, we use the object fields too:"
+            +"For defining the content, also use the object fields:"
         }
         playground {
             source(
@@ -317,8 +317,9 @@ fun RenderContext.gridBoxDemo(): Div {
 
         showcaseSubHeader("Defining Areas")
         paragraph {
-            +"In order to group cells together, you can define areas also by referring to the name of the cell type."
-            +" This technique is used for a simple toggable drawer that appears on the right side by a button click."
+            +"In order to group cells together, you can also define areas by referring to the name of the cell type."
+            +" This technique is used for a simple togglable drawer that appears on the right side with the click of a"
+            +" button."
         }
         playground {
             source(
@@ -330,7 +331,7 @@ fun RenderContext.gridBoxDemo(): Div {
                     box({
                         row {
                             start { grid.HEADER.start } // refer to the cell type and specify the starting
-                            end { span(2) } // just occupy two rows
+                            end { span(2) } // occupy just two rows
                         }
                         column {
                             start { "3" } // start at the third vertical gap
