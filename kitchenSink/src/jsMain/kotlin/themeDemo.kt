@@ -54,6 +54,82 @@ fun RenderContext.themeDemo(): Div {
                     td { c("ResponsiveValue") }
                     td { +"break points for different screen sizes that apply when working with ResponsiveValues" }
                 }
+                tr {
+                    td { +"space" }
+                    td { c("ScaledValue") }
+                    td { +"scale for spacing (margin, padding, etc.)" }
+                }
+                tr {
+                    td { +"position" }
+                    td { c("ScaledValue") }
+                    td { +"scale for positions (top, bottom, etc.)" }
+                }
+                tr {
+                    td { +"fontSizes" }
+                    td { c("ScaledValue") }
+                    td { +"scale for font-sizes" }
+                }
+                tr {
+                    td { +"colors" }
+                    td { c("Colors") }
+                    td { +"theme's color-scheme" }
+                }
+                tr {
+                    td { +"fonts" }
+                    td { c("Fonts") }
+                    td { +"definition of used fonts" }
+                }
+                tr {
+                    td { +"lineHeights" }
+                    td { c("ScaledValue") }
+                    td { +"scale for line-heights" }
+                }
+                tr {
+                    td { +"letterSpacings" }
+                    td { c("ScaledValue") }
+                    td { +"scale for letter-spacing" }
+                }
+                tr {
+                    td { +"sizes" }
+                    td { c("Sizes") }
+                    td { +"scale for sizes (width, height)" }
+                }
+                tr {
+                    td { +"borderWidths" }
+                    td { c("Thickness") }
+                    td { +"scale for border-widths" }
+                }
+                tr {
+                    td { +"radii" }
+                    td { c("ScaledValue") }
+                    td { +"scale for border-radius" }
+                }
+                tr {
+                    td { +"shadows" }
+                    td { c("Shadows") }
+                    td { +"set of shadows used in the theme" }
+                }
+                tr {
+                    td { +"zIndices" }
+                    td { c("ZIndices") }
+                    td { +"scheme used for layering" }
+                }
+                tr {
+                    td { +"opacities" }
+                    td { c("WeightedValue") }
+                    td { +"scale for opacities" }
+                }
+                tr {
+                    td { +"gaps" }
+                    td { c("ScaledValue") }
+                    td { +"scale for gaps" }
+                }
+                tr {
+                    td { +"icons" }
+                    td { c("Icons") }
+                    td { +"set of icons used in the theme" }
+                }
+
             }
         }
 
