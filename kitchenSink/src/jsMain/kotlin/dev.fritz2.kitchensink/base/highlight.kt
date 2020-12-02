@@ -14,7 +14,7 @@ class HighlightComponent {
     init {
         window.setTimeout({
             try {
-                js("""document.querySelectorAll('.dev.fritz2.kitchensink.base.highlight').forEach(function(block) {
+                js("""document.querySelectorAll('.highlight').forEach(function(block) {
                             hljs.highlightBlock(block);
                         });""")
             } catch (t: Throwable) {

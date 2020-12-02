@@ -31,7 +31,7 @@ fun RenderContext.gettingStarted(): Div {
             c("build.gradle")
             +" file in the dependencies section:"
         }
-        playground {
+        highlight {
             source(
                 """
                  // build.gradle.kts
