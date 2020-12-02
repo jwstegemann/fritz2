@@ -1,6 +1,5 @@
 package dev.fritz2.components
 
-import dev.fritz2.components.RadioComponent.Companion.radioLabel
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Label
@@ -95,18 +94,6 @@ class RadioComponent {
                 box-shadow: 0 0 1px ${Theme().colors.dark} inset;
             }
             """
-        )
-        val radioLabel = staticStyle("radioComponent", """
-            &[data-disabled] {
-                opacity: .5    
-            }
-        """)
-        val radioIconStaticCss = staticStyle("radioIcon",
-            """
-            &[data-disabled] {
-                background-color:var(--cb-disabled) !important;
-            }
-        """
         )
     }
 
@@ -217,14 +204,9 @@ fun RenderContext.radio(
             it
         }
     }
-    val labelClass = if( baseClass == null ) {
-        radioLabel
-    } else {
-        baseClass + radioLabel
-    }
 
     return (::label.styled(
-        baseClass = labelClass,
+        baseClass = baseClass,
         id = id,
         prefix = prefix
     ) {
@@ -233,17 +215,15 @@ fun RenderContext.radio(
         inputId?.let {
             `for`(inputId)
         }
-        attr("data-disabled", component.disabled)
         (::input.styled(
             baseClass = RadioComponent.radioInputStaticCss,
             prefix = prefix,
             id = inputId
-        ){ children("&:focus + div") {
-            border {
-                color { "#3182ce" }
+        ){ Theme().radio.input()
+            children("&[checked] + div") {
+                component.selectedStyle()
             }
-            boxShadow { outline }
-        }}) {
+        }) {
             type("radio")
             name(inputName)
             checked(component.selected)
@@ -252,17 +232,11 @@ fun RenderContext.radio(
             component.events?.invoke(this)
         }
 
-        component.selected.render { selected ->
-            (::div.styled(){
-                Theme().radio.default()
-                styling()
-                if( selected ) {
-                    component.selectedStyle()
-                }
-            }) {
-                attr("data-disabled", component.disabled)
-            }
-        }
+        (::div.styled(){
+            Theme().radio.default()
+            styling()
+        }) { }
+
         component.label?.let {
             (::div.styled() {
                 component.labelStyle()

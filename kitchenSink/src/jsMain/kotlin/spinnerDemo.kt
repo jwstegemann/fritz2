@@ -1,7 +1,4 @@
-import dev.fritz2.components.box
-import dev.fritz2.components.lineUp
-import dev.fritz2.components.spinner
-import dev.fritz2.components.stackUp
+import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -10,28 +7,23 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun RenderContext.spinnerDemo(): Div {
     return contentFrame {
         showcaseHeader("Spinner")
-        paragraph { +"A spinner is an animated element, that is used to signalize a long running process." }
-        paragraph { +"There are two flavours of spinner built into fritz2:" }
-        showcaseSection("Pure CSS based")
+        paragraph { +"A spinner is an animated element that is used to indicate a long running process." }
+
+        showcaseSection("Thickness")
+        paragraph {
+            +"You can change the thickness of the spinner using the size property. Choose between "
+            c("thin")
+            +", "
+            c("normal")
+            +", and "
+            c("fat")
+            +", or use a custom size."
+        }
         componentFrame {
             lineUp({
                 alignItems { flexEnd }
             }) {
                 items {
-                    stackUp {
-                        items {
-                            spinner { }
-                            p { +"vanilla" }
-                        }
-                    }
-                    stackUp {
-                        items {
-                            spinner {
-                                size { fat }
-                            }
-                            p { +"fat" }
-                        }
-                    }
                     stackUp {
                         items {
                             spinner {
@@ -43,27 +35,38 @@ fun RenderContext.spinnerDemo(): Div {
                     stackUp {
                         items {
                             spinner {
-                                speed { "2s" }
+                                size { normal }
                             }
-                            p { +"configure turning speed" }
+                            p { +"normal" }
                         }
                     }
                     stackUp {
                         items {
-                            spinner({
-                                color { primary }
-                                size { "3em" }
-                            }) {
+                            spinner {
                                 size { fat }
-                                speed { "1.5s" }
                             }
-                            p { +"custom styleable too" }
+                            p { +"fat" }
                         }
                     }
                 }
             }
         }
-        showcaseSection("Icon based")
+        playground {
+            source("""
+                stackUp {
+                    items {
+                        spinner {
+                            size { thin }
+                        }
+                    }
+                }
+                """.trimIndent())
+        }
+        showcaseSection("Speed")
+        paragraph {
+            +"Let your spinner turn as fast as you like. Simply choose the time it should take the spinner to "
+            +" complete one round."
+        }
         componentFrame {
             lineUp({
                 alignItems { flexEnd }
@@ -72,12 +75,211 @@ fun RenderContext.spinnerDemo(): Div {
                     stackUp {
                         items {
                             spinner({
+                                color { dark }
+                                size { "3em" }
+                            }) {
+                                size { fat }
+                                speed { ".5s" }
+                            }
+                            p { +"0.5s" }
+                        }
+                    }
+                    stackUp {
+                        items {
+                            spinner({
+                                color { dark }
+                                size { "3em" }
+                            }) {
+                                size { fat }
+                                speed { "1s" }
+                            }
+                            p { +"1s" }
+                        }
+                    }
+                    stackUp {
+                        items {
+                            spinner({
+                                color { dark }
+                                size { "3em" }
+                            }) {
+                                size { fat }
+                                speed { "3s" }
+                            }
+                            p { +"3s" }
+                        }
+                    }
+                }
+            }
+        }
+        playground {
+            source("""
+                stackUp {
+                    items {
+                        spinner({
+                            color { dark }
+                            size { "3em" }
+                        }) {
+                            size { fat }
+                            speed { ".5s" }
+                        }
+                    }
+                }
+            """.trimIndent())
+        }
+        showcaseSection("Size")
+        paragraph {
+            +"You can change the size using the size property offered by the fritz2 design language."
+        }
+        componentFrame {
+            lineUp({
+                alignItems { flexEnd }
+            }) {
+                items {
+                    stackUp {
+                        items {
+                            spinner({
+                                size { "1rem" }
+                            }){
+                                size { normal }
+                            }
+                            p { +"1rem" }
+                        }
+                    }
+                    stackUp {
+                        items {
+                            spinner({
+                                size { "3rem" }
+                            }){
+                                size { normal }
+                            }
+                            p { +"3rem" }
+                        }
+                    }
+                    stackUp {
+                        items {
+                            spinner({
+                                size { "5rem" }
+                            }){
+                                size { normal }
+                            }
+                            p { +"5rem" }
+                        }
+                    }
+                }
+            }
+        }
+        playground {
+            source("""
+                stackUp {
+                    items {
+                        spinner({
+                            size { "1rem" }
+                        }){
+                            size { normal }
+                        }
+                    }
+                }
+            """.trimIndent())
+        }
+        showcaseSection("Color")
+        paragraph {
+            +"Choose the color of your spinner. You can use a custom color, or choose from one of the fritz2 theme "
+            +" colors. There are "
+            c("primary")
+            +", "
+            c("secondary")
+            +", "
+            c("tertiary")
+            +", "
+            c("info")
+            +", "
+            c("success")
+            +", "
+            c("light")
+            +", "
+            c("dark")
+            +", "
+            c("warning")
+            +", and "
+            c("danger")
+            +" to choose from."
+        }
+        componentFrame {
+            lineUp({
+                alignItems { flexEnd }
+            }) {
+                items {
+                    stackUp {
+                        items {
+                            spinner({
+                                color { primary }
+                                size { "2em" }
+                            }) {
+                                size { fat }
+                            }
+                            p { +"primary" }
+                        }
+                    }
+                    stackUp {
+                        items {
+                            spinner({
+                                color { dark }
+                                size { "2em" }
+                            }) {
+                                size { fat }
+                            }
+                            p { +"dark" }
+                        }
+                    }
+                    stackUp {
+                        items {
+                            spinner({
+                                color { danger }
+                                size { "2em" }
+                            }) {
+                                size { fat }
+                            }
+                            p { +"danger" }
+                        }
+                    }
+                }
+            }
+        }
+        playground {
+            source("""
+                stackUp {
+                    items {
+                        spinner({
+                            color { primary }
+                            size { "2em" }
+                        }) {
+                            size { fat }
+                        }
+                    }
+                }
+            """.trimIndent())
+        }
+
+
+        showcaseSection("Icon based")
+        paragraph {
+            +"You can choose an icon instead of a spinner to indicate a running process as well."
+        }
+        componentFrame {
+            lineUp({
+                alignItems { flexEnd }
+            }) {
+                items {
+                    stackUp {
+                        items {
+                            spinner({
+                                size { "5rem" }
                                 color { "#FF1080" }
                             }) {
                                 icon { heart }
-                                speed { "1s" }
+                                speed { "2s" }
                             }
-                            p { +"choose any icon" }
+                            p { +"Choose any icon" }
                         }
                     }
                     stackUp {
@@ -94,11 +296,22 @@ fun RenderContext.spinnerDemo(): Div {
                                     speed { "1.5s" }
                                 }
                             }
-                            p { +"completly customizable too!" }
+                            p { +"Completely customizable, too!" }
                         }
                     }
                 }
             }
+        }
+        playground {
+            source("""
+                spinner({
+                    size { "5rem" }
+                    color { "#FF1080" }
+                }) {
+                    icon { heart }
+                    speed { "2s" }
+                }
+            """.trimIndent())
         }
     }
 }

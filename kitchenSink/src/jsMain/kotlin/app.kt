@@ -208,10 +208,12 @@ val gridbox_ = "Gridbox"
 val checkboxes_ = "Checkboxes"
 val radios_ = "Radios"
 val switch_ = "Switch"
-val stack_ = "Stack"
+val stack_ = "Stacks"
 val modal_ = "Modal"
 val popover_ = "Popover"
+val tooltip_ = "Tooltip"
 val datatable_ = "Datatable"
+var color_ = "Color"
 
 
 object ThemeStore : RootStore<Int>(0) {
@@ -408,9 +410,11 @@ fun main() {
                         menuHeader { +"OVERLAY" }
                         menuAnchor(modal_, router)
                         menuAnchor(popover_, router)
+                        menuAnchor(tooltip_, router)
 
                         menuHeader { +"ICONS" }
                         menuAnchor(icons_, router)
+                        menuAnchor(color_, router)
                     }
                 }
                 (::div.styled(id = "content-right") {
@@ -440,8 +444,10 @@ fun main() {
                             stack_ -> stackDemo()
                             modal_ -> modalDemo()
                             popover_ -> popoverDemo()
+                            tooltip_ -> tooltipDemo()
                             welcome_ -> welcome()
                             datatable_ -> tableDemo()
+                            color_ -> colorDemo()
                             else -> welcome()
                         }
                     }
