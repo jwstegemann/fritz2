@@ -1,11 +1,7 @@
 import dev.fritz2.binding.RootStore
 import dev.fritz2.components.*
-import dev.fritz2.dom.html.A
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.P
-import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.*
 import dev.fritz2.dom.mount
-import dev.fritz2.routing.Router
 import dev.fritz2.routing.router
 import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
@@ -20,6 +16,36 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+
+val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
+
+val welcome_ = "Welcome"
+val gettingStarted_ = "Getting Started"
+val icons_ = "Icons"
+val spinner_ = "Spinner"
+val input_ = "Input"
+val buttons_ = "Buttons"
+val formcontrol_ = "Formcontrol"
+val flexbox_ = "Flexbox"
+val gridbox_ = "Gridbox"
+val checkboxes_ = "Checkboxes"
+val radios_ = "Radios"
+val switch_ = "Switch"
+val stack_ = "Stacks"
+val modal_ = "Modal"
+val popover_ = "Popover"
+val tooltip_ = "Tooltip"
+val datatable_ = "Datatable"
+var color_ = "Color"
+
+val router = router(welcome_)
+
+object ThemeStore : RootStore<Int>(0) {
+    val selectTheme = handle<Int> { _, index ->
+        Theme.use(themes[index])
+        index
+    }
+}
 
 fun RenderContext.showcaseHeader(text: String) {
     (::h1.styled {
@@ -100,6 +126,66 @@ fun RenderContext.contentFrame(init: Div.() -> Unit): Div {
     }
 }
 
+fun RenderContext.warningBox(init: P.() -> Unit): Div {
+    return (::div.styled {
+        margins {
+            top { larger }
+            bottom { larger }
+        }
+        paddings {
+            top { small }
+            left { small }
+            bottom { small }
+            right { normal }
+        }
+        borders {
+            left {
+                width{ "4px" }
+                style { solid }
+                color { danger }
+            }
+        }
+        radius { normal }
+        background {
+            color { "rgb(254, 235, 200)" }
+        }
+    }){
+        p {
+            init()
+        }
+    }
+}
+
+fun RenderContext.infoBox(init: P.() -> Unit): Div {
+    return (::div.styled {
+        margins {
+            top { larger }
+            bottom { larger }
+        }
+        paddings {
+            top { small }
+            left { small }
+            bottom { small }
+            right { normal }
+        }
+        borders {
+            left {
+                width{ "4px" }
+                style { solid }
+                color { info }
+            }
+        }
+        radius { normal }
+        background {
+            color { "rgb(201 255 208)" }
+        }
+    }){
+        p {
+            init()
+        }
+    }
+}
+
 
 val componentFrame: Style<BasicParams> = { // Auslagerung von Style
     width { "100%" }
@@ -144,6 +230,22 @@ fun RenderContext.simpleLinkWithBackground(linkUri: String, linkText: String): A
     }) {
         +linkText
         href(linkUri)
+    }
+}
+
+fun RenderContext.externalLink(text: String, url: String, newTab: Boolean = true): A {
+    return (::a.styled {
+        fontSize { normal }
+        color { primary }
+        hover {
+            color { tertiary }
+            background { color { light_hover } }
+            radius { normal }
+        }
+    }) {
+        +text
+        href(url)
+        if(newTab) target("_new")
     }
 }
 
@@ -195,34 +297,6 @@ fun RenderContext.navAnchor(linkText: String, href: String): Div {
     }
 }
 
-val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
-
-val welcome_ = "Welcome"
-val icons_ = "Icons"
-val spinner_ = "Spinner"
-val input_ = "Input"
-val buttons_ = "Buttons"
-val formcontrol_ = "Formcontrol"
-val flexbox_ = "Flexbox"
-val gridbox_ = "Gridbox"
-val checkboxes_ = "Checkboxes"
-val radios_ = "Radios"
-val switch_ = "Switch"
-val stack_ = "Stacks"
-val modal_ = "Modal"
-val popover_ = "Popover"
-val tooltip_ = "Tooltip"
-val datatable_ = "Datatable"
-var color_ = "Color"
-
-
-object ThemeStore : RootStore<Int>(0) {
-    val selectTheme = handle<Int> { _, index ->
-        Theme.use(themes[index])
-        index
-    }
-}
-
 fun RenderContext.menuHeader(init: P.() -> Unit): P {
     return (::p.styled {
         paddings {
@@ -230,8 +304,8 @@ fun RenderContext.menuHeader(init: P.() -> Unit): P {
             left { small }
             right { small }
         }
-        fontSize{small}
-        fontWeight { "700" }
+        fontSize{ small }
+        fontWeight { bold }
         color { tertiary }
     })  {
         init()
@@ -239,7 +313,7 @@ fun RenderContext.menuHeader(init: P.() -> Unit): P {
 }
 
 
-fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
+fun RenderContext.menuAnchor(linkText: String): P {
 
     val selected = style("prefix") {
         width { "90%" }
@@ -256,13 +330,11 @@ fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
         }
     }
 
-    val isActive = router.data.map { hash ->
-        console.log(hash)  //druckt in die Konsole im Browser
-        hash == linkText //map den reinkommenden Wert des Flow auf einen Boolean
-    }.distinctUntilChanged().onEach { if (it) PlaygroundComponent.update() }
+    val isActive = router.data.map { hash -> hash == linkText }
+        .distinctUntilChanged().onEach { if (it) PlaygroundComponent.update() }
 
-    return (::div.styled {
-        width { "90%" }
+    return (::p.styled {
+        width { full }
         radius { normal }
         border {
             width { none }
@@ -278,19 +350,13 @@ fun RenderContext.menuAnchor(linkText: String, router: Router<String>): Div {
             left { small }
             right { small }
         }
+//        fontSize { small }
+        fontWeight { medium }
+        css("cursor: pointer")
     }) {
         className(selected.whenever(isActive).name) // der Name der StyleClass wird das zu stylende Element (in diesem Fall der Div-Container) angehängt
-        nonHoverAnchor(linkText)
-    }
-}
-
-fun RenderContext.nonHoverAnchor(linkText: String): A {
-    return (::a.styled {
-        fontSize { small }
-        fontWeight { "500" }
-    }) {
+        clicks.map { linkText } handledBy router.navTo
         +linkText
-        href("#$linkText")
     }
 }
 
@@ -312,13 +378,11 @@ fun RenderContext.c(text: String) {
 
 @ExperimentalCoroutinesApi
 fun main() {
-    val router = router("")
 
     render(themes.first()) { theme ->
         navBar {
             brand {
                 (::a.styled {
-                    tooltip("visit us on", "www.fritz2.dev") { right }()
                     after {
                         textAlign { center }
                         background { color { primary } }
@@ -339,7 +403,7 @@ fun main() {
                         verticalAlign { sub }
                         fontSize { larger }
                         fontWeight { lighter }
-                    }) { +"fritz2 - component library" }
+                    }) { +"fritz2 - components" }
                 }
             }
 
@@ -377,7 +441,7 @@ fun main() {
                     paddings {
                         top { "50px" }
                     }
-                }, id = "menue-left")
+                }, id = "menu-left")
                 {
                     spacing{tiny}
                     items {
@@ -388,33 +452,34 @@ fun main() {
                                 bottom { "1rem" }
                             }
                         }) {
-                            menuAnchor(welcome_, router)
+                            menuAnchor(welcome_)
+                            menuAnchor(gettingStarted_)
                         }
                         menuHeader { +"LAYOUT" }
-                        menuAnchor(flexbox_, router)
-                        menuAnchor(gridbox_, router)
-                        menuAnchor(stack_, router)
+                        menuAnchor(flexbox_)
+                        menuAnchor(gridbox_)
+                        menuAnchor(stack_)
 
                         menuHeader { +"FORMS" }
-                        menuAnchor(buttons_, router)
-                        menuAnchor(checkboxes_, router)
-                        menuAnchor(formcontrol_, router)
-                        menuAnchor(input_, router)
-                        menuAnchor(radios_, router)
-                        menuAnchor(switch_, router)
-                        menuAnchor(datatable_, router)
+                        menuAnchor(buttons_)
+                        menuAnchor(checkboxes_)
+                        menuAnchor(formcontrol_)
+                        menuAnchor(input_)
+                        menuAnchor(radios_)
+                        menuAnchor(switch_)
+                        menuAnchor(datatable_)
 
                         menuHeader { +"FEEDBACK" }
-                        menuAnchor(spinner_, router)
+                        menuAnchor(spinner_)
 
                         menuHeader { +"OVERLAY" }
-                        menuAnchor(modal_, router)
-                        menuAnchor(popover_, router)
-                        menuAnchor(tooltip_, router)
+                        menuAnchor(modal_)
+                        menuAnchor(popover_)
+                        menuAnchor(tooltip_)
 
                         menuHeader { +"ICONS" }
-                        menuAnchor(icons_, router)
-                        menuAnchor(color_, router)
+                        menuAnchor(icons_)
+                        menuAnchor(color_)
                     }
                 }
                 (::div.styled(id = "content-right") {
@@ -431,6 +496,7 @@ fun main() {
                     //  together)
                     router.data.render { site ->
                         when (site) {
+                            gettingStarted_ -> gettingStarted()
                             icons_ -> iconsDemo()
                             spinner_ -> spinnerDemo()
                             input_ -> inputDemo()
