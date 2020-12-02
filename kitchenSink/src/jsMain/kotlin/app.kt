@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
-
 val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
 
 val welcome_ = "Welcome"
@@ -32,10 +31,12 @@ val gridbox_ = "Gridbox"
 val checkboxes_ = "Checkboxes"
 val radios_ = "Radios"
 val switch_ = "Switch"
-val stack_ = "Stack"
+val stack_ = "Stacks"
 val modal_ = "Modal"
 val popover_ = "Popover"
+val tooltip_ = "Tooltip"
 val datatable_ = "Datatable"
+var color_ = "Color"
 
 val router = router(welcome_)
 
@@ -474,9 +475,11 @@ fun main() {
                         menuHeader { +"OVERLAY" }
                         menuAnchor(modal_)
                         menuAnchor(popover_)
+                        menuAnchor(tooltip_)
 
                         menuHeader { +"ICONS" }
                         menuAnchor(icons_)
+                        menuAnchor(color_)
                     }
                 }
                 (::div.styled(id = "content-right") {
@@ -507,8 +510,10 @@ fun main() {
                             stack_ -> stackDemo()
                             modal_ -> modalDemo()
                             popover_ -> popoverDemo()
+                            tooltip_ -> tooltipDemo()
                             welcome_ -> welcome()
                             datatable_ -> tableDemo()
+                            color_ -> colorDemo()
                             else -> welcome()
                         }
                     }

@@ -1,13 +1,10 @@
 package dev.fritz2.components
 
-import dev.fritz2.components.CheckboxComponent.Companion.checkboxIconStaticCss
 import dev.fritz2.components.CheckboxComponent.Companion.checkboxInputStaticCss
-import dev.fritz2.components.CheckboxComponent.Companion.checkboxLabel
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.Span
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
@@ -68,18 +65,6 @@ class CheckboxComponent {
                 outline: none;
             }           
             """
-        )
-        val checkboxLabel = staticStyle("checkboxComponent", """
-            &[data-disabled] {
-                opacity: .5    
-            }
-        """)
-        val checkboxIconStaticCss = staticStyle("checkboxIcon",
-        """
-            &[data-disabled] {
-                background-color:var(--cb-disabled) !important;
-            }
-        """
         )
     }
 
@@ -173,14 +158,8 @@ fun RenderContext.checkbox(
     val component = CheckboxComponent().apply(build)
     val inputId = id?.let { "$it-input" }
 
-    val labelClass = if( baseClass == null ) {
-        checkboxLabel
-    } else {
-        baseClass + checkboxLabel
-    }
-
    return (::label.styled(
-        baseClass = labelClass,
+        baseClass = baseClass,
         id = id,
         prefix = prefix
     ) {
@@ -189,42 +168,32 @@ fun RenderContext.checkbox(
         inputId?.let {
             `for`(inputId)
         }
-        attr("data-disabled", component.disabled)
         (::input.styled(
             baseClass = checkboxInputStaticCss,
             prefix = prefix,
             id = inputId
-        ){ children("&:focus + div") {
-            border {
-                color { "#3182ce" }
+        ){
+            Theme().checkbox.input()
+            children("&[checked] + div") {
+                component.checkedStyle()
             }
-            boxShadow { outline }
-        }}) {
+        }) {
             type("checkbox")
             checked(component.checked)
             disabled(component.disabled)
             component.events?.invoke(this)
         }
 
-        component.checked.render { checked ->
-                (::div.styled(checkboxIconStaticCss){
-                    Theme().checkbox.default()
-                    styling()
-                    if ( checked ) {
-                        component.checkedStyle()
-                    }
-                }) {
-                    attr("data-disabled", component.disabled)
-                    icon({
-                        Theme().checkbox.icon()
-                        if( !checked ) {
-                            css("visibility:hidden;")
-                        }
-                    }
-                    ) { fromTheme { component.icon } }
-                }
-
+        (::div.styled(){
+            Theme().checkbox.default()
+            styling()
+        }) {
+            icon({
+                Theme().checkbox.icon()
+            }
+            ) { fromTheme { component.icon } }
         }
+
         component.label?.let {
             (::div.styled() {
                 component.labelStyle()
