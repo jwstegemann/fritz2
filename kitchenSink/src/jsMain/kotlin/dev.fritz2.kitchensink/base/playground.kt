@@ -87,7 +87,7 @@ fun RenderContext.playground(
             }) {
                 code(playgroundMarker) {
                     attr("data-target-platform", "js")
-                    attr("data-dev.fritz2.kitchensink.base.highlight-only", true)
+                    attr("data-highlight-only", true)
                     attr("theme", "darcula")
                     attr("auto-indent", "true")
                     attr("lines", "false")
