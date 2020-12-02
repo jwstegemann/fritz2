@@ -109,11 +109,6 @@ fun RenderContext.gettingStarted(): Div {
                 }
             """.trimIndent()
         ) }
-//        dev.fritz2.kitchensink.infoBox {
-//            +"To write a multi-page application like this one. It is a good practice to create your "
-//            c("dev.fritz2.kitchensink.getRouter")
-//            +" and handle your routes here."
-//        }
 
         showcaseSection("Pre-release versions")
         paragraph {

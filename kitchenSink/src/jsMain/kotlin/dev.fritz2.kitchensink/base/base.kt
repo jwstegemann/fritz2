@@ -124,36 +124,6 @@ fun RenderContext.warningBox(init: P.() -> Unit): Div {
     }
 }
 
-fun RenderContext.infoBox(init: P.() -> Unit): Div {
-    return (::div.styled {
-        margins {
-            top { larger }
-            bottom { larger }
-        }
-        paddings {
-            top { small }
-            left { small }
-            bottom { small }
-            right { normal }
-        }
-        borders {
-            left {
-                width{ "4px" }
-                style { solid }
-                color { info }
-            }
-        }
-        radius { normal }
-        background {
-            color { "rgb(201 255 208)" }
-        }
-    }){
-        p {
-            init()
-        }
-    }
-}
-
 fun RenderContext.componentFrame(padding: Boolean = true, init: Div.() -> Unit): Div { //Auslagerung von Komponente
     return (::div.styled {
         width { "100%" }
