@@ -32,7 +32,6 @@ const val switch_ = "Switch"
 const val stack_ = "Stack"
 const val modal_ = "Modal"
 const val popover_ = "Popover"
-const val datatable_ = "Datatable"
 const val styling_ = "Styling"
 const val theme_ = "Theme"
 const val tooltip_ = "Tooltip"
@@ -198,7 +197,6 @@ fun main() {
                         menuAnchor(input_)
                         menuAnchor(radios_)
                         menuAnchor(switch_)
-                        menuAnchor(datatable_)
                         menuAnchor(textarea_)
 
                         menuHeader { +"FEEDBACK" }
@@ -244,7 +242,6 @@ fun main() {
                             popover_ -> popoverDemo()
                             tooltip_ -> tooltipDemo()
                             welcome_ -> welcome()
-                            datatable_ -> tableDemo()
                             styling_ -> stylingDemo()
                             theme_ -> themeDemo()
                             responsive_ -> responsiveDemo()
