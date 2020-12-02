@@ -8,8 +8,7 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.dom.values
-import dev.fritz2.kitchensink.*
-import dev.fritz2.kitchensink.base.playground
+import dev.fritz2.kitchensink.base.*
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.styled

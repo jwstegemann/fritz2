@@ -6,11 +6,12 @@ import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
-import dev.fritz2.kitchenSink.model.*
-import dev.fritz2.kitchensink.componentFrame
-import dev.fritz2.kitchensink.contentFrame
-import dev.fritz2.kitchensink.paragraph
-import dev.fritz2.kitchensink.showcaseHeader
+import dev.fritz2.kitchenSink.model.Address
+import dev.fritz2.kitchenSink.model.Person
+import dev.fritz2.kitchensink.base.componentFrame
+import dev.fritz2.kitchensink.base.contentFrame
+import dev.fritz2.kitchensink.base.paragraph
+import dev.fritz2.kitchensink.base.showcaseHeader
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.lenses.format

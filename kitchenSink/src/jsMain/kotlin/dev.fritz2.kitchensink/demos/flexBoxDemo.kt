@@ -1,11 +1,12 @@
 package dev.fritz2.kitchensink.demos
 
-import dev.fritz2.components.*
+import dev.fritz2.components.box
+import dev.fritz2.components.flexBox
+import dev.fritz2.components.lineUp
+import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.kitchensink.*
-import dev.fritz2.kitchensink.base.ExtendedTheme
-import dev.fritz2.kitchensink.base.playground
+import dev.fritz2.kitchensink.base.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi

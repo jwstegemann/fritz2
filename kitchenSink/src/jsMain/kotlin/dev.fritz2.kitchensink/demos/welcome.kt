@@ -4,7 +4,7 @@ import dev.fritz2.components.icon
 import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.kitchensink.contentFrame
+import dev.fritz2.kitchensink.base.contentFrame
 import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 

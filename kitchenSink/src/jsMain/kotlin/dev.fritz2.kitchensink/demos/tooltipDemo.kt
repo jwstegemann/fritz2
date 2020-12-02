@@ -1,10 +1,10 @@
 package dev.fritz2.kitchensink.demos
 
-import dev.fritz2.components.*
+import dev.fritz2.components.lineUp
+import dev.fritz2.components.tooltip
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.kitchensink.*
-import dev.fritz2.kitchensink.base.playground
+import dev.fritz2.kitchensink.base.*
 import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 

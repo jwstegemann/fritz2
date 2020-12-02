@@ -5,8 +5,8 @@ import dev.fritz2.components.switch
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.kitchensink.*
-import dev.fritz2.kitchensink.base.playground
+import dev.fritz2.kitchensink.ThemeStore
+import dev.fritz2.kitchensink.base.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 

@@ -4,8 +4,7 @@ import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.kitchensink.*
-import dev.fritz2.kitchensink.base.playground
+import dev.fritz2.kitchensink.base.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.Theme

@@ -4,8 +4,8 @@ import dev.fritz2.components.box
 import dev.fritz2.components.lineUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.kitchensink.contentFrame
-import dev.fritz2.kitchensink.showcaseHeader
+import dev.fritz2.kitchensink.base.contentFrame
+import dev.fritz2.kitchensink.base.showcaseHeader
 import dev.fritz2.styling.params.styled
 
 fun RenderContext.colorDemo(): Div {
