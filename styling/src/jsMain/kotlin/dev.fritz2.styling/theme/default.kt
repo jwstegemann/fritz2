@@ -58,6 +58,7 @@ open class DefaultTheme : Theme {
         override val light_hover = "rgb(226,232,240, 0.5)"
         val alert = "feebc8" // rgb(254,235,200)
         override val disabled = light
+        override val focus = "#3182ce"
         //color of focus of input elements: inner: #3182ce / rgb(49,130,206) outer: #acd2f2 / rgb(172,210,242)
     }
 
@@ -1362,19 +1363,10 @@ open class DefaultTheme : Theme {
 
 
     override val checkbox = object : CheckboxStyles {
-       override val sizes = object : CheckboxSizes {
+        override val sizes = object : CheckboxSizes {
            private val basic: Style<BasicParams> = {
-               css("--cb-disabled: ${colors.disabled}")
                display {inlineFlex}
                css("align-items: center;")
-
-               //@TODO doesn't work / why?
-               children("&:focus + div") {
-                   border {
-                       color { "#3182ce" }
-                   }
-                   boxShadow { outline }
-               }
            }
            override val small: Style<BasicParams> = {
                 basic()
@@ -1396,7 +1388,6 @@ open class DefaultTheme : Theme {
             }
             override val large: Style<BasicParams> = {
                 basic()
-                css("--cb-disabled: ${colors.disabled}")
                 css("--cb-size: 1.5rem")
                 css("--cb-svg-size: 1.25rem")
                 css("--cb-radius:  ${radii.normal}")
@@ -1405,7 +1396,25 @@ open class DefaultTheme : Theme {
                 margins { right {small} }
             }
         }
-
+        override val input: Style<BasicParams> = {
+            children("&:focus + div") {
+                border {
+                    color { focus }
+                }
+                boxShadow { outline }
+            }
+            children("&[disabled] + div") {
+                background {
+                    color{ disabled}
+                }
+            }
+            children("&[disabled] ~ div") {
+                    opacity {".5"}
+            }
+            children("&:not([checked]) + div > *") {
+                css("visibility:hidden;")
+            }
+        }
         override val icon : Style<BasicParams> = {
             width { "var(--cb-svg-size)" }
             height { "var(--cb-svg-size)" }
@@ -1443,17 +1452,8 @@ open class DefaultTheme : Theme {
     override val radio = object : RadioStyles {
         override val sizes = object : RadioSizes {
             private val basic: Style<BasicParams> = {
-                css("--rb-disabled: ${colors.disabled}")
                 display {inlineFlex}
                 css("align-items: center;")
-
-                //@TODO doesn't work / why?
-                children("&:focus + div") {
-                    border {
-                        color { "#3182ce" }
-                    }
-                    boxShadow { outline }
-                }
             }
             override val small: Style<BasicParams> = {
                 basic()
@@ -1475,6 +1475,22 @@ open class DefaultTheme : Theme {
                 fontSize { larger }
                 lineHeight { larger }
                 margins { right {small} }
+            }
+        }
+        override val input: Style<BasicParams> = {
+            children("&:focus + div") {
+                border {
+                    color { focus }
+                }
+                boxShadow { outline }
+            }
+            children("&[disabled] + div") {
+                background {
+                    color{ disabled}
+                }
+            }
+            children("&[disabled] ~ div") {
+                opacity {".5"}
             }
         }
         override val label: Style<BasicParams> = {
@@ -1522,17 +1538,8 @@ open class DefaultTheme : Theme {
     override val switch = object : SwitchStyles {
         override val sizes = object : SwitchSizes {
             private val basic: Style<BasicParams> = {
-                css("--sw-disabled: ${colors.disabled}")
                 display {inlineFlex}
                 css("align-items: center;")
-
-                //@TODO doesn't work / why?
-                children("&:focus + div") {
-                    border {
-                        color { "#3182ce" }
-                    }
-                    boxShadow { outline }
-                }
             }
             override val small: Style<BasicParams> = {
                 basic()
@@ -1559,6 +1566,28 @@ open class DefaultTheme : Theme {
                 margins { right {small} }
             }
         }
+        override val input: Style<BasicParams> = {
+            children("&:focus + div") {
+                border {
+                    color { focus }
+                }
+                boxShadow { outline }
+            }
+
+            children("&[checked] + div div") {
+                css("transform:translateX(calc(var(--sw-width) - var(--sw-height)));")
+
+            }
+
+            children("&[disabled] + div") {
+                background {
+                    color{ disabled}
+                }
+            }
+            children("&[disabled] ~ div") {
+                opacity {".5"}
+            }
+        }
         override val dot : Style<BasicParams> = {
             width { "var(--sw-height)" }
             height { "var(--sw-height)" }
@@ -1567,6 +1596,9 @@ open class DefaultTheme : Theme {
                 color { "white" }
             }
             css("transition: transform 250ms ease 0s;")
+
+
+
         }
         override val label: Style<BasicParams> = {
             margins { left { tiny } }
@@ -1580,7 +1612,7 @@ open class DefaultTheme : Theme {
             padding { "2px" }
             width { "var(--sw-width)" }
             height { "var(--sw-height)" }
-            background { color { disabled } }
+            background { color { light } }
             radius { "9999px" }
             css("justify-content: flex-start;")
             css("box-sizing: content-box;")
@@ -1992,7 +2024,7 @@ open class DefaultTheme : Theme {
                     css("content:\"${value.asList().joinToString("\\A")}\";")
                     background { color{ dark } }
                     color{ light }
-                    display { block }
+                    display { none }
                     overflow { hidden }
                     opacity { "0" }
                     zIndex { "20" }
@@ -2011,12 +2043,14 @@ open class DefaultTheme : Theme {
                 }
                 focus{
                     after{
+                        display { block }
                         opacity { "1" }
                     }
 
                 }
                 hover {
                    after{
+                       display { block }
                        opacity { "1" }
                    }
                 }

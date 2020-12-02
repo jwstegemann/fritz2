@@ -33,7 +33,7 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                implementation(project(":core"))
+                implementation(project(":components"))
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.1.0")
             }
         }
@@ -48,8 +48,6 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                implementation(project(":styling"))
-                implementation(project(":components"))
                 implementation(project(":datatable"))
             }
         }

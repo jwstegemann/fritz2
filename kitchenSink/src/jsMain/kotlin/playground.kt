@@ -74,7 +74,7 @@ fun RenderContext.playground(
     val component = PlaygroundComponent().apply(build)
 
     stackUp ({
-        margins { top { "1.25rem" } }
+        margins { top { large } }
     }){
         items {
             box({
