@@ -18,7 +18,7 @@ fun RenderContext.stackDemo(): Div {
     return contentFrame {
         showcaseHeader("Stacks")
         paragraph {
-            +"A stack is a layout component that allows arbitrary elements to be stacked either in a vertical or"
+            +"A stack is a layout component which allows arbitrary elements to be aligned either in a vertical or"
             +" horizontal way. We offer dedicated components for each use case:"
         }
         ul {
@@ -32,23 +32,23 @@ fun RenderContext.stackDemo(): Div {
             }
         }
         paragraph {
-            +"They are basically a specialized "
+            +"They are basically specialized "
             simpleLinkWithBackground("/#Flexbox", "Flexboxes")
-            +", that expose a built-in way to set the alignment direction and to define the spacing "
-            +"between the items."
+            +" which expose a built-in way to set the alignment direction and define the spacing "
+            +" between the items."
         }
         paragraph {
-            +"You can put arbitrary content into the stack components, like simply one HTML element, a complex "
-            +"structure of elements or other components of course."
+            +"You can put arbitrary content into the stack components, like just one HTML element, a complex"
+            +" structure of elements, or other components of course."
         }
 
         showcaseSection("Usage")
         paragraph {
-            +"In order to stack up items horizontally, just use the "
+            +"In order to line up items horizontally, just use the "
             c("lineUp")
             +" component and put some "
             c("items")
-            +"in it:"
+            +" in it:"
         }
         componentFrame {
             lineUp {
@@ -83,7 +83,7 @@ fun RenderContext.stackDemo(): Div {
         }
 
         paragraph {
-            +"You can also use "
+            +"Use "
             c("stackUp")
             +" to stack items vertically:"
         }
@@ -101,7 +101,7 @@ fun RenderContext.stackDemo(): Div {
                 """
                 stackUp {
                     items {
-                        box { p { +"1" } } // simplified for readability!
+                        box { p { +"1" } } // simplified for readability
                         box { p { +"2" } }
                         box { p { +"3" } }
                     }
@@ -115,14 +115,14 @@ fun RenderContext.stackDemo(): Div {
             +"Stacks can be customized by..."
             ul {
                 li {
-                    +"... defining the "
+                    +".. defining the "
                     c("spacing")
-                    +"between each item"
+                    +" between each item"
                 }
                 li {
-                    +"... changing the order by setting "
+                    +".. changing the order by setting "
                     c("reverse")
-                    +"to"
+                    +" to"
                     c("true")
                 }
             }
@@ -137,7 +137,7 @@ fun RenderContext.stackDemo(): Div {
                         items {
                             item("gold", "se")
                             item("tomato", "ver")
-                            item("lightseagreen", "in")
+                            item("lightseagreen", "re")
                         }
                     }
                     item("gold", "1")
@@ -154,10 +154,10 @@ fun RenderContext.stackDemo(): Div {
                         stackUp {
                             spacing { tiny }
                             reverse { true }
-                            items { // will be rendered in reverse order!
+                            items { // will be rendered in reverse order
                                 box { p { +"se" } }
                                 box { p { +"ver" } }
-                                box { p { +"in" } }
+                                box { p { +"re" } }
                             }
                         }
                         box { p { +"1" } }
@@ -168,7 +168,7 @@ fun RenderContext.stackDemo(): Div {
             )
         }
 
-        showcaseSection("Further layout technics")
+        showcaseSection("Other layout techniques")
 
         // TODO: infoBox Auslagern
         (::blockquote.styled {
@@ -195,9 +195,9 @@ fun RenderContext.stackDemo(): Div {
         }) {
             p {
                 strong { +"Tip:" }
-                +" Favour the application of a"
+                +" Favor the application of a "
                 simpleLinkWithBackground("/#Gridbox", "Gridbox")
-                +"over complex styling for stack components."
+                +" over complex styling for stack components."
             }
             p {
                 +"The "
@@ -205,19 +205,19 @@ fun RenderContext.stackDemo(): Div {
                     "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout",
                     "CSS grid model "
                 )
-                +"offers much more control over the layout than flexbox approaches!"
+                +" offers much more control over the layout than flexbox approaches."
             }
         }
 
         paragraph {
-            +"The default layout of our stack components is based upon the following properties:"
+            +"The default layout of our stack components is based on the following properties:"
         }
         ul {
             li {
-                c("align-items=flex-start")
+                c("align-items = flex-start")
             }
             li {
-                c("justify-content=flex-start")
+                c("justify-content = flex-start")
             }
         }
         paragraph {
