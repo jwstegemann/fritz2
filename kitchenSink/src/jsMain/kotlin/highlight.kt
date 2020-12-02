@@ -1,9 +1,6 @@
-import dev.fritz2.components.PlaygroundComponent
 import dev.fritz2.components.box
-import dev.fritz2.components.playgroundMarker
 import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import kotlinx.browser.window
 
@@ -12,18 +9,16 @@ import kotlinx.browser.window
  */
 class HighlightComponent {
 
-    companion object {
-        init {
-            window.setTimeout({
-                try {
-                    js("""document.querySelectorAll('.highlight').forEach(function(block) {
+    init {
+        window.setTimeout({
+            try {
+                js("""document.querySelectorAll('.highlight').forEach(function(block) {
                             hljs.highlightBlock(block);
                         });""")
-                } catch (t: Throwable) {
-                    console.error(t)
-                }
-            }, 500)
-        }
+            } catch (t: Throwable) {
+                console.error(t)
+            }
+        }, 500)
     }
 
     var source: String = "// your code goes here"
@@ -55,7 +50,8 @@ fun RenderContext.highlight(
                 radius { "12px" }
                 width { full }
                 padding { small }
-                fontSize { smaller }
+                paddings { left{ "22px" } }
+                fontSize { "0.8em" }
             }) {
                 pre("highlight", id = id) {
                     code {
