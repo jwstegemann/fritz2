@@ -67,7 +67,7 @@ abstract class StackComponent {
     companion object {
         val staticCss = staticStyle(
             "stack",
-            "align-items: center;"
+            "align-items: flex-start;"
         )
     }
 

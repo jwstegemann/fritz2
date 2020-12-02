@@ -15,7 +15,7 @@ class PlaygroundComponent {
             staticStyle(
                 """
                 .CodeMirror {
-                  font-size: 0.8em !important;
+                  font-size: 0.85em !important;
                 }
                 
                 .executable-fragment-wrapper {
@@ -74,7 +74,7 @@ fun RenderContext.playground(
     val component = PlaygroundComponent().apply(build)
 
     stackUp ({
-        margins { top { "1.25rem" } }
+        margins { top { large } }
     }){
         items {
             box({
