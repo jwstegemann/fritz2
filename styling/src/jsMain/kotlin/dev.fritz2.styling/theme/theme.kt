@@ -186,6 +186,8 @@ interface Theme {
     val popover: PopoverStyles
 
     val tooltip: Tooltip
+
+    val textarea: TextAreaStyles
 }
 
 /**
