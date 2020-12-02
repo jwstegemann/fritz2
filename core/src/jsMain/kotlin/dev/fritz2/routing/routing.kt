@@ -83,8 +83,8 @@ interface Route<T> {
  * @param default [String] to use when no explicit *window.location.hash* was set before
  */
 open class StringRoute(override val default: String) : Route<String> {
-    override fun unmarshal(hash: String): String = hash
-    override fun marshal(route: String): String = route
+    override fun unmarshal(hash: String): String = decodeURIComponent(hash)
+    override fun marshal(route: String): String = encodeURIComponent(route)
 }
 
 /**
