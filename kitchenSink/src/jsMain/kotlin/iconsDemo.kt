@@ -163,11 +163,11 @@ fun RenderContext.iconsDemo(): Div {
             +" component offers a way to use SVG based icons within an application."
         }
         paragraph {
-            +" We deliver a basic set of icons for common use cases, but you are free to include any custom icon quite "
-            +"easily."
+            +"fritz2 comes with a basic set of icons for common use cases, but you can easily include any custom"
+            +" icon."
         }
 
-        // TODO: infoBox Auslagern
+        // TODO: move infoBox
         (::blockquote.styled {
             borders {
                 left {
@@ -194,7 +194,7 @@ fun RenderContext.iconsDemo(): Div {
             p {
                 +"Please have look at their "
                 simpleLinkWithBackground("https://icons.mono.company/", "project page")
-                +"!"
+                +"."
             }
             p{
                 +"The icons are licensed under the "
@@ -205,9 +205,10 @@ fun RenderContext.iconsDemo(): Div {
 
         showcaseSection("Usage")
         paragraph {
-            +"The easiest way to include an icon is to provide an appropriate identifier from the "
+            +"The easiest way to include an icon is to provide one of the identifiers from the"
             c("theme")
-            +". You can adjust the size and color quite easily by adding some styling rules"
+            +" which represents one of our icons. You can adjust the size and color by simply adding some"
+            +" styling rules."
         }
 
         componentFrame {
@@ -217,7 +218,8 @@ fun RenderContext.iconsDemo(): Div {
                     icon { fromTheme { favorite } }
 
                     icon({
-                        size { "2rem" } // TODO: Why values from theme are getting crippled? (1.2px instead of 1.2rem)
+                        size { "2rem" } // TODO: Why are values from theme getting crippled? (1.2px instead of 1
+                    // .2rem)
                     }) { fromTheme { fritz2 } }
 
                     icon({
@@ -251,14 +253,14 @@ fun RenderContext.iconsDemo(): Div {
             c("displayName")
             +", "
             c("viewBox")
-            +" string and the "
+            +" string, and the "
             c("svg")
             +" definitions."
         }
         paragraph {
-            +"For example include the "
+            +"For example, include the "
             simpleLinkWithBackground("https://github.com/logos", "github mark")
-            +"to create a nice button:"
+            +" to create a nice button:"
         }
         componentFrame {
             pushButton {
