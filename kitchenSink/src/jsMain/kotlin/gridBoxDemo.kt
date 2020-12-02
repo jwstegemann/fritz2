@@ -1,12 +1,10 @@
-import dev.fritz2.components.box
-import dev.fritz2.components.gridBox
+import dev.fritz2.binding.storeOf
+import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.params.AreaName
-import dev.fritz2.styling.params.end
-import dev.fritz2.styling.params.start
-import dev.fritz2.styling.params.styled
+import dev.fritz2.styling.params.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
 fun RenderContext.gridBoxDemo(): Div {
@@ -19,52 +17,104 @@ fun RenderContext.gridBoxDemo(): Div {
             val CONTENT: AreaName = "content"
             val FOOTER: AreaName = "footer"
         }
-        showcaseHeader("Grid Layout")
+        showcaseHeader("Gridbox")
         paragraph {
-            +"Use the grid layout to display elements on top of other elements. Also, this layout transforms with "
-            +"screensize. Try resizing your browser window to see what it does when the available space becomes narrow."
+            +"Use a Gridbox to create arbitrary complex layouts."
+            +" It does not offer special component properties, but instead relies on the "
+            simpleLinkWithBackground(
+                "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout",
+                "CSS based grid-layout"
+            )
+            +"styling possibilities."
         }
-        br {}
+        showcaseSection("Usage")
         paragraph {
+            +"In order to create a Gridbox just pass some specialized grid styling information."
+            +" In this simple case we define a five column based grid layout and insert seven items, thus"
+            +" two items will be rendered upon a second row:"
+        }
+        componentFrame {
+            gridBox({
+                columns { repeat(5) { "1fr" } }
+                gap { normal }
+                children("div") {
+                    size { "60px" }
+                    background { color { "gold" } }
+                }
+            }) {
+                div { +"one" }
+                div { +"two" }
+                div { +"three" }
+                div { +"four" }
+                div { +"five" }
+                div { +"six" }
+                div { +"seven" }
+            }
+        }
+        playground {
+            source(
+                """
+                gridBox({
+                    columns { repeat(5) { "1fr" } }
+                    gap { normal }
+                    children("div") {
+                        size { "60px" }
+                        background { color { "gold" } }
+                    }
+                }) {
+                    div { +"one" }
+                    div { +"two" }
+                    div { +"three" }
+                    div { +"four" }
+                    div { +"five" }
+                    div { +"six" }
+                    div { +"seven" }
+                }                    
+                """.trimIndent()
+            )
+        }
+
+        showcaseSection("Complex layout")
+        paragraph {
+            +"Now we want to show a rather complex layout (including responsive behaviour), in order to "
+            +"present a very helpful technique based upon Kotlins"
+            c("objects")
+            +" for defining the overall column layout."
+        }
+        componentFrame {
+            val toggle = storeOf(false)
             gridBox({
                 fontSize { normal }
                 columns {
-                    repeat(9) { "9fr" }
-                    //repeat(autoFill) { "9fr" }
+                    repeat(3) { "1fr" }
                 }
 
-                autoRows {
-                    minmax("200px", auto)
-                    //minmax(minContent, auto)
-                    //minmax("100px", auto)
-                }
+                css(
+                    sm = "grid-template-rows: 1fr 1fr 3fr 1fr",
+                    md = "grid-template-rows: 1fr 4fr 1fr"
+                )
 
                 areas(
                     sm = {
                         with(grid) {
-                            row(HEADER, HEADER, HEADER, HEADER, HEADER, HEADER, HEADER, HEADER, HEADER)
-                            row(SIDEBAR, SIDEBAR, SIDEBAR, SIDEBAR, SIDEBAR, SIDEBAR, SIDEBAR, SIDEBAR, SIDEBAR)
-                            row(CONTENT, CONTENT, CONTENT, CONTENT, CONTENT, CONTENT, CONTENT, CONTENT, CONTENT)
-                            row(FOOTER, FOOTER, FOOTER, FOOTER, FOOTER, FOOTER, FOOTER, FOOTER, FOOTER)
+                            row(HEADER, HEADER, HEADER)
+                            row(SIDEBAR, SIDEBAR, SIDEBAR)
+                            row(CONTENT, CONTENT, CONTENT)
+                            row(FOOTER, FOOTER, FOOTER)
                         }
                     },
                     md = {
                         with(grid) {
-                            row(HEADER, HEADER, HEADER, HEADER, HEADER, HEADER, HEADER, HEADER, HEADER)
-                            row(SIDEBAR, SIDEBAR, SIDEBAR, CONTENT, CONTENT, CONTENT, CONTENT, CONTENT, CONTENT)
-                            row(FOOTER, FOOTER, FOOTER, FOOTER, FOOTER, FOOTER, FOOTER, FOOTER, FOOTER)
+                            row(HEADER, HEADER, HEADER)
+                            row(SIDEBAR, CONTENT, CONTENT)
+                            row(FOOTER, FOOTER, FOOTER)
                         }
                     }
                 )
                 gap { large }
-                //autoFlow { dense }
-                //raw("place-items: stretch flex-end;")
-                //justifyContent { spaceEvenly }
-                //alignItems { start }
             }) {
                 box({
                     grid { area { grid.HEADER } }
-                    //bgColor { "green" }
                     background {
                         color { light }
                     }
@@ -89,21 +139,15 @@ fun RenderContext.gridBoxDemo(): Div {
                     grid(sm = { area { grid.CONTENT } })
                     background(
                         sm = {
-                            image { "https://via.placeholder.com/150/?text=Klein" }
+                            image { "https://via.placeholder.com/150/?text=small%20sized%20 device" }
                             repeat { repeat }
                             positions {
                                 horizontal { center }
                                 vertical { center }
                             }
-                            /*
-        sizes {
-            horizontal { "100%" }
-            vertical { "80%" }
-        }
-         */
                         },
                         md = {
-                            image { "https://via.placeholder.com/300/A9A9A9?text=Gross" }
+                            image { "https://via.placeholder.com/300/A9A9A9?text=medium%20sized%20device" }
                             repeat { repeat }
                             positions {
                                 horizontal { center }
@@ -126,45 +170,178 @@ fun RenderContext.gridBoxDemo(): Div {
                         padding { "1rem" }
                     }) { +"Footer" }
                 }
-                box({
-                    margin { normal }
-                    paddings { all { "0.2rem" } }
-                    grid(
-                        sm = {
-                            row {
-                                start { grid.HEADER.start }
-                                //end { grid.FOOTER.end }
-                                //end { span(grid.SIDEBAR) }
-                                end { grid.CONTENT.end }
+                toggle.data.render { show ->
+                    if (show) {
+                        box({
+                            margin { normal }
+                            paddings { all { "0.2rem" } }
+                            grid(
+                                sm = {
+                                    row {
+                                        start { grid.HEADER.start }
+                                        end { grid.CONTENT.end }
+                                    }
+                                    column {
+                                        start { grid.CONTENT.start }
+                                        end { grid.CONTENT.end }
+                                    }
+                                },
+                                md = {
+                                    row {
+                                        start { grid.HEADER.start }
+                                        end { span(2) }
+                                    }
+                                    column {
+                                        start { "3" }
+                                        end { grid.CONTENT.end }
+                                    }
+                                }
+                            )
+                            background {
+                                color { primary_hover }
                             }
-                            column {
-                                start { grid.CONTENT.start }
-                                end { grid.CONTENT.end }
-                            }
-                        },
-                        md = {
-                            row {
-                                start { grid.HEADER.start }
-                                end { span(2) }
-                            }
-                            column {
-                                start { grid.CONTENT.start }
-                                end { grid.CONTENT.end }
-                            }
+                            paddings { all { "0.2rem" } }
+                            // TODO: How to animate a little? Fade in sideways
+                            css("text-overflow: ellipsis;")
+                            css("transition: opacity .2s, transform .2s;")
+                            css("white-space: pre;")
+                        }) {
+                            (::p.styled {
+                                padding { "1rem" }
+                            }) { +"Drawer" }
                         }
-                    )
-                    //bgColor { "rgba(255, 0, 0, 0.5)" }
-                    background {
-                        //blendMode { darken }
-                        color { primary_hover }
                     }
-                    paddings { all { "0.2rem" } }
-                }) {
-                    (::p.styled {
-                        padding { "1rem" }
-                    }) { +"Overlay" }
                 }
             }
+            pushButton({
+                margins { top { normal } }
+            }) {
+                text("Toggle Drawer!")
+                events {
+                    clicks.events.map { !toggle.current } handledBy toggle.update
+                }
+            }
+        }
+
+        // TODO: infoBox Auslagern
+        (::blockquote.styled {
+            borders {
+                left {
+                    color { rgb(221, 107, 32) }
+                    width { "4px" }
+                    style { solid }
+                }
+            }
+            radius { "4px" }
+            background {
+                color { rgb(254, 235, 200) }
+            }
+            margins {
+                top { normal }
+            }
+            paddings {
+                right { normal }
+                left { small }
+                top { small }
+                bottom { small }
+            }
+        }) {
+            p {
+                strong { +"Note:" }
+                +" Also, this layout transforms with screensize. Try resizing your browser window to see "
+                +"that the sidebar will gain its own row when the space becomes narrow."
+                +"The content appears on a separate row below then."
+            }
+        }
+
+        showcaseSubHeader("Column layout")
+        paragraph {
+            +"We use a plain old Kotlin object in order to define the "
+            strong { +"types" }
+            +" of columns."
+            +" Then we can refer to its properties later within the column definitions:"
+        }
+        playground {
+            source(
+                """
+                // define the kinds of cells
+                val grid = object {
+                    val HEADER: AreaName = "header"
+                    val SIDEBAR: AreaName = "sidebar"
+                    val CONTENT: AreaName = "content"
+                    val FOOTER: AreaName = "footer"
+                }                    
+                
+                gridBox({
+                    columns {
+                        repeat(3) { "1fr" }
+                    }
+                                    
+                    // refer to those -> easy refactoring included
+                    areas(
+                        with(grid) {
+                            row(HEADER, HEADER, HEADER)
+                            row(SIDEBAR, CONTENT, CONTENT) // mix cell types in one row
+                            row(FOOTER, FOOTER, FOOTER)
+                        }
+                    )
+                }) // ...
+                """.trimIndent()
+            )
+        }
+        paragraph {
+            +"For defining the content, we use the object fields too:"
+        }
+        playground {
+            source(
+                """
+                gridBox({
+                    // as above
+                }) {
+                    box({
+                        grid { area { grid.HEADER } } // refer to the cell type 
+                    }) {
+                        // put the special content for this cell type
+                    }
+                    // next type
+                    box({
+                        grid { area { grid.CONTENT } }  
+                    }) {
+                        // ...
+                    }
+                    // and so on!
+                }
+                """.trimIndent()
+            )
+        }
+
+        showcaseSubHeader("Defining Areas")
+        paragraph {
+            +"In order to group cells together, you can define areas also by referring to the name of the cell type."
+            +" This technique is used for a simple toggable drawer that appears on the right side by a button click."
+        }
+        playground {
+            source(
+                """
+                gridBox({
+                    // as above
+                }) {
+                    // define the drawer
+                    box({
+                        row {
+                            start { grid.HEADER.start } // refer to the cell type and specify the starting
+                            end { span(2) } // just occupy two rows
+                        }
+                        column {
+                            start { "3" } // start at the third vertical gap
+                            end { grid.CONTENT.end } // refer to another cell type and the exact position  
+                        }
+                    }) {
+                        // put the special content for the drawer
+                    }
+                }
+            """.trimIndent()
+            )
         }
     }
 }
