@@ -230,6 +230,12 @@ fun RenderContext.flexBoxDemo(): Div {
                     box { +"Box 1"}
                     box { +"Box 2"}
                     box { +"Box 3"}
+                    box { +"Box 4"}
+                    box { +"Box 5"}
+                    box { +"Box 6"}
+                    box { +"Box 7"}
+                    box { +"Box 8"}
+                    box { +"Box 9"}
                 }                    
             """.trimIndent()
             )
