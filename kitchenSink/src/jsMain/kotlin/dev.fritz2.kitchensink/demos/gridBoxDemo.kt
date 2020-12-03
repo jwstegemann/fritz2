@@ -33,7 +33,7 @@ fun RenderContext.gridBoxDemo(): Div {
                 "CSS based grid-layout",
                 "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout"
             )
-            +"styling options."
+            +" styling options."
         }
         showcaseSection("Usage")
         paragraph {
@@ -47,7 +47,10 @@ fun RenderContext.gridBoxDemo(): Div {
                 gap { normal }
                 children("div") {
                     size { "60px" }
-                    background { color { "gold" } }
+                    background { color { warning } }
+                    display { flex }
+                    css("justify-content: center")
+                    css("align-items: center")
                 }
             }) {
                 div { +"one" }
@@ -65,19 +68,23 @@ fun RenderContext.gridBoxDemo(): Div {
                 gridBox({
                     columns { repeat(5) { "1fr" } }
                     gap { normal }
-                    children("div") {
-                        size { "60px" }
-                        background { color { "gold" } }
-                    }
                 }) {
-                    div { +"one" }
-                    div { +"two" }
-                    div { +"three" }
-                    div { +"four" }
-                    div { +"five" }
-                    div { +"six" }
-                    div { +"seven" }
-                }                    
+                    // put some arbitrary content into the gridBox!
+                    box({
+                        size { "60px" }
+                        background { color { warning } }
+                        display { flex }
+                        justifyContent { center }
+                        alignItems { center }
+                    }) { +"one" }
+                    // all following items without styling for better readability!
+                    box { +"two" }
+                    box { +"three" }
+                    box { +"four" }
+                    box { +"five" }
+                    box { +"six" }
+                    box { +"seven" }
+                }                   
                 """.trimIndent()
             )
         }
@@ -181,7 +188,7 @@ fun RenderContext.gridBoxDemo(): Div {
                 toggle.data.render { show ->
                     if (show) {
                         box({
-                            margin { normal }
+                            margin { none }
                             paddings { all { "0.2rem" } }
                             grid(
                                 sm = {
@@ -209,10 +216,6 @@ fun RenderContext.gridBoxDemo(): Div {
                                 color { primary_hover }
                             }
                             paddings { all { "0.2rem" } }
-                            // TODO: How to animate a little? Fade in sideways
-                            css("text-overflow: ellipsis;")
-                            css("transition: opacity .2s, transform .2s;")
-                            css("white-space: pre;")
                         }) {
                             (::p.styled {
                                 padding { "1rem" }
@@ -304,8 +307,8 @@ fun RenderContext.gridBoxDemo(): Div {
         showcaseSubSection("Defining Areas")
         paragraph {
             +"In order to group cells together, you can also define areas by referring to the name of the cell type."
-            +" This technique is used for a simple togglable drawer that appears on the right side with the click of a"
-            +" button."
+            +" This technique is used for the simple togglable drawer above, that appears on the right side by"
+            +" the click of the button below the gridbox."
         }
         playground {
             source(
