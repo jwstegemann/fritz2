@@ -54,7 +54,7 @@ class PlaygroundComponent {
                 } catch (t: Throwable) {
                     console.error(t)
                 }
-            }, 500)
+            }, 300)
         }
     }
 

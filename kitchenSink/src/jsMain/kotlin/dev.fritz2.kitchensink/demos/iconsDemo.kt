@@ -17,7 +17,6 @@ fun RenderContext.iconsDemo(): Div {
 
     val icons = listOf(
         Theme().icons.add,
-        Theme().icons.all,
         Theme().icons.archive,
         Theme().icons.arrowDown,
         Theme().icons.arrowLeftDown,

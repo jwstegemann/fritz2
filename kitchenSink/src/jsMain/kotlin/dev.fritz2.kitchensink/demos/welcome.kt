@@ -1,6 +1,8 @@
 package dev.fritz2.kitchensink.demos
 
+import dev.fritz2.components.box
 import dev.fritz2.components.icon
+import dev.fritz2.components.lineUp
 import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
@@ -13,49 +15,59 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 fun RenderContext.welcome(): Div {
-
     return contentFrame {
 
+        lineUp({
+            alignItems { center }
+            margins { top { "3rem" } }
+        }) {
+            items {
+                icon({
+                    size { "13.5rem" }
+                    color { "rgba(255,255,255,0.85)" }
+                    textShadow { flat }
+                }) { fromTheme { fritz2 } }
+                box {
+                    (::h1.styled {
+                        fontSize { "5.5rem" }
+                        textShadow { flat }
+                    }) { +"tailor-made" }
+                    (::h1.styled {
+                        fontSize { "5.5rem" }
+                        margins { top { "-1.8rem" } }
+                        color { "rgba(255,255,255,0.85)" }
+                        textShadow { flat }
+                    }) { +"components" }
+                }
+
+            }
+        }
+
         stackUp({
+            padding { large }
+            background { color { "rgba(255,255,255,0.85)" } }
+            margins { top { "3rem" } }
+            radius { normal }
+            boxShadow { flat }
         }) {
             spacing { normal }
             items {
-                icon({
-                    size { "10rem" }
-                    margins {
-                        top { "2.5rem" }
-                    }
-                    color { primary }
+                (::h2.styled {
+                    margins { vertical { normal } }
                 }) {
-                    fromTheme { fritz2 }
+                    +"All you need is less."
                 }
-                (::p.styled {
-                    fontSize { "2rem" }
-                    margins {
-                        top { "1.5rem" }
-                        bottom { "1.5rem" }
-                    }
-                }) { +"fritz2 Components" }
-                (::p.styled {
-                    fontSize { "1.5rem" }
-                    fontWeight { bold }
-                    margins {
-                        top { "1.5rem" }
-                        bottom { ".5rem" }
-                    }
-                }) { +"Customizable Components Tailored To fritz2" }
-
 
                 paragraph {
                     +"""
-                        This is a set of ready to go components for building reactive themable web-apps. It uses fritz2
-                        and follows a consistent design system.
+                        This is a set of ready-to-go components for building reactive themable web-apps 
+                        following a consistent contraint-based design system using fritz2.
                     """.trimIndent()
                 }
 
                 paragraph {
                     +"""
-                        While the components can be used out of the box with the default theme, they are designed to be
+                        While these components can be used out of the box with a provided default theme, they are designed to be
                         customizable and can easily be styled and composed to fit your needs.
                     """.trimIndent()
                 }
@@ -68,7 +80,7 @@ fun RenderContext.welcome(): Div {
 
                 (::p.styled {
                     margins {
-                        bottom { "3rem" }
+                        bottom { "2rem" }
                     }
                 }) {
                     +"Your opinions and comments are very welcome. Please visit "
@@ -78,7 +90,8 @@ fun RenderContext.welcome(): Div {
                     +" to open issues and check out the code."
                 }
 
-                p { +"The design and concepts of the fritz2 component library are highly inspired by "
+                p {
+                    +"The design and concepts of the fritz2 component library are highly inspired by the great"
                     externalLink("Chakra UI", "https://chakra-ui.com/")
                     +" ."
                 }

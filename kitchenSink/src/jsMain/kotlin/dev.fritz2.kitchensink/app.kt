@@ -9,10 +9,12 @@ import dev.fritz2.dom.mount
 import dev.fritz2.kitchensink.base.*
 import dev.fritz2.kitchensink.demos.*
 import dev.fritz2.routing.router
+import dev.fritz2.styling.name
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.render
+import dev.fritz2.styling.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
@@ -48,6 +50,12 @@ object ThemeStore : RootStore<Int>(0) {
     }
 }
 
+const val welcomeContentStaticCss = """
+    background-image: url("https://unsplash.com/photos/LmyPLbbUWhA/download?force=true&w=1920");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+"""
+
 const val settingsTableStaticCss = """
         font-family: Inter, sans-serif;
         color: rgb(45, 55, 72);
@@ -75,19 +83,7 @@ const val settingsTableStaticCss = """
 @ExperimentalCoroutinesApi
 fun main() {
     staticStyle("settings-table", settingsTableStaticCss)
-
-    staticStyle(
-        """
-    @font-face {
-        font-family: 'Nunito';
-        font-style: normal;
-        font-weight: 400;
-        src: url(https://fonts.gstatic.com/s/nunito/v16/XRXV3I6Li01BKofIO-aBTMnFcQIG.woff2) format('woff2');
-        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-    }
-    """
-    )
-
+    val welcomeContent = staticStyle("welcome-content", welcomeContentStaticCss)
 
     val router = router("")
 
@@ -233,6 +229,7 @@ fun main() {
                         "100%"
                     }
                 }) {
+                    className(welcomeContent.whenever(router.data) { it == welcome_ }.name)
 
                     // todo we might want a better flex demo
                     // todo we might want a dedicated theme demo (or use formcontrol (rename) --> all

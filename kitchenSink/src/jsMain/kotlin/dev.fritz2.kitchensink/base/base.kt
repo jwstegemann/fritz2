@@ -89,7 +89,7 @@ fun RenderContext.contentFrame(init: Div.() -> Unit): Div {
             top { huge }
             left { normal }
         }
-    }){
+    }) {
         init()
     }
 }

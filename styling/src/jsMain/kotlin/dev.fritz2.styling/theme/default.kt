@@ -175,14 +175,6 @@ open class DefaultTheme : Theme {
         )
 
         // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
-        override val all = IconDefinition(
-            "all",
-            svg = """
-                
-            """.trimIndent()
-        )
-
-        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
         override val archive = IconDefinition(
             "archive",
             svg = """
