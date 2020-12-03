@@ -28,6 +28,11 @@ fun RenderContext.radiosDemo(): Div {
             +" of course you can customize their appearance with the use of the styling parameter."
         }
 
+        paragraph {
+            +"Please note that the creation of stores was omitted in some of the examples to keep the source fragments short."
+            +" This means that some of the radios do not alter their state when clicked."
+        }
+
         val demoItems = listOf("item 1", "item 2", "item 3")
         val usageRadioStore = storeOf(true)
         val usageRadioGroupStore = storeOf("item 2")
@@ -37,7 +42,7 @@ fun RenderContext.radiosDemo(): Div {
             +"Single "
             c("Radios")
             +" do not have a wide range of use cases, but we provide them anyway. You"
-            +" need to supply a Flow of Boolean representing the checked state via the"
+            +" need to supply a Flow of Boolean representing the selected state via the"
             c("selected")
             +" function. If you want to connect a handler to the state changes, use the event context."
         }
