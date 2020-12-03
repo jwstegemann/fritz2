@@ -73,7 +73,6 @@ fun RenderContext.responsiveDemo(): Div {
                 padding { small }
                 direction(sm = { column }, md = { row })
             }) {
-
                 box({
                     zIndex { layer(1) }
                     margins(
@@ -97,7 +96,6 @@ fun RenderContext.responsiveDemo(): Div {
 
                 box({
                     zIndex { base }
-                    //width { "300px" }
                     margins(
                         {
                             top { small }
@@ -130,18 +128,69 @@ fun RenderContext.responsiveDemo(): Div {
                     }
                 }
             }
-
-
         }
         playground {
             source(
                 """
-                (::span.styled {
-                    background { color { dark } }
-                    color { light }
-                    boxShadow { raised }
-                    padding { normal }
-                }) { +"raised text" }
+                    flexBox({
+                        padding { small }
+                        direction(sm = { column }, md = { row })
+                    }) {
+                        box({
+                            margins(
+                                {
+                                    top { small }
+                                    bottom { small }
+                                },
+                                md = { left { normal } }
+                            )
+                            flex { shrink { "0" } }
+                        }) {
+                            (::img.styled {
+                                width(sm = { full }, md = { wide.small })
+                                boxShadow { flat }
+                                radius { large }
+                            }) {
+                                src("https://bit.ly/3qthIO3")
+                                alt("Photo by Lauren York on Unsplash")
+                            }
+                        }
+        
+                        box({
+                            zIndex { base }
+                            margins(
+                                sm = {
+                                    top { small }
+                                    bottom { large }
+                                },
+                                md = { left { normal } }
+                            )
+                        }) {
+                            (::p.styled {
+                                textTransform { capitalize }
+                                color { info }
+                                fontWeight { semiBold }
+                                fontSize { smaller }
+                            }) {
+                                +"Photo by Lauren York on Unsplash"
+                            }
+                            
+                            (::h1.styled {
+                                fontSize { large }
+                                fontWeight { bold }
+                            }) { +"Flex Layouts Showcase" }
+                            
+                            (::p.styled {
+                                paddings {
+                                    all { small }
+                                    left { none }
+                                }
+                                fontSize { small }
+                            }) {
+                                +"Lorem ipsum dolor sit amet..." 
+                            }
+                        }
+                    }
                 """
             )
         }

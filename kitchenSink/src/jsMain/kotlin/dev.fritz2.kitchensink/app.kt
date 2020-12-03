@@ -87,7 +87,10 @@ fun main() {
     val router = router("")
 
     render(themes.first()) { theme ->
-        navBar {
+        navBar({
+            border { width { "0" } }
+            boxShadow { flat }
+        }) {
             brand {
                 (::a.styled {
                     after {
