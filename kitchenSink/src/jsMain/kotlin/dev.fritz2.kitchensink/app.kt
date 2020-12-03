@@ -76,6 +76,19 @@ const val settingsTableStaticCss = """
 fun main() {
     staticStyle("settings-table", settingsTableStaticCss)
 
+    staticStyle(
+        """
+    @font-face {
+        font-family: 'Nunito';
+        font-style: normal;
+        font-weight: 400;
+        src: url(https://fonts.gstatic.com/s/nunito/v16/XRXV3I6Li01BKofIO-aBTMnFcQIG.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    """
+    )
+
+
     val router = router("")
 
     render(themes.first()) { theme ->
