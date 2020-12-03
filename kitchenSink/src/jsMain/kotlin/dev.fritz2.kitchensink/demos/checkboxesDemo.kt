@@ -19,8 +19,6 @@ import kotlinx.coroutines.flow.flowOf
 @ExperimentalCoroutinesApi
 fun RenderContext.checkboxesDemo(): Div {
 
-    val demoItems = flowOf(listOf("item 1", "item 2", "item 3"))
-
     return contentFrame {
         showcaseHeader("Checkboxes")
 
@@ -183,7 +181,7 @@ fun RenderContext.checkboxesDemo(): Div {
         componentFrame {
             lineUp(
                 {
-                    verticalAlign { middle }
+                    alignItems { center }
                 }
             ){
                 items {

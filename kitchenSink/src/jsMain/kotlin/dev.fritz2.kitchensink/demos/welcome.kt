@@ -23,18 +23,34 @@ fun RenderContext.welcome(): Div {
         }) {
             items {
                 icon({
-                    size { "13.5rem" }
+                    size(
+                        sm = { "4.75rem" },
+                        md = { "13.5rem" }
+                    )
                     color { "rgba(255,255,255,0.8)" }
                     css("drop-shadow(0 0 0.5rem grey);")
                 }) { fromTheme { fritz2 } }
                 box {
                     (::h1.styled {
-                        fontSize { "5.5rem" }
+                        fontSize(
+                            sm = { "1.75rem" },
+                            md = { "5.5rem" }
+                        )
+                        lineHeight(
+                            sm = { "1.75rem" },
+                            md = { "5.5rem" }
+                        )
                         textShadow { flat }
                     }) { +"tailor-made" }
                     (::h1.styled {
-                        fontSize { "5.5rem" }
-                        margins { top { "-1.8rem" } }
+                        fontSize(
+                            sm = { "1.75rem" },
+                            md = { "5.5rem" }
+                        )
+                        lineHeight(
+                            sm = { "1.75rem" },
+                            md = { "5.5rem" }
+                        )
                         color { "rgba(255,255,255,0.85)" }
                         textShadow { flat }
                     }) { +"components" }
@@ -47,6 +63,10 @@ fun RenderContext.welcome(): Div {
             padding { large }
             background { color { "rgba(255,255,255,0.85)" } }
             margins { top { "3rem" } }
+            margins(
+                sm = { top { "1.5rem" } },
+                md = { top { "3rem" } }
+            )
             radius { normal }
             boxShadow { flat }
         }) {
@@ -91,9 +111,9 @@ fun RenderContext.welcome(): Div {
                 }
 
                 p {
-                    +"The design and concepts of the fritz2 component library are highly inspired by the great"
+                    +"The design and concepts of the fritz2 component library are highly inspired by the great "
                     externalLink("Chakra UI", "https://chakra-ui.com/")
-                    +" ."
+                    +"."
                 }
 
                 p {

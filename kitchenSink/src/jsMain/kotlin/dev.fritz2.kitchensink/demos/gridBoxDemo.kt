@@ -215,11 +215,10 @@ fun RenderContext.gridBoxDemo(): Div {
                             background {
                                 color { primary_hover }
                             }
-                            paddings { all { "0.2rem" } }
+                            padding { normal }
+                            textAlign { center }
                         }) {
-                            (::p.styled {
-                                padding { "1rem" }
-                            }) { +"Drawer" }
+                             +"Drawer"
                         }
                     }
                 }
