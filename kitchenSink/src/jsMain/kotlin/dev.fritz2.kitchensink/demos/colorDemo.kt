@@ -34,7 +34,7 @@ fun RenderContext.colorDemo(): Div {
                 }) {
                     (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
@@ -74,7 +74,7 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                 }) {
                     (::p.styled {
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
@@ -115,7 +115,7 @@ fun RenderContext.colorDemo(): Div {
                 }) {
                     (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
@@ -156,7 +156,7 @@ fun RenderContext.colorDemo(): Div {
                 }) {
                     (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
@@ -197,7 +197,7 @@ fun RenderContext.colorDemo(): Div {
                 }) {
                     (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
@@ -238,7 +238,7 @@ fun RenderContext.colorDemo(): Div {
                 }) {
                     (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
@@ -279,7 +279,7 @@ fun RenderContext.colorDemo(): Div {
                 }) {
                     (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
@@ -321,7 +321,7 @@ fun RenderContext.colorDemo(): Div {
                 }) {
                     (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
@@ -362,7 +362,7 @@ fun RenderContext.colorDemo(): Div {
                 }) {
                     (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
@@ -403,7 +403,7 @@ fun RenderContext.colorDemo(): Div {
                 }) {
                     (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
@@ -444,7 +444,7 @@ fun RenderContext.colorDemo(): Div {
                 }) {
                     (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }

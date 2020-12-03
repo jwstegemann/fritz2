@@ -28,7 +28,7 @@ fun RenderContext.themeDemo(): Div {
         paragraph {
             +"fritz2's components come with a predefined"
             c("DefaultTheme")
-            +""" and can be used to start styling your app. Of course you can derive custom dev.fritz2.kitchensink.getThemes 
+            +""" and can be used to start styling your app. Of course you can derive custom themes 
                 from this one to change values, or even extend the theme by your own definitions, from simple property 
                 values to complex predefined styles.""".trimIndent()
         }
@@ -188,24 +188,24 @@ fun RenderContext.themeDemo(): Div {
         playground {
             source(
                 """
-                    val dev.fritz2.kitchensink.getThemes = listOf<dev.fritz2.kitchensink.base.ExtendedTheme>(dev.fritz2.kitchensink.base.SmallFonts(), dev.fritz2.kitchensink.base.LargeFonts())
+                    val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
 
-                    object dev.fritz2.kitchensink.ThemeStore : RootStore<Int>(0) {
+                    object ThemeStore : RootStore<Int>(0) {
                         val selectTheme = handle<Int> { _, index ->
-                            Theme.use(dev.fritz2.kitchensink.getThemes[index])
+                            Theme.use(themes[index])
                             index
                         }
                     }
                         
                     //set your default theme    
-                    render(dev.fritz2.kitchensink.getThemes.first()) { theme ->
+                    render(themes.first()) { theme ->
                         //...
 
                         switch {
                             label("use large Fonts")
-                            checked { dev.fritz2.kitchensink.ThemeStore.data.map {it == 1} }
+                            checked { ThemeStore.data.map {it == 1} }
                             events {
-                                changes.states().map { if (it) 1 else 0 } handledBy dev.fritz2.kitchensink.ThemeStore.update
+                                changes.states().map { if (it) 1 else 0 } handledBy ThemeStore.update
                             }
                         }
                     }

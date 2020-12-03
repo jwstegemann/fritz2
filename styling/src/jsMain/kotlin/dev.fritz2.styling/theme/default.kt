@@ -1837,7 +1837,7 @@ open class DefaultTheme : Theme {
                     left { small }
                     right { small }
                 }
-                radius { tiny }
+                radius { small }
                 boxShadow { flat }
                 zIndex { "20" }
 
@@ -1865,8 +1865,8 @@ open class DefaultTheme : Theme {
         }
         override val section: Style<BasicParams> = {
             paddings {
-                top { tiny }
-                bottom { tiny }
+                top { small }
+                bottom { small }
             }
         }
         override val footer: Style<BasicParams> = {

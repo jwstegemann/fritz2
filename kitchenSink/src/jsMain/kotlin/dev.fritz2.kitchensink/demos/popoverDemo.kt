@@ -7,7 +7,6 @@ import dev.fritz2.components.pushButton
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.kitchensink.base.*
-import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -19,19 +18,14 @@ fun RenderContext.popoverDemo(): Div {
 
         showcaseSection("Usage")
         paragraph {
-            +"To define a popover, follow these steps :"
-            br { }
-            +" 1. Add a trigger : this can be a simple HTMLElement or a fritz2 component, e.g an icon or button"
-            br { }
-            +"2. Add at least one or more of the following \"areas\" : "
+            +"To define a popover, follow these steps create a trigger. This can be a simple HTMLElement or a fritz2 component, e.g an icon or button. "
+            +"Add one or more of the following \"areas\" : "
             c("header")
-            +"|"
+            +","
             c("content")
-            +"|"
+            +" and "
             c("footer")
-            br { }
-            br { }
-            +"The following example uses a"
+            +". The following example uses a"
             c("Pushbutton ")
             +" as trigger and a"
             c("content")
@@ -45,14 +39,10 @@ fun RenderContext.popoverDemo(): Div {
                 items {
                     popover {
                         trigger {
-                            pushButton {
-                                text("Trigger")
-                            }
+                            pushButton { text("Trigger") }
                         }
                         content {
-                            div {
-                                +"My popover content"
-                            }
+                            div { +"My popover content" }
                         }
                     }
                 }
@@ -64,14 +54,10 @@ fun RenderContext.popoverDemo(): Div {
                 """
                 popover {
                         trigger {
-                            pushButton {
-                                text("trigger")
-                            }
+                            pushButton { text("trigger") }
                         }
                         content {  
-                            div {
-                            +"My popover content"
-                        }
+                            div { +"My popover content" }
                       }
                     }
             """.trimIndent()
@@ -91,16 +77,12 @@ fun RenderContext.popoverDemo(): Div {
                 items {
                     popover {
                         trigger {
-                            pushButton {
-                                text("Trigger without marker")
-                            }
+                            pushButton { text("Trigger without marker") }
+                        }
+                        content {
+                            div { +"My popover content" }
                         }
                         hasArrow(false)
-                        content {
-                            div {
-                                +"My popover content"
-                            }
-                        }
                     }
                 }
             }
@@ -109,19 +91,14 @@ fun RenderContext.popoverDemo(): Div {
         playground {
             source(
                 """
-            
               popover {
                         trigger {
-                            pushButton {
-                                text("Trigger without marker")
-                            }
+                            pushButton { text("Trigger without marker") }
+                        }
+                        content {
+                            div { +"My popover content" }
                         }
                         hasArrow(false)
-                        content {
-                            div {
-                                +"My popover content"
-                            }
-                        }
                     }
         """.trimIndent()
             )
@@ -129,15 +106,13 @@ fun RenderContext.popoverDemo(): Div {
 
         showcaseSection("Areas")
         paragraph {
-            +"A popover can consist of the 3 areas "
+            +"A popover can consist of one or more of these three areas "
             c("header")
             +", "
             c("content")
-            +", and"
+            +" and"
             c("footer")
-            +"."
-            br {}
-            +"You must define at least one of them."
+            +". You must define at least one of them."
 
             componentFrame {
                 lineUp {
@@ -165,18 +140,13 @@ fun RenderContext.popoverDemo(): Div {
                 """
                  popover {
                             trigger {
-                                pushButton {
-                                    text("Areas")
-                                }
+                                pushButton { text("Areas") }
                             }
                             header("My header area")
                             content {
-                                div {
-                                    +"My content area"
-                                }
+                                div { +"My content area" }
                             }
                             footer("My footer area")
-
                         }
             """.trimIndent()
             )
@@ -186,11 +156,11 @@ fun RenderContext.popoverDemo(): Div {
         paragraph {
             +"The placement of your popover can be configured. fritz2 offers four predefined placements: "
             c("right")
-            +"|"
+            +","
             c("top")
-            +"|"
+            +","
             c("bottom")
-            +"|"
+            +","
             c("left")
             +", where "
             c("top")
@@ -206,7 +176,7 @@ fun RenderContext.popoverDemo(): Div {
                         margins { right { small } }
                     }) {
                         trigger {
-                            icon({ size { "2.5rem" } }) { fromTheme { arrowRight } }
+                            icon({ size { large } }) { fromTheme { arrowRight } }
                         }
                         placement { right }
                         header("Our simple Popover")
@@ -216,55 +186,55 @@ fun RenderContext.popoverDemo(): Div {
                             }
                         }
 
-                        footer("Footercontent")
+                        footer("Footer")
                     }
 
                     popover({
                         margins { right { small } }
                     }) {
                         trigger {
-                            icon({ size { "2.5rem" } }) { fromTheme { arrowUp } }
+                            icon({ size { large } }) { fromTheme { arrowUp } }
                         }
                         placement { top }
                         header("Our simple Popover")
                         content {
                             div {
-                                +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
+                                +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor..."
                             }
                         }
-                        footer("Footercontent")
+                        footer("Footer")
                     }
 
                     popover({
                         margins { right { small } }
                     }) {
                         trigger {
-                            icon({ size { "2.5rem" } }) { fromTheme { arrowDown } }
+                            icon({ size { large } }) { fromTheme { arrowDown } }
                         }
                         placement { bottom }
                         header("Our simple Popover")
                         content {
                             div {
-                                +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
+                                +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor..."
                             }
                         }
-                        footer("Footercontent")
+                        footer("Footer")
                     }
 
                     popover({
                         margins { right { small } }
                     }) {
                         trigger {
-                            icon({ size { "2.5rem" } }) { fromTheme { arrowLeft } }
+                            icon({ size { large } }) { fromTheme { arrowLeft } }
                         }
                         placement { left }
                         header("Our simple Popover")
                         content {
                             div {
-                                +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
+                                +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed ..."
                             }
                         }
-                        footer("Footercontent")
+                        footer("Footer")
                     }
                 }
             }
@@ -273,21 +243,20 @@ fun RenderContext.popoverDemo(): Div {
         playground {
             source(
                 """
-
-                   popover({
+                    popover({
                         margins { right { small } }
                     }) {
                         trigger {
-                            icon({ size { "2.5rem" } }) { fromTheme { arrowRight } }
+                            icon({ size { large } }) { fromTheme { arrowLeft } }
                         }
-                        placement { right } // set your placement here
+                        placement { left } // set your placement here
                         header("Our simple Popover")
                         content {
                             div {
-                                +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, ....
+                                +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed ..."
                             }
                         }
-                        footer("Footercontent")
+                        footer("Footer")
                     }
                     // other examples omitted for legibility
 
@@ -315,7 +284,7 @@ fun RenderContext.popoverDemo(): Div {
                         color { base }
                     }) {
                         trigger {
-                            icon({ size { "2rem" } }) { fromTheme { Theme().icons.circleInformation } }
+                            icon({ size { large } }) { fromTheme { circleInformation } }
                         }
                         placement { top }
                         hasCloseButton(false)
@@ -338,14 +307,12 @@ fun RenderContext.popoverDemo(): Div {
                         margins { right { small } }
                     }) {
                         trigger {
-                            icon({ size { "2rem" } }) { fromTheme { Theme().icons.eye } }
+                            icon({ size { large } }) { fromTheme { eye } }
                         }
                         placement { bottom }
                         hasArrow(false)
                         closeButton {
-                            icon({
-                                fontSize { tiny }
-                            }) { fromTheme { eyeOff } }
+                            icon({ size { tiny } }) { fromTheme { eyeOff } }
                         }
                         header("Custom Close Button")
                         content {
@@ -362,54 +329,37 @@ fun RenderContext.popoverDemo(): Div {
             source(
                 """
             // popover without a close button
-             popover({
-                        background { color { primary } }
-                        border { color { base } }
-                        margins { right { small } }
-                        color { base }
-                    }) {
-                        trigger {
-                            icon({ size { "2rem" } }) { fromTheme { Theme().icons.circleInformation } }
-                        }
-                        placement { top }
-                        hasCloseButton(false)
-                        header("Popover without close button")
-                        content {
-                            div {
-                                +"background-color"
-                                br {}
-                                +"border-color"
-                                br {}
-                                +"hidden close Button"
-                                br {}
-                                +"and hidden arrow"
-                            }
-                        }
-                        footer("Use the Trigger to close the popover ;-)")
-                    }
+            popover {
+                trigger {
+                    icon({ size { large } }) { fromTheme { circleInformation } }
+                }
+                placement { top }
+                hasCloseButton(false)
+                header("Popover without close button")
+                content {
+                    div { /* your content */ }
+                }
+                footer("Use the Trigger to close the popover ;-)")
+            }
             
-            // popover with a customized close button 
-                   popover({
-                        margins { right { small } }
-                    }) {
-                        trigger {
-                            icon({ size { "2rem" } }) { fromTheme { Theme().icons.eye } }
-                        }
-                        placement { bottom }
-                        hasArrow(false)
-                        closeButton {
-                            icon({
-                                fontSize { tiny }
-                            }) { fromTheme { eyeOff } }
-                        }
-                        header("Custom Close Button...")
-                        content {
-                            div {
-                                +"At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren ... "
-                            }
-                        }
+            // popover with custom close button
+            popover {
+                trigger {
+                    icon({ size { large } }) { fromTheme { eye } }
+                }
+                placement { bottom }
+                hasArrow(false)
+                closeButton {
+                    icon({ size { tiny } }) { fromTheme { eyeOff } }
+                }
+                header("Custom Close Button")
+                content {
+                    div {
+                        +"At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. "
                     }
-        """.trimIndent()
+                }
+            }
+            """.trimIndent()
             )
         }
 

@@ -73,7 +73,7 @@ fun RenderContext.gettingStarted(): Div {
 
         paragraph {
             +"The next step is adding your code to a Kotlin file (e.g. "
-            c("dev.fritz2.kitchensink/app.kt")
+            c("app.kt")
             +") which contains a "
             c("fun main() {...}")
             +" function. In this function, call the"
@@ -84,20 +84,20 @@ fun RenderContext.gettingStarted(): Div {
         }
         playground { source(
             """fun main() {
-                    val dev.fritz2.kitchensink.getRouter = dev.fritz2.kitchensink.getRouter(dev.fritz2.kitchensink.demos.welcome)
+                    val router = router(welcome)
                 
-                    render(dev.fritz2.kitchensink.getThemes.first()) { theme ->
+                    render(Themes().first()) { theme ->
                         div("header") {
                             ...
                         }
                         div("content") {
                             ...
-                            dev.fritz2.kitchensink.getRouter.data.render { site ->
+                            router.data.render { site ->
                                 when (site) {
-                                    dev.fritz2.kitchensink.demos.welcome -> dev.fritz2.kitchensink.demos.welcome()
+                                    welcome -> welcome()
                                     pageA -> pageA()
                                     pageB -> pageB()
-                                    else -> dev.fritz2.kitchensink.demos.welcome()
+                                    else -> welcome()
                                 }
                             }
                             ...
