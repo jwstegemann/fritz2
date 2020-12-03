@@ -75,9 +75,9 @@ fun RenderContext.textAreaDemo(): Div {
         paragraph {
             +"fritz2 offers three different sizes of textareas:"
             c("small")
-            +"|"
+            +", "
             c("normal")
-            +" (default)|"
+            +" (default) and "
             c("large")
         }
 
@@ -123,9 +123,9 @@ fun RenderContext.textAreaDemo(): Div {
         paragraph {
             +"fritz2 offers the well known behavior of resizing a textarea by using one of these resizing options: "
             c("vertical")
-            +"|"
+            +", "
             c("horizontal")
-            +"|"
+            +" and "
             c("none")
 
         }
