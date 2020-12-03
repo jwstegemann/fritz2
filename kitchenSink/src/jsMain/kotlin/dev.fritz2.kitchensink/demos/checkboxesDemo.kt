@@ -23,25 +23,23 @@ fun RenderContext.checkboxesDemo(): Div {
           showcaseHeader("Checkboxes")
 
           paragraph {
-              +"Using a "
-              c("checkbox")
-              +" or "
-              c("checkboxGroup")
-              +"for smarter multiple selection of different options. "
-
+              c("Checkboxes")
+              +"and "
+              c("CheckboxGroups")
+              +"provide a solution for handling multi selections."
           }
 
 
           showcaseSection("Usage")
           paragraph {
-              +"Define your checkbox(es) by adding label, the checked state and an eventHandler"
-              +"A"
+              +"Define your checkbox(es) by adding a label, the checked state, and an event handler."
+              +" A"
               c("checkbox")
-              +"communicate the state of the component via the given events of boolean type."
+              +"communicates the state of the component via the given events of boolean type."
               br {}
               +"The"
               c("checkboxGroup")
-              +" using a store to handle the selections and communication. You can display the group in a row or column."
+              +" uses a store to handle the selections and communication. You can display the group in a row or column."
           }
           val usageCheckboxStore = object : RootStore<Boolean>(true) {}
           val usageCheckboxGroupStore = object : RootStore<List<String>>(emptyList()) {}
@@ -51,7 +49,7 @@ fun RenderContext.checkboxesDemo(): Div {
                       lineUp {
                           items {
                               checkbox {
-                                  label("my Checkbox")
+                                  label("A single Checkbox")
                                   checked { usageCheckboxStore.data }
                                   events {
                                       changes.states() handledBy usageCheckboxStore.update
@@ -95,16 +93,15 @@ fun RenderContext.checkboxesDemo(): Div {
 
           showcaseSection("Customizing")
           paragraph {
-              +"You've a great scope to customize the box(es)."
-              +"Setting up the checked "
+              +"fritz2 offers a lot of scope to customize the box(es)."
+              +"For example, you can set up your checkboxes' check mark simply with any "
               c("icon")
-              +" with the fritz2 icon-Set. But you can also set the "
+              +" from the fritz2 icon-Set. Additionally, you can set the "
               c("labelStyle")
               +","
               c("checkedStyle")
-              +"and of course you can overwrite the default style of the"
-              c("checkbox")
-              +"The "
+              +", and of course you can overwrite any of the the default checkbox styles."
+              +" The "
               c("checkboxGroup")
               +" uses the same invocations."
           }
@@ -143,7 +140,7 @@ fun RenderContext.checkboxesDemo(): Div {
                                       color { danger }
                                   }
                               }) {
-                                  label("some different colors")
+                                  label("different colors")
                                   checked { customizingCheckbox2Store.data }
                                   checkedStyle {
                                       {
@@ -193,7 +190,7 @@ fun RenderContext.checkboxesDemo(): Div {
                                     color { danger }
                                 }
                             }) {
-                                label("some different colors")
+                                label("different colors")
                                 checked { myStore.data }
                                 checkedStyle {
                                     {
@@ -213,13 +210,13 @@ fun RenderContext.checkboxesDemo(): Div {
 
           showcaseSection("Sizes")
           paragraph {
-              +"choose from on three predefined sizes ("
+              +"Choose from one of three predefined sizes ("
               c("small")
               +", "
               c("normal")
-              +" or  "
+              +", or  "
               c("large")
-              +") or scale your checkbox(es) to your needs using the styling parameter."
+              +"), or scale your checkbox(es) to your needs using the styling parameter."
           }
           val sizesCheckboxStore = object : RootStore<Boolean>(false){}
           val sizesCheckbox1Store = object : RootStore<Boolean>(false){}
@@ -240,7 +237,6 @@ fun RenderContext.checkboxesDemo(): Div {
 
                               checkbox {
                                   label("normal")
-                                  size { normal }
                                   checked { sizesCheckbox1Store.data }
                                   events {
                                       changes.states() handledBy sizesCheckbox1Store.update
@@ -273,7 +269,6 @@ fun RenderContext.checkboxesDemo(): Div {
                               
                               checkbox {
                                   label("normal")
-                                  size { normal } // default
                                   checked { myStore.data }
                                   events {
                                       changes.states() handledBy myStore.update

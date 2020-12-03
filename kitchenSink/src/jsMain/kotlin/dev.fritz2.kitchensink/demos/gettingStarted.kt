@@ -25,8 +25,8 @@ fun RenderContext.gettingStarted(): Div {
 
         showcaseSection("Installation")
         paragraph {
-            +"To see how to create a new fritz2 Multiplatform project take a look "
-            externalLink("here", "https://docs.fritz2.dev/ProjectSetup.html")
+            +"To see how to create a new fritz2 Multiplatform project, take a look at the"
+            externalLink("fritz2 project setup docs", "https://docs.fritz2.dev/ProjectSetup.html")
             +" ."
         }
         paragraph {
@@ -49,8 +49,8 @@ fun RenderContext.gettingStarted(): Div {
 
         showcaseSection("Run in browser")
         paragraph {
-            +"To get your JS loaded you need a static html file. "
-            +"Here is a short example for a html-file in your JS resources folder (e.g. "
+            +"To get your JS loaded, you need a static html file."
+            +" Here is a short example for an html-file in your JS resources folder (e.g."
             c("src/resources/index.html")
             +"):"
         }
@@ -72,15 +72,15 @@ fun RenderContext.gettingStarted(): Div {
         }
 
         paragraph {
-            +"Next step is to add your code into a Kotlin file (e.g. "
+            +"The next step is adding your code to a Kotlin file (e.g. "
             c("dev.fritz2.kitchensink/app.kt")
             +") which contains a "
             c("fun main() {...}")
-            +" function. In this function you call the "
+            +" function. In this function, call the"
             c("mount(\"target\")")
             +" function to append your dynamic html to the "
             c("<body>")
-            +" element on your page."
+            +" element of your page."
         }
         playground { source(
             """fun main() {
@@ -112,8 +112,8 @@ fun RenderContext.gettingStarted(): Div {
 
         showcaseSection("Pre-release versions")
         paragraph {
-            +"For getting the latest pre-release version of fritz2 components take a look "
-            externalLink("here", "https://docs.fritz2.dev/ProjectSetup.html#pre-release-builds")
+            +"To get the latest pre-release version of fritz2 components, take a look "
+            externalLink("at the setup docs.", "https://docs.fritz2.dev/ProjectSetup.html#pre-release-builds")
         }
     }
 }

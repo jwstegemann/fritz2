@@ -220,7 +220,7 @@ fun main() {
                         menuAnchor(popover_)
                         menuAnchor(tooltip_)
 
-                        menuHeader { +"ICONS" }
+                        menuHeader { +"COLORS & ICONS" }
                         menuAnchor(icons_)
                         menuAnchor(color_)
                     }

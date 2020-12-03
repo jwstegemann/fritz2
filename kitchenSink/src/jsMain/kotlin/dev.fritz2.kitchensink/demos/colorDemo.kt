@@ -2,15 +2,18 @@ package dev.fritz2.kitchensink.demos
 
 import dev.fritz2.components.box
 import dev.fritz2.components.lineUp
+import dev.fritz2.components.tooltip
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.kitchensink.base.contentFrame
+import dev.fritz2.kitchensink.base.paragraph
 import dev.fritz2.kitchensink.base.showcaseHeader
 import dev.fritz2.styling.params.styled
 
 fun RenderContext.colorDemo(): Div {
     return contentFrame {
         showcaseHeader("Colors")
+        paragraph { +"These are the colors fritz2 uses in its default theme." }
         lineUp ({
             margins {
                 top { "3rem"}
@@ -29,6 +32,7 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "100%" }
+                        tooltip("#319795") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
@@ -71,6 +75,7 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "95%" }
+                        tooltip("rgb(49,151,149, 0.3)") { right }()
                     }
                     radius { "1.3rem" }
                 }) {
@@ -110,6 +115,7 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "90%" }
+                        tooltip("#b2f5ea") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
@@ -151,6 +157,7 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "85%" }
+                        tooltip("#718096") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
@@ -192,6 +199,7 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "80%" }
+                        tooltip("#2d3748") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
@@ -233,6 +241,7 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "75%" }
+                        tooltip("#e2e8f0") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
@@ -274,6 +283,7 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "70%" }
+                        tooltip("rgb(226,232,240, 0.5)") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
@@ -316,6 +326,7 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "65%" }
+                        tooltip("#3182ce") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
@@ -357,6 +368,7 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "60%" }
+                        tooltip("#28a745") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
@@ -398,6 +410,7 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "55%" }
+                        tooltip("#ffc107") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
@@ -439,6 +452,7 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "50%" }
+                        tooltip("#dc3545") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
@@ -462,7 +476,5 @@ fun RenderContext.colorDemo(): Div {
                 }
             }
         }
-
-
     }
 }
