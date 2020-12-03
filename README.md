@@ -2,7 +2,6 @@
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
-[![LOC](https://img.shields.io/badge/lines%20of%20code-1%2C5k-green)](https://clean-code-developer.com/grades/grade-1-red/#Keep_it_simple_stupid_KISS)
 [![Download](https://api.bintray.com/packages/jwstegemann/fritz2/core/images/download.svg)](https://bintray.com/jwstegemann/fritz2/core/_latestVersion)
 
 [![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://www.fritz2.dev/examples.html)
@@ -21,51 +20,48 @@ val model = storeOf("init value")
 render {
     div("some-css-class") {
         input {
-            value = model.data
+            value(model.data)
             changes.values() handledBy model.update 
         }
         p {
             +"model value = "
-            store.data.bind()
+            store.data.asText()
         }
     }
 }.mount("target")
 ```
 
-fritz2 implements **precise data binding**. This means that when parts of your data model change, **exactly those** and ONLY those DOM-nodes depending on the changed parts will automatically change as well.
-
-No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additional methods to decide which parts of your component have to be re-rendered:
+fritz2 implements **precise data binding**. This means that when parts of your data model change, **exactly those** and only those DOM-nodes depending on the changed parts will automatically change as well. No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additional methods to decide which parts of your component have to be re-rendered:
 
 ![State management in fritz2](https://www.fritz2.dev/static/fritz2_state.001.png)
 
 Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data classes only once and use it on your client and server (i.e. in a [SpringBoot](https://github.com/jamowei/fritz2-spring-todomvc)- or [Ktor](https://github.com/jamowei/fritz2-ktor-todomvc)-Backend). This is also true for your model-validation-code, which can quickly become far more complex than your data model.
 
-Expect a flat learning curve - we chose Kotlin for its focus on writing clean and intuitive code, which makes working with fritz2 easy to learn.
-fritz2 itself depends on only a handful of [concepts](https://docs.fritz2.dev) you have to master. The [core API](https://api.fritz2.dev/fritz2/) consists of about a dozen key objects and types offering only essential methods and functions. 
+## Key Features
+
+- easy reactive one- and two-way-databinding (even for lists and deep nested structures)
+- complete set of html5 elements, attributes and events
+- hassle-free redux-like state-handling
+- model-validation and message handling 
+- routing (for SPAs, hash-based)
+- [examples](https://www.fritz2.dev/examples.html) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
+- backend-repositories (Rest APIs, WebSockets, LocalStorage, etc.)
+- history / undo
+- processing state ("spinning wheel")
+- integrated [styling-dsl](https://docs.fritz2.dev/StylingDSL.html)
+- [component-library](https://components.fritz2.dev)
+- [documentation](https://docs.fritz2.dev)
+- easy to learn  
+
 
 ## How to try it?
 
 * Take a look at our hosted [examples](https://www.fritz2.dev/examples.html)
 * Or set up a new project on your own, following our [documentation](https://docs.fritz2.dev/ProjectSetup.html)
 
-
-## What we've got so far
-
-- easy reactive one- and two-way-databinding
-- even for lists and deep nested structures
-- complete set of html5 elements, attributes and events
-- hassle-free redux-like state-handling
-- model-validation and message handling 
-- routing (for SPAs, hash-based)
-- [examples](https://www.fritz2.dev/examples.html) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
-- backend-repositories (Rest APIs, LocalStorage, etc.)
-- history / undo
-- processing state ("spinning wheel")
-- [documentation](https://docs.fritz2.dev)
-
 ## Overall Goals
 
-- staying extremely lightweight (a few hundred lines of code for the core)
+- staying lightweight (a few hundred lines of code for the core)
 - keeping dependencies as low as possible (zero up to now!)
 - generating elements, attributes, events for html from specification (w3c, mozilla, ...)
 
