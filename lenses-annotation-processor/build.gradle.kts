@@ -6,6 +6,7 @@ plugins {
 
 kotlin {
     jvm()
+    js(LEGACY).nodejs()
 
     sourceSets {
         val commonMain by getting {
