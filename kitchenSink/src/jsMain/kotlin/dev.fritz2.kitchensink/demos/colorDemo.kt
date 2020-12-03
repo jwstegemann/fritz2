@@ -5,9 +5,6 @@ import dev.fritz2.components.lineUp
 import dev.fritz2.components.tooltip
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.kitchensink.base.contentFrame
-import dev.fritz2.kitchensink.base.paragraph
-import dev.fritz2.kitchensink.base.showcaseHeader
 import dev.fritz2.styling.params.styled
 
 fun RenderContext.colorDemo(): Div {
@@ -20,7 +17,7 @@ fun RenderContext.colorDemo(): Div {
             items {
                 box({
                     width { "90%" }
-                    height { "2.35rem" }
+                    //height { "2.35rem" }
                     background {
                         color { primary }
                     }
@@ -35,7 +32,7 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h3.styled {
+                    (::p.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
@@ -62,7 +59,7 @@ fun RenderContext.colorDemo(): Div {
             items {
                 box({
                     width { "85%" }
-                    height { "2.35rem" }
+                    //height { "2.35rem" }
                     background {
                         color { primary_hover }
                     }
@@ -76,7 +73,7 @@ fun RenderContext.colorDemo(): Div {
                     }
                     radius { "1.3rem" }
                 }) {
-                    (::h3.styled {
+                    (::p.styled {
                         width { maxContent }
                         background {
                             color { base }
@@ -101,7 +98,7 @@ fun RenderContext.colorDemo(): Div {
             items {
                 box({
                     width { "80%" }
-                    height { "2.35rem" }
+                    //height { "2.35rem" }
                     background {
                         color { secondary }
                     }
@@ -116,7 +113,7 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h3.styled {
+                    (::p.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
@@ -142,7 +139,7 @@ fun RenderContext.colorDemo(): Div {
             items {
                 box({
                     width { "75%" }
-                    height { "2.35rem" }
+                    //height { "2.35rem" }
                     background {
                         color { tertiary }
                     }
@@ -157,7 +154,7 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h3.styled {
+                    (::p.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
@@ -183,7 +180,7 @@ fun RenderContext.colorDemo(): Div {
             items {
                 box({
                     width { "70%" }
-                    height { "2.35rem" }
+                    //height { "2.35rem" }
                     background {
                         color { dark }
                     }
@@ -198,7 +195,7 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h3.styled {
+                    (::p.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
@@ -224,7 +221,7 @@ fun RenderContext.colorDemo(): Div {
             items {
                 box({
                     width { "65%" }
-                    height { "2.35rem" }
+                    //height { "2.35rem" }
                     background {
                         color { light }
                     }
@@ -239,7 +236,7 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h3.styled {
+                    (::p.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
@@ -265,7 +262,7 @@ fun RenderContext.colorDemo(): Div {
             items {
                 box({
                     width { "60%" }
-                    height { "2.35rem" }
+                    //height { "2.35rem" }
                     background {
                         color { light_hover }
                     }
@@ -280,7 +277,7 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h3.styled {
+                    (::p.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
@@ -307,7 +304,7 @@ fun RenderContext.colorDemo(): Div {
             items {
                 box({
                     width { "55%" }
-                    height { "2.35rem" }
+                    //height { "2.35rem" }
                     background {
                         color { info }
                     }
@@ -322,7 +319,7 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h3.styled {
+                    (::p.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
@@ -348,7 +345,7 @@ fun RenderContext.colorDemo(): Div {
             items {
                 box({
                     width { "50%" }
-                    height { "2.35rem" }
+                    //height { "2.35rem" }
                     background {
                         color { success }
                     }
@@ -363,7 +360,7 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h3.styled {
+                    (::p.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
@@ -389,7 +386,7 @@ fun RenderContext.colorDemo(): Div {
             items {
                 box({
                     width { "45%" }
-                    height { "2.35rem" }
+                    //height { "2.35rem" }
                     background {
                         color { warning }
                     }
@@ -404,7 +401,7 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h3.styled {
+                    (::p.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
@@ -430,7 +427,7 @@ fun RenderContext.colorDemo(): Div {
             items {
                 box({
                     width { "40%" }
-                    height { "2.35rem" }
+                    //height { "2.35rem" }
                     background {
                         color { danger }
                     }
@@ -445,7 +442,7 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h3.styled {
+                    (::p.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
