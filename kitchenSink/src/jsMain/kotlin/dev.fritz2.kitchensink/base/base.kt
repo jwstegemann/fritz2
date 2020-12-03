@@ -9,7 +9,6 @@ import dev.fritz2.styling.name
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.style
-import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -22,10 +21,10 @@ fun RenderContext.showcaseHeader(text: String) {
             top { "2rem" }
             bottom { ".25rem" }
         }
-        lineHeight { Theme().lineHeights.tiny }
+        lineHeight { tiny }
         fontWeight { "700" }
-        fontSize { Theme().fontSizes.huge }
-        letterSpacing { Theme().letterSpacings.small }
+        fontSize { huge }
+        letterSpacing { small }
     }) { +text }
 }
 
@@ -36,20 +35,20 @@ fun RenderContext.showcaseSubSection(text: String) {
             top { "4rem" }
             bottom { ".5rem" }
         }
-        lineHeight { Theme().lineHeights.small }
+        lineHeight { small }
         fontWeight { "600" }
-        fontSize { Theme().fontSizes.normal }
-        letterSpacing { Theme().letterSpacings.small }
+        fontSize { normal }
+        letterSpacing { small }
     }) { +text }
 }
 
 fun RenderContext.showcaseSection(text: String) {
     (::h3.styled {
         fontFamily { "Inter, sans-serif" }
-        lineHeight { Theme().lineHeights.smaller }
+        lineHeight { smaller }
         fontWeight { "600" }
-        fontSize { Theme().fontSizes.large }
-        letterSpacing { Theme().letterSpacings.small }
+        fontSize { large }
+        letterSpacing { small }
 
         borders {
             left {
@@ -70,10 +69,10 @@ fun RenderContext.paragraph(init: P.() -> Unit): P {
         margins {
             top { "1.25rem" }
         }
-        lineHeight { Theme().lineHeights.larger }
+        lineHeight { larger }
         fontWeight { "400" }
-        fontSize { Theme().fontSizes.normal }
-        letterSpacing { Theme().letterSpacings.small }
+        fontSize { normal }
+        letterSpacing { small }
     })  {
         init()
     }
