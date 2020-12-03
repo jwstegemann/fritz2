@@ -2226,6 +2226,19 @@ open class DefaultTheme : Theme {
               font-size: ${fontSizes.smaller};
               font-weight: bold;
             }
+            li {
+                display: list-item;
+                text-align: -webkit-match-parent;
+            }
+            ul {
+                display: block;
+                list-style-type: disc;
+                margin-block-start: 1em;
+                margin-block-end: 1em;
+                margin-inline-start: 0px;
+                margin-inline-end: 0px;
+                padding-inline-start: 1.5em;            
+            }
         """.trimIndent()
     }
 
