@@ -1448,7 +1448,7 @@ open class DefaultTheme : Theme {
             border {
                 width { "1px" }
                 style { solid }
-                color { dark }
+                color { light }
             }
             radius { "var(--cb-radius)" }
         }
