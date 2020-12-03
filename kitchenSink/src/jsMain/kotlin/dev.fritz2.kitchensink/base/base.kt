@@ -29,7 +29,7 @@ fun RenderContext.showcaseHeader(text: String) {
     }) { +text }
 }
 
-fun RenderContext.showcaseSubHeader(text: String) {
+fun RenderContext.showcaseSubSection(text: String) {
     (::h2.styled {
         fontFamily { "Inter, sans-serif" }
         margins {
@@ -38,7 +38,7 @@ fun RenderContext.showcaseSubHeader(text: String) {
         }
         lineHeight { Theme().lineHeights.small }
         fontWeight { "600" }
-        fontSize { Theme().fontSizes.larger }
+        fontSize { Theme().fontSizes.normal }
         letterSpacing { Theme().letterSpacings.small }
     }) { +text }
 }
@@ -108,12 +108,12 @@ fun RenderContext.warningBox(init: P.() -> Unit): Div {
         }
         borders {
             left {
-                width{ "4px" }
+                width { "4px" }
                 style { solid }
                 color { danger }
             }
         }
-        radius { normal }
+        radius { small }
         background {
             color { "rgb(254, 235, 200)" }
         }

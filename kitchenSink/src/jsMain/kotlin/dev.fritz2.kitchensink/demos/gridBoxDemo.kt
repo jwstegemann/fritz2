@@ -240,7 +240,7 @@ fun RenderContext.gridBoxDemo(): Div {
             }
         }
 
-        showcaseSubHeader("Column layout")
+        showcaseSubSection("Column layout")
         paragraph {
             +"Use a simple Kotlin object in order to define the "
             strong { +"types" }
@@ -301,7 +301,7 @@ fun RenderContext.gridBoxDemo(): Div {
             )
         }
 
-        showcaseSubHeader("Defining Areas")
+        showcaseSubSection("Defining Areas")
         paragraph {
             +"In order to group cells together, you can also define areas by referring to the name of the cell type."
             +" This technique is used for a simple togglable drawer that appears on the right side with the click of a"

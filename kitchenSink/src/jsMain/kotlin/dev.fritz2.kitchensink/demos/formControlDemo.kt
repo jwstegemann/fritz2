@@ -260,7 +260,7 @@ fun RenderContext.formControlDemo(): Div {
             +"We would like to show you two more examples with other controls:"
         }
 
-        showcaseSubHeader("Checkbox")
+        showcaseSubSection("Checkbox")
         componentFrame {
             val loveStore = storeOf(true)
             val labels = mapOf(
@@ -305,7 +305,7 @@ fun RenderContext.formControlDemo(): Div {
             """.trimIndent()
             )
         }
-        showcaseSubHeader("CheckboxGroup")
+        showcaseSubSection("CheckboxGroup")
 
         val myItemList = "fritz2".toCharArray().map { it.toString() }
         val mySelectedItems = myItemList.take(2)
