@@ -2,15 +2,14 @@ package dev.fritz2.kitchensink.demos
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
-import dev.fritz2.components.*
+import dev.fritz2.components.checkbox
+import dev.fritz2.components.checkboxGroup
+import dev.fritz2.components.lineUp
+import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.kitchensink.base.*
-import dev.fritz2.styling.StyleClass.Companion.plus
-import dev.fritz2.styling.params.AlignContentValues
-import dev.fritz2.styling.params.AlignContentValues.center
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -125,7 +124,6 @@ fun RenderContext.checkboxesDemo(): Div {
 
                     checkbox {
                         label("changed checkmark to fritz2 icon")
-                        checked { flowOf(true) }
                         icon { Theme().icons.fritz2 }
                         checked { usageCheckboxStore.data }
                         events {
