@@ -193,12 +193,12 @@ fun RenderContext.iconsDemo(): Div {
             lineUp ({
                 alignItems { center }
             }){
-                spacing { huge } // TODO: wide.large or something alike
+                spacing { huge }
                 items {
                     icon { fromTheme { favorite } }
 
                     icon({
-                        size { giant } // TODO: Why are values from theme getting crippled? (1.2px instead of 1
+                        size { larger }
                     // .2rem)
                     }) { fromTheme { fritz2 } }
 
@@ -216,11 +216,11 @@ fun RenderContext.iconsDemo(): Div {
                 icon { fromTheme { favorite } }
 
                 icon({
-                    size { "2rem" }
+                    size { lager }
                 }) { fromTheme { fritz2 } }
 
                 icon({
-                    size { "3rem" }
+                    size { giant }
                     color { warning }
                 }) { fromTheme { warning } }                
             """.trimIndent()
