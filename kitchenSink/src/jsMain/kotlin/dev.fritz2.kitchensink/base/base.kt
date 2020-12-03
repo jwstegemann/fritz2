@@ -83,11 +83,15 @@ fun RenderContext.contentFrame(init: Div.() -> Unit): Div {
         margins {
             top { "2rem" }
         }
-        maxWidth { "48rem" }
-        paddings {
-            top { huge }
-            left { normal }
-        }
+        maxWidth(sm = { unset }, md = { "48rem" })
+        paddings(
+            sm = {
+                top { normal }
+            },
+            md = {
+                top { huge }
+                left { normal }
+            })
     }) {
         init()
     }
@@ -156,7 +160,7 @@ fun RenderContext.externalLink(text: String, url: String, newTab: Boolean = true
     return link {
         +text
         href(url)
-        if(newTab) target("_new")
+        if (newTab) target("_new")
     }
 }
 

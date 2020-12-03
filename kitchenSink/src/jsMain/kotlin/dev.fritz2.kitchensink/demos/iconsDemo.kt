@@ -174,7 +174,7 @@ fun RenderContext.iconsDemo(): Div {
                 externalLink("project page", "https://icons.mono.company/")
                 +"."
             }
-            p{
+            p {
                 +"The icons are licensed under the "
                 externalLink("MIT license", "https://github.com/mono-company/mono-icons/blob/master/LICENSE.md")
                 +"."
@@ -190,16 +190,16 @@ fun RenderContext.iconsDemo(): Div {
         }
 
         componentFrame {
-            lineUp ({
+            lineUp({
                 alignItems { center }
-            }){
+            }) {
                 spacing { huge }
                 items {
                     icon { fromTheme { favorite } }
 
                     icon({
                         size { larger }
-                    // .2rem)
+                        // .2rem)
                     }) { fromTheme { fritz2 } }
 
                     icon({
@@ -317,9 +317,10 @@ fun RenderContext.iconsDemo(): Div {
             +" property."
         }
         gridBox({
-            columns {
-                repeat(4) { "1fr" }
-            }
+            columns(
+                sm = { repeat(2) { "1fr" } },
+                md = { repeat(4) { "1fr" } }
+            )
             gap { normal }
             margins { top { giant } }
             maxWidth { "80%" }

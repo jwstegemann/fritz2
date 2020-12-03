@@ -1,10 +1,8 @@
 package dev.fritz2.kitchensink
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.components.icon
-import dev.fritz2.components.lineUp
-import dev.fritz2.components.navBar
-import dev.fritz2.components.stackUp
+import dev.fritz2.binding.storeOf
+import dev.fritz2.components.*
 import dev.fritz2.dom.mount
 import dev.fritz2.kitchensink.base.*
 import dev.fritz2.kitchensink.demos.*
@@ -15,6 +13,7 @@ import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.render
 import dev.fritz2.styling.whenever
+import kotlinx.browser.window
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 val themes = listOf<ExtendedTheme>(SmallFonts(), LargeFonts())
@@ -86,178 +85,211 @@ fun main() {
 
     val router = router("")
 
-    render(themes.first()) { theme ->
-        navBar({
-            border { width { "0" } }
-            boxShadow { flat }
+    val menuStore = storeOf(false)
+
+    render(themes.first()) {
+        (::div.styled {
+            width { "100%" }
+            position { relative {} }
+            children("&[data-menu-open] #menu-left") {
+                display { flex }
+            }
         }) {
-            brand {
-                (::a.styled {
-                    after {
-                        textAlign { center }
-                        background { color { primary } }
-                        color { light }
+            attr("data-menu-open", menuStore.data)
+            navBar({
+                border { width { "0" } }
+                boxShadow { flat }
+            }) {
+                brand {
+                    (::a.styled {
+                        after {
+                            textAlign { center }
+                            background { color { primary } }
+                            color { light }
+                        }
+                        alignItems { end }
+                    }) {
+                        href("https://www.fritz2.dev/")
+                        target("_new")
+
+                        icon({
+                            size { "2.5rem" }
+                            color { primary }
+                        }) { fromTheme { fritz2 } }
+
+                        (::span.styled {
+                            margins { left { normal } }
+                            verticalAlign { sub }
+                            fontSize(sm = { large }, md = { larger })
+                            fontWeight { lighter }
+                        }) { +"Components" }
                     }
-                    alignItems { end }
-                }) {
-                    href("https://www.fritz2.dev/")
-                    target("_new")
-
-                    icon({
-                        size { "2.5rem" }
-                        color { primary }
-                    }) { fromTheme { fritz2 } }
-
+                    //FIXME: convert to styles
                     (::span.styled {
-                        margins { left { normal } }
-                        verticalAlign { sub }
-                        fontSize { larger }
-                        fontWeight { lighter }
-                    }) { +"Components" }
-                }
-                //FIXME: convert to styles
-                (::span.styled {
-                    css("""
+                        css(
+                            """
                     display: inline-flex;
                     vertical-align: top;
                     -moz-box-align: center;
                     align-items: center;
                     max-width: 100%;
                     font-weight: 500;
-                    line-height: 1.2;
                     min-height: 1.5rem;
                     min-width: 1.5rem;
-                    font-size: 0.875rem;
                     border-radius: 0.375rem;
-                    padding-left: 0.5rem;
-                    padding-right: 0.5rem;
                     background: none repeat scroll 0% 0%;
-                    """.trimIndent())
-                    background {
-                        color { warning }
-                    }
-                    margins {
-                        left { small }
-                    }
-                }) { +"Preview" }
-            }
-
-            actions {
-                lineUp {
-                    items {
-                        navAnchor("Documentation", "https://docs.fritz2.dev/")
-                        navAnchor("API", "https://api.fritz2.dev")
-                        navAnchor("Examples", "https://www.fritz2.dev/examples.html")
-                        navAnchor("Github", "https://github.com/jwstegemann/fritz2")
-                    }
-                }
-            }
-        }
-
-        lineUp({
-            alignItems { stretch }
-            color { dark }
-            minHeight { "100%" }
-        }) {
-            items {
-                stackUp({
-                    margins {
-                        top { larger }
-                    }
-                    padding { "1rem" }
-                    minWidth { "200px" }
-                    minHeight { "100%" }
-                    display { flex }
-                    wrap { nowrap }
-                    direction { column }
-                    alignItems { flexStart }
-                    background { color { base } }
-                    color { dark }
-                    paddings {
-                        top { "50px" }
-                    }
-                }, id = "menu-left")
-                {
-                    spacing { tiny }
-                    items {
-                        (::p.styled {
-                            width { "100%" }
-                            margins { top { huge } }
-                            paddings {
-                                bottom { "1rem" }
-                            }
-                        }) {
-                            menuAnchor(welcome_)
-                            menuAnchor(gettingStarted_)
+                    """.trimIndent()
+                        )
+                        paddings(
+                            sm = { horizontal { "0.25rem" } },
+                            md = { horizontal { "0.5rem" } }
+                        )
+                        fontSize(
+                            sm = { smaller },
+                            md = { small }
+                        )
+                        lineHeight(
+                            sm = { smaller },
+                            md = { small }
+                        )
+                        background {
+                            color { warning }
                         }
-                        menuHeader { +"FEATURES" }
-                        menuAnchor(styling_)
-                        menuAnchor(theme_)
-                        menuAnchor(responsive_)
-
-
-                        menuHeader { +"LAYOUT" }
-                        menuAnchor(flexbox_)
-                        menuAnchor(gridbox_)
-                        menuAnchor(stack_)
-
-                        menuHeader { +"FORMS" }
-                        menuAnchor(buttons_)
-                        menuAnchor(checkboxes_)
-                        menuAnchor(formcontrol_)
-                        menuAnchor(input_)
-                        menuAnchor(radios_)
-                        menuAnchor(switch_)
-                        menuAnchor(textarea_)
-
-                        menuHeader { +"FEEDBACK" }
-                        menuAnchor(spinner_)
-
-                        menuHeader { +"OVERLAY" }
-                        menuAnchor(modal_)
-                        menuAnchor(popover_)
-                        menuAnchor(tooltip_)
-
-                        menuHeader { +"ICONS" }
-                        menuAnchor(icons_)
-                    }
+                        margins {
+                            left { small }
+                        }
+                    }) { +"Preview" }
                 }
-                (::div.styled(id = "content-right") {
-                    paddings {
-                        all { huge }
-                    }
-                    width {
-                        "100%"
-                    }
-                }) {
-                    className(welcomeContent.whenever(router.data) { it == welcome_ }.name)
 
-                    // todo we might want a better flex demo
-                    // todo we might want a dedicated theme demo (or use formcontrol (rename) --> all
-                    //  together)
-                    router.data.render { site ->
-                        when (site) {
-                            gettingStarted_ -> gettingStarted()
-                            icons_ -> iconsDemo()
-                            spinner_ -> spinnerDemo()
-                            input_ -> inputDemo()
-                            buttons_ -> buttonDemo()
-                            formcontrol_ -> formControlDemo()
-                            flexbox_ -> flexBoxDemo()
-                            gridbox_ -> gridBoxDemo()
-                            checkboxes_ -> checkboxesDemo()
-                            radios_ -> radiosDemo()
-                            switch_ -> switchDemo()
-                            stack_ -> stackDemo()
-                            modal_ -> modalDemo()
-                            popover_ -> popoverDemo()
-                            tooltip_ -> tooltipDemo()
-                            welcome_ -> welcome()
-                            styling_ -> stylingDemo()
-                            theme_ -> themeDemo()
-                            responsive_ -> responsiveDemo()
-                            textarea_ -> textAreaDemo()
-                            else -> welcome()
+                actions {
+                    lineUp({
+                        display(sm = { none }, md = { flex })
+                    }) {
+                        items {
+                            navAnchor("Documentation", "https://docs.fritz2.dev/")
+                            navAnchor("API", "https://api.fritz2.dev")
+                            navAnchor("Examples", "https://www.fritz2.dev/examples.html")
+                            navAnchor("Github", "https://github.com/jwstegemann/fritz2")
+                        }
+                    }
+                    clickButton({
+                        display(sm = { flex }, md = { none })
+                    }) {
+                        icon { fromTheme { menu } }
+                    }.map {
+                        window.scrollTo(0.0, 0.0)
+                        !menuStore.current
+                    } handledBy menuStore.update
+                }
+            }
+
+            lineUp({
+                alignItems { stretch }
+                color { dark }
+                minHeight { "100%" }
+                direction(sm = { column }, md = { row })
+            }) {
+                items {
+                    stackUp({
+                        margins {
+                            top { larger }
+                        }
+                        padding { "1rem" }
+                        minWidth { "200px" }
+                        minHeight { "100%" }
+                        display(sm = { none }, md = { flex })
+                        wrap { nowrap }
+                        direction { column }
+                        alignItems { flexStart }
+                        background { color { base } }
+                        color { dark }
+                        paddings {
+                            top { "50px" }
+                        }
+                    }, id = "menu-left")
+                    {
+                        spacing { tiny }
+                        items {
+                            (::p.styled {
+                                width { "100%" }
+                                margins { top { huge } }
+                                paddings {
+                                    bottom { "1rem" }
+                                }
+                            }) {
+                                menuAnchor(welcome_)
+                                menuAnchor(gettingStarted_)
+                            }
+                            menuHeader { +"FEATURES" }
+                            menuAnchor(styling_)
+                            menuAnchor(theme_)
+                            menuAnchor(responsive_)
+
+
+                            menuHeader { +"LAYOUT" }
+                            menuAnchor(flexbox_)
+                            menuAnchor(gridbox_)
+                            menuAnchor(stack_)
+
+                            menuHeader { +"FORMS" }
+                            menuAnchor(buttons_)
+                            menuAnchor(checkboxes_)
+                            menuAnchor(formcontrol_)
+                            menuAnchor(input_)
+                            menuAnchor(radios_)
+                            menuAnchor(switch_)
+                            menuAnchor(textarea_)
+
+                            menuHeader { +"FEEDBACK" }
+                            menuAnchor(spinner_)
+
+                            menuHeader { +"OVERLAY" }
+                            menuAnchor(modal_)
+                            menuAnchor(popover_)
+                            menuAnchor(tooltip_)
+
+                            menuHeader { +"ICONS" }
+                            menuAnchor(icons_)
+                        }
+                    }
+                    (::div.styled(id = "content-right") {
+                        paddings {
+                            all { huge }
+                        }
+                        margins {
+                            left { "0 !important" }
+                        }
+                        width {
+                            "100%"
+                        }
+                    }) {
+                        className(welcomeContent.whenever(router.data) { it == welcome_ }.name)
+
+                        router.data.render { site ->
+                            menuStore.update(false)
+                            when (site) {
+                                gettingStarted_ -> gettingStarted()
+                                icons_ -> iconsDemo()
+                                spinner_ -> spinnerDemo()
+                                input_ -> inputDemo()
+                                buttons_ -> buttonDemo()
+                                formcontrol_ -> formControlDemo()
+                                flexbox_ -> flexBoxDemo()
+                                gridbox_ -> gridBoxDemo()
+                                checkboxes_ -> checkboxesDemo()
+                                radios_ -> radiosDemo()
+                                switch_ -> switchDemo()
+                                stack_ -> stackDemo()
+                                modal_ -> modalDemo()
+                                popover_ -> popoverDemo()
+                                tooltip_ -> tooltipDemo()
+                                welcome_ -> welcome()
+                                styling_ -> stylingDemo()
+                                theme_ -> themeDemo()
+                                responsive_ -> responsiveDemo()
+                                textarea_ -> textAreaDemo()
+                                else -> welcome()
+                            }
                         }
                     }
                 }
