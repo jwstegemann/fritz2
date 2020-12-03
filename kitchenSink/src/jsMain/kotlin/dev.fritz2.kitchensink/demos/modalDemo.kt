@@ -21,7 +21,6 @@ fun RenderContext.modalDemo(): Div {
         fun createDeepDialogs(count: Int, size: Style<BasicParams>): SimpleHandler<Unit> {
             if (count < 2) {
                 return modal {
-                    closeButton()
                     size { size }
                     content {
                         h1 { +"Final Dialog" }
@@ -69,51 +68,48 @@ fun RenderContext.modalDemo(): Div {
                     clickButton {
                         variant { outline }
                         text("Blank dialog with closeButton")
-                    } handledBy modal {
-                        closeButton()
-                    }
+                    } handledBy modal { }
 
                 }
             }
         }
         playground {
-            source("""
+            source(
+                """
                  clickButton {
                     variant { outline }
                     text("Blank dialog with closeButton")
-                } handledBy modal {
-                    closeButton()
-                }
-            """.trimIndent())
+                } handledBy modal { }
+            """.trimIndent()
+            )
         }
 
         componentFrame {
-            lineUp ({
+            lineUp({
                 alignItems { start }
-            }){
+            }) {
                 items {
                     clickButton {
                         variant { outline }
                         text("Stacking modals")
-                    } handledBy modal { close ->
-                        size { normal }
+                    } handledBy modal {
                         content {
-                            h1 { +"Simple dialog" }
+                            h1 { +"Level One!" }
                             paragraph { +"You can put any content or structure into a modal." }
                             clickButton({
                                 margins { top { "1.25rem" } }
                                 color { dark }
                                 background { color { light } }
-                            }) { text("Another modal!") } handledBy modal {
+                            }) { text("open next level") } handledBy modal {
                                 size { small }
                                 content {
-                                    h1 { +"One more to go!" }
+                                    h1 { +"Level Two!" }
                                     paragraph { +"You can stack as many as you like." }
                                     clickButton({
                                         margins { top { "1.25rem" } }
                                         color { dark }
                                         background { color { light } }
-                                    }) { text("And another modal!") } handledBy modal {
+                                    }) { text("open final Level") } handledBy modal {
                                         size { small }
                                         content {
                                             h1 { +"Final message" }
@@ -128,23 +124,23 @@ fun RenderContext.modalDemo(): Div {
             }
         }
         playground {
-            source("""
-                
+            source(
+                """
                 clickButton {
                     variant { outline }
                     text("Stacking modals")
-                } handledBy modal { close ->
-                    size { normal }
+                } handledBy modal {
                     content {
-                        h1 { +"<your text>" }
-                        // add your text here if you want 
-                        clickButton(...) {
-                            // style and fill your button here
+                        h1 { +"Level One!" }
+                        clickButton {
+                            text("open next level")
+                        } handledBy modal {
+                            // "stacked" modal
                         }
-                    }
-                    
+                    }   
                 }
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         showcaseSection("CloseButton variants")
@@ -181,7 +177,8 @@ fun RenderContext.modalDemo(): Div {
         }
 
         playground {
-            source("""
+            source(
+                """
                 clickButton {
                     variant { outline }
                     text("<your button title here>")
@@ -202,7 +199,8 @@ fun RenderContext.modalDemo(): Div {
                         iconRight()
                     }
                 }
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
         componentFrame {
             lineUp({
@@ -211,29 +209,30 @@ fun RenderContext.modalDemo(): Div {
                 items {
                     clickButton {
                         variant { outline }
-                        text("Blank dialog with closeButton")
+                        text("Blank dialog with custom closeButton")
                     } handledBy modal { close ->
                         hasCloseButton(false)
                         content {
-                            clickButton ({
+                            clickButton({
                                 position {
                                     absolute {
                                         right { normal }
                                         bottom { normal }
                                     }
                                 }
-                            }){ text("Terminate") } handledBy close // use close handler!
+                            }) { text("Terminate") } handledBy close // use close handler!
                         }
                     }
                 }
             }
         }
         playground {
-            source("""
+            source(
+                """
                 clickButton {
                     variant { outline }
                     text("Blank dialog with closeButton")
-                } handledBy modal { close ->
+                } handledBy modal { close -> // inject close handler
                     hasCloseButton(false)
                     content {
                         clickButton ({
@@ -246,7 +245,8 @@ fun RenderContext.modalDemo(): Div {
                         }){ text("Terminate") } handledBy close // use close handler!
                     }
                 }
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         showcaseSection("Overlay variants")
@@ -286,10 +286,11 @@ fun RenderContext.modalDemo(): Div {
             }
         }
         showcaseSection("Sizes")
-        paragraph { +"There are four different sizes for your modal to choose from. "
-        c("small")
+        paragraph {
+            +"There are four different sizes for your modal to choose from. "
+            c("small")
             +", "
-            c("normal")
+            c("normal (default)")
             +", "
             c("large")
             +" and "
@@ -317,7 +318,8 @@ fun RenderContext.modalDemo(): Div {
             }
         }
         playground {
-            source("""
+            source(
+                """
                 clickButton {
                         text("small")
                     } handledBy modal {
@@ -326,7 +328,8 @@ fun RenderContext.modalDemo(): Div {
                             //create your content here
                         }
                     }
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
         showcaseSection("Variants")
         paragraph { +"You can also make your modal cover the entire height of your viewport." }
@@ -338,8 +341,6 @@ fun RenderContext.modalDemo(): Div {
                     clickButton {
                         text("verticalFilled")
                     } handledBy modal {
-                        closeButton()
-                        size { normal }
                         variant { verticalFilled }
                         content {
                             h1 { +"Dialog takes all vertical space within the viewport" }
@@ -350,19 +351,19 @@ fun RenderContext.modalDemo(): Div {
             }
         }
         playground {
-            source("""
+            source(
+                """
                  clickButton {
                     text("verticalFilled")
                 } handledBy modal {
-                    closeButton()
-                    size { normal }
                     variant { verticalFilled }
                     content {
                         h1 { +"<your modal title here>" }
                         // add text here 
                     }
                 }
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
     }
 }
