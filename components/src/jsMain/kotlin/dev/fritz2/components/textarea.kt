@@ -61,7 +61,7 @@ class TextAreaComponent {
         border {
             width { thin }
             style { solid }
-            color { dark }
+            color { light }
 
         }
 

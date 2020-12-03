@@ -1,8 +1,9 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.params.rgb
-import dev.fritz2.styling.params.styled
+import dev.fritz2.kitchensink.base.*
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Theme
 import kotlinx.browser.window
@@ -16,7 +17,6 @@ fun RenderContext.iconsDemo(): Div {
 
     val icons = listOf(
         Theme().icons.add,
-        Theme().icons.all,
         Theme().icons.archive,
         Theme().icons.arrowDown,
         Theme().icons.arrowLeftDown,
@@ -167,38 +167,16 @@ fun RenderContext.iconsDemo(): Div {
             +" icon."
         }
 
-        // TODO: move infoBox
-        (::blockquote.styled {
-            borders {
-                left {
-                    color { rgb(221, 107, 32) }
-                    width { "4px" }
-                    style { solid }
-                }
-            }
-            radius { "4px" }
-            background {
-                color { rgb(254, 235, 200) }
-            }
-            margins {
-                top { normal }
-            }
-            paddings {
-                right { normal }
-                left { small }
-                top { small }
-                bottom { small }
-            }
-        }) {
+        warningBox {
             p { +"Most of our included icons are taken from the excellent mono icons project." }
             p {
                 +"Please have look at their "
-                simpleLinkWithBackground("https://icons.mono.company/", "project page")
+                externalLink("project page", "https://icons.mono.company/")
                 +"."
             }
-            p{
+            p {
                 +"The icons are licensed under the "
-                simpleLinkWithBackground("https://github.com/mono-company/mono-icons/blob/master/LICENSE.md", "MIT license")
+                externalLink("MIT license", "https://github.com/mono-company/mono-icons/blob/master/LICENSE.md")
                 +"."
             }
         }
@@ -212,18 +190,20 @@ fun RenderContext.iconsDemo(): Div {
         }
 
         componentFrame {
-            lineUp {
-                spacing { huge } // TODO: wide.large or something alike
+            lineUp({
+                alignItems { center }
+            }) {
+                spacing { huge }
                 items {
                     icon { fromTheme { favorite } }
 
                     icon({
-                        size { "2rem" } // TODO: Why are values from theme getting crippled? (1.2px instead of 1
-                    // .2rem)
+                        size { larger }
+                        // .2rem)
                     }) { fromTheme { fritz2 } }
 
                     icon({
-                        size { "3rem" }
+                        size { giant }
                         color { warning }
                     }) { fromTheme { warning } }
                 }
@@ -236,11 +216,11 @@ fun RenderContext.iconsDemo(): Div {
                 icon { fromTheme { favorite } }
 
                 icon({
-                    size { "2rem" }
+                    size { lager }
                 }) { fromTheme { fritz2 } }
 
                 icon({
-                    size { "3rem" }
+                    size { giant }
                     color { warning }
                 }) { fromTheme { warning } }                
             """.trimIndent()
@@ -259,7 +239,7 @@ fun RenderContext.iconsDemo(): Div {
         }
         paragraph {
             +"For example, include the "
-            simpleLinkWithBackground("https://github.com/logos", "github mark")
+            externalLink("github mark", "https://github.com/logos")
             +" to create a nice button:"
         }
         componentFrame {
@@ -337,11 +317,12 @@ fun RenderContext.iconsDemo(): Div {
             +" property."
         }
         gridBox({
-            columns {
-                repeat(4) { "1fr" }
-            }
+            columns(
+                sm = { repeat(2) { "1fr" } },
+                md = { repeat(4) { "1fr" } }
+            )
             gap { normal }
-            margins { top { "3rem" } }
+            margins { top { giant } }
             maxWidth { "80%" }
         }) {
             icons.forEach {

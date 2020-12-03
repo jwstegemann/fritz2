@@ -1,9 +1,12 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.components.icon
 import dev.fritz2.components.lineUp
-import dev.fritz2.components.playground
 import dev.fritz2.components.pushButton
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.kitchensink.base.*
+import dev.fritz2.kitchensink.theme_
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
@@ -25,15 +28,9 @@ fun RenderContext.stylingDemo(): Div {
         paragraph {
             +"""These style properties are connected to sets or scales of predefined values which are grouped in 
             a """
-            a {
-                href("#Theme")
-                +"Theme"
-            }
+            internalLink("Theme", theme_)
             +""". We heavily rely on the ideas and concepts of """.trimMargin()
-            a {
-                href("https://styled-system.com")
-                +"Styled Systems"
-            }
+            externalLink("Styled Systems", "https://styled-system.com")
             +""" here."""
         }
 

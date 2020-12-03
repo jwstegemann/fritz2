@@ -1,6 +1,12 @@
-import dev.fritz2.components.*
+package dev.fritz2.kitchensink.demos
+
+import dev.fritz2.components.box
+import dev.fritz2.components.lineUp
+import dev.fritz2.components.spinner
+import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.kitchensink.base.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -53,12 +59,8 @@ fun RenderContext.spinnerDemo(): Div {
         }
         playground {
             source("""
-                stackUp {
-                    items {
-                        spinner {
-                            size { thin }
-                        }
-                    }
+                spinner {
+                    size { thin } // change thickness here
                 }
                 """.trimIndent())
         }
@@ -113,16 +115,8 @@ fun RenderContext.spinnerDemo(): Div {
         }
         playground {
             source("""
-                stackUp {
-                    items {
-                        spinner({
-                            color { dark }
-                            size { "3em" }
-                        }) {
-                            size { fat }
-                            speed { ".5s" }
-                        }
-                    }
+                spinner {
+                    speed { ".5s" } // change speed here
                 }
             """.trimIndent())
         }
@@ -170,14 +164,10 @@ fun RenderContext.spinnerDemo(): Div {
         }
         playground {
             source("""
-                stackUp {
-                    items {
-                        spinner({
-                            size { "1rem" }
-                        }){
-                            size { normal }
-                        }
-                    }
+                spinner({
+                    size { "1rem" } // change size here
+                }){
+                    // other properties here
                 }
             """.trimIndent())
         }
@@ -247,16 +237,11 @@ fun RenderContext.spinnerDemo(): Div {
         }
         playground {
             source("""
-                stackUp {
-                    items {
-                        spinner({
-                            color { primary }
-                            size { "2em" }
-                        }) {
-                            size { fat }
-                        }
-                    }
-                }
+                spinner({
+                    color { primary } // change color here
+                }) {
+                    // other properties here
+                }s
             """.trimIndent())
         }
 
@@ -305,10 +290,10 @@ fun RenderContext.spinnerDemo(): Div {
         playground {
             source("""
                 spinner({
-                    size { "5rem" }
+                    size { "5rem" } // this is size, not thickness
                     color { "#FF1080" }
                 }) {
-                    icon { heart }
+                    icon { heart } // change icon here
                     speed { "2s" }
                 }
             """.trimIndent())

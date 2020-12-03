@@ -1,8 +1,16 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.binding.storeOf
-import dev.fritz2.components.*
+import dev.fritz2.components.box
+import dev.fritz2.components.gridBox
+import dev.fritz2.components.pushButton
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.params.*
+import dev.fritz2.kitchensink.base.*
+import dev.fritz2.styling.params.AreaName
+import dev.fritz2.styling.params.end
+import dev.fritz2.styling.params.start
+import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
@@ -21,11 +29,11 @@ fun RenderContext.gridBoxDemo(): Div {
         paragraph {
             +"Use a Gridbox to create arbitrary complex layouts."
             +" It does not offer special component properties, but instead relies on the "
-            simpleLinkWithBackground(
-                "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout",
-                "CSS based grid-layout"
+            externalLink(
+                "CSS based grid-layout",
+                "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout"
             )
-            +"styling options."
+            +" styling options."
         }
         showcaseSection("Usage")
         paragraph {
@@ -39,7 +47,10 @@ fun RenderContext.gridBoxDemo(): Div {
                 gap { normal }
                 children("div") {
                     size { "60px" }
-                    background { color { "gold" } }
+                    background { color { warning } }
+                    display { flex }
+                    css("justify-content: center")
+                    css("align-items: center")
                 }
             }) {
                 div { +"one" }
@@ -57,19 +68,23 @@ fun RenderContext.gridBoxDemo(): Div {
                 gridBox({
                     columns { repeat(5) { "1fr" } }
                     gap { normal }
-                    children("div") {
-                        size { "60px" }
-                        background { color { "gold" } }
-                    }
                 }) {
-                    div { +"one" }
-                    div { +"two" }
-                    div { +"three" }
-                    div { +"four" }
-                    div { +"five" }
-                    div { +"six" }
-                    div { +"seven" }
-                }                    
+                    // put some arbitrary content into the gridBox!
+                    box({
+                        size { "60px" }
+                        background { color { warning } }
+                        display { flex }
+                        justifyContent { center }
+                        alignItems { center }
+                    }) { +"one" }
+                    // all following items without styling for better readability!
+                    box { +"two" }
+                    box { +"three" }
+                    box { +"four" }
+                    box { +"five" }
+                    box { +"six" }
+                    box { +"seven" }
+                }                   
                 """.trimIndent()
             )
         }
@@ -173,7 +188,7 @@ fun RenderContext.gridBoxDemo(): Div {
                 toggle.data.render { show ->
                     if (show) {
                         box({
-                            margin { normal }
+                            margin { none }
                             paddings { all { "0.2rem" } }
                             grid(
                                 sm = {
@@ -200,15 +215,10 @@ fun RenderContext.gridBoxDemo(): Div {
                             background {
                                 color { primary_hover }
                             }
-                            paddings { all { "0.2rem" } }
-                            // TODO: How to animate a little? Fade in sideways
-                            css("text-overflow: ellipsis;")
-                            css("transition: opacity .2s, transform .2s;")
-                            css("white-space: pre;")
+                            padding { normal }
+                            textAlign { center }
                         }) {
-                            (::p.styled {
-                                padding { "1rem" }
-                            }) { +"Drawer" }
+                             +"Drawer"
                         }
                     }
                 }
@@ -223,29 +233,7 @@ fun RenderContext.gridBoxDemo(): Div {
             }
         }
 
-        // TODO: infoBox Auslagern
-        (::blockquote.styled {
-            borders {
-                left {
-                    color { rgb(221, 107, 32) }
-                    width { "4px" }
-                    style { solid }
-                }
-            }
-            radius { "4px" }
-            background {
-                color { rgb(254, 235, 200) }
-            }
-            margins {
-                top { normal }
-            }
-            paddings {
-                right { normal }
-                left { small }
-                top { small }
-                bottom { small }
-            }
-        }) {
+        warningBox {
             p {
                 strong { +"Please note:" }
                 +" This layout also transforms with screen size. Try resizing your browser window to see "
@@ -254,7 +242,7 @@ fun RenderContext.gridBoxDemo(): Div {
             }
         }
 
-        showcaseSubHeader("Column layout")
+        showcaseSubSection("Column layout")
         paragraph {
             +"Use a simple Kotlin object in order to define the "
             strong { +"types" }
@@ -315,11 +303,11 @@ fun RenderContext.gridBoxDemo(): Div {
             )
         }
 
-        showcaseSubHeader("Defining Areas")
+        showcaseSubSection("Defining Areas")
         paragraph {
             +"In order to group cells together, you can also define areas by referring to the name of the cell type."
-            +" This technique is used for a simple togglable drawer that appears on the right side with the click of a"
-            +" button."
+            +" This technique is used for the simple togglable drawer above, that appears on the right side by"
+            +" the click of the button below the gridbox."
         }
         playground {
             source(

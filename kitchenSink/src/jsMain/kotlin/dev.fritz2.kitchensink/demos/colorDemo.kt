@@ -1,21 +1,23 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.components.box
 import dev.fritz2.components.lineUp
+import dev.fritz2.components.tooltip
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.params.styled
 
 fun RenderContext.colorDemo(): Div {
-    return contentFrame {
-        showcaseHeader("Colors")
-        lineUp ({
+    return div {
+        lineUp({
             margins {
-                top { "3rem"}
+                top { huge }
             }
         }) {
             items {
                 box({
                     width { "90%" }
-                    height { "3rem" }
+                    //height { "2.35rem" }
                     background {
                         color { primary }
                     }
@@ -25,39 +27,39 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "100%" }
+                        tooltip("#319795") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { primary }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"primary"}
+                    }) { +"primary" }
                 }
 
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "85%" }
-                    height { "3rem" }
+                    //height { "2.35rem" }
                     background {
                         color { primary_hover }
                     }
@@ -67,36 +69,36 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "95%" }
+                        tooltip("rgb(49,151,149, 0.3)") { right }()
                     }
                     radius { "1.3rem" }
                 }) {
-                    (::h1.styled {
-                        width { maxContent }
+                    (::p.styled {
+                        width { "8rem" }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { primary_hover }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"primary_hover"}
+                    }) { +"primary_hover" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "80%" }
-                    height { "3rem" }
+                    //height { "2.35rem" }
                     background {
                         color { secondary }
                     }
@@ -106,38 +108,38 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "90%" }
+                        tooltip("#b2f5ea") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { secondary }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"secondary"}
+                    }) { +"secondary" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "75%" }
-                    height { "3rem" }
+                    //height { "2.35rem" }
                     background {
                         color { tertiary }
                     }
@@ -147,38 +149,38 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "85%" }
+                        tooltip("#718096") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { tertiary }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"tertiary"}
+                    }) { +"tertiary" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "70%" }
-                    height { "3rem" }
+                    //height { "2.35rem" }
                     background {
                         color { dark }
                     }
@@ -188,38 +190,38 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "80%" }
+                        tooltip("#2d3748") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { dark }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"dark"}
+                    }) { +"dark" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "65%" }
-                    height { "3rem" }
+                    //height { "2.35rem" }
                     background {
                         color { light }
                     }
@@ -229,38 +231,38 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "75%" }
+                        tooltip("#e2e8f0") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { light }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"light"}
+                    }) { +"light" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "60%" }
-                    height { "3rem" }
+                    //height { "2.35rem" }
                     background {
                         color { light_hover }
                     }
@@ -270,39 +272,39 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "70%" }
+                        tooltip("rgb(226,232,240, 0.5)") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { light_hover }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"light_hover"}
+                    }) { +"light_hover" }
                 }
             }
         }
 
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "55%" }
-                    height { "3rem" }
+                    //height { "2.35rem" }
                     background {
                         color { info }
                     }
@@ -312,38 +314,38 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "65%" }
+                        tooltip("#3182ce") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { info }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"info"}
+                    }) { +"info" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "50%" }
-                    height { "3rem" }
+                    //height { "2.35rem" }
                     background {
                         color { success }
                     }
@@ -353,38 +355,38 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "60%" }
+                        tooltip("#28a745") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { success }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"success"}
+                    }) { +"success" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "45%" }
-                    height { "3rem" }
+                    //height { "2.35rem" }
                     background {
                         color { warning }
                     }
@@ -394,38 +396,38 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "55%" }
+                        tooltip("#ffc107") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { warning }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"warning"}
+                    }) { +"warning" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "40%" }
-                    height { "3rem" }
+                    //height { "2.35rem" }
                     background {
                         color { danger }
                     }
@@ -435,30 +437,28 @@ fun RenderContext.colorDemo(): Div {
                     }
                     hover {
                         width { "50%" }
+                        tooltip("#dc3545") { right }()
                     }
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::p.styled {
                         textAlign { right }
-                        width { maxContent }
+                        width { "8rem" }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { danger }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"danger"}
+                    }) { +"danger" }
                 }
             }
         }
-
-
     }
 }

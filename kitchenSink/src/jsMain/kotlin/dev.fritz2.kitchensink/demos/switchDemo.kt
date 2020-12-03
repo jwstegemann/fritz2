@@ -1,11 +1,11 @@
+package dev.fritz2.kitchensink.demos
+
 import dev.fritz2.binding.RootStore
-import dev.fritz2.components.playground
-import dev.fritz2.components.stackUp
 import dev.fritz2.components.switch
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.styling.params.styled
+import dev.fritz2.kitchensink.base.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -87,27 +87,28 @@ fun RenderContext.switchDemo(): Div {
                 """
                     switch(styling = {
                         background {
-                            color { info }
+                            color { info } // change background color here
                         }
                     }) {
                         label("Different dot color")
-                        checked { checkedStore3.data }
+                        checked { <your boolean> } // defines whether switch is checked or not 
                         checkedStyle {
                             {
                                 background {
-                                    color { "pink" }
+                                    color { "pink" } // change checked background color here
                                 }
                             }
                         }
                         dotStyle {
                             {
                                 background {
-                                    color { danger }
+                                    color { danger } // change dot color here
                                 }
                             }
                         }
                         events {
-                            changes.states() handledBy checkedStore3.update
+                            changes.states() handledBy <your boolean>.update
+                            //changes the state of your check boolean
                         }
                     }
                 """
@@ -160,27 +161,7 @@ fun RenderContext.switchDemo(): Div {
                 """
                     switch() {
                         label("Small size")
-                        size { small }
-                        checked { checkedStore4.data }
-                        events {
-                            changes.states() handledBy checkedStore4.update
-                        }
-                    }
-                    switch() {
-                        label("Normal size")
-                        size { normal }
-                        checked { checkedStore5.data }
-                        events {
-                            changes.states() handledBy checkedStore5.update
-                        }
-                    }
-                    switch() {
-                        label("Large size")
-                        size { large }
-                        checked { checkedStore6.data }
-                        events {
-                            changes.states() handledBy checkedStore6.update
-                        }
+                        size { small } // change size here
                     }
                 """
             )

@@ -98,8 +98,8 @@ class CheckboxGroupComponent<T> {
     }
 
     var disabled: Flow<Boolean> = flowOf(false)
-    fun disabled(value: Flow<Boolean>) {
-        disabled = value
+    fun disabled(value: () -> Flow<Boolean>) {
+        disabled = value()
     }
     fun disabled(value:  Boolean) {
         disabled = flowOf(value)

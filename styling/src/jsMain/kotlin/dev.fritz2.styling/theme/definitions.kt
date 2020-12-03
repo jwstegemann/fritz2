@@ -231,7 +231,6 @@ class IconDefinition(
  */
 interface Icons {
     val add: IconDefinition
-    val all: IconDefinition
     val archive: IconDefinition
     val arrowDown: IconDefinition
     val arrowLeftDown: IconDefinition
