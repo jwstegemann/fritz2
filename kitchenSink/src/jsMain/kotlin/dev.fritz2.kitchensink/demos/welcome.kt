@@ -95,6 +95,19 @@ fun RenderContext.welcome(): Div {
                     externalLink("Chakra UI", "https://chakra-ui.com/")
                     +" ."
                 }
+
+                p {
+                    +"Photo by "
+                    externalLink(
+                        "Ochir-Erdene Oyunmedeg",
+                        "https://unsplash.com/@chiklad?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText"
+                    )
+                    +" on "
+                    externalLink(
+                        "Unsplash",
+                        "https://unsplash.com/s/photos/grass?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText"
+                    )
+                }
             }
         }
     }

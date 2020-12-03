@@ -110,7 +110,7 @@ fun main() {
                         verticalAlign { sub }
                         fontSize { larger }
                         fontWeight { lighter }
-                    }) { +"fritz2 - components" }
+                    }) { +"Components" }
                 }
                 //FIXME: convert to styles
                 (::span.styled {
