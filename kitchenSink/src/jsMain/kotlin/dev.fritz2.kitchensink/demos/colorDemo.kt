@@ -11,18 +11,16 @@ import dev.fritz2.kitchensink.base.showcaseHeader
 import dev.fritz2.styling.params.styled
 
 fun RenderContext.colorDemo(): Div {
-    return contentFrame {
-        showcaseHeader("Colors")
-        paragraph { +"These are the colors fritz2 uses in its default theme." }
-        lineUp ({
+    return div {
+        lineUp({
             margins {
-                top { "3rem"}
+                top { huge }
             }
         }) {
             items {
                 box({
                     width { "90%" }
-                    height { "3rem" }
+                    height { "2.35rem" }
                     background {
                         color { primary }
                     }
@@ -37,35 +35,34 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::h3.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { primary }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"primary"}
+                    }) { +"primary" }
                 }
 
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "85%" }
-                    height { "3rem" }
+                    height { "2.35rem" }
                     background {
                         color { primary_hover }
                     }
@@ -79,33 +76,32 @@ fun RenderContext.colorDemo(): Div {
                     }
                     radius { "1.3rem" }
                 }) {
-                    (::h1.styled {
+                    (::h3.styled {
                         width { maxContent }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { primary_hover }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"primary_hover"}
+                    }) { +"primary_hover" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "80%" }
-                    height { "3rem" }
+                    height { "2.35rem" }
                     background {
                         color { secondary }
                     }
@@ -120,34 +116,33 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::h3.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { secondary }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"secondary"}
+                    }) { +"secondary" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "75%" }
-                    height { "3rem" }
+                    height { "2.35rem" }
                     background {
                         color { tertiary }
                     }
@@ -162,34 +157,33 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::h3.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { tertiary }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"tertiary"}
+                    }) { +"tertiary" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "70%" }
-                    height { "3rem" }
+                    height { "2.35rem" }
                     background {
                         color { dark }
                     }
@@ -204,34 +198,33 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::h3.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { dark }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"dark"}
+                    }) { +"dark" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "65%" }
-                    height { "3rem" }
+                    height { "2.35rem" }
                     background {
                         color { light }
                     }
@@ -246,34 +239,33 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::h3.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { light }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"light"}
+                    }) { +"light" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "60%" }
-                    height { "3rem" }
+                    height { "2.35rem" }
                     background {
                         color { light_hover }
                     }
@@ -288,35 +280,34 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::h3.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { light_hover }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"light_hover"}
+                    }) { +"light_hover" }
                 }
             }
         }
 
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "55%" }
-                    height { "3rem" }
+                    height { "2.35rem" }
                     background {
                         color { info }
                     }
@@ -331,34 +322,33 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::h3.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { info }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"info"}
+                    }) { +"info" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "50%" }
-                    height { "3rem" }
+                    height { "2.35rem" }
                     background {
                         color { success }
                     }
@@ -373,34 +363,33 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::h3.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { success }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"success"}
+                    }) { +"success" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "45%" }
-                    height { "3rem" }
+                    height { "2.35rem" }
                     background {
                         color { warning }
                     }
@@ -415,34 +404,33 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::h3.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { warning }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"warning"}
+                    }) { +"warning" }
                 }
             }
         }
-        lineUp ({
+        lineUp({
             margins {
-                top { "1rem"}
+                top { tiny }
             }
         }) {
             items {
                 box({
                     width { "40%" }
-                    height { "3rem" }
+                    height { "2.35rem" }
                     background {
                         color { danger }
                     }
@@ -457,22 +445,21 @@ fun RenderContext.colorDemo(): Div {
                     radius { "1.3rem" }
                     textAlign { right }
                 }) {
-                    (::h1.styled {
+                    (::h3.styled {
                         textAlign { right }
                         width { maxContent }
                         background {
                             color { base }
                         }
                         radii {
-                            left{ "1rem" }
+                            left { "1rem" }
                         }
                         color { danger }
                         paddings {
-                            bottom { tiny }
                             left { small }
                             right { small }
                         }
-                    }) { +"danger"}
+                    }) { +"danger" }
                 }
             }
         }
