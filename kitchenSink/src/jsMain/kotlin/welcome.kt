@@ -12,7 +12,7 @@ fun RenderContext.welcome(): Div {
 
         stackUp({
             width { "100%" }
-            justifyContent { center }
+            alignItems { center }
         }) {
             spacing { normal }
             items {
@@ -31,7 +31,7 @@ fun RenderContext.welcome(): Div {
                         top { "1.5rem" }
                         bottom { "1.5rem" }
                     }
-                }) { +"fritz2 component library" }
+                }) { +"fritz2 components" }
                 (::p.styled {
                     fontSize { "1.5rem" }
                     fontWeight { bold }
@@ -39,7 +39,7 @@ fun RenderContext.welcome(): Div {
                         top { "1.5rem" }
                         bottom { ".5rem" }
                     }
-                }) { +"Welcome to our components demo!" }
+                }) { +"Welcome to our components demo" }
 
 
                 p { +"This demo shows the component library we added to fritz2 with the release v0.8."
@@ -67,7 +67,7 @@ fun RenderContext.welcome(): Div {
                     +" to open issues or check out the code."
                 }
 
-                p { +"The design of the fritz2 component library is highly inspired by "
+                p { +"The design of the fritz2 components is highly inspired by "
                     a {
                         href("https://chakra-ui.com/")
                         + "Chakra UI"
