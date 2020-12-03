@@ -10,7 +10,6 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -49,6 +48,8 @@ import kotlinx.coroutines.flow.map
  * field to grasp, how the mapping between a control and a rendering strategie is done.
  *
  */
+// TODO: Add support for disable
+// TODO: Add support for invalid for every control! (currently only works for inputField)
 @ComponentMarker
 open class FormControlComponent {
     companion object {
@@ -72,9 +73,7 @@ open class FormControlComponent {
         const val invalidClassName = "invalid"
 
         val invalidCss: Style<BasicParams> = {
-            boxShadow {
-                Theme().shadows.danger
-            }
+            boxShadow { danger }
             border {
                 width { thin }
                 style { solid }
@@ -224,6 +223,24 @@ open class FormControlComponent {
             }
         }
     }
+
+    open fun radioGroup(
+        styling: BasicParams.() -> Unit = {},
+        store: Store<String>,
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = ControlNames.radioGroup,
+        build: RadioGroupComponent<String>.() -> Unit
+    ) {
+        control.set(ControlNames.radioGroup) {
+            radioGroup(styling, store, baseClass, id, prefix) {
+                build()
+            }
+        }
+    }
+
+    // TODO: Add support for ``textArea``
+    // TODO: Add support for ``switch``
 
     fun render(
         styling: BasicParams.() -> Unit = {},

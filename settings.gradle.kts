@@ -15,8 +15,7 @@ include(
     "test-server",
     "styling",
     "components",
-    "datatable",
-    "kitchenSink"
+    "datatable"
 )
 
 enableFeaturePreview("GRADLE_METADATA")
