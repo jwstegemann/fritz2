@@ -10,6 +10,7 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.kitchensink.base.*
+import dev.fritz2.styling.params.AlignContentValues.center
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 
@@ -30,7 +31,6 @@ fun RenderContext.radiosDemo(): Div {
 
         paragraph {
             +"Please note that the creation of stores was omitted in some of the examples to keep the source fragments short."
-            +" This means that some of the radios do not alter their state when clicked."
         }
 
         val demoItems = listOf("item 1", "item 2", "item 3")
@@ -82,7 +82,6 @@ fun RenderContext.radiosDemo(): Div {
             radioGroup(store = usageRadioGroupStore) {
                 items { flowOf(demoItems) }
                 direction { row }
-
             }
         }
         playground {
@@ -109,19 +108,39 @@ fun RenderContext.radiosDemo(): Div {
             +", or scale your radios to your needs using the styling parameter."
         }
 
+        val smallStore = storeOf(false)
+        val normalStore = storeOf(true)
+        val largeStore = storeOf(true)
+
         componentFrame {
-            lineUp {
+            lineUp(
+                {
+                    verticalAlign { middle }
+                }
+            ) {
                 items {
                     radio {
                         label("small")
                         size { small }
+                        selected { smallStore.data }
+                        events {
+                            changes.states() handledBy smallStore.update
+                        }
                     }
                     radio {
                         label("normal")
+                        selected { normalStore.data }
+                        events {
+                            changes.states() handledBy normalStore.update
+                        }
                     }
                     radio {
                         label("large")
                         size { large }
+                        selected { largeStore.data }
+                        events {
+                            changes.states() handledBy largeStore.update
+                        }
                     }
                 }
             }
@@ -162,6 +181,7 @@ fun RenderContext.radiosDemo(): Div {
                         border { color { "tomato" } }
                     }) {
                         label("custom unselected style")
+                        selected { flowOf(false) }
                     }
 
                     radio {
@@ -172,7 +192,11 @@ fun RenderContext.radiosDemo(): Div {
 
                     radio {
                         label("custom label style: margin")
+                        selected { usageRadioStore.data }
                         labelStyle { { margins { left { larger } } } }
+                        events {
+                            changes.states() handledBy usageRadioStore.update
+                        }
                     }
                 }
             }
@@ -207,6 +231,7 @@ fun RenderContext.radiosDemo(): Div {
                     radio {
                         label("A disabled Radio or RadioGroup can not be selected.")
                         disabled { flowOf(true) }
+                        selected { usageRadioStore.data }
                     }
 
                     radioGroup(store = usageRadioGroupStore) {
