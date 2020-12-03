@@ -56,7 +56,6 @@ open class DefaultTheme : Theme {
         override val base = "#ffffff" // rgb(255,255,255)
         override val primary_hover = "rgb(49,151,149, 0.3)"
         override val light_hover = "rgb(226,232,240, 0.5)"
-        val alert = "feebc8" // rgb(254,235,200)
         override val disabled = light
         override val focus = "#3182ce"
         //color of focus of input elements: inner: #3182ce / rgb(49,130,206) outer: #acd2f2 / rgb(172,210,242)
@@ -64,9 +63,9 @@ open class DefaultTheme : Theme {
 
     override val fonts = object : Fonts {
         override val body =
-            """Inter, sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" """
+            """system-ui, sans-serif"""
         override val heading =
-            """Inter, sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" """
+            """system-ui, sans-serif"""
         override val mono = """SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace"""
     }
 
@@ -171,14 +170,6 @@ open class DefaultTheme : Theme {
             "add",
             svg = """
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M12 4C12.5523 4 13 4.44772 13 5V11H19C19.5523 11 20 11.4477 20 12C20 12.5523 19.5523 13 19 13H13V19C13 19.5523 12.5523 20 12 20C11.4477 20 11 19.5523 11 19V13H5C4.44772 13 4 12.5523 4 12C4 11.4477 4.44772 11 5 11H11V5C11 4.44772 11.4477 4 12 4Z" fill="currentColor"/>
-            """.trimIndent()
-        )
-
-        // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
-        override val all = IconDefinition(
-            "all",
-            svg = """
-                
             """.trimIndent()
         )
 
@@ -1448,7 +1439,7 @@ open class DefaultTheme : Theme {
             border {
                 width { "1px" }
                 style { solid }
-                color { dark }
+                color { light }
             }
             radius { "var(--cb-radius)" }
         }
@@ -1845,7 +1836,7 @@ open class DefaultTheme : Theme {
                     left { small }
                     right { small }
                 }
-                radius { tiny }
+                radius { small }
                 boxShadow { flat }
                 zIndex { "20" }
 
@@ -1873,8 +1864,8 @@ open class DefaultTheme : Theme {
         }
         override val section: Style<BasicParams> = {
             paddings {
-                top { tiny }
-                bottom { tiny }
+                top { small }
+                bottom { small }
             }
         }
         override val footer: Style<BasicParams> = {
@@ -2161,29 +2152,33 @@ open class DefaultTheme : Theme {
     override val reset: String by lazy {
         //from modern-normalize v1.0.0 | MIT License | https://github.com/sindresorhus/modern-normalize
         """
-            *,::after,::before{box-sizing:border-box}:root{-moz-tab-size:4;tab-size:4}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}legend{padding:0}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}button{background-color:transparent;background-image:none}fieldset{margin:0;padding:0}ol,ul{list-style:none;margin:0;padding:0}html{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";line-height:1.5}body{font-family:inherit;line-height:inherit}*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}img{border-style:solid}textarea{resize:vertical}input::placeholder,textarea::placeholder{color:#9ca3af}[role=button],button{cursor:pointer}table{border-collapse:collapse}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}button,input,optgroup,select,textarea{padding:0;line-height:inherit;color:inherit}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}
-        """ + """
+            *,::after,::before{box-sizing:border-box}:root{-moz-tab-size:4;tab-size:4}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}body{font-family:-apple-system,system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}legend{padding:0}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}button{background-color:transparent;background-image:none}fieldset{margin:0;padding:0}ol,ul{list-style:none;margin:0;padding:0}html{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";line-height:1.5}body{font-family:inherit;line-height:inherit}*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}img{border-style:solid}textarea{resize:vertical}input::placeholder,textarea::placeholder{color:#9ca3af}[role=button],button{cursor:pointer}table{border-collapse:collapse}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}button,input,optgroup,select,textarea{padding:0;line-height:inherit;color:inherit}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}
+        """ + """     
+                               
             html {
-              font-rendering: optimizeLegibilty;
-              color: ${colors.dark}
+                line-height: 1.5;
+                text-size-adjust: 100%;
+                font-family: system-ui, sans-serif;
+                font-family: ${fonts.body};
+                -webkit-font-smoothing: antialiased;
+                text-rendering: optimizelegibility;
+                color: ${colors.dark};
             }
             body {
               margin: 0;
-              line-height: ${lineHeights.large}
-              font-family: Inter, sans-serif;
+              line-height: ${lineHeights.large};
+//              
               font-feature-settings: "kern";
+              background-color: rgb(255, 255, 255);
             }
             textarea {
-              font-family: Inter, sans-serif;
               line-height: ${lineHeights.tiny}; /* 1 */
             }
             a {
-              font-family: Inter, sans-serif;
               font-weight: 600;
               font-size: ${fontSizes.small}
             }
             p {
-              font-family: Inter, sans-serif;
               font-size: ${fontSizes.normal};
               line-height: ${lineHeights.larger};
             }
@@ -2192,7 +2187,6 @@ open class DefaultTheme : Theme {
               overflow-wrap: break-word;
             }
             h1 {
-              font-family: Inter, sans-serif;
               line-height: ${lineHeights.tiny};
               font-weight: 700;
               font-size: ${fontSizes.huge};
@@ -2200,33 +2194,41 @@ open class DefaultTheme : Theme {
               outline: 0;
             }
             h2 {
-              font-family: Inter, sans-serif;
               line-height: ${lineHeights.small};
               font-weight: 600;
               font-size: ${fontSizes.larger};
               letter-spacing: ${letterSpacings.small};
             }
             h3 {
-              font-family: Inter, sans-serif;
               line-height: smaller;
               font-weight: 600;
               font-size: ${fontSizes.large};
               letter-spacing: ${letterSpacings.small};
             }
             h4 {
-              font-family: Inter, sans-serif;
               font-size: ${fontSizes.normal};
               font-weight: bold;
             }
             h5 {
-              font-family: Inter, sans-serif;
               font-size: ${fontSizes.small};
               font-weight: bold;
             }
             h6 {
-              font-family: Inter, sans-serif;
               font-size: ${fontSizes.smaller};
               font-weight: bold;
+            }
+            li {
+                display: list-item;
+                text-align: -webkit-match-parent;
+            }
+            ul {
+                display: block;
+                list-style-type: disc;
+                margin-block-start: 1em;
+                margin-block-end: 1em;
+                margin-inline-start: 0px;
+                margin-inline-end: 0px;
+                padding-inline-start: 1.5em;            
             }
         """.trimIndent()
     }
