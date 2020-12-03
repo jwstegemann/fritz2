@@ -1,6 +1,7 @@
 package dev.fritz2.kitchensink.demos
 
 import dev.fritz2.components.box
+import dev.fritz2.components.flexBox
 import dev.fritz2.components.lineUp
 import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
@@ -8,6 +9,10 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.kitchensink.base.*
 import dev.fritz2.kitchensink.flexbox_
 import dev.fritz2.kitchensink.gridbox_
+import dev.fritz2.styling.params.Color
+import dev.fritz2.styling.params.ColorProperty
+import dev.fritz2.styling.theme.Colors
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
@@ -15,7 +20,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun RenderContext.stackDemo(): Div {
     val item: RenderContext.(String, String) -> Unit = { color, text ->
         box({
+            display { flex }
+            justifyContent { center }
+            alignItems { center }
             background { color { color } }
+            color { "white" }
             size { "40px" }
         }) { p { +text } }
     }
@@ -58,9 +67,9 @@ fun RenderContext.stackDemo(): Div {
         componentFrame {
             lineUp {
                 items {
-                    item("gold", "1")
-                    item("tomato", "2")
-                    item("lightseagreen", "3")
+                    item(Theme().colors.primary, "1")
+                    item(Theme().colors.danger, "2")
+                    item(Theme().colors.warning, "3")
                 }
             }
         }
@@ -69,18 +78,18 @@ fun RenderContext.stackDemo(): Div {
                 """
                 lineUp {
                     items {
+                        // put some arbitrary content into the lineUp!
                         box({
-                            background { color { "gold" } }
-                            size { "40px" }
+                            display { flex }
+                            justifyContent { center }
+                            alignItems { center }
+                            background { color { color } }
+                            color { "white" }
+                            size { "40px" }                        
                         }) { p { +"1" } }
-                        box({
-                            background { color { "tomato" } }
-                            size { "40px" }
-                        }) { p { +"2" } }
-                        box({
-                            background { color { "lightseagreen" } }
-                            size { "40px" }
-                        }) { p { +"3" } }
+                        // all following items without styling for better readability!
+                        box { p { +"2" } }
+                        box { p { +"3" } }
                     }
                 }                    
                 """.trimIndent()
@@ -95,9 +104,9 @@ fun RenderContext.stackDemo(): Div {
         componentFrame {
             stackUp {
                 items {
-                    item("gold", "1")
-                    item("tomato", "2")
-                    item("lightseagreen", "3")
+                    item(Theme().colors.primary, "1")
+                    item(Theme().colors.danger, "2")
+                    item(Theme().colors.warning, "3")
                 }
             }
         }
@@ -140,13 +149,13 @@ fun RenderContext.stackDemo(): Div {
                         spacing { tiny }
                         reverse { true }
                         items {
-                            item("gold", "se")
-                            item("tomato", "ver")
-                            item("lightseagreen", "re")
+                            item(Theme().colors.primary, "se")
+                            item(Theme().colors.danger, "ver")
+                            item(Theme().colors.warning, "re")
                         }
                     }
-                    item("gold", "1")
-                    item("tomato", "2")
+                    item(Theme().colors.danger, "1")
+                    item(Theme().colors.primary, "2")
                 }
             }
         }
