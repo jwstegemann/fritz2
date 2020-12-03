@@ -35,7 +35,7 @@ fun RenderContext.welcome(): Div {
                         top { "1.5rem" }
                         bottom { "1.5rem" }
                     }
-                }) { +"fritz2 component" }
+                }) { +"fritz2 Components" }
                 (::p.styled {
                     fontSize { "1.5rem" }
                     fontWeight { bold }
@@ -43,26 +43,27 @@ fun RenderContext.welcome(): Div {
                         top { "1.5rem" }
                         bottom { ".5rem" }
                     }
-                }) { +"components tailored to fritz2" }
+                }) { +"Customizable Components Tailored To fritz2" }
 
 
                 paragraph {
                     +"""
-                        This is a set of ready to go components to build reactive themable web-apps using fritz2
-                        following a consistent design system.
+                        This is a set of ready to go components for building reactive themable web-apps. It uses fritz2
+                        and follows a consistent design system.
                     """.trimIndent()
                 }
 
                 paragraph {
                     +"""
-                        While the components can be used out of the box with the default theme they are designed to be
+                        While the components can be used out of the box with the default theme, they are designed to be
                         customizable and can easily be styled and composed to fit your needs.
                     """.trimIndent()
                 }
 
                 warningBox {
                     +" Remember that this is a preview release."
-                    +" Most components still need some work others are not implemented yet and the api has to be completed and streamlined."
+                    +" Most components still need some work, others are not implemented yet, and the api still needs "
+                    +" to be completed and streamlined."
                 }
 
                 (::p.styled {
@@ -77,7 +78,7 @@ fun RenderContext.welcome(): Div {
                     +" to open issues and check out the code."
                 }
 
-                p { +"The design and concepts of the fritz2 component library is highly inspired by "
+                p { +"The design and concepts of the fritz2 component library are highly inspired by "
                     externalLink("Chakra UI", "https://chakra-ui.com/")
                     +" ."
                 }
