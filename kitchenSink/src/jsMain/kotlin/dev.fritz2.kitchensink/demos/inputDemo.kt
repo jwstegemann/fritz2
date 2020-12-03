@@ -32,8 +32,8 @@ fun RenderContext.inputDemo(): Div {
         paragraph {
             +"""Please note: Should you require labels or validation, use an input field with a """
             internalLink("FormControl", formcontrol_)
-            +"""
-             component. A standalone input field does not offer those functions.
+            +" "
+            +"""component. A standalone input field does not offer those functions.
             """.trimIndent()
         }
 
