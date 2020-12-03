@@ -5,7 +5,7 @@
 [![Download](https://api.bintray.com/packages/jwstegemann/fritz2/core/images/download.svg)](https://bintray.com/jwstegemann/fritz2/core/_latestVersion)
 
 [![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://www.fritz2.dev/examples.html)
-[![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev/core/)
+[![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev)
 [![Docs](https://img.shields.io/badge/doc-umentation-blue)](https://docs.fritz2.dev)
 [![Slack](https://img.shields.io/badge/slack-channel-green?logo=slack)](https://fritz2workspace.slack.com/)
 [![Discord](https://img.shields.io/discord/723492739819241513?color=7389D8&label=Chat&logo=discord&logoColor=ffffff)](https://discord.gg/UwQRH93)
