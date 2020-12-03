@@ -44,21 +44,25 @@ open class DefaultTheme : Theme {
     )
 
     override val colors = object : Colors {
-        override val secondary = "#b2f5ea" // rgb(178,245,234) new
+
+
+        //todo: comments are not up to date
+        override val primary = "#6B9D06" // green // formerly "#319795"
+        override val primary_hover = "#AAC96E"//"rgb(49,151,149, 0.3)"
+        override val secondary = "#F3B82E"//"#b2f5ea" // rgb(178,245,234) new
         override val tertiary = "#718096" // rgb(61,64,92) formerly primary
-        override val primary = "#319795" // rgb(49,151,149) formerly "#e07a5f" // rgb(224,122,95)
-        override val success = "#28a745" // rgb(40,167,69)
-        override val danger = "#dc3545" // rgb(220,53,69)
-        override val warning = "#ffc107" // rgb(225,193,7)
-        override val info = "#3182ce" // rgb(23,162,184)
-        override val light = "#e2e8f0" // rgb(226,232,240)
         override val dark = "#2d3748" // rgb(45,55,72)
+        override val light = "#DCE3EB" // rgb(220,227,235)
+        override val light_hover = "rgb(220,227,235, 0.5)" // same as light with different opac
+        override val info = "#1998BF" // rgb(23,162,184)
+        override val success = "#00B300" // rgb(40,167,69)
+        override val warning = "#F3A42E" // rgb(225,193,7)
+        override val danger = "#E14F2A" // rgb(220,53,69)
+
         override val base = "#ffffff" // rgb(255,255,255)
-        override val primary_hover = "rgb(49,151,149, 0.3)"
-        override val light_hover = "rgb(226,232,240, 0.5)"
-        val alert = "feebc8" // rgb(254,235,200)
+        val alert = "feebc8" // rgb(254,235,200) //todo why does this not have a #
         override val disabled = light
-        override val focus = "#3182ce"
+        override val focus = primary_hover//"#3182ce"
         //color of focus of input elements: inner: #3182ce / rgb(49,130,206) outer: #acd2f2 / rgb(172,210,242)
     }
 
@@ -1406,7 +1410,7 @@ open class DefaultTheme : Theme {
             }
             children("&[disabled] + div") {
                 background {
-                    color{ disabled}
+                    color{ disabled }
                 }
             }
             children("&[disabled] ~ div") {
@@ -1445,7 +1449,7 @@ open class DefaultTheme : Theme {
             radius { "var(--cb-radius)" }
         }
         override val checked: Style<BasicParams> = {
-            background { color { info } }
+            background { color { primary } }
             color { base }
         }
     }
@@ -1487,7 +1491,7 @@ open class DefaultTheme : Theme {
             }
             children("&[disabled] + div") {
                 background {
-                    color{ disabled}
+                    color{ disabled }
                 }
             }
             children("&[disabled] ~ div") {
@@ -1516,7 +1520,7 @@ open class DefaultTheme : Theme {
             radius { "9999px" }
         }
         override val selected: Style<BasicParams> = {
-            background { color { info } }
+            background { color { primary } }
             color { light }
             before {
                 css("content:\"\";")
