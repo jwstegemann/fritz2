@@ -245,7 +245,7 @@ fun main() {
                             input_ -> inputDemo()
                             buttons_ -> buttonDemo()
                             formcontrol_ -> formControlDemo()
-                            flexbox_ -> flexBoxDemo(theme)
+                            flexbox_ -> flexBoxDemo()
                             gridbox_ -> gridBoxDemo()
                             checkboxes_ -> checkboxesDemo()
                             radios_ -> radiosDemo()

@@ -7,15 +7,47 @@ import dev.fritz2.components.stackUp
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.kitchensink.base.*
+import dev.fritz2.styling.params.*
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
+fun RenderContext.flexBoxDemo(): Div {
 
+    val item: RenderContext.(String, Int) -> Unit = { color, number ->
+        flexBox({
+            background { color { color } }
+            color { "white" }
+            width { "150px" }
+            height { "50px" }
+            justifyContent { center }
+            alignItems { center }
+            margin { smaller }
+        }) { +"Box $number" }
+    }
+
+    val threeItems: RenderContext.() -> Unit = {
+        listOf(Theme().colors.primary, Theme().colors.danger, Theme().colors.warning)
+            .forEachIndexed { index, value -> item(value, index + 1) }
+    }
+
+    val nineItems: RenderContext.() -> Unit = {
+        listOf(
+            Theme().colors.primary,
+            Theme().colors.danger,
+            Theme().colors.warning,
+            Theme().colors.primary,
+            Theme().colors.danger,
+            Theme().colors.warning,
+            Theme().colors.primary,
+            Theme().colors.danger,
+            Theme().colors.warning,
+        ).forEachIndexed { index, value -> item(value, index + 1) }
+    }
 
     return contentFrame {
 
-        showcaseHeader("Flex Layouts")
+        showcaseHeader("Flexbox")
         paragraph {
             +"The main idea behind the flex layout is to give a container the ability to alter its items' width,"
             +" height, and order to best fill the available space. The container is basically a box which has the css"
@@ -24,206 +56,89 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
             +" attached."
 
         }
+        showcaseSection("Usage")
+        paragraph {
+            +"Just use the "
+            c("flexBox")
+            +" component without much ceremony."
+            +" Our Flexbox does not offer special properties, so there is no layer of abstraction upon the CSS"
+            +" based possibilities. We believe those are sufficient, have a good level of abstraction and offer"
+            +" a great flexibility."
+        }
         componentFrame {
-            lineUp({
-
-            }) {
+            lineUp {
                 items {
                     flexBox({
                         width { full }
-
                     }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-
+                        threeItems()
                     }
                 }
-
             }
-
         }
         playground {
             source(
                 """
-                      listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                }) {
-                                    +"Box (index + 1)"
-                                }
-                            }
-                
+                flexBox({
+                    width { full }
+                }) {
+                    // put some arbitrary content into the flexBox!
+                    box({
+                        display { flex }
+                        justifyContent { center }
+                        alignItems { center }
+                        margin { smaller }
+                        width { "150px" }
+                        height { "50px" }
+                        background { color { primary } } // danger & warning for others
+                        color { "white" }
+                    }) { +"Box 1" }
+                    // all following items without styling for better readability!
+                    box { +"Box 2" }
+                    box { +"Box 3" }
+                }
             """.trimIndent()
             )
         }
 
         showcaseSection("Flex-Direction")
         paragraph {
-            +"fritz2 provides these well known flex-direction properties : "
-            c("row")
-            +"|"
-            c("row-reverse")
-            +"|"
+            +"fritz2's styling DSL provides these well known flex-direction properties : "
+            c("row (default)")
+            +", "
+            c("rowReverse")
+            +", "
             c("column")
-            +"|"
-            c("column-reverse")
-            +"|"
+            +", "
+            c("columnReverse")
         }
 
-        componentFrame {
-
-            stackUp {
-                items {
-                    flexBox({
-                        width { full }
-                        direction { row }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
-                    flexBox({
-                        width { full }
-                        direction { rowReverse }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
-                    flexBox({
-                        width { full }
-                        direction { column }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
-                    flexBox({
-                        width { full }
-                        direction { columnReverse }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
-
+        listOf(
+            DirectionValues.row,
+            DirectionValues.rowReverse,
+            DirectionValues.column,
+            DirectionValues.columnReverse,
+        ).forEach {
+            componentFrame {
+                flexBox({
+                    width { full }
+                    direction { it }
+                }) {
+                    threeItems()
                 }
             }
-
         }
 
         playground {
             source(
                 """
-                 flexBox({
-                        width { full }
-                        direction { row } // set your direction property here
-                    }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-
-
-                                }) {
-                                    +"Box (index + 1)"
-                                }
-                            }
-                    }
-                   
+                flexBox({
+                    direction { row } // put the appropriate value here
+                }) {
+                    box { +"Box 1"}
+                    box { +"Box 2"}
+                    box { +"Box 3"}
+                }
             """.trimIndent()
             )
         }
@@ -231,214 +146,47 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
         showcaseSection("Justify Content")
         paragraph {
             +"Justify Content defines the alignment along the main axis. Our flexbox provides the default properties:"
-            c("flext-start")
-            +"|"
-            c("flex-end")
-            +"|"
+            c("flextStart (default)")
+            +", "
+            c("flexEnd")
+            +", "
             c("center")
-            +"|"
-            c("space-between")
-            +"|"
-            c("space-around")
-            +"|"
-            c("space-evenly")
-
-
+            +", "
+            c("spaceBetween")
+            +", "
+            c("spaceAround")
+            +", "
+            c("spaceEvenly")
         }
-        componentFrame {
-            stackUp {
-                items {
 
-                    flexBox({
-                        width { full }
-                        justifyContent { flexStart }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
-
-                    flexBox({
-                        width { full }
-                        justifyContent { flexEnd }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-
-                        radius { normal }
-                    }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
-                    flexBox({
-                        width { full }
-                        justifyContent { center }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-
-                                    margin { smaller }
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
-                    flexBox({
-                        width { full }
-                        justifyContent { spaceBetween }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
-                    flexBox({
-                        width { full }
-                        justifyContent { spaceAround }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
-                    flexBox({
-                        width { full }
-                        justifyContent { spaceEvenly }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
-
+        listOf(
+            JustifyContentValues.flexStart,
+            JustifyContentValues.flexEnd,
+            JustifyContentValues.center,
+            JustifyContentValues.spaceBetween,
+            JustifyContentValues.spaceAround,
+            JustifyContentValues.spaceEvenly
+        ).forEach {
+            componentFrame {
+                flexBox({
+                    width { full }
+                    justifyContent { it }
+                }) {
+                    threeItems()
                 }
             }
         }
+
         playground {
             source(
                 """
-             flexBox({
-                        width { full }
-                        justifyContent { spaceEvenly } // set your justifyContent property here
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf("gold", "tomato", "lightseagreen")
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-
-
-                                }) {
-                                    +"Box (index + 1)"
-                                }
-                            }
-                    }
+                flexBox({
+                    justifyContent { flexStart } // put the appropriate value here
+                }) {
+                    box { +"Box 1"}
+                    box { +"Box 2"}
+                    box { +"Box 3"}
+                }
         """.trimIndent()
             )
         }
@@ -449,127 +197,26 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
             +"Flex items, by default, try to fit into one line. With flex wrap, you can change this behavior and"
             +" allow the items to wrap as needed."
             +"fritz2 provides these common properties for flex-wrap: "
-            c("nowrap")
-            +"|"
+            c("nowrap (default)")
+            +", "
             c("wrap")
-            +"|"
+            +", "
             c("wrap-reverse")
 
 
         }
-        componentFrame {
 
-            stackUp {
-                items {
-                    flexBox({
-                        width { full }
-                        wrap { nowrap }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf(
-                            "gold",
-                            "tomato",
-                            "lightseagreen",
-                            "gold",
-                            "tomato",
-                            "lightseagreen",
-                            "gold",
-                            "tomato",
-                            "lightseagreen"
-                        )
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
-                    flexBox({
-
-                        width { full }
-                        wrap { wrap }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf(
-                            "gold",
-                            "tomato",
-                            "lightseagreen",
-                            "gold",
-                            "tomato",
-                            "lightseagreen",
-                            "gold",
-                            "tomato",
-                            "lightseagreen"
-                        )
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
-                    flexBox({
-                        width { full }
-                        wrap { wrapReverse }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf(
-                            "gold",
-                            "tomato",
-                            "lightseagreen",
-                            "gold",
-                            "tomato",
-                            "lightseagreen",
-                            "gold",
-                            "tomato",
-                            "lightseagreen"
-                        )
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-
-                                }) {
-                                    +"Box ${index + 1}"
-                                }
-                            }
-                    }
+        listOf(
+            WrapValues.nowrap,
+            WrapValues.wrap,
+            WrapValues.wrapReverse
+        ).forEach {
+            componentFrame {
+                flexBox({
+                    width { full }
+                    wrap { it }
+                }) {
+                    nineItems()
                 }
             }
         }
@@ -578,41 +225,12 @@ fun RenderContext.flexBoxDemo(theme: ExtendedTheme): Div {
             source(
                 """
                 flexBox({
-                        width { full }
-                        wrap { wrapReverse }
-                        border {
-                            width { thin }
-                            style { solid }
-                            color { dark }
-
-                        }
-                        radius { normal }
-                    }) {
-                        listOf(
-                            "gold",
-                            "tomato",
-                            "lightseagreen",
-                            "gold",
-                            "tomato",
-                            "lightseagreen",
-                            "gold",
-                            "tomato",
-                            "lightseagreen"
-                        )
-                            .forEachIndexed { index, value ->
-                                box({
-                                    background { color { value } }
-                                    width { "150px" }
-                                    height { "50px" }
-                                    color { light }
-                                    textAlign { center }
-                                    margin { smaller }
-
-                                }) {
-                                    +"Box (index + 1)"
-                                }
-                            }
-                    }
+                    wrap { noWrap } // put the appropriate value here
+                }) {
+                    box { +"Box 1"}
+                    box { +"Box 2"}
+                    box { +"Box 3"}
+                }                    
             """.trimIndent()
             )
         }
