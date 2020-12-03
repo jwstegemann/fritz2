@@ -190,18 +190,20 @@ fun RenderContext.iconsDemo(): Div {
         }
 
         componentFrame {
-            lineUp {
+            lineUp ({
+                alignItems { center }
+            }){
                 spacing { huge } // TODO: wide.large or something alike
                 items {
                     icon { fromTheme { favorite } }
 
                     icon({
-                        size { "2rem" } // TODO: Why are values from theme getting crippled? (1.2px instead of 1
+                        size { giant } // TODO: Why are values from theme getting crippled? (1.2px instead of 1
                     // .2rem)
                     }) { fromTheme { fritz2 } }
 
                     icon({
-                        size { "3rem" }
+                        size { giant }
                         color { warning }
                     }) { fromTheme { warning } }
                 }
@@ -319,7 +321,7 @@ fun RenderContext.iconsDemo(): Div {
                 repeat(4) { "1fr" }
             }
             gap { normal }
-            margins { top { "3rem" } }
+            margins { top { giant } }
             maxWidth { "80%" }
         }) {
             icons.forEach {

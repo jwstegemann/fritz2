@@ -39,7 +39,6 @@ const val theme_ = "Theme"
 const val tooltip_ = "Tooltip"
 const val responsive_ = "Responsiveness"
 const val textarea_ = "Textarea"
-const val color_ = "Color"
 
 val router = router(welcome_)
 
@@ -216,9 +215,8 @@ fun main() {
                         menuAnchor(popover_)
                         menuAnchor(tooltip_)
 
-                        menuHeader { +"COLORS & ICONS" }
+                        menuHeader { +"ICONS" }
                         menuAnchor(icons_)
-                        menuAnchor(color_)
                     }
                 }
                 (::div.styled(id = "content-right") {
@@ -255,7 +253,6 @@ fun main() {
                             styling_ -> stylingDemo()
                             theme_ -> themeDemo()
                             responsive_ -> responsiveDemo()
-                            color_ -> colorDemo()
                             textarea_ -> textAreaDemo()
                             else -> welcome()
                         }
