@@ -170,7 +170,7 @@ fun RenderContext.themeDemo(): Div {
             c("Theme()")
             +". Change the current theme by"
             c("Theme.use(someTheme)")
-            "."
+            +"."
         }
         componentFrame {
             lineUp {
@@ -212,6 +212,32 @@ fun RenderContext.themeDemo(): Div {
                 """
             )
         }
+        showcaseSection("Colors")
+        paragraph { +"These are the colors fritz2 uses in its default theme. There are "
+            c("primary")
+            +", "
+            c("primary_hover")
+            +", "
+            c("secondary")
+            +", "
+            c("tertiary")
+            +", "
+            c("dark")
+            +", "
+            c("light")
+            +", "
+            c("light_hover")
+            +", "
+            c("info")
+            +", "
+            c("success")
+            +", "
+            c("warning")
+            +" and "
+            c("danger")
+            +". Hover over the color to get the color code."
+        }
+        colorDemo()
 
 
     }
