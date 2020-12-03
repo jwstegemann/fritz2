@@ -120,9 +120,10 @@ fun RenderContext.radiosDemo(): Div {
                     }
                 }
             }
-            playground {
-                source(
-                    """
+        }
+        playground {
+            source(
+                """
                     radio {
                         label("small")
                         size { small }
@@ -135,8 +136,7 @@ fun RenderContext.radiosDemo(): Div {
                         size { large }
                     }
                     """
-                )
-            }
+            )
         }
 
 
@@ -171,10 +171,10 @@ fun RenderContext.radiosDemo(): Div {
                     }
                 }
             }
-
-            playground {
-                source(
-                    """
+        }
+        playground {
+            source(
+                """
                     radio({
                         border { color { "tomato" } }
                     }) {
@@ -192,8 +192,7 @@ fun RenderContext.radiosDemo(): Div {
                         labelStyle { { margins { left { larger } } } }
                     }
                     """
-                )
-            }
+            )
         }
 
        showcaseSection("Disabled Radios")
@@ -213,9 +212,10 @@ fun RenderContext.radiosDemo(): Div {
                 }
 
             }
-            playground {
-                source(
-                    """
+        }
+        playground {
+            source(
+                """
                     radio {
                         label("A disabled Radio or RadioGroup can not be selected.")
                         disabled { flowOf(true) }
@@ -227,8 +227,7 @@ fun RenderContext.radiosDemo(): Div {
                         disabled { flowOf(true) }
                     }
                     """
-                )
-            }
+            )
         }
     }
 }
