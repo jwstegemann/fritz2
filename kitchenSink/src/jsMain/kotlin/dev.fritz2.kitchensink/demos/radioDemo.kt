@@ -115,7 +115,7 @@ fun RenderContext.radiosDemo(): Div {
         componentFrame {
             lineUp(
                 {
-                    verticalAlign { middle }
+                    alignItems { center }
                 }
             ) {
                 items {
