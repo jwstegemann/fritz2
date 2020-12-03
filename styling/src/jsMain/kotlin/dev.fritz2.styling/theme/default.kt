@@ -56,7 +56,6 @@ open class DefaultTheme : Theme {
         override val base = "#ffffff" // rgb(255,255,255)
         override val primary_hover = "rgb(49,151,149, 0.3)"
         override val light_hover = "rgb(226,232,240, 0.5)"
-        val alert = "feebc8" // rgb(254,235,200)
         override val disabled = light
         override val focus = "#3182ce"
         //color of focus of input elements: inner: #3182ce / rgb(49,130,206) outer: #acd2f2 / rgb(172,210,242)
