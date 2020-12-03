@@ -5,6 +5,7 @@ import dev.fritz2.components.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.kitchensink.base.*
+import dev.fritz2.styling.params.AlignItemsValues
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.Theme
@@ -69,9 +70,28 @@ fun RenderContext.modalDemo(): Div {
                         variant { outline }
                         text("Blank dialog with closeButton")
                     } handledBy modal {
-                        size { normal }
                         closeButton()
                     }
+
+                }
+            }
+        }
+        playground {
+            source("""
+                 clickButton {
+                    variant { outline }
+                    text("Blank dialog with closeButton")
+                } handledBy modal {
+                    closeButton()
+                }
+            """.trimIndent())
+        }
+
+        componentFrame {
+            lineUp ({
+                alignItems { start }
+            }){
+                items {
                     clickButton {
                         variant { outline }
                         text("Stacking modals")
@@ -101,23 +121,14 @@ fun RenderContext.modalDemo(): Div {
                                         }
                                     }
                                 }
-                                closeButton()
                             }
                         }
-                        closeButton()
                     }
                 }
             }
         }
         playground {
             source("""
-                 clickButton {
-                    variant { outline }
-                    text("Blank dialog with closeButton")
-                } handledBy modal {
-                    size { normal }
-                    closeButton()
-                }
                 
                 clickButton {
                     variant { outline }
@@ -125,33 +136,13 @@ fun RenderContext.modalDemo(): Div {
                 } handledBy modal { close ->
                     size { normal }
                     content {
-                        h1 { +"Simple dialog" }
-                        dev.fritz2.kitchensink.paragraph { +"You can put any content or structure into a modal." }
-                        clickButton({
-                            margins { top { "1.25rem" } }
-                            color { dark }
-                            background { color { light } }
-                        }) { text("Another modal!") } handledBy modal {
-                            size { small }
-                            content {
-                                h1 { +"One more to go!" }
-                                dev.fritz2.kitchensink.paragraph { +"You can stack as many as you like." }
-                                clickButton({
-                                    margins { top { "1.25rem" } }
-                                    color { dark }
-                                    background { color { light } }
-                                }) { text("And another modal!") } handledBy modal {
-                                    size { small }
-                                    content {
-                                        h1 { +"Final message" }
-                                        dev.fritz2.kitchensink.paragraph { +"This is the next level modal dialog." }
-                                    }
-                                }
-                            }
-                            closeButton()
+                        h1 { +"<your text>" }
+                        // add your text here if you want 
+                        clickButton(...) {
+                            // style and fill your button here
                         }
                     }
-                    closeButton()
+                    
                 }
             """.trimIndent())
         }
@@ -185,23 +176,6 @@ fun RenderContext.modalDemo(): Div {
                             iconRight()
                         }
                     }
-                    clickButton {
-                        variant { outline }
-                        text("Blank dialog with closeButton")
-                    } handledBy modal { close ->
-                        size { normal }
-                        hasCloseButton(false)
-                        content {
-                            clickButton ({
-                                position {
-                                    absolute {
-                                        right { normal }
-                                        bottom { normal }
-                                    }
-                                }
-                            }){ text("Terminate") } handledBy close // use close handler!
-                        }
-                    }
                 }
             }
         }
@@ -210,7 +184,7 @@ fun RenderContext.modalDemo(): Div {
             source("""
                 clickButton {
                     variant { outline }
-                    text("Blank dialog with custom-styled closeButton")
+                    text("<your button title here>")
                 } handledBy modal {
                     closeButton({
                         background { color { danger } }
@@ -228,12 +202,38 @@ fun RenderContext.modalDemo(): Div {
                         iconRight()
                     }
                 }
-                
+            """.trimIndent())
+        }
+        componentFrame {
+            lineUp({
+                alignItems { start }
+            }) {
+                items {
+                    clickButton {
+                        variant { outline }
+                        text("Blank dialog with closeButton")
+                    } handledBy modal { close ->
+                        hasCloseButton(false)
+                        content {
+                            clickButton ({
+                                position {
+                                    absolute {
+                                        right { normal }
+                                        bottom { normal }
+                                    }
+                                }
+                            }){ text("Terminate") } handledBy close // use close handler!
+                        }
+                    }
+                }
+            }
+        }
+        playground {
+            source("""
                 clickButton {
                     variant { outline }
                     text("Blank dialog with closeButton")
                 } handledBy modal { close ->
-                    size { normal }
                     hasCloseButton(false)
                     content {
                         clickButton ({
@@ -285,31 +285,6 @@ fun RenderContext.modalDemo(): Div {
                 items(overlayVariants.values.toList())
             }
         }
-
-        playground {
-            source("""
-                val overlayVariants = mapOf(
-                    Pair("Activate default overlay", DefaultOverlay()),
-                    Pair("Activate overlay for each nested level", DefaultOverlay(OverlayMethod.CoveringEach)),
-                    Pair("Activate styled overlay", DefaultOverlay(OverlayMethod.CoveringTopMost) {
-                        width { "100%" }
-                        height { "100%" }
-                        position {
-                            absolute {
-                                horizontal { "0" }
-                                vertical { "0" }
-                            }
-                        }
-                        background {
-                            image { "https://via.placeholder.com/150x50/?text=BACKGROUND" }
-                            repeat { repeat }
-                        }
-                        css("transform: rotate(-30deg) translateX(-.5rem) scale(200%)")
-                        opacity { "0.8" }
-                    })
-                )
-            """.trimIndent())
-        }
         showcaseSection("Sizes")
         paragraph { +"There are four different sizes for your modal to choose from. "
         c("small")
@@ -344,17 +319,13 @@ fun RenderContext.modalDemo(): Div {
         playground {
             source("""
                 clickButton {
-                    text("small")
-                } handledBy createDeepDialogs(30, Theme().modal.sizes.small)
-                clickButton {
-                    text("normal")
-                } handledBy createDeepDialogs(30, Theme().modal.sizes.normal)
-                clickButton {
-                    text("large")
-                } handledBy createDeepDialogs(30, Theme().modal.sizes.large)
-                clickButton {
-                    text("full")
-                } handledBy createDeepDialogs(30, Theme().modal.sizes.full)
+                        text("small")
+                    } handledBy modal {
+                        size{small} // change size here
+                        content {
+                            //create your content here
+                        }
+                    }
             """.trimIndent())
         }
         showcaseSection("Variants")
@@ -387,8 +358,8 @@ fun RenderContext.modalDemo(): Div {
                     size { normal }
                     variant { verticalFilled }
                     content {
-                        h1 { +"Dialog takes all vertical space within the viewport" }
-                        dev.fritz2.kitchensink.paragraph { +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." }
+                        h1 { +"<your modal title here>" }
+                        // add text here 
                     }
                 }
             """.trimIndent())

@@ -82,7 +82,7 @@ fun RenderContext.textAreaDemo(): Div {
         }
 
         componentFrame {
-            lineUp {
+            stackUp {
                 items {
                     textArea {
                         placeholder("A small textarea")
@@ -131,7 +131,7 @@ fun RenderContext.textAreaDemo(): Div {
         }
 
         componentFrame {
-            lineUp {
+            stackUp {
                 items {
                     textArea {
                         placeholder("resize : vertical")
