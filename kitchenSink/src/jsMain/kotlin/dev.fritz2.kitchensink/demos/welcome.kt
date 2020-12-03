@@ -24,8 +24,8 @@ fun RenderContext.welcome(): Div {
             items {
                 icon({
                     size { "13.5rem" }
-                    color { "rgba(255,255,255,0.85)" }
-                    textShadow { flat }
+                    color { "rgba(255,255,255,0.8)" }
+                    css("drop-shadow(0 0 0.5rem grey);")
                 }) { fromTheme { fritz2 } }
                 box {
                     (::h1.styled {
