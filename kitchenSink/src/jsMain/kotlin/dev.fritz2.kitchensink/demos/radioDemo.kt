@@ -1,6 +1,7 @@
 package dev.fritz2.kitchensink.demos
 
 import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.storeOf
 import dev.fritz2.components.lineUp
 import dev.fritz2.components.radio
 import dev.fritz2.components.radioGroup
@@ -15,303 +16,216 @@ import kotlinx.coroutines.flow.flowOf
 
 @ExperimentalCoroutinesApi
 fun RenderContext.radiosDemo(): Div {
-    val demoItems = flowOf(listOf("item 1", "item 2", "item 3"))
 
     return contentFrame {
         showcaseHeader("Radios")
 
         paragraph {
             c("Radios")
-            +"and "
+            +" and"
             c("RadioGroups")
-            +"offer a smart option for single selections."
+            +" offer smart options for single selections. Like other components, they come with their own options, and"
+            +" of course you can customize their appearance with the use of the styling parameter."
         }
 
+        val demoItems = listOf("item 1", "item 2", "item 3")
+        val usageRadioStore = storeOf(true)
+        val usageRadioGroupStore = storeOf("item 2")
 
         showcaseSection("Usage")
         paragraph {
-            +"Define your radio(s) by adding a label, the selected state, and an event handler."
-            +" A"
-            c("radio")
-            +"communicates the state of the component via the given events of boolean type."
-            br {}
-            +"The"
-            c("radioGroup")
-            +" uses a store to handle the selection and communication. You can display the group in a row or column."
+            +"Single "
+            c("Radios")
+            +" do not have a wide range of use cases, but we provide them anyway. You"
+            +" need to supply a Flow of Boolean representing the checked state via the"
+            c("selected")
+            +" function. If you want to connect a handler to the state changes, use the event context."
         }
-        val usageRadioStore = object : RootStore<Boolean>(true) {}
-        val usageRadioGroupStore = object : RootStore<String>("item 2") {}
         componentFrame {
-            stackUp {
-                items {
-                    lineUp {
-                        items {
-                            radio {
-                                label("A single Radio")
-                                selected { usageRadioStore.data }
-                                events {
-                                    changes.states() handledBy usageRadioStore.update
-                                }
-                            }
-                        }
-                    }
-                    lineUp {
-                        radioGroup(store = usageRadioGroupStore) {
-                            items { demoItems }
-                            direction { row }
-                        }
-
-                    }
+            radio {
+                label("A single Radio")
+                selected { usageRadioStore.data }
+                events {
+                    changes.states() handledBy usageRadioStore.update
                 }
             }
         }
         playground {
             source(
                 """
-                     val myStore = object : RootStore<Boolean>(true) {}
-                     radio {
-                        label("my Radio")
-                        selected { myStore.data }
-                        events {
-                            changes.states() handledBy usageRadioStore.update
-                        }
-                     }
-                   
-                     val demoItems = flowOf(listOf("item 1", "item 2", "item 3"))
-                     val myStore = object : RootStore<String>("item 2") {}
-                   
-                     radioGroup(store = myStore) {
-                        items { demoItems }
-                        direction { row }
-                     }
+                radio {
+                    label("A single Radio")
+                    selected { usageRadioStore.data }
+                    events {
+                        changes.states() handledBy usageRadioStore.update
+                    }
+                }
                 """
             )
         }
 
-
-        showcaseSection("Customizing")
         paragraph {
-            +"You can customize both the selected and unselected state of the component, and also the label."
+            +" For most use cases, you will want a radio group. It accepts a Flow of"
+            c("List<T>")
+            +" as group items, and its selection event returns the currently selected entry instead of Boolean."
+            +" The example below uses Strings, but any type can be displayed. Since the store is a non-optional"
+            +" argument anyway, the component always connects the selected-handler automatically. Using the"
+            c("direction")
+            +" parameter, you can display the radios in a row or as a column."
         }
-
         componentFrame {
-            stackUp {
-                items {
-                    lineUp {
-                        items {
+            radioGroup(store = usageRadioGroupStore) {
+                items { flowOf(demoItems) }
+                direction { row }
 
-                           radio({
-                                background {
-                                    color { danger }
-                                }
-                            }) {
-                                label("unselected style")
-                                selected { flowOf(false) }
-                            }
-
-                            radio({
-                                background {
-                                    color { danger }
-                                }
-                            }) {
-                                label("selected style")
-                                selected { flowOf(true) }
-                                selectedStyle {
-                                    {
-                                        background {
-                                            color { success }
-                                        }
-                                    }
-                                }
-                            }
-
-                            radio{
-                                label("danger font color, margined label")
-                                selected { flowOf(false) }
-                                labelStyle {
-                                    {
-                                      margins { left { larger } }
-                                      color { danger }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
             }
-
-            playground {
-                source(
-                    """
-                         radio({
-                                background {
-                                    color { danger }
-                                }
-                            }) {
-                                label("unselected style")
-                                selected { flowOf(false) }
-                            }
-
-                            radio({
-                                background {
-                                    color { danger }
-                                }
-                            }) {
-                                label("selected style")
-                                selected { flowOf(true) }
-                                selectedStyle {
-                                    {
-                                        background {
-                                            color { success }
-                                        }
-                                    }
-                                }
-                            }
-
-                            radio{
-                                label("danger font color, margined label")
-                                selected { flowOf(false) }
-                                labelStyle {
-                                    {
-                                      margins { left { larger } }
-                                      color { danger }
-                                    }
-                                }
-                            }
-                    """
-                )
-            }
+        }
+        playground {
+            source(
+                """
+                 val allItems = listOf("item 1", "item 2", "item 3")
+                 val selectedItem = storeOf("item 2")
+                 radioGroup(store = selectedItem) {
+                    items{ flowOf(allItems) }
+                    direction { row }
+                 }
+                """
+            )
         }
 
         showcaseSection("Sizes")
         paragraph {
-            +"Choose from one of three predefined sizes ("
+            +"Choose from the three predefined sizes "
             c("small")
             +", "
             c("normal")
             +", or  "
             c("large")
-            +"), or scale your radio(s) to your needs using the styling parameter."
+            +", or scale your radios to your needs using the styling parameter."
         }
-        val sizesRadioStore = object : RootStore<Boolean>(false){}
-        val sizesRadio1Store = object : RootStore<Boolean>(false){}
-        val sizesRadio2Store = object : RootStore<Boolean>(false){}
+
         componentFrame {
-            stackUp {
+            lineUp {
                 items {
-                    lineUp {
-                        items {
-                            radio {
-                                label("small")
-                                size { small }
-                                selected { sizesRadioStore.data }
-                                events {
-                                    changes.states() handledBy sizesRadioStore.update
-                                }
-                            }
-
-                            radio {
-                                label("normal")
-                                selected { sizesRadio1Store.data }
-                                events {
-                                    changes.states() handledBy sizesRadio1Store.update
-                                }
-                            }
-
-                            radio {
-                                label("large")
-                                size { large }
-                                selected { sizesRadio2Store.data }
-                                events {
-                                    changes.states() handledBy sizesRadio2Store.update
-                                }
-                            }
-                        }
+                    radio {
+                        label("small")
+                        size { small }
+                    }
+                    radio {
+                        label("normal")
+                    }
+                    radio {
+                        label("large")
+                        size { large }
                     }
                 }
             }
             playground {
                 source(
                     """
-                         radio {
-                                  label("small")
-                                  size { small }
-                                  selected { myStore.data }
-                                  events {
-                                      changes.states() handledBy myStore.update
-                                  }
-                              }
-                              
-                              radio {
-                                  label("normal")
-                                  selected { myStore.data }
-                                  events {
-                                      changes.states() handledBy myStore.update
-                                  }
-                              }
-                              
-                              radio {
-                                  label("large")
-                                  size { large }
-                                  selected { sizesRadio2Store.data }                                  
-                                  events {
-                                      changes.states() handledBy myStore.update
-                                  }
-                              }
+                    radio {
+                        label("small")
+                        size { small }
+                    }
+                    radio {
+                        label("normal")
+                    }
+                    radio {
+                        label("large")
+                        size { large }
+                    }
                     """
                 )
             }
         }
 
-        showcaseSection("Disabled")
-        val disabledRadioStore = object : RootStore<Boolean>(false){}
-        val disabledRadio1Store = object : RootStore<Boolean>(true){}
+
+        showcaseSection("Customizing")
+        paragraph {
+            +"You can customize the selected styles, unselected styles, and the component label. The unselected"
+            +" styles go directly into the styling parameter, while you need to use the component functions "
+            c("selectedStyle")
+            +" and "
+            c("labelStyle")
+            +" for their respective changes in appearance."
+        }
+
+        componentFrame {
+            lineUp {
+                items {
+                    radio({
+                        border { color { "tomato" } }
+                    }) {
+                        label("custom unselected style")
+                    }
+
+                    radio {
+                        label("custom selected style")
+                        selected { flowOf(true) }
+                        selectedStyle { { background { color { "tomato" } } } }
+                    }
+
+                    radio {
+                        label("custom label style: margin")
+                        labelStyle { { margins { left { larger } } } }
+                    }
+                }
+            }
+
+            playground {
+                source(
+                    """
+                    radio({
+                        border { color { "tomato" } }
+                    }) {
+                        label("custom unselected style")
+                    }
+
+                    radio {
+                        label("custom selected style")
+                        selected { flowOf(true) }
+                        selectedStyle { { background { color { "tomato" } } } }
+                    }
+
+                    radio {
+                        label("custom label style: margin")
+                        labelStyle { { margins { left { larger } } } }
+                    }
+                    """
+                )
+            }
+        }
+
+       showcaseSection("Disabled Radios")
         componentFrame {
             stackUp {
                 items {
-                    lineUp {
-                        items {
-                            radio {
-                                label("disabled Radio")
-                                disabled{ flowOf(true) }
-                                selected { disabledRadioStore.data }
-                                events {
-                                    changes.states() handledBy disabledRadioStore.update
-                                }
-                            }
+                    radio {
+                        label("A disabled Radio or RadioGroup can not be selected.")
+                        disabled { flowOf(true) }
+                    }
 
-                            radio {
-                                label("disabled Radio")
-                                disabled { flowOf(true) }
-                                selected { disabledRadio1Store.data }
-                                events {
-                                    changes.states() handledBy disabledRadio1Store.update
-                                }
-                            }
-                        }
+                    radioGroup(store = usageRadioGroupStore) {
+                        items { flowOf(demoItems) }
+                        direction { column }
+                        disabled { flowOf(true) }
                     }
                 }
+
             }
             playground {
                 source(
                     """
-                          radio {
-                                  label("disabled Radio")
-                                  disabled{ flowOf(true) }
-                                  selected { myStore.data }
-                                  events {
-                                      changes.states() handledBy myStore.update
-                                  }
-                              }
-
-                              radio {
-                                  label("disabled Radio")
-                                  disabled { flowOf(true) }
-                                  selected { myStore.data }
-                                  events {
-                                      changes.states() handledBy myStore.update
-                                  }
-                              }
+                    radio {
+                        label("A disabled Radio or RadioGroup can not be selected.")
+                        disabled { flowOf(true) }
+                    }
+                    
+                    radioGroup(store = usageRadioGroupStore) {
+                        items { flowOf(demoItems) }
+                        direction { column }
+                        disabled { flowOf(true) }
+                    }
                     """
                 )
             }
