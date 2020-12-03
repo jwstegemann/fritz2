@@ -10,7 +10,6 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -74,9 +73,7 @@ open class FormControlComponent {
         const val invalidClassName = "invalid"
 
         val invalidCss: Style<BasicParams> = {
-            boxShadow {
-                Theme().shadows.danger
-            }
+            boxShadow { danger }
             border {
                 width { thin }
                 style { solid }
