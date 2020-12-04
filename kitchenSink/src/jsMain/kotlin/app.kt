@@ -44,6 +44,7 @@ const val tooltip_ = "Tooltip"
 const val responsive_ = "Responsiveness"
 const val textarea_ = "Textarea"
 const val color_ = "Color"
+const val select_ = "Select"
 
 val router = router(welcome_)
 
@@ -535,6 +536,7 @@ fun main() {
                         menuAnchor(switch_)
                         menuAnchor(datatable_)
                         menuAnchor(textarea_)
+                        menuAnchor(select_)
 
                         menuHeader { +"FEEDBACK" }
                         menuAnchor(spinner_)
@@ -585,6 +587,7 @@ fun main() {
                             responsive_ -> responsiveDemo()
                             color_ -> colorDemo()
                             textarea_ -> textAreaDemo()
+                            select_ -> selectDemo()
                             else -> welcome()
                         }
                     }

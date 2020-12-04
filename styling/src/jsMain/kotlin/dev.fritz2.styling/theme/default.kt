@@ -1414,11 +1414,11 @@ open class DefaultTheme : Theme {
             }
             children("&[disabled] + div") {
                 background {
-                    color{ disabled}
+                    color { disabled }
                 }
             }
             children("&[disabled] ~ div") {
-                    opacity {".5"}
+                opacity { ".5" }
             }
             children("&:not([checked]) + div > *") {
                 css("visibility:hidden;")
@@ -1495,11 +1495,11 @@ open class DefaultTheme : Theme {
             }
             children("&[disabled] + div") {
                 background {
-                    color{ disabled}
+                    color { disabled }
                 }
             }
             children("&[disabled] ~ div") {
-                opacity {".5"}
+                opacity { ".5" }
             }
         }
         override val label: Style<BasicParams> = {
@@ -1590,11 +1590,11 @@ open class DefaultTheme : Theme {
 
             children("&[disabled] + div") {
                 background {
-                    color{ disabled}
+                    color { disabled }
                 }
             }
             children("&[disabled] ~ div") {
-                opacity {".5"}
+                opacity { ".5" }
             }
         }
         override val dot: Style<BasicParams> = {
@@ -1605,7 +1605,6 @@ open class DefaultTheme : Theme {
                 color { "white" }
             }
             css("transition: transform 250ms ease 0s;")
-
 
 
         }
@@ -2279,6 +2278,58 @@ open class DefaultTheme : Theme {
                 }
             }
         }
+
+    }
+
+    override val select = object : SelectStyles {
+        override val variant = object : SelectVariants {
+            override val outline: Style<BasicParams> = {
+
+                border {
+                    width { thin }
+                    style { solid }
+                    color { light }
+                }
+
+
+            }
+
+            override val filled: Style<BasicParams> = {
+                background { color { light } }
+            }
+
+            override val flushed: Style<BasicParams> = {
+
+                borders {
+                    bottom {
+                        width { thin }
+                        style { solid }
+                        color { light }
+                    }
+                }
+            }
+
+            override val unstyled: Style<BasicParams> = {
+
+            }
+
+
+        }
+
+        override val size = object : SelectSize {
+            override val small: Style<BasicParams> = {
+
+                height { "32px" }
+            }
+            override val normal: Style<BasicParams> = {
+                height { "40px" }
+            }
+            override val large: Style<BasicParams> = {
+                height { "48px" }
+            }
+
+        }
+
 
     }
 }

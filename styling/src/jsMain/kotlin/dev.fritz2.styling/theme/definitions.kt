@@ -536,3 +536,22 @@ interface TextAreaSize {
     val normal: Style<BasicParams>
     val large: Style<BasicParams>
 }
+
+interface SelectStyles {
+    val variant: SelectVariants
+    val size: SelectSize
+}
+
+interface SelectVariants {
+    val outline: Style<BasicParams>
+    val filled: Style<BasicParams>
+    val flushed: Style<BasicParams>
+    val unstyled: Style<BasicParams>
+}
+
+interface SelectSize {
+    val small: Style<BasicParams>
+    val normal: Style<BasicParams>
+    val large: Style<BasicParams>
+
+}
