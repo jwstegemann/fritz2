@@ -45,25 +45,20 @@ open class DefaultTheme : Theme {
 
     override val colors = object : Colors {
 
-
-        //todo: comments are not up to date
-        override val primary = "#6B9D06" // green // formerly "#319795"
-        override val primary_hover = "#AAC96E"//"rgb(49,151,149, 0.3)"
-        override val secondary = "#F3B82E"//"#b2f5ea" // rgb(178,245,234) new
-        override val tertiary = "#718096" // rgb(61,64,92) formerly primary
-        override val dark = "#2d3748" // rgb(45,55,72)
-        override val light = "#DCE3EB" // rgb(220,227,235)
-        override val light_hover = "rgb(220,227,235, 0.5)" // same as light with different opac
-        override val info = "#1998BF" // rgb(23,162,184)
-        override val success = "#00B300" // rgb(40,167,69)
-        override val warning = "#F3A42E" // rgb(225,193,7)
-        override val danger = "#E14F2A" // rgb(220,53,69)
-
-        override val base = "#ffffff" // rgb(255,255,255)
-        val alert = "feebc8" // rgb(254,235,200) //todo why does this not have a #
+        override val primary = "#6ba506" // green
+        override val primary_hover = "#b4cc85" // more transparent green
+        override val secondary = "#F3B82E" // yellowish orange
+        override val tertiary = "#718096" // bluish gray
+        override val dark = "#2d3748" // dark gray
+        override val light = "#cdd1d6" // light gray
+        override val light_hover = "rgb(205,209,214, 0.5)" // same as light with less opac
+        override val info = "#1998BF" // blue
+        override val success = "#00B300" // bright green
+        override val warning = "#F3A42E" // orange
+        override val danger = "#E14F2A" // red
+        override val base = "#ffffff" // white, rgb(255,255,255)
         override val disabled = light
-        override val focus = primary_hover//"#3182ce"
-        //color of focus of input elements: inner: #3182ce / rgb(49,130,206) outer: #acd2f2 / rgb(172,210,242)
+        override val focus = primary_hover // this does not apply to shadow color
     }
 
     override val fonts = object : Fonts {
@@ -150,8 +145,8 @@ open class DefaultTheme : Theme {
             "0",
             "0",
             "0",
-            "3px",
-            color = colors.secondary
+            "2px",
+            color = colors.primary_hover
         ), // changed by mkempa-np: formerly rgba(66, 153, 225, 0.6)
         danger = shadow("0", "0", "0", "1px", color = colors.danger)
     )
@@ -1511,7 +1506,7 @@ open class DefaultTheme : Theme {
             css("justify-content:center;")
             width { "var(--rb-size)" }
             height { "var(--rb-size)" }
-            background { color { "white" } }
+            background { color { base } }
             border {
                 width { "2px" }
                 style { solid }
@@ -1534,7 +1529,7 @@ open class DefaultTheme : Theme {
                 height { "50%" }
                 radius { "50%" }
                 background {
-                    color { "currentColor" }
+                    color { base }
                 }
             }
         }
@@ -1598,7 +1593,7 @@ open class DefaultTheme : Theme {
             height { "var(--sw-height)" }
             radius { "9999px" }
             background {
-                color { "white" }
+                color { base }
             }
             css("transition: transform 250ms ease 0s;")
 
@@ -1625,7 +1620,7 @@ open class DefaultTheme : Theme {
             css("transition: all 120ms ease 0s;")
         }
         override val checked: Style<BasicParams> = {
-            background { color { success } }
+            background { color { primary } }
         }
     }
 
@@ -1740,7 +1735,7 @@ open class DefaultTheme : Theme {
 
             private val basic: Style<BasicParams> = {
                 background {
-                    color { "white" }
+                    color { base }
                 }
                 padding { normal }
                 radius { tiny }
@@ -1833,7 +1828,7 @@ open class DefaultTheme : Theme {
         override val size: PopoverSizes = object : PopoverSizes {
             private val basic: Style<BasicParams> = {
                 background {
-                    color { "white" }
+                    color { base }
                 }
                 paddings {
                     top { tiny }
