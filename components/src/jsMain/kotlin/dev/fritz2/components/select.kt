@@ -3,6 +3,7 @@ import dev.fritz2.components.CheckboxGroupComponent
 import dev.fritz2.components.ComponentMarker
 import dev.fritz2.components.icon
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Select
 import dev.fritz2.dom.selectedValue
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
@@ -139,6 +140,43 @@ class SelectComponent {
         icon = value()
     }
 
+    fun renderPlaceHolderAndOptions(renderContext: Select, styling: BasicParams.() -> Unit = {}, store: Store<String>) {
+        renderContext.apply {
+
+            placeholder!!.combine(options) { placholder, options ->
+                listOf(placholder) + options
+            }.renderEach { item ->
+                val selected = store.data.map { it == item }
+                (::option.styled(styling = styling)){
+
+                    value(item)
+                    +"$item"
+                    selected(selected)
+
+                }
+            }
+        }
+    }
+
+    fun renderOptions(renderContext: Select, styling: BasicParams.() -> Unit = {}, store: Store<String>) {
+        renderContext.apply {
+            options.renderEach { item ->
+
+                val selected = store.data.map { it == item }
+
+                (::option.styled(styling = styling)){
+
+                    value(item)
+                    +"$item"
+                    selected(selected)
+
+                }
+
+            }
+        }
+    }
+
+
 }
 
 
@@ -174,6 +212,8 @@ class SelectComponent {
  *
  *    }
  *
+ * TODO : this component should take a generic type ! For now it only takes strings as types
+ *
  */
 fun RenderContext.select(
     styling: BasicParams.() -> Unit = {},
@@ -181,7 +221,7 @@ fun RenderContext.select(
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "select",
-    init: SelectComponent.() -> Unit
+    init: SelectComponent.() -> Unit,
 ) {
     val component = SelectComponent().apply(init)
 
@@ -196,37 +236,11 @@ fun RenderContext.select(
             component.size.invoke(Theme().select.size)()
         }){
 
-            var plh = component.placeholder?.map { listOf(it) }
-
-            if (plh != null) {
-                val all = plh.combine(component.options) { placeholder, options -> placeholder + options }
-
-                all.renderEach { item ->
-
-                    val selected = store.data.map { it == item }
-
-                    (::option.styled(styling = styling)){
-
-                        value(item)
-                        +"$item"
-                        selected(selected)
-
-                    }
-                }
-            } else {
-
-                component.options.renderEach { item ->
-
-                    val selected = store.data.map { it == item }
-
-                    (::option.styled(styling = styling)){
-                        value(item)
-                        +"$item"
-                        selected(selected)
-
-                    }
-                }
+            when (component.placeholder) {
+                null -> component.renderOptions(this, styling, store)
+                else -> component.renderPlaceHolderAndOptions(this, styling, store)
             }
+
             changes.selectedValue() handledBy store.update
         }
         (::div.styled(prefix = "icon-wrapper") {
