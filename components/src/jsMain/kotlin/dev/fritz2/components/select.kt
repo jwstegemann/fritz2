@@ -1,7 +1,9 @@
 import dev.fritz2.binding.Store
-import dev.fritz2.components.CheckboxGroupComponent
 import dev.fritz2.components.ComponentMarker
 import dev.fritz2.components.icon
+import dev.fritz2.components.optionSelect
+import dev.fritz2.dom.html.Events.select
+import dev.fritz2.dom.html.Option
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Select
 import dev.fritz2.dom.selectedValue
@@ -15,10 +17,7 @@ import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.SelectSize
 import dev.fritz2.styling.theme.SelectVariants
 import dev.fritz2.styling.theme.Theme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 /**
  * This class offers configuration for a select element
@@ -36,7 +35,7 @@ import kotlinx.coroutines.flow.map
  *  * For a detailed explanation and examples of usage have a look at the [select] function
  */
 @ComponentMarker
-class SelectComponent {
+class SelectComponent<T> {
 
 
     companion object {
@@ -97,28 +96,28 @@ class SelectComponent {
 
     }
 
-    var placeholder: Flow<String>? = null
+    var placeholder: Flow<T>? = null
 
-    fun placeholder(value: String) {
+    fun placeholder(value: T) {
         placeholder = flowOf(value)
     }
 
-    fun placeholder(value: Flow<String>) {
+    fun placeholder(value: Flow<T>) {
         placeholder = value
     }
 
-    fun placeholder(value: () -> Flow<String>) {
+    fun placeholder(value: () -> Flow<T>) {
         placeholder = value()
 
     }
 
-    var options: Flow<List<String>> = flowOf(emptyList())
+    var options: Flow<List<T>> = flowOf(emptyList())
 
-    fun options(value: List<String>) {
+    fun options(value: List<T>) {
         options = flowOf(value)
     }
 
-    fun options(value: () -> Flow<List<String>>) {
+    fun options(value: () -> Flow<List<T>>) {
         options = value()
     }
 
@@ -140,42 +139,63 @@ class SelectComponent {
         icon = value()
     }
 
-    fun renderPlaceHolderAndOptions(renderContext: Select, styling: BasicParams.() -> Unit = {}, store: Store<String>) {
+    var label: ((item: T) -> String) = { it.toString() }
+    fun label(value: (item: T) -> String) {
+        label = value
+    }
+
+
+    var value: ((item: T) -> String) = { it.toString() }
+    fun value(param: (item: T) -> String) {
+        value = param
+    }
+
+
+    fun renderPlaceHolderAndOptions(renderContext: Select, store: Store<T>): Map<String, T> {
+        val map = mutableMapOf<String, T>()
         renderContext.apply {
 
             placeholder!!.combine(options) { placholder, options ->
                 listOf(placholder) + options
             }.renderEach { item ->
-                val selected = store.data.map { it == item }
-                (::option.styled(styling = styling)){
-
-                    value(item)
-                    +"$item"
-                    selected(selected)
-
-                }
+                handleRendering(map, item, store, this, this@SelectComponent)
             }
         }
+
+        return map
     }
 
-    fun renderOptions(renderContext: Select, styling: BasicParams.() -> Unit = {}, store: Store<String>) {
+    fun renderOptions(renderContext: Select, store: Store<T>): Map<String, T> {
+        val map = mutableMapOf<String, T>()
+
         renderContext.apply {
+
             options.renderEach { item ->
-
-                val selected = store.data.map { it == item }
-
-                (::option.styled(styling = styling)){
-
-                    value(item)
-                    +"$item"
-                    selected(selected)
-
-                }
-
+                handleRendering(map, item, store, this, this@SelectComponent)
             }
         }
+
+
+        return map
     }
 
+    private fun handleRendering(
+        map: MutableMap<String, T>,
+        item: T,
+        store: Store<T>,
+        renderContext: RenderContext,
+        selectComponent: SelectComponent<T>,
+    ): Option {
+
+        map[item.toString()] = item
+        val selected = store.data.map { it == item }
+
+        return renderContext.optionSelect {
+            value { selectComponent.value(item) }
+            label { selectComponent.label(item) }
+            selected(selected)
+        }
+    }
 
 }
 
@@ -212,18 +232,17 @@ class SelectComponent {
  *
  *    }
  *
- * TODO : this component should take a generic type ! For now it only takes strings as types
- *
  */
-fun RenderContext.select(
+fun <T> RenderContext.select(
     styling: BasicParams.() -> Unit = {},
-    store: Store<String>,
+    store: Store<T>,
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "select",
-    init: SelectComponent.() -> Unit,
+    init: SelectComponent<T>.() -> Unit,
 ) {
-    val component = SelectComponent().apply(init)
+    val component = SelectComponent<T>().apply(init)
+
 
     (::div.styled(styling, baseClass + SelectComponent.staticCss, id, prefix) {
 
@@ -231,17 +250,19 @@ fun RenderContext.select(
     }){
         (::select.styled(styling, baseClass) {
             component.basicInputStyles()
-
             component.variant.invoke(Theme().select.variant)()
             component.size.invoke(Theme().select.size)()
         }){
 
-            when (component.placeholder) {
-                null -> component.renderOptions(this, styling, store)
-                else -> component.renderPlaceHolderAndOptions(this, styling, store)
+            val map = when (component.placeholder) {
+                null -> component.renderOptions(this, store)
+                else -> component.renderPlaceHolderAndOptions(this, store)
             }
 
-            changes.selectedValue() handledBy store.update
+
+            changes.selectedValue()
+                .map { map[it] ?: error("something in select component went wrong") } handledBy store.update
+
         }
         (::div.styled(prefix = "icon-wrapper") {
             component.iconWrapperStyle()
