@@ -4,15 +4,16 @@ package dev.fritz2.lenses
 //import net.ltgt.gradle.incap.IncrementalAnnotationProcessorType
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
-import com.squareup.kotlinpoet.metadata.*
-import com.squareup.kotlinpoet.metadata.specs.*
+import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
+import com.squareup.kotlinpoet.metadata.specs.toTypeSpec
 import dev.fritz2.lenses.LensesAnnotationProcessor.Companion.FRITZ2_VISIBILITY_OPTION_NAME
 import dev.fritz2.lenses.LensesAnnotationProcessor.Companion.KAPT_KOTLIN_GENERATED_OPTION_NAME
-import java.io.*
+import java.io.File
 import javax.annotation.processing.*
-import javax.lang.model.*
-import javax.lang.model.element.*
-import javax.tools.Diagnostic.Kind.*
+import javax.lang.model.SourceVersion
+import javax.lang.model.element.ElementKind
+import javax.lang.model.element.TypeElement
+import javax.tools.Diagnostic.Kind.ERROR
 
 
 @KotlinPoetMetadataPreview
