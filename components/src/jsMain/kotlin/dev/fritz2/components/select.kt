@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.*
  *  - a placeholder
  *  - the icon of the select
  *  - some predefined styling variants
+ *  - the text which is shown -> label
+ *  - disable the element
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
  *  ``init``. It offers an initialized instance of this [SelectComponent] class as receiver, so every mutating
@@ -72,7 +74,15 @@ class SelectComponent<T> {
             boxShadow { outline }
 
         }
+
+        disabled {
+            background {
+                color { disabled }
+            }
+
+        }
         position { relative { } }
+
         css("outline: 0px;")
         css("appearance: none;")
         css("transition: all 0.2s ease 0s;")
@@ -95,6 +105,7 @@ class SelectComponent<T> {
         css("transform: translateY(-50%);")
 
     }
+
 
     var placeholder: Flow<T>? = null
 
@@ -150,51 +161,67 @@ class SelectComponent<T> {
         value = param
     }
 
+    var disabled: Flow<Boolean> = flowOf(false)
 
-    fun renderPlaceHolderAndOptions(renderContext: Select, store: Store<T>): Map<String, T> {
-        val map = mutableMapOf<String, T>()
+    fun disabled(value: Boolean) {
+        disabled = flowOf(value)
+    }
+
+    fun disabled(value: Flow<Boolean>) {
+        disabled = value
+    }
+
+    fun disabled(value: () -> Flow<Boolean>) {
+        disabled = value()
+    }
+
+    fun renderPlaceHolderAndOptions(
+        renderContext: Select,
+        store: Store<T>,
+        optionsMap: MutableMap<String, T>,
+    ): Map<String, T> {
         renderContext.apply {
 
-            placeholder!!.combine(options) { placholder, options ->
-                listOf(placholder) + options
+            placeholder!!.combine(options) { placeholder, options ->
+                listOf(placeholder) + options
             }.renderEach { item ->
-                handleRendering(map, item, store, this, this@SelectComponent)
+                handleRendering(optionsMap, item, store, this, this@SelectComponent)
             }
         }
 
-        return map
+        return optionsMap
     }
 
-    fun renderOptions(renderContext: Select, store: Store<T>): Map<String, T> {
-        val map = mutableMapOf<String, T>()
+    fun renderOptions(renderContext: Select, store: Store<T>, optionsMap: MutableMap<String, T>): Map<String, T> {
 
         renderContext.apply {
 
             options.renderEach { item ->
-                handleRendering(map, item, store, this, this@SelectComponent)
+                handleRendering(optionsMap, item, store, this, this@SelectComponent)
             }
         }
 
-
-        return map
+        return optionsMap
     }
 
     private fun handleRendering(
-        map: MutableMap<String, T>,
+        optionsMap: MutableMap<String, T>,
         item: T,
         store: Store<T>,
         renderContext: RenderContext,
         selectComponent: SelectComponent<T>,
     ): Option {
 
-        map[item.toString()] = item
+        optionsMap[item.toString()] = item
         val selected = store.data.map { it == item }
 
         return renderContext.optionSelect {
+
             value { selectComponent.value(item) }
             label { selectComponent.label(item) }
             selected(selected)
         }
+
     }
 
 }
@@ -203,9 +230,10 @@ class SelectComponent<T> {
 /**
  * This component generates a select element
  *
- * You have to pass a store in order to set the selected value
  *
- * // basic usecase would be :
+ * You have to pass a store in order to handle the selected value
+ *
+ *  // basic usecase would be :
  *    val myOptions = listOf("black", "red", "yellow")
  *    val selectedItem = storeOf("")
  *
@@ -227,10 +255,33 @@ class SelectComponent<T> {
  *  // use case showing variant and size handling
  *
  *    select(store = selectedItem) {
+ *    placeholder("size and variant")
  *    size { large }
  *    variant { outline }
  *
  *    }
+ *
+ *  // use case : disable the component
+ *
+ *  select(store = selectedItem) {
+ *       options(myOptions)
+ *       disabled(true)
+ *    }
+ *
+ *  // use case showing how to set a specific label
+ *    val persons = listOf(Person("John Doe", 1), Person("Jane Doe", 2))
+ *
+ *    select(store = store) {
+ *    options(persons)
+ *    label { it.name }
+ *   }
+ *
+ * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param store  a [Store] that holds the selected value of the select component
+ * @param baseClass optional CSS class that should be applied to the element
+ * @param id the ID of the element
+ * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param init a lambda expression for setting up the component itself. Details in [SelectComponent]
  *
  */
 fun <T> RenderContext.select(
@@ -242,7 +293,7 @@ fun <T> RenderContext.select(
     init: SelectComponent<T>.() -> Unit,
 ) {
     val component = SelectComponent<T>().apply(init)
-
+    val optionsMap = mutableMapOf<String, T>()
 
     (::div.styled(styling, baseClass + SelectComponent.staticCss, id, prefix) {
 
@@ -252,16 +303,20 @@ fun <T> RenderContext.select(
             component.basicInputStyles()
             component.variant.invoke(Theme().select.variant)()
             component.size.invoke(Theme().select.size)()
-        }){
 
-            val map = when (component.placeholder) {
-                null -> component.renderOptions(this, store)
-                else -> component.renderPlaceHolderAndOptions(this, store)
+        }){
+            disabled(component.disabled)
+
+
+            val mapContainingOptions = when (component.placeholder) {
+                null -> component.renderOptions(this, store, optionsMap)
+                else -> component.renderPlaceHolderAndOptions(this, store, optionsMap)
             }
 
-
             changes.selectedValue()
-                .map { map[it] ?: error("something in select component went wrong") } handledBy store.update
+                .map {
+                    mapContainingOptions[it] ?: error("mapping the selected value in select component went wrong")
+                } handledBy store.update
 
         }
         (::div.styled(prefix = "icon-wrapper") {
@@ -269,9 +324,6 @@ fun <T> RenderContext.select(
         }){
             icon { fromTheme { component.icon } }
         }
-
-
     }
-
 }
 
