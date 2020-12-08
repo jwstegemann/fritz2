@@ -226,7 +226,6 @@ class SelectComponent<T> {
 
 }
 
-
 /**
  * This component generates a select element
  *
