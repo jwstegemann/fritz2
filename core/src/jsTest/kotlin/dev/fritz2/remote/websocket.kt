@@ -7,7 +7,8 @@ import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.Resource
-import dev.fritz2.serialization.Serializer
+import dev.fritz2.resource.ResourceSerializer
+
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
@@ -154,16 +155,16 @@ class WebSocketTests {
     private val ageLens = buildLens("age", SocketPerson::age) { p, v -> p.copy(age = v) }
     private val idLens = buildLens("id", SocketPerson::_id) { p, v -> p.copy(_id = v) }
 
-    object PersonSerializer : Serializer<SocketPerson, String> {
+    object PersonSerializer : ResourceSerializer<SocketPerson> {
         override fun write(item: SocketPerson): String = JSON.stringify(item)
-        override fun read(msg: String): SocketPerson {
-            val obj = JSON.parse<dynamic>(msg)
+        override fun read(source: String): SocketPerson {
+            val obj = JSON.parse<dynamic>(source)
             return SocketPerson(obj.name as String, obj.age as Int, obj._id as String)
         }
 
         override fun writeList(items: List<SocketPerson>): String = JSON.stringify(items)
-        override fun readList(msg: String): List<SocketPerson> {
-            val list = JSON.parse<Array<dynamic>>(msg)
+        override fun readList(source: String): List<SocketPerson> {
+            val list = JSON.parse<Array<dynamic>>(source)
             return list.map { obj -> SocketPerson(obj.name as String, obj.age as Int, obj._id as String) }
         }
     }

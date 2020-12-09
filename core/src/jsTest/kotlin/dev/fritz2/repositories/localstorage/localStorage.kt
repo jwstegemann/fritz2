@@ -7,7 +7,8 @@ import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.Resource
-import dev.fritz2.serialization.Serializer
+import dev.fritz2.resource.ResourceSerializer
+
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
@@ -27,16 +28,16 @@ class LocalStorageTests {
     private val idLens = buildLens("id", LocalPerson::_id) { p, v -> p.copy(_id = v) }
 
 
-    object PersonSerializer : Serializer<LocalPerson, String> {
+    object PersonSerializer : ResourceSerializer<LocalPerson> {
         override fun write(item: LocalPerson): String = JSON.stringify(item)
-        override fun read(msg: String): LocalPerson {
-            val obj = JSON.parse<dynamic>(msg)
+        override fun read(source: String): LocalPerson {
+            val obj = JSON.parse<dynamic>(source)
             return LocalPerson(obj.name as String, obj.age as Int, obj._id as String)
         }
 
         override fun writeList(items: List<LocalPerson>): String = JSON.stringify(items)
-        override fun readList(msg: String): List<LocalPerson> {
-            val list = JSON.parse<Array<dynamic>>(msg)
+        override fun readList(source: String): List<LocalPerson> {
+            val list = JSON.parse<Array<dynamic>>(source)
             return list.map { obj -> LocalPerson(obj.name as String, obj.age as Int, obj._id as String) }
         }
     }

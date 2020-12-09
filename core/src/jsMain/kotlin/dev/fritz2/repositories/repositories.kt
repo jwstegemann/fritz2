@@ -1,7 +1,8 @@
 package dev.fritz2.repositories
 
 import dev.fritz2.lenses.IdProvider
-import dev.fritz2.serialization.Serializer
+import dev.fritz2.resource.ResourceSerializer
+
 
 /**
  * defines the interface that is used in the repositories
@@ -13,7 +14,7 @@ import dev.fritz2.serialization.Serializer
  */
 data class Resource<T, I>(
     val idProvider: IdProvider<T, I>,
-    val serializer: Serializer<T, String>,
+    val serializer: ResourceSerializer<T>,
     val emptyEntity: T,
     val serializeId: (I) -> String = { it.toString() }
 )

@@ -7,7 +7,8 @@ import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.Resource
-import dev.fritz2.serialization.Serializer
+import dev.fritz2.resource.ResourceSerializer
+
 import dev.fritz2.test.*
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -28,20 +29,20 @@ class RestTests {
     private val ageLens = buildLens("age", RestPerson::age) { p, v -> p.copy(age = v) }
     private val idLens = buildLens("_id", RestPerson::_id) { p, v -> p.copy(_id = v) }
 
-    object PersonSerializer : Serializer<RestPerson, String> {
+    object PersonSerializer : ResourceSerializer<RestPerson> {
         data class PersonWithoutId(val name: String, val age: Int)
 
         private fun removeId(person: RestPerson) = PersonWithoutId(person.name, person.age)
 
         override fun write(item: RestPerson): String = JSON.stringify(removeId(item))
-        override fun read(msg: String): RestPerson {
-            val obj = JSON.parse<dynamic>(msg)
+        override fun read(source: String): RestPerson {
+            val obj = JSON.parse<dynamic>(source)
             return RestPerson(obj.name as String, obj.age as Int, obj._id as String)
         }
 
         override fun writeList(items: List<RestPerson>): String = JSON.stringify(items.map { removeId(it) })
-        override fun readList(msg: String): List<RestPerson> {
-            val list = JSON.parse<Array<dynamic>>(msg)
+        override fun readList(source: String): List<RestPerson> {
+            val list = JSON.parse<Array<dynamic>>(source)
             return list.map { obj -> RestPerson(obj.name as String, obj.age as Int, obj._id as String) }
         }
     }
@@ -66,7 +67,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            private val rest = restEntity(personResource, "", remote = remote)
+            private val rest = restEntity(personResource, remote)
 
             val load = handle { entity, id: String -> rest.load(entity, id) }
             val saveOrUpdate = handle { entity -> rest.addOrUpdate(entity) }
@@ -145,7 +146,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            private val rest = restQuery<RestPerson, String, Unit>(personResource, "", remote = remote)
+            private val rest = restQuery<RestPerson, String, Unit>(personResource, remote)
 
             val addOrUpdate = handle<RestPerson> { entities, person -> rest.addOrUpdate(entities, person) }
             val query = handle<Unit> { entities, query -> rest.query(entities, query) }
@@ -226,7 +227,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            private val rest = restQuery<RestPerson, String, Unit>(personResource, "", remote = remote)
+            private val rest = restQuery<RestPerson, String, Unit>(personResource, remote)
 
             val addOrUpdate = handle<RestPerson> { entities, entity ->
                 rest.addOrUpdate(entities, entity)
