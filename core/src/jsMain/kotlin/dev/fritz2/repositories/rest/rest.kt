@@ -15,15 +15,27 @@ import org.w3c.fetch.Response
  * @param resource definition of the [Resource]
  * @param url base-url of the REST-API
  * @param contentType to be used by the REST-API
- * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
  */
 fun <T, I> restEntity(
     resource: Resource<T, I>,
     url: String,
-    contentType: String = "application/json; charset=utf-8",
-    remote: Request = http(url)
+    contentType: String = "application/json; charset=utf-8"
 ): EntityRepository<T, I> =
-    RestEntity(resource, url, contentType, remote)
+    RestEntity(resource, contentType, http(url))
+
+/**
+ * provides crud-functions for REST-API to a defined [Resource]
+ *
+ * @param resource definition of the [Resource]
+ * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
+ * @param contentType to be used by the REST-API
+ */
+fun <T, I> restEntity(
+    resource: Resource<T, I>,
+    remote: Request,
+    contentType: String = "application/json; charset=utf-8"
+): EntityRepository<T, I> =
+    RestEntity(resource, contentType, remote)
 
 /**
  * provides crud-functions for REST-API to a defined [Resource]
@@ -35,7 +47,6 @@ fun <T, I> restEntity(
  */
 class RestEntity<T, I>(
     private val resource: Resource<T, I>,
-    val url: String,
     val contentType: String,
     val remote: Request
 ) : EntityRepository<T, I> {
@@ -92,16 +103,29 @@ class RestEntity<T, I>(
  * @param resource definition of the [Resource]
  * @param url base-url of the REST-API
  * @param contentType to be used by the REST-API
- * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
  * @param buildQuery function to build a [Request] for a given object defining the query
  */
 fun <T, I, Q> restQuery(
     resource: Resource<T, I>,
     url: String,
     contentType: String = "application/json; charset=utf-8",
-    remote: Request = http(url),
     buildQuery: suspend Request.(Q) -> Response = { accept(contentType).get() }
-): QueryRepository<T, I, Q> = RestQuery(resource, url, contentType, remote, buildQuery)
+): QueryRepository<T, I, Q> = RestQuery(resource, contentType, http(url), buildQuery)
+
+/**
+ * provides services to deal with queries for REST-API to a defined [Resource]
+ *
+ * @param resource definition of the [Resource]
+ * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
+ * @param contentType to be used by the REST-API
+ * @param buildQuery function to build a [Request] for a given object defining the query
+ */
+fun <T, I, Q> restQuery(
+    resource: Resource<T, I>,
+    remote: Request,
+    contentType: String = "application/json; charset=utf-8",
+    buildQuery: suspend Request.(Q) -> Response = { accept(contentType).get() }
+): QueryRepository<T, I, Q> = RestQuery(resource, contentType, remote, buildQuery)
 
 /**
  * provides services to deal with queries for REST-API to a defined [Resource]
@@ -114,7 +138,6 @@ fun <T, I, Q> restQuery(
  */
 class RestQuery<T, I, Q>(
     private val resource: Resource<T, I>,
-    val url: String,
     val contentType: String,
     private val remote: Request,
     private inline val buildQuery: suspend Request.(Q) -> Response
