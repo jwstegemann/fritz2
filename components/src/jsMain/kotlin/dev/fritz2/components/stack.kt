@@ -83,9 +83,9 @@ abstract class StackComponent {
         spacing = value
     }
 
-    var items: (RenderContext.() -> Unit)? = null
+    var items: (Div.() -> Unit)? = null
 
-    fun items(value: RenderContext.() -> Unit) {
+    fun items(value: Div.() -> Unit) {
         items = value
     }
 

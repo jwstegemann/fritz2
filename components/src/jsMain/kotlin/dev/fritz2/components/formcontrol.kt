@@ -2,6 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.Store
 import dev.fritz2.components.FormControlComponent.Control
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -14,6 +15,7 @@ import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLElement
 
 
 /**
@@ -102,9 +104,9 @@ open class FormControlComponent {
     class Control {
 
         private val overflows: MutableList<String> = mutableListOf()
-        var assignee: Pair<String, (RenderContext.() -> Unit)>? = null
+        var assignee: Pair<String, (Tag<HTMLElement>.() -> Unit)>? = null
 
-        fun set(controlName: String, component: (RenderContext.() -> Unit)) {
+        fun set(controlName: String, component: (Tag<HTMLElement>.() -> Unit)) {
             if (assignee == null) {
                 assignee = Pair(controlName, component)
             } else {
@@ -292,7 +294,8 @@ open class FormControlComponent {
         }
     }
 
-    val requiredMarker: RenderContext.() -> Unit = {
+    // TODO: issue#228 change to ``RenderContext``
+    val requiredMarker: Tag<HTMLElement>.() -> Unit = {
         if (required) {
             (::span.styled {
                 color { danger }
@@ -309,7 +312,7 @@ interface ControlRenderer {
         id: String? = null,
         prefix: String = "formControl",
         renderContext: RenderContext,
-        control: RenderContext.() -> Unit
+        control: Tag<HTMLElement>.() -> Unit  // TODO: issue#228 change receiver to ``RenderContext``
     )
 }
 
@@ -320,7 +323,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
         id: String?,
         prefix: String,
         renderContext: RenderContext,
-        control: RenderContext.() -> Unit
+        control: Tag<HTMLElement>.() -> Unit // TODO: issue#228 change receiver to ``RenderContext``
     ) {
         renderContext.stackUp(
             {
@@ -354,7 +357,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
         id: String?,
         prefix: String,
         renderContext: RenderContext,
-        control: RenderContext.() -> Unit
+        control: Tag<HTMLElement>.() -> Unit // TODO: issue#228 change receiver to ``RenderContext``
     ) {
         renderContext.box({
             width { full }
