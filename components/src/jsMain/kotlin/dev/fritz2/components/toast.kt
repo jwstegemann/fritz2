@@ -219,21 +219,16 @@ class ToastComponent {
                     icon {
                         fromTheme { icon }
                     }
-
                 }
-
                 (::div.styled {
                     css("flex: 1 1 0%;")
                 }){
 
                     title?.invoke(this)
                     description?.invoke(this)
-
                 }
             }
         }
-
-
     }
 
     private fun renderCustomComponent(renderContext: Div) {
@@ -245,7 +240,7 @@ class ToastComponent {
 
 
     fun show() {
-       
+
         closeButton()
         val listId = uniqueId()
         val clickStore = object : RootStore<String>("") {
