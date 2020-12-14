@@ -2,18 +2,27 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.components.Position.BOTTOM
+import dev.fritz2.components.Position.BOTTOM_LEFT
+import dev.fritz2.components.Position.BOTTOM_RIGHT
+import dev.fritz2.components.Position.TOP
+import dev.fritz2.components.Position.TOP_LEFT
+import dev.fritz2.components.Position.TOP_RIGHT
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Li
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.rgb
+import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Theme
-import dev.fritz2.styling.theme.ToastPlacement
 import dev.fritz2.styling.theme.ToastStatus
+import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -23,6 +32,16 @@ typealias AddToast = () -> Unit
 
 data class ToastListElement(val toastRenderContext: ToastRenderContext, val id: String)
 
+object Position {
+
+    const val BOTTOM = "bottom"
+    const val BOTTOM_LEFT = "bottomLeft"
+    const val BOTTOM_RIGHT = "bottomRight"
+    const val TOP = "top"
+    const val TOP_LEFT = "topLeft"
+    const val TOP_RIGHT = "topRight"
+
+}
 
 /**
  *  This class combines the _configuration_ and the core styling of a toast
@@ -42,18 +61,69 @@ data class ToastListElement(val toastRenderContext: ToastRenderContext, val id: 
 @ComponentMarker
 class ToastComponent {
 
-    object ToastStore : RootStore<List<ToastListElement>>(listOf()) {
+// TODO  would be nice to have one main store with 6 sub-stores
 
+    object BottomLeftStore : RootStore<List<ToastListElement>>(listOf()) {
+
+        val add = handle<ToastListElement> { allToasts, newToast ->
+
+            allToasts + newToast
+        }
+        val remove = handle<ToastListElement> { allToasts, currentToast ->
+            allToasts - currentToast
+        }
+    }
+
+    object BottomStore : RootStore<List<ToastListElement>>(listOf()) {
         val add = handle<ToastListElement> { allToasts, newToast ->
             allToasts + newToast
         }
-
-        val remove = handle<ToastListElement> { allToasts, newToast ->
-            allToasts.filter { it != newToast }
-
+        val remove = handle<ToastListElement> { allToasts, currentToast ->
+            allToasts - currentToast
         }
-
     }
+
+    object BottomRightStore : RootStore<List<ToastListElement>>(listOf()) {
+        val add = handle<ToastListElement> { allToasts, newToast ->
+
+            allToasts + newToast
+        }
+        val remove = handle<ToastListElement> { allToasts, currentToast ->
+            allToasts - currentToast
+        }
+    }
+
+    object TopLeftStore : RootStore<List<ToastListElement>>(listOf()) {
+        val add = handle<ToastListElement> { allToasts, newToast ->
+
+            allToasts + newToast
+        }
+        val remove = handle<ToastListElement> { allToasts, currentToast ->
+            allToasts - currentToast
+        }
+    }
+
+    object TopStore : RootStore<List<ToastListElement>>(listOf()) {
+        val add = handle<ToastListElement> { allToasts, newToast ->
+
+            allToasts + newToast
+        }
+        val remove = handle<ToastListElement> { allToasts, currentToast ->
+            allToasts - currentToast
+        }
+    }
+
+
+    object TopRightStore : RootStore<List<ToastListElement>>(listOf()) {
+        val add = handle<ToastListElement> { allToasts, newToast ->
+            println("update in TopRightStore")
+            allToasts + newToast
+        }
+        val remove = handle<ToastListElement> { allToasts, currentToast ->
+            allToasts - currentToast
+        }
+    }
+
 
     companion object {
         val staticCss = staticStyle(
@@ -68,16 +138,16 @@ class ToastComponent {
         )
 
         val toastMap = mutableMapOf<String, ToastListElement>()
-
     }
 
 
-    val listStyle: Style<BasicParams> = {
+    var listStyle: Style<BasicParams> = {
         display { flex }
         radius { "0.375rem" }
         css("transform-origin: 50% 50% 0px;")
         css("flex-direction: column;")
         opacity { "1" }
+        css("transition: opacity 1s ease-in-out;")
     }
 
     val toastInner: Style<BasicParams> = {
@@ -106,12 +176,18 @@ class ToastComponent {
         css(" align-items: start;")
         css(" box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;")
 
-
     }
 
+    var standAlone: Boolean = false
+    fun standAlone(value: Boolean) {
+        standAlone = value
+    }
+
+    fun standAlone(value: () -> Boolean) {
+        standAlone = value()
+    }
 
     var title: (RenderContext.() -> Unit)? = null
-
     fun title(value: Flow<String>) {
         title = {
             (::div.styled(prefix = "toast-title") {
@@ -129,8 +205,12 @@ class ToastComponent {
         this.title(flowOf(value))
     }
 
-    var description: (RenderContext.() -> Unit)? = null
+    fun title(value: () -> String) {
+        this.title(flowOf(value()))
+    }
 
+
+    var description: (RenderContext.() -> Unit)? = null
     fun description(value: Flow<String>) {
         description = {
             (::div.styled(prefix = "toast-description") {
@@ -145,6 +225,10 @@ class ToastComponent {
         this.description(flowOf(value))
     }
 
+    fun description(value: () -> String) {
+        this.description(flowOf(value()))
+    }
+
     var customComponent: (RenderContext.() -> Unit)? = null
     fun customComponent(value: RenderContext.() -> Unit) {
         customComponent = value
@@ -155,33 +239,33 @@ class ToastComponent {
         icon = value()
     }
 
-    var position: ToastPlacement.() -> Style<BasicParams> = { Theme().toast.placement.bottom }
-    fun position(value: ToastPlacement.() -> Style<BasicParams>) {
+    var position: String = BOTTOM
+    fun position(value: String) {
         position = value
     }
 
-    private val alignment = when (position) {
-        Theme().toast.placement.top -> AlignItemsValues.center
-        Theme().toast.placement.topLeft -> AlignItemsValues.flexStart
-        Theme().toast.placement.topRight -> AlignItemsValues.flexEnd
-        Theme().toast.placement.bottom -> AlignItemsValues.center
-        Theme().toast.placement.bottomLeft -> AlignItemsValues.flexStart
-        Theme().toast.placement.bottomRight -> AlignItemsValues.flexEnd
-        else -> AlignItemsValues.center
+    fun position(value: () -> String) {
+        position = value()
     }
+
 
     var status: (ToastStatus.() -> Style<BasicParams>) = { Theme().toast.status.info }
     fun status(value: ToastStatus.() -> Style<BasicParams>) {
         status = value
     }
 
-    var hasCloseButton: Boolean = true
-    fun hasCloseButton(value: Boolean) {
-        hasCloseButton = value
+    var duration: Int = 2000
+    fun duration(value: () -> Int) {
+        duration = value()
     }
 
+    fun duration(value: Int) {
+        duration = value
+    }
+
+
     var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
-    fun closeButton(
+    private fun closeButton(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,
         id: String? = null,
@@ -232,22 +316,53 @@ class ToastComponent {
     }
 
     private fun renderCustomComponent(renderContext: Div) {
-        hasCloseButton = false
+
         renderContext.apply {
             customComponent!!.invoke(this)
         }
     }
 
+    private fun handleStoreAdd(element: ToastListElement) {
+
+        when (position) {
+
+            BOTTOM_LEFT -> BottomLeftStore.add(element)
+            BOTTOM_RIGHT -> BottomRightStore.add(element)
+            BOTTOM -> BottomStore.add(element)
+            TOP_LEFT -> TopLeftStore.add(element)
+            TOP_RIGHT -> TopRightStore.add(element)
+            TOP -> TopStore.add(element)
+            else -> TopStore.add(element)
+
+        }
+
+    }
+
+    fun handleStoreRemove(element: ToastListElement) {
+
+        when (position) {
+            BOTTOM_LEFT -> BottomLeftStore.remove(element)
+            BOTTOM_RIGHT -> BottomRightStore.remove(element)
+            BOTTOM -> BottomStore.remove(element)
+            TOP_LEFT -> TopLeftStore.remove(element)
+            TOP_RIGHT -> TopRightStore.remove(element)
+            TOP -> TopStore.remove(element)
+            else -> TopStore.remove(element)
+        }
+    }
 
     fun show() {
+
 
         closeButton()
         val listId = uniqueId()
         val clickStore = object : RootStore<String>("") {
             val delete = handle {
                 val currentToastListElement = toastMap[listId]
+                document.getElementById(listId)!!.setAttribute("style", "opacity: 0;")
                 toastMap.remove(listId)
-                ToastStore.remove(currentToastListElement!!)
+                delay(1010)
+                handleStoreRemove(currentToastListElement!!)
                 it
             }
         }
@@ -256,7 +371,8 @@ class ToastComponent {
 
             (::li.styled(id = listId) {
                 listStyle()
-                alignItems { alignment }
+                alignItems { center }
+
             }){
 
                 (::div.styled(prefix = "toast-inner") {
@@ -279,10 +395,10 @@ class ToastComponent {
 
             }
         }
-        val listContext = ToastListElement(toast, listId)
 
+        val listContext = ToastListElement(toast, listId)
         toastMap[listId] = listContext
-        ToastStore.add(listContext)
+        handleStoreAdd(listContext)
 
     }
 
@@ -299,22 +415,60 @@ fun RenderContext.toast(
     prefix: String = "ul-toast-container",
     build: ToastComponent.() -> Unit,
 ): SimpleHandler<Unit> {
+
     val component = ToastComponent().apply(build)
+    if (component.standAlone) {
+        component.show()
+    }
 
     val store = object : RootStore<AddToast>({}) {
         val add = handle {
+
             component.show()
             it
         }
     }
 
     (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
-        component.status.let { Theme().toast.status }
-        component.position.invoke(Theme().toast.placement)()
+        Theme().toast.placement.top()
     }){
-        ToastComponent.ToastStore.data.renderEach { it.toastRenderContext.invoke(this) }
 
+        ToastComponent.TopStore.data.renderEach { it.toastRenderContext.invoke(this) }
     }
+    (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
+        Theme().toast.placement.topLeft()
+    }){
+
+        ToastComponent.TopLeftStore.data.renderEach { it.toastRenderContext.invoke(this) }
+    }
+    (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
+        Theme().toast.placement.topRight()
+    }){
+
+        ToastComponent.TopRightStore.data.renderEach { it.toastRenderContext.invoke(this) }
+    }
+
+    (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
+        Theme().toast.placement.bottom()
+    }){
+
+        ToastComponent.BottomStore.data.renderEach { it.toastRenderContext.invoke(this) }
+    }
+
+    (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
+        Theme().toast.placement.bottomRight()
+    }){
+
+        ToastComponent.BottomRightStore.data.renderEach { it.toastRenderContext.invoke(this) }
+    }
+
+    (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
+        Theme().toast.placement.bottomLeft()
+    }){
+
+        ToastComponent.BottomLeftStore.data.renderEach { it.toastRenderContext.invoke(this) }
+    }
+
     return store.add
 
 }
