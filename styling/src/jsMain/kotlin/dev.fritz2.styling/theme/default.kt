@@ -2340,18 +2340,19 @@ open class DefaultTheme : Theme {
             override val close: Style<BasicParams> = {
                 radius { "0.375rem" }
                 width { "24px" }
-                height { "24px" }
+                height { "1rem" }
                 fontSize { "10px" }
-                position { absolute { } }
-                right { "0.25rem" }
                 css("outline: 0px;")
                 flex { shrink { "0" } }
                 display { flex }
                 css("align-items: center;")
                 css("justify-content: center;")
                 css("transition: all 0.2s ease 0s;")
-                css("top: 0.25rem;")
-
+                paddings { left { "1rem" } }
+                focus {
+                    css("outline: none;")
+                    boxShadow { none }
+                }
             }
 
         }
