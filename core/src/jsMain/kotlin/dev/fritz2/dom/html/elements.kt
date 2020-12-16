@@ -1189,10 +1189,13 @@ open class Ul(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTM
 open class TextElement(tagName: String, id: String? = null, baseClass: String? = null, job: Job) :
     Tag<HTMLElement>(tagName, id, baseClass, job), WithText<HTMLElement>
 
+// TODO: issue#228 uncomment
+//typealias RenderContext = Tag<HTMLElement>
 
 /**
  * Context for rendering dynamically DOM-nodes to your page.
  */
+// TODO: issue#228 Rename to ``HtmlElements``
 interface RenderContext : WithJob {
 
     /**
