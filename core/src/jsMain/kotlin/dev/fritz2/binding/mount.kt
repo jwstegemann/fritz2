@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.scan
  */
 //TODO: inline?
 fun <T> mountSingle(parentJob: Job, upstream: Flow<T>, set: suspend (T, T?) -> Unit) {
-    (MainScope() + parentJob).launch {
+    (MainScope() + parentJob).launch(start = CoroutineStart.UNDISPATCHED) {
         upstream.scan(null) { last: T?, value: T ->
             set(value, last)
             value
