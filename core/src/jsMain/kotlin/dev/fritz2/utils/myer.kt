@@ -20,12 +20,12 @@ object Myer {
      *
      * @param oldList old version of the [List]
      * @param newList new version of the [List]
-     * @return a [Flow] of [Patch]es needed to transform the old list into the new one
+     * @return a [List] of [Patch]es needed to transform the old list into the new one
      */
-    fun <T, I> diff(oldList: List<T>, newList: List<T>, idProvider: IdProvider<T, I>): Flow<Patch<T>> {
+    fun <T, I> diff(oldList: List<T>, newList: List<T>, idProvider: IdProvider<T, I>): List<Patch<T>> {
         val isSame = { a: T, b: T -> idProvider(a) == idProvider(b) }
         val trace = shortestEdit(oldList, newList, isSame)
-        return flow {
+        return buildList {
             backtrack<T>(trace, oldList, newList, isSame)
         }
     }
@@ -35,17 +35,17 @@ object Myer {
      *
      * @param oldList old version of the [List]
      * @param newList new version of the [List]
-     * @return a [Flow] of [Patch]es needed to transform the old list into the new one
+     * @return a [List] of [Patch]es needed to transform the old list into the new one
      */
-    fun <T> diff(oldList: List<T>, newList: List<T>): Flow<Patch<T>> {
+    fun <T> diff(oldList: List<T>, newList: List<T>): List<Patch<T>> {
         val isSame = { a: T, b: T -> a == b }
         val trace = shortestEdit(oldList, newList, isSame)
-        return flow {
+        return buildList {
             backtrack<T>(trace, oldList, newList, isSame)
         }
     }
 
-    private suspend inline fun <T> FlowCollector<Patch<T>>.backtrack(
+    private inline fun <T> MutableList<Patch<T>>.backtrack(
         trace: List<CircularArray>,
         oldList: List<T>,
         newList: List<T>,
@@ -86,7 +86,7 @@ object Myer {
                         else if (lastPatch is Patch.Insert && isSame(lastPatch.element, element)) {
                             lastPatch = Patch.Move(prevX, lastPatch.index) // - 1)
                         } else {
-                            emit(lastPatch)
+                            add(lastPatch)
                             lastPatch = Patch.Delete(prevX, 1)
                         }
                     }
@@ -117,7 +117,7 @@ object Myer {
                         ) {
                             lastPatch = Patch.Move(lastPatch.start, index)
                         } else {
-                            emit(lastPatch)
+                            add(lastPatch)
                             lastPatch = Patch.Insert(element, x)
                         }
                     }
@@ -132,7 +132,7 @@ object Myer {
             y = prevY
         }
 
-        if (lastPatch != null) emit(lastPatch)
+        if (lastPatch != null) add(lastPatch)
     }
 
     private inline fun <T> shortestEdit(

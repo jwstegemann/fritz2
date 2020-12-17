@@ -107,7 +107,7 @@ open class Tag<out E : Element>(
      * @param accumulator [Pair] of two [List]s
      * @param newValue new [List] to accumulate
      */
-    suspend inline fun <T> accumulate(
+    inline fun <T> accumulate(
         accumulator: Pair<List<T>, List<T>>,
         newValue: List<T>
     ): Pair<List<T>, List<T>> = Pair(accumulator.second, newValue)
@@ -119,6 +119,7 @@ open class Tag<out E : Element>(
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
      * when an element stays the same, but changes it's internal values.
      *
+     * @param idProvider function to identify a unique entity in the list
      * @param content [RenderContext] for rendering the data to the DOM
      */
     fun <V, I> Flow<List<V>>.renderEach(
@@ -127,14 +128,14 @@ open class Tag<out E : Element>(
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
-            this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
-                Myer.diff(old, new, idProvider)
-            }.map { patch ->
-                patch.map(job) { value, newJob ->
-                    dev.fritz2.dom.html.renderElement(newJob) {
-                        content(value)
-                    }.also {
-                        jobs[it.domNode] = newJob
+            this.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
+                Myer.diff(old, new, idProvider).map { patch ->
+                    patch.map(job) { value, newJob ->
+                        dev.fritz2.dom.html.renderElement(newJob) {
+                            content(value)
+                        }.also {
+                            jobs[it.domNode] = newJob
+                        }
                     }
                 }
             }) { node ->
@@ -158,14 +159,14 @@ open class Tag<out E : Element>(
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
-            this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
-                Myer.diff(old, new)
-            }.map { patch ->
-                patch.map(job) { value, newJob ->
-                    dev.fritz2.dom.html.renderElement(newJob) {
-                        content(value)
-                    }.also {
-                        jobs[it.domNode] = newJob
+            this.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
+                Myer.diff(old, new).map { patch ->
+                    patch.map(job) { value, newJob ->
+                        dev.fritz2.dom.html.renderElement(newJob) {
+                            content(value)
+                        }.also {
+                            jobs[it.domNode] = newJob
+                        }
                     }
                 }
             }) { node ->
@@ -191,14 +192,14 @@ open class Tag<out E : Element>(
         val jobs = mutableMapOf<Node, Job>()
 
         mountDomNodePatch(job, domNode,
-            this.data.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
-                Myer.diff(old, new, idProvider)
-            }.map { patch ->
-                patch.map(job) { value, newJob ->
-                    dev.fritz2.dom.html.renderElement(newJob) {
-                        content(sub(elementLens(value, idProvider)))
-                    }.also {
-                        jobs[it.domNode] = newJob
+            this.data.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
+                Myer.diff(old, new, idProvider).map { patch ->
+                    patch.map(job) { value, newJob ->
+                        dev.fritz2.dom.html.renderElement(newJob) {
+                            content(sub(elementLens(value, idProvider)))
+                        }.also {
+                            jobs[it.domNode] = newJob
+                        }
                     }
                 }
             }) { node ->
@@ -221,13 +222,13 @@ open class Tag<out E : Element>(
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
             this.data.map { it.withIndex().toList() }.eachIndex().map { patch ->
-                patch.map(job) { (i, _), newJob ->
+                listOf(patch.map(job) { (i, _), newJob ->
                     dev.fritz2.dom.html.renderElement(newJob) {
                         content(sub(i))
                     }.also {
                         jobs[it.domNode] = newJob
                     }
-                }
+                })
             }) { node ->
             val job = jobs.remove(node)
             if (job != null) job.cancelChildren()
@@ -250,14 +251,14 @@ open class Tag<out E : Element>(
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
-            this.data.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
-                Myer.diff(old, new, idProvider)
-            }.map { patch ->
-                patch.map(job) { value, newJob ->
-                    dev.fritz2.dom.html.renderElement(newJob) {
-                        content(sub(elementLens(value, idProvider)))
-                    }.also {
-                        jobs[it.domNode] = newJob
+            this.data.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
+                Myer.diff(old, new, idProvider).map { patch ->
+                    patch.map(job) { value, newJob ->
+                        dev.fritz2.dom.html.renderElement(newJob) {
+                            content(sub(elementLens(value, idProvider)))
+                        }.also {
+                            jobs[it.domNode] = newJob
+                        }
                     }
                 }
             }) { node ->
@@ -280,13 +281,13 @@ open class Tag<out E : Element>(
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
             this.data.map { it.withIndex().toList() }.eachIndex().map { patch ->
-                patch.map(job) { (i, _), newJob ->
+                listOf(patch.map(job) { (i, _), newJob ->
                     dev.fritz2.dom.html.renderElement(newJob) {
                         content(sub(i))
                     }.also {
                         jobs[it.domNode] = newJob
                     }
-                }
+                })
             }) { node ->
             val job = jobs.remove(node)
             if (job != null) job.cancelChildren()
@@ -305,7 +306,12 @@ open class Tag<out E : Element>(
             val oldSize = old.size
             val newSize = new.size
             when {
-                oldSize < newSize -> flowOf<Patch<V>>(Patch.InsertMany(new.subList(oldSize, newSize).reversed(), oldSize))
+                oldSize < newSize -> flowOf<Patch<V>>(
+                    Patch.InsertMany(
+                        new.subList(oldSize, newSize).reversed(),
+                        oldSize
+                    )
+                )
                 oldSize > newSize -> flowOf<Patch<V>>(Patch.Delete(newSize, (oldSize - newSize)))
                 else -> emptyFlow()
             }
@@ -318,7 +324,7 @@ open class Tag<out E : Element>(
      * @param handler that will handle the fired [Event]
      */
     infix fun <E : Event, X : Element> Listener<E, X>.handledBy(handler: Handler<Unit>) =
-        handler.collect(this.events.map { Unit }, job)
+        handler.collect(this.events.map { }, job)
 
     /**
      * Sets an attribute.
