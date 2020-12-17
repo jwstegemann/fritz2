@@ -47,10 +47,10 @@ fun alterBrightness(color: String, brightness: Double): String {
     val b: Long = color.subSequence(5,7).toString().toLong(16)
 
     val rgb = longArrayOf(r,g,b)
-    var res = arrayOf("1", "2", "3")
+    val res = arrayOf("1", "2", "3")
 
     for (i: Int in 0..2) {
-        var newCalc: Double = 1.0
+        var newCalc: Double
         if (brightness > 1) {
             newCalc = rgb[i] + ((brightness-1) * ((255-rgb[i])))
         } else if (brightness < 1) {
