@@ -2,6 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.binding.invoke
 import dev.fritz2.components.Position.bottom
 import dev.fritz2.components.Position.bottomLeft
 import dev.fritz2.components.Position.bottomRight
@@ -20,6 +21,7 @@ import dev.fritz2.styling.params.rgb
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.IconDefinition
+import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.ToastStatus
 import kotlinx.browser.document
@@ -50,20 +52,60 @@ object Position {
     const val topLeft = "topLeft"
     const val topRight = "topRight"
 
+    val positionList = listOf(bottom, bottomLeft, bottomRight, top, topLeft, topRight)
+
 }
 
 /**
  *  This class combines the _configuration_ and the core styling of a toast
  *
  *  You can configure the following aspects:
- *  - position of the toast: top | top-left | top-right | bottom | bottom-left | bottom-right
+ *  - position of the toast: top | topLeft | topRight | bottom (default) | bottomLeft | bottomRight
  *  - title: title of the toast
  *  - description: description of the toast
  *  - status:  success | error | warning | info(default)
- *  - duration: time in ms before dismiss the toast
- *  - hasCloseButton : if true, a button is added to the toast
- *  - icon : icon of the toast
+ *  - duration: time in ms before dismiss the toast - default are 5000 ms
+ *  - isCloseable : if true, a close button is added for closing the toast before timer is expired
+ *  - icon : icon of the toast - default icon is Theme().icons.circleInformation
  *  - customComponent : custom component to render instead of title and description
+ *      * with a custom component you have not the ability to use the close button !
+ *
+ *  Also, there are 2 helper functions for the following use cases:
+ *   - fun closeAllToasts() -> close all visible toasts
+ *   - fun closeLastToast()  -> close the last toast
+ *
+ *  A use case would look like :
+ *
+ *  clickButton {
+ *    variant { outline }
+ *    text("closeAll")
+ *   } handledBy ToastComponent().closeAllToasts()
+ *
+ *   or
+ *
+ *    clickButton {
+ *     variant { outline }
+ *     text("closeLatest")
+ *   } handledBy ToastComponent().closeLastToast()
+ *
+ *  Use case showing how to configure position, duration, status :
+ *
+ *  toast {
+ *      status { warning }
+ *      position { bottomRight }
+ *      duration { 8000 }
+ *
+ *      title { "Title" }
+ *      description { "Description" }
+ *    }
+ *
+ *  use case showing how to set a custom icon
+ *
+ *  toast {
+ *      icon { arrowRight }
+ *      title { "Icon"}
+ *      description {"custom icon"}
+ *  }
  *
  */
 
@@ -71,13 +113,21 @@ object Position {
 class ToastComponent {
 
 
-    object ToastStore : RootStore<List<ToastListElement>>(listOf(), id = "Toaststore") {
+    object ToastStore : RootStore<List<ToastListElement>>(listOf(), id = "toast-store") {
 
         val add = handle<ToastListElement> { allToasts, newToast ->
             allToasts + newToast
         }
         val remove = handle<ToastListElement> { allToasts, currentToast ->
             allToasts - currentToast
+        }
+
+        val removeAll = handle { _ ->
+            emptyList()
+        }
+
+        val removeLast = handle { allToasts ->
+            allToasts.dropLast(1)
         }
     }
 
@@ -107,7 +157,6 @@ class ToastComponent {
         opacity { "1" }
         css("transition: opacity 1s ease-in-out;")
         overflow { auto }
-
     }
 
     val toastInner: Style<BasicParams> = {
@@ -197,8 +246,8 @@ class ToastComponent {
     }
 
     var icon: IconDefinition = Theme().icons.circleInformation
-    fun icon(value: () -> IconDefinition) {
-        icon = value()
+    fun icon(value: Icons.() -> IconDefinition) {
+        icon = Theme().icons.value()
     }
 
     var position: String = bottom
@@ -259,9 +308,9 @@ class ToastComponent {
             closeButton()
         }
 
-        if (title == null && description == null) {
+        if (title == null || description == null) {
             renderContext.apply {
-                p { +"You have to define a title or a description or you just define a custom component !!!" }
+                p { +"You have to define a title and a description or you just define a custom component !" }
             }
         } else {
             renderContext.apply {
@@ -288,7 +337,12 @@ class ToastComponent {
 
     private fun renderCustomComponent(renderContext: Div) {
         renderContext.apply {
-            customComponent!!.invoke(this)
+            (::div.styled {
+
+            }){
+                customComponent!!.invoke(this)
+            }
+
         }
     }
 
@@ -317,18 +371,18 @@ class ToastComponent {
                 (::div.styled(prefix = "toast-inner") {
                     toastInner()
                     status.invoke(Theme().toast.status)()
-
+                    customComponent?.let { alertStyle() }
                 }){
-                    (::div.styled(prefix = "toast-alert") {
-                        alertStyle()
-                    }){
-                        when (customComponent) {
-                            null -> renderTitleAndDescription(this)
-                            else -> renderCustomComponent(this)
-                        }
-                        if (customComponent == null) closeButton?.invoke(this, clickStore.delete)
-                    }
+                    customComponent?.let { renderCustomComponent(this) }
 
+                    if (customComponent == null) {
+                        (::div.styled(prefix = "toast-alert") {
+                            alertStyle()
+                        }){
+                            renderTitleAndDescription(this)
+                            closeButton?.invoke(this, clickStore.delete)
+                        }
+                    }
                 }
             }
         }
@@ -344,9 +398,80 @@ class ToastComponent {
 
     }
 
+    fun closeAllToasts(): SimpleHandler<Unit> {
+        val store = object : RootStore<String>("") {
+            val closeAll = handle {
+                ToastStore.removeAll.invoke()
+                it
+            }
+        }
+        return store.closeAll
+    }
+
+    fun closeLastToast(): SimpleHandler<Unit> {
+        val store = object : RootStore<String>("") {
+            val closeLatest = handle {
+                ToastStore.removeLast.invoke()
+                it
+            }
+        }
+
+        return store.closeLatest
+    }
 }
 
 /**
+ *
+ *  These component generates a toast
+ *
+ *  A toast normally consists of a title and a description. At least one of these must be given or a custom component
+ *  must be included instead.
+ *
+ *  toast {
+ *      customComponent {
+ *          p { +"my custom component"}
+ *      }
+ *    }
+ *
+ *
+ *  You can bind this toast to a Flow where every element of this Flow will then create a toast or
+ *  you combine the toast directly with some other component that has a listener which fits to our handler like a [clickButton].
+ *  If you bind it directly to an Flow, you have to set the standAlone property to true
+ *
+ *   val myFlow = flowOf(listOf(1 to "one", 2 to "two", 3 to "three"))
+ *
+ *   myFlow.render {
+ *      toast {
+ *      standAlone { true }
+ *      status { warning }
+ *      position { bottomRight }
+ *      title { it.first.toString() }
+ *      description { it.second }
+ *      duration { 8000 }
+ *     }
+ *   }
+ *
+ *
+ *   clickButton {
+ *     variant { outline }
+ *     text("ADD TOAST")
+ *    } handledBy toast {
+ *
+ *     position { topLeft }
+ *     title("Title")
+ *     description("Description")
+ *   }
+ *
+ * For a detailed overview about the possible properties of the component object itself and more use cases,
+ * have a look at [ToastComponent]
+ *
+ *
+ * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the element
+ * @param id the ID of the element
+ * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param build a lambda expression for setting up the component itself.
+ * @return a [SimpleHandler]
  *
  */
 fun RenderContext.toast(
@@ -372,54 +497,25 @@ fun RenderContext.toast(
     }
 
     div {
-        (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
-            Theme().toast.placement.top()
-        }){
+        Position.positionList.forEach {
+            val placementStyle = when (it) {
+                bottom -> Theme().toast.placement.bottom
+                bottomLeft -> Theme().toast.placement.bottomLeft
+                bottomRight -> Theme().toast.placement.bottomRight
+                top -> Theme().toast.placement.top
+                topLeft -> Theme().toast.placement.topLeft
+                topRight -> Theme().toast.placement.topRight
+                else -> Theme().toast.placement.bottom
+            }
 
-            ToastComponent.ToastStore.data.map { it.filter { it.position == top } }
-                .renderEach { it.toastRenderContext.invoke(this) }
-        }
-        (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
-            Theme().toast.placement.topLeft()
-        }){
-
-            ToastComponent.ToastStore.data.map { it.filter { it.position == topLeft } }
-                .renderEach { it.toastRenderContext.invoke(this) }
-        }
-        (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
-            Theme().toast.placement.topRight()
-        }){
-
-            ToastComponent.ToastStore.data.map { it.filter { it.position == topRight } }
-                .renderEach { it.toastRenderContext.invoke(this) }
-        }
-
-        (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
-            Theme().toast.placement.bottom()
-        }){
-
-            ToastComponent.ToastStore.data.map { it.filter { it.position == bottom } }
-                .renderEach { it.toastRenderContext.invoke(this) }
-        }
-
-        (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
-            Theme().toast.placement.bottomRight()
-        }){
-
-            ToastComponent.ToastStore.data.map { it.filter { it.position == bottomRight } }
-                .renderEach { it.toastRenderContext.invoke(this) }
-        }
-
-        (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
-            Theme().toast.placement.bottomLeft()
-        }){
-
-            ToastComponent.ToastStore.data.map { it.filter { it.position == bottomLeft } }
-                .renderEach { it.toastRenderContext.invoke(this) }
+            (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
+                placementStyle()
+            }){
+                ToastComponent.ToastStore.data.map { toastList -> toastList.filter { toast -> toast.position == it } }
+                    .renderEach { element -> element.toastRenderContext.invoke(this) }
+            }
         }
     }
-
-
 
     return store.add
 }
