@@ -46,12 +46,12 @@ open class DefaultTheme : Theme {
     override val colors = object : Colors {
 
         override val primary = "#6ba506" // green
-        override val primary_hover = "#b4cc85" // more transparent green
+        override val primary_hover = alterBrightness(primary, 1.5) // more transparent green
         override val secondary = "#F3B82E" // yellowish orange
         override val tertiary = "#718096" // bluish gray
         override val dark = "#2d3748" // dark gray
         override val light = "#cdd1d6" // light gray
-        override val light_hover = "rgb(205,209,214, 0.5)" // same as light with less opac
+        override val light_hover = alterBrightness(light, 1.5) // same as light with less opac
         override val info = "#1998BF" // blue
         override val success = "#00B300" // bright green
         override val warning = "#F3A42E" // orange
@@ -1345,7 +1345,7 @@ open class DefaultTheme : Theme {
                 }
 
                 hover {
-                    css("filter: brightness(90%);")
+                    background { color { alterBrightness(light, 0.8) } }
                 }
 
                 focus {
@@ -1405,11 +1405,11 @@ open class DefaultTheme : Theme {
             }
             children("&[disabled] + div") {
                 background {
-                    color{ disabled }
+                    color { disabled }
                 }
             }
             children("&[disabled] ~ div") {
-                    opacity {".5"}
+                opacity { ".5" }
             }
             children("&:not([checked]) + div > *") {
                 css("visibility:hidden;")
@@ -1486,11 +1486,11 @@ open class DefaultTheme : Theme {
             }
             children("&[disabled] + div") {
                 background {
-                    color{ disabled }
+                    color { disabled }
                 }
             }
             children("&[disabled] ~ div") {
-                opacity {".5"}
+                opacity { ".5" }
             }
         }
         override val label: Style<BasicParams> = {
@@ -1581,11 +1581,11 @@ open class DefaultTheme : Theme {
 
             children("&[disabled] + div") {
                 background {
-                    color{ disabled}
+                    color { disabled }
                 }
             }
             children("&[disabled] ~ div") {
-                opacity {".5"}
+                opacity { ".5" }
             }
         }
         override val dot: Style<BasicParams> = {
@@ -1596,7 +1596,6 @@ open class DefaultTheme : Theme {
                 color { base }
             }
             css("transition: transform 250ms ease 0s;")
-
 
 
         }
@@ -1638,36 +1637,36 @@ open class DefaultTheme : Theme {
 
             override val solid: Style<BasicParams> = {
                 basic()
-                background { color { "var(--main-color)" } }
+                background { color { primary } }
                 color { base }
                 hover {
-                    css("filter: brightness(80%);") //132%
+                    background { color { alterBrightness(primary, 0.7) } }
                 }
                 active {
-                    css("filter: brightness(80%);")
+                    background { color { alterBrightness(primary, 0.7) } }
                 }
             }
 
             override val outline: Style<BasicParams> = {
                 basic()
-                color { "var(--main-color)" }
+                color { primary }
                 border {
                     width { thin }
                     style { solid }
-                    color { "var(--main-color)" }
+                    color { primary }
                 }
                 hover {
-                    css("background-opacity: 0.2;")
+                    color { alterBrightness(primary, 0.7) }
                     background {
                         color { primary_hover }
                     }
-
+                    border { color { alterBrightness(primary, 0.7) } }
                 }
             }
 
             override val ghost: Style<BasicParams> = {
                 basic()
-                color { "var(--main-color)" }
+                color { primary }
             }
 
             override val link: Style<BasicParams> = {
@@ -1675,7 +1674,7 @@ open class DefaultTheme : Theme {
                 paddings { all { none } }
                 height { auto }
                 lineHeight { normal }
-                color { "var(--main-color)" }
+                color { primary }
                 hover {
                     textDecoration { underline }
                 }
