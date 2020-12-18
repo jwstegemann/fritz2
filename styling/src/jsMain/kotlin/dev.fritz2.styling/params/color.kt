@@ -4,6 +4,7 @@ import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlin.coroutines.EmptyCoroutineContext.get
 
 internal const val colorKey = "color: "
 internal const val opacityKey = "opacity: "
@@ -12,6 +13,12 @@ internal const val opacityKey = "opacity: "
  * alias for colors
  */
 typealias ColorProperty = Property
+
+val ColorProperty.hover
+    get() = alterBrightness(this, Theme().hoverBrightness)
+
+val ColorProperty.darken
+    get() = alterBrightness(this, Theme().hoverDarkness)
 
 /**
  * creates a [ColorProperty] from rgb-values
@@ -38,7 +45,7 @@ fun hsla(h: Int, s: Int, l: Int, a: Double) = "hsl($h,$s% c vn,,$l%,$a)"
  * Enter a value between 1 and 2 to increase brightness, and a value between 0 and 1 to decrease brightness.
  * Increasing the brightness of a color lets them appear rather faded than shining.
  */
-fun alterBrightness(color: String, brightness: Double): String {
+fun alterBrightness(color: ColorProperty, brightness: Double): ColorProperty {
     if (color.length != 7 || color[0] != '#') {
         console.log("wrong color input format")
     }
@@ -169,5 +176,4 @@ interface Color : StyleParams {
         xl: WeightedValueProperty? = null
     ) =
         property(opacityKey, Theme().opacities, sm, md, lg, xl)
-
 }

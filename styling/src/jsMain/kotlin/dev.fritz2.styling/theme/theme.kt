@@ -166,6 +166,16 @@ interface Theme {
     val gaps: ScaledValue
 
     /**
+     * definition of the hover brightness
+     */
+    val hoverBrightness: Double
+
+    /**
+     * definition of the hover darkness
+     */
+    val hoverDarkness: Double
+
+    /**
      * definition of theme-icons
      */
     val icons: Icons
@@ -190,6 +200,9 @@ interface Theme {
     val tooltip: Tooltip
 
     val textarea: TextAreaStyles
+
+    //val ColorProperty.hover: ColorProperty
+
 }
 
 /**

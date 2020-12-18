@@ -32,6 +32,10 @@ open class DefaultTheme : Theme {
 
     override val gaps = space
 
+    override val hoverBrightness = 1.5
+
+    override val hoverDarkness = 0.7
+
     override val fontSizes = ScaledValue(
         smaller = "0.75rem",
         small = "0.875rem",
@@ -46,19 +50,17 @@ open class DefaultTheme : Theme {
     override val colors = object : Colors {
 
         override val primary = "#3B6302" // darker green
-        override val primary_hover = alterBrightness(primary, 1.5) // more transparent green
         override val secondary = "#449202" // green
         override val tertiary = "#F7B52F" // yellowish orange
         override val dark = "#214A25" // dark gray coming from green
         override val light = "#C6CFC9" //"#cdd1d6" // light gray // coming from green / blue
-        override val light_hover = alterBrightness(light, 1.5) // same as light with less opac
         override val info = "#1B959E" // blue
         override val success = "#00A848" // bright green
         override val warning = "#F08B3A" // orange
         override val danger = "#E14F2A" // red
         override val base = "#ffffff"
         override val disabled = light
-        override val focus = primary_hover // this does not apply to shadow color
+        override val focus = alterBrightness(primary, hoverBrightness) // this does not apply to shadow color
     }
 
     override val fonts = object : Fonts {
@@ -146,7 +148,7 @@ open class DefaultTheme : Theme {
             "0",
             "0",
             "2px",
-            color = colors.primary_hover
+            color = alterBrightness(colors.primary, hoverBrightness)
         ), // changed by mkempa-np: formerly rgba(66, 153, 225, 0.6)
         danger = shadow("0", "0", "0", "1px", color = colors.danger)
     )
@@ -1659,7 +1661,7 @@ open class DefaultTheme : Theme {
                 hover {
                     color { alterBrightness(primary, 0.7) }
                     background {
-                        color { primary_hover }
+                        color { alterBrightness(colors.primary, hoverBrightness)}
                     }
                     border { color { alterBrightness(primary, 0.7) } }
                 }
