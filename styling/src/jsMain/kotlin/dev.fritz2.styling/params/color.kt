@@ -45,32 +45,30 @@ fun hsla(h: Int, s: Int, l: Int, a: Double) = "hsl($h,$s% c vn,,$l%,$a)"
  * Enter a value between 1 and 2 to increase brightness, and a value between 0 and 1 to decrease brightness.
  * Increasing the brightness of a color lets them appear rather faded than shining.
  */
-fun alterBrightness(color: ColorProperty, brightness: Double): ColorProperty {
-    if (color.length != 7 || color[0] != '#') {
-        console.log("wrong color input format")
-    }
-    val r: Long = color.subSequence(1,3).toString().toLong(16)
-    val g: Long = color.subSequence(3,5).toString().toLong(16)
-    val b: Long = color.subSequence(5,7).toString().toLong(16)
-
-    val rgb = longArrayOf(r,g,b)
-    val res = arrayOf("1", "2", "3")
-
-    for (i: Int in 0..2) {
-        var newCalc: Double
-        if (brightness > 1) {
-            newCalc = rgb[i] + ((brightness-1) * ((255-rgb[i])))
-        } else if (brightness < 1) {
-            newCalc = rgb[i] - ((1-brightness) * (rgb[i]))
-        } else return color
-
-        var new: Int = newCalc.toInt()
-        if (new > 255) { new = 255 }
-        res[i] = new.toString(16)
-        if (res[i].length == 1) { res[i] = "0" + res[i] }
-    }
-    return "#${res[0]}${res[1]}${res[2]}"
-}
+fun alterBrightness(color: ColorProperty, brightness: Double): ColorProperty =
+        if (color.length != 7 || color[0] != '#') {
+            console.log("wrong color input format")
+            color
+        } else {
+            val rgb = color.asSequence()
+                .drop(1)
+                .chunked(2)
+                .map { it.joinToString("").toInt(16) }
+                .map {
+                    if (brightness > 1) {
+                        it + (brightness - 1) * (255 - it)
+                    } else if (brightness < 1) {
+                        it - ((1 - brightness) * it)
+                    } else {
+                        it
+                    }
+                }.map {
+                    minOf(it.toInt(), 255)
+                }.map {
+                    it.toString(16).let { if (it.length == 2) it else "0$it" }
+                }.joinToString("")
+            "#$rgb"
+        }
 
 
 /**
