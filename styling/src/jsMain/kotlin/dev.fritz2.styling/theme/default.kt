@@ -1570,7 +1570,7 @@ open class DefaultTheme : Theme {
         override val input: Style<BasicParams> = {
             children("&:focus + div") {
                 border {
-                    color { focus }
+                    color { light }
                 }
                 boxShadow { outline }
             }
