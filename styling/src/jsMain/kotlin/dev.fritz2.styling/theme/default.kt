@@ -133,8 +133,8 @@ open class DefaultTheme : Theme {
     override val shadows = Shadows(
         flat = shadow("0", "1px", "3px", color = rgba(0, 0, 0, 0.12))
                 and shadow("0", "1px", "2px", rgba(0, 0, 0, 0.24)),
-        raised = shadow("0", "7px", "14px", rgba(0, 0, 0, 0.25))
-                and shadow(" 0", "7px", "14px", rgba(0, 0, 0, 0.22)),
+        raised = shadow("0", "5px", "10px", rgba(0, 0, 0, 0.25))
+                and shadow(" 0", "5px", "10px", rgba(0, 0, 0, 0.22)),
         raisedFurther = shadow("0", "14px", "28px", rgba(0, 0, 0, 0.25))
                 and shadow("0", "10px", "10px", rgba(0, 0, 0, 0.22)),
         top = shadow("0", "19px", "38px", rgba(0, 0, 0, 0.30))
