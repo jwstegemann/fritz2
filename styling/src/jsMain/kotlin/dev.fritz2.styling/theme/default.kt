@@ -45,16 +45,16 @@ open class DefaultTheme : Theme {
 
     override val colors = object : Colors {
 
-        override val primary = "#446B02" // darker green
+        override val primary = "#3B6302" // darker green
         override val primary_hover = alterBrightness(primary, 1.5) // more transparent green
-        override val secondary = "#6ba506" // green
-        override val tertiary = "#F3B82E" // yellowish orange
-        override val dark = "#1F361E" // dark gray coming from green
-        override val light = "#CED7D1" //"#cdd1d6" // light gray // coming from green / blue
+        override val secondary = "#449202" // green
+        override val tertiary = "#F7B52F" // yellowish orange
+        override val dark = "#214A25" // dark gray coming from green
+        override val light = "#C6CFC9" //"#cdd1d6" // light gray // coming from green / blue
         override val light_hover = alterBrightness(light, 1.5) // same as light with less opac
-        override val info = "#1998BF" // blue
-        override val success = "#00B300" // bright green
-        override val warning = "#F3A42E" // orange
+        override val info = "#1B959E" // blue
+        override val success = "#00A848" // bright green
+        override val warning = "#F08B3A" // orange
         override val danger = "#E14F2A" // red
         override val base = "#ffffff"
         override val disabled = light
@@ -1396,7 +1396,7 @@ open class DefaultTheme : Theme {
         override val input: Style<BasicParams> = {
             children("&:focus + div") {
                 border {
-                    color { focus }
+                    color { light }
                 }
                 boxShadow { outline }
             }
@@ -1442,6 +1442,7 @@ open class DefaultTheme : Theme {
         }
         override val checked: Style<BasicParams> = {
             background { color { primary } }
+            border { color { primary } }
             color { base }
         }
     }
@@ -1477,7 +1478,7 @@ open class DefaultTheme : Theme {
         override val input: Style<BasicParams> = {
             children("&:focus + div") {
                 border {
-                    color { focus }
+                    color { primary }
                 }
                 boxShadow { outline }
             }
@@ -1507,13 +1508,16 @@ open class DefaultTheme : Theme {
             border {
                 width { "2px" }
                 style { solid }
-                color { inherit }
+                color { light }
             }
             radius { "9999px" }
         }
         override val selected: Style<BasicParams> = {
             background { color { primary } }
             color { light }
+            border {
+                color { primary }
+            }
             before {
                 css("content:\"\";")
                 display {
