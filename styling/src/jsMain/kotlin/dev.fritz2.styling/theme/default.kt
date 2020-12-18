@@ -45,18 +45,18 @@ open class DefaultTheme : Theme {
 
     override val colors = object : Colors {
 
-        override val primary = "#6ba506" // green
+        override val primary = "#446B02" // darker green
         override val primary_hover = alterBrightness(primary, 1.5) // more transparent green
-        override val secondary = "#F3B82E" // yellowish orange
-        override val tertiary = "#718096" // bluish gray
-        override val dark = "#2d3748" // dark gray
-        override val light = "#cdd1d6" // light gray
+        override val secondary = "#6ba506" // green
+        override val tertiary = "#F3B82E" // yellowish orange
+        override val dark = "#1F361E" // dark gray coming from green
+        override val light = "#CED7D1" //"#cdd1d6" // light gray // coming from green / blue
         override val light_hover = alterBrightness(light, 1.5) // same as light with less opac
         override val info = "#1998BF" // blue
         override val success = "#00B300" // bright green
         override val warning = "#F3A42E" // orange
         override val danger = "#E14F2A" // red
-        override val base = "#ffffff" // white, rgb(255,255,255)
+        override val base = "#ffffff"
         override val disabled = light
         override val focus = primary_hover // this does not apply to shadow color
     }
@@ -133,8 +133,8 @@ open class DefaultTheme : Theme {
     override val shadows = Shadows(
         flat = shadow("0", "1px", "3px", color = rgba(0, 0, 0, 0.12))
                 and shadow("0", "1px", "2px", rgba(0, 0, 0, 0.24)),
-        raised = shadow("0", "14px", "28px", rgba(0, 0, 0, 0.25))
-                and shadow(" 0", "10px", "10px", rgba(0, 0, 0, 0.22)),
+        raised = shadow("0", "7px", "14px", rgba(0, 0, 0, 0.25))
+                and shadow(" 0", "7px", "14px", rgba(0, 0, 0, 0.22)),
         raisedFurther = shadow("0", "14px", "28px", rgba(0, 0, 0, 0.25))
                 and shadow("0", "10px", "10px", rgba(0, 0, 0, 0.22)),
         top = shadow("0", "19px", "38px", rgba(0, 0, 0, 0.30))
@@ -160,9 +160,9 @@ open class DefaultTheme : Theme {
     override val icons = object : Icons {
 
         /*
-         * Most of our provided icons are taken from the [MONO Icons](https://icons.mono.company/) Projekt, that
-         * provides a solid set of useful icons. Some icons might be slightly modified and some icons
-         * (like the outstanding fritz2 logo itself) are made by ourselves.
+         * Most of our provided icons are taken from the [MONO Icons](https://icons.mono.company/) project which
+         * provides a solid set of useful icons. Some icons might be slightly modified, and some icons
+         * (like the fritz2 logo) are made by us.
          */
 
         // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
@@ -1362,11 +1362,8 @@ open class DefaultTheme : Theme {
     override val checkbox = object : CheckboxStyles {
         override val sizes = object : CheckboxSizes {
             private val basic: Style<BasicParams> = {
-
                 display { inlineFlex }
                 css("align-items: center;")
-
-
             }
             override val small: Style<BasicParams> = {
                 basic()
@@ -1711,9 +1708,7 @@ open class DefaultTheme : Theme {
                     horizontal { larger }
                 }
             }
-
         }
-
     }
 
     override val modal = object : ModalStyles {
@@ -1759,7 +1754,6 @@ open class DefaultTheme : Theme {
                     fixed {
                         left { "var(--main-level)" }
                         top { "var(--main-level)" }
-                        //bottom {normal}
                         right { normal }
                     }
                 }
@@ -1818,7 +1812,7 @@ open class DefaultTheme : Theme {
                     }
                 }
                 // FIXME: does not work! overrides size-settings!
-                css("transform: translatey(-50%);")
+                css("transform: translateY(-50%);")
             }
         }
     }
