@@ -57,26 +57,29 @@ class TextAreaComponent {
         radius { normal }
         fontWeight { normal }
 
-
         border {
             width { thin }
             style { solid }
             color { light }
-
         }
 
-        background { color { "white" } }
+        background { color { base } }
 
         disabled {
             background {
                 color { disabled }
             }
+        }
 
+        readOnly {
+            background {
+                color { disabled }
+            }
         }
 
         focus {
             border {
-                color { "#3182ce" }
+                color { primary }
             }
             boxShadow { outline }
         }
@@ -103,20 +106,6 @@ class TextAreaComponent {
 
     }
 
-    var disable: Flow<Boolean> = flowOf(false)
-
-    fun disable(value: Boolean) {
-        disable = flowOf(value)
-    }
-
-    fun disable(value: Flow<Boolean>) {
-        disable = value
-    }
-
-    fun disable(value: () -> Flow<Boolean>) {
-        disable = value()
-    }
-
     var size: TextAreaSize.() -> Style<BasicParams> = { Theme().textarea.size.normal }
     fun size(value: TextAreaSize.() -> Style<BasicParams>) {
         size = value
@@ -132,8 +121,6 @@ class TextAreaComponent {
     fun base(value: TextArea.() -> Unit) {
         base = value
     }
-
-
 }
 
 /**
@@ -212,7 +199,6 @@ fun RenderContext.textArea(
 
     }){
         placeholder(component.placeholder ?: emptyFlow())
-        disabled(component.disable)
         value(component.value ?: emptyFlow())
         component.base?.invoke(this)
         store?.let {
