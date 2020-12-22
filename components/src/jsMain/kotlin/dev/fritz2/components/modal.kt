@@ -91,21 +91,6 @@ class ModalComponent {
         init {
             appendToBody(renderElement {
                 div(id = "modals") {
-                    // TODO: Check whether this stopped working (new solution is idiomatically much better anyways!)
-                    /*
-                    overlay.data.combine(stack.data) { o, m -> Pair(m, o) }.render { (modal, overlay) ->
-                        if (overlay.method == OverlayMethod.CoveringTopMost && modal.isNotEmpty()) {
-                            overlay.render(this, modal.size)
-                        }
-                        for ((index, modal) in modal.withIndex()) {
-                            if (overlay.method == OverlayMethod.CoveringEach) {
-                                overlay.render(this, index + 1)
-                            }
-                            modal(index + 1)
-                        }
-                    }
-                     */
-
                     stack.data.map { it.size }.render { size ->
                         val currentOverlay = overlay.current
                         if (currentOverlay.method == OverlayMethod.CoveringTopMost && size > 0) {
@@ -160,9 +145,9 @@ class ModalComponent {
         }
     }
 
-    var content: (RenderContext.() -> Unit)? = null
+    var content: (Div.() -> Unit)? = null
 
-    fun content(value: RenderContext.() -> Unit) {
+    fun content(value: Div.() -> Unit) {
         content = value
     }
 
@@ -204,7 +189,7 @@ class ModalComponent {
                 variant { ghost }
                 icon { fromTheme { close } }
                 build()
-            }.map { Unit } handledBy closeHandle
+            }.map { } handledBy closeHandle
         }
     }
 
@@ -232,8 +217,7 @@ class ModalComponent {
  * clickButton {
  *     text("Open")
  * } handledBy modal {
- *     hasCloseButton(true) // enable the integrated close button
- *     items { // provide arbitrary content
+ *     content { // provide arbitrary content
  *         p { +"Hello world from a modal!" }
  *         p { +"Please click the X to close this..." }
  *     }
@@ -242,11 +226,12 @@ class ModalComponent {
  * // apply custom close button
  * clickButton {
  *     text("Open")
- * } handledBy modal { close -> // SimpleHandler<Unit> is injected by default
- *     items {
+ * } handledBy modal { closeHandler -> // SimpleHandler<Unit> is injected by default
+ *     hasCloseButton(false) // disable the integrated close button
+ *     content {
  *         p { +"Hello world from a modal!" }
  *         p { +"Please click the X to close this..." }
- *         clickButton { text("Close") } handledBy close // define a custom button that uses the close handler
+ *         clickButton { text("Close") } handledBy closeHandler // define a custom button that uses the close handler
  *     }
  * }
  * ```
