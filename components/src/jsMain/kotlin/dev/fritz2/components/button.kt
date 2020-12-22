@@ -132,6 +132,12 @@ open class PushButtonComponent {
         }
     }
 
+    var base: (Button.() -> Unit)? = null
+
+    fun base(value: Button.() -> Unit) {
+        base = value
+    }
+
     var events: (WithEvents<HTMLButtonElement>.() -> Unit)? = null
 
     fun events(value: WithEvents<HTMLButtonElement>.() -> Unit) {
@@ -289,7 +295,7 @@ fun RenderContext.pushButton(
                 component.renderIcon(this, component.rightIconStyle, component.rightSpinnerStyle)
             }
         }
-
+        component.base?.invoke(this)
         component.events?.invoke(this)
     }
 }
