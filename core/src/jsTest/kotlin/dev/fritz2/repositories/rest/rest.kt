@@ -6,6 +6,7 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
+import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
 import dev.fritz2.resource.ResourceSerializer
 
@@ -13,10 +14,7 @@ import dev.fritz2.test.*
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import kotlin.test.fail
+import kotlin.test.*
 
 class RestTests {
     data class RestPerson(val name: String, val age: Int, val _id: String = "") {
@@ -67,11 +65,15 @@ class RestTests {
                 fail(exception.message)
             }
 
-            private val rest = restEntity(personResource, remote, "")
+            val rest = restEntity(personResource, remote, "")
 
             val load = handle { _, id: String -> rest.load(id) }
             val saveOrUpdate = handle { entity -> rest.addOrUpdate(entity) }
             val delete = handle { entity -> rest.delete(entity); defaultPerson }
+        }
+
+        assertFailsWith(ResourceNotFoundException::class) {
+            entityStore.rest.load("unknown")
         }
 
         val idId = "id-${uniqueId()}"

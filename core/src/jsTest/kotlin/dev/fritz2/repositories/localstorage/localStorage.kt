@@ -6,6 +6,7 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
+import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
 import dev.fritz2.resource.ResourceSerializer
 
@@ -15,10 +16,7 @@ import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import kotlin.test.fail
+import kotlin.test.*
 
 class LocalStorageTests {
     data class LocalPerson(val name: String, val age: Int, val _id: String = uniqueId())
@@ -60,12 +58,16 @@ class LocalStorageTests {
                 fail(exception.message)
             }
 
-            private val localStorage = localStorageEntity(personResource, "")
+            val localStorage = localStorageEntity(personResource, "")
 
             val load = handle { _, id: String -> localStorage.load(id) }
 
             val saveOrUpdate = handle { entity -> localStorage.addOrUpdate(entity) }
             val delete = handle { entity -> localStorage.delete(entity); defaultPerson }
+        }
+
+        assertFailsWith(ResourceNotFoundException::class) {
+            entityStore.localStorage.load("unknown")
         }
 
         val nameId = "name-${uniqueId()}"
