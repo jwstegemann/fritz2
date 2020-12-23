@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.flow
 /**
  * Implementation of Myer's diff algorithm on two [List]s creating a [Flow] of [Patch]es.
  */
-@ExperimentalStdlibApi
 object Myer {
 
     /**
