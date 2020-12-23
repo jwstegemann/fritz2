@@ -4,7 +4,7 @@ import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
-import dev.fritz2.repositories.Resource
+import dev.fritz2.resource.Resource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -139,7 +139,7 @@ interface Store<T> : WithJob {
      * calls a handler on each new value of the [Store]
      */
     fun syncBy(handler: Handler<Unit>) {
-        data.drop(1).map { Unit } handledBy handler
+        data.drop(1).map { } handledBy handler
     }
 
     /**

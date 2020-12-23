@@ -1,22 +1,5 @@
 package dev.fritz2.repositories
 
-import dev.fritz2.lenses.IdProvider
-import dev.fritz2.resource.ResourceSerializer
-
-
-/**
- * defines the interface that is used in the repositories
- *
- * @param idProvider function to provide an id for a given entity
- * @param serializer used to (de-)serialize the entity/response
- * @param serializeId convert the entities [idProvider] into a [String], default calling [toString]
- */
-data class Resource<T, I>(
-    val idProvider: IdProvider<T, I>,
-    val serializer: ResourceSerializer<T>,
-    val serializeId: (I) -> String = { it.toString() }
-)
-
 /**
  * Gets thrown when load can't find the resource
  * @param id Id of the resource to look for

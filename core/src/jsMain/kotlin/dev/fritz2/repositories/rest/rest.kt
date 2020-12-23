@@ -5,8 +5,8 @@ import dev.fritz2.remote.getBody
 import dev.fritz2.remote.http
 import dev.fritz2.repositories.EntityRepository
 import dev.fritz2.repositories.QueryRepository
-import dev.fritz2.repositories.Resource
 import dev.fritz2.repositories.ResourceNotFoundException
+import dev.fritz2.resource.Resource
 import org.w3c.fetch.Response
 
 

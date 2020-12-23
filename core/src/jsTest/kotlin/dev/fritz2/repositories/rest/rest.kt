@@ -6,7 +6,7 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
-import dev.fritz2.repositories.Resource
+import dev.fritz2.resource.Resource
 import dev.fritz2.resource.ResourceSerializer
 
 import dev.fritz2.test.*

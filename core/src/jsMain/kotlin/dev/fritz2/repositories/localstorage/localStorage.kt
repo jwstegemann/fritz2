@@ -2,8 +2,8 @@ package dev.fritz2.repositories.localstorage
 
 import dev.fritz2.repositories.EntityRepository
 import dev.fritz2.repositories.QueryRepository
-import dev.fritz2.repositories.Resource
 import dev.fritz2.repositories.ResourceNotFoundException
+import dev.fritz2.resource.Resource
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import org.w3c.dom.get
