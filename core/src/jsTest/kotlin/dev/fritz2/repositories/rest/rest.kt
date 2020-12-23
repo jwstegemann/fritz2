@@ -51,27 +51,27 @@ class RestTests {
     fun testEntityService() = runTest {
         initDocument()
 
+        val defaultPerson = RestPerson("", 0)
         val startPerson = RestPerson("Heinz", 18)
         val changedAge = 99
 
         val personResource = Resource(
             RestPerson::_id,
-            PersonSerializer,
-            RestPerson("", 0)
+            PersonSerializer
         )
 
         val remote = testHttpServer(rest)
 
-        val entityStore = object : RootStore<RestPerson>(personResource.emptyEntity) {
+        val entityStore = object : RootStore<RestPerson>(defaultPerson) {
             override fun errorHandler(exception: Throwable, oldValue: RestPerson): RestPerson {
                 fail(exception.message)
             }
 
-            private val rest = restEntity(personResource, remote)
+            private val rest = restEntity(personResource, remote, "")
 
-            val load = handle { entity, id: String -> rest.load(entity, id) }
+            val load = handle { _, id: String -> rest.load(id) }
             val saveOrUpdate = handle { entity -> rest.addOrUpdate(entity) }
-            val delete = handle { entity -> rest.delete(entity) }
+            val delete = handle { entity -> rest.delete(entity); defaultPerson }
         }
 
         val idId = "id-${uniqueId()}"
@@ -135,8 +135,7 @@ class RestTests {
 
         val personResource = Resource(
             RestPerson::_id,
-            PersonSerializer,
-            RestPerson("", 0)
+            PersonSerializer
         )
 
         val remote = testHttpServer(rest)
@@ -146,10 +145,10 @@ class RestTests {
                 fail(exception.message)
             }
 
-            private val rest = restQuery<RestPerson, String, Unit>(personResource, remote)
+            private val rest = restQuery<RestPerson, String, Unit>(personResource, remote, "")
 
             val addOrUpdate = handle<RestPerson> { entities, person -> rest.addOrUpdate(entities, person) }
-            val query = handle<Unit> { entities, query -> rest.query(entities, query) }
+            val query = handle<Unit> { _, query -> rest.query(query) }
             val delete = handle<String> { entities, id -> rest.delete(entities, id) }
         }
 
@@ -194,7 +193,7 @@ class RestTests {
         val listAfterDelete = document.getElementById(listId)?.textContent
         assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDelete, "wrong list after delete")
 
-        queryStore.update(emptyList<RestPerson>())
+        queryStore.update(emptyList())
         delay(1)
         queryStore.query()
         delay(200)
@@ -216,8 +215,7 @@ class RestTests {
 
         val personResource = Resource(
             RestPerson::_id,
-            PersonSerializer,
-            RestPerson("", 0)
+            PersonSerializer
         )
 
         val remote = testHttpServer(rest)
@@ -227,7 +225,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            private val rest = restQuery<RestPerson, String, Unit>(personResource, remote)
+            private val rest = restQuery<RestPerson, String, Unit>(personResource, remote, "")
 
             val addOrUpdate = handle<RestPerson> { entities, entity ->
                 rest.addOrUpdate(entities, entity)

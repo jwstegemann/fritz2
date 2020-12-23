@@ -23,6 +23,6 @@ data class Resource<T, I>(
 interface ResourceSerializer<T> {
     fun write(item: T): String
     fun read(source: String): T
-    fun writeList(items: List<T>): String
-    fun readList(source: String): List<T>
+    fun writeList(items: List<T>): String = throw NotImplementedError()
+    fun readList(source: String): List<T> = throw NotImplementedError()
 }

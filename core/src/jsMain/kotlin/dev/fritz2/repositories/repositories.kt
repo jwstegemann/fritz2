@@ -9,15 +9,22 @@ import dev.fritz2.resource.ResourceSerializer
  *
  * @param idProvider function to provide an id for a given entity
  * @param serializer used to (de-)serialize the entity/response
- * @param emptyEntity an instance of the entity defining an empty state (e.g. after deletion)
  * @param serializeId convert the entities [idProvider] into a [String], default calling [toString]
  */
 data class Resource<T, I>(
     val idProvider: IdProvider<T, I>,
     val serializer: ResourceSerializer<T>,
-    val emptyEntity: T,
     val serializeId: (I) -> String = { it.toString() }
 )
+
+/**
+ * Gets thrown when load can't find the resource
+ * @param id Id of the resource to look for
+ * @param throwable source exception if occurs
+ */
+class ResourceNotFoundException(id: String, throwable: Throwable? = null): Exception("resource with id ($id) not exists", throwable)
+
+class QueryException
 
 /**
  * defines the interface that should be provided by all repositories dealing with a single Entity.
@@ -27,11 +34,11 @@ interface EntityRepository<T, I> {
     /**
      * loads an entity
      *
-     * @param entity current entity (before load)
      * @param id of the entity to load
      * @return the entity (identified by [id]) loaded
+     * @throws ResourceNotFoundException when resource not found
      */
-    suspend fun load(entity: T, id: I): T
+    suspend fun load(id: I): T
 
     /**
      * adds or updates an entity
@@ -47,7 +54,7 @@ interface EntityRepository<T, I> {
      * @param entity entity to delete
      * @return a new entity after deletion
      */
-    suspend fun delete(entity: T): T
+    suspend fun delete(entity: T)
 }
 
 /**
@@ -58,11 +65,10 @@ interface QueryRepository<T, I, Q> {
     /**
      * runs a query
      *
-     * @param entities entity list
      * @param query object defining the query
      * @return result of the query
      */
-    suspend fun query(entities: List<T>, query: Q): List<T>
+    suspend fun query(query: Q): List<T>
 
     /**
      * updates all entities in the list

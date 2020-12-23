@@ -46,26 +46,26 @@ class LocalStorageTests {
     fun testEntityService() = runTest {
         initDocument()
 
+        val defaultPerson = LocalPerson("", 0)
         val startPerson = LocalPerson("Heinz", 18)
         val changedAge = 99
 
         val personResource = Resource(
             LocalPerson::_id,
-            PersonSerializer,
-            LocalPerson("", 0)
+            PersonSerializer
         )
 
-        val entityStore = object : RootStore<LocalPerson>(personResource.emptyEntity) {
+        val entityStore = object : RootStore<LocalPerson>(defaultPerson) {
             override fun errorHandler(exception: Throwable, oldValue: LocalPerson): LocalPerson {
                 fail(exception.message)
             }
 
             private val localStorage = localStorageEntity(personResource, "")
 
-            val load = handle { entity, id: String -> localStorage.load(entity, id) }
+            val load = handle { _, id: String -> localStorage.load(id) }
 
             val saveOrUpdate = handle { entity -> localStorage.addOrUpdate(entity) }
-            val delete = handle { entity -> localStorage.delete(entity) }
+            val delete = handle { entity -> localStorage.delete(entity); defaultPerson }
         }
 
         val nameId = "name-${uniqueId()}"
@@ -132,8 +132,7 @@ class LocalStorageTests {
 
         val personResource = Resource(
             LocalPerson::_id,
-            PersonSerializer,
-            LocalPerson("", 0)
+            PersonSerializer
         )
 
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
@@ -146,8 +145,8 @@ class LocalStorageTests {
                     entities.sortedBy(LocalPerson::name)
                 }
             val addOrUpdate = handle<LocalPerson> { entities, person -> localStorage.addOrUpdate(entities, person) }
-            val query = handle<Unit> { entities, query -> localStorage.query(entities, query) }
-            val delete = handle<String> { entites, id -> localStorage.delete(entites, id) }
+            val query = handle<Unit> { _, query -> localStorage.query(query) }
+            val delete = handle<String> { entities, id -> localStorage.delete(entities, id) }
         }
 
         val listId = "list-${uniqueId()}"
@@ -193,7 +192,7 @@ class LocalStorageTests {
         val listAfterDelete = document.getElementById(listId)?.textContent
         assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDelete, "wrong list after query")
 
-        queryStore.update(emptyList<LocalPerson>())
+        queryStore.update(emptyList())
         delay(1)
         queryStore.query()
         delay(250)
@@ -216,8 +215,7 @@ class LocalStorageTests {
 
         val personResource = Resource(
             LocalPerson::_id,
-            PersonSerializer,
-            LocalPerson("", 0)
+            PersonSerializer
         )
 
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {

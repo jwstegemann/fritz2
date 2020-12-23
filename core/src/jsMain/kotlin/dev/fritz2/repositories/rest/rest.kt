@@ -6,66 +6,78 @@ import dev.fritz2.remote.http
 import dev.fritz2.repositories.EntityRepository
 import dev.fritz2.repositories.QueryRepository
 import dev.fritz2.repositories.Resource
+import dev.fritz2.repositories.ResourceNotFoundException
 import org.w3c.fetch.Response
 
 
 /**
- * provides crud-functions for REST-API to a defined [Resource]
+ * provides CRUD-functions for REST-API to a defined [Resource]
  *
  * @param resource definition of the [Resource]
  * @param url base-url of the REST-API
+ * @param emptyId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  */
 fun <T, I> restEntity(
     resource: Resource<T, I>,
     url: String,
+    emptyId: I,
     contentType: String = "application/json; charset=utf-8"
 ): EntityRepository<T, I> =
-    RestEntity(resource, contentType, http(url))
+    RestEntity(resource, emptyId, contentType, http(url))
 
 /**
  * provides crud-functions for REST-API to a defined [Resource]
  *
  * @param resource definition of the [Resource]
  * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
+ * @param emptyId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  */
 fun <T, I> restEntity(
     resource: Resource<T, I>,
     remote: Request,
+    emptyId: I,
     contentType: String = "application/json; charset=utf-8"
 ): EntityRepository<T, I> =
-    RestEntity(resource, contentType, remote)
+    RestEntity(resource, emptyId, contentType, remote)
 
 /**
  * provides crud-functions for REST-API to a defined [Resource]
  *
  * @param resource definition of the [Resource]
+ * @param emptyId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
  */
 class RestEntity<T, I>(
     private val resource: Resource<T, I>,
+    val emptyId: I,
     val contentType: String,
-    val remote: Request
+    private val remote: Request
 ) : EntityRepository<T, I> {
 
     /**
-     * loads an entity by a get request to [resource].url/{id}
+     * loads an entity by a get request to [resource]/{id}
      *
-     * @param entity current entity (before load)
      * @param id of the entity to load
      * @return the entity (identified by [id]) loaded
+     * @throws ResourceNotFoundException when resource not found
      */
-    override suspend fun load(entity: T, id: I): T =
-        resource.serializer.read(
-            remote.accept(contentType).get(resource.serializeId(id))
-                .getBody()
-        )
+    override suspend fun load(id: I): T =
+        try {
+            resource.serializer.read(
+                remote.accept(contentType).get(resource.serializeId(id))
+                    .getBody()
+            )
+        } catch (throwable: Throwable) {
+            throw ResourceNotFoundException(resource.serializeId(id), throwable)
+        }
 
     /**
-     * sends a post-(for add) or a put-(for update) request to [resource].url/{id} with the serialized entity in it's body.
-     * The [Resource.emptyEntity] of [resource] is used to determine if it should add or updated
+     * sends a post-(for add) or a put-(for update) request to [remote]/{id}
+     * with the serialized entity in it's body.
+     * The [emptyId] is used to determine if it should add or updated.
      *
      * @param entity entity to save
      * @return the added or saved entity
@@ -73,7 +85,7 @@ class RestEntity<T, I>(
     override suspend fun addOrUpdate(entity: T): T =
         remote.contentType(contentType)
             .body(resource.serializer.write(entity)).run {
-                if (resource.idProvider(entity) == resource.idProvider(resource.emptyEntity)) {
+                if (resource.idProvider(entity) == emptyId) {
                     resource.serializer.read(
                         accept(contentType).post().getBody()
                     )
@@ -89,9 +101,8 @@ class RestEntity<T, I>(
      * @param entity entity to delete
      * @return the emptyEntity defined at [resource]
      */
-    override suspend fun delete(entity: T): T {
+    override suspend fun delete(entity: T) {
         remote.delete(resource.serializeId(resource.idProvider(entity)))
-        return resource.emptyEntity
     }
 }
 
@@ -101,42 +112,47 @@ class RestEntity<T, I>(
  *
  * @param resource definition of the [Resource]
  * @param url base-url of the REST-API
+ * @param emptyId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  * @param buildQuery function to build a [Request] for a given object defining the query
  */
 fun <T, I, Q> restQuery(
     resource: Resource<T, I>,
     url: String,
+    emptyId: I,
     contentType: String = "application/json; charset=utf-8",
     buildQuery: suspend Request.(Q) -> Response = { accept(contentType).get() }
-): QueryRepository<T, I, Q> = RestQuery(resource, contentType, http(url), buildQuery)
+): QueryRepository<T, I, Q> = RestQuery(resource, emptyId, contentType, http(url), buildQuery)
 
 /**
  * provides services to deal with queries for REST-API to a defined [Resource]
  *
  * @param resource definition of the [Resource]
  * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
+ * @param emptyId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  * @param buildQuery function to build a [Request] for a given object defining the query
  */
 fun <T, I, Q> restQuery(
     resource: Resource<T, I>,
     remote: Request,
+    emptyId: I,
     contentType: String = "application/json; charset=utf-8",
     buildQuery: suspend Request.(Q) -> Response = { accept(contentType).get() }
-): QueryRepository<T, I, Q> = RestQuery(resource, contentType, remote, buildQuery)
+): QueryRepository<T, I, Q> = RestQuery(resource, emptyId, contentType, remote, buildQuery)
 
 /**
  * provides services to deal with queries for REST-API to a defined [Resource]
  *
  * @param resource definition of the [Resource]
- * @param url base-url of the REST-API
+ * @param emptyId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
  * @param buildQuery function to build a [Request] for a given object defining the query
  */
 class RestQuery<T, I, Q>(
     private val resource: Resource<T, I>,
+    val emptyId: I,
     val contentType: String,
     private val remote: Request,
     private inline val buildQuery: suspend Request.(Q) -> Response
@@ -145,16 +161,11 @@ class RestQuery<T, I, Q>(
     /**
      * queries the resource by sending the request which is build by [buildQuery] using the [query]
      *
-     * @param entities current list of entities
      * @param query object defining the query
      * @return result of the query
      */
-    override suspend fun query(entities: List<T>, query: Q): List<T> =
-        resource.serializer.readList(
-            remote
-                .buildQuery(query)
-                .getBody()
-        )
+    override suspend fun query(query: Q): List<T> =
+        resource.serializer.readList(remote.buildQuery(query).getBody())
 
     /**
      * updates given entities in the [entities] list
@@ -177,9 +188,9 @@ class RestQuery<T, I, Q>(
     }
 
     /**
-     * sends a post-(for add) or a put-(for update) request to [resource].url/{id}
-     * with the serialized entity in it's body. The emptyEntity of [resource] is used to
-     * determine if it should saved or updated
+     * sends a post-(for add) or a put-(for update) request to [remote]/{id}
+     * with the serialized entity in it's body. The [emptyId] is used to
+     * determine if it should saved or updated.
      *
      * @param entities entity list
      * @param entity entity to add or update
@@ -188,7 +199,7 @@ class RestQuery<T, I, Q>(
     override suspend fun addOrUpdate(entities: List<T>, entity: T): List<T> =
         remote.contentType(contentType)
             .body(resource.serializer.write(entity)).run {
-                if (resource.idProvider(entity) == resource.idProvider(resource.emptyEntity)) {
+                if (resource.idProvider(entity) == emptyId) {
                     entities + resource.serializer.read(
                         accept(contentType).post().getBody()
                     )
@@ -222,9 +233,7 @@ class RestQuery<T, I, Q>(
      * @return list after deletion
      */
     override suspend fun delete(entities: List<T>, ids: List<I>): List<T> {
-        ids.forEach {
-            deleteById(it)
-        }
+        ids.forEach { deleteById(it) }
         return entities.filterNot { ids.contains(resource.idProvider(it)) }
     }
 }

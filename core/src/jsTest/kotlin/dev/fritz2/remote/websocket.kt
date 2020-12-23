@@ -173,6 +173,7 @@ class WebSocketTests {
     fun testSyncWith() = runTest {
         initDocument()
 
+        val defaultPerson = SocketPerson("", 0)
         val startPerson = SocketPerson("Heinz", 18)
         val changedAge = 99
         val testId = "test"
@@ -180,13 +181,12 @@ class WebSocketTests {
 
         val personResource = Resource(
                 SocketPerson::_id,
-                PersonSerializer,
-                SocketPerson("", 0)
+                PersonSerializer
         )
 
         val socket = websocket.append("json")
 
-        val entityStore = object : RootStore<SocketPerson>(personResource.emptyEntity) {
+        val entityStore = object : RootStore<SocketPerson>(defaultPerson) {
             override fun errorHandler(exception: Throwable, oldValue: SocketPerson): SocketPerson {
                 fail(exception.message)
             }
