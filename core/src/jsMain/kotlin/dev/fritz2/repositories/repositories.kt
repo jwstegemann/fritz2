@@ -24,8 +24,6 @@ data class Resource<T, I>(
  */
 class ResourceNotFoundException(id: String, throwable: Throwable? = null): Exception("resource with id ($id) not exists", throwable)
 
-class QueryException
-
 /**
  * defines the interface that should be provided by all repositories dealing with a single Entity.
  */
