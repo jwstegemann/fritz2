@@ -41,7 +41,6 @@ fun <T, I> restEntity(
  * provides crud-functions for REST-API to a defined [Resource]
  *
  * @param resource definition of the [Resource]
- * @param url base-url of the REST-API
  * @param contentType to be used by the REST-API
  * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
  */
