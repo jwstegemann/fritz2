@@ -39,7 +39,7 @@ class MyerTests {
     }
 
 
-    fun createTestCase(): Pair<MutableList<String>, MutableList<String>> {
+    private fun createTestCase(): Pair<MutableList<String>, MutableList<String>> {
         val letters = listOf("a", "b", "c", "d", "e", "f", "g")
         val maxStartLength = 20
         val maxOperations = 10
@@ -76,7 +76,7 @@ class MyerTests {
     }
 
 
-    suspend fun runTestCase(old: MutableList<String>, new: MutableList<String>) {
+    fun runTestCase(old: MutableList<String>, new: MutableList<String>) {
 
 //        console.log("old: $old \n")
 //        console.log("new: $new \n")
@@ -85,13 +85,14 @@ class MyerTests {
             val patches = Myer.diff(old, new)
 
             try {
-                patches.map { patch ->
+                patches.forEach { patch ->
 //                    console.log("applying patch: $patch \n")
                     old.applyPatch(patch)
 //                    console.log("... result: $old \n")
-                }.reduce { _, value -> value }
+                }
             } catch (e: NoSuchElementException) {
-            } //if there is nothing to do this is ok
+                //if there is nothing to do this is ok
+            }
 
             assertEquals(new, old)
 

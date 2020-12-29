@@ -2,7 +2,9 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.TextElement
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
@@ -53,7 +55,7 @@ class PopoverComponent {
                 variant { ghost }
                 icon{ fromTheme { close } }
                 build()
-            }.map { Unit } handledBy closeHandle
+            }.map { } handledBy closeHandle
         }
     }
 
@@ -84,13 +86,13 @@ class PopoverComponent {
         arrowPlacement = value
     }
 
-    var trigger: (RenderContext.() -> Unit)? = null
-    fun trigger(value: (RenderContext.() -> Unit)) {
+    var trigger: (Div.() -> Unit)? = null
+    fun trigger(value: (Div.() -> Unit)) {
         trigger = value
     }
 
-    var header: (RenderContext.() -> Unit)? = null
-    fun header(value: (RenderContext.() -> Unit)) {
+    var header: (Div.() -> Unit)? = null
+    fun header(value: (TextElement.() -> Unit)) {
         header = {
             (::header.styled(prefix = "popover-header") {
                 Theme().popover.header()
@@ -110,8 +112,8 @@ class PopoverComponent {
         }
     }
 
-    var footer: (RenderContext.() -> Unit)? = null
-    fun footer(value: (RenderContext.() -> Unit)) {
+    var footer: (Div.() -> Unit)? = null
+    fun footer(value: (TextElement.() -> Unit)) {
         footer = {
             (::footer.styled(prefix = "popover-footer") {
                 Theme().popover.footer()
@@ -131,12 +133,12 @@ class PopoverComponent {
         }
     }
 
-    var content: (RenderContext.() -> Unit)? = null
-    fun content(value: (RenderContext.() -> Unit)) {
+    var content: (Div.() -> Unit)? = null
+    fun content(value: (TextElement.() -> Unit)) {
         content = {
             (::section.styled(prefix = "popover-content") {
                 Theme().popover.section()
-            }){ value() }
+            }){ value(this) }
         }
     }
 
@@ -241,7 +243,7 @@ fun RenderContext.popover(
         (::div.styled(prefix = "popover-trigger") {
             Theme().popover.trigger()
         }) {
-            clicks.events.map { Unit } handledBy clickStore.toggle
+            clicks.events.map { } handledBy clickStore.toggle
             component.trigger?.invoke(this)
         }
         clickStore.data.render {
