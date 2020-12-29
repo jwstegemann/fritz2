@@ -35,7 +35,7 @@ class LocalStorageEntity<T, I>(private val resource: Resource<T, I>, private val
     override suspend fun load(id: I): T {
         val result = window.localStorage["${prefix}.${resource.serializeId(id)}"]
             ?: throw ResourceNotFoundException(resource.serializeId(id))
-        return resource.serializer.read(result)
+        return resource.deserialize(result)
     }
 
     /**
@@ -48,7 +48,7 @@ class LocalStorageEntity<T, I>(private val resource: Resource<T, I>, private val
     override suspend fun addOrUpdate(entity: T): T {
         window.localStorage.setItem(
             "${prefix}.${resource.serializeId(resource.idProvider(entity))}",
-            resource.serializer.write(entity)
+            resource.serialize(entity)
         )
         return entity
     }
@@ -100,7 +100,7 @@ class LocalStorageQuery<T, I, Q>(
         for (index in 0 until localStorage.length) {
             val key = localStorage.key(index)
             if (key != null && key.startsWith(prefix)) {
-                add(resource.serializer.read(localStorage[key]!!))
+                add(resource.deserialize(localStorage[key]!!))
             }
         }
     }, query)
@@ -117,7 +117,7 @@ class LocalStorageQuery<T, I, Q>(
                 val entity = entities.last()
                 window.localStorage.setItem(
                     "${prefix}.${resource.serializeId(id)}",
-                    resource.serializer.write(entity)
+                    resource.serialize(entity)
                 )
                 entity
             }
@@ -134,7 +134,7 @@ class LocalStorageQuery<T, I, Q>(
     override suspend fun addOrUpdate(entities: List<T>, entity: T): List<T> {
         window.localStorage.setItem(
             "${prefix}.${resource.serializeId(resource.idProvider(entity))}",
-            resource.serializer.write(entity)
+            resource.serialize(entity)
         )
         var inList = false
         val updatedList = entities.map {

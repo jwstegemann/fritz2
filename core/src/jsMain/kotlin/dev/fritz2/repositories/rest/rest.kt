@@ -15,44 +15,44 @@ import org.w3c.fetch.Response
  *
  * @param resource definition of the [Resource]
  * @param url base-url of the REST-API
- * @param emptyId id to compare a given resource for differentiation of adding or updating
+ * @param initialId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  */
 fun <T, I> restEntity(
     resource: Resource<T, I>,
     url: String,
-    emptyId: I,
+    initialId: I,
     contentType: String = "application/json; charset=utf-8"
 ): EntityRepository<T, I> =
-    RestEntity(resource, emptyId, contentType, http(url))
+    RestEntity(resource, initialId, contentType, http(url))
 
 /**
  * provides crud-functions for REST-API to a defined [Resource]
  *
  * @param resource definition of the [Resource]
  * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
- * @param emptyId id to compare a given resource for differentiation of adding or updating
+ * @param initialId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  */
 fun <T, I> restEntity(
     resource: Resource<T, I>,
     remote: Request,
-    emptyId: I,
+    initialId: I,
     contentType: String = "application/json; charset=utf-8"
 ): EntityRepository<T, I> =
-    RestEntity(resource, emptyId, contentType, remote)
+    RestEntity(resource, initialId, contentType, remote)
 
 /**
  * provides crud-functions for REST-API to a defined [Resource]
  *
  * @param resource definition of the [Resource]
- * @param emptyId id to compare a given resource for differentiation of adding or updating
+ * @param initialId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
  */
 class RestEntity<T, I>(
     private val resource: Resource<T, I>,
-    val emptyId: I,
+    val initialId: I,
     val contentType: String,
     private val remote: Request
 ) : EntityRepository<T, I> {
@@ -66,7 +66,7 @@ class RestEntity<T, I>(
      */
     override suspend fun load(id: I): T =
         try {
-            resource.serializer.read(
+            resource.deserialize(
                 remote.accept(contentType).get(resource.serializeId(id))
                     .getBody()
             )
@@ -77,16 +77,16 @@ class RestEntity<T, I>(
     /**
      * sends a post-(for add) or a put-(for update) request to [remote]/{id}
      * with the serialized entity in it's body.
-     * The [emptyId] is used to determine if it should add or updated.
+     * The [initialId] is used to determine if it should add or updated.
      *
      * @param entity entity to save
      * @return the added or saved entity
      */
     override suspend fun addOrUpdate(entity: T): T =
         remote.contentType(contentType)
-            .body(resource.serializer.write(entity)).run {
-                if (resource.idProvider(entity) == emptyId) {
-                    resource.serializer.read(
+            .body(resource.serialize(entity)).run {
+                if (resource.idProvider(entity) == initialId) {
+                    resource.deserialize(
                         accept(contentType).post().getBody()
                     )
                 } else {
@@ -112,47 +112,47 @@ class RestEntity<T, I>(
  *
  * @param resource definition of the [Resource]
  * @param url base-url of the REST-API
- * @param emptyId id to compare a given resource for differentiation of adding or updating
+ * @param initialId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  * @param buildQuery function to build a [Request] for a given object defining the query
  */
 fun <T, I, Q> restQuery(
     resource: Resource<T, I>,
     url: String,
-    emptyId: I,
+    initialId: I,
     contentType: String = "application/json; charset=utf-8",
     buildQuery: suspend Request.(Q) -> Response = { accept(contentType).get() }
-): QueryRepository<T, I, Q> = RestQuery(resource, emptyId, contentType, http(url), buildQuery)
+): QueryRepository<T, I, Q> = RestQuery(resource, initialId, contentType, http(url), buildQuery)
 
 /**
  * provides services to deal with queries for REST-API to a defined [Resource]
  *
  * @param resource definition of the [Resource]
  * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
- * @param emptyId id to compare a given resource for differentiation of adding or updating
+ * @param initialId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  * @param buildQuery function to build a [Request] for a given object defining the query
  */
 fun <T, I, Q> restQuery(
     resource: Resource<T, I>,
     remote: Request,
-    emptyId: I,
+    initialId: I,
     contentType: String = "application/json; charset=utf-8",
     buildQuery: suspend Request.(Q) -> Response = { accept(contentType).get() }
-): QueryRepository<T, I, Q> = RestQuery(resource, emptyId, contentType, remote, buildQuery)
+): QueryRepository<T, I, Q> = RestQuery(resource, initialId, contentType, remote, buildQuery)
 
 /**
  * provides services to deal with queries for REST-API to a defined [Resource]
  *
  * @param resource definition of the [Resource]
- * @param emptyId id to compare a given resource for differentiation of adding or updating
+ * @param initialId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  * @param remote base [Request] to be used by all subsequent requests. Use it to configure authentication, etc.
  * @param buildQuery function to build a [Request] for a given object defining the query
  */
 class RestQuery<T, I, Q>(
     private val resource: Resource<T, I>,
-    val emptyId: I,
+    val initialId: I,
     val contentType: String,
     private val remote: Request,
     private inline val buildQuery: suspend Request.(Q) -> Response
@@ -165,7 +165,7 @@ class RestQuery<T, I, Q>(
      * @return result of the query
      */
     override suspend fun query(query: Q): List<T> =
-        resource.serializer.readList(remote.buildQuery(query).getBody())
+        resource.deserializeList(remote.buildQuery(query).getBody())
 
     /**
      * updates given entities in the [entities] list
@@ -180,7 +180,7 @@ class RestQuery<T, I, Q>(
         val updated: Map<I, T> = (entities + entitiesToUpdate).groupBy { resource.idProvider(it) }
             .filterValues { it.size > 1 }.mapValues { (id, entities) ->
                 val entity = entities.last()
-                request.body(resource.serializer.write(entity))
+                request.body(resource.serialize(entity))
                     .put(resource.serializeId(id))
                 entity
             }
@@ -189,7 +189,7 @@ class RestQuery<T, I, Q>(
 
     /**
      * sends a post-(for add) or a put-(for update) request to [remote]/{id}
-     * with the serialized entity in it's body. The [emptyId] is used to
+     * with the serialized entity in it's body. The [initialId] is used to
      * determine if it should saved or updated.
      *
      * @param entities entity list
@@ -198,9 +198,9 @@ class RestQuery<T, I, Q>(
      */
     override suspend fun addOrUpdate(entities: List<T>, entity: T): List<T> =
         remote.contentType(contentType)
-            .body(resource.serializer.write(entity)).run {
-                if (resource.idProvider(entity) == emptyId) {
-                    entities + resource.serializer.read(
+            .body(resource.serialize(entity)).run {
+                if (resource.idProvider(entity) == initialId) {
+                    entities + resource.deserialize(
                         accept(contentType).post().getBody()
                     )
                 } else {

@@ -153,13 +153,13 @@ interface Store<T> : WithJob {
         val session = socket.connect()
         var last: T? = null
         session.messages.body.map {
-            val received = resource.serializer.read(it)
+            val received = resource.deserialize(it)
             last = received
             received
         } handledBy update
 
         data.drop(1).onEach {
-            if (last != it) session.send(resource.serializer.write(it))
+            if (last != it) session.send(resource.serialize(it))
         }.watch()
     }
 }
@@ -175,13 +175,13 @@ fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
     val session = socket.connect()
     var last: List<T>? = null
     session.messages.body.map {
-        val received = resource.serializer.readList(it)
+        val received = resource.deserializeList(it)
         last = received
         received
     } handledBy update
 
     data.drop(1).onEach {
-        if (last != it) session.send(resource.serializer.writeList(it))
+        if (last != it) session.send(resource.serializeList(it))
     }.watch()
 }
 
