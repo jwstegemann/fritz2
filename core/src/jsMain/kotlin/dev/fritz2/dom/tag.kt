@@ -107,7 +107,7 @@ open class Tag<out E : Element>(
      * @param accumulator [Pair] of two [List]s
      * @param newValue new [List] to accumulate
      */
-    inline fun <T> accumulate(
+    private fun <T> accumulate(
         accumulator: Pair<List<T>, List<T>>,
         newValue: List<T>
     ): Pair<List<T>, List<T>> = Pair(accumulator.second, newValue)
