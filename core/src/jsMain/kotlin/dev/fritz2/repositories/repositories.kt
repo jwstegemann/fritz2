@@ -5,7 +5,7 @@ package dev.fritz2.repositories
  * @param id Id of the resource to look for
  * @param throwable source exception if occurs
  */
-class ResourceNotFoundException(id: String, throwable: Throwable? = null): Exception("resource with id ($id) not exists", throwable)
+class ResourceNotFoundException(id: String, throwable: Throwable? = null): Exception("resource with id ($id) does not exist", throwable)
 
 /**
  * defines the interface that should be provided by all repositories dealing with a single Entity.
