@@ -5,9 +5,9 @@ import dev.fritz2.binding.watch
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
+import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.resource.Resource
-import dev.fritz2.resource.ResourceSerializer
 
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -155,15 +155,16 @@ class WebSocketTests {
     private val ageLens = buildLens("age", SocketPerson::age) { p, v -> p.copy(age = v) }
     private val idLens = buildLens("id", SocketPerson::_id) { p, v -> p.copy(_id = v) }
 
-    object PersonSerializer : ResourceSerializer<SocketPerson> {
-        override fun write(item: SocketPerson): String = JSON.stringify(item)
-        override fun read(source: String): SocketPerson {
+    object PersonResource : Resource<SocketPerson, String> {
+        override val idProvider: IdProvider<SocketPerson, String> = SocketPerson::_id
+        override fun serialize(item: SocketPerson): String = JSON.stringify(item)
+        override fun deserialize(source: String): SocketPerson {
             val obj = JSON.parse<dynamic>(source)
             return SocketPerson(obj.name as String, obj.age as Int, obj._id as String)
         }
 
-        override fun writeList(items: List<SocketPerson>): String = JSON.stringify(items)
-        override fun readList(source: String): List<SocketPerson> {
+        override fun serializeList(items: List<SocketPerson>): String = JSON.stringify(items)
+        override fun deserializeList(source: String): List<SocketPerson> {
             val list = JSON.parse<Array<dynamic>>(source)
             return list.map { obj -> SocketPerson(obj.name as String, obj.age as Int, obj._id as String) }
         }
@@ -179,11 +180,6 @@ class WebSocketTests {
         val testId = "test"
         val testName = "Hans"
 
-        val personResource = Resource(
-                SocketPerson::_id,
-                PersonSerializer
-        )
-
         val socket = websocket.append("json")
 
         val entityStore = object : RootStore<SocketPerson>(defaultPerson) {
@@ -192,7 +188,7 @@ class WebSocketTests {
             }
 
             init {
-                syncWith(socket, personResource)
+                syncWith(socket, PersonResource)
             }
         }
 

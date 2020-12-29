@@ -5,10 +5,10 @@ import dev.fritz2.binding.invoke
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
+import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
-import dev.fritz2.resource.ResourceSerializer
 
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -26,15 +26,16 @@ class LocalStorageTests {
     private val idLens = buildLens("id", LocalPerson::_id) { p, v -> p.copy(_id = v) }
 
 
-    object PersonSerializer : ResourceSerializer<LocalPerson> {
-        override fun write(item: LocalPerson): String = JSON.stringify(item)
-        override fun read(source: String): LocalPerson {
+    object PersonResource : Resource<LocalPerson, String> {
+        override val idProvider: IdProvider<LocalPerson, String> = LocalPerson::_id
+        override fun serialize(item: LocalPerson): String = JSON.stringify(item)
+        override fun deserialize(source: String): LocalPerson {
             val obj = JSON.parse<dynamic>(source)
             return LocalPerson(obj.name as String, obj.age as Int, obj._id as String)
         }
 
-        override fun writeList(items: List<LocalPerson>): String = JSON.stringify(items)
-        override fun readList(source: String): List<LocalPerson> {
+        override fun serializeList(items: List<LocalPerson>): String = JSON.stringify(items)
+        override fun deserializeList(source: String): List<LocalPerson> {
             val list = JSON.parse<Array<dynamic>>(source)
             return list.map { obj -> LocalPerson(obj.name as String, obj.age as Int, obj._id as String) }
         }
@@ -48,17 +49,12 @@ class LocalStorageTests {
         val startPerson = LocalPerson("Heinz", 18)
         val changedAge = 99
 
-        val personResource = Resource(
-            LocalPerson::_id,
-            PersonSerializer
-        )
-
         val entityStore = object : RootStore<LocalPerson>(defaultPerson) {
             override fun errorHandler(exception: Throwable, oldValue: LocalPerson): LocalPerson {
                 fail(exception.message)
             }
 
-            val localStorage = localStorageEntity(personResource, "")
+            val localStorage = localStorageEntity(PersonResource, "")
 
             val load = handle { _, id: String -> localStorage.load(id) }
 
@@ -132,18 +128,13 @@ class LocalStorageTests {
             LocalPerson("E", 0)
         )
 
-        val personResource = Resource(
-            LocalPerson::_id,
-            PersonSerializer
-        )
-
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
             override fun errorHandler(exception: Throwable, oldValue: List<LocalPerson>): List<LocalPerson> {
                 fail(exception.message)
             }
 
             private val localStorage =
-                localStorageQuery(personResource, "") { entities, _: Unit ->
+                localStorageQuery(PersonResource, "") { entities, _: Unit ->
                     entities.sortedBy(LocalPerson::name)
                 }
             val addOrUpdate = handle<LocalPerson> { entities, person -> localStorage.addOrUpdate(entities, person) }
@@ -215,17 +206,12 @@ class LocalStorageTests {
             LocalPerson("E", 0)
         )
 
-        val personResource = Resource(
-            LocalPerson::_id,
-            PersonSerializer
-        )
-
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
             override fun errorHandler(exception: Throwable, oldValue: List<LocalPerson>): List<LocalPerson> {
                 fail(exception.message)
             }
 
-            private val localStorage: LocalStorageQuery<LocalPerson, String, Unit> = localStorageQuery(personResource, "")
+            private val localStorage: LocalStorageQuery<LocalPerson, String, Unit> = localStorageQuery(PersonResource, "")
 
             val addOrUpdate = handle<LocalPerson> { entities, entity -> localStorage.addOrUpdate(entities, entity) }
             val updateMany = handle<List<LocalPerson>> { entities, updatedEntities -> localStorage.updateMany(entities, updatedEntities) }

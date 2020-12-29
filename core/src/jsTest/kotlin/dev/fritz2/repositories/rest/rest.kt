@@ -5,10 +5,10 @@ import dev.fritz2.binding.invoke
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
+import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
-import dev.fritz2.resource.ResourceSerializer
 
 import dev.fritz2.test.*
 import kotlinx.browser.document
@@ -27,19 +27,21 @@ class RestTests {
     private val ageLens = buildLens("age", RestPerson::age) { p, v -> p.copy(age = v) }
     private val idLens = buildLens("_id", RestPerson::_id) { p, v -> p.copy(_id = v) }
 
-    object PersonSerializer : ResourceSerializer<RestPerson> {
+    object PersonResource : Resource<RestPerson, String> {
+        override val idProvider: IdProvider<RestPerson, String> = RestPerson::_id
+
         data class PersonWithoutId(val name: String, val age: Int)
 
         private fun removeId(person: RestPerson) = PersonWithoutId(person.name, person.age)
 
-        override fun write(item: RestPerson): String = JSON.stringify(removeId(item))
-        override fun read(source: String): RestPerson {
+        override fun serialize(item: RestPerson): String = JSON.stringify(removeId(item))
+        override fun deserialize(source: String): RestPerson {
             val obj = JSON.parse<dynamic>(source)
             return RestPerson(obj.name as String, obj.age as Int, obj._id as String)
         }
 
-        override fun writeList(items: List<RestPerson>): String = JSON.stringify(items.map { removeId(it) })
-        override fun readList(source: String): List<RestPerson> {
+        override fun serializeList(items: List<RestPerson>): String = JSON.stringify(items.map { removeId(it) })
+        override fun deserializeList(source: String): List<RestPerson> {
             val list = JSON.parse<Array<dynamic>>(source)
             return list.map { obj -> RestPerson(obj.name as String, obj.age as Int, obj._id as String) }
         }
@@ -53,11 +55,6 @@ class RestTests {
         val startPerson = RestPerson("Heinz", 18)
         val changedAge = 99
 
-        val personResource = Resource(
-            RestPerson::_id,
-            PersonSerializer
-        )
-
         val remote = testHttpServer(rest)
 
         val entityStore = object : RootStore<RestPerson>(defaultPerson) {
@@ -65,7 +62,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            val rest = restEntity(personResource, remote, "")
+            val rest = restEntity(PersonResource, remote, "")
 
             val load = handle { _, id: String -> rest.load(id) }
             val saveOrUpdate = handle { entity -> rest.addOrUpdate(entity) }
@@ -135,11 +132,6 @@ class RestTests {
             RestPerson("C", 0)
         )
 
-        val personResource = Resource(
-            RestPerson::_id,
-            PersonSerializer
-        )
-
         val remote = testHttpServer(rest)
 
         val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
@@ -147,7 +139,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            private val rest = restQuery<RestPerson, String, Unit>(personResource, remote, "")
+            private val rest = restQuery<RestPerson, String, Unit>(PersonResource, remote, "")
 
             val addOrUpdate = handle<RestPerson> { entities, person -> rest.addOrUpdate(entities, person) }
             val query = handle<Unit> { _, query -> rest.query(query) }
@@ -215,11 +207,6 @@ class RestTests {
             RestPerson("D", 0)
         )
 
-        val personResource = Resource(
-            RestPerson::_id,
-            PersonSerializer
-        )
-
         val remote = testHttpServer(rest)
 
         val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
@@ -227,7 +214,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            private val rest = restQuery<RestPerson, String, Unit>(personResource, remote, "")
+            private val rest = restQuery<RestPerson, String, Unit>(PersonResource, remote, "")
 
             val addOrUpdate = handle<RestPerson> { entities, entity ->
                 rest.addOrUpdate(entities, entity)
