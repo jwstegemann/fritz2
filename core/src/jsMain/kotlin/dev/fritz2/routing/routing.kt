@@ -1,7 +1,6 @@
 package dev.fritz2.routing
 
 import dev.fritz2.binding.SimpleHandler
-import dev.fritz2.binding.Store
 import dev.fritz2.dom.html.Events
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
@@ -133,7 +132,7 @@ class Router<T>(
     /**
      * Gives a [Flow] of [T] for rendering the site depending on the current route.
      */
-    val data = state.asStateFlow()
+    val data: Flow<T> = state.asStateFlow()
 
     /**
      * Represents the current route of the [Router].
