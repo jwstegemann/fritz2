@@ -45,4 +45,37 @@ class RenderTests {
 
         assertEquals("off", div2.textContent)
     }
+
+    @Test
+    fun testRenderFunction() = runTest {
+        initDocument()
+
+        val store = storeOf(true)
+
+        val divId = uniqueId()
+
+        render {
+            div(id = divId) {
+                store.data.render { value ->
+                    if (value) div { +"on" } else span { +"off" }
+                }
+            }
+        }.mount(targetId)
+
+        delay(100)
+
+        val div = document.getElementById(divId) as HTMLDivElement
+
+        assertEquals(1, div.childElementCount)
+        assertEquals("DIV", div.firstChild?.nodeName)
+        assertEquals("on", div.textContent)
+
+        store.update(false)
+        delay(200)
+
+        val span = document.getElementById(divId) as HTMLDivElement
+        assertEquals(1, span.childElementCount)
+        assertEquals("SPAN", span.firstChild?.nodeName)
+        assertEquals("off", span.textContent)
+    }
 }
