@@ -49,9 +49,8 @@ open class DefaultTheme : Theme {
 
     override val colors = object : Colors {
 
-        override val primary = "#3B6302" // darker green
-        override val secondary = "#449202" // green
-        override val tertiary = "#F7B52F" // yellowish orange
+        override val primary = "#427802"//"#3B6302" // darker green
+        override val secondary = "#F7B52F" // yellowish orange
         override val dark = "#214A25" // dark gray coming from green
         override val light = "#C6CFC9" //"#cdd1d6" // light gray // coming from green / blue
         override val info = "#1B959E" // blue

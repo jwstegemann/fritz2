@@ -14,10 +14,10 @@ internal const val opacityKey = "opacity: "
  */
 typealias ColorProperty = Property
 
-val ColorProperty.hover
+val ColorProperty.lighter
     get() = alterBrightness(this, Theme().hoverBrightness)
 
-val ColorProperty.darken
+val ColorProperty.darker
     get() = alterBrightness(this, Theme().hoverDarkness)
 
 /**

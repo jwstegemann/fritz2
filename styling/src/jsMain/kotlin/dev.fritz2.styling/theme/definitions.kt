@@ -186,7 +186,6 @@ interface Fonts {
 interface Colors {
     val primary: ColorProperty
     val secondary: ColorProperty
-    val tertiary: ColorProperty
     val success: ColorProperty
     val danger: ColorProperty
     val warning: ColorProperty
