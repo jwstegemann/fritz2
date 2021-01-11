@@ -1085,7 +1085,7 @@ open class TBody(id: String? = null, baseClass: String? = null, job: Job) : Tag<
 /**
  * Exposes the JavaScript [HTMLTextAreaElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTextAreaElement) to Kotlin
  */
-open class TextArea(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTextAreaElement>("textarea", id, baseClass, job),
+open class Textarea(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLTextAreaElement>("textarea", id, baseClass, job),
     WithText<HTMLTextAreaElement> {
     fun autocomplete(value: String) = attr("autocomplete", value)
 	fun autocomplete(value: Flow<String>) = attr("autocomplete", value)
@@ -1395,8 +1395,8 @@ interface RenderContext : WithJob {
     fun tbody(baseClass: String? = null, id: String? = null, content: TBody.() -> Unit): TBody =
         register(TBody(id, baseClass, job), content)
 
-    fun textarea(baseClass: String? = null, id: String? = null, content: TextArea.() -> Unit): TextArea =
-        register(TextArea(id, baseClass, job), content)
+    fun textarea(baseClass: String? = null, id: String? = null, content: Textarea.() -> Unit): Textarea =
+        register(Textarea(id, baseClass, job), content)
 
     fun time(baseClass: String? = null, id: String? = null, content: Time.() -> Unit): Time =
         register(Time(id, baseClass, job), content)

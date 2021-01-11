@@ -1342,11 +1342,13 @@ open class DefaultTheme : Theme {
 
             override val filled: Style<BasicParams> = {
                 background {
-                    color { light }
+                    color { primary.lighter }
                 }
+                color { base }
 
                 hover {
-                    background { color { alterBrightness(light, 0.8) } }
+                    background { color { primary.lighter.lighter } }
+                    color { dark }
                 }
 
                 focus {
@@ -1354,6 +1356,7 @@ open class DefaultTheme : Theme {
                     background {
                         color { "transparent" }
                     }
+                    color { dark }
                 }
             }
         }
@@ -1847,7 +1850,7 @@ open class DefaultTheme : Theme {
                 width { "250px" }
             }
         }
-        override val trigger: Style<BasicParams> = {
+        override val toggle: Style<BasicParams> = {
             display { "inline-block" }
         }
         override val header: Style<BasicParams> = {
@@ -2231,8 +2234,8 @@ open class DefaultTheme : Theme {
         """.trimIndent()
     }
 
-    override val textarea = object : TextAreaStyles {
-        override val resize = object : TextAreaResize {
+    override val textarea = object : TextareaStyles {
+        override val resize = object : TextareaResize {
             override val none: Style<BasicParams> = {
                 css("resize:none")
             }
@@ -2246,7 +2249,7 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val size = object : TextAreaSize {
+        override val size = object : TextareaSize {
 
             override val small: Style<BasicParams> = {
                 lineHeight { normal }

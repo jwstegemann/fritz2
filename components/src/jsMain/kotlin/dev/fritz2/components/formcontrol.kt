@@ -241,7 +241,7 @@ open class FormControlComponent {
         }
     }
 
-    // TODO: Add support for ``textArea``
+    // TODO: Add support for ``textarea``
     // TODO: Add support for ``switch``
 
     fun render(

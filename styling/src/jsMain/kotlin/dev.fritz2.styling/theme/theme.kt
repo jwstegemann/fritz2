@@ -2,8 +2,6 @@ package dev.fritz2.styling.theme
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.params.ColorProperty
-import dev.fritz2.styling.params.alterBrightness
 import dev.fritz2.styling.resetCss
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -199,10 +197,7 @@ interface Theme {
 
     val tooltip: Tooltip
 
-    val textarea: TextAreaStyles
-
-    //val ColorProperty.hover: ColorProperty
-
+    val textarea: TextareaStyles
 }
 
 /**

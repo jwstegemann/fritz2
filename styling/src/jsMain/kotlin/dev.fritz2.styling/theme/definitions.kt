@@ -471,7 +471,7 @@ interface ModalSizes {
 
 interface PopoverStyles {
     val size: PopoverSizes
-    val trigger: Style<BasicParams>
+    val toggle: Style<BasicParams>
     val header: Style<BasicParams>
     val section: Style<BasicParams>
     val footer: Style<BasicParams>
@@ -516,18 +516,18 @@ interface TooltipPlacements {
     val left: Style<BasicParams>
 }
 
-interface TextAreaStyles {
-    val resize: TextAreaResize
-    val size: TextAreaSize
+interface TextareaStyles {
+    val resize: TextareaResize
+    val size: TextareaSize
 }
 
-interface TextAreaResize {
+interface TextareaResize {
     val none: Style<BasicParams>
     val vertical: Style<BasicParams>
     val horizontal: Style<BasicParams>
 }
 
-interface TextAreaSize {
+interface TextareaSize {
     val small: Style<BasicParams>
     val normal: Style<BasicParams>
     val large: Style<BasicParams>

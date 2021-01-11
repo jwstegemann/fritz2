@@ -86,9 +86,9 @@ class PopoverComponent {
         arrowPlacement = value
     }
 
-    var trigger: (Div.() -> Unit)? = null
-    fun trigger(value: (Div.() -> Unit)) {
-        trigger = value
+    var toggle: (Div.() -> Unit)? = null
+    fun toggle(value: (Div.() -> Unit)) {
+        toggle = value
     }
 
     var header: (Div.() -> Unit)? = null
@@ -192,18 +192,18 @@ class PopoverComponent {
 }
 
 /**
- * This component enables to render a popover thats floats around a trigger.
- * The trigger can be a simple HTMLElement or a fritz2 component.
+ * This component enables to render a popover thats floats around a toggle element.
+ * The toggle can be a simple HTMLElement or a fritz2 component.
  * The Popover can be containing a header, a section and a footer.
  * All "areas" are optional and it containing a simple String, a flowOf<String> or
  * a HTMLElement as well as a fritz2 component. The placement of the Popover is configurable.
  *
  * The popover has a default close Button, you can hide it or you can use your own custom Button.
- * The trigger is marked by an arrow, you can hide the arrow.
+ * The toggle element is marked by an arrow, you can hide the arrow.
  *
  * ```
  * popover {
- *   trigger {
+ *   toggle {
  *      icon { fromTheme { arrowForward } }
  *   }
  *   placement { right }
@@ -240,11 +240,11 @@ fun RenderContext.popover(
     }
     (::div.styled({ }, PopoverComponent.staticCss, null, prefix){
     }){
-        (::div.styled(prefix = "popover-trigger") {
-            Theme().popover.trigger()
+        (::div.styled(prefix = "popover-toggle") {
+            Theme().popover.toggle()
         }) {
             clicks.events.map { } handledBy clickStore.toggle
-            component.trigger?.invoke(this)
+            component.toggle?.invoke(this)
         }
         clickStore.data.render {
             if (it) {
