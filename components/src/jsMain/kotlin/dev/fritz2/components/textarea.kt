@@ -2,7 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.Store
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.Textarea
+import dev.fritz2.dom.html.TextArea
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
@@ -10,8 +10,8 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.TextareaResize
-import dev.fritz2.styling.theme.TextareaSize
+import dev.fritz2.styling.theme.TextAreaResize
+import dev.fritz2.styling.theme.TextAreaSize
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.flowOf
 /**
  * This class handles the configuration of an textarea element
  *
- * The textarea can be configured for the following aspects:
+ * The TextArea can be configured for the following aspects:
  *  - the size of the element
  *  - the direction of resizing
  *  - some predefined styles
@@ -29,15 +29,15 @@ import kotlinx.coroutines.flow.flowOf
  *  - the base options of the HTML input element can be set.
  *  [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#Attributes)
  *
- *  * For a detailed explanation and examples of usage have a look at the [textarea] function !
+ *  * For a detailed explanation and examples of usage have a look at the [textArea] function !
  *
  */
 @ComponentMarker
-class TextareaComponent {
+class TextAreaComponent {
 
     companion object {
         val staticCss = staticStyle(
-        "textareaContainer",
+        "textAreaContainer",
         """
             outline: 0px;
             position: relative;
@@ -114,19 +114,18 @@ class TextareaComponent {
         disable = value()
     }
 
-    var size: TextareaSize.() -> Style<BasicParams> = { Theme().textarea.size.normal }
-    fun size(value: TextareaSize.() -> Style<BasicParams>) {
+    var size: TextAreaSize.() -> Style<BasicParams> = { Theme().textArea.size.normal }
+    fun size(value: TextAreaSize.() -> Style<BasicParams>) {
         size = value
     }
 
-    var resizeBehavior: TextareaResize.() -> Style<BasicParams> = { Theme().textarea.resize.vertical }
-    fun resizeBehavior(value: TextareaResize.() -> Style<BasicParams>) {
+    var resizeBehavior: TextAreaResize.() -> Style<BasicParams> = { Theme().textArea.resize.vertical }
+    fun resizeBehavior(value: TextAreaResize.() -> Style<BasicParams>) {
         resizeBehavior = value
     }
 
-    var base: (Textarea.() -> Unit)? = null
-
-    fun base(value: Textarea.() -> Unit) {
+    var base: (TextArea.() -> Unit)? = null
+    fun base(value: TextArea.() -> Unit) {
         base = value
     }
 
@@ -134,7 +133,7 @@ class TextareaComponent {
 }
 
 /**
- * This component generates a textarea.
+ * This component generates a TextArea.
  *
  * You can optionally pass a store in order to set the value and react to updates automatically.
  *
@@ -146,16 +145,16 @@ class TextareaComponent {
  *  - placeholder : String | Flow<String>
  *  - disable : Boolean | Flow<Boolean>
  *  - value -> maybe you want to set an initial value instead of a placeholder
- *  - base -> basic properties of an textarea
+ *  - base -> basic properties of the textarea html element
  *
- *  textarea(store = dataStore) {
+ *  textArea(store = dataStore) {
  *        placeholder { "My placeholder" }  // render a placeholder text for empty textarea
  *        resizeBehavior { horizontal }    // resize textarea horizontal
  *        size { small }                   // render a smaller textarea
  *     }
  *
  *
- *   textarea({ // use the styling parameter
+ *   textArea({ // use the styling parameter
  *            background {
  *                color { dark }
  *               }
@@ -168,43 +167,43 @@ class TextareaComponent {
  *
  *               }
  *
- *   textarea {
+ *   textArea {
  *          value { dataStore.data }  // value depends on value in store
  *          disable(true)             // editing is disabled, but resizing still works
  *          }
  *
- *   textarea {
+ *   textArea {
  *         base{                                        // you have access to base properties of a textarea
  *         placeholder("Here is a sample placeholder")
  *         changes.values() handledBy dataStore.update
  *                 }
  *          }
  *
- * @see TextareaComponent
+ * @see TextAreaComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param store optional [Store] that holds the data of the textarea
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param init a lambda expression for setting up the component itself. Details in [TextareaComponent]
+ * @param init a lambda expression for setting up the component itself. Details in [TextAreaComponent]
  */
 
 
-fun RenderContext.textarea(
+fun RenderContext.textArea(
     styling: BasicParams.() -> Unit = {},
     store: Store<String>? = null,
     baseClass: StyleClass? = null,
     id: String? = null,
-    prefix: String = "textarea",
-    init: TextareaComponent.() -> Unit
+    prefix: String = "textArea",
+    init: TextAreaComponent.() -> Unit
 ) {
 
-    val component = TextareaComponent().apply(init)
+    val component = TextAreaComponent().apply(init)
 
-    (::textarea.styled(styling, baseClass + TextareaComponent.staticCss, id, prefix) {
-        component.resizeBehavior.invoke(Theme().textarea.resize)()
-        component.size.invoke(Theme().textarea.size)()
+    (::textarea.styled(styling, baseClass + TextAreaComponent.staticCss, id, prefix) {
+        component.resizeBehavior.invoke(Theme().textArea.resize)()
+        component.size.invoke(Theme().textArea.size)()
         component.basicInputStyles()
 
     }){
@@ -215,7 +214,6 @@ fun RenderContext.textarea(
         store?.let {
             value(it.data)
             changes.values() handledBy it.update
-
         }
     }
 }

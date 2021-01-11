@@ -59,9 +59,9 @@ class WeightedValue(
 class Thickness(
     val none: Property,
     val normal: Property,
-    val thin: Property = normal,
-    val fat: Property = normal,
-    val hair: Property = thin,
+    val thin: Property,
+    val fat: Property,
+    val hair: Property,
 ) {
     val initial: Property = "initial"
     val inherit: Property = "inherit"
@@ -516,18 +516,18 @@ interface TooltipPlacements {
     val left: Style<BasicParams>
 }
 
-interface TextareaStyles {
-    val resize: TextareaResize
-    val size: TextareaSize
+interface TextAreaStyles {
+    val resize: TextAreaResize
+    val size: TextAreaSize
 }
 
-interface TextareaResize {
+interface TextAreaResize {
     val none: Style<BasicParams>
     val vertical: Style<BasicParams>
     val horizontal: Style<BasicParams>
 }
 
-interface TextareaSize {
+interface TextAreaSize {
     val small: Style<BasicParams>
     val normal: Style<BasicParams>
     val large: Style<BasicParams>
