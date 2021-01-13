@@ -2,14 +2,10 @@ package dev.fritz2.dom
 
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.mountSingle
-import dev.fritz2.dom.html.RenderContext
 import kotlinx.browser.document
-import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Comment
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 
 /**
@@ -129,7 +125,7 @@ fun <N : Node> mountDomNodePatch(
  * @param child Node to insert or append
  * @param index place to insert or append
  */
-fun <N : Node> N.insertOrAppend(child: Node, index: Int) {
+private fun <N : Node> N.insertOrAppend(child: Node, index: Int) {
     if (index == childNodes.length) appendChild(child)
     else childNodes.item(index)?.let {
         insertBefore(child, it)
@@ -143,7 +139,7 @@ fun <N : Node> N.insertOrAppend(child: Node, index: Int) {
  * @param element from type [WithDomNode]
  * @param index place to insert or append
  */
-fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrAppend(element.domNode, index)
+private fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrAppend(element.domNode, index)
 
 /**
  * Inserts a [List] of elements to the DOM.
@@ -152,7 +148,7 @@ fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrApp
  * @param elements [List] of [WithDomNode]s elements to insert
  * @param index place to insert or append
  */
-fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
+private fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
     if (index == childNodes.length) {
         for (child in elements.reversed()) appendChild(child.domNode)
     } else {
@@ -171,7 +167,7 @@ fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
  * @param start position for deleting
  * @param count of elements to delete
  */
-fun <N : Node> N.delete(start: Int, count: Int, cancelJob: (Node) -> Unit) {
+private fun <N : Node> N.delete(start: Int, count: Int, cancelJob: (Node) -> Unit) {
     var itemToDelete = childNodes.item(start)
     repeat(count) {
         itemToDelete?.let {
@@ -189,80 +185,7 @@ fun <N : Node> N.delete(start: Int, count: Int, cancelJob: (Node) -> Unit) {
  * @param from position index
  * @param to position index
  */
-fun <N : Node> N.move(from: Int, to: Int) {
+private fun <N : Node> N.move(from: Int, to: Int) {
     val itemToMove = childNodes.item(from)
     if (itemToMove != null) insertOrAppend(itemToMove, to)
-}
-
-/**
- * Occurs when the targeted html element is not present in document.
- *
- * @param targetId id which used for mounting
- */
-class MountTargetNotFoundException(targetId: String) :
-    Exception("html document contains no element with id: $targetId")
-
-/**
- * Mounts a [List] of [Tag]s to a constant element in the static html file.
- *
- * @param targetId id of the element to mount to
- * @receiver the [Flow] to mount to this element
- * @throws MountTargetNotFoundException if target element with [targetId] not found
- */
-fun List<RenderContext>.mount(targetId: String) {
-    document.getElementById(targetId)?.let { parent ->
-        parent.removeChildren()
-        this.forEach { parent.appendChild(it.domNode) }
-    } ?: throw MountTargetNotFoundException(targetId)
-}
-
-/**
- * Mounts a [Tag] to a constant element in the static html file.
- *
- * @param targetId id of the element to mount to
- * @receiver the [Tag] to mount to this element
- * @throws MountTargetNotFoundException if target element with [targetId] not found
- */
-fun <E : Element> Tag<E>.mount(targetId: String) {
-    document.getElementById(targetId)?.let { parent ->
-        parent.removeChildren()
-        parent.appendChild(this.domNode)
-    } ?: throw MountTargetNotFoundException(targetId)
-}
-
-/**
- * Appends one or more [List]s of [Tag]s to the content of a constant element.
- *
- * @param targetId id of the element to mount to
- * @param tagLists the [List]s of [Tag]s to mount to this element
- * @throws MountTargetNotFoundException if target element with [targetId] not found
- */
-fun append(targetId: String, vararg tagLists: List<RenderContext>) {
-    window.document.getElementById(targetId)?.let { parent ->
-        for (tagList in tagLists)
-            for (tag in tagList) parent.appendChild(tag.domNode)
-    } ?: throw MountTargetNotFoundException(targetId)
-}
-
-/**
- * Appends one or more static [Tag]s to an elements content.
- *
- * @param targetId id of the element to mount to
- * @param tags [Tag]s to append
- */
-fun <X : Element> append(targetId: String, vararg tags: Tag<X>) {
-    window.document.getElementById(targetId)?.let { parent ->
-        tags.forEach { tag -> parent.appendChild(tag.domNode) }
-    } ?: throw MountTargetNotFoundException(targetId)
-}
-
-/**
- * Appends one or more static [Tag]s to the document's body.
- *
- * @param tags [Tag]s to append
- */
-fun <X : Element> appendToBody(vararg tags: Tag<X>) {
-    window.document.getElementsByTagName("body").item(0)?.let { element ->
-        tags.forEach { tag -> element.appendChild(tag.domNode) }
-    } ?: throw MountTargetNotFoundException("body")
 }

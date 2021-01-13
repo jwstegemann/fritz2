@@ -1,10 +1,9 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.*
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.MultipleRootElementsException
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.render
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.elementLens
 import dev.fritz2.utils.Myer
@@ -12,10 +11,54 @@ import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.*
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.Node
+import org.w3c.dom.*
 import org.w3c.dom.events.Event
+
+/**
+ * Occurs when more then one root [Tag] is defined in a [render] context.
+ *
+ * @param message exception message text
+ */
+class MultipleRootElementsException(message: String) : RuntimeException(message)
+
+private inline fun registerMulti(
+    job: Job, parent: RenderContext,
+    content: RenderContext.() -> Unit
+): List<WithDomNode<HTMLElement>> =
+    buildList {
+        content(object : RenderContext(
+            "", parent.id, parent.baseClass,
+            job, parent.domNode.unsafeCast<HTMLElement>()
+        ) {
+            override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
+                content(element)
+                add(element)
+                return element
+            }
+        })
+    }
+
+private inline fun registerSingle(
+    job: Job, parent: RenderContext,
+    content: RenderContext.() -> RenderContext
+): WithDomNode<HTMLElement> =
+    content(object : RenderContext(
+        "", parent.id, parent.baseClass,
+        job, parent.domNode.unsafeCast<HTMLElement>()
+    ) {
+        var alreadyRegistered: Boolean = false
+
+        override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
+            if (alreadyRegistered) {
+                throw MultipleRootElementsException("You can have only one root-tag per html-context!")
+            } else {
+                content(element)
+                alreadyRegistered = true
+                return element
+            }
+        }
+    })
+
 
 /**
  * A marker to separate the layers of calls in the type-safe-builder pattern.
@@ -63,13 +106,13 @@ open class Tag<out E : Element>(
      * Renders the data of a [Flow] as [Tag]s to the DOM.
      *
      * @receiver [Flow] containing the data
-     * @param content [HtmlElements] for rendering the data to the DOM
+     * @param content [RenderContext] for rendering the data to the DOM
      */
-    fun <V> Flow<V>.render(content: HtmlElements.(V) -> Unit) {
+    fun <V> Flow<V>.render(content: RenderContext.(V) -> Unit) {
         val newJob = Job(job)
         mountDomNodeList(job, domNode, this.map { data ->
             newJob.cancelChildren()
-            dev.fritz2.dom.html.render(newJob) {
+            registerMulti(newJob, this@Tag.unsafeCast<RenderContext>()) {
                 content(data)
             }
         })
@@ -77,23 +120,23 @@ open class Tag<out E : Element>(
 
     /**
      * Renders the data of a [Flow] as [Tag]s to the DOM.
-     * It should only create one root [Tag] like a [Div] otherwise a
+     * [content] should only contain one root [Tag] otherwise a
      * [MultipleRootElementsException] will be thrown.
      *
      * @receiver [Flow] containing the data
      * @param preserveOrder use a placeholder to keep the rendered [Tag]s in order with static [Tag]s at
      * the same level (default true)
-     * @param content [HtmlElements] for rendering the data to the DOM
+     * @param content [RenderContext] for rendering the data to the DOM
      */
     fun <V> Flow<V>.renderElement(
         preserveOrder: Boolean = true,
-        content: HtmlElements.(V) -> RenderContext
+        content: RenderContext.(V) -> RenderContext
     ) {
         val newJob = Job(job)
 
         val upstream = this.map { data ->
             newJob.cancelChildren()
-            dev.fritz2.dom.html.renderElement(newJob) {
+            registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
                 content(data)
             }
         }
@@ -121,18 +164,18 @@ open class Tag<out E : Element>(
      * when an element stays the same, but changes it's internal values.
      *
      * @param idProvider function to identify a unique entity in the list
-     * @param content [HtmlElements] for rendering the data to the DOM
+     * @param content [RenderContext] for rendering the data to the DOM
      */
     fun <V, I> Flow<List<V>>.renderEach(
         idProvider: IdProvider<V, I>,
-        content: HtmlElements.(V) -> RenderContext
+        content: RenderContext.(V) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
             this.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
                 Myer.diff(old, new, idProvider).map { patch ->
                     patch.map(job) { value, newJob ->
-                        dev.fritz2.dom.html.renderElement(newJob) {
+                        registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
                             content(value)
                         }.also {
                             jobs[it.domNode] = newJob
@@ -153,17 +196,17 @@ open class Tag<out E : Element>(
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
      * when an element stays the same, but changes it's internal values.
      *
-     * @param content [HtmlElements] for rendering the data to the DOM
+     * @param content [RenderContext] for rendering the data to the DOM
      */
     fun <V> Flow<List<V>>.renderEach(
-        content: HtmlElements.(V) -> RenderContext
+        content: RenderContext.(V) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
             this.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
                 Myer.diff(old, new).map { patch ->
                     patch.map(job) { value, newJob ->
-                        dev.fritz2.dom.html.renderElement(newJob) {
+                        registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
                             content(value)
                         }.also {
                             jobs[it.domNode] = newJob
@@ -184,11 +227,11 @@ open class Tag<out E : Element>(
      * when an element stays the same, but changes it's internal values.
      *
      * @param idProvider function to identify a unique entity in the list
-     * @param content [HtmlElements] for rendering the data to the DOM
+     * @param content [RenderContext] for rendering the data to the DOM
      */
     fun <V, I> RootStore<List<V>>.renderEach(
         idProvider: IdProvider<V, I>,
-        content: HtmlElements.(SubStore<List<V>, List<V>, V>) -> RenderContext
+        content: RenderContext.(SubStore<List<V>, List<V>, V>) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
 
@@ -196,7 +239,7 @@ open class Tag<out E : Element>(
             this.data.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
                 Myer.diff(old, new, idProvider).map { patch ->
                     patch.map(job) { value, newJob ->
-                        dev.fritz2.dom.html.renderElement(newJob) {
+                        registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
                             content(sub(elementLens(value, idProvider)))
                         }.also {
                             jobs[it.domNode] = newJob
@@ -215,16 +258,16 @@ open class Tag<out E : Element>(
      * Internally the [Patch]es are determined using the position of an item in the list.
      * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
      *
-     * @param content [HtmlElements] for rendering the data to the DOM given a [Store] of the list's item-type
+     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
     fun <V> RootStore<List<V>>.renderEach(
-        content: HtmlElements.(SubStore<List<V>, List<V>, V>) -> RenderContext
+        content: RenderContext.(SubStore<List<V>, List<V>, V>) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
             this.data.map { it.withIndex().toList() }.eachIndex().map { patch ->
                 listOf(patch.map(job) { (i, _), newJob ->
-                    dev.fritz2.dom.html.renderElement(newJob) {
+                    registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
                         content(sub(i))
                     }.also {
                         jobs[it.domNode] = newJob
@@ -244,18 +287,18 @@ open class Tag<out E : Element>(
      * when an element stays the same, but changes it's internal values.
      *
      * @param idProvider function to identify a unique entity in the list
-     * @param content [HtmlElements] for rendering the data to the DOM given a [Store] of the list's item-type
+     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
     fun <R, P, V, I> SubStore<R, P, List<V>>.renderEach(
         idProvider: IdProvider<V, I>,
-        content: HtmlElements.(SubStore<R, List<V>, V>) -> RenderContext
+        content: RenderContext.(SubStore<R, List<V>, V>) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
             this.data.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
                 Myer.diff(old, new, idProvider).map { patch ->
                     patch.map(job) { value, newJob ->
-                        dev.fritz2.dom.html.renderElement(newJob) {
+                        registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
                             content(sub(elementLens(value, idProvider)))
                         }.also {
                             jobs[it.domNode] = newJob
@@ -274,16 +317,16 @@ open class Tag<out E : Element>(
      * Internally the [Patch]es are determined using the position of an item in the list.
      * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
      *
-     * @param content [HtmlElements] for rendering the data to the DOM given a [Store] of the list's item-type
+     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
     fun <R, P, V> SubStore<R, P, List<V>>.renderEach(
-        content: HtmlElements.(SubStore<R, List<V>, V>) -> RenderContext
+        content: RenderContext.(SubStore<R, List<V>, V>) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
             this.data.map { it.withIndex().toList() }.eachIndex().map { patch ->
                 listOf(patch.map(job) { (i, _), newJob ->
-                    dev.fritz2.dom.html.renderElement(newJob) {
+                    registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
                         content(sub(i))
                     }.also {
                         jobs[it.domNode] = newJob
@@ -302,7 +345,7 @@ open class Tag<out E : Element>(
      * @receiver [Flow] of lists to create [Patch]es for
      * @return [Flow] of patches
      */
-    fun <V> Flow<List<V>>.eachIndex(): Flow<Patch<V>> =
+    private fun <V> Flow<List<V>>.eachIndex(): Flow<Patch<V>> =
         this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
             val oldSize = old.size
             val newSize = new.size

@@ -1,13 +1,12 @@
 package dev.fritz2.styling.theme
 
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.render
 import dev.fritz2.styling.resetCss
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 
 /**
@@ -192,31 +191,27 @@ interface Theme {
 }
 
 /**
- * convenience function to create a render-context that provides a specialized theme correctly typed
+ * Creates a render context for [Tag]s and
+ * mounts it to a [HTMLElement]. It also applies
+ * the given [Theme].
+ *
+ * @param theme [Theme] used in this [RenderContext]
+ * @param parentElement [HTMLElement] to mount to
+ * @param override if true all child elements are removed before rendering
+ * @param content [RenderContext] for rendering the data to the DOM
  */
-//TODO: add for Flow.render and each().render
-@ExperimentalCoroutinesApi
-inline fun <reified T : Theme> render(crossinline content: HtmlElements.(T) -> Unit): List<RenderContext> =
-    dev.fritz2.dom.html.render {
-        content(Theme().unsafeCast<T>())
-    }
-
-inline fun <E : Element, reified T : Theme> renderElement(crossinline content: HtmlElements.(T) -> Tag<E>) =
-    dev.fritz2.dom.html.renderElement {
-        content(Theme().unsafeCast<T>())
-    }
-
-@ExperimentalCoroutinesApi
 inline fun <reified T : Theme> render(
     theme: T,
-    crossinline content: HtmlElements.(T) -> Unit
-): List<RenderContext> {
+    parentElement: HTMLElement,
+    override: Boolean = true,
+    crossinline content: RenderContext.(T) -> Unit
+) {
     Theme.use(theme)
-    return render { currentTheme: T ->
-        div {
-            Theme.data.render {
-                content(currentTheme)
-            }
+    render(parentElement, override) {
+        Theme.data.render {
+            content(Theme().unsafeCast<T>())
         }
     }
 }
+
+//TODO: add for Flow.render and Flow.renderEach

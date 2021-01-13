@@ -1,63 +1,52 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.WithDomNode
+import dev.fritz2.dom.removeChildren
+import kotlinx.browser.document
 import kotlinx.coroutines.Job
-import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
 
 /**
- * Creates a render context for [Tag]s.
+ * Occurs when the targeted html element is not present in document.
  *
- * @param parentJob used when launching new coroutines
- * @param content html [Tag] elements to render
+ * @param targetId id which used for mounting
+ */
+class MountTargetNotFoundException(targetId: String) :
+    Exception("html document contains no element with id: $targetId")
+
+/**
+ * Creates a render context for [Tag]s and
+ * mounts it to a constant element in the static html file
+ * which id matches the [targetId].
+ *
+ * @param targetId id of the element to mount to
+ * @param override if true all child elements are removed before rendering
+ * @param content [RenderContext] for rendering the data to the DOM
  */
 fun render(
-    parentJob: Job = Job(),
-    content: HtmlElements.() -> Unit
-): List<RenderContext> = buildList {
-    content(object : HtmlElements {
-        override val job = parentJob
-
-        override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
-            content(element)
-            add(element.unsafeCast<RenderContext>())
-            return element
-        }
-    })
+    targetId: String,
+    override: Boolean = true,
+    content: RenderContext.() -> Unit
+) {
+    document.getElementById(targetId)?.let { parentElement ->
+        if (parentElement is HTMLElement) {
+            render(parentElement, override, content)
+        } else MountTargetNotFoundException(targetId)
+    } ?: throw MountTargetNotFoundException(targetId)
 }
 
 /**
- * Creates a render context for [Tag]s. It should only contain
- * one root [Tag] like [Div] otherwise a [MultipleRootElementsException]
- * will be thrown.
+ * Creates a render context for [Tag]s and mounts it to a [parentElement].
  *
- * @param parentJob
- * @param content html [Tag] elements to render
- * @throws MultipleRootElementsException if more then one root [Tag] is defined in [content]
+ * @param parentElement [HTMLElement] to mount to
+ * @param override if true all child elements are removed before rendering
+ * @param content [RenderContext] for rendering the data to the DOM
  */
-fun <E : Element> renderElement(
-    parentJob: Job = Job(),
-    content: HtmlElements.() -> Tag<E>
-): Tag<E> =
-    content(object : HtmlElements {
-        override val job = parentJob
-
-        var alreadyRegistered: Boolean = false
-
-        override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
-            if (alreadyRegistered) {
-                throw MultipleRootElementsException("You can have only one root-tag per html-context!")
-            } else {
-                content(element)
-                alreadyRegistered = true
-                return element
-            }
-        }
-    })
-
-/**
- * Occurs when more then one root [Tag] is defined in a [render] context.
- *
- * @param message exception message text
- */
-class MultipleRootElementsException(message: String) : RuntimeException(message)
+fun render(
+    parentElement: HTMLElement,
+    override: Boolean = true,
+    content: RenderContext.() -> Unit
+) {
+    if (override) parentElement.removeChildren()
+    content(RenderContext(parentElement.tagName, parentElement.id, job = Job(), domNode = parentElement))
+}
