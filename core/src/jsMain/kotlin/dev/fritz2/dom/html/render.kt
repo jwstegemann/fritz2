@@ -4,7 +4,6 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
 import kotlinx.coroutines.Job
 import org.w3c.dom.Element
-import org.w3c.dom.HTMLElement
 
 /**
  * Creates a render context for [Tag]s.
