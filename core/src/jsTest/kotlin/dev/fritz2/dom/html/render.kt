@@ -1,7 +1,6 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -22,7 +21,7 @@ class RenderTests {
 
         val divId = uniqueId()
 
-        render {
+        render(targetId) {
             section {
                 store.data.renderElement { value ->
                     div(id = divId) {
@@ -30,7 +29,7 @@ class RenderTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -54,13 +53,13 @@ class RenderTests {
 
         val divId = uniqueId()
 
-        render {
+        render(targetId) {
             div(id = divId) {
                 store.data.render { value ->
                     if (value) div { +"on" } else span { +"off" }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 

@@ -1,7 +1,6 @@
 package dev.fritz2.routing
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -31,7 +30,7 @@ class RoutingTests {
         val testId = uniqueId()
         val buttons = testRange.map { "btn-${uniqueId()}" to "page$it" }
 
-        render {
+        render(targetId) {
             div(id = testId) {
                 router.data.asText()
                 ul {
@@ -44,7 +43,7 @@ class RoutingTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
 
@@ -77,7 +76,7 @@ class RoutingTests {
         val btnId = "btn-${uniqueId()}"
         val buttons = testRange.map { "btn-${uniqueId()}" to "page-$it" }
 
-        render {
+        render(targetId) {
             div {
                 div(id = pageId) {
                     router.select(pageKey, "").asText()
@@ -96,7 +95,7 @@ class RoutingTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(250)
 
@@ -124,11 +123,11 @@ class RoutingTests {
 
         val divId = "div-${uniqueId()}"
 
-        render {
+        render(targetId) {
             div(id = divId) {
                 router.select("fail", "error").asText()
             }
-        }.mount(targetId)
+        }
 
         delay(250)
 

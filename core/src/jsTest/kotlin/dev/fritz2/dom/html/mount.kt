@@ -1,9 +1,6 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.dom.MountTargetNotFoundException
-import dev.fritz2.dom.append
-import dev.fritz2.dom.mount
 import dev.fritz2.dom.selectedText
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
@@ -33,7 +30,7 @@ class MountTests {
             }
         }
 
-        render {
+        render(targetId) {
             div {
                 input(id = id) {
                     type("text")
@@ -41,7 +38,7 @@ class MountTests {
                     clicks handledBy store.modify
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(250)
 
@@ -68,7 +65,7 @@ class MountTests {
             }
         }
 
-        render {
+        render(targetId) {
             div {
                 input(id = id) {
                     type("checkbox")
@@ -76,7 +73,7 @@ class MountTests {
                     clicks handledBy store.modify
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(250)
 
@@ -105,7 +102,7 @@ class MountTests {
             }
         }
 
-        render {
+        render(targetId) {
             div {
                 select (id = id) {
                     option(id = option1Id) {
@@ -119,7 +116,7 @@ class MountTests {
                     changes.selectedText() handledBy store.select
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(250)
 
@@ -155,22 +152,12 @@ class MountTests {
         initDocument()
 
         assertFailsWith(MountTargetNotFoundException::class) {
-            render {
-                div {
-                    +"div1"
-                }
-            }.mount(targetId + "error")
-            delay(100)
-        }
-
-        assertFailsWith(MountTargetNotFoundException::class) {
-            val dom = render {
+            render(targetId + "error") {
                 div {
                     +"div1"
                 }
             }
-            append(targetId + "error", dom)
-            delay(150)
+            delay(100)
         }
     }
 }

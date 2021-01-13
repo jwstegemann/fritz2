@@ -3,7 +3,6 @@ package dev.fritz2.remote
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.watch
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.Resource
@@ -178,9 +177,9 @@ class WebSocketTests {
         val testName = "Hans"
 
         val personResource = Resource(
-                SocketPerson::_id,
-                PersonSerializer,
-                SocketPerson("", 0)
+            SocketPerson::_id,
+            PersonSerializer,
+            SocketPerson("", 0)
         )
 
         val socket = websocket.append("json")
@@ -203,13 +202,13 @@ class WebSocketTests {
         val idSubStore = entityStore.sub(idLens)
 
 
-        render {
+        render(targetId) {
             div {
                 div(id = idId) { idSubStore.data.asText() }
                 div(id = nameId) { nameSubStore.data.asText() }
                 div(id = ageId) { ageSubStore.data.asText() }
             }
-        }.mount(targetId)
+        }
 
         entityStore.update(startPerson)
         delay(100)

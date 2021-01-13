@@ -2,7 +2,6 @@ package dev.fritz2.history
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -33,13 +32,13 @@ class HistoryTests {
 
         }
 
-        render {
+        render(targetId) {
             div {
                 span(id = valueId) { store.data.asText() }
                 span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.asText() }
                 span(id = availableId) { store.hist.available.map { it.toString() }.asText() }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
         assertEquals(values[0], getValue())
@@ -98,12 +97,12 @@ class HistoryTests {
 
         }
 
-        render {
+        render(targetId) {
             div {
                 span(id = valueId) { store.data.asText() }
                 span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.asText() }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
         assertEquals("", getValue())
@@ -138,12 +137,12 @@ class HistoryTests {
 
         }
 
-        render {
+        render(targetId) {
             div {
                 span(id = valueId) { store.data.asText() }
                 span(id = historyId) { store.hist.map { hist -> hist.joinToString() }.asText() }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
         assertEquals("", getValue())

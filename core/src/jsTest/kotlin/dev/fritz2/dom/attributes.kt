@@ -29,7 +29,7 @@ class AttributeTests {
         val (name2, values2) = "test2" to testRange.map { "value$it" }
         val (name3, values3) = "test3" to testRange.map { "value$it" }
 
-        render {
+        render(targetId) {
             div(id = testId) {
                 attr(name0, value0)
                 attr(name1, flowOf(value1))
@@ -42,7 +42,7 @@ class AttributeTests {
                 attr("test5", flowOf(false))
                 attr("test6", flowOf(true), "foo")
             }
-        }.mount(targetId)
+        }
 
         delay(200)
 

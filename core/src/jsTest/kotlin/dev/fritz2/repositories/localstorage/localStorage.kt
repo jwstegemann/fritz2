@@ -3,7 +3,6 @@ package dev.fritz2.repositories.localstorage
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.invoke
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.Resource
@@ -75,13 +74,13 @@ class LocalStorageTests {
         val idSubStore = entityStore.sub(idLens)
 
 
-        render {
+        render(targetId) {
             div {
                 div(id = idId) { idSubStore.data.asText() }
                 div(id = nameId) { nameSubStore.data.asText() }
                 div(id = ageId) { ageSubStore.data.asText() }
             }
-        }.mount(targetId)
+        }
 
         entityStore.update(startPerson)
         delay(100)
@@ -152,7 +151,7 @@ class LocalStorageTests {
         val listId = "list-${uniqueId()}"
         val firstPersonId = "first-${uniqueId()}"
 
-        render {
+        render(targetId) {
             div {
                 ul(id = listId) {
                     queryStore.renderEach(LocalPerson::_id) { p ->
@@ -166,7 +165,7 @@ class LocalStorageTests {
                     }.asText()
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -232,7 +231,7 @@ class LocalStorageTests {
 
         val listId = "list-${uniqueId()}"
 
-        render {
+        render(targetId) {
             div {
                 ul(id = listId) {
                     queryStore.renderEach(LocalPerson::_id) { p ->
@@ -240,7 +239,7 @@ class LocalStorageTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         testList.forEach {
             queryStore.addOrUpdate(it)

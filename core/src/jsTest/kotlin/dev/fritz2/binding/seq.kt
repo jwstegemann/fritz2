@@ -1,7 +1,6 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.test.initDocument
@@ -39,7 +38,7 @@ class SeqTests {
 
         val store = TestListStore()
 
-        render {
+        render(targetId) {
             div {
                 ul(id = listId) {
                     store.data.renderEach {
@@ -51,7 +50,7 @@ class SeqTests {
                 button(id = insertBtnId) { clicks handledBy store.insert }
                 button(id = deleteBtnId) { clicks handledBy store.delete }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
         assertEquals("abcd", listContent(listId), "list incorrect after init")
@@ -86,7 +85,7 @@ class SeqTests {
 
         val store = TestListStore()
 
-        render {
+        render(targetId) {
             div {
                 ul(id = listId) {
                     store.renderEach {
@@ -100,7 +99,7 @@ class SeqTests {
 
                 div(id = "hugo") { store.data.asText() }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
         assertEquals("abcd", listContent(listId), "list incorrect after init")
@@ -152,7 +151,7 @@ class SeqTests {
 
         val store = TestEntityListStore()
 
-        render {
+        render(targetId) {
             div {
                 ul(id = listId) {
                     store.data.renderEach(Entity::id) {
@@ -164,7 +163,7 @@ class SeqTests {
                 button(id = insertBtnId) { clicks handledBy store.insert }
                 button(id = deleteBtnId) { clicks handledBy store.delete }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
         assertEquals("abcd", listContent(listId), "list incorrect after init")
@@ -199,7 +198,7 @@ class SeqTests {
 
         val store = TestEntityListStore()
 
-        render {
+        render(targetId) {
             div {
                 ul(id = listId) {
                     store.renderEach(Entity::id) {
@@ -212,7 +211,7 @@ class SeqTests {
                 button(id = insertBtnId) { clicks handledBy store.insert }
                 button(id = deleteBtnId) { clicks handledBy store.delete }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
         assertEquals("abcd", listContent(listId), "list incorrect after init")

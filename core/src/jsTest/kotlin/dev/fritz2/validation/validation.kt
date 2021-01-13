@@ -2,7 +2,6 @@ package dev.fritz2.validation
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -38,7 +37,7 @@ class ValidationJSTests {
         val idData = "data-${uniqueId()}"
         val idMessages = "messages-${uniqueId()}"
 
-        render {
+        render(targetId) {
             div {
                 div(id = idData) {
                     store.data.map { it.name }.asText()
@@ -51,7 +50,7 @@ class ValidationJSTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
         val divData = document.getElementById(idData) as HTMLDivElement

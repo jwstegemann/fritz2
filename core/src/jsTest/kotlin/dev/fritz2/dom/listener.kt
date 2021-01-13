@@ -31,7 +31,7 @@ class ListenerTest {
 
         val store = object : RootStore<String>("start") {}
 
-        render {
+        render(targetId) {
             section {
                 input(id = inputId) {
                     value(store.data)
@@ -41,7 +41,7 @@ class ListenerTest {
                     store.data.asText()
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -77,7 +77,7 @@ class ListenerTest {
             }
         }
 
-        render {
+        render(targetId) {
             section {
                 div(id = resultId) {
                     store.data.asText()
@@ -86,7 +86,7 @@ class ListenerTest {
                     clicks handledBy store.addADot
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -134,7 +134,7 @@ class ListenerTest {
 
         }
 
-        render {
+        render(targetId) {
             section {
                 div(id = resultId) {
                     store.data.asText()
@@ -145,7 +145,7 @@ class ListenerTest {
                     clicks handledBy store.addDollar
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -195,7 +195,7 @@ class ListenerTest {
 
         }
 
-        render {
+        render(targetId) {
             section {
                 div(id = resultId) {
                     store.data.asText()
@@ -204,7 +204,7 @@ class ListenerTest {
                     keydowns.key() handledBy store.keyPressed
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 

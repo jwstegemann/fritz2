@@ -1,7 +1,6 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.dom.values
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
@@ -34,7 +33,7 @@ class EventTests {
         }
 
 
-        render {
+        render(targetId) {
             section {
                 input {
                     value(store.data)
@@ -49,7 +48,7 @@ class EventTests {
                     clicks handledBy store.addADot
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 

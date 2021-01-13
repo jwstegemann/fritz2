@@ -1,20 +1,33 @@
 package dev.fritz2.webcomponents
 
-import dev.fritz2.dom.html.renderElement
+import dev.fritz2.dom.Tag
+import dev.fritz2.dom.WithDomNode
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.w3c.dom.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+//FIXME: use RenderContext instead!
+inline fun <E : Element> createTag(content: HtmlElements.() -> Tag<E>): Tag<E> =
+    content(object : HtmlElements {
+        override val job = Job()
+        override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+            content(element)
+            return element
+        }
+    })
+
 class WebComponentTests {
 
     class MyComponent : WebComponent<HTMLParagraphElement>() {
         override fun init(element: HTMLElement, shadowRoot: ShadowRoot) =
-            renderElement {
+            createTag {
                 p(id = "paragraph-in-web-component") {
                     +"I am a WebComponent"
                 }

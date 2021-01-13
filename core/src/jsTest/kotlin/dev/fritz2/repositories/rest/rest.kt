@@ -3,7 +3,6 @@ package dev.fritz2.repositories.rest
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.invoke
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.Resource
@@ -80,13 +79,13 @@ class RestTests {
         val ageId = "age-${uniqueId()}"
         val ageSubStore = entityStore.sub(ageLens)
 
-        render {
+        render(targetId) {
             div {
                 div(id = idId) { idSubStore.data.asText() }
                 div(id = nameId) { nameSubStore.data.asText() }
                 div(id = ageId) { ageSubStore.data.asText() }
             }
-        }.mount(targetId)
+        }
 
         entityStore.update(startPerson)
         delay(100)
@@ -155,7 +154,7 @@ class RestTests {
         val listId = "list-${uniqueId()}"
         val firstPersonId = "first-${uniqueId()}"
 
-        render {
+        render(targetId) {
             div {
                 ul(id = listId) {
                     queryStore.renderEach(RestPerson::_id) { p ->
@@ -169,7 +168,7 @@ class RestTests {
                     }.asText()
                 }
             }
-        }.mount(targetId)
+        }
 
         testList.forEach {
             queryStore.addOrUpdate(it)
@@ -193,7 +192,7 @@ class RestTests {
         val listAfterDelete = document.getElementById(listId)?.textContent
         assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDelete, "wrong list after delete")
 
-        queryStore.update(emptyList<RestPerson>())
+        queryStore.update(emptyList())
         delay(1)
         queryStore.query()
         delay(200)
@@ -241,7 +240,7 @@ class RestTests {
 
         val listId = "list-${uniqueId()}"
 
-        render {
+        render(targetId) {
             div {
                 ul(id = listId) {
                     queryStore.renderEach(RestPerson::_id) { p ->
@@ -251,7 +250,7 @@ class RestTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         testList.forEach {
             queryStore.addOrUpdate(it)

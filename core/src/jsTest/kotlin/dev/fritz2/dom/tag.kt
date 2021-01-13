@@ -22,11 +22,11 @@ class TagTests {
         val testId = uniqueId()
         val testClass = "testClass"
 
-        render {
+        render(targetId) {
             div(id = testId) {
                 className(flowOf(testClass))
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -45,11 +45,11 @@ class TagTests {
         val baseClass = "baseClass"
         val testClass = "testClass"
 
-        render {
+        render(targetId) {
             div(baseClass = baseClass, id = testId) {
                 className(flowOf(testClass))
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -68,7 +68,7 @@ class TagTests {
         val testIds = testRange.map { "testId$it" }
         val testClasses = testRange.map { "testClass$it" }
 
-        render {
+        render(targetId) {
             ul(id = "list") {
                 (flowOf(testIds)).renderEach {
                     li(id = it) {
@@ -76,7 +76,7 @@ class TagTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(500)
 

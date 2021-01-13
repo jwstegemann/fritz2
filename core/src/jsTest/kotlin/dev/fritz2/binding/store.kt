@@ -1,7 +1,6 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -38,7 +37,7 @@ class StoreTests {
             }
         }
 
-        render {
+        render(targetId) {
             section {
                 div(id = id1) {
                     store1.data.asText()
@@ -50,7 +49,7 @@ class StoreTests {
                     clicks handledBy store1.finish
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -102,7 +101,7 @@ class StoreTests {
             }
         }
 
-        render {
+        render(targetId) {
             section {
                 div(id = id1) {
                     s1.data.asText()
@@ -117,7 +116,7 @@ class StoreTests {
                     clicks handledBy s1.finish
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -161,14 +160,14 @@ class StoreTests {
             }
         }
 
-        render {
+        render(targetId) {
             div {
                 span(id = valueId) { store.data.asText() }
                 button(id = buttonId) {
                     clicks handledBy store.testHandler
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 

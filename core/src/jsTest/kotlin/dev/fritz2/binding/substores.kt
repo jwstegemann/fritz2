@@ -1,7 +1,6 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.lenses.format
@@ -43,7 +42,7 @@ class SubStoreTests {
         val streetId = "street-${uniqueId()}"
         val postalCodeId = "postalCode-${uniqueId()}"
 
-        render {
+        render(targetId) {
             div {
                 label {
                     +"Name: "
@@ -58,7 +57,7 @@ class SubStoreTests {
                     div(id = postalCodeId) { codeSub.data.asText() }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
 
@@ -102,14 +101,14 @@ class SubStoreTests {
 
         val completeSub = store.sub(personFormatLens)
 
-        render {
+        render(targetId) {
             div {
                 label {
                     +"Person: "
                     div(id = completeSub.id) { completeSub.data.asText() }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
 

@@ -24,7 +24,7 @@ class TextTests {
         val id1 = uniqueId()
         val id2 = uniqueId()
 
-        render {
+        render(targetId) {
             div {
                 p(id = id1) {
                     +"Hello World1!"
@@ -33,7 +33,7 @@ class TextTests {
                     +"Hello World2!"
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(250)
 
@@ -52,7 +52,7 @@ class TextTests {
         val id2 = uniqueId()
         val text = "testText"
 
-        render {
+        render(targetId) {
             section {
                 div(id = id1) {
                     +text
@@ -61,7 +61,7 @@ class TextTests {
                     +text
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -83,11 +83,11 @@ class TextTests {
         val testId = uniqueId()
         val text = "testText"
 
-        render {
+        render(targetId) {
             div(id = testId) {
                 flowOf(text).asText()
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 

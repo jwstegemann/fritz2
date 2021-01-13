@@ -23,7 +23,7 @@ class CommentTests {
         val id2 = uniqueId()
         val comment = "testComment"
 
-        render {
+        render(targetId) {
             section {
                 div(id = id1) {
                     flowOf(comment).asComment()
@@ -32,7 +32,7 @@ class CommentTests {
                     !comment
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 

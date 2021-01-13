@@ -1,11 +1,11 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.checkSingleFlow
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
+import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.GlobalScope
@@ -62,7 +62,7 @@ class MountTests {
 
         val text = flowOf("test")
 
-        render {
+        render(targetId) {
             div(id = outer) {
                 text.render {
                     div(id = inner1) {
@@ -73,7 +73,7 @@ class MountTests {
                     +"hallo"
                 }
             }
-        }.mount("target")
+        }
 
         delay(250)
 
@@ -93,14 +93,14 @@ class MountTests {
 
         val text = flowOf(listOf(inner1, inner2))
 
-        render {
+        render(targetId) {
             div(id = outer) {
                 text.renderEach {
                     div(id = it) {}
                 }
                 div(id = inner3) {}
             }
-        }.mount("target")
+        }
 
         delay(250)
 
@@ -118,13 +118,13 @@ class MountTests {
 
         val text = flowOf("test")
 
-        render {
+        render(targetId) {
             div(id = id) {
                 +"start-"
                 text.asText()
                 +"-end"
             }
-        }.mount("target")
+        }
 
         delay(250)
 
