@@ -14,14 +14,14 @@ import org.w3c.dom.HTMLElement
  */
 fun render(
     parentJob: Job = Job(),
-    content: RenderContext.() -> Unit
-): List<Tag<HTMLElement>> = buildList {
-    content(object : RenderContext {
+    content: HtmlElements.() -> Unit
+): List<RenderContext> = buildList {
+    content(object : HtmlElements {
         override val job = parentJob
 
         override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
             content(element)
-            add(element.unsafeCast<Tag<HTMLElement>>())
+            add(element.unsafeCast<RenderContext>())
             return element
         }
     })
@@ -38,9 +38,9 @@ fun render(
  */
 fun <E : Element> renderElement(
     parentJob: Job = Job(),
-    content: RenderContext.() -> Tag<E>
+    content: HtmlElements.() -> Tag<E>
 ): Tag<E> =
-    content(object : RenderContext {
+    content(object : HtmlElements {
         override val job = parentJob
 
         var alreadyRegistered: Boolean = false

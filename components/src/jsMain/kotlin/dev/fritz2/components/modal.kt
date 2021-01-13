@@ -5,6 +5,7 @@ import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.appendToBody
 import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.renderElement
 import dev.fritz2.styling.StyleClass
@@ -15,7 +16,7 @@ import dev.fritz2.styling.theme.ModalVariants
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.map
 
-typealias ModalRenderContext = RenderContext.(level: Int) -> Div
+typealias ModalRenderContext = HtmlElements.(level: Int) -> Div
 
 enum class OverlayMethod {
     CoveringTopMost,
@@ -25,14 +26,14 @@ enum class OverlayMethod {
 interface Overlay {
     val method: OverlayMethod
     val styling: Style<BasicParams>
-    fun render(renderContext: RenderContext, level: Int)
+    fun render(renderContext: HtmlElements, level: Int)
 }
 
 class DefaultOverlay(
     override val method: OverlayMethod = OverlayMethod.CoveringTopMost,
     override val styling: Style<BasicParams> = Theme().modal.overlay
 ) : Overlay {
-    override fun render(renderContext: RenderContext, level: Int) {
+    override fun render(renderContext: HtmlElements, level: Int) {
         renderContext.box({
             zIndex { modal(level, offset = -1) }
             styling()
@@ -145,9 +146,9 @@ class ModalComponent {
         }
     }
 
-    var content: (Div.() -> Unit)? = null
+    var content: (RenderContext.() -> Unit)? = null
 
-    fun content(value: Div.() -> Unit) {
+    fun content(value: RenderContext.() -> Unit) {
         content = value
     }
 
@@ -168,7 +169,7 @@ class ModalComponent {
         hasCloseButton = value
     }
 
-    var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
+    var closeButton: (HtmlElements.(SimpleHandler<Unit>) -> Unit)? = null
     fun closeButton(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,

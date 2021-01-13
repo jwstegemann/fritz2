@@ -3,6 +3,7 @@ package dev.fritz2.dom
 import dev.fritz2.binding.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.MultipleRootElementsException
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.elementLens
@@ -44,7 +45,7 @@ open class Tag<out E : Element>(
         if (id != null) element.id = id
         if (baseClass != null) element.className = baseClass
     }.unsafeCast<E>()
-) : WithDomNode<E>, WithComment<E>, WithEvents<E>(), RenderContext {
+) : WithDomNode<E>, WithComment<E>, WithEvents<E>(), HtmlElements {
 
     /**
      * Creates the content of the [Tag] and appends it as a child to the wrapped [Element].
@@ -62,9 +63,9 @@ open class Tag<out E : Element>(
      * Renders the data of a [Flow] as [Tag]s to the DOM.
      *
      * @receiver [Flow] containing the data
-     * @param content [RenderContext] for rendering the data to the DOM
+     * @param content [HtmlElements] for rendering the data to the DOM
      */
-    fun <V> Flow<V>.render(content: RenderContext.(V) -> Unit) {
+    fun <V> Flow<V>.render(content: HtmlElements.(V) -> Unit) {
         val newJob = Job(job)
         mountDomNodeList(job, domNode, this.map { data ->
             newJob.cancelChildren()
@@ -82,11 +83,11 @@ open class Tag<out E : Element>(
      * @receiver [Flow] containing the data
      * @param preserveOrder use a placeholder to keep the rendered [Tag]s in order with static [Tag]s at
      * the same level (default true)
-     * @param content [RenderContext] for rendering the data to the DOM
+     * @param content [HtmlElements] for rendering the data to the DOM
      */
     fun <V> Flow<V>.renderElement(
         preserveOrder: Boolean = true,
-        content: RenderContext.(V) -> Tag<HTMLElement>
+        content: HtmlElements.(V) -> RenderContext
     ) {
         val newJob = Job(job)
 
@@ -120,11 +121,11 @@ open class Tag<out E : Element>(
      * when an element stays the same, but changes it's internal values.
      *
      * @param idProvider function to identify a unique entity in the list
-     * @param content [RenderContext] for rendering the data to the DOM
+     * @param content [HtmlElements] for rendering the data to the DOM
      */
     fun <V, I> Flow<List<V>>.renderEach(
         idProvider: IdProvider<V, I>,
-        content: RenderContext.(V) -> Tag<HTMLElement>
+        content: HtmlElements.(V) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
@@ -152,10 +153,10 @@ open class Tag<out E : Element>(
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
      * when an element stays the same, but changes it's internal values.
      *
-     * @param content [RenderContext] for rendering the data to the DOM
+     * @param content [HtmlElements] for rendering the data to the DOM
      */
     fun <V> Flow<List<V>>.renderEach(
-        content: RenderContext.(V) -> Tag<HTMLElement>
+        content: HtmlElements.(V) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
@@ -183,11 +184,11 @@ open class Tag<out E : Element>(
      * when an element stays the same, but changes it's internal values.
      *
      * @param idProvider function to identify a unique entity in the list
-     * @param content [RenderContext] for rendering the data to the DOM
+     * @param content [HtmlElements] for rendering the data to the DOM
      */
     fun <V, I> RootStore<List<V>>.renderEach(
         idProvider: IdProvider<V, I>,
-        content: RenderContext.(SubStore<List<V>, List<V>, V>) -> Tag<HTMLElement>
+        content: HtmlElements.(SubStore<List<V>, List<V>, V>) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
 
@@ -214,10 +215,10 @@ open class Tag<out E : Element>(
      * Internally the [Patch]es are determined using the position of an item in the list.
      * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
      *
-     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
+     * @param content [HtmlElements] for rendering the data to the DOM given a [Store] of the list's item-type
      */
     fun <V> RootStore<List<V>>.renderEach(
-        content: RenderContext.(SubStore<List<V>, List<V>, V>) -> Tag<HTMLElement>
+        content: HtmlElements.(SubStore<List<V>, List<V>, V>) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
@@ -243,11 +244,11 @@ open class Tag<out E : Element>(
      * when an element stays the same, but changes it's internal values.
      *
      * @param idProvider function to identify a unique entity in the list
-     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
+     * @param content [HtmlElements] for rendering the data to the DOM given a [Store] of the list's item-type
      */
     fun <R, P, V, I> SubStore<R, P, List<V>>.renderEach(
         idProvider: IdProvider<V, I>,
-        content: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
+        content: HtmlElements.(SubStore<R, List<V>, V>) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
@@ -273,10 +274,10 @@ open class Tag<out E : Element>(
      * Internally the [Patch]es are determined using the position of an item in the list.
      * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
      *
-     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
+     * @param content [HtmlElements] for rendering the data to the DOM given a [Store] of the list's item-type
      */
     fun <R, P, V> SubStore<R, P, List<V>>.renderEach(
-        content: RenderContext.(SubStore<R, List<V>, V>) -> Tag<HTMLElement>
+        content: HtmlElements.(SubStore<R, List<V>, V>) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,

@@ -1,7 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
-import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
@@ -162,7 +162,7 @@ class RadioGroupComponent<T> {
  * @param build a lambda expression for setting up the component itself. Details in [RadioGroupComponent]
  * @return a flow of the _selected_ item
  */
-fun <T>RenderContext.radioGroup(
+fun <T>HtmlElements.radioGroup(
     styling: BasicParams.() -> Unit = {},
     store: Store<T>,
     baseClass: StyleClass? = null,

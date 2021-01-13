@@ -1,6 +1,6 @@
 package dev.fritz2.dom
 
-import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.HtmlElements
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +12,7 @@ import org.w3c.dom.Text
 /**
  * Interface providing functionality to handle text-content
  */
-interface WithText<N : Node> : WithDomNode<N>, RenderContext {
+interface WithText<N : Node> : WithDomNode<N>, HtmlElements {
 
     /**
      * Adds text-content of a [Flow] at this position

@@ -4,7 +4,7 @@ import dev.fritz2.components.CheckboxComponent.Companion.checkboxInputStaticCss
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Label
-import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
@@ -148,7 +148,7 @@ class CheckboxComponent {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [CheckboxComponent]
  */
-fun RenderContext.checkbox(
+fun HtmlElements.checkbox(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

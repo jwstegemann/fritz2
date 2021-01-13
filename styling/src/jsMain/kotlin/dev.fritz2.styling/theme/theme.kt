@@ -1,6 +1,7 @@
 package dev.fritz2.styling.theme
 
 import dev.fritz2.dom.Tag
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.resetCss
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -195,12 +196,12 @@ interface Theme {
  */
 //TODO: add for Flow.render and each().render
 @ExperimentalCoroutinesApi
-inline fun <reified T : Theme> render(crossinline content: RenderContext.(T) -> Unit): List<Tag<HTMLElement>> =
+inline fun <reified T : Theme> render(crossinline content: HtmlElements.(T) -> Unit): List<RenderContext> =
     dev.fritz2.dom.html.render {
         content(Theme().unsafeCast<T>())
     }
 
-inline fun <E : Element, reified T : Theme> renderElement(crossinline content: RenderContext.(T) -> Tag<E>) =
+inline fun <E : Element, reified T : Theme> renderElement(crossinline content: HtmlElements.(T) -> Tag<E>) =
     dev.fritz2.dom.html.renderElement {
         content(Theme().unsafeCast<T>())
     }
@@ -208,8 +209,8 @@ inline fun <E : Element, reified T : Theme> renderElement(crossinline content: R
 @ExperimentalCoroutinesApi
 inline fun <reified T : Theme> render(
     theme: T,
-    crossinline content: RenderContext.(T) -> Unit
-): List<Tag<HTMLElement>> {
+    crossinline content: HtmlElements.(T) -> Unit
+): List<RenderContext> {
     Theme.use(theme)
     return render { currentTheme: T ->
         div {

@@ -3,6 +3,7 @@ package dev.fritz2.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.TextElement
 import dev.fritz2.styling.StyleClass
@@ -38,7 +39,7 @@ class PopoverComponent {
         hasCloseButton = value
     }
 
-    var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
+    var closeButton: (HtmlElements.(SimpleHandler<Unit>) -> Unit)? = null
     fun closeButton(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,
@@ -86,13 +87,13 @@ class PopoverComponent {
         arrowPlacement = value
     }
 
-    var trigger: (Div.() -> Unit)? = null
-    fun trigger(value: (Div.() -> Unit)) {
+    var trigger: (RenderContext.() -> Unit)? = null
+    fun trigger(value: (RenderContext.() -> Unit)) {
         trigger = value
     }
 
-    var header: (Div.() -> Unit)? = null
-    fun header(value: (TextElement.() -> Unit)) {
+    var header: (RenderContext.() -> Unit)? = null
+    fun header(value: (RenderContext.() -> Unit)) {
         header = {
             (::header.styled(prefix = "popover-header") {
                 Theme().popover.header()
@@ -112,8 +113,8 @@ class PopoverComponent {
         }
     }
 
-    var footer: (Div.() -> Unit)? = null
-    fun footer(value: (TextElement.() -> Unit)) {
+    var footer: (RenderContext.() -> Unit)? = null
+    fun footer(value: (RenderContext.() -> Unit)) {
         footer = {
             (::footer.styled(prefix = "popover-footer") {
                 Theme().popover.footer()
@@ -133,8 +134,8 @@ class PopoverComponent {
         }
     }
 
-    var content: (Div.() -> Unit)? = null
-    fun content(value: (TextElement.() -> Unit)) {
+    var content: (RenderContext.() -> Unit)? = null
+    fun content(value: (RenderContext.() -> Unit)) {
         content = {
             (::section.styled(prefix = "popover-content") {
                 Theme().popover.section()
@@ -154,8 +155,8 @@ class PopoverComponent {
         }
     }
 
-    private fun renderArrow(renderContext: RenderContext) {
-        renderContext.apply {
+    private fun renderArrow(htmlElements: HtmlElements) {
+        htmlElements.apply {
             (::div.styled(prefix = "popover-arrow") {
                 arrowPlacement.invoke(Theme().popover.arrowPlacement)()
             }){}
@@ -167,9 +168,9 @@ class PopoverComponent {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = "popover",
-        renderContext: RenderContext,
+        htmlElements: HtmlElements,
         closeHandler: SimpleHandler<Unit>) {
-        renderContext.apply {
+        htmlElements.apply {
             (::div.styled(styling, baseClass, id, prefix) {
                 positionStyle.invoke(Theme().popover.placement)()
                 size.invoke(Theme().popover.size)()
@@ -225,7 +226,7 @@ class PopoverComponent {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [PopoverComponent]
  */
-fun RenderContext.popover(
+fun HtmlElements.popover(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

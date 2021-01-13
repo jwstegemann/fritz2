@@ -1187,16 +1187,19 @@ open class Ul(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTM
  * Special [Tag] for html5 with no attributes
  */
 open class TextElement(tagName: String, id: String? = null, baseClass: String? = null, job: Job) :
-    Tag<HTMLElement>(tagName, id, baseClass, job), WithText<HTMLElement>
+    RenderContext(tagName, id, baseClass, job), WithText<HTMLElement>
 
-// TODO: issue#228 uncomment
-//typealias RenderContext = Tag<HTMLElement>
+/**
+ * Type alias for the most generic type of a tag. This type should be preferred for HTML structures without
+ * restrictions. This is very useful for sub-structures of a component that a client can freely inject, like the
+ * items of a stack or the content of a modal for example.
+ */
+typealias RenderContext = Tag<HTMLElement>
 
 /**
  * Context for rendering dynamically DOM-nodes to your page.
  */
-// TODO: issue#228 Rename to ``HtmlElements``
-interface RenderContext : WithJob {
+interface HtmlElements : WithJob {
 
     /**
      * Creates a custom [Tag] with the provided [content].
@@ -1205,8 +1208,8 @@ interface RenderContext : WithJob {
      * @param content content scope for inner [Tag]s
      * @return custom [Tag] of type [HTMLElement]
      */
-    fun custom(tagName: String, content: Tag<HTMLElement>.() -> Unit): Tag<HTMLElement> =
-        register(Tag(tagName, job = job), content)
+    fun custom(tagName: String, content: RenderContext.() -> Unit): RenderContext =
+        register(RenderContext(tagName, job = job), content)
 
     /**
      * Converts the content of a [Flow] to [String] by using [toString] method.

@@ -3,7 +3,7 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.Store
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.styled
@@ -74,7 +74,7 @@ open class NavbarComponent {
 }
 
 
-fun RenderContext.navBar(
+fun HtmlElements.navBar(
     styling: BasicParams.() -> Unit = {},
     store: Store<String>? = null,
     baseClass: StyleClass? = null,

@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
@@ -83,9 +84,9 @@ abstract class StackComponent {
         spacing = value
     }
 
-    var items: (Div.() -> Unit)? = null
+    var items: (RenderContext.() -> Unit)? = null
 
-    fun items(value: Div.() -> Unit) {
+    fun items(value: RenderContext.() -> Unit) {
         items = value
     }
 
@@ -149,7 +150,7 @@ class StackUpComponent : StackComponent() {
  * @return a [Div] element in order to use this component as top level element of an UI part. This way it can be
  *         directly integrated into one of the _render_ functions!
  */
-fun RenderContext.stackUp(
+fun HtmlElements.stackUp(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -223,7 +224,7 @@ class LineUpComponent : StackComponent() {
  * @return a [Div] element in order to use this component as top level element of an UI part. This way it can be
  *         directly integrated into one of the _render_ functions!
  */
-fun RenderContext.lineUp(
+fun HtmlElements.lineUp(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

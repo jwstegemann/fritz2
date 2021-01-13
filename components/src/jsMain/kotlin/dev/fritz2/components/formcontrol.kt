@@ -2,8 +2,8 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.Store
 import dev.fritz2.components.FormControlComponent.Control
-import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Input
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.className
@@ -15,7 +15,6 @@ import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.HTMLElement
 
 
 /**
@@ -104,9 +103,9 @@ open class FormControlComponent {
     class Control {
 
         private val overflows: MutableList<String> = mutableListOf()
-        var assignee: Pair<String, (Tag<HTMLElement>.() -> Unit)>? = null
+        var assignee: Pair<String, (RenderContext.() -> Unit)>? = null
 
-        fun set(controlName: String, component: (Tag<HTMLElement>.() -> Unit)) {
+        fun set(controlName: String, component: (RenderContext.() -> Unit)) {
             if (assignee == null) {
                 assignee = Pair(controlName, component)
             } else {
@@ -249,21 +248,21 @@ open class FormControlComponent {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = "formControl",
-        renderContext: RenderContext
+        htmlElements: HtmlElements
     ) {
         control.assignee?.second?.let {
             renderStrategies[control.assignee?.first]?.render(
                 {
                     children(".$invalidClassName", invalidCss)
                     styling()
-                }, baseClass, id, prefix, renderContext, it
+                }, baseClass, id, prefix, htmlElements, it
             )
         }
         control.assert()
     }
 
-    fun renderHelperText(renderContext: RenderContext) {
-        renderContext.div {
+    fun renderHelperText(htmlElements: HtmlElements) {
+        htmlElements.div {
             helperText?.let {
                 (::p.styled {
                     color { dark }
@@ -274,8 +273,8 @@ open class FormControlComponent {
         }
     }
 
-    fun renderErrorMessage(renderContext: RenderContext) {
-        renderContext.div {
+    fun renderErrorMessage(htmlElements: HtmlElements) {
+        htmlElements.div {
             errorMessage.render {
                 if (it.isNotEmpty()) {
                     lineUp({
@@ -294,8 +293,7 @@ open class FormControlComponent {
         }
     }
 
-    // TODO: issue#228 change to ``RenderContext``
-    val requiredMarker: Tag<HTMLElement>.() -> Unit = {
+    val requiredMarker: RenderContext.() -> Unit = {
         if (required) {
             (::span.styled {
                 color { danger }
@@ -311,8 +309,8 @@ interface ControlRenderer {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = "formControl",
-        renderContext: RenderContext,
-        control: Tag<HTMLElement>.() -> Unit  // TODO: issue#228 change receiver to ``RenderContext``
+        htmlElements: HtmlElements,
+        control: RenderContext.() -> Unit
     )
 }
 
@@ -322,10 +320,10 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
         baseClass: StyleClass?,
         id: String?,
         prefix: String,
-        renderContext: RenderContext,
-        control: Tag<HTMLElement>.() -> Unit // TODO: issue#228 change receiver to ``RenderContext``
+        htmlElements: HtmlElements,
+        control: RenderContext.() -> Unit
     ) {
-        renderContext.stackUp(
+        htmlElements.stackUp(
             {
                 alignItems { start }
                 width { full }
@@ -356,10 +354,10 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
         baseClass: StyleClass?,
         id: String?,
         prefix: String,
-        renderContext: RenderContext,
-        control: Tag<HTMLElement>.() -> Unit // TODO: issue#228 change receiver to ``RenderContext``
+        htmlElements: HtmlElements,
+        control: RenderContext.() -> Unit
     ) {
-        renderContext.box({
+        htmlElements.box({
             width { full }
         }) {
             (::fieldset.styled(baseClass, id, prefix) {
@@ -440,7 +438,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [FormControlComponent]
  */
-fun RenderContext.formControl(
+fun HtmlElements.formControl(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

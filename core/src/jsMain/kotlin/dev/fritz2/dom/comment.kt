@@ -1,6 +1,6 @@
 package dev.fritz2.dom
 
-import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.HtmlElements
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +11,7 @@ import org.w3c.dom.Node
 /**
  * Provides functionality to handle comments.
  */
-interface WithComment<out T : Node> : WithDomNode<T>, RenderContext {
+interface WithComment<out T : Node> : WithDomNode<T>, HtmlElements {
 
     /**
      * Adds comment-content of a [Flow] at this position

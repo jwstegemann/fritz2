@@ -2,6 +2,7 @@ package dev.fritz2.dom
 
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.mountSingle
+import dev.fritz2.dom.html.RenderContext
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
@@ -208,7 +209,7 @@ class MountTargetNotFoundException(targetId: String) :
  * @receiver the [Flow] to mount to this element
  * @throws MountTargetNotFoundException if target element with [targetId] not found
  */
-fun List<Tag<HTMLElement>>.mount(targetId: String) {
+fun List<RenderContext>.mount(targetId: String) {
     document.getElementById(targetId)?.let { parent ->
         parent.removeChildren()
         this.forEach { parent.appendChild(it.domNode) }
@@ -236,7 +237,7 @@ fun <E : Element> Tag<E>.mount(targetId: String) {
  * @param tagLists the [List]s of [Tag]s to mount to this element
  * @throws MountTargetNotFoundException if target element with [targetId] not found
  */
-fun append(targetId: String, vararg tagLists: List<Tag<HTMLElement>>) {
+fun append(targetId: String, vararg tagLists: List<RenderContext>) {
     window.document.getElementById(targetId)?.let { parent ->
         for (tagList in tagLists)
             for (tag in tagList) parent.appendChild(tag.domNode)
