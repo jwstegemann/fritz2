@@ -3,17 +3,17 @@ package dev.fritz2.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.appendToBody
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.renderElement
+import dev.fritz2.dom.html.render
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.ModalSizes
 import dev.fritz2.styling.theme.ModalVariants
 import dev.fritz2.styling.theme.Theme
+import kotlinx.browser.document
 import kotlinx.coroutines.flow.map
 
 typealias ModalRenderContext = HtmlElements.(level: Int) -> Div
@@ -90,7 +90,7 @@ class ModalComponent {
         }
 
         init {
-            appendToBody(renderElement {
+            render(document.body!!, false) {
                 div(id = "modals") {
                     stack.data.map { it.size }.render { size ->
                         val currentOverlay = overlay.current
@@ -110,7 +110,7 @@ class ModalComponent {
                         }
                     }
                 }
-            })
+            }
         }
 
         fun show(
