@@ -41,7 +41,7 @@ fun render(
 /**
  * Creates a render context for [Tag]s and mounts it to a [targetElement].
  *
- * @param targetElement [HTMLElement] to mount to
+ * @param targetElement [HTMLElement] to mount to, default is *document.body*
  * @param override if true all child elements are removed before rendering
  * @param content [RenderContext] for rendering the data to the DOM
  * @throws MountTargetNotFoundException if [targetElement] not found
@@ -103,13 +103,13 @@ fun <E : Element> Tag<E>.mount(
 /**
  * Mounts a [Tag] to a constant element in the static html file.
  *
- * @param targetElement [HTMLElement] to mount to
+ * @param targetElement [HTMLElement] to mount to, default is *document.body*
  * @param override if true all child elements are removed before rendering
  * @receiver the [Tag] to mount to [targetElement]
  * @throws MountTargetNotFoundException if [targetElement] not found
  */
 fun <E : Element> Tag<E>.mount(
-    targetElement: HTMLElement?,
+    targetElement: HTMLElement? = document.body,
     override: Boolean = true
 ) {
     targetElement?.let {
