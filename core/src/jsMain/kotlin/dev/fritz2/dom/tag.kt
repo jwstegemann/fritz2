@@ -1,12 +1,13 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.*
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.TagContext
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.render
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.elementLens
 import dev.fritz2.utils.Myer
+import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
@@ -20,44 +21,6 @@ import org.w3c.dom.events.Event
  * @param message exception message text
  */
 class MultipleRootElementsException(message: String) : RuntimeException(message)
-
-private inline fun registerMulti(
-    job: Job, parent: RenderContext,
-    content: RenderContext.() -> Unit
-): List<WithDomNode<HTMLElement>> =
-    buildList {
-        content(object : RenderContext(
-            "", parent.id, parent.baseClass,
-            job, parent.domNode.unsafeCast<HTMLElement>()
-        ) {
-            override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
-                content(element)
-                add(element)
-                return element
-            }
-        })
-    }
-
-private inline fun registerSingle(
-    job: Job, parent: RenderContext,
-    content: RenderContext.() -> RenderContext
-): WithDomNode<HTMLElement> =
-    content(object : RenderContext(
-        "", parent.id, parent.baseClass,
-        job, parent.domNode.unsafeCast<HTMLElement>()
-    ) {
-        var alreadyRegistered: Boolean = false
-
-        override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
-            if (alreadyRegistered) {
-                throw MultipleRootElementsException("You can have only one root-tag per html-context!")
-            } else {
-                content(element)
-                alreadyRegistered = true
-                return element
-            }
-        }
-    })
 
 
 /**
@@ -88,7 +51,47 @@ open class Tag<out E : Element>(
         if (id != null) element.id = id
         if (baseClass != null) element.className = baseClass
     }.unsafeCast<E>()
-) : WithDomNode<E>, WithComment<E>, WithEvents<E>(), HtmlElements {
+) : WithDomNode<E>, WithComment<E>, WithEvents<E>(), TagContext {
+
+    companion object {
+        private inline fun registerMulti(
+            job: Job, parent: RenderContext,
+            content: RenderContext.() -> Unit
+        ): List<WithDomNode<HTMLElement>> =
+            buildList {
+                content(object : RenderContext(
+                    "", parent.id, parent.baseClass,
+                    job, parent.domNode.unsafeCast<HTMLElement>()
+                ) {
+                    override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
+                        content(element)
+                        add(element)
+                        return element
+                    }
+                })
+            }
+
+        private inline fun registerSingle(
+            job: Job, parent: RenderContext,
+            content: RenderContext.() -> RenderContext
+        ): WithDomNode<HTMLElement> =
+            content(object : RenderContext(
+                "", parent.id, parent.baseClass,
+                job, parent.domNode.unsafeCast<HTMLElement>()
+            ) {
+                var alreadyRegistered: Boolean = false
+
+                override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
+                    if (alreadyRegistered) {
+                        throw MultipleRootElementsException("You can have only one root-tag per html-context!")
+                    } else {
+                        content(element)
+                        alreadyRegistered = true
+                        return element
+                    }
+                }
+            })
+    }
 
     /**
      * Creates the content of the [Tag] and appends it as a child to the wrapped [Element].
