@@ -1184,7 +1184,7 @@ open class Ul(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTM
 
 
 /**
- * Special [Tag] for html5 with no attributes
+ * Special [Tag] for HTML5 with no attributes
  */
 open class TextElement(tagName: String, id: String? = null, baseClass: String? = null, job: Job) :
     RenderContext(tagName, id, baseClass, job), WithText<HTMLElement>
@@ -1197,9 +1197,9 @@ open class TextElement(tagName: String, id: String? = null, baseClass: String? =
 typealias RenderContext = Tag<HTMLElement>
 
 /**
- * Context for rendering dynamically DOM-nodes to your page.
+ * Context for rendering standard HTML5 [Tag]s
  */
-interface HtmlElements : WithJob {
+interface TagContext : WithJob {
 
     /**
      * Creates a custom [Tag] with the provided [content].

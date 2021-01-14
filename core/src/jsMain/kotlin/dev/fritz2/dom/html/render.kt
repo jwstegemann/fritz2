@@ -61,12 +61,12 @@ fun render(
 /**
  * Creates a [Tag] by providing you a tag context.
  *
- * @param content [HtmlElements] for creating [Tag]s
+ * @param content [TagContext] for creating [Tag]s
  * @throws MultipleRootElementsException if more then one root [Tag] is defined
  */
 fun <E : Element> tag(
-    content: HtmlElements.() -> Tag<E>
-): Tag<E> = content(object : HtmlElements {
+    content: TagContext.() -> Tag<E>
+): Tag<E> = content(object : TagContext {
     override val job = Job()
 
     var alreadyRegistered: Boolean = false
