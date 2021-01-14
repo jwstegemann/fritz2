@@ -4,7 +4,6 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
@@ -24,7 +23,7 @@ class TextTests {
         val id1 = uniqueId()
         val id2 = uniqueId()
 
-        render(targetId) {
+        render {
             div {
                 p(id = id1) {
                     +"Hello World1!"
@@ -52,7 +51,7 @@ class TextTests {
         val id2 = uniqueId()
         val text = "testText"
 
-        render(targetId) {
+        render {
             section {
                 div(id = id1) {
                     +text
@@ -83,7 +82,7 @@ class TextTests {
         val testId = uniqueId()
         val text = "testText"
 
-        render(targetId) {
+        render {
             div(id = testId) {
                 flowOf(text).asText()
             }

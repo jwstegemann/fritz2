@@ -4,7 +4,6 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
@@ -29,7 +28,7 @@ class AttributeTests {
         val (name2, values2) = "test2" to testRange.map { "value$it" }
         val (name3, values3) = "test3" to testRange.map { "value$it" }
 
-        render(targetId) {
+        render {
             div(id = testId) {
                 attr(name0, value0)
                 attr(name1, flowOf(value1))

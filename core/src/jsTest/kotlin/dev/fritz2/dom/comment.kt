@@ -4,7 +4,6 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
@@ -23,7 +22,7 @@ class CommentTests {
         val id2 = uniqueId()
         val comment = "testComment"
 
-        render(targetId) {
+        render {
             section {
                 div(id = id1) {
                     flowOf(comment).asComment()

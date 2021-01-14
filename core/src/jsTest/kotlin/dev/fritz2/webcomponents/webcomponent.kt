@@ -5,7 +5,6 @@ import dev.fritz2.dom.WithDomNode
 import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -42,7 +41,7 @@ class WebComponentTests {
 
         delay(250)
 
-        val body = document.getElementById(targetId).unsafeCast<HTMLBodyElement>()
+        val body = document.body.unsafeCast<HTMLBodyElement>()
 
         body.appendChild(document.createElement("my-component", ElementCreationOptions("my-component")))
 

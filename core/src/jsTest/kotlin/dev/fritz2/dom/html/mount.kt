@@ -5,7 +5,6 @@ import dev.fritz2.dom.selectedText
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -30,7 +29,7 @@ class MountTests {
             }
         }
 
-        render(targetId) {
+        render {
             div {
                 input(id = id) {
                     type("text")
@@ -65,7 +64,7 @@ class MountTests {
             }
         }
 
-        render(targetId) {
+        render {
             div {
                 input(id = id) {
                     type("checkbox")
@@ -102,7 +101,7 @@ class MountTests {
             }
         }
 
-        render(targetId) {
+        render {
             div {
                 select (id = id) {
                     option(id = option1Id) {
@@ -152,7 +151,7 @@ class MountTests {
         initDocument()
 
         assertFailsWith(MountTargetNotFoundException::class) {
-            render(targetId + "error") {
+            render("error") {
                 div {
                     +"div1"
                 }

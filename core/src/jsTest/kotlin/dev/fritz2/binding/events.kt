@@ -5,7 +5,6 @@ import dev.fritz2.dom.values
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
@@ -33,7 +32,7 @@ class EventTests {
         }
 
 
-        render(targetId) {
+        render {
             section {
                 input {
                     value(store.data)

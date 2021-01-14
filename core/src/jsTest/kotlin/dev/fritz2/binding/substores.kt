@@ -6,7 +6,6 @@ import dev.fritz2.lenses.buildLens
 import dev.fritz2.lenses.format
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLDivElement
@@ -42,7 +41,7 @@ class SubStoreTests {
         val streetId = "street-${uniqueId()}"
         val postalCodeId = "postalCode-${uniqueId()}"
 
-        render(targetId) {
+        render {
             div {
                 label {
                     +"Name: "
@@ -101,7 +100,7 @@ class SubStoreTests {
 
         val completeSub = store.sub(personFormatLens)
 
-        render(targetId) {
+        render {
             div {
                 label {
                     +"Person: "

@@ -5,7 +5,6 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -37,7 +36,7 @@ class ValidationJSTests {
         val idData = "data-${uniqueId()}"
         val idMessages = "messages-${uniqueId()}"
 
-        render(targetId) {
+        render {
             div {
                 div(id = idData) {
                     store.data.map { it.name }.asText()

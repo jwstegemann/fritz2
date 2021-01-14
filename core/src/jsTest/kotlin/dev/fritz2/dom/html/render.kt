@@ -4,7 +4,6 @@ import dev.fritz2.binding.storeOf
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLDivElement
@@ -21,7 +20,7 @@ class RenderTests {
 
         val divId = uniqueId()
 
-        render(targetId) {
+        render {
             section {
                 store.data.renderElement { value ->
                     div(id = divId) {
@@ -53,7 +52,7 @@ class RenderTests {
 
         val divId = uniqueId()
 
-        render(targetId) {
+        render {
             div(id = divId) {
                 store.data.render { value ->
                     if (value) div { +"on" } else span { +"off" }

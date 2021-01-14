@@ -7,7 +7,6 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
@@ -31,7 +30,7 @@ class ListenerTest {
 
         val store = object : RootStore<String>("start") {}
 
-        render(targetId) {
+        render {
             section {
                 input(id = inputId) {
                     value(store.data)
@@ -77,7 +76,7 @@ class ListenerTest {
             }
         }
 
-        render(targetId) {
+        render {
             section {
                 div(id = resultId) {
                     store.data.asText()
@@ -134,7 +133,7 @@ class ListenerTest {
 
         }
 
-        render(targetId) {
+        render {
             section {
                 div(id = resultId) {
                     store.data.asText()
@@ -195,7 +194,7 @@ class ListenerTest {
 
         }
 
-        render(targetId) {
+        render {
             section {
                 div(id = resultId) {
                     store.data.asText()

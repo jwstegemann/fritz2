@@ -4,7 +4,6 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
@@ -37,7 +36,7 @@ class StoreTests {
             }
         }
 
-        render(targetId) {
+        render {
             section {
                 div(id = id1) {
                     store1.data.asText()
@@ -101,7 +100,7 @@ class StoreTests {
             }
         }
 
-        render(targetId) {
+        render {
             section {
                 div(id = id1) {
                     s1.data.asText()
@@ -160,7 +159,7 @@ class StoreTests {
             }
         }
 
-        render(targetId) {
+        render {
             div {
                 span(id = valueId) { store.data.asText() }
                 button(id = buttonId) {

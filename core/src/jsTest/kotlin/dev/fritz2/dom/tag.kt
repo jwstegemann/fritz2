@@ -4,7 +4,6 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
@@ -22,7 +21,7 @@ class TagTests {
         val testId = uniqueId()
         val testClass = "testClass"
 
-        render(targetId) {
+        render {
             div(id = testId) {
                 className(flowOf(testClass))
             }
@@ -45,7 +44,7 @@ class TagTests {
         val baseClass = "baseClass"
         val testClass = "testClass"
 
-        render(targetId) {
+        render {
             div(baseClass = baseClass, id = testId) {
                 className(flowOf(testClass))
             }
@@ -68,7 +67,7 @@ class TagTests {
         val testIds = testRange.map { "testId$it" }
         val testClasses = testRange.map { "testClass$it" }
 
-        render(targetId) {
+        render {
             ul(id = "list") {
                 (flowOf(testIds)).renderEach {
                     li(id = it) {

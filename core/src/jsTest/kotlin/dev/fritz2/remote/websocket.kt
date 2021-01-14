@@ -9,7 +9,6 @@ import dev.fritz2.repositories.Resource
 import dev.fritz2.serialization.Serializer
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -202,7 +201,7 @@ class WebSocketTests {
         val idSubStore = entityStore.sub(idLens)
 
 
-        render(targetId) {
+        render {
             div {
                 div(id = idId) { idSubStore.data.asText() }
                 div(id = nameId) { nameSubStore.data.asText() }

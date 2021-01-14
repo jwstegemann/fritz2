@@ -5,7 +5,6 @@ import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
@@ -38,7 +37,7 @@ class SeqTests {
 
         val store = TestListStore()
 
-        render(targetId) {
+        render {
             div {
                 ul(id = listId) {
                     store.data.renderEach {
@@ -85,7 +84,7 @@ class SeqTests {
 
         val store = TestListStore()
 
-        render(targetId) {
+        render {
             div {
                 ul(id = listId) {
                     store.renderEach {
@@ -151,7 +150,7 @@ class SeqTests {
 
         val store = TestEntityListStore()
 
-        render(targetId) {
+        render {
             div {
                 ul(id = listId) {
                     store.data.renderEach(Entity::id) {
@@ -198,7 +197,7 @@ class SeqTests {
 
         val store = TestEntityListStore()
 
-        render(targetId) {
+        render {
             div {
                 ul(id = listId) {
                     store.renderEach(Entity::id) {

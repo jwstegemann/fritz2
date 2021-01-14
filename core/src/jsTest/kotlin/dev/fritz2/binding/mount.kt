@@ -5,7 +5,6 @@ import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.checkSingleFlow
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.GlobalScope
@@ -62,7 +61,7 @@ class MountTests {
 
         val text = flowOf("test")
 
-        render(targetId) {
+        render {
             div(id = outer) {
                 text.render {
                     div(id = inner1) {
@@ -93,7 +92,7 @@ class MountTests {
 
         val text = flowOf(listOf(inner1, inner2))
 
-        render(targetId) {
+        render {
             div(id = outer) {
                 text.renderEach {
                     div(id = it) {}
@@ -118,7 +117,7 @@ class MountTests {
 
         val text = flowOf("test")
 
-        render(targetId) {
+        render {
             div(id = id) {
                 +"start-"
                 text.asText()

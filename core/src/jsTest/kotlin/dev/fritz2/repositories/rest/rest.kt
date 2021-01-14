@@ -7,7 +7,10 @@ import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.Resource
 import dev.fritz2.serialization.Serializer
-import dev.fritz2.test.*
+import dev.fritz2.test.initDocument
+import dev.fritz2.test.rest
+import dev.fritz2.test.runTest
+import dev.fritz2.test.testHttpServer
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -79,7 +82,7 @@ class RestTests {
         val ageId = "age-${uniqueId()}"
         val ageSubStore = entityStore.sub(ageLens)
 
-        render(targetId) {
+        render {
             div {
                 div(id = idId) { idSubStore.data.asText() }
                 div(id = nameId) { nameSubStore.data.asText() }
@@ -154,7 +157,7 @@ class RestTests {
         val listId = "list-${uniqueId()}"
         val firstPersonId = "first-${uniqueId()}"
 
-        render(targetId) {
+        render {
             div {
                 ul(id = listId) {
                     queryStore.renderEach(RestPerson::_id) { p ->
@@ -240,7 +243,7 @@ class RestTests {
 
         val listId = "list-${uniqueId()}"
 
-        render(targetId) {
+        render {
             div {
                 ul(id = listId) {
                     queryStore.renderEach(RestPerson::_id) { p ->
