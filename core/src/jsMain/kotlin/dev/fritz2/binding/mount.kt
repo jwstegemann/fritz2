@@ -1,6 +1,7 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.MultipleRootElementsException
+import dev.fritz2.lenses.LensException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -22,7 +23,10 @@ fun <T> mountSingle(parentJob: Job, upstream: Flow<T>, set: suspend (T, T?) -> U
             set(value, last)
             value
         }.catch {
-            if(it is MultipleRootElementsException) console.error(it.stackTraceToString())
+            when(it) {
+                is LensException -> {}
+                else -> console.error(it)
+            }
             // do not do anything here but canceling the coroutine, because this is an expected
             // behaviour when dealing with filtering, renderEach and idProvider
             cancel("error mounting", it)
