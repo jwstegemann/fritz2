@@ -17,7 +17,7 @@ import org.w3c.dom.HTMLElement
 class MountTargetNotFoundException(message: String) : Exception(message)
 
 /**
- * Creates a render context for [Tag]s and
+ * Creates a [RenderContext] for [Tag]s and
  * mounts it to a constant element in the static html file
  * which id matches the [targetId].
  *
@@ -39,7 +39,7 @@ fun render(
 }
 
 /**
- * Creates a render context for [Tag]s and mounts it to a [targetElement].
+ * Creates a [RenderContext] for [Tag]s and mounts it to a [targetElement].
  *
  * @param targetElement [HTMLElement] to mount to, default is *document.body*
  * @param override if true all child elements are removed before rendering
@@ -57,6 +57,7 @@ fun render(
     } ?: throw MountTargetNotFoundException("targetElement should not be null")
 }
 
+//FIXME: really needed!?
 /**
  * Creates a [Tag] by providing you a tag context.
  *
@@ -81,6 +82,7 @@ fun <E : Element> tag(
     }
 })
 
+//FIXME: really needed!?
 /**
  * Mounts a [Tag] to a constant element in the static html file.
  *
@@ -100,6 +102,7 @@ fun <E : Element> Tag<E>.mount(
     } ?: throw MountTargetNotFoundException("html document contains no element with id=$targetId")
 }
 
+//FIXME: really needed!?
 /**
  * Mounts a [Tag] to a constant element in the static html file.
  *
