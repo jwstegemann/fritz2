@@ -1,13 +1,12 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.*
-import dev.fritz2.dom.html.TagContext
+import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.render
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.elementLens
 import dev.fritz2.utils.Myer
-import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
@@ -51,7 +50,7 @@ open class Tag<out E : Element>(
         if (id != null) element.id = id
         if (baseClass != null) element.className = baseClass
     }.unsafeCast<E>()
-) : WithDomNode<E>, WithComment<E>, WithEvents<E>(), TagContext {
+) : WithDomNode<E>, WithComment<E>, WithEvents<E>(), HtmlElements {
 
     companion object {
         private inline fun registerMulti(
