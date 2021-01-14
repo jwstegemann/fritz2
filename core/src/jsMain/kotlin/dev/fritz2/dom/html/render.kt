@@ -12,10 +12,9 @@ import org.w3c.dom.HTMLElement
 /**
  * Occurs when the targeted html element is not present in document.
  *
- * @param targetId id which used for mounting
+ * @param message exception message
  */
-class MountTargetNotFoundException(targetId: String) :
-    Exception("html document contains no element with id: $targetId")
+class MountTargetNotFoundException(message: String) : Exception(message)
 
 /**
  * Creates a render context for [Tag]s and
@@ -35,8 +34,8 @@ fun render(
     document.getElementById(targetId)?.let { parentElement ->
         if (parentElement is HTMLElement) {
             render(parentElement, override, content)
-        } else MountTargetNotFoundException(targetId)
-    } ?: throw MountTargetNotFoundException(targetId)
+        } else MountTargetNotFoundException("element with id=$targetId is not an HTMLElement")
+    } ?: throw MountTargetNotFoundException("html document contains no element with id=$targetId")
 }
 
 /**
@@ -48,14 +47,14 @@ fun render(
  * @throws MountTargetNotFoundException if [targetElement] not found
  */
 fun render(
-    targetElement: HTMLElement?,
+    targetElement: HTMLElement? = document.body,
     override: Boolean = true,
     content: RenderContext.() -> Unit
 ) {
     targetElement?.let {
         if (override) it.removeChildren()
         content(RenderContext(it.tagName, it.id, job = Job(), domNode = it))
-    } ?: throw MountTargetNotFoundException("")
+    } ?: throw MountTargetNotFoundException("targetElement should not be null")
 }
 
 /**
@@ -97,8 +96,8 @@ fun <E : Element> Tag<E>.mount(
     document.getElementById(targetId)?.let { parent ->
         if(parent is HTMLElement) {
             this@mount.mount(parent, override)
-        } else throw MountTargetNotFoundException(targetId)
-    } ?: throw MountTargetNotFoundException(targetId)
+        } else throw MountTargetNotFoundException("element with id=$targetId is not an HTMLElement")
+    } ?: throw MountTargetNotFoundException("html document contains no element with id=$targetId")
 }
 
 /**
@@ -116,5 +115,5 @@ fun <E : Element> Tag<E>.mount(
     targetElement?.let {
         if(override) it.removeChildren()
         it.appendChild(this.domNode)
-    } ?: throw MountTargetNotFoundException("")
+    } ?: throw MountTargetNotFoundException("targetElement should not be null")
 }
