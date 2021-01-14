@@ -19,7 +19,7 @@ import org.w3c.dom.events.Event
  *
  * @param message exception message text
  */
-class MultipleRootElementsException(message: String) : RuntimeException(message)
+class MultipleRootElementsException(message: String) : Exception(message)
 
 
 /**
@@ -102,6 +102,10 @@ open class Tag<out E : Element>(
         content(element)
         domNode.appendChild(element.domNode)
         return element
+    }
+
+    operator fun <E: Element> Tag<E>.invoke() {
+        this@Tag.domNode.appendChild(this.domNode)
     }
 
     /**
