@@ -90,6 +90,17 @@ open class Tag<out E : Element>(
                     }
                 }
             })
+
+        /**
+         * Accumulates a [Pair] and a [List] to a new [Pair] of [List]s
+         *
+         * @param accumulator [Pair] of two [List]s
+         * @param newValue new [List] to accumulate
+         */
+        private fun <T> accumulate(
+            accumulator: Pair<List<T>, List<T>>,
+            newValue: List<T>
+        ): Pair<List<T>, List<T>> = Pair(accumulator.second, newValue)
     }
 
     /**
@@ -102,10 +113,6 @@ open class Tag<out E : Element>(
         content(element)
         domNode.appendChild(element.domNode)
         return element
-    }
-
-    operator fun <E: Element> Tag<E>.invoke() {
-        this@Tag.domNode.appendChild(this.domNode)
     }
 
     /**
@@ -150,18 +157,6 @@ open class Tag<out E : Element>(
         if (preserveOrder) mountDomNode(job, domNode, upstream)
         else mountDomNodeUnordered(job, domNode, upstream)
     }
-
-    /**
-     * Accumulates a [Pair] and a [List] to a new [Pair] of [List]s
-     *
-     * @param accumulator [Pair] of two [List]s
-     * @param newValue new [List] to accumulate
-     */
-    private fun <T> accumulate(
-        accumulator: Pair<List<T>, List<T>>,
-        newValue: List<T>
-    ): Pair<List<T>, List<T>> = Pair(accumulator.second, newValue)
-
 
     /**
      * Renders each element of a [List].
