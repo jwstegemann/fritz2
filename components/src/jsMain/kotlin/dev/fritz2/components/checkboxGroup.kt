@@ -1,7 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
@@ -173,7 +173,7 @@ class CheckboxGroupComponent<T> {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [CheckboxGroupComponent]
  */
-fun <T>HtmlElements.checkboxGroup(
+fun <T>RenderContext.checkboxGroup(
     styling: BasicParams.() -> Unit = {},
     store: Store<List<T>>,
     baseClass: StyleClass? = null,

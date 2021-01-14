@@ -1,7 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.TextArea
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
@@ -194,7 +194,7 @@ class TextAreaComponent {
  */
 
 
-fun HtmlElements.textArea(
+fun RenderContext.textArea(
     styling: BasicParams.() -> Unit = {},
     store: Store<String>? = null,
     baseClass: StyleClass? = null,

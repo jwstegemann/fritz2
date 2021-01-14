@@ -3,7 +3,6 @@ package dev.fritz2.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.HtmlElements
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.TextElement
 import dev.fritz2.styling.StyleClass
@@ -39,7 +38,7 @@ class PopoverComponent {
         hasCloseButton = value
     }
 
-    var closeButton: (HtmlElements.(SimpleHandler<Unit>) -> Unit)? = null
+    var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
     fun closeButton(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,
@@ -155,8 +154,8 @@ class PopoverComponent {
         }
     }
 
-    private fun renderArrow(htmlElements: HtmlElements) {
-        htmlElements.apply {
+    private fun renderArrow(RenderContext: RenderContext) {
+        RenderContext.apply {
             (::div.styled(prefix = "popover-arrow") {
                 arrowPlacement.invoke(Theme().popover.arrowPlacement)()
             }){}
@@ -168,9 +167,9 @@ class PopoverComponent {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = "popover",
-        htmlElements: HtmlElements,
+        RenderContext: RenderContext,
         closeHandler: SimpleHandler<Unit>) {
-        htmlElements.apply {
+        RenderContext.apply {
             (::div.styled(styling, baseClass, id, prefix) {
                 positionStyle.invoke(Theme().popover.placement)()
                 size.invoke(Theme().popover.size)()
@@ -226,7 +225,7 @@ class PopoverComponent {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [PopoverComponent]
  */
-fun HtmlElements.popover(
+fun RenderContext.popover(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

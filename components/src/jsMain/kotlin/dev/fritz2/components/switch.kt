@@ -5,7 +5,7 @@ import dev.fritz2.components.SwitchComponent.Companion.switchInputStaticCss
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Label
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -149,7 +149,7 @@ class SwitchComponent {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [SwitchComponent]
  */
-fun HtmlElements.switch(
+fun RenderContext.switch(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -207,7 +207,7 @@ fun HtmlElements.switch(
     }
 }
 
-fun HtmlElements.switch(
+fun RenderContext.switch(
     styling: BasicParams.() -> Unit = {},
     store: Store<Boolean>,
     baseClass: StyleClass? = null,

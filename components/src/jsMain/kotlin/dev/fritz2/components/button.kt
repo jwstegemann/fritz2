@@ -3,7 +3,7 @@ package dev.fritz2.components
 import dev.fritz2.dom.Listener
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Button
-import dev.fritz2.dom.html.HtmlElements
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.*
@@ -158,7 +158,7 @@ open class PushButtonComponent {
         size = value
     }
 
-    var label: (HtmlElements.(hide: Boolean) -> Unit)? = null
+    var label: (RenderContext.(hide: Boolean) -> Unit)? = null
 
     fun text(value: String) {
         label = { hide -> span(if (hide) hidden.name else null) { +value } }
@@ -184,7 +184,7 @@ open class PushButtonComponent {
         loading = value
     }
 
-    var icon: ((HtmlElements, Style<BasicParams>) -> Unit)? = null
+    var icon: ((RenderContext, Style<BasicParams>) -> Unit)? = null
 
     fun icon(
         styling: BasicParams.() -> Unit = {},
@@ -265,7 +265,7 @@ open class PushButtonComponent {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
  */
-fun HtmlElements.pushButton(
+fun RenderContext.pushButton(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -321,7 +321,7 @@ fun HtmlElements.pushButton(
  * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
  * @return a listener (think of a flow!) that offers the clicks of the button
  */
-fun HtmlElements.clickButton(
+fun RenderContext.clickButton(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,

@@ -191,9 +191,29 @@ interface Theme {
 }
 
 /**
- * Creates a render context for [Tag]s and
- * mounts it to a [HTMLElement]. It also applies
- * the given [Theme].
+ * Creates a render context for [Tag]s and mounts it to an [HTMLElement] given by id. It also applies the given [Theme].
+ *
+ * @param theme [Theme] used in this [RenderContext]
+ * @param targetId id of the element to mount to
+ * @param override if true all child elements are removed before rendering
+ * @param content [RenderContext] for rendering the data to the DOM
+ */
+inline fun <reified T : Theme> render(
+    theme: T,
+    targetId: String,
+    override: Boolean = true,
+    crossinline content: RenderContext.(T) -> Unit
+) {
+    Theme.use(theme)
+    render(targetId, override) {
+        Theme.data.render {
+            content(Theme().unsafeCast<T>())
+        }
+    }
+}
+
+/**
+ * Creates a render context for [Tag]s and mounts it to an [HTMLElement]. It also applies the given [Theme].
  *
  * @param theme [Theme] used in this [RenderContext]
  * @param parentElement [HTMLElement] to mount to
