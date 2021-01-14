@@ -43,10 +43,12 @@ fun render(
  * @param content [RenderContext] for rendering the data to the DOM
  */
 fun render(
-    parentElement: HTMLElement,
+    parentElement: HTMLElement?,
     override: Boolean = true,
     content: RenderContext.() -> Unit
 ) {
-    if (override) parentElement.removeChildren()
-    content(RenderContext(parentElement.tagName, parentElement.id, job = Job(), domNode = parentElement))
+    parentElement?.let {
+        if (override) it.removeChildren()
+        content(RenderContext(it.tagName, it.id, job = Job(), domNode = it))
+    } ?: throw MountTargetNotFoundException("")
 }

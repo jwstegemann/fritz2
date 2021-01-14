@@ -90,7 +90,7 @@ class ModalComponent {
         }
 
         init {
-            render(document.body!!, false) {
+            render(document.body, false) {
                 div(id = "modals") {
                     stack.data.map { it.size }.render { size ->
                         val currentOverlay = overlay.current
