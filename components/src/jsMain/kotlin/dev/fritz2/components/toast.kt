@@ -404,7 +404,7 @@ class ToastComponent(private val renderContext: RenderContext) {
              id: String? = null,
              prefix: String = defaultToastContainerId) {
 
-        // TODO: Render via 'appendToBody' once a solution is found
+        // TODO: Render in the companion object via the new, non-overriding 'render'-function once fritz2 0.9 is available
         if (!containerRendered) {
             renderToastContainer(renderContext, styling, baseClass, id, prefix)
             containerRendered = true
