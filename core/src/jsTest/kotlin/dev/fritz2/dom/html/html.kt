@@ -26,13 +26,6 @@ class HtmlTests {
             }
         }
         delay(250)
-
-        assertFailsWith(MultipleRootElementsException::class) {
-            tag {
-                div { +"div1" }
-                div { +"div2" }
-            }.mount()
-        }
     }
 
     @Test
@@ -41,12 +34,6 @@ class HtmlTests {
             render("missing") {
                 div { +"div" }
             }
-        }
-
-        assertFailsWith(MountTargetNotFoundException::class) {
-            tag {
-                div { +"div" }
-            }.mount("missing")
         }
     }
 }
