@@ -54,56 +54,66 @@ object Position {
 private const val defaultToastContainerId = "ul-toast-container"
 
 /**
- *  This class combines the _configuration_ and the core styling of a toast
+ * This class combines the _configuration_ and the core styling of a toast
  *
- *  You can configure the following aspects:
- *  - position of the toast: top | topLeft | topRight | bottom (default) | bottomLeft | bottomRight
- *  - title: title of the toast
- *  - description: description of the toast
- *  - status:  success | error | warning | info(default)
- *  - duration: time in ms before dismiss the toast - default are 5000 ms
- *  - isCloseable : if true, a close button is added for closing the toast before timer is expired
- *  - icon : icon of the toast - default icon is Theme().icons.circleInformation
- *  - customComponent : custom component to render instead of title and description
- *      * with a custom component you have not the ability to use the close button !
+ * You can configure the following aspects:
+ * - position of the toast: top | topLeft | topRight | bottom (default) | bottomLeft | bottomRight
+ * - title: title of the toast
+ * - description: description of the toast
+ * - status:  success | error | warning | info(default)
+ * - duration: time in ms before dismiss the toast - default are 5000 ms
+ * - isCloseable : if true, a close button is added for closing the toast before timer is expired
+ * - icon : icon of the toast - default icon is Theme().icons.circleInformation
+ * - customComponent : custom component to render instead of title and description
+ *     * with a custom component you have not the ability to use the close button !
  *
- *  Also, there are 2 helper functions for the following use cases:
- *   - fun closeAllToasts() -> close all visible toasts
- *   - fun closeLastToast()  -> close the last toast
+ * Also, there are 2 static helper functions for the following use cases:
+ *  - fun closeAllToasts() -> close all visible toasts
+ *  - fun closeLastToast()  -> close the last toast
  *
- *  A use case would look like :
+ * A use case would look like :
  *
- *  clickButton {
+ * ```
+ * clickButton {
+ *   variant { outline }
+ *   text("closeAll")
+ * } handledBy ToastComponent.closeAllToasts()
+ * ```
+ *
+ * or
+ *
+ * ```
+ * clickButton {
  *    variant { outline }
- *    text("closeAll")
- *   } handledBy ToastComponent().closeAllToasts()
+ *    text("closeLatest")
+ * } handledBy ToastComponent.closeLastToast()
+ * ```
  *
- *   or
+ * Use case showing how to configure position, duration and status:
  *
- *    clickButton {
- *     variant { outline }
- *     text("closeLatest")
- *   } handledBy ToastComponent().closeLastToast()
+ * ```
+ * showToast {
+ *     status { warning }
+ *     position { bottomRight }
+ *     duration { 8000 }
  *
- *  Use case showing how to configure position, duration, status :
+ *     title { "Title" }
+ *     description { "Description" }
+ * }
+ * ```
  *
- *  toast {
- *      status { warning }
- *      position { bottomRight }
- *      duration { 8000 }
+ * use case showing how to set a custom icon:
  *
- *      title { "Title" }
- *      description { "Description" }
- *    }
+ * ```
+ * showToast {
+ *     icon { arrowRight }
+ *     title { "Icon"}
+ *     description {"custom icon"}
+ * }
+ * ```
  *
- *  use case showing how to set a custom icon
  *
- *  toast {
- *      icon { arrowRight }
- *      title { "Icon"}
- *      description {"custom icon"}
- *  }
- *
+ * @param renderContext The current RenderContext under which the toast will be rendered
  */
 @ComponentMarker
 class ToastComponent(private val renderContext: RenderContext) {
