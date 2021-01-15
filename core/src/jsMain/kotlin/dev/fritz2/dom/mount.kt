@@ -100,20 +100,23 @@ fun <N : Node> mountDomNodeList(
  *
  * @param job to collect values
  * @param target DOM mounting target
- * @param upstream returns the [Flow] with the [Patch]es of [WithDomNode]s that should be mounted at this point
+ * @param upstream [Flow] of [List] of [Patch]es of [WithDomNode]s that should be mounted at this point
+ * @cancelJob lambda expression to cancel coroutines when not needed anymore
  */
 fun <N : Node> mountDomNodePatch(
     job: Job,
     target: N,
-    upstream: Flow<Patch<WithDomNode<N>>>,
+    upstream: Flow<List<Patch<WithDomNode<N>>>>,
     cancelJob: (Node) -> Unit
 ) {
-    mountSingle(job, upstream) { patch, _ ->
-        when (patch) {
-            is Patch.Insert -> target.insert(patch.element, patch.index)
-            is Patch.InsertMany -> target.insertMany(patch.elements, patch.index)
-            is Patch.Delete -> target.delete(patch.start, patch.count, cancelJob)
-            is Patch.Move -> target.move(patch.from, patch.to)
+    mountSingle(job, upstream) { patches, _ ->
+        patches.forEach { patch ->
+            when (patch) {
+                is Patch.Insert -> target.insert(patch.element, patch.index)
+                is Patch.InsertMany -> target.insertMany(patch.elements, patch.index)
+                is Patch.Delete -> target.delete(patch.start, patch.count, cancelJob)
+                is Patch.Move -> target.move(patch.from, patch.to)
+            }
         }
     }
 }
