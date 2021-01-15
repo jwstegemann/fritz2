@@ -14,16 +14,12 @@ import dev.fritz2.dom.html.Li
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.rgb
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.IconDefinition
-import dev.fritz2.styling.theme.Icons
-import dev.fritz2.styling.theme.Theme
-import dev.fritz2.styling.theme.ToastStatus
+import dev.fritz2.styling.theme.*
 import kotlinx.browser.document
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -53,8 +49,9 @@ object Position {
     const val topRight = "topRight"
 
     val positionList = listOf(bottom, bottomLeft, bottomRight, top, topLeft, topRight)
-
 }
+
+private const val defaultToastContainerId = "ul-toast-container"
 
 /**
  *  This class combines the _configuration_ and the core styling of a toast
@@ -108,16 +105,15 @@ object Position {
  *  }
  *
  */
-
 @ComponentMarker
-class ToastComponent {
-
+class ToastComponent(private val renderContext: RenderContext) {
 
     object ToastStore : RootStore<List<ToastListElement>>(listOf(), id = "toast-store") {
 
         val add = handle<ToastListElement> { allToasts, newToast ->
             allToasts + newToast
         }
+
         val remove = handle<ToastListElement> { allToasts, currentToast ->
             allToasts - currentToast
         }
@@ -147,6 +143,33 @@ class ToastComponent {
 
         val toastMap = mutableMapOf<String, ToastListElement>()
 
+        // Indicates whether the Div-container hosting the individual ToastListElements
+        // has already been added to the DOM.
+        // TODO: Should this be synchronized?
+        private var containerRendered = false
+
+
+        // TODO: Are these really needed?:
+
+        fun closeAllToasts(): SimpleHandler<Unit> {
+            val store = object : RootStore<String>("") {
+                val closeAll = handle {
+                    ToastStore.removeAll.invoke()
+                    it
+                }
+            }
+            return store.closeAll
+        }
+
+        fun closeLastToast(): SimpleHandler<Unit> {
+            val store = object : RootStore<String>("") {
+                val closeLatest = handle {
+                    ToastStore.removeLast.invoke()
+                    it
+                }
+            }
+            return store.closeLatest
+        }
     }
 
 
@@ -187,15 +210,6 @@ class ToastComponent {
         css(" align-items: start;")
         css(" box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;")
 
-    }
-
-    var standAlone: Boolean = false
-    fun standAlone(value: Boolean) {
-        standAlone = value
-    }
-
-    fun standAlone(value: () -> Boolean) {
-        standAlone = value()
     }
 
     var title: (RenderContext.() -> Unit)? = null
@@ -303,6 +317,35 @@ class ToastComponent {
         }
     }
 
+    private fun renderToastContainer(
+        renderContext: RenderContext,
+        styling: BasicParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ) {
+        renderContext.div {
+            Position.positionList.forEach {
+                val placementStyle = when (it) {
+                    bottom -> Theme().toast.placement.bottom
+                    bottomLeft -> Theme().toast.placement.bottomLeft
+                    bottomRight -> Theme().toast.placement.bottomRight
+                    top -> Theme().toast.placement.top
+                    topLeft -> Theme().toast.placement.topLeft
+                    topRight -> Theme().toast.placement.topRight
+                    else -> Theme().toast.placement.bottom
+                }
+
+                (::ul.styled(styling, staticCss + baseClass, id, prefix) {
+                    placementStyle()
+                }){
+                    ToastStore.data.map { toastList -> toastList.filter { toast -> toast.position == it } }
+                        .renderEach { element -> element.toastRenderContext.invoke(this) }
+                }
+            }
+        }
+    }
+
     private fun renderTitleAndDescription(renderContext: Div) {
         if (isCloseable) {
             closeButton()
@@ -346,8 +389,16 @@ class ToastComponent {
         }
     }
 
+    fun show(styling: BasicParams.() -> Unit = {},
+             baseClass: StyleClass? = null,
+             id: String? = null,
+             prefix: String = defaultToastContainerId) {
 
-    fun show() {
+        // TODO: Render via 'appendToBody' once a solution is found
+        if (!containerRendered) {
+            renderToastContainer(renderContext, styling, baseClass, id, prefix)
+            containerRendered = true
+        }
 
         val listId = uniqueId()
         var job: Job? = null
@@ -397,73 +448,25 @@ class ToastComponent {
         }
 
     }
-
-    fun closeAllToasts(): SimpleHandler<Unit> {
-        val store = object : RootStore<String>("") {
-            val closeAll = handle {
-                ToastStore.removeAll.invoke()
-                it
-            }
-        }
-        return store.closeAll
-    }
-
-    fun closeLastToast(): SimpleHandler<Unit> {
-        val store = object : RootStore<String>("") {
-            val closeLatest = handle {
-                ToastStore.removeLast.invoke()
-                it
-            }
-        }
-
-        return store.closeLatest
-    }
 }
 
 /**
+ * This factory method creates a toast and displays it _right away_.
+ * Use [showToastDelayed] in order to display a toast delayed, e.g. when a button is pressed.
  *
- *  These component generates a toast
+ * A toast usually consists of a title and a description. At least one of these must be given or a custom component
+ * must be included instead as shown below:
  *
- *  A toast normally consists of a title and a description. At least one of these must be given or a custom component
- *  must be included instead.
- *
- *  toast {
- *      customComponent {
- *          p { +"my custom component"}
- *      }
- *    }
- *
- *
- *  You can bind this toast to a Flow where every element of this Flow will then create a toast or
- *  you combine the toast directly with some other component that has a listener which fits to our handler like a [clickButton].
- *  If you bind it directly to an Flow, you have to set the standAlone property to true
- *
- *   val myFlow = flowOf(listOf(1 to "one", 2 to "two", 3 to "three"))
- *
- *   myFlow.render {
- *      toast {
- *      standAlone { true }
- *      status { warning }
- *      position { bottomRight }
- *      title { it.first.toString() }
- *      description { it.second }
- *      duration { 8000 }
+ * ```
+ * showToast {
+ *     customComponent {
+ *         p { +"my custom toast message"}
  *     }
- *   }
- *
- *
- *   clickButton {
- *     variant { outline }
- *     text("ADD TOAST")
- *    } handledBy toast {
- *
- *     position { topLeft }
- *     title("Title")
- *     description("Description")
- *   }
+ * }
+ * ```
  *
  * For a detailed overview about the possible properties of the component object itself and more use cases,
- * have a look at [ToastComponent]
+ * have a look at [ToastComponent].
  *
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
@@ -471,51 +474,79 @@ class ToastComponent {
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself.
- * @return a [SimpleHandler]
  *
  */
-fun RenderContext.toast(
+fun RenderContext.showToast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
-    prefix: String = "ul-toast-container",
+    prefix: String = defaultToastContainerId,
     build: ToastComponent.() -> Unit,
+) {
+    val component = ToastComponent(this).apply(build)
+    component.show(styling, baseClass, id, prefix)
+}
+
+/**
+ * This factory method creates a toast that will be shown when the returned handler is triggered, eg. on a button press.
+ *
+ * You can bind this toast to a Flow where every element of this Flow will then create a toast or
+ * you may combine the toast directly with some other component that has a listener which fits to our handler, like for
+ * example a [clickButton].
+ *
+ * Example of binding a toast message to a Flow:
+ * ```
+ * val myFlow = flowOf(listOf(1 to "one", 2 to "two", 3 to "three"))
+ *
+ * myFlow.render {
+ *     toast {
+ *         status { warning }
+ *         position { bottomRight }
+ *         title { it.first.toString() }
+ *         description { it.second }
+ *         duration { 8000 }
+ *     }
+ * }
+ * ```
+ *
+ * Example of binding a toast message to a button event:
+ * ```
+ * clickButton {
+ *    variant { outline }
+ *    text("ADD TOAST")
+ * } handledBy showToastDelayed {
+ *
+ *    position { topLeft }
+ *    title("Title")
+ *    description("Description")
+ * }
+ * ```
+ *
+ * For a detailed overview about the possible properties of the component object itself and more use cases,
+ * have a look at [ToastComponent].
+ *
+ *
+ * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the element
+ * @param id the ID of the element
+ * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param build a lambda expression for setting up the component itself.
+ */
+fun RenderContext.showToastDelayed(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: StyleClass? = null,
+    id: String? = null,
+    prefix: String = defaultToastContainerId,
+    build: ToastComponent.() -> Unit
 ): SimpleHandler<Unit> {
 
+    val component = ToastComponent(this).apply(build)
 
-    val component = ToastComponent().apply(build)
-    if (component.standAlone) {
-        component.show()
-    }
-
-    val store = object : RootStore<AddToast>({}) {
-        val add = handle {
-            component.show()
-
+    val pendingToastStore = object : RootStore<AddToast>({}) {
+        val show = handle {
+            component.show(styling, baseClass, id, prefix)
             it
         }
     }
-
-    div {
-        Position.positionList.forEach {
-            val placementStyle = when (it) {
-                bottom -> Theme().toast.placement.bottom
-                bottomLeft -> Theme().toast.placement.bottomLeft
-                bottomRight -> Theme().toast.placement.bottomRight
-                top -> Theme().toast.placement.top
-                topLeft -> Theme().toast.placement.topLeft
-                topRight -> Theme().toast.placement.topRight
-                else -> Theme().toast.placement.bottom
-            }
-
-            (::ul.styled(styling, baseClass + ToastComponent.staticCss, id, prefix) {
-                placementStyle()
-            }){
-                ToastComponent.ToastStore.data.map { toastList -> toastList.filter { toast -> toast.position == it } }
-                    .renderEach { element -> element.toastRenderContext.invoke(this) }
-            }
-        }
-    }
-
-    return store.add
+    return pendingToastStore.show
 }
