@@ -3,7 +3,6 @@ package dev.fritz2.repositories.rest
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.invoke
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
@@ -86,7 +85,7 @@ class RestTests {
                 div(id = nameId) { nameSubStore.data.asText() }
                 div(id = ageId) { ageSubStore.data.asText() }
             }
-        }.mount(targetId)
+        }
 
         entityStore.update(startPerson)
         delay(100)
@@ -163,7 +162,7 @@ class RestTests {
                     }.asText()
                 }
             }
-        }.mount(targetId)
+        }
 
         testList.forEach {
             queryStore.addOrUpdate(it)
@@ -239,7 +238,7 @@ class RestTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         testList.forEach {
             queryStore.addOrUpdate(it)

@@ -1,11 +1,9 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLDivElement
@@ -30,7 +28,7 @@ class RenderTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -60,7 +58,7 @@ class RenderTests {
                     if (value) div { +"on" } else span { +"off" }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 

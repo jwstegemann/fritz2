@@ -2,11 +2,9 @@ package dev.fritz2.validation
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -67,7 +65,7 @@ class ValidationJSTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
         val divData = document.getElementById(idData) as HTMLDivElement

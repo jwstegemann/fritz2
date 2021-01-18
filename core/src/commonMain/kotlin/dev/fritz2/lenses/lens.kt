@@ -78,6 +78,11 @@ inline fun <P> format(crossinline parse: (String) -> P, crossinline format: (P) 
 typealias IdProvider<T, I> = (T) -> I
 
 /**
+ * Occurs when [Lens] points to non existing element.
+ */
+class LensException: Exception()
+
+/**
  * creates a [Lens] pointing to a certain element in a list
  *
  * @param element current instance of the element to focus on
@@ -89,7 +94,7 @@ fun <T, I> elementLens(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, 
 
     override fun get(parent: List<T>): T = parent.find {
         idProvider(it) == idProvider(element)
-    } ?: throw IndexOutOfBoundsException()
+    } ?: throw LensException()
 
     override fun set(parent: List<T>, value: T): List<T> = parent.map {
         if (idProvider(it) == idProvider(value)) value else it

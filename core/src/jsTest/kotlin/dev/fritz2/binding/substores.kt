@@ -1,13 +1,11 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.lenses.format
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLDivElement
@@ -58,7 +56,7 @@ class SubStoreTests {
                     div(id = postalCodeId) { codeSub.data.asText() }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
 
@@ -109,7 +107,7 @@ class SubStoreTests {
                     div(id = completeSub.id) { completeSub.data.asText() }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
 

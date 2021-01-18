@@ -3,7 +3,6 @@ package dev.fritz2.repositories.localstorage
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.invoke
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
@@ -12,7 +11,6 @@ import dev.fritz2.resource.Resource
 
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -80,7 +78,7 @@ class LocalStorageTests {
                 div(id = nameId) { nameSubStore.data.asText() }
                 div(id = ageId) { ageSubStore.data.asText() }
             }
-        }.mount(targetId)
+        }
 
         entityStore.update(startPerson)
         delay(100)
@@ -159,7 +157,7 @@ class LocalStorageTests {
                     }.asText()
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -227,7 +225,7 @@ class LocalStorageTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         testList.forEach {
             queryStore.addOrUpdate(it)
