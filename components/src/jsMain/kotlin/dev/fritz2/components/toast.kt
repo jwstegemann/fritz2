@@ -261,7 +261,7 @@ class ToastComponent(private val renderContext: RenderContext) {
         status = value
     }
 
-    var duration: Long = 5000
+    var duration: Long = 5000L
     fun duration(value: () -> Long) {
         duration = value()
     }
@@ -314,15 +314,15 @@ class ToastComponent(private val renderContext: RenderContext) {
         id: String? = null,
         prefix: String = defaultInnerToastPrefix
     ) {
-        val toastID = id?: uniqueId()
+        val toastId = id?: uniqueId()
 
         var job: Job? = null
         val clickStore = object : RootStore<String>("") {
             val delete = handle {
                 job?.cancel()
-                val currentToastListElement = toastMap[toastID]
-                document.getElementById(toastID)!!.setAttribute("style", "opacity: 0;")
-                toastMap.remove(toastID)
+                val currentToastListElement = toastMap[toastId]
+                document.getElementById(toastId)!!.setAttribute("style", "opacity: 0;")
+                toastMap.remove(toastId)
                 delay(1020)
                 ToastStore.remove(currentToastListElement!!)
                 it
@@ -333,7 +333,7 @@ class ToastComponent(private val renderContext: RenderContext) {
             closeButton()
 
         val toast: ToastRenderContext = {
-            (::li.styled(id = toastID) {
+            (::li.styled(id = toastId) {
                 listStyle()
                 alignItems { center }
             }){
@@ -349,8 +349,8 @@ class ToastComponent(private val renderContext: RenderContext) {
             }
         }
 
-        val listContext = ToastListElement(toast, toastID, position, duration)
-        toastMap[toastID] = listContext
+        val listContext = ToastListElement(toast, toastId, position, duration)
+        toastMap[toastId] = listContext
         ToastStore.add(listContext)
 
         job = GlobalScope.launch {
@@ -404,55 +404,81 @@ fun RenderContext.showToast(
 /**
  * Convenience factory that creates an info-toast with a given [title] and [description].
  *
+ * Additional adjustments can be made via the standard `build`-lambda. Note that any custom _content_ will be ignored,
+ * however!
+ *
  * @param title Text to be used for the title of the toast
  * @param description Text to be used for the description (secondary text) of the toast.
+ * @param build Optional additional build arguments
  */
 fun RenderContext.showInfoToast(
     title: String,
     description: String,
-) = showToastWithTitleAndDescription(title, description, status = { info })
+    build: ToastComponent.() -> Unit = {},
+) = showToastWithTitleAndDescription(title, description, status = { info }, build)
 
 /**
  * Convenience factory that creates a success-toast with a given [title] and [description].
  *
+ * Additional adjustments can be made via the standard `build`-lambda. Note that any custom _content_ will be ignored,
+ * however!
+ *
  * @param title Text to be used for the title of the toast
  * @param description Text to be used for the description (secondary text) of the toast.
+ * @param build Optional additional build arguments
  */
 fun RenderContext.showSuccessToast(
     title: String,
     description: String,
-) = showToastWithTitleAndDescription(title, description, status = { success })
+    build: ToastComponent.() -> Unit = {},
+) = showToastWithTitleAndDescription(title, description, status = { success }, build)
 
 /**
  * Convenience factory that creates a warning-toast with a given [title] and [description].
  *
+ * Additional adjustments can be made via the standard `build`-lambda. Note that any custom _content_ will be ignored,
+ * however!
+ *
  * @param title Text to be used for the title of the toast
  * @param description Text to be used for the description (secondary text) of the toast.
+ * @param build Optional additional build arguments
  */
 fun RenderContext.showWarningToast(
     title: String,
     description: String,
-) = showToastWithTitleAndDescription(title, description, status = { warning })
+    build: ToastComponent.() -> Unit = {},
+) = showToastWithTitleAndDescription(title, description, status = { warning }, build)
 
 /**
  * Convenience factory that creates an error-toast with a given [title] and [description].
  *
+ * Additional adjustments can be made via the standard `build`-lambda. Note that any custom _content_ will be ignored,
+ * however!
+ *
  * @param title Text to be used for the title of the toast
  * @param description Text to be used for the description (secondary text) of the toast.
+ * @param build Optional additional build arguments
  */
 fun RenderContext.showErrorToast(
     title: String,
     description: String,
-) = showToastWithTitleAndDescription(title, description, status = { error })
+    build: ToastComponent.() -> Unit = {},
+) = showToastWithTitleAndDescription(title, description, status = { error }, build)
 
 private fun RenderContext.showToastWithTitleAndDescription(
     title: String,
     description: String,
-    status: ToastStatus.() -> Style<BasicParams>
+    status: ToastStatus.() -> Style<BasicParams>,
+    build: ToastComponent.() -> Unit,
 ) {
     showToast {
+        // Apply default settings
         this.status = status
+        position { bottomRight }
         isCloseable(true)
+
+        // Apply additional build functions. Content will be ignored as it gets overwritten below.
+        build()
 
         content {
             (::span.styled() {
