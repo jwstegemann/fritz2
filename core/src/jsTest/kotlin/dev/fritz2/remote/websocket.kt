@@ -5,9 +5,10 @@ import dev.fritz2.binding.watch
 import dev.fritz2.dom.html.render
 import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
+import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
-import dev.fritz2.repositories.Resource
-import dev.fritz2.serialization.Serializer
+import dev.fritz2.resource.Resource
+
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.test.targetId
@@ -154,16 +155,17 @@ class WebSocketTests {
     private val ageLens = buildLens("age", SocketPerson::age) { p, v -> p.copy(age = v) }
     private val idLens = buildLens("id", SocketPerson::_id) { p, v -> p.copy(_id = v) }
 
-    object PersonSerializer : Serializer<SocketPerson, String> {
-        override fun write(item: SocketPerson): String = JSON.stringify(item)
-        override fun read(msg: String): SocketPerson {
-            val obj = JSON.parse<dynamic>(msg)
+    object PersonResource : Resource<SocketPerson, String> {
+        override val idProvider: IdProvider<SocketPerson, String> = SocketPerson::_id
+        override fun serialize(item: SocketPerson): String = JSON.stringify(item)
+        override fun deserialize(source: String): SocketPerson {
+            val obj = JSON.parse<dynamic>(source)
             return SocketPerson(obj.name as String, obj.age as Int, obj._id as String)
         }
 
-        override fun writeList(items: List<SocketPerson>): String = JSON.stringify(items)
-        override fun readList(msg: String): List<SocketPerson> {
-            val list = JSON.parse<Array<dynamic>>(msg)
+        override fun serializeList(items: List<SocketPerson>): String = JSON.stringify(items)
+        override fun deserializeList(source: String): List<SocketPerson> {
+            val list = JSON.parse<Array<dynamic>>(source)
             return list.map { obj -> SocketPerson(obj.name as String, obj.age as Int, obj._id as String) }
         }
     }
@@ -172,26 +174,21 @@ class WebSocketTests {
     fun testSyncWith() = runTest {
         initDocument()
 
+        val defaultPerson = SocketPerson("", 0)
         val startPerson = SocketPerson("Heinz", 18)
         val changedAge = 99
         val testId = "test"
         val testName = "Hans"
 
-        val personResource = Resource(
-                SocketPerson::_id,
-                PersonSerializer,
-                SocketPerson("", 0)
-        )
-
         val socket = websocket.append("json")
 
-        val entityStore = object : RootStore<SocketPerson>(personResource.emptyEntity) {
+        val entityStore = object : RootStore<SocketPerson>(defaultPerson) {
             override fun errorHandler(exception: Throwable, oldValue: SocketPerson): SocketPerson {
                 fail(exception.message)
             }
 
             init {
-                syncWith(socket, personResource)
+                syncWith(socket, PersonResource)
             }
         }
 
