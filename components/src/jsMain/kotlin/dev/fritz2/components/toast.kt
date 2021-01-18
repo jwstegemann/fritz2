@@ -11,8 +11,10 @@ import dev.fritz2.components.Position.topLeft
 import dev.fritz2.components.Position.topRight
 import dev.fritz2.components.ToastComponent.Companion.closeAllToasts
 import dev.fritz2.components.ToastComponent.Companion.closeLastToast
+import dev.fritz2.dom.appendToBody
 import dev.fritz2.dom.html.Li
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.renderElement
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -20,10 +22,7 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.rgb
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.IconDefinition
-import dev.fritz2.styling.theme.Icons
-import dev.fritz2.styling.theme.Theme
-import dev.fritz2.styling.theme.ToastStatus
+import dev.fritz2.styling.theme.*
 import kotlinx.browser.document
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -125,7 +124,8 @@ class ToastComponent(private val renderContext: RenderContext) {
 
 
     companion object {
-        val staticCss = staticStyle(
+
+        private val staticCss = staticStyle(
             "toastContainer",
             """
                position: fixed; 
@@ -136,13 +136,42 @@ class ToastComponent(private val renderContext: RenderContext) {
            
                """
         )
-
         val toastMap = mutableMapOf<String, ToastListElement>()
 
-        // Indicates whether the Div-container hosting the individual ToastListElements
-        // has already been added to the DOM.
-        // TODO: Should this be synchronized?
-        private var containerRendered = false
+
+        init {
+            /*
+            Rendering of the toast container hosting all toast messages.
+
+            Important: As for now elements added via `appendToBody` may be overwritten by the `mount`-call in the
+            application's app.kt. A temporary fix is to mount the app's root element to any other element than `body`.
+
+            Once the underlying changes required to fix this are made to fritz2, this call of `appendToBody` needs to be
+            replaced with `render`!
+             */
+            appendToBody(renderElement {
+                div {
+                    Position.positionList.forEach {
+                        val placementStyle = when (it) {
+                            bottom -> Theme().toast.placement.bottom
+                            bottomLeft -> Theme().toast.placement.bottomLeft
+                            bottomRight -> Theme().toast.placement.bottomRight
+                            top -> Theme().toast.placement.top
+                            topLeft -> Theme().toast.placement.topLeft
+                            topRight -> Theme().toast.placement.topRight
+                            else -> Theme().toast.placement.bottom
+                        }
+
+                        (::ul.styled(staticCss, id, defaultToastContainerPrefix) {
+                            placementStyle()
+                        }){
+                            ToastStore.data.map { toastList -> toastList.filter { toast -> toast.position == it } }
+                                .renderEach { element -> element.toastRenderContext.invoke(this) }
+                        }
+                    }
+                }
+            })
+        }
 
 
         // TODO: Are these really needed?:
@@ -179,7 +208,6 @@ class ToastComponent(private val renderContext: RenderContext) {
     }
 
     val toastInner: Style<BasicParams> = {
-
         maxWidth { "560px" }
         minWidth { "300px" }
         height { "72px" }
@@ -272,73 +300,48 @@ class ToastComponent(private val renderContext: RenderContext) {
     }
 
 
-    private fun renderToastContainer(
-        renderContext: RenderContext,
-        styling: BasicParams.() -> Unit,
-        baseClass: StyleClass?,
-        id: String?,
-        prefix: String
+    /**
+     * Makes the toast visible on the screen.
+     *
+     * @param styling Additional styling of the toast
+     * @param baseClass Base class of the toast style
+     * @param id Specific id to use for the toast
+     * @param prefix Specific prefix to use for the generated CSS of the toast
+     */
+    fun show(
+        styling: BasicParams.() -> Unit = {},
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = defaultInnerToastPrefix
     ) {
-        renderContext.div {
-            Position.positionList.forEach {
-                val placementStyle = when (it) {
-                    bottom -> Theme().toast.placement.bottom
-                    bottomLeft -> Theme().toast.placement.bottomLeft
-                    bottomRight -> Theme().toast.placement.bottomRight
-                    top -> Theme().toast.placement.top
-                    topLeft -> Theme().toast.placement.topLeft
-                    topRight -> Theme().toast.placement.topRight
-                    else -> Theme().toast.placement.bottom
-                }
+        val toastID = id?: uniqueId()
 
-                (::ul.styled(styling, staticCss + baseClass, id, prefix) {
-                    placementStyle()
-                }){
-                    ToastStore.data.map { toastList -> toastList.filter { toast -> toast.position == it } }
-                        .renderEach { element -> element.toastRenderContext.invoke(this) }
-                }
-            }
-        }
-    }
-
-    fun show(styling: BasicParams.() -> Unit = {},
-             baseClass: StyleClass? = null,
-             id: String? = null,
-             prefix: String = defaultToastContainerPrefix
-    ) {
-        // TODO: Render in the companion object via the new, non-overriding 'render'-function once fritz2 0.9 is available
-        if (!containerRendered) {
-            renderToastContainer(renderContext, styling, baseClass, id, prefix)
-            containerRendered = true
-        }
-
-        if (isCloseable) {
-            closeButton()
-        }
-
-        val listId = uniqueId()
         var job: Job? = null
         val clickStore = object : RootStore<String>("") {
             val delete = handle {
                 job?.cancel()
-                val currentToastListElement = toastMap[listId]
-                document.getElementById(listId)!!.setAttribute("style", "opacity: 0;")
-                toastMap.remove(listId)
+                val currentToastListElement = toastMap[toastID]
+                document.getElementById(toastID)!!.setAttribute("style", "opacity: 0;")
+                toastMap.remove(toastID)
                 delay(1020)
                 ToastStore.remove(currentToastListElement!!)
                 it
             }
         }
 
+        if (isCloseable)
+            closeButton()
+
         val toast: ToastRenderContext = {
-            (::li.styled(id = listId) {
+            (::li.styled(id = toastID) {
                 listStyle()
                 alignItems { center }
             }){
-                (::div.styled(prefix = defaultInnerToastPrefix) {
+                (::div.styled(prefix = prefix, baseClass = baseClass) {
                     toastInner()
                     status.invoke(Theme().toast.status)()
                     content?.let { alertStyle() }
+                    styling()
                 }){
                     content?.invoke(this)
                     closeButton?.invoke(this, clickStore.delete)
@@ -346,8 +349,8 @@ class ToastComponent(private val renderContext: RenderContext) {
             }
         }
 
-        val listContext = ToastListElement(toast, listId, position, duration)
-        toastMap[listId] = listContext
+        val listContext = ToastListElement(toast, toastID, position, duration)
+        toastMap[toastID] = listContext
         ToastStore.add(listContext)
 
         job = GlobalScope.launch {
@@ -524,11 +527,11 @@ private fun RenderContext.showToastWithTitleAndDescription(
  * have a look at [ToastComponent].
  *
  *
- * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
- * @param baseClass optional CSS class that should be applied to the element
- * @param id the ID of the element
- * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself.
+ * @param styling a lambda expression for declaring the styling of the toast using fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the toast element
+ * @param id the ID of the toast element
+ * @param prefix the prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
+ * @param build a lambda expression for setting up the component itself
  */
 fun RenderContext.delayedToast(
     styling: BasicParams.() -> Unit = {},
