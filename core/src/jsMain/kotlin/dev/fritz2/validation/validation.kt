@@ -3,6 +3,7 @@ package dev.fritz2.validation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
 /**
  * Describes the logic for validating a given data-model.
@@ -22,6 +23,18 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      * If no messages result from validation its returns an empty list.
      */
     val msgs = state as Flow<List<M>>
+
+    /**
+     * Finds the first [ValidationMessage] matching the given [predicate].
+     * If no such element was found, nothing gets called afterwards.
+     */
+    fun find(predicate: (M) -> Boolean): Flow<M> = msgs.mapNotNull { it.find(predicate) }
+
+    /**
+     * Returns a [Flow] of list containing only
+     * [ValidationMessage]s matching the given [predicate].
+     */
+    fun filter(predicate: (M) -> Boolean): Flow<List<M>> = msgs.map { it.filter(predicate) }
 
     /**
      * validates the given data by using the given metadata and returns

@@ -35,6 +35,8 @@ class ValidationJSTests {
 
         val idData = "data-${uniqueId()}"
         val idMessages = "messages-${uniqueId()}"
+        val idFind = "find-${uniqueId()}"
+        val idFilter = "filter-${uniqueId()}"
 
         render {
             div {
@@ -48,12 +50,28 @@ class ValidationJSTests {
                         }
                     }
                 }
+                div(id = idFind) {
+                    carValidator.find { it == colorValuesAreToLow }.render {
+                        p {
+                            +it.text
+                        }
+                    }
+                }
+                div(id = idFilter) {
+                    carValidator.filter { it == colorValuesAreToLow }.render {
+                        p {
+                            +(it.firstOrNull()?.text ?: "")
+                        }
+                    }
+                }
             }
         }
 
         delay(100)
         val divData = document.getElementById(idData) as HTMLDivElement
         val divMessages = document.getElementById(idMessages) as HTMLDivElement
+        val findMessages = document.getElementById(idFind) as HTMLDivElement
+        val filterMessages = document.getElementById(idFilter) as HTMLDivElement
 
         assertEquals(carName, divData.textContent, "initial car name is wrong")
         assertEquals(0, divMessages.childElementCount, "there are messages")
@@ -68,6 +86,7 @@ class ValidationJSTests {
             divMessages.firstElementChild?.textContent,
             "c1: there is not expected message"
         )
+        assertEquals(0, findMessages.childElementCount, "c1 find: there is not 0 message")
 
         store.update(c2)
         delay(100)
@@ -78,6 +97,18 @@ class ValidationJSTests {
             colorValuesAreToLow.text,
             divMessages.firstElementChild?.textContent,
             "c2: there is not expected message"
+        )
+        assertEquals(1, findMessages.childElementCount, "c2 find: there is not 1 message")
+        assertEquals(
+            colorValuesAreToLow.text,
+            findMessages.firstElementChild?.textContent,
+            "c2 find: there is not expected message"
+        )
+        assertEquals(1, filterMessages.childElementCount, "c2 filter: there is not 1 message")
+        assertEquals(
+            colorValuesAreToLow.text,
+            filterMessages.firstElementChild?.textContent,
+            "c2 filter: there is not expected message"
         )
 
         store.update(c3)
