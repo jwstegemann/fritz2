@@ -222,51 +222,10 @@ class ToastComponent(private val renderContext: RenderContext) {
 
     }
 
-    var title: (RenderContext.() -> Unit)? = null
-    fun title(value: Flow<String>) {
-        title = {
-            (::div.styled(prefix = "toast-title") {
-                fontWeight { "700" }
-                lineHeight { "1.5rem" }
-                margins {
-                    right { "0.5rem" }
-                }
 
-            }){ value.asText() }
-        }
-    }
-
-    fun title(value: String) {
-        this.title(flowOf(value))
-    }
-
-    fun title(value: () -> String) {
-        this.title(flowOf(value()))
-    }
-
-
-    var description: (RenderContext.() -> Unit)? = null
-    fun description(value: Flow<String>) {
-        description = {
-            (::div.styled(prefix = "toast-description") {
-                display { block }
-                lineHeight { "1.5rem" }
-
-            }){ value.asText() }
-        }
-    }
-
-    fun description(value: String) {
-        this.description(flowOf(value))
-    }
-
-    fun description(value: () -> String) {
-        this.description(flowOf(value()))
-    }
-
-    var customComponent: (RenderContext.() -> Unit)? = null
-    fun customComponent(value: RenderContext.() -> Unit) {
-        customComponent = value
+    var content: (RenderContext.() -> Unit)? = null
+    fun content(value: RenderContext.() -> Unit) {
+        content = value
     }
 
     var icon: IconDefinition = Theme().icons.circleInformation
@@ -306,7 +265,6 @@ class ToastComponent(private val renderContext: RenderContext) {
         isCloseable = value
     }
 
-
     var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
     private fun closeButton(
         baseClass: StyleClass? = null,
@@ -326,6 +284,7 @@ class ToastComponent(private val renderContext: RenderContext) {
             }.map { Unit } handledBy closeHandle
         }
     }
+
 
     private fun renderToastContainer(
         renderContext: RenderContext,
@@ -356,49 +315,6 @@ class ToastComponent(private val renderContext: RenderContext) {
         }
     }
 
-    private fun renderTitleAndDescription(renderContext: Div) {
-        if (isCloseable) {
-            closeButton()
-        }
-
-        if (title == null || description == null) {
-            renderContext.apply {
-                p { +"You have to define a title and a description or you just define a custom component !" }
-            }
-        } else {
-            renderContext.apply {
-                (::span.styled() {
-                    margins { right { "0.75rem" } }
-                    width { "1.25rem" }
-                    height { "1.5rem" }
-                    display { inherit }
-                    flex { shrink { "0" } }
-                }){
-                    icon {
-                        fromTheme { icon }
-                    }
-                }
-                (::div.styled {
-                    css("flex: 1 1 0%;")
-                }){
-                    title?.invoke(this)
-                    description?.invoke(this)
-                }
-            }
-        }
-    }
-
-    private fun renderCustomComponent(renderContext: Div) {
-        renderContext.apply {
-            (::div.styled {
-
-            }){
-                customComponent!!.invoke(this)
-            }
-
-        }
-    }
-
     fun show(styling: BasicParams.() -> Unit = {},
              baseClass: StyleClass? = null,
              id: String? = null,
@@ -408,6 +324,10 @@ class ToastComponent(private val renderContext: RenderContext) {
         if (!containerRendered) {
             renderToastContainer(renderContext, styling, baseClass, id, prefix)
             containerRendered = true
+        }
+
+        if (isCloseable) {
+            closeButton()
         }
 
         val listId = uniqueId()
@@ -432,18 +352,20 @@ class ToastComponent(private val renderContext: RenderContext) {
                 (::div.styled(prefix = "toast-inner") {
                     toastInner()
                     status.invoke(Theme().toast.status)()
-                    customComponent?.let { alertStyle() }
+                    content?.let { alertStyle() }
                 }){
-                    customComponent?.let { renderCustomComponent(this) }
+                    content?.invoke(this)
+                    closeButton?.invoke(this, clickStore.delete)
 
-                    if (customComponent == null) {
+                    // TODO: Remove
+                    /*if (content == null) {
                         (::div.styled(prefix = "toast-alert") {
                             alertStyle()
                         }){
                             renderTitleAndDescription(this)
                             closeButton?.invoke(this, clickStore.delete)
                         }
-                    }
+                    }*/
                 }
             }
         }
@@ -462,15 +384,18 @@ class ToastComponent(private val renderContext: RenderContext) {
 
 /**
  * This factory method creates a toast and displays it _right away_.
- * Use [showToastDelayed] in order to display a toast delayed, e.g. when a button is pressed.
+ * Use [delayedToast] in order to display a toast delayed, e.g. when a button is pressed.
  *
- * A toast usually consists of a title and a description. At least one of these must be given or a custom component
- * must be included instead as shown below:
+ * A toast usually consists of a title and a description but you are free to specify any content you prefer via the
+ * `content { ... }` method. In most cases it should be sufficient to use on of the convenience factories
+ * [showInfoToast], [showSuccessToast], [showWarningToast] or [showErrorToast], though. They use a unified layout
+ * consisting of a title and a description which you can simply pass as a parameter.
  *
+ * Example of a custom content:
  * ```
  * showToast {
- *     customComponent {
- *         p { +"my custom toast message"}
+ *     content {
+ *         p { +"My toast content"}
  *     }
  * }
  * ```
@@ -496,6 +421,79 @@ fun RenderContext.showToast(
     val component = ToastComponent(this).apply(build)
     component.show(styling, baseClass, id, prefix)
 }
+
+private fun RenderContext.showToastWithTitleAndDescription(
+    id: String?,
+    prefix: String,
+    title: String,
+    description: String,
+    status: ToastStatus.() -> Style<BasicParams>
+) {
+    showToast(id = id, prefix = prefix) {
+        this.status = status
+        isCloseable(true)
+
+        content {
+            (::span.styled() {
+                margins { right { "0.75rem" } }
+                width { "1.25rem" }
+                height { "1.5rem" }
+                display { inherit }
+                flex { shrink { "0" } }
+            }){
+                icon {
+                    fromTheme { icon }
+                }
+            }
+            (::div.styled {
+                css("flex: 1 1 0%;")
+            }){
+                (::div.styled(prefix = "toast-title") {
+                    fontWeight { "700" }
+                    lineHeight { "1.5rem" }
+                    margins {
+                        right { "0.5rem" }
+                    }
+
+                }){ +title }
+
+                (::div.styled(prefix = "toast-description") {
+                    display { block }
+                    lineHeight { "1.5rem" }
+
+                }){ +description }
+            }
+        }
+    }
+}
+
+fun RenderContext.showInfoToast(
+    id: String? = null,
+    prefix: String = defaultToastContainerId,
+    title: String,
+    description: String
+) = showToastWithTitleAndDescription(id, prefix, title, description, status = { info })
+
+fun RenderContext.showSuccessToast(
+    id: String? = null,
+    prefix: String = defaultToastContainerId,
+    title: String,
+    description: String
+) = showToastWithTitleAndDescription(id, prefix, title, description, status = { success })
+
+fun RenderContext.showWarningToast(
+    id: String? = null,
+    prefix: String = defaultToastContainerId,
+    title: String,
+    description: String
+) = showToastWithTitleAndDescription(id, prefix, title, description, status = { warning })
+
+fun RenderContext.showErrorToast(
+    id: String? = null,
+    prefix: String = defaultToastContainerId,
+    title: String,
+    description: String
+) = showToastWithTitleAndDescription(id, prefix, title, description, status = { error })
 
 /**
  * This factory method creates a toast that will be shown when the returned handler is triggered, eg. on a button press.
@@ -542,7 +540,7 @@ fun RenderContext.showToast(
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself.
  */
-fun RenderContext.showToastDelayed(
+fun RenderContext.delayedToast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
