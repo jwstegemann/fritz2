@@ -9,7 +9,8 @@ import dev.fritz2.components.Position.bottomRight
 import dev.fritz2.components.Position.top
 import dev.fritz2.components.Position.topLeft
 import dev.fritz2.components.Position.topRight
-import dev.fritz2.dom.html.Div
+import dev.fritz2.components.ToastComponent.Companion.closeAllToasts
+import dev.fritz2.components.ToastComponent.Companion.closeLastToast
 import dev.fritz2.dom.html.Li
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
@@ -19,13 +20,14 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.rgb
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.*
+import dev.fritz2.styling.theme.IconDefinition
+import dev.fritz2.styling.theme.Icons
+import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.theme.ToastStatus
 import kotlinx.browser.document
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -51,67 +53,51 @@ object Position {
     val positionList = listOf(bottom, bottomLeft, bottomRight, top, topLeft, topRight)
 }
 
-private const val defaultToastContainerId = "ul-toast-container"
+private const val defaultToastContainerPrefix = "ul-toast-container"
+private const val defaultInnerToastPrefix = "toast-inner"
 
 /**
- * This class combines the _configuration_ and the core styling of a toast
+ * This class combines the _configuration_ and the core styling of a toast.
  *
  * You can configure the following aspects:
  * - position of the toast: top | topLeft | topRight | bottom (default) | bottomLeft | bottomRight
- * - title: title of the toast
- * - description: description of the toast
  * - status:  success | error | warning | info(default)
  * - duration: time in ms before dismiss the toast - default are 5000 ms
  * - isCloseable : if true, a close button is added for closing the toast before timer is expired
  * - icon : icon of the toast - default icon is Theme().icons.circleInformation
- * - customComponent : custom component to render instead of title and description
- *     * with a custom component you have not the ability to use the close button !
+ * - content : the toast's content (e.g. some text)
  *
- * Also, there are 2 static helper functions for the following use cases:
- *  - fun closeAllToasts() -> close all visible toasts
- *  - fun closeLastToast()  -> close the last toast
+ * As an alternative to the 'content { ... }` method there are also a hand full of convenience factories available
+ * which you can use to display simple toasts consisting of only a title and description as well as an optional
+ * close-button:
+ * - [showInfoToast]
+ * - [showSuccessToast]
+ * - [showWarningToast]
+ * - [showErrorToast]
  *
- * A use case would look like :
- *
- * ```
- * clickButton {
- *   variant { outline }
- *   text("closeAll")
- * } handledBy ToastComponent.closeAllToasts()
- * ```
- *
- * or
- *
- * ```
- * clickButton {
- *    variant { outline }
- *    text("closeLatest")
- * } handledBy ToastComponent.closeLastToast()
- * ```
- *
- * Use case showing how to configure position, duration and status:
- *
+ * Example on how to set a status, position, duration and icon:
  * ```
  * showToast {
  *     status { warning }
  *     position { bottomRight }
  *     duration { 8000 }
- *
- *     title { "Title" }
- *     description { "Description" }
- * }
- * ```
- *
- * use case showing how to set a custom icon:
- *
- * ```
- * showToast {
  *     icon { arrowRight }
- *     title { "Icon"}
- *     description {"custom icon"}
+ *
+ *     content { ... }
  * }
  * ```
  *
+ * Also, there are two static helper functions for the following use cases:
+ *  - [closeAllToasts] -> close all visible toasts
+ *  - [closeLastToast]  -> close the last toast
+ *
+ * Example:
+ * ```
+ * clickButton {
+ *      variant { outline }
+ *      text("closeAll")
+ * } handledBy ToastComponent.closeAllToasts()
+ * ```
  *
  * @param renderContext The current RenderContext under which the toast will be rendered
  */
@@ -318,8 +304,8 @@ class ToastComponent(private val renderContext: RenderContext) {
     fun show(styling: BasicParams.() -> Unit = {},
              baseClass: StyleClass? = null,
              id: String? = null,
-             prefix: String = defaultToastContainerId) {
-
+             prefix: String = defaultToastContainerPrefix
+    ) {
         // TODO: Render in the companion object via the new, non-overriding 'render'-function once fritz2 0.9 is available
         if (!containerRendered) {
             renderToastContainer(renderContext, styling, baseClass, id, prefix)
@@ -349,23 +335,13 @@ class ToastComponent(private val renderContext: RenderContext) {
                 listStyle()
                 alignItems { center }
             }){
-                (::div.styled(prefix = "toast-inner") {
+                (::div.styled(prefix = defaultInnerToastPrefix) {
                     toastInner()
                     status.invoke(Theme().toast.status)()
                     content?.let { alertStyle() }
                 }){
                     content?.invoke(this)
                     closeButton?.invoke(this, clickStore.delete)
-
-                    // TODO: Remove
-                    /*if (content == null) {
-                        (::div.styled(prefix = "toast-alert") {
-                            alertStyle()
-                        }){
-                            renderTitleAndDescription(this)
-                            closeButton?.invoke(this, clickStore.delete)
-                        }
-                    }*/
                 }
             }
         }
@@ -415,21 +391,63 @@ fun RenderContext.showToast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
-    prefix: String = defaultToastContainerId,
+    prefix: String = defaultToastContainerPrefix,
     build: ToastComponent.() -> Unit,
 ) {
     val component = ToastComponent(this).apply(build)
     component.show(styling, baseClass, id, prefix)
 }
 
+/**
+ * Convenience factory that creates an info-toast with a given [title] and [description].
+ *
+ * @param title Text to be used for the title of the toast
+ * @param description Text to be used for the description (secondary text) of the toast.
+ */
+fun RenderContext.showInfoToast(
+    title: String,
+    description: String,
+) = showToastWithTitleAndDescription(title, description, status = { info })
+
+/**
+ * Convenience factory that creates a success-toast with a given [title] and [description].
+ *
+ * @param title Text to be used for the title of the toast
+ * @param description Text to be used for the description (secondary text) of the toast.
+ */
+fun RenderContext.showSuccessToast(
+    title: String,
+    description: String,
+) = showToastWithTitleAndDescription(title, description, status = { success })
+
+/**
+ * Convenience factory that creates a warning-toast with a given [title] and [description].
+ *
+ * @param title Text to be used for the title of the toast
+ * @param description Text to be used for the description (secondary text) of the toast.
+ */
+fun RenderContext.showWarningToast(
+    title: String,
+    description: String,
+) = showToastWithTitleAndDescription(title, description, status = { warning })
+
+/**
+ * Convenience factory that creates an error-toast with a given [title] and [description].
+ *
+ * @param title Text to be used for the title of the toast
+ * @param description Text to be used for the description (secondary text) of the toast.
+ */
+fun RenderContext.showErrorToast(
+    title: String,
+    description: String,
+) = showToastWithTitleAndDescription(title, description, status = { error })
+
 private fun RenderContext.showToastWithTitleAndDescription(
-    id: String?,
-    prefix: String,
     title: String,
     description: String,
     status: ToastStatus.() -> Style<BasicParams>
 ) {
-    showToast(id = id, prefix = prefix) {
+    showToast {
         this.status = status
         isCloseable(true)
 
@@ -466,34 +484,6 @@ private fun RenderContext.showToastWithTitleAndDescription(
         }
     }
 }
-
-fun RenderContext.showInfoToast(
-    id: String? = null,
-    prefix: String = defaultToastContainerId,
-    title: String,
-    description: String
-) = showToastWithTitleAndDescription(id, prefix, title, description, status = { info })
-
-fun RenderContext.showSuccessToast(
-    id: String? = null,
-    prefix: String = defaultToastContainerId,
-    title: String,
-    description: String
-) = showToastWithTitleAndDescription(id, prefix, title, description, status = { success })
-
-fun RenderContext.showWarningToast(
-    id: String? = null,
-    prefix: String = defaultToastContainerId,
-    title: String,
-    description: String
-) = showToastWithTitleAndDescription(id, prefix, title, description, status = { warning })
-
-fun RenderContext.showErrorToast(
-    id: String? = null,
-    prefix: String = defaultToastContainerId,
-    title: String,
-    description: String
-) = showToastWithTitleAndDescription(id, prefix, title, description, status = { error })
 
 /**
  * This factory method creates a toast that will be shown when the returned handler is triggered, eg. on a button press.
@@ -544,7 +534,7 @@ fun RenderContext.delayedToast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
-    prefix: String = defaultToastContainerId,
+    prefix: String = defaultToastContainerPrefix,
     build: ToastComponent.() -> Unit
 ): SimpleHandler<Unit> {
 
