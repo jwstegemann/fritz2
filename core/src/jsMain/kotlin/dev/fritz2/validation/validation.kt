@@ -28,7 +28,7 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      * Finds the first [ValidationMessage] matching the given [predicate].
      * If no such element was found, nothing gets called afterwards.
      */
-    fun find(predicate: (M) -> Boolean): Flow<M> = msgs.mapNotNull { it.find(predicate) }
+    fun find(predicate: (M) -> Boolean): Flow<M?> = msgs.map { it.find(predicate) }
 
     /**
      * Returns a [Flow] of list containing only
