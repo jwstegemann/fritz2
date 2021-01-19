@@ -12,6 +12,7 @@ import dev.fritz2.components.Position.topRight
 import dev.fritz2.components.ToastComponent.Companion.closeAllToasts
 import dev.fritz2.components.ToastComponent.Companion.closeLastToast
 import dev.fritz2.dom.appendToBody
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Li
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.renderElement
@@ -343,7 +344,24 @@ class ToastComponent(private val renderContext: RenderContext) {
                     content?.let { alertStyle() }
                     styling()
                 }){
-                    content?.invoke(this)
+                    (::span.styled() {
+                        margins { right { "0.75rem" } }
+                        width { "1.25rem" }
+                        height { "1.5rem" }
+                        display { inherit }
+                        flex { shrink { "0" } }
+                    }){
+                        icon {
+                            fromTheme { icon }
+                        }
+                    }
+                    content?.let {
+                        (::div.styled {
+                            css("flex: 1 1 0%;")
+                        }) {
+                            content!!.invoke(this)
+                        }
+                    }
                     closeButton?.invoke(this, clickStore.delete)
                 }
             }
@@ -481,20 +499,7 @@ private fun RenderContext.showToastWithTitleAndDescription(
         build()
 
         content {
-            (::span.styled() {
-                margins { right { "0.75rem" } }
-                width { "1.25rem" }
-                height { "1.5rem" }
-                display { inherit }
-                flex { shrink { "0" } }
-            }){
-                icon {
-                    fromTheme { icon }
-                }
-            }
-            (::div.styled {
-                css("flex: 1 1 0%;")
-            }){
+            div {
                 (::div.styled(prefix = "toast-title") {
                     fontWeight { "700" }
                     lineHeight { "1.5rem" }
