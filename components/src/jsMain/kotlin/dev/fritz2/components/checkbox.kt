@@ -174,9 +174,9 @@ fun RenderContext.checkbox(
                 component.checkedStyle()
             }
         }) {
-            component.element?.invoke(this)
-            disabled(component.disabled)
-            readOnly(component.readonly)
+            component.element.value.invoke(this)
+            disabled(component.disabled.values)
+            readOnly(component.readonly.values)
             type("checkbox")
             checked(component.checked)
             component.events?.invoke(this)

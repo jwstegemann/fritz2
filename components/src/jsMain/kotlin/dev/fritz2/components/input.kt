@@ -90,57 +90,12 @@ open class InputFieldComponent : ElementProperties<Input> by Element(), InputFor
         }
     }
 
-    var variant: InputFieldVariants.() -> Style<BasicParams> = { Theme().input.variants.outline }
-
-    fun variant(value: InputFieldVariants.() -> Style<BasicParams>) {
-        variant = value
-    }
-
-    var size: InputFieldSizes.() -> Style<BasicParams> = { Theme().input.sizes.normal }
-
-    fun size(value: InputFieldSizes.() -> Style<BasicParams>) {
-        size = value
-    }
-
-    var value: Flow<String> = flowOf("")
-
-    fun value(value: Flow<String>) {
-        this.value = value
-    }
-
-    fun value(value: String) {
-        value(flowOf(value))
-    }
-
-    var placeholder: Flow<String> = flowOf("")
-
-    fun placeholder(value: Flow<String>) {
-        placeholder = value
-    }
-
-    fun placeholder(value: String) {
-        placeholder(flowOf(value))
-    }
-
-    var type: Flow<String> = flowOf("")
-
-    fun type(value: Flow<String>) {
-        type = value
-    }
-
-    fun type(value: String) {
-        type(flowOf(value))
-    }
-
-    var step: Flow<String> = flowOf("")
-
-    fun step(value: Flow<String>) {
-        step = value
-    }
-
-    fun step(value: String) {
-        step(flowOf(value))
-    }
+    var variant = ComponentProperty<InputFieldVariants.() -> Style<BasicParams>> { Theme().input.variants.outline }
+    var size = ComponentProperty<InputFieldSizes.() -> Style<BasicParams>> { Theme().input.sizes.normal }
+    var value = DynamicComponentProperty(flowOf(""))
+    var placeholder = DynamicComponentProperty(flowOf(""))
+    var type = DynamicComponentProperty(flowOf(""))
+    var step = DynamicComponentProperty(flowOf(""))
 }
 
 
@@ -206,17 +161,17 @@ fun RenderContext.inputField(
     val component = InputFieldComponent().apply(build)
 
     (::input.styled(styling, baseClass + InputFieldComponent.staticCss, id, prefix) {
-        component.size.invoke(Theme().input.sizes)()
-        component.variant.invoke(Theme().input.variants)()
+        component.size.value.invoke(Theme().input.sizes)()
+        component.variant.value.invoke(Theme().input.variants)()
         InputFieldComponent.basicInputStyles()
     }) {
-        component.element?.invoke(this)
-        disabled(component.disabled)
-        readOnly(component.readonly)
-        placeholder(component.placeholder)
-        value(component.value)
-        type(component.type)
-        step(component.step)
+        component.element.value.invoke(this)
+        disabled(component.disabled.values)
+        readOnly(component.readonly.values)
+        placeholder(component.placeholder.values)
+        value(component.value.values)
+        type(component.type.values)
+        step(component.step.values)
         store?.let {
             value(it.data)
             changes.values() handledBy it.update

@@ -10,32 +10,36 @@ import kotlinx.coroutines.flow.map
 @DslMarker
 annotation class ComponentMarker
 
-interface ElementProperties<T> {
-    var element: (T.() -> Unit)?
-
-    fun element(value: T.() -> Unit) {
-        element = value
+class ComponentProperty<T>(var value: T) {
+    operator fun invoke(newValue: T) {
+        value = newValue
     }
+}
+
+class DynamicComponentProperty<T>(var values: Flow<T>) {
+    operator fun invoke(newValue: T) {
+        values = flowOf(newValue)
+    }
+
+    operator fun invoke(newValues: Flow<T>) {
+        values = newValues
+    }
+}
+
+interface ElementProperties<T> {
+    var element: ComponentProperty<T.() -> Unit>
 }
 
 // TODO: Constraint für Typ: T : Tag<E> ?
 class Element<T> : ElementProperties<T> {
-    override var element: (T.() -> Unit)? = null
+    override var element: ComponentProperty<T.() -> Unit> = ComponentProperty {}
 }
 
 interface FormProperties {
-    var disabled: Flow<Boolean>
-
-    fun disabled(value: Flow<Boolean>) {
-        disabled = value
-    }
-
-    fun disabled(value: Boolean) {
-        disabled(flowOf(value))
-    }
+    var disabled: DynamicComponentProperty<Boolean>
 
     fun enabled(value: Flow<Boolean>) {
-        disabled = value.map { !it }
+        disabled(value.map { !it })
     }
 
     fun enabled(value: Boolean) {
@@ -44,21 +48,17 @@ interface FormProperties {
 }
 
 open class Form : FormProperties {
-    override var disabled: Flow<Boolean> = flowOf(false)
+    override var disabled = DynamicComponentProperty(flowOf(false))
 }
 
 interface InputFormProperties : FormProperties {
-
-    var readonly: Flow<Boolean>
-
-    fun readonly(value: Flow<Boolean>) {
-        readonly = value
-    }
-    fun readonly(value: Boolean) {
-        readonly(flowOf(value))
-    }
+    var readonly: DynamicComponentProperty<Boolean>
 }
 
 class InputForm : InputFormProperties, Form() {
-    override var readonly: Flow<Boolean> = flowOf(false)
+    override var readonly = DynamicComponentProperty(flowOf(false))
+}
+
+interface TextInputFormProperties : InputFormProperties {
+    // TODO Some further properties are equal between input type=text and textarea; could be worth to centralize!
 }

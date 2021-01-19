@@ -225,13 +225,12 @@ fun RenderContext.radio(
                 component.selectedStyle()
             }
         }) {
-            component.element?.invoke(this)
-            disabled(component.disabled)
-            readOnly(component.readonly)
+            component.element.value.invoke(this)
+            disabled(component.disabled.values)
+            readOnly(component.readonly.values)
             type("radio")
             name(inputName)
             checked(component.selected)
-            disabled(component.disabled)
             value("X")
             component.events?.invoke(this)
         }

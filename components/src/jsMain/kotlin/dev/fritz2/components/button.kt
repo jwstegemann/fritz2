@@ -279,10 +279,8 @@ fun RenderContext.pushButton(
         component.variant.invoke(Theme().button.variants)()
         component.size.invoke(Theme().button.sizes)()
     }) {
-        component.element?.invoke(this)
-        component.element?.invoke(this)
-        disabled(component.disabled)
-//        readOnly(component.readonly)
+        component.element.value.invoke(this)
+        disabled(component.disabled.values)
         if (component.label == null) {
             component.renderIcon(this, component.centerIconStyle, component.centerSpinnerStyle)
         } else {
