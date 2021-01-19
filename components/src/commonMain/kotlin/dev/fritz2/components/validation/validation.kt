@@ -3,7 +3,12 @@ package dev.fritz2.components.validation
 import dev.fritz2.validation.ValidationMessage
 import dev.fritz2.validation.Validator
 
-data class ComponentValidationMessage(val id: String, val severity: Severity, val message: String) : ValidationMessage {
+data class ComponentValidationMessage(
+    val id: String,
+    val severity: Severity,
+    val message: String,
+    val details: String? = null,
+) : ValidationMessage {
     override fun isError(): Boolean = severity > Severity.Warning
 }
 
