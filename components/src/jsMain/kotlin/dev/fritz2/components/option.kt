@@ -1,12 +1,10 @@
 package dev.fritz2.components
 
-import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Option
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import org.w3c.dom.HTMLOptionElement
 
 /**
  * This class offers the configuration for an option element

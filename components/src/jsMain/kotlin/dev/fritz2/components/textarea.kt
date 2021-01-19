@@ -11,7 +11,7 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.TextAreaResize
-import dev.fritz2.styling.theme.TextAreaSize
+import dev.fritz2.styling.theme.TextAreaSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -117,8 +117,8 @@ class TextAreaComponent {
         disable = value()
     }
 
-    var size: TextAreaSize.() -> Style<BasicParams> = { Theme().textarea.size.normal }
-    fun size(value: TextAreaSize.() -> Style<BasicParams>) {
+    var size: TextAreaSizes.() -> Style<BasicParams> = { Theme().textarea.sizes.normal }
+    fun size(value: TextAreaSizes.() -> Style<BasicParams>) {
         size = value
     }
 
@@ -207,7 +207,7 @@ fun RenderContext.textArea(
 
     (::textarea.styled(styling, baseClass + TextAreaComponent.staticCss, id, prefix) {
         component.resizeBehavior.invoke(Theme().textarea.resize)()
-        component.size.invoke(Theme().textarea.size)()
+        component.size.invoke(Theme().textarea.sizes)()
         component.basicInputStyles()
 
     }){
@@ -218,7 +218,6 @@ fun RenderContext.textArea(
         store?.let {
             value(it.data)
             changes.values() handledBy it.update
-
         }
     }
 }

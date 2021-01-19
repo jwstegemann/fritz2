@@ -189,7 +189,7 @@ interface Theme {
 
     val textarea: TextAreaStyles
 
-    val select : SelectStyles
+    val select : SelectFieldStyles
 }
 
 /**

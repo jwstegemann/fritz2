@@ -521,7 +521,7 @@ interface TooltipPlacements {
 
 interface TextAreaStyles {
     val resize: TextAreaResize
-    val size: TextAreaSize
+    val sizes: TextAreaSizes
 }
 
 interface TextAreaResize {
@@ -530,25 +530,23 @@ interface TextAreaResize {
     val horizontal: Style<BasicParams>
 }
 
-interface TextAreaSize {
+interface TextAreaSizes {
     val small: Style<BasicParams>
     val normal: Style<BasicParams>
     val large: Style<BasicParams>
 }
 
-interface SelectStyles {
-    val variant: SelectVariants
-    val size: SelectSize
+interface SelectFieldStyles {
+    val variants: SelectFieldVariants
+    val sizes: SelectFieldSizes
 }
 
-interface SelectVariants {
+interface SelectFieldVariants {
     val outline: Style<BasicParams>
     val filled: Style<BasicParams>
-    val flushed: Style<BasicParams>
-    val unstyled: Style<BasicParams>
 }
 
-interface SelectSize {
+interface SelectFieldSizes {
     val small: Style<BasicParams>
     val normal: Style<BasicParams>
     val large: Style<BasicParams>

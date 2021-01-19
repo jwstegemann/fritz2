@@ -1362,11 +1362,8 @@ open class DefaultTheme : Theme {
     override val checkbox = object : CheckboxStyles {
         override val sizes = object : CheckboxSizes {
             private val basic: Style<BasicParams> = {
-
                 display { inlineFlex }
                 css("align-items: center;")
-
-
             }
             override val small: Style<BasicParams> = {
                 basic()
@@ -2247,8 +2244,7 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val size = object : TextAreaSize {
-
+        override val sizes = object : TextAreaSizes {
             override val small: Style<BasicParams> = {
                 lineHeight { normal }
                 height { "1rem" }
@@ -2280,60 +2276,67 @@ open class DefaultTheme : Theme {
                 }
             }
         }
-
     }
 
-    override val select = object : SelectStyles {
-        override val variant = object : SelectVariants {
-            override val outline: Style<BasicParams> = {
+    override val select = object : SelectFieldStyles {
 
+        override val variants = object : SelectFieldVariants {
+            override val outline: Style<BasicParams> = {
                 border {
                     width { thin }
                     style { solid }
                     color { light }
                 }
-
-
             }
 
             override val filled: Style<BasicParams> = {
-                background { color { light } }
-            }
+                background {
+                    color { light }
+                }
 
-            override val flushed: Style<BasicParams> = {
+                hover {
+                    css("filter: brightness(90%);")
+                }
 
-                borders {
-                    bottom {
-                        width { thin }
-                        style { solid }
-                        color { light }
+                focus {
+                    zIndex { "1" }
+                    background {
+                        color { "transparent" }
                     }
                 }
             }
-
-            override val unstyled: Style<BasicParams> = {
-
-            }
-
-
         }
 
-        override val size = object : SelectSize {
+        override val sizes = object : SelectFieldSizes {
             override val small: Style<BasicParams> = {
-
-                height { "32px" }
+//                height { "2rem" }
+//                minWidth { "2.5rem" }
+                fontSize { small }
+                paddings {
+                    horizontal { tiny }
+                }
+                css("--select-size: .75rem")
             }
+
             override val normal: Style<BasicParams> = {
-                height { "40px" }
+//                height { "2.5rem" }
+//                minWidth { "2.5rem" }
+                fontSize { normal }
+                paddings {
+                    horizontal { small }
+                }
+                css("--select-size: 1.0rem")
             }
+
             override val large: Style<BasicParams> = {
-                height { "48px" }
+//                height { "3rem" }
+//                minWidth { "2.5rem" }
+                fontSize { large }
+                paddings {
+                    horizontal { small }
+                }
+                css("--select-size: 1.5rem")
             }
-
         }
-
-
     }
 }
-
-
