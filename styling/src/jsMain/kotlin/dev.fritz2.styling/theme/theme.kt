@@ -1,9 +1,11 @@
 package dev.fritz2.styling.theme
 
 import dev.fritz2.dom.Tag
+import dev.fritz2.dom.html.MountTargetNotFoundException
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.render
 import dev.fritz2.styling.resetCss
+import kotlinx.browser.document
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -191,21 +193,25 @@ interface Theme {
 }
 
 /**
- * Creates a render context for [Tag]s and mounts it to an [HTMLElement] given by id. It also applies the given [Theme].
+ * Creates a [RenderContext] for [Tag]s and mounts it to a constant element in the static html file
+ * which id matches the [selector]. It also applies the given [Theme]
  *
- * @param theme [Theme] used in this [RenderContext]
- * @param targetId id of the element to mount to
+ * @see render
+ *
+ * @param selector [query selector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector)
+ * of the element to mount to
  * @param override if true all child elements are removed before rendering
  * @param content [RenderContext] for rendering the data to the DOM
+ * @throws MountTargetNotFoundException if target element with [selector] not found
  */
 inline fun <reified T : Theme> render(
     theme: T,
-    targetId: String,
+    selector: String,
     override: Boolean = true,
     crossinline content: RenderContext.(T) -> Unit
 ) {
     Theme.use(theme)
-    render(targetId, override) {
+    render(selector, override) {
         Theme.data.render {
             content(Theme().unsafeCast<T>())
         }
@@ -215,19 +221,22 @@ inline fun <reified T : Theme> render(
 /**
  * Creates a render context for [Tag]s and mounts it to an [HTMLElement]. It also applies the given [Theme].
  *
+ * @see render
+ *
  * @param theme [Theme] used in this [RenderContext]
- * @param parentElement [HTMLElement] to mount to
+ * @param targetElement [HTMLElement] to mount to, default is *document.body*
  * @param override if true all child elements are removed before rendering
  * @param content [RenderContext] for rendering the data to the DOM
+ * @throws MountTargetNotFoundException if [targetElement] not found
  */
 inline fun <reified T : Theme> render(
     theme: T,
-    parentElement: HTMLElement,
+    targetElement: HTMLElement? = document.body,
     override: Boolean = true,
     crossinline content: RenderContext.(T) -> Unit
 ) {
     Theme.use(theme)
-    render(parentElement, override) {
+    render(targetElement, override) {
         Theme.data.render {
             content(Theme().unsafeCast<T>())
         }
