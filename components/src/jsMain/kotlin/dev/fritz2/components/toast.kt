@@ -11,11 +11,7 @@ import dev.fritz2.components.Position.topLeft
 import dev.fritz2.components.Position.topRight
 import dev.fritz2.components.ToastComponent.Companion.closeAllToasts
 import dev.fritz2.components.ToastComponent.Companion.closeLastToast
-import dev.fritz2.dom.appendToBody
-import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.Li
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.renderElement
+import dev.fritz2.dom.html.*
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -141,16 +137,8 @@ class ToastComponent(private val renderContext: RenderContext) {
 
 
         init {
-            /*
-            Rendering of the toast container hosting all toast messages.
-
-            Important: As for now elements added via `appendToBody` may be overwritten by the `mount`-call in the
-            application's app.kt. A temporary fix is to mount the app's root element to any other element than `body`.
-
-            Once the underlying changes required to fix this are made to fritz2, this call of `appendToBody` needs to be
-            replaced with `render`!
-             */
-            appendToBody(renderElement {
+            // Rendering of the toast container hosting all toast messages.
+            render(targetElement = document.body, override = false) {
                 div {
                     Position.positionList.forEach {
                         val placementStyle = when (it) {
@@ -171,7 +159,7 @@ class ToastComponent(private val renderContext: RenderContext) {
                         }
                     }
                 }
-            })
+            }
         }
 
 
