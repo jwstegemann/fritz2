@@ -3,21 +3,18 @@ package dev.fritz2.repositories.localstorage
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.invoke
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
+import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
-import dev.fritz2.repositories.Resource
-import dev.fritz2.serialization.Serializer
+import dev.fritz2.repositories.ResourceNotFoundException
+import dev.fritz2.resource.Resource
+
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import kotlin.test.fail
+import kotlin.test.*
 
 class LocalStorageTests {
     data class LocalPerson(val name: String, val age: Int, val _id: String = uniqueId())
@@ -27,16 +24,17 @@ class LocalStorageTests {
     private val idLens = buildLens("id", LocalPerson::_id) { p, v -> p.copy(_id = v) }
 
 
-    object PersonSerializer : Serializer<LocalPerson, String> {
-        override fun write(item: LocalPerson): String = JSON.stringify(item)
-        override fun read(msg: String): LocalPerson {
-            val obj = JSON.parse<dynamic>(msg)
+    object PersonResource : Resource<LocalPerson, String> {
+        override val idProvider: IdProvider<LocalPerson, String> = LocalPerson::_id
+        override fun serialize(item: LocalPerson): String = JSON.stringify(item)
+        override fun deserialize(source: String): LocalPerson {
+            val obj = JSON.parse<dynamic>(source)
             return LocalPerson(obj.name as String, obj.age as Int, obj._id as String)
         }
 
-        override fun writeList(items: List<LocalPerson>): String = JSON.stringify(items)
-        override fun readList(msg: String): List<LocalPerson> {
-            val list = JSON.parse<Array<dynamic>>(msg)
+        override fun serializeList(items: List<LocalPerson>): String = JSON.stringify(items)
+        override fun deserializeList(source: String): List<LocalPerson> {
+            val list = JSON.parse<Array<dynamic>>(source)
             return list.map { obj -> LocalPerson(obj.name as String, obj.age as Int, obj._id as String) }
         }
     }
@@ -45,26 +43,25 @@ class LocalStorageTests {
     fun testEntityService() = runTest {
         initDocument()
 
+        val defaultPerson = LocalPerson("", 0)
         val startPerson = LocalPerson("Heinz", 18)
         val changedAge = 99
 
-        val personResource = Resource(
-            LocalPerson::_id,
-            PersonSerializer,
-            LocalPerson("", 0)
-        )
-
-        val entityStore = object : RootStore<LocalPerson>(personResource.emptyEntity) {
+        val entityStore = object : RootStore<LocalPerson>(defaultPerson) {
             override fun errorHandler(exception: Throwable, oldValue: LocalPerson): LocalPerson {
                 fail(exception.message)
             }
 
-            private val localStorage = localStorageEntity(personResource, "")
+            val localStorage = localStorageEntity(PersonResource, "")
 
-            val load = handle { entity, id: String -> localStorage.load(entity, id) }
+            val load = handle { _, id: String -> localStorage.load(id) }
 
             val saveOrUpdate = handle { entity -> localStorage.addOrUpdate(entity) }
-            val delete = handle { entity -> localStorage.delete(entity) }
+            val delete = handle { entity -> localStorage.delete(entity); defaultPerson }
+        }
+
+        assertFailsWith(ResourceNotFoundException::class) {
+            entityStore.localStorage.load("unknown")
         }
 
         val nameId = "name-${uniqueId()}"
@@ -81,7 +78,7 @@ class LocalStorageTests {
                 div(id = nameId) { nameSubStore.data.asText() }
                 div(id = ageId) { ageSubStore.data.asText() }
             }
-        }.mount(targetId)
+        }
 
         entityStore.update(startPerson)
         delay(100)
@@ -129,24 +126,18 @@ class LocalStorageTests {
             LocalPerson("E", 0)
         )
 
-        val personResource = Resource(
-            LocalPerson::_id,
-            PersonSerializer,
-            LocalPerson("", 0)
-        )
-
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
             override fun errorHandler(exception: Throwable, oldValue: List<LocalPerson>): List<LocalPerson> {
                 fail(exception.message)
             }
 
             private val localStorage =
-                localStorageQuery(personResource, "") { entities, _: Unit ->
+                localStorageQuery(PersonResource, "") { entities, _: Unit ->
                     entities.sortedBy(LocalPerson::name)
                 }
             val addOrUpdate = handle<LocalPerson> { entities, person -> localStorage.addOrUpdate(entities, person) }
-            val query = handle<Unit> { entities, query -> localStorage.query(entities, query) }
-            val delete = handle<String> { entites, id -> localStorage.delete(entites, id) }
+            val query = handle<Unit> { _, query -> localStorage.query(query) }
+            val delete = handle<String> { entities, id -> localStorage.delete(entities, id) }
         }
 
         val listId = "list-${uniqueId()}"
@@ -166,7 +157,7 @@ class LocalStorageTests {
                     }.asText()
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -192,7 +183,7 @@ class LocalStorageTests {
         val listAfterDelete = document.getElementById(listId)?.textContent
         assertEquals(testList.drop(1).joinToString("") { it.name }, listAfterDelete, "wrong list after query")
 
-        queryStore.update(emptyList<LocalPerson>())
+        queryStore.update(emptyList())
         delay(1)
         queryStore.query()
         delay(250)
@@ -213,18 +204,12 @@ class LocalStorageTests {
             LocalPerson("E", 0)
         )
 
-        val personResource = Resource(
-            LocalPerson::_id,
-            PersonSerializer,
-            LocalPerson("", 0)
-        )
-
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
             override fun errorHandler(exception: Throwable, oldValue: List<LocalPerson>): List<LocalPerson> {
                 fail(exception.message)
             }
 
-            private val localStorage: LocalStorageQuery<LocalPerson, String, Unit> = localStorageQuery(personResource, "")
+            private val localStorage: LocalStorageQuery<LocalPerson, String, Unit> = localStorageQuery(PersonResource, "")
 
             val addOrUpdate = handle<LocalPerson> { entities, entity -> localStorage.addOrUpdate(entities, entity) }
             val updateMany = handle<List<LocalPerson>> { entities, updatedEntities -> localStorage.updateMany(entities, updatedEntities) }
@@ -240,7 +225,7 @@ class LocalStorageTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         testList.forEach {
             queryStore.addOrUpdate(it)

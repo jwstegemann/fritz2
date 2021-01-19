@@ -1,12 +1,14 @@
 package dev.fritz2.styling.theme
 
 import dev.fritz2.dom.Tag
+import dev.fritz2.dom.html.MountTargetNotFoundException
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.render
 import dev.fritz2.styling.resetCss
+import kotlinx.browser.document
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 
 /**
@@ -193,31 +195,54 @@ interface Theme {
 }
 
 /**
- * convenience function to create a render-context that provides a specialized theme correctly typed
+ * Creates a [RenderContext] for [Tag]s and mounts it to a constant element in the static html file
+ * which id matches the [selector]. It also applies the given [Theme]
+ *
+ * @see render
+ *
+ * @param selector [query selector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector)
+ * of the element to mount to
+ * @param override if true all child elements are removed before rendering
+ * @param content [RenderContext] for rendering the data to the DOM
+ * @throws MountTargetNotFoundException if target element with [selector] not found
  */
-//TODO: add for Flow.render and each().render
-@ExperimentalCoroutinesApi
-inline fun <reified T : Theme> render(crossinline content: RenderContext.(T) -> Unit): List<Tag<HTMLElement>> =
-    dev.fritz2.dom.html.render {
-        content(Theme().unsafeCast<T>())
-    }
-
-inline fun <E : Element, reified T : Theme> renderElement(crossinline content: RenderContext.(T) -> Tag<E>) =
-    dev.fritz2.dom.html.renderElement {
-        content(Theme().unsafeCast<T>())
-    }
-
-@ExperimentalCoroutinesApi
 inline fun <reified T : Theme> render(
     theme: T,
+    selector: String,
+    override: Boolean = true,
     crossinline content: RenderContext.(T) -> Unit
-): List<Tag<HTMLElement>> {
+) {
     Theme.use(theme)
-    return render { currentTheme: T ->
-        div {
-            Theme.data.render {
-                content(currentTheme)
-            }
+    render(selector, override) {
+        Theme.data.render {
+            content(Theme().unsafeCast<T>())
         }
     }
 }
+
+/**
+ * Creates a render context for [Tag]s and mounts it to an [HTMLElement]. It also applies the given [Theme].
+ *
+ * @see render
+ *
+ * @param theme [Theme] used in this [RenderContext]
+ * @param targetElement [HTMLElement] to mount to, default is *document.body*
+ * @param override if true all child elements are removed before rendering
+ * @param content [RenderContext] for rendering the data to the DOM
+ * @throws MountTargetNotFoundException if [targetElement] not found
+ */
+inline fun <reified T : Theme> render(
+    theme: T,
+    targetElement: HTMLElement? = document.body,
+    override: Boolean = true,
+    crossinline content: RenderContext.(T) -> Unit
+) {
+    Theme.use(theme)
+    render(targetElement, override) {
+        Theme.data.render {
+            content(Theme().unsafeCast<T>())
+        }
+    }
+}
+
+//TODO: add for Flow.render and Flow.renderEach

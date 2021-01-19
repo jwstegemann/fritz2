@@ -2,7 +2,8 @@ package dev.fritz2.repositories.localstorage
 
 import dev.fritz2.repositories.EntityRepository
 import dev.fritz2.repositories.QueryRepository
-import dev.fritz2.repositories.Resource
+import dev.fritz2.repositories.ResourceNotFoundException
+import dev.fritz2.resource.Resource
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import org.w3c.dom.get
@@ -28,16 +29,18 @@ class LocalStorageEntity<T, I>(private val resource: Resource<T, I>, private val
     /**
      * loads an entity from [localStorage] using prefix and id defined in [resource]
      *
-     * @param entity current entity (before load)
      * @param id of the entity to load
      * @return the entity (identified by [id])
      */
-    override suspend fun load(entity: T, id: I): T =
-        window.localStorage["${prefix}.${resource.serializeId(id)}"]?.let(resource.serializer::read)
-            ?: entity
+    override suspend fun load(id: I): T {
+        val result = window.localStorage["${prefix}.${resource.serializeId(id)}"]
+            ?: throw ResourceNotFoundException(resource.serializeId(id))
+        return resource.deserialize(result)
+    }
 
     /**
-     * adds or updates the serialized entity to [localStorage] using prefix and id defined in [resource]
+     * adds or updates the serialized entity to [localStorage]
+     * using [prefix] and id defined in [resource]
      *
      * @param entity entity to add or update
      * @return the added or saved entity
@@ -45,7 +48,7 @@ class LocalStorageEntity<T, I>(private val resource: Resource<T, I>, private val
     override suspend fun addOrUpdate(entity: T): T {
         window.localStorage.setItem(
             "${prefix}.${resource.serializeId(resource.idProvider(entity))}",
-            resource.serializer.write(entity)
+            resource.serialize(entity)
         )
         return entity
     }
@@ -54,11 +57,9 @@ class LocalStorageEntity<T, I>(private val resource: Resource<T, I>, private val
      * deletes the entity in [localStorage]
      *
      * @param entity entity to delete
-     * @return the emptyEntity defined at [resource]
      */
-    override suspend fun delete(entity: T): T {
+    override suspend fun delete(entity: T) {
         window.localStorage.removeItem("${prefix}.${resource.serializeId(resource.idProvider(entity))}")
-        return resource.emptyEntity
     }
 
 }
@@ -92,16 +93,14 @@ class LocalStorageQuery<T, I, Q>(
     /**
      * applies a given query to the collection of entities
      *
-     * @param entities current list of entities
      * @param query object defining the query
      * @return result of the query
      */
-    @ExperimentalStdlibApi
-    override suspend fun query(entities: List<T>, query: Q): List<T> = runQuery(buildList<T> {
+    override suspend fun query(query: Q): List<T> = runQuery(buildList {
         for (index in 0 until localStorage.length) {
             val key = localStorage.key(index)
             if (key != null && key.startsWith(prefix)) {
-                add(resource.serializer.read(localStorage[key]!!))
+                add(resource.deserialize(localStorage[key]!!))
             }
         }
     }, query)
@@ -118,7 +117,7 @@ class LocalStorageQuery<T, I, Q>(
                 val entity = entities.last()
                 window.localStorage.setItem(
                     "${prefix}.${resource.serializeId(id)}",
-                    resource.serializer.write(entity)
+                    resource.serialize(entity)
                 )
                 entity
             }
@@ -135,7 +134,7 @@ class LocalStorageQuery<T, I, Q>(
     override suspend fun addOrUpdate(entities: List<T>, entity: T): List<T> {
         window.localStorage.setItem(
             "${prefix}.${resource.serializeId(resource.idProvider(entity))}",
-            resource.serializer.write(entity)
+            resource.serialize(entity)
         )
         var inList = false
         val updatedList = entities.map {

@@ -168,7 +168,7 @@ open class PushButtonComponent {
         label = { hide -> span(if (hide) hidden.name else null) { value.asText() } }
     }
 
-    var loadingText: (RenderContext.() -> Unit)? = null
+    var loadingText: (Button.() -> Unit)? = null
 
     fun loadingText(value: String) {
         loadingText = { span { +value } }
@@ -224,6 +224,7 @@ open class PushButtonComponent {
             label?.invoke(renderContext, false)
         } else {
             renderContext.apply {
+                val btnCtx = this
                 loading?.render { running ->
                     if (running) {
                         spinner({
@@ -233,7 +234,7 @@ open class PushButtonComponent {
                             } else leftSpinnerStyle()
                         }) {}
                         if (loadingText != null) {
-                            loadingText!!.invoke(this)
+                            loadingText!!.invoke(btnCtx)
                         } else {
                             label?.invoke(this, true)
                         }

@@ -2,7 +2,9 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.TextElement
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
@@ -53,7 +55,7 @@ class PopoverComponent {
                 variant { ghost }
                 icon{ fromTheme { close } }
                 build()
-            }.map { Unit } handledBy closeHandle
+            }.map { } handledBy closeHandle
         }
     }
 
@@ -136,7 +138,7 @@ class PopoverComponent {
         content = {
             (::section.styled(prefix = "popover-content") {
                 Theme().popover.section()
-            }){ value() }
+            }){ value(this) }
         }
     }
 
@@ -152,8 +154,8 @@ class PopoverComponent {
         }
     }
 
-    private fun renderArrow(renderContext: RenderContext) {
-        renderContext.apply {
+    private fun renderArrow(RenderContext: RenderContext) {
+        RenderContext.apply {
             (::div.styled(prefix = "popover-arrow") {
                 arrowPlacement.invoke(Theme().popover.arrowPlacement)()
             }){}
@@ -165,9 +167,9 @@ class PopoverComponent {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = "popover",
-        renderContext: RenderContext,
+        RenderContext: RenderContext,
         closeHandler: SimpleHandler<Unit>) {
-        renderContext.apply {
+        RenderContext.apply {
             (::div.styled(styling, baseClass, id, prefix) {
                 positionStyle.invoke(Theme().popover.placement)()
                 size.invoke(Theme().popover.size)()
@@ -241,7 +243,7 @@ fun RenderContext.popover(
         (::div.styled(prefix = "popover-trigger") {
             Theme().popover.trigger()
         }) {
-            clicks.events.map { Unit } handledBy clickStore.toggle
+            clicks.events.map { } handledBy clickStore.toggle
             component.trigger?.invoke(this)
         }
         clickStore.data.render {

@@ -4,7 +4,7 @@ import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
-import dev.fritz2.repositories.Resource
+import dev.fritz2.resource.Resource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -139,7 +139,7 @@ interface Store<T> : WithJob {
      * calls a handler on each new value of the [Store]
      */
     fun syncBy(handler: Handler<Unit>) {
-        data.drop(1).map { Unit } handledBy handler
+        data.drop(1).map { } handledBy handler
     }
 
     /**
@@ -153,13 +153,13 @@ interface Store<T> : WithJob {
         val session = socket.connect()
         var last: T? = null
         session.messages.body.map {
-            val received = resource.serializer.read(it)
+            val received = resource.deserialize(it)
             last = received
             received
         } handledBy update
 
         data.drop(1).onEach {
-            if (last != it) session.send(resource.serializer.write(it))
+            if (last != it) session.send(resource.serialize(it))
         }.watch()
     }
 }
@@ -175,13 +175,13 @@ fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
     val session = socket.connect()
     var last: List<T>? = null
     session.messages.body.map {
-        val received = resource.serializer.readList(it)
+        val received = resource.deserializeList(it)
         last = received
         received
     } handledBy update
 
     data.drop(1).onEach {
-        if (last != it) session.send(resource.serializer.writeList(it))
+        if (last != it) session.send(resource.serializeList(it))
     }.watch()
 }
 
