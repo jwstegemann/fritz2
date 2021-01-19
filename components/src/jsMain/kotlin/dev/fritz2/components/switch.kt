@@ -4,6 +4,7 @@ import dev.fritz2.binding.Store
 import dev.fritz2.components.SwitchComponent.Companion.switchInputStaticCss
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
@@ -50,7 +51,7 @@ import org.w3c.dom.HTMLInputElement
  * ```
  */
 @ComponentMarker
-class SwitchComponent {
+class SwitchComponent : ElementProperties<Input> by Element(), InputFormProperties by InputForm() {
     companion object {
         val switchInputStaticCss = staticStyle(
             "switch",
@@ -114,11 +115,6 @@ class SwitchComponent {
     fun checked(value: () -> Flow<Boolean>) {
         checked = value()
     }
-
-    var disabled: Flow<Boolean> = flowOf(false) // @input
-    fun disabled(value: () -> Flow<Boolean>) {
-        disabled = value()
-    }
 }
 
 /**
@@ -178,6 +174,9 @@ fun RenderContext.switch(
                 component.checkedStyle()
             }
         }) {
+            component.element?.invoke(this)
+            disabled(component.disabled)
+            readOnly(component.readonly)
             type("checkbox")
             checked(component.checked)
             disabled(component.disabled)

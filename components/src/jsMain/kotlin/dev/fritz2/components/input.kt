@@ -15,6 +15,8 @@ import dev.fritz2.styling.theme.InputFieldSizes
 import dev.fritz2.styling.theme.InputFieldStyles
 import dev.fritz2.styling.theme.InputFieldVariants
 import dev.fritz2.styling.theme.Theme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 /**
  * This class deals with the _configuration_ of an input element.
@@ -22,7 +24,7 @@ import dev.fritz2.styling.theme.Theme
  * The inputField can be configured for the following aspects:
  *  - the size of the element
  *  - some predefined styling variants
- *  - the base options of the HTML input element can be set.
+ *  - the element options of the HTML input element can be set.
  *    [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes)
  *
  *  * For a detailed explanation and examples of usage have a look at the [inputField] function!
@@ -30,7 +32,7 @@ import dev.fritz2.styling.theme.Theme
  * @see InputFieldStyles
  */
 @ComponentMarker
-open class InputFieldComponent {
+open class InputFieldComponent : ElementProperties<Input> by Element(), InputFormProperties by InputForm() {
     companion object {
 
         val staticCss = staticStyle(
@@ -100,10 +102,44 @@ open class InputFieldComponent {
         size = value
     }
 
-    var base: (Input.() -> Unit)? = null
+    var value: Flow<String> = flowOf("")
 
-    fun base(value: Input.() -> Unit) {
-        base = value
+    fun value(value: Flow<String>) {
+        this.value = value
+    }
+
+    fun value(value: String) {
+        value(flowOf(value))
+    }
+
+    var placeholder: Flow<String> = flowOf("")
+
+    fun placeholder(value: Flow<String>) {
+        placeholder = value
+    }
+
+    fun placeholder(value: String) {
+        placeholder(flowOf(value))
+    }
+
+    var type: Flow<String> = flowOf("")
+
+    fun type(value: Flow<String>) {
+        type = value
+    }
+
+    fun type(value: String) {
+        type(flowOf(value))
+    }
+
+    var step: Flow<String> = flowOf("")
+
+    fun step(value: Flow<String>) {
+        step = value
+    }
+
+    fun step(value: String) {
+        step(flowOf(value))
     }
 }
 
@@ -117,11 +153,11 @@ open class InputFieldComponent {
  *
  * To enable or disable it or to make it readOnly just use the well known attributes of the HTML
  * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Input). To manually set the value or
- * react to a change refer also to its event's. All that can be achieved via the [InputFieldComponent.base] property!
+ * react to a change refer also to its event's. All that can be achieved via the [InputFieldComponent.element] property!
  *
  * ```
  * inputField(store = dataStore) {
- *      base {
+ *      element {
  *          placeholder("Placeholder") // render a placeholder text for empty field
  *      }
  * }
@@ -130,7 +166,7 @@ open class InputFieldComponent {
  * inputField(store = dataStore) {
  *      size { small } // render a smaller input
  *      variant { filled } // fill the background with ``light`` color
- *      base {
+ *      element {
  *          placeholder("Placeholder") // render a placeholder text for empty field
  *      }
  * }
@@ -144,7 +180,7 @@ open class InputFieldComponent {
  * },
  * store = dataStore) {
  *      size { small } // render a smaller input
- *      base {
+ *      element {
  *          placeholder("Placeholder") // render a placeholder text for empty field
  *      }
  * }
@@ -174,7 +210,13 @@ fun RenderContext.inputField(
         component.variant.invoke(Theme().input.variants)()
         InputFieldComponent.basicInputStyles()
     }) {
-        component.base?.invoke(this)
+        component.element?.invoke(this)
+        disabled(component.disabled)
+        readOnly(component.readonly)
+        placeholder(component.placeholder)
+        value(component.value)
+        type(component.type)
+        step(component.step)
         store?.let {
             value(it.data)
             changes.values() handledBy it.update

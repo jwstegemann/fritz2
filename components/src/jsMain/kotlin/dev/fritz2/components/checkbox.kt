@@ -3,6 +3,7 @@ package dev.fritz2.components
 import dev.fritz2.components.CheckboxComponent.Companion.checkboxInputStaticCss
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -49,7 +50,7 @@ import org.w3c.dom.HTMLInputElement
  * ```
  */
 @ComponentMarker
-class CheckboxComponent {
+class CheckboxComponent : ElementProperties<Input> by Element(), InputFormProperties by InputForm() {
     companion object {
        val checkboxInputStaticCss = staticStyle(
             "checkbox",
@@ -112,11 +113,6 @@ class CheckboxComponent {
     fun checked(value: () -> Flow<Boolean>) {
         checked = value()
     }
-
-    var disabled: Flow<Boolean> = flowOf(false) // @input
-    fun disabled(value: () -> Flow<Boolean>) {
-        disabled = value()
-    }
 }
 
 /**
@@ -178,9 +174,11 @@ fun RenderContext.checkbox(
                 component.checkedStyle()
             }
         }) {
+            component.element?.invoke(this)
+            disabled(component.disabled)
+            readOnly(component.readonly)
             type("checkbox")
             checked(component.checked)
-            disabled(component.disabled)
             component.events?.invoke(this)
         }
 

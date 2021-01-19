@@ -51,7 +51,7 @@ import org.w3c.dom.events.MouseEvent
  *  ```
  */
 @ComponentMarker
-open class PushButtonComponent {
+open class PushButtonComponent : ElementProperties<Button> by Element(), FormProperties by Form() {
     companion object {
         val staticCss = staticStyle(
             "button",
@@ -279,6 +279,10 @@ fun RenderContext.pushButton(
         component.variant.invoke(Theme().button.variants)()
         component.size.invoke(Theme().button.sizes)()
     }) {
+        component.element?.invoke(this)
+        component.element?.invoke(this)
+        disabled(component.disabled)
+//        readOnly(component.readonly)
         if (component.label == null) {
             component.renderIcon(this, component.centerIconStyle, component.centerSpinnerStyle)
         } else {

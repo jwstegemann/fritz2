@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.flowOf
  *
  */
 @ComponentMarker
-class TextAreaComponent {
+class TextAreaComponent : ElementProperties<TextArea> by Element(), InputFormProperties by InputForm() {
 
     companion object {
         val staticCss = staticStyle(
@@ -48,15 +48,12 @@ class TextAreaComponent {
                 
                 """
         )
-
-
     }
 
     val basicInputStyles: Style<BasicParams> = {
 
         radius { normal }
         fontWeight { normal }
-
 
         border {
             width { thin }
@@ -82,10 +79,14 @@ class TextAreaComponent {
         }
     }
 
-
     var value: Flow<String>? = null
-    fun value(value: () -> Flow<String>) {
-        this.value = value()
+
+    fun value(value: Flow<String>) {
+        this.value = value
+    }
+
+    fun value(value: String) {
+        value(flowOf(value))
     }
 
     var placeholder: Flow<String>? = null
@@ -98,25 +99,6 @@ class TextAreaComponent {
         placeholder = value
     }
 
-    fun placeholder(value: () -> Flow<String>) {
-        placeholder = value()
-
-    }
-
-    var disable: Flow<Boolean> = flowOf(false)
-
-    fun disable(value: Boolean) {
-        disable = flowOf(value)
-    }
-
-    fun disable(value: Flow<Boolean>) {
-        disable = value
-    }
-
-    fun disable(value: () -> Flow<Boolean>) {
-        disable = value()
-    }
-
     var size: TextAreaSize.() -> Style<BasicParams> = { Theme().textarea.size.normal }
     fun size(value: TextAreaSize.() -> Style<BasicParams>) {
         size = value
@@ -126,14 +108,6 @@ class TextAreaComponent {
     fun resizeBehavior(value: TextAreaResize.() -> Style<BasicParams>) {
         resizeBehavior = value
     }
-
-    var base: (TextArea.() -> Unit)? = null
-
-    fun base(value: TextArea.() -> Unit) {
-        base = value
-    }
-
-
 }
 
 /**
@@ -211,14 +185,14 @@ fun RenderContext.textArea(
         component.basicInputStyles()
 
     }){
+        component.element?.invoke(this)
+        disabled(component.disabled)
+        readOnly(component.readonly)
         placeholder(component.placeholder ?: emptyFlow())
-        disabled(component.disable)
         value(component.value ?: emptyFlow())
-        component.base?.invoke(this)
         store?.let {
             value(it.data)
             changes.values() handledBy it.update
-
         }
     }
 }

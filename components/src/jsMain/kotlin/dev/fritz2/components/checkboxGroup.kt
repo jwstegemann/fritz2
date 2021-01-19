@@ -205,7 +205,7 @@ fun <T>RenderContext.checkboxGroup(
                 checkedStyle { component.checkedStyle }
                 label(component.label(item))
                 checked { checkedFlow }
-                disabled { component.disabled }
+                disabled (component.disabled )
                 events {
                    changes.states().map{ item } handledBy toggle
                 }

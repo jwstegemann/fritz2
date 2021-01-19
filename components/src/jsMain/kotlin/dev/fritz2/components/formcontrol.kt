@@ -178,7 +178,7 @@ open class FormControlComponent {
         control.set(ControlNames.inputField)
         {
             inputField(styling, store, baseClass, id, prefix) {
-                base {
+                element {
                     className(StyleClass(invalidClassName).whenever(msg))
                     init()
                 }

@@ -76,11 +76,13 @@ class RadioGroupComponent<T> {
             }
         }
     }
+
     var items: Flow<List<T>> = flowOf(emptyList())
 
     fun items(value: List<T>) {
         items = flowOf(value)
     }
+
     fun items(value: () -> Flow<List<T>>) {
         items = value()
     }
@@ -90,8 +92,8 @@ class RadioGroupComponent<T> {
         icon = value()
     }
 
-    var label: ((item: T)  -> String) =  {it.toString()}
-    fun label (value: (item: T)  -> String) {
+    var label: ((item: T) -> String) = { it.toString() }
+    fun label(value: (item: T) -> String) {
         label = value
     }
 
@@ -100,13 +102,13 @@ class RadioGroupComponent<T> {
         disabled = value()
     }
 
-    fun disabled(value:  Boolean) {
+    fun disabled(value: Boolean) {
         disabled = flowOf(value)
     }
 
     var direction: Style<BasicParams> = RadioGroupLayouts.column
     fun direction(value: RadioGroupLayouts.() -> Style<BasicParams>) {
-        direction =  RadioGroupLayouts.value()
+        direction = RadioGroupLayouts.value()
     }
 
     var size: RadioSizes.() -> Style<BasicParams> = { Theme().radio.sizes.normal }
@@ -130,8 +132,6 @@ class RadioGroupComponent<T> {
     }
 
 }
-
-
 
 
 /**
@@ -162,7 +162,7 @@ class RadioGroupComponent<T> {
  * @param build a lambda expression for setting up the component itself. Details in [RadioGroupComponent]
  * @return a flow of the _selected_ item
  */
-fun <T>RenderContext.radioGroup(
+fun <T> RenderContext.radioGroup(
     styling: BasicParams.() -> Unit = {},
     store: Store<T>,
     baseClass: StyleClass? = null,
@@ -184,9 +184,9 @@ fun <T>RenderContext.radioGroup(
                 selectedStyle { component.selectedStyle }
                 label(component.label(item))
                 selected { checkedFlow }
-                disabled { component.disabled }
+                disabled(component.disabled)
                 events {
-                    changes.states().map{ item } handledBy store.update
+                    changes.states().map { item } handledBy store.update
                 }
             }
         }
