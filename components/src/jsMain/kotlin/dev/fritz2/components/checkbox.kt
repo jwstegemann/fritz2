@@ -1,10 +1,14 @@
 package dev.fritz2.components
 
+import dev.fritz2.binding.Store
 import dev.fritz2.components.CheckboxComponent.Companion.checkboxInputStaticCss
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.states
+import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
@@ -12,10 +16,13 @@ import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.CheckboxSizes
 import dev.fritz2.styling.theme.IconDefinition
+import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLTextAreaElement
 
 /**
  * This class combines the _configuration_ and the core styling of a checkbox.
@@ -41,17 +48,24 @@ import org.w3c.dom.HTMLInputElement
  * checkbox {
  *      label("with extra cheese") // set the label
  *      size { normal } // choose a predefined size
- *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
+ *      checked(cheeseStore.data) // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
+ *      }
+ *      element {
+ *          // exposes the underlying HTML input element for direct access. Use with caution!
  *      }
  * }
  * ```
  */
 @ComponentMarker
-class CheckboxComponent {
+class CheckboxComponent :
+    EventProperties<HTMLInputElement> by Event(),
+    ElementProperties<Input> by Element(),
+    InputFormProperties by InputForm() {
+
     companion object {
-       val checkboxInputStaticCss = staticStyle(
+        val checkboxInputStaticCss = staticStyle(
             "checkbox",
             """
             position: absolute;
@@ -68,30 +82,28 @@ class CheckboxComponent {
         )
     }
 
-    var size: CheckboxSizes.() -> Style<BasicParams> = { Theme().checkbox.sizes.normal }
-    fun size(value: CheckboxSizes.() -> Style<BasicParams>) {
-        size = value
-    }
+    var size = ComponentProperty<CheckboxSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
+    var icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.check }
 
-    var icon: IconDefinition = Theme().icons.check
-    fun icon(value: () -> IconDefinition ) {
-        icon = value()
-    }
+    var label: (RenderContext.() -> Unit)? = null
 
-    var label: (Div.() -> Unit)? = null
     fun label(value: String) {
         label = {
-           +value
+            span { +value }
         }
     }
+
     fun label(value: Flow<String>) {
         label = {
-            value.asText()
+            span { value.asText() }
         }
     }
-    fun label(value: (Div.() -> Unit)) {
+
+    fun label(value: (RenderContext.() -> Unit)) {
         label = value
     }
+
+    var checked = DynamicComponentProperty(flowOf(false))
 
     var labelStyle: Style<BasicParams> = { Theme().checkbox.label() }
     fun labelStyle(value: () -> Style<BasicParams>) {
@@ -101,21 +113,6 @@ class CheckboxComponent {
     var checkedStyle: Style<BasicParams> = { Theme().checkbox.checked() }
     fun checkedStyle(value: () -> Style<BasicParams>) {
         checkedStyle = value()
-    }
-
-    var events: (WithEvents<HTMLInputElement>.() -> Unit)? = null // @input
-    fun events(value: WithEvents<HTMLInputElement>.() -> Unit) {
-        events = value
-    }
-
-    var checked: Flow<Boolean> = flowOf(false) // @input
-    fun checked(value: () -> Flow<Boolean>) {
-        checked = value()
-    }
-
-    var disabled: Flow<Boolean> = flowOf(false) // @input
-    fun disabled(value: () -> Flow<Boolean>) {
-        disabled = value()
     }
 }
 
@@ -130,10 +127,17 @@ class CheckboxComponent {
  *
  * Example usage
  * ```
+ * val cheeseStore = storeOf(false)
+ * checkbox(store = cheeseStore) {
+ *      label("with extra cheese") // set the label
+ *      size { normal } // choose a predefined size
+ * }
+ *
+ * // one can handle the events and preselect the control also manually if needed:
  * checkbox {
  *      label("with extra cheese") // set the label
  *      size { normal } // choose a predefined size
- *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
+ *      checked(cheeseStore.data) // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
  *      }
@@ -143,6 +147,7 @@ class CheckboxComponent {
  * @see CheckboxComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param store a boolean store to handle the state and its changes automatically
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
@@ -150,6 +155,7 @@ class CheckboxComponent {
  */
 fun RenderContext.checkbox(
     styling: BasicParams.() -> Unit = {},
+    store: Store<Boolean>? = null,
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "checkboxComponent",
@@ -158,12 +164,12 @@ fun RenderContext.checkbox(
     val component = CheckboxComponent().apply(build)
     val inputId = id?.let { "$it-input" }
 
-   return (::label.styled(
+    return (::label.styled(
         baseClass = baseClass,
         id = id,
         prefix = prefix
     ) {
-       component.size.invoke(Theme().checkbox.sizes)()
+        component.size.value.invoke(Theme().checkbox.sizes)()
     }) {
         inputId?.let {
             `for`(inputId)
@@ -172,26 +178,29 @@ fun RenderContext.checkbox(
             baseClass = checkboxInputStaticCss,
             prefix = prefix,
             id = inputId
-        ){
+        ) {
             Theme().checkbox.input()
             children("&[checked] + div") {
                 component.checkedStyle()
             }
         }) {
+            component.element.value.invoke(this)
+            disabled(component.disabled.values)
+            readOnly(component.readonly.values)
             type("checkbox")
-            checked(component.checked)
-            disabled(component.disabled)
-            component.events?.invoke(this)
+            checked(store?.data ?: component.checked.values)
+            component.events.value.invoke(this)
+            store?.let { changes.states() handledBy it.update }
         }
 
-        (::div.styled(){
+        (::div.styled() {
             Theme().checkbox.default()
             styling()
         }) {
             icon({
                 Theme().checkbox.icon()
             }
-            ) { fromTheme { component.icon } }
+            ) { def(component.icon.value(Theme().icons)) }
         }
 
         component.label?.let {

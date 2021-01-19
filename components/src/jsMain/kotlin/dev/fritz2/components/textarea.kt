@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
+import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.TextArea
 import dev.fritz2.dom.values
@@ -16,6 +17,8 @@ import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLTextAreaElement
 
 /**
  * This class handles the configuration of an textarea element
@@ -33,12 +36,15 @@ import kotlinx.coroutines.flow.flowOf
  *
  */
 @ComponentMarker
-class TextAreaComponent {
+class TextAreaComponent :
+    EventProperties<HTMLTextAreaElement> by Event(),
+    ElementProperties<TextArea> by Element(),
+    InputFormProperties by InputForm() {
 
     companion object {
         val staticCss = staticStyle(
-        "textAreaContainer",
-        """
+            "textAreaContainer",
+            """
             outline: 0px;
             position: relative;
             appearance: none;
@@ -53,7 +59,6 @@ class TextAreaComponent {
 
         radius { normal }
         fontWeight { normal }
-
 
         border {
             width { thin }
@@ -79,57 +84,10 @@ class TextAreaComponent {
         }
     }
 
-
-    var value: Flow<String>? = null
-    fun value(value: () -> Flow<String>) {
-        this.value = value()
-    }
-
-    var placeholder: Flow<String>? = null
-
-    fun placeholder(value: String) {
-        placeholder = flowOf(value)
-    }
-
-    fun placeholder(value: Flow<String>) {
-        placeholder = value
-    }
-
-    fun placeholder(value: () -> Flow<String>) {
-        placeholder = value()
-
-    }
-
-    var disable: Flow<Boolean> = flowOf(false)
-
-    fun disable(value: Boolean) {
-        disable = flowOf(value)
-    }
-
-    fun disable(value: Flow<Boolean>) {
-        disable = value
-    }
-
-    fun disable(value: () -> Flow<Boolean>) {
-        disable = value()
-    }
-
-    var size: TextAreaSizes.() -> Style<BasicParams> = { Theme().textArea.sizes.normal }
-    fun size(value: TextAreaSizes.() -> Style<BasicParams>) {
-        size = value
-    }
-
-    var resizeBehavior: TextAreaResize.() -> Style<BasicParams> = { Theme().textArea.resize.vertical }
-    fun resizeBehavior(value: TextAreaResize.() -> Style<BasicParams>) {
-        resizeBehavior = value
-    }
-
-    var base: (TextArea.() -> Unit)? = null
-    fun base(value: TextArea.() -> Unit) {
-        base = value
-    }
-
-
+    var value = DynamicComponentProperty(flowOf(""))
+    var placeholder = DynamicComponentProperty(flowOf(""))
+    var resizeBehavior = ComponentProperty<TextAreaResize.() -> Style<BasicParams>> { Theme().textArea.resize.vertical }
+    var size = ComponentProperty<TextAreaSizes.() -> Style<BasicParams>> { Theme().textArea.sizes.normal }
 }
 
 /**
@@ -145,39 +103,40 @@ class TextAreaComponent {
  *  - placeholder : String | Flow<String>
  *  - disable : Boolean | Flow<Boolean>
  *  - value -> maybe you want to set an initial value instead of a placeholder
- *  - base -> basic properties of the textarea html element
+ *  - events -> access the DOM events of the underlying HTML element
+ *  - element -> basic properties of the textarea html element; use with caution!
  *
- *  textArea(store = dataStore) {
- *        placeholder { "My placeholder" }  // render a placeholder text for empty textarea
- *        resizeBehavior { horizontal }    // resize textarea horizontal
- *        size { small }                   // render a smaller textarea
+ * textArea(store = dataStore) {
+ *     placeholder { "My placeholder" } // render a placeholder text for empty textarea
+ *     resizeBehavior { horizontal } // resize textarea horizontal
+ *     size { small } // render a smaller textarea
+ * }
+ *
+ *
+ * textArea({ // use the styling parameter
+ *     background {
+ *         color { dark }
  *     }
+ *     color { light }
+ *     radius { "1rem" }}, store = dataStore) {
+ *     disable(true) // textarea is disabled
+ *     resizeBehavior { none } // resizing is not possible
+ *     size { large } // render a large textarea
+ * }
  *
+ * textArea {
+ *     value { dataStore.data } // value depends on value in store
+ *     disable(true) // editing is disabled, but resizing still works
+ * }
  *
- *   textArea({ // use the styling parameter
- *            background {
- *                color { dark }
- *               }
- *               color { light }
- *               radius { "1rem" }},store = dataStore) {
- *
- *               disable(true)              // textarea is disabled
- *               resizeBehavior { none }    // resizing is not possible
- *               size { large }             // render a large textarea
- *
- *               }
- *
- *   textArea {
- *          value { dataStore.data }  // value depends on value in store
- *          disable(true)             // editing is disabled, but resizing still works
- *          }
- *
- *   textArea {
- *         base{                                        // you have access to base properties of a textarea
- *         placeholder("Here is a sample placeholder")
- *         changes.values() handledBy dataStore.update
- *                 }
- *          }
+ * // all state management can also be done manually if needed:
+ * val someStore = storeOf("some initial text")
+ * textArea {
+ *     value(someStore.data)
+ *     events {
+ *         changes.values() handledBy someStore.update
+ *     }
+ * }
  *
  * @see TextAreaComponent
  *
@@ -202,15 +161,17 @@ fun RenderContext.textArea(
     val component = TextAreaComponent().apply(init)
 
     (::textarea.styled(styling, baseClass + TextAreaComponent.staticCss, id, prefix) {
-        component.resizeBehavior.invoke(Theme().textArea.resize)()
-        component.size.invoke(Theme().textArea.sizes)()
+        component.resizeBehavior.value.invoke(Theme().textArea.resize)()
+        component.size.value.invoke(Theme().textArea.sizes)()
         component.basicInputStyles()
 
     }){
-        placeholder(component.placeholder ?: emptyFlow())
-        disabled(component.disable)
-        value(component.value ?: emptyFlow())
-        component.base?.invoke(this)
+        component.element.value.invoke(this)
+        component.events.value.invoke(this)
+        disabled(component.disabled.values)
+        readOnly(component.readonly.values)
+        placeholder(component.placeholder.values)
+        value(component.value.values)
         store?.let {
             value(it.data)
             changes.values() handledBy it.update

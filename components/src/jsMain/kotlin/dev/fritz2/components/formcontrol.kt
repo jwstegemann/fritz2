@@ -3,6 +3,8 @@ package dev.fritz2.components
 import SelectFieldComponent
 import dev.fritz2.binding.Store
 import dev.fritz2.components.FormControlComponent.Control
+import dev.fritz2.components.validation.validationMessage
+import dev.fritz2.components.validation.validationMessages
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
@@ -14,6 +16,7 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.whenever
+import dev.fritz2.validation.ValidationMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -54,7 +57,7 @@ import selectField
 // TODO: Add support for disable
 // TODO: Add support for invalid for every control
 @ComponentMarker
-open class FormControlComponent {
+open class FormControlComponent : FormProperties by Form() {
     companion object {
         val staticCss = staticStyle(
             "formControl",
@@ -110,9 +113,15 @@ open class FormControlComponent {
         private val overflows: MutableList<String> = mutableListOf()
         var assignee: Pair<String, (RenderContext.() -> Unit)>? = null
 
-        fun set(controlName: String, component: (RenderContext.() -> Unit)) {
+        fun set(
+            controlName: String,
+            component: (RenderContext.() -> Unit),
+            //errorMessages: Flow<List<ValidationMessage>>,
+            //parent: FormControlComponent
+        ) {
             if (assignee == null) {
                 assignee = Pair(controlName, component)
+                //parent.errorMessages = errorMessages
             } else {
                 overflows.add(controlName)
             }
@@ -135,35 +144,13 @@ open class FormControlComponent {
     protected val renderStrategies: MutableMap<String, ControlRenderer> = mutableMapOf()
     protected val control = Control()
 
-    var label: String = ""
+    val label = ComponentProperty("")
+    val required = ComponentProperty(false)
+    val helperText = ComponentProperty<String?>(null)
+    val errorMessage = DynamicComponentProperty(flowOf(""))
 
-    fun label(value: () -> String) {
-        label = value()
-    }
-
-    var disabled: Flow<Boolean> = flowOf(false)
-
-    fun disabled(value: () -> Flow<Boolean>) {
-        disabled = value()
-    }
-
-    var required: Boolean = false
-
-    fun required(value: Boolean) {
-        required = value
-    }
-
-    var helperText: String? = null
-
-    fun helperText(value: () -> String) {
-        helperText = value()
-    }
-
-    var errorMessage: Flow<String> = flowOf("")
-
-    fun errorMessage(value: () -> Flow<String>) {
-        errorMessage = value()
-    }
+    // TODO: Check if private is possible
+    private var errorMessages: Flow<List<ValidationMessage>>? = null
 
     init {
         renderStrategies[ControlNames.inputField] = SingleControlRenderer(this)
@@ -183,11 +170,11 @@ open class FormControlComponent {
         prefix: String = ControlNames.inputField,
         init: Input.() -> Unit
     ) {
-        val msg = errorMessage.map { it.isNotEmpty() }
+        val msg = errorMessage.values.map { it.isNotEmpty() }
         control.set(ControlNames.inputField)
         {
             inputField(styling, store, baseClass, id, prefix) {
-                base {
+                element {
                     className(StyleClass(invalidClassName).whenever(msg))
                     init()
                 }
@@ -197,15 +184,16 @@ open class FormControlComponent {
 
     open fun switch(
         styling: BasicParams.() -> Unit = {},
+        store: Store<Boolean>? = null,
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.switch,
-        init: SwitchComponent.() -> Unit
+        init: SwitchComponent.() -> Unit = {}
     ) {
-        val msg = errorMessage.map { it.isNotEmpty() }
+        val msg = errorMessage.values.map { it.isNotEmpty() }
         control.set(ControlNames.inputField)
         {
-            switch(styling, baseClass, id, prefix) {
+            switch(styling, store, baseClass, id, prefix) {
                 className(StyleClass(invalidClassName).whenever(msg))
                 init()
             }
@@ -220,11 +208,11 @@ open class FormControlComponent {
         prefix: String = ControlNames.textArea,
         init: TextArea.() -> Unit
     ) {
-        val msg = errorMessage.map { it.isNotEmpty() }
+        val msg = errorMessage.values.map { it.isNotEmpty() }
         control.set(ControlNames.textArea)
         {
             textArea(styling, store, baseClass, id, prefix) {
-                base {
+                element {
                     className(StyleClass(invalidClassName).whenever(msg))
                     init()
                 }
@@ -235,6 +223,7 @@ open class FormControlComponent {
     open fun checkbox(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,
+        store: Store<Boolean>? = null,
         id: String? = null,
         prefix: String = ControlNames.checkbox,
         build: CheckboxComponent.() -> Unit
@@ -242,62 +231,64 @@ open class FormControlComponent {
         //val msg = errorMessage.map { it.isNotEmpty() }
         val msg = flowOf(true)
 
-            control.set(ControlNames.checkbox)
-            {
-                checkbox({
-                    styling()
-                    StyleClass(invalidClassName).whenever(msg) { it }
-                }, baseClass, id, prefix) {
-                    build()
-                }
-            }
-
-
-    }
-
-    open fun <T>checkboxGroup(
-        styling: BasicParams.() -> Unit = {},
-        store: Store<List<T>>,
-        baseClass: StyleClass? = null,
-        id: String? = null,
-        prefix: String = ControlNames.checkboxGroup,
-        build: CheckboxGroupComponent<T>.() -> Unit
-    ) {
-        control.set(ControlNames.checkboxGroup) {
-            checkboxGroup(styling, store, baseClass, id, prefix) {
+        control.set(ControlNames.checkbox)
+        {
+            checkbox({
+                styling()
+                StyleClass(invalidClassName).whenever(msg) { it }
+            }, store, baseClass, id, prefix) {
                 build()
             }
         }
     }
 
-    open fun <T>radioGroup(
+    open fun <T> checkboxGroup(
         styling: BasicParams.() -> Unit = {},
-        store: Store<T>,
+        items: List<T>,
+        store: Store<List<T>>? = null,
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = ControlNames.checkboxGroup,
+        build: CheckboxGroupComponent<T>.() -> Unit
+    ) {
+        control.set(ControlNames.checkboxGroup /*, store?.validationMessages() */) {
+            checkboxGroup(styling, items, store, baseClass, id, prefix) {
+                build()
+            }
+        }
+    }
+
+    open fun <T> radioGroup(
+        styling: BasicParams.() -> Unit = {},
+        items: List<T>,
+        store: Store<T>? = null,
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.radioGroup,
         build: RadioGroupComponent<T>.() -> Unit
     ) {
         control.set(ControlNames.radioGroup) {
-            radioGroup(styling, store, baseClass, id, prefix) {
+            radioGroup(styling, items, store, baseClass, id, prefix) {
                 build()
             }
         }
     }
 
-    open fun <T>selectField(
+    open fun <T> selectField(
         styling: BasicParams.() -> Unit = {},
-        store: Store<T>,
+        items: List<T>,
+        store: Store<T>? = null,
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.selectField,
         init: SelectFieldComponent<T>.() -> Unit
     ) {
-        val msg = errorMessage.map { it.isNotEmpty() }
+        val msg = errorMessage.values.map { it.isNotEmpty() }
         control.set(ControlNames.selectField)
         {
             selectField<T>(
                 styling,
+                items,
                 store,
                 baseClass,
                 id,
@@ -329,7 +320,7 @@ open class FormControlComponent {
 
     fun renderHelperText(renderContext: RenderContext) {
         renderContext.div {
-            helperText?.let {
+            helperText.value?.let {
                 (::p.styled {
                     color { dark }
                     fontSize { smaller }
@@ -341,7 +332,7 @@ open class FormControlComponent {
 
     fun renderErrorMessage(renderContext: RenderContext) {
         renderContext.div {
-            errorMessage.render {
+            errorMessage.values.render {
                 if (it.isNotEmpty()) {
                     lineUp({
                         color { danger }
@@ -360,7 +351,7 @@ open class FormControlComponent {
     }
 
     val requiredMarker: RenderContext.() -> Unit = {
-        if (required) {
+        if (required.value) {
             (::span.styled {
                 color { danger }
                 margins { left { tiny } }
@@ -402,7 +393,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
             spacing { tiny }
             items {
                 label {
-                    +component.label
+                    +component.label.value
                     component.requiredMarker(this)
                 }
                 control(this)
@@ -429,7 +420,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
             (::fieldset.styled(baseClass, id, prefix) {
                 styling()
             }) {
-                legend { +component.label }
+                legend { +component.label.value }
                 control(this)
                 component.renderHelperText(this)
                 component.renderErrorMessage(this)

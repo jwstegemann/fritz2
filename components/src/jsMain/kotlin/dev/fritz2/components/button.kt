@@ -14,6 +14,7 @@ import dev.fritz2.styling.theme.PushButtonVariants
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.events.MouseEvent
 
 /**
@@ -40,18 +41,25 @@ import org.w3c.dom.events.MouseEvent
  *  ```
  *  pushButton { /* this == PushButtonComponent() */
  *      icon { fromTheme { check } } // set up an icon
- *      iconRight() // place the icon on the right side (left ist the default)
+ *      iconPlacement { right } // place the icon on the right side (``left`` is the default)
  *      loading(someStore.loading) // pass in some [Flow<Boolean>] that shows a spinner if ``true`` is passed
  *      loadingText("saving") // show an _alternate_ label, if store sends ``true``
  *      text("save") // define the default label
+ *      disabled(true) // disable the button; could also be a ``Flow<Boolean>`` for dynamic disabling
  *      events { // open inner context with all DOM-element events
  *          clicks handledBy someStore.update // react to click event
+ *      }
+ *      element {
+ *          // exposes the underlying HTML button element for direct access. Use with caution!
  *      }
  *  }
  *  ```
  */
 @ComponentMarker
-open class PushButtonComponent {
+open class PushButtonComponent :
+    EventProperties<HTMLButtonElement> by Event(),
+    ElementProperties<Button> by Element(),
+    FormProperties by Form() {
     companion object {
         val staticCss = staticStyle(
             "button",
@@ -80,6 +88,8 @@ open class PushButtonComponent {
             "hidden",
             "visibility: hidden;"
         )
+
+        val iconPlacementContext = IconPlacementContext()
     }
 
     private val iconSize = "1.15em"
@@ -132,12 +142,6 @@ open class PushButtonComponent {
         }
     }
 
-    var events: (WithEvents<HTMLButtonElement>.() -> Unit)? = null
-
-    fun events(value: WithEvents<HTMLButtonElement>.() -> Unit) {
-        events = value
-    }
-
     private fun buildColor(value: ColorProperty): Style<BasicParams> = { css("--main-color: $value;") }
 
     var color: Style<BasicParams> = buildColor(Theme().colors.primary)
@@ -146,17 +150,8 @@ open class PushButtonComponent {
         color = buildColor(Theme().colors.value())
     }
 
-    var variant: PushButtonVariants.() -> Style<BasicParams> = { Theme().button.variants.solid }
-
-    fun variant(value: PushButtonVariants.() -> Style<BasicParams>) {
-        variant = value
-    }
-
-    var size: PushButtonSizes.() -> Style<BasicParams> = { Theme().button.sizes.normal }
-
-    fun size(value: PushButtonSizes.() -> Style<BasicParams>) {
-        size = value
-    }
+    var variant = ComponentProperty<PushButtonVariants.() -> Style<BasicParams>> { Theme().button.variants.solid }
+    var size = ComponentProperty<PushButtonSizes.() -> Style<BasicParams>> { Theme().button.sizes.normal }
 
     var label: (RenderContext.(hide: Boolean) -> Unit)? = null
 
@@ -168,7 +163,7 @@ open class PushButtonComponent {
         label = { hide -> span(if (hide) hidden.name else null) { value.asText() } }
     }
 
-    var loadingText: (Button.() -> Unit)? = null
+    var loadingText: (RenderContext.() -> Unit)? = null
 
     fun loadingText(value: String) {
         loadingText = { span { +value } }
@@ -198,10 +193,17 @@ open class PushButtonComponent {
         }
     }
 
-    var isIconRight: Boolean = false
-    fun iconRight() {
-        isIconRight = true
+    enum class IconPlacement {
+        right,
+        left
     }
+
+    class IconPlacementContext(
+        val right: IconPlacement = IconPlacement.right,
+        val left: IconPlacement = IconPlacement.left
+    )
+
+    var iconPlacement = ComponentProperty<IconPlacementContext.() -> IconPlacement> { IconPlacement.left }
 
     fun renderIcon(renderContext: Button, iconStyle: Style<BasicParams>, spinnerStyle: Style<BasicParams>) {
         if (loading == null) {
@@ -224,7 +226,6 @@ open class PushButtonComponent {
             label?.invoke(renderContext, false)
         } else {
             renderContext.apply {
-                val btnCtx = this
                 loading?.render { running ->
                     if (running) {
                         spinner({
@@ -234,7 +235,7 @@ open class PushButtonComponent {
                             } else leftSpinnerStyle()
                         }) {}
                         if (loadingText != null) {
-                            loadingText!!.invoke(btnCtx)
+                            loadingText!!.invoke(this)
                         } else {
                             label?.invoke(this, true)
                         }
@@ -276,22 +277,24 @@ fun RenderContext.pushButton(
 
     (::button.styled(styling, baseClass + PushButtonComponent.staticCss, id, prefix) {
         component.color()
-        component.variant.invoke(Theme().button.variants)()
-        component.size.invoke(Theme().button.sizes)()
+        component.variant.value.invoke(Theme().button.variants)()
+        component.size.value.invoke(Theme().button.sizes)()
     }) {
+        component.element.value.invoke(this)
+        disabled(component.disabled.values)
         if (component.label == null) {
             component.renderIcon(this, component.centerIconStyle, component.centerSpinnerStyle)
         } else {
-            if (component.icon != null && !component.isIconRight) {
+            if (component.icon != null && component.iconPlacement.value(PushButtonComponent.iconPlacementContext) == PushButtonComponent.IconPlacement.left) {
                 component.renderIcon(this, component.leftIconStyle, component.leftSpinnerStyle)
             }
             component.renderLabel(this)
-            if (component.icon != null && component.isIconRight) {
+            if (component.icon != null && component.iconPlacement.value(PushButtonComponent.iconPlacementContext) == PushButtonComponent.IconPlacement.right) {
                 component.renderIcon(this, component.rightIconStyle, component.rightSpinnerStyle)
             }
         }
 
-        component.events?.invoke(this)
+        component.events.value.invoke(this)
     }
 }
 
@@ -307,7 +310,6 @@ fun RenderContext.pushButton(
  * offer such a handler btw, so for example you can combine such a [clickButton] with a [modal] like this:
  * ```
  * clickButton { text("save") } handledBy modal {
- *      closeButton()
  *      items { p {+"foo"} }
  * }
  * ```

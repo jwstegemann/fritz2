@@ -57,42 +57,28 @@ open class NavbarComponent {
         )
     }
 
-    var brand: Div.() -> Unit = { }
-
-    fun brand(value: Div.() -> Unit) {
-        brand = value
-    }
-
-
-    var actions: Div.() -> Unit = { }
-
-    fun actions(value: Div.() -> Unit) {
-        actions = value
-    }
-
-
+    var brand = ComponentProperty<RenderContext.() -> Unit> { }
+    var actions = ComponentProperty<RenderContext.() -> Unit> {}
 }
-
 
 fun RenderContext.navBar(
     styling: BasicParams.() -> Unit = {},
-    store: Store<String>? = null,
+    //store: Store<String>? = null,
     baseClass: StyleClass? = null,
     id: String? = null,
-    prefix: String = "navBar",
+    prefix: String = "navbar",
     build: NavbarComponent.() -> Unit = {}
 ) {
     val component = NavbarComponent().apply(build)
 
-    nav((NavbarComponent.staticHeaderCss + baseClass).name) {
-        (::div.styled(baseClass = NavbarComponent.staticContentCss) {
+    nav((NavbarComponent.staticHeaderCss + baseClass).name, id) {
+        (::div.styled(baseClass = NavbarComponent.staticContentCss, prefix = prefix) {
             borders {
                 top {
                     width { "6px" }
                     style { solid }
                     color { primary }
                 }
-
 
                 bottom {
                     width { "2px" }
@@ -103,12 +89,11 @@ fun RenderContext.navBar(
             styling()
         }) {
             div(NavbarComponent.staticBrandCss.name) {
-                component.brand(this)
+                component.brand.value(this)
             }
             div(NavbarComponent.staticActionsCss.name) {
-                component.actions(this)
+                component.actions.value(this)
             }
         }
     }
-
 }

@@ -69,7 +69,14 @@ class DefaultOverlay(
  * ``ModalComponent.Companion.init`` block.
  */
 @ComponentMarker
-class ModalComponent {
+class ModalComponent : CloseButtonProperty by CloseButton({
+    position {
+        absolute {
+            right { none }
+            top { none }
+        }
+    }
+}, "modal-close-button") {
 
     class ModalsStack : RootStore<List<ModalRenderContext>>(listOf()) {
 
@@ -125,18 +132,18 @@ class ModalComponent {
                 box({
                     css("--main-level: ${level}rem;")
                     zIndex { modal(level) }
-                    component.size.invoke(Theme().modal.sizes)()
-                    component.variant.invoke(Theme().modal.variants)()
+                    component.size.value.invoke(Theme().modal.sizes)()
+                    component.variant.value.invoke(Theme().modal.variants)()
                     styling()
                 }, baseClass, id, prefix) {
-                    if (component.hasCloseButton) {
-                        if (component.closeButton == null) {
+                    if (component.hasCloseButton.value) {
+                        if (component.closeButton.value == null) {
                             component.closeButton()
                         }
-                        component.closeButton?.let { it(this, close) }
+                        component.closeButton.value?.let { it(this, close) }
                     }
 
-                    component.content?.let { it() }
+                    component.content.value?.let { it() }
                 }
             }
 
@@ -144,54 +151,9 @@ class ModalComponent {
         }
     }
 
-    var content: (RenderContext.() -> Unit)? = null
-
-    fun content(value: RenderContext.() -> Unit) {
-        content = value
-    }
-
-    var size: ModalSizes.() -> Style<BasicParams> = { Theme().modal.sizes.normal }
-
-    fun size(value: ModalSizes.() -> Style<BasicParams>) {
-        size = value
-    }
-
-    var variant: ModalVariants.() -> Style<BasicParams> = { Theme().modal.variants.auto }
-
-    fun variant(value: ModalVariants.() -> Style<BasicParams>) {
-        variant = value
-    }
-
-    var hasCloseButton: Boolean = true
-    fun hasCloseButton(value: Boolean) {
-        hasCloseButton = value
-    }
-
-    var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
-    fun closeButton(
-        styling: BasicParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
-        id: String? = null,
-        prefix: String = "modal-close-button",
-        build: PushButtonComponent.() -> Unit = {}
-    ) {
-        closeButton = { closeHandle ->
-            clickButton({
-                position {
-                    absolute {
-                        right { none }
-                        top { none }
-                    }
-                }
-                styling()
-            }, baseClass, id, prefix) {
-                variant { ghost }
-                icon { fromTheme { close } }
-                build()
-            }.map { } handledBy closeHandle
-        }
-    }
-
+    var content = ComponentProperty<(RenderContext.() -> Unit)?>(null)
+    var size = ComponentProperty<ModalSizes.() -> Style<BasicParams>> { Theme().modal.sizes.normal }
+    var variant = ComponentProperty<ModalVariants.() -> Style<BasicParams>> { Theme().modal.variants.auto }
 }
 
 
