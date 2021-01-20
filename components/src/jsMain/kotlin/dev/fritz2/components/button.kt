@@ -4,8 +4,6 @@ import dev.fritz2.dom.Listener
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.Span
-import dev.fritz2.dom.html.TextElement
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.*
@@ -140,7 +138,14 @@ open class PushButtonComponent {
         events = value
     }
 
-    private fun buildColor(value: ColorProperty): Style<BasicParams> = { css("--main-color: $value;") }
+    private fun buildColor(value: ColorProperty): Style<BasicParams> = {
+        val hoverColor = alterBrightness(value, Theme().hoverBrightness) // TODO
+        css("""
+            --main-color-hover: $hoverColor;
+            --main-color: $value; 
+            """
+        )
+    }
 
     var color: Style<BasicParams> = buildColor(Theme().colors.primary)
 

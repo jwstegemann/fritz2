@@ -1634,7 +1634,6 @@ open class DefaultTheme : Theme {
                 lineHeight { smaller }
                 radius { normal }
                 fontWeight { semiBold }
-
                 focus {
                     boxShadow { outline }
                 }
@@ -1642,36 +1641,35 @@ open class DefaultTheme : Theme {
 
             override val solid: Style<BasicParams> = {
                 basic()
-                background { color { primary } }
+                background { color { "var(--main-color)" } }
                 color { base }
                 hover {
-                    background { color { alterBrightness(primary, 0.7) } }
+                    background { color { "var(--main-color-hover)" } }
                 }
                 active {
-                    background { color { alterBrightness(primary, 0.7) } }
+                    background { color { "var(--main-color-hover)" } }
                 }
             }
 
             override val outline: Style<BasicParams> = {
                 basic()
-                color { primary }
+                color { "var(--main-color)" }
                 border {
                     width { thin }
                     style { solid }
-                    color { primary }
+                    color { "var(--main-color)" }
                 }
                 hover {
-                    color { alterBrightness(primary, 0.7) }
                     background {
-                        color { alterBrightness(colors.primary, hoverBrightness)}
+                        color { "var(--main-color-hover)" }
                     }
-                    border { color { alterBrightness(primary, 0.7) } }
+                    border { color { "var(--main-color)" } }
                 }
             }
 
             override val ghost: Style<BasicParams> = {
                 basic()
-                color { primary }
+                color { "var(--main-color)" }
             }
 
             override val link: Style<BasicParams> = {
@@ -1679,12 +1677,12 @@ open class DefaultTheme : Theme {
                 paddings { all { none } }
                 height { auto }
                 lineHeight { normal }
-                color { primary }
+                color { "var(--main-color)" }
                 hover {
                     textDecoration { underline }
                 }
                 active {
-                    color { secondary }
+                    color { "var(--main-color-hover)" }
                 }
             }
         }
