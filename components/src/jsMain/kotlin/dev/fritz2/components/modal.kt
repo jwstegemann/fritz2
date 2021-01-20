@@ -78,15 +78,11 @@ class ModalComponent {
     class ModalsStack : RootStore<List<ModalRenderContext>>(listOf()) {
 
         fun push(dialog: ModalRenderContext) = handle { stack ->
-            val list = stack + dialog
-            println("open dialog: ${list.size}")
-            list
+            stack + dialog
         }
 
         val pop = handle { stack ->
-            val list = stack.dropLast(1)
-            println("close dialog: ${list.size}")
-            list
+            stack.dropLast(1)
         }
     }
 
@@ -101,7 +97,6 @@ class ModalComponent {
 
         init {
             stack.data.map { modals ->
-                println("render modals: ${modals.size}")
                 val modalsParent = document.getElementById("modals")?.let {
                     Tag("div", it.id, job = job, domNode = it)
                 } ?: Div("modals", job = job).apply { document.body?.appendChild(this.domNode) }
