@@ -4,8 +4,6 @@ import dev.fritz2.dom.Listener
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.Span
-import dev.fritz2.dom.html.TextElement
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.*

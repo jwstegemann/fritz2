@@ -1,7 +1,6 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.checkSingleFlow
 import dev.fritz2.test.initDocument
@@ -73,7 +72,7 @@ class MountTests {
                     +"hallo"
                 }
             }
-        }.mount("target")
+        }
 
         delay(250)
 
@@ -100,7 +99,7 @@ class MountTests {
                 }
                 div(id = inner3) {}
             }
-        }.mount("target")
+        }
 
         delay(250)
 
@@ -124,7 +123,7 @@ class MountTests {
                 text.asText()
                 +"-end"
             }
-        }.mount("target")
+        }
 
         delay(250)
 
