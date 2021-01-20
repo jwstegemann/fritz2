@@ -1,12 +1,10 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
@@ -51,7 +49,7 @@ class SeqTests {
                 button(id = insertBtnId) { clicks handledBy store.insert }
                 button(id = deleteBtnId) { clicks handledBy store.delete }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
         assertEquals("abcd", listContent(listId), "list incorrect after init")
@@ -100,7 +98,7 @@ class SeqTests {
 
                 div(id = "hugo") { store.data.asText() }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
         assertEquals("abcd", listContent(listId), "list incorrect after init")
@@ -164,7 +162,7 @@ class SeqTests {
                 button(id = insertBtnId) { clicks handledBy store.insert }
                 button(id = deleteBtnId) { clicks handledBy store.delete }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
         assertEquals("abcd", listContent(listId), "list incorrect after init")
@@ -212,7 +210,7 @@ class SeqTests {
                 button(id = insertBtnId) { clicks handledBy store.insert }
                 button(id = deleteBtnId) { clicks handledBy store.delete }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
         assertEquals("abcd", listContent(listId), "list incorrect after init")

@@ -1,9 +1,8 @@
 package dev.fritz2.webcomponents
 
-import dev.fritz2.dom.html.renderElement
+import dev.fritz2.dom.html.TagContext
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.*
@@ -13,11 +12,9 @@ import kotlin.test.assertEquals
 class WebComponentTests {
 
     class MyComponent : WebComponent<HTMLParagraphElement>() {
-        override fun init(element: HTMLElement, shadowRoot: ShadowRoot) =
-            renderElement {
-                p(id = "paragraph-in-web-component") {
-                    +"I am a WebComponent"
-                }
+        override fun TagContext.init(element: HTMLElement, shadowRoot: ShadowRoot) =
+            p(id = "paragraph-in-web-component") {
+                +"I am a WebComponent"
             }
     }
 
@@ -29,7 +26,7 @@ class WebComponentTests {
 
         delay(250)
 
-        val body = document.getElementById(targetId).unsafeCast<HTMLBodyElement>()
+        val body = document.body.unsafeCast<HTMLBodyElement>()
 
         body.appendChild(document.createElement("my-component", ElementCreationOptions("my-component")))
 

@@ -1,13 +1,12 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import org.w3c.dom.HTMLBodyElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,7 +29,7 @@ class RenderTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -48,21 +47,27 @@ class RenderTests {
 
     @Test
     fun testRenderFunction() = runTest {
-        initDocument()
+        document.clear()
+        document.write("""<body id="target"><h1>Loading...</h1></body>""")
 
         val store = storeOf(true)
 
         val divId = uniqueId()
 
-        render {
+        render("#target") {
             div(id = divId) {
                 store.data.render { value ->
                     if (value) div { +"on" } else span { +"off" }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
+
+        val target = document.getElementById("target") as HTMLBodyElement
+        assertEquals("target", target.id)
+        assertEquals(1, target.childElementCount)
+        assertEquals(divId, target.firstElementChild?.id)
 
         val div = document.getElementById(divId) as HTMLDivElement
 
