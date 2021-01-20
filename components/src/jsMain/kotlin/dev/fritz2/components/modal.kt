@@ -78,15 +78,22 @@ class ModalComponent {
     class ModalsStack : RootStore<List<ModalRenderContext>>(listOf()) {
 
         fun push(dialog: ModalRenderContext) = handle { stack ->
-            stack + dialog
+            val list = stack + dialog
+            println("open dialog: ${list.size}")
+            list
         }
 
-        val pop = handle { stack -> stack.dropLast(1) }
+        val pop = handle { stack ->
+            val list = stack.dropLast(1)
+            println("close dialog: ${list.size}")
+            list
+        }
     }
 
     companion object {
         val stack = ModalsStack()
         val overlay = storeOf<Overlay>(DefaultOverlay())
+        val job = Job()
 
         fun setOverlayHandler(overlay: Overlay) {
             ModalComponent.overlay.update(overlay)
@@ -94,33 +101,27 @@ class ModalComponent {
 
         init {
             stack.data.map { modals ->
+                println("render modals: ${modals.size}")
                 val modalsParent = document.getElementById("modals")?.let {
-                    Tag("div", it.id, job = Job(), domNode = it)
-                } ?: Div("modals", job = Job())
+                    Tag("div", it.id, job = job, domNode = it)
+                } ?: Div("modals", job = job).apply { document.body?.appendChild(this.domNode) }
+
                 modalsParent.apply {
-                    render {
-                        div(id = "modals") {
-                            val currentOverlay = overlay.current
-                            if (currentOverlay.method == OverlayMethod.CoveringTopMost && modals.isNotEmpty()) {
-                                currentOverlay.render(this, modals.size)
+                    domNode.innerHTML = ""
+                    val currentOverlay = overlay.current
+                    if (currentOverlay.method == OverlayMethod.CoveringTopMost && modals.isNotEmpty()) {
+                        currentOverlay.render(this.unsafeCast<RenderContext>(), modals.size)
+                    }
+                    modals.withIndex().toList().forEach { (index, modal) ->
+                        if (currentOverlay.method == OverlayMethod.CoveringEach) {
+                            div {
+                                currentOverlay.render(this, index + 1)
+                                modal(index + 1)
                             }
-                            modals.withIndex().toList().forEach { (index, modal) ->
-                                if (currentOverlay.method == OverlayMethod.CoveringEach) {
-                                    div {
-                                        currentOverlay.render(this, index + 1)
-                                        modal(index + 1)
-                                    }
-                                } else {
-                                    modal(index + 1)
-                                }
-                            }
-                        }
+                        } else this.unsafeCast<RenderContext>().modal(index + 1)
                     }
                 }
             }.watch()
-            render(document.body, override = false) {
-
-            }
         }
 
         fun show(
