@@ -3,6 +3,8 @@ package dev.fritz2.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.storeOf
+import dev.fritz2.binding.watch
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.render
@@ -13,6 +15,8 @@ import dev.fritz2.styling.theme.ModalSizes
 import dev.fritz2.styling.theme.ModalVariants
 import dev.fritz2.styling.theme.Theme
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 typealias ModalRenderContext = RenderContext.(level: Int) -> Div
@@ -89,26 +93,33 @@ class ModalComponent {
         }
 
         init {
-            render(document.body, override = false) {
-                div(id = "modals") {
-                    stack.data.map { it.size }.render { size ->
-                        val currentOverlay = overlay.current
-                        if (currentOverlay.method == OverlayMethod.CoveringTopMost && size > 0) {
-                            currentOverlay.render(this, size)
-                        }
-                    }
-                    stack.data.map { it.withIndex().toList() }.renderEach { (index, modal) ->
-                        val currentOverlay = overlay.current
-                        if (currentOverlay.method == OverlayMethod.CoveringEach) {
-                            div {
-                                currentOverlay.render(this, index + 1)
-                                modal(index + 1)
+            stack.data.map { modals ->
+                val modalsParent = document.getElementById("modals")?.let {
+                    Tag("div", it.id, job = Job(), domNode = it)
+                } ?: Div("modals", job = Job())
+                modalsParent.apply {
+                    render {
+                        div(id = "modals") {
+                            val currentOverlay = overlay.current
+                            if (currentOverlay.method == OverlayMethod.CoveringTopMost && modals.isNotEmpty()) {
+                                currentOverlay.render(this, modals.size)
                             }
-                        } else {
-                            modal(index + 1)
+                            modals.withIndex().toList().forEach { (index, modal) ->
+                                if (currentOverlay.method == OverlayMethod.CoveringEach) {
+                                    div {
+                                        currentOverlay.render(this, index + 1)
+                                        modal(index + 1)
+                                    }
+                                } else {
+                                    modal(index + 1)
+                                }
+                            }
                         }
                     }
                 }
+            }.watch()
+            render(document.body, override = false) {
+
             }
         }
 
