@@ -13,12 +13,6 @@ internal const val opacityKey = "opacity: "
  */
 typealias ColorProperty = Property
 
-val ColorProperty.lighter
-    get() = alterBrightness(this, Theme().hoverBrightness)
-
-val ColorProperty.darker
-    get() = alterBrightness(this, Theme().hoverDarkness)
-
 /**
  * creates a [ColorProperty] from rgb-values
  */
@@ -45,9 +39,9 @@ fun hsla(h: Int, s: Int, l: Int, a: Double) = "hsl($h,$s% c vn,,$l%,$a)"
  * Increasing the brightness of a color lets them appear rather faded than shining.
  */
 
-fun alterBrightness(color: ColorProperty, brightness: Double): ColorProperty =
+fun alterHexColorBrightness(color: ColorProperty, brightness: Double): ColorProperty =
         if (color.length != 7 || color[0] != '#') {
-            console.log("wrong color input format")
+            console.log("alterHexColorBrightness: Wrong color input format (expected #rrggbb).")
             color
         } else {
             val rgb = color.asSequence()
@@ -55,17 +49,21 @@ fun alterBrightness(color: ColorProperty, brightness: Double): ColorProperty =
                 .chunked(2)
                 .map { it.joinToString("").toInt(16) }
                 .map {
-                    if (brightness > 1) {
-                        it + (brightness - 1) * (255 - it)
-                    } else if (brightness < 1) {
-                        it - ((1 - brightness) * it)
-                    } else {
-                        it
+                    when {
+                        brightness > 1 -> {
+                            it + (brightness - 1) * (255 - it)
+                        }
+                        brightness < 1 -> {
+                            it - ((1 - brightness) * it)
+                        }
+                        else -> {
+                            it
+                        }
                     }
                 }.map {
                     minOf(it.toInt(), 255)
                 }.map {
-                    it.toString(16).let { if (it.length == 2) it else "0$it" }
+                    it.toString(16).let { str -> if (str.length == 2) str else "0$str" }
                 }.joinToString("")
             "#$rgb"
         }

@@ -138,14 +138,7 @@ open class PushButtonComponent {
         events = value
     }
 
-    private fun buildColor(value: ColorProperty): Style<BasicParams> = {
-        val hoverColor = alterBrightness(value, Theme().hoverBrightness) // TODO
-        css("""
-            --main-color-hover: $hoverColor;
-            --main-color: $value; 
-            """
-        )
-    }
+    private fun buildColor(value: ColorProperty): Style<BasicParams> = { css("--main-color: $value;") }
 
     var color: Style<BasicParams> = buildColor(Theme().colors.primary)
 

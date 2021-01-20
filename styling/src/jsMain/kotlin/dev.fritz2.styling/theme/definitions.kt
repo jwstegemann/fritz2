@@ -185,12 +185,15 @@ interface Fonts {
  */
 interface Colors {
     val primary: ColorProperty
+    val primaryEffect: ColorProperty
     val secondary: ColorProperty
+    val secondaryEffect: ColorProperty
     val success: ColorProperty
     val danger: ColorProperty
     val warning: ColorProperty
     val info: ColorProperty
     val light: ColorProperty
+    val lightEffect: ColorProperty
     val dark: ColorProperty
     val base: ColorProperty
     val disabled: ColorProperty
