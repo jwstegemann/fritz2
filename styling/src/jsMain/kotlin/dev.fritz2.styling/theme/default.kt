@@ -2309,33 +2309,21 @@ open class DefaultTheme : Theme {
 
         override val sizes = object : SelectFieldSizes {
             override val small: Style<BasicParams> = {
-//                height { "2rem" }
-//                minWidth { "2.5rem" }
                 fontSize { small }
-                paddings {
-                    horizontal { tiny }
-                }
-                css("--select-size: .75rem")
+                css("--select-icon-size: .75rem")
+                height { "2rem" }
             }
 
             override val normal: Style<BasicParams> = {
-//                height { "2.5rem" }
-//                minWidth { "2.5rem" }
                 fontSize { normal }
-                paddings {
-                    horizontal { small }
-                }
-                css("--select-size: 1.0rem")
+                css("--select-icon-size: 1.0rem")
+                height { "2.5rem" }
             }
 
             override val large: Style<BasicParams> = {
-//                height { "3rem" }
-//                minWidth { "2.5rem" }
                 fontSize { large }
-                paddings {
-                    horizontal { small }
-                }
-                css("--select-size: 1.5rem")
+                css("--select-icon-size: 1.5rem")
+                height { "3rem" }
             }
         }
     }

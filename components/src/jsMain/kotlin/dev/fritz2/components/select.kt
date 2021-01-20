@@ -48,15 +48,15 @@ class SelectFieldComponent<T> {
     val basicSelectStyles: Style<BasicParams> = {
 
         width { full }
-        paddings { bottom { "1px" } }
+        paddings {
+            left { "0.75rem" }
+            right { "1.5rem" }
+            bottom { "1px" }
+        }
         lineHeight { normal }
         fontSize { "1rem" }
-        paddings {
-            left { "1rem" }
-            right { "2rem" }
-        }
         height { "2.5rem" }
-        radius { "0.375rem" }
+        radius { normal }
         focus {
             focus {
                 border {
@@ -72,20 +72,16 @@ class SelectFieldComponent<T> {
             }
         }
         position { relative { } }
+        minWidth { "2.5rem" }
 
         css("outline: 0px;")
         css("appearance: none;")
         css("transition: all 0.2s ease 0s;")
-
     }
 
-    // todo variable  for size, see icons
     val iconWrapperStyle: Style<BasicParams> = {
         position { absolute { } }
         display { inlineFlex }
-//        width { "1.5rem" }
-       // height { full }
-        height { "var(--select-size)" }
         css("-webkit-box-align: center;")
         css("align-items: center;")
         css("-webkit-box-pack: center;")
@@ -97,9 +93,8 @@ class SelectFieldComponent<T> {
     }
 
     val iconStyle: Style<BasicParams> = {
-        height { "var(--select-size)" }
+        height { "var(--select-icon-size)" }
     }
-
 
     var placeholder: Flow<T>? = null
 
@@ -296,13 +291,12 @@ fun <T> RenderContext.selectField(
 
         }
         (::div.styled(prefix = "icon-wrapper") {
+            component.size.invoke(Theme().select.sizes)()
             component.iconWrapperStyle()
         }){
-            icon(
-                {
-                    component.iconStyle()
-                }
-            ) { fromTheme { component.icon } }
+            icon({
+                component.iconStyle()
+            }) { fromTheme { component.icon } }
         }
     }
 }
