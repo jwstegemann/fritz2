@@ -46,12 +46,12 @@ open class DefaultTheme : Theme {
     override val colors = object : Colors {
 
         override val primary = "#427802"//"#3B6302" // darker green
-        override val primaryEffect = alterHexColorBrightness(primary, 1.8) // lighter green derived from primary #rrggbb
+        override val primaryEffect = alterHexColorBrightness(primary, 1.5) // lighter green derived from primary #rrggbb
         override val secondary = "#F7B52F" // yellowish orange
-        override val secondaryEffect = alterHexColorBrightness(secondary, 1.8) // lighter orange derived from secondary #rrggbb
+        override val secondaryEffect = alterHexColorBrightness(secondary, 1.5) // lighter orange derived from secondary #rrggbb
         override val dark = "#214A25" // dark gray coming from green
         override val light = "#C6CFC9" //"#cdd1d6" // light gray // coming from green / blue
-        override val lightEffect = alterHexColorBrightness(light, 1.8) // lighter gray derived from light #rrggbb
+        override val lightEffect = alterHexColorBrightness(light, 1.5) // lighter gray derived from light #rrggbb
         override val info = "#1B959E" // blue
         override val success = "#00A848" // bright green
         override val warning = "#F08B3A" // orange
@@ -1342,12 +1342,12 @@ open class DefaultTheme : Theme {
 
             override val filled: Style<BasicParams> = {
                 background {
-                    color { alterHexColorBrightness(primary, 1.8) }
+                    color { primaryEffect } // todo main-color
                 }
                 color { base }
 
                 hover {
-                    background { color { alterHexColorBrightness(primary, 2.0) } }
+                    background { color { lightEffect } }
                     color { dark }
                 }
 
