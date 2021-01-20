@@ -17,6 +17,12 @@ import org.w3c.dom.HTMLElement
 typealias Property = String
 
 /**
+ * adds important flag to resulting css
+ */
+val Property.important: Property
+    get() = "$this !important"
+
+/**
  * Standard interface for themes in fritz2.
  *
  * This interface is implemented by fritz2's [DefaultTheme].
