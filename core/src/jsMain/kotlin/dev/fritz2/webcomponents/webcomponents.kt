@@ -1,8 +1,11 @@
 package dev.fritz2.webcomponents
 
 import dev.fritz2.dom.Tag
+import dev.fritz2.dom.WithDomNode
+import dev.fritz2.dom.html.TagContext
 import kotlinx.browser.window
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
@@ -23,7 +26,7 @@ internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsC
                 
                 const shadowRoot = this.attachShadow({mode: 'open'});
                 
-                let content = this.webComponent.init(this, shadowRoot)
+                let content = this.webComponent.initializeInternal(this, shadowRoot)
                 shadowRoot.appendChild(content.domNode)
             }
             
@@ -63,8 +66,18 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
      * @param shadowRoot the shadowRoot the content will be added to
      * @return a [Tag] representing the content of the component
      */
-    @JsName("init")
-    abstract fun init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T>
+    abstract fun TagContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T>
+
+    @JsName("initializeInternal")
+    internal fun initializeInternal(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T> {
+        return object : TagContext {
+            override val job = Job()
+            override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+                content(element)
+                return element
+            }
+        }.init(element, shadowRoot)
+    }
 
     /**
      * this callback is used, when building the component in native-js (since ES2015-classes are not supported by Kotlin/JS by now)
