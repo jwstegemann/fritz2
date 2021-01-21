@@ -1,8 +1,7 @@
 package dev.fritz2.test
 
 import dev.fritz2.binding.mountSingle
-import dev.fritz2.remote.Request
-import dev.fritz2.remote.http
+import dev.fritz2.remote.*
 import kotlinx.browser.document
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -43,9 +42,18 @@ typealias Endpoint = String
 
 const val test: Endpoint = "test"
 const val rest: Endpoint = "rest"
+const val testauthenticated: Endpoint = "testauthenticated"
+const val restauthenticated: Endpoint = "restauthenticated"
+
 
 suspend fun testHttpServer(endpoint: Endpoint): Request {
     val r = http("http://localhost:3000/$endpoint")
+    if (endpoint == rest) r.get("clear")
+    return r
+}
+
+suspend fun testHttpServerAuthenticated(endpoint: Endpoint, authentication: Authentication): AuthenticatedRequest {
+    val r: AuthenticatedRequest = http("http://localhost:3000/$endpoint", authentication)
     if (endpoint == rest) r.get("clear")
     return r
 }
