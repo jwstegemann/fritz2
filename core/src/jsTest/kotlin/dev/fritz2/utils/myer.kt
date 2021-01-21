@@ -2,8 +2,6 @@ package dev.fritz2.utils
 
 import dev.fritz2.binding.Patch
 import dev.fritz2.test.runTest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.reduce
 import kotlin.js.Date
 import kotlin.random.Random
 import kotlin.test.Test

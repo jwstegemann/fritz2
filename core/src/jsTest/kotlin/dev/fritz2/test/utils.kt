@@ -12,17 +12,9 @@ fun <T> runTest(block: suspend () -> T): dynamic = GlobalScope.promise {
     delay(50)
 }
 
-const val targetId = "target"
-
 fun initDocument() {
     document.clear()
-    document.write(
-        """
-            <body id="$targetId">
-                Loading...
-            </body>
-        """.trimIndent()
-    )
+    document.write("""<body>Loading...</body>""")
 }
 
 fun <T> checkSingleFlow(

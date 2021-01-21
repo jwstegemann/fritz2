@@ -1,64 +1,55 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.WithDomNode
+import kotlinx.browser.document
 import kotlinx.coroutines.Job
-import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 
 /**
- * Creates a render context for [Tag]s.
+ * Occurs when the targeted html element is not present in document.
  *
- * @param parentJob used when launching new coroutines
- * @param content html [Tag] elements to render
+ * @param message exception message
+ */
+class MountTargetNotFoundException(message: String) : Exception(message)
+
+/**
+ * Creates a [RenderContext] for [Tag]s and
+ * mounts it to a constant element in the static html file
+ * which id matches the [selector].
+ *
+ * @param selector [query selector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector)
+ * of the element to mount to
+ * @param override if true all child elements are removed before rendering
+ * @param content [RenderContext] for rendering the data to the DOM
+ * @throws MountTargetNotFoundException if target element with [selector] not found
  */
 fun render(
-    parentJob: Job = Job(),
+    selector: String,
+    override: Boolean = true,
     content: RenderContext.() -> Unit
-): List<Tag<HTMLElement>> = buildList {
-    content(object : RenderContext {
-        override val job = parentJob
-
-        override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
-            content(element)
-            add(element.unsafeCast<Tag<HTMLElement>>())
-            return element
-        }
-    })
+) {
+    document.querySelector(selector)?.let { parentElement ->
+        if (parentElement is HTMLElement) {
+            render(parentElement, override, content)
+        } else MountTargetNotFoundException("element with id=$selector is not an HTMLElement")
+    } ?: throw MountTargetNotFoundException("html document contains no element with id=$selector")
 }
 
 /**
- * Creates a render context for [Tag]s. It should only contain
- * one root [Tag] like [Div] otherwise a [MultipleRootElementsException]
- * will be thrown.
+ * Creates a [RenderContext] for [Tag]s and mounts it to a [targetElement].
  *
- * @param parentJob
- * @param content html [Tag] elements to render
- * @throws MultipleRootElementsException if more then one root [Tag] is defined in [content]
+ * @param targetElement [HTMLElement] to mount to, default is *document.body*
+ * @param override if true all child elements are removed before rendering
+ * @param content [RenderContext] for rendering the data to the DOM
+ * @throws MountTargetNotFoundException if [targetElement] not found
  */
-fun <E : Element> renderElement(
-    parentJob: Job = Job(),
-    content: RenderContext.() -> Tag<E>
-): Tag<E> =
-    content(object : RenderContext {
-        override val job = parentJob
-
-        var alreadyRegistered: Boolean = false
-
-        override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
-            if (alreadyRegistered) {
-                throw MultipleRootElementsException("You can have only one root-tag per html-context!")
-            } else {
-                content(element)
-                alreadyRegistered = true
-                return element
-            }
-        }
-    })
-
-/**
- * Occurs when more then one root [Tag] is defined in a [render] context.
- *
- * @param message exception message text
- */
-class MultipleRootElementsException(message: String) : RuntimeException(message)
+fun render(
+    targetElement: HTMLElement? = document.body,
+    override: Boolean = true,
+    content: RenderContext.() -> Unit
+) {
+    targetElement?.let {
+        if (override) it.innerHTML = ""
+        content(RenderContext(it.tagName, it.id, job = Job(), domNode = it))
+    } ?: throw MountTargetNotFoundException("targetElement should not be null")
+}

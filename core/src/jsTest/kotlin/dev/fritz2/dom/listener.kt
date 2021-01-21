@@ -7,7 +7,6 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
@@ -41,7 +40,7 @@ class ListenerTest {
                     store.data.asText()
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -86,7 +85,7 @@ class ListenerTest {
                     clicks handledBy store.addADot
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -145,7 +144,7 @@ class ListenerTest {
                     clicks handledBy store.addDollar
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 
@@ -204,7 +203,7 @@ class ListenerTest {
                     keydowns.key() handledBy store.keyPressed
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(100)
 

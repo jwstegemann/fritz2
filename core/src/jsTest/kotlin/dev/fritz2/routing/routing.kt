@@ -1,11 +1,9 @@
 package dev.fritz2.routing
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.dom.mount
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.delay
@@ -44,7 +42,7 @@ class RoutingTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(200)
 
@@ -96,7 +94,7 @@ class RoutingTests {
                     }
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(250)
 
@@ -128,7 +126,7 @@ class RoutingTests {
             div(id = divId) {
                 router.select("fail", "error").asText()
             }
-        }.mount(targetId)
+        }
 
         delay(250)
 

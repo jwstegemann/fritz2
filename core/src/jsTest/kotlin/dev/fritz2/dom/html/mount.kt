@@ -1,14 +1,10 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.dom.MountTargetNotFoundException
-import dev.fritz2.dom.append
-import dev.fritz2.dom.mount
 import dev.fritz2.dom.selectedText
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
-import dev.fritz2.test.targetId
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -41,7 +37,7 @@ class MountTests {
                     clicks handledBy store.modify
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(250)
 
@@ -76,7 +72,7 @@ class MountTests {
                     clicks handledBy store.modify
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(250)
 
@@ -119,7 +115,7 @@ class MountTests {
                     changes.selectedText() handledBy store.select
                 }
             }
-        }.mount(targetId)
+        }
 
         delay(250)
 
@@ -155,22 +151,12 @@ class MountTests {
         initDocument()
 
         assertFailsWith(MountTargetNotFoundException::class) {
-            render {
-                div {
-                    +"div1"
-                }
-            }.mount(targetId + "error")
-            delay(100)
-        }
-
-        assertFailsWith(MountTargetNotFoundException::class) {
-            val dom = render {
+            render("error") {
                 div {
                     +"div1"
                 }
             }
-            append(targetId + "error", dom)
-            delay(150)
+            delay(100)
         }
     }
 }

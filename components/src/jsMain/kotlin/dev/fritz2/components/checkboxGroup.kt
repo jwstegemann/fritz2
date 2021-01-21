@@ -1,7 +1,6 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
-import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
