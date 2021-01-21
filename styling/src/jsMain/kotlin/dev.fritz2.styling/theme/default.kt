@@ -1342,7 +1342,7 @@ open class DefaultTheme : Theme {
 
             override val filled: Style<BasicParams> = {
                 background {
-                    color { primaryEffect } // todo main-color
+                    color { primaryEffect }
                 }
                 color { base }
 
@@ -1660,9 +1660,7 @@ open class DefaultTheme : Theme {
                     color { "var(--main-color)" }
                 }
                 hover {
-                    background {
-                        color { "var(--main-color-hover)" }
-                    }
+                    css("filter: brightness(80%);")
                     border { color { "var(--main-color)" } }
                 }
             }
@@ -1682,7 +1680,7 @@ open class DefaultTheme : Theme {
                     textDecoration { underline }
                 }
                 active {
-                    color { "var(--main-color-hover)" }
+                    css("filter: brightness(120%);")
                 }
             }
         }
