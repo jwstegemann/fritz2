@@ -44,21 +44,22 @@ open class DefaultTheme : Theme {
     )
 
     override val colors = object : Colors {
-        override val secondary = "#b2f5ea" // rgb(178,245,234) new
-        override val tertiary = "#718096" // rgb(61,64,92) formerly primary
-        override val primary = "#319795" // rgb(49,151,149) formerly "#e07a5f" // rgb(224,122,95)
-        override val success = "#28a745" // rgb(40,167,69)
-        override val danger = "#dc3545" // rgb(220,53,69)
-        override val warning = "#ffc107" // rgb(225,193,7)
-        override val info = "#3182ce" // rgb(23,162,184)
-        override val light = "#e2e8f0" // rgb(226,232,240)
-        override val dark = "#2d3748" // rgb(45,55,72)
-        override val base = "#ffffff" // rgb(255,255,255)
-        override val primary_hover = "rgb(49,151,149, 0.3)"
-        override val light_hover = "rgb(226,232,240, 0.5)"
+
+        override val primary = "#427802"//"#3B6302" // darker green
+        override val primaryEffect = alterHexColorBrightness(primary, 1.5) // lighter green derived from primary #rrggbb
+        override val secondary = "#F7B52F" // yellowish orange
+        override val secondaryEffect = alterHexColorBrightness(secondary, 1.5) // lighter orange derived from secondary #rrggbb
+        override val dark = "#214A25" // dark gray coming from green
+        override val light = "#C6CFC9" //"#cdd1d6" // light gray // coming from green / blue
+        override val lightEffect = alterHexColorBrightness(light, 1.5) // lighter gray derived from light #rrggbb
+        override val info = "#1B959E" // blue
+        override val success = "#00A848" // bright green
+        override val warning = "#F08B3A" // orange
+        override val danger = "#E14F2A" // red
+        override val base = "#ffffff"
+
         override val disabled = light
-        override val focus = "#3182ce"
-        //color of focus of input elements: inner: #3182ce / rgb(49,130,206) outer: #acd2f2 / rgb(172,210,242)
+        override val focus = primaryEffect
     }
 
     override val fonts = object : Fonts {
@@ -133,8 +134,8 @@ open class DefaultTheme : Theme {
     override val shadows = Shadows(
         flat = shadow("0", "1px", "3px", color = rgba(0, 0, 0, 0.12))
                 and shadow("0", "1px", "2px", rgba(0, 0, 0, 0.24)),
-        raised = shadow("0", "14px", "28px", rgba(0, 0, 0, 0.25))
-                and shadow(" 0", "10px", "10px", rgba(0, 0, 0, 0.22)),
+        raised = shadow("0", "5px", "10px", rgba(0, 0, 0, 0.25))
+                and shadow(" 0", "5px", "10px", rgba(0, 0, 0, 0.22)),
         raisedFurther = shadow("0", "14px", "28px", rgba(0, 0, 0, 0.25))
                 and shadow("0", "10px", "10px", rgba(0, 0, 0, 0.22)),
         top = shadow("0", "19px", "38px", rgba(0, 0, 0, 0.30))
@@ -145,9 +146,9 @@ open class DefaultTheme : Theme {
             "0",
             "0",
             "0",
-            "3px",
-            color = colors.secondary
-        ), // changed by mkempa-np: formerly rgba(66, 153, 225, 0.6)
+            "2px",
+            color = colors.primaryEffect
+        ),
         danger = shadow("0", "0", "0", "1px", color = colors.danger)
     )
 
@@ -160,9 +161,9 @@ open class DefaultTheme : Theme {
     override val icons = object : Icons {
 
         /*
-         * Most of our provided icons are taken from the [MONO Icons](https://icons.mono.company/) Projekt, that
-         * provides a solid set of useful icons. Some icons might be slightly modified and some icons
-         * (like the outstanding fritz2 logo itself) are made by ourselves.
+         * Most of our provided icons are taken from the [MONO Icons](https://icons.mono.company/) project which
+         * provides a solid set of useful icons. Some icons might be slightly modified, and some icons
+         * (like the fritz2 logo) are made by us.
          */
 
         // source: [MONO Icons](https://icons.mono.company/) license: ``icons/LICENSE.md``
@@ -1341,11 +1342,13 @@ open class DefaultTheme : Theme {
 
             override val filled: Style<BasicParams> = {
                 background {
-                    color { light }
+                    color { primaryEffect }
                 }
+                color { base }
 
                 hover {
-                    css("filter: brightness(90%);")
+                    background { color { lightEffect } }
+                    color { dark }
                 }
 
                 focus {
@@ -1353,6 +1356,7 @@ open class DefaultTheme : Theme {
                     background {
                         color { "transparent" }
                     }
+                    color { dark }
                 }
             }
         }
@@ -1396,7 +1400,7 @@ open class DefaultTheme : Theme {
         override val input: Style<BasicParams> = {
             children("&:focus + div") {
                 border {
-                    color { focus }
+                    color { light }
                 }
                 boxShadow { outline }
             }
@@ -1441,7 +1445,8 @@ open class DefaultTheme : Theme {
             radius { "var(--cb-radius)" }
         }
         override val checked: Style<BasicParams> = {
-            background { color { info } }
+            background { color { primary } }
+            border { color { primary } }
             color { base }
         }
     }
@@ -1477,7 +1482,7 @@ open class DefaultTheme : Theme {
         override val input: Style<BasicParams> = {
             children("&:focus + div") {
                 border {
-                    color { focus }
+                    color { primary }
                 }
                 boxShadow { outline }
             }
@@ -1503,17 +1508,20 @@ open class DefaultTheme : Theme {
             css("justify-content:center;")
             width { "var(--rb-size)" }
             height { "var(--rb-size)" }
-            background { color { "white" } }
+            background { color { base } }
             border {
                 width { "2px" }
                 style { solid }
-                color { inherit }
+                color { light }
             }
             radius { "9999px" }
         }
         override val selected: Style<BasicParams> = {
-            background { color { info } }
+            background { color { primary } }
             color { light }
+            border {
+                color { primary }
+            }
             before {
                 css("content:\"\";")
                 display {
@@ -1526,7 +1534,7 @@ open class DefaultTheme : Theme {
                 height { "50%" }
                 radius { "50%" }
                 background {
-                    color { "currentColor" }
+                    color { base }
                 }
             }
         }
@@ -1566,7 +1574,7 @@ open class DefaultTheme : Theme {
         override val input: Style<BasicParams> = {
             children("&:focus + div") {
                 border {
-                    color { focus }
+                    color { light }
                 }
                 boxShadow { outline }
             }
@@ -1590,7 +1598,7 @@ open class DefaultTheme : Theme {
             height { "var(--sw-height)" }
             radius { "9999px" }
             background {
-                color { "white" }
+                color { base }
             }
             css("transition: transform 250ms ease 0s;")
 
@@ -1616,7 +1624,7 @@ open class DefaultTheme : Theme {
             css("transition: all 120ms ease 0s;")
         }
         override val checked: Style<BasicParams> = {
-            background { color { success } }
+            background { color { primary } }
         }
     }
 
@@ -1626,7 +1634,6 @@ open class DefaultTheme : Theme {
                 lineHeight { smaller }
                 radius { normal }
                 fontWeight { semiBold }
-
                 focus {
                     boxShadow { outline }
                 }
@@ -1637,10 +1644,10 @@ open class DefaultTheme : Theme {
                 background { color { "var(--main-color)" } }
                 color { base }
                 hover {
-                    css("filter: brightness(80%);") //132%
+                    css("filter: brightness(80%);")
                 }
                 active {
-                    css("filter: brightness(80%);")
+                    css("filter: brightness(120%);")
                 }
             }
 
@@ -1653,11 +1660,7 @@ open class DefaultTheme : Theme {
                     color { "var(--main-color)" }
                 }
                 hover {
-                    css("background-opacity: 0.2;")
-                    background {
-                        color { primary_hover }
-                    }
-
+                    css("filter: brightness(80%);")
                 }
             }
 
@@ -1676,7 +1679,7 @@ open class DefaultTheme : Theme {
                     textDecoration { underline }
                 }
                 active {
-                    color { secondary }
+                    css("filter: brightness(120%);")
                 }
             }
         }
@@ -1708,9 +1711,7 @@ open class DefaultTheme : Theme {
                     horizontal { larger }
                 }
             }
-
         }
-
     }
 
     override val modal = object : ModalStyles {
@@ -1731,7 +1732,7 @@ open class DefaultTheme : Theme {
 
             private val basic: Style<BasicParams> = {
                 background {
-                    color { "white" }
+                    color { base }
                 }
                 padding { normal }
                 radius { tiny }
@@ -1756,7 +1757,6 @@ open class DefaultTheme : Theme {
                     fixed {
                         left { "var(--main-level)" }
                         top { "var(--main-level)" }
-                        //bottom {normal}
                         right { normal }
                     }
                 }
@@ -1815,7 +1815,7 @@ open class DefaultTheme : Theme {
                     }
                 }
                 // FIXME: does not work! overrides size-settings!
-                css("transform: translatey(-50%);")
+                css("transform: translateY(-50%);")
             }
         }
     }
@@ -1824,7 +1824,7 @@ open class DefaultTheme : Theme {
         override val size: PopoverSizes = object : PopoverSizes {
             private val basic: Style<BasicParams> = {
                 background {
-                    color { "white" }
+                    color { base }
                 }
                 paddings {
                     top { tiny }
@@ -1845,7 +1845,7 @@ open class DefaultTheme : Theme {
                 width { "250px" }
             }
         }
-        override val trigger: Style<BasicParams> = {
+        override val toggle: Style<BasicParams> = {
             display { "inline-block" }
         }
         override val header: Style<BasicParams> = {
@@ -2229,7 +2229,7 @@ open class DefaultTheme : Theme {
         """.trimIndent()
     }
 
-    override val textarea = object : TextAreaStyles {
+    override val textArea = object : TextAreaStyles {
         override val resize = object : TextAreaResize {
             override val none: Style<BasicParams> = {
                 css("resize:none")

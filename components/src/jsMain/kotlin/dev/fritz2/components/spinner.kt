@@ -71,16 +71,16 @@ class SpinnerComponent {
         icon = Theme().icons.value()
     }
 
-    var speed: String = "0.6s"
+    var speed: String = "0.5s"
 
     fun speed(value: () -> String) {
         speed = value()
     }
 
-    var size: Property = Theme().borderWidths.normal
+    var thickness: Property = Theme().borderWidths.normal
 
-    fun size(value: Thickness.() -> Property) {
-        size = Theme().borderWidths.value()
+    fun thickness(value: Thickness.() -> Property) {
+        thickness = Theme().borderWidths.value()
     }
 }
 
@@ -127,7 +127,7 @@ fun RenderContext.spinner(
     if (component.icon == null) {
         (::div.styled(styling, baseClass + SpinnerComponent.staticCss, id, prefix) {
             css("animation: loading ${component.speed} linear infinite;")
-            border { width { component.size } }
+            border { width { component.thickness } }
             width { "1rem" }
             height { "1rem" }
         }) {}
