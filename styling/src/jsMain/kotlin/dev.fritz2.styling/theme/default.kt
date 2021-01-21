@@ -1661,7 +1661,6 @@ open class DefaultTheme : Theme {
                 }
                 hover {
                     css("filter: brightness(80%);")
-                    border { color { "var(--main-color)" } }
                 }
             }
 
