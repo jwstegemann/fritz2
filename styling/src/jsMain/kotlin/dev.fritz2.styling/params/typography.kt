@@ -76,12 +76,12 @@ typealias FontWeightProperty = Property
 object FontWeights : PropertyValues {
     override val key = "font-weight: "
 
-    const val normal: FontWeightProperty = "normal" // = 400
-    const val bold: FontWeightProperty = "bold" // = 700
+    const val normal: FontWeightProperty = "400"
+    const val bold: FontWeightProperty = "700"
     const val medium: FontWeightProperty = "500"
     const val semiBold: FontWeightProperty = "600"
-    const val bolder: FontWeightProperty = "bolder" //
-    const val lighter: FontWeightProperty = "lighter"
+    const val bolder: FontWeightProperty = "800"
+    const val lighter: FontWeightProperty = "300"
     const val initial: FontWeightProperty = "initial"
     const val inherit: FontWeightProperty = "inherit"
 }

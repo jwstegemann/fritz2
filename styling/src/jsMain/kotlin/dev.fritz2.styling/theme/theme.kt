@@ -195,7 +195,7 @@ interface Theme {
 
     val tooltip: Tooltip
 
-    val textarea: TextAreaStyles
+    val textArea: TextAreaStyles
 }
 
 /**

@@ -59,9 +59,9 @@ class WeightedValue(
 class Thickness(
     val none: Property,
     val normal: Property,
-    val thin: Property = normal,
-    val fat: Property = normal,
-    val hair: Property = thin,
+    val thin: Property,
+    val fat: Property,
+    val hair: Property,
 ) {
     val initial: Property = "initial"
     val inherit: Property = "inherit"
@@ -185,17 +185,17 @@ interface Fonts {
  */
 interface Colors {
     val primary: ColorProperty
+    val primaryEffect: ColorProperty
     val secondary: ColorProperty
-    val tertiary: ColorProperty
+    val secondaryEffect: ColorProperty
     val success: ColorProperty
     val danger: ColorProperty
     val warning: ColorProperty
     val info: ColorProperty
     val light: ColorProperty
+    val lightEffect: ColorProperty
     val dark: ColorProperty
     val base: ColorProperty
-    val primary_hover: ColorProperty
-    val light_hover: ColorProperty
     val disabled: ColorProperty
     val focus: ColorProperty
 }
@@ -474,7 +474,7 @@ interface ModalSizes {
 
 interface PopoverStyles {
     val size: PopoverSizes
-    val trigger: Style<BasicParams>
+    val toggle: Style<BasicParams>
     val header: Style<BasicParams>
     val section: Style<BasicParams>
     val footer: Style<BasicParams>
