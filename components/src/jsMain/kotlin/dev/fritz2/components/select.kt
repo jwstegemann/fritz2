@@ -257,6 +257,9 @@ class SelectFieldComponent<T> {
  * @param init a lambda expression for setting up the component itself. Details in [SelectFieldComponent]
  *
  */
+
+// todo: Add the select to the form control!
+
 fun <T> RenderContext.selectField(
     styling: BasicParams.() -> Unit = {},
     store: Store<T>,
