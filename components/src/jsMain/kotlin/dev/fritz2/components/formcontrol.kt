@@ -333,8 +333,8 @@ open class FormControlComponent {
             helperText?.let {
                 (::p.styled {
                     color { dark }
-                    fontSize { small }
-                    lineHeight { small }
+                    fontSize { smaller }
+                    lineHeight { smaller }
                 }) { +it }
             }
         }
