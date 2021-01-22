@@ -8,6 +8,7 @@ import dev.fritz2.test.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -51,7 +52,7 @@ class ValidationJSTests {
                     }
                 }
                 div(id = idFind) {
-                    carValidator.find { it == colorValuesAreToLow }.render {
+                    carValidator.find { it == colorValuesAreToLow }.mapNotNull { it }.render {
                         p {
                             +it.text
                         }

@@ -5,17 +5,15 @@ plugins {
 }
 
 kotlin {
+    jvm()
     js(LEGACY).browser {
         testTask {
             useKarma {
-//                useSafari()
-//                useFirefox()
-//                useChrome()
                 useChromeHeadless()
-//                usePhantomJS()
             }
         }
     }
+
     sourceSets {
         all {
             languageSettings.apply {
@@ -31,6 +29,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":core"))
+                api(project(":styling"))
             }
         }
 
@@ -44,7 +43,6 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                api(project(":styling"))
             }
         }
         val jsTest by getting {
