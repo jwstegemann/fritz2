@@ -196,6 +196,8 @@ interface Theme {
     val tooltip: Tooltip
 
     val textArea: TextAreaStyles
+
+    val select : SelectFieldStyles
 }
 
 /**

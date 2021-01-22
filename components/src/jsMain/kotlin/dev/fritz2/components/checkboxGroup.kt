@@ -134,7 +134,7 @@ class CheckboxGroupComponent<T> {
 /**
  * This component generates a *group* of checkboxes.
  *
- * You can set different kind of properties like the labeltext or different styling aspects like the colors of the
+ * You can set different kind of properties like the label text or different styling aspects like the colors of the
  * background, the label or the checked state. Further more there are configuration functions for accessing the checked
  * state of each box or totally disable it.
  * For a detailed overview about the possible properties of the component object itself, have a look at

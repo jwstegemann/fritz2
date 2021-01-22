@@ -2244,8 +2244,7 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val size = object : TextAreaSize {
-
+        override val sizes = object : TextAreaSizes {
             override val small: Style<BasicParams> = {
                 lineHeight { normal }
                 height { "1rem" }
@@ -2277,8 +2276,55 @@ open class DefaultTheme : Theme {
                 }
             }
         }
+    }
 
+    override val select = object : SelectFieldStyles {
+
+        override val variants = object : SelectFieldVariants {
+            override val outline: Style<BasicParams> = {
+                border {
+                    width { thin }
+                    style { solid }
+                    color { light }
+                }
+            }
+
+            override val filled: Style<BasicParams> = {
+                background {
+                    color { light }
+                }
+
+                hover {
+                    css("filter: brightness(90%);")
+                }
+
+                focus {
+                    zIndex { "1" }
+                    background {
+                        color { "transparent" }
+                    }
+                }
+            }
+        }
+
+        override val sizes = object : SelectFieldSizes {
+            override val small: Style<BasicParams> = {
+                fontSize { small }
+                css("--select-icon-size: .75rem")
+                height { "2rem" }
+            }
+
+            override val normal: Style<BasicParams> = {
+                fontSize { normal }
+                css("--select-icon-size: 1.0rem")
+                height { "2.5rem" }
+            }
+
+            override val large: Style<BasicParams> = {
+                fontSize { large }
+                css("--select-icon-size: 1.5rem")
+                height { "3rem" }
+            }
+        }
     }
 }
-
-
