@@ -113,6 +113,10 @@ class SelectFieldComponent<T> {
         items = flowOf(value)
     }
 
+    fun items(value: Flow<List<T>>) {
+        items = value
+    }
+
     var variant: SelectFieldVariants.() -> Style<BasicParams> = { Theme().select.variants.outline }
 
     fun variant(value: SelectFieldVariants.() -> Style<BasicParams>) {
