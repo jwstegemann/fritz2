@@ -10,14 +10,17 @@ import kotlinx.coroutines.flow.emptyFlow
  * Interface which [RootStore]s can implement to mark them that they have
  * a [ComponentValidator]. Then all [SubStore]s can evaluate if a [ComponentValidationMessage]
  * is available for their field.
+ *
  * The [validator] property must set with a [ComponentValidator] when implementing this interface.
  * To automatically call the validator when the model in [RootStore] is changed, use the [validate]
- * convenince function in the init block:
+ * convenience function in the init block:
  *
  * ```kotlin
- * init {
- *   validate("my metadata")
- * }
+ * val store = object : RootStore<MyData>(MyData()), WithValidator<MyData, String> {
+ *    override val validator = MyDataValidator
+ *
+ *    init { validate("my metadata") }
+ *}
  * ```
  */
 interface WithValidator<D, T> : Store<D> {
@@ -27,7 +30,7 @@ interface WithValidator<D, T> : Store<D> {
     val validator: ComponentValidator<D, T>
 
     /**
-     * Convenice method for calling the [ComponentValidator]
+     * Convenience method for calling the [ComponentValidator]
      * every time the model is changed.
      */
     fun validate(metadata: T) {
