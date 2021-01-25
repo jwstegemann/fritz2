@@ -113,6 +113,10 @@ class SelectFieldComponent<T> {
         items = flowOf(value)
     }
 
+    fun items(value: Flow<List<T>>) {
+        items = value
+    }
+
     var variant: SelectFieldVariants.() -> Style<BasicParams> = { Theme().select.variants.outline }
 
     fun variant(value: SelectFieldVariants.() -> Style<BasicParams>) {
@@ -257,8 +261,6 @@ class SelectFieldComponent<T> {
  * @param init a lambda expression for setting up the component itself. Details in [SelectFieldComponent]
  *
  */
-
-// todo: Add the select to the form control!
 
 fun <T> RenderContext.selectField(
     styling: BasicParams.() -> Unit = {},
