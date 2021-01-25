@@ -52,6 +52,49 @@ object Position {
 private const val defaultToastContainerPrefix = "ul-toast-container"
 private const val defaultInnerToastPrefix = "toast-inner"
 
+
+/*
+TODO: Restructuring ToastComponent
+
+- Use sub-contexts instead of many similar convenience factories
+-> Much more versatile and less prone to usage errors
+-> Clearer naming - always toast or showToast instead of e.g. showInfoToast, showToastWithTitleAndDescription, ...
+-> e.g.:
+
+toast {
+    // properties like duration, position, etc ...
+
+    // different content-variants based on subcontexts:
+    info {
+        title { ... }
+        description { ... }
+    }
+
+    warning {
+        title { ... }
+        description { ... }
+    }
+
+    ...
+
+    // only with icon and close-button
+    simple {
+        content {
+            ...
+        }
+    }
+
+    // without anything:
+    plain {
+        content {
+            ...
+        }
+    }
+}
+
+ */
+
+
 /**
  * This class combines the _configuration_ and the core styling of a toast.
  *
