@@ -96,8 +96,8 @@ class RadioGroupComponent<T> {
     }
 
     var disabled: Flow<Boolean> = flowOf(false)
-    fun disabled(value: () -> Flow<Boolean>) {
-        disabled = value()
+    fun disabled(value: Flow<Boolean>) {
+        disabled = value
     }
 
     fun disabled(value:  Boolean) {
@@ -135,32 +135,31 @@ class RadioGroupComponent<T> {
 
 
 /**
- * This component generates a *group* of radio buttons.
+ * This component generates a group of radio buttons.
  *
- * You can set different kind of properties like the labeltext or different styling aspects like the colors of the
- * background, the label or the selected item. It returns a [Flow<String>] with the currently selected item, so it
- * can be easily passed to an appropriate handler like the update handler of a store.
+ * You can set different kinds of properties like the label text, or styling aspects like the colors of the
+ * background, the label, or the selected item. It needs a store containing the currently selected item.
  *
  * For a detailed overview about the possible properties of the component object itself, have a look at
- * [RadioGroupComponent]
+ * [RadioGroupComponent].
  *
  * Example usage
  * ```
  * val options = listOf("A", "B", "C")
- * radioGroup {
+ * val store = storeOf("A")
+ * radioGroup(store = store) {
  *     items { options } // provide a list of items
- *     selected { options[1] } // pre select "B"
- * } handledBy selectedItemStore.update // combine the Flow<String> with a fitting handler
+ * }
  * ```
  *
  * @see RadioGroupComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param store holds the currently selected option among all options passed via [items] context
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [RadioGroupComponent]
- * @return a flow of the _selected_ item
  */
 fun <T>RenderContext.radioGroup(
     styling: BasicParams.() -> Unit = {},
@@ -183,8 +182,8 @@ fun <T>RenderContext.radioGroup(
                 labelStyle { component.labelStyle }
                 selectedStyle { component.selectedStyle }
                 label(component.label(item))
-                selected { checkedFlow }
-                disabled { component.disabled }
+                selected(checkedFlow)
+                disabled (component.disabled)
                 events {
                     changes.states().map{ item } handledBy store.update
                 }

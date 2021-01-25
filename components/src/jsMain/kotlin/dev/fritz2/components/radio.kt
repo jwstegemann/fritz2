@@ -79,22 +79,6 @@ class RadioComponent {
             }
             """
         )
-
-        val radioLabelStaticCss = staticStyle(
-            "radiolabel",
-            """
-            display: block;
-            position: relative;
-            &::before {
-                content: '';
-                outline: none;
-                position: relative;
-                display: inline-block;
-                vertical-align: middle;
-                box-shadow: 0 0 1px ${Theme().colors.dark} inset;
-            }
-            """
-        )
     }
 
     var size: RadioSizes.() -> Style<BasicParams> = { Theme().radio.sizes.normal }
@@ -137,21 +121,21 @@ class RadioComponent {
     }
 
     var selected: Flow<Boolean> = flowOf(false) // @input
-    fun selected(value: () -> Flow<Boolean>) {
-        selected = value()
+    fun selected(value: Flow<Boolean>) {
+        selected = value
     }
 
     var disabled: Flow<Boolean> = flowOf(false) // @input
-    fun disabled(value: () -> Flow<Boolean>) {
-        disabled = value()
+    fun disabled(value: Flow<Boolean>) {
+        disabled = value
     }
 
     var groupName: Flow<String> = flowOf("")
-    fun groupName(value: () -> String) {
-        groupName = flowOf(value())
+    fun groupName(value: String) {
+        groupName = flowOf(value)
     }
-    fun groupName(value: () -> Flow<String>) {
-        groupName = value()
+    fun groupName(value: Flow<String>) {
+        groupName = value
     }
 
 
@@ -172,7 +156,7 @@ class RadioComponent {
  * radio {
  *      label("with extra cheese") // set the label
  *      size { normal } // choose a predefined size
- *      selected { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
+ *      selected(cheeseStore.data) // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
  *      }

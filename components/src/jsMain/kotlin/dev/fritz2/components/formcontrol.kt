@@ -21,8 +21,8 @@ import selectField
 
 
 /**
- * This component class manages the _configuration_ of a [formControl] and some render centric functionalities.
- * The former are important for clients of a [formControl], the latter for extending or changing the default behaviours.
+ * This component class manages the configuration of a [formControl] and some render centric functionalities.
+ * The former are important for clients of a [formControl], the latter for extending or changing the default behaviors.
  *
  * A [formControl] can be configured in different aspects:
  * - a label for a description of the control as a whole
@@ -31,25 +31,24 @@ import selectField
  * - provide an error message as a [Flow<String>]]; if it is none empty, the message will get rendered.
  * - disable the control
  *
- * In order to customize the control, there are different seams to use:
+ * Customizing the control:
  *
  * To add a new control, extend this class and add a new control function that wraps the desired control component
  * factory function like [FormControlComponent.inputField], [FormControlComponent.selectField],
  * [FormControlComponent.checkbox], [FormControlComponent.checkboxGroup] and [FormControlComponent.radioGroup] do.
  *
- * In order to just _change_ the target of some of the default control wrapping function to a different control
+ * In order to simply change the target of some of the default control wrapping function to a different control
  * component, extend this class and override the desired function. Be aware that you cannot provide default arguments
- * for an overridden function, so probably offer a new function with default arguments that just direct to
+ * for an overridden function, so you must offer a new function with default arguments that just directs to
  * the overridden one.
  *
- * Be aware of how the control should be integrated in the component structure in either way.
- * Currently there are two _strategies_ implemented:
- * - [SingleControlRenderer] for a control that consists of only _one_ element
- * - [ControlGroupRenderer] for a control that consists of multiple parts (like checkBoxes or alike)
+ * Be aware of the render strategy - pick whether your control should be rendered as a single control or a group.
+ * - [SingleControlRenderer] for a control that consists of a single element
+ * - [ControlGroupRenderer] for a control that consists of multiple parts (like checkBoxes etc.)
  *
  * If those do not fit, just implement the [ControlRenderer] interface and pair it with the string based key of the
  * related control wrapping function. Have a look at the init block, [renderStrategies] field and [Control.assignee]
- * field to grasp, how the mapping between a control and a rendering strategie is done.
+ * field to learn how the mapping between control and rendering strategy is done.
  *
  */
 // TODO: Add support for disable
@@ -271,13 +270,13 @@ open class FormControlComponent {
         }
     }
 
-    open fun radioGroup(
+    open fun <T>radioGroup(
         styling: BasicParams.() -> Unit = {},
-        store: Store<String>,
+        store: Store<T>,
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.radioGroup,
-        build: RadioGroupComponent<String>.() -> Unit
+        build: RadioGroupComponent<T>.() -> Unit
     ) {
         control.set(ControlNames.radioGroup) {
             radioGroup(styling, store, baseClass, id, prefix) {
