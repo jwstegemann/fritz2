@@ -11,7 +11,7 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.TextAreaResize
-import dev.fritz2.styling.theme.TextAreaSize
+import dev.fritz2.styling.theme.TextAreaSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.flowOf
 /**
  * This class handles the configuration of an textarea element
  *
- * The textArea can be configured for the following aspects:
+ * The TextArea can be configured for the following aspects:
  *  - the size of the element
  *  - the direction of resizing
  *  - some predefined styles
@@ -37,19 +37,16 @@ class TextAreaComponent {
 
     companion object {
         val staticCss = staticStyle(
-            "textAreaContainer",
+        "textAreaContainer",
+        """
+            outline: 0px;
+            position: relative;
+            appearance: none;
+            transition: all 0.2s ease 0s;
+            min-height: 80px;
+            
             """
-                
-                outline: 0px;
-                position: relative;
-                appearance: none;
-                transition: all 0.2s ease 0s;
-                min-height: 80px;
-                
-                """
         )
-
-
     }
 
     val basicInputStyles: Style<BasicParams> = {
@@ -117,18 +114,17 @@ class TextAreaComponent {
         disable = value()
     }
 
-    var size: TextAreaSize.() -> Style<BasicParams> = { Theme().textarea.size.normal }
-    fun size(value: TextAreaSize.() -> Style<BasicParams>) {
+    var size: TextAreaSizes.() -> Style<BasicParams> = { Theme().textArea.sizes.normal }
+    fun size(value: TextAreaSizes.() -> Style<BasicParams>) {
         size = value
     }
 
-    var resizeBehavior: TextAreaResize.() -> Style<BasicParams> = { Theme().textarea.resize.vertical }
+    var resizeBehavior: TextAreaResize.() -> Style<BasicParams> = { Theme().textArea.resize.vertical }
     fun resizeBehavior(value: TextAreaResize.() -> Style<BasicParams>) {
         resizeBehavior = value
     }
 
     var base: (TextArea.() -> Unit)? = null
-
     fun base(value: TextArea.() -> Unit) {
         base = value
     }
@@ -137,11 +133,11 @@ class TextAreaComponent {
 }
 
 /**
- * This component generates a  textarea
+ * This component generates a TextArea.
  *
- * You can optionally pass in a store in order to set the value and react to updates _automatically_.
+ * You can optionally pass a store in order to set the value and react to updates automatically.
  *
- * To enable or disable it or to make it readOnly just use the well known attributes of the HTML
+ * To enable or disable it or to make it readOnly, just use the well known attributes of HTML.
  *
  * Possible values to set are( default *) :
  *  - size : small | normal * | large
@@ -149,7 +145,7 @@ class TextAreaComponent {
  *  - placeholder : String | Flow<String>
  *  - disable : Boolean | Flow<Boolean>
  *  - value -> maybe you want to set an initial value instead of a placeholder
- *  - base -> basic properties of an textarea
+ *  - base -> basic properties of the textarea html element
  *
  *  textArea(store = dataStore) {
  *        placeholder { "My placeholder" }  // render a placeholder text for empty textarea
@@ -158,15 +154,15 @@ class TextAreaComponent {
  *     }
  *
  *
- *   textArea({ // just use the ``styling`` parameter!
+ *   textArea({ // use the styling parameter
  *            background {
  *                color { dark }
  *               }
  *               color { light }
  *               radius { "1rem" }},store = dataStore) {
  *
- *               disable(true)              // textarea is disabled now
- *               resizeBehavior { none }    // resizing is not possible now
+ *               disable(true)              // textarea is disabled
+ *               resizeBehavior { none }    // resizing is not possible
  *               size { large }             // render a large textarea
  *
  *               }
@@ -206,8 +202,8 @@ fun RenderContext.textArea(
     val component = TextAreaComponent().apply(init)
 
     (::textarea.styled(styling, baseClass + TextAreaComponent.staticCss, id, prefix) {
-        component.resizeBehavior.invoke(Theme().textarea.resize)()
-        component.size.invoke(Theme().textarea.size)()
+        component.resizeBehavior.invoke(Theme().textArea.resize)()
+        component.size.invoke(Theme().textArea.sizes)()
         component.basicInputStyles()
 
     }){
@@ -218,7 +214,6 @@ fun RenderContext.textArea(
         store?.let {
             value(it.data)
             changes.values() handledBy it.update
-
         }
     }
 }

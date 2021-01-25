@@ -86,7 +86,13 @@ open class InputFieldComponent {
                 boxShadow { outline }
             }
         }
+
+
+
     }
+
+
+
 
     var variant: InputFieldVariants.() -> Style<BasicParams> = { Theme().input.variants.outline }
 
