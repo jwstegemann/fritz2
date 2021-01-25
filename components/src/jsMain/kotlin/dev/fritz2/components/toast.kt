@@ -369,7 +369,7 @@ class ToastComponent(private val renderContext: RenderContext) {
 
 /**
  * This factory method creates a toast and displays it _right away_.
- * Use [delayedToast] in order to display a toast delayed, e.g. when a button is pressed.
+ * Use [toast] in order to display a toast delayed, e.g. when a button is pressed.
  *
  * A toast usually consists of a title and a description but you are free to specify any content you prefer via the
  * `content { ... }` method. In most cases it should be sufficient to use on of the convenience factories
@@ -405,6 +405,39 @@ fun RenderContext.showToast(
 ) {
     val component = ToastComponent(this).apply(build)
     component.show(styling, baseClass, id, prefix)
+}
+
+private fun RenderContext.showToastWithTitleAndDescription(
+    title: String,
+    description: String,
+    status: ToastStatus.() -> Style<BasicParams> = { info },
+    build: ToastComponent.() -> Unit,
+) {
+    showToast {
+        // Apply default settings
+        this.status = status
+
+        // Apply additional build lambda. Content will be ignored as it gets overridden below.
+        build()
+        content {
+            div {
+                (::div.styled(prefix = "toast-title") {
+                    fontWeight { "700" }
+                    lineHeight { "1.5rem" }
+                    margins {
+                        right { "0.5rem" }
+                    }
+
+                }){ +title }
+
+                (::div.styled(prefix = "toast-description") {
+                    display { block }
+                    lineHeight { "1.5rem" }
+
+                }){ +description }
+            }
+        }
+    }
 }
 
 /**
@@ -471,42 +504,6 @@ fun RenderContext.showErrorToast(
     build: ToastComponent.() -> Unit = {},
 ) = showToastWithTitleAndDescription(title, description, status = { error }, build)
 
-private fun RenderContext.showToastWithTitleAndDescription(
-    title: String,
-    description: String,
-    status: ToastStatus.() -> Style<BasicParams>,
-    build: ToastComponent.() -> Unit,
-) {
-    showToast {
-        // Apply default settings
-        this.status = status
-        position { bottomRight }
-        isCloseable(true)
-
-        // Apply additional build functions. Content will be ignored as it gets overwritten below.
-        build()
-
-        content {
-            div {
-                (::div.styled(prefix = "toast-title") {
-                    fontWeight { "700" }
-                    lineHeight { "1.5rem" }
-                    margins {
-                        right { "0.5rem" }
-                    }
-
-                }){ +title }
-
-                (::div.styled(prefix = "toast-description") {
-                    display { block }
-                    lineHeight { "1.5rem" }
-
-                }){ +description }
-            }
-        }
-    }
-}
-
 /**
  * This factory method creates a toast that will be shown when the returned handler is triggered, eg. on a button press.
  *
@@ -552,7 +549,7 @@ private fun RenderContext.showToastWithTitleAndDescription(
  * @param prefix the prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself
  */
-fun RenderContext.delayedToast(
+fun RenderContext.toast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
@@ -565,6 +562,33 @@ fun RenderContext.delayedToast(
     val pendingToastStore = object : RootStore<AddToast>({}) {
         val show = handle {
             component.show(styling, baseClass, id, prefix)
+            it
+        }
+    }
+    return pendingToastStore.show
+}
+
+/**
+ * Convenience function to display a toast with a title and description when the returned Handler receives an event.
+ * Use the other overloaded variants of this function for more customization options such as custom styling / content.
+ *
+ * Note that custom content will be ignored when using this function.
+ *
+ * @param title Title to display in the toast
+ * @param description Description to display in the toast
+ * @param build Build function for additional customization of the toast component
+ *
+ * @see toast
+ */
+fun RenderContext.toast(
+    title: String,
+    description: String,
+    build: ToastComponent.() -> Unit = {},
+): SimpleHandler<Unit> {
+
+    val pendingToastStore = object : RootStore<AddToast>({}) {
+        val show = handle {
+            showToastWithTitleAndDescription(title, description, build = build)
             it
         }
     }
