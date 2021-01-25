@@ -262,8 +262,6 @@ class SelectFieldComponent<T> {
  *
  */
 
-// todo: Add the select to the form control!
-
 fun <T> RenderContext.selectField(
     styling: BasicParams.() -> Unit = {},
     store: Store<T>,
