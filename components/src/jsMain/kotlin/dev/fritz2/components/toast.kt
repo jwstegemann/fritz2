@@ -27,15 +27,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-typealias ToastRenderContext = RenderContext.() -> Li
-typealias AddToast = () -> Unit
 
-data class ToastListElement(
-    val toastRenderContext: ToastRenderContext,
-    val id: String,
-    val position: String,
-    val duration: Long,
-)
+private const val defaultToastContainerPrefix = "ul-toast-container"
+private const val defaultInnerToastPrefix = "toast-inner"
 
 object Position {
 
@@ -49,8 +43,15 @@ object Position {
     val positionList = listOf(bottom, bottomLeft, bottomRight, top, topLeft, topRight)
 }
 
-private const val defaultToastContainerPrefix = "ul-toast-container"
-private const val defaultInnerToastPrefix = "toast-inner"
+typealias ToastRenderContext = RenderContext.() -> Li
+typealias AddToast = () -> Unit
+
+data class ToastListElement(
+    val toastRenderContext: ToastRenderContext,
+    val id: String,
+    val position: String,
+    val duration: Long,
+)
 
 
 /*
