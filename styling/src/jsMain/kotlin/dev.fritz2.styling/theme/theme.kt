@@ -199,6 +199,8 @@ interface Theme {
 
     val select : SelectFieldStyles
 
+    val alert: AlertStyles
+
     val toast: ToastStyles
 }
 

@@ -2278,6 +2278,93 @@ open class DefaultTheme : Theme {
         }
     }
 
+    override val alert: AlertStyles = object : AlertStyles {
+        override val variants: AlertVariants = object : AlertVariants {
+            /*
+            TODO: Use text colors from theme
+             */
+            private val textColorDark = rgb(0, 0, 0)
+            private val textColorLight = rgb(255, 255, 255)
+
+            override val subtle: (ColorProperty) -> AlertVariant = { it ->
+                object : AlertVariant {
+                    override val background: Style<BasicParams> = {
+                        background { color { alterHexColorBrightness(it, 1.5) } }
+                    }
+                    override val text: Style<BasicParams> = {
+                        color { textColorDark }
+                    }
+                    override val accent: Style<BasicParams> = {
+                        color { it }
+                    }
+                    override val decorationLeft: Style<BasicParams> = {
+                        css("visibility: hidden")
+                    }
+                    override val decorationTop: Style<BasicParams> = {
+                        css("visibility: hidden")
+                    }
+                }
+            }
+            override val solid: (ColorProperty) -> AlertVariant = {
+                object : AlertVariant {
+                    override val background: Style<BasicParams> = {
+                        background { color { it } }
+                    }
+                    override val text: Style<BasicParams> = {
+                        textColorLight
+                    }
+                    override val accent: Style<BasicParams> = {
+                        textColorLight
+                    }
+                    override val decorationLeft: Style<BasicParams> = {
+                        css("visibility: hidden")
+                    }
+                    override val decorationTop: Style<BasicParams> = {
+                        css("visibility: hidden")
+                    }
+                }
+            }
+            override val leftAccent: (ColorProperty) -> AlertVariant = {
+                object : AlertVariant {
+                    override val background: Style<BasicParams> = {
+                        background { color { alterHexColorBrightness(it, 1.5) } }
+                    }
+                    override val text: Style<BasicParams> = {
+                        color { textColorDark }
+                    }
+                    override val accent: Style<BasicParams> = {
+                        color { it }
+                    }
+                    override val decorationLeft: Style<BasicParams> = {
+                        color { it }
+                    }
+                    override val decorationTop: Style<BasicParams> = {
+                        color { it }
+                    }
+                }
+            }
+            override val topAccent: (ColorProperty) -> AlertVariant = {
+                object : AlertVariant {
+                    override val background: Style<BasicParams> = {
+                        background { color { alterHexColorBrightness(it, 1.5) } }
+                    }
+                    override val text: Style<BasicParams> = {
+                        color { textColorDark }
+                    }
+                    override val accent: Style<BasicParams> = {
+                        color { it }
+                    }
+                    override val decorationLeft: Style<BasicParams> = {
+                        color { it }
+                    }
+                    override val decorationTop: Style<BasicParams> = {
+                        color { it }
+                    }
+                }
+            }
+        }
+    }
+
     override val toast = object : ToastStyles {
         override val placement = object : ToastPlacement {
             override val top: Style<BasicParams> = {

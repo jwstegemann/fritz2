@@ -552,6 +552,25 @@ interface SelectFieldSizes {
     val large: Style<BasicParams>
 }
 
+interface AlertStyles {
+    val variants: AlertVariants
+}
+
+interface AlertVariants {
+    val subtle: (ColorProperty) -> AlertVariant
+    val solid: (ColorProperty) -> AlertVariant
+    val leftAccent: (ColorProperty) -> AlertVariant
+    val topAccent: (ColorProperty) -> AlertVariant
+}
+
+interface AlertVariant {
+    val background: Style<BasicParams>
+    val text: Style<BasicParams>
+    val accent: Style<BasicParams>
+    val decorationLeft: Style<BasicParams>
+    val decorationTop: Style<BasicParams>
+}
+
 interface ToastStyles {
     val placement: ToastPlacement
     val status: ToastStatus
