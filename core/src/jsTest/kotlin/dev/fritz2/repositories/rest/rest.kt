@@ -13,9 +13,13 @@ import dev.fritz2.test.*
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
 import kotlin.test.*
 
 class RestTests {
+    @Serializable
     data class RestPerson(val name: String, val age: Int, val _id: String = "") {
         override fun toString(): String {
             return name
@@ -29,21 +33,12 @@ class RestTests {
     object PersonResource : Resource<RestPerson, String> {
         override val idProvider: IdProvider<RestPerson, String> = RestPerson::_id
 
-        data class PersonWithoutId(val name: String, val age: Int)
-
-        private fun removeId(person: RestPerson) = PersonWithoutId(person.name, person.age)
-
-        override fun serialize(item: RestPerson): String = JSON.stringify(removeId(item))
-        override fun deserialize(source: String): RestPerson {
-            val obj = JSON.parse<dynamic>(source)
-            return RestPerson(obj.name as String, obj.age as Int, obj._id as String)
-        }
-
-        override fun serializeList(items: List<RestPerson>): String = JSON.stringify(items.map { removeId(it) })
-        override fun deserializeList(source: String): List<RestPerson> {
-            val list = JSON.parse<Array<dynamic>>(source)
-            return list.map { obj -> RestPerson(obj.name as String, obj.age as Int, obj._id as String) }
-        }
+        override fun serialize(item: RestPerson): String = Json.encodeToString(RestPerson.serializer(), item)
+        override fun deserialize(source: String): RestPerson = Json.decodeFromString(RestPerson.serializer(), source)
+        override fun serializeList(items: List<RestPerson>): String =
+            Json.encodeToString(ListSerializer(RestPerson.serializer()), items)
+        override fun deserializeList(source: String): List<RestPerson> =
+            Json.decodeFromString(ListSerializer(RestPerson.serializer()), source)
     }
 
     @Test
