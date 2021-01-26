@@ -87,19 +87,21 @@ class ModalComponent {
     }
 
     companion object {
-        val stack = ModalsStack()
+        private val stack = ModalsStack()
         val overlay = storeOf<Overlay>(DefaultOverlay())
-        val job = Job()
+        private val job = Job()
 
         fun setOverlayHandler(overlay: Overlay) {
             ModalComponent.overlay.update(overlay)
         }
 
+        private const val parentId = "f2-components-modals"
+
         init {
             stack.data.map { modals ->
-                val modalsParent = document.getElementById("modals")?.let {
+                val modalsParent = document.getElementById(parentId)?.let {
                     Tag("div", it.id, job = job, domNode = it)
-                } ?: Div("modals", job = job).apply { document.body?.appendChild(this.domNode) }
+                } ?: Div(parentId, job = job).apply { document.body?.appendChild(this.domNode) }
 
                 modalsParent.apply {
                     domNode.innerHTML = ""
