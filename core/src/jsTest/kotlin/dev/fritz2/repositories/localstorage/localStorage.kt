@@ -6,6 +6,7 @@ import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
+import dev.fritz2.remote.WebSocketTests
 import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
 
@@ -14,9 +15,13 @@ import dev.fritz2.test.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
 import kotlin.test.*
 
 class LocalStorageTests {
+    @Serializable
     data class LocalPerson(val name: String, val age: Int, val _id: String = uniqueId())
 
     private val nameLens = buildLens("name", LocalPerson::name) { p, v -> p.copy(name = v) }
@@ -26,17 +31,12 @@ class LocalStorageTests {
 
     object PersonResource : Resource<LocalPerson, String> {
         override val idProvider: IdProvider<LocalPerson, String> = LocalPerson::_id
-        override fun serialize(item: LocalPerson): String = JSON.stringify(item)
-        override fun deserialize(source: String): LocalPerson {
-            val obj = JSON.parse<dynamic>(source)
-            return LocalPerson(obj.name as String, obj.age as Int, obj._id as String)
-        }
-
-        override fun serializeList(items: List<LocalPerson>): String = JSON.stringify(items)
-        override fun deserializeList(source: String): List<LocalPerson> {
-            val list = JSON.parse<Array<dynamic>>(source)
-            return list.map { obj -> LocalPerson(obj.name as String, obj.age as Int, obj._id as String) }
-        }
+        override fun serialize(item: LocalPerson): String = Json.encodeToString(LocalPerson.serializer(), item)
+        override fun deserialize(source: String): LocalPerson = Json.decodeFromString(LocalPerson.serializer(), source)
+        override fun serializeList(items: List<LocalPerson>): String =
+            Json.encodeToString(ListSerializer(LocalPerson.serializer()), items)
+        override fun deserializeList(source: String): List<LocalPerson> =
+            Json.decodeFromString(ListSerializer(LocalPerson.serializer()), source)
     }
 
     @Test

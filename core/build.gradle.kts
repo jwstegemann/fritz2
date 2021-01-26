@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("maven-publish")
     id("org.jetbrains.dokka")
+    kotlin("plugin.serialization") version "1.4.30-RC"
 }
 
 kotlin {
@@ -42,10 +43,8 @@ kotlin {
                 useExperimentalAnnotation("kotlinx.coroutines.FlowPreview")
             }
         }
-
         val commonMain by getting {
             dependencies {
-                implementation(kotlin("stdlib"))
             }
         }
         val commonTest by getting {
@@ -65,6 +64,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-js"))
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${rootProject.ext["coroutinesVersion"]}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
             }
         }
     }
