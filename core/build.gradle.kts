@@ -6,7 +6,7 @@ plugins {
 
 kotlin {
     jvm()
-    js(LEGACY).browser {
+    js(IR).browser {
         testTask {
             useKarma {
 //                useSafari()
