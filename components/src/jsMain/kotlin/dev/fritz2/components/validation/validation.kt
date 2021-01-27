@@ -4,7 +4,6 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.SubStore
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 
 /**
  * Interface which [RootStore]s can implement to mark them that they have
@@ -41,56 +40,47 @@ interface WithValidator<D, T> : Store<D> {
 }
 
 /**
- * Exception which gets thrown when [RootStore] does not implement the [WithValidator]
- * interface.
- *
- * @param id id of the current field derived from model
- */
-class RootStoreHasNoValidator(id: String) :
-    Exception("RootStore of data with id=$id must implement WithValidator interface")
-
-/**
  * Finds the proper [ComponentValidationMessage] for the given [Store].
  *
  * @receiver [Store] for which to find a [ComponentValidationMessage]
- * @throws RootStoreHasNoValidator when no [ComponentValidator] can be found in corresponding [RootStore]
+ * @return nullable [Flow] which is null when no validator can be found
  */
-fun <D> Store<D>.validationMessage(): Flow<ComponentValidationMessage?> = when (this) {
+fun <D> Store<D>.validationMessage(): Flow<ComponentValidationMessage?>? = when (this) {
     is RootStore<*> -> {
         if (this is WithValidator<*, *>) {
             this.validator.find { it.id == this@validationMessage.id }
         } else {
-            throw RootStoreHasNoValidator(id)
+            null
         }
     }
     is SubStore<*, *, *> -> {
         val root = this.root
         if (root is WithValidator<*, *>) {
             root.validator.find { it.id == this@validationMessage.id }
-        } else throw RootStoreHasNoValidator(id)
+        } else null
     }
-    else -> emptyFlow()
+    else -> null
 }
 
 /**
  * Filters all proper [ComponentValidationMessage]s for the given [Store].
  *
  * @receiver [Store] for which to filter all [ComponentValidationMessage]s
- * @throws RootStoreHasNoValidator when no [ComponentValidator] can be found in corresponding [RootStore]
+ * @return nullable [Flow] which is null when no validator can be found
  */
-fun <D> Store<D>.validationMessages(): Flow<List<ComponentValidationMessage>> = when (this) {
+fun <D> Store<D>.validationMessages(): Flow<List<ComponentValidationMessage>>? = when (this) {
     is RootStore<*> -> {
         if (this is WithValidator<*, *>) {
             this.validator.filter { it.id == this@validationMessages.id }
         } else {
-            throw RootStoreHasNoValidator(id)
+            null
         }
     }
     is SubStore<*, *, *> -> {
         val root = this.root
         if (root is WithValidator<*, *>) {
             root.validator.filter { it.id == this@validationMessages.id }
-        } else throw RootStoreHasNoValidator(id)
+        } else null
     }
-    else -> emptyFlow()
+    else -> null
 }
