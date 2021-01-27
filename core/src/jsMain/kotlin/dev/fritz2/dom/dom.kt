@@ -8,5 +8,6 @@ import org.w3c.dom.Node
  * @property domNode the wrapped [Node]
  */
 interface WithDomNode<out T : Node> {
+    @JsName("domNode")
     val domNode: T
 }

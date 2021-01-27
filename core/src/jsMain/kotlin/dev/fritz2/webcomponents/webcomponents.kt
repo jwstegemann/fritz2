@@ -4,7 +4,6 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
 import dev.fritz2.dom.html.TagContext
 import kotlinx.browser.window
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
@@ -23,11 +22,10 @@ internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsC
             constructor() {
                 super();
                 this.webComponent = new _component();
-                
                 const shadowRoot = this.attachShadow({mode: 'open'});
-                
-                let content = this.webComponent.initializeInternal(this, shadowRoot)
-                shadowRoot.appendChild(content.domNode)
+                let content = this.webComponent.initializeInternal(this, shadowRoot);
+                console.log(content);
+                shadowRoot.appendChild(content.domNode);
             }
             
             static get observedAttributes() {
@@ -49,7 +47,6 @@ internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsC
             adoptedCallback() {
                 this.webComponent.adoptedCallback(this)
             }
-
         }
     """
     )
@@ -57,7 +54,6 @@ internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsC
 /**
  * Implement this class to build a WebComponent.
  */
-@ExperimentalCoroutinesApi
 @JsName("WebComponent")
 abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
     /**
@@ -69,7 +65,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
     abstract fun TagContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T>
 
     @JsName("initializeInternal")
-    internal fun initializeInternal(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T> {
+    fun initializeInternal(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T> {
         return object : TagContext {
             override val job = Job()
             override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
