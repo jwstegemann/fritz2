@@ -4,19 +4,15 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.storeOf
 import dev.fritz2.binding.watch
-import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.render
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.ModalSizes
 import dev.fritz2.styling.theme.ModalVariants
 import dev.fritz2.styling.theme.Theme
-import kotlinx.browser.document
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 typealias ModalRenderContext = RenderContext.(level: Int) -> Div
@@ -90,21 +86,15 @@ class ModalComponent {
         private val stack = ModalsStack()
         val overlay = storeOf<Overlay>(DefaultOverlay())
         private val job = Job()
+        private val globalId = "f2c-modals-${randomId()}"
 
         fun setOverlayHandler(overlay: Overlay) {
             ModalComponent.overlay.update(overlay)
         }
 
-        private const val parentId = "f2-components-modals"
-
         init {
             stack.data.map { modals ->
-                val modalsParent = document.getElementById(parentId)?.let {
-                    Tag("div", it.id, job = job, domNode = it)
-                } ?: Div(parentId, job = job).apply { document.body?.appendChild(this.domNode) }
-
-                modalsParent.apply {
-                    domNode.innerHTML = ""
+                globalRenderContext(globalId, job).apply {
                     val currentOverlay = overlay.current
                     if (currentOverlay.method == OverlayMethod.CoveringTopMost && modals.isNotEmpty()) {
                         currentOverlay.render(this.unsafeCast<RenderContext>(), modals.size)
