@@ -97,7 +97,7 @@ class ModalComponent {
                 globalRenderContext(globalId, job).apply {
                     val currentOverlay = overlay.current
                     if (currentOverlay.method == OverlayMethod.CoveringTopMost && modals.isNotEmpty()) {
-                        currentOverlay.render(this.unsafeCast<RenderContext>(), modals.size)
+                        currentOverlay.render(this, modals.size)
                     }
                     modals.withIndex().toList().forEach { (index, modal) ->
                         if (currentOverlay.method == OverlayMethod.CoveringEach) {
@@ -105,7 +105,7 @@ class ModalComponent {
                                 currentOverlay.render(this, index + 1)
                                 modal(index + 1)
                             }
-                        } else this.unsafeCast<RenderContext>().modal(index + 1)
+                        } else this.modal(index + 1)
                     }
                 }
             }.watch()
