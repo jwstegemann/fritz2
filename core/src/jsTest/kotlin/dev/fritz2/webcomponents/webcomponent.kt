@@ -38,5 +38,4 @@ class WebComponentTests {
 
         assertEquals("I am a WebComponent", content?.textContent?.trim())
     }
-
 }
