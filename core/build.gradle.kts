@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("maven-publish")
     id("org.jetbrains.dokka")
-    kotlin("plugin.serialization") version "1.4.30-RC"
+    kotlin("plugin.serialization")
 }
 
 kotlin {
