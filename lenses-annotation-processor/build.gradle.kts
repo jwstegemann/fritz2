@@ -6,7 +6,7 @@ plugins {
 
 kotlin {
     jvm()
-    js(IR).nodejs()
+    js(BOTH).nodejs()
 
     sourceSets {
         val commonMain by getting {
