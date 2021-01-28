@@ -78,13 +78,19 @@ open class InputFieldComponent :
 
             readOnly {
                 background {
-                    color { disabled }
+                    color { base }
                 }
             }
 
             disabled {
                 background {
-                    color { disabled }
+                    color { base }
+                }
+                color { disabled }
+                hover {
+                    border {
+                        color { light }
+                    }
                 }
             }
 

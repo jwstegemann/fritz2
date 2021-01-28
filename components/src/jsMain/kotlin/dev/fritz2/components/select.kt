@@ -62,10 +62,21 @@ class SelectFieldComponent<T> : InputFormProperties by InputForm() {
                 boxShadow { outline }
             }
         }
+        hover {
+            border {
+                color { dark }
+            }
+        }
 
         disabled {
             background {
-                color { disabled }
+                color { base }
+            }
+            color { disabled }
+            hover {
+                border {
+                    color { light }
+                }
             }
         }
         position { relative { } }

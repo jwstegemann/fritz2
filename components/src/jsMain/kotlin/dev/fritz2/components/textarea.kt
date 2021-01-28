@@ -71,8 +71,9 @@ class TextAreaComponent :
 
         disabled {
             background {
-                color { disabled }
+                color { base }
             }
+            color { disabled }
 
         }
 
