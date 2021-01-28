@@ -66,9 +66,9 @@ class SpinnerComponent {
         )
     }
 
-    var icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
-    var speed = ComponentProperty("0.5s")
-    var thickness = ComponentProperty<Thickness.() -> Property> { Theme().borderWidths.normal }
+    val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
+    val speed = ComponentProperty("0.5s")
+    val thickness = ComponentProperty<Thickness.() -> Property> { Theme().borderWidths.normal }
 }
 
 

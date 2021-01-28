@@ -1,6 +1,5 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
@@ -9,9 +8,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.theme.CheckboxSizes
-import dev.fritz2.styling.theme.IconDefinition
-import dev.fritz2.styling.theme.RadioSizes
+import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -61,14 +58,14 @@ import kotlinx.coroutines.flow.map
  * radioGroup(items = myPairs, store = myStore) {
  *     label { it.second }
  *     size { large }
- *     selectedStyle {{
- *          background { color {"green"}}
- *     }}
+ *     selectedStyle {
+ *          background { color {"green"} }
+ *     }
  * }
  * ```
  */
 @ComponentMarker
-class RadioGroupComponent<T> : InputFormProperties by InputForm() {
+class RadioGroupComponent<T> : InputFormProperties by InputFormMixinMixin(), SeverityProperties by SeverityMixin() {
     companion object {
         object RadioGroupLayouts {
             val column: Style<BasicParams> = {
@@ -84,28 +81,13 @@ class RadioGroupComponent<T> : InputFormProperties by InputForm() {
         }
     }
 
-    var label = ComponentProperty<(item: T) -> String> { it.toString() }
-    var size = ComponentProperty<RadioSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
+    val label = ComponentProperty<(item: T) -> String> { it.toString() }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
-    var direction: Style<BasicParams> = RadioGroupLayouts.column
-    fun direction(value: RadioGroupLayouts.() -> Style<BasicParams>) {
-        direction = RadioGroupLayouts.value()
-    }
-
-    var itemStyle: Style<BasicParams> = { Theme().radio.default() }
-    fun itemStyle(value: () -> Style<BasicParams>) {
-        itemStyle = value()
-    }
-
-    var labelStyle: Style<BasicParams> = { Theme().radio.label() }
-    fun labelStyle(value: () -> Style<BasicParams>) {
-        labelStyle = value()
-    }
-
-    var selectedStyle: Style<BasicParams> = { Theme().radio.selected() }
-    fun selectedStyle(value: () -> Style<BasicParams>) {
-        selectedStyle = value()
-    }
+    val direction = ComponentProperty<RadioGroupLayouts.() -> Style<BasicParams>> { column }
+    val itemStyle = ComponentProperty(Theme().radio.default)
+    val labelStyle = ComponentProperty(Theme().radio.label)
+    val selectedStyle = ComponentProperty(Theme().radio.selected)
 
     val selectedItem = NullableDynamicComponentProperty<T>(flowOf(null))
 
@@ -158,7 +140,7 @@ fun <T> RenderContext.radioGroup(
 
     val grpId = id ?: uniqueId()
     (::div.styled(styling, baseClass, id, prefix) {
-        component.direction()
+        component.direction.value(RadioGroupComponent.Companion.RadioGroupLayouts)()
     }) {
         (store?.data ?: component.selectedItem.values)
             .map { selectedItem ->
@@ -167,13 +149,14 @@ fun <T> RenderContext.radioGroup(
 
         items.withIndex().forEach { (index, item) ->
             val checkedFlow = internalStore.data.map { it == index }.distinctUntilChanged()
-            radio(styling = component.itemStyle, id = grpId + "-grp-item-" + uniqueId()) {
+            radio(styling = component.itemStyle.value, id = grpId + "-grp-item-" + uniqueId()) {
                 size { component.size.value.invoke(Theme().radio.sizes) }
-                labelStyle { component.labelStyle }
-                selectedStyle { component.selectedStyle }
+                labelStyle(component.labelStyle.value)
+                selectedStyle(component.selectedStyle.value)
                 label(component.label.value(item))
                 selected(checkedFlow)
                 disabled(component.disabled.values)
+                severity(component.severity.values)
                 events {
                     changes.states().map { index } handledBy internalStore.toggle
                 }

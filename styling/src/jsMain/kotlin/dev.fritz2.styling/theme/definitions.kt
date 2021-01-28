@@ -374,8 +374,34 @@ interface Icons {
     val fritz2: IconDefinition
 }
 
-interface CheckboxStyles {
-    val sizes: CheckboxSizes
+/**
+ * general component's theme abstractions
+ */
+
+interface SeverityStyles {
+    val info: Style<BasicParams>
+    val success: Style<BasicParams>
+    val warning: Style<BasicParams>
+    val error: Style<BasicParams>
+}
+
+interface SeverityAware {
+    val severity: SeverityStyles
+}
+
+interface FormSizes {
+    val small: Style<BasicParams>
+    val normal: Style<BasicParams>
+    val large: Style<BasicParams>
+}
+
+
+/**
+ * definition of the theme's checkbox
+ */
+
+interface CheckboxStyles : SeverityAware {
+    val sizes: FormSizes
     val input: Style<BasicParams>
     val icon: Style<BasicParams>
     val label: Style<BasicParams>
@@ -383,28 +409,26 @@ interface CheckboxStyles {
     val checked: Style<BasicParams>
 }
 
-interface CheckboxSizes {
-    val small: Style<BasicParams>
-    val normal: Style<BasicParams>
-    val large: Style<BasicParams>
-}
 
-interface RadioStyles {
-    val sizes: RadioSizes
+/**
+ * definition of the theme's radioButton
+ */
+
+interface RadioStyles : SeverityAware {
+    val sizes: FormSizes
     val input: Style<BasicParams>
     val label: Style<BasicParams>
     val default: Style<BasicParams>
     val selected: Style<BasicParams>
 }
 
-interface RadioSizes {
-    val small: Style<BasicParams>
-    val normal: Style<BasicParams>
-    val large: Style<BasicParams>
-}
 
-interface SwitchStyles {
-    val sizes: SwitchSizes
+/**
+ * definition of the theme's switch
+ */
+
+interface SwitchStyles : SeverityAware {
+    val sizes: FormSizes
     val input: Style<BasicParams>
     val dot: Style<BasicParams>
     val label: Style<BasicParams>
@@ -412,22 +436,14 @@ interface SwitchStyles {
     val checked: Style<BasicParams>
 }
 
-interface SwitchSizes {
-    val small: Style<BasicParams>
-    val normal: Style<BasicParams>
-    val large: Style<BasicParams>
-}
 
+/**
+ * definition of the theme's inputField
+ */
 
-interface InputFieldStyles {
+interface InputFieldStyles : SeverityAware {
     val variants: InputFieldVariants
-    val sizes: InputFieldSizes
-}
-
-interface InputFieldSizes {
-    val small: Style<BasicParams>
-    val normal: Style<BasicParams>
-    val large: Style<BasicParams>
+    val sizes: FormSizes
 }
 
 interface InputFieldVariants {
@@ -435,9 +451,14 @@ interface InputFieldVariants {
     val filled: Style<BasicParams>
 }
 
+
+/**
+ * definition of the theme's pushButton
+ */
+
 interface PushButtonStyles {
     val variants: PushButtonVariants
-    val sizes: PushButtonSizes
+    val sizes: FormSizes
 }
 
 interface PushButtonVariants {
@@ -447,11 +468,10 @@ interface PushButtonVariants {
     val link: Style<BasicParams>
 }
 
-interface PushButtonSizes {
-    val small: Style<BasicParams>
-    val normal: Style<BasicParams>
-    val large: Style<BasicParams>
-}
+
+/**
+ * definition of the theme's modal
+ */
 
 interface ModalStyles {
     val overlay: Style<BasicParams>
@@ -474,7 +494,7 @@ interface ModalSizes {
 
 
 /**
- * definition of the theme's Popover
+ * definition of the theme's popover
  */
 
 interface PopoverStyles {
@@ -507,8 +527,9 @@ interface PopoverSizes {
     val normal: Style<BasicParams>
 }
 
+
 /**
- * definition of the theme's Popover
+ * definition of the theme's tooltip
  */
 
 interface Tooltip {
@@ -524,9 +545,13 @@ interface TooltipPlacements {
     val left: Style<BasicParams>
 }
 
-interface TextAreaStyles {
+/**
+ * definition of the theme's textArea
+ */
+
+interface TextAreaStyles : SeverityAware {
     val resize: TextAreaResize
-    val sizes: TextAreaSizes
+    val sizes: FormSizes
 }
 
 interface TextAreaResize {
@@ -535,15 +560,14 @@ interface TextAreaResize {
     val horizontal: Style<BasicParams>
 }
 
-interface TextAreaSizes {
-    val small: Style<BasicParams>
-    val normal: Style<BasicParams>
-    val large: Style<BasicParams>
-}
 
-interface SelectFieldStyles {
+/**
+ * definition of the theme's selectField
+ */
+
+interface SelectFieldStyles : SeverityAware {
     val variants: SelectFieldVariants
-    val sizes: SelectFieldSizes
+    val sizes: FormSizes
 }
 
 interface SelectFieldVariants {
@@ -551,17 +575,34 @@ interface SelectFieldVariants {
     val filled: Style<BasicParams>
 }
 
-interface SelectFieldSizes {
-    val small: Style<BasicParams>
-    val normal: Style<BasicParams>
-    val large: Style<BasicParams>
+
+/**
+ * definition of the theme's formControl
+ */
+
+interface FormControlStyles {
+    val sizes: FormSizes
+    val label: Style<BasicParams>
+    val helperText: Style<BasicParams>
+    val requiredMarker: Style<BasicParams>
 }
+
+
+/**
+ * definition of the theme's alerts
+ */
 
 interface AlertStyles {
     val severities: AlertSeverities
     val variants: AlertVariants
+    val sizes: FormSizes
+    val stacking: AlertStacking
 }
 
+interface AlertStacking {
+    val compact: Style<BasicParams>
+    val separated: Style<BasicParams>
+}
 typealias AlertSeverity = ColorProperty
 
 interface AlertSeverities {
@@ -578,6 +619,7 @@ interface AlertVariants {
     val solid: AlertVariantStyleFactory
     val leftAccent: AlertVariantStyleFactory
     val topAccent: AlertVariantStyleFactory
+    val discreet: AlertVariantStyleFactory
 }
 
 interface AlertVariantStyles {
@@ -587,6 +629,11 @@ interface AlertVariantStyles {
     val decorationLeft: Style<BasicParams>
     val decorationTop: Style<BasicParams>
 }
+
+
+/**
+ * definition of the theme's toasts
+ */
 
 interface ToastStyles {
     val placement: ToastPlacement
@@ -601,8 +648,6 @@ interface ToastPlacement {
     val bottom: Style<BasicParams>
     val bottomLeft: Style<BasicParams>
     val bottomRight: Style<BasicParams>
-
-
 }
 
 interface ToastStatus {
