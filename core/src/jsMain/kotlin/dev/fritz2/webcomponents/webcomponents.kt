@@ -24,7 +24,6 @@ internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsC
                 this.webComponent = new _component();
                 const shadowRoot = this.attachShadow({mode: 'open'});
                 let content = this.webComponent.initializeInternal(this, shadowRoot);
-                console.log(content);
                 shadowRoot.appendChild(content.domNode);
             }
             
@@ -85,7 +84,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
      * a [Flow] of all changes made to observed attributes.
      */
     val attributeChanges: Flow<Pair<String, String>> = if (observeAttributes) {
-        callbackFlow<Pair<String, String>> {
+        callbackFlow {
             attributeChangedCallback = { name, value ->
                 offer(Pair(name, value))
             }
