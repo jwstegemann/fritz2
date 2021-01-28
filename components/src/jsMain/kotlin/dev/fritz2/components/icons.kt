@@ -62,11 +62,15 @@ class IconComponent {
         )
     }
 
-    var def: IconDefinition? = null
+    var def = ComponentProperty<IconDefinition?>(null)
 
     fun fromTheme(value: Icons.() -> IconDefinition) {
-        def = Theme().icons.value()
+        def = ComponentProperty(Theme().icons.value())
     }
+
+    var displayName = ComponentProperty<String?>(null)
+    var viewBox = ComponentProperty("0 0 24 24")
+    var svg = ComponentProperty<String?>(null)
 }
 
 
@@ -76,6 +80,7 @@ class IconComponent {
  * fritz2's default theme offers some basic predefined icons, have a look at [dev.fritz2.styling.theme.Theme.icons].
  *
  * Every icon must be wrapped inside an [IconDefinition], that acts as a value class for the raw SVG markup.
+ * Such a definition is implicitly set by using the ``fromTheme`` configuration function:
  *
  * ```
  * icon { fromTheme { fritz2 } }
@@ -90,16 +95,18 @@ class IconComponent {
  * }) { fromTheme { fritz2 } }
  * ```
  *
- * If you want to use a custom icon, just put the definition inside an [IconDefinition] object and pass the latter
- * into the icon component:
+ * If you want to use a custom icon, just set the three necessary properties of the icon component:
+ *  - a [IconComponent.displayName]
+ *  - a [IconComponent.viewBox]
+ *  - the pure [IconComponent.svg] data
+ *
  * ```
  * icon({
  *     size { large }
  * }) {
- *     def = IconDefinition(
- *         displayName = "kotlin",
- *         viewBox = "0 0 60 60",
- *         svg = """
+ *     displayName("kotlin")
+ *     viewBox("0 0 60 60")
+ *     svg("""
  *         <g>
  *                 <linearGradient id="XMLID_3_" gradientUnits="userSpaceOnUse" x1="15.9594" y1="-13.0143" x2="44.3068" y2="15.3332" gradientTransform="matrix(1 0 0 -1 0 61)">
  *                 <stop  offset="9.677000e-02" style="stop-color:#0095D5"/>
@@ -133,8 +140,20 @@ class IconComponent {
  * }
  * ```
  * The above example will render quite a big Kotlin logo :-)
+ *
  * Of course you should consider to _add_ the definition inside your own theme or to a central place within your
- * application in order to make it _reusable_!
+ * application in order to make it _reusable_. You can of course also set the icon definition explicitly in order
+ * to achieve the latter:
+ *
+ * ```
+ * val kotlinLogo = IconDefinition(
+ *     "kotlin",
+ *     "0 0 60 60",
+ *     "<g>...</g>" // like in the example before
+ * )
+ * // later on:
+ * icon { def(kotlinLogo) }
+ * ```
  *
  * @see IconComponent
  *
@@ -151,9 +170,14 @@ fun RenderContext.icon(
     prefix: String = IconComponent.prefix,
     build: IconComponent.() -> Unit = {}
 ) {
-    val component = IconComponent().apply(build)
+    val component = IconComponent().apply {
+        build()
+        if (displayName.value != null && svg.value != null) {
+            def = ComponentProperty(IconDefinition(displayName.value!!, viewBox.value, svg.value!!))
+        }
+    }
 
-    component.def?.let {
+    component.def.value?.let {
         (::svg.styled(baseClass + IconComponent.staticCss, id, prefix) {
             styling()
         }) {

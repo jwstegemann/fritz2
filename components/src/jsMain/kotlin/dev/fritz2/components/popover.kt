@@ -22,7 +22,10 @@ import kotlinx.coroutines.flow.map
  * Class for configuring the appearance of a PopoverComponent.
  */
 @ComponentMarker
-class PopoverComponent {
+class PopoverComponent : CloseButtonProperty by CloseButton(
+    Theme().popover.closeButton,
+    "popover-close-button"
+) {
     companion object {
         val staticCss = staticStyle(
             "popover",
@@ -33,36 +36,7 @@ class PopoverComponent {
         )
     }
 
-    var hasCloseButton: Boolean = true
-    fun hasCloseButton(value: Boolean) {
-        hasCloseButton = value
-    }
-
-    var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
-    fun closeButton(
-        styling: BasicParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
-        id: String? = null,
-        prefix: String = "popover-close-button",
-        build: PushButtonComponent.() -> Unit = {}
-    ) {
-        closeButton = { closeHandle ->
-            clickButton({
-                Theme().popover.closeButton()
-                styling()
-
-            }, baseClass, id, prefix) {
-                variant { ghost }
-                icon{ fromTheme { close } }
-                build()
-            }.map { } handledBy closeHandle
-        }
-    }
-
-    var size: PopoverSizes.() -> Style<BasicParams> = { Theme().popover.size.normal }
-    fun size(value: PopoverSizes.() -> Style<BasicParams>) {
-        size = value
-    }
+    var size = ComponentProperty<PopoverSizes.() -> Style<BasicParams>> { Theme().popover.size.normal }
 
     var positionStyle: PopoverPlacements.() -> Style<BasicParams> = { Theme().popover.placement.top }
     fun placement(value: PopoverPlacements.() -> Style<BasicParams>) {
@@ -76,20 +50,12 @@ class PopoverComponent {
         positionStyle = value
     }
 
-    var hasArrow: Boolean = true
-    fun hasArrow(value: Boolean) {
-        hasArrow = value
-    }
+    var hasArrow = ComponentProperty(true)
 
-    var arrowPlacement: (PopoverArrowPlacements.() -> Style<BasicParams>) = { Theme().popover.arrowPlacement.bottom }
-    fun arrowPlacement(value: PopoverArrowPlacements.() -> Style<BasicParams>) {
-        arrowPlacement = value
-    }
+    var arrowPlacement =
+        ComponentProperty<PopoverArrowPlacements.() -> Style<BasicParams>> { Theme().popover.arrowPlacement.bottom }
 
-    var toggle: (RenderContext.() -> Unit)? = null
-    fun toggle(value: (RenderContext.() -> Unit)) {
-        toggle = value
-    }
+    var toggle = ComponentProperty<(RenderContext.() -> Unit)?>(null)
 
     var header: (RenderContext.() -> Unit)? = null
     fun header(value: (RenderContext.() -> Unit)) {
@@ -157,7 +123,7 @@ class PopoverComponent {
     private fun renderArrow(RenderContext: RenderContext) {
         RenderContext.apply {
             (::div.styled(prefix = "popover-arrow") {
-                arrowPlacement.invoke(Theme().popover.arrowPlacement)()
+                arrowPlacement.value.invoke(Theme().popover.arrowPlacement)()
             }){}
         }
     }
@@ -168,20 +134,21 @@ class PopoverComponent {
         id: String? = null,
         prefix: String = "popover",
         RenderContext: RenderContext,
-        closeHandler: SimpleHandler<Unit>) {
+        closeHandler: SimpleHandler<Unit>
+    ) {
         RenderContext.apply {
             (::div.styled(styling, baseClass, id, prefix) {
                 positionStyle.invoke(Theme().popover.placement)()
-                size.invoke(Theme().popover.size)()
+                size.value.invoke(Theme().popover.size)()
             }){
-                if (hasArrow) {
+                if (hasArrow.value) {
                     renderArrow(this)
                 }
-                if (hasCloseButton) {
-                    if (closeButton == null) {
+                if (hasCloseButton.value) {
+                    if (closeButton.value == null) {
                         closeButton()
                     }
-                    closeButton?.invoke(this, closeHandler)
+                    closeButton.value?.invoke(this, closeHandler)
                 }
                 header?.invoke(this)
                 content?.invoke(this)
@@ -238,17 +205,17 @@ fun RenderContext.popover(
             !it
         }
     }
-    (::div.styled({ }, PopoverComponent.staticCss, null, prefix){
+    (::div.styled({ }, PopoverComponent.staticCss, null, prefix) {
     }){
         (::div.styled(prefix = "popover-toggle") {
             Theme().popover.toggle()
         }) {
             clicks.events.map { } handledBy clickStore.toggle
-            component.toggle?.invoke(this)
+            component.toggle.value?.invoke(this)
         }
         clickStore.data.render {
             if (it) {
-                component.renderPopover(styling, baseClass,id, prefix, this, clickStore.toggle)
+                component.renderPopover(styling, baseClass, id, prefix, this, clickStore.toggle)
             }
         }
     }

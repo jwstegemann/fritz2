@@ -4,14 +4,17 @@ import dev.fritz2.binding.Store
 import dev.fritz2.components.SwitchComponent.Companion.switchInputStaticCss
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.RadioSizes
 import dev.fritz2.styling.theme.SwitchSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
@@ -39,18 +42,32 @@ import org.w3c.dom.HTMLInputElement
  *
  * Example usage
  * ```
+ * val cheeseStore = storeOf(false)
+ * switch(store = cheeseStore) {
+ *      label("with extra cheese") // set the label
+ *      size { normal } // choose a predefined size
+ * }
+ *
+ * // one can handle the events and preselect the control also manually if needed:
  * switch {
  *      label("with extra cheese") // set the label
  *      size { normal } // choose a predefined size
- *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
+ *      checked(cheeseStore.data) // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
+ *      }
+ *      element {
+ *          // exposes the underlying HTML input element for direct access. Use with caution!
  *      }
  * }
  * ```
  */
 @ComponentMarker
-class SwitchComponent {
+class SwitchComponent :
+    EventProperties<HTMLInputElement> by Event(),
+    ElementProperties<Input> by Element(),
+    InputFormProperties by InputForm() {
+
     companion object {
         val switchInputStaticCss = staticStyle(
             "switch",
@@ -69,10 +86,7 @@ class SwitchComponent {
         )
     }
 
-    var size: SwitchSizes.() -> Style<BasicParams> = { Theme().switch.sizes.normal }
-    fun size(value: SwitchSizes.() -> Style<BasicParams>) {
-        size = value
-    }
+    var size = ComponentProperty<SwitchSizes.() -> Style<BasicParams>> { Theme().switch.sizes.normal }
 
     var label: (Div.() -> Unit)? = null
     fun label(value: String) {
@@ -80,11 +94,13 @@ class SwitchComponent {
             +value
         }
     }
+
     fun label(value: Flow<String>) {
         label = {
             value.asText()
         }
     }
+
     fun label(value: (Div.() -> Unit)) {
         label = value
     }
@@ -105,20 +121,7 @@ class SwitchComponent {
         checkedStyle = value()
     }
 
-    var events: (WithEvents<HTMLInputElement>.() -> Unit)? = null // @input
-    fun events(value: WithEvents<HTMLInputElement>.() -> Unit) {
-        events = value
-    }
-
-    var checked: Flow<Boolean> = flowOf(false) // @input
-    fun checked(value: () -> Flow<Boolean>) {
-        checked = value()
-    }
-
-    var disabled: Flow<Boolean> = flowOf(false) // @input
-    fun disabled(value: () -> Flow<Boolean>) {
-        disabled = value()
-    }
+    var checked = DynamicComponentProperty(flowOf(false))
 }
 
 /**
@@ -132,18 +135,28 @@ class SwitchComponent {
  *
  * Example usage
  * ```
+ * // Use a store
+ * val cheeseStore = storeOf(false)
+ * switch(store=cheeseStore) {
+ *      label("with extra cheese") // set the label
+ *      size { normal } // choose a predefined size
+ * }
+ *
+ * // all state management can also be done manually if needed:
  * switch {
  *      label("with extra cheese") // set the label
  *      size { normal } // choose a predefined size
- *      checked { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
+ *      checked(cheeseStore.data) // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
  *      }
  * }
+ * ```
  *
  * @see SwitchComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param store a boolean store to handle the state and its changes automatically
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
@@ -151,6 +164,7 @@ class SwitchComponent {
  */
 fun RenderContext.switch(
     styling: BasicParams.() -> Unit = {},
+    store: Store<Boolean>? = null,
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "switchComponent",
@@ -165,37 +179,40 @@ fun RenderContext.switch(
         id = id,
         prefix = prefix
     ) {
-        component.size.invoke(Theme().switch.sizes)()
+        component.size.value.invoke(Theme().switch.sizes)()
     }) {
-       `for`(inputId)
+        `for`(inputId)
         (::input.styled(
             baseClass = switchInputStaticCss,
             prefix = prefix,
             id = inputId
-        ){
+        ) {
             Theme().switch.input()
             children("&[checked] + div") {
                 component.checkedStyle()
             }
         }) {
+            component.element.value.invoke(this)
+            disabled(component.disabled.values)
+            readOnly(component.readonly.values)
             type("checkbox")
-            checked(component.checked)
-            disabled(component.disabled)
-            component.events?.invoke(this)
+            checked(store?.data ?: component.checked.values)
+            component.events.value.invoke(this)
+            store?.let { changes.states() handledBy it.update }
         }
 
 
-            (::div.styled(){
-                Theme().switch.default()
-                styling()
+        (::div.styled() {
+            Theme().switch.default()
+            styling()
+        }) {
+            (::div.styled() {
+                Theme().switch.dot()
+                component.dotStyle()
             }) {
-                (::div.styled() {
-                    Theme().switch.dot()
-                    component.dotStyle()
-                }) {
 
-                }
             }
+        }
 
         component.label?.let {
             (::div.styled() {
@@ -204,21 +221,5 @@ fun RenderContext.switch(
                 it(this)
             }
         }
-    }
-}
-
-fun RenderContext.switch(
-    styling: BasicParams.() -> Unit = {},
-    store: Store<Boolean>,
-    baseClass: StyleClass? = null,
-    prefix: String = "switchComponent",
-    build: SwitchComponent.() -> Unit = {}
-) {
-    switch(styling, baseClass, store.id, prefix) {
-        checked { store.data }
-        events {
-            checked handledBy store.update
-        }
-        build()
     }
 }
