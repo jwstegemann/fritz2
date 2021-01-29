@@ -2286,8 +2286,8 @@ open class DefaultTheme : Theme {
             private val textColorDark = rgb(0, 0, 0)
             private val textColorLight = rgb(255, 255, 255)
 
-            override val subtle: (ColorProperty) -> AlertVariant = { it ->
-                object : AlertVariant {
+            override val subtle: (ColorProperty) -> AlertVariantStyles = { it ->
+                object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
                         background { color { alterHexColorBrightness(it, 1.5) } }
                     }
@@ -2305,8 +2305,8 @@ open class DefaultTheme : Theme {
                     }
                 }
             }
-            override val solid: (ColorProperty) -> AlertVariant = {
-                object : AlertVariant {
+            override val solid: (ColorProperty) -> AlertVariantStyles = {
+                object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
                         background { color { it } }
                     }
@@ -2324,8 +2324,8 @@ open class DefaultTheme : Theme {
                     }
                 }
             }
-            override val leftAccent: (ColorProperty) -> AlertVariant = {
-                object : AlertVariant {
+            override val leftAccent: (ColorProperty) -> AlertVariantStyles = {
+                object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
                         background { color { alterHexColorBrightness(it, 1.5) } }
                     }
@@ -2343,8 +2343,8 @@ open class DefaultTheme : Theme {
                     }
                 }
             }
-            override val topAccent: (ColorProperty) -> AlertVariant = {
-                object : AlertVariant {
+            override val topAccent: (ColorProperty) -> AlertVariantStyles = {
+                object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
                         background { color { alterHexColorBrightness(it, 1.5) } }
                     }
@@ -2436,10 +2436,7 @@ open class DefaultTheme : Theme {
                     boxShadow { none }
                 }
             }
-
         }
-
-
     }
 
     override val select = object : SelectFieldStyles {

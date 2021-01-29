@@ -557,13 +557,13 @@ interface AlertStyles {
 }
 
 interface AlertVariants {
-    val subtle: (ColorProperty) -> AlertVariant
-    val solid: (ColorProperty) -> AlertVariant
-    val leftAccent: (ColorProperty) -> AlertVariant
-    val topAccent: (ColorProperty) -> AlertVariant
+    val subtle: (ColorProperty) -> AlertVariantStyles
+    val solid: (ColorProperty) -> AlertVariantStyles
+    val leftAccent: (ColorProperty) -> AlertVariantStyles
+    val topAccent: (ColorProperty) -> AlertVariantStyles
 }
 
-interface AlertVariant {
+interface AlertVariantStyles {
     val background: Style<BasicParams>
     val text: Style<BasicParams>
     val accent: Style<BasicParams>

@@ -1,5 +1,7 @@
 package dev.fritz2.components
 
+import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -10,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 typealias Severity = (Colors.() -> ColorProperty)
-typealias Variant = (AlertVariants.() -> ((ColorProperty) -> AlertVariant))
+typealias Variant = (AlertVariants.() -> ((ColorProperty) -> AlertVariantStyles))
 
 // TODO: Add support for the 'leftAccent' and 'topAccent' variants
 @ComponentMarker
@@ -22,6 +24,12 @@ class AlertComponent {
 
     private var severity: Severity = { info }
     private var variant: Variant = { subtle }
+    val variantStyles: AlertVariantStyles
+        get() {
+            val alertSeverity = severity.invoke(Theme().colors)
+            val alertVariant = variant.invoke(Theme().alert.variants)
+            return alertVariant.invoke(alertSeverity)
+        }
 
     private var icon: IconDefinition = Theme().icons.circleInformation
     private var title: (RenderContext.() -> Unit)? = null
@@ -70,40 +78,45 @@ class AlertComponent {
     fun content(value: String) = content(flowOf(value))
 
 
-    fun show(renderContext: RenderContext) {
-        val alertSeverity = severity.invoke(Theme().colors)
-        val alertVariant = variant.invoke(Theme().alert.variants)
-        val alertStyle = alertVariant.invoke(alertSeverity)
+    fun show(
+        renderContext: RenderContext,
+        styling: BasicParams.() -> Unit = {},
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = "alert",
+    ) {
+        val styles = variantStyles
 
         renderContext.apply {
-            (::div.styled {
+            (::div.styled(baseClass = baseClass, id = id, prefix = prefix) {
+                styling()
                 display { flex }
                 position { relative { } }
-                alertStyle.background()
+                styles.background()
             }) {
                 (::div.styled {
                     width { "100%" }
                     height { accentDecorationThickness }
                     position { absolute { } }
-                    alertStyle.decorationTop()
+                    styles.decorationTop()
                 }) { }
 
                 (::div.styled {
                     width { accentDecorationThickness }
                     height { "100%" }
                     position { absolute { } }
-                    alertStyle.decorationLeft()
+                    styles.decorationLeft()
                 }) { }
 
                 (::div.styled {
                     margin { normal }
                     display { flex }
                     css("flex-direction: row")
-                    css("align-items: center")
+                    alignItems { center }
                 }) {
                     (::div.styled {
                         margins { right { small } }
-                        alertStyle.accent()
+                        styles.accent()
                     }) {
                         icon {
                             fromTheme { icon }
@@ -115,7 +128,7 @@ class AlertComponent {
                         verticalAlign { middle }
                         width { "100%" }
                         lineHeight { "1.2em" }
-                        alertStyle.text()
+                        styles.text()
                     }) {
                         title?.invoke(this)
                         content?.invoke(this)
@@ -126,11 +139,58 @@ class AlertComponent {
     }
 }
 
-// TODO: Use additional params
 fun RenderContext.alert(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "alert",
     build: AlertComponent.() -> Unit,
-) = AlertComponent().apply(build).show(this)
+) = AlertComponent().apply(build).show(this, styling, baseClass, id, prefix)
+
+fun RenderContext.alertToast(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: StyleClass? = null,
+    id: String? = null,
+    prefix: String = "alert",
+    toastBuild: ToastComponent.() -> Unit = { },
+    build: AlertComponent.() -> Unit,
+): SimpleHandler<Unit> {
+
+    val pendingToastStore = object : RootStore<AddToast>({}) {
+        val show = handle {
+            showAlertToast(styling, baseClass, id, prefix, toastBuild, build)
+            it
+        }
+    }
+    return pendingToastStore.show
+}
+
+fun RenderContext.showAlertToast(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: StyleClass? = null,
+    id: String? = null,
+    prefix: String = "alert",
+    toastBuild: ToastComponent.() -> Unit = { },
+    build: AlertComponent.() -> Unit,
+) {
+    val alert = AlertComponent().apply(build)
+
+    showToast {
+        toastBuild()
+        content {
+            alert.show(
+                this,
+                styling = {
+                    styling()
+                    paddings { right { giant } }
+                },
+                baseClass,
+                id,
+                prefix
+            )
+        }
+        closeButtonStyle {
+            alert.variantStyles.text()
+        }
+    }
+}
