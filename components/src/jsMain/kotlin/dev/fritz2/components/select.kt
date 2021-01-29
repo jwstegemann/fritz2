@@ -75,7 +75,7 @@ class SelectFieldComponent<T> : InputFormProperties by InputForm() {
             color { disabled }
             hover {
                 border {
-                    color { light }
+                    color { lightGray }
                 }
             }
         }
