@@ -16,6 +16,10 @@ typealias Variant = (AlertVariants.() -> ((ColorProperty) -> AlertVariant))
 @ComponentMarker
 class AlertComponent {
 
+    companion object {
+        private const val accentDecorationThickness = "4px"
+    }
+
     private var severity: Severity = { info }
     private var variant: Variant = { subtle }
 
@@ -74,8 +78,23 @@ class AlertComponent {
         renderContext.apply {
             (::div.styled {
                 display { flex }
+                position { relative { } }
                 alertStyle.background()
             }) {
+                (::div.styled {
+                    width { "100%" }
+                    height { accentDecorationThickness }
+                    position { absolute { } }
+                    alertStyle.decorationTop()
+                }) { }
+
+                (::div.styled {
+                    width { accentDecorationThickness }
+                    height { "100%" }
+                    position { absolute { } }
+                    alertStyle.decorationLeft()
+                }) { }
+
                 (::div.styled {
                     margin { normal }
                     display { flex }

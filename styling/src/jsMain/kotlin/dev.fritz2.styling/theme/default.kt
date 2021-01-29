@@ -2336,10 +2336,10 @@ open class DefaultTheme : Theme {
                         color { it }
                     }
                     override val decorationLeft: Style<BasicParams> = {
-                        color { it }
+                        background { color { it } }
                     }
                     override val decorationTop: Style<BasicParams> = {
-                        color { it }
+                        css("visibility: hidden")
                     }
                 }
             }
@@ -2355,10 +2355,10 @@ open class DefaultTheme : Theme {
                         color { it }
                     }
                     override val decorationLeft: Style<BasicParams> = {
-                        color { it }
+                        css("visibility: hidden")
                     }
                     override val decorationTop: Style<BasicParams> = {
-                        color { it }
+                        background { color { it } }
                     }
                 }
             }
