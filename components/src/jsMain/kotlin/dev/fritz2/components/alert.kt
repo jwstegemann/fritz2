@@ -32,8 +32,8 @@ class AlertComponent {
         variant = value
     }
 
-    fun icon(value: IconDefinition) {
-        icon = value
+    fun icon(value: Icons.() -> IconDefinition) {
+        icon = Theme().icons.value()
     }
 
     fun title(value: RenderContext.() -> Unit) {
@@ -77,14 +77,12 @@ class AlertComponent {
                 alertStyle.background()
             }) {
                 (::div.styled {
-                    margin { "1.0rem" }
+                    margin { normal }
                     display { flex }
                     css("flex-direction: row")
                     css("align-items: center")
                 }) {
                     (::div.styled {
-                        width { "1.5rem" }
-                        height { "1.5rem" }
                         margins { right { small } }
                         alertStyle.accent()
                     }) {
