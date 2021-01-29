@@ -36,10 +36,14 @@ class AlertComponent {
         icon = value
     }
 
+    fun title(value: RenderContext.() -> Unit) {
+        title = value
+    }
     fun title(value: Flow<String>) {
-        title = {
+        title {
             (::span.styled {
-                margins { right { small } }
+                margins { right { smaller } }
+                fontWeight { bold }
             }) {
                 value.asText()
             }
@@ -47,8 +51,11 @@ class AlertComponent {
     }
     fun title(value: String) = title(flowOf(value))
 
+    fun content(value: RenderContext.() -> Unit) {
+        content = value
+    }
     fun content(value: Flow<String>) {
-        content = {
+        content {
             (::span.styled {
                 // To be added
             }) {
@@ -62,37 +69,40 @@ class AlertComponent {
     fun show(renderContext: RenderContext) {
         val alertSeverity = severity.invoke(Theme().colors)
         val alertVariant = variant.invoke(Theme().alert.variants)
-        val variantStyle = alertVariant.invoke(alertSeverity)
+        val alertStyle = alertVariant.invoke(alertSeverity)
 
         renderContext.apply {
             (::div.styled {
-                height { "3rem" }
-                color { Theme().colors.light }
-                variantStyle.background()
+                display { flex }
+                alertStyle.background()
             }) {
-                (::span.styled {
-                    width { "1.5rem" }
-                    height { "1.5rem" }
-                    margins {
-                        left { small }
-                        right { small }
-                    }
-                    variantStyle.accent()
+                (::div.styled {
+                    margin { "1.0rem" }
+                    display { flex }
+                    css("flex-direction: row")
+                    css("align-items: center")
                 }) {
-                    icon({
-                        height { "100%" }
+                    (::div.styled {
+                        width { "1.5rem" }
+                        height { "1.5rem" }
+                        margins { right { small } }
+                        alertStyle.accent()
                     }) {
-                        fromTheme { icon }
+                        icon {
+                            fromTheme { icon }
+                        }
                     }
-                }
 
-                (::span.styled {
-                    display { inlineBlock }
-                    verticalAlign { middle }
-                    variantStyle.text()
-                }) {
-                    title?.invoke(this)
-                    content?.invoke(this)
+                    (::div.styled {
+                        display { inlineBlock }
+                        verticalAlign { middle }
+                        width { "100%" }
+                        lineHeight { "1.2em" }
+                        alertStyle.text()
+                    }) {
+                        title?.invoke(this)
+                        content?.invoke(this)
+                    }
                 }
             }
         }

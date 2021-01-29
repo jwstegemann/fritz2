@@ -2311,10 +2311,10 @@ open class DefaultTheme : Theme {
                         background { color { it } }
                     }
                     override val text: Style<BasicParams> = {
-                        textColorLight
+                        color { textColorLight }
                     }
                     override val accent: Style<BasicParams> = {
-                        textColorLight
+                        color { textColorLight }
                     }
                     override val decorationLeft: Style<BasicParams> = {
                         css("visibility: hidden")
