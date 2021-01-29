@@ -63,7 +63,7 @@ class TextAreaComponent :
         border {
             width { thin }
             style { solid }
-            color { light }
+            color { lightGray }
 
         }
 

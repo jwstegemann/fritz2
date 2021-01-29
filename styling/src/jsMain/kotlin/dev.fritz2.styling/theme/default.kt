@@ -50,15 +50,20 @@ open class DefaultTheme : Theme {
         override val secondary = "#F7B52F" // yellowish orange
         override val secondaryEffect = alterHexColorBrightness(secondary, 1.5) // lighter orange derived from secondary #rrggbb
         override val dark = "#214A25" // dark gray coming from green
-        override val light = "#C6CFC9" //"#cdd1d6" // light gray // coming from green / blue
-        override val lightEffect = alterHexColorBrightness(light, 1.5) // lighter gray derived from light #rrggbb
         override val info = "#1B959E" // blue
         override val success = "#00A848" // bright green
         override val warning = "#F08B3A" // orange
         override val danger = "#E14F2A" // red
         override val base = "#ffffff"
 
-        override val disabled = light
+        override val lightestGray = "#F9FAF9"
+        override val lighterGray = "#E2E7E4"
+        override val lightGray = "#C6CFC9"
+        override val gray = "#9EA5A0"
+        override val darkGray = "#7E8480"
+        override val darkerGray = "#646966"
+
+        override val disabled = lightGray
         override val focus = primaryEffect
     }
 
@@ -1347,7 +1352,7 @@ open class DefaultTheme : Theme {
                 color { base }
 
                 hover {
-                    background { color { lightEffect } }
+                    background { color { lighterGray } }
                     color { dark }
                 }
 
@@ -1400,7 +1405,7 @@ open class DefaultTheme : Theme {
         override val input: Style<BasicParams> = {
             children("&:focus + div") {
                 border {
-                    color { light }
+                    color { lightGray }
                 }
                 boxShadow { outline }
             }
@@ -1440,7 +1445,7 @@ open class DefaultTheme : Theme {
             border {
                 width { "1px" }
                 style { solid }
-                color { light }
+                color { lightGray }
             }
             radius { "var(--cb-radius)" }
         }
@@ -1512,13 +1517,13 @@ open class DefaultTheme : Theme {
             border {
                 width { "2px" }
                 style { solid }
-                color { light }
+                color { lightGray }
             }
             radius { "9999px" }
         }
         override val selected: Style<BasicParams> = {
             background { color { primary } }
-            color { light }
+            color { lightGray }
             border {
                 color { primary }
             }
@@ -1574,7 +1579,7 @@ open class DefaultTheme : Theme {
         override val input: Style<BasicParams> = {
             children("&:focus + div") {
                 border {
-                    color { light }
+                    color { lightGray }
                 }
                 boxShadow { outline }
             }
@@ -1616,7 +1621,7 @@ open class DefaultTheme : Theme {
             padding { "2px" }
             width { "var(--sw-width)" }
             height { "var(--sw-height)" }
-            background { color { light } }
+            background { color { lightGray } }
             radius { "9999px" }
             css("justify-content: flex-start;")
             css("box-sizing: content-box;")
@@ -1660,6 +1665,9 @@ open class DefaultTheme : Theme {
                     color { "var(--main-color)" }
                 }
                 hover {
+                    background {
+                        color { lighterGray }
+                    }
                     css("filter: brightness(80%);")
                 }
             }
@@ -2024,7 +2032,7 @@ open class DefaultTheme : Theme {
                     css("content:\"${value.asList().joinToString("\\A")}\";")
                     background { color { dark } }
                     radius { small }
-                    color { light }
+                    color { lightGray }
                     display { none }
                     overflow { hidden }
                     opacity { "0" }
@@ -2148,7 +2156,7 @@ open class DefaultTheme : Theme {
     override val reset: String by lazy {
         //from modern-normalize v1.0.0 | MIT License | https://github.com/sindresorhus/modern-normalize
         """
-            *,::after,::before{box-sizing:border-box}:root{-moz-tab-size:4;tab-size:4}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}body{font-family:-apple-system,system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}legend{padding:0}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}button{background-color:transparent;background-image:none}fieldset{margin:0;padding:0}ol,ul{list-style:none;margin:0;padding:0}html{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";line-height:1.5}body{font-family:inherit;line-height:inherit}*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}img{border-style:solid}textarea{resize:vertical}input::placeholder,textarea::placeholder{color:#9ca3af}[role=button],button{cursor:pointer}table{border-collapse:collapse}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}button,input,optgroup,select,textarea{padding:0;line-height:inherit;color:inherit}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}
+            *,::after,::before{box-sizing:border-box}:root{-moz-tab-size:4;tab-size:4}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}body{font-family:-apple-system,system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}legend{padding:0}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}button{background-color:transparent;background-image:none}fieldset{margin:0;padding:0}ol,ul{list-style:none;margin:0;padding:0}html{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";line-height:1.5}body{font-family:inherit;line-height:inherit}*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}img{border-style:solid}textarea{resize:vertical}input::placeholder,textarea::placeholder{color:${colors.darkGray}; opacity: 0.8}[role=button],button{cursor:pointer}table{border-collapse:collapse}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}button,input,optgroup,select,textarea{padding:0;line-height:inherit;color:inherit}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}
         """ + """     
                                
             html {
@@ -2285,13 +2293,13 @@ open class DefaultTheme : Theme {
                 border {
                     width { thin }
                     style { solid }
-                    color { light }
+                    color { lightGray }
                 }
             }
 
             override val filled: Style<BasicParams> = {
                 background {
-                    color { light }
+                    color { lightGray }
                 }
 
                 hover {
