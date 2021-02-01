@@ -2,6 +2,8 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.components.validation.ComponentValidationMessage
+import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -11,8 +13,8 @@ import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-typealias Severity = (Colors.() -> ColorProperty)
-typealias Variant = (AlertVariants.() -> ((ColorProperty) -> AlertVariantStyles))
+typealias AlertSeverity = (Colors.() -> ColorProperty)
+typealias AlertVariant = (AlertVariants.() -> ((ColorProperty) -> AlertVariantStyles))
 
 // TODO: Add support for the 'leftAccent' and 'topAccent' variants
 @ComponentMarker
@@ -22,8 +24,8 @@ class AlertComponent {
         private const val accentDecorationThickness = "4px"
     }
 
-    private var severity: Severity = { info }
-    private var variant: Variant = { subtle }
+    private var severity: AlertSeverity = { info }
+    private var variant: AlertVariant = { subtle }
     val variantStyles: AlertVariantStyles
         get() {
             val alertSeverity = severity.invoke(Theme().colors)
@@ -36,11 +38,11 @@ class AlertComponent {
     private var content: (RenderContext.() -> Unit)? = null
 
 
-    fun severity(value: Severity) {
+    fun severity(value: AlertSeverity) {
         severity = value
     }
 
-    fun variant(value: Variant) {
+    fun variant(value: AlertVariant) {
         variant = value
     }
 
@@ -192,5 +194,16 @@ fun RenderContext.showAlertToast(
         closeButtonStyle {
             alert.variantStyles.text()
         }
+    }
+}
+
+fun ComponentValidationMessage.showAsToast(renderContext: RenderContext) {
+    renderContext.showAlertToast {
+        severity { when(severity) {
+            Severity.Info -> Theme().colors.info
+            Severity.Warning -> Theme().colors.warning
+            Severity.Error -> Theme().colors.danger
+        } }
+        content(this@showAsToast.message)
     }
 }
