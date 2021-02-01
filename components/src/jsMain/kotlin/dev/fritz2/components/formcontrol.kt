@@ -1,9 +1,14 @@
 package dev.fritz2.components
 
+import SelectFieldComponent
 import dev.fritz2.binding.Store
 import dev.fritz2.components.FormControlComponent.Control
+import dev.fritz2.components.validation.validationMessage
+import dev.fritz2.components.validation.validationMessages
 import dev.fritz2.dom.html.Input
+import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.TextArea
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
@@ -11,14 +16,16 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.whenever
+import dev.fritz2.validation.ValidationMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import selectField
 
 
 /**
- * This component class manages the _configuration_ of a [formControl] and some render centric functionalities.
- * The former are important for clients of a [formControl], the latter for extending or changing the default behaviours.
+ * This component class manages the configuration of a [formControl] and some render centric functionalities.
+ * The former are important for clients of a [formControl], the latter for extending or changing the default behaviors.
  *
  * A [formControl] can be configured in different aspects:
  * - a label for a description of the control as a whole
@@ -27,31 +34,30 @@ import kotlinx.coroutines.flow.map
  * - provide an error message as a [Flow<String>]]; if it is none empty, the message will get rendered.
  * - disable the control
  *
- * In order to customize the control, there are different seams to use:
+ * Customizing the control:
  *
  * To add a new control, extend this class and add a new control function that wraps the desired control component
- * factory function like [FormControlComponent.inputField], [FormControlComponent.checkbox],
- * [FormControlComponent.checkboxGroup] and [FormControlComponent.radioGroup] do.
+ * factory function like [FormControlComponent.inputField], [FormControlComponent.selectField],
+ * [FormControlComponent.checkbox], [FormControlComponent.checkboxGroup] and [FormControlComponent.radioGroup] do.
  *
- * In order to just _change_ the target of some of the default control wrapping function to a different control
+ * In order to simply change the target of some of the default control wrapping function to a different control
  * component, extend this class and override the desired function. Be aware that you cannot provide default arguments
- * for an overridden function, so probably offer a new function with default arguments that just direct to
+ * for an overridden function, so you must offer a new function with default arguments that just directs to
  * the overridden one.
  *
- * Be aware of how the control should be integrated in the component structure in either way.
- * Currently there are two _strategies_ implemented:
- * - [SingleControlRenderer] for a control that consists of only _one_ element
- * - [ControlGroupRenderer] for a control that consists of multiple parts (like checkBoxes or alike)
+ * Be aware of the render strategy - pick whether your control should be rendered as a single control or a group.
+ * - [SingleControlRenderer] for a control that consists of a single element
+ * - [ControlGroupRenderer] for a control that consists of multiple parts (like checkBoxes etc.)
  *
  * If those do not fit, just implement the [ControlRenderer] interface and pair it with the string based key of the
  * related control wrapping function. Have a look at the init block, [renderStrategies] field and [Control.assignee]
- * field to grasp, how the mapping between a control and a rendering strategie is done.
+ * field to learn how the mapping between control and rendering strategy is done.
  *
  */
 // TODO: Add support for disable
-// TODO: Add support for invalid for every control! (currently only works for inputField)
+// TODO: Add support for invalid for every control
 @ComponentMarker
-open class FormControlComponent {
+open class FormControlComponent : FormProperties by Form() {
     companion object {
         val staticCss = staticStyle(
             "formControl",
@@ -93,6 +99,9 @@ open class FormControlComponent {
 
         object ControlNames {
             const val inputField = "inputField"
+            const val textArea = "textArea"
+            const val switch = "switch"
+            const val selectField = "selectField"
             const val radioGroup = "radioGroup"
             const val checkbox = "checkbox"
             const val checkboxGroup = "checkboxGroup"
@@ -104,9 +113,15 @@ open class FormControlComponent {
         private val overflows: MutableList<String> = mutableListOf()
         var assignee: Pair<String, (RenderContext.() -> Unit)>? = null
 
-        fun set(controlName: String, component: (RenderContext.() -> Unit)) {
+        fun set(
+            controlName: String,
+            component: (RenderContext.() -> Unit),
+            //errorMessages: Flow<List<ValidationMessage>>,
+            //parent: FormControlComponent
+        ) {
             if (assignee == null) {
                 assignee = Pair(controlName, component)
+                //parent.errorMessages = errorMessages
             } else {
                 overflows.add(controlName)
             }
@@ -129,38 +144,19 @@ open class FormControlComponent {
     protected val renderStrategies: MutableMap<String, ControlRenderer> = mutableMapOf()
     protected val control = Control()
 
-    var label: String = ""
+    val label = ComponentProperty("")
+    val required = ComponentProperty(false)
+    val helperText = ComponentProperty<String?>(null)
+    val errorMessage = DynamicComponentProperty(flowOf(""))
 
-    fun label(value: () -> String) {
-        label = value()
-    }
-
-    var disabled: Flow<Boolean> = flowOf(false)
-
-    fun disabled(value: () -> Flow<Boolean>) {
-        disabled = value()
-    }
-
-    var required: Boolean = false
-
-    fun required(value: () -> Boolean) {
-        required = value()
-    }
-
-    var helperText: String? = null
-
-    fun helperText(value: () -> String) {
-        helperText = value()
-    }
-
-    var errorMessage: Flow<String> = flowOf("")
-
-    fun errorMessage(value: () -> Flow<String>) {
-        errorMessage = value()
-    }
+    // TODO: Check if private is possible
+    private var errorMessages: Flow<List<ValidationMessage>>? = null
 
     init {
         renderStrategies[ControlNames.inputField] = SingleControlRenderer(this)
+        renderStrategies[ControlNames.switch] = SingleControlRenderer(this)
+        renderStrategies[ControlNames.textArea] = SingleControlRenderer(this)
+        renderStrategies[ControlNames.selectField] = SingleControlRenderer(this)
         renderStrategies[ControlNames.checkbox] = SingleControlRenderer(this)
         renderStrategies[ControlNames.checkboxGroup] = ControlGroupRenderer(this)
         renderStrategies[ControlNames.radioGroup] = ControlGroupRenderer(this)
@@ -174,11 +170,49 @@ open class FormControlComponent {
         prefix: String = ControlNames.inputField,
         init: Input.() -> Unit
     ) {
-        val msg = errorMessage.map { it.isNotEmpty() }
+        val msg = errorMessage.values.map { it.isNotEmpty() }
         control.set(ControlNames.inputField)
         {
             inputField(styling, store, baseClass, id, prefix) {
-                base {
+                element {
+                    className(StyleClass(invalidClassName).whenever(msg))
+                    init()
+                }
+            }
+        }
+    }
+
+    open fun switch(
+        styling: BasicParams.() -> Unit = {},
+        store: Store<Boolean>? = null,
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = ControlNames.switch,
+        init: SwitchComponent.() -> Unit = {}
+    ) {
+        val msg = errorMessage.values.map { it.isNotEmpty() }
+        control.set(ControlNames.inputField)
+        {
+            switch(styling, store, baseClass, id, prefix) {
+                className(StyleClass(invalidClassName).whenever(msg))
+                init()
+            }
+        }
+    }
+
+    open fun textArea(
+        styling: BasicParams.() -> Unit = {},
+        store: Store<String>? = null,
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = ControlNames.textArea,
+        init: TextArea.() -> Unit
+    ) {
+        val msg = errorMessage.values.map { it.isNotEmpty() }
+        control.set(ControlNames.textArea)
+        {
+            textArea(styling, store, baseClass, id, prefix) {
+                element {
                     className(StyleClass(invalidClassName).whenever(msg))
                     init()
                 }
@@ -189,6 +223,7 @@ open class FormControlComponent {
     open fun checkbox(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,
+        store: Store<Boolean>? = null,
         id: String? = null,
         prefix: String = ControlNames.checkbox,
         build: CheckboxComponent.() -> Unit
@@ -196,51 +231,74 @@ open class FormControlComponent {
         //val msg = errorMessage.map { it.isNotEmpty() }
         val msg = flowOf(true)
 
-            control.set(ControlNames.checkbox)
-            {
-                checkbox({
-                    styling()
-                    StyleClass(invalidClassName).whenever(msg) { it }
-                }, baseClass, id, prefix) {
-                    build()
-                }
+        control.set(ControlNames.checkbox)
+        {
+            checkbox({
+                styling()
+                StyleClass(invalidClassName).whenever(msg) { it }
+            }, store, baseClass, id, prefix) {
+                build()
             }
-
-
+        }
     }
 
-    open fun checkboxGroup(
+    open fun <T> checkboxGroup(
         styling: BasicParams.() -> Unit = {},
-        store: Store<List<String>>,
+        items: List<T>,
+        store: Store<List<T>>? = null,
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.checkboxGroup,
-        build: CheckboxGroupComponent<String>.() -> Unit
+        build: CheckboxGroupComponent<T>.() -> Unit
     ) {
-        control.set(ControlNames.checkboxGroup) {
-            checkboxGroup(styling, store, baseClass, id, prefix) {
+        control.set(ControlNames.checkboxGroup /*, store?.validationMessages() */) {
+            checkboxGroup(styling, items, store, baseClass, id, prefix) {
                 build()
             }
         }
     }
 
-    open fun radioGroup(
+    open fun <T> radioGroup(
         styling: BasicParams.() -> Unit = {},
-        store: Store<String>,
+        items: List<T>,
+        store: Store<T>? = null,
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.radioGroup,
-        build: RadioGroupComponent<String>.() -> Unit
+        build: RadioGroupComponent<T>.() -> Unit
     ) {
         control.set(ControlNames.radioGroup) {
-            radioGroup(styling, store, baseClass, id, prefix) {
+            radioGroup(styling, items, store, baseClass, id, prefix) {
                 build()
             }
         }
     }
 
-    // TODO: Add support for ``textarea``
-    // TODO: Add support for ``switch``
+    open fun <T> selectField(
+        styling: BasicParams.() -> Unit = {},
+        items: List<T>,
+        store: Store<T>? = null,
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = ControlNames.selectField,
+        init: SelectFieldComponent<T>.() -> Unit
+    ) {
+        val msg = errorMessage.values.map { it.isNotEmpty() }
+        control.set(ControlNames.selectField)
+        {
+            selectField<T>(
+                styling,
+                items,
+                store,
+                baseClass,
+                id,
+                prefix
+            ) {
+                className(StyleClass(invalidClassName).whenever(msg))
+                init()
+            }
+        }
+    }
 
     fun render(
         styling: BasicParams.() -> Unit = {},
@@ -262,11 +320,11 @@ open class FormControlComponent {
 
     fun renderHelperText(renderContext: RenderContext) {
         renderContext.div {
-            helperText?.let {
+            helperText.value?.let {
                 (::p.styled {
                     color { dark }
-                    fontSize { small }
-                    lineHeight { small }
+                    fontSize { smaller }
+                    lineHeight { smaller }
                 }) { +it }
             }
         }
@@ -274,7 +332,7 @@ open class FormControlComponent {
 
     fun renderErrorMessage(renderContext: RenderContext) {
         renderContext.div {
-            errorMessage.render {
+            errorMessage.values.render {
                 if (it.isNotEmpty()) {
                     lineUp({
                         color { danger }
@@ -293,7 +351,7 @@ open class FormControlComponent {
     }
 
     val requiredMarker: RenderContext.() -> Unit = {
-        if (required) {
+        if (required.value) {
             (::span.styled {
                 color { danger }
                 margins { left { tiny } }
@@ -335,7 +393,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
             spacing { tiny }
             items {
                 label {
-                    +component.label
+                    +component.label.value
                     component.requiredMarker(this)
                 }
                 control(this)
@@ -362,7 +420,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
             (::fieldset.styled(baseClass, id, prefix) {
                 styling()
             }) {
-                legend { +component.label }
+                legend { +component.label.value }
                 control(this)
                 component.renderHelperText(this)
                 component.renderErrorMessage(this)
@@ -373,7 +431,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
 
 
 /**
- * This component wraps different kind of input elements like [inputField], [checkbox], [checkboxGroup], [radioGroup].
+ * This component wraps input elements like [inputField], [selectField], [checkbox], [checkboxGroup], [radioGroup].
  * It enriches those controls with a describing text or label, an optional helper message and also an optional
  * error message. On top it marks a control as _required_ if that should be exposed.
  *
@@ -387,13 +445,13 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
  * - ... adapt to new input elements
  * - ... get rendered in a new way.
  * In order to achieve this, one can provide new implementations of the rendering strategies or override the control
- * wrapping functions as well. For details have a look at the [ControlRenderer] interface and the four control functions
- * [FormControlComponent.inputField], [FormControlComponent.checkbox], [FormControlComponent.checkboxGroup] and
- * [FormControlComponent.radioGroup].
+ * wrapping functions as well. For details have a look at the [ControlRenderer] interface and the control functions
+ * [FormControlComponent.inputField], [FormControlComponent.checkbox], [FormControlComponent.checkboxGroup],
+ * [FormControlComponent.radioGroup], and [FormControlComponent.selectField].
  *
  * Have a look at some example calls
  * ```
- * // wrap a simple input field
+ * // wrap an input field
  * formControl {
  *     label { "Some describing label" }
  *     required { true } // mark the above label with a small red star
@@ -406,7 +464,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
  *     }
  * }
  *
- * // provide more than one control:
+ * // providing more than one control results in errors:
  * // - the first will get rendered
  * // - starting with the second all others will be logged as errors
  * formControl {
@@ -427,7 +485,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
  * }
  * ```
  *
- * For details about the configuration possibilities have a look at [FormControlComponent].
+ * For details about the configuration options, have a look at [FormControlComponent].
  *
  * @see FormControlComponent
  *

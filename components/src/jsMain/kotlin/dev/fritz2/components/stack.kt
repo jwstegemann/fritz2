@@ -71,23 +71,9 @@ abstract class StackComponent {
         )
     }
 
-    var reverse: Boolean = false
-
-    fun reverse(value: () -> Boolean) {
-        reverse = value()
-    }
-
-    var spacing: ScaledValueProperty = { normal }
-
-    fun spacing(value: ScaledValueProperty) {
-        spacing = value
-    }
-
-    var items: (RenderContext.() -> Unit)? = null
-
-    fun items(value: RenderContext.() -> Unit) {
-        items = value
-    }
+    var reversed = ComponentProperty(false)
+    var spacing = ComponentProperty<ScaledValueProperty> { normal }
+    var items = ComponentProperty<(RenderContext.() -> Unit)> {}
 
     abstract val stackStyles: Style<FlexParams>
 }
@@ -102,15 +88,15 @@ abstract class StackComponent {
 @ComponentMarker
 class StackUpComponent : StackComponent() {
     override val stackStyles: Style<FlexParams> = {
-        if (this@StackUpComponent.reverse) {
+        if (this@StackUpComponent.reversed.value) {
             direction { columnReverse }
             children(" > :not(:first-child)") {
-                margins { bottom(this@StackUpComponent.spacing) }
+                margins { bottom(this@StackUpComponent.spacing.value) }
             }
         } else {
             direction { column }
             children(" > :not(:first-child)") {
-                margins { top(this@StackUpComponent.spacing) }
+                margins { top(this@StackUpComponent.spacing.value) }
             }
         }
     }
@@ -162,7 +148,7 @@ fun RenderContext.stackUp(
         component.stackStyles()
         styling()
     }, baseClass = baseClass + StackComponent.staticCss, prefix = prefix, id = id) {
-        component.items?.let { it() }
+        component.items.value(this)
     }
 }
 
@@ -175,15 +161,15 @@ fun RenderContext.stackUp(
 @ComponentMarker
 class LineUpComponent : StackComponent() {
     override val stackStyles: Style<FlexParams> = {
-        if (this@LineUpComponent.reverse) {
+        if (this@LineUpComponent.reversed.value) {
             direction { rowReverse }
             children(" > :not(:first-child)") {
-                margins { right(this@LineUpComponent.spacing) }
+                margins { right(this@LineUpComponent.spacing.value) }
             }
         } else {
             direction { row }
             children(" > :not(:first-child)") {
-                margins { left(this@LineUpComponent.spacing) }
+                margins { left(this@LineUpComponent.spacing.value) }
             }
         }
     }
@@ -236,6 +222,6 @@ fun RenderContext.lineUp(
         component.stackStyles()
         styling()
     }, baseClass = baseClass + StackComponent.staticCss, prefix = prefix, id = id) {
-        component.items?.let { it() }
+        component.items.value(this)
     }
 }

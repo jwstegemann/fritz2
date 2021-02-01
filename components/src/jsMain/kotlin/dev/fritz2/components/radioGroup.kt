@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
@@ -8,6 +9,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
+import dev.fritz2.styling.theme.CheckboxSizes
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.RadioSizes
 import dev.fritz2.styling.theme.Theme
@@ -23,13 +25,13 @@ import kotlinx.coroutines.flow.map
  * In order to render a checkbox group use the [radioGroup] factory function!
  *
  * This class offers the following _configuration_ features:
- *  - the items as a flowOf(List<T>)
+ *  - the items as a ``List<T>``
+ *  - optionally set a predefined item; if nothing is set or ``null``, nothing gets selected at first
  *  - the label(mapping) of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext ) the the example below
  *  - some predefined styling variants (size)
  *  - the style of the items (radio)
  *  - the style selected state
  *  - the style of the label
- *  - link an external boolean flow to set the disabled state of the box
  *  - choose the direction of checkbox elements (row vs column)
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
@@ -40,28 +42,33 @@ import kotlinx.coroutines.flow.map
  * ```
  * // simple use case showing the core functionality
  * val options = listOf("A", "B", "C")
- * val myStore = storeOf(<String>)
- * radioGroup(store = myStore) {
- *      items { flowOf(options) } or use items(options) // provide a list of items you can
+ * val myStore = storeOf("B") // or ``null`` to select nothing
+ * radioGroup(items = options, store = myStore) {
+ * }
+ *
+ * // one can handle the events and preselected item also manually if needed:
+ * val options = listOf("A", "B", "C")
+ * radioGroup(items = options) {
+ *      selectedItem("A") // or ``null`` (default) if nothing should be selected at all
+ *      events {
+ *          selected handledBy someStoreOfString
+ *      }
  * }
  *
  * // use case showing some styling options and a store of List<Pair<Int,String>>
- *   val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
- *  val myStore = storeOf(<List<Pair<Int,String>>)
- * radioGroup(store = myStore) {
- *      label {
- *          it.second
- *      }
- *      size { large }
- *      items { flowOf(options) } or use items(options) // provide a list of items you can
- *      selectedStyle {{
- *           background { color {"green"}}
- *      }}
+ * val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
+ * val myStore = storeOf(<List<Pair<Int,String>>)
+ * radioGroup(items = myPairs, store = myStore) {
+ *     label { it.second }
+ *     size { large }
+ *     selectedStyle {{
+ *          background { color {"green"}}
+ *     }}
  * }
  * ```
  */
 @ComponentMarker
-class RadioGroupComponent<T> {
+class RadioGroupComponent<T> : InputFormProperties by InputForm() {
     companion object {
         object RadioGroupLayouts {
             val column: Style<BasicParams> = {
@@ -76,42 +83,13 @@ class RadioGroupComponent<T> {
             }
         }
     }
-    var items: Flow<List<T>> = flowOf(emptyList())
 
-    fun items(value: List<T>) {
-        items = flowOf(value)
-    }
-    fun items(value: () -> Flow<List<T>>) {
-        items = value()
-    }
-
-    var icon: IconDefinition = Theme().icons.check
-    fun icon(value: () -> IconDefinition) {
-        icon = value()
-    }
-
-    var label: ((item: T)  -> String) =  {it.toString()}
-    fun label (value: (item: T)  -> String) {
-        label = value
-    }
-
-    var disabled: Flow<Boolean> = flowOf(false)
-    fun disabled(value: () -> Flow<Boolean>) {
-        disabled = value()
-    }
-
-    fun disabled(value:  Boolean) {
-        disabled = flowOf(value)
-    }
+    var label = ComponentProperty<(item: T) -> String> { it.toString() }
+    var size = ComponentProperty<RadioSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
     var direction: Style<BasicParams> = RadioGroupLayouts.column
     fun direction(value: RadioGroupLayouts.() -> Style<BasicParams>) {
-        direction =  RadioGroupLayouts.value()
-    }
-
-    var size: RadioSizes.() -> Style<BasicParams> = { Theme().radio.sizes.normal }
-    fun size(value: RadioSizes.() -> Style<BasicParams>) {
-        size = value
+        direction = RadioGroupLayouts.value()
     }
 
     var itemStyle: Style<BasicParams> = { Theme().radio.default() }
@@ -129,17 +107,20 @@ class RadioGroupComponent<T> {
         selectedStyle = value()
     }
 
+    val selectedItem = NullableDynamicComponentProperty<T>(flowOf(null))
+
+    class EventsContext<T>(val selected: Flow<T>) {
+    }
+
+    val events = ComponentProperty<EventsContext<T>.() -> Unit> {}
 }
-
-
 
 
 /**
  * This component generates a *group* of radio buttons.
  *
  * You can set different kind of properties like the labeltext or different styling aspects like the colors of the
- * background, the label or the selected item. It returns a [Flow<String>] with the currently selected item, so it
- * can be easily passed to an appropriate handler like the update handler of a store.
+ * background, the label or the selected item.
  *
  * For a detailed overview about the possible properties of the component object itself, have a look at
  * [RadioGroupComponent]
@@ -147,48 +128,61 @@ class RadioGroupComponent<T> {
  * Example usage
  * ```
  * val options = listOf("A", "B", "C")
- * radioGroup {
- *     items { options } // provide a list of items
- *     selected { options[1] } // pre select "B"
- * } handledBy selectedItemStore.update // combine the Flow<String> with a fitting handler
+ * radioGroup(items = options, store = selectedItemStore) {
+ *     selectedItem(options[1]) // pre select "B", or ``null`` (default) to select nothing
+ * }
  * ```
  *
  * @see RadioGroupComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param items a list of all available options
+ * @param store for backing up the preselected item and reflecting the selection automatically.
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [RadioGroupComponent]
  * @return a flow of the _selected_ item
  */
-fun <T>RenderContext.radioGroup(
+fun <T> RenderContext.radioGroup(
     styling: BasicParams.() -> Unit = {},
-    store: Store<T>,
+    items: List<T>,
+    store: Store<T>? = null,
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "radioGroupComponent",
     build: RadioGroupComponent<T>.() -> Unit = {}
 ) {
     val component = RadioGroupComponent<T>().apply(build)
+    val internalStore = SingleSelectionStore()
 
     val grpId = id ?: uniqueId()
     (::div.styled(styling, baseClass, id, prefix) {
         component.direction()
     }) {
-        component.items.renderEach { item ->
-            val checkedFlow = store.data.map { it == item }.distinctUntilChanged()
+        (store?.data ?: component.selectedItem.values)
+            .map { selectedItem ->
+                items.indexOf(selectedItem).let { if (it == -1) null else it }
+            } handledBy internalStore.update
+
+        items.withIndex().forEach { (index, item) ->
+            val checkedFlow = internalStore.data.map { it == index }.distinctUntilChanged()
             radio(styling = component.itemStyle, id = grpId + "-grp-item-" + uniqueId()) {
-                size { component.size.invoke(Theme().radio.sizes) }
+                size { component.size.value.invoke(Theme().radio.sizes) }
                 labelStyle { component.labelStyle }
                 selectedStyle { component.selectedStyle }
-                label(component.label(item))
-                selected { checkedFlow }
-                disabled { component.disabled }
+                label(component.label.value(item))
+                selected(checkedFlow)
+                disabled(component.disabled.values)
                 events {
-                    changes.states().map{ item } handledBy store.update
+                    changes.states().map { index } handledBy internalStore.toggle
                 }
             }
+        }
+
+        RadioGroupComponent.EventsContext(internalStore.toggle.map { items[it] }).apply {
+            component.events.value(this)
+            store?.let { selected handledBy it.update }
         }
     }
 }

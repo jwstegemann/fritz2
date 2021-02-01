@@ -1,11 +1,8 @@
 import dev.fritz2.binding.Store
-import dev.fritz2.components.ComponentMarker
-import dev.fritz2.components.icon
-import dev.fritz2.components.optionSelect
-import dev.fritz2.dom.html.Option
+import dev.fritz2.components.*
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.Select
 import dev.fritz2.dom.selectedValue
+import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
@@ -24,14 +21,14 @@ import kotlinx.coroutines.flow.*
  *  - the text which is shown -> label
  *  - disabling the element
  *
- *  The functional expression ``init``, which is the last parameter of the factory function, offers
+ *  The functional expression ``build``, which is the last parameter of the factory function, offers
  *  an initialized instance of this [SelectFieldComponent] class as receiver, so every mutating
  *  method can be called for configuring the desired state for rendering the selectField.
  *
- *  * For a detailed explanation and examples of usage, have a look at the [selectField] function itself.
+ *  For a detailed explanation and examples of usage, have a look at the [selectField] function itself.
  */
 @ComponentMarker
-class SelectFieldComponent<T> {
+class SelectFieldComponent<T> : InputFormProperties by InputForm() {
     companion object {
         val staticCss = staticStyle(
             "selectFieldContainer",
@@ -65,10 +62,21 @@ class SelectFieldComponent<T> {
                 boxShadow { outline }
             }
         }
+        hover {
+            border {
+                color { dark }
+            }
+        }
 
         disabled {
             background {
-                color { disabled }
+                color { base }
+            }
+            color { disabled }
+            hover {
+                border {
+                    color { light }
+                }
             }
         }
         position { relative { } }
@@ -96,110 +104,18 @@ class SelectFieldComponent<T> {
         height { "var(--select-icon-size)" }
     }
 
-    var placeholder: Flow<T>? = null
+    val placeholder = ComponentProperty("...")
+    val variant = ComponentProperty<SelectFieldVariants.() -> Style<BasicParams>> { Theme().select.variants.outline }
+    val label = ComponentProperty<(item: T) -> String> { it.toString() }
+    val size = ComponentProperty<SelectFieldSizes.() -> Style<BasicParams>> { Theme().select.sizes.normal }
+    val icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.chevronDown }
 
-    fun placeholder(value: T) {
-        placeholder = flowOf(value)
+    val selectedItem = NullableDynamicComponentProperty<T>(flowOf(null))
+
+    class EventsContext<T>(val selected: Flow<T>) {
     }
 
-    fun placeholder(value: Flow<T>) {
-        placeholder = value
-    }
-
-
-    var items: Flow<List<T>> = flowOf(emptyList())
-
-    fun items(value: List<T>) {
-        items = flowOf(value)
-    }
-
-    var variant: SelectFieldVariants.() -> Style<BasicParams> = { Theme().select.variants.outline }
-
-    fun variant(value: SelectFieldVariants.() -> Style<BasicParams>) {
-        variant = value
-    }
-
-    var size: SelectFieldSizes.() -> Style<BasicParams> = { Theme().select.sizes.normal }
-
-    fun size(value: SelectFieldSizes.() -> Style<BasicParams>) {
-        size = value
-    }
-
-
-    var icon: IconDefinition = Theme().icons.chevronDown
-    fun icon(value: Icons.() -> IconDefinition) {
-        icon = Theme().icons.value()
-    }
-
-    var label: ((item: T) -> String) = { it.toString() }
-    fun label(value: (item: T) -> String) {
-        label = value
-    }
-
-
-    var value: ((item: T) -> String) = { it.toString() }
-    fun value(param: (item: T) -> String) {
-        value = param
-    }
-
-    var disabled: Flow<Boolean> = flowOf(false)
-
-    fun disabled(value: Boolean) {
-        disabled = flowOf(value)
-    }
-
-    fun disabled(value: Flow<Boolean>) {
-        disabled = value
-    }
-
-    fun renderPlaceholderAndOptions(
-        renderContext: Select,
-        store: Store<T>,
-        optionsMap: MutableMap<String, T>,
-    ): Map<String, T> {
-        renderContext.apply {
-
-            placeholder!!.combine(items) { placeholder, items ->
-                listOf(placeholder) + items
-            }.renderEach { item ->
-                handleRendering(optionsMap, item, store, this, this@SelectFieldComponent)
-            }
-        }
-
-        return optionsMap
-    }
-
-    fun renderOptions(renderContext: Select, store: Store<T>, optionsMap: MutableMap<String, T>): Map<String, T> {
-
-        renderContext.apply {
-            items.renderEach { item ->
-                handleRendering(optionsMap, item, store, this, this@SelectFieldComponent)
-            }
-        }
-
-        return optionsMap
-    }
-
-    private fun handleRendering(
-        optionsMap: MutableMap<String, T>,
-        item: T,
-        store: Store<T>,
-        renderContext: RenderContext,
-        selectComponent: SelectFieldComponent<T>,
-    ): Option {
-
-        optionsMap[item.toString()] = item
-        val selected = store.data.map { it == item }
-
-        return renderContext.optionSelect {
-
-            value { selectComponent.value(item) }
-            label { selectComponent.label(item) }
-            selected(selected)
-        }
-
-    }
-
+    val events = ComponentProperty<EventsContext<T>.() -> Unit> {}
 }
 
 /**
@@ -209,98 +125,111 @@ class SelectFieldComponent<T> {
  * and the events will be connected automatically.
  *
  * A basic use case:
+ * ```
+ * val myOptions = listOf("black", "red", "yellow")
+ * val selectedItem = storeOf("red") // preselect "red"
+ * selectField (items = myOptions, store = selectedItem) {
+ * }
+ * ```
  *
- *    val myOptions = listOf("black", "red", "yellow")
- *    val selectedItem = storeOf("")
+ * Preselect nothing and set a placeholder text:
+ * ```
+ * val myOptions = listOf("black", "red", "yellow")
+ * val selectedItem = storeOf<String?>(null)
+ * selectField (items = myOptions, store = selectedItem) {
+ *      placeholder("My Placeholder") // will be shown until some item is selected!
+ * }
+ * ```
  *
- *    selectField (store = selectedItem) {
- *          placeholder("My Placeholder")
- *          options(myOptions)
- *    }
+ * Customize the appearance:
+ * ```
+ * selectField (items = myOptions, store = selectedItem) {
+ *      icon { fromTheme { circleAdd } }
+ *      size { large }
+ *      variant { flushed }
+ * }
+ * ```
  *
- *  Customize icon:
- *
- *    selectField(store = selectedItem) {
- *          placeholder("circleAdd icon")
- *          icon { fromTheme { circleAdd }}
- *    }
- *
- *  Variants and sizes:
- *
- *    selectField(store = selectedItem) {
- *          size { large }
- *          variant { flushed }
- *    }
- *
- *  Disable the component:
- *
- *  selectField(store = selectedItem) {
- *       options(myOptions)
- *       disabled(true)
- *  }
- *
- *  Set a specific label:
- *
- *  val persons = listOf(Person("John Doe", 37), Person("Jane Doe", 35))
- *  val store = storeOf(persons[0])
- *
- *   selectField(store = store) {
- *       options(persons)
- *       label { it.name }
- *  }
+ * Set a specific label:
+ * ```
+ * val persons = listOf(Person("John Doe", 37), Person("Jane Doe", 35))
+ * val selectedItem = storeOf(persons[0])
+ * selectField(items = persons, store = selectedItem) {
+ *      label { it.name } // pass a lambda expression to create a label string of an specific type
+ * }
+ * ```
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
- * @param store  a [Store] that holds the selected value of the select component
+ * @param items a list of all available options
+ * @param store for backing up the preselected item and reflecting the selection automatically.
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param init a lambda expression for setting up the component itself. Details in [SelectFieldComponent]
+ * @param build a lambda expression for setting up the component itself. Details in [SelectFieldComponent]
  *
  */
-
-// todo: Add the select to the form control!
-
 fun <T> RenderContext.selectField(
     styling: BasicParams.() -> Unit = {},
-    store: Store<T>,
+    items: List<T>,
+    store: Store<T>? = null,
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "selectField",
-    init: SelectFieldComponent<T>.() -> Unit,
+    build: SelectFieldComponent<T>.() -> Unit,
 ) {
-    val component = SelectFieldComponent<T>().apply(init)
-    val optionsMap = mutableMapOf<String, T>()
+    val component = SelectFieldComponent<T>().apply(build)
+    val internalStore = SingleSelectionStore()
 
-    (::div.styled(styling, baseClass + SelectFieldComponent.staticCss, id, prefix) {
+    val grpId = id ?: uniqueId()
 
+    (store?.data ?: component.selectedItem.values)
+        .map { selectedItem ->
+            items.indexOf(selectedItem).let { if (it == -1) null else it }
+        } handledBy internalStore.update
 
-    }){
+    (::div.styled(styling, baseClass + SelectFieldComponent.staticCss, grpId, prefix) {}){
+
         (::select.styled(styling, baseClass) {
             component.basicSelectStyles()
-            component.variant.invoke(Theme().select.variants)()
-            component.size.invoke(Theme().select.sizes)()
-
+            component.variant.value.invoke(Theme().select.variants)()
+            component.size.value.invoke(Theme().select.sizes)()
         }){
-            disabled(component.disabled)
-            val mapContainingOptions = when (component.placeholder) {
-                null -> component.renderOptions(this, store, optionsMap)
-                else -> component.renderPlaceholderAndOptions(this, store, optionsMap)
+            disabled(component.disabled.values)
+
+            internalStore.data.render {
+                if (it == null) {
+                    option {
+                        value("null")
+                        selected(true)
+                        +component.placeholder.value
+                    }
+                }
             }
 
-            changes.selectedValue()
-                .map {
-                    mapContainingOptions[it] ?: error("Error mapping selected value in selectField component.")
-                } handledBy store.update
+            items.withIndex().forEach { (index, item) ->
+                val checkedFlow = internalStore.data.map { it == index }.distinctUntilChanged()
+                option {
+                    value(index.toString())
+                    selected(checkedFlow)
+                    +component.label.value(item)
+                }
+            }
 
+            changes.selectedValue().map { it.toInt() } handledBy internalStore.toggle
         }
+
         (::div.styled(prefix = "icon-wrapper") {
-            component.size.invoke(Theme().select.sizes)()
+            component.size.value.invoke(Theme().select.sizes)()
             component.iconWrapperStyle()
         }){
             icon({
                 component.iconStyle()
-            }) { fromTheme { component.icon } }
+            }) { def(component.icon.value(Theme().icons)) }
         }
     }
-}
 
+    SelectFieldComponent.EventsContext(internalStore.toggle.map { items[it] }).apply {
+        component.events.value(this)
+        store?.let { selected handledBy it.update }
+    }
+}
