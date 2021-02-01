@@ -195,9 +195,9 @@ fun RenderContext.showAlertToast(
 fun ComponentValidationMessage.showAsToast(renderContext: RenderContext) {
     renderContext.showAlertToast {
         severity { when(severity) {
-            Severity.Info -> Theme().colors.info
-            Severity.Warning -> Theme().colors.warning
-            Severity.Error -> Theme().colors.danger
+            Severity.Info -> info
+            Severity.Warning -> warning
+            Severity.Error -> error
         } }
         content(this@showAsToast.message)
     }
