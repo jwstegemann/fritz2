@@ -196,6 +196,9 @@ class ToastComponent(private val renderContext: RenderContext) {
         }
 
 
+        private var toastId: String = uniqueId()
+
+
         fun closeAllToasts(): SimpleHandler<Unit> {
             val store = object : RootStore<String>("") {
                 val closeAll = handle {
@@ -292,17 +295,11 @@ class ToastComponent(private val renderContext: RenderContext) {
         id: String? = null,
         prefix: String = defaultInnerToastPrefix
     ) {
-        val toastId = id?: uniqueId()
-
         var job: Job? = null
         val clickStore = object : RootStore<String>("") {
             val delete = handle {
                 job?.cancel()
-                val currentToastListElement = toastMap[toastId]
-                document.getElementById(toastId)!!.setAttribute("style", "opacity: 0;")
-                toastMap.remove(toastId)
-                delay(1020)
-                ToastStore.remove(currentToastListElement!!)
+                dismiss()
                 it
             }
         }
@@ -349,9 +346,17 @@ class ToastComponent(private val renderContext: RenderContext) {
 
         job = GlobalScope.launch {
             delay(duration)
-            ToastStore.remove(listContext)
+            dismiss()
         }
 
+    }
+
+    private suspend fun dismiss() {
+        val currentToastListElement = toastMap[toastId]
+        document.getElementById(toastId)!!.setAttribute("style", "opacity: 0;")
+        toastMap.remove(toastId)
+        delay(1020)
+        ToastStore.remove(currentToastListElement!!)
     }
 }
 
