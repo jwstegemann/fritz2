@@ -12,6 +12,42 @@ import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
+/**
+ * A component to display an alert consisting of an icon, title and description.
+ * Different styles based on severities are supported, as well as a number of different layout options.
+ *
+ * Currently the following severities are available:
+ * - Info
+ * - Success
+ * - Warning
+ * - Error
+ * Specifying a severity will change the alert's color scheme based on the colors defined in the application theme.
+ * If no severity is specified, 'info' will be used by default.
+ *
+ * Additionally, a number of different layout options are available. These are:
+ * - 'Subtle': A subtle style using different shades of the severity's base color defined in the application theme.
+ * - 'Solid': A solid style using the severity's color from the application theme and a solid white color for the icon,
+ * text and decorations.
+ * - 'Top-Accent': A variation of the 'Subtle' variant with a decoration element at the top.
+ * - 'Left-Accent': A variation of the 'Subtle' variant with a decoration element on the left.
+ * If no variant is specified, 'Subtle' is used by default.
+ *
+ * Usage examples:
+ * ```
+ * alert {
+ *     title("Alert")
+ *     content("This is an alert.")
+ *     severity { info }
+ * }
+ *
+ * alert {
+ *     title("Alert")
+ *     content("This is an alert.")
+ *     severity { error }
+ *     variant { leftAccent }
+ * }
+ * ```
+ */
 @ComponentMarker
 class AlertComponent {
 
@@ -136,6 +172,15 @@ class AlertComponent {
     }
 }
 
+/**
+ * Creates an alert and renders it right away.
+ *
+ * @param styling a lambda expression for declaring the styling of the toast using fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the toast element
+ * @param id the ID of the toast element
+ * @param prefix the prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
+ * @param build a lambda expression for setting up the component itself
+ */
 fun RenderContext.alert(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
@@ -144,6 +189,18 @@ fun RenderContext.alert(
     build: AlertComponent.() -> Unit,
 ) = AlertComponent().apply(build).show(this, styling, baseClass, id, prefix)
 
+/**
+ * Creates and alert and returns a handler that displays it in a toast message when invoked.
+ * Use [showAlertToast] to display the toast message right away.
+ * The toast's theme properties are automatically set but can manually be overridden by passing [toastBuild].
+ *
+ * @param styling a lambda expression for declaring the styling of the toast using fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the toast element
+ * @param id the ID of the toast element
+ * @param prefix the prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
+ * @param toastBuild a lambda expression for setting up the toast containing the alert
+ * @param build a lambda expression for setting up the alert component
+ */
 fun RenderContext.alertToast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
@@ -153,7 +210,7 @@ fun RenderContext.alertToast(
     build: AlertComponent.() -> Unit,
 ): SimpleHandler<Unit> {
 
-    val pendingToastStore = object : RootStore<AddToast>({}) {
+    val pendingToastStore = object : RootStore<AddToast>({ }) {
         val show = handle {
             showAlertToast(styling, baseClass, id, prefix, toastBuild, build)
             it
@@ -162,6 +219,17 @@ fun RenderContext.alertToast(
     return pendingToastStore.show
 }
 
+/**
+ * Creates and alert and displays it as a toast message.
+ * The toast's theme properties are automatically set but can manually be overridden by passing [toastBuild].
+ *
+ * @param styling a lambda expression for declaring the styling of the toast using fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the toast element
+ * @param id the ID of the toast element
+ * @param prefix the prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
+ * @param toastBuild a lambda expression for setting up the toast containing the alert
+ * @param build a lambda expression for setting up the alert component
+ */
 fun RenderContext.showAlertToast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
@@ -192,6 +260,12 @@ fun RenderContext.showAlertToast(
     }
 }
 
+/**
+ * Convenience extension to display a [ComponentValidationMessage] as an alert.
+ * The alert's severity and content are determined from the validation message's properties.
+ *
+ * @param renderContext RenderContext to render the alert in.
+ */
 fun ComponentValidationMessage.asAlert(renderContext: RenderContext) {
     renderContext.alert {
         severity { when(severity) {
