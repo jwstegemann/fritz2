@@ -196,8 +196,13 @@ class ToastComponent(private val renderContext: RenderContext) {
         }
 
 
-        private var toastId: String = uniqueId()
-
+        private suspend fun closeToast(toastId: String) {
+            val currentToastListElement = toastMap[toastId]
+            document.getElementById(toastId)?.setAttribute("style", "opacity: 0;")
+            toastMap.remove(toastId)
+            delay(1020)
+            ToastStore.remove(currentToastListElement!!)
+        }
 
         fun closeAllToasts(): SimpleHandler<Unit> {
             val store = object : RootStore<String>("") {
@@ -305,14 +310,14 @@ class ToastComponent(private val renderContext: RenderContext) {
     fun show(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass? = null,
-        id: String? = null,
+        id: String = uniqueId(),
         prefix: String = defaultInnerToastPrefix
     ) {
         var job: Job? = null
         val clickStore = object : RootStore<String>("") {
             val delete = handle {
                 job?.cancel()
-                dismiss()
+                closeToast(id)
                 it
             }
         }
@@ -353,23 +358,15 @@ class ToastComponent(private val renderContext: RenderContext) {
             }
         }
 
-        val listContext = ToastListElement(toast, toastId, position, duration)
-        toastMap[toastId] = listContext
+        val listContext = ToastListElement(toast, id, position, duration)
+        toastMap[id] = listContext
         ToastStore.add(listContext)
 
         job = GlobalScope.launch {
             delay(duration)
-            dismiss()
+            closeToast(id)
         }
 
-    }
-
-    private suspend fun dismiss() {
-        val currentToastListElement = toastMap[toastId]
-        document.getElementById(toastId)!!.setAttribute("style", "opacity: 0;")
-        toastMap.remove(toastId)
-        delay(1020)
-        ToastStore.remove(currentToastListElement!!)
     }
 }
 
@@ -403,7 +400,7 @@ class ToastComponent(private val renderContext: RenderContext) {
 fun RenderContext.showToast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
-    id: String? = null,
+    id: String = uniqueId(),
     prefix: String = defaultToastContainerPrefix,
     build: ToastComponent.() -> Unit,
 ) {
@@ -446,7 +443,7 @@ fun RenderContext.showToast(
 fun RenderContext.toast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
-    id: String? = null,
+    id: String = uniqueId(),
     prefix: String = defaultToastContainerPrefix,
     build: ToastComponent.() -> Unit
 ): SimpleHandler<Unit> {
