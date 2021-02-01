@@ -59,27 +59,30 @@ data class ToastListElement(
  *
  * You can configure the following aspects:
  * - position of the toast: top | topLeft | topRight | bottom (default) | bottomLeft | bottomRight
- * - status:  success | error | warning | info(default)
- * - duration: time in ms before dismiss the toast - default are 5000 ms
- * - isCloseable : if true, a close button is added for closing the toast before timer is expired
- * - icon : icon of the toast - default icon is Theme().icons.circleInformation
- * - content : the toast's content (e.g. some text)
+ * - duration: time in ms before the toast is automatically dismissed - default is 5000 ms
+ * - isCloseable : if true, a close button is added for closing the toast before the duration timer hits zero
+ * - closeButtonStyle: style of the toast's close button, if displayed
+ * - background: background color of the toast
+ * - content : actual content of the toast, e.g. some text or an icon.
  *
- * As an alternative to the 'content { ... }` method there are also a hand full of convenience factories available
- * which you can use to display simple toasts consisting of only a title and description as well as an optional
- * close-button:
- * - [showInfoToast]
- * - [showSuccessToast]
- * - [showWarningToast]
- * - [showErrorToast]
+ * In order to avoid having to build the toast's content manually, it is recommended to use toasts in combination with
+ * alerts. This can be done by providing an [AlertComponent] as the toast's content or by using one of the convenience
+ * methods provided, such as [alertToast] or [showAlertToast]:
+ * ```
+ * showAlertToast {
+ *     title("Alert-Toast")
+ *     content("This is a test-alert in a toast.")
+ *     severity { success }
+ *     variant { leftAccent }
+ * }
+ * ```
  *
- * Example on how to set a status, position, duration and icon:
+ * Example on how to set up a toast manually:
  * ```
  * showToast {
  *     status { warning }
  *     position { bottomRight }
  *     duration { 8000 }
- *     icon { arrowRight }
  *
  *     content { ... }
  * }
@@ -99,7 +102,6 @@ data class ToastListElement(
  *
  * @param renderContext The current RenderContext under which the toast will be rendered
  */
-// TODO: Adjust documentation!
 @ComponentMarker
 class ToastComponent(private val renderContext: RenderContext) {
 
@@ -255,7 +257,6 @@ class ToastComponent(private val renderContext: RenderContext) {
         closeButtonStyle = value
     }
 
-    // TODO: Clean up
     var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
     private fun closeButton(
         baseClass: StyleClass? = null,
@@ -358,16 +359,14 @@ class ToastComponent(private val renderContext: RenderContext) {
  * This factory method creates a toast and displays it _right away_.
  * Use [toast] in order to display a toast delayed, e.g. when a button is pressed.
  *
- * A toast usually consists of a title and a description but you are free to specify any content you prefer via the
- * `content { ... }` method. In most cases it should be sufficient to use on of the convenience factories
- * [showInfoToast], [showSuccessToast], [showWarningToast] or [showErrorToast], though. They use a unified layout
- * consisting of a title and a description which you can simply pass as a parameter.
- *
- * Example of a custom content:
+ * A toast usually consists of a content you prefer via the `content { ... }` property. Additional properties can be
+ * set as well:
  * ```
  * showToast {
+ *     position { bottomRight }
+ *     ...
  *     content {
- *         p { +"My toast content"}
+ *         ...
  *     }
  * }
  * ```
@@ -383,7 +382,6 @@ class ToastComponent(private val renderContext: RenderContext) {
  * @param build a lambda expression for setting up the component itself.
  *
  */
-// TODO: Adjust documentation!
 fun RenderContext.showToast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
@@ -402,35 +400,22 @@ fun RenderContext.showToast(
  * you may combine the toast directly with some other component that has a listener which fits to our handler, like for
  * example a [clickButton].
  *
- * Example of binding a toast message to a Flow:
- * ```
- * val myFlow = flowOf(listOf(1 to "one", 2 to "two", 3 to "three"))
- *
- * myFlow.render {
- *     toast {
- *         status { warning }
- *         position { bottomRight }
- *         title { it.first.toString() }
- *         description { it.second }
- *         duration { 8000 }
- *     }
- * }
- * ```
- *
- * Example of binding a toast message to a button event:
+ * Usage example:
  * ```
  * clickButton {
  *    variant { outline }
  *    text("ADD TOAST")
- * } handledBy showToastDelayed {
- *
+ * } handledBy toast {
  *    position { topLeft }
- *    title("Title")
- *    description("Description")
+ *    duration { 5000L }
+ *    ...
+ *    content {
+ *        ...
+ *    }
  * }
  * ```
  *
- * For a detailed overview about the possible properties of the component object itself and more use cases,
+ * For a detailed overview of the possible properties of the component object itself and more use cases,
  * have a look at [ToastComponent].
  *
  *
@@ -440,7 +425,6 @@ fun RenderContext.showToast(
  * @param prefix the prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself
  */
-// TODO: Adjust documentation!
 fun RenderContext.toast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
