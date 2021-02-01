@@ -115,7 +115,7 @@ class ToastComponent(private val renderContext: RenderContext) {
             allToasts - currentToast
         }
 
-        val removeAll = handle { _ ->
+        val removeAll = handle {
             emptyList()
         }
 
@@ -221,46 +221,59 @@ class ToastComponent(private val renderContext: RenderContext) {
     }
 
 
-    var content: (RenderContext.() -> Unit)? = null
+    private var content: (RenderContext.() -> Unit)? = null
+
     fun content(value: RenderContext.() -> Unit) {
         content = value
     }
 
-    var position: String = bottomRight
+    private var position: String = bottomRight
+
     fun position(value: String) {
         position = value
     }
+
     fun position(value: Position.() -> String) {
         position = Position.value()
     }
 
-    var duration: Long = 5000L
+    private var duration: Long = 5000L
+
+    @Suppress("unused")
     fun duration(value: () -> Long) {
         duration = value()
     }
+
+    @Suppress("unused")
     fun duration(value: Long) {
         duration = value
     }
 
-    var background: Colors.() -> ColorProperty = { info }
+    private var background: Colors.() -> ColorProperty = { info }
+
     fun background(value: Colors.() -> ColorProperty) {
         background = value
     }
 
-    var isCloseable: Boolean = true
+    private var isCloseable: Boolean = true
+
+    @Suppress("unused")
     fun isCloseable(value: () -> Boolean) {
         isCloseable = value()
     }
+
+    @Suppress("unused")
     fun isCloseable(value: Boolean) {
         isCloseable = value
     }
 
-    var closeButtonStyle: Style<BasicParams> = { }
+    private var closeButtonStyle: Style<BasicParams> = { }
+
     fun closeButtonStyle(value: Style<BasicParams>) {
         closeButtonStyle = value
     }
 
-    var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
+    private var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
     private fun closeButton(
         baseClass: StyleClass? = null,
         id: String? = null,
@@ -276,7 +289,7 @@ class ToastComponent(private val renderContext: RenderContext) {
                 color { light }
                 icon { fromTheme { close } }
                 build()
-            }.map { Unit } handledBy closeHandle
+            } handledBy closeHandle
         }
     }
 
@@ -308,11 +321,11 @@ class ToastComponent(private val renderContext: RenderContext) {
             closeButton()
 
         val toast: ToastRenderContext = {
-            (::li.styled(id = toastId, prefix = prefix, baseClass = baseClass) {
+            (::li.styled(id = id, prefix = prefix, baseClass = baseClass) {
                 listStyle()
                 alignItems { center }
             }){
-                (::div.styled() {
+                (::div.styled {
                     toastStyle()
                     background { color(background) }
                     alignItems { center }

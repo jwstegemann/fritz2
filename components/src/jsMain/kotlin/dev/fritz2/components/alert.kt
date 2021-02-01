@@ -73,6 +73,7 @@ class AlertComponent {
         severity = value
     }
 
+    @Suppress("unused")
     fun variant(value: AlertVariants.() -> AlertVariantStyleFactory) {
         variant = value
     }
@@ -94,6 +95,7 @@ class AlertComponent {
             }
         }
     }
+    @Suppress("unused")
     fun title(value: String) = title(flowOf(value))
 
     fun content(value: RenderContext.() -> Unit) {
