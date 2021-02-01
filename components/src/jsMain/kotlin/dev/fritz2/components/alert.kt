@@ -7,16 +7,11 @@ import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.ColorProperty
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-typealias AlertSeverity = (Colors.() -> ColorProperty)
-typealias AlertVariant = (AlertVariants.() -> ((ColorProperty) -> AlertVariantStyles))
-
-// TODO: Add support for the 'leftAccent' and 'topAccent' variants
 @ComponentMarker
 class AlertComponent {
 
@@ -24,13 +19,13 @@ class AlertComponent {
         private const val accentDecorationThickness = "4px"
     }
 
-    private var severity: AlertSeverity = { info }
-    private var variant: AlertVariant = { subtle }
+    private var severity: AlertSeverities.() -> AlertSeverity = { info }
+    private var variant: AlertVariants.() -> AlertVariantStyleFactory = { subtle }
     val variantStyles: AlertVariantStyles
         get() {
-            val alertSeverity = severity.invoke(Theme().colors)
-            val alertVariant = variant.invoke(Theme().alert.variants)
-            return alertVariant.invoke(alertSeverity)
+            val alertSeverity = severity.invoke(Theme().alert.severities)
+            val alertVariantFactory = variant.invoke(Theme().alert.variants)
+            return alertVariantFactory.invoke(alertSeverity)
         }
 
     private var icon: IconDefinition = Theme().icons.circleInformation
@@ -38,11 +33,11 @@ class AlertComponent {
     private var content: (RenderContext.() -> Unit)? = null
 
 
-    fun severity(value: AlertSeverity) {
+    fun severity(value: AlertSeverities.() -> AlertSeverity) {
         severity = value
     }
 
-    fun variant(value: AlertVariant) {
+    fun variant(value: AlertVariants.() -> AlertVariantStyleFactory) {
         variant = value
     }
 

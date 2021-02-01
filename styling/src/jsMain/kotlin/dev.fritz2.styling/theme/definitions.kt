@@ -553,14 +553,26 @@ interface SelectFieldSizes {
 }
 
 interface AlertStyles {
+    val severities: AlertSeverities
     val variants: AlertVariants
 }
 
+typealias AlertSeverity = ColorProperty
+
+interface AlertSeverities {
+    val info: AlertSeverity
+    val success: AlertSeverity
+    val warning: AlertSeverity
+    val error: AlertSeverity
+}
+
+typealias AlertVariantStyleFactory = (ColorProperty) -> AlertVariantStyles
+
 interface AlertVariants {
-    val subtle: (ColorProperty) -> AlertVariantStyles
-    val solid: (ColorProperty) -> AlertVariantStyles
-    val leftAccent: (ColorProperty) -> AlertVariantStyles
-    val topAccent: (ColorProperty) -> AlertVariantStyles
+    val subtle: AlertVariantStyleFactory
+    val solid: AlertVariantStyleFactory
+    val leftAccent: AlertVariantStyleFactory
+    val topAccent: AlertVariantStyleFactory
 }
 
 interface AlertVariantStyles {

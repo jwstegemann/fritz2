@@ -2279,6 +2279,13 @@ open class DefaultTheme : Theme {
     }
 
     override val alert: AlertStyles = object : AlertStyles {
+        override val severities: AlertSeverities = object : AlertSeverities {
+            override val info: AlertSeverity = colors.info
+            override val success: AlertSeverity = colors.success
+            override val warning: AlertSeverity = colors.warning
+            override val error: AlertSeverity = colors.danger
+        }
+
         override val variants: AlertVariants = object : AlertVariants {
             /*
             TODO: Use text colors from theme
