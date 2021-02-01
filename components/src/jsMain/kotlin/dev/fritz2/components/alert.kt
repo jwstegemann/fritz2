@@ -192,13 +192,13 @@ fun RenderContext.showAlertToast(
     }
 }
 
-fun ComponentValidationMessage.showAsToast(renderContext: RenderContext) {
-    renderContext.showAlertToast {
+fun ComponentValidationMessage.asAlert(renderContext: RenderContext) {
+    renderContext.alert {
         severity { when(severity) {
             Severity.Info -> info
             Severity.Warning -> warning
             Severity.Error -> error
         } }
-        content(this@showAsToast.message)
+        content(message)
     }
 }
