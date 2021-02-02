@@ -25,12 +25,12 @@ import kotlinx.coroutines.flow.flowOf
  * If no severity is specified, 'info' will be used by default.
  *
  * Additionally, a number of different layout options are available. These are:
- * - 'Subtle': A subtle style using different shades of the severity's base color defined in the application theme.
- * - 'Solid': A solid style using the severity's color from the application theme and a solid white color for the icon,
+ * - 'subtle': A subtle style using different shades of the severity's base color defined in the application theme.
+ * - 'solid': A solid style using the severity's color from the application theme and a solid white color for the icon,
  * text and decorations.
- * - 'Top-Accent': A variation of the 'Subtle' variant with a decoration element at the top.
- * - 'Left-Accent': A variation of the 'Subtle' variant with a decoration element on the left.
- * If no variant is specified, 'Subtle' is used by default.
+ * - 'Top-Accent': A variation of the 'subtle' variant with a decoration element at the top.
+ * - 'Left-Accent': A variation of the 'subtle' variant with a decoration element on the left.
+ * If no variant is specified, 'solid' is used by default.
  *
  * Usage examples:
  * ```
@@ -56,7 +56,7 @@ class AlertComponent {
     }
 
     private var severity: AlertSeverities.() -> AlertSeverity = { info }
-    private var variant: AlertVariants.() -> AlertVariantStyleFactory = { subtle }
+    private var variant: AlertVariants.() -> AlertVariantStyleFactory = { solid }
     val variantStyles: AlertVariantStyles
         get() {
             val alertSeverity = severity.invoke(Theme().alert.severities)
