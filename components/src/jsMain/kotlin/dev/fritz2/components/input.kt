@@ -67,7 +67,7 @@ open class InputFieldComponent :
             border {
                 width { thin }
                 style { solid }
-                color { light }
+                color { lightGray }
             }
 
             hover {
@@ -89,7 +89,7 @@ open class InputFieldComponent :
                 color { disabled }
                 hover {
                     border {
-                        color { light }
+                        color { lightGray }
                     }
                 }
             }

@@ -291,7 +291,7 @@ class ToastComponent(private val renderContext: RenderContext) {
                 closeButtonStyle()
             }, baseClass, id, prefix) {
                 variant { ghost }
-                color { light }
+                color { lightGray }
                 icon { fromTheme { close } }
                 build()
             } handledBy closeHandle

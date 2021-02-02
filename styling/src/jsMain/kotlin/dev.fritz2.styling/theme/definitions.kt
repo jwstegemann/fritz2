@@ -192,12 +192,17 @@ interface Colors {
     val danger: ColorProperty
     val warning: ColorProperty
     val info: ColorProperty
-    val light: ColorProperty
-    val lightEffect: ColorProperty
     val dark: ColorProperty
     val base: ColorProperty
     val disabled: ColorProperty
     val focus: ColorProperty
+
+    val lightestGray: ColorProperty
+    val lighterGray: ColorProperty
+    val lightGray: ColorProperty
+    val gray: ColorProperty
+    val darkGray: ColorProperty
+    val darkerGray: ColorProperty
 }
 
 /**
