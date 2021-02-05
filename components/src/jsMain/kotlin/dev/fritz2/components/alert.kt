@@ -212,10 +212,9 @@ fun RenderContext.alertToast(
     build: AlertComponent.() -> Unit,
 ): SimpleHandler<Unit> {
 
-    val pendingToastStore = object : RootStore<AddToast>({ }) {
+    val pendingToastStore = object : RootStore<Unit>(Unit) {
         val show = handle {
             showAlertToast(styling, baseClass, id, prefix, toastBuild, build)
-            it
         }
     }
     return pendingToastStore.show
