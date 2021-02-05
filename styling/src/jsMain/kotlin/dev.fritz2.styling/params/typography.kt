@@ -105,7 +105,7 @@ object TextDecorations : PropertyValues {
     const val unset: TextDecorationProperty = "unset"
 }
 
-
+internal const val fontFamilyKey = "font-family: "
 internal const val fontSizeKey = "font-size: "
 internal const val letterSpacingKey = "letter-spacing: "
 internal const val lineHeightKey = "line-height: "
@@ -133,7 +133,7 @@ interface Typo : StyleParams {
      * @param value extension function parameter for small media devices, recommended to use
      *           predefined values via [dev.fritz2.styling.theme.Theme.fonts] that offer the properties of [Fonts]
      */
-    fun fontFamily(value: Fonts.() -> Property) = property(fontSizeKey, Theme().fonts, value)
+    fun fontFamily(value: Fonts.() -> Property) = property(fontFamilyKey, Theme().fonts, value)
 
     /**
      * This function sets the [font-family](https://developer.mozilla.org/en/docs/Web/CSS/font-family) property
@@ -162,7 +162,7 @@ interface Typo : StyleParams {
         lg: (Fonts.() -> Property)? = null,
         xl: (Fonts.() -> Property)? = null
     ) =
-        property(fontSizeKey, Theme().fonts, sm, md, lg, xl)
+        property(fontFamilyKey, Theme().fonts, sm, md, lg, xl)
 
     /**
      * This function sets the [font-size](https://developer.mozilla.org/en/docs/Web/CSS/font-size) property
