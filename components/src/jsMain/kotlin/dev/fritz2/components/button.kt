@@ -1,7 +1,6 @@
 package dev.fritz2.components
 
 import dev.fritz2.dom.Listener
-import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -14,7 +13,6 @@ import dev.fritz2.styling.theme.PushButtonVariants
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
-import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.events.MouseEvent
 
 /**
