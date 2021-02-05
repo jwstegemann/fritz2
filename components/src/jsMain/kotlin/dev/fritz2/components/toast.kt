@@ -100,17 +100,13 @@ class ToastComponent(private val styling: BasicParams.() -> Unit = {},
     object ToastStore : RootStore<List<ToastComponent>>(listOf(), id = "toast-store") {
 
         val add = handle<ToastComponent> { allToasts, newToast ->
-            println("Add toast with id: ${newToast.id}")
             allToasts + newToast
         }
 
         val remove = handle<String> { allToasts, toastId ->
-            // TODO: Re-implement close-animation
-            //fadeOut(toastId)
-            println("Removing toast with id: $toastId")
             allToasts.find { toast -> toast.id == toastId }
                 ?.let { allToasts.minus(it) }
-                ?: run { allToasts }
+                ?: allToasts
         }
 
         val removeAll = handle {
@@ -119,11 +115,6 @@ class ToastComponent(private val styling: BasicParams.() -> Unit = {},
 
         val removeLast = handle { allToasts ->
             allToasts.dropLast(1)
-        }
-
-        private suspend fun fadeOut(toastId: String) {
-            document.getElementById(toastId)?.setAttribute("style", "opacity: 0;")
-            delay(1200)
         }
     }
 
