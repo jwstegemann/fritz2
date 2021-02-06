@@ -74,7 +74,7 @@ open class FileButtonComponent : PushButtonComponent() {
 }
 
 /**
- * This component generates a file selection button.
+ * This component generates a single file selection button.
  *
  * You can set the label, an icon, the position of the icon and access its events.
  * For a detailed overview about the possible properties of the component object itself, have a look at
@@ -117,9 +117,11 @@ fun RenderContext.fileButton(
             accept?.let { accept(it) }
             acceptFlow?.let { accept(it) }
             file = changes.events.mapNotNull {
-                domNode.value = "" // otherwise same file can't get loaded twice
                 domNode.files?.item(0)
-            }.flatMapLatest { readingStrategy(it) }
+            }.flatMapLatest {
+                domNode.value = "" // otherwise same file can't get loaded twice
+                readingStrategy(it)
+            }
         }.domNode
     }
     (::button.styled(styling, baseClass + PushButtonComponent.staticCss, id, prefix) {
