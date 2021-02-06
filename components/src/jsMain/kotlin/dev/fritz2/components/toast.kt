@@ -20,7 +20,6 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
-import kotlinx.browser.document
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.map
 
@@ -160,29 +159,29 @@ class ToastComponent(private val styling: BasicParams.() -> Unit = {},
             css(" box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;")
         }
 
+        private val job = Job()
+        private val globalId = "f2c-modals-${randomId()}"
 
         init {
             // Rendering of the toast container hosting all toast messages.
-            render(targetElement = document.body, override = false) {
-                div {
-                    Position.positionList.forEach {
-                        val placementStyle = when (it) {
-                            bottom -> Theme().toast.placement.bottom
-                            bottomLeft -> Theme().toast.placement.bottomLeft
-                            bottomRight -> Theme().toast.placement.bottomRight
-                            top -> Theme().toast.placement.top
-                            topLeft -> Theme().toast.placement.topLeft
-                            topRight -> Theme().toast.placement.topRight
-                            else -> Theme().toast.placement.bottom
-                        }
+            globalRenderContext(globalId, job).apply {
+                Position.positionList.forEach {
+                    val placementStyle = when (it) {
+                        bottom -> Theme().toast.placement.bottom
+                        bottomLeft -> Theme().toast.placement.bottomLeft
+                        bottomRight -> Theme().toast.placement.bottomRight
+                        top -> Theme().toast.placement.top
+                        topLeft -> Theme().toast.placement.topLeft
+                        topRight -> Theme().toast.placement.topRight
+                        else -> Theme().toast.placement.bottom
+                    }
 
-                        (::ul.styled(toastContainerStaticCss, id, defaultToastContainerPrefix) {
-                            placementStyle()
-                        }){
-                            ToastStore.data
-                                .map { toasts -> toasts.filter { toast -> toast.position == it } }
-                                .renderEach { toast -> renderToast(toast) }
-                        }
+                    (::ul.styled(toastContainerStaticCss, id, defaultToastContainerPrefix) {
+                        placementStyle()
+                    }){
+                        ToastStore.data
+                            .map { toasts -> toasts.filter { toast -> toast.position == it } }
+                            .renderEach { toast -> renderToast(toast) }
                     }
                 }
             }
