@@ -2022,7 +2022,7 @@ open class DefaultTheme : Theme {
 
         override fun write(
             vararg value: String,
-            tooltipPlacement: TooltipPlacements.() -> Style<BasicParams>
+            tooltipPlacement: TooltipPlacements.() -> Style<BasicParams>,
         ): Style<BasicParams> {
             return {
                 position {
@@ -2157,8 +2157,7 @@ open class DefaultTheme : Theme {
         //from modern-normalize v1.0.0 | MIT License | https://github.com/sindresorhus/modern-normalize
         """
             *,::after,::before{box-sizing:border-box}:root{-moz-tab-size:4;tab-size:4}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}body{font-family:-apple-system,system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}legend{padding:0}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}button{background-color:transparent;background-image:none}fieldset{margin:0;padding:0}ol,ul{list-style:none;margin:0;padding:0}html{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";line-height:1.5}body{font-family:inherit;line-height:inherit}*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}hr{border-top-width:1px}img{border-style:solid}textarea{resize:vertical}input::placeholder,textarea::placeholder{color:${colors.darkGray}; opacity: 0.8}[role=button],button{cursor:pointer}table{border-collapse:collapse}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}button,input,optgroup,select,textarea{padding:0;line-height:inherit;color:inherit}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}
-        """ + """     
-                               
+        """ + """
             html {
                 line-height: 1.5;
                 text-size-adjust: 100%;
@@ -2171,7 +2170,7 @@ open class DefaultTheme : Theme {
             body {
               margin: 0;
               line-height: ${lineHeights.large};
-//              
+//
               font-feature-settings: "kern";
               background-color: rgb(255, 255, 255);
             }
@@ -2232,7 +2231,7 @@ open class DefaultTheme : Theme {
                 margin-block-end: 1em;
                 margin-inline-start: 0px;
                 margin-inline-end: 0px;
-                padding-inline-start: 1.5em;            
+                padding-inline-start: 1.5em;
             }
         """.trimIndent()
     }
@@ -2281,6 +2280,174 @@ open class DefaultTheme : Theme {
                 paddings {
                     vertical { "8px" }
                     horizontal { "0.75rem" }
+                }
+            }
+        }
+    }
+
+    override val alert: AlertStyles = object : AlertStyles {
+        override val severities: AlertSeverities = object : AlertSeverities {
+            override val info: AlertSeverity = colors.info
+            override val success: AlertSeverity = colors.success
+            override val warning: AlertSeverity = colors.warning
+            override val error: AlertSeverity = colors.danger
+        }
+
+        override val variants: AlertVariants = object : AlertVariants {
+            /*
+            TODO: Use text colors from theme
+             */
+            private val textColorDark = rgb(0, 0, 0)
+            private val textColorLight = rgb(255, 255, 255)
+
+            override val subtle: (ColorProperty) -> AlertVariantStyles = { it ->
+                object : AlertVariantStyles {
+                    override val background: Style<BasicParams> = {
+                        background { color { alterHexColorBrightness(it, 1.5) } }
+                    }
+                    override val text: Style<BasicParams> = {
+                        color { textColorDark }
+                    }
+                    override val accent: Style<BasicParams> = {
+                        color { it }
+                    }
+                    override val decorationLeft: Style<BasicParams> = {
+                        css("visibility: hidden")
+                    }
+                    override val decorationTop: Style<BasicParams> = {
+                        css("visibility: hidden")
+                    }
+                }
+            }
+            override val solid: (ColorProperty) -> AlertVariantStyles = {
+                object : AlertVariantStyles {
+                    override val background: Style<BasicParams> = {
+                        background { color { it } }
+                    }
+                    override val text: Style<BasicParams> = {
+                        color { textColorLight }
+                    }
+                    override val accent: Style<BasicParams> = {
+                        color { textColorLight }
+                    }
+                    override val decorationLeft: Style<BasicParams> = {
+                        css("visibility: hidden")
+                    }
+                    override val decorationTop: Style<BasicParams> = {
+                        css("visibility: hidden")
+                    }
+                }
+            }
+            override val leftAccent: (ColorProperty) -> AlertVariantStyles = {
+                object : AlertVariantStyles {
+                    override val background: Style<BasicParams> = {
+                        background { color { alterHexColorBrightness(it, 1.5) } }
+                    }
+                    override val text: Style<BasicParams> = {
+                        color { textColorDark }
+                    }
+                    override val accent: Style<BasicParams> = {
+                        color { it }
+                    }
+                    override val decorationLeft: Style<BasicParams> = {
+                        background { color { it } }
+                    }
+                    override val decorationTop: Style<BasicParams> = {
+                        css("visibility: hidden")
+                    }
+                }
+            }
+            override val topAccent: (ColorProperty) -> AlertVariantStyles = {
+                object : AlertVariantStyles {
+                    override val background: Style<BasicParams> = {
+                        background { color { alterHexColorBrightness(it, 1.5) } }
+                    }
+                    override val text: Style<BasicParams> = {
+                        color { textColorDark }
+                    }
+                    override val accent: Style<BasicParams> = {
+                        color { it }
+                    }
+                    override val decorationLeft: Style<BasicParams> = {
+                        css("visibility: hidden")
+                    }
+                    override val decorationTop: Style<BasicParams> = {
+                        background { color { it } }
+                    }
+                }
+            }
+        }
+    }
+
+    override val toast = object : ToastStyles {
+        override val placement = object : ToastPlacement {
+            override val top: Style<BasicParams> = {
+
+                css("top:0px")
+                css("right:0px")
+                css("left:0px")
+            }
+            override val topLeft: Style<BasicParams> = {
+                css("left:0px")
+                css("top:0px")
+            }
+            override val topRight: Style<BasicParams> = {
+
+                css("top:0px")
+                css("right:0px")
+            }
+            override val bottom: Style<BasicParams> = {
+                css("bottom:0px")
+                css("right:0px")
+                css("left:0px")
+
+
+            }
+            override val bottomLeft: Style<BasicParams> = {
+
+                css("bottom:0px")
+                css("left:0px")
+            }
+            override val bottomRight: Style<BasicParams> = {
+
+                css("bottom:0px")
+                css("right:0px")
+            }
+
+        }
+        override val status = object : ToastStatus {
+            override val success: Style<BasicParams> = {
+
+                background { color { success } }
+            }
+
+            override val error: Style<BasicParams> = {
+                background { color { danger } }
+            }
+            override val warning: Style<BasicParams> = {
+                background { color { warning } }
+            }
+            override val info: Style<BasicParams> = {
+                background { color { info } }
+            }
+
+        }
+        override val closeButton = object : ToastButton {
+            override val close: Style<BasicParams> = {
+                radius { "0.375rem" }
+                width { "24px" }
+                height { "1rem" }
+                fontSize { "10px" }
+                css("outline: 0px;")
+                flex { shrink { "0" } }
+                display { flex }
+                css("align-items: center;")
+                css("justify-content: center;")
+                css("transition: all 0.2s ease 0s;")
+                paddings { left { "1rem" } }
+                focus {
+                    css("outline: none;")
+                    boxShadow { none }
                 }
             }
         }

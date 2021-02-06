@@ -198,6 +198,10 @@ interface Theme {
     val textArea: TextAreaStyles
 
     val select : SelectFieldStyles
+
+    val alert: AlertStyles
+
+    val toast: ToastStyles
 }
 
 /**
