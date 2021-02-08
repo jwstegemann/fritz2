@@ -2,26 +2,21 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
-import org.w3c.files.File
+import org.w3c.files.File as jsFile
 import org.w3c.files.FileReader
 
-open class FileRead(val name: String, val content: String, val type: String)
+open class File(val name: String, val content: String, val type: String)
 
-typealias ReadingStrategy = (File) -> Flow<FileRead>
+typealias ReadingStrategy = (jsFile) -> Flow<File>
 
 @ComponentMarker
-open class FileButtonComponent : PushButtonComponent() {
+open class FileButtonComponent {
 
     companion object {
         const val eventName = "loadend"
@@ -44,7 +39,7 @@ open class FileButtonComponent : PushButtonComponent() {
                 var content = reader.result.toString()
                 val index = content.indexOf("base64,")
                 if (index > -1) content = content.substring(index + 7)
-                offer(FileRead(file.name, content, file.type))
+                offer(File(file.name, content, file.type))
             }
             reader.addEventListener(eventName, listener)
             reader.readAsDataURL(file)
@@ -57,7 +52,7 @@ open class FileButtonComponent : PushButtonComponent() {
             callbackFlow {
                 val reader = FileReader()
                 val listener: (Event) -> Unit = { _ ->
-                    offer(FileRead(file.name, reader.result.toString(), file.type))
+                    offer(File(file.name, reader.result.toString(), file.type))
                 }
                 reader.addEventListener(eventName, listener)
                 reader.readAsText(file, encoding)
@@ -71,6 +66,36 @@ open class FileButtonComponent : PushButtonComponent() {
     fun encoding(value: String) {
         readingStrategy = plainText(value)
     }
+
+    internal var renderContext: RenderContext.(HTMLInputElement) -> Unit = { input ->
+        pushButton {
+            icon { fromTheme { cloudUpload } }
+            element {
+                domNode.onclick = {
+                    input.click()
+                }
+            }
+        }
+    }
+
+    open fun button(
+        styling: BasicParams.() -> Unit = {},
+        baseClass: StyleClass? = null,
+        id: String? = null,
+        prefix: String = "file-button",
+        build: PushButtonComponent.() -> Unit = {}
+    ) {
+        renderContext = { input ->
+            pushButton(styling, baseClass, id, prefix) {
+                build()
+                element {
+                    domNode.onclick = {
+                        input.click()
+                    }
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -80,8 +105,8 @@ open class FileButtonComponent : PushButtonComponent() {
  * For a detailed overview about the possible properties of the component object itself, have a look at
  * [PushButtonComponent]
  *
- * In contrast to the [pushButton] component, this variant returns a [Flow] of [FileRead] in order
- * to combine the button declaration directly to a fitting _handler_ which expects a [FileRead]:
+ * In contrast to the [pushButton] component, this variant returns a [Flow] of [File] in order
+ * to combine the button declaration directly to a fitting _handler_ which expects a [File]:
  * ```
  * val contentStore = object: RootStore<String>("") {
  *   val saveFile<FileRead> = { _, file -> file.content }
@@ -100,52 +125,66 @@ open class FileButtonComponent : PushButtonComponent() {
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
- * @return a [Flow] that offers the selected [FileRead]
+ * @return a [Flow] that offers the selected [File]
  */
-fun RenderContext.fileButton(
+fun RenderContext.file(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
-    prefix: String = "file-button",
+    prefix: String = "file",
     build: FileButtonComponent.() -> Unit = {}
-): Flow<FileRead> {
-    var file: Flow<FileRead>? = null
-    var inputNode: HTMLInputElement? = null
-    val component = FileButtonComponent().apply(build).apply {
-        inputNode = (::input.styled { display { none } }) {
+): Flow<File> {
+    var file: Flow<File>? = null
+    val component = FileButtonComponent().apply(build)
+    (::div.styled(styling, baseClass, id, prefix) {}) {
+        val inputElement = (::input.styled { display { none } }) {
             type("file")
-            accept?.let { accept(it) }
-            acceptFlow?.let { accept(it) }
+            component.accept?.let { accept(it) }
+            component.acceptFlow?.let { accept(it) }
             file = changes.events.mapNotNull {
                 domNode.files?.item(0)
             }.flatMapLatest {
                 domNode.value = "" // otherwise same file can't get loaded twice
-                readingStrategy(it)
+                component.readingStrategy(it)
             }
         }.domNode
-    }
-    (::button.styled(styling, baseClass + PushButtonComponent.staticCss, id, prefix) {
-        component.color()
-        component.variant.value.invoke(Theme().button.variants)()
-        component.size.value.invoke(Theme().button.sizes)()
-    }) {
-        component.element.value.invoke(this)
-        disabled(component.disabled.values)
-        if (component.label == null) {
-            component.renderIcon(this, component.centerIconStyle, component.centerSpinnerStyle)
-        } else {
-            if (component.icon != null && component.iconPlacement.value(PushButtonComponent.iconPlacementContext) == PushButtonComponent.IconPlacement.left) {
-                component.renderIcon(this, component.leftIconStyle, component.leftSpinnerStyle)
-            }
-            component.renderLabel(this)
-            if (component.icon != null && component.iconPlacement.value(PushButtonComponent.iconPlacementContext) == PushButtonComponent.IconPlacement.right) {
-                component.renderIcon(this, component.rightIconStyle, component.rightSpinnerStyle)
-            }
-        }
-        component.events.value.invoke(this)
-        domNode.onclick = {
-            inputNode?.click()
-        }
+        component.renderContext(this, inputElement)
     }
     return file!!
+}
+
+fun RenderContext.files(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: StyleClass? = null,
+    id: String? = null,
+    prefix: String = "file",
+    build: FileButtonComponent.() -> Unit = {}
+): Flow<List<File>> {
+    var files: Flow<List<File>>? = null
+    val component = FileButtonComponent().apply(build)
+    (::div.styled(styling, baseClass, id, prefix) {}) {
+        val inputElement = (::input.styled { display { none } }) {
+            type("file")
+            multiple(true)
+            component.accept?.let { accept(it) }
+            component.acceptFlow?.let { accept(it) }
+            files = changes.events.mapNotNull {
+                val list = domNode.files
+                console.log("files: ${list?.length}}")
+                if(list != null) {
+                    buildList {
+                        for (i in 0..list.length) {
+                            val file = list.item(i)
+                            if (file != null) add(component.readingStrategy(file))
+                        }
+                    }
+                } else null
+            }.flatMapLatest { files ->
+                domNode.value = "" // otherwise same files can't get loaded twice
+                combine(files) { it.toList() }
+            }
+        }.domNode
+        component.renderContext(this, inputElement)
+    }
+    return files!!
 }
