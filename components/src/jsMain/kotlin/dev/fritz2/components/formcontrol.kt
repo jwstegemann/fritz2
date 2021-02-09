@@ -11,7 +11,6 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.theme.FormControlStyles
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
@@ -57,7 +56,6 @@ import selectField
 @ComponentMarker
 open class FormControlComponent : FormProperties by FormMixin() {
     companion object {
-
         object ControlNames {
             const val inputField = "inputField"
             const val textArea = "textArea"
@@ -101,7 +99,17 @@ open class FormControlComponent : FormProperties by FormMixin() {
         }
     }
 
-    private fun setControl(
+    /**
+     * Use this method from your own control wrapping methods or if you override an existing one in order to
+     * register the control for the form.
+     *
+     * @param controlName a unique String name / key for the control. Prefer the predefined [ControlNames] if possible
+     * @param component pass in some control (could be arbitrary complex!) that should be wrapped by the form.
+     * @param onSuccess some optional action that will be executed if the registration was successful (remember that
+     *                  only *one* control, so normally the *first*, will be accepted!), for example the temporary
+     *                  storage of validation messages from a passed in store.
+     */
+    protected fun registerControl(
         controlName: String,
         component: (RenderContext.() -> Unit),
         onSuccess: FormControlComponent.() -> Unit = {}
@@ -111,8 +119,23 @@ open class FormControlComponent : FormProperties by FormMixin() {
         }
     }
 
-    protected val renderStrategies: MutableMap<String, ControlRenderer> = mutableMapOf()
-    protected val control = Control()
+    private val renderStrategies: MutableMap<String, ControlRenderer> = mutableMapOf()
+
+    /**
+     * Use this method to register your custom renderer for existing controls or to register a built-in renderer
+     * for a custom control.
+     *
+     * Remember to prefer to use the predefined [ControlNames] as key for the first case.
+     *
+     * @param controlName a unique String name / key for the control. Prefer the predefined [ControlNames] if possible
+     * @param renderer some instance of a [ControlRenderer] that should be used to render the form for a registered
+     *                 control (match via the name obviously)
+     */
+    protected fun registerRenderStrategy(controlName: String, renderer: ControlRenderer) {
+        renderStrategies[controlName] = renderer
+    }
+
+    private val control = Control()
 
     object FormSizeContext {
         enum class FormSizeSpecifier {
@@ -189,13 +212,17 @@ open class FormControlComponent : FormProperties by FormMixin() {
         }
 
     init {
-        renderStrategies[ControlNames.inputField] = SingleControlRenderer(this)
-        renderStrategies[ControlNames.switch] = SingleControlRenderer(this)
-        renderStrategies[ControlNames.textArea] = SingleControlRenderer(this)
-        renderStrategies[ControlNames.selectField] = SingleControlRenderer(this)
-        renderStrategies[ControlNames.checkbox] = SingleControlRenderer(this)
-        renderStrategies[ControlNames.checkboxGroup] = ControlGroupRenderer(this)
-        renderStrategies[ControlNames.radioGroup] = ControlGroupRenderer(this)
+        val singleRenderer = SingleControlRenderer(this)
+        val groupRenderer = ControlGroupRenderer(this)
+        sequenceOf(
+            ControlNames.inputField,
+            ControlNames.switch,
+            ControlNames.textArea,
+            ControlNames.selectField,
+            ControlNames.checkbox
+        ).forEach { registerRenderStrategy(it, singleRenderer) }
+        registerRenderStrategy(ControlNames.checkboxGroup, groupRenderer)
+        registerRenderStrategy(ControlNames.radioGroup, groupRenderer)
     }
 
     open fun inputField(
@@ -207,7 +234,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         build: InputFieldComponent.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
-        setControl(ControlNames.inputField,
+        registerControl(ControlNames.inputField,
             {
                 inputField(styling, store, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
@@ -228,7 +255,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         build: SwitchComponent.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
-        setControl(ControlNames.inputField,
+        registerControl(ControlNames.inputField,
             {
                 switch(styling, store, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
@@ -249,7 +276,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         build: TextAreaComponent.() -> Unit
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
-        setControl(ControlNames.textArea,
+        registerControl(ControlNames.textArea,
             {
                 textArea(styling, store, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
@@ -270,7 +297,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         build: CheckboxComponent.() -> Unit
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
-        setControl(ControlNames.checkbox,
+        registerControl(ControlNames.checkbox,
             {
                 checkbox({
                     styling()
@@ -294,7 +321,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         build: CheckboxGroupComponent<T>.() -> Unit
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
-        setControl(ControlNames.checkboxGroup,
+        registerControl(ControlNames.checkboxGroup,
             {
                 checkboxGroup(styling, items, store, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
@@ -316,7 +343,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         build: RadioGroupComponent<T>.() -> Unit
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
-        setControl(ControlNames.radioGroup,
+        registerControl(ControlNames.radioGroup,
             {
                 radioGroup(styling, items, store, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
@@ -338,7 +365,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         build: SelectFieldComponent<T>.() -> Unit
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
-        setControl(ControlNames.selectField,
+        registerControl(ControlNames.selectField,
             {
                 selectField(
                     styling,
