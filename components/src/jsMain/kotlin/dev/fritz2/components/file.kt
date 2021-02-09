@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.components.data.File
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -8,12 +9,10 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
-import org.w3c.files.File as jsFile
 import org.w3c.files.FileReader
+import org.w3c.files.File as jsFile
 
-open class File(val name: String, val content: String, val type: String)
-
-typealias ReadingStrategy = (jsFile) -> Flow<File>
+typealias FileReadingStrategy = (jsFile) -> Flow<File>
 
 @ComponentMarker
 open class FileButtonComponent {
@@ -32,14 +31,14 @@ open class FileButtonComponent {
         acceptFlow = value
     }
 
-    val base64: ReadingStrategy = { file ->
+    val base64: FileReadingStrategy = { file ->
         callbackFlow {
             val reader = FileReader()
             val listener: (Event) -> Unit = { _ ->
                 var content = reader.result.toString()
                 val index = content.indexOf("base64,")
                 if (index > -1) content = content.substring(index + 7)
-                offer(File(file.name, content, file.type))
+                offer(File(file.name, file.type, file.size.toLong(), content))
             }
             reader.addEventListener(eventName, listener)
             reader.readAsDataURL(file)
@@ -47,12 +46,12 @@ open class FileButtonComponent {
         }
     }
 
-    val plainText: (String) -> ReadingStrategy = { encoding ->
+    val plainText: (String) -> FileReadingStrategy = { encoding ->
         { file ->
             callbackFlow {
                 val reader = FileReader()
                 val listener: (Event) -> Unit = { _ ->
-                    offer(File(file.name, reader.result.toString(), file.type))
+                    offer(File(file.name, file.type, file.size.toLong(), reader.result.toString()))
                 }
                 reader.addEventListener(eventName, listener)
                 reader.readAsText(file, encoding)
@@ -61,10 +60,10 @@ open class FileButtonComponent {
         }
     }
 
-    var readingStrategy: ReadingStrategy = base64
+    var fileReadingStrategy: FileReadingStrategy = base64
 
     fun encoding(value: String) {
-        readingStrategy = plainText(value)
+        fileReadingStrategy = plainText(value)
     }
 
     internal var renderContext: RenderContext.(HTMLInputElement) -> Unit = { input ->
@@ -105,8 +104,8 @@ open class FileButtonComponent {
  * For a detailed overview about the possible properties of the component object itself, have a look at
  * [PushButtonComponent]
  *
- * In contrast to the [pushButton] component, this variant returns a [Flow] of [File] in order
- * to combine the button declaration directly to a fitting _handler_ which expects a [File]:
+ * In contrast to the [pushButton] component, this variant returns a [Flow] of [file] in order
+ * to combine the button declaration directly to a fitting _handler_ which expects a [file]:
  * ```
  * val contentStore = object: RootStore<String>("") {
  *   val saveFile<FileRead> = { _, file -> file.content }
@@ -125,7 +124,7 @@ open class FileButtonComponent {
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
- * @return a [Flow] that offers the selected [File]
+ * @return a [Flow] that offers the selected [file]
  */
 fun RenderContext.file(
     styling: BasicParams.() -> Unit = {},
@@ -145,7 +144,7 @@ fun RenderContext.file(
                 domNode.files?.item(0)
             }.flatMapLatest {
                 domNode.value = "" // otherwise same file can't get loaded twice
-                component.readingStrategy(it)
+                component.fileReadingStrategy(it)
             }
         }.domNode
         component.renderContext(this, inputElement)
@@ -175,7 +174,7 @@ fun RenderContext.files(
                     buildList {
                         for (i in 0..list.length) {
                             val file = list.item(i)
-                            if (file != null) add(component.readingStrategy(file))
+                            if (file != null) add(component.fileReadingStrategy(file))
                         }
                     }
                 } else null
