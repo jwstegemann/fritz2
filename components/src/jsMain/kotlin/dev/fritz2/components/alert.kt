@@ -7,6 +7,7 @@ import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
@@ -55,36 +56,27 @@ class AlertComponent {
         private const val accentDecorationThickness = "4px"
     }
 
-    private var severity: AlertSeverities.() -> AlertSeverity = { info }
-    private var variant: AlertVariants.() -> AlertVariantStyleFactory = { solid }
+    val sizes = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
+    val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
+    val severity = ComponentProperty<AlertSeverities.() -> AlertSeverity> { info }
+    val variant = ComponentProperty<AlertVariants.() -> AlertVariantStyleFactory> { solid }
+
     val variantStyles: AlertVariantStyles
         get() {
-            val alertSeverity = severity.invoke(Theme().alert.severities)
-            val alertVariantFactory = variant.invoke(Theme().alert.variants)
+            val alertSeverity = severity.value.invoke(Theme().alert.severities)
+            val alertVariantFactory = variant.value.invoke(Theme().alert.variants)
             return alertVariantFactory.invoke(alertSeverity)
         }
 
-    private var icon: IconDefinition = Theme().icons.circleInformation
+    val icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.circleInformation }
+
     private var title: (RenderContext.() -> Unit)? = null
     private var content: (RenderContext.() -> Unit)? = null
-
-
-    fun severity(value: AlertSeverities.() -> AlertSeverity) {
-        severity = value
-    }
-
-    @Suppress("unused")
-    fun variant(value: AlertVariants.() -> AlertVariantStyleFactory) {
-        variant = value
-    }
-
-    fun icon(value: Icons.() -> IconDefinition) {
-        icon = Theme().icons.value()
-    }
 
     fun title(value: RenderContext.() -> Unit) {
         title = value
     }
+
     fun title(value: Flow<String>) {
         title {
             (::span.styled {
@@ -95,12 +87,14 @@ class AlertComponent {
             }
         }
     }
+
     @Suppress("unused")
     fun title(value: String) = title(flowOf(value))
 
     fun content(value: RenderContext.() -> Unit) {
         content = value
     }
+
     fun content(value: Flow<String>) {
         content {
             (::span.styled {
@@ -110,8 +104,8 @@ class AlertComponent {
             }
         }
     }
-    fun content(value: String) = content(flowOf(value))
 
+    fun content(value: String) = content(flowOf(value))
 
     fun show(
         renderContext: RenderContext,
@@ -144,17 +138,21 @@ class AlertComponent {
                 }) { }
 
                 (::div.styled {
-                    margin { normal }
                     display { flex }
                     css("flex-direction: row")
                     alignItems { center }
+                    sizes.value(Theme().alert.sizes)()
+                    stacking.value(Theme().alert.stacking)()
                 }) {
                     (::div.styled {
-                        margins { right { small } }
+                        css("margin-right: var(--al-icon-margin)")
                         styles.accent()
                     }) {
-                        icon {
-                            fromTheme { icon }
+                        icon({
+                            css("width: var(--al-icon-size)")
+                            css("height: var(--al-icon-size)")
+                        }) {
+                            fromTheme { icon.value(Theme().icons) }
                         }
                     }
 
@@ -266,14 +264,35 @@ fun RenderContext.showAlertToast(
  * The alert's severity and content are determined from the validation message's properties.
  *
  * @param renderContext RenderContext to render the alert in.
+ * @param size Optional property for the text and icon size.
+ * @param stacking Optional property for the margins around one alert.
  */
-fun ComponentValidationMessage.asAlert(renderContext: RenderContext) {
+fun ComponentValidationMessage.asAlert(
+    renderContext: RenderContext,
+    size: FormSizes.() -> Style<BasicParams> = { normal },
+    stacking: AlertStacking.() -> Style<BasicParams> = { separated }
+) {
+    val receiver = this
     renderContext.alert {
-        severity { when(severity) {
-            Severity.Info -> info
-            Severity.Warning -> warning
-            Severity.Error -> error
-        } }
+        severity {
+            when (receiver.severity) {
+                Severity.Info -> info
+                Severity.Success -> success
+                Severity.Warning -> warning
+                Severity.Error -> error
+            }
+        }
+        icon {
+            when (receiver.severity) {
+                Severity.Info -> circleInformation
+                Severity.Success -> circleCheck
+                Severity.Warning -> circleWarning
+                Severity.Error -> circleError
+            }
+        }
+        variant { discreet }
+        sizes { size() }
+        stacking { stacking() }
         content(message)
     }
 }

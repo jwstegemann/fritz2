@@ -2,9 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
-import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.TextElement
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
@@ -22,8 +20,8 @@ import kotlinx.coroutines.flow.map
  * Class for configuring the appearance of a PopoverComponent.
  */
 @ComponentMarker
-class PopoverComponent : CloseButtonProperty by CloseButton(
-    Theme().popover.closeButton,
+class PopoverComponent : CloseButtonProperty by CloseButtonMixin(
+    ComponentProperty(Theme().popover.closeButton),
     "popover-close-button"
 ) {
     companion object {
@@ -36,7 +34,7 @@ class PopoverComponent : CloseButtonProperty by CloseButton(
         )
     }
 
-    var size = ComponentProperty<PopoverSizes.() -> Style<BasicParams>> { Theme().popover.size.normal }
+    val size = ComponentProperty<PopoverSizes.() -> Style<BasicParams>> { Theme().popover.size.normal }
 
     var positionStyle: PopoverPlacements.() -> Style<BasicParams> = { Theme().popover.placement.top }
     fun placement(value: PopoverPlacements.() -> Style<BasicParams>) {
@@ -50,12 +48,12 @@ class PopoverComponent : CloseButtonProperty by CloseButton(
         positionStyle = value
     }
 
-    var hasArrow = ComponentProperty(true)
+    val hasArrow = ComponentProperty(true)
 
-    var arrowPlacement =
+    val arrowPlacement =
         ComponentProperty<PopoverArrowPlacements.() -> Style<BasicParams>> { Theme().popover.arrowPlacement.bottom }
 
-    var toggle = ComponentProperty<(RenderContext.() -> Unit)?>(null)
+    val toggle = ComponentProperty<(RenderContext.() -> Unit)?>(null)
 
     var header: (RenderContext.() -> Unit)? = null
     fun header(value: (RenderContext.() -> Unit)) {

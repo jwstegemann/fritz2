@@ -71,9 +71,9 @@ abstract class StackComponent {
         )
     }
 
-    var reversed = ComponentProperty(false)
-    var spacing = ComponentProperty<ScaledValueProperty> { normal }
-    var items = ComponentProperty<(RenderContext.() -> Unit)> {}
+    val reversed = ComponentProperty(false)
+    val spacing = ComponentProperty<ScaledValueProperty> { normal }
+    val items = ComponentProperty<(RenderContext.() -> Unit)> {}
 
     abstract val stackStyles: Style<FlexParams>
 }

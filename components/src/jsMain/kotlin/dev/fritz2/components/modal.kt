@@ -69,7 +69,7 @@ class DefaultOverlay(
  * ``ModalComponent.Companion.init`` block.
  */
 @ComponentMarker
-class ModalComponent : CloseButtonProperty by CloseButton({
+class ModalComponent : CloseButtonProperty by CloseButtonMixin(ComponentProperty {
     position {
         absolute {
             right { none }
@@ -151,9 +151,9 @@ class ModalComponent : CloseButtonProperty by CloseButton({
         }
     }
 
-    var content = ComponentProperty<(RenderContext.() -> Unit)?>(null)
-    var size = ComponentProperty<ModalSizes.() -> Style<BasicParams>> { Theme().modal.sizes.normal }
-    var variant = ComponentProperty<ModalVariants.() -> Style<BasicParams>> { Theme().modal.variants.auto }
+    val content = ComponentProperty<(RenderContext.() -> Unit)?>(null)
+    val size = ComponentProperty<ModalSizes.() -> Style<BasicParams>> { Theme().modal.sizes.normal }
+    val variant = ComponentProperty<ModalVariants.() -> Style<BasicParams>> { Theme().modal.variants.auto }
 }
 
 

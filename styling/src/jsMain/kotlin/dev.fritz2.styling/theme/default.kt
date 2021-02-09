@@ -28,9 +28,11 @@ open class DefaultTheme : Theme {
         full = "4rem"
     )
 
-    override val position = space
+    override val position: ScaledValue
+        get() = space
 
-    override val gaps = space
+    override val gaps: ScaledValue
+        get() = space
 
     override val fontSizes = ScaledValue(
         smaller = "0.75rem",
@@ -43,29 +45,32 @@ open class DefaultTheme : Theme {
         full = "4rem"
     )
 
-    override val colors = object : Colors {
+    override val colors: Colors
+        get() = object : Colors {
 
-        override val primary = "#427802"//"#3B6302" // darker green
-        override val primaryEffect = alterHexColorBrightness(primary, 1.5) // lighter green derived from primary #rrggbb
-        override val secondary = "#F7B52F" // yellowish orange
-        override val secondaryEffect = alterHexColorBrightness(secondary, 1.5) // lighter orange derived from secondary #rrggbb
-        override val dark = "#214A25" // dark gray coming from green
-        override val info = "#1B959E" // blue
-        override val success = "#00A848" // bright green
-        override val warning = "#F08B3A" // orange
-        override val danger = "#E14F2A" // red
-        override val base = "#ffffff"
+            override val primary = "#427802"//"#3B6302" // darker green
+            override val primaryEffect =
+                alterHexColorBrightness(primary, 1.5) // lighter green derived from primary #rrggbb
+            override val secondary = "#F7B52F" // yellowish orange
+            override val secondaryEffect =
+                alterHexColorBrightness(secondary, 1.5) // lighter orange derived from secondary #rrggbb
+            override val dark = "#214A25" // dark gray coming from green
+            override val info = "#1B959E" // blue
+            override val success = "#00A848" // bright green
+            override val warning = "#F08B3A" // orange
+            override val danger = "#E14F2A" // red
+            override val base = "#ffffff"
 
-        override val lightestGray = "#F9FAF9"
-        override val lighterGray = "#E2E7E4"
-        override val lightGray = "#C6CFC9"
-        override val gray = "#9EA5A0"
-        override val darkGray = "#7E8480"
-        override val darkerGray = "#646966"
+            override val lightestGray = "#F9FAF9"
+            override val lighterGray = "#E2E7E4"
+            override val lightGray = "#C6CFC9"
+            override val gray = "#9EA5A0"
+            override val darkGray = "#7E8480"
+            override val darkerGray = "#646966"
 
-        override val disabled = lightGray
-        override val focus = primaryEffect
-    }
+            override val disabled = lightGray
+            override val focus = primaryEffect
+        }
 
     override val fonts = object : Fonts {
         override val body =
@@ -136,26 +141,27 @@ open class DefaultTheme : Theme {
         full = "9999px"
     )
 
-    override val shadows = Shadows(
-        flat = shadow("0", "1px", "3px", color = rgba(0, 0, 0, 0.12))
-                and shadow("0", "1px", "2px", rgba(0, 0, 0, 0.24)),
-        raised = shadow("0", "5px", "10px", rgba(0, 0, 0, 0.25))
-                and shadow(" 0", "5px", "10px", rgba(0, 0, 0, 0.22)),
-        raisedFurther = shadow("0", "14px", "28px", rgba(0, 0, 0, 0.25))
-                and shadow("0", "10px", "10px", rgba(0, 0, 0, 0.22)),
-        top = shadow("0", "19px", "38px", rgba(0, 0, 0, 0.30))
-                and shadow("0", "15px", "12px", rgba(0, 0, 0, 0.22)),
-        lowered = shadow("0", "2px", "4px", color = rgba(0, 0, 0, 0.06), inset = true),
-        glowing = shadow("0", "0", "2px", color = rgba(0, 0, 255, 0.5)),
-        outline = shadow(
-            "0",
-            "0",
-            "0",
-            "2px",
-            color = colors.primaryEffect
-        ),
-        danger = shadow("0", "0", "0", "1px", color = colors.danger)
-    )
+    override val shadows: Shadows
+        get() = Shadows(
+            flat = shadow("0", "1px", "3px", color = rgba(0, 0, 0, 0.12))
+                    and shadow("0", "1px", "2px", rgba(0, 0, 0, 0.24)),
+            raised = shadow("0", "5px", "10px", rgba(0, 0, 0, 0.25))
+                    and shadow(" 0", "5px", "10px", rgba(0, 0, 0, 0.22)),
+            raisedFurther = shadow("0", "14px", "28px", rgba(0, 0, 0, 0.25))
+                    and shadow("0", "10px", "10px", rgba(0, 0, 0, 0.22)),
+            top = shadow("0", "19px", "38px", rgba(0, 0, 0, 0.30))
+                    and shadow("0", "15px", "12px", rgba(0, 0, 0, 0.22)),
+            lowered = shadow("0", "2px", "4px", color = rgba(0, 0, 0, 0.06), inset = true),
+            glowing = shadow("0", "0", "2px", color = rgba(0, 0, 255, 0.5)),
+            outline = shadow(
+                "0",
+                "0",
+                "0",
+                "2px",
+                color = colors.primaryEffect
+            ),
+            danger = shadow("0", "0", "0", "1px", color = colors.danger)
+        )
 
     override val zIndices = ZIndices(1, 100, 2, 200, 300, 2, 400, 2)
 
@@ -1311,7 +1317,7 @@ open class DefaultTheme : Theme {
     }
 
     override val input = object : InputFieldStyles {
-        override val sizes = object : InputFieldSizes {
+        override val sizes = object : FormSizes {
             override val small: Style<BasicParams> = {
                 height { "2rem" }
                 minWidth { "2.5rem" }
@@ -1365,11 +1371,39 @@ open class DefaultTheme : Theme {
                 }
             }
         }
+
+        override val severity = object : SeverityStyles {
+
+            private fun basic(color: ColorProperty, shadow: ShadowProperty): Style<BasicParams> = {
+                boxShadow { shadow }
+                border {
+                    width { thin }
+                    style { solid }
+                    color { color }
+                }
+
+                hover {
+                    border {
+                        color { color }
+                    }
+                }
+
+                focus {
+                    boxShadow { shadow }
+                }
+            }
+
+            override val info: Style<BasicParams> = {}
+            override val success: Style<BasicParams> = {}
+            override val warning: Style<BasicParams> = {}
+            override val error: Style<BasicParams>
+                get() = basic(colors.danger, shadows.danger)
+        }
     }
 
 
     override val checkbox = object : CheckboxStyles {
-        override val sizes = object : CheckboxSizes {
+        override val sizes = object : FormSizes {
             private val basic: Style<BasicParams> = {
                 display { inlineFlex }
                 css("align-items: center;")
@@ -1454,10 +1488,37 @@ open class DefaultTheme : Theme {
             border { color { primary } }
             color { base }
         }
+
+        override val severity = object : SeverityStyles {
+            private fun apply(background: ColorProperty, shadowColor: ColorProperty): Style<BasicParams> = {
+                children("&[checked] + div") {
+                    background { color { background.important } }
+                    focus {
+                        boxShadow {
+                            shadow("0", "0", "0", "2px", color = shadowColor)
+                        }
+                    }
+                }
+                children("+ div") {
+                    background { color { background } }
+                    focus {
+                        boxShadow {
+                            shadow("0", "0", "0", "2px", color = shadowColor)
+                        }
+                    }
+                }
+            }
+
+            override val info: Style<BasicParams> = {}
+            override val success: Style<BasicParams> = {}
+            override val warning: Style<BasicParams> = {}
+            override val error: Style<BasicParams>
+                get() = apply(colors.danger, colors.warning)
+        }
     }
 
     override val radio = object : RadioStyles {
-        override val sizes = object : RadioSizes {
+        override val sizes = object : FormSizes {
             private val basic: Style<BasicParams> = {
                 display { inlineFlex }
                 css("align-items: center;")
@@ -1543,10 +1604,13 @@ open class DefaultTheme : Theme {
                 }
             }
         }
+
+        override val severity: SeverityStyles
+            get() = checkbox.severity
     }
 
     override val switch = object : SwitchStyles {
-        override val sizes = object : SwitchSizes {
+        override val sizes = object : FormSizes {
             private val basic: Style<BasicParams> = {
                 display { inlineFlex }
                 css("align-items: center;")
@@ -1631,6 +1695,9 @@ open class DefaultTheme : Theme {
         override val checked: Style<BasicParams> = {
             background { color { primary } }
         }
+
+        override val severity: SeverityStyles
+            get() = checkbox.severity
     }
 
     override val button = object : PushButtonStyles {
@@ -1692,7 +1759,7 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val sizes = object : PushButtonSizes {
+        override val sizes = object : FormSizes {
             override val normal: Style<BasicParams> = {
                 height { "2.5rem" }
                 minWidth { "2.5rem" }
@@ -2251,7 +2318,7 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val sizes = object : TextAreaSizes {
+        override val sizes = object : FormSizes {
             override val small: Style<BasicParams> = {
                 lineHeight { normal }
                 height { "1rem" }
@@ -2283,15 +2350,19 @@ open class DefaultTheme : Theme {
                 }
             }
         }
+
+        override val severity: SeverityStyles
+            get() = input.severity
     }
 
     override val alert: AlertStyles = object : AlertStyles {
-        override val severities: AlertSeverities = object : AlertSeverities {
-            override val info: AlertSeverity = colors.info
-            override val success: AlertSeverity = colors.success
-            override val warning: AlertSeverity = colors.warning
-            override val error: AlertSeverity = colors.danger
-        }
+        override val severities: AlertSeverities
+            get() = object : AlertSeverities {
+                override val info: AlertSeverity = colors.info
+                override val success: AlertSeverity = colors.success
+                override val warning: AlertSeverity = colors.warning
+                override val error: AlertSeverity = colors.danger
+            }
 
         override val variants: AlertVariants = object : AlertVariants {
             /*
@@ -2300,7 +2371,7 @@ open class DefaultTheme : Theme {
             private val textColorDark = rgb(0, 0, 0)
             private val textColorLight = rgb(255, 255, 255)
 
-            override val subtle: (ColorProperty) -> AlertVariantStyles = { it ->
+            override val subtle: AlertVariantStyleFactory = { it ->
                 object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
                         background { color { alterHexColorBrightness(it, 1.5) } }
@@ -2319,7 +2390,7 @@ open class DefaultTheme : Theme {
                     }
                 }
             }
-            override val solid: (ColorProperty) -> AlertVariantStyles = {
+            override val solid: AlertVariantStyleFactory = {
                 object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
                         background { color { it } }
@@ -2338,7 +2409,7 @@ open class DefaultTheme : Theme {
                     }
                 }
             }
-            override val leftAccent: (ColorProperty) -> AlertVariantStyles = {
+            override val leftAccent: AlertVariantStyleFactory = {
                 object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
                         background { color { alterHexColorBrightness(it, 1.5) } }
@@ -2357,7 +2428,7 @@ open class DefaultTheme : Theme {
                     }
                 }
             }
-            override val topAccent: (ColorProperty) -> AlertVariantStyles = {
+            override val topAccent: AlertVariantStyleFactory = {
                 object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
                         background { color { alterHexColorBrightness(it, 1.5) } }
@@ -2375,6 +2446,56 @@ open class DefaultTheme : Theme {
                         background { color { it } }
                     }
                 }
+            }
+
+            override val discreet: AlertVariantStyleFactory = {
+                object : AlertVariantStyles {
+                    override val background: Style<BasicParams> = {
+                        background { inherit }
+                    }
+                    override val text: Style<BasicParams> = {
+                        color { it }
+                    }
+                    override val accent: Style<BasicParams> = {
+                        color { it }
+                    }
+                    override val decorationLeft: Style<BasicParams> = {
+                        css("visibility: hidden")
+                    }
+                    override val decorationTop: Style<BasicParams> = {
+                        css("visibility: hidden")
+                    }
+                }
+            }
+        }
+
+        override val sizes = object : FormSizes {
+            override val small: Style<BasicParams> = {
+                css("--al-icon-margin: 0.25rem")
+                css("--al-icon-size: ${Theme().fontSizes.small}")
+                fontSize { small }
+                lineHeight { small }
+            }
+            override val normal: Style<BasicParams> = {
+                css("--al-icon-margin: 0.5rem")
+                css("--al-icon-size: ${Theme().fontSizes.normal}")
+                fontSize { normal }
+                lineHeight { normal }
+            }
+            override val large: Style<BasicParams> = {
+                css("--al-icon-margin: 1rem")
+                css("--al-icon-size: ${Theme().fontSizes.larger}")
+                fontSize { larger }
+                lineHeight { larger }
+            }
+        }
+
+        override val stacking = object : AlertStacking {
+            override val compact: Style<BasicParams> = {
+                margin { "0" }
+            }
+            override val separated: Style<BasicParams> = {
+                margin { normal }
             }
         }
     }
@@ -2482,7 +2603,7 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val sizes = object : SelectFieldSizes {
+        override val sizes = object : FormSizes {
             override val small: Style<BasicParams> = {
                 fontSize { small }
                 css("--select-icon-size: .75rem")
@@ -2500,6 +2621,50 @@ open class DefaultTheme : Theme {
                 css("--select-icon-size: 1.5rem")
                 height { "3rem" }
             }
+        }
+
+        override val severity: SeverityStyles
+            get() = input.severity
+    }
+
+    override val formControl = object : FormControlStyles {
+        override val sizes = object : FormSizes {
+            override val small: Style<BasicParams>
+                get() = {
+                    css("--formControl-vertical-margin: ${Theme().sizes.tiny}")
+                    css("--formControl-label-size: ${Theme().fontSizes.small}")
+                    css("--formControl-helperText-size: ${Theme().fontSizes.tiny}")
+                }
+            override val normal: Style<BasicParams>
+                get() = {
+                    css("--formControl-vertical-margin: ${Theme().sizes.smaller}")
+                    css("--formControl-label-size: ${Theme().fontSizes.normal}")
+                    css("--formControl-helperText-size: ${Theme().fontSizes.small}")
+                }
+            override val large: Style<BasicParams>
+                get() = {
+                    css("--formControl-vertical-margin: ${Theme().sizes.small}")
+                    css("--formControl-label-size: ${Theme().fontSizes.large}")
+                    css("--formControl-helperText-size: ${Theme().fontSizes.normal}")
+                }
+        }
+
+        override val label: Style<BasicParams> = {
+            css("margin-bottom: var(--formControl-vertical-margin)")
+            css("font-size: var(--formControl-label-size) ")
+        }
+
+        override val helperText: Style<BasicParams> = {
+            css("margin-top: var(--formControl-vertical-margin)")
+            css("margin-bottom: var(--formControl-vertical-margin)")
+            color { darkerGray }
+            css("font-size: var(--formControl-helperText-size) ")
+            lineHeight { smaller }
+        }
+
+        override val requiredMarker: Style<BasicParams> = {
+            color { danger }
+            margins { left { tiny } }
         }
     }
 }

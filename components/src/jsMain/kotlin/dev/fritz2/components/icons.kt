@@ -62,15 +62,15 @@ class IconComponent {
         )
     }
 
-    var def = ComponentProperty<IconDefinition?>(null)
+    val def = ComponentProperty<IconDefinition?>(null)
 
     fun fromTheme(value: Icons.() -> IconDefinition) {
-        def = ComponentProperty(Theme().icons.value())
+        def(Theme().icons.value())
     }
 
-    var displayName = ComponentProperty<String?>(null)
-    var viewBox = ComponentProperty("0 0 24 24")
-    var svg = ComponentProperty<String?>(null)
+    val displayName = ComponentProperty<String?>(null)
+    val viewBox = ComponentProperty("0 0 24 24")
+    val svg = ComponentProperty<String?>(null)
 }
 
 
@@ -173,7 +173,7 @@ fun RenderContext.icon(
     val component = IconComponent().apply {
         build()
         if (displayName.value != null && svg.value != null) {
-            def = ComponentProperty(IconDefinition(displayName.value!!, viewBox.value, svg.value!!))
+            def(IconDefinition(displayName.value!!, viewBox.value, svg.value!!))
         }
     }
 
