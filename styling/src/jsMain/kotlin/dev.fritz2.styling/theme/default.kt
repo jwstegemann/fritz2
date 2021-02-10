@@ -2667,4 +2667,143 @@ open class DefaultTheme : Theme {
             margins { left { tiny } }
         }
     }
+
+    override val pwa: PwaStyles = object : PwaStyles {
+        override val headerHeight: Property = "3.6rem"
+        override val mobileSidebarWidth: Property = "80vw"
+
+        override val brand: Style<FlexParams> = {
+            //background { color { "rgb(44, 49, 54)"} }
+            background { color { primary } }
+            paddings {
+                all { small }
+                left { normal }
+            }
+            color { lighterGray }
+            alignItems { center }
+            borders {
+                bottom {
+                    width { "1px " }
+                    color { gray }
+                }
+            }
+        }
+
+        override val sidebar: Style<BasicParams> = {
+            css(
+                sm = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary} 20%);",
+                lg = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary} 20%);"
+            )
+//        background { color { primary } }
+            color { lighterGray }
+            minWidth { "22vw" }
+        }
+
+        override val nav: Style<BasicParams> = {
+            paddings {
+                top { tiny }
+            }
+        }
+
+        override val footer: Style<BasicParams> = {
+            height { headerHeight }
+            padding { small }
+            borders {
+                top {
+                    width { "1px" }
+                    color { gray }
+                }
+            }
+        }
+
+        override val header: Style<FlexParams> = {
+            paddings {
+                all { small }
+                left { normal }
+            }
+            alignItems { center }
+            justifyContent { spaceBetween }
+            color { "rgb(44, 49, 54)" }
+            borders {
+                bottom {
+                    width { "1px " }
+                    style { solid }
+                    color { lighterGray }
+                }
+            }
+        }
+
+        override val main: Style<BasicParams> = {
+            padding { normal }
+            background { color { lightestGray } }
+            color { "rgb(44, 49, 54)" }
+        }
+
+        override val tabs: Style<FlexParams> = {
+            borders {
+                top {
+                    width { "1px " }
+                    style { solid }
+                    color { lighterGray }
+                }
+            }
+            height { headerHeight }
+            padding { tiny }
+            children(" > button") {
+                flex {
+                    grow { "1" }
+                    shrink { "1" }
+                    basis { auto }
+                }
+                radius { none }
+                height { full }
+                padding { none }
+            }
+            children(" > button:not(:first-child)") {
+                borders {
+                    left {
+                        width { "1px" }
+                        color { lighterGray }
+                    }
+                }
+            }
+        }
+
+        override val navLink: Style<FlexParams> = {
+            paddings {
+                vertical { "0.6rem" }
+                horizontal { small }
+            }
+            alignItems { AlignItemsValues.center }
+            borders {
+                left {
+                    width { "0.2rem" }
+                    color { "transparent" }
+                }
+            }
+            children(" .icon") {
+                size { large }
+                margins {
+                    left { tiny }
+                }
+            }
+            children(" a") {
+                display { block }
+                fontWeight { semiBold }
+                fontSize { normal }
+            }
+        }
+
+        override val navSection: Style<BasicParams> = {
+            paddings {
+                vertical { "0.5rem" }
+                horizontal { small }
+            }
+            margins { top { small } }
+            textTransform { uppercase }
+            fontWeight { bold }
+            fontSize { ".9rem" }
+            color { gray }
+        }
+    }
 }

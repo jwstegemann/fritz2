@@ -1,9 +1,6 @@
 package dev.fritz2.styling.theme
 
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.ColorProperty
-import dev.fritz2.styling.params.ShadowProperty
-import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.*
 
 /**
  * Defines a responsive [Property] that can have different values for different screen sizes.
@@ -660,3 +657,18 @@ interface ToastStatus {
 interface ToastButton {
     val close: Style<BasicParams>
 }
+
+interface PwaStyles {
+    val headerHeight: Property
+    val mobileSidebarWidth: Property
+    val brand: Style<FlexParams>
+    val sidebar: Style<BasicParams>
+    val nav: Style<BasicParams>
+    val footer: Style<BasicParams>
+    val header: Style<FlexParams>
+    val main: Style<BasicParams>
+    val tabs: Style<FlexParams>
+    val navLink: Style<FlexParams>
+    val navSection: Style<BasicParams>
+}
+
