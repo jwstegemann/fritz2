@@ -8,13 +8,11 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.theme.CheckboxSizes
+import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.IconDefinition
+import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 
 /**
@@ -24,14 +22,14 @@ import kotlinx.coroutines.flow.map
  * In order to render a checkbox group use the [checkboxGroup] factory function!
  *
  * This class offers the following _configuration_ features:
- *  - the items as a flowOf(List<T>)
+ *  - the items as a List<T>
+ *  - the preselected items via a ``Flow<List<T>>``
  *  - the label(mapping) of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext ) the the example below
  *  - some predefined styling variants (size)
  *  - the style of the items (checkbox)
  *  - the style checked state
  *  - the style of the label
  *  - the checked icon ( use our icon library of our theme )
- *  - link an external boolean flow to set the disabled state of the box *
  *  - choose the direction of checkbox elements (row vs column)
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
@@ -42,27 +40,33 @@ import kotlinx.coroutines.flow.map
  * ```
  * // simple use case showing the core functionality
  * val options = listOf("A", "B", "C")
- * val myStore = storeOf(<List<String>>)
- * checkboxGroup(store = myStore) {
- *      items { flowOf(options) } or use items(options) // provide a list of items you can
+ * val myStore = storeOf(listOf("B"))
+ * checkboxGroup(items = options, store = myStore) {
+ * }
+ *
+ * // one can handle the events and preselected item also manually if needed:
+ * val options = listOf("A", "B", "C")
+ * checkboxGroup(items = options) {
+ *      selectedItems(options.skip(1)) // for selecting "B" and "C" or an empty list (default)
+ *                                     // if nothing should be selected at all
+ *      events {
+ *          selected handledBy someStoreOfString
+ *      }
  * }
  *
  * // use case showing some styling options and a store of List<Pair<Int,String>>
  *   val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
  *  val myStore = storeOf(<List<Pair<Int,String>>)
- * checkboxGroup(store = myStore) {
- *      label {
- *          it.second
- *      }
+ * checkboxGroup(items = myPairs, store = myStore) {
+ *      label { it.second }
  *      size { large }
- *      items { flowOf(options) } or use items(options) // provide a list of items you can
- *      checkedStyle {{
- *           background { color {"green"}}
- *      }}
+ *      checkedStyle {
+ *           background { color {"green"} }
+ *      }
  * }
  * ```
  */
-class CheckboxGroupComponent<T> {
+class CheckboxGroupComponent<T> : InputFormProperties by InputFormMixinMixin(), SeverityProperties by SeverityMixin() {
     companion object {
         object CheckboxGroupLayouts {
             val column: Style<BasicParams> = {
@@ -78,58 +82,22 @@ class CheckboxGroupComponent<T> {
         }
     }
 
-    var items: Flow<List<T>> = flowOf(emptyList())
-    fun items(value: List<T>) {
-        items = flowOf(value)
-    }
-    fun items(value: () -> Flow<List<T>>) {
-        items = value()
+    val icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.check }
+    val label = ComponentProperty<(item: T) -> String> { it.toString() }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
+
+    val direction = ComponentProperty<CheckboxGroupLayouts.() -> Style<BasicParams>> { column }
+    val itemStyle = ComponentProperty(Theme().checkbox.default)
+    var labelStyle = ComponentProperty(Theme().checkbox.label)
+    val checkedStyle = ComponentProperty(Theme().checkbox.checked)
+
+    val selectedItems = DynamicComponentProperty<List<T>>(flowOf(emptyList()))
+
+    class EventsContext<T>(val selected: Flow<List<T>>) {
     }
 
-    var icon: IconDefinition = Theme().icons.check
-    fun icon(value: () -> IconDefinition) {
-        icon = value()
-    }
-
-    var label: ((item: T)  -> String) =  {it.toString()}
-    fun label (value: (item: T)  -> String) {
-        label = value
-    }
-
-    var disabled: Flow<Boolean> = flowOf(false)
-    fun disabled(value: () -> Flow<Boolean>) {
-        disabled = value()
-    }
-    fun disabled(value:  Boolean) {
-        disabled = flowOf(value)
-    }
-
-    var direction: Style<BasicParams> = CheckboxGroupLayouts.column
-    fun direction(value: CheckboxGroupLayouts.() -> Style<BasicParams>) {
-        direction =  CheckboxGroupLayouts.value()
-    }
-
-    var size: CheckboxSizes.() -> Style<BasicParams> = { Theme().checkbox.sizes.normal }
-    fun size(value: CheckboxSizes.() -> Style<BasicParams>) {
-        size = value
-    }
-
-    var itemStyle: Style<BasicParams> = { Theme().checkbox.default() }
-    fun itemStyle(value: () -> Style<BasicParams>) {
-        itemStyle = value()
-    }
-    var labelStyle: Style<BasicParams> = { Theme().checkbox.label() }
-    fun labelStyle(value: () -> Style<BasicParams>) {
-        labelStyle = value()
-    }
-
-    var checkedStyle: Style<BasicParams> = { Theme().checkbox.checked() }
-    fun checkedStyle(value: () -> Style<BasicParams>) {
-        checkedStyle = value()
-    }
+    val events = ComponentProperty<EventsContext<T>.() -> Unit> {}
 }
-
-
 
 /**
  * This component generates a *group* of checkboxes.
@@ -145,71 +113,69 @@ class CheckboxGroupComponent<T> {
  * // simple use case showing the core functionality
  * val options = listOf("A", "B", "C")
  * val myStore = storeOf(<List<String>>)
- * checkboxGroup(store = myStore) {
- *      items { flowOf(options) } or use items(options) // provide a list of items you can
+ * checkboxGroup(items = options, store = myStore) {
  * }
  *
  * // use case showing some styling options and a store of List<Pair<Int,String>>
- *   val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
- *  val myStore = storeOf(<List<Pair<Int,String>>)
- * checkboxGroup(store = myStore) {
- *      label {
- *          it.second
- *      }
+ * val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
+ * val myStore = storeOf(<List<Pair<Int,String>>)
+ * checkboxGroup(items = myPairs, store = myStore) {
+ *      label { it.second }
  *      size { large }
- *      items { flowOf(options) } or use items(options) // provide a list of items you can
- *      checkedStyle {{
- *           background { color {"green"}}
- *      }}
+ *      checkedStyle {
+ *           background { color { "green" } }
+ *      }
  * }
  * ```
  *
  * @see CheckboxGroupComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param items a list of all available options
  * @param store a store of List<T>
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [CheckboxGroupComponent]
  */
-fun <T>RenderContext.checkboxGroup(
+fun <T> RenderContext.checkboxGroup(
     styling: BasicParams.() -> Unit = {},
-    store: Store<List<T>>,
+    items: List<T>,
+    store: Store<List<T>>? = null,
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "checkboxGroupComponent",
     build: CheckboxGroupComponent<T>.() -> Unit = {}
 ) {
     val component = CheckboxGroupComponent<T>().apply(build)
-
-    val toggle = store.handle<T> { list, item ->
-        if( list.contains(item) ) {
-            list - item
-        } else {
-            list + item
-        }
-    }
-
+    val multiSelectionStore: MultiSelectionStore<T> = MultiSelectionStore()
 
     val grpId = id ?: uniqueId()
     (::div.styled(styling, baseClass, id, prefix) {
-        component.direction()
+        component.direction.value(CheckboxGroupComponent.Companion.CheckboxGroupLayouts)()
     }) {
-        component.items.renderEach { item ->
-            val checkedFlow = store.data.map { it.contains(item) }.distinctUntilChanged()
-            checkbox(styling = component.itemStyle, id = grpId + "-grp-item-" + uniqueId()){
-                size { component.size.invoke(Theme().checkbox.sizes) }
-                icon { component.icon }
-                labelStyle { component.labelStyle }
-                checkedStyle { component.checkedStyle }
-                label(component.label(item))
-                checked { checkedFlow }
-                disabled { component.disabled }
+        (store?.data ?: component.selectedItems.values) handledBy multiSelectionStore.update
+
+        items.forEach { item ->
+            val checkedFlow = multiSelectionStore.data.map { it.contains(item) }.distinctUntilChanged()
+            checkbox(styling = component.itemStyle.value, id = grpId + "-grp-item-" + uniqueId()) {
+                size { component.size.value.invoke(Theme().checkbox.sizes) }
+                icon { component.icon.value(Theme().icons) }
+                labelStyle(component.labelStyle.value)
+                checkedStyle(component.checkedStyle.value)
+                label(component.label.value(item))
+                checked(checkedFlow)
+                disabled(component.disabled.values)
+                severity(component.severity.values)
                 events {
-                   changes.states().map{ item } handledBy toggle
+                    changes.states().map { item } handledBy multiSelectionStore.toggle
                 }
             }
+        }
+
+        CheckboxGroupComponent.EventsContext(multiSelectionStore.toggle).apply {
+            component.events.value(this)
+            store?.let { selected handledBy it.update }
         }
     }
 }

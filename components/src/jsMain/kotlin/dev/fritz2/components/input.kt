@@ -2,19 +2,23 @@ package dev.fritz2.components
 
 
 import dev.fritz2.binding.Store
+import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
+import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.InputFieldSizes
-import dev.fritz2.styling.theme.InputFieldStyles
-import dev.fritz2.styling.theme.InputFieldVariants
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.theme.*
+import dev.fritz2.styling.whenever
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLInputElement
 
 /**
  * This class deals with the _configuration_ of an input element.
@@ -22,7 +26,7 @@ import dev.fritz2.styling.theme.Theme
  * The inputField can be configured for the following aspects:
  *  - the size of the element
  *  - some predefined styling variants
- *  - the base options of the HTML input element can be set.
+ *  - the element options of the HTML input element can be set.
  *    [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes)
  *
  *  * For a detailed explanation and examples of usage have a look at the [inputField] function!
@@ -30,7 +34,12 @@ import dev.fritz2.styling.theme.Theme
  * @see InputFieldStyles
  */
 @ComponentMarker
-open class InputFieldComponent {
+open class InputFieldComponent :
+    EventProperties<HTMLInputElement> by EventMixin(),
+    ElementProperties<Input> by ElementMixin(),
+    InputFormProperties by InputFormMixinMixin(),
+    SeverityProperties by SeverityMixin() {
+
     companion object {
 
         val staticCss = staticStyle(
@@ -58,7 +67,7 @@ open class InputFieldComponent {
             border {
                 width { thin }
                 style { solid }
-                color { light }
+                color { lightGray }
             }
 
             hover {
@@ -69,48 +78,37 @@ open class InputFieldComponent {
 
             readOnly {
                 background {
-                    color { disabled }
+                    color { base }
                 }
             }
 
             disabled {
                 background {
-                    color { disabled }
+                    color { base }
+                }
+                color { disabled }
+                hover {
+                    border {
+                        color { lightGray }
+                    }
                 }
             }
 
             focus {
                 border {
-                    color { primary } // TODO : Where to define? Or ability to provide? (changed by mkempa-np: formerly "#3182ce")
+                    color { primary }
                 }
                 boxShadow { outline }
             }
         }
-
-
-
     }
 
-
-
-
-    var variant: InputFieldVariants.() -> Style<BasicParams> = { Theme().input.variants.outline }
-
-    fun variant(value: InputFieldVariants.() -> Style<BasicParams>) {
-        variant = value
-    }
-
-    var size: InputFieldSizes.() -> Style<BasicParams> = { Theme().input.sizes.normal }
-
-    fun size(value: InputFieldSizes.() -> Style<BasicParams>) {
-        size = value
-    }
-
-    var base: (Input.() -> Unit)? = null
-
-    fun base(value: Input.() -> Unit) {
-        base = value
-    }
+    val variant = ComponentProperty<InputFieldVariants.() -> Style<BasicParams>> { Theme().input.variants.outline }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().input.sizes.normal }
+    val value = DynamicComponentProperty(flowOf(""))
+    val placeholder = DynamicComponentProperty(flowOf(""))
+    val type = DynamicComponentProperty(flowOf(""))
+    val step = DynamicComponentProperty(flowOf(""))
 }
 
 
@@ -123,22 +121,31 @@ open class InputFieldComponent {
  *
  * To enable or disable it or to make it readOnly just use the well known attributes of the HTML
  * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Input). To manually set the value or
- * react to a change refer also to its event's. All that can be achieved via the [InputFieldComponent.base] property!
+ * react to a change refer also to its event's. All that can be achieved via the [InputFieldComponent.element] property!
  *
  * ```
- * inputField(store = dataStore) {
- *      base {
- *          placeholder("Placeholder") // render a placeholder text for empty field
- *      }
+ * inputField(store = dataStore /* inject a store so all user inputs are automatically reflected! */) {
+ *     placeholder("Placeholder") // render a placeholder text for empty field
+ * }
+ *
+ * // all state management can also be done manually if needed:
+ * val someStore = storeOf("")
+ * inputField {
+ *     placeholder("Enter text")
+ *     value(someStore.data) // connect a flow to the component for setting its value
+ *     events {
+ *         changes.values() handledBy someStore.update // connect an handler for emitting the user input made
+ *     }
+ *     element {
+ *         // exposes the underlying HTML input element for direct access. Use with caution!
+ *     }
  * }
  *
  * // apply predefined size and variant
  * inputField(store = dataStore) {
  *      size { small } // render a smaller input
  *      variant { filled } // fill the background with ``light`` color
- *      base {
- *          placeholder("Placeholder") // render a placeholder text for empty field
- *      }
+ *      placeholder("Placeholder") // render a placeholder text for empty field
  * }
  *
  * // Of course you can apply custom styling as well
@@ -150,9 +157,7 @@ open class InputFieldComponent {
  * },
  * store = dataStore) {
  *      size { small } // render a smaller input
- *      base {
- *          placeholder("Placeholder") // render a placeholder text for empty field
- *      }
+ *      placeholder("Placeholder") // render a placeholder text for empty field
  * }
  * ```
  *
@@ -176,11 +181,19 @@ fun RenderContext.inputField(
     val component = InputFieldComponent().apply(build)
 
     (::input.styled(styling, baseClass + InputFieldComponent.staticCss, id, prefix) {
-        component.size.invoke(Theme().input.sizes)()
-        component.variant.invoke(Theme().input.variants)()
+        component.size.value.invoke(Theme().input.sizes)()
+        component.variant.value.invoke(Theme().input.variants)()
         InputFieldComponent.basicInputStyles()
     }) {
-        component.base?.invoke(this)
+        component.element.value.invoke(this)
+        component.events.value.invoke(this)
+        disabled(component.disabled.values)
+        readOnly(component.readonly.values)
+        placeholder(component.placeholder.values)
+        value(component.value.values)
+        type(component.type.values)
+        step(component.step.values)
+        className(component.severityClassOf(Theme().input.severity, prefix))
         store?.let {
             value(it.data)
             changes.values() handledBy it.update

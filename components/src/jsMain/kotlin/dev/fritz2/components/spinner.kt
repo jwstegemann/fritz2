@@ -4,6 +4,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
@@ -65,23 +66,9 @@ class SpinnerComponent {
         )
     }
 
-    var icon: IconDefinition? = null
-
-    fun icon(value: Icons.() -> IconDefinition) {
-        icon = Theme().icons.value()
-    }
-
-    var speed: String = "0.5s"
-
-    fun speed(value: () -> String) {
-        speed = value()
-    }
-
-    var thickness: Property = Theme().borderWidths.normal
-
-    fun thickness(value: Thickness.() -> Property) {
-        thickness = Theme().borderWidths.value()
-    }
+    val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
+    val speed = ComponentProperty("0.5s")
+    val thickness = ComponentProperty<Thickness.() -> Property> { Theme().borderWidths.normal }
 }
 
 
@@ -124,10 +111,10 @@ fun RenderContext.spinner(
 ) {
     val component = SpinnerComponent().apply(build)
 
-    if (component.icon == null) {
+    if (component.icon.value == null) {
         (::div.styled(styling, baseClass + SpinnerComponent.staticCss, id, prefix) {
-            css("animation: loading ${component.speed} linear infinite;")
-            border { width { component.thickness } }
+            css("animation: loading ${component.speed.value} linear infinite;")
+            border { width { component.thickness.value(Theme().borderWidths) } }
             width { "1rem" }
             height { "1rem" }
         }) {}
@@ -138,12 +125,12 @@ fun RenderContext.spinner(
                 @keyframes spinner {
                   to {transform: rotate(360deg);}
                 }    
-                animation: spinner ${component.speed} linear infinite;
+                animation: spinner ${component.speed.value} linear infinite;
             """.trimIndent()
             )
             styling()
         }, baseClass, id, prefix) {
-            def = component.icon
+            def(component.icon.value!!.invoke(Theme().icons))
         }
     }
 }
