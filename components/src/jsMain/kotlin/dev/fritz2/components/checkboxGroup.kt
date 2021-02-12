@@ -66,7 +66,7 @@ import kotlinx.coroutines.flow.*
  * }
  * ```
  */
-class CheckboxGroupComponent<T> : InputFormProperties by InputFormMixinMixin(), SeverityProperties by SeverityMixin() {
+class CheckboxGroupComponent<T> : InputFormProperties by InputFormMixin(), SeverityProperties by SeverityMixin() {
     companion object {
         object CheckboxGroupLayouts {
             val column: Style<BasicParams> = {

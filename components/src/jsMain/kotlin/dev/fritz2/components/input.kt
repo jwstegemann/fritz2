@@ -2,7 +2,6 @@ package dev.fritz2.components
 
 
 import dev.fritz2.binding.Store
-import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
@@ -14,10 +13,7 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
-import dev.fritz2.styling.whenever
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLInputElement
 
 /**
@@ -37,7 +33,7 @@ import org.w3c.dom.HTMLInputElement
 open class InputFieldComponent :
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
-    InputFormProperties by InputFormMixinMixin(),
+    InputFormProperties by InputFormMixin(),
     SeverityProperties by SeverityMixin() {
 
     companion object {
