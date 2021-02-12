@@ -57,8 +57,8 @@ open class NavbarComponent {
         )
     }
 
-    var brand = ComponentProperty<RenderContext.() -> Unit> { }
-    var actions = ComponentProperty<RenderContext.() -> Unit> {}
+    val brand = ComponentProperty<RenderContext.() -> Unit> { }
+    val actions = ComponentProperty<RenderContext.() -> Unit> {}
 }
 
 fun RenderContext.navBar(

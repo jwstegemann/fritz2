@@ -2,17 +2,18 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.SeverityStyles
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
-import org.w3c.dom.HTMLInputElement
 
 /**
  * A marker to separate the layers of calls in the type-safe-builder pattern.
@@ -47,24 +48,24 @@ class NullableDynamicComponentProperty<T>(var values: Flow<T?>) {
 }
 
 interface EventProperties<T : Element> {
-    var events: ComponentProperty<WithEvents<T>.() -> Unit>
+    val events: ComponentProperty<WithEvents<T>.() -> Unit>
 }
 
-class Event<T : Element> : EventProperties<T> {
-    override var events: ComponentProperty<WithEvents<T>.() -> Unit> = ComponentProperty {}
+class EventMixin<T : Element> : EventProperties<T> {
+    override val events: ComponentProperty<WithEvents<T>.() -> Unit> = ComponentProperty {}
 }
 
 interface ElementProperties<T> {
-    var element: ComponentProperty<T.() -> Unit>
+    val element: ComponentProperty<T.() -> Unit>
 }
 
 // TODO: Constraint für Typ: T : Tag<E> ?
-class Element<T> : ElementProperties<T> {
-    override var element: ComponentProperty<T.() -> Unit> = ComponentProperty {}
+class ElementMixin<T> : ElementProperties<T> {
+    override val element: ComponentProperty<T.() -> Unit> = ComponentProperty {}
 }
 
 interface FormProperties {
-    var disabled: DynamicComponentProperty<Boolean>
+    val disabled: DynamicComponentProperty<Boolean>
 
     fun enabled(value: Flow<Boolean>) {
         disabled(value.map { !it })
@@ -75,16 +76,48 @@ interface FormProperties {
     }
 }
 
-open class Form : FormProperties {
-    override var disabled = DynamicComponentProperty(flowOf(false))
+open class FormMixin : FormProperties {
+    override val disabled = DynamicComponentProperty(flowOf(false))
 }
 
 interface InputFormProperties : FormProperties {
-    var readonly: DynamicComponentProperty<Boolean>
+    val readonly: DynamicComponentProperty<Boolean>
 }
 
-class InputForm : InputFormProperties, Form() {
-    override var readonly = DynamicComponentProperty(flowOf(false))
+class InputFormMixinMixin : InputFormProperties, FormMixin() {
+    override val readonly = DynamicComponentProperty(flowOf(false))
+}
+
+interface SeverityProperties {
+    val severity: NullableDynamicComponentProperty<Severity?>
+
+    class SeverityContext {
+        val info: Severity = Severity.Info
+        val warning: Severity = Severity.Warning
+        val error: Severity = Severity.Error
+    }
+
+    fun severity(value: SeverityContext.() -> Severity) {
+        severity(value(SeverityContext()))
+    }
+
+    fun severityClassOf(
+        severityStyle: SeverityStyles,
+        prefix: String
+    ): Flow<StyleClass> =
+        severity.values.map {
+            when (it) {
+                Severity.Info -> staticStyle("${prefix}-severity-info", severityStyle.info)
+                Severity.Success -> staticStyle("${prefix}-severity-info", severityStyle.success)
+                Severity.Warning -> staticStyle("${prefix}-severity-warning", severityStyle.warning)
+                Severity.Error -> staticStyle("${prefix}-severity-error", severityStyle.error)
+                else -> StyleClass.None
+            }
+        }
+}
+
+class SeverityMixin : SeverityProperties {
+    override val severity = NullableDynamicComponentProperty<Severity?>(flowOf(null))
 }
 
 interface TextInputFormProperties : InputFormProperties {
@@ -113,7 +146,7 @@ interface CloseButtonProperty {
     val prefix: String
     val hasCloseButton: ComponentProperty<Boolean>
     val closeButton: ComponentProperty<(RenderContext.(SimpleHandler<Unit>) -> Unit)?>
-    val closeButtonStyle: Style<BasicParams>
+    val closeButtonStyle: ComponentProperty<Style<BasicParams>>
 
     fun closeButton(
         styling: BasicParams.() -> Unit = {},
@@ -124,14 +157,14 @@ interface CloseButtonProperty {
     )
 }
 
-class CloseButton(
-    override val closeButtonStyle: Style<BasicParams>,
+class CloseButtonMixin(
+    override val closeButtonStyle: ComponentProperty<Style<BasicParams>>,
     override val prefix: String = "close-button"
 ) : CloseButtonProperty {
 
     override val hasCloseButton = ComponentProperty(true)
 
-    override var closeButton = ComponentProperty<(RenderContext.(SimpleHandler<Unit>) -> Unit)?>(null)
+    override val closeButton = ComponentProperty<(RenderContext.(SimpleHandler<Unit>) -> Unit)?>(null)
 
     override fun closeButton(
         styling: BasicParams.() -> Unit,
@@ -142,7 +175,7 @@ class CloseButton(
     ) {
         closeButton { closeHandle ->
             clickButton({
-                closeButtonStyle()
+                closeButtonStyle.value()
                 styling()
             }, baseClass, id, prefix) {
                 variant { ghost }

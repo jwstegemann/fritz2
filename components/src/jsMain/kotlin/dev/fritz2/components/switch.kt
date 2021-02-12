@@ -2,7 +2,6 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.Store
 import dev.fritz2.components.SwitchComponent.Companion.switchInputStaticCss
-import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
@@ -10,12 +9,12 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.RadioSizes
-import dev.fritz2.styling.theme.SwitchSizes
+import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -64,9 +63,10 @@ import org.w3c.dom.HTMLInputElement
  */
 @ComponentMarker
 class SwitchComponent :
-    EventProperties<HTMLInputElement> by Event(),
-    ElementProperties<Input> by Element(),
-    InputFormProperties by InputForm() {
+    EventProperties<HTMLInputElement> by EventMixin(),
+    ElementProperties<Input> by ElementMixin(),
+    InputFormProperties by InputFormMixinMixin(),
+    SeverityProperties by SeverityMixin() {
 
     companion object {
         val switchInputStaticCss = staticStyle(
@@ -86,7 +86,7 @@ class SwitchComponent :
         )
     }
 
-    var size = ComponentProperty<SwitchSizes.() -> Style<BasicParams>> { Theme().switch.sizes.normal }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().switch.sizes.normal }
 
     var label: (Div.() -> Unit)? = null
     fun label(value: String) {
@@ -105,23 +105,10 @@ class SwitchComponent :
         label = value
     }
 
-    var labelStyle: Style<BasicParams> = { Theme().switch.label() }
-    fun labelStyle(value: () -> Style<BasicParams>) {
-        labelStyle = value()
-    }
-
-    var dotStyle: Style<BasicParams> = { }
-    fun dotStyle(value: () -> Style<BasicParams>) {
-        dotStyle = value()
-
-    }
-
-    var checkedStyle: Style<BasicParams> = { Theme().switch.checked() }
-    fun checkedStyle(value: () -> Style<BasicParams>) {
-        checkedStyle = value()
-    }
-
-    var checked = DynamicComponentProperty(flowOf(false))
+    val labelStyle = ComponentProperty(Theme().switch.label)
+    val dotStyle = ComponentProperty<Style<BasicParams>> {}
+    var checkedStyle = ComponentProperty(Theme().switch.checked)
+    val checked = DynamicComponentProperty(flowOf(false))
 }
 
 /**
@@ -189,7 +176,7 @@ fun RenderContext.switch(
         ) {
             Theme().switch.input()
             children("&[checked] + div") {
-                component.checkedStyle()
+                component.checkedStyle.value()
             }
         }) {
             component.element.value.invoke(this)
@@ -199,8 +186,8 @@ fun RenderContext.switch(
             checked(store?.data ?: component.checked.values)
             component.events.value.invoke(this)
             store?.let { changes.states() handledBy it.update }
+            className(component.severityClassOf(Theme().switch.severity, prefix))
         }
-
 
         (::div.styled() {
             Theme().switch.default()
@@ -208,7 +195,7 @@ fun RenderContext.switch(
         }) {
             (::div.styled() {
                 Theme().switch.dot()
-                component.dotStyle()
+                component.dotStyle.value()
             }) {
 
             }
@@ -216,7 +203,7 @@ fun RenderContext.switch(
 
         component.label?.let {
             (::div.styled() {
-                component.labelStyle()
+                component.labelStyle.value()
             }){
                 it(this)
             }

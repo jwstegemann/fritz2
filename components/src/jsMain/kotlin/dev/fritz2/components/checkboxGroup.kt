@@ -1,6 +1,5 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
@@ -9,7 +8,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.theme.CheckboxSizes
+import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme
@@ -61,13 +60,13 @@ import kotlinx.coroutines.flow.*
  * checkboxGroup(items = myPairs, store = myStore) {
  *      label { it.second }
  *      size { large }
- *      checkedStyle {{
- *           background { color {"green"}}
- *      }}
+ *      checkedStyle {
+ *           background { color {"green"} }
+ *      }
  * }
  * ```
  */
-class CheckboxGroupComponent<T> : InputFormProperties by InputForm() {
+class CheckboxGroupComponent<T> : InputFormProperties by InputFormMixinMixin(), SeverityProperties by SeverityMixin() {
     companion object {
         object CheckboxGroupLayouts {
             val column: Style<BasicParams> = {
@@ -85,27 +84,12 @@ class CheckboxGroupComponent<T> : InputFormProperties by InputForm() {
 
     val icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.check }
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
-    val size = ComponentProperty<CheckboxSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
 
-    var direction: Style<BasicParams> = CheckboxGroupLayouts.column
-    fun direction(value: CheckboxGroupLayouts.() -> Style<BasicParams>) {
-        direction = CheckboxGroupLayouts.value()
-    }
-
-    var itemStyle: Style<BasicParams> = { Theme().checkbox.default() }
-    fun itemStyle(value: () -> Style<BasicParams>) {
-        itemStyle = value()
-    }
-
-    var labelStyle: Style<BasicParams> = { Theme().checkbox.label() }
-    fun labelStyle(value: () -> Style<BasicParams>) {
-        labelStyle = value()
-    }
-
-    var checkedStyle: Style<BasicParams> = { Theme().checkbox.checked() }
-    fun checkedStyle(value: () -> Style<BasicParams>) {
-        checkedStyle = value()
-    }
+    val direction = ComponentProperty<CheckboxGroupLayouts.() -> Style<BasicParams>> { column }
+    val itemStyle = ComponentProperty(Theme().checkbox.default)
+    var labelStyle = ComponentProperty(Theme().checkbox.label)
+    val checkedStyle = ComponentProperty(Theme().checkbox.checked)
 
     val selectedItems = DynamicComponentProperty<List<T>>(flowOf(emptyList()))
 
@@ -138,9 +122,9 @@ class CheckboxGroupComponent<T> : InputFormProperties by InputForm() {
  * checkboxGroup(items = myPairs, store = myStore) {
  *      label { it.second }
  *      size { large }
- *      checkedStyle {{
- *           background { color { "green" }}
- *      }}
+ *      checkedStyle {
+ *           background { color { "green" } }
+ *      }
  * }
  * ```
  *
@@ -168,20 +152,21 @@ fun <T> RenderContext.checkboxGroup(
 
     val grpId = id ?: uniqueId()
     (::div.styled(styling, baseClass, id, prefix) {
-        component.direction()
+        component.direction.value(CheckboxGroupComponent.Companion.CheckboxGroupLayouts)()
     }) {
         (store?.data ?: component.selectedItems.values) handledBy multiSelectionStore.update
 
         items.forEach { item ->
             val checkedFlow = multiSelectionStore.data.map { it.contains(item) }.distinctUntilChanged()
-            checkbox(styling = component.itemStyle, id = grpId + "-grp-item-" + uniqueId()) {
+            checkbox(styling = component.itemStyle.value, id = grpId + "-grp-item-" + uniqueId()) {
                 size { component.size.value.invoke(Theme().checkbox.sizes) }
                 icon { component.icon.value(Theme().icons) }
-                labelStyle { component.labelStyle }
-                checkedStyle { component.checkedStyle }
+                labelStyle(component.labelStyle.value)
+                checkedStyle(component.checkedStyle.value)
                 label(component.label.value(item))
                 checked(checkedFlow)
                 disabled(component.disabled.values)
+                severity(component.severity.values)
                 events {
                     changes.states().map { item } handledBy multiSelectionStore.toggle
                 }
