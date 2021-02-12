@@ -6,6 +6,7 @@ import dev.fritz2.components.FormControlComponent.Control
 import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.components.validation.validationMessages
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -16,6 +17,7 @@ import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import selectField
 
 
@@ -156,7 +158,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
 
     val size = ComponentProperty<FormSizeContext.() -> FormSizeContext.FormSizeSpecifier> { normal }
 
-    private var sizeBuilder: (FormSizes) -> Style<BasicParams> = { sizes ->
+    protected var sizeBuilder: (FormSizes) -> Style<BasicParams> = { sizes ->
         when (this@FormControlComponent.size.value(FormSizeContext)) {
             FormSizeContext.FormSizeSpecifier.small -> sizes.small
             FormSizeContext.FormSizeSpecifier.normal -> sizes.normal
@@ -167,16 +169,6 @@ open class FormControlComponent : FormProperties by FormMixin() {
 
     val label = ComponentProperty("")
     val labelStyle = ComponentProperty(Theme().formControl.label)
-
-    val required = ComponentProperty(false)
-    val requiredStyle = ComponentProperty(Theme().formControl.requiredMarker)
-    val requiredRendering = ComponentProperty<RenderContext.() -> Unit> {
-        if (required.value) {
-            (::span.styled {
-                requiredStyle.value()
-            }) { +"*" }
-        }
-    }
 
     val helperText = ComponentProperty<String?>(null)
     val helperTextStyle = ComponentProperty(Theme().formControl.helperText)
@@ -201,7 +193,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
             get() = messages?.map { messages -> messages.map { it.severity }.maxOrNull() } ?: flowOf(null)
     }
 
-    private var validationMessagesBuilder: (() -> ValidationResult)? = null
+    protected var validationMessagesBuilder: (() -> ValidationResult)? = null
 
     val validationMessage = ComponentProperty<() -> Flow<ComponentValidationMessage?>?> { null }
     val validationMessages = ComponentProperty<() -> Flow<List<ComponentValidationMessage>>?> { null }
@@ -402,7 +394,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
     }
 
     fun renderHelperText(renderContext: RenderContext) {
-        renderContext.div {
+        renderContext.apply {
             helperText.value?.let {
                 (::p.styled {
                     helperTextStyle.value()
@@ -412,6 +404,39 @@ open class FormControlComponent : FormProperties by FormMixin() {
     }
 
     fun renderValidationMessages(renderContext: RenderContext) {
+        renderContext.apply {
+            stackUp({
+                width { "100%" }
+            }) {
+                spacing { none }
+                items {
+                    this@FormControlComponent.validationMessagesBuilder?.invoke()?.messages?.renderEach { message ->
+                        box({
+                            width { "100%" }
+                        }) {
+                            this@FormControlComponent.validationMessageRendering.value.invoke(this, message)
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /*
+        renderContext.apply {
+            stackUp {
+                items {
+                    val stack = this
+                    this@FormControlComponent.validationMessagesBuilder?.invoke()?.messages?.render { messages ->
+                        messages.forEach {
+                            this@FormControlComponent.validationMessageRendering.value.invoke(stack, it)
+                        }
+                    }
+                }
+            }
+        }
+         */
+        /*
         renderContext.div {
             validationMessagesBuilder?.invoke()?.messages?.renderEach {
                 stackUp {
@@ -421,6 +446,8 @@ open class FormControlComponent : FormProperties by FormMixin() {
                 }
             }
         }
+
+         */
     }
 }
 
@@ -461,7 +488,6 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
                     component.labelStyle.value()
                 }) {
                     +component.label.value
-                    component.requiredRendering.value(this)
                 }
                 control(this)
                 component.renderHelperText(this)
@@ -491,7 +517,6 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
                 (::legend.styled {
                     component.labelStyle.value()
                 }) { +component.label.value }
-                component.requiredRendering.value(this)
                 control(this)
                 component.renderHelperText(this)
                 component.renderValidationMessages(this)

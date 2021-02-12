@@ -65,7 +65,7 @@ import kotlinx.coroutines.flow.map
  * ```
  */
 @ComponentMarker
-class RadioGroupComponent<T> : InputFormProperties by InputFormMixinMixin(), SeverityProperties by SeverityMixin() {
+class RadioGroupComponent<T> : InputFormProperties by InputFormMixin(), SeverityProperties by SeverityMixin() {
     companion object {
         object RadioGroupLayouts {
             val column: Style<BasicParams> = {
