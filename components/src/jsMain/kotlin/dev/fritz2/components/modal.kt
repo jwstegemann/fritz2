@@ -3,16 +3,16 @@ package dev.fritz2.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.storeOf
+import dev.fritz2.binding.watch
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.render
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.ModalSizes
 import dev.fritz2.styling.theme.ModalVariants
 import dev.fritz2.styling.theme.Theme
-import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 
 typealias ModalRenderContext = RenderContext.(level: Int) -> Div
@@ -69,7 +69,14 @@ class DefaultOverlay(
  * ``ModalComponent.Companion.init`` block.
  */
 @ComponentMarker
-class ModalComponent {
+class ModalComponent : CloseButtonProperty by CloseButtonMixin(ComponentProperty {
+    position {
+        absolute {
+            right { none }
+            top { none }
+        }
+    }
+}, "modal-close-button") {
 
     class ModalsStack : RootStore<List<ModalRenderContext>>(listOf()) {
 
@@ -77,39 +84,38 @@ class ModalComponent {
             stack + dialog
         }
 
-        val pop = handle { stack -> stack.dropLast(1) }
+        val pop = handle { stack ->
+            stack.dropLast(1)
+        }
     }
 
     companion object {
-        val stack = ModalsStack()
+        private val stack = ModalsStack()
         val overlay = storeOf<Overlay>(DefaultOverlay())
+        private val job = Job()
+        private val globalId = "f2c-modals-${randomId()}"
 
         fun setOverlayHandler(overlay: Overlay) {
             ModalComponent.overlay.update(overlay)
         }
 
         init {
-            render(document.body, override = false) {
-                div(id = "modals") {
-                    stack.data.map { it.size }.render { size ->
-                        val currentOverlay = overlay.current
-                        if (currentOverlay.method == OverlayMethod.CoveringTopMost && size > 0) {
-                            currentOverlay.render(this, size)
-                        }
+            stack.data.map { modals ->
+                globalRenderContext(globalId, job).apply {
+                    val currentOverlay = overlay.current
+                    if (currentOverlay.method == OverlayMethod.CoveringTopMost && modals.isNotEmpty()) {
+                        currentOverlay.render(this, modals.size)
                     }
-                    stack.data.map { it.withIndex().toList() }.renderEach { (index, modal) ->
-                        val currentOverlay = overlay.current
+                    modals.withIndex().toList().forEach { (index, modal) ->
                         if (currentOverlay.method == OverlayMethod.CoveringEach) {
                             div {
                                 currentOverlay.render(this, index + 1)
                                 modal(index + 1)
                             }
-                        } else {
-                            modal(index + 1)
-                        }
+                        } else this.modal(index + 1)
                     }
                 }
-            }
+            }.watch()
         }
 
         fun show(
@@ -126,18 +132,18 @@ class ModalComponent {
                 box({
                     css("--main-level: ${level}rem;")
                     zIndex { modal(level) }
-                    component.size.invoke(Theme().modal.sizes)()
-                    component.variant.invoke(Theme().modal.variants)()
+                    component.size.value.invoke(Theme().modal.sizes)()
+                    component.variant.value.invoke(Theme().modal.variants)()
                     styling()
                 }, baseClass, id, prefix) {
-                    if (component.hasCloseButton) {
-                        if (component.closeButton == null) {
+                    if (component.hasCloseButton.value) {
+                        if (component.closeButton.value == null) {
                             component.closeButton()
                         }
-                        component.closeButton?.let { it(this, close) }
+                        component.closeButton.value?.let { it(this, close) }
                     }
 
-                    component.content?.let { it() }
+                    component.content.value?.let { it() }
                 }
             }
 
@@ -145,54 +151,9 @@ class ModalComponent {
         }
     }
 
-    var content: (RenderContext.() -> Unit)? = null
-
-    fun content(value: RenderContext.() -> Unit) {
-        content = value
-    }
-
-    var size: ModalSizes.() -> Style<BasicParams> = { Theme().modal.sizes.normal }
-
-    fun size(value: ModalSizes.() -> Style<BasicParams>) {
-        size = value
-    }
-
-    var variant: ModalVariants.() -> Style<BasicParams> = { Theme().modal.variants.auto }
-
-    fun variant(value: ModalVariants.() -> Style<BasicParams>) {
-        variant = value
-    }
-
-    var hasCloseButton: Boolean = true
-    fun hasCloseButton(value: Boolean) {
-        hasCloseButton = value
-    }
-
-    var closeButton: (RenderContext.(SimpleHandler<Unit>) -> Unit)? = null
-    fun closeButton(
-        styling: BasicParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
-        id: String? = null,
-        prefix: String = "modal-close-button",
-        build: PushButtonComponent.() -> Unit = {}
-    ) {
-        closeButton = { closeHandle ->
-            clickButton({
-                position {
-                    absolute {
-                        right { none }
-                        top { none }
-                    }
-                }
-                styling()
-            }, baseClass, id, prefix) {
-                variant { ghost }
-                icon { fromTheme { close } }
-                build()
-            }.map { } handledBy closeHandle
-        }
-    }
-
+    val content = ComponentProperty<(RenderContext.() -> Unit)?>(null)
+    val size = ComponentProperty<ModalSizes.() -> Style<BasicParams>> { Theme().modal.sizes.normal }
+    val variant = ComponentProperty<ModalVariants.() -> Style<BasicParams>> { Theme().modal.variants.auto }
 }
 
 

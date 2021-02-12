@@ -76,12 +76,12 @@ typealias FontWeightProperty = Property
 object FontWeights : PropertyValues {
     override val key = "font-weight: "
 
-    const val normal: FontWeightProperty = "normal" // = 400
-    const val bold: FontWeightProperty = "bold" // = 700
+    const val normal: FontWeightProperty = "400"
+    const val bold: FontWeightProperty = "700"
     const val medium: FontWeightProperty = "500"
     const val semiBold: FontWeightProperty = "600"
-    const val bolder: FontWeightProperty = "bolder" //
-    const val lighter: FontWeightProperty = "lighter"
+    const val bolder: FontWeightProperty = "800"
+    const val lighter: FontWeightProperty = "300"
     const val initial: FontWeightProperty = "initial"
     const val inherit: FontWeightProperty = "inherit"
 }
@@ -105,7 +105,7 @@ object TextDecorations : PropertyValues {
     const val unset: TextDecorationProperty = "unset"
 }
 
-
+internal const val fontFamilyKey = "font-family: "
 internal const val fontSizeKey = "font-size: "
 internal const val letterSpacingKey = "letter-spacing: "
 internal const val lineHeightKey = "line-height: "
@@ -133,7 +133,7 @@ interface Typo : StyleParams {
      * @param value extension function parameter for small media devices, recommended to use
      *           predefined values via [dev.fritz2.styling.theme.Theme.fonts] that offer the properties of [Fonts]
      */
-    fun fontFamily(value: Fonts.() -> Property) = property(fontSizeKey, Theme().fonts, value)
+    fun fontFamily(value: Fonts.() -> Property) = property(fontFamilyKey, Theme().fonts, value)
 
     /**
      * This function sets the [font-family](https://developer.mozilla.org/en/docs/Web/CSS/font-family) property
@@ -162,7 +162,7 @@ interface Typo : StyleParams {
         lg: (Fonts.() -> Property)? = null,
         xl: (Fonts.() -> Property)? = null
     ) =
-        property(fontSizeKey, Theme().fonts, sm, md, lg, xl)
+        property(fontFamilyKey, Theme().fonts, sm, md, lg, xl)
 
     /**
      * This function sets the [font-size](https://developer.mozilla.org/en/docs/Web/CSS/font-size) property

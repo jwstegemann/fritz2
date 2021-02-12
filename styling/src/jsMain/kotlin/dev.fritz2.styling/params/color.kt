@@ -34,6 +34,42 @@ fun hsl(h: Int, s: Int, l: Int) = "hsl($h,$s%,$l%)"
 fun hsla(h: Int, s: Int, l: Int, a: Double) = "hsl($h,$s% c vn,,$l%,$a)"
 
 /**
+ * alters the brightness of a given input color in the hex format.
+ * Enter a value between 1 and 2 to increase brightness, and a value between 0 and 1 to decrease brightness.
+ * Increasing the brightness of a color lets them appear rather faded than shining.
+ */
+
+fun alterHexColorBrightness(color: ColorProperty, brightness: Double): ColorProperty =
+        if (color.length != 7 || color[0] != '#') {
+            console.log("alterHexColorBrightness: Wrong color input format (expected #rrggbb).")
+            color
+        } else {
+            val rgb = color.asSequence()
+                .drop(1)
+                .chunked(2)
+                .map { it.joinToString("").toInt(16) }
+                .map {
+                    when {
+                        brightness > 1 -> {
+                            it + (brightness - 1) * (255 - it)
+                        }
+                        brightness < 1 -> {
+                            it - ((1 - brightness) * it)
+                        }
+                        else -> {
+                            it
+                        }
+                    }
+                }.map {
+                    minOf(it.toInt(), 255)
+                }.map {
+                    it.toString(16).let { str -> if (str.length == 2) str else "0$str" }
+                }.joinToString("")
+            "#$rgb"
+        }
+
+
+/**
  * This _context_ interface offers functions to style the color related CSS properties of a component.
  *
  * It only offers two functions
@@ -136,5 +172,4 @@ interface Color : StyleParams {
         xl: WeightedValueProperty? = null
     ) =
         property(opacityKey, Theme().opacities, sm, md, lg, xl)
-
 }

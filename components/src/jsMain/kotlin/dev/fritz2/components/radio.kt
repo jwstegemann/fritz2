@@ -1,17 +1,18 @@
 package dev.fritz2.components
 
-import dev.fritz2.dom.WithEvents
+import dev.fritz2.binding.Store
 import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.IconDefinition
-import dev.fritz2.styling.theme.RadioSizes
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -41,15 +42,23 @@ import org.w3c.dom.HTMLInputElement
  * radio {
  *      label("with extra cheese") // set the label
  *      size { normal } // choose a predefined size
- *      selected { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
+ *      selected(cheeseStore.data) // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
+ *      }
+ *      element {
+ *          // exposes the underlying HTML input element for direct access. Use with caution!
  *      }
  * }
  * ```
  */
 @ComponentMarker
-class RadioComponent {
+class RadioComponent :
+    EventProperties<HTMLInputElement> by EventMixin(),
+    ElementProperties<Input> by ElementMixin(),
+    InputFormProperties by InputFormMixinMixin(),
+    SeverityProperties by SeverityMixin() {
+
     companion object {
         val radioInputStaticCss = staticStyle(
             "radioInput",
@@ -79,33 +88,9 @@ class RadioComponent {
             }
             """
         )
-
-        val radioLabelStaticCss = staticStyle(
-            "radiolabel",
-            """
-            display: block;
-            position: relative;
-            &::before {
-                content: '';
-                outline: none;
-                position: relative;
-                display: inline-block;
-                vertical-align: middle;
-                box-shadow: 0 0 1px ${Theme().colors.dark} inset;
-            }
-            """
-        )
     }
 
-    var size: RadioSizes.() -> Style<BasicParams> = { Theme().radio.sizes.normal }
-    fun size(value: RadioSizes.() -> Style<BasicParams>) {
-        size = value
-    }
-
-    var icon: IconDefinition? = null
-    fun icon(value: () -> IconDefinition) {
-        icon = value()
-    }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
     var label: (Div.() -> Unit)? = null
     fun label(value: String) {
@@ -113,48 +98,21 @@ class RadioComponent {
             +value
         }
     }
+
     fun label(value: Flow<String>) {
         label = {
             value.asText()
         }
     }
+
     fun label(value: (Div.() -> Unit)) {
         label = value
     }
-    var labelStyle: Style<BasicParams> = { Theme().radio.label() }
-    fun labelStyle(value: () -> Style<BasicParams>) {
-        labelStyle = value()
-    }
 
-    var selectedStyle: Style<BasicParams> = { Theme().radio.selected() }
-    fun selectedStyle(value: () -> Style<BasicParams>) {
-        selectedStyle = value()
-    }
-
-    var events: (WithEvents<HTMLInputElement>.() -> Unit)? = null // @input
-    fun events(value: WithEvents<HTMLInputElement>.() -> Unit) {
-        events = value
-    }
-
-    var selected: Flow<Boolean> = flowOf(false) // @input
-    fun selected(value: () -> Flow<Boolean>) {
-        selected = value()
-    }
-
-    var disabled: Flow<Boolean> = flowOf(false) // @input
-    fun disabled(value: () -> Flow<Boolean>) {
-        disabled = value()
-    }
-
-    var groupName: Flow<String> = flowOf("")
-    fun groupName(value: () -> String) {
-        groupName = flowOf(value())
-    }
-    fun groupName(value: () -> Flow<String>) {
-        groupName = value()
-    }
-
-
+    val labelStyle = ComponentProperty(Theme().radio.label)
+    val selectedStyle = ComponentProperty(Theme().radio.selected)
+    val selected = DynamicComponentProperty(flowOf(false))
+    val groupName = DynamicComponentProperty(flowOf(""))
 }
 
 
@@ -169,10 +127,17 @@ class RadioComponent {
  *
  * Example usage
  * ```
+ * val cheeseStore = storeOf(false)
+ * radio(store = cheeseStore) {
+ *      label("with extra cheese") // set the label
+ *      size { normal } // choose a predefined size
+ * }
+ *
+ * // one can handle the events and preselect the control also manually if needed:
  * radio {
  *      label("with extra cheese") // set the label
  *      size { normal } // choose a predefined size
- *      selected { cheeseStore.data } // link a [Flow<Boolean>] in order to visualize the checked state
+ *      selected(cheeseStore.data) // link a [Flow<Boolean>] in order to visualize the checked state
  *      events { // open inner context with all DOM-element events
  *          changes.states() handledBy cheeseStore.update // connect the changes event with the state store
  *      }
@@ -182,6 +147,7 @@ class RadioComponent {
  * @see RadioComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param store a boolean store to handle the state and its changes automatically
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
@@ -189,6 +155,7 @@ class RadioComponent {
  */
 fun RenderContext.radio(
     styling: BasicParams.() -> Unit = {},
+    store: Store<Boolean>? = null,
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "radioComponent",
@@ -197,8 +164,8 @@ fun RenderContext.radio(
     val component = RadioComponent().apply(build)
     val inputId = id?.let { "$it-input" }
     val alternativeGroupname = id?.let { "$it-groupName" }
-    val inputName = component.groupName.map {
-        if(it.isEmpty()) {
+    val inputName = component.groupName.values.map {
+        if (it.isEmpty()) {
             alternativeGroupname ?: ""
         } else {
             it
@@ -210,7 +177,7 @@ fun RenderContext.radio(
         id = id,
         prefix = prefix
     ) {
-        component.size.invoke(Theme().radio.sizes)()
+        component.size.value.invoke(Theme().radio.sizes)()
     }) {
         inputId?.let {
             `for`(inputId)
@@ -219,27 +186,32 @@ fun RenderContext.radio(
             baseClass = RadioComponent.radioInputStaticCss,
             prefix = prefix,
             id = inputId
-        ){ Theme().radio.input()
+        ) {
+            Theme().radio.input()
             children("&[checked] + div") {
-                component.selectedStyle()
+                component.selectedStyle.value()
             }
         }) {
+            component.element.value.invoke(this)
+            disabled(component.disabled.values)
+            readOnly(component.readonly.values)
             type("radio")
             name(inputName)
-            checked(component.selected)
-            disabled(component.disabled)
+            checked(store?.data ?: component.selected.values)
             value("X")
-            component.events?.invoke(this)
+            component.events.value.invoke(this)
+            className(component.severityClassOf(Theme().radio.severity, prefix))
+            store?.let { changes.states() handledBy it.update }
         }
 
-        (::div.styled(){
+        (::div.styled() {
             Theme().radio.default()
             styling()
         }) { }
 
         component.label?.let {
             (::div.styled() {
-                component.labelStyle()
+                component.labelStyle.value()
             }){
                 it(this)
             }
