@@ -70,7 +70,6 @@ open class PushButtonComponent :
                 justify-content: center;
                 transition: all 250ms;
                 user-select: none;
-                position: relative;
                 white-space: nowrap;
                 vertical-align: middle;
                 outline: none;
