@@ -36,7 +36,7 @@ import org.w3c.dom.HTMLTextAreaElement
 class TextAreaComponent :
     EventProperties<HTMLTextAreaElement> by EventMixin(),
     ElementProperties<TextArea> by ElementMixin(),
-    InputFormProperties by InputFormMixinMixin(),
+    InputFormProperties by InputFormMixin(),
     SeverityProperties by SeverityMixin() {
 
     companion object {
