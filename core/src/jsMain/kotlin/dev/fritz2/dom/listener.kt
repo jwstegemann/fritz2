@@ -103,3 +103,35 @@ fun Listener<Event, HTMLSelectElement>.selectedText(): Flow<String> =
  * Gives you the pressed key as [Key] from a [KeyboardEvent].
  */
 fun <X : Element> Listener<KeyboardEvent, X>.key(): Flow<Key> = events.map { Key.from(it) }
+
+
+/**
+ * Handles a Flow of Browser Window [Event]s
+ */
+inline class BrowserWindowListener<E : Event>(val events: Flow<E>) {
+    /**
+     * Maps the given [Event] to a new value.
+     */
+    inline fun <R> map(crossinline mapper: suspend (E) -> R) = events.map(mapper)
+}
+
+/**
+ * Calls the js method [preventDefault] on the given [Event].
+ */
+fun <E : Event> BrowserWindowListener<E>.preventDefault(): BrowserWindowListener<E> = BrowserWindowListener(
+    events.map { it.preventDefault(); it }
+)
+
+/**
+ * Calls the js method [stopImmediatePropagation] on the given [Event].
+ */
+fun <E : Event> BrowserWindowListener<E>.stopImmediatePropagation(): BrowserWindowListener<E> = BrowserWindowListener(
+    events.map { it.stopImmediatePropagation(); it }
+)
+
+/**
+ * Calls the js method [stopPropagation] on the given [Event].
+ */
+fun <E : Event> BrowserWindowListener<E>.stopPropagation(): BrowserWindowListener<E> = BrowserWindowListener(
+    events.map { it.stopPropagation(); it }
+)
