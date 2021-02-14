@@ -2771,6 +2771,7 @@ open class DefaultTheme : Theme {
         }
 
         override val navLink: Style<FlexParams> = {
+            css("cursor: pointer;")
             paddings {
                 vertical { "0.6rem" }
                 horizontal { small }
