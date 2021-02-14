@@ -183,6 +183,8 @@ fun RenderContext.pwa(
     (::aside.styled {
         grid(sm = { area { "main" } }, md = { area { "sidebar" } })
         component.mobileSidebar(Theme().pwa.headerHeight)()
+        maxHeight(sm = { "calc(100vh - ${Theme().pwa.headerHeight})" }, md = { unset })
+        overflow { hidden }
         height(sm = { "calc(100vh - ${Theme().pwa.headerHeight})" }, md = { unset })
         Theme().pwa.sidebar()
     }) {
@@ -193,6 +195,8 @@ fun RenderContext.pwa(
             alignItems { dev.fritz2.styling.params.AlignItemsValues.stretch }
             justifyContent { dev.fritz2.styling.params.JustifyContentValues.spaceBetween }
             height { full }
+            maxHeight { "-webkit-fill-available" }
+            overflow { auto }
         }) {
             (::section.styled {
                 Theme().pwa.nav()
