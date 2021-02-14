@@ -660,6 +660,7 @@ interface ToastButton {
 
 interface PwaStyles {
     val headerHeight: Property
+    val footerMinHeight: Property
     val mobileSidebarWidth: Property
     val brand: Style<FlexParams>
     val sidebar: Style<BasicParams>

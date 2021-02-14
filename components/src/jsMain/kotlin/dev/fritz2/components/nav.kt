@@ -1,5 +1,7 @@
 import dev.fritz2.components.*
+import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.stopImmediatePropagation
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
@@ -11,6 +13,8 @@ import dev.fritz2.styling.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.events.MouseEvent
 
 @ExperimentalCoroutinesApi
 open class NavLinkComponent {
@@ -37,19 +41,25 @@ fun RenderContext.navLink(
     id: String? = null,
     prefix: String = "navlink",
     build: NavLinkComponent.() -> Unit = {}
-) {
+): Listener<MouseEvent, HTMLElement> {
     val component = NavLinkComponent().apply(build)
+    var clickEvents: Listener<MouseEvent, HTMLElement>? = null
 
     lineUp({
         Theme().pwa.navLink()
         styling()
     }, baseClass, id, prefix) {
+        spacing { small }
         items {
             component.active.value?.let { className(NavLinkComponent.activeStyle.whenever(it).name) }
             icon(build = component.icon.value)
             a { component.text.values.asText() }
         }
+        clickEvents = clicks.stopImmediatePropagation()
+
     }
+
+    return clickEvents!!
 }
 
 @ExperimentalCoroutinesApi

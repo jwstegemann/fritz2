@@ -64,6 +64,7 @@ open class PwaComponent() {
     )
 
     fun mobileSidebar(topPosition: Property): Style<BasicParams> = {
+        //FIXME: add to Theme!
         zIndex { "5000" }
         width(sm = { Theme().pwa.mobileSidebarWidth }, md = { unset })
         css(sm = "transform: translateX(-110vw);", md = "transform: unset;")
@@ -74,6 +75,7 @@ open class PwaComponent() {
         })
         css(
             """
+            max-height: -webkit-fill-available;
             will-change: transform;
             transition: 
                 transform .6s ease-in,
@@ -98,7 +100,7 @@ open class PwaComponent() {
     }
     var nav = ComponentProperty<TextElement.() -> Unit> {}
     var main = ComponentProperty<TextElement.() -> Unit> {}
-    var footer = ComponentProperty<TextElement.() -> Unit> {}
+    var footer = ComponentProperty<(TextElement.() -> Unit)?>(null)
     var tabs = ComponentProperty<(Div.() -> Unit)?>(null)
 
 
@@ -197,10 +199,12 @@ fun RenderContext.pwa(
             }) {
                 component.nav.value(this)
             }
-            (::section.styled {
-                Theme().pwa.footer()
-            }) {
-                component.footer.value(this)
+            component.footer.value?.let { footer ->
+                (::section.styled {
+                    Theme().pwa.footer()
+                }) {
+                    footer(this)
+                }
             }
         }
     }

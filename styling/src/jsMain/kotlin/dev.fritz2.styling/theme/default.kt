@@ -2670,7 +2670,8 @@ open class DefaultTheme : Theme {
 
     override val pwa: PwaStyles = object : PwaStyles {
         override val headerHeight: Property = "3.6rem"
-        override val mobileSidebarWidth: Property = "80vw"
+        override val footerMinHeight: Property = "2.8rem"
+        override val mobileSidebarWidth: Property = "85vw"
 
         override val brand: Style<FlexParams> = {
             //background { color { "rgb(44, 49, 54)"} }
@@ -2690,11 +2691,11 @@ open class DefaultTheme : Theme {
         }
 
         override val sidebar: Style<BasicParams> = {
-            css(
-                sm = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary} 20%);",
-                lg = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary} 20%);"
-            )
-//        background { color { primary } }
+//            css(
+//                sm = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary} 20%);",
+//                lg = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary} 20%);"
+//            )
+            background { color { primary } }
             color { lighterGray }
             minWidth { "22vw" }
         }
@@ -2706,7 +2707,7 @@ open class DefaultTheme : Theme {
         }
 
         override val footer: Style<BasicParams> = {
-            height { headerHeight }
+            minHeight { footerMinHeight }
             padding { small }
             borders {
                 top {
@@ -2747,7 +2748,7 @@ open class DefaultTheme : Theme {
                     color { lighterGray }
                 }
             }
-            height { headerHeight }
+            height { footerMinHeight }
             padding { tiny }
             children(" > button") {
                 flex {
@@ -2789,8 +2790,8 @@ open class DefaultTheme : Theme {
             }
             children(" a") {
                 display { block }
-                fontWeight { semiBold }
-                fontSize { normal }
+                fontWeight { "500" }
+                fontSize { ".9rem" }
             }
         }
 
@@ -2801,8 +2802,8 @@ open class DefaultTheme : Theme {
             }
             margins { top { small } }
             textTransform { uppercase }
-            fontWeight { bold }
-            fontSize { ".9rem" }
+            fontWeight { semiBold }
+            fontSize { ".8rem" }
             color { gray }
         }
     }
