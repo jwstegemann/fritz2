@@ -26,8 +26,8 @@ open class PwaComponent() {
                 """
                 body {
                     height: 100vh;
+                    max-height: -webkit-fill-available;
                     width: 100vw;
-        
                     display: grid;
                     grid-template-areas:
                         "brand header"
@@ -35,7 +35,6 @@ open class PwaComponent() {
                         "sidebar footer";
                     grid-template-rows: ${Theme().pwa.headerHeight} 1fr min-content;
                     grid-auto-columns: min-content 1fr;
-        
                     padding: 0;
                     margin: 0; 
                 }
@@ -130,6 +129,7 @@ fun RenderContext.pwa(
         }
         width { "100vw" }
         height { "100vh" }
+        css("height: -webkit-fill-available;")
         zIndex { "4000" }
         css(
             """
