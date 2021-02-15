@@ -25,7 +25,7 @@ open class PwaComponent() {
             staticStyle(
                 """
                 body {
-                    height: 100vh;
+                    height: min(100vh, 100%);
                     max-height: -webkit-fill-available;
                     width: 100vw;
                     display: grid;
@@ -78,8 +78,8 @@ open class PwaComponent() {
             max-height: -webkit-fill-available;
             will-change: transform;
             transition: 
-                transform .6s ease-in,
-                visibility .6s linear .6s;        
+                transform .4s ease-in,
+                visibility .4s linear;        
             """.trimIndent()
         )
         boxShadow(sm = { raised }, md = { none })
@@ -130,7 +130,7 @@ fun RenderContext.pwa(
             }
         }
         width { "100vw" }
-        height { "100vh" }
+        height { "min(100vh, 100%)" }
         css("height: -webkit-fill-available;")
         zIndex { "4000" }
         css(
@@ -183,9 +183,8 @@ fun RenderContext.pwa(
     (::aside.styled {
         grid(sm = { area { "main" } }, md = { area { "sidebar" } })
         component.mobileSidebar(Theme().pwa.headerHeight)()
-        maxHeight(sm = { "calc(100vh - ${Theme().pwa.headerHeight})" }, md = { unset })
         overflow { hidden }
-        height(sm = { "calc(100vh - ${Theme().pwa.headerHeight})" }, md = { unset })
+        height(sm = { "calc(100% - ${Theme().pwa.headerHeight})" }, md = { unset })
         Theme().pwa.sidebar()
     }) {
         className(component.openSideBar.whenever(component.sidebarStatus.data).name)
