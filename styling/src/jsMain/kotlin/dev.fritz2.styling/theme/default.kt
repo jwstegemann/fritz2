@@ -2661,10 +2661,5 @@ open class DefaultTheme : Theme {
             css("font-size: var(--formControl-helperText-size) ")
             lineHeight { smaller }
         }
-
-        override val requiredMarker: Style<BasicParams> = {
-            color { danger }
-            margins { left { tiny } }
-        }
     }
 }

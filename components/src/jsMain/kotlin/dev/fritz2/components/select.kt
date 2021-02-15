@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.*
  *  For a detailed explanation and examples of usage, have a look at the [selectField] function itself.
  */
 @ComponentMarker
-class SelectFieldComponent<T> : InputFormProperties by InputFormMixinMixin(), SeverityProperties by SeverityMixin() {
+class SelectFieldComponent<T> : InputFormProperties by InputFormMixin(), SeverityProperties by SeverityMixin() {
 
     companion object {
         val staticCss = staticStyle(

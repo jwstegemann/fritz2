@@ -584,7 +584,6 @@ interface FormControlStyles {
     val sizes: FormSizes
     val label: Style<BasicParams>
     val helperText: Style<BasicParams>
-    val requiredMarker: Style<BasicParams>
 }
 
 
