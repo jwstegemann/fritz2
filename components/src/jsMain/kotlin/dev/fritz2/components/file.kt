@@ -12,10 +12,42 @@ import org.w3c.dom.events.Event
 import org.w3c.files.FileReader
 import org.w3c.files.File as jsFile
 
+/**
+ * function for reading the [jsFile] to a [File]
+ * with [File.content] as a [String]
+ */
 typealias FileReadingStrategy = (jsFile) -> Flow<File>
 
+/**
+ * This class is the _configuration_ for file inputs.
+ *
+ * There are two functions [file] and [files] for creating a _configuration_ context
+ * for a single or multiple file selection. In both of them you can create a [button] which has the same
+ * options like a [pushButton].
+ *
+ * Much more important are the _configuration_ functions. You can configure the following aspects:
+ *  - accept [docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept)
+ *  - the [FileReadingStrategy] for interpreting the content of the file
+ *
+ * This can be done within a functional expression that is the last parameter of the two files functions, called
+ * ``build``. It offers an initialized instance of this [FileSelectionComponent] class as receiver, so every mutating
+ * method can be called for configuring the desired state for rendering the button.
+ *
+ * The following example shows the usage:
+ * ```
+ * file {
+ *   accept("application/pdf")
+ *   button({
+ *     background { color { info } }
+ *   }) {
+ *     icon { fromTheme { document } }
+ *     text("Accept only pdf files")
+ *   }
+ * }
+ * ```
+ */
 @ComponentMarker
-open class FileButtonComponent {
+open class FileSelectionComponent {
 
     companion object {
         const val eventName = "loadend"
@@ -98,23 +130,25 @@ open class FileButtonComponent {
 }
 
 /**
- * This component generates a single file selection button.
+ * This component generates a single file selection context.
  *
- * You can set the label, an icon, the position of the icon and access its events.
- * For a detailed overview about the possible properties of the component object itself, have a look at
+ * In there you can create a button with a label, an icon, the position of the icon and access its events.
+ * For a detailed overview about the possible properties of the button component object itself, have a look at
  * [PushButtonComponent]
  *
- * In contrast to the [pushButton] component, this variant returns a [Flow] of [file] in order
- * to combine the button declaration directly to a fitting _handler_ which expects a [file]:
+ * The [File] function then returns a [Flow] of [File] in order
+ * to combine the [Flow] directly to a fitting _handler_ which accepts a [File]:
  * ```
- * val contentStore = object: RootStore<String>("") {
- *   val saveFile<FileRead> = { _, file -> file.content }
+ * val textFileStore = object : RootStore<String>("") {
+ *     val upload = handle<File> { _, file -> file.content }
  * }
- * fileButton {
- *   text("Select a file")
+ * file {
  *   accept("text/plain")
  *   encoding("utf-8")
- * } handledBy contentStore.saveFile
+ *   button(id = "myFile") {
+ *     text("Select a file")
+ *   }
+ * } handledBy textFileStore.upload
  * ```
  *
  * @see PushButtonComponent
@@ -124,17 +158,17 @@ open class FileButtonComponent {
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
- * @return a [Flow] that offers the selected [file]
+ * @return a [Flow] that offers the selected [File]
  */
 fun RenderContext.file(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "file",
-    build: FileButtonComponent.() -> Unit = {}
+    build: FileSelectionComponent.() -> Unit = {}
 ): Flow<File> {
     var file: Flow<File>? = null
-    val component = FileButtonComponent().apply(build)
+    val component = FileSelectionComponent().apply(build)
     (::div.styled(styling, baseClass, id, prefix) {}) {
         val inputElement = (::input.styled { display { none } }) {
             type("file")
@@ -152,15 +186,45 @@ fun RenderContext.file(
     return file!!
 }
 
+/**
+ * This component generates a multiple file selection context.
+ *
+ * In there you can create a button with a label, an icon, the position of the icon and access its events.
+ * For a detailed overview about the possible properties of the button component object itself, have a look at
+ * [PushButtonComponent].
+ *
+ * The [File] function then returns a [Flow] of a [List] of [File]s in order
+ * to combine the [Flow] directly to a fitting _handler_ which accepts a [List] of [File]s:
+ * ```
+ * val textFileStore = object : RootStore<List<String>>(emptyList()) {
+ *   val upload = handle<List<File>>{ _, files -> files.map { it.content } }
+ * }
+ * files {
+ *   accept("text/plain")
+ *   encoding("utf-8")
+ *   button(id = "myFiles") {
+ *     text("Select one or more files")
+ *   }
+ * } handledBy textFileStore.upload
+ * ```
+ * @see PushButtonComponent
+ *
+ * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the element
+ * @param id the ID of the element
+ * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
+ * @return a [Flow] that offers the selected [File]
+ */
 fun RenderContext.files(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "file",
-    build: FileButtonComponent.() -> Unit = {}
+    build: FileSelectionComponent.() -> Unit = {}
 ): Flow<List<File>> {
     var files: Flow<List<File>>? = null
-    val component = FileButtonComponent().apply(build)
+    val component = FileSelectionComponent().apply(build)
     (::div.styled(styling, baseClass, id, prefix) {}) {
         val inputElement = (::input.styled { display { none } }) {
             type("file")
@@ -170,7 +234,7 @@ fun RenderContext.files(
             files = changes.events.mapNotNull {
                 val list = domNode.files
                 console.log("files: ${list?.length}}")
-                if(list != null) {
+                if (list != null) {
                     buildList {
                         for (i in 0..list.length) {
                             val file = list.item(i)
