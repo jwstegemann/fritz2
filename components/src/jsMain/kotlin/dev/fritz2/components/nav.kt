@@ -46,7 +46,7 @@ fun RenderContext.navLink(
     var clickEvents: Listener<MouseEvent, HTMLElement>? = null
 
     lineUp({
-        Theme().pwa.navLink()
+        Theme().appFrame.navLink()
         styling()
     }, baseClass, id, prefix) {
         spacing { small }
@@ -71,7 +71,7 @@ fun RenderContext.navSection(
     prefix: String = "navsection",
 ) {
     (::h3.styled(baseClass, id, prefix) {
-        Theme().pwa.navSection()
+        Theme().appFrame.navSection()
         styling()
     }) { +text }
 }

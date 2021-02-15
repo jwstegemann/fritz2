@@ -205,7 +205,7 @@ interface Theme {
 
     val toast: ToastStyles
 
-    val pwa: PwaStyles
+    val appFrame: AppFrameStyles
 }
 
 /**

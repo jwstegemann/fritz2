@@ -658,7 +658,7 @@ interface ToastButton {
     val close: Style<BasicParams>
 }
 
-interface PwaStyles {
+interface AppFrameStyles {
     val headerHeight: Property
     val footerMinHeight: Property
     val mobileSidebarWidth: Property

@@ -18,7 +18,7 @@ import dev.fritz2.styling.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-open class PwaComponent() {
+open class AppFrameComponent() {
 
     companion object {
         init {
@@ -33,7 +33,7 @@ open class PwaComponent() {
                         "brand header"
                         "sidebar main"
                         "sidebar footer";
-                    grid-template-rows: ${Theme().pwa.headerHeight} 1fr min-content;
+                    grid-template-rows: ${Theme().appFrame.headerHeight} 1fr min-content;
                     grid-auto-columns: min-content 1fr;
                     padding: 0;
                     margin: 0; 
@@ -66,7 +66,7 @@ open class PwaComponent() {
     fun mobileSidebar(topPosition: Property): Style<BasicParams> = {
         //FIXME: add to Theme!
         zIndex { "5000" }
-        width(sm = { Theme().pwa.mobileSidebarWidth }, md = { unset })
+        width(sm = { Theme().appFrame.mobileSidebarWidth }, md = { unset })
         css(sm = "transform: translateX(-110vw);", md = "transform: unset;")
         position(sm = {
             fixed { top { topPosition } }
@@ -82,7 +82,7 @@ open class PwaComponent() {
                 visibility .4s linear;        
             """.trimIndent()
         )
-        boxShadow(sm = { raised }, md = { none })
+        boxShadow(sm = { flat }, md = { none })
     }
 
     var brand = ComponentProperty<Div.() -> Unit> {}
@@ -107,22 +107,22 @@ open class PwaComponent() {
 }
 
 @ExperimentalCoroutinesApi
-fun RenderContext.pwa(
+fun RenderContext.appFrame(
     styling: BasicParams.() -> Unit = {},
     store: Store<String>? = null,
     baseClass: StyleClass? = null,
     id: String? = null,
-    prefix: String = "pwa",
-    build: PwaComponent.() -> Unit = {}
+    prefix: String = "app",
+    build: AppFrameComponent.() -> Unit = {}
 ) {
-    val component = PwaComponent().apply(build)
+    val component = AppFrameComponent().apply(build)
 
     box({
         display(
             sm = { dev.fritz2.styling.params.DisplayValues.block },
             md = { dev.fritz2.styling.params.DisplayValues.none })
         opacity { "0" }
-        background { color { "rgba(0,0,0,0.6)" } }
+        background { color { "rgba(0,0,0,0.8)" } }
         position {
             fixed {
                 top { "0" }
@@ -147,12 +147,12 @@ fun RenderContext.pwa(
     (::header.styled {
         grid(sm = { area { "header" } }, md = { area { "brand" } })
         component.mobileSidebar("none")()
-        height(sm = { Theme().pwa.headerHeight }, md = { unset })
+        height(sm = { Theme().appFrame.headerHeight }, md = { unset })
     }) {
         className(component.openSideBar.whenever(component.sidebarStatus.data).name)
         flexBox({
-            height { Theme().pwa.headerHeight }
-            Theme().pwa.brand()
+            height { Theme().appFrame.headerHeight }
+            Theme().appFrame.brand()
         }) {
             component.brand.value(this)
         }
@@ -162,8 +162,8 @@ fun RenderContext.pwa(
         grid { area { "header" } }
     }) {
         flexBox({
-            height { Theme().pwa.headerHeight }
-            Theme().pwa.header()
+            height { Theme().appFrame.headerHeight }
+            Theme().appFrame.header()
         }) {
             lineUp({
                 alignItems { dev.fritz2.styling.params.AlignItemsValues.center }
@@ -182,10 +182,10 @@ fun RenderContext.pwa(
 
     (::aside.styled {
         grid(sm = { area { "main" } }, md = { area { "sidebar" } })
-        component.mobileSidebar(Theme().pwa.headerHeight)()
+        component.mobileSidebar(Theme().appFrame.headerHeight)()
         overflow { hidden }
-        height(sm = { "calc(100% - ${Theme().pwa.headerHeight})" }, md = { unset })
-        Theme().pwa.sidebar()
+        height(sm = { "calc(100% - ${Theme().appFrame.headerHeight})" }, md = { unset })
+        Theme().appFrame.sidebar()
     }) {
         className(component.openSideBar.whenever(component.sidebarStatus.data).name)
 
@@ -198,13 +198,13 @@ fun RenderContext.pwa(
             overflow { auto }
         }) {
             (::section.styled {
-                Theme().pwa.nav()
+                Theme().appFrame.nav()
             }) {
                 component.nav.value(this)
             }
             component.footer.value?.let { footer ->
                 (::section.styled {
-                    Theme().pwa.footer()
+                    Theme().appFrame.footer()
                 }) {
                     footer(this)
                 }
@@ -215,7 +215,7 @@ fun RenderContext.pwa(
     (::main.styled {
         grid { area { "main" } }
         overflow { dev.fritz2.styling.params.OverflowValues.auto }
-        Theme().pwa.main()
+        Theme().appFrame.main()
     }) {
         component.main.value(this)
     }
@@ -223,13 +223,10 @@ fun RenderContext.pwa(
     component.tabs.value?.let { tabs ->
         flexBox({
             grid { area { "footer" } }
-            direction { dev.fritz2.styling.params.DirectionValues.row }
-            alignItems { dev.fritz2.styling.params.AlignItemsValues.center }
-            justifyContent { dev.fritz2.styling.params.JustifyContentValues.spaceEvenly }
-            Theme().pwa.tabs()
-//        overflow { auto }
-//        PwaStyles.main()
-//        height { "calc(100vh - ${PwaStyles.headerHeight})" }
+            direction { row }
+            alignItems { center }
+            justifyContent { spaceEvenly }
+            Theme().appFrame.tabs()
         }) {
             tabs(this)
         }

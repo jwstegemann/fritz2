@@ -2668,7 +2668,7 @@ open class DefaultTheme : Theme {
         }
     }
 
-    override val pwa: PwaStyles = object : PwaStyles {
+    override val appFrame: AppFrameStyles = object : AppFrameStyles {
         override val headerHeight: Property = "3.6rem"
         override val footerMinHeight: Property = "2.8rem"
         override val mobileSidebarWidth: Property = "85vw"
