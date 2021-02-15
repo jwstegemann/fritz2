@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.components.data.File
+import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -53,14 +54,14 @@ open class FileSelectionComponent {
         const val eventName = "loadend"
     }
 
-    internal var accept: String? = null
+    var accept: (Input.() -> Unit)? = null
+
     fun accept(value: String) {
-        accept = value
+        accept = { attr("accept", value) }
     }
 
-    internal var acceptFlow: Flow<String>? = null
     fun accept(value: Flow<String>) {
-        acceptFlow = value
+        accept = { attr("accept", value) }
     }
 
     val base64: FileReadingStrategy = { file ->
@@ -99,7 +100,7 @@ open class FileSelectionComponent {
     }
 
     internal var renderContext: RenderContext.(HTMLInputElement) -> Unit = { input ->
-        pushButton {
+        pushButton(prefix = "file-button") {
             icon { fromTheme { cloudUpload } }
             element {
                 domNode.onclick = {
@@ -172,8 +173,7 @@ fun RenderContext.file(
     (::div.styled(styling, baseClass, id, prefix) {}) {
         val inputElement = (::input.styled { display { none } }) {
             type("file")
-            component.accept?.let { accept(it) }
-            component.acceptFlow?.let { accept(it) }
+            component.accept?.invoke(this)
             file = changes.events.mapNotNull {
                 domNode.files?.item(0)
             }.flatMapLatest {
@@ -229,8 +229,7 @@ fun RenderContext.files(
         val inputElement = (::input.styled { display { none } }) {
             type("file")
             multiple(true)
-            component.accept?.let { accept(it) }
-            component.acceptFlow?.let { accept(it) }
+            component.accept?.invoke(this)
             files = changes.events.mapNotNull {
                 val list = domNode.files
                 console.log("files: ${list?.length}}")
