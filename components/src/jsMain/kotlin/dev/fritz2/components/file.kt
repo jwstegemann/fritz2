@@ -27,7 +27,7 @@ typealias FileReadingStrategy = (jsFile) -> Flow<File>
  * options like a [pushButton].
  *
  * Much more important are the _configuration_ functions. You can configure the following aspects:
- *  - accept [docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept)
+ *  - the [accept](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept) property
  *  - the [FileReadingStrategy] for interpreting the content of the file
  *
  * This can be done within a functional expression that is the last parameter of the two files functions, called
