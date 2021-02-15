@@ -1,13 +1,13 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
-import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
@@ -54,9 +54,11 @@ import org.w3c.dom.HTMLInputElement
  */
 @ComponentMarker
 class RadioComponent :
-    EventProperties<HTMLInputElement> by Event(),
-    ElementProperties<Input> by Element(),
-    InputFormProperties by InputForm() {
+    EventProperties<HTMLInputElement> by EventMixin(),
+    ElementProperties<Input> by ElementMixin(),
+    InputFormProperties by InputFormMixin(),
+    SeverityProperties by SeverityMixin() {
+
     companion object {
         val radioInputStaticCss = staticStyle(
             "radioInput",
@@ -88,7 +90,7 @@ class RadioComponent :
         )
     }
 
-    var size = ComponentProperty<RadioSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
     var label: (Div.() -> Unit)? = null
     fun label(value: String) {
@@ -107,18 +109,10 @@ class RadioComponent :
         label = value
     }
 
-    var labelStyle: Style<BasicParams> = { Theme().radio.label() }
-    fun labelStyle(value: () -> Style<BasicParams>) {
-        labelStyle = value()
-    }
-
-    var selectedStyle: Style<BasicParams> = { Theme().radio.selected() }
-    fun selectedStyle(value: () -> Style<BasicParams>) {
-        selectedStyle = value()
-    }
-
-    var selected = DynamicComponentProperty(flowOf(false))
-    var groupName = DynamicComponentProperty(flowOf(""))
+    val labelStyle = ComponentProperty(Theme().radio.label)
+    val selectedStyle = ComponentProperty(Theme().radio.selected)
+    val selected = DynamicComponentProperty(flowOf(false))
+    val groupName = DynamicComponentProperty(flowOf(""))
 }
 
 
@@ -195,7 +189,7 @@ fun RenderContext.radio(
         ) {
             Theme().radio.input()
             children("&[checked] + div") {
-                component.selectedStyle()
+                component.selectedStyle.value()
             }
         }) {
             component.element.value.invoke(this)
@@ -206,6 +200,7 @@ fun RenderContext.radio(
             checked(store?.data ?: component.selected.values)
             value("X")
             component.events.value.invoke(this)
+            className(component.severityClassOf(Theme().radio.severity, prefix))
             store?.let { changes.states() handledBy it.update }
         }
 
@@ -216,7 +211,7 @@ fun RenderContext.radio(
 
         component.label?.let {
             (::div.styled() {
-                component.labelStyle()
+                component.labelStyle.value()
             }){
                 it(this)
             }

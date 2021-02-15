@@ -1,23 +1,20 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
-import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.TextArea
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
+import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.TextAreaResize
-import dev.fritz2.styling.theme.TextAreaSizes
+import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
-import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLTextAreaElement
 
 /**
@@ -37,9 +34,10 @@ import org.w3c.dom.HTMLTextAreaElement
  */
 @ComponentMarker
 class TextAreaComponent :
-    EventProperties<HTMLTextAreaElement> by Event(),
-    ElementProperties<TextArea> by Element(),
-    InputFormProperties by InputForm() {
+    EventProperties<HTMLTextAreaElement> by EventMixin(),
+    ElementProperties<TextArea> by ElementMixin(),
+    InputFormProperties by InputFormMixin(),
+    SeverityProperties by SeverityMixin() {
 
     companion object {
         val staticCss = staticStyle(
@@ -85,10 +83,10 @@ class TextAreaComponent :
         }
     }
 
-    var value = DynamicComponentProperty(flowOf(""))
-    var placeholder = DynamicComponentProperty(flowOf(""))
-    var resizeBehavior = ComponentProperty<TextAreaResize.() -> Style<BasicParams>> { Theme().textArea.resize.vertical }
-    var size = ComponentProperty<TextAreaSizes.() -> Style<BasicParams>> { Theme().textArea.sizes.normal }
+    val value = DynamicComponentProperty(flowOf(""))
+    val placeholder = DynamicComponentProperty(flowOf(""))
+    val resizeBehavior = ComponentProperty<TextAreaResize.() -> Style<BasicParams>> { Theme().textArea.resize.vertical }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().textArea.sizes.normal }
 }
 
 /**
@@ -146,7 +144,7 @@ class TextAreaComponent :
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param init a lambda expression for setting up the component itself. Details in [TextAreaComponent]
+ * @param build a lambda expression for setting up the component itself. Details in [TextAreaComponent]
  */
 
 
@@ -156,10 +154,10 @@ fun RenderContext.textArea(
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "textArea",
-    init: TextAreaComponent.() -> Unit
+    build: TextAreaComponent.() -> Unit
 ) {
 
-    val component = TextAreaComponent().apply(init)
+    val component = TextAreaComponent().apply(build)
 
     (::textarea.styled(styling, baseClass + TextAreaComponent.staticCss, id, prefix) {
         component.resizeBehavior.value.invoke(Theme().textArea.resize)()
@@ -173,6 +171,7 @@ fun RenderContext.textArea(
         readOnly(component.readonly.values)
         placeholder(component.placeholder.values)
         value(component.value.values)
+        className(component.severityClassOf(Theme().textArea.severity, prefix))
         store?.let {
             value(it.data)
             changes.values() handledBy it.update

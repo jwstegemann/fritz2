@@ -8,7 +8,7 @@ import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Colors
-import dev.fritz2.styling.theme.PushButtonSizes
+import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.PushButtonVariants
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
@@ -55,9 +55,9 @@ import org.w3c.dom.events.MouseEvent
  */
 @ComponentMarker
 open class PushButtonComponent :
-    EventProperties<HTMLButtonElement> by Event(),
-    ElementProperties<Button> by Element(),
-    FormProperties by Form() {
+    EventProperties<HTMLButtonElement> by EventMixin(),
+    ElementProperties<Button> by ElementMixin(),
+    FormProperties by FormMixin() {
     companion object {
         val staticCss = staticStyle(
             "button",
@@ -148,8 +148,8 @@ open class PushButtonComponent :
         color = buildColor(Theme().colors.value())
     }
 
-    var variant = ComponentProperty<PushButtonVariants.() -> Style<BasicParams>> { Theme().button.variants.solid }
-    var size = ComponentProperty<PushButtonSizes.() -> Style<BasicParams>> { Theme().button.sizes.normal }
+    val variant = ComponentProperty<PushButtonVariants.() -> Style<BasicParams>> { Theme().button.variants.solid }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().button.sizes.normal }
 
     var label: (RenderContext.(hide: Boolean) -> Unit)? = null
 
@@ -192,16 +192,16 @@ open class PushButtonComponent :
     }
 
     enum class IconPlacement {
-        right,
-        left
+        Right,
+        Left
     }
 
-    class IconPlacementContext(
-        val right: IconPlacement = IconPlacement.right,
-        val left: IconPlacement = IconPlacement.left
-    )
+    class IconPlacementContext {
+        val right: IconPlacement = IconPlacement.Right
+        val left: IconPlacement = IconPlacement.Left
+    }
 
-    var iconPlacement = ComponentProperty<IconPlacementContext.() -> IconPlacement> { IconPlacement.left }
+    val iconPlacement = ComponentProperty<IconPlacementContext.() -> IconPlacement> { IconPlacement.Left }
 
     fun renderIcon(renderContext: Button, iconStyle: Style<BasicParams>, spinnerStyle: Style<BasicParams>) {
         if (loading == null) {
@@ -283,11 +283,11 @@ fun RenderContext.pushButton(
         if (component.label == null) {
             component.renderIcon(this, component.centerIconStyle, component.centerSpinnerStyle)
         } else {
-            if (component.icon != null && component.iconPlacement.value(PushButtonComponent.iconPlacementContext) == PushButtonComponent.IconPlacement.left) {
+            if (component.icon != null && component.iconPlacement.value(PushButtonComponent.iconPlacementContext) == PushButtonComponent.IconPlacement.Left) {
                 component.renderIcon(this, component.leftIconStyle, component.leftSpinnerStyle)
             }
             component.renderLabel(this)
-            if (component.icon != null && component.iconPlacement.value(PushButtonComponent.iconPlacementContext) == PushButtonComponent.IconPlacement.right) {
+            if (component.icon != null && component.iconPlacement.value(PushButtonComponent.iconPlacementContext) == PushButtonComponent.IconPlacement.Right) {
                 component.renderIcon(this, component.rightIconStyle, component.rightSpinnerStyle)
             }
         }

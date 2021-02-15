@@ -5,6 +5,7 @@ import dev.fritz2.dom.selectedValue
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
+import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
@@ -28,7 +29,8 @@ import kotlinx.coroutines.flow.*
  *  For a detailed explanation and examples of usage, have a look at the [selectField] function itself.
  */
 @ComponentMarker
-class SelectFieldComponent<T> : InputFormProperties by InputForm() {
+class SelectFieldComponent<T> : InputFormProperties by InputFormMixin(), SeverityProperties by SeverityMixin() {
+
     companion object {
         val staticCss = staticStyle(
             "selectFieldContainer",
@@ -105,10 +107,10 @@ class SelectFieldComponent<T> : InputFormProperties by InputForm() {
     }
 
     val placeholder = ComponentProperty("...")
-    val variant = ComponentProperty<SelectFieldVariants.() -> Style<BasicParams>> { Theme().select.variants.outline }
+    val variant = ComponentProperty<SelectFieldVariants.() -> Style<BasicParams>> { outline }
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
-    val size = ComponentProperty<SelectFieldSizes.() -> Style<BasicParams>> { Theme().select.sizes.normal }
-    val icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.chevronDown }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
+    val icon = ComponentProperty<Icons.() -> IconDefinition> { chevronDown }
 
     val selectedItem = NullableDynamicComponentProperty<T>(flowOf(null))
 
@@ -214,6 +216,8 @@ fun <T> RenderContext.selectField(
                     +component.label.value(item)
                 }
             }
+
+            className(component.severityClassOf(Theme().select.severity, prefix))
 
             changes.selectedValue().map { it.toInt() } handledBy internalStore.toggle
         }

@@ -2,23 +2,18 @@ package dev.fritz2.components
 
 
 import dev.fritz2.binding.Store
-import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
+import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.InputFieldSizes
-import dev.fritz2.styling.theme.InputFieldStyles
-import dev.fritz2.styling.theme.InputFieldVariants
-import dev.fritz2.styling.theme.Theme
-import kotlinx.coroutines.flow.Flow
+import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.flowOf
-import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLInputElement
 
 /**
@@ -36,9 +31,10 @@ import org.w3c.dom.HTMLInputElement
  */
 @ComponentMarker
 open class InputFieldComponent :
-    EventProperties<HTMLInputElement> by Event(),
-    ElementProperties<Input> by Element(),
-    InputFormProperties by InputForm() {
+    EventProperties<HTMLInputElement> by EventMixin(),
+    ElementProperties<Input> by ElementMixin(),
+    InputFormProperties by InputFormMixin(),
+    SeverityProperties by SeverityMixin() {
 
     companion object {
 
@@ -96,25 +92,19 @@ open class InputFieldComponent :
 
             focus {
                 border {
-                    color { primary } // TODO : Where to define? Or ability to provide? (changed by mkempa-np: formerly "#3182ce")
+                    color { primary }
                 }
                 boxShadow { outline }
             }
         }
-
-
-
     }
 
-
-
-
-    var variant = ComponentProperty<InputFieldVariants.() -> Style<BasicParams>> { Theme().input.variants.outline }
-    var size = ComponentProperty<InputFieldSizes.() -> Style<BasicParams>> { Theme().input.sizes.normal }
-    var value = DynamicComponentProperty(flowOf(""))
-    var placeholder = DynamicComponentProperty(flowOf(""))
-    var type = DynamicComponentProperty(flowOf(""))
-    var step = DynamicComponentProperty(flowOf(""))
+    val variant = ComponentProperty<InputFieldVariants.() -> Style<BasicParams>> { Theme().input.variants.outline }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().input.sizes.normal }
+    val value = DynamicComponentProperty(flowOf(""))
+    val placeholder = DynamicComponentProperty(flowOf(""))
+    val type = DynamicComponentProperty(flowOf(""))
+    val step = DynamicComponentProperty(flowOf(""))
 }
 
 
@@ -199,6 +189,7 @@ fun RenderContext.inputField(
         value(component.value.values)
         type(component.type.values)
         step(component.step.values)
+        className(component.severityClassOf(Theme().input.severity, prefix))
         store?.let {
             value(it.data)
             changes.values() handledBy it.update

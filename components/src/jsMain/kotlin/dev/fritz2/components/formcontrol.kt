@@ -3,23 +3,21 @@ package dev.fritz2.components
 import SelectFieldComponent
 import dev.fritz2.binding.Store
 import dev.fritz2.components.FormControlComponent.Control
-import dev.fritz2.components.validation.validationMessage
+import dev.fritz2.components.validation.ComponentValidationMessage
+import dev.fritz2.components.validation.Severity
 import dev.fritz2.components.validation.validationMessages
-import dev.fritz2.dom.html.Input
-import dev.fritz2.dom.html.Label
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.TextArea
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.whenever
-import dev.fritz2.validation.ValidationMessage
+import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import selectField
 
 
@@ -31,8 +29,11 @@ import selectField
  * - a label for a description of the control as a whole
  * - mark the control as _required_
  * - an optional helper text
- * - provide an error message as a [Flow<String>]]; if it is none empty, the message will get rendered.
+ * - provide a validation message as a [Flow<ComponentValidationMessage>]]; the *severity* is reflected by the default
+ *   theme!
  * - disable the control
+ * - provide a store to the control itself, with optional additional validation ([dev.fritz2.components.validation.WithValidator])
+ *   at best, in order to automatically apply model validation and get the results shown
  *
  * Customizing the control:
  *
@@ -54,49 +55,9 @@ import selectField
  * field to learn how the mapping between control and rendering strategy is done.
  *
  */
-// TODO: Add support for disable
-// TODO: Add support for invalid for every control
 @ComponentMarker
-open class FormControlComponent : FormProperties by Form() {
+open class FormControlComponent : FormProperties by FormMixin() {
     companion object {
-        val staticCss = staticStyle(
-            "formControl",
-            """
-                display: inline-flex;
-                position: relative;
-                vertical-align: middle;
-                height: 2.5rem;
-                appearance: none;
-                align-items : center;
-                justify-content: center;
-                transition: all 250ms;
-                white-space: nowrap;
-                outline: none;
-                width: 100%;
-            """
-        )
-
-        const val invalidClassName = "invalid"
-
-        val invalidCss: Style<BasicParams> = {
-            boxShadow { danger }
-            border {
-                width { thin }
-                style { solid }
-                color { danger }
-            }
-
-            hover {
-                border {
-                    color { danger }
-                }
-            }
-
-            focus {
-                boxShadow { danger }
-            }
-        }
-
         object ControlNames {
             const val inputField = "inputField"
             const val textArea = "textArea"
@@ -116,15 +77,14 @@ open class FormControlComponent : FormProperties by Form() {
         fun set(
             controlName: String,
             component: (RenderContext.() -> Unit),
-            //errorMessages: Flow<List<ValidationMessage>>,
-            //parent: FormControlComponent
-        ) {
+        ): Boolean {
             if (assignee == null) {
                 assignee = Pair(controlName, component)
-                //parent.errorMessages = errorMessages
+                return true
             } else {
                 overflows.add(controlName)
             }
+            return false
         }
 
         fun assert() {
@@ -141,25 +101,120 @@ open class FormControlComponent : FormProperties by Form() {
         }
     }
 
-    protected val renderStrategies: MutableMap<String, ControlRenderer> = mutableMapOf()
-    protected val control = Control()
+    /**
+     * Use this method from your own control wrapping methods or if you override an existing one in order to
+     * register the control for the form.
+     *
+     * @param controlName a unique String name / key for the control. Prefer the predefined [ControlNames] if possible
+     * @param component pass in some control (could be arbitrary complex!) that should be wrapped by the form.
+     * @param onSuccess some optional action that will be executed if the registration was successful (remember that
+     *                  only *one* control, so normally the *first*, will be accepted!), for example the temporary
+     *                  storage of validation messages from a passed in store.
+     */
+    protected fun registerControl(
+        controlName: String,
+        component: (RenderContext.() -> Unit),
+        onSuccess: FormControlComponent.() -> Unit = {}
+    ) {
+        if (control.set(controlName, component)) {
+            onSuccess(this)
+        }
+    }
+
+    private val renderStrategies: MutableMap<String, ControlRenderer> = mutableMapOf()
+
+    /**
+     * Use this method to register your custom renderer for existing controls or to register a built-in renderer
+     * for a custom control.
+     *
+     * Remember to prefer to use the predefined [ControlNames] as key for the first case.
+     *
+     * @param controlName a unique String name / key for the control. Prefer the predefined [ControlNames] if possible
+     * @param renderer some instance of a [ControlRenderer] that should be used to render the form for a registered
+     *                 control (match via the name obviously)
+     */
+    protected fun registerRenderStrategy(controlName: String, renderer: ControlRenderer) {
+        renderStrategies[controlName] = renderer
+    }
+
+    private val control = Control()
+
+    object FormSizeContext {
+        enum class FormSizeSpecifier {
+            small, normal, large
+        }
+
+        val small = FormSizeSpecifier.small
+        val normal = FormSizeSpecifier.normal
+        val large = FormSizeSpecifier.large
+
+    }
+
+    fun ownSize(): Style<BasicParams> = when (size.value(FormSizeContext)) {
+        FormSizeContext.FormSizeSpecifier.small -> Theme().formControl.sizes.small
+        FormSizeContext.FormSizeSpecifier.normal -> Theme().formControl.sizes.normal
+        FormSizeContext.FormSizeSpecifier.large -> Theme().formControl.sizes.large
+    }
+
+    val size = ComponentProperty<FormSizeContext.() -> FormSizeContext.FormSizeSpecifier> { normal }
+
+    protected var sizeBuilder: (FormSizes) -> Style<BasicParams> = { sizes ->
+        when (this@FormControlComponent.size.value(FormSizeContext)) {
+            FormSizeContext.FormSizeSpecifier.small -> sizes.small
+            FormSizeContext.FormSizeSpecifier.normal -> sizes.normal
+            FormSizeContext.FormSizeSpecifier.large -> sizes.large
+        }
+    }
+
 
     val label = ComponentProperty("")
-    val required = ComponentProperty(false)
-    val helperText = ComponentProperty<String?>(null)
-    val errorMessage = DynamicComponentProperty(flowOf(""))
+    val labelStyle = ComponentProperty(Theme().formControl.label)
 
-    // TODO: Check if private is possible
-    private var errorMessages: Flow<List<ValidationMessage>>? = null
+    val helperText = ComponentProperty<String?>(null)
+    val helperTextStyle = ComponentProperty(Theme().formControl.helperText)
+
+    class ValidationResult(val messages: Flow<List<ComponentValidationMessage>>?) {
+        companion object {
+            /**
+             * Simple factory method to encapsulate the logic that defining some ``validationMessage(s)`` property
+             * beats the validation from the store!
+             * Also defer the *execution* after the component object is fully initialized, so that the
+             * *declaration order* of the control and a possible manually declared validation message property does
+             * not matter!
+             */
+            fun <T> builderOf(formControl: FormControlComponent, store: Store<T>? = null): () -> ValidationResult = {
+                ValidationResult(
+                    (formControl.validationMessage.value()?.map { if (it == null) emptyList() else listOf(it) }
+                        ?: formControl.validationMessages.value()) ?: store?.validationMessages())
+            }
+        }
+
+        val hasSeverity: Flow<Severity?>
+            get() = messages?.map { messages -> messages.map { it.severity }.maxOrNull() } ?: flowOf(null)
+    }
+
+    protected var validationMessagesBuilder: (() -> ValidationResult)? = null
+
+    val validationMessage = ComponentProperty<() -> Flow<ComponentValidationMessage?>?> { null }
+    val validationMessages = ComponentProperty<() -> Flow<List<ComponentValidationMessage>>?> { null }
+
+    val validationMessageRendering =
+        ComponentProperty<RenderContext.(ComponentValidationMessage) -> Unit> { message ->
+            message.asAlert(this, size = sizeBuilder, stacking = { compact })
+        }
 
     init {
-        renderStrategies[ControlNames.inputField] = SingleControlRenderer(this)
-        renderStrategies[ControlNames.switch] = SingleControlRenderer(this)
-        renderStrategies[ControlNames.textArea] = SingleControlRenderer(this)
-        renderStrategies[ControlNames.selectField] = SingleControlRenderer(this)
-        renderStrategies[ControlNames.checkbox] = SingleControlRenderer(this)
-        renderStrategies[ControlNames.checkboxGroup] = ControlGroupRenderer(this)
-        renderStrategies[ControlNames.radioGroup] = ControlGroupRenderer(this)
+        val singleRenderer = SingleControlRenderer(this)
+        val groupRenderer = ControlGroupRenderer(this)
+        sequenceOf(
+            ControlNames.inputField,
+            ControlNames.switch,
+            ControlNames.textArea,
+            ControlNames.selectField,
+            ControlNames.checkbox
+        ).forEach { registerRenderStrategy(it, singleRenderer) }
+        registerRenderStrategy(ControlNames.checkboxGroup, groupRenderer)
+        registerRenderStrategy(ControlNames.radioGroup, groupRenderer)
     }
 
     open fun inputField(
@@ -168,18 +223,19 @@ open class FormControlComponent : FormProperties by Form() {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.inputField,
-        init: Input.() -> Unit
+        build: InputFieldComponent.() -> Unit = {}
     ) {
-        val msg = errorMessage.values.map { it.isNotEmpty() }
-        control.set(ControlNames.inputField)
-        {
-            inputField(styling, store, baseClass, id, prefix) {
-                element {
-                    className(StyleClass(invalidClassName).whenever(msg))
-                    init()
+        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        registerControl(ControlNames.inputField,
+            {
+                inputField(styling, store, baseClass, id, prefix) {
+                    size { this@FormControlComponent.sizeBuilder(this) }
+                    severity(validationMessagesBuilder().hasSeverity)
+                    build()
                 }
-            }
-        }
+            },
+            { this.validationMessagesBuilder = validationMessagesBuilder }
+        )
     }
 
     open fun switch(
@@ -188,16 +244,19 @@ open class FormControlComponent : FormProperties by Form() {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.switch,
-        init: SwitchComponent.() -> Unit = {}
+        build: SwitchComponent.() -> Unit = {}
     ) {
-        val msg = errorMessage.values.map { it.isNotEmpty() }
-        control.set(ControlNames.inputField)
-        {
-            switch(styling, store, baseClass, id, prefix) {
-                className(StyleClass(invalidClassName).whenever(msg))
-                init()
-            }
-        }
+        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        registerControl(ControlNames.inputField,
+            {
+                switch(styling, store, baseClass, id, prefix) {
+                    size { this@FormControlComponent.sizeBuilder(this) }
+                    severity(validationMessagesBuilder().hasSeverity)
+                    build()
+                }
+            },
+            { this.validationMessagesBuilder = validationMessagesBuilder }
+        )
     }
 
     open fun textArea(
@@ -206,18 +265,19 @@ open class FormControlComponent : FormProperties by Form() {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.textArea,
-        init: TextArea.() -> Unit
+        build: TextAreaComponent.() -> Unit
     ) {
-        val msg = errorMessage.values.map { it.isNotEmpty() }
-        control.set(ControlNames.textArea)
-        {
-            textArea(styling, store, baseClass, id, prefix) {
-                element {
-                    className(StyleClass(invalidClassName).whenever(msg))
-                    init()
+        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        registerControl(ControlNames.textArea,
+            {
+                textArea(styling, store, baseClass, id, prefix) {
+                    size { this@FormControlComponent.sizeBuilder(this) }
+                    severity(validationMessagesBuilder().hasSeverity)
+                    build()
                 }
-            }
-        }
+            },
+            { this.validationMessagesBuilder = validationMessagesBuilder }
+        )
     }
 
     open fun checkbox(
@@ -228,18 +288,19 @@ open class FormControlComponent : FormProperties by Form() {
         prefix: String = ControlNames.checkbox,
         build: CheckboxComponent.() -> Unit
     ) {
-        //val msg = errorMessage.map { it.isNotEmpty() }
-        val msg = flowOf(true)
-
-        control.set(ControlNames.checkbox)
-        {
-            checkbox({
-                styling()
-                StyleClass(invalidClassName).whenever(msg) { it }
-            }, store, baseClass, id, prefix) {
-                build()
-            }
-        }
+        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        registerControl(ControlNames.checkbox,
+            {
+                checkbox({
+                    styling()
+                }, store, baseClass, id, prefix) {
+                    size { this@FormControlComponent.sizeBuilder(this) }
+                    severity(validationMessagesBuilder().hasSeverity)
+                    build()
+                }
+            },
+            { this.validationMessagesBuilder = validationMessagesBuilder }
+        )
     }
 
     open fun <T> checkboxGroup(
@@ -251,11 +312,17 @@ open class FormControlComponent : FormProperties by Form() {
         prefix: String = ControlNames.checkboxGroup,
         build: CheckboxGroupComponent<T>.() -> Unit
     ) {
-        control.set(ControlNames.checkboxGroup /*, store?.validationMessages() */) {
-            checkboxGroup(styling, items, store, baseClass, id, prefix) {
-                build()
-            }
-        }
+        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        registerControl(ControlNames.checkboxGroup,
+            {
+                checkboxGroup(styling, items, store, baseClass, id, prefix) {
+                    size { this@FormControlComponent.sizeBuilder(this) }
+                    severity(validationMessagesBuilder().hasSeverity)
+                    build()
+                }
+            },
+            { this.validationMessagesBuilder = validationMessagesBuilder }
+        )
     }
 
     open fun <T> radioGroup(
@@ -267,11 +334,17 @@ open class FormControlComponent : FormProperties by Form() {
         prefix: String = ControlNames.radioGroup,
         build: RadioGroupComponent<T>.() -> Unit
     ) {
-        control.set(ControlNames.radioGroup) {
-            radioGroup(styling, items, store, baseClass, id, prefix) {
-                build()
-            }
-        }
+        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        registerControl(ControlNames.radioGroup,
+            {
+                radioGroup(styling, items, store, baseClass, id, prefix) {
+                    size { this@FormControlComponent.sizeBuilder(this) }
+                    severity(validationMessagesBuilder().hasSeverity)
+                    build()
+                }
+            },
+            { this.validationMessagesBuilder = validationMessagesBuilder }
+        )
     }
 
     open fun <T> selectField(
@@ -281,23 +354,26 @@ open class FormControlComponent : FormProperties by Form() {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.selectField,
-        init: SelectFieldComponent<T>.() -> Unit
+        build: SelectFieldComponent<T>.() -> Unit
     ) {
-        val msg = errorMessage.values.map { it.isNotEmpty() }
-        control.set(ControlNames.selectField)
-        {
-            selectField<T>(
-                styling,
-                items,
-                store,
-                baseClass,
-                id,
-                prefix
-            ) {
-                className(StyleClass(invalidClassName).whenever(msg))
-                init()
-            }
-        }
+        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        registerControl(ControlNames.selectField,
+            {
+                selectField(
+                    styling,
+                    items,
+                    store,
+                    baseClass,
+                    id,
+                    prefix
+                ) {
+                    size { this@FormControlComponent.sizeBuilder(this) }
+                    severity(validationMessagesBuilder().hasSeverity)
+                    build()
+                }
+            },
+            { this.validationMessagesBuilder = validationMessagesBuilder }
+        )
     }
 
     fun render(
@@ -310,7 +386,6 @@ open class FormControlComponent : FormProperties by Form() {
         control.assignee?.second?.let {
             renderStrategies[control.assignee?.first]?.render(
                 {
-                    children(".$invalidClassName", invalidCss)
                     styling()
                 }, baseClass, id, prefix, renderContext, it
             )
@@ -319,44 +394,60 @@ open class FormControlComponent : FormProperties by Form() {
     }
 
     fun renderHelperText(renderContext: RenderContext) {
-        renderContext.div {
+        renderContext.apply {
             helperText.value?.let {
                 (::p.styled {
-                    color { dark }
-                    fontSize { smaller }
-                    lineHeight { smaller }
+                    helperTextStyle.value()
                 }) { +it }
             }
         }
     }
 
-    fun renderErrorMessage(renderContext: RenderContext) {
-        renderContext.div {
-            errorMessage.values.render {
-                if (it.isNotEmpty()) {
-                    lineUp({
-                        color { danger }
-                        fontSize { small }
-                        lineHeight { small }
-                    }) {
-                        spacing { tiny }
-                        items {
-                            icon { fromTheme { warning } }
-                            p { +it }
+    fun renderValidationMessages(renderContext: RenderContext) {
+        renderContext.apply {
+            stackUp({
+                width { "100%" }
+            }) {
+                spacing { none }
+                items {
+                    this@FormControlComponent.validationMessagesBuilder?.invoke()?.messages?.renderEach { message ->
+                        box({
+                            width { "100%" }
+                        }) {
+                            this@FormControlComponent.validationMessageRendering.value.invoke(this, message)
                         }
                     }
                 }
             }
         }
-    }
 
-    val requiredMarker: RenderContext.() -> Unit = {
-        if (required.value) {
-            (::span.styled {
-                color { danger }
-                margins { left { tiny } }
-            }) { +"*" }
+
+        /*
+        renderContext.apply {
+            stackUp {
+                items {
+                    val stack = this
+                    this@FormControlComponent.validationMessagesBuilder?.invoke()?.messages?.render { messages ->
+                        messages.forEach {
+                            this@FormControlComponent.validationMessageRendering.value.invoke(stack, it)
+                        }
+                    }
+                }
+            }
         }
+         */
+        /*
+        renderContext.div {
+            validationMessagesBuilder?.invoke()?.messages?.renderEach {
+                stackUp {
+                    items {
+                        this@FormControlComponent.validationMessageRendering.value(this, it)
+                    }
+                }
+            }
+        }
+
+         */
     }
 }
 
@@ -384,6 +475,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
             {
                 alignItems { start }
                 width { full }
+                component.ownSize()()
                 styling()
             },
             baseClass = baseClass,
@@ -392,13 +484,14 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
         ) {
             spacing { tiny }
             items {
-                label {
+                (::label.styled {
+                    component.labelStyle.value()
+                }) {
                     +component.label.value
-                    component.requiredMarker(this)
                 }
                 control(this)
                 component.renderHelperText(this)
-                component.renderErrorMessage(this)
+                component.renderValidationMessages(this)
             }
         }
     }
@@ -418,12 +511,15 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
             width { full }
         }) {
             (::fieldset.styled(baseClass, id, prefix) {
+                component.ownSize()()
                 styling()
             }) {
-                legend { +component.label.value }
+                (::legend.styled {
+                    component.labelStyle.value()
+                }) { +component.label.value }
                 control(this)
                 component.renderHelperText(this)
-                component.renderErrorMessage(this)
+                component.renderValidationMessages(this)
             }
         }
     }
@@ -442,7 +538,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
  * get rendered; the remaining ones will be reported as errors in the log.
  *
  * This component can be customized in different ways and thus is quite flexible to...
- * - ... adapt to new input elements
+ * - ... adopt to new input elements
  * - ... get rendered in a new way.
  * In order to achieve this, one can provide new implementations of the rendering strategies or override the control
  * wrapping functions as well. For details have a look at the [ControlRenderer] interface and the control functions
@@ -456,8 +552,10 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
  *     label { "Some describing label" }
  *     required { true } // mark the above label with a small red star
  *     helperText { "You can provide a hint here" }
- *     // provide a Flow<String> where each none empty content will lead to the display of the error
- *     errorMessage { const("Sorry, always wrong in this case") }
+ *     // provide a Flow<ComponentValidationMessage> in order to show some message
+ *     errorMessage {
+ *         flowOf(errorMessage("id", "Sorry, always wrong in this case"))
+ *     }
  *     // just use the appropriate control with its specific API!
  *     inputField(store = someStore) {
  *         placeholder("Some text to type")

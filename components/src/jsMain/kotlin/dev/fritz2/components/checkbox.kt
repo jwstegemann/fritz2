@@ -2,27 +2,23 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.Store
 import dev.fritz2.components.CheckboxComponent.Companion.checkboxInputStaticCss
-import dev.fritz2.dom.WithEvents
-import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.CheckboxSizes
+import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.HTMLTextAreaElement
 
 /**
  * This class combines the _configuration_ and the core styling of a checkbox.
@@ -60,9 +56,10 @@ import org.w3c.dom.HTMLTextAreaElement
  */
 @ComponentMarker
 class CheckboxComponent :
-    EventProperties<HTMLInputElement> by Event(),
-    ElementProperties<Input> by Element(),
-    InputFormProperties by InputForm() {
+    EventProperties<HTMLInputElement> by EventMixin(),
+    ElementProperties<Input> by ElementMixin(),
+    InputFormProperties by InputFormMixin(),
+    SeverityProperties by SeverityMixin() {
 
     companion object {
         val checkboxInputStaticCss = staticStyle(
@@ -82,8 +79,8 @@ class CheckboxComponent :
         )
     }
 
-    var size = ComponentProperty<CheckboxSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
-    var icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.check }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
+    val icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.check }
 
     var label: (RenderContext.() -> Unit)? = null
 
@@ -103,17 +100,9 @@ class CheckboxComponent :
         label = value
     }
 
-    var checked = DynamicComponentProperty(flowOf(false))
-
-    var labelStyle: Style<BasicParams> = { Theme().checkbox.label() }
-    fun labelStyle(value: () -> Style<BasicParams>) {
-        labelStyle = value()
-    }
-
-    var checkedStyle: Style<BasicParams> = { Theme().checkbox.checked() }
-    fun checkedStyle(value: () -> Style<BasicParams>) {
-        checkedStyle = value()
-    }
+    val labelStyle = ComponentProperty(Theme().checkbox.label)
+    val checked = DynamicComponentProperty(flowOf(false))
+    var checkedStyle = ComponentProperty(Theme().checkbox.checked)
 }
 
 /**
@@ -181,7 +170,7 @@ fun RenderContext.checkbox(
         ) {
             Theme().checkbox.input()
             children("&[checked] + div") {
-                component.checkedStyle()
+                component.checkedStyle.value()
             }
         }) {
             component.element.value.invoke(this)
@@ -189,6 +178,7 @@ fun RenderContext.checkbox(
             readOnly(component.readonly.values)
             type("checkbox")
             checked(store?.data ?: component.checked.values)
+            className(component.severityClassOf(Theme().checkbox.severity, prefix))
             component.events.value.invoke(this)
             store?.let { changes.states() handledBy it.update }
         }
@@ -204,8 +194,8 @@ fun RenderContext.checkbox(
         }
 
         component.label?.let {
-            (::div.styled() {
-                component.labelStyle()
+            (::div.styled {
+                component.labelStyle.value()
             }){
                 it(this)
             }
