@@ -45,7 +45,7 @@ fun RenderContext.svg(baseClass: String?, id: String?, init: Svg.() -> Unit): Sv
  * In order to provide a comfortable way to use the predefined icons from the [dev.fritz2.styling.theme.Theme],
  * use the [IconComponent.fromTheme] method.
  */
-class IconComponent {
+class IconComponent : EventProperties<SVGElement> by EventMixin() {
     companion object {
         const val prefix = "icon"
         val staticCss = staticStyle(
@@ -169,7 +169,7 @@ fun RenderContext.icon(
     id: String? = null,
     prefix: String = IconComponent.prefix,
     build: IconComponent.() -> Unit = {}
-) {
+): Unit {
     val component = IconComponent().apply {
         build()
         if (displayName.value != null && svg.value != null) {
@@ -177,15 +177,16 @@ fun RenderContext.icon(
         }
     }
 
-    component.def.value?.let {
-        (::svg.styled(baseClass + IconComponent.staticCss, id, prefix) {
-            styling()
-        }) {
+    (::svg.styled(baseClass + IconComponent.staticCss, id, prefix) {
+        styling()
+    }) {
+        component.def.value?.let {
             domNode.setAttributeNS(null, "viewBox", it.viewBox)
             domNode.setAttributeNS(null, "focusable", "false")
             domNode.setAttributeNS(null, "role", "presentation")
             domNode.innerHTML = it.svg
         }
+        component.events.value.invoke(this)
     }
 }
 
