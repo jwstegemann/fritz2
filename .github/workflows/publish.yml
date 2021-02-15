@@ -16,14 +16,20 @@ jobs:
         java-version: 12
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Build and run Unit Tests
-      run: ./gradlew allTests
+    - name: Build with Gradle
+      run: ./gradlew build
     - name: Archive test-results
       if: always()
       uses: actions/upload-artifact@v1.0.0
       with:
         name: Test-Results
         path: core/build/reports/tests/allTests
+    - name: Archive server log
+      if: always()
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Server-Logs
+        path: test-server/build/server.log
     - name: Publish with Gradle
       run: ./gradlew publish
       env: # Or as an environment variable
