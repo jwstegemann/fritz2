@@ -5,21 +5,37 @@ import org.w3c.fetch.*
 import org.w3c.files.Blob
 import org.w3c.xhr.FormData
 
-
+/**
+ * Represents the functions needed to authenticate a user and in which cases the authentication should be made.
+ * */
 interface Authentication {
 
+    /* List of HTTP-Status-Codes forcing an authentication. Defaults are 401 (unauthorized) and 403 (forbidden) */
     val errorcodesEnforcingAuthentication: List<Short>
         get() = listOf(401, 403)
 
-    // Funktion, die den Request um die geforderten Login-Informationen anreichert
-    suspend fun enrichRequest(aRequest: Request): Request
+    /**
+     * function enriching the request with authentication information depending on the
+     * servers need. For example the server could expect sepcial header-information, that could be
+     * set by this function.
+     *
+     * @param request the request-object that is enriched with the login-information.
+     */
+    suspend fun enrichRequest(request: Request): Request
 
-    // Funktion, die das Login durchführt
+    /*+
+     * function doing the authentication
+     * */
     suspend fun authenticate()
 
+    /**
+     * shows whether there is a successful authentication or not.
+     * */
     fun isAuthenticated(): Boolean
 
-    // Hier gilt dasselbe wie für die Login-Function
+    /**
+     * performing a logout
+     */
     suspend fun logout()
 }
 
@@ -32,7 +48,7 @@ interface Authentication {
 fun http(baseUrl: String = "", authentication: Authentication) = AuthenticatedRequest(authentication, http(baseUrl))
 
 /**
- * Represents the common fields and attributes of a given set of http requests.
+ * Represents the common fields and attributes for a given set of http requests.
  *
  * In comparison with the [Request]-object the [AuthenticatedRequest] contains information
  * about authorization necessary when performing a [Request]
@@ -40,7 +56,8 @@ fun http(baseUrl: String = "", authentication: Authentication) = AuthenticatedRe
  * Use this class similarly to the [Request]-class enriched with authentication-information.
  *
  * @property request the Request-object containing the common base of all urls that you want to call using this template
- * @property authentication [Authentication]-object containing the information how to authenticate and in which cases
+ * @property authentication [Authentication]-object containing the information how and in which cases the authentication
+ * has to be made
  */
 class AuthenticatedRequest(private val authentication: Authentication, private val request: Request ) {
 
