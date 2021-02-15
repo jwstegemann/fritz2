@@ -58,7 +58,7 @@ import org.w3c.dom.HTMLInputElement
 class CheckboxComponent :
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
-    InputFormProperties by InputFormMixinMixin(),
+    InputFormProperties by InputFormMixin(),
     SeverityProperties by SeverityMixin() {
 
     companion object {

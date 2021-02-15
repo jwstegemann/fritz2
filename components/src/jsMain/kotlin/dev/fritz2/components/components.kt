@@ -84,7 +84,7 @@ interface InputFormProperties : FormProperties {
     val readonly: DynamicComponentProperty<Boolean>
 }
 
-class InputFormMixinMixin : InputFormProperties, FormMixin() {
+class InputFormMixin : InputFormProperties, FormMixin() {
     override val readonly = DynamicComponentProperty(flowOf(false))
 }
 
@@ -93,6 +93,7 @@ interface SeverityProperties {
 
     class SeverityContext {
         val info: Severity = Severity.Info
+        val success: Severity = Severity.Success
         val warning: Severity = Severity.Warning
         val error: Severity = Severity.Error
     }
@@ -108,7 +109,7 @@ interface SeverityProperties {
         severity.values.map {
             when (it) {
                 Severity.Info -> staticStyle("${prefix}-severity-info", severityStyle.info)
-                Severity.Success -> staticStyle("${prefix}-severity-info", severityStyle.success)
+                Severity.Success -> staticStyle("${prefix}-severity-success", severityStyle.success)
                 Severity.Warning -> staticStyle("${prefix}-severity-warning", severityStyle.warning)
                 Severity.Error -> staticStyle("${prefix}-severity-error", severityStyle.error)
                 else -> StyleClass.None
