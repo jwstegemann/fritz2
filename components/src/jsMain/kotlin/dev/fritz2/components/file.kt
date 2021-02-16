@@ -54,7 +54,7 @@ open class FileSelectionComponent {
         const val eventName = "loadend"
     }
 
-    var accept: (Input.() -> Unit)? = null
+    internal var accept: (Input.() -> Unit)? = null
 
     fun accept(value: String) {
         accept = { attr("accept", value) }
@@ -93,13 +93,13 @@ open class FileSelectionComponent {
         }
     }
 
-    var fileReadingStrategy: FileReadingStrategy = base64
+    val fileReadingStrategy = ComponentProperty<FileSelectionComponent.() -> FileReadingStrategy> { base64 }
 
     fun encoding(value: String) {
-        fileReadingStrategy = plainText(value)
+        fileReadingStrategy { plainText(value) }
     }
 
-    internal var renderContext: RenderContext.(HTMLInputElement) -> Unit = { input ->
+    internal var context: RenderContext.(HTMLInputElement) -> Unit = { input ->
         pushButton(prefix = "file-button") {
             icon { fromTheme { cloudUpload } }
             element {
@@ -117,7 +117,7 @@ open class FileSelectionComponent {
         prefix: String = "file-button",
         build: PushButtonComponent.() -> Unit = {}
     ) {
-        renderContext = { input ->
+        context = { input ->
             pushButton(styling, baseClass, id, prefix) {
                 build()
                 element {
@@ -178,10 +178,10 @@ fun RenderContext.file(
                 domNode.files?.item(0)
             }.flatMapLatest {
                 domNode.value = "" // otherwise same file can't get loaded twice
-                component.fileReadingStrategy(it)
+                component.fileReadingStrategy.value(component)(it)
             }
         }.domNode
-        component.renderContext(this, inputElement)
+        component.context(this, inputElement)
     }
     return file!!
 }
@@ -232,12 +232,11 @@ fun RenderContext.files(
             component.accept?.invoke(this)
             files = changes.events.mapNotNull {
                 val list = domNode.files
-                console.log("files: ${list?.length}}")
                 if (list != null) {
                     buildList {
                         for (i in 0..list.length) {
                             val file = list.item(i)
-                            if (file != null) add(component.fileReadingStrategy(file))
+                            if (file != null) add(component.fileReadingStrategy.value(component)(file))
                         }
                     }
                 } else null
@@ -246,7 +245,7 @@ fun RenderContext.files(
                 combine(files) { it.toList() }
             }
         }.domNode
-        component.renderContext(this, inputElement)
+        component.context(this, inputElement)
     }
     return files!!
 }
