@@ -11,6 +11,7 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.SeverityStyles
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
@@ -118,7 +119,7 @@ interface SeverityProperties {
 }
 
 class SeverityMixin : SeverityProperties {
-    override val severity = NullableDynamicComponentProperty<Severity?>(flowOf(null))
+    override val severity = NullableDynamicComponentProperty<Severity?>(emptyFlow())
 }
 
 interface TextInputFormProperties : InputFormProperties {
