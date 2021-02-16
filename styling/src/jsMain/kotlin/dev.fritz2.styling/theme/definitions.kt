@@ -602,7 +602,11 @@ interface AlertStacking {
     val compact: Style<BasicParams>
     val separated: Style<BasicParams>
 }
-typealias AlertSeverity = ColorProperty
+
+interface AlertSeverity {
+    val color: ColorProperty
+    val icon: IconDefinition
+}
 
 interface AlertSeverities {
     val info: AlertSeverity

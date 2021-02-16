@@ -2358,10 +2358,22 @@ open class DefaultTheme : Theme {
     override val alert: AlertStyles = object : AlertStyles {
         override val severities: AlertSeverities
             get() = object : AlertSeverities {
-                override val info: AlertSeverity = colors.info
-                override val success: AlertSeverity = colors.success
-                override val warning: AlertSeverity = colors.warning
-                override val error: AlertSeverity = colors.danger
+                override val info: AlertSeverity = object : AlertSeverity {
+                    override val color = colors.info
+                    override val icon = icons.circleInformation
+                }
+                override val success: AlertSeverity = object : AlertSeverity {
+                    override val color = colors.success
+                    override val icon = icons.circleCheck
+                }
+                override val warning: AlertSeverity = object : AlertSeverity {
+                    override val color = colors.warning
+                    override val icon = icons.circleWarning
+                }
+                override val error: AlertSeverity = object : AlertSeverity {
+                    override val color = colors.danger
+                    override val icon = icons.circleError
+                }
             }
 
         override val variants: AlertVariants = object : AlertVariants {
