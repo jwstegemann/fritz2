@@ -151,7 +151,7 @@ class RadioComponent :
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself. Details in [CheckboxComponent]
+ * @param build a lambda expression for setting up the component itself. Details in [RadioComponent]
  */
 fun RenderContext.radio(
     styling: BasicParams.() -> Unit = {},
@@ -192,16 +192,16 @@ fun RenderContext.radio(
                 component.selectedStyle.value()
             }
         }) {
-            component.element.value.invoke(this)
             disabled(component.disabled.values)
             readOnly(component.readonly.values)
             type("radio")
             name(inputName)
             checked(store?.data ?: component.selected.values)
             value("X")
-            component.events.value.invoke(this)
             className(component.severityClassOf(Theme().radio.severity, prefix))
             store?.let { changes.states() handledBy it.update }
+            component.events.value.invoke(this)
+            component.element.value.invoke(this)
         }
 
         (::div.styled() {
