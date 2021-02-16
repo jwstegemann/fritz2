@@ -91,10 +91,12 @@ object Position {
  * @param prefix prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
  */
 @ComponentMarker
-class ToastComponent(private val styling: BasicParams.() -> Unit = {},
-                     private val baseClass: StyleClass? = null,
-                     id: String? = null,
-                     private val prefix: String = defaultInnerToastPrefix,) {
+class ToastComponent(
+    private val styling: BasicParams.() -> Unit = {},
+    private val baseClass: StyleClass? = null,
+    id: String? = null,
+    private val prefix: String = defaultInnerToastPrefix
+) {
 
     object ToastStore : RootStore<List<ToastComponent>>(listOf(), id = "toast-store") {
 
@@ -251,7 +253,7 @@ class ToastComponent(private val styling: BasicParams.() -> Unit = {},
     }
 
 
-    val id: String = id?: uniqueId()
+    val id: String = id ?: uniqueId()
 
 
     private var content: (RenderContext.() -> Unit)? = null
