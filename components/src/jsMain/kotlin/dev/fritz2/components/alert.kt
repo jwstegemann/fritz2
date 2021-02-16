@@ -288,14 +288,6 @@ fun ComponentValidationMessage.asAlert(
                 Severity.Error -> error
             }
         }
-        icon {
-            when (receiver.severity) {
-                Severity.Info -> circleInformation
-                Severity.Success -> circleCheck
-                Severity.Warning -> circleWarning
-                Severity.Error -> circleError
-            }
-        }
         variant { discreet }
         sizes { size() }
         stacking { stacking() }
