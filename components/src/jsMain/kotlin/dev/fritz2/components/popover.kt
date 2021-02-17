@@ -5,6 +5,7 @@ import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
@@ -20,10 +21,11 @@ import kotlinx.coroutines.flow.map
  * Class for configuring the appearance of a PopoverComponent.
  */
 @ComponentMarker
-class PopoverComponent : CloseButtonProperty by CloseButtonMixin(
-    ComponentProperty(Theme().popover.closeButton),
-    "popover-close-button"
-) {
+open class PopoverComponent : Component<Unit>,
+    CloseButtonProperty by CloseButtonMixin(
+        "popover-close-button",
+        ComponentProperty(Theme().popover.closeButton)
+    ) {
     companion object {
         val staticCss = staticStyle(
             "popover",
@@ -36,7 +38,7 @@ class PopoverComponent : CloseButtonProperty by CloseButtonMixin(
 
     val size = ComponentProperty<PopoverSizes.() -> Style<BasicParams>> { Theme().popover.size.normal }
 
-    var positionStyle: PopoverPlacements.() -> Style<BasicParams> = { Theme().popover.placement.top }
+    private var placementStyle: PopoverPlacements.() -> Style<BasicParams> = { Theme().popover.placement.top }
     fun placement(value: PopoverPlacements.() -> Style<BasicParams>) {
 
         when (value.invoke(Theme().popover.placement)) {
@@ -45,14 +47,13 @@ class PopoverComponent : CloseButtonProperty by CloseButtonMixin(
             Theme().popover.placement.bottom -> arrowPlacement { top }
             Theme().popover.placement.left -> arrowPlacement { right }
         }
-        positionStyle = value
+        placementStyle = value
     }
 
     val hasArrow = ComponentProperty(true)
-
-    val arrowPlacement =
-        ComponentProperty<PopoverArrowPlacements.() -> Style<BasicParams>> { Theme().popover.arrowPlacement.bottom }
-
+    val arrowPlacement = ComponentProperty<PopoverArrowPlacements.() -> Style<BasicParams>> {
+        Theme().popover.arrowPlacement.bottom
+    }
     val toggle = ComponentProperty<(RenderContext.() -> Unit)?>(null)
 
     private var header: (RenderContext.() -> Unit)? = null
@@ -76,7 +77,7 @@ class PopoverComponent : CloseButtonProperty by CloseButtonMixin(
         }
     }
 
-    var footer: (RenderContext.() -> Unit)? = null
+    private var footer: (RenderContext.() -> Unit)? = null
     fun footer(value: (RenderContext.() -> Unit)) {
         footer = {
             (::footer.styled(prefix = "popover-footer") {
@@ -97,7 +98,7 @@ class PopoverComponent : CloseButtonProperty by CloseButtonMixin(
         }
     }
 
-    var content: (RenderContext.() -> Unit)? = null
+    private var content: (RenderContext.() -> Unit)? = null
     fun content(value: (RenderContext.() -> Unit)) {
         content = {
             (::section.styled(prefix = "popover-content") {
@@ -118,16 +119,38 @@ class PopoverComponent : CloseButtonProperty by CloseButtonMixin(
         }
     }
 
-    private fun renderArrow(RenderContext: RenderContext) {
-        RenderContext.apply {
-            (::div.styled(prefix = "popover-arrow") {
-                arrowPlacement.value.invoke(Theme().popover.arrowPlacement)()
-            }){}
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ) {
+        val clickStore = object : RootStore<Boolean>(false) {
+            val toggle = handle {
+                !it
+            }
+        }
+        context.apply {
+            (::div.styled({ }, staticCss, null, prefix) {
+            }){
+                (::div.styled(prefix = "popover-toggle") {
+                    Theme().popover.toggle()
+                }) {
+                    clicks.events.map { } handledBy clickStore.toggle
+                    toggle.value?.invoke(this)
+                }
+                clickStore.data.render {
+                    if (it) {
+                        renderPopover(styling, baseClass, id, prefix, this, clickStore.toggle)
+                    }
+                }
+            }
         }
     }
 
-    fun renderPopover(
-        styling: BasicParams.() -> Unit = {},
+    private fun renderPopover(
+        styling: BoxParams.() -> Unit = {},
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = "popover",
@@ -136,22 +159,27 @@ class PopoverComponent : CloseButtonProperty by CloseButtonMixin(
     ) {
         RenderContext.apply {
             (::div.styled(styling, baseClass, id, prefix) {
-                positionStyle.invoke(Theme().popover.placement)()
+                placementStyle.invoke(Theme().popover.placement)()
                 size.value.invoke(Theme().popover.size)()
             }){
                 if (hasArrow.value) {
                     renderArrow(this)
                 }
                 if (hasCloseButton.value) {
-                    if (closeButton.value == null) {
-                        closeButton()
-                    }
-                    closeButton.value?.invoke(this, closeHandler)
+                    closeButtonRendering.value(this) handledBy closeHandler
                 }
                 header?.invoke(this)
                 content?.invoke(this)
                 footer?.invoke(this)
             }
+        }
+    }
+
+    private fun renderArrow(RenderContext: RenderContext) {
+        RenderContext.apply {
+            (::div.styled(prefix = "popover-arrow") {
+                arrowPlacement.value.invoke(Theme().popover.arrowPlacement)()
+            }){}
         }
     }
 }
@@ -197,24 +225,5 @@ fun RenderContext.popover(
     prefix: String = "popover",
     build: PopoverComponent.() -> Unit = {}
 ) {
-    val component = PopoverComponent().apply(build)
-    val clickStore = object : RootStore<Boolean>(false) {
-        val toggle = handle {
-            !it
-        }
-    }
-    (::div.styled({ }, PopoverComponent.staticCss, null, prefix) {
-    }){
-        (::div.styled(prefix = "popover-toggle") {
-            Theme().popover.toggle()
-        }) {
-            clicks.events.map { } handledBy clickStore.toggle
-            component.toggle.value?.invoke(this)
-        }
-        clickStore.data.render {
-            if (it) {
-                component.renderPopover(styling, baseClass, id, prefix, this, clickStore.toggle)
-            }
-        }
-    }
+    PopoverComponent().apply(build).render(this, styling, baseClass, id, prefix)
 }

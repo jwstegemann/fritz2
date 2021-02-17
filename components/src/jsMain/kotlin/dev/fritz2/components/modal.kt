@@ -8,6 +8,7 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.ModalSizes
 import dev.fritz2.styling.theme.ModalVariants
@@ -65,18 +66,19 @@ class DefaultOverlay(
  * management, a custom implementation is the way to go.
  * The interface also enforces to pass the rendering strategy identifier via the [Overlay.method] property.
  *
- * For a detailed understanding have a look into the [ModalComponent.show] function and the
+ * For a detailed understanding have a look into the [ModalComponent.render] function and the
  * ``ModalComponent.Companion.init`` block.
  */
 @ComponentMarker
-class ModalComponent : CloseButtonProperty by CloseButtonMixin(ComponentProperty {
-    position {
-        absolute {
-            right { none }
-            top { none }
+open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Unit>) -> Unit) : Component<SimpleHandler<Unit>>,
+    CloseButtonProperty by CloseButtonMixin("modal-close-button", ComponentProperty {
+        position {
+            absolute {
+                right { none }
+                top { none }
+            }
         }
-    }
-}, "modal-close-button") {
+    }) {
 
     class ModalsStack : RootStore<List<ModalRenderContext>>(listOf()) {
 
@@ -118,42 +120,39 @@ class ModalComponent : CloseButtonProperty by CloseButtonMixin(ComponentProperty
             }.watch()
         }
 
-        fun show(
-            styling: BasicParams.() -> Unit = {},
-            baseClass: StyleClass? = null,
-            id: String? = null,
-            prefix: String = "modal",
-            build: ModalComponent.(SimpleHandler<Unit>) -> Unit
-        ): SimpleHandler<Unit> {
-            val close = stack.pop
-            val component = ModalComponent().apply { build(close) }
-
-            val modal: ModalRenderContext = { level ->
-                box({
-                    css("--main-level: ${level}rem;")
-                    zIndex { modal(level) }
-                    component.size.value.invoke(Theme().modal.sizes)()
-                    component.variant.value.invoke(Theme().modal.variants)()
-                    styling()
-                }, baseClass, id, prefix) {
-                    if (component.hasCloseButton.value) {
-                        if (component.closeButton.value == null) {
-                            component.closeButton()
-                        }
-                        component.closeButton.value?.let { it(this, close) }
-                    }
-
-                    component.content.value?.let { it() }
-                }
-            }
-
-            return stack.push(modal)
-        }
     }
 
     val content = ComponentProperty<(RenderContext.() -> Unit)?>(null)
     val size = ComponentProperty<ModalSizes.() -> Style<BasicParams>> { Theme().modal.sizes.normal }
     val variant = ComponentProperty<ModalVariants.() -> Style<BasicParams>> { Theme().modal.variants.auto }
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ): SimpleHandler<Unit> {
+        val close = stack.pop
+        val component = this.apply { build(close) }
+
+        val modal: ModalRenderContext = { level ->
+            box({
+                css("--main-level: ${level}rem;")
+                zIndex { modal(level) }
+                component.size.value.invoke(Theme().modal.sizes)()
+                component.variant.value.invoke(Theme().modal.variants)()
+                styling(this as BoxParams)
+            }, baseClass, id, prefix) {
+                if (component.hasCloseButton.value) {
+                    component.closeButtonRendering.value(this) handledBy close
+                }
+                component.content.value?.let { it() }
+            }
+        }
+
+        return stack.push(modal)
+    }
 }
 
 
@@ -208,12 +207,10 @@ class ModalComponent : CloseButtonProperty by CloseButtonMixin(ComponentProperty
  * @param build a lambda expression for setting up the component itself. Details in [ModalComponent]
  *              be aware that a [SimpleHandler<Unit>] is injected in order to apply it to some closing flow inside!
  */
-fun modal(
+fun RenderContext.modal(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "modal",
     build: ModalComponent.(SimpleHandler<Unit>) -> Unit
-): SimpleHandler<Unit> {
-    return ModalComponent.show(styling, baseClass, id, prefix, build)
-}
+): SimpleHandler<Unit> = ModalComponent(build).render(this, styling, baseClass, id, prefix)

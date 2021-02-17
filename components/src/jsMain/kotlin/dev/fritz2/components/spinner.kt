@@ -4,6 +4,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
@@ -46,7 +47,8 @@ import org.w3c.dom.HTMLDivElement
  *
  */
 @ComponentMarker
-class SpinnerComponent : EventProperties<HTMLDivElement> by EventMixin() {
+open class SpinnerComponent : Component<Unit>,
+    EventProperties<HTMLDivElement> by EventMixin() {
     companion object {
         val staticCss = staticStyle(
             "spinner",
@@ -69,6 +71,45 @@ class SpinnerComponent : EventProperties<HTMLDivElement> by EventMixin() {
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val speed = ComponentProperty("0.5s")
     val thickness = ComponentProperty<Thickness.() -> Property> { Theme().borderWidths.normal }
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ) {
+
+        context.apply {
+            if (icon.value == null) {
+                (::div.styled(styling, baseClass + staticCss, id, prefix) {
+                    css("animation: loading ${speed.value} linear infinite;")
+                    border { width { thickness.value(Theme().borderWidths) } }
+                    width { "1rem" }
+                    height { "1rem" }
+                }) {
+                    events.value.invoke(this)
+                }
+            } else {
+                div {
+                    icon({
+                        css(
+                            """
+                @keyframes spinner {
+                  to {transform: rotate(360deg);}
+                }    
+                animation: spinner ${speed.value} linear infinite;
+            """.trimIndent()
+                        )
+                        styling(this as BoxParams)
+                    }, baseClass, id, prefix) {
+                        def(icon.value!!.invoke(Theme().icons))
+                    }
+                    events.value.invoke(this)
+                }
+            }
+        }
+    }
 }
 
 
@@ -109,33 +150,5 @@ fun RenderContext.spinner(
     prefix: String = "spinner",
     build: SpinnerComponent.() -> Unit
 ) {
-    val component = SpinnerComponent().apply(build)
-
-    if (component.icon.value == null) {
-        (::div.styled(styling, baseClass + SpinnerComponent.staticCss, id, prefix) {
-            css("animation: loading ${component.speed.value} linear infinite;")
-            border { width { component.thickness.value(Theme().borderWidths) } }
-            width { "1rem" }
-            height { "1rem" }
-        }) {
-            component.events.value.invoke(this)
-        }
-    } else {
-        div {
-            icon({
-                css(
-                    """
-                @keyframes spinner {
-                  to {transform: rotate(360deg);}
-                }    
-                animation: spinner ${component.speed.value} linear infinite;
-            """.trimIndent()
-                )
-                styling()
-            }, baseClass, id, prefix) {
-                def(component.icon.value!!.invoke(Theme().icons))
-            }
-            component.events.value.invoke(this)
-        }
-    }
+    SpinnerComponent().apply(build).render(this, styling, baseClass, id, prefix)
 }

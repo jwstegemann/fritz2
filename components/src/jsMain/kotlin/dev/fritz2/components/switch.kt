@@ -11,6 +11,7 @@ import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
@@ -62,7 +63,8 @@ import org.w3c.dom.HTMLInputElement
  * ```
  */
 @ComponentMarker
-class SwitchComponent :
+open class SwitchComponent(protected val store: Store<Boolean>? = null) :
+    Component<Label>,
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
@@ -88,7 +90,7 @@ class SwitchComponent :
 
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().switch.sizes.normal }
 
-    var label: (Div.() -> Unit)? = null
+    private var label: (Div.() -> Unit)? = null
     fun label(value: String) {
         label = {
             +value
@@ -109,6 +111,67 @@ class SwitchComponent :
     val dotStyle = ComponentProperty<Style<BasicParams>> {}
     var checkedStyle = ComponentProperty(Theme().switch.checked)
     val checked = DynamicComponentProperty(flowOf(false))
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ): Label {
+        val inputId = (id ?: uniqueId()) + "-input"
+
+        return with(context) {
+            (::label.styled(
+                baseClass = baseClass,
+                id = id,
+                prefix = prefix
+            ) {
+                size.value.invoke(Theme().switch.sizes)()
+            }) {
+                `for`(inputId)
+                (::input.styled(
+                    baseClass = switchInputStaticCss,
+                    prefix = prefix,
+                    id = inputId
+                ) {
+                    Theme().switch.input()
+                    children("&[checked] + div") {
+                        checkedStyle.value()
+                    }
+                }) {
+                    disabled(disabled.values)
+                    readOnly(readonly.values)
+                    type("checkbox")
+                    checked(store?.data ?: checked.values)
+                    events.value.invoke(this)
+                    store?.let { changes.states() handledBy it.update }
+                    className(severityClassOf(Theme().switch.severity, prefix))
+                    element.value.invoke(this)
+                }
+
+                (::div.styled() {
+                    Theme().switch.default()
+                    styling()
+                }) {
+                    (::div.styled() {
+                        Theme().switch.dot()
+                        dotStyle.value()
+                    }) {
+
+                    }
+                }
+
+                label?.let {
+                    (::div.styled() {
+                        labelStyle.value()
+                    }){
+                        it(this)
+                    }
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -156,57 +219,4 @@ fun RenderContext.switch(
     id: String? = null,
     prefix: String = "switchComponent",
     build: SwitchComponent.() -> Unit = {}
-): Label {
-    val component = SwitchComponent().apply(build)
-    val inputId = (id ?: uniqueId()) + "-input"
-
-
-    return (::label.styled(
-        baseClass = baseClass,
-        id = id,
-        prefix = prefix
-    ) {
-        component.size.value.invoke(Theme().switch.sizes)()
-    }) {
-        `for`(inputId)
-        (::input.styled(
-            baseClass = switchInputStaticCss,
-            prefix = prefix,
-            id = inputId
-        ) {
-            Theme().switch.input()
-            children("&[checked] + div") {
-                component.checkedStyle.value()
-            }
-        }) {
-            disabled(component.disabled.values)
-            readOnly(component.readonly.values)
-            type("checkbox")
-            checked(store?.data ?: component.checked.values)
-            component.events.value.invoke(this)
-            store?.let { changes.states() handledBy it.update }
-            className(component.severityClassOf(Theme().switch.severity, prefix))
-            component.element.value.invoke(this)
-        }
-
-        (::div.styled() {
-            Theme().switch.default()
-            styling()
-        }) {
-            (::div.styled() {
-                Theme().switch.dot()
-                component.dotStyle.value()
-            }) {
-
-            }
-        }
-
-        component.label?.let {
-            (::div.styled() {
-                component.labelStyle.value()
-            }){
-                it(this)
-            }
-        }
-    }
-}
+): Label = SwitchComponent(store).apply(build).render(this, styling, baseClass, id, prefix)
