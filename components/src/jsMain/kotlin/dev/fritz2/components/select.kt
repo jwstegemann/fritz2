@@ -11,7 +11,10 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
 
 /**
  * This class offers configuration for a selectField element:
@@ -112,7 +115,7 @@ class SelectFieldComponent<T> : InputFormProperties by InputFormMixin(), Severit
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
     val icon = ComponentProperty<Icons.() -> IconDefinition> { chevronDown }
 
-    val selectedItem = NullableDynamicComponentProperty<T>(flowOf(null))
+    val selectedItem = NullableDynamicComponentProperty<T>(emptyFlow())
 
     class EventsContext<T>(val selected: Flow<T>) {
     }

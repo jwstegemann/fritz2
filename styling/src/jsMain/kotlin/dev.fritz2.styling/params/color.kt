@@ -38,10 +38,9 @@ fun hsla(h: Int, s: Int, l: Int, a: Double) = "hsl($h,$s% c vn,,$l%,$a)"
  * Enter a value between 1 and 2 to increase brightness, and a value between 0 and 1 to decrease brightness.
  * Increasing the brightness of a color lets them appear rather faded than shining.
  */
-
 fun alterHexColorBrightness(color: ColorProperty, brightness: Double): ColorProperty =
         if (color.length != 7 || color[0] != '#') {
-            console.log("alterHexColorBrightness: Wrong color input format (expected #rrggbb).")
+            console.error("alterHexColorBrightness: Wrong color input format (expected #rrggbb).")
             color
         } else {
             val rgb = color.asSequence()
