@@ -8,6 +8,7 @@ import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.ScaledValueProperty
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
+import org.w3c.dom.HTMLDivElement
 
 /**
  * This base component class for stacking components offer some _configuration_ properties.
@@ -63,7 +64,7 @@ import dev.fritz2.styling.staticStyle
  *  ```
  */
 @ComponentMarker
-abstract class StackComponent {
+abstract class StackComponent : EventProperties<HTMLDivElement> by EventMixin() {
     companion object {
         val staticCss = staticStyle(
             "stack",
@@ -149,6 +150,7 @@ fun RenderContext.stackUp(
         styling()
     }, baseClass = baseClass + StackComponent.staticCss, prefix = prefix, id = id) {
         component.items.value(this)
+        component.events.value(this)
     }
 }
 
@@ -223,5 +225,6 @@ fun RenderContext.lineUp(
         styling()
     }, baseClass = baseClass + StackComponent.staticCss, prefix = prefix, id = id) {
         component.items.value(this)
+        component.events.value(this)
     }
 }

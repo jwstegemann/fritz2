@@ -277,7 +277,6 @@ fun RenderContext.pushButton(
         component.variant.value.invoke(Theme().button.variants)()
         component.size.value.invoke(Theme().button.sizes)()
     }) {
-        component.element.value.invoke(this)
         disabled(component.disabled.values)
         if (component.text == null) {
             component.renderIcon(this, component.centerIconStyle, component.centerSpinnerStyle)
@@ -290,8 +289,8 @@ fun RenderContext.pushButton(
                 component.renderIcon(this, component.rightIconStyle, component.rightSpinnerStyle)
             }
         }
-
         component.events.value.invoke(this)
+        component.element.value.invoke(this)
     }
 }
 
