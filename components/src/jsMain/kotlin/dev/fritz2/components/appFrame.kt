@@ -32,7 +32,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * By default is a hamburger-button.
  *
  * The rendering function is used by the component factory functions [appFrame], so it is
- * not meant to be called directly unless you plan to implement your own button.
+ * not meant to be called directly unless you plan to implement your own appFrame.
  */
 @ExperimentalCoroutinesApi
 open class AppFrameComponent() {
@@ -100,10 +100,10 @@ open class AppFrameComponent() {
         boxShadow(sm = { flat }, md = { none })
     }
 
-    var brand = ComponentProperty<Div.() -> Unit> {}
-    var header = ComponentProperty<RenderContext.() -> Unit> {}
-    var actions = ComponentProperty<RenderContext.() -> Unit> {}
-    var sidebarToggle = ComponentProperty<RenderContext.(SimpleHandler<Unit>) -> Unit> { sidebarToggle ->
+    val brand = ComponentProperty<Div.() -> Unit> {}
+    val header = ComponentProperty<RenderContext.() -> Unit> {}
+    val actions = ComponentProperty<RenderContext.() -> Unit> {}
+    val sidebarToggle = ComponentProperty<RenderContext.(SimpleHandler<Unit>) -> Unit> { sidebarToggle ->
         clickButton({
             display(md = { none })
             padding { none }
@@ -113,10 +113,10 @@ open class AppFrameComponent() {
             icon { fromTheme { menu } }
         } handledBy sidebarToggle
     }
-    var nav = ComponentProperty<TextElement.() -> Unit> {}
-    var main = ComponentProperty<TextElement.() -> Unit> {}
-    var footer = ComponentProperty<(TextElement.() -> Unit)?>(null)
-    var tabs = ComponentProperty<(Div.() -> Unit)?>(null)
+    val nav = ComponentProperty<TextElement.() -> Unit> {}
+    val main = ComponentProperty<TextElement.() -> Unit> {}
+    val footer = ComponentProperty<(TextElement.() -> Unit)?>(null)
+    val tabs = ComponentProperty<(Div.() -> Unit)?>(null)
 
 
     fun render(

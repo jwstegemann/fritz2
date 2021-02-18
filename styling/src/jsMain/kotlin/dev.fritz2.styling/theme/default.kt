@@ -2803,6 +2803,15 @@ open class DefaultTheme : Theme {
             }
         }
 
+        override val activeNavLink: Style<FlexParams> = {
+            background { color { "rgba(0,0,0,0.2)" } }
+            borders {
+                left {
+                    color { lightGray.important }
+                }
+            }
+        }
+
         override val navSection: Style<BasicParams> = {
             paddings {
                 vertical { "0.5rem" }
