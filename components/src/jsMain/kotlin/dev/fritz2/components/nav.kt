@@ -55,7 +55,9 @@ fun RenderContext.navLink(
             icon(build = component.icon.value)
             a { component.text.values.asText() }
         }
-        clickEvents = clicks.stopImmediatePropagation()
+        events {
+            clickEvents = clicks.stopImmediatePropagation()
+        }
 
     }
 
