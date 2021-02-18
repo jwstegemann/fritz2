@@ -661,6 +661,9 @@ interface ToastButton {
     val close: Style<BasicParams>
 }
 
+/**
+ * definition of the theme's appFrame
+ */
 interface AppFrameStyles {
     val headerHeight: Property
     val footerMinHeight: Property
