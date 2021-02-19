@@ -204,6 +204,8 @@ interface Theme {
     val alert: AlertStyles
 
     val toast: ToastStyles
+
+    val appFrame: AppFrameStyles
 }
 
 /**
