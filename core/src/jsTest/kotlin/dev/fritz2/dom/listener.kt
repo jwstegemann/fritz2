@@ -22,7 +22,7 @@ import kotlin.test.assertEquals
 class ListenerTest {
 
     @Test
-    fun testListenerForChangeEvent() = runTest {
+    fun testListenerForChangeAndInputEvent() = runTest {
         initDocument()
 
         val inputId = uniqueId()
@@ -43,8 +43,8 @@ class ListenerTest {
             }
         }
 
+        // this delay seems necessary; not sure why
         delay(100)
-
         val input = document.getElementById(inputId).unsafeCast<HTMLInputElement>()
         val result = document.getElementById(resultId).unsafeCast<HTMLDivElement>()
 
@@ -52,18 +52,40 @@ class ListenerTest {
 
         input.value = "test1"
         input.dispatchEvent(Event("change"))
-        delay(100)
-        assertEquals("test1", result.textContent, "wrong dom content of result-node")
+        pollUntilItSucceeds {
+            assertEquals("test1", result.textContent, "wrong dom content of result-node")
+        }
 
         input.value = "test2"
         input.dispatchEvent(Event("change"))
-        delay(100)
-        assertEquals("test2", result.textContent, "wrong dom content of result-node")
+        pollUntilItSucceeds {
+            assertEquals("test2", result.textContent, "wrong dom content of result-node")
+        }
 
         input.value = "test3"
         input.dispatchEvent(Event("input"))
-        delay(100)
-        assertEquals("test3", result.textContent, "wrong dom content of result-node")
+        // It seems to need this, 200 was not enough.
+        pollUntilItSucceeds {
+            assertEquals("test3", result.textContent, "wrong dom content of result-node")
+        }
+    }
+
+    suspend fun pollUntilItSucceeds(time: Long=1500, block: () -> Unit) {
+        // note this seems to fix some flakiness; probably would be good to think about
+        // a more generalized approach to polling and remove all the delays from the tests
+        // as this is flaky and slow
+        val step = 10L
+        var waited = 0L
+        while(waited<time) {
+            try {
+                block.invoke()
+                return
+            } catch (e: AssertionError) {
+                delay(step)
+                waited += step
+            }
+        }
+        block.invoke()
     }
 
     @Test
