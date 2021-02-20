@@ -35,6 +35,7 @@ class ListenerTest {
                 input(id = inputId) {
                     value(store.data)
                     changes.values() handledBy store.update
+                    inputs.values() handledBy store.update
                 }
                 div(id = resultId) {
                     store.data.asText()
@@ -58,6 +59,11 @@ class ListenerTest {
         input.dispatchEvent(Event("change"))
         delay(100)
         assertEquals("test2", result.textContent, "wrong dom content of result-node")
+
+        input.value = "test3"
+        input.dispatchEvent(Event("input"))
+        delay(100)
+        assertEquals("test3", result.textContent, "wrong dom content of result-node")
     }
 
     @Test
