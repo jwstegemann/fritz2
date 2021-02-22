@@ -41,7 +41,7 @@ open class AppFrameComponent() {
             staticStyle(
                 """
                 body {
-                    height: min(100vh, 100%);
+                    height: 100vh;
                     max-height: -webkit-fill-available;
                     width: 100vw;
                     display: grid;
