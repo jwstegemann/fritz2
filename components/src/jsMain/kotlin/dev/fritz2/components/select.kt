@@ -38,7 +38,7 @@ class SelectFieldComponent<T> : InputFormProperties by InputFormMixin(), Severit
         val staticCss = staticStyle(
             "selectFieldContainer",
             """
-                  width: 50%;
+                  width: 100%;
                   height: fit-content;
                   position: relative;
                   outline:none;
