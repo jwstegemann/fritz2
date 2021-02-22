@@ -6,7 +6,6 @@ import dev.fritz2.components.FormControlComponent.Control
 import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.components.validation.validationMessages
-import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -17,7 +16,6 @@ import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import selectField
 
 
@@ -265,7 +263,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.textArea,
-        build: TextAreaComponent.() -> Unit
+        build: TextAreaComponent.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
         registerControl(ControlNames.textArea,
@@ -286,7 +284,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         store: Store<Boolean>? = null,
         id: String? = null,
         prefix: String = ControlNames.checkbox,
-        build: CheckboxComponent.() -> Unit
+        build: CheckboxComponent.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
         registerControl(ControlNames.checkbox,
@@ -310,7 +308,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.checkboxGroup,
-        build: CheckboxGroupComponent<T>.() -> Unit
+        build: CheckboxGroupComponent<T>.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
         registerControl(ControlNames.checkboxGroup,
@@ -332,7 +330,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.radioGroup,
-        build: RadioGroupComponent<T>.() -> Unit
+        build: RadioGroupComponent<T>.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
         registerControl(ControlNames.radioGroup,
@@ -354,7 +352,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = ControlNames.selectField,
-        build: SelectFieldComponent<T>.() -> Unit
+        build: SelectFieldComponent<T>.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
         registerControl(ControlNames.selectField,
