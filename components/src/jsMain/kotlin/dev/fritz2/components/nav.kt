@@ -1,7 +1,7 @@
 import dev.fritz2.components.*
+import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.stopImmediatePropagation
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
@@ -63,9 +63,9 @@ fun RenderContext.navLink(
     id: String? = null,
     prefix: String = "navlink",
     build: NavLinkComponent.() -> Unit = {}
-): Listener<MouseEvent, HTMLElement> {
+): Listener<MouseEvent> {
     val component = NavLinkComponent().apply(build)
-    var clickEvents: Listener<MouseEvent, HTMLElement>? = null
+    var clickEvents: Listener<MouseEvent>? = null
 
     lineUp({
         Theme().appFrame.navLink()

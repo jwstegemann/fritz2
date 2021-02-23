@@ -43,7 +43,7 @@ fun DomListener<Event, HTMLInputElement>.values(): Flow<String> =
 /**
  * Gives you the new value as [String] from the targeting [Element].
  */
-fun Listener<InputEvent, HTMLInputElement>.values(): Flow<String> =
+fun DomListener<InputEvent, HTMLInputElement>.values(): Flow<String> =
     events.map { it.target.unsafeCast<HTMLInputElement>().value }
 
 /**
@@ -55,7 +55,7 @@ fun DomListener<Event, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
 /**
  * Gives you the new value as [Double] from the targeting [Element].
  */
-fun Listener<InputEvent, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
+fun DomListener<InputEvent, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
     events.map { it.target.unsafeCast<HTMLInputElement>().valueAsNumber }
 
 /**
