@@ -13,6 +13,8 @@ import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import org.khronos.webgl.Uint8Array
 import org.w3c.files.Blob
 import org.w3c.files.BlobPropertyBag
@@ -146,6 +148,7 @@ class WebSocketTests {
         delay(200)
     }
 
+    @Serializable
     data class SocketPerson(val name: String, val age: Int, val _id: String = uniqueId())
 
     private val nameLens = buildLens("name", SocketPerson::name) { p, v -> p.copy(name = v) }
@@ -154,17 +157,8 @@ class WebSocketTests {
 
     object PersonResource : Resource<SocketPerson, String> {
         override val idProvider: IdProvider<SocketPerson, String> = SocketPerson::_id
-        override fun serialize(item: SocketPerson): String = JSON.stringify(item)
-        override fun deserialize(source: String): SocketPerson {
-            val obj = JSON.parse<dynamic>(source)
-            return SocketPerson(obj.name as String, obj.age as Int, obj._id as String)
-        }
-
-        override fun serializeList(items: List<SocketPerson>): String = JSON.stringify(items)
-        override fun deserializeList(source: String): List<SocketPerson> {
-            val list = JSON.parse<Array<dynamic>>(source)
-            return list.map { obj -> SocketPerson(obj.name as String, obj.age as Int, obj._id as String) }
-        }
+        override fun serialize(item: SocketPerson): String = Json.encodeToString(SocketPerson.serializer(), item)
+        override fun deserialize(source: String): SocketPerson = Json.decodeFromString(SocketPerson.serializer(), source)
     }
 
     @Test

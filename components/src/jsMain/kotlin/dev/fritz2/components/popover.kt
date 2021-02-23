@@ -62,7 +62,7 @@ class PopoverComponent : CloseButtonProperty by CloseButtonMixin(
 
     val toggle = ComponentProperty<(RenderContext.() -> Unit)?>(null)
 
-    var header: (RenderContext.() -> Unit)? = null
+    private var header: (RenderContext.() -> Unit)? = null
     fun header(value: (RenderContext.() -> Unit)) {
         header = {
             (::header.styled(prefix = "popover-header") {

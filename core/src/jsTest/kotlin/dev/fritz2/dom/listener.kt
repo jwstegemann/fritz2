@@ -22,11 +22,10 @@ import kotlin.test.assertEquals
 class ListenerTest {
 
     @Test
-    fun testListenerForChangeEvent() = runTest {
+    fun testListenerForChangeAndInputEvent() = runTest {
         initDocument()
 
         val inputId = uniqueId()
-        val resultId = uniqueId()
 
         val store = object : RootStore<String>("start") {}
 
@@ -35,37 +34,34 @@ class ListenerTest {
                 input(id = inputId) {
                     value(store.data)
                     changes.values() handledBy store.update
-                }
-                div(id = resultId) {
-                    store.data.asText()
+                    inputs.values() handledBy store.update
                 }
             }
         }
 
+        // wait for initial rendering to finish
         delay(100)
-
         val input = document.getElementById(inputId).unsafeCast<HTMLInputElement>()
-        val result = document.getElementById(resultId).unsafeCast<HTMLDivElement>()
 
-        assertEquals("start", result.textContent, "wrong dom content of result-node")
+        assertEquals("start", input.value, "wrong dom content of result-node")
 
         input.value = "test1"
         input.dispatchEvent(Event("change"))
-        delay(100)
-        assertEquals("test1", result.textContent, "wrong dom content of result-node")
+        delay(200)
+        assertEquals("test1", input.value, "wrong dom content of result-node")
 
         input.value = "test2"
-        input.dispatchEvent(Event("change"))
-        delay(100)
-        assertEquals("test2", result.textContent, "wrong dom content of result-node")
+        input.dispatchEvent(Event("input"))
+        delay(200)
+        assertEquals("test2", input.value, "wrong dom content of result-node")
     }
 
     @Test
     fun testListenerForClickEvent() = runTest {
         initDocument()
 
-        val resultId = "result2"
-        val buttonId = "button2"
+        val resultId = uniqueId()
+        val buttonId = uniqueId()
 
         val store = object : RootStore<String>("start") {
             var countHandlerCalls = 0
@@ -110,8 +106,8 @@ class ListenerTest {
     fun testListenerForMultipleClickEvent() = runTest {
         initDocument()
 
-        val resultId = "result3"
-        val buttonId = "button3"
+        val resultId = uniqueId()
+        val buttonId = uniqueId()
 
         val store = object : RootStore<String>("") {
             var countHandlerCalls = 0
@@ -169,8 +165,8 @@ class ListenerTest {
     fun testListenerForKeyboardEvent() = runTest {
         initDocument()
 
-        val resultId = "result4"
-        val inputId = "button4"
+        val resultId = uniqueId()
+        val inputId = uniqueId()
 
         val store = object : RootStore<String>("") {
             var countHandlerCalls = 0
