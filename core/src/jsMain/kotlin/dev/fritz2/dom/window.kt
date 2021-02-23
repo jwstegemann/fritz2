@@ -9,22 +9,17 @@ import org.w3c.dom.Window
 import org.w3c.dom.events.Event
 
 /**
- * Object of the Browser Window expanded with [Listener]s to handle easily the [Event]
+ * Object of the Browser Window expanded with [DomListener]s to handle easily the [Event]
  */
-object BrowserWindow: WithWindowEvents()  {
-    override val browserWindow: Window = window
-}
-
-
-abstract class WithWindowEvents {
-    abstract val browserWindow: Window
+object Window  {
+    private val browserWindow: Window = window
 
     /**
-     * Creates a [BrowserWindowListener] on the browser Window
+     * Creates a [WindowListener] on the browser Window
      *
      * @param type [EventType] to listen for
      */
-    private fun <E : Event> subscribe(type: EventType<E>): BrowserWindowListener<E> =  BrowserWindowListener(
+    private fun <E : Event> subscribe(type: EventType<E>): WindowListener<E> =  WindowListener(
         callbackFlow {
         val listener: (Event) -> Unit = {
             offer(it.unsafeCast<E>())
@@ -113,3 +108,4 @@ abstract class WithWindowEvents {
     val waitings by lazy { subscribe(Events.waiting) }
     val wheels by lazy { subscribe(Events.wheel) }
 }
+

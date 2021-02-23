@@ -365,10 +365,10 @@ open class Tag<out E : Element>(
     /**
      * Connects [Event]s to a [Handler].
      *
-     * @receiver [Listener] which contains the [Event]
+     * @receiver [DomListener] which contains the [Event]
      * @param handler that will handle the fired [Event]
      */
-    infix fun <E : Event, X : Element> Listener<E, X>.handledBy(handler: Handler<Unit>) =
+    infix fun <E : Event, X : Element> DomListener<E, X>.handledBy(handler: Handler<Unit>) =
         handler.collect(this.events.map { }, job)
 
     /**

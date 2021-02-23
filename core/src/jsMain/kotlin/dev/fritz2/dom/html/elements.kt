@@ -15,7 +15,7 @@ import org.w3c.dom.*
  * Exposes the JavaScript [HTMLAnchorElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAnchorElement) to Kotlin
  */
 open class A(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLAnchorElement>("a", id, baseClass, job),
-    WithText<HTMLAnchorElement> {
+    WithText<HTMLAnchorElement>{
     fun target(value: String) = attr("target", value)
 	fun target(value: Flow<String>) = attr("target", value)
 

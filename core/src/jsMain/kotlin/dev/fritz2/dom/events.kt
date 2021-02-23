@@ -9,16 +9,16 @@ import org.w3c.dom.events.Event
 
 
 /**
- * Offers [Listener]s for all DOM-events available.
+ * Offers [DomListener]s for all DOM-events available.
  */
 abstract class WithEvents<out T : Element> : WithDomNode<T> {
 
     /**
-     * Creates a [Listener] on a DOM-element.
+     * Creates a [DomListener] on a DOM-element.
      *
      * @param type [EventType] to listen for
      */
-    private fun <E : Event> subscribe(type: EventType<E>): Listener<E, T> = Listener(callbackFlow {
+    private fun <E : Event> subscribe(type: EventType<E>): DomListener<E, T> = DomListener(callbackFlow {
         val listener: (Event) -> Unit = {
             offer(it.unsafeCast<E>())
         }

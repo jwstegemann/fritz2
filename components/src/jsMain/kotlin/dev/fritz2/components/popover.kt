@@ -2,7 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
-import dev.fritz2.dom.BrowserWindow
+import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -14,9 +14,8 @@ import dev.fritz2.styling.theme.PopoverArrowPlacements
 import dev.fritz2.styling.theme.PopoverPlacements
 import dev.fritz2.styling.theme.PopoverSizes
 import dev.fritz2.styling.theme.Theme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import kotlinx.browser.document
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.NamedNodeMap
 import org.w3c.dom.events.EventTarget
 import org.w3c.dom.get
@@ -159,6 +158,11 @@ class PopoverComponent : CloseButtonProperty by CloseButtonMixin(
                 header?.invoke(this)
                 content?.invoke(this)
                 footer?.invoke(this)
+
+                if (closeOnBlur.value) {
+                    blurs.events.debounce(200).map { } handledBy closeHandler
+                }
+
             }
         }
     }
@@ -167,7 +171,7 @@ class PopoverComponent : CloseButtonProperty by CloseButtonMixin(
         return composedPath.asSequence().any {
             val dom = it.asDynamic()
             val namedNodeMap = dom.attributes.unsafeCast<NamedNodeMap>()
-            namedNodeMap != undefined && namedNodeMap["data-popover-for"]?.value == popoverId || dom.id == popoverId
+            ( namedNodeMap != undefined && namedNodeMap["data-popover-for"]?.value == popoverId ) || dom.id == popoverId
         }
     }
 
@@ -232,29 +236,38 @@ fun RenderContext.popover(
     }
 
     if( component.closeOnBlur.value ) {
-        BrowserWindow.clicks.map {
-            !component.hasPopOverElementInto(it.composedPath(), popoverId)
+        Window.clicks.composedPath().map {
+            !component.hasPopOverElementInto(it, popoverId)
         } handledBy clickStore.close
     }
 
     if( component.closeOnEscape.value ) {
-        BrowserWindow.keyups.map {
+        Window.keyups.map {
             it.keyCode == Keys.Tab.code && !component.hasPopOverElementInto(it.composedPath(), popoverId) || it.keyCode == Keys.Escape.code
         } handledBy clickStore.close
     }
 
-    (::div.styled({ }, PopoverComponent.staticCss, null, prefix) {
-    }){
+    (::div.styled({ }, PopoverComponent.staticCss, null, prefix) { }){
         (::div.styled(prefix = "popover-toggle", id = "popover-toggle-$popoverId") {
             Theme().popover.toggle()
         }) {
-            attr("data-popover-for",popoverId)
+            attr("data-popover-for", popoverId)
             clicks.events.map { } handledBy clickStore.toggle
             component.toggle.value?.invoke(this)
         }
+
         clickStore.data.render {
             if (it) {
-                component.renderPopover(styling, baseClass, id, prefix, this, clickStore.toggle)
+                component.renderPopover(styling, baseClass, popoverId, prefix, this, clickStore.toggle)
+            }
+        }
+
+        clickStore.data.render {
+            if( it ) {
+                try {
+                    document.getElementById(popoverId).asDynamic().focus()
+                } catch (e: Exception) {
+                }
             }
         }
     }
