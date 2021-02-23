@@ -370,7 +370,10 @@ open class Request(
  */
 suspend fun Response.getBody() = this.text().await()
 
-suspend fun Response.getHeaders() = this.headers
+/**
+ * returns the [Headers] from the given [Response]
+ */
+fun Response.getHeaders() = this.headers
 
 /**
  * extracts the body as blob from the given [Response]
