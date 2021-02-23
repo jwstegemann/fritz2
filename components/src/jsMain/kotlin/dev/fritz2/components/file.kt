@@ -5,6 +5,8 @@ import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.DisplayValues
 import dev.fritz2.styling.params.styled
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
@@ -20,21 +22,23 @@ import org.w3c.files.File as jsFile
 typealias FileReadingStrategy = (jsFile) -> Flow<File>
 
 /**
- * This class is the _configuration_ for file inputs.
+ * This abstract class is the base _configuration_ for file inputs.
+ * It has two specific implementations:
+ * - [SingleFileSelectionComponent] for handling one file input
+ * - [MultiFileSelectionComponent] for handling an arbitrary amount of files
  *
- * There are two functions [file] and [files] for creating a _configuration_ context
- * for a single or multiple file selection. In both of them you can create a [button] which has the same
- * options like a [pushButton].
+ * Both specific implementations only differ in their rendering implementation, but share the same configuration
+ * options, like creating a [button] which has the same options like a [pushButton].
  *
  * Much more important are the _configuration_ functions. You can configure the following aspects:
  *  - the [accept](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept) property
  *  - the [FileReadingStrategy] for interpreting the content of the file
  *
  * This can be done within a functional expression that is the last parameter of the two files functions, called
- * ``build``. It offers an initialized instance of this [FileSelectionComponent] class as receiver, so every mutating
+ * ``build``. It offers an initialized instance of this [FileSelectionBaseComponent] class as receiver, so every mutating
  * method can be called for configuring the desired state for rendering the button.
  *
- * The following example shows the usage:
+ * The following example shows the usage ([SingleFileSelectionComponent]):
  * ```
  * file {
  *   accept("application/pdf")
@@ -48,13 +52,13 @@ typealias FileReadingStrategy = (jsFile) -> Flow<File>
  * ```
  */
 @ComponentMarker
-open class FileSelectionComponent {
+abstract class FileSelectionBaseComponent {
 
     companion object {
         const val eventName = "loadend"
     }
 
-    internal var accept: (Input.() -> Unit)? = null
+    protected var accept: (Input.() -> Unit)? = null
 
     fun accept(value: String) {
         accept = { attr("accept", value) }
@@ -93,13 +97,13 @@ open class FileSelectionComponent {
         }
     }
 
-    val fileReadingStrategy = ComponentProperty<FileSelectionComponent.() -> FileReadingStrategy> { base64 }
+    val fileReadingStrategy = ComponentProperty<FileSelectionBaseComponent.() -> FileReadingStrategy> { base64 }
 
     fun encoding(value: String) {
         fileReadingStrategy { plainText(value) }
     }
 
-    internal var context: RenderContext.(HTMLInputElement) -> Unit = { input ->
+    protected var context: RenderContext.(HTMLInputElement) -> Unit = { input ->
         pushButton(prefix = "file-button") {
             icon { fromTheme { cloudUpload } }
             element {
@@ -131,7 +135,87 @@ open class FileSelectionComponent {
 }
 
 /**
- * This component generates a single file selection context.
+ * Specific component for handling the upload for one file at once.
+ *
+ * For the common configuration options @see [FileSelectionBaseComponent].
+ */
+open class SingleFileSelectionComponent : FileSelectionBaseComponent(), Component<Flow<File>> {
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ): Flow<File> {
+        var file: Flow<File>? = null
+        context.apply {
+            (::div.styled(styling, baseClass, id, prefix) {}) {
+                val inputElement = (::input.styled { display { none } }) {
+                    type("file")
+                    accept?.invoke(this)
+                    file = changes.events.mapNotNull {
+                        domNode.files?.item(0)
+                    }.flatMapLatest {
+                        domNode.value = "" // otherwise same file can't get loaded twice
+                        fileReadingStrategy.value(this@SingleFileSelectionComponent)(it)
+                    }
+                }.domNode
+                context(this, inputElement)
+            }
+        }
+        return file!!
+    }
+}
+
+/**
+ * Specific component for handling the upload for an arbitrary amount of files.
+ *
+ * For the common configuration options @see [FileSelectionBaseComponent].
+ */
+open class MultiFileSelectionComponent : FileSelectionBaseComponent(), Component<Flow<List<File>>> {
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ): Flow<List<File>> {
+        var files: Flow<List<File>>? = null
+        context.apply {
+            (::div.styled(styling, baseClass, id, prefix) {}) {
+                val inputElement = (::input.styled { display { none } }) {
+                    type("file")
+                    multiple(true)
+                    accept?.invoke(this)
+                    files = changes.events.mapNotNull {
+                        val list = domNode.files
+                        if (list != null) {
+                            buildList {
+                                for (i in 0..list.length) {
+                                    val file = list.item(i)
+                                    if (file != null) add(
+                                        fileReadingStrategy.value(this@MultiFileSelectionComponent)(
+                                            file
+                                        )
+                                    )
+                                }
+                            }
+                        } else null
+                    }.flatMapLatest { files ->
+                        domNode.value = "" // otherwise same files can't get loaded twice
+                        combine(files) { it.toList() }
+                    }
+                }.domNode
+                context(this, inputElement)
+            }
+        }
+        return files!!
+    }
+}
+
+
+/**
+ * This factory generates a single file selection context.
  *
  * In there you can create a button with a label, an icon, the position of the icon and access its events.
  * For a detailed overview about the possible properties of the button component object itself, have a look at
@@ -166,28 +250,12 @@ fun RenderContext.file(
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "file",
-    build: FileSelectionComponent.() -> Unit = {}
-): Flow<File> {
-    var file: Flow<File>? = null
-    val component = FileSelectionComponent().apply(build)
-    (::div.styled(styling, baseClass, id, prefix) {}) {
-        val inputElement = (::input.styled { display { none } }) {
-            type("file")
-            component.accept?.invoke(this)
-            file = changes.events.mapNotNull {
-                domNode.files?.item(0)
-            }.flatMapLatest {
-                domNode.value = "" // otherwise same file can't get loaded twice
-                component.fileReadingStrategy.value(component)(it)
-            }
-        }.domNode
-        component.context(this, inputElement)
-    }
-    return file!!
-}
+    build: FileSelectionBaseComponent.() -> Unit = {}
+): Flow<File> = SingleFileSelectionComponent().apply(build).render(this, styling, baseClass, id, prefix)
+
 
 /**
- * This component generates a multiple file selection context.
+ * This factory generates a multiple file selection context.
  *
  * In there you can create a button with a label, an icon, the position of the icon and access its events.
  * For a detailed overview about the possible properties of the button component object itself, have a look at
@@ -221,31 +289,5 @@ fun RenderContext.files(
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = "file",
-    build: FileSelectionComponent.() -> Unit = {}
-): Flow<List<File>> {
-    var files: Flow<List<File>>? = null
-    val component = FileSelectionComponent().apply(build)
-    (::div.styled(styling, baseClass, id, prefix) {}) {
-        val inputElement = (::input.styled { display { none } }) {
-            type("file")
-            multiple(true)
-            component.accept?.invoke(this)
-            files = changes.events.mapNotNull {
-                val list = domNode.files
-                if (list != null) {
-                    buildList {
-                        for (i in 0..list.length) {
-                            val file = list.item(i)
-                            if (file != null) add(component.fileReadingStrategy.value(component)(file))
-                        }
-                    }
-                } else null
-            }.flatMapLatest { files ->
-                domNode.value = "" // otherwise same files can't get loaded twice
-                combine(files) { it.toList() }
-            }
-        }.domNode
-        component.context(this, inputElement)
-    }
-    return files!!
-}
+    build: FileSelectionBaseComponent.() -> Unit = {}
+): Flow<List<File>> = MultiFileSelectionComponent().apply(build).render(this, styling, baseClass, id, prefix)

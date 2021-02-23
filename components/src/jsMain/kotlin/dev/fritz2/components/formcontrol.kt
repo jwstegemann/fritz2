@@ -9,6 +9,8 @@ import dev.fritz2.components.validation.validationMessages
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.FormSizes
@@ -54,7 +56,7 @@ import selectField
  *
  */
 @ComponentMarker
-open class FormControlComponent : FormProperties by FormMixin() {
+open class FormControlComponent : Component<Unit>, FormProperties by FormMixin() {
     companion object {
         object ControlNames {
             const val inputField = "inputField"
@@ -374,24 +376,24 @@ open class FormControlComponent : FormProperties by FormMixin() {
         )
     }
 
-    fun render(
-        styling: BasicParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
-        id: String? = null,
-        prefix: String = "formControl",
-        renderContext: RenderContext
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
     ) {
         control.assignee?.second?.let {
             renderStrategies[control.assignee?.first]?.render(
                 {
                     styling()
-                }, baseClass, id, prefix, renderContext, it
+                }, baseClass, id, prefix, context, it
             )
         }
         control.assert()
     }
 
-    fun renderHelperText(renderContext: RenderContext) {
+    open fun renderHelperText(renderContext: RenderContext) {
         renderContext.apply {
             helperText.value?.let {
                 (::p.styled {
@@ -401,7 +403,7 @@ open class FormControlComponent : FormProperties by FormMixin() {
         }
     }
 
-    fun renderValidationMessages(renderContext: RenderContext) {
+    open fun renderValidationMessages(renderContext: RenderContext) {
         renderContext.apply {
             stackUp({
                 width { "100%" }
@@ -418,40 +420,12 @@ open class FormControlComponent : FormProperties by FormMixin() {
                 }
             }
         }
-
-
-        /*
-        renderContext.apply {
-            stackUp {
-                items {
-                    val stack = this
-                    this@FormControlComponent.validationMessagesBuilder?.invoke()?.messages?.render { messages ->
-                        messages.forEach {
-                            this@FormControlComponent.validationMessageRendering.value.invoke(stack, it)
-                        }
-                    }
-                }
-            }
-        }
-         */
-        /*
-        renderContext.div {
-            validationMessagesBuilder?.invoke()?.messages?.renderEach {
-                stackUp {
-                    items {
-                        this@FormControlComponent.validationMessageRendering.value(this, it)
-                    }
-                }
-            }
-        }
-
-         */
     }
 }
 
 interface ControlRenderer {
     fun render(
-        styling: BasicParams.() -> Unit = {},
+        styling: BoxParams.() -> Unit = {},
         baseClass: StyleClass? = null,
         id: String? = null,
         prefix: String = "formControl",
@@ -462,7 +436,7 @@ interface ControlRenderer {
 
 class SingleControlRenderer(private val component: FormControlComponent) : ControlRenderer {
     override fun render(
-        styling: BasicParams.() -> Unit,
+        styling: BoxParams.() -> Unit,
         baseClass: StyleClass?,
         id: String?,
         prefix: String,
@@ -474,7 +448,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
                 alignItems { start }
                 width { full }
                 component.ownSize()()
-                styling()
+                styling(this as BoxParams)
             },
             baseClass = baseClass,
             id = id,
@@ -498,7 +472,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
 
 class ControlGroupRenderer(private val component: FormControlComponent) : ControlRenderer {
     override fun render(
-        styling: BasicParams.() -> Unit,
+        styling: BoxParams.() -> Unit,
         baseClass: StyleClass?,
         id: String?,
         prefix: String,
@@ -598,7 +572,6 @@ fun RenderContext.formControl(
     prefix: String = "formControl",
     build: FormControlComponent.() -> Unit = {}
 ) {
-    val component = FormControlComponent().apply(build)
-    component.render(styling, baseClass, id, prefix, this)
+    FormControlComponent().apply(build).render(this, styling, baseClass, id, prefix)
 }
 

@@ -8,6 +8,7 @@ import dev.fritz2.dom.html.TextElement
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
@@ -35,7 +36,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * not meant to be called directly unless you plan to implement your own appFrame.
  */
 @ExperimentalCoroutinesApi
-open class AppFrameComponent() {
+open class AppFrameComponent : Component<Unit> {
     companion object {
         init {
             staticStyle(
@@ -119,12 +120,12 @@ open class AppFrameComponent() {
     val tabs = ComponentProperty<(Div.() -> Unit)?>(null)
 
 
-    fun render(
+    override fun render(
         context: RenderContext,
-        styling: BasicParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
-        id: String? = null,
-        prefix: String = "app"
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
     ) {
         context.apply {
             box({
