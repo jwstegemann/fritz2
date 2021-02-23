@@ -22,8 +22,9 @@ import kotlinx.coroutines.flow.flowOf
  * - Success
  * - Warning
  * - Error
- * Specifying a severity will change the alert's color scheme based on the colors defined in the application theme.
- * If no severity is specified, 'info' will be used by default.
+ * Specifying a severity will change the alert's color scheme based on the colors defined in the application theme as
+ * well as the icon displayed. If no severity is specified, 'info' will be used by default.
+ * The alert's icon can manually be set via the 'icon'-property in which case the severity's icon will be ignored.
  *
  * Additionally, a number of different layout options are available. These are:
  * - 'subtle': A subtle style using different shades of the severity's base color defined in the application theme.
@@ -65,10 +66,11 @@ class AlertComponent {
         get() {
             val alertSeverity = severity.value.invoke(Theme().alert.severities)
             val alertVariantFactory = variant.value.invoke(Theme().alert.variants)
-            return alertVariantFactory.invoke(alertSeverity)
+            return alertVariantFactory.invoke(alertSeverity.color)
         }
 
-    val icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.circleInformation }
+    // the icon specified in AlertSeverity is used if no icon is specified manually
+    val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)
 
     private var title: (RenderContext.() -> Unit)? = null
     private var content: (RenderContext.() -> Unit)? = null
@@ -152,7 +154,11 @@ class AlertComponent {
                             css("width: var(--al-icon-size)")
                             css("height: var(--al-icon-size)")
                         }) {
-                            fromTheme { icon.value(Theme().icons) }
+                            fromTheme {
+                                icon.value
+                                    ?.invoke(Theme().icons)
+                                    ?: severity.value(Theme().alert.severities).icon
+                            }
                         }
                     }
 
@@ -280,14 +286,6 @@ fun ComponentValidationMessage.asAlert(
                 Severity.Success -> success
                 Severity.Warning -> warning
                 Severity.Error -> error
-            }
-        }
-        icon {
-            when (receiver.severity) {
-                Severity.Info -> circleInformation
-                Severity.Success -> circleCheck
-                Severity.Warning -> circleWarning
-                Severity.Error -> circleError
             }
         }
         variant { discreet }

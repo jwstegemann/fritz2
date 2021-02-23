@@ -165,8 +165,6 @@ fun RenderContext.textArea(
         component.basicInputStyles()
 
     }){
-        component.element.value.invoke(this)
-        component.events.value.invoke(this)
         disabled(component.disabled.values)
         readOnly(component.readonly.values)
         placeholder(component.placeholder.values)
@@ -176,5 +174,7 @@ fun RenderContext.textArea(
             value(it.data)
             changes.values() handledBy it.update
         }
+        component.events.value.invoke(this)
+        component.element.value.invoke(this)
     }
 }

@@ -12,7 +12,7 @@ import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 
 /**
@@ -89,7 +89,7 @@ class RadioGroupComponent<T> : InputFormProperties by InputFormMixin(), Severity
     val labelStyle = ComponentProperty(Theme().radio.label)
     val selectedStyle = ComponentProperty(Theme().radio.selected)
 
-    val selectedItem = NullableDynamicComponentProperty<T>(flowOf(null))
+    val selectedItem = NullableDynamicComponentProperty<T>(emptyFlow())
 
     class EventsContext<T>(val selected: Flow<T>) {
     }

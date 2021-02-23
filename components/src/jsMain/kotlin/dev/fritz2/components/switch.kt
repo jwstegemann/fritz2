@@ -179,7 +179,6 @@ fun RenderContext.switch(
                 component.checkedStyle.value()
             }
         }) {
-            component.element.value.invoke(this)
             disabled(component.disabled.values)
             readOnly(component.readonly.values)
             type("checkbox")
@@ -187,6 +186,7 @@ fun RenderContext.switch(
             component.events.value.invoke(this)
             store?.let { changes.states() handledBy it.update }
             className(component.severityClassOf(Theme().switch.severity, prefix))
+            component.element.value.invoke(this)
         }
 
         (::div.styled() {

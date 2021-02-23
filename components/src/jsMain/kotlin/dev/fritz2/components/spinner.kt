@@ -8,7 +8,7 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
-
+import org.w3c.dom.HTMLDivElement
 
 /**
  * This component class offers different configuration values of a spinner.
@@ -46,7 +46,7 @@ import dev.fritz2.styling.theme.*
  *
  */
 @ComponentMarker
-class SpinnerComponent {
+class SpinnerComponent : EventProperties<HTMLDivElement> by EventMixin() {
     companion object {
         val staticCss = staticStyle(
             "spinner",
@@ -117,20 +117,25 @@ fun RenderContext.spinner(
             border { width { component.thickness.value(Theme().borderWidths) } }
             width { "1rem" }
             height { "1rem" }
-        }) {}
+        }) {
+            component.events.value.invoke(this)
+        }
     } else {
-        icon({
-            css(
-                """
+        div {
+            icon({
+                css(
+                    """
                 @keyframes spinner {
                   to {transform: rotate(360deg);}
                 }    
                 animation: spinner ${component.speed.value} linear infinite;
             """.trimIndent()
-            )
-            styling()
-        }, baseClass, id, prefix) {
-            def(component.icon.value!!.invoke(Theme().icons))
+                )
+                styling()
+            }, baseClass, id, prefix) {
+                def(component.icon.value!!.invoke(Theme().icons))
+            }
+            component.events.value.invoke(this)
         }
     }
 }
