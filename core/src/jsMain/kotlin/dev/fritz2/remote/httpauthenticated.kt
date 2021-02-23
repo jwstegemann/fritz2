@@ -10,7 +10,10 @@ import org.w3c.xhr.FormData
  * */
 interface Authentication {
 
-    /* List of HTTP-Status-Codes forcing an authentication. Defaults are 401 (unauthorized) and 403 (forbidden) */
+    /**
+     * List of HTTP-Status-Codes forcing an authentication.
+     * Defaults are 401 (unauthorized) and 403 (forbidden)
+     */
     val errorcodesEnforcingAuthentication: List<Short>
         get() = listOf(401, 403)
 
@@ -23,14 +26,14 @@ interface Authentication {
      */
     suspend fun enrichRequest(request: Request): Request
 
-    /*+
+    /**
      * function doing the authentication
-     * */
+     */
     suspend fun authenticate()
 
     /**
      * shows whether there is a successful authentication or not.
-     * */
+     */
     fun isAuthenticated(): Boolean
 
     /**

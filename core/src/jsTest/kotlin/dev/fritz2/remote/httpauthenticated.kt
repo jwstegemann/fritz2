@@ -14,14 +14,13 @@ class AuthenticatedRemoteTests {
         private val EMPTY_TOKEN = ""
         private var token = EMPTY_TOKEN
 
-        override val errorcodesEnforcingAuthentication: List<Short>
-            get() = listOf(401, 403)
+        override val errorcodesEnforcingAuthentication: List<Short> = listOf(401, 403)
 
-        override suspend fun enrichRequest(aRequest: Request): Request {
-            if(this.token == EMPTY_TOKEN) {
+        override suspend fun enrichRequest(request: Request): Request {
+            if (this.token == EMPTY_TOKEN) {
                 this.authenticate()
             }
-            return aRequest.header("authtoken", token)
+            return request.header("authtoken", token)
         }
 
         override suspend fun authenticate() {
@@ -121,7 +120,7 @@ class AuthenticatedRemoteTests {
     @Test
     fun testErrorStatusCodesWithoutServerCheck() = runTest {
         authentication.setTokenInvalid()
-        val remoteWithoutServerCheck: AuthenticatedRequest = testHttpServerAuthenticated(test, authentication)
+        val remoteWithoutServerCheck = testHttpServerAuthenticated(test, authentication)
         for(code in codes) {
             assertFailsWith(FetchException::class) {
                 remoteWithoutServerCheck.get("status/$code")
@@ -132,7 +131,7 @@ class AuthenticatedRemoteTests {
     @Test
     fun testErrorStatusCodesWithServerCheck() = runTest {
         authentication.setTokenInvalid()
-        val remoteWithServerCheck: AuthenticatedRequest = testHttpServerAuthenticated(testauthenticated, authentication)
+        val remoteWithServerCheck = testHttpServerAuthenticated(testauthenticated, authentication)
         for(code in codes) {
             assertFailsWith(FetchException::class) {
                 remoteWithServerCheck.get("status/$code")
