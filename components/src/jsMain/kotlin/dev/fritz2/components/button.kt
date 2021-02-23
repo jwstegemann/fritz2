@@ -69,7 +69,6 @@ open class PushButtonComponent :
                 justify-content: center;
                 transition: all 250ms;
                 user-select: none;
-                position: relative;
                 white-space: nowrap;
                 vertical-align: middle;
                 outline: none;
@@ -152,14 +151,14 @@ open class PushButtonComponent :
     val variant = ComponentProperty<PushButtonVariants.() -> Style<BasicParams>> { Theme().button.variants.solid }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().button.sizes.normal }
 
-    var label: (RenderContext.(hide: Boolean) -> Unit)? = null
+    var text: (RenderContext.(hide: Boolean) -> Unit)? = null
 
     fun text(value: String) {
-        label = { hide -> span(if (hide) hidden.name else null) { +value } }
+        text = { hide -> span(if (hide) hidden.name else null) { +value } }
     }
 
     fun text(value: Flow<String>) {
-        label = { hide -> span(if (hide) hidden.name else null) { value.asText() } }
+        text = { hide -> span(if (hide) hidden.name else null) { value.asText() } }
     }
 
     var loadingText: (RenderContext.() -> Unit)? = null
@@ -222,7 +221,7 @@ open class PushButtonComponent :
 
     fun renderLabel(renderContext: Button) {
         if (loading == null || icon != null) {
-            label?.invoke(renderContext, false)
+            text?.invoke(renderContext, false)
         } else {
             renderContext.apply {
                 loading?.render { running ->
@@ -236,10 +235,10 @@ open class PushButtonComponent :
                         if (loadingText != null) {
                             loadingText!!.invoke(this)
                         } else {
-                            label?.invoke(this, true)
+                            text?.invoke(this, true)
                         }
                     } else {
-                        label?.invoke(this, false)
+                        text?.invoke(this, false)
                     }
                 }
             }
@@ -279,9 +278,8 @@ fun RenderContext.pushButton(
         component.variant.value.invoke(Theme().button.variants)()
         component.size.value.invoke(Theme().button.sizes)()
     }) {
-        component.element.value.invoke(this)
         disabled(component.disabled.values)
-        if (component.label == null) {
+        if (component.text == null) {
             component.renderIcon(this, component.centerIconStyle, component.centerSpinnerStyle)
         } else {
             if (component.icon != null && component.iconPlacement.value(PushButtonComponent.iconPlacementContext) == PushButtonComponent.IconPlacement.Left) {
@@ -292,8 +290,8 @@ fun RenderContext.pushButton(
                 component.renderIcon(this, component.rightIconStyle, component.rightSpinnerStyle)
             }
         }
-
         component.events.value.invoke(this)
+        component.element.value.invoke(this)
     }
 }
 

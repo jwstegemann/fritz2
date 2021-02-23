@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
+import org.w3c.dom.events.InputEvent
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.files.FileList
 
@@ -40,9 +41,21 @@ fun DomListener<Event, HTMLInputElement>.values(): Flow<String> =
     events.map { it.target.unsafeCast<HTMLInputElement>().value }
 
 /**
+ * Gives you the new value as [String] from the targeting [Element].
+ */
+fun DomListener<InputEvent, HTMLInputElement>.values(): Flow<String> =
+    events.map { it.target.unsafeCast<HTMLInputElement>().value }
+
+/**
  * Gives you the new value as [Double] from the targeting [Element].
  */
 fun DomListener<Event, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
+    events.map { it.target.unsafeCast<HTMLInputElement>().valueAsNumber }
+
+/**
+ * Gives you the new value as [Double] from the targeting [Element].
+ */
+fun DomListener<InputEvent, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
     events.map { it.target.unsafeCast<HTMLInputElement>().valueAsNumber }
 
 /**

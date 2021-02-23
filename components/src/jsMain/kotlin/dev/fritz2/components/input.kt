@@ -26,8 +26,6 @@ import org.w3c.dom.HTMLInputElement
  *    [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes)
  *
  *  * For a detailed explanation and examples of usage have a look at the [inputField] function!
- *
- * @see InputFieldStyles
  */
 @ComponentMarker
 open class InputFieldComponent :
@@ -117,7 +115,7 @@ open class InputFieldComponent :
  *
  * To enable or disable it or to make it readOnly just use the well known attributes of the HTML
  * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Input). To manually set the value or
- * react to a change refer also to its event's. All that can be achieved via the [InputFieldComponent.element] property!
+ * react to a change refer also to its event's. All that can be achieved via the [ElementMixin.element] property!
  *
  * ```
  * inputField(store = dataStore /* inject a store so all user inputs are automatically reflected! */) {
@@ -181,8 +179,6 @@ fun RenderContext.inputField(
         component.variant.value.invoke(Theme().input.variants)()
         InputFieldComponent.basicInputStyles()
     }) {
-        component.element.value.invoke(this)
-        component.events.value.invoke(this)
         disabled(component.disabled.values)
         readOnly(component.readonly.values)
         placeholder(component.placeholder.values)
@@ -194,5 +190,7 @@ fun RenderContext.inputField(
             value(it.data)
             changes.values() handledBy it.update
         }
+        component.events.value.invoke(this)
+        component.element.value.invoke(this)
     }
 }

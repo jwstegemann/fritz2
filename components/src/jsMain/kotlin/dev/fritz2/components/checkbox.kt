@@ -173,14 +173,14 @@ fun RenderContext.checkbox(
                 component.checkedStyle.value()
             }
         }) {
-            component.element.value.invoke(this)
             disabled(component.disabled.values)
             readOnly(component.readonly.values)
             type("checkbox")
             checked(store?.data ?: component.checked.values)
             className(component.severityClassOf(Theme().checkbox.severity, prefix))
-            component.events.value.invoke(this)
             store?.let { changes.states() handledBy it.update }
+            component.events.value.invoke(this)
+            component.element.value.invoke(this)
         }
 
         (::div.styled() {
@@ -189,8 +189,9 @@ fun RenderContext.checkbox(
         }) {
             icon({
                 Theme().checkbox.icon()
+            }) {
+                def(component.icon.value(Theme().icons))
             }
-            ) { def(component.icon.value(Theme().icons)) }
         }
 
         component.label?.let {
