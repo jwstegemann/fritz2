@@ -70,32 +70,27 @@ class WindowTest {
 
         val divId = "divId"
         val buttonId = "buttonId"
-        val button2Id = "button2Id"
 
-        val buttonEventText = "buttonClicked"
-        val windowEventText = "clicked"
+        val windowEventText = "windowEventText"
+        val windowSecondEventText = "windowSecondEventText"
 
         val windowStore = object : RootStore<String>("") {  }
-        val buttonStore = object : RootStore<String>("") {  }
 
         render {
             Window.clicks.stopImmediatePropagation().map {
                 windowEventText
             } handledBy windowStore.update
 
+            Window.clicks.map {
+                windowSecondEventText
+            } handledBy windowStore.update
 
             section {
                 div(id = divId) {
                     windowStore.data.asText()
-                    button(id = buttonId) {
-                        clicks.events.map { buttonEventText } handledBy buttonStore.update
-                        buttonStore.data.asText()
-                    }
                 }
-                button(id = button2Id) {
-                    clicks.stopImmediatePropagation().map { buttonEventText } handledBy buttonStore.update
-                    buttonStore.data.asText()
-                }
+
+                button(id = buttonId) {}
             }
         }
 
@@ -103,20 +98,10 @@ class WindowTest {
 
         val div = document.getElementById(divId).unsafeCast<HTMLDivElement>()
         val button = document.getElementById(buttonId).unsafeCast<HTMLButtonElement>()
-        val button2 = document.getElementById(button2Id).unsafeCast<HTMLButtonElement>()
 
         button.click()
         delay(100)
         assertEquals(windowEventText, div.textContent, "Button clicked: wrong content into div")
-        assertEquals("", button.textContent, "Button clicked: wrong content into Button")
-
-        buttonStore.update("")
-        windowStore.update("")
-
-        button2.click()
-        delay(100)
-        assertEquals("", div.textContent, "Button 2 clicked: wrong content into div")
-        assertEquals(buttonEventText, button2.textContent, "Button 2 clicked: wrong content into Button")
 
     }
 }
