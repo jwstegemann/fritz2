@@ -7,6 +7,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
@@ -32,7 +33,10 @@ import kotlinx.coroutines.flow.map
  *  For a detailed explanation and examples of usage, have a look at the [selectField] function itself.
  */
 @ComponentMarker
-class SelectFieldComponent<T> : InputFormProperties by InputFormMixin(), SeverityProperties by SeverityMixin() {
+open class SelectFieldComponent<T>(protected val items: List<T>, protected val store: Store<T>? = null) :
+    Component<Unit>,
+    InputFormProperties by InputFormMixin(),
+    SeverityProperties by SeverityMixin() {
 
     companion object {
         val staticCss = staticStyle(
@@ -121,6 +125,73 @@ class SelectFieldComponent<T> : InputFormProperties by InputFormMixin(), Severit
     }
 
     val events = ComponentProperty<EventsContext<T>.() -> Unit> {}
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ) {
+        val internalStore = SingleSelectionStore()
+
+        val grpId = id ?: uniqueId()
+
+        context.apply {
+            (store?.data ?: selectedItem.values)
+                .map { selectedItem ->
+                    items.indexOf(selectedItem).let { if (it == -1) null else it }
+                } handledBy internalStore.update
+
+            (::div.styled(styling, baseClass + staticCss, grpId, prefix) {}){
+
+                (::select.styled(styling, baseClass) {
+                    basicSelectStyles()
+                    variant.value.invoke(Theme().select.variants)()
+                    size.value.invoke(Theme().select.sizes)()
+                }){
+                    disabled(disabled.values)
+
+                    internalStore.data.render {
+                        if (it == null) {
+                            option {
+                                value("null")
+                                selected(true)
+                                +placeholder.value
+                            }
+                        }
+                    }
+
+                    items.withIndex().forEach { (index, item) ->
+                        val checkedFlow = internalStore.data.map { it == index }.distinctUntilChanged()
+                        option {
+                            value(index.toString())
+                            selected(checkedFlow)
+                            +label.value(item)
+                        }
+                    }
+
+                    className(severityClassOf(Theme().select.severity, prefix))
+
+                    changes.selectedValue().map { it.toInt() } handledBy internalStore.toggle
+                }
+
+                (::div.styled(prefix = "icon-wrapper") {
+                    size.value.invoke(Theme().select.sizes)()
+                    iconWrapperStyle()
+                }){
+                    icon({
+                        iconStyle()
+                    }) { def(icon.value(Theme().icons)) }
+                }
+            }
+
+            EventsContext(internalStore.toggle.map { items[it] }).apply {
+                events.value(this)
+                store?.let { selected handledBy it.update }
+            }
+        }
+    }
 }
 
 /**
@@ -182,61 +253,5 @@ fun <T> RenderContext.selectField(
     prefix: String = "selectField",
     build: SelectFieldComponent<T>.() -> Unit,
 ) {
-    val component = SelectFieldComponent<T>().apply(build)
-    val internalStore = SingleSelectionStore()
-
-    val grpId = id ?: uniqueId()
-
-    (store?.data ?: component.selectedItem.values)
-        .map { selectedItem ->
-            items.indexOf(selectedItem).let { if (it == -1) null else it }
-        } handledBy internalStore.update
-
-    (::div.styled(styling, baseClass + SelectFieldComponent.staticCss, grpId, prefix) {}){
-
-        (::select.styled(styling, baseClass) {
-            component.basicSelectStyles()
-            component.variant.value.invoke(Theme().select.variants)()
-            component.size.value.invoke(Theme().select.sizes)()
-        }){
-            disabled(component.disabled.values)
-
-            internalStore.data.render {
-                if (it == null) {
-                    option {
-                        value("null")
-                        selected(true)
-                        +component.placeholder.value
-                    }
-                }
-            }
-
-            items.withIndex().forEach { (index, item) ->
-                val checkedFlow = internalStore.data.map { it == index }.distinctUntilChanged()
-                option {
-                    value(index.toString())
-                    selected(checkedFlow)
-                    +component.label.value(item)
-                }
-            }
-
-            className(component.severityClassOf(Theme().select.severity, prefix))
-
-            changes.selectedValue().map { it.toInt() } handledBy internalStore.toggle
-        }
-
-        (::div.styled(prefix = "icon-wrapper") {
-            component.size.value.invoke(Theme().select.sizes)()
-            component.iconWrapperStyle()
-        }){
-            icon({
-                component.iconStyle()
-            }) { def(component.icon.value(Theme().icons)) }
-        }
-    }
-
-    SelectFieldComponent.EventsContext(internalStore.toggle.map { items[it] }).apply {
-        component.events.value(this)
-        store?.let { selected handledBy it.update }
-    }
+    SelectFieldComponent<T>(items, store).apply(build).render(this, styling, baseClass, id, prefix)
 }
