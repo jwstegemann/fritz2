@@ -15,8 +15,47 @@ import kotlin.test.assertEquals
 
 class WindowTest {
 
-
     @Test
+    fun testWindowListenerForClickEvent() = runTest {
+        initDocument()
+
+        val labelId = "labelId"
+        val divId = "divId"
+
+        val store = object : RootStore<String>("") {
+        }
+
+        render {
+            Window.clicks.map {
+                labelId
+            } handledBy store.update
+
+
+            section {
+                div(id = divId) {
+                    store.data.asText()
+                    label(id = labelId) { }
+                }
+
+            }
+        }
+        val div = document.getElementById(divId).unsafeCast<HTMLDivElement>()
+        val label = document.getElementById(labelId).unsafeCast<HTMLLabelElement>()
+
+        delay(100)
+
+        assertEquals("", div.textContent, "wrong content into div")
+
+
+        delay(100)
+
+
+        label.click()
+        delay(100)
+        assertEquals(labelId, div.textContent, "wrong content into div")
+    }
+
+  /*  @Test
     fun testWindowListenerForClickEventAndComposedPath() = runTest {
         initDocument()
 
@@ -103,5 +142,5 @@ class WindowTest {
         delay(100)
         assertEquals(windowEventText, div.textContent, "Button clicked: wrong content into div")
 
-    }
+    }*/
 }
