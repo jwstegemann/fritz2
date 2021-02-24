@@ -1,7 +1,9 @@
 package dev.fritz2.test
 
 import dev.fritz2.binding.mountSingle
-import dev.fritz2.remote.*
+import dev.fritz2.remote.Authentication
+import dev.fritz2.remote.Request
+import dev.fritz2.remote.http
 import kotlinx.browser.document
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -44,8 +46,6 @@ suspend fun testHttpServer(endpoint: Endpoint): Request {
     return r
 }
 
-suspend fun testHttpServerAuthenticated(endpoint: Endpoint, authentication: Authentication): AuthenticatedRequest {
-    val r: AuthenticatedRequest = http("http://localhost:3000/$endpoint", authentication)
-    if (endpoint == rest) r.get("clear")
-    return r
+suspend fun testHttpServerAuthenticated(endpoint: Endpoint, authentication: Authentication): Request {
+    return http("http://localhost:3000/$endpoint").authentication(authentication)
 }

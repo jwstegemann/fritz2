@@ -45,7 +45,8 @@ open class Request(
     private val redirect: RequestRedirect? = undefined,
     private val integrity: String? = undefined,
     private val keepalive: Boolean? = undefined,
-    private val reqWindow: Any? = undefined
+    private val reqWindow: Any? = undefined,
+    private val authentication: Authentication? = null
 ) {
 
     /**
@@ -61,7 +62,14 @@ open class Request(
                 append("/${subUrl.trimStart('/')}")
             }
         }
-        val response = browserWindow.fetch(url, init).await()
+        var response = browserWindow.fetch(url, init).await()
+        if (authentication != null) {
+            if (authentication.errorcodesEnforcingAuthentication.contains(response.status)) {
+                authentication.authenticate()
+                val redo = authentication.enrichRequest(this).buildInit(init.method!!)
+                response = browserWindow.fetch(url, redo).await()
+            }
+        }
         if (response.ok) return response
         else throw FetchException(response.status, response.getBody(), response)
     }
@@ -71,23 +79,25 @@ open class Request(
      *
      * @param method the http method to use (GET, POST, etc.)
      */
-    private fun buildInit(method: String): RequestInit {
+    private suspend fun buildInit(method: String): RequestInit {
+        // enrich request if authentication is available
+        val request = authentication?.enrichRequest(this) ?: this
         // Headers has no methods for reading key-value-pairs
         val reqHeader = Headers()
-        for ((k,v) in headers) reqHeader.set(k,v)
+        for ((k, v) in request.headers) reqHeader.set(k, v)
         return RequestInit(
             method = method,
-            body = body,
+            body = request.body,
             headers = reqHeader,
-            referrer = referrer,
-            referrerPolicy = referrerPolicy,
-            mode = mode,
-            credentials = credentials,
-            cache = cache,
-            redirect = redirect,
-            integrity = integrity,
-            keepalive = keepalive,
-            window = reqWindow
+            referrer = request.referrer,
+            referrerPolicy = request.referrerPolicy,
+            mode = request.mode,
+            credentials = request.credentials,
+            cache = request.cache,
+            redirect = request.redirect,
+            integrity = request.integrity,
+            keepalive = request.keepalive,
+            window = request.reqWindow
         )
     }
 
@@ -158,7 +168,7 @@ open class Request(
     fun append(subUrl: String) = Request(
         "${baseUrl.trimEnd('/')}/${subUrl.trimStart('/')}",
         headers, body, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow
+        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
     )
 
     /**
@@ -168,7 +178,7 @@ open class Request(
      */
     fun body(content: String) = Request(
         baseUrl, headers, content, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow
+        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
     )
 
     /**
@@ -178,7 +188,7 @@ open class Request(
      */
     fun arrayBuffer(content: ArrayBuffer) = Request(
         baseUrl, headers, content, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow
+        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
     )
 
     /**
@@ -188,7 +198,7 @@ open class Request(
      */
     fun formData(content: FormData) = Request(
         baseUrl, headers, content, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow
+        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
     )
 
     /**
@@ -198,7 +208,7 @@ open class Request(
      */
     fun blob(content: Blob) = Request(
         baseUrl, headers, content, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow
+        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
     )
 
     /**
@@ -209,7 +219,7 @@ open class Request(
      */
     fun header(name: String, value: String) = Request(
         baseUrl, headers.plus(name to value), body, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow
+        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
     )
 
     /**
@@ -258,7 +268,8 @@ open class Request(
      */
     fun referrer(value: String) = Request(
         baseUrl, headers, body, value, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow)
+        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
+    )
 
     /**
      * sets the referrerPolicy property of the [Request]
@@ -267,7 +278,8 @@ open class Request(
      */
     fun referrerPolicy(value: dynamic) = Request(
         baseUrl, headers, body, referrer, value, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow)
+        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
+    )
 
     /**
      * sets the requestMode property of the [Request]
@@ -276,7 +288,8 @@ open class Request(
      */
     fun requestMode(value: RequestMode) = Request(
         baseUrl, headers, body, referrer, referrerPolicy, value,
-        credentials, cache, redirect, integrity, keepalive, reqWindow)
+        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
+    )
 
     /**
      * sets the credentials property of the [Request]
@@ -285,7 +298,8 @@ open class Request(
      */
     fun credentials(value: RequestCredentials) = Request(
         baseUrl, headers, body, referrer, referrerPolicy, mode,
-        value, cache, redirect, integrity, keepalive, reqWindow)
+        value, cache, redirect, integrity, keepalive, reqWindow, authentication
+    )
 
     /**
      * sets the cache property of the [Request]
@@ -294,7 +308,8 @@ open class Request(
      */
     fun cache(value: RequestCache) = Request(
         baseUrl, headers, body, referrer, referrerPolicy, mode,
-        credentials, value, redirect, integrity, keepalive, reqWindow)
+        credentials, value, redirect, integrity, keepalive, reqWindow, authentication
+    )
 
     /**
      * sets the redirect property of the [Request]
@@ -303,7 +318,8 @@ open class Request(
      */
     fun redirect(value: RequestRedirect) = Request(
         baseUrl, headers, body, referrer, referrerPolicy, mode,
-        credentials, cache, value, integrity, keepalive, reqWindow)
+        credentials, cache, value, integrity, keepalive, reqWindow, authentication
+    )
 
     /**
      * sets the integrity property of the [Request]
@@ -312,7 +328,8 @@ open class Request(
      */
     fun integrity(value: String) = Request(
         baseUrl, headers, body, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, value, keepalive, reqWindow)
+        credentials, cache, redirect, value, keepalive, reqWindow, authentication
+    )
 
     /**
      * sets the keepalive property of the [Request]
@@ -321,7 +338,8 @@ open class Request(
      */
     fun keepalive(value: Boolean) = Request(
         baseUrl, headers, body, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, value, reqWindow)
+        credentials, cache, redirect, integrity, value, reqWindow, authentication
+    )
 
     /**
      * sets the reqWindow property of the [Request]
@@ -330,7 +348,19 @@ open class Request(
      */
     fun reqWindow(value: Any) = Request(
         baseUrl, headers, body, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, value)
+        credentials, cache, redirect, integrity, keepalive, value, authentication
+    )
+
+
+    /**
+     * sets the general [Authentication] mechanism of the [Request]
+     *
+     * @param auth [Authentication] mechanism
+     */
+    fun authentication(auth: Authentication) = Request(
+        baseUrl, headers, body, referrer, referrerPolicy, mode,
+        credentials, cache, redirect, integrity, keepalive, reqWindow, auth
+    )
 }
 
 // Response
@@ -340,7 +370,10 @@ open class Request(
  */
 suspend fun Response.getBody() = this.text().await()
 
-suspend fun Response.getHeaders() = this.headers
+/**
+ * returns the [Headers] from the given [Response]
+ */
+fun Response.getHeaders() = this.headers
 
 /**
  * extracts the body as blob from the given [Response]
@@ -363,3 +396,41 @@ suspend fun Response.getFormData() = this.formData().await()
 suspend fun Response.getJson() = json().await()
 
 external fun btoa(decoded: String): String
+
+/**
+ * Represents the functions needed to authenticate a user
+ * and in which cases the authentication should be made.
+ */
+interface Authentication {
+
+    /**
+     * List of HTTP-Status-Codes forcing an authentication.
+     * Defaults are 401 (unauthorized) and 403 (forbidden)
+     */
+    val errorcodesEnforcingAuthentication: List<Short>
+        get() = listOf(401, 403)
+
+    /**
+     * function enriching the request with authentication information depending on the
+     * servers need. For example the server could expect sepcial header-information, that could be
+     * set by this function.
+     *
+     * @param request the request-object that is enriched with the login-information.
+     */
+    suspend fun enrichRequest(request: Request): Request
+
+    /**
+     * function doing the authentication
+     */
+    suspend fun authenticate()
+
+    /**
+     * shows whether there is a successful authentication or not.
+     */
+    fun isAuthenticated(): Boolean
+
+    /**
+     * performing a logout
+     */
+    suspend fun logout()
+}
