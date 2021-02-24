@@ -5,9 +5,11 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.FlexParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.ScaledValueProperty
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
+import org.w3c.dom.HTMLDivElement
 
 /**
  * This base component class for stacking components offer some _configuration_ properties.
@@ -63,7 +65,7 @@ import dev.fritz2.styling.staticStyle
  *  ```
  */
 @ComponentMarker
-abstract class StackComponent {
+abstract class StackComponent : Component<Div>, EventProperties<HTMLDivElement> by EventMixin() {
     companion object {
         val staticCss = staticStyle(
             "stack",
@@ -76,6 +78,20 @@ abstract class StackComponent {
     val items = ComponentProperty<(RenderContext.() -> Unit)> {}
 
     abstract val stackStyles: Style<FlexParams>
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ) = context.flexBox({
+        stackStyles()
+        styling(this as BoxParams)
+    }, baseClass = baseClass + staticCss, prefix = prefix, id = id) {
+        items.value(this)
+        events.value(this)
+    }
 }
 
 
@@ -141,16 +157,8 @@ fun RenderContext.stackUp(
     id: String? = null,
     prefix: String = "stack-up",
     build: StackUpComponent.() -> Unit = {}
-): Div {
-    val component = StackUpComponent().apply(build)
+): Div = StackUpComponent().apply(build).render(this, styling, baseClass, id, prefix)
 
-    return flexBox({
-        component.stackStyles()
-        styling()
-    }, baseClass = baseClass + StackComponent.staticCss, prefix = prefix, id = id) {
-        component.items.value(this)
-    }
-}
 
 /**
  * This component class just defines the core styling in order to render child items within a flexBox layout
@@ -215,13 +223,4 @@ fun RenderContext.lineUp(
     id: String? = null,
     prefix: String = "line-up",
     build: LineUpComponent.() -> Unit = {}
-): Div {
-    val component = LineUpComponent().apply(build)
-
-    return flexBox({
-        component.stackStyles()
-        styling()
-    }, baseClass = baseClass + StackComponent.staticCss, prefix = prefix, id = id) {
-        component.items.value(this)
-    }
-}
+): Div = LineUpComponent().apply(build).render(this, styling, baseClass, id, prefix)

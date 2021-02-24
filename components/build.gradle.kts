@@ -6,7 +6,7 @@ plugins {
 
 kotlin {
     jvm()
-    js(LEGACY).browser {
+    js(BOTH).browser {
         testTask {
             useKarma {
                 useChromeHeadless()

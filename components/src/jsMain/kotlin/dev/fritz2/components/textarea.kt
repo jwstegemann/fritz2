@@ -8,6 +8,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
@@ -33,7 +34,8 @@ import org.w3c.dom.HTMLTextAreaElement
  *
  */
 @ComponentMarker
-class TextAreaComponent :
+open class TextAreaComponent(protected val store: Store<String>? = null) :
+    Component<Unit>,
     EventProperties<HTMLTextAreaElement> by EventMixin(),
     ElementProperties<TextArea> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
@@ -87,6 +89,35 @@ class TextAreaComponent :
     val placeholder = DynamicComponentProperty(flowOf(""))
     val resizeBehavior = ComponentProperty<TextAreaResize.() -> Style<BasicParams>> { Theme().textArea.resize.vertical }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().textArea.sizes.normal }
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ) {
+        context.apply {
+            (::textarea.styled(styling, baseClass + staticCss, id, prefix) {
+                resizeBehavior.value.invoke(Theme().textArea.resize)()
+                size.value.invoke(Theme().textArea.sizes)()
+                basicInputStyles()
+
+            }){
+                disabled(disabled.values)
+                readOnly(readonly.values)
+                placeholder(placeholder.values)
+                value(value.values)
+                className(severityClassOf(Theme().textArea.severity, prefix))
+                store?.let {
+                    value(it.data)
+                    changes.values() handledBy it.update
+                }
+                events.value.invoke(this)
+                element.value.invoke(this)
+            }
+        }
+    }
 }
 
 /**
@@ -156,25 +187,5 @@ fun RenderContext.textArea(
     prefix: String = "textArea",
     build: TextAreaComponent.() -> Unit
 ) {
-
-    val component = TextAreaComponent().apply(build)
-
-    (::textarea.styled(styling, baseClass + TextAreaComponent.staticCss, id, prefix) {
-        component.resizeBehavior.value.invoke(Theme().textArea.resize)()
-        component.size.value.invoke(Theme().textArea.sizes)()
-        component.basicInputStyles()
-
-    }){
-        component.element.value.invoke(this)
-        component.events.value.invoke(this)
-        disabled(component.disabled.values)
-        readOnly(component.readonly.values)
-        placeholder(component.placeholder.values)
-        value(component.value.values)
-        className(component.severityClassOf(Theme().textArea.severity, prefix))
-        store?.let {
-            value(it.data)
-            changes.values() handledBy it.update
-        }
-    }
+    TextAreaComponent(store).apply(build).render(this, styling, baseClass, id, prefix)
 }

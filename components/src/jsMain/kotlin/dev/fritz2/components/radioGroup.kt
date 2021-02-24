@@ -6,13 +6,14 @@ import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 
 /**
@@ -65,7 +66,11 @@ import kotlinx.coroutines.flow.map
  * ```
  */
 @ComponentMarker
-class RadioGroupComponent<T> : InputFormProperties by InputFormMixin(), SeverityProperties by SeverityMixin() {
+open class RadioGroupComponent<T>(protected val items: List<T>, protected val store: Store<T>? = null) :
+    Component<Unit>,
+    InputFormProperties by InputFormMixin(),
+    SeverityProperties by SeverityMixin() {
+
     companion object {
         object RadioGroupLayouts {
             val column: Style<BasicParams> = {
@@ -89,12 +94,54 @@ class RadioGroupComponent<T> : InputFormProperties by InputFormMixin(), Severity
     val labelStyle = ComponentProperty(Theme().radio.label)
     val selectedStyle = ComponentProperty(Theme().radio.selected)
 
-    val selectedItem = NullableDynamicComponentProperty<T>(flowOf(null))
+    val selectedItem = NullableDynamicComponentProperty<T>(emptyFlow())
 
     class EventsContext<T>(val selected: Flow<T>) {
     }
 
     val events = ComponentProperty<EventsContext<T>.() -> Unit> {}
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ) {
+        val internalStore = SingleSelectionStore()
+        val grpId = id ?: uniqueId()
+
+        context.apply {
+            (::div.styled(styling, baseClass, id, prefix) {
+                direction.value(RadioGroupLayouts)()
+            }) {
+                (store?.data ?: selectedItem.values)
+                    .map { selectedItem ->
+                        items.indexOf(selectedItem).let { if (it == -1) null else it }
+                    } handledBy internalStore.update
+
+                items.withIndex().forEach { (index, item) ->
+                    val checkedFlow = internalStore.data.map { it == index }.distinctUntilChanged()
+                    radio(styling = itemStyle.value, id = grpId + "-grp-item-" + uniqueId()) {
+                        this.size { this@RadioGroupComponent.size.value.invoke(Theme().radio.sizes) }
+                        labelStyle(labelStyle.value)
+                        selectedStyle(selectedStyle.value)
+                        label(this@RadioGroupComponent.label.value(item))
+                        selected(checkedFlow)
+                        disabled(this@RadioGroupComponent.disabled.values)
+                        severity(severity.values)
+                        events {
+                            changes.states().map { index } handledBy internalStore.toggle
+                        }
+                    }
+                }
+            }
+            EventsContext(internalStore.toggle.map { items[it] }).apply {
+                events.value(this)
+                store?.let { selected handledBy it.update }
+            }
+        }
+    }
 }
 
 
@@ -135,37 +182,5 @@ fun <T> RenderContext.radioGroup(
     prefix: String = "radioGroupComponent",
     build: RadioGroupComponent<T>.() -> Unit = {}
 ) {
-    val component = RadioGroupComponent<T>().apply(build)
-    val internalStore = SingleSelectionStore()
-
-    val grpId = id ?: uniqueId()
-    (::div.styled(styling, baseClass, id, prefix) {
-        component.direction.value(RadioGroupComponent.Companion.RadioGroupLayouts)()
-    }) {
-        (store?.data ?: component.selectedItem.values)
-            .map { selectedItem ->
-                items.indexOf(selectedItem).let { if (it == -1) null else it }
-            } handledBy internalStore.update
-
-        items.withIndex().forEach { (index, item) ->
-            val checkedFlow = internalStore.data.map { it == index }.distinctUntilChanged()
-            radio(styling = component.itemStyle.value, id = grpId + "-grp-item-" + uniqueId()) {
-                size { component.size.value.invoke(Theme().radio.sizes) }
-                labelStyle(component.labelStyle.value)
-                selectedStyle(component.selectedStyle.value)
-                label(component.label.value(item))
-                selected(checkedFlow)
-                disabled(component.disabled.values)
-                severity(component.severity.values)
-                events {
-                    changes.states().map { index } handledBy internalStore.toggle
-                }
-            }
-        }
-
-        RadioGroupComponent.EventsContext(internalStore.toggle.map { items[it] }).apply {
-            component.events.value(this)
-            store?.let { selected handledBy it.update }
-        }
-    }
+    RadioGroupComponent(items, store).apply(build).render(this, styling, baseClass, id, prefix)
 }

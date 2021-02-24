@@ -9,6 +9,7 @@ import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
@@ -55,7 +56,8 @@ import org.w3c.dom.HTMLInputElement
  * ```
  */
 @ComponentMarker
-class CheckboxComponent :
+open class CheckboxComponent(protected val store: Store<Boolean>?) :
+    Component<Label>,
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
@@ -82,27 +84,87 @@ class CheckboxComponent :
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
     val icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.check }
 
-    var label: (RenderContext.() -> Unit)? = null
+    private var labelField: (RenderContext.() -> Unit)? = null
 
     fun label(value: String) {
-        label = {
+        labelField = {
             span { +value }
         }
     }
 
     fun label(value: Flow<String>) {
-        label = {
+        labelField = {
             span { value.asText() }
         }
     }
 
     fun label(value: (RenderContext.() -> Unit)) {
-        label = value
+        labelField = value
     }
 
     val labelStyle = ComponentProperty(Theme().checkbox.label)
     val checked = DynamicComponentProperty(flowOf(false))
     var checkedStyle = ComponentProperty(Theme().checkbox.checked)
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ): Label = with(context) {
+        (::label.styled(
+            baseClass = baseClass,
+            id = id,
+            prefix = prefix
+        ) {
+            size.value.invoke(Theme().checkbox.sizes)()
+        }) {
+            val inputId = id?.let { "$it-input" }
+            inputId?.let {
+                `for`(inputId)
+            }
+            (::input.styled(
+                baseClass = checkboxInputStaticCss,
+                prefix = prefix,
+                id = inputId
+            ) {
+                Theme().checkbox.input()
+                children("&[checked] + div") {
+                    checkedStyle.value()
+                }
+            }) {
+                disabled(disabled.values)
+                readOnly(readonly.values)
+                type("checkbox")
+                checked(store?.data ?: checked.values)
+                className(severityClassOf(Theme().checkbox.severity, prefix))
+                store?.let { changes.states() handledBy it.update }
+                events.value.invoke(this)
+                element.value.invoke(this)
+            }
+
+            (::div.styled() {
+                Theme().checkbox.default()
+                styling()
+            }) {
+                icon({
+                    Theme().checkbox.icon()
+                }) {
+                    def(icon.value(Theme().icons))
+                }
+            }
+
+            labelField?.let {
+                (::div.styled {
+                    labelStyle.value()
+                }){
+                    it(this)
+                }
+            }
+        }
+
+    }
 }
 
 /**
@@ -149,56 +211,4 @@ fun RenderContext.checkbox(
     id: String? = null,
     prefix: String = "checkboxComponent",
     build: CheckboxComponent.() -> Unit = {}
-): Label {
-    val component = CheckboxComponent().apply(build)
-    val inputId = id?.let { "$it-input" }
-
-    return (::label.styled(
-        baseClass = baseClass,
-        id = id,
-        prefix = prefix
-    ) {
-        component.size.value.invoke(Theme().checkbox.sizes)()
-    }) {
-        inputId?.let {
-            `for`(inputId)
-        }
-        (::input.styled(
-            baseClass = checkboxInputStaticCss,
-            prefix = prefix,
-            id = inputId
-        ) {
-            Theme().checkbox.input()
-            children("&[checked] + div") {
-                component.checkedStyle.value()
-            }
-        }) {
-            component.element.value.invoke(this)
-            disabled(component.disabled.values)
-            readOnly(component.readonly.values)
-            type("checkbox")
-            checked(store?.data ?: component.checked.values)
-            className(component.severityClassOf(Theme().checkbox.severity, prefix))
-            component.events.value.invoke(this)
-            store?.let { changes.states() handledBy it.update }
-        }
-
-        (::div.styled() {
-            Theme().checkbox.default()
-            styling()
-        }) {
-            icon({
-                Theme().checkbox.icon()
-            }
-            ) { def(component.icon.value(Theme().icons)) }
-        }
-
-        component.label?.let {
-            (::div.styled {
-                component.labelStyle.value()
-            }){
-                it(this)
-            }
-        }
-    }
-}
+): Label = CheckboxComponent(store).apply(build).render(this, styling, baseClass, id, prefix)
