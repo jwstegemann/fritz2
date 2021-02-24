@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.map
 open class PopoverComponent : Component<Unit>,
     CloseButtonProperty by CloseButtonMixin(
         "popover-close-button",
-        ComponentProperty(Theme().popover.closeButton)
+        Theme().popover.closeButton
     ) {
     companion object {
         val staticCss = staticStyle(
