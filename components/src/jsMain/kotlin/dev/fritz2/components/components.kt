@@ -476,7 +476,7 @@ class SeverityMixin : SeverityProperties {
  * RFC: Never ever expose the internal store directly to the client side! Only accept values or [Flow]s and return
  * those in order to exchange data with the client!
  */
-class MultiSelectionStore<T> : RootStore<List<T>>(emptyList()) {
+open class MultiSelectionStore<T> : RootStore<List<T>>(emptyList()) {
     val toggle = handleAndEmit<T, List<T>> { selectedRows, new ->
         val newSelection = if (selectedRows.contains(new))
             selectedRows - new
@@ -496,7 +496,7 @@ class MultiSelectionStore<T> : RootStore<List<T>>(emptyList()) {
  * RFC: Never ever expose the internal store directly to the client side! Only accept values or [Flow]s and return
  * those in order to exchange data with the client!
  */
-class SingleSelectionStore : RootStore<Int?>(null) {
+open class SingleSelectionStore : RootStore<Int?>(null) {
     val toggle = handleAndEmit<Int, Int> { _, new ->
         emit(new)
         new
