@@ -9,6 +9,7 @@ import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
@@ -53,7 +54,8 @@ import org.w3c.dom.HTMLInputElement
  * ```
  */
 @ComponentMarker
-class RadioComponent :
+open class RadioComponent(protected val store: Store<Boolean>? = null) :
+    Component<Label>,
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
@@ -92,7 +94,7 @@ class RadioComponent :
 
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
-    var label: (Div.() -> Unit)? = null
+    private var label: (Div.() -> Unit)? = null
     fun label(value: String) {
         label = {
             +value
@@ -113,6 +115,72 @@ class RadioComponent :
     val selectedStyle = ComponentProperty(Theme().radio.selected)
     val selected = DynamicComponentProperty(flowOf(false))
     val groupName = DynamicComponentProperty(flowOf(""))
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ): Label {
+        val inputId = id?.let { "$it-input" }
+        val alternativeGroupname = id?.let { "$it-groupName" }
+        val inputName = groupName.values.map {
+            if (it.isEmpty()) {
+                alternativeGroupname ?: ""
+            } else {
+                it
+            }
+        }
+
+        return with(context) {
+            (::label.styled(
+                baseClass = baseClass,
+                id = id,
+                prefix = prefix
+            ) {
+                size.value.invoke(Theme().radio.sizes)()
+            }) {
+                inputId?.let {
+                    `for`(inputId)
+                }
+                (::input.styled(
+                    baseClass = radioInputStaticCss,
+                    prefix = prefix,
+                    id = inputId
+                ) {
+                    Theme().radio.input()
+                    children("&[checked] + div") {
+                        selectedStyle.value()
+                    }
+                }) {
+                    disabled(disabled.values)
+                    readOnly(readonly.values)
+                    type("radio")
+                    name(inputName)
+                    checked(store?.data ?: selected.values)
+                    value("X")
+                    className(severityClassOf(Theme().radio.severity, prefix))
+                    store?.let { changes.states() handledBy it.update }
+                    events.value.invoke(this)
+                    element.value.invoke(this)
+                }
+
+                (::div.styled() {
+                    Theme().radio.default()
+                    styling()
+                }) { }
+
+                label?.let {
+                    (::div.styled() {
+                        labelStyle.value()
+                    }){
+                        it(this)
+                    }
+                }
+            }
+        }
+    }
 }
 
 
@@ -160,61 +228,5 @@ fun RenderContext.radio(
     id: String? = null,
     prefix: String = "radioComponent",
     build: RadioComponent.() -> Unit = {}
-): Label {
-    val component = RadioComponent().apply(build)
-    val inputId = id?.let { "$it-input" }
-    val alternativeGroupname = id?.let { "$it-groupName" }
-    val inputName = component.groupName.values.map {
-        if (it.isEmpty()) {
-            alternativeGroupname ?: ""
-        } else {
-            it
-        }
-    }
+): Label = RadioComponent(store).apply(build).render(this, styling, baseClass, id, prefix)
 
-    return (::label.styled(
-        baseClass = baseClass,
-        id = id,
-        prefix = prefix
-    ) {
-        component.size.value.invoke(Theme().radio.sizes)()
-    }) {
-        inputId?.let {
-            `for`(inputId)
-        }
-        (::input.styled(
-            baseClass = RadioComponent.radioInputStaticCss,
-            prefix = prefix,
-            id = inputId
-        ) {
-            Theme().radio.input()
-            children("&[checked] + div") {
-                component.selectedStyle.value()
-            }
-        }) {
-            disabled(component.disabled.values)
-            readOnly(component.readonly.values)
-            type("radio")
-            name(inputName)
-            checked(store?.data ?: component.selected.values)
-            value("X")
-            className(component.severityClassOf(Theme().radio.severity, prefix))
-            store?.let { changes.states() handledBy it.update }
-            component.events.value.invoke(this)
-            component.element.value.invoke(this)
-        }
-
-        (::div.styled() {
-            Theme().radio.default()
-            styling()
-        }) { }
-
-        component.label?.let {
-            (::div.styled() {
-                component.labelStyle.value()
-            }){
-                it(this)
-            }
-        }
-    }
-}

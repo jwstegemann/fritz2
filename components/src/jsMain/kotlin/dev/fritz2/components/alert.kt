@@ -7,6 +7,7 @@ import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.*
@@ -51,7 +52,7 @@ import kotlinx.coroutines.flow.flowOf
  * ```
  */
 @ComponentMarker
-class AlertComponent {
+open class AlertComponent : Component<Unit> {
 
     companion object {
         private const val accentDecorationThickness = "4px"
@@ -109,16 +110,16 @@ class AlertComponent {
 
     fun content(value: String) = content(flowOf(value))
 
-    fun show(
-        renderContext: RenderContext,
-        styling: BasicParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
-        id: String? = null,
-        prefix: String = "alert",
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String,
     ) {
         val styles = variantStyles
 
-        renderContext.apply {
+        context.apply {
             (::div.styled(baseClass = baseClass, id = id, prefix = prefix) {
                 styling()
                 display { flex }
@@ -178,6 +179,7 @@ class AlertComponent {
     }
 }
 
+
 /**
  * Creates an alert and renders it right away.
  *
@@ -193,77 +195,10 @@ fun RenderContext.alert(
     id: String? = null,
     prefix: String = "alert",
     build: AlertComponent.() -> Unit,
-) = AlertComponent().apply(build).show(this, styling, baseClass, id, prefix)
-
-/**
- * Creates and alert and returns a handler that displays it in a toast message when invoked.
- * Use [showAlertToast] to display the toast message right away.
- * The toast's theme properties are automatically set but can manually be overridden by passing [toastBuild].
- *
- * @param styling a lambda expression for declaring the styling of the toast using fritz2's styling DSL
- * @param baseClass optional CSS class that should be applied to the toast element
- * @param id the ID of the toast element
- * @param prefix the prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
- * @param toastBuild a lambda expression for setting up the toast containing the alert
- * @param build a lambda expression for setting up the alert component
- */
-fun RenderContext.alertToast(
-    styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
-    id: String? = null,
-    prefix: String = "alert",
-    toastBuild: ToastComponent.() -> Unit = { },
-    build: AlertComponent.() -> Unit,
-): SimpleHandler<Unit> {
-
-    val pendingToastStore = object : RootStore<Unit>(Unit) {
-        val show = handle {
-            showAlertToast(styling, baseClass, id, prefix, toastBuild, build)
-        }
-    }
-    return pendingToastStore.show
-}
-
-/**
- * Creates and alert and displays it as a toast message.
- * The toast's theme properties are automatically set but can manually be overridden by passing [toastBuild].
- *
- * @param styling a lambda expression for declaring the styling of the toast using fritz2's styling DSL
- * @param baseClass optional CSS class that should be applied to the toast element
- * @param id the ID of the toast element
- * @param prefix the prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
- * @param toastBuild a lambda expression for setting up the toast containing the alert
- * @param build a lambda expression for setting up the alert component
- */
-fun RenderContext.showAlertToast(
-    styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
-    id: String? = null,
-    prefix: String = "alert",
-    toastBuild: ToastComponent.() -> Unit = { },
-    build: AlertComponent.() -> Unit,
 ) {
-    val alert = AlertComponent().apply(build)
-
-    showToast {
-        toastBuild()
-        content {
-            alert.show(
-                this,
-                styling = {
-                    styling()
-                    paddings { right { giant } }
-                },
-                baseClass,
-                id,
-                prefix
-            )
-        }
-        closeButtonStyle {
-            alert.variantStyles.text()
-        }
-    }
+    AlertComponent().apply(build).render(this, styling, baseClass, id, prefix)
 }
+
 
 /**
  * Convenience extension to display a [ComponentValidationMessage] as an alert.

@@ -8,6 +8,7 @@ import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.className
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
@@ -28,7 +29,8 @@ import org.w3c.dom.HTMLInputElement
  *  * For a detailed explanation and examples of usage have a look at the [inputField] function!
  */
 @ComponentMarker
-open class InputFieldComponent :
+open class InputFieldComponent(protected val store: Store<String>?) :
+    Component<Unit>,
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
@@ -103,6 +105,36 @@ open class InputFieldComponent :
     val placeholder = DynamicComponentProperty(flowOf(""))
     val type = DynamicComponentProperty(flowOf(""))
     val step = DynamicComponentProperty(flowOf(""))
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ) {
+        context.apply {
+            (::input.styled(styling, baseClass + staticCss, id, prefix) {
+                size.value.invoke(Theme().input.sizes)()
+                variant.value.invoke(Theme().input.variants)()
+                basicInputStyles()
+            }) {
+                disabled(disabled.values)
+                readOnly(readonly.values)
+                placeholder(placeholder.values)
+                value(value.values)
+                type(type.values)
+                step(step.values)
+                className(severityClassOf(Theme().input.severity, prefix))
+                store?.let {
+                    value(it.data)
+                    changes.values() handledBy it.update
+                }
+                events.value.invoke(this)
+                element.value.invoke(this)
+            }
+        }
+    }
 }
 
 
@@ -172,25 +204,5 @@ fun RenderContext.inputField(
     prefix: String = "inputField",
     build: InputFieldComponent.() -> Unit = {}
 ) {
-    val component = InputFieldComponent().apply(build)
-
-    (::input.styled(styling, baseClass + InputFieldComponent.staticCss, id, prefix) {
-        component.size.value.invoke(Theme().input.sizes)()
-        component.variant.value.invoke(Theme().input.variants)()
-        InputFieldComponent.basicInputStyles()
-    }) {
-        disabled(component.disabled.values)
-        readOnly(component.readonly.values)
-        placeholder(component.placeholder.values)
-        value(component.value.values)
-        type(component.type.values)
-        step(component.step.values)
-        className(component.severityClassOf(Theme().input.severity, prefix))
-        store?.let {
-            value(it.data)
-            changes.values() handledBy it.update
-        }
-        component.events.value.invoke(this)
-        component.element.value.invoke(this)
-    }
+    InputFieldComponent(store).apply(build).render(this, styling, baseClass, id, prefix)
 }

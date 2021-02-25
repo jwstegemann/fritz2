@@ -5,6 +5,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Theme
@@ -27,7 +28,7 @@ import org.w3c.dom.events.MouseEvent
  * not meant to be called directly unless you plan to implement your own navLink.
  */
 @ExperimentalCoroutinesApi
-open class NavLinkComponent {
+open class NavLinkComponent : Component<Listener<MouseEvent>> {
     companion object {
         val activeStyle = staticStyle("navlink-active") {
             Theme().appFrame.activeNavLink()
@@ -35,9 +36,39 @@ open class NavLinkComponent {
     }
 
     val icon = ComponentProperty<IconComponent.() -> Unit> { fromTheme { bookmark } }
-    val text = DynamicComponentProperty<String>(flowOf("Navigation Link"))
+    val text = DynamicComponentProperty(flowOf("Navigation Link"))
     val active = ComponentProperty<Flow<Boolean>?>(null)
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ): DomListener<MouseEvent, HTMLElement> {
+        var clickEvents: Listener<MouseEvent>? = null
+
+        context.apply {
+            lineUp({
+                Theme().appFrame.navLink()
+                styling(this as BoxParams)
+            }, baseClass, id, prefix) {
+                spacing { small }
+                items {
+                    active.value?.let { className(activeStyle.whenever(it).name) }
+                    icon(build = icon.value)
+                    a { text.values.asText() }
+                }
+                events {
+                    clickEvents = clicks.stopImmediatePropagation()
+                }
+            }
+        }
+
+        return clickEvents!!
+    }
 }
+
 
 /**
  * This component generates a navigation link inside the [appFrame]'s sidebar.
@@ -63,28 +94,9 @@ fun RenderContext.navLink(
     id: String? = null,
     prefix: String = "navlink",
     build: NavLinkComponent.() -> Unit = {}
-): Listener<MouseEvent> {
-    val component = NavLinkComponent().apply(build)
-    var clickEvents: Listener<MouseEvent>? = null
+): Listener<MouseEvent> = NavLinkComponent().apply(build)
+    .render(this, styling, baseClass, id, prefix)
 
-    lineUp({
-        Theme().appFrame.navLink()
-        styling()
-    }, baseClass, id, prefix) {
-        spacing { small }
-        items {
-            component.active.value?.let { className(NavLinkComponent.activeStyle.whenever(it).name) }
-            icon(build = component.icon.value)
-            a { component.text.values.asText() }
-        }
-        events {
-            clickEvents = clicks.stopImmediatePropagation()
-        }
-
-    }
-
-    return clickEvents!!
-}
 
 /**
  * This component generates a navigation section header inside the [appFrame]'s sidebar.

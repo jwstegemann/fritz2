@@ -56,6 +56,7 @@ import org.w3c.dom.events.MouseEvent
  */
 @ComponentMarker
 open class PushButtonComponent :
+    Component<Unit>,
     EventProperties<HTMLButtonElement> by EventMixin(),
     ElementProperties<Button> by ElementMixin(),
     FormProperties by FormMixin() {
@@ -142,16 +143,16 @@ open class PushButtonComponent :
 
     private fun buildColor(value: ColorProperty): Style<BasicParams> = { css("--main-color: $value;") }
 
-    var color: Style<BasicParams> = buildColor(Theme().colors.primary)
+    private var colorField: Style<BasicParams> = buildColor(Theme().colors.primary)
 
     fun color(value: Colors.() -> ColorProperty) {
-        color = buildColor(Theme().colors.value())
+        colorField = buildColor(Theme().colors.value())
     }
 
     val variant = ComponentProperty<PushButtonVariants.() -> Style<BasicParams>> { Theme().button.variants.solid }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().button.sizes.normal }
 
-    var text: (RenderContext.(hide: Boolean) -> Unit)? = null
+    private var text: (RenderContext.(hide: Boolean) -> Unit)? = null
 
     fun text(value: String) {
         text = { hide -> span(if (hide) hidden.name else null) { +value } }
@@ -161,7 +162,7 @@ open class PushButtonComponent :
         text = { hide -> span(if (hide) hidden.name else null) { value.asText() } }
     }
 
-    var loadingText: (RenderContext.() -> Unit)? = null
+    private var loadingText: (RenderContext.() -> Unit)? = null
 
     fun loadingText(value: String) {
         loadingText = { span { +value } }
@@ -171,13 +172,13 @@ open class PushButtonComponent :
         loadingText = { span { value.asText() } }
     }
 
-    var loading: Flow<Boolean>? = null
+    private var loading: Flow<Boolean>? = null
 
     fun loading(value: Flow<Boolean>) {
         loading = value
     }
 
-    var icon: ((RenderContext, Style<BasicParams>) -> Unit)? = null
+    private var icon: ((RenderContext, Style<BasicParams>) -> Unit)? = null
 
     fun icon(
         styling: BasicParams.() -> Unit = {},
@@ -203,7 +204,38 @@ open class PushButtonComponent :
 
     val iconPlacement = ComponentProperty<IconPlacementContext.() -> IconPlacement> { IconPlacement.Left }
 
-    fun renderIcon(renderContext: Button, iconStyle: Style<BasicParams>, spinnerStyle: Style<BasicParams>) {
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass?,
+        id: String?,
+        prefix: String
+    ) {
+        context.apply {
+            (::button.styled(styling, baseClass + staticCss, id, prefix) {
+                colorField()
+                variant.value.invoke(Theme().button.variants)()
+                size.value.invoke(Theme().button.sizes)()
+            }) {
+                disabled(disabled.values)
+                if (text == null) {
+                    renderIcon(this, centerIconStyle, centerSpinnerStyle)
+                } else {
+                    if (icon != null && iconPlacement.value(iconPlacementContext) == IconPlacement.Left) {
+                        renderIcon(this, leftIconStyle, leftSpinnerStyle)
+                    }
+                    renderText(this)
+                    if (icon != null && iconPlacement.value(iconPlacementContext) == IconPlacement.Right) {
+                        renderIcon(this, rightIconStyle, rightSpinnerStyle)
+                    }
+                }
+                events.value.invoke(this)
+                element.value.invoke(this)
+            }
+        }
+    }
+
+    private fun renderIcon(renderContext: Button, iconStyle: Style<BasicParams>, spinnerStyle: Style<BasicParams>) {
         if (loading == null) {
             icon?.invoke(renderContext, iconStyle)
         } else {
@@ -219,7 +251,7 @@ open class PushButtonComponent :
         }
     }
 
-    fun renderLabel(renderContext: Button) {
+    private fun renderText(renderContext: Button) {
         if (loading == null || icon != null) {
             text?.invoke(renderContext, false)
         } else {
@@ -271,28 +303,7 @@ fun RenderContext.pushButton(
     prefix: String = "push-button",
     build: PushButtonComponent.() -> Unit = {}
 ) {
-    val component = PushButtonComponent().apply(build)
-
-    (::button.styled(styling, baseClass + PushButtonComponent.staticCss, id, prefix) {
-        component.color()
-        component.variant.value.invoke(Theme().button.variants)()
-        component.size.value.invoke(Theme().button.sizes)()
-    }) {
-        disabled(component.disabled.values)
-        if (component.text == null) {
-            component.renderIcon(this, component.centerIconStyle, component.centerSpinnerStyle)
-        } else {
-            if (component.icon != null && component.iconPlacement.value(PushButtonComponent.iconPlacementContext) == PushButtonComponent.IconPlacement.Left) {
-                component.renderIcon(this, component.leftIconStyle, component.leftSpinnerStyle)
-            }
-            component.renderLabel(this)
-            if (component.icon != null && component.iconPlacement.value(PushButtonComponent.iconPlacementContext) == PushButtonComponent.IconPlacement.Right) {
-                component.renderIcon(this, component.rightIconStyle, component.rightSpinnerStyle)
-            }
-        }
-        component.events.value.invoke(this)
-        component.element.value.invoke(this)
-    }
+    PushButtonComponent().apply(build).render(this, styling, baseClass, id, prefix)
 }
 
 /**
