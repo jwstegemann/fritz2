@@ -7,6 +7,7 @@ import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
@@ -16,6 +17,7 @@ import dev.fritz2.styling.theme.PopoverSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
@@ -141,6 +143,7 @@ open class PopoverComponent : Component<Unit>,
                 }
                 open
             }
+
             init {
                 close handledBy toggle
             }
@@ -148,14 +151,14 @@ open class PopoverComponent : Component<Unit>,
 
 
         val popoverId = id ?: "popover" + randomId()
-
-        if( closeOnEscape.value ) {
-            Window.keyups.map {
-              it.keyCode == Keys.Escape.code
-            } handledBy clickStore.close
-        }
-
         context.apply {
+
+            if (closeOnEscape.value) {
+                Window.keyups.map {
+                    it.keyCode == Keys.Escape.code
+                } handledBy clickStore.close
+            }
+
             (::div.styled({ }, staticCss, null, prefix) {
             }){
                 (::div.styled(prefix = "popover-toggle", id = "popover-toggle-$popoverId") {
@@ -167,7 +170,7 @@ open class PopoverComponent : Component<Unit>,
                 }
                 clickStore.data.render {
                     if (it) {
-                        renderPopover(styling, baseClass, id, prefix, this, clickStore.toggle)
+                        renderPopover(styling, baseClass, popoverId, prefix, this, clickStore.toggle)
                     }
                 }
                 clickStore.data.render {
@@ -192,10 +195,14 @@ open class PopoverComponent : Component<Unit>,
     ) {
         RenderContext.apply {
 
-            (::div.styled(styling, baseClass, id, prefix) {
+            (::section.styled(styling, baseClass, id, prefix) {
                 placementStyle.invoke(Theme().popover.placement)()
                 size.value.invoke(Theme().popover.size)()
+                focus {
+                    css("outline:none")
+                }
             }){
+                attr("tabindex", "-1")
                 if (hasArrow.value) {
                     renderArrow(this)
                 }

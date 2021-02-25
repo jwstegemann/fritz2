@@ -13,7 +13,6 @@ import dev.fritz2.styling.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.MouseEvent
 
 /**
@@ -45,7 +44,7 @@ open class NavLinkComponent : Component<Listener<MouseEvent>> {
         baseClass: StyleClass?,
         id: String?,
         prefix: String
-    ): DomListener<MouseEvent, HTMLElement> {
+    ): Listener<MouseEvent> {
         var clickEvents: Listener<MouseEvent>? = null
 
         context.apply {
