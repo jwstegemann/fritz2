@@ -72,7 +72,7 @@ import kotlinx.coroutines.flow.map
 open class ToastComponent : Component<Unit>,
     CloseButtonProperty by CloseButtonMixin(
         "toast-close-button",
-        ComponentProperty(Theme().toast.closeButton.close)
+        Theme().toast.closeButton.close
     ) {
 
     object Placement {

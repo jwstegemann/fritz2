@@ -70,8 +70,9 @@ class DefaultOverlay(
  * ``ModalComponent.Companion.init`` block.
  */
 @ComponentMarker
-open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Unit>) -> Unit) : Component<SimpleHandler<Unit>>,
-    CloseButtonProperty by CloseButtonMixin("modal-close-button", ComponentProperty {
+open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Unit>) -> Unit) :
+    Component<SimpleHandler<Unit>>,
+    CloseButtonProperty by CloseButtonMixin("modal-close-button", {
         position {
             absolute {
                 right { none }

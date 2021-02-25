@@ -20,6 +20,9 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.className
+import dev.fritz2.styling.theme.IconDefinition
+import dev.fritz2.styling.theme.Icons
+import dev.fritz2.styling.theme.Theme
 
 /**
  * A marker to separate the layers of calls in the type-safe-builder pattern.
@@ -476,7 +479,7 @@ class SeverityMixin : SeverityProperties {
  * RFC: Never ever expose the internal store directly to the client side! Only accept values or [Flow]s and return
  * those in order to exchange data with the client!
  */
-class MultiSelectionStore<T> : RootStore<List<T>>(emptyList()) {
+open class MultiSelectionStore<T> : RootStore<List<T>>(emptyList()) {
     val toggle = handleAndEmit<T, List<T>> { selectedRows, new ->
         val newSelection = if (selectedRows.contains(new))
             selectedRows - new
@@ -496,7 +499,7 @@ class MultiSelectionStore<T> : RootStore<List<T>>(emptyList()) {
  * RFC: Never ever expose the internal store directly to the client side! Only accept values or [Flow]s and return
  * those in order to exchange data with the client!
  */
-class SingleSelectionStore : RootStore<Int?>(null) {
+open class SingleSelectionStore : RootStore<Int?>(null) {
     val toggle = handleAndEmit<Int, Int> { _, new ->
         emit(new)
         new
@@ -537,26 +540,34 @@ class SingleSelectionStore : RootStore<Int?>(null) {
  * @see [ToastComponent]
  */
 interface CloseButtonProperty {
-    val prefix: String
+    val closeButtonPrefix: String
     val closeButtonStyle: ComponentProperty<Style<BasicParams>>
+    val closeButtonIcon: ComponentProperty<Icons.() -> IconDefinition>
     val hasCloseButton: ComponentProperty<Boolean>
     val closeButtonRendering: ComponentProperty<RenderContext.() -> Listener<MouseEvent, HTMLElement>>
 }
 
 /**
  * Default implementation of the [CloseButtonProperty] interface in order to apply this as mixin for a component
+ *
+ * @param closeButtonPrefix the prefix for the generated CSS class
+ * @param defaultStyle define the default styling of the button fitting for the implementing component needs
+ *                     (the placement within the component's space for example)
  */
 class CloseButtonMixin(
-    override val prefix: String = "close-button",
-    override val closeButtonStyle: ComponentProperty<Style<BasicParams>>
+    override val closeButtonPrefix: String = "close-button",
+    private val defaultStyle: Style<BasicParams>
 ) : CloseButtonProperty {
+    override val closeButtonStyle = ComponentProperty<Style<BasicParams>> {}
+    override val closeButtonIcon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.close }
     override val hasCloseButton = ComponentProperty(true)
     override val closeButtonRendering = ComponentProperty<RenderContext.() -> Listener<MouseEvent, HTMLElement>> {
         clickButton({
+            defaultStyle()
             closeButtonStyle.value()
-        }, id = "close-button-${uniqueId()}", prefix = prefix) {
+        }, id = "close-button-${uniqueId()}", prefix = closeButtonPrefix) {
             variant { ghost }
-            icon { fromTheme { close } }
+            icon { def(closeButtonIcon.value(Theme().icons)) }
         }
     }
 }
