@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLLabelElement
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -43,19 +44,14 @@ class WindowTest {
         val label = document.getElementById(labelId).unsafeCast<HTMLLabelElement>()
 
         delay(100)
-
         assertEquals("", div.textContent, "wrong content into div")
-
-
-        delay(100)
-
-
         label.click()
         delay(100)
         assertEquals(labelId, div.textContent, "wrong content into div")
     }
 
-  /*  @Test
+    @Ignore
+    @Test
     fun testWindowListenerForClickEventAndComposedPath() = runTest {
         initDocument()
 
@@ -103,6 +99,7 @@ class WindowTest {
         assertEquals(divId, div.textContent, "wrong id into store")
     }
 
+    @Ignore
     @Test
     fun testWindowListenerForStopImmediatePropagation() = runTest {
         initDocument()
@@ -142,5 +139,5 @@ class WindowTest {
         delay(100)
         assertEquals(windowEventText, div.textContent, "Button clicked: wrong content into div")
 
-    }*/
+    }
 }
