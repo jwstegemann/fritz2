@@ -129,7 +129,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val st
                         label(this@RadioGroupComponent.label.value(item))
                         selected(checkedFlow)
                         disabled(this@RadioGroupComponent.disabled.values)
-                        severity(severity.values)
+                        severity(this@RadioGroupComponent.severity.values)
                         events {
                             changes.states().map { index } handledBy internalStore.toggle
                         }
