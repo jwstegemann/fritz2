@@ -135,7 +135,7 @@ class Router<T>(
     val data: Flow<T> = state.asStateFlow()
 
     /**
-     * Represents the current route of the [Router].
+     * Gives the current route [T].
      */
     val current: T
         get() = state.value
