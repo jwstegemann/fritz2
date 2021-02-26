@@ -18,14 +18,15 @@ abstract class WithEvents<out T : Element> : WithDomNode<T> {
      *
      * @param type [EventType] to listen for
      */
-    private fun <E : Event> subscribe(type: EventType<E>): DomListener<E, T> = DomListener(callbackFlow {
-        val listener: (Event) -> Unit = {
-            offer(it.unsafeCast<E>())
-        }
-        domNode.addEventListener(type.name, listener)
+    private fun <E : Event> subscribe(type: EventType<E>): DomListener<E, T> = DomListener(
+        callbackFlow {
+            val listener: (Event) -> Unit = {
+                offer(it.unsafeCast<E>())
+            }
+            domNode.addEventListener(type.name, listener)
 
-        awaitClose { domNode.removeEventListener(type.name, listener) }
-    })
+            awaitClose { domNode.removeEventListener(type.name, listener) }
+        })
 
     val aborts by lazy { subscribe(Events.abort) }
     val afterprints by lazy { subscribe(Events.afterprint) }
