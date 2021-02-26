@@ -54,7 +54,7 @@ fun Router<Map<String, String>>.select(key: String, orElse: String): Flow<String
  * A Route is a abstraction for routes
  * which needed for routing
  *
- * @param T type to marshal and unmarshal from
+ * @param T type to de-/serialize from
  */
 interface Route<T> {
     /**
@@ -63,31 +63,31 @@ interface Route<T> {
     val default: T
 
     /**
-     * Unmarshals the *window.location.hash* to the
-     * given type [T] after getting the hashchange-event.
+     * Deserializes the *window.location.hash* to the
+     * given type [T] after the hashchange-event is fired.
      */
-    fun unmarshal(hash: String): T
+    fun deserialize(hash: String): T
 
     /**
-     * Marshals a given object of type [T] to [String]
+     * Serializes a given object of type [T] to [String]
      * for setting it to the *window.location.hash*
      */
-    fun marshal(route: T): String
+    fun serialize(route: T): String
 }
 
 /**
  * [StringRoute] is a simple [Route] which
- * marshals and unmarshalls nothing.
+ * serializes and deserializes nothing.
  *
  * @param default [String] to use when no explicit *window.location.hash* was set before
  */
 open class StringRoute(override val default: String) : Route<String> {
-    override fun unmarshal(hash: String): String = decodeURIComponent(hash)
-    override fun marshal(route: String): String = encodeURIComponent(route)
+    override fun deserialize(hash: String): String = decodeURIComponent(hash)
+    override fun serialize(route: String): String = encodeURIComponent(route)
 }
 
 /**
- * [MapRoute] marshals and unmarshals a [Map] to and from *window.location.hash*.
+ * [MapRoute] serializes and deserializes a [Map] to and from *window.location.hash*.
  * It is like using url parameters with pairs of key and value.
  * In the begin there is only a **#** instead of **?**.
  *
@@ -97,10 +97,10 @@ open class MapRoute(override val default: Map<String, String>) : Route<Map<Strin
     private val assignment = "="
     private val divider = "&"
 
-    override fun unmarshal(hash: String): Map<String, String> =
+    override fun deserialize(hash: String): Map<String, String> =
         hash.split(divider).filter { s -> s.isNotBlank() }.asReversed().map(::extractPair).toMap()
 
-    override fun marshal(route: Map<String, String>): String =
+    override fun serialize(route: Map<String, String>): String =
         route.map { (key, value) -> "$key$assignment${encodeURIComponent(value)}" }
             .joinToString(separator = divider)
 
@@ -117,7 +117,7 @@ open class MapRoute(override val default: Map<String, String>) : Route<Map<Strin
 /**
  * Router register the event-listener for hashchange-event and
  * handles route-changes. Therefore it uses a [Route] object
- * which can [Route.marshal] and [Route.unmarshal] the given type.
+ * which can [Route.serialize] and [Route.deserialize] the given type.
  *
  * @param T type to marshal and unmarshal
  * @property defaultRoute default route to use when page is called and no hash is set
@@ -151,19 +151,19 @@ class Router<T>(
         if (window.location.hash.isBlank()) {
             setRoute(defaultRoute.default)
         } else {
-            state.value = defaultRoute.unmarshal(window.location.hash.removePrefix(prefix))
+            state.value = defaultRoute.deserialize(window.location.hash.removePrefix(prefix))
         }
 
         val listener: (Event) -> Unit = {
             it.preventDefault()
-            state.value = defaultRoute.unmarshal(window.location.hash.removePrefix(prefix))
+            state.value = defaultRoute.deserialize(window.location.hash.removePrefix(prefix))
         }
         window.addEventListener(Events.hashchange.name, listener)
     }
 
     private fun setRoute(newRoute: T) {
         state.value = newRoute
-        window.location.hash = prefix + defaultRoute.marshal(newRoute)
+        window.location.hash = prefix + defaultRoute.serialize(newRoute)
     }
 }
 
