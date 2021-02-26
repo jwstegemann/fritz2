@@ -127,10 +127,10 @@ open class CheckboxGroupComponent<T>(
                         icon { this@CheckboxGroupComponent.icon.value(Theme().icons) }
                         labelStyle(labelStyle.value)
                         checkedStyle(checkedStyle.value)
-                        label(label.value(item))
+                        label(this@CheckboxGroupComponent.label.value(item))
                         checked(checkedFlow)
-                        disabled(disabled.values)
-                        severity(severity.values)
+                        disabled(this@CheckboxGroupComponent.disabled.values)
+                        severity(this@CheckboxGroupComponent.severity.values)
                         events {
                             changes.states().map { item } handledBy multiSelectionStore.toggle
                         }
