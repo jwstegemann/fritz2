@@ -11,7 +11,7 @@ import org.w3c.dom.events.Event
 /**
  * Object of the Browser Window expanded with [DomListener]s to handle easily the [Event]
  */
-object Window  {
+object Window {
     private val browserWindow: Window = window
 
     /**
@@ -19,14 +19,14 @@ object Window  {
      *
      * @param type [EventType] to listen for
      */
-    private fun <E : Event> subscribe(type: EventType<E>): WindowListener<E> =  WindowListener(
+    private fun <E : Event> subscribe(type: EventType<E>): WindowListener<E> = WindowListener(
         callbackFlow {
-        val listener: (Event) -> Unit = {
-            offer(it.unsafeCast<E>())
-        }
-        browserWindow.addEventListener(type.name, listener)
-        awaitClose { browserWindow.removeEventListener(type.name, listener) }
-    })
+            val listener: (Event) -> Unit = {
+                offer(it.unsafeCast<E>())
+            }
+            browserWindow.addEventListener(type.name, listener)
+            awaitClose { browserWindow.removeEventListener(type.name, listener) }
+        })
 
     val aborts by lazy { subscribe(Events.abort) }
     val afterprints by lazy { subscribe(Events.afterprint) }
