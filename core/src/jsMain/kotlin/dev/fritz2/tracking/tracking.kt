@@ -14,27 +14,38 @@ fun tracker(defaultTransaction: String = "...", debounceTimeout: Long = 100): Tr
  *
  * @param defaultTransaction default transactions text (used if not specified when [track] is called)
  * @param debounceTimeout denounces values in the [Flow] of running transaction by this value
- * @param state stores the actual running transaction or null
  */
 class Tracker(
-    val defaultTransaction: String,
+    private val defaultTransaction: String,
     private val debounceTimeout: Long,
-    val state: MutableStateFlow<String?> = MutableStateFlow(null)
-) : Flow<Boolean> by (state.debounce(debounceTimeout).distinctUntilChanged().map { it != null }) {
+) {
+
+    private val state: MutableStateFlow<String?> = MutableStateFlow(null)
 
     /**
-     * tracks a given operation
+     * Gives a [Flow] to check if a transaction is running.
+     */
+    val data: Flow<Boolean> = state.debounce(debounceTimeout).distinctUntilChanged().map { it != null }
+
+    /**
+     * Represents the current transaction which is running or null.
+     */
+    val current: String?
+        get() = state.value
+
+    /**
+     * Tracks a given [operation].
      *
      * @param transaction text describing the transaction
      * @param operation function to track
      */
-    inline fun <T> track(transaction: String = defaultTransaction, operation: () -> T): T {
+    suspend fun <T> track(transaction: String = defaultTransaction, operation: suspend () -> T): T {
         state.value = transaction
         return operation().also { state.value = null }
     }
 
     /**
-     * return a [Flow] to check, if a certain transaction is running
+     * Gives a [Flow] to check, if a certain transaction is running
      *
      * @param transaction name of transaction to monitor
      */

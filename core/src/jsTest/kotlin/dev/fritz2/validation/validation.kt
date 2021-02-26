@@ -45,7 +45,7 @@ class ValidationJSTests {
                     store.data.map { it.name }.asText()
                 }
                 div(id = idMessages) {
-                    carValidator.msgs.renderEach(Message::text) {
+                    carValidator.data.renderEach(Message::text) {
                         p {
                             +it.text
                         }

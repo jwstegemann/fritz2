@@ -39,7 +39,7 @@ class TrackingTests {
 
         render {
             div {
-                span(id = transactionId) { store.running.map { if (it) transactionText else "" }.asText() }
+                span(id = transactionId) { store.running.data.map { if (it) transactionText else "" }.asText() }
                 span(id = valueId) { store.data.asText() }
             }
         }
