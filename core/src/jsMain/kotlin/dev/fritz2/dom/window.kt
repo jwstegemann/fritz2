@@ -9,7 +9,7 @@ import org.w3c.dom.Window
 import org.w3c.dom.events.Event
 
 /**
- * Object of the Browser Window expanded with [DomListener]s to handle easily the [Event]
+ * Represents all [Event]s of the browser [window] object as [WindowListener]s
  */
 object Window {
     private val browserWindow: Window = window
