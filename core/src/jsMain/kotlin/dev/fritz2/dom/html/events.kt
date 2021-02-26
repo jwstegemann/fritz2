@@ -252,6 +252,7 @@ object Events {
 
     // The event occurs when the mouse wheel rolls up or down over an element
     val wheel = EventType<WheelEvent>("wheel")
+
 }
 
 /**

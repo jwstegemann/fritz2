@@ -5,6 +5,7 @@ import dev.fritz2.dom.Listener
 import dev.fritz2.binding.RootStore
 import org.w3c.dom.events.MouseEvent
 import dev.fritz2.components.validation.Severity
+import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -544,7 +545,7 @@ interface CloseButtonProperty {
     val closeButtonStyle: ComponentProperty<Style<BasicParams>>
     val closeButtonIcon: ComponentProperty<Icons.() -> IconDefinition>
     val hasCloseButton: ComponentProperty<Boolean>
-    val closeButtonRendering: ComponentProperty<RenderContext.() -> Listener<MouseEvent, HTMLElement>>
+    val closeButtonRendering: ComponentProperty<RenderContext.() -> DomListener<MouseEvent, HTMLElement>>
 }
 
 /**
@@ -561,7 +562,7 @@ class CloseButtonMixin(
     override val closeButtonStyle = ComponentProperty<Style<BasicParams>> {}
     override val closeButtonIcon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.close }
     override val hasCloseButton = ComponentProperty(true)
-    override val closeButtonRendering = ComponentProperty<RenderContext.() -> Listener<MouseEvent, HTMLElement>> {
+    override val closeButtonRendering = ComponentProperty<RenderContext.() -> DomListener<MouseEvent, HTMLElement>> {
         clickButton({
             defaultStyle()
             closeButtonStyle.value()

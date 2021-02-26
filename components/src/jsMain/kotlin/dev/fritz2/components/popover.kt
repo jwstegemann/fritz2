@@ -2,6 +2,8 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.dom.Window
+import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
@@ -13,7 +15,9 @@ import dev.fritz2.styling.theme.PopoverArrowPlacements
 import dev.fritz2.styling.theme.PopoverPlacements
 import dev.fritz2.styling.theme.PopoverSizes
 import dev.fritz2.styling.theme.Theme
+import kotlinx.browser.document
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
@@ -49,6 +53,9 @@ open class PopoverComponent : Component<Unit>,
         }
         placementStyle = value
     }
+
+    val closeOnBlur =  ComponentProperty(true)
+    val closeOnEscape =  ComponentProperty(true)
 
     val hasArrow = ComponentProperty(true)
     val arrowPlacement = ComponentProperty<PopoverArrowPlacements.() -> Style<BasicParams>> {
@@ -130,19 +137,48 @@ open class PopoverComponent : Component<Unit>,
             val toggle = handle {
                 !it
             }
+            val close = handleAndEmit<Boolean, Unit> { open, close ->
+                if (open && close) {
+                    emit(Unit)
+                }
+                open
+            }
+
+            init {
+                close handledBy toggle
+            }
         }
+
+
+        val popoverId = id ?: "popover" + randomId()
         context.apply {
+
+            if (closeOnEscape.value) {
+                Window.keyups.map {
+                    it.keyCode == Keys.Escape.code
+                } handledBy clickStore.close
+            }
+
             (::div.styled({ }, staticCss, null, prefix) {
             }){
-                (::div.styled(prefix = "popover-toggle") {
+                (::div.styled(prefix = "popover-toggle", id = "popover-toggle-$popoverId") {
                     Theme().popover.toggle()
                 }) {
+                    attr("data-popover-for", popoverId)
                     clicks.events.map { } handledBy clickStore.toggle
                     toggle.value?.invoke(this)
                 }
                 clickStore.data.render {
                     if (it) {
-                        renderPopover(styling, baseClass, id, prefix, this, clickStore.toggle)
+                        renderPopover(styling, baseClass, popoverId, prefix, this, clickStore.toggle)
+                    }
+                }
+                clickStore.data.render {
+                    if( it ) {
+                        try {
+                            document.getElementById(popoverId).asDynamic().focus()
+                        } catch (e: Exception) {
+                        }
                     }
                 }
             }
@@ -158,10 +194,15 @@ open class PopoverComponent : Component<Unit>,
         closeHandler: SimpleHandler<Unit>
     ) {
         RenderContext.apply {
-            (::div.styled(styling, baseClass, id, prefix) {
+
+            (::section.styled(styling, baseClass, id, prefix) {
                 placementStyle.invoke(Theme().popover.placement)()
                 size.value.invoke(Theme().popover.size)()
+                focus {
+                    css("outline:none")
+                }
             }){
+                attr("tabindex", "-1")
                 if (hasArrow.value) {
                     renderArrow(this)
                 }
@@ -171,6 +212,11 @@ open class PopoverComponent : Component<Unit>,
                 header?.invoke(this)
                 content?.invoke(this)
                 footer?.invoke(this)
+
+                if (closeOnBlur.value) {
+                    blurs.events.debounce(200).map { } handledBy closeHandler
+                }
+
             }
         }
     }

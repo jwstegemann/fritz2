@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.RenderContext
@@ -336,8 +337,8 @@ fun RenderContext.clickButton(
     id: String? = null,
     prefix: String = "push-button",
     build: PushButtonComponent.() -> Unit = {}
-): Listener<MouseEvent, HTMLButtonElement> {
-    var clickEvents: Listener<MouseEvent, HTMLButtonElement>? = null
+): DomListener<MouseEvent, HTMLButtonElement> {
+    var clickEvents: DomListener<MouseEvent, HTMLButtonElement>? = null
     pushButton(styling, baseClass, id, prefix) {
         build()
         events {

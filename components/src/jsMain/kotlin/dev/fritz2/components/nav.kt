@@ -1,7 +1,7 @@
 import dev.fritz2.components.*
+import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.stopImmediatePropagation
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
@@ -13,7 +13,6 @@ import dev.fritz2.styling.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.MouseEvent
 
 /**
@@ -28,7 +27,7 @@ import org.w3c.dom.events.MouseEvent
  * not meant to be called directly unless you plan to implement your own navLink.
  */
 @ExperimentalCoroutinesApi
-open class NavLinkComponent : Component<Listener<MouseEvent, HTMLElement>> {
+open class NavLinkComponent : Component<Listener<MouseEvent>> {
     companion object {
         val activeStyle = staticStyle("navlink-active") {
             Theme().appFrame.activeNavLink()
@@ -45,8 +44,8 @@ open class NavLinkComponent : Component<Listener<MouseEvent, HTMLElement>> {
         baseClass: StyleClass?,
         id: String?,
         prefix: String
-    ): Listener<MouseEvent, HTMLElement> {
-        var clickEvents: Listener<MouseEvent, HTMLElement>? = null
+    ): Listener<MouseEvent> {
+        var clickEvents: Listener<MouseEvent>? = null
 
         context.apply {
             lineUp({
@@ -94,7 +93,7 @@ fun RenderContext.navLink(
     id: String? = null,
     prefix: String = "navlink",
     build: NavLinkComponent.() -> Unit = {}
-): Listener<MouseEvent, HTMLElement> = NavLinkComponent().apply(build)
+): Listener<MouseEvent> = NavLinkComponent().apply(build)
     .render(this, styling, baseClass, id, prefix)
 
 

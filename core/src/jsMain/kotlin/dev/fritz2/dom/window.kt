@@ -2,30 +2,30 @@ package dev.fritz2.dom
 
 import dev.fritz2.dom.html.EventType
 import dev.fritz2.dom.html.Events
+import kotlinx.browser.window
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import org.w3c.dom.Element
+import org.w3c.dom.Window
 import org.w3c.dom.events.Event
 
-
 /**
- * Offers [DomListener]s for all DOM-events available.
+ * Represents all [Event]s of the browser [window] object as [WindowListener]s
  */
-abstract class WithEvents<out T : Element> : WithDomNode<T> {
+object Window {
+    private val browserWindow: Window = window
 
     /**
-     * Creates a [DomListener] on a DOM-element.
+     * Creates a [WindowListener] for the given [EventType]
      *
      * @param type [EventType] to listen for
      */
-    private fun <E : Event> subscribe(type: EventType<E>): DomListener<E, T> = DomListener(
+    private fun <E : Event> subscribe(type: EventType<E>): WindowListener<E> = WindowListener(
         callbackFlow {
             val listener: (Event) -> Unit = {
                 offer(it.unsafeCast<E>())
             }
-            domNode.addEventListener(type.name, listener)
-
-            awaitClose { domNode.removeEventListener(type.name, listener) }
+            browserWindow.addEventListener(type.name, listener)
+            awaitClose { browserWindow.removeEventListener(type.name, listener) }
         })
 
     val aborts by lazy { subscribe(Events.abort) }
@@ -108,3 +108,4 @@ abstract class WithEvents<out T : Element> : WithDomNode<T> {
     val waitings by lazy { subscribe(Events.waiting) }
     val wheels by lazy { subscribe(Events.wheel) }
 }
+
