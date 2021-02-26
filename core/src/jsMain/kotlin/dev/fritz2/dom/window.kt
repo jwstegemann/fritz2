@@ -15,7 +15,7 @@ object Window {
     private val browserWindow: Window = window
 
     /**
-     * Creates a [WindowListener] on the browser Window
+     * Creates a [WindowListener] for the given [EventType]
      *
      * @param type [EventType] to listen for
      */
