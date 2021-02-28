@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 
 class WebComponentTests {
 
-    class MyComponent : WebComponent<HTMLParagraphElement>() {
+    object MyComponent : WebComponent<HTMLParagraphElement>() {
         override fun TagContext.init(element: HTMLElement, shadowRoot: ShadowRoot) =
             p(id = "paragraph-in-web-component") {
                 +"I am a WebComponent"
@@ -22,7 +22,7 @@ class WebComponentTests {
     fun testWebComponent() = runTest {
         initDocument()
 
-        registerWebComponent("my-component", MyComponent::class)
+        registerWebComponent("my-component", MyComponent)
 
         delay(250)
 

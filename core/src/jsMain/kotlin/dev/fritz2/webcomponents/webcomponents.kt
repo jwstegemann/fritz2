@@ -164,6 +164,22 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
  * So to make a component that can be added by just importing your javascript, call this in main.
  *
  *  @param localName name of the new custom tag (must contain a '-')
+ *  @param webComponent instance of a [WebComponent]
+ *  @param observedAttributes attributes to be observed, changes will occur on [WebComponent.attributeChanges]
+ */
+fun <X : Element, T : WebComponent<X>> registerWebComponent(
+    localName: String,
+    webComponent: T,
+    vararg observedAttributes: String
+) {
+    registerWebComponent(localName, webComponent::class, *observedAttributes)
+}
+
+/**
+ * registers a [WebComponent] at the browser's registry so you can use it in fritz2 by custom-[Tag] or in HTML.
+ * So to make a component that can be added by just importing your javascript, call this in main.
+ *
+ *  @param localName name of the new custom tag (must contain a '-')
  *  @param constructor class describing the component to register implementing [WebComponent]
  *  @param observedAttributes attributes to be observed, changes will occur on [WebComponent.attributeChanges]
  */
