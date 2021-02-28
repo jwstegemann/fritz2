@@ -1,6 +1,9 @@
 package dev.fritz2.validation
 
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 
 /**
  * Describes the logic for validating a given data-model.
@@ -16,22 +19,28 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
     private val state = MutableStateFlow<List<M>>(emptyList())
 
     /**
-     * contains the [List] of [ValidationMessage]s which gets updated every time when [isValid] gets called.
+     * Gives a [Flow] of [ValidationMessage]s which gets updated every time when [isValid] gets called.
      * If no messages result from validation its returns an empty list.
      */
-    val msgs = state.asStateFlow()
+    val data: Flow<List<M>> = state.asStateFlow()
+
+    /**
+     * Represents the current [List] of [ValidationMessage]s.
+     */
+    val current: List<M>
+        get() = state.value
 
     /**
      * Finds the first [ValidationMessage] matching the given [predicate].
      * If no such element was found, nothing gets called afterwards.
      */
-    fun find(predicate: (M) -> Boolean): Flow<M?> = msgs.map { it.find(predicate) }
+    fun find(predicate: (M) -> Boolean): Flow<M?> = data.map { it.find(predicate) }
 
     /**
      * Returns a [Flow] of list containing only
      * [ValidationMessage]s matching the given [predicate].
      */
-    fun filter(predicate: (M) -> Boolean): Flow<List<M>> = msgs.map { it.filter(predicate) }
+    fun filter(predicate: (M) -> Boolean): Flow<List<M>> = data.map { it.filter(predicate) }
 
     /**
      * validates the given data by using the given metadata and returns
@@ -60,6 +69,6 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
     /**
      * A [Flow] representing the current state of the model (valid or not).
      */
-    val isValid: Flow<Boolean> by lazy { msgs.map { list -> list.none(ValidationMessage::isError) } }
+    val isValid: Flow<Boolean> by lazy { data.map { list -> list.none(ValidationMessage::isError) } }
 }
 
