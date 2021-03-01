@@ -17,6 +17,7 @@ import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 
 
 /**
@@ -75,6 +76,12 @@ open class ToastComponent : Component<Unit>,
         Theme().toast.closeButton.close
     ) {
 
+    data class ToastFragment(
+        val id: String,
+        val placement: String,
+        val render: RenderContext.() -> Li
+    )
+
     object Placement {
 
         const val bottom = "bottom"
@@ -85,13 +92,10 @@ open class ToastComponent : Component<Unit>,
         const val topRight = "topRight"
 
         val placements = listOf(bottom, bottomLeft, bottomRight, top, topLeft, topRight)
-    }
 
-    data class ToastFragment(
-        val id: String,
-        val placement: String,
-        val render: RenderContext.() -> Li
-    )
+        fun appearsFromBottom(toasts: List<ToastFragment>): Boolean = toasts.isNotEmpty()
+                && setOf(bottom, bottomRight, bottomLeft).contains(toasts.first().placement)
+    }
 
     object ToastStore : RootStore<List<ToastFragment>>(listOf(), id = "toast-store") {
 
@@ -178,7 +182,23 @@ open class ToastComponent : Component<Unit>,
                         placementStyle()
                     }){
                         ToastStore.data
-                            .map { toasts -> toasts.filter { toast -> toast.placement == it } }
+                            .map { toasts ->
+                                toasts.filter { toast -> toast.placement == it }
+                            }.map { toasts ->
+                                /*
+                                New toasts should always be stacked on existing ones, which naturally depends on the
+                                basic placement:
+                                - top: the new toast must be rendered *below* the existing ones
+                                - bottom: the new toast must be rendered *above* the existing ones (reverse order
+                                          needed)
+                                 */
+                                if (Placement.appearsFromBottom(toasts)
+                                ) {
+                                    toasts.asReversed()
+                                } else {
+                                    toasts
+                                }
+                            }
                             .renderEach { toast -> toast.render(this) }
                     }
                 }
