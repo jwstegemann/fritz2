@@ -25,7 +25,7 @@ render {
         }
         p {
             +"model value = "
-            store.data.asText()
+            model.data.asText()
         }
     }
 }
