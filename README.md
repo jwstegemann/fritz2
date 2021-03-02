@@ -8,8 +8,7 @@
 [![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://www.fritz2.dev/examples.html)
 [![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev)
 [![Docs](https://img.shields.io/badge/doc-umentation-blue)](https://docs.fritz2.dev)
-[![Slack](https://img.shields.io/badge/slack-channel-green?logo=slack)](https://fritz2workspace.slack.com/)
-[![Discord](https://img.shields.io/discord/723492739819241513?color=7389D8&label=Chat&logo=discord&logoColor=ffffff)](https://discord.gg/UwQRH93)
+[![Slack chat](https://img.shields.io/badge/kotlinlang-%23fritz2-B37700?logo=slack&style=flat-square)](https://kotlinlang.slack.com/messages/fritz2)
 
 fritz2 is an ***extremely lightweight***, well-performing, independent library to build reactive web apps in ***Kotlin*** heavily depending on coroutines and flows.
 
