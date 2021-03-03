@@ -1,7 +1,6 @@
 package dev.fritz2.repositories.rest
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.invoke
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.IdProvider
