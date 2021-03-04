@@ -2,22 +2,18 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
-import dev.fritz2.binding.invoke
 import dev.fritz2.components.ToastComponent.Companion.closeAllToasts
 import dev.fritz2.components.ToastComponent.Companion.closeLastToast
-import dev.fritz2.dom.html.*
+import dev.fritz2.dom.html.Li
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.ColorProperty
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
+import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.*
+import dev.fritz2.styling.theme.Colors
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 
 
 /**

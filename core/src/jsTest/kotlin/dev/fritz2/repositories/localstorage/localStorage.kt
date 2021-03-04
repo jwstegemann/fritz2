@@ -1,12 +1,10 @@
 package dev.fritz2.repositories.localstorage
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.invoke
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
-import dev.fritz2.remote.WebSocketTests
 import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
 

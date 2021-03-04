@@ -5,7 +5,7 @@ plugins {
 
 kotlin {
     jvm()
-    js(BOTH)
+    js(BOTH).browser()
 
     sourceSets {
         val commonMain by getting {

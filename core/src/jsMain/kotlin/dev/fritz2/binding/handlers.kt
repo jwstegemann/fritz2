@@ -1,10 +1,7 @@
 package dev.fritz2.binding
 
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.*
 
 /**
  * Base-interface of the different types of handlers
@@ -20,14 +17,13 @@ interface Handler<A> {
      * @param data parameter forwarded to the handler
      */
     operator fun invoke(data: A) = this.collect(flowOf(data), Job())
-}
 
-/**
- * Calls this handler exactly once.
- *
- * @receiver [Handler] which gets called
- */
-operator fun Handler<Unit>.invoke() = this.collect(flowOf(Unit), Job())
+    /**
+     * Calls this handler exactly once.
+     *
+     */
+    operator fun invoke() = this.collect(flowOf(Unit.unsafeCast<A>()), Job())
+}
 
 /**
  * Defines, how to handle actions in your [Store]. Each Handler accepts actions of a defined type.
