@@ -1346,12 +1346,54 @@ open class DefaultTheme : Theme {
         }
 
         override val variants = object : InputFieldVariants {
+            private val basic: Style<BasicParams> = {
+                lineHeight { normal }
+                radius { normal }
+                fontWeight { normal }
+                paddings { horizontal { small } }
+                border {
+                    width { thin }
+                    style { solid }
+                    color { lightGray }
+                }
+
+                hover {
+                    border {
+                        color { dark }
+                    }
+                }
+
+                readOnly {
+                    background {
+                        color { base }
+                    }
+                }
+
+                disabled {
+                    background {
+                        color { base }
+                    }
+                    color { disabled }
+                    hover {
+                        border {
+                            color { lightGray }
+                        }
+                    }
+                }
+
+                focus {
+                    border {
+                        color { primary }
+                    }
+                    boxShadow { outline }
+                }
+            }
             override val outline: Style<BasicParams> = {
-                // just leave the *foundation* CSS values untouched!
-                // But we need a *name* for this variant, so we got to have this val!
+                basic()
             }
 
             override val filled: Style<BasicParams> = {
+                basic()
                 background {
                     color { primaryEffect }
                 }

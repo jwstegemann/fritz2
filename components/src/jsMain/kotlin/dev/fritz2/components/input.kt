@@ -55,48 +55,6 @@ open class InputFieldComponent(protected val store: Store<String>?) :
             """
         )
 
-        val basicInputStyles: Style<BasicParams> = {
-            lineHeight { normal }
-            radius { normal }
-            fontWeight { normal }
-            paddings { horizontal { small } }
-            border {
-                width { thin }
-                style { solid }
-                color { lightGray }
-            }
-
-            hover {
-                border {
-                    color { dark }
-                }
-            }
-
-            readOnly {
-                background {
-                    color { base }
-                }
-            }
-
-            disabled {
-                background {
-                    color { base }
-                }
-                color { disabled }
-                hover {
-                    border {
-                        color { lightGray }
-                    }
-                }
-            }
-
-            focus {
-                border {
-                    color { primary }
-                }
-                boxShadow { outline }
-            }
-        }
     }
 
     val variant = ComponentProperty<InputFieldVariants.() -> Style<BasicParams>> { Theme().input.variants.outline }
@@ -117,7 +75,6 @@ open class InputFieldComponent(protected val store: Store<String>?) :
             (::input.styled(styling, baseClass + staticCss, id, prefix) {
                 size.value.invoke(Theme().input.sizes)()
                 variant.value.invoke(Theme().input.variants)()
-                basicInputStyles()
             }) {
                 disabled(disabled.values)
                 readOnly(readonly.values)
