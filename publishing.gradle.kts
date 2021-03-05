@@ -2,6 +2,8 @@
 
 apply(plugin = "maven-publish")
 apply(plugin = "signing")
+apply(plugin = "org.jetbrains.dokka")
+
 
 fun Project.signing(configure: SigningExtension.() -> Unit): Unit =
     configure(configure)
@@ -16,6 +18,13 @@ signing {
     useInMemoryPgpKeys(signingKey, signingPassphrase)
     if (signingKey.isBlank() || signingPassphrase.isBlank()) throw Exception("no signing credentials available")
     sign((extensions.getByName("publishing") as PublishingExtension).publications)
+}
+
+val javadocJar by tasks.creating(Jar::class) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles java doc to jar"
+    archiveClassifier.set("javadoc")
+    from(tasks.named("dokkaHtml"))
 }
 
 publishing {
@@ -38,6 +47,8 @@ publishing {
 
     publications.withType<MavenPublication>().forEach {
         it.apply {
+            artifact(javadocJar)
+
             pom {
                 name.set("core")
                 description.set("Easily build reactive web-apps in Kotlin based on flows and coroutines")
