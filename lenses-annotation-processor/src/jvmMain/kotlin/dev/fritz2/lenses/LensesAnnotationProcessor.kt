@@ -4,8 +4,11 @@ package dev.fritz2.lenses
 //import net.ltgt.gradle.incap.IncrementalAnnotationProcessorType
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
+import com.squareup.kotlinpoet.metadata.ImmutableKmClass
 import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
+import com.squareup.kotlinpoet.metadata.isPrimary
 import com.squareup.kotlinpoet.metadata.specs.toTypeSpec
+import com.squareup.kotlinpoet.metadata.toImmutableKmClass
 import dev.fritz2.lenses.LensesAnnotationProcessor.Companion.FRITZ2_VISIBILITY_OPTION_NAME
 import dev.fritz2.lenses.LensesAnnotationProcessor.Companion.KAPT_KOTLIN_GENERATED_OPTION_NAME
 import java.io.File
@@ -41,7 +44,7 @@ class LensesAnnotationProcessor : AbstractProcessor() {
     annotatedElements
       .filter { it.kind == ElementKind.CLASS }
       .map { it as TypeElement }
-      .associateWith { it.toTypeSpec() }
+      .associateWith { it.toTypeSpec() to it.toImmutableKmClass() }
       .toList()
       .groupBy { (element, _) ->
         processingEnv.elementUtils.getPackageOf(element).qualifiedName.toString()
@@ -54,7 +57,7 @@ class LensesAnnotationProcessor : AbstractProcessor() {
         
         val lensesObject = TypeSpec.objectBuilder("L").addModifiers(visibility.asVisibilityModifier())
         classes.forEach { (element, classData) ->
-          lensesObject.addType(handleDataClass(element, classData))
+          lensesObject.addType(handleDataClass(element, classData.first, classData.second))
         }
         fileSpecBuilder.addType(lensesObject.build())
         
@@ -75,9 +78,12 @@ class LensesAnnotationProcessor : AbstractProcessor() {
     KModifier.INTERNAL,
   ).find { it.name.equals(this, true) } ?: default
   
-  private fun handleDataClass(element: TypeElement, classData: TypeSpec): TypeSpec {
+  private fun handleDataClass(element: TypeElement, classData: TypeSpec, kmClassData: ImmutableKmClass): TypeSpec {
     val classSpec = TypeSpec.objectBuilder(classData.name ?: "unknown")
-    classData.propertySpecs.forEach { propertyData ->
+    val ctorParamNames = kmClassData.constructors.first { it.isPrimary }.valueParameters.map { it.name }
+    classData.propertySpecs
+      .filter { ctorParamNames.contains(it.name) }
+      .forEach { propertyData ->
       //FIXME: replace deprecated function call
       classSpec.addProperty((handleField(element.asClassName(), propertyData)))
     }
@@ -95,7 +101,7 @@ class LensesAnnotationProcessor : AbstractProcessor() {
       .plusParameter(propertyData.type)
     
     return PropertySpec.builder(attributeName, lensTypeName)
-      .initializer("buildLens(%S, { it.$attributeName },{ p, v -> p.copy($attributeName = v)})", attributeName)
+      .initializer("buildLens(%S, { it.$attributeName }, { p, v -> p.copy($attributeName = v)})", attributeName)
       .build()
   }
   
