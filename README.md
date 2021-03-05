@@ -8,12 +8,11 @@
 [![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://www.fritz2.dev/examples.html)
 [![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev)
 [![Docs](https://img.shields.io/badge/doc-umentation-blue)](https://docs.fritz2.dev)
-[![Slack](https://img.shields.io/badge/slack-channel-green?logo=slack)](https://fritz2workspace.slack.com/)
-[![Discord](https://img.shields.io/discord/723492739819241513?color=7389D8&label=Chat&logo=discord&logoColor=ffffff)](https://discord.gg/UwQRH93)
+[![Slack chat](https://img.shields.io/badge/kotlinlang-%23fritz2-B37700?logo=slack&style=flat-square)](https://kotlinlang.slack.com/messages/fritz2)
 
 fritz2 is an ***extremely lightweight***, well-performing, independent library to build reactive web apps in ***Kotlin*** heavily depending on coroutines and flows.
 
-fritz2 includes an intuitive way to build and render html-elements using a type-safe dsl. You can easily create lightweight **reactive** html-components that are bound to an underlying model and **automatically** change whenever the model data changes:
+fritz2 includes an intuitive way to build and render html-elements and styles using a type-safe dsl. You can easily create lightweight **reactive** html-components that are bound to an underlying model and **automatically** change whenever the model data changes:
 
 ```kotlin
 val model = storeOf("init value")
@@ -26,10 +25,10 @@ render {
         }
         p {
             +"model value = "
-            store.data.asText()
+            model.data.asText()
         }
     }
-}.mount("target")
+}
 ```
 
 fritz2 implements **precise data binding**. This means that when parts of your data model change, **exactly those** and only those DOM-nodes depending on the changed parts will automatically change as well. No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additional methods to decide which parts of your component have to be re-rendered:
@@ -41,18 +40,17 @@ Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data c
 ## Key Features
 
 - easy reactive one- and two-way-databinding (even for lists and deep nested structures)
-- complete set of html5 elements, attributes and events
 - hassle-free redux-like state-handling
 - model-validation and message handling 
+- integrated [styling-dsl](https://docs.fritz2.dev/StylingDSL.html)
+- [component-library](https://components.fritz2.dev)
 - routing (for SPAs, hash-based)
-- [examples](https://www.fritz2.dev/examples.html) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
 - backend-repositories (Rest APIs, WebSockets, LocalStorage, etc.)
 - history / undo
 - processing state ("spinning wheel")
-- integrated [styling-dsl](https://docs.fritz2.dev/StylingDSL.html)
-- [component-library](https://components.fritz2.dev)
-- [documentation](https://docs.fritz2.dev)
 - easy to learn  
+- [documentation](https://docs.fritz2.dev)
+- [examples](https://www.fritz2.dev/examples.html) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
 
 
 ## How to try it?
@@ -65,6 +63,7 @@ Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data c
 - staying lightweight (a few hundred lines of code for the core)
 - keeping dependencies as low as possible (zero up to now!)
 - generating elements, attributes, events for html from specification (w3c, mozilla, ...)
+- make it as easy as possible to write reactive pwas in pure kotlin
 
 ## Inspiration
 

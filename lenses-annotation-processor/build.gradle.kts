@@ -1,12 +1,11 @@
 plugins {
     kotlin("multiplatform")
-//    kotlin("kapt")
     id("maven-publish")
 }
 
 kotlin {
     jvm()
-    js(BOTH).nodejs()
+    js(BOTH).browser()
 
     sourceSets {
         val commonMain by getting {
