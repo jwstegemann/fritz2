@@ -1,0 +1,74 @@
+// publishing
+
+apply(plugin = "maven-publish")
+apply(plugin = "signing")
+
+fun Project.signing(configure: SigningExtension.() -> Unit): Unit =
+    configure(configure)
+
+fun Project.publishing(action: PublishingExtension.() -> Unit) =
+    configure(action)
+
+signing {
+    val signingKey: String = System.getenv("GPG_SIGNING_KEY")
+    val signingPassphrase: String = System.getenv("GPG_SIGNING_PASSPHRASE")
+
+    useInMemoryPgpKeys(signingKey, signingPassphrase)
+    if (signingKey.isBlank() || signingPassphrase.isBlank()) throw Exception("no signing credentials available")
+    sign((extensions.getByName("publishing") as PublishingExtension).publications)
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "sonatype"
+
+            val releaseUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            val snapshotUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            val isRelease = System.getenv("GITHUB_EVENT_NAME").equals("release", true)
+
+            url = uri(if (isRelease && !version.toString().endsWith("SNAPSHOT")) releaseUrl else snapshotUrl)
+
+            credentials {
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD")
+            }
+        }
+    }
+
+    publications.withType<MavenPublication>().forEach {
+        it.apply {
+            pom {
+                name.set("core")
+                description.set("Easily build reactive web-apps in Kotlin based on flows and coroutines")
+                url.set("http://github.com/jwstegemann/fritz2")
+
+                scm {
+                    connection.set("scm:git:http://github.com/jwstegemann/fritz2/")
+                    developerConnection.set("scm:git:http://github.com/jwstegemann/")
+                    url.set("http://github.com/jwstegemann/fritz2/")
+                }
+
+                licenses {
+                    license {
+                        name.set("MIT")
+                        url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("jwstegemann")
+                        name.set("Jens Stegemann")
+                        email.set("jwstegemann@gmail.com")
+                    }
+                    developer {
+                        id.set("jamowei")
+                        name.set("Jan Weidenhaupt")
+                        email.set("jan@rexster.de")
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,9 +1,7 @@
 plugins {
     kotlin("multiplatform")
-    id("maven-publish")
     id("org.jetbrains.dokka")
     kotlin("plugin.serialization")
-    signing
 }
 
 kotlin {
@@ -71,26 +69,4 @@ kotlin {
     }
 }
 
-signing {
-    sign((extensions.getByName("publishing") as PublishingExtension).publications)
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "sonatype"
-
-            val releaseUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            val snapshotUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-            val isRelease = System.getenv("GITHUB_EVENT_NAME").equals("release", true)
-
-            url = uri(if (isRelease && !version.toString().endsWith("SNAPSHOT")) releaseUrl else snapshotUrl)
-
-            credentials {
-                username = System.getenv("OSSRH_USERNAME")
-                password = System.getenv("OSSRH_PASSWORD")
-            }
-        }
-    }
-}
-
+apply(from = "$rootDir/publishing.gradle.kts")
