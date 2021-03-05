@@ -33,7 +33,6 @@ jobs:
     - name: Publish with Gradle
       run: ./gradlew publish
       env: # Or as an environment variable
-        BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
         GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
         GPG_SIGNING_PASSPHRASE: ${{ secrets.GPG_SIGNING_PASSPHRASE }}
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}

@@ -21,8 +21,6 @@ allprojects {
     //manage common setting and dependencies
     repositories {
         mavenCentral()
-        jcenter()
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
     }
 }
 
