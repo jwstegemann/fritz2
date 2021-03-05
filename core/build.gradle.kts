@@ -3,6 +3,7 @@ plugins {
     id("maven-publish")
     id("org.jetbrains.dokka")
     kotlin("plugin.serialization")
+    signing
 }
 
 kotlin {
@@ -70,22 +71,26 @@ kotlin {
     }
 }
 
+signing {
+    sign((extensions.getByName("publishing") as PublishingExtension).publications)
+}
+
 publishing {
     repositories {
         maven {
-            name = "bintray"
-            val releaseUrl = "https://api.bintray.com/maven/jwstegemann/fritz2/${project.name}/;" +
-                    "publish=0;" + // Never auto-publish to allow override.
-                    "override=1"
-            val snapshotUrl = "https://oss.jfrog.org/artifactory/oss-snapshot-local"
+            name = "sonatype"
+
+            val releaseUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            val snapshotUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
             val isRelease = System.getenv("GITHUB_EVENT_NAME").equals("release", true)
 
             url = uri(if (isRelease && !version.toString().endsWith("SNAPSHOT")) releaseUrl else snapshotUrl)
 
             credentials {
-                username = "jwstegemann"
-                password = System.getenv("BINTRAY_API_KEY")
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD")
             }
         }
     }
 }
+
