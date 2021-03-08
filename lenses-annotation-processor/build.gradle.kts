@@ -27,6 +27,14 @@ kotlin {
 //                    implementation(kotlin("compiler-embeddable"))
             }
         }
+
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit"))
+                implementation("org.assertj:assertj-core:3.19.0")
+                implementation("com.github.tschuchortdev:kotlin-compile-testing:1.3.6")
+            }
+        }
     }
 }
 
