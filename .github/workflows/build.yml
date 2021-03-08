@@ -18,9 +18,6 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-      env: # Or as an environment variable
-        GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
-        GPG_SIGNING_PASSPHRASE: ${{ secrets.GPG_SIGNING_PASSPHRASE }}
     - name: Archive test-results
       if: always()
       uses: actions/upload-artifact@v1.0.0
