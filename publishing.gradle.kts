@@ -11,13 +11,15 @@ fun Project.signing(configure: SigningExtension.() -> Unit): Unit =
 fun Project.publishing(action: PublishingExtension.() -> Unit) =
     configure(action)
 
-signing {
-    val signingKey: String = System.getenv("GPG_SIGNING_KEY")
-    val signingPassphrase: String = System.getenv("GPG_SIGNING_PASSPHRASE")
 
-    useInMemoryPgpKeys(signingKey, signingPassphrase)
-    if (signingKey.isBlank() || signingPassphrase.isBlank()) throw Exception("no signing credentials available")
-    sign((extensions.getByName("publishing") as PublishingExtension).publications)
+signing {
+    val signingKey: String = System.getenv("GPG_SIGNING_KEY").orEmpty()
+    val signingPassphrase: String = System.getenv("GPG_SIGNING_PASSPHRASE").orEmpty()
+
+    if (signingKey.isNotBlank() && signingPassphrase.isNotBlank()) {
+        useInMemoryPgpKeys(signingKey, signingPassphrase)
+        sign((extensions.getByName("publishing") as PublishingExtension).publications)
+    }
 }
 
 val javadocJar by tasks.creating(Jar::class) {
