@@ -2,13 +2,11 @@
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
-[![Download](https://api.bintray.com/packages/jwstegemann/fritz2/core/images/download.svg)](https://bintray.com/jwstegemann/fritz2/core/_latestVersion)
+[![Download](https://img.shields.io/maven-central/v/dev.fritz2/core)](https://search.maven.org/search?q=g:dev.fritz2)
 [![IR](https://img.shields.io/badge/Kotlin%2FJS-IR%20supported-yellow)](https://kotl.in/jsirsupported)
-
 [![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://www.fritz2.dev/examples.html)
 [![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev)
 [![Docs](https://img.shields.io/badge/doc-umentation-blue)](https://docs.fritz2.dev)
-[![Slack chat](https://img.shields.io/badge/kotlinlang-%23fritz2-B37700?logo=slack&style=flat-square)](https://kotlinlang.slack.com/messages/fritz2)
 
 fritz2 is an ***extremely lightweight***, well-performing, independent library to build reactive web apps in ***Kotlin*** heavily depending on coroutines and flows.
 
