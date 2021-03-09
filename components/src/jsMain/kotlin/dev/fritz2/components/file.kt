@@ -6,8 +6,8 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.DisplayValues
 import dev.fritz2.styling.params.styled
+import dev.fritz2.styling.staticStyle
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLInputElement
@@ -56,6 +56,7 @@ abstract class FileSelectionBaseComponent {
 
     companion object {
         const val eventName = "loadend"
+        val inputStyle: StyleClass = staticStyle("file-input", "display: none;")
     }
 
     protected var accept: (Input.() -> Unit)? = null
@@ -150,7 +151,7 @@ open class SingleFileSelectionComponent : FileSelectionBaseComponent(), Componen
         var file: Flow<File>? = null
         context.apply {
             (::div.styled(styling, baseClass, id, prefix) {}) {
-                val inputElement = (::input.styled { display { none } }) {
+                val inputElement = input(inputStyle.name) {
                     type("file")
                     accept?.invoke(this)
                     file = changes.events.mapNotNull {
@@ -183,7 +184,7 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(), Component
         var files: Flow<List<File>>? = null
         context.apply {
             (::div.styled(styling, baseClass, id, prefix) {}) {
-                val inputElement = (::input.styled { display { none } }) {
+                val inputElement = input(inputStyle.name) {
                     type("file")
                     multiple(true)
                     accept?.invoke(this)
