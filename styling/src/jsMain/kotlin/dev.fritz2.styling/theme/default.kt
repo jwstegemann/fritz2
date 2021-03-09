@@ -1320,15 +1320,14 @@ open class DefaultTheme : Theme {
         override val sizes = object : FormSizes {
             override val small: Style<BasicParams> = {
                 height { "2rem" }
-                minWidth { "2.5rem" }
                 fontSize { small }
                 paddings {
                     horizontal { tiny }
                 }
             }
+
             override val normal: Style<BasicParams> = {
                 height { "2.5rem" }
-                minWidth { "2.5rem" }
                 fontSize { normal }
                 paddings {
                     horizontal { small }
@@ -1337,7 +1336,6 @@ open class DefaultTheme : Theme {
 
             override val large: Style<BasicParams> = {
                 height { "3rem" }
-                minWidth { "2.5rem" }
                 fontSize { large }
                 paddings {
                     horizontal { small }
@@ -1347,10 +1345,10 @@ open class DefaultTheme : Theme {
 
         override val variants = object : InputFieldVariants {
             private val basic: Style<BasicParams> = {
+                minWidth { "2.5rem" }
                 lineHeight { normal }
                 radius { normal }
                 fontWeight { normal }
-                paddings { horizontal { small } }
                 border {
                     width { thin }
                     style { solid }
