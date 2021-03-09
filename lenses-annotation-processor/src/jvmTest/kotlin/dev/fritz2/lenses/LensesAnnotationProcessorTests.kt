@@ -142,7 +142,7 @@ class LensesAnnotationProcessorTests {
         Assertions.assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.COMPILATION_ERROR)
         Assertions.assertThat(compilationResult.messages).contains(
             "@Lenses annotation can't be applied to data classes outside of a package! " +
-                    "Please add package declarations to the following classes: Bar, Baz, Foo"
+                    "Please add package declarations to the following classes:", "Bar", "Baz", "Foo"
         )
     }
 
