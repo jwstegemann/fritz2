@@ -84,44 +84,19 @@ fun resetCss(css: String) {
     Styling.resetCss(css)
 }
 
-
 /**
- * alias for CSS class names
+ * Alias class for css classes
  */
 inline class StyleClass(val name: String) {
     companion object {
         val None = StyleClass("")
-
-        infix operator fun StyleClass?.plus(other: StyleClass): StyleClass {
-            return when {
-                this == null || this == None -> other
-                other == None -> this
-                else -> StyleClass(this.name + " " + other.name)
-            }
-        }
-
-        infix operator fun StyleClass?.plus(other: StyleClass?): StyleClass {
-            return when {
-                this == null || this == None -> other ?: None
-                other == null || other == None -> this
-                else -> StyleClass(this.name + " " + other.name)
-            }
-        }
     }
 
     infix operator fun plus(other: StyleClass): StyleClass {
         return when {
             this == None -> other
             other == None -> this
-            else -> StyleClass(this.name + " " + other.name)
-        }
-    }
-
-    infix operator fun plus(other: StyleClass?): StyleClass {
-        return when {
-            this == None -> other ?: None
-            other == null || other == None -> this
-            else -> StyleClass(this.name + " " + other.name)
+            else -> StyleClass("${this.name} ${other.name}")
         }
     }
 }
@@ -137,11 +112,6 @@ fun <E : Element> Tag<E>.classList(values: Flow<List<StyleClass>>) {
 fun <E : Element> Tag<E>.classMap(values: Flow<Map<StyleClass, Boolean>>) {
     classMap(values.map { it.mapKeys { (k, _) -> k.name } })
 }
-
-/**
- * const for no style class
- */
-//const val NoStyle: StyleClass = ""
 
 /**
  * adds some static css to your app's dynamic style sheet.
@@ -187,14 +157,17 @@ fun staticStyle(name: String, styling: BoxParams.() -> Unit): StyleClass {
  * @return the name of the created class
  */
 fun style(css: String, prefix: String = "s"): StyleClass {
-    val hash = v3(css)
-    return StyleClass("$prefix-${generateAlphabeticName(hash)}").also {
-        Styling.addDynamicCss(it.name, ".${it.name} { $css }")
+    return if(css.isBlank()) StyleClass.None
+    else {
+        val hash = v3(css)
+        StyleClass("$prefix-${generateAlphabeticName(hash)}").also {
+            Styling.addDynamicCss(it.name, ".${it.name} { $css }")
+        }
     }
 }
 
 /**
- * creates a dynamic css-class and add it to your app's dynamic style sheet.
+ * creates a dynamic css class and add it to your app's dynamic style sheet.
  * To make the name unique a hash is calculated from your content. This hash is also used to make sure
  * that no two rules with identical content are created but the already existing class is used in this case.
  *
@@ -204,38 +177,53 @@ fun style(css: String, prefix: String = "s"): StyleClass {
  */
 fun style(prefix: String = "s", styling: BoxParams.() -> Unit): StyleClass {
     val css = StyleParamsImpl().apply(styling).toCss()
-    return style(css, prefix)
+    return if(css.isNotBlank()) style(css, prefix) else StyleClass.None
 }
 
 /**
- * function to apply a given class only when a condition is fullfiled.
+ * applies a given css class only when a condition is fulfilled.
  *
  * @receiver css class to apply
- * @param upstream [Flow] that holds the value to check
- * @param mapper defining the rule, when to apply the class
+ * @param value [Flow] that holds the value to check
+ * @param predicate defining the rule, when to apply the class
  * @return [Flow] containing the class name if check returns true or nothing
  */
-inline fun <T> StyleClass.whenever(upstream: Flow<T>, crossinline mapper: suspend (T) -> Boolean): Flow<StyleClass> =
-    upstream.map { value ->
-        if (mapper(value)) this else StyleClass.None
-    }
-
+inline fun <T> StyleClass.whenever(value: Flow<T>, crossinline predicate: suspend (T) -> Boolean): Flow<StyleClass> =
+    value.map { if (predicate(it)) this else StyleClass.None }
 
 /**
- * function to apply a given class only when a condition is fulfilled.
+ * applies a given css class only when a condition is fulfilled.
  *
  * @receiver css class to apply
- * @param upstream [Flow] that holds the value to check
- * @return [Flow] containing the class name if check returns true or nothing
+ * @param value [Flow] that holds the value to check
+ * @param predicate defining the rule, when to apply the class
+ * @return [Flow] containing the class name if check returns true or null
  */
-fun StyleClass.whenever(upstream: Flow<Boolean>): Flow<StyleClass> =
-    upstream.map { value ->
-        if (value) this else StyleClass.None
-    }
-
+inline fun <T> StyleClass.whenever(value: T, predicate: (T) -> Boolean): StyleClass =
+    if (predicate(value)) this else StyleClass.None
 
 /**
- * use name on a Flow<StyleClass> just as you do on StyleClass to apply it whenever class-names are required as Strings
+ * applies a given css class only when a condition is fulfilled.
+ *
+ * @receiver css class to apply
+ * @param condition [Flow] that holds the value to check
+ * @return [Flow] containing the class name if check returns true or null
+ */
+fun StyleClass.whenever(condition: Flow<Boolean>): Flow<StyleClass> =
+    condition.map { value -> if (value) this else StyleClass.None }
+
+/**
+ * applies a given css class only when a condition is fulfilled.
+ *
+ * @receiver css class to apply
+ * @param condition that holds the value to check
+ * @return [StyleClass] containing the class name if check returns true or null
+ */
+fun StyleClass.whenever(condition: Boolean): StyleClass = if (condition) this else StyleClass.None
+
+/**
+ * use [name] on a [Flow] of [StyleClass] to get the css classname out of it.
+ * If the [StyleClass] is null it returns a empty [String].
  */
 val Flow<StyleClass>.name: Flow<String>
     get() = this.map { it.name }
