@@ -2,7 +2,6 @@ package dev.fritz2.styling.params
 
 import dev.fritz2.dom.html.TagContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.StyleClass.Companion.plus
 
 
 /**
@@ -62,14 +61,14 @@ typealias BasicComponent<E> = (String?, String?, E.() -> Unit) -> E
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  */
 fun <E> BasicComponent<E>.styled(
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
     styling: BoxParams.() -> Unit
 ): TagContext.(E.() -> Unit) -> E {
     val additionalClass = StyleParamsImpl().apply(styling).cssClasses(prefix)
     return { init ->
-        this@styled("${baseClass?.name.orEmpty()} ${additionalClass?.name.orEmpty()}", id, init)
+        this@styled((baseClass + additionalClass).name, id, init)
     }
 }
 
@@ -136,7 +135,7 @@ fun <E> BasicComponent<E>.styled(
  */
 fun <E> BasicComponent<E>.styled(
     parentStyling: BoxParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
     styling: BoxParams.() -> Unit
