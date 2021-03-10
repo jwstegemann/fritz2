@@ -240,7 +240,7 @@ open class ToastComponent : Component<Unit>,
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String,
     ) {
@@ -310,7 +310,7 @@ open class ToastComponent : Component<Unit>,
  */
 fun RenderContext.showToast(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = ToastComponent.defaultToastContainerPrefix,
     build: ToastComponent.() -> Unit,
@@ -352,7 +352,7 @@ fun RenderContext.showToast(
  */
 fun RenderContext.toast(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = ToastComponent.defaultToastContainerPrefix,
     build: ToastComponent.() -> Unit

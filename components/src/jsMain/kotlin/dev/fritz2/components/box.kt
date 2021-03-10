@@ -35,7 +35,7 @@ import dev.fritz2.styling.params.styled
  */
 fun RenderContext.box(
     styling: FlexParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "box",
     init: Div.() -> Unit
@@ -74,7 +74,7 @@ fun RenderContext.box(
  */
 fun RenderContext.flexBox(
     styling: FlexParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "flex-box",
     init: Div.() -> Unit
@@ -118,7 +118,7 @@ fun RenderContext.flexBox(
  */
 fun RenderContext.gridBox(
     styling: GridParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "grid-box",
     init: Div.() -> Unit

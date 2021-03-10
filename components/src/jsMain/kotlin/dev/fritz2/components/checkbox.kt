@@ -1,18 +1,18 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
-import dev.fritz2.components.CheckboxComponent.Companion.checkboxInputStaticCss
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.className
+import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
@@ -109,7 +109,7 @@ open class CheckboxComponent(protected val store: Store<Boolean>?) :
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ): Label = with(context) {
@@ -138,7 +138,7 @@ open class CheckboxComponent(protected val store: Store<Boolean>?) :
                 readOnly(readonly.values)
                 type("checkbox")
                 checked(store?.data ?: checked.values)
-                className(severityClassOf(Theme().checkbox.severity, prefix))
+                className(severityClassOf(Theme().checkbox.severity, prefix).name)
                 store?.let { changes.states() handledBy it.update }
                 events.value.invoke(this)
                 element.value.invoke(this)
@@ -207,7 +207,7 @@ open class CheckboxComponent(protected val store: Store<Boolean>?) :
 fun RenderContext.checkbox(
     styling: BasicParams.() -> Unit = {},
     store: Store<Boolean>? = null,
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "checkboxComponent",
     build: CheckboxComponent.() -> Unit = {}

@@ -10,7 +10,6 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.FormSizes
@@ -220,7 +219,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
     open fun inputField(
         styling: BasicParams.() -> Unit = {},
         store: Store<String>? = null,
-        baseClass: StyleClass? = null,
+        baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = ControlNames.inputField,
         build: InputFieldComponent.() -> Unit = {}
@@ -241,7 +240,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
     open fun switch(
         styling: BasicParams.() -> Unit = {},
         store: Store<Boolean>? = null,
-        baseClass: StyleClass? = null,
+        baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = ControlNames.switch,
         build: SwitchComponent.() -> Unit = {}
@@ -262,7 +261,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
     open fun textArea(
         styling: BasicParams.() -> Unit = {},
         store: Store<String>? = null,
-        baseClass: StyleClass? = null,
+        baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = ControlNames.textArea,
         build: TextAreaComponent.() -> Unit = {}
@@ -282,7 +281,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
 
     open fun checkbox(
         styling: BasicParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
+        baseClass: StyleClass = StyleClass.None,
         store: Store<Boolean>? = null,
         id: String? = null,
         prefix: String = ControlNames.checkbox,
@@ -307,7 +306,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         styling: BasicParams.() -> Unit = {},
         items: List<T>,
         store: Store<List<T>>? = null,
-        baseClass: StyleClass? = null,
+        baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = ControlNames.checkboxGroup,
         build: CheckboxGroupComponent<T>.() -> Unit = {}
@@ -329,7 +328,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         styling: BasicParams.() -> Unit = {},
         items: List<T>,
         store: Store<T>? = null,
-        baseClass: StyleClass? = null,
+        baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = ControlNames.radioGroup,
         build: RadioGroupComponent<T>.() -> Unit = {}
@@ -351,7 +350,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         styling: BasicParams.() -> Unit = {},
         items: List<T>,
         store: Store<T>? = null,
-        baseClass: StyleClass? = null,
+        baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = ControlNames.selectField,
         build: SelectFieldComponent<T>.() -> Unit = {}
@@ -379,7 +378,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ) {
@@ -426,7 +425,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
 interface ControlRenderer {
     fun render(
         styling: BoxParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
+        baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = "formControl",
         renderContext: RenderContext,
@@ -437,7 +436,7 @@ interface ControlRenderer {
 class SingleControlRenderer(private val component: FormControlComponent) : ControlRenderer {
     override fun render(
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String,
         renderContext: RenderContext,
@@ -473,7 +472,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
 class ControlGroupRenderer(private val component: FormControlComponent) : ControlRenderer {
     override fun render(
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String,
         renderContext: RenderContext,
@@ -567,7 +566,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
  */
 fun RenderContext.formControl(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "formControl",
     build: FormControlComponent.() -> Unit = {}

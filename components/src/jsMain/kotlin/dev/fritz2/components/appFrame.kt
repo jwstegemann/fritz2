@@ -123,7 +123,7 @@ open class AppFrameComponent : Component<Unit> {
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ) {
@@ -273,7 +273,7 @@ open class AppFrameComponent : Component<Unit> {
 @ExperimentalCoroutinesApi
 fun RenderContext.appFrame(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "app",
     build: AppFrameComponent.() -> Unit = {}

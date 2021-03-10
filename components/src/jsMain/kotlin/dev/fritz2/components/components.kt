@@ -1,29 +1,26 @@
 package dev.fritz2.components
 
-import org.w3c.dom.*
-import dev.fritz2.dom.Listener
 import dev.fritz2.binding.RootStore
-import org.w3c.dom.events.MouseEvent
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.IconDefinition
+import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.SeverityStyles
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.Element
-import dev.fritz2.identification.uniqueId
-import dev.fritz2.styling.className
-import dev.fritz2.styling.theme.IconDefinition
-import dev.fritz2.styling.theme.Icons
-import dev.fritz2.styling.theme.Theme
+import org.w3c.dom.*
+import org.w3c.dom.events.MouseEvent
 
 /**
  * A marker to separate the layers of calls in the type-safe-builder pattern.
@@ -162,7 +159,7 @@ class NullableDynamicComponentProperty<T>(var values: Flow<T?>) {
  *      styling: BasicParams.() -> Unit,
  *      items: List<String>,          // two additional parameters
  *      store: Store<String>? = null, // after ``styling`` and before ``baseClass``!
- *      baseClass: StyleClass?,
+ *      baseClass: StyleClass,
  *      id: String?,
  *      prefix: String
  *      build: MyComponent.() -> Unit = {}
@@ -189,7 +186,7 @@ interface Component<T> {
     fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ): T

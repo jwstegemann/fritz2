@@ -56,7 +56,7 @@ abstract class FileSelectionBaseComponent {
 
     companion object {
         const val eventName = "loadend"
-        val inputStyle: StyleClass = staticStyle("file-input", "display: none;")
+        val inputStyle = staticStyle("file-input", "display: none;")
     }
 
     protected var accept: (Input.() -> Unit)? = null
@@ -117,7 +117,7 @@ abstract class FileSelectionBaseComponent {
 
     open fun button(
         styling: BasicParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
+        baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = "file-button",
         build: PushButtonComponent.() -> Unit = {}
@@ -144,7 +144,7 @@ open class SingleFileSelectionComponent : FileSelectionBaseComponent(), Componen
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ): Flow<File> {
@@ -177,7 +177,7 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(), Component
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ): Flow<List<File>> {
@@ -248,7 +248,7 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(), Component
  */
 fun RenderContext.file(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "file",
     build: FileSelectionBaseComponent.() -> Unit = {}
@@ -287,7 +287,7 @@ fun RenderContext.file(
  */
 fun RenderContext.files(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "file",
     build: FileSelectionBaseComponent.() -> Unit = {}

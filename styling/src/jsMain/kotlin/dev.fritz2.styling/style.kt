@@ -101,8 +101,12 @@ inline class StyleClass(val name: String) {
     }
 }
 
-fun <E : Element> Tag<E>.className(values: Flow<StyleClass>) {
-    className(values.map { it.name })
+fun <E : Element> Tag<E>.className(value: Flow<StyleClass>) {
+    className(value.map { it.name })
+}
+
+fun <E : Element> Tag<E>.className(value: StyleClass) {
+    className(value.name)
 }
 
 fun <E : Element> Tag<E>.classList(values: Flow<List<StyleClass>>) {

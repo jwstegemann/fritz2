@@ -1,5 +1,4 @@
 import dev.fritz2.components.*
-import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -41,7 +40,7 @@ open class NavLinkComponent : Component<Listener<MouseEvent>> {
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ): Listener<MouseEvent> {
@@ -89,7 +88,7 @@ open class NavLinkComponent : Component<Listener<MouseEvent>> {
 @ExperimentalCoroutinesApi
 fun RenderContext.navLink(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "navlink",
     build: NavLinkComponent.() -> Unit = {}
@@ -113,7 +112,7 @@ fun RenderContext.navLink(
 fun RenderContext.navSection(
     text: String,
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "navsection",
 ) {

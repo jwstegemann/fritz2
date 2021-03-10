@@ -3,9 +3,8 @@ package dev.fritz2.components
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.StyleClass.Companion.plus
-import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.ScaledValueProperty
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
@@ -82,7 +81,7 @@ abstract class StackComponent : Component<Div>, EventProperties<HTMLDivElement> 
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ) = context.flexBox({
@@ -153,7 +152,7 @@ class StackUpComponent : StackComponent() {
  */
 fun RenderContext.stackUp(
     styling: FlexParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "stack-up",
     build: StackUpComponent.() -> Unit = {}
@@ -219,7 +218,7 @@ class LineUpComponent : StackComponent() {
  */
 fun RenderContext.lineUp(
     styling: FlexParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "line-up",
     build: LineUpComponent.() -> Unit = {}

@@ -107,7 +107,7 @@ open class CheckboxGroupComponent<T>(
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ) {
@@ -189,7 +189,7 @@ fun <T> RenderContext.checkboxGroup(
     styling: BasicParams.() -> Unit = {},
     items: List<T>,
     store: Store<List<T>>? = null,
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "checkboxGroupComponent",
     build: CheckboxGroupComponent<T>.() -> Unit = {}

@@ -4,7 +4,6 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.selectedValue
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.className
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -129,7 +128,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ) {
@@ -248,7 +247,7 @@ fun <T> RenderContext.selectField(
     styling: BasicParams.() -> Unit = {},
     items: List<T>,
     store: Store<T>? = null,
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "selectField",
     build: SelectFieldComponent<T>.() -> Unit,
