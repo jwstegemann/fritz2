@@ -101,19 +101,59 @@ inline class StyleClass(val name: String) {
     }
 }
 
-fun <E : Element> Tag<E>.className(value: Flow<StyleClass>) {
-    className(value.map { it.name })
-}
-
-fun <E : Element> Tag<E>.className(value: StyleClass) {
+/**
+ * Sets the *class* attribute from a [StyleClass].
+ *
+ * @param value [StyleClass] to set
+ */
+fun <E : Element> Tag<E>.style(value: StyleClass) {
     className(value.name)
 }
 
-fun <E : Element> Tag<E>.classList(values: Flow<List<StyleClass>>) {
+/**
+ * Sets the *class* attribute from a [StyleClass].
+ *
+ * @param value [Flow] of a [StyleClass] to set
+ */
+fun <E : Element> Tag<E>.style(value: Flow<StyleClass>) {
+    className(value.map { it.name })
+}
+
+/**
+ * Sets the *class* attribute from a [List] of [StyleClass]es.
+ *
+ * @param values as [List] of [StyleClass]es
+ */
+fun <E : Element> Tag<E>.styleList(values: List<StyleClass>) {
+    classList(values.map { styleClass -> styleClass.name })
+}
+
+/**
+ * Sets the *class* attribute from a [List] of [StyleClass]es.
+ *
+ * @param values [Flow] from a [List] of [StyleClass]es
+ */
+fun <E : Element> Tag<E>.styleList(values: Flow<List<StyleClass>>) {
     classList(values.map { it.map { styleClass -> styleClass.name } })
 }
 
-fun <E : Element> Tag<E>.classMap(values: Flow<Map<StyleClass, Boolean>>) {
+/**
+ * Sets the *class* attribute from a [Map] of [StyleClass] to [Boolean].
+ * If the value of the [Map]-entry is true, the key will be used inside the resulting [StyleClass].
+ *
+ * @param values as [Map] with key to set and corresponding values to decide
+ */
+fun <E : Element> Tag<E>.styleMap(values: Map<StyleClass, Boolean>) {
+    classMap(values.mapKeys { (k, _) -> k.name })
+}
+
+/**
+ * Sets the *class* attribute from a [Map] of [StyleClass] to [Boolean].
+ * If the value of the [Map]-entry is true, the key will be used inside the resulting [StyleClass].
+ *
+ * @param values [Flow] of a [Map] with key to set and corresponding values to decide
+ */
+fun <E : Element> Tag<E>.styleMap(values: Flow<Map<StyleClass, Boolean>>) {
     classMap(values.map { it.mapKeys { (k, _) -> k.name } })
 }
 
