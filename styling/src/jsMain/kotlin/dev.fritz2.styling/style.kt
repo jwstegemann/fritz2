@@ -106,7 +106,7 @@ inline class StyleClass(val name: String) {
  *
  * @param value [StyleClass] to set
  */
-fun <E : Element> Tag<E>.style(value: StyleClass) {
+fun <E : Element> Tag<E>.styleClass(value: StyleClass) {
     className(value.name)
 }
 
@@ -115,7 +115,7 @@ fun <E : Element> Tag<E>.style(value: StyleClass) {
  *
  * @param value [Flow] of a [StyleClass] to set
  */
-fun <E : Element> Tag<E>.style(value: Flow<StyleClass>) {
+fun <E : Element> Tag<E>.styleClass(value: Flow<StyleClass>) {
     className(value.map { it.name })
 }
 
