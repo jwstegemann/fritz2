@@ -48,7 +48,7 @@ open class Tag<out E : Element>(
     override val job: Job,
     override val domNode: E = window.document.createElement(tagName).also { element ->
         if (id != null) element.id = id
-        if (baseClass != null) element.className = baseClass
+        if (!baseClass.isNullOrBlank()) element.className = baseClass
     }.unsafeCast<E>()
 ) : WithDomNode<E>, WithComment<E>, WithEvents<E>(), TagContext {
 
@@ -490,7 +490,7 @@ open class Tag<out E : Element>(
      * @param value as [String]
      */
     fun className(value: String) {
-        attr("class", if (baseClass != null) "$baseClass $value" else value)
+        attr("class", if (baseClass.isNullOrBlank()) value else "$baseClass $value")
     }
 
     /**
@@ -499,7 +499,7 @@ open class Tag<out E : Element>(
      * @param value [Flow] with [String]
      */
     fun className(value: Flow<String>) {
-        attr("class", if (baseClass != null) value.map { "$baseClass $it" } else value)
+        attr("class", if (baseClass.isNullOrBlank()) value else value.map { "$baseClass $it" })
     }
 
     /**
@@ -508,7 +508,7 @@ open class Tag<out E : Element>(
      * @param values as [List] of [String]s
      */
     fun classList(values: List<String>) {
-        attr("class", if (baseClass != null) values + baseClass else values)
+        attr("class", if (baseClass.isNullOrBlank()) values else values + baseClass)
     }
 
     /**
@@ -517,7 +517,7 @@ open class Tag<out E : Element>(
      * @param values [Flow] with [List] of [String]s
      */
     fun classList(values: Flow<List<String>>) {
-        attr("class", if (baseClass != null) values.map { it + baseClass } else values)
+        attr("class", if (baseClass.isNullOrBlank()) values else values.map { it + baseClass })
     }
 
     /**
@@ -527,7 +527,7 @@ open class Tag<out E : Element>(
      * @param values as [Map] with key to set and corresponding values to decide
      */
     fun classMap(values: Map<String, Boolean>) {
-        attr("class", if (baseClass != null) values + (baseClass to true) else values)
+        attr("class", if (baseClass.isNullOrBlank()) values else values + (baseClass to true))
     }
 
     /**
@@ -537,7 +537,7 @@ open class Tag<out E : Element>(
      * @param values [Flow] of [Map] with key to set and corresponding values to decide
      */
     fun classMap(values: Flow<Map<String, Boolean>>) {
-        attr("class", if (baseClass != null) values.map { it + (baseClass to true) } else values)
+        attr("class", if (baseClass.isNullOrBlank()) values else values.map { it + (baseClass to true) })
     }
 
     /**
