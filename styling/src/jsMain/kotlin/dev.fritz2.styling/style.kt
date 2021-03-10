@@ -92,15 +92,38 @@ inline class StyleClass(val name: String) {
     companion object {
         val None = StyleClass("")
 
-        infix operator fun StyleClass?.plus(other: StyleClass) = StyleClass(this?.name.orEmpty() + " " + other.name)
+        infix operator fun StyleClass?.plus(other: StyleClass): StyleClass {
+            return when {
+                this == null || this == None -> other
+                other == None -> this
+                else -> StyleClass(this.name + " " + other.name)
+            }
+        }
 
-        infix operator fun StyleClass?.plus(other: StyleClass?) =
-            StyleClass(this?.name.orEmpty() + " " + other?.name.orEmpty())
+        infix operator fun StyleClass?.plus(other: StyleClass?): StyleClass {
+            return when {
+                this == null || this == None -> other ?: None
+                other == null || other == None -> this
+                else -> StyleClass(this.name + " " + other.name)
+            }
+        }
     }
 
-    infix operator fun plus(other: StyleClass) = StyleClass(this.name + " " + other.name)
+    infix operator fun plus(other: StyleClass): StyleClass {
+        return when {
+            this == None -> other
+            other == None -> this
+            else -> StyleClass(this.name + " " + other.name)
+        }
+    }
 
-    infix operator fun plus(other: StyleClass?) = StyleClass(this.name + " " + other?.name.orEmpty())
+    infix operator fun plus(other: StyleClass?): StyleClass {
+        return when {
+            this == None -> other ?: None
+            other == null || other == None -> this
+            else -> StyleClass(this.name + " " + other.name)
+        }
+    }
 }
 
 fun <E : Element> Tag<E>.className(values: Flow<StyleClass>) {
@@ -199,7 +222,7 @@ inline fun <T> StyleClass.whenever(upstream: Flow<T>, crossinline mapper: suspen
 
 
 /**
- * function to apply a given class only when a condition is fullfiled.
+ * function to apply a given class only when a condition is fulfilled.
  *
  * @receiver css class to apply
  * @param upstream [Flow] that holds the value to check
@@ -212,7 +235,7 @@ fun StyleClass.whenever(upstream: Flow<Boolean>): Flow<StyleClass> =
 
 
 /**
- * use name on a Flow<StyleClass> just as you do on StyleClass to apply it whereever class-names are required as Strings
+ * use name on a Flow<StyleClass> just as you do on StyleClass to apply it whenever class-names are required as Strings
  */
 val Flow<StyleClass>.name: Flow<String>
     get() = this.map { it.name }
