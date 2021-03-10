@@ -487,10 +487,28 @@ open class Tag<out E : Element>(
     /**
      * Sets the *class* attribute.
      *
+     * @param value as [String]
+     */
+    fun className(value: String) {
+        attr("class", if (baseClass != null) "$baseClass $value" else value)
+    }
+
+    /**
+     * Sets the *class* attribute.
+     *
      * @param value [Flow] with [String]
      */
     fun className(value: Flow<String>) {
-        attr("class", baseClass?.let { value.map { "$baseClass $it" } } ?: value)
+        attr("class", if (baseClass != null) value.map { "$baseClass $it" } else value)
+    }
+
+    /**
+     * Sets the *class* attribute from a [List] of [String]s.
+     *
+     * @param values as [List] of [String]s
+     */
+    fun classList(values: List<String>) {
+        attr("class", if (baseClass != null) values + baseClass else values)
     }
 
     /**
@@ -499,9 +517,18 @@ open class Tag<out E : Element>(
      * @param values [Flow] with [List] of [String]s
      */
     fun classList(values: Flow<List<String>>) {
-        attr("class", (if (baseClass != null) values.map { it + baseClass } else values))
+        attr("class", if (baseClass != null) values.map { it + baseClass } else values)
     }
 
+    /**
+     * Sets the *class* attribute from a [Map] of [String] to [Boolean].
+     * If the value of the [Map]-entry is true, the key will be used inside the resulting [String].
+     *
+     * @param values as [Map] with key to set and corresponding values to decide
+     */
+    fun classMap(values: Map<String, Boolean>) {
+        attr("class", if (baseClass != null) values + (baseClass to true) else values)
+    }
 
     /**
      * Sets the *class* attribute from a [Map] of [String] to [Boolean].
