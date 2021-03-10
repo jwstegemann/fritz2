@@ -1,8 +1,6 @@
 package dev.fritz2.components
 
 
-import dev.fritz2.binding.Store
-import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams

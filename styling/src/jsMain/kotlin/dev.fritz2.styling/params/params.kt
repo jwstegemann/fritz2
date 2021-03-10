@@ -198,7 +198,7 @@ open class StyleParamsImpl : BoxParams {
         return smProperties.toString()
     }
 
-    fun cssClasses(prefix: String): StyleClass? =
+    fun cssClasses(prefix: String): StyleClass =
         toCss().let { if (it.isNotEmpty()) style(it, prefix) else StyleClass.None }
 }
 
@@ -223,7 +223,7 @@ interface BasicParams : Space, Color, Border, Typo, Background, Position, Shadow
     /**
      * allows the usage of predefined styles in this context
      *
-     * @receiver [PredefinedBasicStyle] to include
+     * @receiver [Style] of [BasicParams] to include
      */
     operator fun Style<BasicParams>.invoke() = this(this@BasicParams)
 }
@@ -236,14 +236,14 @@ interface FlexParams : BasicParams, Flexbox {
     /**
      * allows the usage of predefined styles in this context
      *
-     * @receiver [PredefinedFlexStyle] to include
+     * @receiver [Style] of [BasicParams] to include
      */
     override operator fun Style<BasicParams>.invoke() = this(this@FlexParams)
 
     /**
      * allows the usage of predefined styles in this context
      *
-     * @receiver [PredefinedFlexStyle] to include
+     * @receiver [Style] of [FlexParams] to include
      */
     operator fun Style<FlexParams>.invoke() = this(this@FlexParams)
 }
@@ -256,14 +256,14 @@ interface GridParams : BasicParams, GridLayout {
     /**
      * allows the usage of predefined styles in this context
      *
-     * @receiver [PredefinedBasicStyle] to include
+     * @receiver [Style] of [BasicParams] to include
      */
     override operator fun Style<BasicParams>.invoke() = this(this@GridParams)
 
     /**
      * allows the usage of predefined styles in this context
      *
-     * @receiver [PredefinedGridStyle] to include
+     * @receiver [Style] of [GridParams] to include
      */
     operator fun Style<GridParams>.invoke() = this(this@GridParams)
 }
@@ -276,14 +276,14 @@ interface BoxParams : FlexParams, GridParams {
     /**
      * allows the usage of predefined styles in this context
      *
-     * @receiver [PredefinedBasicStyle] to include
+     * @receiver [Style] of [BasicParams] to include
      */
     override operator fun Style<BasicParams>.invoke() = this(this@BoxParams)
 
     /**
      * allows the usage of predefined styles in this context
      *
-     * @receiver [PredefinedBoxStyle] to include
+     * @receiver [Style] of [BoxParams] to include
      */
     operator fun Style<BoxParams>.invoke() = this(this@BoxParams)
 }
