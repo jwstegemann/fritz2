@@ -1,7 +1,5 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.RenderContext
@@ -113,7 +111,7 @@ open class AlertComponent : Component<Unit> {
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String,
     ) {
@@ -191,7 +189,7 @@ open class AlertComponent : Component<Unit> {
  */
 fun RenderContext.alert(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "alert",
     build: AlertComponent.() -> Unit,

@@ -2,10 +2,8 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
@@ -75,7 +73,7 @@ open class SpinnerComponent : Component<Unit>,
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ) {
@@ -145,7 +143,7 @@ open class SpinnerComponent : Component<Unit>,
  */
 fun RenderContext.spinner(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "spinner",
     build: SpinnerComponent.() -> Unit

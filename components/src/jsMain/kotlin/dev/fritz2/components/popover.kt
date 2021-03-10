@@ -129,7 +129,7 @@ open class PopoverComponent : Component<Unit>,
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ) {
@@ -187,7 +187,7 @@ open class PopoverComponent : Component<Unit>,
 
     private fun renderPopover(
         styling: BoxParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
+        baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = "popover",
         RenderContext: RenderContext,
@@ -266,7 +266,7 @@ open class PopoverComponent : Component<Unit>,
  */
 fun RenderContext.popover(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "popover",
     build: PopoverComponent.() -> Unit = {}

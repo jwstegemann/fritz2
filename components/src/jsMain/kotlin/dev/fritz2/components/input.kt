@@ -6,14 +6,15 @@ import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.className
-import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.*
+import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.InputFieldVariants
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLInputElement
 
@@ -67,7 +68,7 @@ open class InputFieldComponent(protected val store: Store<String>?) :
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ) {
@@ -156,7 +157,7 @@ open class InputFieldComponent(protected val store: Store<String>?) :
 fun RenderContext.inputField(
     styling: BasicParams.() -> Unit = {},
     store: Store<String>? = null,
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "inputField",
     build: InputFieldComponent.() -> Unit = {}

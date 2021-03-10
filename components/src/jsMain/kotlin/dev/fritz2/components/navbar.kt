@@ -62,7 +62,7 @@ open class NavbarComponent {
 fun RenderContext.navBar(
     styling: BasicParams.() -> Unit = {},
     //store: Store<String>? = null,
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "navbar",
     build: NavbarComponent.() -> Unit = {}

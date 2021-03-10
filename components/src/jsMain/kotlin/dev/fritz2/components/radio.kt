@@ -13,7 +13,8 @@ import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.*
+import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -119,7 +120,7 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ): Label {
@@ -224,7 +225,7 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
 fun RenderContext.radio(
     styling: BasicParams.() -> Unit = {},
     store: Store<Boolean>? = null,
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "radioComponent",
     build: RadioComponent.() -> Unit = {}

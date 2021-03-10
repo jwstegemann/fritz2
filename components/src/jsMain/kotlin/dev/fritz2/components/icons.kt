@@ -4,7 +4,6 @@ import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.styled
@@ -76,7 +75,7 @@ open class IconComponent : Component<Unit>, EventProperties<SVGElement> by Event
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ) {
@@ -188,7 +187,7 @@ open class IconComponent : Component<Unit>, EventProperties<SVGElement> by Event
  */
 fun RenderContext.icon(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = IconComponent.prefix,
     build: IconComponent.() -> Unit = {}

@@ -104,7 +104,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val st
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ) {
@@ -177,7 +177,7 @@ fun <T> RenderContext.radioGroup(
     styling: BasicParams.() -> Unit = {},
     items: List<T>,
     store: Store<T>? = null,
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "radioGroupComponent",
     build: RadioGroupComponent<T>.() -> Unit = {}

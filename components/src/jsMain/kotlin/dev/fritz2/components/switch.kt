@@ -1,7 +1,6 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
-import dev.fritz2.components.SwitchComponent.Companion.switchInputStaticCss
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
@@ -115,7 +114,7 @@ open class SwitchComponent(protected val store: Store<Boolean>? = null) :
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ): Label {
@@ -215,7 +214,7 @@ open class SwitchComponent(protected val store: Store<Boolean>? = null) :
 fun RenderContext.switch(
     styling: BasicParams.() -> Unit = {},
     store: Store<Boolean>? = null,
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "switchComponent",
     build: SwitchComponent.() -> Unit = {}

@@ -130,7 +130,7 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ): SimpleHandler<Unit> {
@@ -210,7 +210,7 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
  */
 fun RenderContext.modal(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "modal",
     build: ModalComponent.(SimpleHandler<Unit>) -> Unit

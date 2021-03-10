@@ -5,13 +5,13 @@ import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.StyleClass.Companion.plus
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.PushButtonVariants
 import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.MouseEvent
@@ -155,11 +155,11 @@ open class PushButtonComponent :
     private var text: (RenderContext.(hide: Boolean) -> Unit)? = null
 
     fun text(value: String) {
-        text = { hide -> span(if (hide) hidden.name else null) { +value } }
+        text = { hide -> span(hidden.whenever(hide).name) { +value } }
     }
 
     fun text(value: Flow<String>) {
-        text = { hide -> span(if (hide) hidden.name else null) { value.asText() } }
+        text = { hide -> span(hidden.whenever(hide).name) { value.asText() } }
     }
 
     private var loadingText: (RenderContext.() -> Unit)? = null
@@ -182,7 +182,7 @@ open class PushButtonComponent :
 
     fun icon(
         styling: BasicParams.() -> Unit = {},
-        baseClass: StyleClass? = null,
+        baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = IconComponent.prefix,
         build: IconComponent.() -> Unit = {}
@@ -207,7 +207,7 @@ open class PushButtonComponent :
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ) {
@@ -298,7 +298,7 @@ open class PushButtonComponent :
  */
 fun RenderContext.pushButton(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "push-button",
     build: PushButtonComponent.() -> Unit = {}
@@ -333,7 +333,7 @@ fun RenderContext.pushButton(
  */
 fun RenderContext.clickButton(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass? = null,
+    baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "push-button",
     build: PushButtonComponent.() -> Unit = {}
