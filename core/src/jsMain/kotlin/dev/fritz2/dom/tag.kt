@@ -484,13 +484,20 @@ open class Tag<out E : Element>(
         mountSingle(job, values) { v, _ -> attr(name, v, separator) }
     }
 
+    private fun setClassName(className: String): String =
+        when {
+            baseClass.isNullOrBlank() -> className
+            className.isNotBlank() -> "$baseClass $className"
+            else -> baseClass
+        }
+
     /**
      * Sets the *class* attribute.
      *
      * @param value as [String]
      */
     fun className(value: String) {
-        attr("class", if (baseClass.isNullOrBlank()) value else "$baseClass $value")
+        attr("class", setClassName(value))
     }
 
     /**
@@ -499,7 +506,7 @@ open class Tag<out E : Element>(
      * @param value [Flow] with [String]
      */
     fun className(value: Flow<String>) {
-        attr("class", if (baseClass.isNullOrBlank()) value else value.map { "$baseClass $it" })
+        attr("class", value.map { setClassName(it) })
     }
 
     /**
