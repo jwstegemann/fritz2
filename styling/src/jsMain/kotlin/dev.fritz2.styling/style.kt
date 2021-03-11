@@ -16,8 +16,9 @@ import org.w3c.dom.css.get
 
 internal object Styling {
     class Sheet(val id: String) {
-        var counter: Int = 0
-        val styleSheet: CSSStyleSheet = create()
+        private val styleSheet: CSSStyleSheet = create()
+        private var counter: Int = 0
+
         val middleware = middleware(arrayOf(::stringify, addRuleMiddleware()))
 
         private fun addRuleMiddleware(): (dynamic) -> dynamic = { value ->
