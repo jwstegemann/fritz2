@@ -4,7 +4,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.selectedValue
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.styleClass
+import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
@@ -170,7 +170,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
                         }
                     }
 
-                    styleClass(severityClassOf(Theme().select.severity, prefix))
+                    className(severityClassOf(Theme().select.severity, prefix).name)
 
                     changes.selectedValue().map { it.toInt() } handledBy internalStore.toggle
                 }

@@ -1,6 +1,5 @@
 package dev.fritz2.styling
 
-import dev.fritz2.dom.Tag
 import dev.fritz2.styling.hash.v3
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.StyleParamsImpl
@@ -11,9 +10,9 @@ import dev.fritz2.styling.stylis.stringify
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.Element
 import org.w3c.dom.HTMLStyleElement
 import org.w3c.dom.css.CSSStyleSheet
+import org.w3c.dom.css.get
 
 internal object Styling {
     class Sheet(val id: String) {
@@ -51,6 +50,15 @@ internal object Styling {
             }
 
         }
+
+        override fun toString(): String {
+            val ruleList = this.styleSheet.cssRules
+            val builder = StringBuilder()
+            for (i in 0 until ruleList.length) {
+                ruleList[i]?.cssText.let { builder.append(it) }
+            }
+            return builder.toString()
+        }
     }
 
     private const val dynamicStyleSheetId = "fritz2Dynamic"
@@ -78,11 +86,22 @@ internal object Styling {
             rules.add(key)
         }
     }
+
+    val dynamicStyleText: String
+        get() = dynamicSheet.toString()
+
+    val staticStyleText: String
+        get() = staticSheet.toString()
+
 }
 
 fun resetCss(css: String) {
     Styling.resetCss(css)
 }
+
+fun showDynamicStyle(): String = Styling.dynamicStyleText
+
+fun showStaticStyle(): String = Styling.staticStyleText
 
 /**
  * Alias class for css classes
@@ -99,62 +118,6 @@ inline class StyleClass(val name: String) {
             else -> StyleClass("${this.name} ${other.name}")
         }
     }
-}
-
-/**
- * Sets the *class* attribute from a [StyleClass].
- *
- * @param value [StyleClass] to set
- */
-fun <E : Element> Tag<E>.styleClass(value: StyleClass) {
-    className(value.name)
-}
-
-/**
- * Sets the *class* attribute from a [StyleClass].
- *
- * @param value [Flow] of a [StyleClass] to set
- */
-fun <E : Element> Tag<E>.styleClass(value: Flow<StyleClass>) {
-    className(value.map { it.name })
-}
-
-/**
- * Sets the *class* attribute from a [List] of [StyleClass]es.
- *
- * @param values as [List] of [StyleClass]es
- */
-fun <E : Element> Tag<E>.styleList(values: List<StyleClass>) {
-    classList(values.map { styleClass -> styleClass.name })
-}
-
-/**
- * Sets the *class* attribute from a [List] of [StyleClass]es.
- *
- * @param values [Flow] from a [List] of [StyleClass]es
- */
-fun <E : Element> Tag<E>.styleList(values: Flow<List<StyleClass>>) {
-    classList(values.map { it.map { styleClass -> styleClass.name } })
-}
-
-/**
- * Sets the *class* attribute from a [Map] of [StyleClass] to [Boolean].
- * If the value of the [Map]-entry is true, the key will be used inside the resulting [StyleClass].
- *
- * @param values as [Map] with key to set and corresponding values to decide
- */
-fun <E : Element> Tag<E>.styleMap(values: Map<StyleClass, Boolean>) {
-    classMap(values.mapKeys { (k, _) -> k.name })
-}
-
-/**
- * Sets the *class* attribute from a [Map] of [StyleClass] to [Boolean].
- * If the value of the [Map]-entry is true, the key will be used inside the resulting [StyleClass].
- *
- * @param values [Flow] of a [Map] with key to set and corresponding values to decide
- */
-fun <E : Element> Tag<E>.styleMap(values: Flow<Map<StyleClass, Boolean>>) {
-    classMap(values.map { it.mapKeys { (k, _) -> k.name } })
 }
 
 /**
@@ -201,7 +164,7 @@ fun staticStyle(name: String, styling: BoxParams.() -> Unit): StyleClass {
  * @return the name of the created class
  */
 fun style(css: String, prefix: String = "s"): StyleClass {
-    return if(css.isBlank()) StyleClass.None
+    return if (css.isBlank()) StyleClass.None
     else {
         val hash = v3(css)
         StyleClass("$prefix-${generateAlphabeticName(hash)}").also {
@@ -221,7 +184,7 @@ fun style(css: String, prefix: String = "s"): StyleClass {
  */
 fun style(prefix: String = "s", styling: BoxParams.() -> Unit): StyleClass {
     val css = StyleParamsImpl().apply(styling).toCss()
-    return if(css.isNotBlank()) style(css, prefix) else StyleClass.None
+    return if (css.isNotBlank()) style(css, prefix) else StyleClass.None
 }
 
 /**
@@ -239,31 +202,11 @@ inline fun <T> StyleClass.whenever(value: Flow<T>, crossinline predicate: suspen
  * applies a given css class only when a condition is fulfilled.
  *
  * @receiver css class to apply
- * @param value [Flow] that holds the value to check
- * @param predicate defining the rule, when to apply the class
- * @return [Flow] containing the class name if check returns true or null
- */
-inline fun <T> StyleClass.whenever(value: T, predicate: (T) -> Boolean): StyleClass =
-    if (predicate(value)) this else StyleClass.None
-
-/**
- * applies a given css class only when a condition is fulfilled.
- *
- * @receiver css class to apply
  * @param condition [Flow] that holds the value to check
  * @return [Flow] containing the class name if check returns true or null
  */
 fun StyleClass.whenever(condition: Flow<Boolean>): Flow<StyleClass> =
     condition.map { value -> if (value) this else StyleClass.None }
-
-/**
- * applies a given css class only when a condition is fulfilled.
- *
- * @receiver css class to apply
- * @param condition that holds the value to check
- * @return [StyleClass] containing the class name if check returns true or null
- */
-fun StyleClass.whenever(condition: Boolean): StyleClass = if (condition) this else StyleClass.None
 
 /**
  * use [name] on a [Flow] of [StyleClass] to get the css classname out of it.
