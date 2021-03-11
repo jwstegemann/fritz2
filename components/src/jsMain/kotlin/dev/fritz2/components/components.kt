@@ -224,7 +224,7 @@ interface Component<T> {
  * a component and much easier to read and maintain at client side code.
  *
  * RFC: If the component itself offers some redundant property, the values from within the [element] property
- * context should win and used for the redering! This is the *mandatory* behaviour!
+ * context should win and used for the rendering! This is the *mandatory* behaviour!
  */
 interface ElementProperties<T> {
 
@@ -416,8 +416,7 @@ interface SeverityProperties {
      * }
      * ```
      *
-     * @param severityStyle definition for the different stylings for each state
-     * @prefix the prefix for the generated CSS class resulting in the form ``$prefix-severity-{value}``
+     * @param severityStyle definition for the different styling for each state
      *
      * @return a flow of the current mapped style class. Can be applied to the component via [className] extension
      *         method
