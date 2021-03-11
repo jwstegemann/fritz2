@@ -10,7 +10,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.SeverityStyles
@@ -422,16 +422,13 @@ interface SeverityProperties {
      * @return a flow of the current mapped style class. Can be applied to the component via [className] extension
      *         method
      */
-    fun severityClassOf(
-        severityStyle: SeverityStyles,
-        prefix: String
-    ): Flow<StyleClass> =
+    fun severityClassOf(severityStyle: SeverityStyles): Flow<StyleClass> =
         severity.values.map {
             when (it) {
-                Severity.Info -> staticStyle("${prefix}-severity-info", severityStyle.info)
-                Severity.Success -> staticStyle("${prefix}-severity-success", severityStyle.success)
-                Severity.Warning -> staticStyle("${prefix}-severity-warning", severityStyle.warning)
-                Severity.Error -> staticStyle("${prefix}-severity-error", severityStyle.error)
+                Severity.Info -> style("severity-info", severityStyle.info)
+                Severity.Success -> style("severity-success", severityStyle.success)
+                Severity.Warning -> style("severity-warning", severityStyle.warning)
+                Severity.Error -> style("severity-error", severityStyle.error)
                 else -> StyleClass.None
             }
         }

@@ -137,7 +137,7 @@ open class CheckboxComponent(protected val store: Store<Boolean>?) :
                 readOnly(readonly.values)
                 type("checkbox")
                 checked(store?.data ?: checked.values)
-                className(severityClassOf(Theme().checkbox.severity, prefix).name)
+                className(severityClassOf(Theme().checkbox.severity).name)
                 store?.let { changes.states() handledBy it.update }
                 events.value.invoke(this)
                 element.value.invoke(this)

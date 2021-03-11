@@ -170,7 +170,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
                         }
                     }
 
-                    className(severityClassOf(Theme().select.severity, prefix).name)
+                    className(severityClassOf(Theme().select.severity).name)
 
                     changes.selectedValue().map { it.toInt() } handledBy internalStore.toggle
                 }

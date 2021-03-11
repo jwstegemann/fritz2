@@ -145,7 +145,7 @@ open class SwitchComponent(protected val store: Store<Boolean>? = null) :
                     checked(store?.data ?: checked.values)
                     events.value.invoke(this)
                     store?.let { changes.states() handledBy it.update }
-                    className(severityClassOf(Theme().switch.severity, prefix).name)
+                    className(severityClassOf(Theme().switch.severity).name)
                     element.value.invoke(this)
                 }
 
