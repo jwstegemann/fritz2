@@ -8,7 +8,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.styleClass
+import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
@@ -145,7 +145,7 @@ open class SwitchComponent(protected val store: Store<Boolean>? = null) :
                     checked(store?.data ?: checked.values)
                     events.value.invoke(this)
                     store?.let { changes.states() handledBy it.update }
-                    styleClass(severityClassOf(Theme().switch.severity, prefix))
+                    className(severityClassOf(Theme().switch.severity, prefix).name)
                     element.value.invoke(this)
                 }
 

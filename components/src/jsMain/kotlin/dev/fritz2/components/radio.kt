@@ -7,7 +7,7 @@ import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.styleClass
+import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
@@ -161,7 +161,7 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
                     name(inputName)
                     checked(store?.data ?: selected.values)
                     value("X")
-                    styleClass(severityClassOf(Theme().radio.severity, prefix))
+                    className(severityClassOf(Theme().radio.severity, prefix).name)
                     store?.let { changes.states() handledBy it.update }
                     events.value.invoke(this)
                     element.value.invoke(this)

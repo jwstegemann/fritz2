@@ -531,8 +531,7 @@ interface Layout : StyleParams {
         md: SizesProperty? = null,
         lg: SizesProperty? = null,
         xl: SizesProperty? = null
-    ) =
-        property(widthKey, Theme().sizes, sm, md, lg, xl)
+    ) = property(widthKey, Theme().sizes, sm, md, lg, xl)
 
     /**
      * This function sets the [height](https://developer.mozilla.org/en/docs/Web/CSS/height) property of a component

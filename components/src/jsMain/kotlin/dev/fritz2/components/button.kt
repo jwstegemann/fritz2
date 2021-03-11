@@ -155,11 +155,17 @@ open class PushButtonComponent :
     private var text: (RenderContext.(hide: Boolean) -> Unit)? = null
 
     fun text(value: String) {
-        text = { hide -> span(hidden.whenever(hide).name) { +value } }
+        text = { hide -> span { +value
+                if(hide) className(hidden.name)
+            }
+        }
     }
 
     fun text(value: Flow<String>) {
-        text = { hide -> span(hidden.whenever(hide).name) { value.asText() } }
+        text = { hide -> span { value.asText()
+                if(hide) className(hidden.name)
+            }
+        }
     }
 
     private var loadingText: (RenderContext.() -> Unit)? = null

@@ -5,7 +5,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.TextArea
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.styleClass
+import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
@@ -107,7 +107,7 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
                 readOnly(readonly.values)
                 placeholder(placeholder.values)
                 value(value.values)
-                styleClass(severityClassOf(Theme().textArea.severity, prefix))
+                className(severityClassOf(Theme().textArea.severity, prefix).name)
                 store?.let {
                     value(it.data)
                     changes.values() handledBy it.update
