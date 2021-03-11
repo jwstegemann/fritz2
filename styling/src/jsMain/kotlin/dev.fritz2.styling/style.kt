@@ -56,7 +56,7 @@ internal object Styling {
             val ruleList = this.styleSheet.cssRules
             val builder = StringBuilder()
             for (i in 0 until ruleList.length) {
-                ruleList[i]?.cssText.let { builder.append(it) }
+                ruleList[i]?.cssText.let { builder.append(it).append("\n") }
             }
             return builder.toString()
         }
