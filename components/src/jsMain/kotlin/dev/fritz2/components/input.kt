@@ -83,7 +83,7 @@ open class InputFieldComponent(protected val store: Store<String>?) :
                 value(value.values)
                 type(type.values)
                 step(step.values)
-                className(severityClassOf(Theme().input.severity, prefix).name)
+                className(severityClassOf(Theme().input.severity).name)
                 store?.let {
                     value(it.data)
                     changes.values() handledBy it.update

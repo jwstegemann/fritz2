@@ -161,7 +161,7 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
                     name(inputName)
                     checked(store?.data ?: selected.values)
                     value("X")
-                    className(severityClassOf(Theme().radio.severity, prefix).name)
+                    className(severityClassOf(Theme().radio.severity).name)
                     store?.let { changes.states() handledBy it.update }
                     events.value.invoke(this)
                     element.value.invoke(this)

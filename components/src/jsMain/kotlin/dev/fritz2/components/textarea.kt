@@ -107,7 +107,7 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
                 readOnly(readonly.values)
                 placeholder(placeholder.values)
                 value(value.values)
-                className(severityClassOf(Theme().textArea.severity, prefix).name)
+                className(severityClassOf(Theme().textArea.severity).name)
                 store?.let {
                     value(it.data)
                     changes.values() handledBy it.update
