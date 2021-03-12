@@ -61,21 +61,19 @@ open class DefaultTheme : Theme {
             override val focus = primaryEffect
         }
 
-    override val background = object : Backgrounds {
-        override val color = "#ffffff"
-    }
+    //FIXME: move to typography section
+
+    override val backgroundColor
+        get() = colors.base
+
+    override val fontColor
+        get() = colors.darkerGray
 
     override val fontFamilies = object : FontFamilies {
-        override val body =
+        override val normal =
             "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';"
-        override val heading = body
         override val mono =
             "ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;"
-    }
-
-    override val fontColors = object : FontColors {
-        override val normal = "#000000"
-        override val light = "#ffffff"
     }
 
     override val fontSizes = ScaledValue(
@@ -2146,7 +2144,7 @@ open class DefaultTheme : Theme {
         }
     }
 
-    override val tooltip = object : Tooltip {
+    override val tooltip = object : TooltipStyles {
 
         override fun write(vararg value: String): Style<BasicParams> {
             return write(*value) { top }
@@ -2285,51 +2283,23 @@ open class DefaultTheme : Theme {
         }
     }
 
+    //from modern-normalize v1.0.0 | MIT License | https://github.com/sindresorhus/modern-normalize
     override val reset: String by lazy {
+        """*,::after,::before{box-sizing:border-box}:root{-moz-tab-size:4;tab-size:4}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}abbr[title]{text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}::-moz-focus-inner{border-style:none;padding:0}:-moz-focusring{outline:1px dotted ButtonText}:-moz-ui-invalid{box-shadow:none}legend{padding:0}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}""" +
+        // extra css for fixing general layout and using theme props
         """
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
-        
-        :root {
-            -moz-tab-size: 4;
-            tab-size: 4;
-        }
-        
         html {
             line-height: ${lineHeights.large};
-            text-size-adjust: 100%;
             -webkit-text-size-adjust: 100%;
             -webkit-font-smoothing: antialiased;
             text-rendering: optimizelegibility;
         }
-        
+            
         body {
-            color: ${fontColors.normal};
-            font-family: ${fontFamilies.body};
-            margin: 0;
+            color: ${fontColor};
+            font-family: ${fontFamilies.normal};
+            background-color: ${backgroundColor};
             font-feature-settings: "kern";
-            background-color: ${background.color};
-        }
-        
-        hr {
-            height: 0;
-            color: inherit;
-        }
-        
-        abbr[title] {
-            text-decoration: underline dotted;
-        }
-        
-        b,
-        strong {
-            font-weight: ${fontWeights.stronger};
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: ${fontFamilies.heading};
         }
         
         code,
@@ -2340,104 +2310,96 @@ open class DefaultTheme : Theme {
             font-size: ${fontSizes.normal};
         }
         
-        small {
-            font-size: 80%;
-        }
-        
-        sub,
-        sup {
-            font-size: 75%;
-            line-height: 0;
-            position: relative;
-            vertical-align: baseline;
-        }
-        
-        sub {
-            bottom: -0.25em;
-        }
-        
-        sup {
-            top: -0.5em;
-        }
-        
-        table {
-            text-indent: 0;
-            border-color: inherit;
-        }
-        
         button,
         input,
         optgroup,
         select,
         textarea {
-            font-family: inherit;
-            font-size: 100%;
             line-height: ${lineHeights.large};
+        }
+        
+        b,
+        strong {
+            font-weight: ${fontWeights.stronger};
+        }
+            
+        blockquote, dd, dl, figure, h1, h2, h3, h4, h5, h6, hr, p, pre {
+            margin: 0
+        }
+
+        button {
+            background-color: transparent;
+            background-image: none
+        }
+
+        fieldset {
             margin: 0;
+            padding: 0
+        }
+
+        ol, ul {
+            list-style: none;
+            margin: 0;
+            padding: 0
         }
         
-        button,
-        select {
-            text-transform: none;
+        *, ::after, ::before {
+            box-sizing: border-box;
+            border-width: 0;
+            border-style: solid;
+            border-color: #e5e7eb
         }
         
-        button,
-        [type='button'],
-        [type='reset'],
-        [type='submit'] {
-            -webkit-appearance: button;
+        hr {
+            border-top-width: 1px
         }
         
-        ::-moz-focus-inner {
-            border-style: none;
-            padding: 0;
+        img {
+            border-style: solid
         }
-        
-        :-moz-focusring {
-            outline: 1px dotted ButtonText;
-        }
-        
-        :-moz-ui-invalid {
-            box-shadow: none;
-        }
-        
-        legend {
-            padding: 0;
-        }
-        
-        progress {
-            vertical-align: baseline;
-        }
-        
-        ::-webkit-inner-spin-button,
-        ::-webkit-outer-spin-button {
-            height: auto;
-        }
-        
-        [type='search'] {
-            -webkit-appearance: textfield;
-            outline-offset: -2px;
-        }
-        
-        ::-webkit-search-decoration {
-            -webkit-appearance: none;
-        }
-        
-        ::-webkit-file-upload-button {
-            -webkit-appearance: button;
-            font: inherit;
-        }
-        
-        summary {
-            display: list-item;
-        }
-        """.trimIndent() + """
-        *::after {
-          overflow-wrap: break-word;
-        }
-        
+
         textarea {
-          line-height: ${lineHeights.tiny};
+            line-height: ${lineHeights.tiny};
+            resize: vertical
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: ${colors.darkGray};
+            opacity: 0.8
+        }
+
+        [role=button], button {
+            cursor: pointer
+        }
+        
+        table {
+            border-collapse: collapse
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-size: inherit;
+            font-weight: inherit
+        }
+
+        a {
+            color: inherit;
+            text-decoration: inherit
+        }
+
+        button, input, optgroup, select, textarea {
+            padding: 0;
+            line-height: inherit;
+            color: inherit
+        }
+
+        audio, canvas, embed, iframe, img, object, svg, video {
+            display: block;
+            vertical-align: middle
+        }
+
+        img, video {
+            max-width: 100%;
+            height: auto
         }
         
         a {
