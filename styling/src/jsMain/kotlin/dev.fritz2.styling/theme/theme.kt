@@ -4,6 +4,7 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.MountTargetNotFoundException
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.render
+import dev.fritz2.styling.params.ColorProperty
 import dev.fritz2.styling.resetCss
 import kotlinx.browser.document
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -62,12 +63,12 @@ interface Theme {
          * @param theme [Theme] to activate
          */
         fun use(theme: Theme) {
-            resetCss(theme.reset)
+            resetCss(theme.reset + theme.global)
             currentTheme.value = theme
         }
 
         init {
-            resetCss(currentTheme.value.reset)
+            resetCss(currentTheme.value.reset + currentTheme.value.global)
         }
     }
 
@@ -75,6 +76,11 @@ interface Theme {
      * css to reset browser's defaults and set your own
      */
     val reset: String
+
+    /**
+     * css to set global defaults
+     */
+    val global: String
 
     /**
      * an human readable name like ``default`` or ``dark`` for example
@@ -112,19 +118,34 @@ interface Theme {
     val position: ScaledValue
 
     /**
-     * definition of the font-size-scale
-     */
-    val fontSizes: ScaledValue
-
-    /**
      * definition of the theme's colors
      */
     val colors: Colors
 
     /**
+     * definition of the theme's background color
+     */
+    val backgroundColor: ColorProperty
+
+    /**
+     * definition of the theme's font colors
+     */
+    val fontColor: ColorProperty
+
+    /**
      * definition of the theme's fonts
      */
-    val fonts: Fonts
+    val fontFamilies: FontFamilies
+
+    /**
+     * definition of the font-size-scale
+     */
+    val fontSizes: ScaledValue
+
+    /**
+     * definition of the scala for font-weights
+     */
+    val fontWeights: WeightedValue
 
     /**
      * definition of the scale for line-heights
@@ -193,7 +214,7 @@ interface Theme {
      */
     val popover: PopoverStyles
 
-    val tooltip: Tooltip
+    val tooltip: TooltipStyles
 
     val textArea: TextAreaStyles
 
