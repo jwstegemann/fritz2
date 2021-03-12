@@ -63,12 +63,12 @@ interface Theme {
          * @param theme [Theme] to activate
          */
         fun use(theme: Theme) {
-            resetCss(theme.reset)
+            resetCss(theme.reset + theme.global)
             currentTheme.value = theme
         }
 
         init {
-            resetCss(currentTheme.value.reset)
+            resetCss(currentTheme.value.reset + currentTheme.value.global)
         }
     }
 
@@ -76,6 +76,11 @@ interface Theme {
      * css to reset browser's defaults and set your own
      */
     val reset: String
+
+    /**
+     * css to set global defaults
+     */
+    val global: String
 
     /**
      * an human readable name like ``default`` or ``dark`` for example
