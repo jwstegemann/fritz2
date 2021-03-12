@@ -170,17 +170,8 @@ class ZIndices(
  * Defines the fonts-family in a theme
  */
 interface FontFamilies {
-    val body: Property
-    val heading: Property
+    val normal: Property
     val mono: Property
-}
-
-/**
- * Defines the fonts-color in a theme
- */
-interface FontColors {
-    val normal: ColorProperty
-    val light: ColorProperty
 }
 
 /**
@@ -206,13 +197,6 @@ interface Colors {
     val gray: ColorProperty
     val darkGray: ColorProperty
     val darkerGray: ColorProperty
-}
-
-/**
- * Defines the scheme background in a theme
- */
-interface Backgrounds {
-    val color: ColorProperty
 }
 
 /**
@@ -532,7 +516,7 @@ interface PopoverSizes {
 /**
  * definition of the theme's tooltip
  */
-interface Tooltip {
+interface TooltipStyles {
     fun write(vararg value: String): Style<BasicParams>
     fun write(vararg value: String, tooltipPlacement: TooltipPlacements.() -> Style<BasicParams>): Style<BasicParams>
     val placement: TooltipPlacements
