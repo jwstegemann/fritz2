@@ -112,19 +112,34 @@ interface Theme {
     val position: ScaledValue
 
     /**
-     * definition of the font-size-scale
-     */
-    val fontSizes: ScaledValue
-
-    /**
      * definition of the theme's colors
      */
     val colors: Colors
 
     /**
+     * definition of the theme's background color
+     */
+    val background: Backgrounds
+
+    /**
      * definition of the theme's fonts
      */
-    val fonts: Fonts
+    val fontFamilies: FontFamilies
+
+    /**
+     * definition of the theme's font colors
+     */
+    val fontColors: FontColors
+
+    /**
+     * definition of the font-size-scale
+     */
+    val fontSizes: ScaledValue
+
+    /**
+     * definition of the scala for font-weights
+     */
+    val fontWeights: WeightedValue
 
     /**
      * definition of the scale for line-heights

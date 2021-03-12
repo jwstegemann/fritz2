@@ -167,18 +167,24 @@ class ZIndices(
 }
 
 /**
- * Defines the scheme fonts in a theme
- *
+ * Defines the fonts-family in a theme
  */
-interface Fonts {
+interface FontFamilies {
     val body: Property
     val heading: Property
     val mono: Property
 }
 
 /**
+ * Defines the fonts-color in a theme
+ */
+interface FontColors {
+    val normal: ColorProperty
+    val light: ColorProperty
+}
+
+/**
  * Defines the scheme colors in a theme
- *
  */
 interface Colors {
     val primary: ColorProperty
@@ -203,8 +209,14 @@ interface Colors {
 }
 
 /**
+ * Defines the scheme background in a theme
+ */
+interface Backgrounds {
+    val color: ColorProperty
+}
+
+/**
  * Defines the scheme shadows in a theme
- *
  */
 class Shadows(
     val flat: ShadowProperty,
@@ -374,7 +386,6 @@ interface Icons {
 /**
  * general component's theme abstractions
  */
-
 interface SeverityStyles {
     val info: Style<BasicParams>
     val success: Style<BasicParams>
@@ -396,7 +407,6 @@ interface FormSizes {
 /**
  * definition of the theme's checkbox
  */
-
 interface CheckboxStyles : SeverityAware {
     val sizes: FormSizes
     val input: Style<BasicParams>
@@ -410,7 +420,6 @@ interface CheckboxStyles : SeverityAware {
 /**
  * definition of the theme's radioButton
  */
-
 interface RadioStyles : SeverityAware {
     val sizes: FormSizes
     val input: Style<BasicParams>
@@ -423,7 +432,6 @@ interface RadioStyles : SeverityAware {
 /**
  * definition of the theme's switch
  */
-
 interface SwitchStyles : SeverityAware {
     val sizes: FormSizes
     val input: Style<BasicParams>
@@ -437,7 +445,6 @@ interface SwitchStyles : SeverityAware {
 /**
  * definition of the theme's inputField
  */
-
 interface InputFieldStyles : SeverityAware {
     val variants: InputFieldVariants
     val sizes: FormSizes
@@ -452,7 +459,6 @@ interface InputFieldVariants {
 /**
  * definition of the theme's pushButton
  */
-
 interface PushButtonStyles {
     val variants: PushButtonVariants
     val sizes: FormSizes
@@ -469,7 +475,6 @@ interface PushButtonVariants {
 /**
  * definition of the theme's modal
  */
-
 interface ModalStyles {
     val overlay: Style<BasicParams>
     val sizes: ModalSizes
@@ -493,7 +498,6 @@ interface ModalSizes {
 /**
  * definition of the theme's popover
  */
-
 interface PopoverStyles {
     val size: PopoverSizes
     val toggle: Style<BasicParams>
@@ -528,7 +532,6 @@ interface PopoverSizes {
 /**
  * definition of the theme's tooltip
  */
-
 interface Tooltip {
     fun write(vararg value: String): Style<BasicParams>
     fun write(vararg value: String, tooltipPlacement: TooltipPlacements.() -> Style<BasicParams>): Style<BasicParams>
@@ -543,30 +546,33 @@ interface TooltipPlacements {
 }
 
 /**
- * definition of the theme's textArea
+ * definition of the theme's textArea styles
  */
-
 interface TextAreaStyles : SeverityAware {
     val resize: TextAreaResize
     val sizes: FormSizes
 }
 
+/**
+ * definition of the theme's textArea resizes
+ */
 interface TextAreaResize {
     val none: Style<BasicParams>
     val vertical: Style<BasicParams>
     val horizontal: Style<BasicParams>
 }
 
-
 /**
- * definition of the theme's selectField
+ * definition of the theme's selectField styles
  */
-
 interface SelectFieldStyles : SeverityAware {
     val variants: SelectFieldVariants
     val sizes: FormSizes
 }
 
+/**
+ * definition of the theme's selectField variants
+ */
 interface SelectFieldVariants {
     val outline: Style<BasicParams>
     val filled: Style<BasicParams>
@@ -576,7 +582,6 @@ interface SelectFieldVariants {
 /**
  * definition of the theme's formControl
  */
-
 interface FormControlStyles {
     val sizes: FormSizes
     val label: Style<BasicParams>
@@ -587,7 +592,6 @@ interface FormControlStyles {
 /**
  * definition of the theme's alerts
  */
-
 interface AlertStyles {
     val severities: AlertSeverities
     val variants: AlertVariants
@@ -634,7 +638,6 @@ interface AlertVariantStyles {
 /**
  * definition of the theme's toasts
  */
-
 interface ToastStyles {
     val placement: ToastPlacement
     val status: ToastStatus

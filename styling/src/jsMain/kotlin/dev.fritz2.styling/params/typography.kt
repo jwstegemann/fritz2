@@ -1,6 +1,6 @@
 package dev.fritz2.styling.params
 
-import dev.fritz2.styling.theme.Fonts
+import dev.fritz2.styling.theme.FontFamilies
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -133,7 +133,7 @@ interface Typo : StyleParams {
      * @param value extension function parameter for small media devices, recommended to use
      *           predefined values via [dev.fritz2.styling.theme.Theme.fonts] that offer the properties of [Fonts]
      */
-    fun fontFamily(value: Fonts.() -> Property) = property(fontFamilyKey, Theme().fonts, value)
+    fun fontFamily(value: FontFamilies.() -> Property) = property(fontFamilyKey, Theme().fontFamilies, value)
 
     /**
      * This function sets the [font-family](https://developer.mozilla.org/en/docs/Web/CSS/font-family) property
@@ -157,12 +157,12 @@ interface Typo : StyleParams {
      *           predefined values via [dev.fritz2.styling.theme.Theme.fonts] that offer the properties of [Fonts]
      */
     fun fontFamily(
-        sm: (Fonts.() -> Property)? = null,
-        md: (Fonts.() -> Property)? = null,
-        lg: (Fonts.() -> Property)? = null,
-        xl: (Fonts.() -> Property)? = null
+        sm: (FontFamilies.() -> Property)? = null,
+        md: (FontFamilies.() -> Property)? = null,
+        lg: (FontFamilies.() -> Property)? = null,
+        xl: (FontFamilies.() -> Property)? = null
     ) =
-        property(fontFamilyKey, Theme().fonts, sm, md, lg, xl)
+        property(fontFamilyKey, Theme().fontFamilies, sm, md, lg, xl)
 
     /**
      * This function sets the [font-size](https://developer.mozilla.org/en/docs/Web/CSS/font-size) property
