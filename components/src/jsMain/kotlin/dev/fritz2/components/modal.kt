@@ -71,7 +71,7 @@ class DefaultOverlay(
  */
 @ComponentMarker
 open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Unit>) -> Unit) :
-    Component<SimpleHandler<Unit>>,
+    ManagedComponent<SimpleHandler<Unit>>,
     CloseButtonProperty by CloseButtonMixin("modal-close-button", {
         position {
             absolute {
@@ -104,7 +104,7 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
 
         init {
             stack.data.map { modals ->
-                globalRenderContext(globalId, job).apply {
+                ManagedComponent.managedRenderContext(globalId, job).apply {
                     val currentOverlay = overlay.current
                     if (currentOverlay.method == OverlayMethod.CoveringTopMost && modals.isNotEmpty()) {
                         currentOverlay.render(this, modals.size)
@@ -128,7 +128,6 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
     val variant = ComponentProperty<ModalVariants.() -> Style<BasicParams>> { Theme().modal.variants.auto }
 
     override fun render(
-        context: RenderContext,
         styling: BoxParams.() -> Unit,
         baseClass: StyleClass,
         id: String?,
@@ -208,10 +207,10 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
  * @param build a lambda expression for setting up the component itself. Details in [ModalComponent]
  *              be aware that a [SimpleHandler<Unit>] is injected in order to apply it to some closing flow inside!
  */
-fun RenderContext.modal(
+fun modal(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "modal",
     build: ModalComponent.(SimpleHandler<Unit>) -> Unit
-): SimpleHandler<Unit> = ModalComponent(build).render(this, styling, baseClass, id, prefix)
+): SimpleHandler<Unit> = ModalComponent(build).render(styling, baseClass, id, prefix)
