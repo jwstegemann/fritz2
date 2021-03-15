@@ -32,7 +32,7 @@ interface ManagedComponent<T> {
      */
     fun render(
         styling: BoxParams.() -> Unit,
-        baseClass: StyleClass?,
+        baseClass: StyleClass,
         id: String?,
         prefix: String
     ): T
