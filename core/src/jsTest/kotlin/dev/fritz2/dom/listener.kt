@@ -12,9 +12,11 @@ import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLParagraphElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.KeyboardEventInit
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -239,5 +241,50 @@ class ListenerTest {
             }
             assertEquals(expected, result.textContent, "wrong dom content of result-node")
         }
+    }
+
+    // FIXME: Activate if Issue #312 is fixed.
+    //  https://github.com/jwstegemann/fritz2/issues/312
+    // TODO: Evaluate parameterized tests in order to test also keydowns and keypresss
+    //  This should also be transferred to other tests as well to eliminate boilerplate and control structures!
+    @Test
+    @Ignore
+    fun testEnterForInput() = runTest {
+        // TODO: Evaluate pre test execution by framework
+        initDocument()
+
+        val inputId = uniqueId()
+        val resultId = uniqueId()
+
+        val store = object : RootStore<String>("start") {}
+
+        render {
+            section {
+                input(id = inputId) {
+                    value(store.data)
+                    keyups.enter() handledBy store.update
+                }
+                p(id = resultId) {
+                    store.data.asText()
+                }
+            }
+        }
+
+        // wait for initial rendering to finish
+        delay(100)
+        val input = document.getElementById(inputId).unsafeCast<HTMLInputElement>()
+        val resultNode = document.getElementById(resultId).unsafeCast<HTMLParagraphElement>()
+
+        assertEquals("start", resultNode.textContent, "wrong dom content of result-node")
+
+        input.value = "some other content"
+        // FIXME: Should work, if issue #312 is implemented! ``Keys.Enter.Code`` seems to be plausible for ``code`` param
+        val event = KeyboardEvent("keyup", KeyboardEventInit(Keys.Enter.name, code = Keys.Enter.name))
+        input.dispatchEvent(event)
+        delay(200)
+
+        // TODO: Check all other tests, if testing against ``input.value`` is probably false!
+        //   (It asserted to true, no matter I did not handled anything nor dispatched anything!)
+        assertEquals("some other content", resultNode.textContent, "wrong dom content of result-node")
     }
 }

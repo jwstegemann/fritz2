@@ -1528,7 +1528,7 @@ open class DefaultTheme : Theme {
                 height { "2rem" }
                 fontSize { small }
                 paddings {
-                    horizontal { tiny }
+                    horizontal { small }
                 }
             }
 
