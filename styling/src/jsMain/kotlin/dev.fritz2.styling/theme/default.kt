@@ -1389,7 +1389,7 @@ open class DefaultTheme : Theme {
 
                 readOnly {
                     background {
-                        color { neutral }
+                        color { gray200 }
                     }
                 }
 
