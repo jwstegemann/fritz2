@@ -37,21 +37,6 @@ open class DefaultTheme : Theme {
     // used color scheme https://coolors.co/8ecae6-219ebc-023047-ffb703-fb8500
     override val colors: Colors
         get() = object : Colors {
-            override val primary = // prussian blue
-                ColorScheme(base = "#023047", highlight = "#219EBC", complementary = "#000000")
-
-            override val secondary = // orange
-                ColorScheme(base = "#FB8500", highlight = "#FFE9CF", complementary = "#FFFFFF")
-
-            override val tertiary = // honey yellow
-                ColorScheme(base = "#FFB703", highlight = "#FFEDCB", complementary = "#000000")
-
-            override val info = "#8ECAE6"       // blue
-            override val success = "#00A848"    // green
-            override val warning = "#F08B3A"    // orange
-            override val danger = "#E14F2A"     // red
-            override val neutral = "#ffffff"    // white
-
             override val gray100 = "#F9FAF9"
             override val gray200 = "#E2E7E4"
             override val gray300 = "#C6CFC9"
@@ -59,6 +44,21 @@ open class DefaultTheme : Theme {
             override val gray500 = "#7E8480"
             override val gray600 = "#646966"
             override val gray700 = "#242424"
+
+            override val primary = // prussian blue
+                ColorScheme(base = "#0C5173", highlight = "#CAE4EA", complementary = gray500)
+
+            override val secondary = // orange
+                ColorScheme(base = "#FB8500", highlight = "#FFE9CF", complementary = gray500)
+
+            override val tertiary = // honey yellow
+                ColorScheme(base = "#FFB703", highlight = "#FFEDCB", complementary = gray500)
+
+            override val info = "#219EBC"       // blue
+            override val success = "#00A848"    // green
+            override val warning = "#F08B3A"    // orange
+            override val danger = "#E14F2A"     // red
+            override val neutral = "#ffffff"    // white
 
             override val disabled = gray300
             override val focus = primary.highlight
