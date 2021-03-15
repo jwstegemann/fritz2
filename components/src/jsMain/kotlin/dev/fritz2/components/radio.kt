@@ -77,7 +77,7 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
                 outline: none;
             }
             &:focus + label::before {
-                box-shadow: 0 0 1px ${Theme().colors.dark};
+                box-shadow: 0 0 1px ${Theme().colors.gray700};
             }
             &:disabled + label {
                 color: ${Theme().colors.disabled};

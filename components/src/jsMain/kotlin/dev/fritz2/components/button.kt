@@ -11,7 +11,6 @@ import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.PushButtonVariants
 import dev.fritz2.styling.theme.Theme
-import dev.fritz2.styling.whenever
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.MouseEvent
@@ -143,7 +142,7 @@ open class PushButtonComponent :
 
     private fun buildColor(value: ColorProperty): Style<BasicParams> = { css("--main-color: $value;") }
 
-    private var colorField: Style<BasicParams> = buildColor(Theme().colors.primary)
+    private var colorField: Style<BasicParams> = buildColor(Theme().colors.primary.base)
 
     fun color(value: Colors.() -> ColorProperty) {
         colorField = buildColor(Theme().colors.value())

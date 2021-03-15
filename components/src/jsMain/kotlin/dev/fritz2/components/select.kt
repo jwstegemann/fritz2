@@ -65,25 +65,25 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
         focus {
             focus {
                 border {
-                    color { primary }
+                    color { primary.base }
                 }
                 boxShadow { outline }
             }
         }
         hover {
             border {
-                color { dark }
+                color { gray700 }
             }
         }
 
         disabled {
             background {
-                color { base }
+                color { neutral }
             }
             color { disabled }
             hover {
                 border {
-                    color { lightGray }
+                    color { gray300 }
                 }
             }
         }

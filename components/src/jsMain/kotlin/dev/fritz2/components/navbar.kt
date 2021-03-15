@@ -75,13 +75,13 @@ fun RenderContext.navBar(
                 top {
                     width { "6px" }
                     style { solid }
-                    color { primary }
+                    color { primary.base }
                 }
 
                 bottom {
                     width { "2px" }
                     style { solid }
-                    color { lightGray }
+                    color { gray300 }
                 }
             }
             styling()
