@@ -34,40 +34,43 @@ open class DefaultTheme : Theme {
     override val gaps: ScaledValue
         get() = space
 
+    // used color scheme https://coolors.co/8ecae6-219ebc-023047-ffb703-fb8500
     override val colors: Colors
         get() = object : Colors {
+            override val primary = // prussian blue
+                ColorScheme(base = "#023047", highlight = "#219EBC", complementary = "#000000")
 
-            override val primary = "#427802"//"#3B6302" // darker green
-            override val primaryEffect =
-                alterHexColorBrightness(primary, 1.5) // lighter green derived from primary #rrggbb
-            override val secondary = "#F7B52F" // yellowish orange
-            override val secondaryEffect =
-                alterHexColorBrightness(secondary, 1.5) // lighter orange derived from secondary #rrggbb
-            override val dark = "#214A25" // dark gray coming from green
-            override val info = "#1B959E" // blue
-            override val success = "#00A848" // bright green
-            override val warning = "#F08B3A" // orange
-            override val danger = "#E14F2A" // red
-            override val base = "#ffffff"
+            override val secondary = // orange
+                ColorScheme(base = "#FB8500", highlight = "#FFE9CF", complementary = "#FFFFFF")
 
-            override val lightestGray = "#F9FAF9"
-            override val lighterGray = "#E2E7E4"
-            override val lightGray = "#C6CFC9"
-            override val gray = "#9EA5A0"
-            override val darkGray = "#7E8480"
-            override val darkerGray = "#646966"
+            override val tertiary = // honey yellow
+                ColorScheme(base = "#FFB703", highlight = "#FFEDCB", complementary = "#000000")
 
-            override val disabled = lightGray
-            override val focus = primaryEffect
+            override val info = "#8ECAE6"       // blue
+            override val success = "#00A848"    // green
+            override val warning = "#F08B3A"    // orange
+            override val danger = "#E14F2A"     // red
+            override val neutral = "#ffffff"    // white
+
+            override val gray100 = "#F9FAF9"
+            override val gray200 = "#E2E7E4"
+            override val gray300 = "#C6CFC9"
+            override val gray400 = "#9EA5A0"
+            override val gray500 = "#7E8480"
+            override val gray600 = "#646966"
+            override val gray700 = "#242424"
+
+            override val disabled = gray300
+            override val focus = primary.highlight
         }
 
     //FIXME: move to typography section
 
     override val backgroundColor
-        get() = colors.base
+        get() = colors.neutral
 
     override val fontColor
-        get() = colors.darkerGray
+        get() = colors.gray600
 
     override val fontFamilies = object : FontFamilies {
         override val normal =
@@ -175,7 +178,7 @@ open class DefaultTheme : Theme {
                 "0",
                 "0",
                 "2px",
-                color = colors.primaryEffect
+                color = colors.primary.highlight
             ),
             danger = shadow("0", "0", "0", "1px", color = colors.danger)
         )
@@ -1375,36 +1378,36 @@ open class DefaultTheme : Theme {
                 border {
                     width { thin }
                     style { solid }
-                    color { lightGray }
+                    color { gray300 }
                 }
 
                 hover {
                     border {
-                        color { dark }
+                        color { gray700 }
                     }
                 }
 
                 readOnly {
                     background {
-                        color { base }
+                        color { neutral }
                     }
                 }
 
                 disabled {
                     background {
-                        color { base }
+                        color { neutral }
                     }
                     color { disabled }
                     hover {
                         border {
-                            color { lightGray }
+                            color { gray300 }
                         }
                     }
                 }
 
                 focus {
                     border {
-                        color { primary }
+                        color { primary.base }
                     }
                     boxShadow { outline }
                 }
@@ -1416,13 +1419,13 @@ open class DefaultTheme : Theme {
             override val filled: Style<BasicParams> = {
                 basic()
                 background {
-                    color { primaryEffect }
+                    color { primary.highlight }
                 }
-                color { base }
+                color { neutral }
 
                 hover {
-                    background { color { lighterGray } }
-                    color { dark }
+                    background { color { gray200 } }
+                    color { gray700 }
                 }
 
                 focus {
@@ -1430,7 +1433,7 @@ open class DefaultTheme : Theme {
                     background {
                         color { "transparent" }
                     }
-                    color { dark }
+                    color { gray700 }
                 }
             }
         }
@@ -1502,7 +1505,7 @@ open class DefaultTheme : Theme {
         override val input: Style<BasicParams> = {
             children("&:focus + div") {
                 border {
-                    color { lightGray }
+                    color { gray300 }
                 }
                 boxShadow { outline }
             }
@@ -1538,18 +1541,18 @@ open class DefaultTheme : Theme {
             }
             width { "var(--cb-size)" }
             height { "var(--cb-size)" }
-            background { color { base } }
+            background { color { neutral } }
             border {
                 width { "1px" }
                 style { solid }
-                color { lightGray }
+                color { gray300 }
             }
             radius { "var(--cb-radius)" }
         }
         override val checked: Style<BasicParams> = {
-            background { color { primary } }
-            border { color { primary } }
-            color { base }
+            background { color { primary.base } }
+            border { color { primary.base } }
+            color { neutral }
         }
 
         override val severity = object : SeverityStyles {
@@ -1611,7 +1614,7 @@ open class DefaultTheme : Theme {
         override val input: Style<BasicParams> = {
             children("&:focus + div") {
                 border {
-                    color { primary }
+                    color { primary.base }
                 }
                 boxShadow { outline }
             }
@@ -1637,19 +1640,19 @@ open class DefaultTheme : Theme {
             css("justify-content:center;")
             width { "var(--rb-size)" }
             height { "var(--rb-size)" }
-            background { color { base } }
+            background { color { neutral } }
             border {
                 width { "2px" }
                 style { solid }
-                color { lightGray }
+                color { gray300 }
             }
             radius { "9999px" }
         }
         override val selected: Style<BasicParams> = {
-            background { color { primary } }
-            color { lightGray }
+            background { color { primary.base } }
+            color { gray300 }
             border {
-                color { primary }
+                color { primary.base }
             }
             before {
                 css("content:\"\";")
@@ -1663,7 +1666,7 @@ open class DefaultTheme : Theme {
                 height { "50%" }
                 radius { "50%" }
                 background {
-                    color { base }
+                    color { neutral }
                 }
             }
         }
@@ -1706,7 +1709,7 @@ open class DefaultTheme : Theme {
         override val input: Style<BasicParams> = {
             children("&:focus + div") {
                 border {
-                    color { lightGray }
+                    color { gray300 }
                 }
                 boxShadow { outline }
             }
@@ -1730,7 +1733,7 @@ open class DefaultTheme : Theme {
             height { "var(--sw-height)" }
             radius { "9999px" }
             background {
-                color { base }
+                color { neutral }
             }
             css("transition: transform 250ms ease 0s;")
 
@@ -1748,7 +1751,7 @@ open class DefaultTheme : Theme {
             padding { "2px" }
             width { "var(--sw-width)" }
             height { "var(--sw-height)" }
-            background { color { lightGray } }
+            background { color { gray300 } }
             radius { "9999px" }
             css("justify-content: flex-start;")
             css("box-sizing: content-box;")
@@ -1756,7 +1759,7 @@ open class DefaultTheme : Theme {
             css("transition: all 120ms ease 0s;")
         }
         override val checked: Style<BasicParams> = {
-            background { color { primary } }
+            background { color { primary.base } }
         }
 
         override val severity: SeverityStyles
@@ -1777,7 +1780,7 @@ open class DefaultTheme : Theme {
             override val solid: Style<BasicParams> = {
                 basic()
                 background { color { "var(--main-color)" } }
-                color { base }
+                color { neutral }
                 hover {
                     css("filter: brightness(80%);")
                 }
@@ -1796,7 +1799,7 @@ open class DefaultTheme : Theme {
                 }
                 hover {
                     background {
-                        color { lighterGray }
+                        color { gray200 }
                     }
                     css("filter: brightness(80%);")
                 }
@@ -1870,7 +1873,7 @@ open class DefaultTheme : Theme {
 
             private val basic: Style<BasicParams> = {
                 background {
-                    color { base }
+                    color { neutral }
                 }
                 padding { normal }
                 radius { tiny }
@@ -1962,7 +1965,7 @@ open class DefaultTheme : Theme {
         override val size: PopoverSizes = object : PopoverSizes {
             private val basic: Style<BasicParams> = {
                 background {
-                    color { base }
+                    color { neutral }
                 }
                 paddings {
                     top { tiny }
@@ -2160,9 +2163,9 @@ open class DefaultTheme : Theme {
                 }
                 after {
                     css("content:\"${value.asList().joinToString("\\A")}\";")
-                    background { color { dark } }
+                    background { color { gray700 } }
                     radius { small }
-                    color { lightGray }
+                    color { gray300 }
                     display { none }
                     overflow { hidden }
                     opacity { "0" }
@@ -2366,7 +2369,7 @@ open class DefaultTheme : Theme {
         }
 
         input::placeholder, textarea::placeholder {
-            color: ${colors.darkGray};
+            color: ${colors.gray500};
             opacity: 0.8
         }
 
@@ -2758,13 +2761,13 @@ open class DefaultTheme : Theme {
                 border {
                     width { thin }
                     style { solid }
-                    color { lightGray }
+                    color { gray300 }
                 }
             }
 
             override val filled: Style<BasicParams> = {
                 background {
-                    color { lightGray }
+                    color { gray300 }
                 }
 
                 hover {
@@ -2834,7 +2837,7 @@ open class DefaultTheme : Theme {
         override val helperText: Style<BasicParams> = {
             css("margin-top: var(--formControl-vertical-margin)")
             css("margin-bottom: var(--formControl-vertical-margin)")
-            color { darkerGray }
+            color { gray600 }
             css("font-size: var(--formControl-helperText-size) ")
             lineHeight { smaller }
         }
@@ -2847,28 +2850,28 @@ open class DefaultTheme : Theme {
 
         override val brand: Style<FlexParams> = {
             //background { color { "rgb(44, 49, 54)"} }
-            background { color { primary } }
+            background { color { primary.base } }
             paddings {
                 all { small }
                 left { normal }
             }
-            color { lighterGray }
+            color { gray200 }
             alignItems { center }
             borders {
                 bottom {
                     width { "1px " }
-                    color { gray }
+                    color { gray400 }
                 }
             }
         }
 
         override val sidebar: Style<BasicParams> = {
 //            css(
-//                sm = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary} 20%);",
-//                lg = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary} 20%);"
+//                sm = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary.base} 20%);",
+//                lg = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary.base} 20%);"
 //            )
-            background { color { primary } }
-            color { lighterGray }
+            background { color { primary.base } }
+            color { gray200 }
             minWidth { "22vw" }
         }
 
@@ -2884,7 +2887,7 @@ open class DefaultTheme : Theme {
             borders {
                 top {
                     width { "1px" }
-                    color { gray }
+                    color { gray400 }
                 }
             }
         }
@@ -2901,14 +2904,14 @@ open class DefaultTheme : Theme {
                 bottom {
                     width { "1px " }
                     style { solid }
-                    color { lighterGray }
+                    color { gray200 }
                 }
             }
         }
 
         override val main: Style<BasicParams> = {
             padding { normal }
-            background { color { lightestGray } }
+            background { color { gray100 } }
             color { "rgb(44, 49, 54)" }
         }
 
@@ -2917,7 +2920,7 @@ open class DefaultTheme : Theme {
                 top {
                     width { "1px " }
                     style { solid }
-                    color { lighterGray }
+                    color { gray200 }
                 }
             }
             height { footerMinHeight }
@@ -2936,7 +2939,7 @@ open class DefaultTheme : Theme {
                 borders {
                     left {
                         width { "1px" }
-                        color { lighterGray }
+                        color { gray200 }
                     }
                 }
             }
@@ -2972,7 +2975,7 @@ open class DefaultTheme : Theme {
             background { color { "rgba(0,0,0,0.2)" } }
             borders {
                 left {
-                    color { lightGray.important }
+                    color { gray300.important }
                 }
             }
         }
@@ -2986,7 +2989,7 @@ open class DefaultTheme : Theme {
             textTransform { uppercase }
             fontWeight { semiBold }
             fontSize { ".8rem" }
-            color { gray }
+            color { gray400 }
         }
     }
 }

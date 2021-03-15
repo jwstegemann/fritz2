@@ -87,7 +87,7 @@ interface Color : StyleParams {
      *
      * Example call:
      * ```
-     * color { primary } // use the predefined values from the theme (by [dev.fritz2.styling.theme.Theme.colors])
+     * color { primary.base } // use the predefined values from the theme (by [dev.fritz2.styling.theme.Theme.colors])
      * // color { "lime" } // we don't provide common CSS colors at the moment, you must provide them individually
      * // color { rgba(255, 0, 0, 100) }
      * ```
@@ -105,7 +105,7 @@ interface Color : StyleParams {
      * Example call:
      * ```
      * color(
-     *     sm = { primary }
+     *     sm = { primary.base }
      *     lg = { dark }
      * )
      * ```

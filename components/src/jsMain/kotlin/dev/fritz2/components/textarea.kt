@@ -62,7 +62,7 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
         border {
             width { thin }
             style { solid }
-            color { lightGray }
+            color { gray300 }
 
         }
 
@@ -70,7 +70,7 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
 
         disabled {
             background {
-                color { base }
+                color { neutral }
             }
             color { disabled }
 
