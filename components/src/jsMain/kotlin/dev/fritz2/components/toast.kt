@@ -66,7 +66,7 @@ import kotlinx.coroutines.flow.map
  * ```
  */
 @ComponentMarker
-open class ToastComponent : Component<Unit>,
+open class ToastComponent : ManagedComponent<Unit>,
     CloseButtonProperty by CloseButtonMixin(
         "toast-close-button",
         Theme().toast.closeButton.close
@@ -162,7 +162,7 @@ open class ToastComponent : Component<Unit>,
 
         init {
             // Rendering of the toast container hosting all toast messages.
-            globalRenderContext(globalId, job).apply {
+            ManagedComponent.managedRenderContext(globalId, job).apply {
                 Placement.placements.forEach {
                     val placementStyle = when (it) {
                         Placement.bottom -> Theme().toast.placement.bottom
@@ -231,14 +231,12 @@ open class ToastComponent : Component<Unit>,
      * This method registers one toast at the central toast store and creates a rendering expression that will be
      * executed by the central rendering in the companion's object [ToastComponent.Companion] init block.
      *
-     * @param context not used here, just for be compliant with the interface [Component]
      * @param styling lambda expression for declaring the styling of the toast using fritz2's styling DSL
      * @param baseClass optional CSS class that should be applied to the toast element
      * @param id ID of the toast element, a unique id will be generated if no ID is specified
      * @param prefix prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
      */
     override fun render(
-        context: RenderContext,
         styling: BoxParams.() -> Unit,
         baseClass: StyleClass?,
         id: String?,
@@ -308,14 +306,14 @@ open class ToastComponent : Component<Unit>,
  * @param build a lambda expression for setting up the component itself.
  *
  */
-fun RenderContext.showToast(
+fun showToast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
     prefix: String = ToastComponent.defaultToastContainerPrefix,
     build: ToastComponent.() -> Unit,
 ) {
-    ToastComponent().apply(build).render(this, styling, baseClass, id, prefix)
+    ToastComponent().apply(build).render(styling, baseClass, id, prefix)
 }
 
 /**
@@ -350,7 +348,7 @@ fun RenderContext.showToast(
  * @param prefix prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself
  */
-fun RenderContext.toast(
+fun toast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass? = null,
     id: String? = null,
