@@ -1,8 +1,10 @@
 package dev.fritz2.dom
 
 import dev.fritz2.dom.html.Key
+import dev.fritz2.dom.html.Keys
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.InputEvent
@@ -59,6 +61,24 @@ fun DomListener<InputEvent, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
     events.map { it.target.unsafeCast<HTMLInputElement>().valueAsNumber }
 
 /**
+ * Gives you the new value as [String] from the targeting [Element] when enter is pressed.
+ */
+fun DomListener<KeyboardEvent, HTMLInputElement>.enter(): Flow<String> =
+    events.mapNotNull {
+        if(it.keyCode == Keys.Enter.code) it.target.unsafeCast<HTMLInputElement>().value
+        else null
+    }
+
+/**
+ * Gives you the new value as [Double] from the targeting [Element] when enter is pressed.
+ */
+fun DomListener<KeyboardEvent, HTMLInputElement>.enterAsNumber(): Flow<Double> =
+    events.mapNotNull {
+        if(it.keyCode == Keys.Enter.code) it.target.unsafeCast<HTMLInputElement>().valueAsNumber
+        else null
+    }
+
+/**
  * Gives you the new value as [String] from the targeting [Element].
  */
 fun DomListener<Event, HTMLSelectElement>.values(): Flow<String> =
@@ -69,6 +89,15 @@ fun DomListener<Event, HTMLSelectElement>.values(): Flow<String> =
  */
 fun DomListener<Event, HTMLTextAreaElement>.values(): Flow<String> =
     events.map { it.target.unsafeCast<HTMLTextAreaElement>().value }
+
+/**
+ * Gives you the new value as [String] from the targeting [Element].
+ */
+fun DomListener<KeyboardEvent, HTMLTextAreaElement>.enter(): Flow<String> =
+    events.mapNotNull {
+        if(it.keyCode == Keys.Enter.code) it.target.unsafeCast<HTMLTextAreaElement>().value
+        else null
+    }
 
 /**
  * Gives you the [FileList] from the targeting [Element].
