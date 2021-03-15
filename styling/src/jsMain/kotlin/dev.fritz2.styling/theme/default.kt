@@ -2407,11 +2407,6 @@ open class DefaultTheme : Theme {
             height: auto
         }
         
-        a {
-          font-weight: ${fontWeights.strong};
-          font-size: ${fontSizes.small}
-        }
-        
         p {
           font-size: ${fontSizes.normal};
           line-height: ${lineHeights.larger};
