@@ -52,7 +52,7 @@ open class DefaultTheme : Theme {
                 ColorScheme(base = "#0C5173", baseContrast = gray100, highlight = "#CAE4EA", highlightContrast = gray600)
 
             override val secondary = // orange
-                ColorScheme(base = "#FFB703", baseContrast = gray100, highlight = "#FFEDCB", highlightContrast = gray600)
+                ColorScheme(base = "#FFB703", baseContrast = gray200, highlight = "#FFEDCB", highlightContrast = gray600)
 
             override val tertiary = // grey
                 ColorScheme(base = gray600, baseContrast = gray100, highlight = gray300, highlightContrast = gray600)
@@ -73,7 +73,7 @@ open class DefaultTheme : Theme {
         get() = colors.neutral
 
     override val fontColor
-        get() = colors.gray600
+        get() = colors.gray700
 
     override val fontFamilies = object : FontFamilies {
         override val normal =
