@@ -176,15 +176,16 @@ interface FontFamilies {
 
 /**
  * Defines three colors for a color scheme.
- * First is [base] which is the default color.
+ * First is [base] which is the default color and [baseContrast]
+ * for showing things on top of [highlight] color.
  * Besides from that there is a color [highlight] for highlighting things
- * and a color [complementary] for showing things on top of [base] color,
- * e.g. texts or icons.
+ * and a color [highlightContrast] for showing things on top of [highlight] color.
  */
 open class ColorScheme(
     val base: ColorProperty,
+    val baseContrast: ColorProperty,
     val highlight: ColorProperty,
-    val complementary: ColorProperty
+    val highlightContrast: ColorProperty
 )
 
 /**
@@ -198,17 +199,20 @@ interface Colors {
     val danger: ColorProperty
     val warning: ColorProperty
     val info: ColorProperty
-    val gray700: ColorProperty
     val neutral: ColorProperty
     val disabled: ColorProperty
     val focus: ColorProperty
 
+    val gray50: ColorProperty
     val gray100: ColorProperty
     val gray200: ColorProperty
     val gray300: ColorProperty
     val gray400: ColorProperty
     val gray500: ColorProperty
     val gray600: ColorProperty
+    val gray700: ColorProperty
+    val gray800: ColorProperty
+    val gray900: ColorProperty
 }
 
 /**
