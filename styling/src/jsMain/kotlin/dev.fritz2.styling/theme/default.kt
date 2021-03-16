@@ -37,22 +37,25 @@ open class DefaultTheme : Theme {
     // used color scheme https://coolors.co/8ecae6-219ebc-023047-ffb703-fb8500
     override val colors: Colors
         get() = object : Colors {
-            override val gray100 = "#F9FAF9"
-            override val gray200 = "#E2E7E4"
-            override val gray300 = "#C6CFC9"
-            override val gray400 = "#9EA5A0"
-            override val gray500 = "#7E8480"
-            override val gray600 = "#646966"
-            override val gray700 = "#242424"
+            override val gray50 = "#F7FAFC"
+            override val gray100 = "#EDF2F7"
+            override val gray200 = "#E2E8F0"
+            override val gray300 = "#CBD5E0"
+            override val gray400 = "#A0AEC0"
+            override val gray500 = "#718096"
+            override val gray600 = "#4A5568"
+            override val gray700 = "#2D3748"
+            override val gray800 = "#1A202C"
+            override val gray900 = "#171923"
 
             override val primary = // prussian blue
-                ColorScheme(base = "#0C5173", highlight = "#CAE4EA", complementary = gray500)
+                ColorScheme(base = "#0C5173", baseContrast = gray100, highlight = "#CAE4EA", highlightContrast = gray600)
 
             override val secondary = // orange
-                ColorScheme(base = "#FB8500", highlight = "#FFE9CF", complementary = gray500)
+                ColorScheme(base = "#FFB703", baseContrast = gray100, highlight = "#FFEDCB", highlightContrast = gray600)
 
-            override val tertiary = // honey yellow
-                ColorScheme(base = "#FFB703", highlight = "#FFEDCB", complementary = gray500)
+            override val tertiary = // grey
+                ColorScheme(base = gray600, baseContrast = gray100, highlight = gray300, highlightContrast = gray600)
 
             override val info = "#219EBC"       // blue
             override val success = "#00A848"    // green
@@ -88,16 +91,6 @@ open class DefaultTheme : Theme {
         huge = "1.875rem",
         giant = "3rem",
         full = "4rem"
-    )
-
-    override val fontWeights = WeightedValue(
-        normal = "400",
-        light = "300",
-        lighter = "200",
-        strong = "600",
-        stronger = "700",
-        none = "400",
-        full = "800"
     )
 
     override val lineHeights = ScaledValue(
@@ -228,7 +221,7 @@ open class DefaultTheme : Theme {
         
         b,
         strong {
-            font-weight: ${fontWeights.stronger};
+            font-weight: ${FontWeights.bold};
         }
             
         blockquote, dd, dl, figure, h1, h2, h3, h4, h5, h6, hr, p, pre {
@@ -317,7 +310,7 @@ open class DefaultTheme : Theme {
         
         h1 {
           line-height: ${lineHeights.tiny};
-          font-weight: ${fontWeights.stronger};
+          font-weight: ${FontWeights.medium};
           font-size: ${fontSizes.huge};
           letter-spacing: ${letterSpacings.small};
           outline: 0;
@@ -325,31 +318,31 @@ open class DefaultTheme : Theme {
         
         h2 {
           line-height: ${lineHeights.small};
-          font-weight: ${fontWeights.strong};
+          font-weight: ${FontWeights.medium};
           font-size: ${fontSizes.larger};
           letter-spacing: ${letterSpacings.small};
         }
         
         h3 {
           line-height: ${lineHeights.small};
-          font-weight: ${fontWeights.strong};
+          font-weight: ${FontWeights.medium};
           font-size: ${fontSizes.large};
           letter-spacing: ${letterSpacings.small};
         }
         
         h4 {
           font-size: ${fontSizes.normal};
-          font-weight: ${fontWeights.stronger};
+          font-weight: ${FontWeights.medium};
         }
         
         h5 {
           font-size: ${fontSizes.small};
-          font-weight: ${fontWeights.stronger};
+          font-weight: ${FontWeights.medium};
         }
         
         h6 {
           font-size: ${fontSizes.smaller};
-          font-weight: ${fontWeights.stronger};
+          font-weight: ${FontWeights.medium};
         }
         
         li {
