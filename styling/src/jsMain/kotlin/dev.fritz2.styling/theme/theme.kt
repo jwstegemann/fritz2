@@ -73,16 +73,6 @@ interface Theme {
     }
 
     /**
-     * css to reset browser's defaults and set your own
-     */
-    val reset: String
-
-    /**
-     * css to set global defaults
-     */
-    val global: String
-
-    /**
      * an human readable name like ``default`` or ``dark`` for example
      */
     val name: String
@@ -191,6 +181,16 @@ interface Theme {
      * definition of the scale for gaps
      */
     val gaps: ScaledValue
+
+    /**
+     * css to reset browser's defaults and set your own
+     */
+    val reset: String
+
+    /**
+     * css to set global defaults
+     */
+    val global: String
 
     /**
      * definition of theme-icons
