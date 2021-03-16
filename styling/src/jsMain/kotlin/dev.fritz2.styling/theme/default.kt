@@ -48,11 +48,11 @@ open class DefaultTheme : Theme {
             override val gray800 = "#1A202C"
             override val gray900 = "#171923"
 
-            override val primary = // prussian blue
+            override val primary = // blue
                 ColorScheme(base = "#0C5173", baseContrast = gray100, highlight = "#CAE4EA", highlightContrast = gray600)
 
-            override val secondary = // orange
-                ColorScheme(base = "#FFB703", baseContrast = gray200, highlight = "#FFEDCB", highlightContrast = gray600)
+            override val secondary = // yellow
+                ColorScheme(base = "#E6A300", baseContrast = gray100, highlight = "#FFEDCB", highlightContrast = gray600)
 
             override val tertiary = // grey
                 ColorScheme(base = gray600, baseContrast = gray100, highlight = gray300, highlightContrast = gray600)
