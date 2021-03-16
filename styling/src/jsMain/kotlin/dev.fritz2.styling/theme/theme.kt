@@ -133,11 +133,6 @@ interface Theme {
     val fontSizes: ScaledValue
 
     /**
-     * definition of the scala for font-weights
-     */
-    val fontWeights: WeightedValue
-
-    /**
      * definition of the scale for line-heights
      */
     val lineHeights: ScaledValue
