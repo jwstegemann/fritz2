@@ -77,9 +77,9 @@ open class DefaultTheme : Theme {
 
     override val fontFamilies = object : FontFamilies {
         override val normal =
-            "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';"
+            "Inter, 'Segoe UI', Roboto, Helvetica, Calibri, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', -apple-system, sans-serif"
         override val mono =
-            "ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;"
+            "Courier, Consolas, 'Liberation Mono', Menlo, 'Courier New', SFMono-Regular, monospace"
     }
 
     override val fontSizes = ScaledValue(
