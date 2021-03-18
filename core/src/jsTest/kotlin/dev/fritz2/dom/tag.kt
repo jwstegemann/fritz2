@@ -1,5 +1,6 @@
 package dev.fritz2.dom
 
+import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
@@ -106,6 +107,49 @@ class TagTests {
             assertEquals(testIds[i], element.id)
             assertEquals("li", element.localName)
             assertEquals(testClasses.joinToString(separator = " "), element.className, "wrong classes for $i")
+        }
+    }
+
+    @Test
+    fun testRenderWithCondition() = runTest {
+        initDocument()
+
+        val outerId = uniqueId()
+        val innerId = uniqueId()
+
+        val switch = storeOf(false)
+        val data = storeOf("Test")
+
+        render {
+            div(id = outerId) {
+                switch.data.render {
+                    if (it) {
+                        data.data.render { text ->
+                            if (text.isNotBlank()) div(id = innerId) { +text }
+                        }
+                    }
+                }
+            }
+        }
+
+        delay(300)
+
+        val outer = document.getElementById(outerId) as HTMLDivElement
+        fun inner() = document.getElementById(innerId) as HTMLDivElement
+
+        assertEquals(0, outer.childElementCount, "outer element has a children")
+
+        for(i in 0..4) {
+            switch.update(true)
+            delay(200)
+
+            assertEquals(1, outer.childElementCount, "[$i] outer element has no children")
+            assertEquals("Test", inner().textContent, "[$i] inner has no text")
+
+            switch.update(false)
+            delay(200)
+
+            assertEquals(0, outer.childElementCount, "[$i] outer element has no children")
         }
     }
 
