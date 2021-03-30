@@ -150,7 +150,7 @@ open class CheckboxComponent(protected val store: Store<Boolean>?) :
                 icon({
                     Theme().checkbox.icon()
                 }) {
-                    def(icon.value(Theme().icons))
+                    def(this@CheckboxComponent.icon.value(Theme().icons))
                 }
             }
 

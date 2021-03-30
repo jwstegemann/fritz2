@@ -36,6 +36,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * not meant to be called directly unless you plan to implement your own appFrame.
  */
 @ExperimentalCoroutinesApi
+@ComponentMarker
 open class AppFrameComponent : Component<Unit> {
     companion object {
         init {
@@ -181,8 +182,8 @@ open class AppFrameComponent : Component<Unit> {
                     }) {
                         spacing { tiny }
                         items {
-                            sidebarToggle.value(this, toggleSidebar)
-                            header.value(this)
+                            this@AppFrameComponent.sidebarToggle.value(this, this@AppFrameComponent.toggleSidebar)
+                            this@AppFrameComponent.header.value(this)
                         }
                     }
                     section {

@@ -154,9 +154,9 @@ open class AlertComponent : Component<Unit> {
                             css("height: var(--al-icon-size)")
                         }) {
                             fromTheme {
-                                icon.value
+                                this@AlertComponent.icon.value
                                     ?.invoke(Theme().icons)
-                                    ?: severity.value(Theme().alert.severities).icon
+                                    ?: this@AlertComponent.severity.value(Theme().alert.severities).icon
                             }
                         }
                     }

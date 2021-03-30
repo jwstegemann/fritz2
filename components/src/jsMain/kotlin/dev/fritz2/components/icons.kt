@@ -45,6 +45,7 @@ fun RenderContext.svg(baseClass: String?, id: String?, init: Svg.() -> Unit): Sv
  * In order to provide a comfortable way to use the predefined icons from the [dev.fritz2.styling.theme.Theme],
  * use the [IconComponent.fromTheme] method.
  */
+@ComponentMarker
 open class IconComponent : Component<Unit>, EventProperties<SVGElement> by EventMixin() {
     companion object {
         const val prefix = "icon"

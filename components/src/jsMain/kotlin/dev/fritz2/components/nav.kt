@@ -26,6 +26,7 @@ import org.w3c.dom.events.MouseEvent
  * not meant to be called directly unless you plan to implement your own navLink.
  */
 @ExperimentalCoroutinesApi
+@ComponentMarker
 open class NavLinkComponent : Component<Listener<MouseEvent>> {
     companion object {
         val activeStyle = staticStyle("navlink-active") {
@@ -53,9 +54,9 @@ open class NavLinkComponent : Component<Listener<MouseEvent>> {
             }, baseClass, id, prefix) {
                 spacing { small }
                 items {
-                    active.value?.let { className(activeStyle.whenever(it).name) }
-                    icon(build = icon.value)
-                    a { text.values.asText() }
+                    this@NavLinkComponent.active.value?.let { className(activeStyle.whenever(it).name) }
+                    icon(build = this@NavLinkComponent.icon.value)
+                    a { this@NavLinkComponent.text.values.asText() }
                 }
                 events {
                     clickEvents = clicks.stopImmediatePropagation()

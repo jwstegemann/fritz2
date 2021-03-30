@@ -181,7 +181,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
                 }){
                     icon({
                         iconStyle()
-                    }) { def(icon.value(Theme().icons)) }
+                    }) { def(this@SelectFieldComponent.icon.value(Theme().icons)) }
                 }
             }
 

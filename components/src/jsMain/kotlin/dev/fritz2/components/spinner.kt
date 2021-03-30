@@ -93,15 +93,15 @@ open class SpinnerComponent : Component<Unit>,
                     icon({
                         css(
                             """
-                @keyframes spinner {
-                  to {transform: rotate(360deg);}
-                }    
-                animation: spinner ${speed.value} linear infinite;
-            """.trimIndent()
+                                @keyframes spinner {
+                                  to {transform: rotate(360deg);}
+                                }
+                                animation: spinner ${speed.value} linear infinite;
+                            """.trimIndent()
                         )
                         styling(this as BoxParams)
                     }, baseClass, id, prefix) {
-                        def(icon.value!!.invoke(Theme().icons))
+                        def(this@SpinnerComponent.icon.value!!.invoke(Theme().icons))
                     }
                     events.value.invoke(this)
                 }
