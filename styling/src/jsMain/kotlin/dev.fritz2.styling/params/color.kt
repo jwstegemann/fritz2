@@ -106,7 +106,7 @@ interface Color : StyleParams {
      * ```
      * color(
      *     sm = { primary.base }
-     *     lg = { dark }
+     *     lg = { gray900 }
      * )
      * ```
      *

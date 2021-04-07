@@ -78,7 +78,7 @@ internal const val borderBottomLeftRadiusKey = "border-bottom-left-radius: "
  * border { /* it == BorderContext.() -> Unit */
  *     width { thin }
  *     style { dashed }
- *     color { dark }
+ *     color { gray900 }
  * }
  * ```
  *
@@ -92,7 +92,7 @@ internal const val borderBottomLeftRadiusKey = "border-bottom-left-radius: "
  *     top {  it == /* BorderContext.() -> Unit */
  *         width { thin }
  *         style { dashed }
- *         color { dark }
+ *         color { gray900 }
  *     },
  *     bottom {
  *         // some properties
@@ -158,7 +158,7 @@ class BorderContext(
      * example call:
      * ```
      * border {
-     *     color { dark }
+     *     color { gray900 }
      *     // color { "lime" }
      *     // color { rgba(255, 0, 0, 100 }
      * }
