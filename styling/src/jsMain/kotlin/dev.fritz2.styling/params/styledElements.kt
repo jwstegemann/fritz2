@@ -1,16 +1,23 @@
 package dev.fritz2.styling.params
 
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.TagContext
 import dev.fritz2.styling.StyleClass
 
 
 /**
- * Typealias for the common function signature of [RenderContext. methods.
+ * Typealias for the common function signature of [RenderContext] methods.
  * It is used for defining a generic extension method for styling basic HTML elements.
  *
  * @see ``BasicComponent.styled``
  */
 typealias BasicComponent<E> = (String?, String?, E.() -> Unit) -> E
+
+/**
+ * Typealias for the common function signature of adding [BoxParams] context to [RenderContext].
+ * It is used for defining a generic extension method for styling basic HTML elements.
+ */
+typealias StyledComponent<E> = RenderContext.(style: BoxParams.() -> Unit, block: E.() -> Unit) -> E
 
 /**
  * Extension method that enables the usage of fritz2's powerful styling DSL for basic HTML elements.
@@ -44,7 +51,7 @@ typealias BasicComponent<E> = (String?, String?, E.() -> Unit) -> E
  *     prefix = "another-style",
  * ) {/* styling parameter */
  *     border {
- *         color { dark }
+ *         color { gray900 }
  *         style { solid }
  *         width { "5px" }
  *     }
@@ -70,6 +77,50 @@ fun <E> BasicComponent<E>.styled(
     return { init ->
         this@styled((baseClass + additionalClass).name, id, init)
     }
+}
+
+/**
+ * Wrapper method that enables the usage of fritz2's powerful styling DSL for basic HTML elements.
+ * This method is used for *unstyled* HTML elements.
+ *
+ *
+ * Example
+ * ```
+ * styled(::p)({ color { "red" } }) { +"I will be rendered in red" }
+ * ```
+ *
+ * Of course you can provide all the other parameters too:
+ * ```
+ * styled(
+ *     ::div,
+ *     baseClass = StyleClass("my-style"),
+ *     id = "main-content",
+ *     prefix = "another-style",
+ * ) ({/* styling parameter */
+ *     border {
+ *         color { gray900 }
+ *         style { solid }
+ *         width { "5px" }
+ *     }
+ *     margin { huge }
+ * }) { /* content parameter of ``RenderContext.div``-method */
+ *     h1 { +"Some heading" }
+ *     p { +"Some content" }
+ * }
+ * ```
+ *
+ * @param component [BasicComponent] to style
+ * @param baseClass optional CSS class that should be applied to the element
+ * @param id the ID of the element
+ * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ */
+fun <E> styled(
+    component: BasicComponent<E>,
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+): StyledComponent<E> = { style, block ->
+    (component.styled(baseClass, id, prefix, style))(block)
 }
 
 /**
@@ -102,7 +153,7 @@ fun <E> BasicComponent<E>.styled(
  *     //     |
  *     //     +- use *this* ``styled`` extension method
  *         border {
- *             color { dark }
+ *             color { gray900 }
  *             style { solid }
  *             width { thin }
  *         }
@@ -147,6 +198,77 @@ fun <E> BasicComponent<E>.styled(
     return { init ->
         this@styled((baseClass + additionalClass).name, id, init)
     }
+}
+
+/**
+ * Extension method that enables the usage of fritz2's powerful styling DSL for basic HTML elements.
+ * This method is used for HTML elements that should apply an additional dynamic styling provided as
+ * external parameter. This is needed and extremely useful for implementing _components_!
+ *
+ * A component should behave in a similar way as a basic HTML element. So like the basic ``BasicComponent.styled``
+ * version you should be able to call a component like this:
+ * ```
+ * myComponent({ /* styling */}) { /* content and events */}
+ * ```
+ * In order to provide this syntax, the CSS DSl expression must be passed into the component.
+ * If the component consists of an HTML element (at least at the top level), the here provided variant of
+ * a ``styled`` extension method is needed. With this function you can pass dynamic CSS into a basic HTML element:
+ * ```
+ * fun RenderContext.myComponent(
+ *    // provide a styling DSL expression as parameter
+ *    styling: BasicParams.() -> Unit = {},
+ *     // just offer the "basic params" in order to simply pass them by
+ *     baseClass: StyleClass? = null,
+ *     id: String? = null,
+ *     prefix: String = "my-red-link",
+ *     // offer some extension method to setup the content or events of the inner HTML element
+ *     init: Div.() -> Unit
+ * ): Div =
+ *     styled(::div, styling, baseClass, id, prefix) ({
+ *     //     ^^^^^^ ^^^^^^^
+ *     //     |      pass in a dynamic styling expression! (key difference to the basic ``styled`` variant!)
+ *     //     |
+ *     //     +- use *this* ``styled`` extension method
+ *         border {
+ *             color { gray900 }
+ *             style { solid }
+ *             width { thin }
+ *         }
+ *    })(init)
+ * ```
+ * This way we can use the component like this:
+ * ```
+ * myComponent({/* we can provide a styling - analog to the styling of a basic HTML element! */
+ *     border {
+ *         color { "purple" } // override the component's default
+ *     }
+ *     // and add some "ad hoc" styling
+ *     background {
+ *         color { "snow" }
+ *     }
+ * }) {
+ *     h1 { +"My important content" }
+ *     p { +"Some really important stuff..." }
+ * }
+ * ```
+ * Pay attention to the *consistent* syntactic structure of a component compared to a styled basic HTML element
+ * in fritz2! This is the core intention of our design choice, how to style elements!
+ *
+ * @param component [BasicComponent] to style
+ * @param parentStyling a lambda expression for declaring the styling as fritz2's styling DSL; best passed into from
+ *                      an outer source
+ * @param baseClass optional CSS class that should be applied to the element
+ * @param id the ID of the element
+ * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ */
+fun <E> styled(
+    component: BasicComponent<E>,
+    parentStyling: BoxParams.() -> Unit = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+): StyledComponent<E> = { style, block ->
+    (component.styled(parentStyling, baseClass, id, prefix, style))(block)
 }
 
 
