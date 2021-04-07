@@ -3,6 +3,7 @@ package dev.fritz2.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.DomListener
+import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.WithEvents
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
@@ -170,6 +171,7 @@ class NullableDynamicComponentProperty<T>(var values: Flow<T?>) {
  * }
  * ```
  */
+@HtmlTagMarker
 interface Component<T> {
 
     /**
