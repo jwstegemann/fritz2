@@ -24,13 +24,6 @@ import org.w3c.dom.*
 import org.w3c.dom.events.MouseEvent
 
 /**
- * A marker to separate the layers of calls in the type-safe-builder pattern.
- */
-@DslMarker
-annotation class ComponentMarker
-
-
-/**
  * Generic container for modeling a property for a component class.
  * Use it like this:
  * ```
