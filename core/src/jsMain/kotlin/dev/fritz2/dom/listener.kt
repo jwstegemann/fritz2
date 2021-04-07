@@ -1,7 +1,6 @@
 package dev.fritz2.dom
 
 import dev.fritz2.dom.html.Key
-import dev.fritz2.dom.html.Keys
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
@@ -65,7 +64,7 @@ fun DomListener<InputEvent, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
  */
 fun DomListener<KeyboardEvent, HTMLInputElement>.enter(): Flow<String> =
     events.mapNotNull {
-        if(it.keyCode == Keys.Enter.code) it.target.unsafeCast<HTMLInputElement>().value
+        if(Key(it) == Key.Enter) it.target.unsafeCast<HTMLInputElement>().value
         else null
     }
 
@@ -74,7 +73,7 @@ fun DomListener<KeyboardEvent, HTMLInputElement>.enter(): Flow<String> =
  */
 fun DomListener<KeyboardEvent, HTMLInputElement>.enterAsNumber(): Flow<Double> =
     events.mapNotNull {
-        if(it.keyCode == Keys.Enter.code) it.target.unsafeCast<HTMLInputElement>().valueAsNumber
+        if(Key(it) == Key.Enter) it.target.unsafeCast<HTMLInputElement>().valueAsNumber
         else null
     }
 
@@ -95,7 +94,7 @@ fun DomListener<Event, HTMLTextAreaElement>.values(): Flow<String> =
  */
 fun DomListener<KeyboardEvent, HTMLTextAreaElement>.enter(): Flow<String> =
     events.mapNotNull {
-        if(it.keyCode == Keys.Enter.code) it.target.unsafeCast<HTMLTextAreaElement>().value
+        if(Key(it) == Key.Enter) it.target.unsafeCast<HTMLTextAreaElement>().value
         else null
     }
 
@@ -138,4 +137,4 @@ fun DomListener<Event, HTMLSelectElement>.selectedText(): Flow<String> =
 /**
  * Gives you the pressed key as [Key] from a [KeyboardEvent].
  */
-fun <X : Element> DomListener<KeyboardEvent, X>.key(): Flow<Key> = events.map { Key.from(it) }
+fun <X : Element> DomListener<KeyboardEvent, X>.key(): Flow<Key> = events.map { Key(it) }

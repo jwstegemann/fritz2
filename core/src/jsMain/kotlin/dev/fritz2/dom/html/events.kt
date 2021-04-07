@@ -256,81 +256,113 @@ object Events {
 }
 
 /**
- * [Key] represents a key press e.g. for keypress events
+ * [Key] represents a key from [KeyboardEvent]
+ *
+ * More info [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values)
  */
-data class Key(
-    val code: Int,
-    val name: String,
-    val ctrl: Boolean,
-    val alt: Boolean,
-    val shift: Boolean,
-    val meta: Boolean
+class Key(
+    val code: String,
+    val key: String,
+    val ctrl: Boolean = false,
+    val alt: Boolean = false,
+    val shift: Boolean = false,
+    val meta: Boolean = false
 ) {
-    companion object {
-        fun from(e: KeyboardEvent) = Key(e.keyCode, e.key, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey)
+    constructor(key: String) : this(key, key)
+    constructor(e: KeyboardEvent) : this(e.code, e.key, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey)
+
+    override fun equals(other: Any?): Boolean =
+        if (other is Key) key == other.key else super.equals(other)
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + code.hashCode()
+        result = 31 * result + key.hashCode()
+        result = 31 * result + ctrl.hashCode()
+        result = 31 * result + alt.hashCode()
+        result = 31 * result + shift.hashCode()
+        result = 31 * result + meta.hashCode()
+        return result
     }
 
-    fun isKey(keys: Keys): Boolean = code == keys.code
-}
+    override fun toString() = key
 
-/**
- * [Keys] contains most of the javascript related special key codes
- */
-enum class Keys(val code: Int) {
-    Backspace(8),
-    Tab(9),
-    Enter(13),
-    Shift(16),
-    Ctrl(17),
-    Alt(18),
-    Pause(19),
-    CapsLock(20),
-    Escape(27),
-    Space(32),
-    Pageup(33),
-    Pagedown(34),
-    End(35),
-    Home(36),
-    ArrowLeft(37),
-    ArrowUp(38),
-    ArrowRight(39),
-    ArrowDown(40),
-    Insert(45),
-    Delete(46),
-    ContextMenu(93),
-    Numpad0(96),
-    Numpad1(97),
-    Numpad2(98),
-    Numpad3(99),
-    Numpad4(100),
-    Numpad5(101),
-    Numpad6(102),
-    Numpad7(103),
-    Numpad8(104),
-    Numpad9(105),
-    NumpadMultiply(106),
-    NumpadAdd(107),
-    NumpadSubtract(109),
-    NumpadDecimal(110),
-    NumpadDivide(111),
-    F1(112),
-    F2(113),
-    F3(114),
-    F4(115),
-    F5(116),
-    F6(117),
-    F7(118),
-    F8(119),
-    F9(120),
-    F10(121),
-    F11(122),
-    F12(123),
-    NumLock(144),
-    ScrollLock(145),
-    Semicolon(186),
-    Equalsign(187),
-    Comma(188),
-    Dash(189),
-    Period(190),
-    Backquote(220)
+    companion object {
+        val Unidentified = Key("Unidentified")
+        val Alt = Key("Alt")
+        val AltGraph = Key("AltGraph")
+        val CapsLock = Key("CapsLock")
+        val Control = Key("Control")
+        val Fn = Key("Fn")
+        val FnLock = Key("FnLock")
+        val Hyper = Key("Hyper")
+        val Meta = Key("Meta")
+        val NumLock = Key("NumLock")
+        val ScrollLock = Key("ScrollLock")
+        val Shift = Key("Shift")
+        val Super = Key("Super")
+        val Symbol = Key("Symbol")
+        val SymbolLock = Key("SymbolLock")
+        val Enter = Key("Enter")
+        val Tab = Key("Tab")
+        val Space = Key(" ")
+        val ArrowDown = Key("ArrowDown")
+        val ArrowLeft = Key("ArrowLeft")
+        val ArrowRight = Key("ArrowRight")
+        val ArrowUp = Key("ArrowUp")
+        val End = Key("End")
+        val Home = Key("Home")
+        val PageDown = Key("PageDown")
+        val PageUp = Key("PageUp")
+        val Backspace = Key("Backspace")
+        val Clear = Key("Clear")
+        val Copy = Key("Copy")
+        val CrSel = Key("CrSel")
+        val Cut = Key("Cut")
+        val Delete = Key("Delete")
+        val EraseEof = Key("EraseEof")
+        val ExSel = Key("ExSel")
+        val Insert = Key("Insert")
+        val Paste = Key("Paste")
+        val Redo = Key("Redo")
+        val Undo = Key("Undo")
+        val Accept = Key("Accept")
+        val Again = Key("Again")
+        val Attn = Key("Attn")
+        val Cancel = Key("Cancel")
+        val ContextMenu = Key("ContextMenu")
+        val Escape = Key("Escape")
+        val Execute = Key("Execute")
+        val Find = Key("Find")
+        val Help = Key("Help")
+        val Pause = Key("Pause")
+        val Play = Key("Play")
+        val Props = Key("Props")
+        val Select = Key("Select")
+        val ZoomIn = Key("ZoomIn")
+        val ZoomOut = Key("ZoomOut")
+        val F1 = Key("F1")
+        val F2 = Key("F2")
+        val F3 = Key("F3")
+        val F4 = Key("F4")
+        val F5 = Key("F5")
+        val F6 = Key("F6")
+        val F7 = Key("F7")
+        val F8 = Key("F8")
+        val F9 = Key("F9")
+        val F10 = Key("F10")
+        val F11 = Key("F11")
+        val F12 = Key("F12")
+        val Num0 = Key("0")
+        val Num1 = Key("1")
+        val Num2 = Key("2")
+        val Num3 = Key("3")
+        val Num4 = Key("4")
+        val Num5 = Key("5")
+        val Num6 = Key("6")
+        val Num7 = Key("7")
+        val Num8 = Key("8")
+        val Num9 = Key("9")
+        val Separator = Key("Separator")
+    }
 }

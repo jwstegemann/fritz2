@@ -2,7 +2,6 @@ package dev.fritz2.dom
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.Key
-import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
@@ -16,7 +15,6 @@ import org.w3c.dom.HTMLParagraphElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.KeyboardEventInit
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -182,9 +180,9 @@ class ListenerTest {
                     key.meta -> pressed = "meta+"
                     key.shift -> pressed = "shift+"
                 }
-                pressed += when (key.code) {
-                    Keys.ArrowUp.code -> "up"
-                    Keys.ArrowDown.code -> "down"
+                pressed += when (key) {
+                    Key.ArrowUp -> "up"
+                    Key.ArrowDown -> "down"
                     else -> "unknown"
                 }
                 pressed
@@ -212,18 +210,18 @@ class ListenerTest {
         assertEquals(handlerCalls, store.countHandlerCalls, "wrong number of handler calls")
         assertEquals("", result.textContent, "wrong dom content of result-node")
 
-        val keyboardEvents = listOf(Keys.ArrowUp, Keys.ArrowDown)
+        val keyboardEvents = listOf(Key.ArrowUp, Key.ArrowDown)
             .flatMap {
                 listOf(
-                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, ctrlKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, altKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, shiftKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, metaKey = true))
+                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, ctrlKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, altKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, shiftKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, metaKey = true))
                 )
             }
 
 
-        for (e in keyboardEvents) {
+        for (e: KeyboardEvent in keyboardEvents) {
             input.dispatchEvent(e)
             delay(100)
             assertEquals(++handlerCalls, store.countHandlerCalls, "wrong number of handler calls")
@@ -234,21 +232,18 @@ class ListenerTest {
                 e.metaKey -> expected = "meta+"
                 e.shiftKey -> expected = "shift+"
             }
-            expected += when (e.keyCode) {
-                Keys.ArrowUp.code -> "up"
-                Keys.ArrowDown.code -> "down"
+            expected += when (Key(e)) {
+                Key.ArrowUp -> "up"
+                Key.ArrowDown -> "down"
                 else -> "unknown"
             }
             assertEquals(expected, result.textContent, "wrong dom content of result-node")
         }
     }
 
-    // FIXME: Activate if Issue #312 is fixed.
-    //  https://github.com/jwstegemann/fritz2/issues/312
     // TODO: Evaluate parameterized tests in order to test also keydowns and keypresss
     //  This should also be transferred to other tests as well to eliminate boilerplate and control structures!
     @Test
-    @Ignore
     fun testEnterForInput() = runTest {
         // TODO: Evaluate pre test execution by framework
         initDocument()
@@ -278,13 +273,10 @@ class ListenerTest {
         assertEquals("start", resultNode.textContent, "wrong dom content of result-node")
 
         input.value = "some other content"
-        // FIXME: Should work, if issue #312 is implemented! ``Keys.Enter.Code`` seems to be plausible for ``code`` param
-        val event = KeyboardEvent("keyup", KeyboardEventInit(Keys.Enter.name, code = Keys.Enter.name))
+        val event = KeyboardEvent("keyup", KeyboardEventInit(Key.Enter.key, code = Key.Enter.key))
         input.dispatchEvent(event)
         delay(200)
 
-        // TODO: Check all other tests, if testing against ``input.value`` is probably false!
-        //   (It asserted to true, no matter I did not handled anything nor dispatched anything!)
         assertEquals("some other content", resultNode.textContent, "wrong dom content of result-node")
     }
 }
