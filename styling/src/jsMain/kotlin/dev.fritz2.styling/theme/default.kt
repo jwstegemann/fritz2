@@ -359,6 +359,10 @@ open class DefaultTheme : Theme {
             margin-inline-end: 0px;
             padding-inline-start: 1.5em;
         }
+        
+        :-moz-focusring {
+            outline: none
+        }
         """.trimIndent()
     }
 
