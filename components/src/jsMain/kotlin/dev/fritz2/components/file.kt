@@ -51,7 +51,6 @@ typealias FileReadingStrategy = (jsFile) -> Flow<File>
  * }
  * ```
  */
-@ComponentMarker
 abstract class FileSelectionBaseComponent {
 
     companion object {
@@ -153,15 +152,15 @@ open class SingleFileSelectionComponent : FileSelectionBaseComponent(), Componen
             (::div.styled(styling, baseClass, id, prefix) {}) {
                 val inputElement = input(inputStyle.name) {
                     type("file")
-                    accept?.invoke(this)
+                    this@SingleFileSelectionComponent.accept?.invoke(this)
                     file = changes.events.mapNotNull {
                         domNode.files?.item(0)
                     }.flatMapLatest {
                         domNode.value = "" // otherwise same file can't get loaded twice
-                        fileReadingStrategy.value(this@SingleFileSelectionComponent)(it)
+                        this@SingleFileSelectionComponent.fileReadingStrategy.value(this@SingleFileSelectionComponent)(it)
                     }
                 }.domNode
-                context(this, inputElement)
+                this@SingleFileSelectionComponent.context(this, inputElement)
             }
         }
         return file!!
@@ -187,7 +186,7 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(), Component
                 val inputElement = input(inputStyle.name) {
                     type("file")
                     multiple(true)
-                    accept?.invoke(this)
+                    this@MultiFileSelectionComponent.accept?.invoke(this)
                     files = changes.events.mapNotNull {
                         val list = domNode.files
                         if (list != null) {
@@ -195,7 +194,7 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(), Component
                                 for (i in 0..list.length) {
                                     val file = list.item(i)
                                     if (file != null) add(
-                                        fileReadingStrategy.value(this@MultiFileSelectionComponent)(
+                                        this@MultiFileSelectionComponent.fileReadingStrategy.value(this@MultiFileSelectionComponent)(
                                             file
                                         )
                                     )
@@ -207,7 +206,7 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(), Component
                         combine(files) { it.toList() }
                     }
                 }.domNode
-                context(this, inputElement)
+                this@MultiFileSelectionComponent.context(this, inputElement)
             }
         }
         return files!!

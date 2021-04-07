@@ -83,13 +83,13 @@ open class IconComponent : Component<Unit>, EventProperties<SVGElement> by Event
             (::svg.styled(baseClass + staticCss, id, prefix) {
                 styling()
             }) {
-                def.value?.let {
+                this@IconComponent.def.value?.let {
                     domNode.setAttributeNS(null, "viewBox", it.viewBox)
                     domNode.setAttributeNS(null, "focusable", "false")
                     domNode.setAttributeNS(null, "role", "presentation")
                     domNode.innerHTML = it.svg
                 }
-                events.value.invoke(this)
+                this@IconComponent.events.value.invoke(this)
             }
         }
     }

@@ -54,7 +54,6 @@ import org.w3c.dom.HTMLInputElement
  * }
  * ```
  */
-@ComponentMarker
 open class CheckboxComponent(protected val store: Store<Boolean>?) :
     Component<Label>,
     EventProperties<HTMLInputElement> by EventMixin(),
@@ -117,7 +116,7 @@ open class CheckboxComponent(protected val store: Store<Boolean>?) :
             id = id,
             prefix = prefix
         ) {
-            size.value.invoke(Theme().checkbox.sizes)()
+            this@CheckboxComponent.size.value.invoke(Theme().checkbox.sizes)()
         }) {
             val inputId = id?.let { "$it-input" }
             inputId?.let {
@@ -130,17 +129,17 @@ open class CheckboxComponent(protected val store: Store<Boolean>?) :
             ) {
                 Theme().checkbox.input()
                 children("&[checked] + div") {
-                    checkedStyle.value()
+                    this@CheckboxComponent.checkedStyle.value()
                 }
             }) {
-                disabled(disabled.values)
-                readOnly(readonly.values)
+                disabled(this@CheckboxComponent.disabled.values)
+                readOnly(this@CheckboxComponent.readonly.values)
                 type("checkbox")
-                checked(store?.data ?: checked.values)
-                className(severityClassOf(Theme().checkbox.severity).name)
-                store?.let { changes.states() handledBy it.update }
-                events.value.invoke(this)
-                element.value.invoke(this)
+                checked(this@CheckboxComponent.store?.data ?: this@CheckboxComponent.checked.values)
+                className(this@CheckboxComponent.severityClassOf(Theme().checkbox.severity).name)
+                this@CheckboxComponent.store?.let { changes.states() handledBy it.update }
+                this@CheckboxComponent.events.value.invoke(this)
+                this@CheckboxComponent.element.value.invoke(this)
             }
 
             (::div.styled() {
@@ -150,13 +149,13 @@ open class CheckboxComponent(protected val store: Store<Boolean>?) :
                 icon({
                     Theme().checkbox.icon()
                 }) {
-                    def(icon.value(Theme().icons))
+                    def(this@CheckboxComponent.icon.value(Theme().icons))
                 }
             }
 
-            labelField?.let {
+            this@CheckboxComponent.labelField?.let {
                 (::div.styled {
-                    labelStyle.value()
+                    this@CheckboxComponent.labelStyle.value()
                 }){
                     it(this)
                 }

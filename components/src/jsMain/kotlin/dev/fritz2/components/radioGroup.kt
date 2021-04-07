@@ -65,7 +65,6 @@ import kotlinx.coroutines.flow.map
  * }
  * ```
  */
-@ComponentMarker
 open class RadioGroupComponent<T>(protected val items: List<T>, protected val store: Store<T>? = null) :
     Component<Unit>,
     InputFormProperties by InputFormMixin(),
@@ -113,19 +112,19 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val st
 
         context.apply {
             (::div.styled(styling, baseClass, id, prefix) {
-                direction.value(RadioGroupLayouts)()
+                this@RadioGroupComponent.direction.value(RadioGroupLayouts)()
             }) {
-                (store?.data ?: selectedItem.values)
+                (this@RadioGroupComponent.store?.data ?: this@RadioGroupComponent.selectedItem.values)
                     .map { selectedItem ->
-                        items.indexOf(selectedItem).let { if (it == -1) null else it }
+                        this@RadioGroupComponent.items.indexOf(selectedItem).let { if (it == -1) null else it }
                     } handledBy internalStore.update
 
-                items.withIndex().forEach { (index, item) ->
+                this@RadioGroupComponent.items.withIndex().forEach { (index, item) ->
                     val checkedFlow = internalStore.data.map { it == index }.distinctUntilChanged()
-                    radio(styling = itemStyle.value, id = grpId + "-grp-item-" + uniqueId()) {
+                    radio(styling = this@RadioGroupComponent.itemStyle.value, id = grpId + "-grp-item-" + uniqueId()) {
                         this.size { this@RadioGroupComponent.size.value.invoke(Theme().radio.sizes) }
-                        labelStyle(labelStyle.value)
-                        selectedStyle(selectedStyle.value)
+                        labelStyle(this@RadioGroupComponent.labelStyle.value)
+                        selectedStyle(this@RadioGroupComponent.selectedStyle.value)
                         label(this@RadioGroupComponent.label.value(item))
                         selected(checkedFlow)
                         disabled(this@RadioGroupComponent.disabled.values)
@@ -136,9 +135,9 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val st
                     }
                 }
             }
-            EventsContext(internalStore.toggle.map { items[it] }).apply {
-                events.value(this)
-                store?.let { selected handledBy it.update }
+            EventsContext(internalStore.toggle.map { this@RadioGroupComponent.items[it] }).apply {
+                this@RadioGroupComponent.events.value(this)
+                this@RadioGroupComponent.store?.let { selected handledBy it.update }
             }
         }
     }

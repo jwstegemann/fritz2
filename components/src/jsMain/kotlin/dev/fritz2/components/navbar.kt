@@ -1,14 +1,15 @@
 package dev.fritz2.components
 
-
+import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 
-@ComponentMarker
-open class NavbarComponent {
+@HtmlTagMarker
+open class NavbarComponent: Component<Unit> {
     companion object {
 
         val staticHeaderCss = staticStyle(
@@ -57,6 +58,16 @@ open class NavbarComponent {
 
     val brand = ComponentProperty<RenderContext.() -> Unit> { }
     val actions = ComponentProperty<RenderContext.() -> Unit> {}
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass,
+        id: String?,
+        prefix: String
+    ) {
+        TODO("Not yet implemented")
+    }
 }
 
 fun RenderContext.navBar(
