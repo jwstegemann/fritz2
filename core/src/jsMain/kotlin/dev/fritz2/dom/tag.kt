@@ -1,8 +1,8 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.*
-import dev.fritz2.dom.html.TagContext
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.TagContext
 import dev.fritz2.dom.html.render
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.elementLens
@@ -11,8 +11,24 @@ import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.*
-import org.w3c.dom.*
+import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.Node
 import org.w3c.dom.events.Event
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.buildList
+import kotlin.collections.emptyList
+import kotlin.collections.filter
+import kotlin.collections.joinToString
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.mutableMapOf
+import kotlin.collections.plus
+import kotlin.collections.reversed
+import kotlin.collections.set
+import kotlin.collections.toList
+import kotlin.collections.withIndex
 
 /**
  * Occurs when more then one root [Tag] is defined in a [render] context.
@@ -50,7 +66,7 @@ open class Tag<out E : Element>(
         if (id != null) element.id = id
         if (!baseClass.isNullOrBlank()) element.className = baseClass
     }.unsafeCast<E>()
-) : WithDomNode<E>, WithComment<E>, WithEvents<E>(), TagContext {
+) : WithDomNode<E>, WithComment<E>, EventContext<E>, TagContext {
 
     companion object {
         private inline fun registerMulti(
