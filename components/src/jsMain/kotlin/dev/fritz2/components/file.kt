@@ -157,7 +157,9 @@ open class SingleFileSelectionComponent : FileSelectionBaseComponent(), Componen
                         domNode.files?.item(0)
                     }.flatMapLatest {
                         domNode.value = "" // otherwise same file can't get loaded twice
-                        this@SingleFileSelectionComponent.fileReadingStrategy.value(this@SingleFileSelectionComponent)(it)
+                        this@SingleFileSelectionComponent.fileReadingStrategy.value(this@SingleFileSelectionComponent)(
+                            it
+                        )
                     }
                 }.domNode
                 this@SingleFileSelectionComponent.context(this, inputElement)

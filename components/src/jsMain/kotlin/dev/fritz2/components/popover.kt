@@ -53,8 +53,8 @@ open class PopoverComponent : Component<Unit>,
         placementStyle = value
     }
 
-    val closeOnBlur =  ComponentProperty(true)
-    val closeOnEscape =  ComponentProperty(true)
+    val closeOnBlur = ComponentProperty(true)
+    val closeOnEscape = ComponentProperty(true)
 
     val hasArrow = ComponentProperty(true)
     val arrowPlacement = ComponentProperty<PopoverArrowPlacements.() -> Style<BasicParams>> {
@@ -169,11 +169,18 @@ open class PopoverComponent : Component<Unit>,
                 }
                 clickStore.data.render {
                     if (it) {
-                        this@PopoverComponent.renderPopover(styling, baseClass, popoverId, prefix, this, clickStore.toggle)
+                        this@PopoverComponent.renderPopover(
+                            styling,
+                            baseClass,
+                            popoverId,
+                            prefix,
+                            this,
+                            clickStore.toggle
+                        )
                     }
                 }
                 clickStore.data.render {
-                    if( it ) {
+                    if (it) {
                         try {
                             document.getElementById(popoverId).asDynamic().focus()
                         } catch (e: Exception) {

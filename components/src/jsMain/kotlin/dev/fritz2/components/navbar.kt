@@ -9,7 +9,7 @@ import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 
 @HtmlTagMarker
-open class NavbarComponent: Component<Unit> {
+open class NavbarComponent : Component<Unit> {
     companion object {
 
         val staticHeaderCss = staticStyle(

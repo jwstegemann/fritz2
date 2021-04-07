@@ -121,11 +121,15 @@ open class CheckboxGroupComponent<T>(
             (::div.styled(styling, baseClass, id, prefix) {
                 this@CheckboxGroupComponent.direction.value(CheckboxGroupLayouts)()
             }) {
-                (this@CheckboxGroupComponent.store?.data ?: this@CheckboxGroupComponent.selectedItems.values) handledBy multiSelectionStore.update
+                (this@CheckboxGroupComponent.store?.data
+                    ?: this@CheckboxGroupComponent.selectedItems.values) handledBy multiSelectionStore.update
 
                 this@CheckboxGroupComponent.items.forEach { item ->
                     val checkedFlow = multiSelectionStore.data.map { it.contains(item) }.distinctUntilChanged()
-                    checkbox(styling = this@CheckboxGroupComponent.itemStyle.value, id = grpId + "-grp-item-" + uniqueId()) {
+                    checkbox(
+                        styling = this@CheckboxGroupComponent.itemStyle.value,
+                        id = grpId + "-grp-item-" + uniqueId()
+                    ) {
                         size { this@CheckboxGroupComponent.size.value.invoke(Theme().checkbox.sizes) }
                         icon { this@CheckboxGroupComponent.icon.value(Theme().icons) }
                         labelStyle(this@CheckboxGroupComponent.labelStyle.value)

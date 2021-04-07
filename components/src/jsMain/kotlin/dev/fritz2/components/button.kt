@@ -153,15 +153,19 @@ open class PushButtonComponent :
     private var text: (RenderContext.(hide: Boolean) -> Unit)? = null
 
     fun text(value: String) {
-        text = { hide -> span { +value
-                if(hide) className(hidden.name)
+        text = { hide ->
+            span {
+                +value
+                if (hide) className(hidden.name)
             }
         }
     }
 
     fun text(value: Flow<String>) {
-        text = { hide -> span { value.asText()
-                if(hide) className(hidden.name)
+        text = { hide ->
+            span {
+                value.asText()
+                if (hide) className(hidden.name)
             }
         }
     }
@@ -223,17 +227,32 @@ open class PushButtonComponent :
             }) {
                 disabled(this@PushButtonComponent.disabled.values)
                 if (this@PushButtonComponent.text == null) {
-                    this@PushButtonComponent.renderIcon(this,
+                    this@PushButtonComponent.renderIcon(
+                        this,
                         this@PushButtonComponent.centerIconStyle,
                         this@PushButtonComponent.centerSpinnerStyle
                     )
                 } else {
-                    if (this@PushButtonComponent.icon != null && this@PushButtonComponent.iconPlacement.value(iconPlacementContext) == IconPlacement.Left) {
-                        this@PushButtonComponent.renderIcon(this, this@PushButtonComponent.leftIconStyle, this@PushButtonComponent.leftSpinnerStyle)
+                    if (this@PushButtonComponent.icon != null && this@PushButtonComponent.iconPlacement.value(
+                            iconPlacementContext
+                        ) == IconPlacement.Left
+                    ) {
+                        this@PushButtonComponent.renderIcon(
+                            this,
+                            this@PushButtonComponent.leftIconStyle,
+                            this@PushButtonComponent.leftSpinnerStyle
+                        )
                     }
                     this@PushButtonComponent.renderText(this)
-                    if (this@PushButtonComponent.icon != null && this@PushButtonComponent.iconPlacement.value(iconPlacementContext) == IconPlacement.Right) {
-                        this@PushButtonComponent.renderIcon(this, this@PushButtonComponent.rightIconStyle, this@PushButtonComponent.rightSpinnerStyle)
+                    if (this@PushButtonComponent.icon != null && this@PushButtonComponent.iconPlacement.value(
+                            iconPlacementContext
+                        ) == IconPlacement.Right
+                    ) {
+                        this@PushButtonComponent.renderIcon(
+                            this,
+                            this@PushButtonComponent.rightIconStyle,
+                            this@PushButtonComponent.rightSpinnerStyle
+                        )
                     }
                 }
                 this@PushButtonComponent.events.value.invoke(this)
