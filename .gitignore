@@ -7,5 +7,5 @@ api/navigation.html
 **/build/
 **/src/generated/
 
-macOS-specific:
+# macOS-specific:
 .DS_Store
