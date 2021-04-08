@@ -2464,6 +2464,10 @@ open class DefaultTheme : Theme {
 
     override val textArea = object : TextAreaStyles {
         override val resize = object : TextAreaResize {
+            override val both: Style<BasicParams> = {
+                css("resize:both")
+            }
+
             override val none: Style<BasicParams> = {
                 css("resize:none")
             }
