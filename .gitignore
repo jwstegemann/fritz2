@@ -6,3 +6,6 @@ api/-modules.html
 api/navigation.html
 **/build/
 **/src/generated/
+
+# macOS-specific:
+.DS_Store

@@ -86,7 +86,7 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
 
     val value = DynamicComponentProperty(flowOf(""))
     val placeholder = DynamicComponentProperty(flowOf(""))
-    val resizeBehavior = ComponentProperty<TextAreaResize.() -> Style<BasicParams>> { Theme().textArea.resize.vertical }
+    val resizeBehavior = ComponentProperty<TextAreaResize.() -> Style<BasicParams>> { Theme().textArea.resize.both }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().textArea.sizes.normal }
 
     override fun render(

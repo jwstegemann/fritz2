@@ -19,6 +19,8 @@ internal object Styling {
         private val styleSheet: CSSStyleSheet = create()
         private var counter: Int = 0
 
+        internal var showError: Boolean = true
+
         val middleware = middleware(arrayOf(::stringify, addRuleMiddleware()))
 
         private fun addRuleMiddleware(): (dynamic) -> dynamic = { value ->
@@ -28,7 +30,7 @@ internal object Styling {
                         if (this != null && this.isNotBlank()) styleSheet.insertRule(this, counter++)
                     }
             } catch (e: Throwable) {
-                console.error("unable to insert rule in stylesheet: ${e.message}", e)
+                if(showError) console.error("unable to insert rule in stylesheet: ${e.message}", e)
                 counter--
             }
             undefined
@@ -74,7 +76,9 @@ internal object Styling {
         dynamicSheet.remove()
         rules.clear()
         dynamicSheet = Sheet(dynamicStyleSheetId)
+        dynamicSheet.showError = false
         addDynamicCss("reset", css)
+        dynamicSheet.showError = true
     }
 
     fun addStaticCss(css: String) {
