@@ -14,21 +14,7 @@ import kotlinx.coroutines.flow.*
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
-import org.w3c.dom.events.Event
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.buildList
-import kotlin.collections.emptyList
-import kotlin.collections.filter
-import kotlin.collections.joinToString
-import kotlin.collections.listOf
-import kotlin.collections.map
-import kotlin.collections.mutableMapOf
-import kotlin.collections.plus
-import kotlin.collections.reversed
 import kotlin.collections.set
-import kotlin.collections.toList
-import kotlin.collections.withIndex
 
 /**
  * Occurs when more then one root [Tag] is defined in a [render] context.
@@ -377,15 +363,6 @@ open class Tag<out E : Element>(
                 else -> emptyFlow()
             }
         }
-
-    /**
-     * Connects [Event]s to a [Handler].
-     *
-     * @receiver [DomListener] which contains the [Event]
-     * @param handler that will handle the fired [Event]
-     */
-    infix fun <E : Event, X : Element> DomListener<E, X>.handledBy(handler: Handler<Unit>) =
-        handler.collect(this.events.map { }, job)
 
     /**
      * Sets an attribute.
