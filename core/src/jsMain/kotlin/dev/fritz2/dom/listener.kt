@@ -138,3 +138,8 @@ fun DomListener<Event, HTMLSelectElement>.selectedText(): Flow<String> =
  * Gives you the pressed key as [Key] from a [KeyboardEvent].
  */
 fun <X : Element> DomListener<KeyboardEvent, X>.key(): Flow<Key> = events.map { Key(it) }
+
+/**
+ * Gives you the pressed key as [Key] from a [KeyboardEvent].
+ */
+fun <X : Element> WindowListener<KeyboardEvent>.key(): Flow<Key> = events.map { Key(it) }
