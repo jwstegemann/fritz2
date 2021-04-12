@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.map
 /**
  * Class for configuring the appearance of a PopoverComponent.
  */
-@ComponentMarker
 open class PopoverComponent : Component<Unit>,
     CloseButtonProperty by CloseButtonMixin(
         "popover-close-button",
@@ -54,8 +53,8 @@ open class PopoverComponent : Component<Unit>,
         placementStyle = value
     }
 
-    val closeOnBlur =  ComponentProperty(true)
-    val closeOnEscape =  ComponentProperty(true)
+    val closeOnBlur = ComponentProperty(true)
+    val closeOnEscape = ComponentProperty(true)
 
     val hasArrow = ComponentProperty(true)
     val arrowPlacement = ComponentProperty<PopoverArrowPlacements.() -> Style<BasicParams>> {
@@ -153,7 +152,7 @@ open class PopoverComponent : Component<Unit>,
         val popoverId = id ?: "popover" + randomId()
         context.apply {
 
-            if (closeOnEscape.value) {
+            if (this@PopoverComponent.closeOnEscape.value) {
                 Window.keyups.map {
                     it.keyCode == Keys.Escape.code
                 } handledBy clickStore.close
@@ -166,15 +165,22 @@ open class PopoverComponent : Component<Unit>,
                 }) {
                     attr("data-popover-for", popoverId)
                     clicks.events.map { } handledBy clickStore.toggle
-                    toggle.value?.invoke(this)
+                    this@PopoverComponent.toggle.value?.invoke(this)
                 }
                 clickStore.data.render {
                     if (it) {
-                        renderPopover(styling, baseClass, popoverId, prefix, this, clickStore.toggle)
+                        this@PopoverComponent.renderPopover(
+                            styling,
+                            baseClass,
+                            popoverId,
+                            prefix,
+                            this,
+                            clickStore.toggle
+                        )
                     }
                 }
                 clickStore.data.render {
-                    if( it ) {
+                    if (it) {
                         try {
                             document.getElementById(popoverId).asDynamic().focus()
                         } catch (e: Exception) {
@@ -196,24 +202,24 @@ open class PopoverComponent : Component<Unit>,
         RenderContext.apply {
 
             (::section.styled(styling, baseClass, id, prefix) {
-                placementStyle.invoke(Theme().popover.placement)()
-                size.value.invoke(Theme().popover.size)()
+                this@PopoverComponent.placementStyle.invoke(Theme().popover.placement)()
+                this@PopoverComponent.size.value.invoke(Theme().popover.size)()
                 focus {
                     css("outline:none")
                 }
             }){
                 attr("tabindex", "-1")
-                if (hasArrow.value) {
-                    renderArrow(this)
+                if (this@PopoverComponent.hasArrow.value) {
+                    this@PopoverComponent.renderArrow(this)
                 }
-                if (hasCloseButton.value) {
-                    closeButtonRendering.value(this) handledBy closeHandler
+                if (this@PopoverComponent.hasCloseButton.value) {
+                    this@PopoverComponent.closeButtonRendering.value(this) handledBy closeHandler
                 }
-                header?.invoke(this)
-                content?.invoke(this)
-                footer?.invoke(this)
+                this@PopoverComponent.header?.invoke(this)
+                this@PopoverComponent.content?.invoke(this)
+                this@PopoverComponent.footer?.invoke(this)
 
-                if (closeOnBlur.value) {
+                if (this@PopoverComponent.closeOnBlur.value) {
                     blurs.events.debounce(200).map { } handledBy closeHandler
                 }
 
@@ -224,7 +230,7 @@ open class PopoverComponent : Component<Unit>,
     private fun renderArrow(RenderContext: RenderContext) {
         RenderContext.apply {
             (::div.styled(prefix = "popover-arrow") {
-                arrowPlacement.value.invoke(Theme().popover.arrowPlacement)()
+                this@PopoverComponent.arrowPlacement.value.invoke(Theme().popover.arrowPlacement)()
             }){}
         }
     }

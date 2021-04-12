@@ -54,7 +54,6 @@ import org.w3c.dom.HTMLInputElement
  * }
  * ```
  */
-@ComponentMarker
 open class RadioComponent(protected val store: Store<Boolean>? = null) :
     Component<Label>,
     EventProperties<HTMLInputElement> by EventMixin(),
@@ -140,7 +139,7 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
                 id = id,
                 prefix = prefix
             ) {
-                size.value.invoke(Theme().radio.sizes)()
+                this@RadioComponent.size.value.invoke(Theme().radio.sizes)()
             }) {
                 inputId?.let {
                     `for`(inputId)
@@ -152,19 +151,19 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
                 ) {
                     Theme().radio.input()
                     children("&[checked] + div") {
-                        selectedStyle.value()
+                        this@RadioComponent.selectedStyle.value()
                     }
                 }) {
-                    disabled(disabled.values)
-                    readOnly(readonly.values)
+                    disabled(this@RadioComponent.disabled.values)
+                    readOnly(this@RadioComponent.readonly.values)
                     type("radio")
                     name(inputName)
-                    checked(store?.data ?: selected.values)
+                    checked(this@RadioComponent.store?.data ?: this@RadioComponent.selected.values)
                     value("X")
-                    className(severityClassOf(Theme().radio.severity).name)
-                    store?.let { changes.states() handledBy it.update }
-                    events.value.invoke(this)
-                    element.value.invoke(this)
+                    className(this@RadioComponent.severityClassOf(Theme().radio.severity).name)
+                    this@RadioComponent.store?.let { changes.states() handledBy it.update }
+                    this@RadioComponent.events.value.invoke(this)
+                    this@RadioComponent.element.value.invoke(this)
                 }
 
                 (::div.styled() {
@@ -172,9 +171,9 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
                     styling()
                 }) { }
 
-                label?.let {
+                this@RadioComponent.label?.let {
                     (::div.styled() {
-                        labelStyle.value()
+                        this@RadioComponent.labelStyle.value()
                     }){
                         it(this)
                     }

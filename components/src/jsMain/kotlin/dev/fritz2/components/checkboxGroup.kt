@@ -13,7 +13,10 @@ import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 
 
 /**
@@ -116,17 +119,21 @@ open class CheckboxGroupComponent<T>(
 
         context.apply {
             (::div.styled(styling, baseClass, id, prefix) {
-                direction.value(CheckboxGroupLayouts)()
+                this@CheckboxGroupComponent.direction.value(CheckboxGroupLayouts)()
             }) {
-                (store?.data ?: selectedItems.values) handledBy multiSelectionStore.update
+                (this@CheckboxGroupComponent.store?.data
+                    ?: this@CheckboxGroupComponent.selectedItems.values) handledBy multiSelectionStore.update
 
-                items.forEach { item ->
+                this@CheckboxGroupComponent.items.forEach { item ->
                     val checkedFlow = multiSelectionStore.data.map { it.contains(item) }.distinctUntilChanged()
-                    checkbox(styling = itemStyle.value, id = grpId + "-grp-item-" + uniqueId()) {
+                    checkbox(
+                        styling = this@CheckboxGroupComponent.itemStyle.value,
+                        id = grpId + "-grp-item-" + uniqueId()
+                    ) {
                         size { this@CheckboxGroupComponent.size.value.invoke(Theme().checkbox.sizes) }
                         icon { this@CheckboxGroupComponent.icon.value(Theme().icons) }
-                        labelStyle(labelStyle.value)
-                        checkedStyle(checkedStyle.value)
+                        labelStyle(this@CheckboxGroupComponent.labelStyle.value)
+                        checkedStyle(this@CheckboxGroupComponent.checkedStyle.value)
                         label(this@CheckboxGroupComponent.label.value(item))
                         checked(checkedFlow)
                         disabled(this@CheckboxGroupComponent.disabled.values)
@@ -138,8 +145,8 @@ open class CheckboxGroupComponent<T>(
                 }
 
                 EventsContext(multiSelectionStore.toggle).apply {
-                    events.value(this)
-                    store?.let { selected handledBy it.update }
+                    this@CheckboxGroupComponent.events.value(this)
+                    this@CheckboxGroupComponent.store?.let { selected handledBy it.update }
                 }
             }
         }

@@ -29,7 +29,6 @@ import org.w3c.dom.HTMLInputElement
  *
  *  * For a detailed explanation and examples of usage have a look at the [inputField] function!
  */
-@ComponentMarker
 open class InputFieldComponent(protected val store: Store<String>?) :
     Component<Unit>,
     EventProperties<HTMLInputElement> by EventMixin(),
@@ -74,22 +73,22 @@ open class InputFieldComponent(protected val store: Store<String>?) :
     ) {
         context.apply {
             (::input.styled(styling, baseClass + staticCss, id, prefix) {
-                size.value.invoke(Theme().input.sizes)()
-                variant.value.invoke(Theme().input.variants)()
+                this@InputFieldComponent.size.value.invoke(Theme().input.sizes)()
+                this@InputFieldComponent.variant.value.invoke(Theme().input.variants)()
             }) {
-                disabled(disabled.values)
-                readOnly(readonly.values)
-                placeholder(placeholder.values)
-                value(value.values)
-                type(type.values)
-                step(step.values)
-                className(severityClassOf(Theme().input.severity).name)
-                store?.let {
+                disabled(this@InputFieldComponent.disabled.values)
+                readOnly(this@InputFieldComponent.readonly.values)
+                placeholder(this@InputFieldComponent.placeholder.values)
+                value(this@InputFieldComponent.value.values)
+                type(this@InputFieldComponent.type.values)
+                step(this@InputFieldComponent.step.values)
+                className(this@InputFieldComponent.severityClassOf(Theme().input.severity).name)
+                this@InputFieldComponent.store?.let {
                     value(it.data)
                     changes.values() handledBy it.update
                 }
-                events.value.invoke(this)
-                element.value.invoke(this)
+                this@InputFieldComponent.events.value.invoke(this)
+                this@InputFieldComponent.element.value.invoke(this)
             }
         }
     }

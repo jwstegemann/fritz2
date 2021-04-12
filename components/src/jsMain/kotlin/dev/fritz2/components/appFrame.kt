@@ -151,21 +151,21 @@ open class AppFrameComponent : Component<Unit> {
         """.trimIndent()
                 )
             }, prefix = "backdrop") {
-                className(showBackdrop.whenever(sidebarStatus.data).name)
-                clicks handledBy toggleSidebar
+                className(this@AppFrameComponent.showBackdrop.whenever(this@AppFrameComponent.sidebarStatus.data).name)
+                clicks handledBy this@AppFrameComponent.toggleSidebar
             }
 
             (::header.styled {
                 grid(sm = { area { "header" } }, md = { area { "brand" } })
-                mobileSidebar("none")()
+                this@AppFrameComponent.mobileSidebar("none")()
                 height(sm = { Theme().appFrame.headerHeight }, md = { unset })
             }) {
-                className(openSideBar.whenever(sidebarStatus.data).name)
+                className(this@AppFrameComponent.openSideBar.whenever(this@AppFrameComponent.sidebarStatus.data).name)
                 flexBox({
                     height { Theme().appFrame.headerHeight }
                     Theme().appFrame.brand()
                 }) {
-                    brand.value(this)
+                    this@AppFrameComponent.brand.value(this)
                 }
             }
 
@@ -181,24 +181,24 @@ open class AppFrameComponent : Component<Unit> {
                     }) {
                         spacing { tiny }
                         items {
-                            sidebarToggle.value(this, toggleSidebar)
-                            header.value(this)
+                            this@AppFrameComponent.sidebarToggle.value(this, this@AppFrameComponent.toggleSidebar)
+                            this@AppFrameComponent.header.value(this)
                         }
                     }
                     section {
-                        actions.value(this)
+                        this@AppFrameComponent.actions.value(this)
                     }
                 }
             }
 
             (::aside.styled {
                 grid(sm = { area { "main" } }, md = { area { "sidebar" } })
-                mobileSidebar(Theme().appFrame.headerHeight)()
+                this@AppFrameComponent.mobileSidebar(Theme().appFrame.headerHeight)()
                 overflow { hidden }
                 height(sm = { "calc(100% - ${Theme().appFrame.headerHeight})" }, md = { unset })
                 Theme().appFrame.sidebar()
             }) {
-                className(openSideBar.whenever(sidebarStatus.data).name)
+                className(this@AppFrameComponent.openSideBar.whenever(this@AppFrameComponent.sidebarStatus.data).name)
 
                 flexBox({
                     direction { column }
@@ -211,9 +211,9 @@ open class AppFrameComponent : Component<Unit> {
                     (::section.styled {
                         Theme().appFrame.nav()
                     }) {
-                        nav.value(this)
+                        this@AppFrameComponent.nav.value(this)
                     }
-                    footer.value?.let { footer ->
+                    this@AppFrameComponent.footer.value?.let { footer ->
                         (::section.styled {
                             Theme().appFrame.footer()
                         }) {
@@ -229,10 +229,10 @@ open class AppFrameComponent : Component<Unit> {
                 Theme().appFrame.main()
                 styling()
             }) {
-                main.value(this)
+                this@AppFrameComponent.main.value(this)
             }
 
-            tabs.value?.let { tabs ->
+            this@AppFrameComponent.tabs.value?.let { tabs ->
                 flexBox({
                     grid { area { "footer" } }
                     direction { row }
