@@ -631,8 +631,7 @@ interface AlertVariantStyles {
     val background: Style<BasicParams>
     val text: Style<BasicParams>
     val accent: Style<BasicParams>
-    val decorationLeft: Style<BasicParams>
-    val decorationTop: Style<BasicParams>
+    val decoration: Style<BasicParams>
 }
 
 

@@ -2557,12 +2557,7 @@ open class DefaultTheme : Theme {
                     override val accent: Style<BasicParams> = {
                         color { it }
                     }
-                    override val decorationLeft: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
-                    override val decorationTop: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
+                    override val decoration: Style<BasicParams> = { }
                 }
             }
             override val solid: AlertVariantStyleFactory = {
@@ -2576,12 +2571,7 @@ open class DefaultTheme : Theme {
                     override val accent: Style<BasicParams> = {
                         color { textColorLight }
                     }
-                    override val decorationLeft: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
-                    override val decorationTop: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
+                    override val decoration: Style<BasicParams> = { }
                 }
             }
             override val leftAccent: AlertVariantStyleFactory = {
@@ -2595,11 +2585,13 @@ open class DefaultTheme : Theme {
                     override val accent: Style<BasicParams> = {
                         color { it }
                     }
-                    override val decorationLeft: Style<BasicParams> = {
-                        background { color { it } }
-                    }
-                    override val decorationTop: Style<BasicParams> = {
-                        css("visibility: hidden")
+                    override val decoration: Style<BasicParams> = {
+                        borders {
+                            left {
+                                color { it }
+                                width { "var(--al-border-width)" }
+                            }
+                        }
                     }
                 }
             }
@@ -2614,11 +2606,13 @@ open class DefaultTheme : Theme {
                     override val accent: Style<BasicParams> = {
                         color { it }
                     }
-                    override val decorationLeft: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
-                    override val decorationTop: Style<BasicParams> = {
-                        background { color { it } }
+                    override val decoration: Style<BasicParams> = {
+                        borders {
+                            top {
+                                color { it }
+                                width { "var(--al-border-width)" }
+                            }
+                        }
                     }
                 }
             }
@@ -2634,12 +2628,7 @@ open class DefaultTheme : Theme {
                     override val accent: Style<BasicParams> = {
                         color { it }
                     }
-                    override val decorationLeft: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
-                    override val decorationTop: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
+                    override val decoration: Style<BasicParams> = { }
                 }
             }
         }
@@ -2648,18 +2637,21 @@ open class DefaultTheme : Theme {
             override val small: Style<BasicParams> = {
                 css("--al-icon-margin: 0.25rem")
                 css("--al-icon-size: ${Theme().fontSizes.small}")
+                css("--al-border-width: ${Theme().borderWidths.normal}")
                 fontSize { small }
                 lineHeight { small }
             }
             override val normal: Style<BasicParams> = {
                 css("--al-icon-margin: 0.5rem")
                 css("--al-icon-size: ${Theme().fontSizes.normal}")
+                css("--al-border-width: ${Theme().borderWidths.fat}")
                 fontSize { normal }
                 lineHeight { normal }
             }
             override val large: Style<BasicParams> = {
                 css("--al-icon-margin: 1rem")
                 css("--al-icon-size: ${Theme().fontSizes.larger}")
+                css("--al-border-width: ${Theme().borderWidths.fat}")
                 fontSize { larger }
                 lineHeight { larger }
             }

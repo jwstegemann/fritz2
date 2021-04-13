@@ -8,6 +8,7 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
+import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -52,7 +53,17 @@ import kotlinx.coroutines.flow.flowOf
 open class AlertComponent : Component<Unit> {
 
     companion object {
-        private const val accentDecorationThickness = "4px"
+        private val alertCss = style("alert") {
+            alignItems { center }
+            padding { normal }
+        }
+
+        private val alertContentCss = style("alert-content") {
+            display { inlineBlock }
+            verticalAlign { middle }
+            width { "100%" }
+            lineHeight { "1.2em" }
+        }
     }
 
     val sizes = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
@@ -114,62 +125,34 @@ open class AlertComponent : Component<Unit> {
         id: String?,
         prefix: String,
     ) {
-        val styles = variantStyles
-
         context.apply {
-            (::div.styled(baseClass = baseClass, id = id, prefix = prefix) {
-                styling()
-                display { flex }
-                position { relative { } }
-                styles.background()
+            flexBox(baseClass = alertCss, styling = {
+                this@AlertComponent.sizes.value(Theme().alert.sizes)()
+                this@AlertComponent.stacking.value(Theme().alert.stacking)()
+                this@AlertComponent.variantStyles.background()
+                this@AlertComponent.variantStyles.decoration()
             }) {
-                (::div.styled {
-                    width { "100%" }
-                    height { accentDecorationThickness }
-                    position { absolute { } }
-                    styles.decorationTop()
-                }) { }
-
-                (::div.styled {
-                    width { accentDecorationThickness }
-                    height { "100%" }
-                    position { absolute { } }
-                    styles.decorationLeft()
-                }) { }
-
-                (::div.styled {
-                    display { flex }
-                    css("flex-direction: row")
-                    alignItems { center }
-                    this@AlertComponent.sizes.value(Theme().alert.sizes)()
-                    this@AlertComponent.stacking.value(Theme().alert.stacking)()
+                box(styling = {
+                    css("margin-right: var(--al-icon-margin)")
+                    this@AlertComponent.variantStyles.accent()
                 }) {
-                    (::div.styled {
-                        css("margin-right: var(--al-icon-margin)")
-                        styles.accent()
+                    icon({
+                        css("width: var(--al-icon-size)")
+                        css("height: var(--al-icon-size)")
                     }) {
-                        icon({
-                            css("width: var(--al-icon-size)")
-                            css("height: var(--al-icon-size)")
-                        }) {
-                            fromTheme {
-                                this@AlertComponent.icon.value
-                                    ?.invoke(Theme().icons)
-                                    ?: this@AlertComponent.severity.value(Theme().alert.severities).icon
-                            }
+                        fromTheme {
+                            this@AlertComponent.icon.value
+                                ?.invoke(Theme().icons)
+                                ?: this@AlertComponent.severity.value(Theme().alert.severities).icon
                         }
                     }
+                }
 
-                    (::div.styled {
-                        display { inlineBlock }
-                        verticalAlign { middle }
-                        width { "100%" }
-                        lineHeight { "1.2em" }
-                        styles.text()
-                    }) {
-                        this@AlertComponent.title?.invoke(this)
-                        this@AlertComponent.content?.invoke(this)
-                    }
+                box(baseClass = alertContentCss, styling = {
+                    this@AlertComponent.variantStyles.text()
+                }) {
+                    this@AlertComponent.title?.invoke(this)
+                    this@AlertComponent.content?.invoke(this)
                 }
             }
         }
