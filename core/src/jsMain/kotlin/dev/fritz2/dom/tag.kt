@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.*
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
-import kotlin.collections.set
 
 /**
  * Occurs when more then one root [Tag] is defined in a [render] context.
