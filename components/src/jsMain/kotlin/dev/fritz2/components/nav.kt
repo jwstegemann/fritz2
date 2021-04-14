@@ -53,9 +53,9 @@ open class NavLinkComponent : Component<Listener<MouseEvent>> {
             }, baseClass, id, prefix) {
                 spacing { small }
                 items {
-                    active.value?.let { className(activeStyle.whenever(it).name) }
-                    icon(build = icon.value)
-                    a { text.values.asText() }
+                    this@NavLinkComponent.active.value?.let { className(activeStyle.whenever(it).name) }
+                    icon(build = this@NavLinkComponent.icon.value)
+                    a { this@NavLinkComponent.text.values.asText() }
                 }
                 events {
                     clickEvents = clicks.stopImmediatePropagation()

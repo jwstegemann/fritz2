@@ -65,7 +65,6 @@ import kotlinx.coroutines.flow.map
  * } handledBy ToastComponent.closeAllToasts()
  * ```
  */
-@ComponentMarker
 open class ToastComponent : ManagedComponent<Unit>,
     CloseButtonProperty by CloseButtonMixin(
         "toast-close-button",
@@ -259,19 +258,19 @@ open class ToastComponent : ManagedComponent<Unit>,
             }){
                 (::div.styled {
                     toastStyle()
-                    background { color(background.value) }
+                    background { color(this@ToastComponent.background.value) }
                     alignItems { center }
                     styling()
                 }){
-                    content.value?.let {
+                    this@ToastComponent.content.value?.let {
                         (::div.styled {
                             css("flex: 1 1 0%;")
                         }) {
                             it.invoke(this)
                         }
                     }
-                    if (hasCloseButton.value) {
-                        closeButtonRendering.value(this).map { localId } handledBy ToastStore.remove
+                    if (this@ToastComponent.hasCloseButton.value) {
+                        this@ToastComponent.closeButtonRendering.value(this).map { localId } handledBy ToastStore.remove
                     }
                 }
             }

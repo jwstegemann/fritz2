@@ -54,7 +54,6 @@ import selectField
  * field to learn how the mapping between control and rendering strategy is done.
  *
  */
-@ComponentMarker
 open class FormControlComponent : Component<Unit>, FormProperties by FormMixin() {
     companion object {
         object ControlNames {
@@ -199,7 +198,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
 
     val validationMessageRendering =
         ComponentProperty<RenderContext.(ComponentValidationMessage) -> Unit> { message ->
-            message.asAlert(this, size = sizeBuilder, stacking = { compact })
+            message.asAlert(this, size = this@FormControlComponent.sizeBuilder, stacking = { compact })
         }
 
     init {
@@ -394,9 +393,9 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
 
     open fun renderHelperText(renderContext: RenderContext) {
         renderContext.apply {
-            helperText.value?.let {
+            this@FormControlComponent.helperText.value?.let {
                 (::p.styled {
-                    helperTextStyle.value()
+                    this@FormControlComponent.helperTextStyle.value()
                 }) { +it }
             }
         }

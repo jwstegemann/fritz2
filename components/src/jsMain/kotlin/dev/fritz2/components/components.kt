@@ -3,7 +3,8 @@ package dev.fritz2.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.DomListener
-import dev.fritz2.dom.WithEvents
+import dev.fritz2.dom.EventContext
+import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
@@ -21,13 +22,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 import org.w3c.dom.events.MouseEvent
-
-/**
- * A marker to separate the layers of calls in the type-safe-builder pattern.
- */
-@DslMarker
-annotation class ComponentMarker
-
 
 /**
  * Generic container for modeling a property for a component class.
@@ -170,6 +164,7 @@ class NullableDynamicComponentProperty<T>(var values: Flow<T?>) {
  * }
  * ```
  */
+@HtmlTagMarker
 interface Component<T> {
 
     /**
@@ -278,14 +273,14 @@ interface EventProperties<T : Element> {
     /**
      * This property enables the client to access *all* events offered by the underlying HTML element.
      */
-    val events: ComponentProperty<WithEvents<T>.() -> Unit>
+    val events: ComponentProperty<EventContext<T>.() -> Unit>
 }
 
 /**
  * Default implementation of the [EventProperties] interface in order to apply this as mixin for a component
  */
 class EventMixin<T : Element> : EventProperties<T> {
-    override val events: ComponentProperty<WithEvents<T>.() -> Unit> = ComponentProperty {}
+    override val events: ComponentProperty<EventContext<T>.() -> Unit> = ComponentProperty {}
 }
 
 /**

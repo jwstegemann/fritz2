@@ -49,7 +49,6 @@ import kotlinx.coroutines.flow.flowOf
  * }
  * ```
  */
-@ComponentMarker
 open class AlertComponent : Component<Unit> {
 
     companion object {
@@ -142,8 +141,8 @@ open class AlertComponent : Component<Unit> {
                     display { flex }
                     css("flex-direction: row")
                     alignItems { center }
-                    sizes.value(Theme().alert.sizes)()
-                    stacking.value(Theme().alert.stacking)()
+                    this@AlertComponent.sizes.value(Theme().alert.sizes)()
+                    this@AlertComponent.stacking.value(Theme().alert.stacking)()
                 }) {
                     (::div.styled {
                         css("margin-right: var(--al-icon-margin)")
@@ -154,9 +153,9 @@ open class AlertComponent : Component<Unit> {
                             css("height: var(--al-icon-size)")
                         }) {
                             fromTheme {
-                                icon.value
+                                this@AlertComponent.icon.value
                                     ?.invoke(Theme().icons)
-                                    ?: severity.value(Theme().alert.severities).icon
+                                    ?: this@AlertComponent.severity.value(Theme().alert.severities).icon
                             }
                         }
                     }
@@ -168,8 +167,8 @@ open class AlertComponent : Component<Unit> {
                         lineHeight { "1.2em" }
                         styles.text()
                     }) {
-                        title?.invoke(this)
-                        content?.invoke(this)
+                        this@AlertComponent.title?.invoke(this)
+                        this@AlertComponent.content?.invoke(this)
                     }
                 }
             }

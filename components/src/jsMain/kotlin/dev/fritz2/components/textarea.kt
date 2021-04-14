@@ -32,7 +32,6 @@ import org.w3c.dom.HTMLTextAreaElement
  *  * For a detailed explanation and examples of usage have a look at the [textArea] function !
  *
  */
-@ComponentMarker
 open class TextAreaComponent(protected val store: Store<String>? = null) :
     Component<Unit>,
     EventProperties<HTMLTextAreaElement> by EventMixin(),
@@ -98,22 +97,22 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
     ) {
         context.apply {
             (::textarea.styled(styling, baseClass + staticCss, id, prefix) {
-                resizeBehavior.value.invoke(Theme().textArea.resize)()
-                size.value.invoke(Theme().textArea.sizes)()
-                basicInputStyles()
+                this@TextAreaComponent.resizeBehavior.value.invoke(Theme().textArea.resize)()
+                this@TextAreaComponent.size.value.invoke(Theme().textArea.sizes)()
+                this@TextAreaComponent.basicInputStyles()
 
             }){
-                disabled(disabled.values)
-                readOnly(readonly.values)
-                placeholder(placeholder.values)
-                value(value.values)
-                className(severityClassOf(Theme().textArea.severity).name)
-                store?.let {
+                disabled(this@TextAreaComponent.disabled.values)
+                readOnly(this@TextAreaComponent.readonly.values)
+                placeholder(this@TextAreaComponent.placeholder.values)
+                value(this@TextAreaComponent.value.values)
+                className(this@TextAreaComponent.severityClassOf(Theme().textArea.severity).name)
+                this@TextAreaComponent.store?.let {
                     value(it.data)
                     changes.values() handledBy it.update
                 }
-                events.value.invoke(this)
-                element.value.invoke(this)
+                this@TextAreaComponent.events.value.invoke(this)
+                this@TextAreaComponent.element.value.invoke(this)
             }
         }
     }
