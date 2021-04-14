@@ -51,51 +51,6 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
         )
     }
 
-    val basicSelectStyles: Style<BasicParams> = {
-
-        width { full }
-        paddings {
-            left { "0.75rem" }
-            right { "1.5rem" }
-            bottom { "1px" }
-        }
-        lineHeight { normal }
-        fontSize { "1rem" }
-        height { "2.5rem" }
-        radius { normal }
-        focus {
-            focus {
-                border {
-                    color { primary.base }
-                }
-                boxShadow { outline }
-            }
-        }
-        hover {
-            border {
-                color { gray700 }
-            }
-        }
-
-        disabled {
-            background {
-                color { neutral }
-            }
-            color { disabled }
-            hover {
-                border {
-                    color { gray300 }
-                }
-            }
-        }
-        position { relative { } }
-        minWidth { "2.5rem" }
-
-        css("outline: 0px;")
-        css("appearance: none;")
-        css("transition: all 0.2s ease 0s;")
-    }
-
     val iconWrapperStyle: Style<BasicParams> = {
         position { absolute { } }
         display { inlineFlex }
@@ -146,7 +101,6 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
             (::div.styled(styling, baseClass + staticCss, grpId, prefix) {}) {
 
                 (::select.styled(styling, baseClass) {
-                    this@SelectFieldComponent.basicSelectStyles()
                     this@SelectFieldComponent.variant.value.invoke(Theme().select.variants)()
                     this@SelectFieldComponent.size.value.invoke(Theme().select.sizes)()
                 }){

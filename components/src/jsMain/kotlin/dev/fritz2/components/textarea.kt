@@ -11,9 +11,7 @@ import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.FormSizes
-import dev.fritz2.styling.theme.TextAreaResize
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLTextAreaElement
 
@@ -53,37 +51,8 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
         )
     }
 
-    val basicInputStyles: Style<BasicParams> = {
-
-        radius { normal }
-        fontWeight { normal }
-
-        border {
-            width { thin }
-            style { solid }
-            color { gray300 }
-
-        }
-
-        background { color { "white" } }
-
-        disabled {
-            background {
-                color { neutral }
-            }
-            color { disabled }
-
-        }
-
-        focus {
-            border {
-                color { "#3182ce" }
-            }
-            boxShadow { outline }
-        }
-    }
-
     val value = DynamicComponentProperty(flowOf(""))
+    val variant = ComponentProperty<TextAreaVariants.() -> Style<BasicParams>> { basic }
     val placeholder = DynamicComponentProperty(flowOf(""))
     val resizeBehavior = ComponentProperty<TextAreaResize.() -> Style<BasicParams>> { Theme().textArea.resize.both }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().textArea.sizes.normal }
@@ -99,8 +68,7 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
             (::textarea.styled(styling, baseClass + staticCss, id, prefix) {
                 this@TextAreaComponent.resizeBehavior.value.invoke(Theme().textArea.resize)()
                 this@TextAreaComponent.size.value.invoke(Theme().textArea.sizes)()
-                this@TextAreaComponent.basicInputStyles()
-
+                this@TextAreaComponent.variant.value.invoke(Theme().textArea.variants)
             }){
                 disabled(this@TextAreaComponent.disabled.values)
                 readOnly(this@TextAreaComponent.readonly.values)
