@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.map
  *
  *  For a detailed explanation and examples of usage, have a look at the [selectField] function itself.
  */
-@ComponentMarker
 open class SelectFieldComponent<T>(protected val items: List<T>, protected val store: Store<T>? = null) :
     Component<Unit>,
     InputFormProperties by InputFormMixin(),
@@ -137,57 +136,57 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
         val grpId = id ?: uniqueId()
 
         context.apply {
-            (store?.data ?: selectedItem.values)
+            (this@SelectFieldComponent.store?.data ?: this@SelectFieldComponent.selectedItem.values)
                 .map { selectedItem ->
-                    items.indexOf(selectedItem).let { if (it == -1) null else it }
+                    this@SelectFieldComponent.items.indexOf(selectedItem).let { if (it == -1) null else it }
                 } handledBy internalStore.update
 
             (::div.styled(styling, baseClass + staticCss, grpId, prefix) {}){
 
                 (::select.styled(styling, baseClass) {
-                    basicSelectStyles()
-                    variant.value.invoke(Theme().select.variants)()
-                    size.value.invoke(Theme().select.sizes)()
+                    this@SelectFieldComponent.basicSelectStyles()
+                    this@SelectFieldComponent.variant.value.invoke(Theme().select.variants)()
+                    this@SelectFieldComponent.size.value.invoke(Theme().select.sizes)()
                 }){
-                    disabled(disabled.values)
+                    disabled(this@SelectFieldComponent.disabled.values)
 
                     internalStore.data.render {
                         if (it == null) {
                             option {
                                 value("null")
                                 selected(true)
-                                +placeholder.value
+                                +this@SelectFieldComponent.placeholder.value
                             }
                         }
                     }
 
-                    items.withIndex().forEach { (index, item) ->
+                    this@SelectFieldComponent.items.withIndex().forEach { (index, item) ->
                         val checkedFlow = internalStore.data.map { it == index }.distinctUntilChanged()
                         option {
                             value(index.toString())
                             selected(checkedFlow)
-                            +label.value(item)
+                            +this@SelectFieldComponent.label.value(item)
                         }
                     }
 
-                    className(severityClassOf(Theme().select.severity).name)
+                    className(this@SelectFieldComponent.severityClassOf(Theme().select.severity).name)
 
                     changes.selectedValue().map { it.toInt() } handledBy internalStore.toggle
                 }
 
                 (::div.styled(prefix = "icon-wrapper") {
-                    size.value.invoke(Theme().select.sizes)()
-                    iconWrapperStyle()
+                    this@SelectFieldComponent.size.value.invoke(Theme().select.sizes)()
+                    this@SelectFieldComponent.iconWrapperStyle()
                 }){
                     icon({
-                        iconStyle()
-                    }) { def(icon.value(Theme().icons)) }
+                        this@SelectFieldComponent.iconStyle()
+                    }) { def(this@SelectFieldComponent.icon.value(Theme().icons)) }
                 }
             }
 
-            EventsContext(internalStore.toggle.map { items[it] }).apply {
-                events.value(this)
-                store?.let { selected handledBy it.update }
+            EventsContext(internalStore.toggle.map { this@SelectFieldComponent.items[it] }).apply {
+                this@SelectFieldComponent.events.value(this)
+                this@SelectFieldComponent.store?.let { selected handledBy it.update }
             }
         }
     }

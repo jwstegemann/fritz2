@@ -61,7 +61,6 @@ import org.w3c.dom.HTMLInputElement
  * }
  * ```
  */
-@ComponentMarker
 open class SwitchComponent(protected val store: Store<Boolean>? = null) :
     Component<Label>,
     EventProperties<HTMLInputElement> by EventMixin(),
@@ -126,7 +125,7 @@ open class SwitchComponent(protected val store: Store<Boolean>? = null) :
                 id = id,
                 prefix = prefix
             ) {
-                size.value.invoke(Theme().switch.sizes)()
+                this@SwitchComponent.size.value.invoke(Theme().switch.sizes)()
             }) {
                 `for`(inputId)
                 (::input.styled(
@@ -136,17 +135,17 @@ open class SwitchComponent(protected val store: Store<Boolean>? = null) :
                 ) {
                     Theme().switch.input()
                     children("&[checked] + div") {
-                        checkedStyle.value()
+                        this@SwitchComponent.checkedStyle.value()
                     }
                 }) {
-                    disabled(disabled.values)
-                    readOnly(readonly.values)
+                    disabled(this@SwitchComponent.disabled.values)
+                    readOnly(this@SwitchComponent.readonly.values)
                     type("checkbox")
-                    checked(store?.data ?: checked.values)
-                    events.value.invoke(this)
-                    store?.let { changes.states() handledBy it.update }
-                    className(severityClassOf(Theme().switch.severity).name)
-                    element.value.invoke(this)
+                    checked(this@SwitchComponent.store?.data ?: this@SwitchComponent.checked.values)
+                    this@SwitchComponent.events.value.invoke(this)
+                    this@SwitchComponent.store?.let { changes.states() handledBy it.update }
+                    className(this@SwitchComponent.severityClassOf(Theme().switch.severity).name)
+                    this@SwitchComponent.element.value.invoke(this)
                 }
 
                 (::div.styled() {
@@ -155,15 +154,15 @@ open class SwitchComponent(protected val store: Store<Boolean>? = null) :
                 }) {
                     (::div.styled() {
                         Theme().switch.dot()
-                        dotStyle.value()
+                        this@SwitchComponent.dotStyle.value()
                     }) {
 
                     }
                 }
 
-                label?.let {
+                this@SwitchComponent.label?.let {
                     (::div.styled() {
-                        labelStyle.value()
+                        this@SwitchComponent.labelStyle.value()
                     }){
                         it(this)
                     }

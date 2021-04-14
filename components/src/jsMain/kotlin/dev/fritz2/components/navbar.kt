@@ -1,14 +1,13 @@
 package dev.fritz2.components
 
-
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 
-@ComponentMarker
-open class NavbarComponent {
+open class NavbarComponent : Component<Unit> {
     companion object {
 
         val staticHeaderCss = staticStyle(
@@ -57,41 +56,50 @@ open class NavbarComponent {
 
     val brand = ComponentProperty<RenderContext.() -> Unit> { }
     val actions = ComponentProperty<RenderContext.() -> Unit> {}
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass,
+        id: String?,
+        prefix: String
+    ) {
+        with(context) {
+            nav((staticHeaderCss + baseClass).name, id) {
+                (::div.styled(baseClass = staticContentCss, prefix = prefix) {
+                    borders {
+                        top {
+                            width { "6px" }
+                            style { solid }
+                            color { primary.base }
+                        }
+
+                        bottom {
+                            width { "2px" }
+                            style { solid }
+                            color { gray300 }
+                        }
+                    }
+                    styling()
+                }) {
+                    div(staticBrandCss.name) {
+                        this@NavbarComponent.brand.value(this)
+                    }
+                    div(staticActionsCss.name) {
+                        this@NavbarComponent.actions.value(this)
+                    }
+                }
+            }
+        }
+    }
 }
 
 fun RenderContext.navBar(
     styling: BasicParams.() -> Unit = {},
-    //store: Store<String>? = null,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "navbar",
     build: NavbarComponent.() -> Unit = {}
 ) {
-    val component = NavbarComponent().apply(build)
-
-    nav((NavbarComponent.staticHeaderCss + baseClass).name, id) {
-        (::div.styled(baseClass = NavbarComponent.staticContentCss, prefix = prefix) {
-            borders {
-                top {
-                    width { "6px" }
-                    style { solid }
-                    color { primary.base }
-                }
-
-                bottom {
-                    width { "2px" }
-                    style { solid }
-                    color { gray300 }
-                }
-            }
-            styling()
-        }) {
-            div(NavbarComponent.staticBrandCss.name) {
-                component.brand.value(this)
-            }
-            div(NavbarComponent.staticActionsCss.name) {
-                component.actions.value(this)
-            }
-        }
-    }
+    NavbarComponent().apply(build).render(this, styling, baseClass, id, prefix)
 }

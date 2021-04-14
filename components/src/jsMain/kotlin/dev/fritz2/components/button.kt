@@ -53,7 +53,6 @@ import org.w3c.dom.events.MouseEvent
  *  }
  *  ```
  */
-@ComponentMarker
 open class PushButtonComponent :
     Component<Unit>,
     EventProperties<HTMLButtonElement> by EventMixin(),
@@ -100,16 +99,16 @@ open class PushButtonComponent :
     }
 
     val centerSpinnerStyle: Style<BasicParams> = {
-        width { iconSize }
-        height { iconSize }
+        width { this@PushButtonComponent.iconSize }
+        height { this@PushButtonComponent.iconSize }
     }
 
     val leftSpinnerStyle: Style<BasicParams> = {
         width { "1.0em" }
         height { "1.0em" }
         margins {
-            left { marginToBorder }
-            right { marginToText }
+            left { this@PushButtonComponent.marginToBorder }
+            right { this@PushButtonComponent.marginToText }
         }
     }
 
@@ -117,26 +116,26 @@ open class PushButtonComponent :
         width { "1.0em" }
         height { "1.0em" }
         margins {
-            left { marginToText }
-            right { marginToBorder }
+            left { this@PushButtonComponent.marginToText }
+            right { this@PushButtonComponent.marginToBorder }
         }
     }
 
     val leftIconStyle: Style<BasicParams> = {
-        width { iconSize }
-        height { iconSize }
+        width { this@PushButtonComponent.iconSize }
+        height { this@PushButtonComponent.iconSize }
         margins {
-            left { marginToBorder }
-            right { marginToText }
+            left { this@PushButtonComponent.marginToBorder }
+            right { this@PushButtonComponent.marginToText }
         }
     }
 
     val rightIconStyle: Style<BasicParams> = {
-        width { iconSize }
-        height { iconSize }
+        width { this@PushButtonComponent.iconSize }
+        height { this@PushButtonComponent.iconSize }
         margins {
-            right { marginToBorder }
-            left { marginToText }
+            right { this@PushButtonComponent.marginToBorder }
+            left { this@PushButtonComponent.marginToText }
         }
     }
 
@@ -154,15 +153,19 @@ open class PushButtonComponent :
     private var text: (RenderContext.(hide: Boolean) -> Unit)? = null
 
     fun text(value: String) {
-        text = { hide -> span { +value
-                if(hide) className(hidden.name)
+        text = { hide ->
+            span {
+                +value
+                if (hide) className(hidden.name)
             }
         }
     }
 
     fun text(value: Flow<String>) {
-        text = { hide -> span { value.asText()
-                if(hide) className(hidden.name)
+        text = { hide ->
+            span {
+                value.asText()
+                if (hide) className(hidden.name)
             }
         }
     }
@@ -218,24 +221,42 @@ open class PushButtonComponent :
     ) {
         context.apply {
             (::button.styled(styling, baseClass + staticCss, id, prefix) {
-                colorField()
-                variant.value.invoke(Theme().button.variants)()
-                size.value.invoke(Theme().button.sizes)()
+                this@PushButtonComponent.colorField()
+                this@PushButtonComponent.variant.value.invoke(Theme().button.variants)()
+                this@PushButtonComponent.size.value.invoke(Theme().button.sizes)()
             }) {
-                disabled(disabled.values)
-                if (text == null) {
-                    renderIcon(this, centerIconStyle, centerSpinnerStyle)
+                disabled(this@PushButtonComponent.disabled.values)
+                if (this@PushButtonComponent.text == null) {
+                    this@PushButtonComponent.renderIcon(
+                        this,
+                        this@PushButtonComponent.centerIconStyle,
+                        this@PushButtonComponent.centerSpinnerStyle
+                    )
                 } else {
-                    if (icon != null && iconPlacement.value(iconPlacementContext) == IconPlacement.Left) {
-                        renderIcon(this, leftIconStyle, leftSpinnerStyle)
+                    if (this@PushButtonComponent.icon != null && this@PushButtonComponent.iconPlacement.value(
+                            iconPlacementContext
+                        ) == IconPlacement.Left
+                    ) {
+                        this@PushButtonComponent.renderIcon(
+                            this,
+                            this@PushButtonComponent.leftIconStyle,
+                            this@PushButtonComponent.leftSpinnerStyle
+                        )
                     }
-                    renderText(this)
-                    if (icon != null && iconPlacement.value(iconPlacementContext) == IconPlacement.Right) {
-                        renderIcon(this, rightIconStyle, rightSpinnerStyle)
+                    this@PushButtonComponent.renderText(this)
+                    if (this@PushButtonComponent.icon != null && this@PushButtonComponent.iconPlacement.value(
+                            iconPlacementContext
+                        ) == IconPlacement.Right
+                    ) {
+                        this@PushButtonComponent.renderIcon(
+                            this,
+                            this@PushButtonComponent.rightIconStyle,
+                            this@PushButtonComponent.rightSpinnerStyle
+                        )
                     }
                 }
-                events.value.invoke(this)
-                element.value.invoke(this)
+                this@PushButtonComponent.events.value.invoke(this)
+                this@PushButtonComponent.element.value.invoke(this)
             }
         }
     }
@@ -245,11 +266,11 @@ open class PushButtonComponent :
             icon?.invoke(renderContext, iconStyle)
         } else {
             renderContext.apply {
-                loading?.render { running ->
+                this@PushButtonComponent.loading?.render { running ->
                     if (running) {
                         spinner(spinnerStyle) {}
                     } else {
-                        icon?.invoke(this, iconStyle)
+                        this@PushButtonComponent.icon?.invoke(this, iconStyle)
                     }
                 }
             }
@@ -261,21 +282,21 @@ open class PushButtonComponent :
             text?.invoke(renderContext, false)
         } else {
             renderContext.apply {
-                loading?.render { running ->
+                this@PushButtonComponent.loading?.render { running ->
                     if (running) {
                         spinner({
-                            if (loadingText == null) {
+                            if (this@PushButtonComponent.loadingText == null) {
                                 css("position: absolute;")
-                                centerSpinnerStyle()
-                            } else leftSpinnerStyle()
+                                this@PushButtonComponent.centerSpinnerStyle()
+                            } else this@PushButtonComponent.leftSpinnerStyle()
                         }) {}
-                        if (loadingText != null) {
-                            loadingText!!.invoke(this)
+                        if (this@PushButtonComponent.loadingText != null) {
+                            this@PushButtonComponent.loadingText!!.invoke(this)
                         } else {
-                            text?.invoke(this, true)
+                            this@PushButtonComponent.text?.invoke(this, true)
                         }
                     } else {
-                        text?.invoke(this, false)
+                        this@PushButtonComponent.text?.invoke(this, false)
                     }
                 }
             }

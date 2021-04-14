@@ -63,7 +63,6 @@ import org.w3c.dom.HTMLDivElement
  * }
  *  ```
  */
-@ComponentMarker
 abstract class StackComponent : Component<Div>, EventProperties<HTMLDivElement> by EventMixin() {
     companion object {
         val staticCss = staticStyle(
@@ -85,11 +84,11 @@ abstract class StackComponent : Component<Div>, EventProperties<HTMLDivElement> 
         id: String?,
         prefix: String
     ) = context.flexBox({
-        stackStyles()
+        this@StackComponent.stackStyles()
         styling(this as BoxParams)
     }, baseClass = baseClass + staticCss, prefix = prefix, id = id) {
-        items.value(this)
-        events.value(this)
+        this@StackComponent.items.value(this)
+        this@StackComponent.events.value(this)
     }
 }
 
@@ -100,7 +99,6 @@ abstract class StackComponent : Component<Div>, EventProperties<HTMLDivElement> 
  *
  * @see StackComponent
  */
-@ComponentMarker
 class StackUpComponent : StackComponent() {
     override val stackStyles: Style<FlexParams> = {
         if (this@StackUpComponent.reversed.value) {
@@ -165,7 +163,6 @@ fun RenderContext.stackUp(
  *
  * @see StackComponent
  */
-@ComponentMarker
 class LineUpComponent : StackComponent() {
     override val stackStyles: Style<FlexParams> = {
         if (this@LineUpComponent.reversed.value) {

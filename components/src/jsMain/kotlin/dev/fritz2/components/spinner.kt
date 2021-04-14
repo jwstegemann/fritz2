@@ -44,7 +44,6 @@ import org.w3c.dom.HTMLDivElement
  * ```
  *
  */
-@ComponentMarker
 open class SpinnerComponent : Component<Unit>,
     EventProperties<HTMLDivElement> by EventMixin() {
     companion object {
@@ -79,14 +78,14 @@ open class SpinnerComponent : Component<Unit>,
     ) {
 
         context.apply {
-            if (icon.value == null) {
+            if (this@SpinnerComponent.icon.value == null) {
                 (::div.styled(styling, baseClass + staticCss, id, prefix) {
-                    css("animation: loading ${speed.value} linear infinite;")
-                    border { width { thickness.value(Theme().borderWidths) } }
+                    css("animation: loading ${this@SpinnerComponent.speed.value} linear infinite;")
+                    border { width { this@SpinnerComponent.thickness.value(Theme().borderWidths) } }
                     width { "1rem" }
                     height { "1rem" }
                 }) {
-                    events.value.invoke(this)
+                    this@SpinnerComponent.events.value.invoke(this)
                 }
             } else {
                 div {
@@ -96,14 +95,14 @@ open class SpinnerComponent : Component<Unit>,
                 @keyframes spinner {
                   to {transform: rotate(360deg);}
                 }    
-                animation: spinner ${speed.value} linear infinite;
+                animation: spinner ${this@SpinnerComponent.speed.value} linear infinite;
             """.trimIndent()
                         )
                         styling(this as BoxParams)
                     }, baseClass, id, prefix) {
-                        def(icon.value!!.invoke(Theme().icons))
+                        def(this@SpinnerComponent.icon.value!!.invoke(Theme().icons))
                     }
-                    events.value.invoke(this)
+                    this@SpinnerComponent.events.value.invoke(this)
                 }
             }
         }

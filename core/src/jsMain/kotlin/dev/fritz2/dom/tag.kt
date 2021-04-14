@@ -1,8 +1,8 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.*
-import dev.fritz2.dom.html.TagContext
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.TagContext
 import dev.fritz2.dom.html.render
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.elementLens
@@ -11,8 +11,10 @@ import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.*
-import org.w3c.dom.*
-import org.w3c.dom.events.Event
+import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.Node
+import kotlin.collections.set
 
 /**
  * Occurs when more then one root [Tag] is defined in a [render] context.
@@ -50,7 +52,7 @@ open class Tag<out E : Element>(
         if (id != null) element.id = id
         if (!baseClass.isNullOrBlank()) element.className = baseClass
     }.unsafeCast<E>()
-) : WithDomNode<E>, WithComment<E>, WithEvents<E>(), TagContext {
+) : WithDomNode<E>, WithComment<E>, EventContext<E>, TagContext {
 
     companion object {
         private inline fun registerMulti(
@@ -361,15 +363,6 @@ open class Tag<out E : Element>(
                 else -> emptyFlow()
             }
         }
-
-    /**
-     * Connects [Event]s to a [Handler].
-     *
-     * @receiver [DomListener] which contains the [Event]
-     * @param handler that will handle the fired [Event]
-     */
-    infix fun <E : Event, X : Element> DomListener<E, X>.handledBy(handler: Handler<Unit>) =
-        handler.collect(this.events.map { }, job)
 
     /**
      * Sets an attribute.

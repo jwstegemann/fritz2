@@ -69,7 +69,6 @@ class DefaultOverlay(
  * For a detailed understanding have a look into the [ModalComponent.render] function and the
  * ``ModalComponent.Companion.init`` block.
  */
-@ComponentMarker
 open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Unit>) -> Unit) :
     ManagedComponent<SimpleHandler<Unit>>,
     CloseButtonProperty by CloseButtonMixin("modal-close-button", {

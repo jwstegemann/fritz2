@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
@@ -15,6 +16,7 @@ import kotlin.random.nextUInt
 /**
  * This interface marks
  */
+@HtmlTagMarker
 interface ManagedComponent<T> {
 
     /**

@@ -557,6 +557,7 @@ interface TextAreaStyles : SeverityAware {
  * definition of the theme's textArea resizes
  */
 interface TextAreaResize {
+    val both: Style<BasicParams>
     val none: Style<BasicParams>
     val vertical: Style<BasicParams>
     val horizontal: Style<BasicParams>
