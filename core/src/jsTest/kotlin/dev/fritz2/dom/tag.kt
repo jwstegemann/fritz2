@@ -139,7 +139,7 @@ class TagTests {
 
         assertEquals(0, outer.childElementCount, "outer element has a children")
 
-        for(i in 0..4) {
+        for(i in 0..2) {
             switch.update(true)
             delay(200)
 
