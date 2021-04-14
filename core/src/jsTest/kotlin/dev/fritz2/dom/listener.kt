@@ -2,6 +2,7 @@ package dev.fritz2.dom
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.Key
+import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
@@ -181,8 +182,8 @@ class ListenerTest {
                     key.shift -> pressed = "shift+"
                 }
                 pressed += when (key) {
-                    Key.ArrowUp -> "up"
-                    Key.ArrowDown -> "down"
+                    Keys.ArrowUp -> "up"
+                    Keys.ArrowDown -> "down"
                     else -> "unknown"
                 }
                 pressed
@@ -210,7 +211,7 @@ class ListenerTest {
         assertEquals(handlerCalls, store.countHandlerCalls, "wrong number of handler calls")
         assertEquals("", result.textContent, "wrong dom content of result-node")
 
-        val keyboardEvents = listOf(Key.ArrowUp, Key.ArrowDown)
+        val keyboardEvents = listOf(Keys.ArrowUp, Keys.ArrowDown)
             .flatMap {
                 listOf(
                     KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, ctrlKey = true)),
@@ -233,8 +234,8 @@ class ListenerTest {
                 e.shiftKey -> expected = "shift+"
             }
             expected += when (Key(e)) {
-                Key.ArrowUp -> "up"
-                Key.ArrowDown -> "down"
+                Keys.ArrowUp -> "up"
+                Keys.ArrowDown -> "down"
                 else -> "unknown"
             }
             assertEquals(expected, result.textContent, "wrong dom content of result-node")
@@ -273,7 +274,7 @@ class ListenerTest {
         assertEquals("start", resultNode.textContent, "wrong dom content of result-node")
 
         input.value = "some other content"
-        val event = KeyboardEvent("keyup", KeyboardEventInit(Key.Enter.key, code = Key.Enter.key))
+        val event = KeyboardEvent("keyup", KeyboardEventInit(Keys.Enter.key, code = Keys.Enter.key))
         input.dispatchEvent(event)
         delay(200)
 
