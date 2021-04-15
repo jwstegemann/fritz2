@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.*
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
-import kotlin.collections.set
 
 /**
  * Occurs when more then one root [Tag] is defined in a [render] context.
@@ -65,7 +64,7 @@ open class Tag<out E : Element>(
                     job, parent.domNode.unsafeCast<HTMLElement>()
                 ) {
                     override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
-                        content(element)
+                        parent.register(element, content)
                         add(element)
                         return element
                     }
@@ -86,7 +85,7 @@ open class Tag<out E : Element>(
                     if (alreadyRegistered) {
                         throw MultipleRootElementsException("You can have only one root-tag per html-context!")
                     } else {
-                        content(element)
+                        parent.register(element, content)
                         alreadyRegistered = true
                         return element
                     }
