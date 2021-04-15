@@ -3,6 +3,7 @@ package dev.fritz2.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.Window
+import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -154,7 +155,7 @@ open class PopoverComponent : Component<Unit>,
 
             if (this@PopoverComponent.closeOnEscape.value) {
                 Window.keyups.map {
-                    it.keyCode == Keys.Escape.code
+                    Key(it) == Keys.Escape
                 } handledBy clickStore.close
             }
 
