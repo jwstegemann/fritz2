@@ -130,6 +130,10 @@ inline class StyleClass(val name: String) {
  *
  * @param css well formed content of the css-rule to add
  */
+@Deprecated(
+    message = "Use 'style' instead.",
+    ReplaceWith("style(css)")
+)
 fun staticStyle(css: String) {
     Styling.addStaticCss(css)
 }
@@ -141,6 +145,10 @@ fun staticStyle(css: String) {
  * @param css well formed content of the css-rule to add
  * @return the name of the created class
  */
+@Deprecated(
+    message = "Use 'style' instead.",
+    ReplaceWith("style(css, name)")
+)
 fun staticStyle(name: String, css: String): StyleClass {
     Styling.addStaticCss(".$name { $css }")
     return StyleClass(name)
@@ -153,6 +161,10 @@ fun staticStyle(name: String, css: String): StyleClass {
  * @param styling styling DSL expression
  * @return the name of the created class
  */
+@Deprecated(
+    message = "Use 'style' instead.",
+    ReplaceWith("style(name, styling)")
+)
 fun staticStyle(name: String, styling: BoxParams.() -> Unit): StyleClass {
     val css = StyleParamsImpl().apply(styling).toCss()
     Styling.addStaticCss(".$name { $css }")
