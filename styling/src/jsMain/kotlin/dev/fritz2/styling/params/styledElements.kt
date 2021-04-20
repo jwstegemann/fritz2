@@ -10,6 +10,7 @@ import dev.fritz2.styling.StyleClass
  *
  * @see ``BasicComponent.styled``
  */
+@Deprecated(message = "Use extensions functions in styling package. It will be removed in next major version")
 typealias BasicComponent<E> = (String?, String?, E.() -> Unit) -> E
 
 /**
@@ -60,6 +61,7 @@ typealias BasicComponent<E> = (String?, String?, E.() -> Unit) -> E
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  */
+@Deprecated(message = "Use extensions functions in styling package instead. It will be removed in next major version")
 fun <E> BasicComponent<E>.styled(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -133,6 +135,7 @@ fun <E> BasicComponent<E>.styled(
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  */
+@Deprecated(message = "Use extensions functions in styling package instead. It will be removed in next major version")
 fun <E> BasicComponent<E>.styled(
     parentStyling: BoxParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
