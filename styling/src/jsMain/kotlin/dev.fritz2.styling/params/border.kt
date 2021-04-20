@@ -258,7 +258,7 @@ class BordersContext(
      * @param value extension function parameter to open the [BorderContext] as scope of the functional expression
      *              in order to use its specific styling functions.
      */
-    fun horizontal(value: BorderContext.() -> Unit) {
+    fun vertical(value: BorderContext.() -> Unit) {
         right(value)
         left(value)
     }
@@ -275,7 +275,7 @@ class BordersContext(
      * @param value extension function parameter to open the [BorderContext] as scope of the functional expression
      *              in order to use its specific styling functions.
      */
-    fun vertical(value: BorderContext.() -> Unit) {
+    fun horizontal(value: BorderContext.() -> Unit) {
         top(value)
         bottom(value)
     }
