@@ -54,7 +54,7 @@ import org.w3c.dom.HTMLInputElement
  * }
  * ```
  */
-open class CheckboxComponent(protected val store: Store<Boolean>?) :
+open class CheckboxComponent(protected val value: Store<Boolean>?) :
     Component<Label>,
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
@@ -135,9 +135,9 @@ open class CheckboxComponent(protected val store: Store<Boolean>?) :
                 disabled(this@CheckboxComponent.disabled.values)
                 readOnly(this@CheckboxComponent.readonly.values)
                 type("checkbox")
-                checked(this@CheckboxComponent.store?.data ?: this@CheckboxComponent.checked.values)
+                checked(this@CheckboxComponent.value?.data ?: this@CheckboxComponent.checked.values)
                 className(this@CheckboxComponent.severityClassOf(Theme().checkbox.severity).name)
-                this@CheckboxComponent.store?.let { changes.states() handledBy it.update }
+                this@CheckboxComponent.value?.let { changes.states() handledBy it.update }
                 this@CheckboxComponent.events.value.invoke(this)
                 this@CheckboxComponent.element.value.invoke(this)
             }
@@ -196,7 +196,7 @@ open class CheckboxComponent(protected val store: Store<Boolean>?) :
  * @see CheckboxComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
- * @param store a boolean store to handle the state and its changes automatically
+ * @param value a boolean store to handle the state and its changes automatically
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
@@ -204,9 +204,9 @@ open class CheckboxComponent(protected val store: Store<Boolean>?) :
  */
 fun RenderContext.checkbox(
     styling: BasicParams.() -> Unit = {},
-    store: Store<Boolean>? = null,
+    value: Store<Boolean>? = null,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "checkboxComponent",
     build: CheckboxComponent.() -> Unit = {}
-): Label = CheckboxComponent(store).apply(build).render(this, styling, baseClass, id, prefix)
+): Label = CheckboxComponent(value).apply(build).render(this, styling, baseClass, id, prefix)

@@ -15,6 +15,7 @@ import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.InputFieldVariants
 import dev.fritz2.styling.theme.Theme
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLInputElement
 
@@ -29,7 +30,7 @@ import org.w3c.dom.HTMLInputElement
  *
  *  * For a detailed explanation and examples of usage have a look at the [inputField] function!
  */
-open class InputFieldComponent(protected val store: Store<String>?) :
+open class InputFieldComponent(protected val value: Store<String>?) :
     Component<Unit>,
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
@@ -59,7 +60,13 @@ open class InputFieldComponent(protected val store: Store<String>?) :
 
     val variant = ComponentProperty<InputFieldVariants.() -> Style<BasicParams>> { Theme().input.variants.outline }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().input.sizes.normal }
-    val value = DynamicComponentProperty(flowOf(""))
+    val valueAttr = DynamicComponentProperty(flowOf(""))
+    fun value(value: Flow<String>) {
+        valueAttr(value)
+    }
+    fun value(value: String) {
+        valueAttr(value)
+    }
     val placeholder = DynamicComponentProperty(flowOf(""))
     val type = DynamicComponentProperty(flowOf(""))
     val step = DynamicComponentProperty(flowOf(""))
@@ -79,11 +86,11 @@ open class InputFieldComponent(protected val store: Store<String>?) :
                 disabled(this@InputFieldComponent.disabled.values)
                 readOnly(this@InputFieldComponent.readonly.values)
                 placeholder(this@InputFieldComponent.placeholder.values)
-                value(this@InputFieldComponent.value.values)
+                value(this@InputFieldComponent.valueAttr.values)
                 type(this@InputFieldComponent.type.values)
                 step(this@InputFieldComponent.step.values)
                 className(this@InputFieldComponent.severityClassOf(Theme().input.severity).name)
-                this@InputFieldComponent.store?.let {
+                this@InputFieldComponent.value?.let {
                     value(it.data)
                     changes.values() handledBy it.update
                 }
@@ -107,7 +114,7 @@ open class InputFieldComponent(protected val store: Store<String>?) :
  * react to a change refer also to its event's. All that can be achieved via the [ElementMixin.element] property!
  *
  * ```
- * inputField(store = dataStore /* inject a store so all user inputs are automatically reflected! */) {
+ * inputField(value = dataStore /* inject a store so all user inputs are automatically reflected! */) {
  *     placeholder("Placeholder") // render a placeholder text for empty field
  * }
  *
@@ -125,7 +132,7 @@ open class InputFieldComponent(protected val store: Store<String>?) :
  * }
  *
  * // apply predefined size and variant
- * inputField(store = dataStore) {
+ * inputField(value = dataStore) {
  *      size { small } // render a smaller input
  *      variant { filled } // fill the background with ``light`` color
  *      placeholder("Placeholder") // render a placeholder text for empty field
@@ -147,7 +154,7 @@ open class InputFieldComponent(protected val store: Store<String>?) :
  * @see InputFieldComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
- * @param store optional [Store] that holds the data of the input
+ * @param value optional [Store] that holds the data of the input
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
@@ -155,11 +162,11 @@ open class InputFieldComponent(protected val store: Store<String>?) :
  */
 fun RenderContext.inputField(
     styling: BasicParams.() -> Unit = {},
-    store: Store<String>? = null,
+    value: Store<String>? = null,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "inputField",
     build: InputFieldComponent.() -> Unit = {}
 ) {
-    InputFieldComponent(store).apply(build).render(this, styling, baseClass, id, prefix)
+    InputFieldComponent(value).apply(build).render(this, styling, baseClass, id, prefix)
 }

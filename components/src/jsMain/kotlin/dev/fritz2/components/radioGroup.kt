@@ -58,7 +58,7 @@ import org.w3c.dom.HTMLElement
  * // use case showing some styling options and a store of List<Pair<Int,String>>
  * val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
  * val myStore = storeOf(<List<Pair<Int,String>>)
- * radioGroup(items = myPairs, store = myStore) {
+ * radioGroup(items = myPairs, value = myStore) {
  *     label { it.second }
  *     size { large }
  *     selectedStyle {
@@ -67,7 +67,7 @@ import org.w3c.dom.HTMLElement
  * }
  * ```
  */
-open class RadioGroupComponent<T>(protected val items: List<T>, protected val store: Store<T>? = null) :
+open class RadioGroupComponent<T>(protected val items: List<T>, protected val value: Store<T>? = null) :
     Component<Unit>,
     InputFormProperties by InputFormMixin(),
     SeverityProperties by SeverityMixin() {
@@ -116,7 +116,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val st
             (::div.styled(styling, baseClass, id, prefix) {
                 this@RadioGroupComponent.direction.value(RadioGroupLayouts)()
             }) {
-                (this@RadioGroupComponent.store?.data ?: this@RadioGroupComponent.selectedItem.values)
+                (this@RadioGroupComponent.value?.data ?: this@RadioGroupComponent.selectedItem.values)
                     .map { selectedItem ->
                         this@RadioGroupComponent.items.indexOf(selectedItem).let { if (it == -1) null else it }
                     } handledBy internalStore.update
@@ -138,7 +138,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val st
                 }
                 EventsContext(this, internalStore.toggle.map { this@RadioGroupComponent.items[it] }).apply {
                     this@RadioGroupComponent.events.value(this)
-                    this@RadioGroupComponent.store?.let { selected handledBy it.update }
+                    this@RadioGroupComponent.value?.let { selected handledBy it.update }
                 }
             }
         }
@@ -167,7 +167,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val st
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param items a list of all available options
- * @param store for backing up the preselected item and reflecting the selection automatically.
+ * @param value for backing up the preselected item and reflecting the selection automatically.
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
@@ -177,11 +177,11 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val st
 fun <T> RenderContext.radioGroup(
     styling: BasicParams.() -> Unit = {},
     items: List<T>,
-    store: Store<T>? = null,
+    value: Store<T>? = null,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "radioGroupComponent",
     build: RadioGroupComponent<T>.() -> Unit = {}
 ) {
-    RadioGroupComponent(items, store).apply(build).render(this, styling, baseClass, id, prefix)
+    RadioGroupComponent(items, value).apply(build).render(this, styling, baseClass, id, prefix)
 }
