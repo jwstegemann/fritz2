@@ -1,7 +1,6 @@
 package dev.fritz2.styling.theme
 
 import dev.fritz2.styling.params.*
-import dev.fritz2.styling.params.BackgroundBlendModes.color
 
 /**
  * Defines a responsive [Property] that can have different values for different screen sizes.
@@ -484,8 +483,6 @@ interface PushButtonVariants {
     val ghost: BasicParams.(ColorScheme) -> Unit
     val link: BasicParams.(ColorScheme) -> Unit
 }
-
-
 
 /**
  * definition of the theme's modal

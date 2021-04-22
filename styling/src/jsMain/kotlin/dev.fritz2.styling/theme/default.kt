@@ -50,29 +50,59 @@ open class DefaultTheme : Theme {
             override val gray900 = "#171923"
 
             override val neutral = // white
-                ColorScheme(main = "#ffffff", mainContrast   = gray700, highlight = gray100, highlightContrast = gray700)
+                ColorScheme(main = "#ffffff", mainContrast = gray700, highlight = gray100, highlightContrast = gray700)
 
             override val primary = // blue primary.inverted
-                ColorScheme(main = "#0C5173", mainContrast = gray100, highlight = "#CAE4EA", highlightContrast = gray600)
+                ColorScheme(
+                    main = "#0C5173",
+                    mainContrast = gray100,
+                    highlight = "#CAE4EA",
+                    highlightContrast = gray600
+                )
 
             override val secondary = // yellow
-                ColorScheme(main = "#E6A300", mainContrast = gray100, highlight = "#FFEDCB", highlightContrast = gray600)
+                ColorScheme(
+                    main = "#E6A300",
+                    mainContrast = gray100,
+                    highlight = "#FFEDCB",
+                    highlightContrast = gray600
+                )
 
             override val tertiary = // grey
                 ColorScheme(main = gray600, mainContrast = gray100, highlight = gray300, highlightContrast = gray600)
 
             // Signal Colors
             override val info =  // blue
-                 ColorScheme(main = "#219EBC", mainContrast = neutral.main, highlight = "#d2ebf1", highlightContrast = gray700) //3dbddd
+                ColorScheme(
+                    main = "#219EBC",
+                    mainContrast = neutral.main,
+                    highlight = "#d2ebf1",
+                    highlightContrast = gray700
+                ) //3dbddd
 
             override val success = // green
-                ColorScheme(main = "#00A848", mainContrast = neutral.main, highlight = "#ccedda", highlightContrast = gray700) //E77457 00d95E
+                ColorScheme(
+                    main = "#00A848",
+                    mainContrast = neutral.main,
+                    highlight = "#ccedda",
+                    highlightContrast = gray700
+                ) //E77457 00d95E
 
             override val warning =   // orange
-                ColorScheme(main = "#F08B3A", mainContrast = neutral.main, highlight = "#fce7d7", highlightContrast = gray700) //f3a462
+                ColorScheme(
+                    main = "#F08B3A",
+                    mainContrast = neutral.main,
+                    highlight = "#fce7d7",
+                    highlightContrast = gray700
+                ) //f3a462
 
             override val danger =  // red
-                ColorScheme(main = "#E14F2A", mainContrast = neutral.main, highlight = "#f9dbd4", highlightContrast = gray700)
+                ColorScheme(
+                    main = "#E14F2A",
+                    mainContrast = neutral.main,
+                    highlight = "#f9dbd4",
+                    highlightContrast = gray700
+                )
 
             override val disabled = gray300
             override val focus = primary.highlight
@@ -199,7 +229,8 @@ open class DefaultTheme : Theme {
     }
 
     // extra css for general layout by using theme props
-    override val global: String by lazy { """
+    override val global: String by lazy {
+        """
         html {
             line-height: ${lineHeights.large};
             -webkit-text-size-adjust: 100%;
@@ -813,14 +844,20 @@ open class DefaultTheme : Theme {
 
     override val button = object : PushButtonStyles {
         override val types: PushButtonTypes = object : PushButtonTypes {
-            override val primary = colors.primary
-            override val secondary = colors.secondary
-            override val info = colors.info
-            override val success = colors.success
-            override val warning = colors.warning
-            override val danger = colors.danger
+            override val primary
+                get() = colors.primary
+            override val secondary
+                get() = colors.secondary
+            override val info
+                get() = colors.info
+            override val success
+                get() = colors.success
+            override val warning
+                get() = colors.warning
+            override val danger
+                get() = colors.danger
         }
-        
+
         override val variants = object : PushButtonVariants {
             private val basic: Style<BasicParams> = {
                 lineHeight { smaller }
@@ -834,22 +871,22 @@ open class DefaultTheme : Theme {
             override val solid: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 basic()
                 background { color { colorScheme.main } }
-                color   { colorScheme.mainContrast }
+                color { colorScheme.mainContrast }
                 hover {
                     background {
                         color { colorScheme.highlight }
                     }
-                    color   { colorScheme.highlightContrast }
+                    color { colorScheme.highlightContrast }
                 }
                 active {
                     background {
                         color { colorScheme.highlight }
                     }
-                    color   { colorScheme.highlightContrast }
+                    color { colorScheme.highlightContrast }
                 }
             }
 
-            override val outline:  BasicParams.(ColorScheme) -> Unit = { colorScheme ->
+            override val outline: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 basic()
                 color { colorScheme.main }
                 border {
@@ -865,12 +902,12 @@ open class DefaultTheme : Theme {
                 }
             }
 
-            override val ghost:  BasicParams.(ColorScheme) -> Unit = { colorScheme ->
+            override val ghost: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 basic()
                 color { colorScheme.main }
             }
 
-            override val link:  BasicParams.(ColorScheme) -> Unit = { colorScheme ->
+            override val link: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 basic()
                 paddings { all { none } }
                 height { auto }
