@@ -139,7 +139,7 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
  *      }
  *      radius { "1rem" }
  * },
- * store = dataStore) {
+ * value = dataStore) {
  *      size { small } // render a smaller input
  *      placeholder("Placeholder") // render a placeholder text for empty field
  * }
