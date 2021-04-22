@@ -1,6 +1,5 @@
 package dev.fritz2.components
 
-import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.Button
@@ -8,7 +7,10 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.*
+import dev.fritz2.styling.theme.ColorScheme
+import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.PushButtonTypes
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.MouseEvent
@@ -137,19 +139,19 @@ open class PushButtonComponent :
         }
     }
 
-    enum class ButtonVariant {
-        OUTLINE, SOLID, GHOST, LINK
-    }
+//    enum class ButtonVariant {
+//        OUTLINE, SOLID, GHOST, LINK
+//    }
 
     object VariantContext {
-        val outline: ButtonVariant = ButtonVariant.OUTLINE
-        val solid: ButtonVariant = ButtonVariant.SOLID
-        val ghost: ButtonVariant = ButtonVariant.GHOST
-        val link: ButtonVariant = ButtonVariant.LINK
+        const val outline = 1
+        const val solid = 2
+        const val ghost = 3
+        const val link = 4
     }
 
     val type = ComponentProperty<PushButtonTypes.() -> ColorScheme> { Theme().button.types.primary }
-    val variant = ComponentProperty<VariantContext.() -> ButtonVariant> { solid }
+    val variant = ComponentProperty<VariantContext.() -> Int> { solid }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().button.sizes.normal }
 
     private var text: (RenderContext.(hide: Boolean) -> Unit)? = null
@@ -224,10 +226,14 @@ open class PushButtonComponent :
         context.apply {
             (::button.styled(styling, baseClass + staticCss, id, prefix) {
                when(this@PushButtonComponent.variant.value(VariantContext)) {
-                   ButtonVariant.SOLID -> Theme().button.variants.solid(this, this@PushButtonComponent.type.value( Theme().button.types))
-                   ButtonVariant.LINK -> Theme().button.variants.link(this, this@PushButtonComponent.type.value( Theme().button.types))
-                   ButtonVariant.OUTLINE -> Theme().button.variants.outline(this, this@PushButtonComponent.type.value( Theme().button.types))
-                   ButtonVariant.GHOST -> Theme().button.variants.ghost(this, this@PushButtonComponent.type.value( Theme().button.types))
+                   VariantContext.solid ->
+                       Theme().button.variants.solid(this, this@PushButtonComponent.type.value(Theme().button.types))
+                   VariantContext.link ->
+                       Theme().button.variants.link(this, this@PushButtonComponent.type.value(Theme().button.types))
+                   VariantContext.outline ->
+                       Theme().button.variants.outline(this, this@PushButtonComponent.type.value(Theme().button.types))
+                   VariantContext.ghost ->
+                       Theme().button.variants.ghost(this, this@PushButtonComponent.type.value(Theme().button.types))
                 }
                 this@PushButtonComponent.size.value.invoke(Theme().button.sizes)()
             }) {
