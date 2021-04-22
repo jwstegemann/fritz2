@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
+import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLElement
 
 /**
  * This class combines the _configuration_ and the core styling of a radio group.
@@ -95,8 +97,8 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val st
 
     val selectedItem = NullableDynamicComponentProperty<T>(emptyFlow())
 
-    class EventsContext<T>(val selected: Flow<T>) {
-    }
+    class EventsContext<T>(private val element: RenderContext, val selected: Flow<T>) :
+        EventContext<HTMLElement> by element
 
     val events = ComponentProperty<EventsContext<T>.() -> Unit> {}
 
@@ -134,10 +136,10 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val st
                         }
                     }
                 }
-            }
-            EventsContext(internalStore.toggle.map { this@RadioGroupComponent.items[it] }).apply {
-                this@RadioGroupComponent.events.value(this)
-                this@RadioGroupComponent.store?.let { selected handledBy it.update }
+                EventsContext(this, internalStore.toggle.map { this@RadioGroupComponent.items[it] }).apply {
+                    this@RadioGroupComponent.events.value(this)
+                    this@RadioGroupComponent.store?.let { selected handledBy it.update }
+                }
             }
         }
     }
