@@ -33,7 +33,7 @@ import org.w3c.dom.HTMLElement
  *
  *  For a detailed explanation and examples of usage, have a look at the [selectField] function itself.
  */
-open class SelectFieldComponent<T>(protected val items: List<T>, protected val store: Store<T>? = null) :
+open class SelectFieldComponent<T>(protected val items: List<T>, protected val value: Store<T>? = null) :
     Component<Unit>,
     InputFormProperties by InputFormMixin(),
     SeverityProperties by SeverityMixin() {
@@ -93,7 +93,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
         val grpId = id ?: uniqueId()
 
         context.apply {
-            (this@SelectFieldComponent.store?.data ?: this@SelectFieldComponent.selectedItem.values)
+            (this@SelectFieldComponent.value?.data ?: this@SelectFieldComponent.selectedItem.values)
                 .map { selectedItem ->
                     this@SelectFieldComponent.items.indexOf(selectedItem).let { if (it == -1) null else it }
                 } handledBy internalStore.update
@@ -140,7 +140,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
                 }
                 EventsContext(this, internalStore.toggle.map { this@SelectFieldComponent.items[it] }).apply {
                     this@SelectFieldComponent.events.value(this)
-                    this@SelectFieldComponent.store?.let { selected handledBy it.update }
+                    this@SelectFieldComponent.value?.let { selected handledBy it.update }
                 }
             }
         }
@@ -150,14 +150,14 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
 /**
  * This function generates a selectField element.
  *
- * You have to pass a store in order to handle the selected value,
+ * You have to pass a store as value in order to handle the selected value,
  * and the events will be connected automatically.
  *
  * A basic use case:
  * ```
  * val myOptions = listOf("black", "red", "yellow")
  * val selectedItem = storeOf("red") // preselect "red"
- * selectField (items = myOptions, store = selectedItem) {
+ * selectField (items = myOptions, value = selectedItem) {
  * }
  * ```
  *
@@ -165,14 +165,14 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
  * ```
  * val myOptions = listOf("black", "red", "yellow")
  * val selectedItem = storeOf<String?>(null)
- * selectField (items = myOptions, store = selectedItem) {
+ * selectField (items = myOptions, value = selectedItem) {
  *      placeholder("My Placeholder") // will be shown until some item is selected!
  * }
  * ```
  *
  * Customize the appearance:
  * ```
- * selectField (items = myOptions, store = selectedItem) {
+ * selectField (items = myOptions, value = selectedItem) {
  *      icon { fromTheme { circleAdd } }
  *      size { large }
  *      variant { flushed }
@@ -183,14 +183,14 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
  * ```
  * val persons = listOf(Person("John Doe", 37), Person("Jane Doe", 35))
  * val selectedItem = storeOf(persons[0])
- * selectField(items = persons, store = selectedItem) {
+ * selectField(items = persons, value = selectedItem) {
  *      label { it.name } // pass a lambda expression to create a label string of an specific type
  * }
  * ```
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param items a list of all available options
- * @param store for backing up the preselected item and reflecting the selection automatically.
+ * @param value for backing up the preselected item and reflecting the selection automatically.
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
@@ -200,11 +200,11 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
 fun <T> RenderContext.selectField(
     styling: BasicParams.() -> Unit = {},
     items: List<T>,
-    store: Store<T>? = null,
+    value: Store<T>? = null,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "selectField",
     build: SelectFieldComponent<T>.() -> Unit,
 ) {
-    SelectFieldComponent(items, store).apply(build).render(this, styling, baseClass, id, prefix)
+    SelectFieldComponent<T>(items, value).apply(build).render(this, styling, baseClass, id, prefix)
 }
