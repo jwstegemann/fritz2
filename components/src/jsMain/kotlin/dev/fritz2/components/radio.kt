@@ -13,6 +13,7 @@ import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
@@ -61,10 +62,8 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
     InputFormProperties by InputFormMixin(),
     SeverityProperties by SeverityMixin() {
 
-    companion object {
-        val radioInputStaticCss = staticStyle(
-            "radioInput",
-            """
+    private val radioInputStaticCss = style(
+        """
             position: absolute;
             height: 1px; 
             width: 1px;
@@ -88,9 +87,9 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
                 boxShadow: none;
                 color: ${Theme().colors.disabled};
             }
-            """
-        )
-    }
+        """.trimIndent(),
+        prefix = "radioInput"
+    )
 
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
@@ -145,7 +144,7 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
                     `for`(inputId)
                 }
                 (::input.styled(
-                    baseClass = radioInputStaticCss,
+                    baseClass = this@RadioComponent.radioInputStaticCss,
                     prefix = prefix,
                     id = inputId
                 ) {

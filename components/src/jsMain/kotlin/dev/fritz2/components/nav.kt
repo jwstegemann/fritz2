@@ -1,14 +1,11 @@
 import dev.fritz2.components.*
 import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.name
+import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Theme
-import dev.fritz2.styling.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -27,10 +24,8 @@ import org.w3c.dom.events.MouseEvent
  */
 @ExperimentalCoroutinesApi
 open class NavLinkComponent : Component<Listener<MouseEvent>> {
-    companion object {
-        val activeStyle = staticStyle("navlink-active") {
-            Theme().appFrame.activeNavLink()
-        }
+    private val activeStyle = style("navlink-active") {
+        Theme().appFrame.activeNavLink()
     }
 
     val icon = ComponentProperty<IconComponent.() -> Unit> { fromTheme { bookmark } }
@@ -53,7 +48,9 @@ open class NavLinkComponent : Component<Listener<MouseEvent>> {
             }, baseClass, id, prefix) {
                 spacing { small }
                 items {
-                    this@NavLinkComponent.active.value?.let { className(activeStyle.whenever(it).name) }
+                    this@NavLinkComponent.active.value?.let {
+                        className(this@NavLinkComponent.activeStyle.whenever(it).name)
+                    }
                     icon(build = this@NavLinkComponent.icon.value)
                     a { this@NavLinkComponent.text.values.asText() }
                 }
