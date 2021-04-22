@@ -43,7 +43,7 @@ import org.w3c.dom.HTMLElement
  * // simple use case showing the core functionality
  * val options = listOf("A", "B", "C")
  * val myStore = storeOf("B") // or ``null`` to select nothing
- * radioGroup(items = options, store = myStore) {
+ * radioGroup(items = options, value = myStore) {
  * }
  *
  * // one can handle the events and preselected item also manually if needed:
@@ -158,7 +158,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
  * Example usage
  * ```
  * val options = listOf("A", "B", "C")
- * radioGroup(items = options, store = selectedItemStore) {
+ * radioGroup(items = options, value = selectedItemStore) {
  *     selectedItem(options[1]) // pre select "B", or ``null`` (default) to select nothing
  * }
  * ```

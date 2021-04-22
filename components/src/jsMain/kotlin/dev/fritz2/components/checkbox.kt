@@ -177,7 +177,7 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
  * Example usage
  * ```
  * val cheeseStore = storeOf(false)
- * checkbox(store = cheeseStore) {
+ * checkbox(value = cheeseStore) {
  *      label("with extra cheese") // set the label
  *      size { normal } // choose a predefined size
  * }

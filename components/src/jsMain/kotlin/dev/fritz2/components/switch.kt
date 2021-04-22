@@ -42,7 +42,7 @@ import org.w3c.dom.HTMLInputElement
  * Example usage
  * ```
  * val cheeseStore = storeOf(false)
- * switch(store = cheeseStore) {
+ * switch(value = cheeseStore) {
  *      label("with extra cheese") // set the label
  *      size { normal } // choose a predefined size
  * }

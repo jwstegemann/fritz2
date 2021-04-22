@@ -47,7 +47,7 @@ import org.w3c.dom.HTMLElement
  * // simple use case showing the core functionality
  * val options = listOf("A", "B", "C")
  * val myStore = storeOf(listOf("B"))
- * checkboxGroup(items = options, store = myStore) {
+ * checkboxGroup(items = options, values = myStore) {
  * }
  *
  * // one can handle the events and preselected item also manually if needed:
@@ -169,7 +169,7 @@ open class CheckboxGroupComponent<T>(
  * // simple use case showing the core functionality
  * val options = listOf("A", "B", "C")
  * val myStore = storeOf(<List<String>>)
- * checkboxGroup(items = options, store = myStore) {
+ * checkboxGroup(items = options, values = myStore) {
  * }
  *
  * // use case showing some styling options and a store of List<Pair<Int,String>>
