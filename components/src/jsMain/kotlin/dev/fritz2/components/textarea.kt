@@ -69,7 +69,7 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
 
         disabled {
             background {
-                color { neutral }
+                color { neutral.main }
             }
             color { disabled }
 

@@ -71,7 +71,7 @@ open class NavbarComponent : Component<Unit> {
                         top {
                             width { "6px" }
                             style { solid }
-                            color { primary.base }
+                            color { primary.main }
                         }
 
                         bottom {

@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.Button
@@ -7,10 +8,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.Colors
-import dev.fritz2.styling.theme.FormSizes
-import dev.fritz2.styling.theme.PushButtonVariants
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.MouseEvent
@@ -139,15 +137,19 @@ open class PushButtonComponent :
         }
     }
 
-    private fun buildColor(value: ColorProperty): Style<BasicParams> = { css("--main-color: $value;") }
-
-    private var colorField: Style<BasicParams> = buildColor(Theme().colors.primary.base)
-
-    fun color(value: Colors.() -> ColorProperty) {
-        colorField = buildColor(Theme().colors.value())
+    enum class ButtonVariant {
+        OUTLINE, SOLID, GHOST, LINK
     }
 
-    val variant = ComponentProperty<PushButtonVariants.() -> Style<BasicParams>> { Theme().button.variants.solid }
+    object VariantContext {
+        val outline: ButtonVariant = ButtonVariant.OUTLINE
+        val solid: ButtonVariant = ButtonVariant.SOLID
+        val ghost: ButtonVariant = ButtonVariant.GHOST
+        val link: ButtonVariant = ButtonVariant.LINK
+    }
+
+    val type = ComponentProperty<PushButtonTypes.() -> ColorScheme> { Theme().button.types.primary }
+    val variant = ComponentProperty<VariantContext.() -> ButtonVariant> { solid }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().button.sizes.normal }
 
     private var text: (RenderContext.(hide: Boolean) -> Unit)? = null
@@ -221,8 +223,12 @@ open class PushButtonComponent :
     ) {
         context.apply {
             (::button.styled(styling, baseClass + staticCss, id, prefix) {
-                this@PushButtonComponent.colorField()
-                this@PushButtonComponent.variant.value.invoke(Theme().button.variants)()
+               when(this@PushButtonComponent.variant.value(VariantContext)) {
+                   ButtonVariant.SOLID -> Theme().button.variants.solid(this, this@PushButtonComponent.type.value( Theme().button.types))
+                   ButtonVariant.LINK -> Theme().button.variants.link(this, this@PushButtonComponent.type.value( Theme().button.types))
+                   ButtonVariant.OUTLINE -> Theme().button.variants.outline(this, this@PushButtonComponent.type.value( Theme().button.types))
+                   ButtonVariant.GHOST -> Theme().button.variants.ghost(this, this@PushButtonComponent.type.value( Theme().button.types))
+                }
                 this@PushButtonComponent.size.value.invoke(Theme().button.sizes)()
             }) {
                 disabled(this@PushButtonComponent.disabled.values)
