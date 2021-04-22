@@ -15,7 +15,6 @@ import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.InputFieldVariants
 import dev.fritz2.styling.theme.Theme
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLInputElement
 
@@ -30,7 +29,7 @@ import org.w3c.dom.HTMLInputElement
  *
  *  * For a detailed explanation and examples of usage have a look at the [inputField] function!
  */
-open class InputFieldComponent(protected val value: Store<String>?) :
+open class InputFieldComponent(protected val valueStore: Store<String>?) :
     Component<Unit>,
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
@@ -60,13 +59,8 @@ open class InputFieldComponent(protected val value: Store<String>?) :
 
     val variant = ComponentProperty<InputFieldVariants.() -> Style<BasicParams>> { Theme().input.variants.outline }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().input.sizes.normal }
-    val valueAttr = DynamicComponentProperty(flowOf(""))
-    fun value(value: Flow<String>) {
-        valueAttr(value)
-    }
-    fun value(value: String) {
-        valueAttr(value)
-    }
+
+    val value = DynamicComponentProperty(flowOf(""))
     val placeholder = DynamicComponentProperty(flowOf(""))
     val type = DynamicComponentProperty(flowOf(""))
     val step = DynamicComponentProperty(flowOf(""))
@@ -86,11 +80,11 @@ open class InputFieldComponent(protected val value: Store<String>?) :
                 disabled(this@InputFieldComponent.disabled.values)
                 readOnly(this@InputFieldComponent.readonly.values)
                 placeholder(this@InputFieldComponent.placeholder.values)
-                value(this@InputFieldComponent.valueAttr.values)
+                value(this@InputFieldComponent.value.values)
                 type(this@InputFieldComponent.type.values)
                 step(this@InputFieldComponent.step.values)
                 className(this@InputFieldComponent.severityClassOf(Theme().input.severity).name)
-                this@InputFieldComponent.value?.let {
+                this@InputFieldComponent.valueStore?.let {
                     value(it.data)
                     changes.values() handledBy it.update
                 }
