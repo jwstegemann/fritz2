@@ -31,7 +31,7 @@ import org.w3c.dom.HTMLTextAreaElement
  *  * For a detailed explanation and examples of usage have a look at the [textArea] function !
  *
  */
-open class TextAreaComponent(protected val value: Store<String>? = null) :
+open class TextAreaComponent(protected val valueStore: Store<String>? = null) :
     Component<Unit>,
     EventProperties<HTMLTextAreaElement> by EventMixin(),
     ElementProperties<TextArea> by ElementMixin(),
@@ -52,14 +52,7 @@ open class TextAreaComponent(protected val value: Store<String>? = null) :
         )
     }
 
-    val valueAttr = DynamicComponentProperty(flowOf(""))
-    fun value(value: Flow<String>) {
-        valueAttr(value)
-    }
-    fun value(value: String) {
-        valueAttr(value)
-    }
-
+    val value = DynamicComponentProperty(flowOf(""))
     val variant = ComponentProperty<TextAreaVariants.() -> Style<BasicParams>> { basic }
     val placeholder = DynamicComponentProperty(flowOf(""))
     val resizeBehavior = ComponentProperty<TextAreaResize.() -> Style<BasicParams>> { Theme().textArea.resize.both }
@@ -81,9 +74,9 @@ open class TextAreaComponent(protected val value: Store<String>? = null) :
                 disabled(this@TextAreaComponent.disabled.values)
                 readOnly(this@TextAreaComponent.readonly.values)
                 placeholder(this@TextAreaComponent.placeholder.values)
-                value(this@TextAreaComponent.valueAttr.values)
+                value(this@TextAreaComponent.value.values)
                 className(this@TextAreaComponent.severityClassOf(Theme().textArea.severity).name)
-                this@TextAreaComponent.value?.let {
+                this@TextAreaComponent.valueStore?.let {
                     value(it.data)
                     changes.values() handledBy it.update
                 }
