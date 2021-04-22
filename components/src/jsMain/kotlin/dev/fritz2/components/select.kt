@@ -1,5 +1,6 @@
 import dev.fritz2.binding.Store
 import dev.fritz2.components.*
+import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.selectedValue
 import dev.fritz2.identification.uniqueId
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLElement
 
 /**
  * This class offers configuration for a selectField element:
@@ -119,8 +121,8 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
 
     val selectedItem = NullableDynamicComponentProperty<T>(emptyFlow())
 
-    class EventsContext<T>(val selected: Flow<T>) {
-    }
+    class EventsContext<T>(private val element: RenderContext, val selected: Flow<T>) :
+        EventContext<HTMLElement> by element
 
     val events = ComponentProperty<EventsContext<T>.() -> Unit> {}
 
@@ -141,7 +143,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
                     this@SelectFieldComponent.items.indexOf(selectedItem).let { if (it == -1) null else it }
                 } handledBy internalStore.update
 
-            (::div.styled(styling, baseClass + staticCss, grpId, prefix) {}){
+            (::div.styled(styling, baseClass + staticCss, grpId, prefix) {}) {
 
                 (::select.styled(styling, baseClass) {
                     this@SelectFieldComponent.basicSelectStyles()
@@ -182,11 +184,10 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val s
                         this@SelectFieldComponent.iconStyle()
                     }) { def(this@SelectFieldComponent.icon.value(Theme().icons)) }
                 }
-            }
-
-            EventsContext(internalStore.toggle.map { this@SelectFieldComponent.items[it] }).apply {
-                this@SelectFieldComponent.events.value(this)
-                this@SelectFieldComponent.store?.let { selected handledBy it.update }
+                EventsContext(this, internalStore.toggle.map { this@SelectFieldComponent.items[it] }).apply {
+                    this@SelectFieldComponent.events.value(this)
+                    this@SelectFieldComponent.store?.let { selected handledBy it.update }
+                }
             }
         }
     }
@@ -251,5 +252,5 @@ fun <T> RenderContext.selectField(
     prefix: String = "selectField",
     build: SelectFieldComponent<T>.() -> Unit,
 ) {
-    SelectFieldComponent<T>(items, store).apply(build).render(this, styling, baseClass, id, prefix)
+    SelectFieldComponent(items, store).apply(build).render(this, styling, baseClass, id, prefix)
 }

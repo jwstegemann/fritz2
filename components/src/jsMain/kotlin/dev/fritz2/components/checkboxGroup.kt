@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
+import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLElement
 
 
 /**
@@ -102,8 +104,8 @@ open class CheckboxGroupComponent<T>(
 
     val selectedItems = DynamicComponentProperty<List<T>>(flowOf(emptyList()))
 
-    class EventsContext<T>(val selected: Flow<List<T>>) {
-    }
+    class EventsContext<T>(private val element: RenderContext, val selected: Flow<List<T>>) :
+        EventContext<HTMLElement> by element
 
     val events = ComponentProperty<EventsContext<T>.() -> Unit> {}
 
@@ -144,7 +146,7 @@ open class CheckboxGroupComponent<T>(
                     }
                 }
 
-                EventsContext(multiSelectionStore.toggle).apply {
+                EventsContext(this, multiSelectionStore.toggle).apply {
                     this@CheckboxGroupComponent.events.value(this)
                     this@CheckboxGroupComponent.store?.let { selected handledBy it.update }
                 }
