@@ -1904,7 +1904,7 @@ open class DefaultTheme : Theme {
                 vertical { "0.6rem" }
                 horizontal { small }
             }
-            alignItems { AlignItemsValues.center }
+            alignItems { center }
             borders {
                 left {
                     width { "0.2rem" }
