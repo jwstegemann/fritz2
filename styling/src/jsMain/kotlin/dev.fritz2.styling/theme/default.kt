@@ -1435,6 +1435,37 @@ open class DefaultTheme : Theme {
             }
         }
 
+        override val variants = object : TextAreaVariants {
+            override val basic: Style<BasicParams> = {
+                radius { normal }
+                fontWeight { normal }
+
+                border {
+                    width { thin }
+                    style { solid }
+                    color { gray300 }
+
+                }
+
+                background { color { "white" } }
+
+                disabled {
+                    background {
+                        color { neutral }
+                    }
+                    color { disabled }
+
+                }
+
+                focus {
+                    border {
+                        color { "#3182ce" }
+                    }
+                    boxShadow { outline }
+                }
+            }
+        }
+
         override val severity: SeverityStyles
             get() = input.severity
     }
@@ -1674,7 +1705,51 @@ open class DefaultTheme : Theme {
     override val select = object : SelectFieldStyles {
 
         override val variants = object : SelectFieldVariants {
+            private val basic: Style<BasicParams> = {
+                width { full }
+                paddings {
+                    left { "0.75rem" }
+                    right { "1.5rem" }
+                    bottom { "1px" }
+                }
+                lineHeight { normal }
+                fontSize { "1rem" }
+                height { "2.5rem" }
+                radius { normal }
+                focus {
+                    focus {
+                        border {
+                            color { primary.base }
+                        }
+                        boxShadow { outline }
+                    }
+                }
+                hover {
+                    border {
+                        color { gray700 }
+                    }
+                }
+
+                disabled {
+                    background {
+                        color { neutral }
+                    }
+                    color { disabled }
+                    hover {
+                        border {
+                            color { gray300 }
+                        }
+                    }
+                }
+                position { relative { } }
+                minWidth { "2.5rem" }
+
+                css("outline: 0px;")
+                css("appearance: none;")
+                css("transition: all 0.2s ease 0s;")
+            }
             override val outline: Style<BasicParams> = {
+                basic()
                 border {
                     width { thin }
                     style { solid }
@@ -1683,6 +1758,7 @@ open class DefaultTheme : Theme {
             }
 
             override val filled: Style<BasicParams> = {
+                basic()
                 background {
                     color { gray300 }
                 }

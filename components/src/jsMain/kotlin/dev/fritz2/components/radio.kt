@@ -13,6 +13,7 @@ import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
@@ -54,17 +55,15 @@ import org.w3c.dom.HTMLInputElement
  * }
  * ```
  */
-open class RadioComponent(protected val store: Store<Boolean>? = null) :
+open class RadioComponent(protected val value: Store<Boolean>? = null) :
     Component<Label>,
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
     SeverityProperties by SeverityMixin() {
 
-    companion object {
-        val radioInputStaticCss = staticStyle(
-            "radioInput",
-            """
+    private val radioInputStaticCss = style(
+        """
             position: absolute;
             height: 1px; 
             width: 1px;
@@ -88,9 +87,9 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
                 boxShadow: none;
                 color: ${Theme().colors.disabled};
             }
-            """
-        )
-    }
+        """.trimIndent(),
+        prefix = "radioInput"
+    )
 
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
@@ -145,7 +144,7 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
                     `for`(inputId)
                 }
                 (::input.styled(
-                    baseClass = radioInputStaticCss,
+                    baseClass = this@RadioComponent.radioInputStaticCss,
                     prefix = prefix,
                     id = inputId
                 ) {
@@ -158,10 +157,10 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
                     readOnly(this@RadioComponent.readonly.values)
                     type("radio")
                     name(inputName)
-                    checked(this@RadioComponent.store?.data ?: this@RadioComponent.selected.values)
+                    checked(this@RadioComponent.value?.data ?: this@RadioComponent.selected.values)
                     value("X")
                     className(this@RadioComponent.severityClassOf(Theme().radio.severity).name)
-                    this@RadioComponent.store?.let { changes.states() handledBy it.update }
+                    this@RadioComponent.value?.let { changes.states() handledBy it.update }
                     this@RadioComponent.events.value.invoke(this)
                     this@RadioComponent.element.value.invoke(this)
                 }
@@ -196,7 +195,7 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
  * Example usage
  * ```
  * val cheeseStore = storeOf(false)
- * radio(store = cheeseStore) {
+ * radio(value = cheeseStore) {
  *      label("with extra cheese") // set the label
  *      size { normal } // choose a predefined size
  * }
@@ -215,7 +214,7 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
  * @see RadioComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
- * @param store a boolean store to handle the state and its changes automatically
+ * @param value a boolean store to handle the state and its changes automatically
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
@@ -223,10 +222,10 @@ open class RadioComponent(protected val store: Store<Boolean>? = null) :
  */
 fun RenderContext.radio(
     styling: BasicParams.() -> Unit = {},
-    store: Store<Boolean>? = null,
+    value: Store<Boolean>? = null,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "radioComponent",
     build: RadioComponent.() -> Unit = {}
-): Label = RadioComponent(store).apply(build).render(this, styling, baseClass, id, prefix)
+): Label = RadioComponent(value).apply(build).render(this, styling, baseClass, id, prefix)
 

@@ -11,9 +11,8 @@ import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.FormSizes
-import dev.fritz2.styling.theme.TextAreaResize
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.theme.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLTextAreaElement
 
@@ -32,7 +31,7 @@ import org.w3c.dom.HTMLTextAreaElement
  *  * For a detailed explanation and examples of usage have a look at the [textArea] function !
  *
  */
-open class TextAreaComponent(protected val store: Store<String>? = null) :
+open class TextAreaComponent(protected val valueStore: Store<String>? = null) :
     Component<Unit>,
     EventProperties<HTMLTextAreaElement> by EventMixin(),
     ElementProperties<TextArea> by ElementMixin(),
@@ -53,37 +52,8 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
         )
     }
 
-    val basicInputStyles: Style<BasicParams> = {
-
-        radius { normal }
-        fontWeight { normal }
-
-        border {
-            width { thin }
-            style { solid }
-            color { gray300 }
-
-        }
-
-        background { color { "white" } }
-
-        disabled {
-            background {
-                color { neutral.main }
-            }
-            color { disabled }
-
-        }
-
-        focus {
-            border {
-                color { "#3182ce" }
-            }
-            boxShadow { outline }
-        }
-    }
-
     val value = DynamicComponentProperty(flowOf(""))
+    val variant = ComponentProperty<TextAreaVariants.() -> Style<BasicParams>> { basic }
     val placeholder = DynamicComponentProperty(flowOf(""))
     val resizeBehavior = ComponentProperty<TextAreaResize.() -> Style<BasicParams>> { Theme().textArea.resize.both }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().textArea.sizes.normal }
@@ -99,15 +69,14 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
             (::textarea.styled(styling, baseClass + staticCss, id, prefix) {
                 this@TextAreaComponent.resizeBehavior.value.invoke(Theme().textArea.resize)()
                 this@TextAreaComponent.size.value.invoke(Theme().textArea.sizes)()
-                this@TextAreaComponent.basicInputStyles()
-
+                this@TextAreaComponent.variant.value.invoke(Theme().textArea.variants)
             }){
                 disabled(this@TextAreaComponent.disabled.values)
                 readOnly(this@TextAreaComponent.readonly.values)
                 placeholder(this@TextAreaComponent.placeholder.values)
                 value(this@TextAreaComponent.value.values)
                 className(this@TextAreaComponent.severityClassOf(Theme().textArea.severity).name)
-                this@TextAreaComponent.store?.let {
+                this@TextAreaComponent.valueStore?.let {
                     value(it.data)
                     changes.values() handledBy it.update
                 }
@@ -134,7 +103,7 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
  *  - events -> access the DOM events of the underlying HTML element
  *  - element -> basic properties of the textarea html element; use with caution!
  *
- * textArea(store = dataStore) {
+ * textArea(value = dataStore) {
  *     placeholder { "My placeholder" } // render a placeholder text for empty textarea
  *     resizeBehavior { horizontal } // resize textarea horizontal
  *     size { small } // render a smaller textarea
@@ -169,7 +138,7 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
  * @see TextAreaComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
- * @param store optional [Store] that holds the data of the textarea
+ * @param value optional [Store] that holds the data of the textarea
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
@@ -179,11 +148,11 @@ open class TextAreaComponent(protected val store: Store<String>? = null) :
 
 fun RenderContext.textArea(
     styling: BasicParams.() -> Unit = {},
-    store: Store<String>? = null,
+    value: Store<String>? = null,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "textArea",
     build: TextAreaComponent.() -> Unit
 ) {
-    TextAreaComponent(store).apply(build).render(this, styling, baseClass, id, prefix)
+    TextAreaComponent(value).apply(build).render(this, styling, baseClass, id, prefix)
 }

@@ -563,6 +563,7 @@ interface TooltipPlacements {
 interface TextAreaStyles : SeverityAware {
     val resize: TextAreaResize
     val sizes: FormSizes
+    val variants: TextAreaVariants
 }
 
 /**
@@ -573,6 +574,10 @@ interface TextAreaResize {
     val none: Style<BasicParams>
     val vertical: Style<BasicParams>
     val horizontal: Style<BasicParams>
+}
+
+interface TextAreaVariants {
+    val basic: Style<BasicParams>
 }
 
 /**
