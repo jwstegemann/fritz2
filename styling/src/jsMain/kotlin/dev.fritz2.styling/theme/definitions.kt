@@ -623,7 +623,7 @@ interface AlertStacking {
 }
 
 interface AlertSeverity {
-    val color: ColorProperty
+    val colorScheme: ColorScheme
     val icon: IconDefinition
 }
 
@@ -634,22 +634,12 @@ interface AlertSeverities {
     val error: AlertSeverity
 }
 
-typealias AlertVariantStyleFactory = (ColorProperty) -> AlertVariantStyles
-
 interface AlertVariants {
-    val subtle: AlertVariantStyleFactory
-    val solid: AlertVariantStyleFactory
-    val leftAccent: AlertVariantStyleFactory
-    val topAccent: AlertVariantStyleFactory
-    val discreet: AlertVariantStyleFactory
-}
-
-interface AlertVariantStyles {
-    val background: Style<BasicParams>
-    val text: Style<BasicParams>
-    val accent: Style<BasicParams>
-    val decorationLeft: Style<BasicParams>
-    val decorationTop: Style<BasicParams>
+    val subtle: BasicParams.(AlertSeverity) -> Unit
+    val solid: BasicParams.(AlertSeverity) -> Unit
+    val leftAccent: BasicParams.(AlertSeverity) -> Unit
+    val topAccent: BasicParams.(AlertSeverity) -> Unit
+    val discreet: BasicParams.(AlertSeverity) -> Unit
 }
 
 

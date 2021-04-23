@@ -50,9 +50,14 @@ open class DefaultTheme : Theme {
             override val gray900 = "#171923"
 
             override val neutral = // white
-                ColorScheme(main = "#ffffff", mainContrast = gray700, highlight = gray100, highlightContrast = gray700)
+                ColorScheme(
+                    main = "#ffffff",
+                    mainContrast = gray700,
+                    highlight = gray100,
+                    highlightContrast = gray700
+                )
 
-            override val primary = // blue primary.inverted
+            override val primary =
                 ColorScheme(
                     main = "#0C5173",
                     mainContrast = gray100,
@@ -60,7 +65,7 @@ open class DefaultTheme : Theme {
                     highlightContrast = gray600
                 )
 
-            override val secondary = // yellow
+            override val secondary =
                 ColorScheme(
                     main = "#E6A300",
                     mainContrast = gray100,
@@ -68,35 +73,40 @@ open class DefaultTheme : Theme {
                     highlightContrast = gray600
                 )
 
-            override val tertiary = // grey
-                ColorScheme(main = gray600, mainContrast = gray100, highlight = gray300, highlightContrast = gray600)
+            override val tertiary =
+                ColorScheme(
+                    main = gray600,
+                    mainContrast = gray100,
+                    highlight = gray300,
+                    highlightContrast = gray600
+                )
 
             // Signal Colors
-            override val info =  // blue
+            override val info =
                 ColorScheme(
                     main = "#219EBC",
                     mainContrast = neutral.main,
                     highlight = "#d2ebf1",
                     highlightContrast = gray700
-                ) //3dbddd
+                )
 
-            override val success = // green
+            override val success =
                 ColorScheme(
                     main = "#00A848",
                     mainContrast = neutral.main,
                     highlight = "#ccedda",
                     highlightContrast = gray700
-                ) //E77457 00d95E
+                )
 
-            override val warning =   // orange
+            override val warning =
                 ColorScheme(
                     main = "#F08B3A",
                     mainContrast = neutral.main,
                     highlight = "#fce7d7",
                     highlightContrast = gray700
-                ) //f3a462
+                )
 
-            override val danger =  // red
+            override val danger =
                 ColorScheme(
                     main = "#E14F2A",
                     mainContrast = neutral.main,
@@ -1447,19 +1457,19 @@ open class DefaultTheme : Theme {
 
                 }
 
-                background { color { "white" } }
+                background { backgroundColor }
+                color { fontColor }
 
                 disabled {
                     background {
-                        color { neutral }
+                        color { neutral.highlight }
                     }
                     color { disabled }
-
                 }
 
                 focus {
                     border {
-                        color { "#3182ce" }
+                        color { focus }
                     }
                     boxShadow { outline }
                 }
@@ -1474,125 +1484,70 @@ open class DefaultTheme : Theme {
         override val severities: AlertSeverities
             get() = object : AlertSeverities {
                 override val info: AlertSeverity = object : AlertSeverity {
-                    override val color = colors.info.main
+                    override val colorScheme = colors.info
                     override val icon = icons.circleInformation
                 }
                 override val success: AlertSeverity = object : AlertSeverity {
-                    override val color = colors.success.main
+                    override val colorScheme = colors.success
                     override val icon = icons.circleCheck
                 }
                 override val warning: AlertSeverity = object : AlertSeverity {
-                    override val color = colors.warning.main
+                    override val colorScheme = colors.warning
                     override val icon = icons.circleWarning
                 }
                 override val error: AlertSeverity = object : AlertSeverity {
-                    override val color = colors.danger.main
+                    override val colorScheme = colors.danger
                     override val icon = icons.circleError
                 }
             }
 
         override val variants: AlertVariants = object : AlertVariants {
-            /*
-            TODO: Use text colors from theme
-             */
-            private val textColorDark = rgb(0, 0, 0)
-            private val textColorLight = rgb(255, 255, 255)
-
-            override val subtle: AlertVariantStyleFactory = { it ->
-                object : AlertVariantStyles {
-                    override val background: Style<BasicParams> = {
-                        background { color { alterHexColorBrightness(it, 1.5) } }
-                    }
-                    override val text: Style<BasicParams> = {
-                        color { textColorDark }
-                    }
-                    override val accent: Style<BasicParams> = {
-                        color { it }
-                    }
-                    override val decorationLeft: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
-                    override val decorationTop: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
+            override val subtle: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+                background {
+                    color { alertSeverity.colorScheme.highlight }
                 }
+                color { alertSeverity.colorScheme.highlightContrast }
             }
-            override val solid: AlertVariantStyleFactory = {
-                object : AlertVariantStyles {
-                    override val background: Style<BasicParams> = {
-                        background { color { it } }
-                    }
-                    override val text: Style<BasicParams> = {
-                        color { textColorLight }
-                    }
-                    override val accent: Style<BasicParams> = {
-                        color { textColorLight }
-                    }
-                    override val decorationLeft: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
-                    override val decorationTop: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
+            override val solid: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+                background {
+                    color { alertSeverity.colorScheme.main }
                 }
-            }
-            override val leftAccent: AlertVariantStyleFactory = {
-                object : AlertVariantStyles {
-                    override val background: Style<BasicParams> = {
-                        background { color { alterHexColorBrightness(it, 1.5) } }
-                    }
-                    override val text: Style<BasicParams> = {
-                        color { textColorDark }
-                    }
-                    override val accent: Style<BasicParams> = {
-                        color { it }
-                    }
-                    override val decorationLeft: Style<BasicParams> = {
-                        background { color { it } }
-                    }
-                    override val decorationTop: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
-                }
-            }
-            override val topAccent: AlertVariantStyleFactory = {
-                object : AlertVariantStyles {
-                    override val background: Style<BasicParams> = {
-                        background { color { alterHexColorBrightness(it, 1.5) } }
-                    }
-                    override val text: Style<BasicParams> = {
-                        color { textColorDark }
-                    }
-                    override val accent: Style<BasicParams> = {
-                        color { it }
-                    }
-                    override val decorationLeft: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
-                    override val decorationTop: Style<BasicParams> = {
-                        background { color { it } }
-                    }
-                }
+                color { alertSeverity.colorScheme.mainContrast }
             }
 
-            override val discreet: AlertVariantStyleFactory = {
-                object : AlertVariantStyles {
-                    override val background: Style<BasicParams> = {
-                        background { inherit }
-                    }
-                    override val text: Style<BasicParams> = {
-                        color { it }
-                    }
-                    override val accent: Style<BasicParams> = {
-                        color { it }
-                    }
-                    override val decorationLeft: Style<BasicParams> = {
-                        css("visibility: hidden")
-                    }
-                    override val decorationTop: Style<BasicParams> = {
-                        css("visibility: hidden")
+            override val leftAccent: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+                background {
+                    color { alertSeverity.colorScheme.highlight }
+                }
+                color { alertSeverity.colorScheme.highlightContrast }
+
+                borders {
+                    left {
+                        width { fat }
+                        color { alertSeverity.colorScheme.main }
+                        style { solid }
                     }
                 }
+            }
+            override val topAccent: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+                background {
+                    color { alertSeverity.colorScheme.highlight }
+                }
+                color { alertSeverity.colorScheme.highlightContrast }
+
+                borders {
+                    top {
+                        width { fat }
+                        color { alertSeverity.colorScheme.main }
+                        style { solid }
+                    }
+                }
+            }
+            override val discreet: BasicParams.(AlertSeverity) -> Unit = { _ ->
+                background {
+                    color { backgroundColor }
+                }
+                color { fontColor }
             }
         }
 
@@ -1619,7 +1574,7 @@ open class DefaultTheme : Theme {
 
         override val stacking = object : AlertStacking {
             override val compact: Style<BasicParams> = {
-                margin { "0" }
+                margin { none }
             }
             override val separated: Style<BasicParams> = {
                 margin { normal }
@@ -1716,10 +1671,12 @@ open class DefaultTheme : Theme {
                 fontSize { "1rem" }
                 height { "2.5rem" }
                 radius { normal }
+                background { backgroundColor }
+                color { fontColor }
                 focus {
                     focus {
                         border {
-                            color { primary.base }
+                            color { focus }
                         }
                         boxShadow { outline }
                     }
@@ -1732,7 +1689,7 @@ open class DefaultTheme : Theme {
 
                 disabled {
                     background {
-                        color { neutral }
+                        color { neutral.highlight }
                     }
                     color { disabled }
                     hover {
@@ -1764,7 +1721,10 @@ open class DefaultTheme : Theme {
                 }
 
                 hover {
-                    css("filter: brightness(90%);")
+                    background {
+                        color { primary.highlight }
+                    }
+                    color { primary.highlightContrast }
                 }
 
                 focus {
