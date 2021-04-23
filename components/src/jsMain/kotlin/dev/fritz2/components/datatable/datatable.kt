@@ -1204,11 +1204,11 @@ open class TableComponent<T, I>(val dataStore: RootStore<List<T>>, protected val
 
                 // tie selection to external store if needed
                 when (this@TableComponent.selection.value.selectionMode) {
-                    SelectionMode.Single -> this@TableComponent.events {
-                        this@TableComponent.selection.value.single!!.store.value?.let { selectedRow handledBy it.update }
+                    SelectionMode.Single -> this@TableComponent.selection.value.single!!.store.value?.let {
+                        this@TableComponent.events { selectedRow handledBy it.update }
                     }
-                    SelectionMode.Multi -> this@TableComponent.events {
-                        this@TableComponent.selection.value.multi!!.store.value?.let { selectedRows handledBy it.update }
+                    SelectionMode.Multi -> this@TableComponent.selection.value.multi!!.store.value?.let {
+                        this@TableComponent.events { selectedRows handledBy it.update }
                     }
                     else -> Unit
                 }
