@@ -5,6 +5,7 @@ import dev.fritz2.binding.Store
 import dev.fritz2.binding.SubStore
 import dev.fritz2.binding.sub
 import dev.fritz2.components.*
+import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.*
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
@@ -16,6 +17,7 @@ import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.HTMLElement
 import kotlin.collections.Map
 import kotlin.math.abs
 
@@ -1023,15 +1025,14 @@ open class TableComponent<T, I>(val dataStore: RootStore<List<T>>, protected val
 
     val selectionStore: RowSelectionStore<T, I> = RowSelectionStore(rowIdProvider)
 
-    class EventsContext<T, I>(rowSelectionStore: RowSelectionStore<T, I>) {
+    class EventsContext<T, I>(element: RenderContext, rowSelectionStore: RowSelectionStore<T, I>) :
+        EventContext<HTMLElement> by element {
         val selectedRows: Flow<List<T>> = rowSelectionStore.selectedData
         val selectedRow: Flow<T?> = rowSelectionStore.selectedData.map { it.firstOrNull() }
         val dbClicks: Flow<T> = rowSelectionStore.dbClickedRow
     }
 
-    fun events(expr: EventsContext<T, I>.() -> Unit) {
-        EventsContext(selectionStore).expr()
-    }
+    val events = ComponentProperty<EventsContext<T, I>.() -> Unit> {}
 
     class Selection<T, I> {
 
@@ -1200,17 +1201,21 @@ open class TableComponent<T, I>(val dataStore: RootStore<List<T>>, protected val
                 position { relative { } }
             }) {
                 this@TableComponent.renderTable(baseClass, id, prefix, this@TableComponent.rowIdProvider, this)
-            }
 
-            // tie selection to external store if needed
-            when (this@TableComponent.selection.value.selectionMode) {
-                SelectionMode.Single -> this@TableComponent.events {
-                    this@TableComponent.selection.value.single!!.store.value?.let { selectedRow handledBy it.update }
+                // tie selection to external store if needed
+                when (this@TableComponent.selection.value.selectionMode) {
+                    SelectionMode.Single -> this@TableComponent.events {
+                        this@TableComponent.selection.value.single!!.store.value?.let { selectedRow handledBy it.update }
+                    }
+                    SelectionMode.Multi -> this@TableComponent.events {
+                        this@TableComponent.selection.value.multi!!.store.value?.let { selectedRows handledBy it.update }
+                    }
+                    else -> Unit
                 }
-                SelectionMode.Multi -> this@TableComponent.events {
-                    this@TableComponent.selection.value.multi!!.store.value?.let { selectedRows handledBy it.update }
+
+                EventsContext(this, this@TableComponent.selectionStore).apply {
+                    this@TableComponent.events.value(this)
                 }
-                else -> Unit
             }
         }
     }
