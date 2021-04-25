@@ -54,15 +54,19 @@ open class AlertComponent : Component<Unit> {
     val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
     val severity = ComponentProperty<AlertSeverities.() -> AlertSeverity> { info }
 
-    object VariantContext {
-        val solid = 1
-        val subtle = 2
-        val leftAccent = 3
-        val topAccent = 4
-        val discreet = 5
+    enum class AlertVariant {
+        SOLID, SUBTLE, LEFT_ACCENT, TOP_ACCENT, DISCREET
     }
 
-    val variant = ComponentProperty<VariantContext.() -> Int> { solid }
+    object VariantContext {
+        val solid : AlertVariant = AlertVariant.SOLID
+        val subtle = AlertVariant.SUBTLE
+        val leftAccent = AlertVariant.LEFT_ACCENT
+        val topAccent = AlertVariant.TOP_ACCENT
+        val discreet = AlertVariant.DISCREET
+    }
+
+    val variant = ComponentProperty<VariantContext.() -> AlertVariant> { solid }
 
     // the icon specified in AlertSeverity is used if no icon is specified manually
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)

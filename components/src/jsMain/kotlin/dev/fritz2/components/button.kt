@@ -23,7 +23,7 @@ import org.w3c.dom.events.MouseEvent
  * If not, just use those functions for stetting up a button!
  *
  * Much more important are the _configuration_ functions. You can configure the following aspects:
- *  - the background color
+ *  - the type (``colorScheme``) - default is ``primary``
  *  - the label text
  *  - the icon including its position (left or right)
  *  - a state called ``loading`` for visualizing a longer background task
@@ -139,19 +139,19 @@ open class PushButtonComponent :
         }
     }
 
-//    enum class ButtonVariant {
-//        OUTLINE, SOLID, GHOST, LINK
-//    }
+    enum class ButtonVariant {
+        OUTLINE, SOLID, GHOST, LINK
+    }
 
     object VariantContext {
-        const val outline = 1
-        const val solid = 2
-        const val ghost = 3
-        const val link = 4
+        val outline = ButtonVariant.OUTLINE
+        val solid = ButtonVariant.SOLID
+        val ghost = ButtonVariant.GHOST
+        val link = ButtonVariant.LINK
     }
 
     val type = ComponentProperty<PushButtonTypes.() -> ColorScheme> { Theme().button.types.primary }
-    val variant = ComponentProperty<VariantContext.() -> Int> { solid }
+    val variant = ComponentProperty<VariantContext.() -> ButtonVariant> { solid }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().button.sizes.normal }
 
     private var text: (RenderContext.(hide: Boolean) -> Unit)? = null
