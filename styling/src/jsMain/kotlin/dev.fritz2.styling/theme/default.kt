@@ -1375,26 +1375,6 @@ open class DefaultTheme : Theme {
     }
 
     override val alert: AlertStyles = object : AlertStyles {
-        override val severities: AlertSeverities
-            get() = object : AlertSeverities {
-                override val info: AlertSeverity = object : AlertSeverity {
-                    override val color = colors.info
-                    override val icon = icons.circleInformation
-                }
-                override val success: AlertSeverity = object : AlertSeverity {
-                    override val color = colors.success
-                    override val icon = icons.circleCheck
-                }
-                override val warning: AlertSeverity = object : AlertSeverity {
-                    override val color = colors.warning
-                    override val icon = icons.circleWarning
-                }
-                override val error: AlertSeverity = object : AlertSeverity {
-                    override val color = colors.danger
-                    override val icon = icons.circleError
-                }
-            }
-
         override val variants: AlertVariants = object : AlertVariants {
             /*
             TODO: Use text colors from theme
@@ -1402,70 +1382,58 @@ open class DefaultTheme : Theme {
             private val textColorDark = rgb(0, 0, 0)
             private val textColorLight = rgb(255, 255, 255)
 
-            override val subtle: AlertVariantStyleFactory = { it ->
+            override val subtle: AlertVariantStyleFactory = { color ->
                 object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
-                        background { color { alterHexColorBrightness(it, 1.5) } }
+                        background { color { alterHexColorBrightness(color, 1.5) } }
                     }
-                    override val text: Style<BasicParams> = {
+                    override val foreground: Style<BasicParams> = {
                         color { textColorDark }
-                    }
-                    override val accent: Style<BasicParams> = {
-                        color { it }
                     }
                     override val decoration: Style<BasicParams> = { }
                 }
             }
-            override val solid: AlertVariantStyleFactory = {
+            override val solid: AlertVariantStyleFactory = { color ->
                 object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
-                        background { color { it } }
+                        background { color { color } }
                     }
-                    override val text: Style<BasicParams> = {
-                        color { textColorLight }
-                    }
-                    override val accent: Style<BasicParams> = {
+                    override val foreground: Style<BasicParams> = {
                         color { textColorLight }
                     }
                     override val decoration: Style<BasicParams> = { }
                 }
             }
-            override val leftAccent: AlertVariantStyleFactory = {
+            override val leftAccent: AlertVariantStyleFactory = { color ->
                 object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
-                        background { color { alterHexColorBrightness(it, 1.5) } }
+                        background { color { alterHexColorBrightness(color, 1.5) } }
                     }
-                    override val text: Style<BasicParams> = {
+                    override val foreground: Style<BasicParams> = {
                         color { textColorDark }
-                    }
-                    override val accent: Style<BasicParams> = {
-                        color { it }
                     }
                     override val decoration: Style<BasicParams> = {
                         borders {
                             left {
-                                color { it }
+                                color { color }
                                 width { "var(--al-border-width)" }
                             }
                         }
                     }
                 }
             }
-            override val topAccent: AlertVariantStyleFactory = {
+            override val topAccent: AlertVariantStyleFactory = { color ->
                 object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
-                        background { color { alterHexColorBrightness(it, 1.5) } }
+                        background { color { alterHexColorBrightness(color, 1.5) } }
                     }
-                    override val text: Style<BasicParams> = {
+                    override val foreground: Style<BasicParams> = {
                         color { textColorDark }
-                    }
-                    override val accent: Style<BasicParams> = {
-                        color { it }
                     }
                     override val decoration: Style<BasicParams> = {
                         borders {
                             top {
-                                color { it }
+                                color { color }
                                 width { "var(--al-border-width)" }
                             }
                         }
@@ -1473,16 +1441,13 @@ open class DefaultTheme : Theme {
                 }
             }
 
-            override val discreet: AlertVariantStyleFactory = {
+            override val discreet: AlertVariantStyleFactory = { color ->
                 object : AlertVariantStyles {
                     override val background: Style<BasicParams> = {
                         background { inherit }
                     }
-                    override val text: Style<BasicParams> = {
-                        color { it }
-                    }
-                    override val accent: Style<BasicParams> = {
-                        color { it }
+                    override val foreground: Style<BasicParams> = {
+                        color { color }
                     }
                     override val decoration: Style<BasicParams> = { }
                 }

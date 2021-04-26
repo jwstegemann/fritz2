@@ -594,7 +594,6 @@ interface FormControlStyles {
  * definition of the theme's alerts
  */
 interface AlertStyles {
-    val severities: AlertSeverities
     val variants: AlertVariants
     val sizes: FormSizes
     val stacking: AlertStacking
@@ -603,18 +602,6 @@ interface AlertStyles {
 interface AlertStacking {
     val compact: Style<BasicParams>
     val separated: Style<BasicParams>
-}
-
-interface AlertSeverity {
-    val color: ColorProperty
-    val icon: IconDefinition
-}
-
-interface AlertSeverities {
-    val info: AlertSeverity
-    val success: AlertSeverity
-    val warning: AlertSeverity
-    val error: AlertSeverity
 }
 
 typealias AlertVariantStyleFactory = (ColorProperty) -> AlertVariantStyles
@@ -629,8 +616,7 @@ interface AlertVariants {
 
 interface AlertVariantStyles {
     val background: Style<BasicParams>
-    val text: Style<BasicParams>
-    val accent: Style<BasicParams>
+    val foreground: Style<BasicParams>
     val decoration: Style<BasicParams>
 }
 

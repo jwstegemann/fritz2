@@ -4,10 +4,7 @@ import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
+import dev.fritz2.styling.params.*
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +14,7 @@ import kotlinx.coroutines.flow.flowOf
  * A component to display an alert consisting of an icon, title and description.
  * Different styles based on severities are supported, as well as a number of different layout options.
  *
+ * TODO: Adjust kdoc for missing severity
  * Currently the following severities are available:
  * - Info
  * - Success
@@ -66,23 +64,21 @@ open class AlertComponent : Component<Unit> {
         }
     }
 
-    val sizes = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
-    val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
-    val severity = ComponentProperty<AlertSeverities.() -> AlertSeverity> { info }
-    val variant = ComponentProperty<AlertVariants.() -> AlertVariantStyleFactory> { solid }
-
-    val variantStyles: AlertVariantStyles
-        get() {
-            val alertSeverity = severity.value.invoke(Theme().alert.severities)
-            val alertVariantFactory = variant.value.invoke(Theme().alert.variants)
-            return alertVariantFactory.invoke(alertSeverity.color)
-        }
-
     // the icon specified in AlertSeverity is used if no icon is specified manually
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)
+    val color = ComponentProperty<Colors.() -> ColorProperty> { info }
+    val variant = ComponentProperty<AlertVariants.() -> AlertVariantStyleFactory> { solid }
+    val sizes = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
+    val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
+
+    private val variantStyles: AlertVariantStyles
+        get() {
+            val alertVariantFactory = variant.value.invoke(Theme().alert.variants)
+            return alertVariantFactory.invoke(color.value.invoke(Theme().colors))
+        }
+
 
     private var title: (RenderContext.() -> Unit)? = null
-    private var content: (RenderContext.() -> Unit)? = null
 
     fun title(value: RenderContext.() -> Unit) {
         title = value
@@ -99,8 +95,10 @@ open class AlertComponent : Component<Unit> {
         }
     }
 
-    @Suppress("unused")
     fun title(value: String) = title(flowOf(value))
+
+
+    private var content: (RenderContext.() -> Unit)? = null
 
     fun content(value: RenderContext.() -> Unit) {
         content = value
@@ -108,15 +106,12 @@ open class AlertComponent : Component<Unit> {
 
     fun content(value: Flow<String>) {
         content {
-            (::span.styled {
-                // To be added
-            }) {
-                value.asText()
-            }
+            span { value.asText() }
         }
     }
 
     fun content(value: String) = content(flowOf(value))
+
 
     override fun render(
         context: RenderContext,
@@ -132,24 +127,22 @@ open class AlertComponent : Component<Unit> {
                 this@AlertComponent.variantStyles.background()
                 this@AlertComponent.variantStyles.decoration()
             }) {
-                box(styling = {
-                    css("margin-right: var(--al-icon-margin)")
-                    this@AlertComponent.variantStyles.accent()
-                }) {
-                    icon({
-                        css("width: var(--al-icon-size)")
-                        css("height: var(--al-icon-size)")
+                this@AlertComponent.icon.value?.let {
+                    box(styling = {
+                        css("margin-right: var(--al-icon-margin)")
+                        this@AlertComponent.variantStyles.foreground()
                     }) {
-                        fromTheme {
-                            this@AlertComponent.icon.value
-                                ?.invoke(Theme().icons)
-                                ?: this@AlertComponent.severity.value(Theme().alert.severities).icon
+                        icon({
+                            css("width: var(--al-icon-size)")
+                            css("height: var(--al-icon-size)")
+                        }) {
+                            fromTheme { it.invoke(Theme().icons) }
                         }
                     }
                 }
 
                 box(baseClass = alertContentCss, styling = {
-                    this@AlertComponent.variantStyles.text()
+                    this@AlertComponent.variantStyles.foreground()
                 }) {
                     this@AlertComponent.title?.invoke(this)
                     this@AlertComponent.content?.invoke(this)
@@ -195,12 +188,20 @@ fun ComponentValidationMessage.asAlert(
 ) {
     val receiver = this
     renderContext.alert {
-        severity {
+        color {
             when (receiver.severity) {
                 Severity.Info -> info
                 Severity.Success -> success
                 Severity.Warning -> warning
-                Severity.Error -> error
+                Severity.Error -> danger
+            }
+        }
+        icon {
+            when (receiver.severity) {
+                Severity.Info -> circleInformation
+                Severity.Success -> circleCheck
+                Severity.Warning -> circleWarning
+                Severity.Error -> circleError
             }
         }
         variant { discreet }
