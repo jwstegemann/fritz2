@@ -69,7 +69,7 @@ open class TextAreaComponent(protected val valueStore: Store<String>? = null) :
             (::textarea.styled(styling, baseClass + staticCss, id, prefix) {
                 this@TextAreaComponent.resizeBehavior.value.invoke(Theme().textArea.resize)()
                 this@TextAreaComponent.size.value.invoke(Theme().textArea.sizes)()
-                this@TextAreaComponent.variant.value.invoke(Theme().textArea.variants)
+                this@TextAreaComponent.variant.value.invoke(Theme().textArea.variants)()
             }){
                 disabled(this@TextAreaComponent.disabled.values)
                 readOnly(this@TextAreaComponent.readonly.values)

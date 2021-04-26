@@ -176,17 +176,19 @@ interface FontFamilies {
 
 /**
  * Defines three colors for a color scheme.
- * First is [base] which is the default color and [baseContrast]
+ * First is [main] which is the default color and [mainContrast]
  * for showing things on top of [highlight] color.
  * Besides from that there is a color [highlight] for highlighting things
  * and a color [highlightContrast] for showing things on top of [highlight] color.
  */
 open class ColorScheme(
-    val base: ColorProperty,
-    val baseContrast: ColorProperty,
+    val main: ColorProperty,
+    val mainContrast: ColorProperty,
     val highlight: ColorProperty,
     val highlightContrast: ColorProperty
-)
+) {
+    fun inverted() : ColorScheme = ColorScheme(this.highlight, this.highlightContrast, this.main, this.mainContrast)
+}
 
 /**
  * Defines the scheme colors in a theme
@@ -195,11 +197,12 @@ interface Colors {
     val primary: ColorScheme
     val secondary: ColorScheme
     val tertiary: ColorScheme
-    val success: ColorProperty
-    val danger: ColorProperty
-    val warning: ColorProperty
-    val info: ColorProperty
-    val neutral: ColorProperty
+    val success: ColorScheme
+    val danger: ColorScheme
+    val warning: ColorScheme
+    val info: ColorScheme
+    val neutral: ColorScheme
+
     val disabled: ColorProperty
     val focus: ColorProperty
 
@@ -460,17 +463,26 @@ interface InputFieldVariants {
  * definition of the theme's pushButton
  */
 interface PushButtonStyles {
+    val types: PushButtonTypes
     val variants: PushButtonVariants
     val sizes: FormSizes
 }
 
-interface PushButtonVariants {
-    val outline: Style<BasicParams>
-    val solid: Style<BasicParams>
-    val ghost: Style<BasicParams>
-    val link: Style<BasicParams>
+interface PushButtonTypes {
+    val primary: ColorScheme
+    val secondary: ColorScheme
+    val info: ColorScheme
+    val success: ColorScheme
+    val warning: ColorScheme
+    val danger: ColorScheme
 }
 
+interface PushButtonVariants {
+    val outline: BasicParams.(ColorScheme) -> Unit
+    val solid: BasicParams.(ColorScheme) -> Unit
+    val ghost: BasicParams.(ColorScheme) -> Unit
+    val link: BasicParams.(ColorScheme) -> Unit
+}
 
 /**
  * definition of the theme's modal
@@ -611,7 +623,7 @@ interface AlertStacking {
 }
 
 interface AlertSeverity {
-    val color: ColorProperty
+    val colorScheme: ColorScheme
     val icon: IconDefinition
 }
 
@@ -622,22 +634,12 @@ interface AlertSeverities {
     val error: AlertSeverity
 }
 
-typealias AlertVariantStyleFactory = (ColorProperty) -> AlertVariantStyles
-
 interface AlertVariants {
-    val subtle: AlertVariantStyleFactory
-    val solid: AlertVariantStyleFactory
-    val leftAccent: AlertVariantStyleFactory
-    val topAccent: AlertVariantStyleFactory
-    val discreet: AlertVariantStyleFactory
-}
-
-interface AlertVariantStyles {
-    val background: Style<BasicParams>
-    val text: Style<BasicParams>
-    val accent: Style<BasicParams>
-    val decorationLeft: Style<BasicParams>
-    val decorationTop: Style<BasicParams>
+    val subtle: BasicParams.(AlertSeverity) -> Unit
+    val solid: BasicParams.(AlertSeverity) -> Unit
+    val leftAccent: BasicParams.(AlertSeverity) -> Unit
+    val topAccent: BasicParams.(AlertSeverity) -> Unit
+    val discreet: BasicParams.(AlertSeverity) -> Unit
 }
 
 
