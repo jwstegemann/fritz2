@@ -1,7 +1,5 @@
 package dev.fritz2.styling
 
-import dev.fritz2.styling.theme.ColorScheme
-
 internal const val charsLength = 52
 
 /* start at 75 for 'a' until 'z' (25) and then start at 65 for capitalised letters */

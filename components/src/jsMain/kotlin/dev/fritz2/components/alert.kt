@@ -4,7 +4,10 @@ import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.span
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow

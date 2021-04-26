@@ -5,6 +5,8 @@ import dev.fritz2.binding.SubStore
 import dev.fritz2.components.ComponentProperty
 import dev.fritz2.components.DynamicComponentProperty
 import dev.fritz2.components.NullableDynamicComponentProperty
+import dev.fritz2.components.datatable.ColumnsContext.ColumnContext
+import dev.fritz2.components.datatable.OptionsContext.Sorting
 import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext

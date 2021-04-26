@@ -7,11 +7,10 @@ import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
-import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.SeverityStyles
