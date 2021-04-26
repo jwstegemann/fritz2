@@ -222,6 +222,8 @@ interface Theme {
     val toast: ToastStyles
 
     val appFrame: AppFrameStyles
+
+    val dataTableStyles: DataTableStyles
 }
 
 /**
