@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.flowOf
  * A component to display an alert consisting of an icon, title and description.
  * Different styles based on severities are supported, as well as a number of different layout options.
  *
- * TODO: Adjust kdoc for missing severity
  * Currently the following severities are available:
  * - Info
  * - Success
@@ -22,7 +21,7 @@ import kotlinx.coroutines.flow.flowOf
  * - Error
  * Specifying a severity will change the alert's color scheme based on the colors defined in the application theme as
  * well as the icon displayed. If no severity is specified, 'info' will be used by default.
- * The alert's icon can manually be set via the 'icon'-property in which case the severity's icon will be ignored.
+ * Both the alert's icon and color can manually be overridden by setting the respective dsl property.
  *
  * Additionally, a number of different layout options are available. These are:
  * - 'subtle': A subtle style using different shades of the severity's base color defined in the application theme.
@@ -45,6 +44,13 @@ import kotlinx.coroutines.flow.flowOf
  *     content("This is an alert.")
  *     severity { error }
  *     variant { leftAccent }
+ * }
+ *
+ * alert {
+ *     title("Alert")
+ *     content("This is an alert.")
+ *     icon { fritz2 }
+ *     color { primary }
  * }
  * ```
  */
@@ -151,7 +157,6 @@ open class AlertComponent : Component<Unit> {
             }) {
                 box(styling = {
                     css("margin-right: var(--al-icon-margin)")
-                    //this@AlertComponent.variantStyles.foreground()
                 }) {
                     icon({
                         css("width: var(--al-icon-size)")
