@@ -1994,8 +1994,8 @@ open class DefaultTheme : Theme {
 
         override val headerStyle: BasicParams.(sorted: Boolean) -> Unit
             get() = {
-                background { color { headerColors.base } }
-                color { headerColors.baseContrast }
+                background { color { headerColors.main } }
+                color { headerColors.mainContrast }
                 verticalAlign { middle }
                 fontSize { normal }
                 position { relative {} }
@@ -2004,7 +2004,7 @@ open class DefaultTheme : Theme {
                     right {
                         width { "1px" }
                         style { solid }
-                        color { headerColors.baseContrast }
+                        color { headerColors.mainContrast }
                     }
                 }
             }
@@ -2018,29 +2018,29 @@ open class DefaultTheme : Theme {
                 basic()
                 with((index + 1) % 2) {
                     if (selected) {
-                        background { color { selectionColor.base } }
-                        color { selectionColor.baseContrast }
+                        background { color { selectionColor.main } }
+                        color { selectionColor.mainContrast }
                     } else {
-                        background { color { columnColors[this@with].base } }
-                        color { columnColors[this@with].baseContrast }
+                        background { color { columnColors[this@with].main } }
+                        color { columnColors[this@with].mainContrast }
                     }
                     borders {
                         right {
                             width { "1px" }
                             style { solid }
-                            color { columnColors[abs(this@with - 1)].base }
+                            color { columnColors[abs(this@with - 1)].main }
                         }
                     }
                 }
                 if (sorted) {
                     borders {
                         right {
-                            color { headerColors.base }
+                            color { headerColors.main }
                             width { normal }
                             style { solid }
                         }
                         left {
-                            color { headerColors.base }
+                            color { headerColors.main }
                             width { normal }
                             style { solid }
                         }
