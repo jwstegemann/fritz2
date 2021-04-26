@@ -91,12 +91,12 @@ open class AlertComponent : Component<Unit> {
     val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
 
     private val actualIcon: IconDefinition
-        get() = this@AlertComponent.icon.value?.invoke(Theme().icons)
-            ?: this@AlertComponent.severity.value(Theme().alert.severities).icon
+        get() = icon.value?.invoke(Theme().icons)
+            ?: severity.value(Theme().alert.severities).icon
 
     private val actualColorScheme: ColorScheme
-        get() = this@AlertComponent.color.value?.invoke(Theme().colors)
-            ?: this@AlertComponent.severity.value(Theme().alert.severities).colorScheme
+        get() = color.value?.invoke(Theme().colors)
+            ?: severity.value(Theme().alert.severities).colorScheme
 
 
     private var title: (RenderContext.() -> Unit)? = null
