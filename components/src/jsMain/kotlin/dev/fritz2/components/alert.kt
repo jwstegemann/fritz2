@@ -119,18 +119,21 @@ open class AlertComponent : Component<Unit> {
                 display { flex }
                 position { relative { } }
                 when (this@AlertComponent.variant.value(VariantContext)) {
-                    VariantContext.solid ->
+                    AlertVariant.SOLID ->
                         Theme().alert.variants
                             .solid(this, this@AlertComponent.severity.value(Theme().alert.severities))
-                    VariantContext.subtle ->
+                    AlertVariant.SUBTLE ->
                         Theme().alert.variants
                             .subtle(this, this@AlertComponent.severity.value(Theme().alert.severities))
-                    VariantContext.leftAccent ->
+                    AlertVariant.LEFT_ACCENT ->
                         Theme().alert.variants
                             .leftAccent(this, this@AlertComponent.severity.value(Theme().alert.severities))
-                    VariantContext.topAccent ->
+                    AlertVariant.TOP_ACCENT ->
                         Theme().alert.variants
                             .topAccent(this, this@AlertComponent.severity.value(Theme().alert.severities))
+                    AlertVariant.DISCREET ->
+                        Theme().alert.variants
+                            .discreet(this, this@AlertComponent.severity.value(Theme().alert.severities))
                 }
             }) {
                 (::div.styled {
