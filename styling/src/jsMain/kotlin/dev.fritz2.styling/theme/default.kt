@@ -3,6 +3,7 @@ package dev.fritz2.styling.theme
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.params.BackgroundAttachments.inherit
 import dev.fritz2.styling.theme.icons.MonoIcons
+import kotlin.math.abs
 
 /**
  * defines the default values and scales for fritz2
@@ -1947,5 +1948,139 @@ open class DefaultTheme : Theme {
             fontSize { ".8rem" }
             color { gray400 }
         }
+    }
+
+
+    override val dataTableStyles = object : DataTableStyles {
+        val headerColors: ColorScheme
+            get() = colors.primary
+
+        /**
+         * Semantic: One [ColorScheme] per row:
+         *  - base: background of the cell
+         *  - baseContrast: text color of the cell
+         *  - highlight: background of the row (each cell) that is hovered
+         *  - highlightContrast: text color of row (each cell) that is hovered
+         *
+         *  Use cases:
+         *   - alternating (odd - even) rows
+         *   - grouping for value based categories (for example different ranges applied for visual analyzing)
+         *
+         *   Therefore a [List] fits best: Very small overhead, but clear semantics and arbitrary coloring is possible.
+         */
+        val columnColors: List<ColorScheme>
+            get() = listOf(
+                ColorScheme(
+                    colors.gray100,
+                    colors.gray700,
+                    colors.gray700,
+                    colors.gray100
+                ),
+                ColorScheme(
+                    colors.gray300,
+                    colors.gray900,
+                    colors.gray900,
+                    colors.gray300
+                )
+            )
+
+        val selectionColor: ColorScheme
+            get() = colors.secondary
+
+        private val basic: Style<BasicParams> = {
+            paddings {
+                vertical { smaller }
+                left { smaller }
+                right { large }
+            }
+        }
+
+        override val headerStyle: BasicParams.(sorted: Boolean) -> Unit
+            get() = {
+                background { color { headerColors.main } }
+                color { headerColors.mainContrast }
+                verticalAlign { middle }
+                fontSize { normal }
+                position { relative {} }
+                basic()
+                borders {
+                    right {
+                        width { "1px" }
+                        style { solid }
+                        color { headerColors.mainContrast }
+                    }
+                }
+            }
+
+        override val cellStyle: BasicParams.(
+            value: IndexedValue<Any>,
+            selected: Boolean,
+            sorted: Boolean
+        ) -> Unit
+            get() = { (index, _), selected, sorted ->
+                basic()
+                with((index + 1) % 2) {
+                    if (selected) {
+                        background { color { selectionColor.main } }
+                        color { selectionColor.mainContrast }
+                    } else {
+                        background { color { columnColors[this@with].main } }
+                        color { columnColors[this@with].mainContrast }
+                    }
+                    borders {
+                        right {
+                            width { "1px" }
+                            style { solid }
+                            color { columnColors[abs(this@with - 1)].main }
+                        }
+                    }
+                }
+                if (sorted) {
+                    borders {
+                        right {
+                            color { headerColors.main }
+                            width { normal }
+                            style { solid }
+                        }
+                        left {
+                            color { headerColors.main }
+                            width { normal }
+                            style { solid }
+                        }
+                    }
+                }
+            }
+
+        override val hoveringStyle: BasicParams.(
+            value: IndexedValue<Any>,
+            selected: Boolean,
+            sorted: Boolean
+        ) -> Unit
+            get() = { (index, _), selected, _ ->
+                with((index + 1) % 2) {
+                    if (selected) {
+                        background { color { selectionColor.highlight } }
+                        color { selectionColor.highlightContrast }
+                    } else {
+                        background { color { columnColors[this@with].highlight } }
+                        color { columnColors[this@with].highlightContrast }
+                    }
+                }
+            }
+
+        override val sorterStyle: BasicParams.(sorted: Boolean) -> Unit
+            get() = { sorted ->
+                display { flex }
+                position {
+                    absolute {
+                        right { "-1.125rem" }
+                        top { "calc(50% -15px)" }
+                    }
+                }
+                css("cursor:pointer;")
+                if (sorted) {
+                    color { headerColors.highlight }
+                }
+            }
     }
 }
