@@ -19,13 +19,15 @@ import dev.fritz2.styling.params.*
  * - custom content for header and column cells including access to current row data
  * - different modes for selecting rows (checkbox and click based) and separation between single or multiple selection
  *
+ * @see DataTableComponent
+ *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param rows the required store holding the data rows that should be rendered by the table
  * @param rowIdProvider an appropriate id provider for the specific row type ``T`` (typically some sort of Id property)
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form $prefix-$hash
- * @param build a lambda expression for setting up the component itself. Details in [TableComponent]
+ * @param build a lambda expression for setting up the component itself. Details in [DataTableComponent]
  */
 fun <T, I> RenderContext.dataTable(
     styling: GridParams.() -> Unit = {},
@@ -33,10 +35,10 @@ fun <T, I> RenderContext.dataTable(
     rowIdProvider: (T) -> I,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
-    prefix: String = TableComponent.prefix,
-    build: TableComponent<T, I>.() -> Unit = {}
+    prefix: String = DataTableComponent.prefix,
+    build: DataTableComponent<T, I>.() -> Unit = {}
 ) {
-    TableComponent(rows, rowIdProvider).apply(build).render(this, styling, baseClass, id, prefix)
+    DataTableComponent(rows, rowIdProvider).apply(build).render(this, styling, baseClass, id, prefix)
 }
 
 /**
@@ -52,6 +54,8 @@ fun <T, I> RenderContext.dataTable(
  * - custom content for header and column cells including access to current row data
  * - different modes for selecting rows (checkbox and click based) and separation between single or multiple selection
  *
+ * @see DataTableComponent
+ *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param rows the required store holding the data rows that should be rendered by the table
  * @param rowIdProvider an appropriate id provider for the specific row type ``T`` (typically some sort of Id property)
@@ -59,7 +63,7 @@ fun <T, I> RenderContext.dataTable(
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form $prefix-$hash
- * @param build a lambda expression for setting up the component itself. Details in [TableComponent]
+ * @param build a lambda expression for setting up the component itself. Details in [DataTableComponent]
  */
 fun <T, I> RenderContext.dataTable(
     styling: GridParams.() -> Unit = {},
@@ -68,10 +72,10 @@ fun <T, I> RenderContext.dataTable(
     selection: Store<List<T>>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
-    prefix: String = TableComponent.prefix,
-    build: TableComponent<T, I>.() -> Unit = {}
+    prefix: String = DataTableComponent.prefix,
+    build: DataTableComponent<T, I>.() -> Unit = {}
 ) {
-    TableComponent(rows, rowIdProvider).apply {
+    DataTableComponent(rows, rowIdProvider).apply {
         build()
         selection { multi { store(selection) } }
     }.render(this, styling, baseClass, id, prefix)
@@ -90,6 +94,8 @@ fun <T, I> RenderContext.dataTable(
  * - custom content for header and column cells including access to current row data
  * - different modes for selecting rows (checkbox and click based) and separation between single or multiple selection
  *
+ * @see DataTableComponent
+ *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param rows the required store holding the data rows that should be rendered by the table
  * @param rowIdProvider an appropriate id provider for the specific row type ``T`` (typically some sort of Id property)
@@ -97,7 +103,7 @@ fun <T, I> RenderContext.dataTable(
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form $prefix-$hash
- * @param build a lambda expression for setting up the component itself. Details in [TableComponent]
+ * @param build a lambda expression for setting up the component itself. Details in [DataTableComponent]
  */
 fun <T, I> RenderContext.dataTable(
     styling: GridParams.() -> Unit = {},
@@ -106,13 +112,11 @@ fun <T, I> RenderContext.dataTable(
     selection: Store<T?>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
-    prefix: String = TableComponent.prefix,
-    build: TableComponent<T, I>.() -> Unit = {}
+    prefix: String = DataTableComponent.prefix,
+    build: DataTableComponent<T, I>.() -> Unit = {}
 ) {
-    TableComponent(rows, rowIdProvider).apply {
+    DataTableComponent(rows, rowIdProvider).apply {
         build()
         selection { single { store(selection) } }
     }.render(this, styling, baseClass, id, prefix)
 }
-
-

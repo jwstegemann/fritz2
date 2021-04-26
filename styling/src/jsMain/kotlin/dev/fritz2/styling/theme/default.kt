@@ -1503,48 +1503,48 @@ open class DefaultTheme : Theme {
             }
 
         override val variants: AlertVariants = object : AlertVariants {
-            override val subtle: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+            override val subtle: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 background {
-                    color { alertSeverity.colorScheme.highlight }
+                    color { colorScheme.highlight }
                 }
-                color { alertSeverity.colorScheme.highlightContrast }
+                color { colorScheme.highlightContrast }
             }
-            override val solid: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+            override val solid: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 background {
-                    color { alertSeverity.colorScheme.main }
+                    color { colorScheme.main }
                 }
-                color { alertSeverity.colorScheme.mainContrast }
+                color { colorScheme.mainContrast }
             }
 
-            override val leftAccent: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+            override val leftAccent: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 background {
-                    color { alertSeverity.colorScheme.highlight }
+                    color { colorScheme.highlight }
                 }
-                color { alertSeverity.colorScheme.highlightContrast }
+                color { colorScheme.highlightContrast }
 
                 borders {
                     left {
                         width { fat }
-                        color { alertSeverity.colorScheme.main }
+                        color { colorScheme.main }
                         style { solid }
                     }
                 }
             }
-            override val topAccent: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+            override val topAccent: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 background {
-                    color { alertSeverity.colorScheme.highlight }
+                    color { colorScheme.highlight }
                 }
-                color { alertSeverity.colorScheme.highlightContrast }
+                color { colorScheme.highlightContrast }
 
                 borders {
                     top {
                         width { fat }
-                        color { alertSeverity.colorScheme.main }
+                        color { colorScheme.main }
                         style { solid }
                     }
                 }
             }
-            override val discreet: BasicParams.(AlertSeverity) -> Unit = { _ ->
+            override val discreet: BasicParams.(ColorScheme) -> Unit = { _ ->
                 background {
                     color { backgroundColor }
                 }
@@ -1556,18 +1556,21 @@ open class DefaultTheme : Theme {
             override val small: Style<BasicParams> = {
                 css("--al-icon-margin: 0.25rem")
                 css("--al-icon-size: ${Theme().fontSizes.small}")
+                css("--al-border-width: ${Theme().borderWidths.normal}")
                 fontSize { small }
                 lineHeight { small }
             }
             override val normal: Style<BasicParams> = {
                 css("--al-icon-margin: 0.5rem")
                 css("--al-icon-size: ${Theme().fontSizes.normal}")
+                css("--al-border-width: ${Theme().borderWidths.fat}")
                 fontSize { normal }
                 lineHeight { normal }
             }
             override val large: Style<BasicParams> = {
                 css("--al-icon-margin: 1rem")
                 css("--al-icon-size: ${Theme().fontSizes.larger}")
+                css("--al-border-width: ${Theme().borderWidths.fat}")
                 fontSize { larger }
                 lineHeight { larger }
             }
@@ -1994,8 +1997,8 @@ open class DefaultTheme : Theme {
 
         override val headerStyle: BasicParams.(sorted: Boolean) -> Unit
             get() = {
-                background { color { headerColors.base } }
-                color { headerColors.baseContrast }
+                background { color { headerColors.main } }
+                color { headerColors.mainContrast }
                 verticalAlign { middle }
                 fontSize { normal }
                 position { relative {} }
@@ -2004,7 +2007,7 @@ open class DefaultTheme : Theme {
                     right {
                         width { "1px" }
                         style { solid }
-                        color { headerColors.baseContrast }
+                        color { headerColors.mainContrast }
                     }
                 }
             }
@@ -2018,29 +2021,29 @@ open class DefaultTheme : Theme {
                 basic()
                 with((index + 1) % 2) {
                     if (selected) {
-                        background { color { selectionColor.base } }
-                        color { selectionColor.baseContrast }
+                        background { color { selectionColor.main } }
+                        color { selectionColor.mainContrast }
                     } else {
-                        background { color { columnColors[this@with].base } }
-                        color { columnColors[this@with].baseContrast }
+                        background { color { columnColors[this@with].main } }
+                        color { columnColors[this@with].mainContrast }
                     }
                     borders {
                         right {
                             width { "1px" }
                             style { solid }
-                            color { columnColors[abs(this@with - 1)].base }
+                            color { columnColors[abs(this@with - 1)].main }
                         }
                     }
                 }
                 if (sorted) {
                     borders {
                         right {
-                            color { headerColors.base }
+                            color { headerColors.main }
                             width { normal }
                             style { solid }
                         }
                         left {
-                            color { headerColors.base }
+                            color { headerColors.main }
                             width { normal }
                             style { solid }
                         }
