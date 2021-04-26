@@ -1502,48 +1502,48 @@ open class DefaultTheme : Theme {
             }
 
         override val variants: AlertVariants = object : AlertVariants {
-            override val subtle: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+            override val subtle: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 background {
-                    color { alertSeverity.colorScheme.highlight }
+                    color { colorScheme.highlight }
                 }
-                color { alertSeverity.colorScheme.highlightContrast }
+                color { colorScheme.highlightContrast }
             }
-            override val solid: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+            override val solid: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 background {
-                    color { alertSeverity.colorScheme.main }
+                    color { colorScheme.main }
                 }
-                color { alertSeverity.colorScheme.mainContrast }
+                color { colorScheme.mainContrast }
             }
 
-            override val leftAccent: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+            override val leftAccent: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 background {
-                    color { alertSeverity.colorScheme.highlight }
+                    color { colorScheme.highlight }
                 }
-                color { alertSeverity.colorScheme.highlightContrast }
+                color { colorScheme.highlightContrast }
 
                 borders {
                     left {
                         width { fat }
-                        color { alertSeverity.colorScheme.main }
+                        color { colorScheme.main }
                         style { solid }
                     }
                 }
             }
-            override val topAccent: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+            override val topAccent: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 background {
-                    color { alertSeverity.colorScheme.highlight }
+                    color { colorScheme.highlight }
                 }
-                color { alertSeverity.colorScheme.highlightContrast }
+                color { colorScheme.highlightContrast }
 
                 borders {
                     top {
                         width { fat }
-                        color { alertSeverity.colorScheme.main }
+                        color { colorScheme.main }
                         style { solid }
                     }
                 }
             }
-            override val discreet: BasicParams.(AlertSeverity) -> Unit = { _ ->
+            override val discreet: BasicParams.(ColorScheme) -> Unit = { _ ->
                 background {
                     color { backgroundColor }
                 }

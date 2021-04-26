@@ -76,13 +76,21 @@ open class AlertComponent : Component<Unit> {
         val discreet = AlertVariant.DISCREET
     }
 
-    // icon and color from severity are used if either of them is not specified manually
+    // icon and color override the values set in the AlertSeverity style (theme)
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)
-    val color = ComponentProperty<Colors.() -> ColorScheme> { info }
-    val severity = ComponentProperty<AlertSeverities.() -> AlertSeverity> { info }
+    val color = ComponentProperty<(Colors.() -> ColorScheme)?>(value = null)
+    val severity = ComponentProperty<(AlertSeverities.() -> AlertSeverity)> { info }
     val variant = ComponentProperty<VariantContext.() -> AlertVariant> { solid }
     val sizes = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
     val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
+
+    private val actualIcon: IconDefinition
+        get() = this@AlertComponent.icon.value?.invoke(Theme().icons)
+            ?: this@AlertComponent.severity.value(Theme().alert.severities).icon
+
+    private val actualColorScheme: ColorScheme
+        get() = this@AlertComponent.color.value?.invoke(Theme().colors)
+            ?: this@AlertComponent.severity.value(Theme().alert.severities).colorScheme
 
 
     private var title: (RenderContext.() -> Unit)? = null
@@ -132,20 +140,14 @@ open class AlertComponent : Component<Unit> {
                 this@AlertComponent.sizes.value(Theme().alert.sizes)()
                 this@AlertComponent.stacking.value(Theme().alert.stacking)()
 
-                when (this@AlertComponent.variant.value(VariantContext)) {
-                    VariantContext.solid ->
-                        Theme().alert.variants
-                            .solid(this, this@AlertComponent.severity.value(Theme().alert.severities))
-                    VariantContext.subtle ->
-                        Theme().alert.variants
-                            .subtle(this, this@AlertComponent.severity.value(Theme().alert.severities))
-                    VariantContext.leftAccent ->
-                        Theme().alert.variants
-                            .leftAccent(this, this@AlertComponent.severity.value(Theme().alert.severities))
-                    VariantContext.topAccent ->
-                        Theme().alert.variants
-                            .topAccent(this, this@AlertComponent.severity.value(Theme().alert.severities))
-                }
+                when(this@AlertComponent.variant.value(VariantContext)) {
+                    VariantContext.solid -> Theme().alert.variants.solid
+                    VariantContext.subtle -> Theme().alert.variants.subtle
+                    VariantContext.leftAccent -> Theme().alert.variants.leftAccent
+                    VariantContext.topAccent -> Theme().alert.variants.topAccent
+                    VariantContext.discreet -> Theme().alert.variants.discreet
+                    else -> Theme().alert.variants.solid
+                }.invoke(this, this@AlertComponent.actualColorScheme)
             }) {
                 box(styling = {
                     css("margin-right: var(--al-icon-margin)")
@@ -155,11 +157,7 @@ open class AlertComponent : Component<Unit> {
                         css("width: var(--al-icon-size)")
                         css("height: var(--al-icon-size)")
                     }) {
-                        fromTheme {
-                            this@AlertComponent.icon.value
-                                ?.invoke(Theme().icons)
-                                ?: this@AlertComponent.severity.value(Theme().alert.severities).icon
-                        }
+                        fromTheme { this@AlertComponent.actualIcon }
                     }
                 }
 

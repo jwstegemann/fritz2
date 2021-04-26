@@ -635,11 +635,11 @@ interface AlertSeverities {
 }
 
 interface AlertVariants {
-    val subtle: BasicParams.(AlertSeverity) -> Unit
-    val solid: BasicParams.(AlertSeverity) -> Unit
-    val leftAccent: BasicParams.(AlertSeverity) -> Unit
-    val topAccent: BasicParams.(AlertSeverity) -> Unit
-    val discreet: BasicParams.(AlertSeverity) -> Unit
+    val subtle: BasicParams.(ColorScheme) -> Unit
+    val solid: BasicParams.(ColorScheme) -> Unit
+    val leftAccent: BasicParams.(ColorScheme) -> Unit
+    val topAccent: BasicParams.(ColorScheme) -> Unit
+    val discreet: BasicParams.(ColorScheme) -> Unit
 }
 
 
