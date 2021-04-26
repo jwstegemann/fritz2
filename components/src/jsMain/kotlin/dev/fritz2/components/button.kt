@@ -226,13 +226,13 @@ open class PushButtonComponent :
         context.apply {
             (::button.styled(styling, baseClass + staticCss, id, prefix) {
                when(this@PushButtonComponent.variant.value(VariantContext)) {
-                   VariantContext.solid ->
+                   ButtonVariant.SOLID ->
                        Theme().button.variants.solid(this, this@PushButtonComponent.type.value(Theme().button.types))
-                   VariantContext.link ->
+                   ButtonVariant.LINK ->
                        Theme().button.variants.link(this, this@PushButtonComponent.type.value(Theme().button.types))
-                   VariantContext.outline ->
+                   ButtonVariant.OUTLINE ->
                        Theme().button.variants.outline(this, this@PushButtonComponent.type.value(Theme().button.types))
-                   VariantContext.ghost ->
+                   ButtonVariant.GHOST ->
                        Theme().button.variants.ghost(this, this@PushButtonComponent.type.value(Theme().button.types))
                 }
                 this@PushButtonComponent.size.value.invoke(Theme().button.sizes)()
