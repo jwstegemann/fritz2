@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.flowOf
  * - Error
  * Specifying a severity will change the alert's color scheme based on the colors defined in the application theme as
  * well as the icon displayed. If no severity is specified, 'info' will be used by default.
- * Both the alert's icon and color can manually be overridden by setting the respective dsl property.
+ * The alert's icon can manually be overridden by setting the respective dsl property.
  *
  * Additionally, a number of different layout options are available. These are:
  * - 'subtle': A subtle style using different shades of the severity's base color defined in the application theme.
@@ -50,7 +50,6 @@ import kotlinx.coroutines.flow.flowOf
  *     title("Alert")
  *     content("This is an alert.")
  *     icon { fritz2 }
- *     color { primary }
  * }
  * ```
  */
@@ -82,9 +81,7 @@ open class AlertComponent : Component<Unit> {
         val discreet = AlertVariant.DISCREET
     }
 
-    // icon and color override the values set in the AlertSeverity style (theme)
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)
-    val color = ComponentProperty<(Colors.() -> ColorScheme)?>(value = null)
     val severity = ComponentProperty<(AlertSeverities.() -> AlertSeverity)> { info }
     val variant = ComponentProperty<VariantContext.() -> AlertVariant> { solid }
     val sizes = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
@@ -93,10 +90,6 @@ open class AlertComponent : Component<Unit> {
     private val actualIcon: IconDefinition
         get() = icon.value?.invoke(Theme().icons)
             ?: severity.value(Theme().alert.severities).icon
-
-    private val actualColorScheme: ColorScheme
-        get() = color.value?.invoke(Theme().colors)
-            ?: severity.value(Theme().alert.severities).colorScheme
 
 
     private var title: (RenderContext.() -> Unit)? = null
@@ -147,13 +140,12 @@ open class AlertComponent : Component<Unit> {
                 this@AlertComponent.stacking.value(Theme().alert.stacking)()
 
                 when(this@AlertComponent.variant.value(VariantContext)) {
-                    VariantContext.solid -> Theme().alert.variants.solid
-                    VariantContext.subtle -> Theme().alert.variants.subtle
-                    VariantContext.leftAccent -> Theme().alert.variants.leftAccent
-                    VariantContext.topAccent -> Theme().alert.variants.topAccent
-                    VariantContext.discreet -> Theme().alert.variants.discreet
-                    else -> Theme().alert.variants.solid
-                }.invoke(this, this@AlertComponent.actualColorScheme)
+                    AlertVariant.SOLID -> Theme().alert.variants.solid
+                    AlertVariant.SUBTLE -> Theme().alert.variants.subtle
+                    AlertVariant.LEFT_ACCENT -> Theme().alert.variants.leftAccent
+                    AlertVariant.TOP_ACCENT -> Theme().alert.variants.topAccent
+                    AlertVariant.DISCREET -> Theme().alert.variants.discreet
+                }.invoke(this, this@AlertComponent.severity.value(Theme().alert.severities).colorScheme)
             }) {
                 box(styling = {
                     css("margin-right: var(--al-icon-margin)")
