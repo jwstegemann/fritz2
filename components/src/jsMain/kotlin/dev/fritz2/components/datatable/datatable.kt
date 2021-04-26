@@ -19,163 +19,6 @@ import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
 import kotlin.collections.Map
-import kotlin.math.abs
-
-// TODO: Remove theme stuff, if code is moved into the fritz2 core project!
-//  Add specific interface and implementation into the original fritz2's theme!
-interface DataTableStyles {
-    val headerStyle: BasicParams.(sorted: Boolean) -> Unit
-
-    /**
-     * TODO: find possibility to remove separate parameters and go back to ``IndexedValue<StatefulItem<Any>>``!
-     */
-    val cellStyle: BasicParams.(value: IndexedValue<Any>, selected: Boolean, sorted: Boolean) -> Unit
-
-    /**
-     * TODO: find possibility to remove separate parameters and go back to ``IndexedValue<StatefulItem<Any>>``!
-     */
-    val hoveringStyle: BasicParams.(value: IndexedValue<Any>, selected: Boolean, sorted: Boolean) -> Unit
-
-    val sorterStyle: BasicParams.(sorted: Boolean) -> Unit
-}
-
-class DataTableTheme : DefaultTheme() {
-    override val name = "Theme with Table specific styles"
-
-    val dataTableStyles = object : DataTableStyles {
-        val headerColors: ColorScheme
-            get() = colors.primary
-
-        /**
-         * Semantic: One [ColorScheme] per row:
-         *  - base: background of the cell
-         *  - baseContrast: text color of the cell
-         *  - highlight: background of the row (each cell) that is hovered
-         *  - highlightContrast: text color of row (each cell) that is hovered
-         *
-         *  Use cases:
-         *   - alternating (odd - even) rows
-         *   - grouping for value based categories (for example different ranges applied for visual analyzing)
-         *
-         *   Therefore a [List] fits best: Very small overhead, but clear semantics and arbitrary coloring is possible.
-         */
-        val columnColors: List<ColorScheme>
-            get() = listOf(
-                ColorScheme(
-                    colors.gray100,
-                    colors.gray700,
-                    colors.gray700,
-                    colors.gray100
-                ),
-                ColorScheme(
-                    colors.gray300,
-                    colors.gray900,
-                    colors.gray900,
-                    colors.gray300
-                )
-            )
-
-        val selectionColor: ColorScheme = colors.secondary
-
-        private val basic: Style<BasicParams> = {
-            paddings {
-                vertical { smaller }
-                left { smaller }
-                right { large }
-            }
-        }
-
-        override val headerStyle: BasicParams.(sorted: Boolean) -> Unit
-            get() = {
-                background { color { headerColors.base } }
-                color { headerColors.baseContrast }
-                verticalAlign { middle }
-                fontSize { normal }
-                position { relative {} }
-                basic()
-                borders {
-                    right {
-                        width { "1px" }
-                        style { solid }
-                        color { headerColors.baseContrast }
-                    }
-                }
-            }
-
-        override val cellStyle: BasicParams.(
-            value: IndexedValue<Any>,
-            selected: Boolean,
-            sorted: Boolean
-        ) -> Unit
-            get() = { (index, _), selected, sorted ->
-                basic()
-                with((index + 1) % 2) {
-                    if (selected) {
-                        background { color { selectionColor.base } }
-                        color { selectionColor.baseContrast }
-                    } else {
-                        background { color { columnColors[this@with].base } }
-                        color { columnColors[this@with].baseContrast }
-                    }
-                    borders {
-                        right {
-                            width { "1px" }
-                            style { solid }
-                            color { columnColors[abs(this@with - 1)].base }
-                        }
-                    }
-                }
-                if (sorted) {
-                    borders {
-                        right {
-                            color { headerColors.base }
-                            width { normal }
-                            style { solid }
-                        }
-                        left {
-                            color { headerColors.base }
-                            width { normal }
-                            style { solid }
-                        }
-                    }
-                }
-            }
-
-        override val hoveringStyle: BasicParams.(
-            value: IndexedValue<Any>,
-            selected: Boolean,
-            sorted: Boolean
-        ) -> Unit
-            get() = { (index, _), selected, _ ->
-                with((index + 1) % 2) {
-                    if (selected) {
-                        background { color { selectionColor.highlight } }
-                        color { selectionColor.highlightContrast }
-                    } else {
-                        background { color { columnColors[this@with].highlight } }
-                        color { columnColors[this@with].highlightContrast }
-                    }
-                }
-            }
-
-        override val sorterStyle: BasicParams.(sorted: Boolean) -> Unit
-            get() = { sorted ->
-                display { flex }
-                position {
-                    absolute {
-                        right { "-1.125rem" }
-                        top { "calc(50% -15px)" }
-                    }
-                }
-                css("cursor:pointer;")
-                if (sorted) {
-                    color { headerColors.highlight }
-                }
-            }
-    }
-}
-
-// TODO: End of provisional Theming stuff
 
 /**
  * Representation of the different sorting status.
@@ -878,13 +721,6 @@ open class TableComponent<T, I>(val dataStore: RootStore<List<T>>, protected val
 
     private val columnStateIdProvider: (Pair<Column<T>, ColumnIdSorting>) -> String = { it.first.id + it.second }
 
-    // TODO: Cast rausnehmen, sobald Theming in fritz2 verschoben ist!
-    private val headerStyle = Theme().unsafeCast<DataTableTheme>().dataTableStyles.headerStyle
-    private val columnStyle = Theme().unsafeCast<DataTableTheme>().dataTableStyles.cellStyle
-    private val hoveringStyle = Theme().unsafeCast<DataTableTheme>().dataTableStyles.hoveringStyle
-    private val sorterStyle = Theme().unsafeCast<DataTableTheme>().dataTableStyles.sorterStyle
-
-
     class TableColumnsContext<T> {
 
         class TableColumnContext<T> {
@@ -1357,7 +1193,11 @@ open class TableComponent<T, I>(val dataStore: RootStore<List<T>>, protected val
                     component.stateStore.renderingHeaderData(component)
                         .renderEach(component.columnStateIdProvider) { (column, sorting) ->
                             (::th.styled {
-                                this@TableComponent.headerStyle(this, Sorting.sorted(sorting.strategy))
+                                Sorting.sorted(sorting.strategy)
+                                Theme().dataTableStyles.headerStyle(
+                                    this,
+                                    Sorting.sorted(sorting.strategy)
+                                )
                                 component.header.value.styling.value()
                                 column.headerStyling(this, sorting.strategy)
                             })  {
@@ -1371,7 +1211,11 @@ open class TableComponent<T, I>(val dataStore: RootStore<List<T>>, protected val
 
                                     // Sorting
                                     (::div.styled({
-                                        this@TableComponent.sorterStyle(this, Sorting.sorted(sorting.strategy))
+                                        Sorting.sorted(sorting.strategy)
+                                        Theme().dataTableStyles.sorterStyle(
+                                            this,
+                                            Sorting.sorted(sorting.strategy)
+                                        )
                                     }) {}){
                                         if (column.id == sorting.id) {
                                             component.options.value.sorting.value.renderer.value.renderSortingActive(
@@ -1418,7 +1262,11 @@ open class TableComponent<T, I>(val dataStore: RootStore<List<T>>, protected val
                                 className(isSelected.map { sel ->
                                     style {
                                         children("&:hover td") {
-                                            this@TableComponent.hoveringStyle(
+                                            IndexedValue(
+                                                index,
+                                                rowData as Any, // cast necessary, as theme can't depend on ``T``!
+                                            )
+                                            Theme().dataTableStyles.hoveringStyle(
                                                 this,
                                                 IndexedValue(
                                                     index,
@@ -1447,7 +1295,12 @@ open class TableComponent<T, I>(val dataStore: RootStore<List<T>>, protected val
                             component.stateStore.renderingCellsData(component, index, rowData, isSelected)
                                 .renderEach { (column, statefulIndex) ->
                                     (::td.styled {
-                                        this@TableComponent.columnStyle(
+                                        IndexedValue(
+                                            index,
+                                            rowData as Any, // cast necessary, as theme can't depend on ``T``!
+                                        )
+                                        Sorting.sorted(statefulIndex.value.sorting)
+                                        Theme().dataTableStyles.cellStyle(
                                             this,
                                             IndexedValue(
                                                 index,
