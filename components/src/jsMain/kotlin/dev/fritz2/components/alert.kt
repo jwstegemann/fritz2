@@ -50,22 +50,23 @@ import kotlinx.coroutines.flow.flowOf
  * ```
  */
 open class AlertComponent : Component<Unit> {
-
-    companion object {
-        private const val accentDecorationThickness = "4px"
-    }
-
     val sizes = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
     val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
     val severity = ComponentProperty<AlertSeverities.() -> AlertSeverity> { info }
-    val variant = ComponentProperty<AlertVariants.() -> AlertVariantStyleFactory> { solid }
 
-    val variantStyles: AlertVariantStyles
-        get() {
-            val alertSeverity = severity.value.invoke(Theme().alert.severities)
-            val alertVariantFactory = variant.value.invoke(Theme().alert.variants)
-            return alertVariantFactory.invoke(alertSeverity.color)
-        }
+    enum class AlertVariant {
+        SOLID, SUBTLE, LEFT_ACCENT, TOP_ACCENT, DISCREET
+    }
+
+    object VariantContext {
+        val solid : AlertVariant = AlertVariant.SOLID
+        val subtle = AlertVariant.SUBTLE
+        val leftAccent = AlertVariant.LEFT_ACCENT
+        val topAccent = AlertVariant.TOP_ACCENT
+        val discreet = AlertVariant.DISCREET
+    }
+
+    val variant = ComponentProperty<VariantContext.() -> AlertVariant> { solid }
 
     // the icon specified in AlertSeverity is used if no icon is specified manually
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)
@@ -88,9 +89,7 @@ open class AlertComponent : Component<Unit> {
         }
     }
 
-    @Suppress("unused")
     fun title(value: String) = title(flowOf(value))
-
     fun content(value: RenderContext.() -> Unit) {
         content = value
     }
@@ -114,29 +113,29 @@ open class AlertComponent : Component<Unit> {
         id: String?,
         prefix: String,
     ) {
-        val styles = variantStyles
-
         context.apply {
             (::div.styled(baseClass = baseClass, id = id, prefix = prefix) {
                 styling()
                 display { flex }
                 position { relative { } }
-                styles.background()
+                when (this@AlertComponent.variant.value(VariantContext)) {
+                    AlertVariant.SOLID ->
+                        Theme().alert.variants
+                            .solid(this, this@AlertComponent.severity.value(Theme().alert.severities))
+                    AlertVariant.SUBTLE ->
+                        Theme().alert.variants
+                            .subtle(this, this@AlertComponent.severity.value(Theme().alert.severities))
+                    AlertVariant.LEFT_ACCENT ->
+                        Theme().alert.variants
+                            .leftAccent(this, this@AlertComponent.severity.value(Theme().alert.severities))
+                    AlertVariant.TOP_ACCENT ->
+                        Theme().alert.variants
+                            .topAccent(this, this@AlertComponent.severity.value(Theme().alert.severities))
+                    AlertVariant.DISCREET ->
+                        Theme().alert.variants
+                            .discreet(this, this@AlertComponent.severity.value(Theme().alert.severities))
+                }
             }) {
-                (::div.styled {
-                    width { "100%" }
-                    height { accentDecorationThickness }
-                    position { absolute { } }
-                    styles.decorationTop()
-                }) { }
-
-                (::div.styled {
-                    width { accentDecorationThickness }
-                    height { "100%" }
-                    position { absolute { } }
-                    styles.decorationLeft()
-                }) { }
-
                 (::div.styled {
                     display { flex }
                     css("flex-direction: row")
@@ -146,7 +145,6 @@ open class AlertComponent : Component<Unit> {
                 }) {
                     (::div.styled {
                         css("margin-right: var(--al-icon-margin)")
-                        styles.accent()
                     }) {
                         icon({
                             css("width: var(--al-icon-size)")
@@ -159,13 +157,11 @@ open class AlertComponent : Component<Unit> {
                             }
                         }
                     }
-
                     (::div.styled {
                         display { inlineBlock }
                         verticalAlign { middle }
                         width { "100%" }
                         lineHeight { "1.2em" }
-                        styles.text()
                     }) {
                         this@AlertComponent.title?.invoke(this)
                         this@AlertComponent.content?.invoke(this)
