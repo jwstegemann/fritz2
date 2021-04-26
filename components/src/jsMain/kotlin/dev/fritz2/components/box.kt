@@ -3,9 +3,9 @@ package dev.fritz2.components
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.div
 import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.GridParams
-import dev.fritz2.styling.params.styled
 
 /**
  * This component represents the simplest layout component possible: A simple ``div`` that acts as a container
@@ -31,17 +31,15 @@ import dev.fritz2.styling.params.styled
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param init a lambda expression for setting up the content and events of the ``div`` element itself
+ * @param content a lambda expression for setting up the content and events of the ``div`` element itself
  */
 fun RenderContext.box(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "box",
-    init: Div.() -> Unit
-): Div =
-    ::div.styled(styling, baseClass, id, prefix) {
-    }(init)
+    content: Div.() -> Unit
+): Div = div(styling, baseClass, id, prefix) { content() }
 
 
 /**
@@ -70,18 +68,15 @@ fun RenderContext.box(
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param init a lambda expression for setting up the content and events of the ``div`` element itself
+ * @param content a lambda expression for setting up the content and events of the ``div`` element itself
  */
 fun RenderContext.flexBox(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "flex-box",
-    init: Div.() -> Unit
-): Div =
-    ::div.styled(styling, baseClass, id, prefix) {
-        css("display: flex;")
-    }(init)
+    content: Div.() -> Unit
+): Div = div({ display { flex } }, styling, baseClass, id, prefix) { content() }
 
 
 /**
@@ -114,16 +109,14 @@ fun RenderContext.flexBox(
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param init a lambda expression for setting up the content and events of the ``div`` element itself
+ * @param content a lambda expression for setting up the content and events of the ``div`` element itself
  */
 fun RenderContext.gridBox(
     styling: GridParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "grid-box",
-    init: Div.() -> Unit
+    content: Div.() -> Unit
 ): Div =
-    ::div.styled(styling, baseClass, id, prefix) {
-        css("display: grid;")
-    }(init)
+    div({ display { grid } }, styling, baseClass, id, prefix) { content() }
 

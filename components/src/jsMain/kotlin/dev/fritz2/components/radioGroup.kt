@@ -6,10 +6,10 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
@@ -113,9 +113,9 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
         val grpId = id ?: uniqueId()
 
         context.apply {
-            (::div.styled(styling, baseClass, id, prefix) {
+            div({
                 this@RadioGroupComponent.direction.value(RadioGroupLayouts)()
-            }) {
+            }, styling, baseClass, id, prefix) {
                 (this@RadioGroupComponent.value?.data ?: this@RadioGroupComponent.selectedItem.values)
                     .map { selectedItem ->
                         this@RadioGroupComponent.items.indexOf(selectedItem).let { if (it == -1) null else it }

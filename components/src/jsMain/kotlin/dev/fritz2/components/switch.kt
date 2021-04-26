@@ -7,13 +7,10 @@ import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
-import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.name
+import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
@@ -120,24 +117,16 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
         val inputId = (id ?: uniqueId()) + "-input"
 
         return with(context) {
-            (::label.styled(
-                baseClass = baseClass,
-                id = id,
-                prefix = prefix
-            ) {
+            label({
                 this@SwitchComponent.size.value.invoke(Theme().switch.sizes)()
-            }) {
+            }, baseClass = baseClass, id = id, prefix = prefix) {
                 `for`(inputId)
-                (::input.styled(
-                    baseClass = switchInputStaticCss,
-                    prefix = prefix,
-                    id = inputId
-                ) {
+                input({
                     Theme().switch.input()
                     children("&[checked] + div") {
                         this@SwitchComponent.checkedStyle.value()
                     }
-                }) {
+                }, baseClass = switchInputStaticCss, prefix = prefix, id = inputId) {
                     disabled(this@SwitchComponent.disabled.values)
                     readOnly(this@SwitchComponent.readonly.values)
                     type("checkbox")
@@ -148,22 +137,20 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
                     this@SwitchComponent.element.value.invoke(this)
                 }
 
-                (::div.styled() {
+                div({
                     Theme().switch.default()
                     styling()
                 }) {
-                    (::div.styled() {
+                    div({
                         Theme().switch.dot()
                         this@SwitchComponent.dotStyle.value()
-                    }) {
-
-                    }
+                    }) {}
                 }
 
                 this@SwitchComponent.label?.let {
-                    (::div.styled() {
+                    div({
                         this@SwitchComponent.labelStyle.value()
-                    }){
+                    }) {
                         it(this)
                     }
                 }

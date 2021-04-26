@@ -7,11 +7,10 @@ import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.components.validation.validationMessages
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
@@ -394,7 +393,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
     open fun renderHelperText(renderContext: RenderContext) {
         renderContext.apply {
             this@FormControlComponent.helperText.value?.let {
-                (::p.styled {
+                p({
                     this@FormControlComponent.helperTextStyle.value()
                 }) { +it }
             }
@@ -454,7 +453,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
         ) {
             spacing { tiny }
             items {
-                (::label.styled {
+                label({
                     component.labelStyle.value()
                 }) {
                     +component.label.value
@@ -480,11 +479,11 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
         renderContext.box({
             width { full }
         }) {
-            (::fieldset.styled(baseClass, id, prefix) {
+            fieldset({
                 component.ownSize()()
                 styling()
-            }) {
-                (::legend.styled {
+            }, baseClass, id, prefix) {
+                legend({
                     component.labelStyle.value()
                 }) { +component.label.value }
                 control(this)

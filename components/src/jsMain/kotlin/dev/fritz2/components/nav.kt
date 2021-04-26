@@ -4,7 +4,6 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -113,8 +112,8 @@ fun RenderContext.navSection(
     id: String? = null,
     prefix: String = "navsection",
 ) {
-    (::h3.styled(baseClass, id, prefix) {
+    h3({
         Theme().appFrame.navSection()
         styling()
-    }) { +text }
+    }, baseClass, id, prefix) { +text }
 }

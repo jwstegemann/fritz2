@@ -9,10 +9,12 @@ import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.*
-import kotlinx.coroutines.flow.Flow
+import dev.fritz2.styling.textarea
+import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.TextAreaResize
+import dev.fritz2.styling.theme.TextAreaVariants
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLTextAreaElement
 
@@ -66,11 +68,11 @@ open class TextAreaComponent(protected val valueStore: Store<String>? = null) :
         prefix: String
     ) {
         context.apply {
-            (::textarea.styled(styling, baseClass + staticCss, id, prefix) {
+            textarea({
                 this@TextAreaComponent.resizeBehavior.value.invoke(Theme().textArea.resize)()
                 this@TextAreaComponent.size.value.invoke(Theme().textArea.sizes)()
                 this@TextAreaComponent.variant.value.invoke(Theme().textArea.variants)()
-            }){
+            }, styling, baseClass + staticCss, id, prefix) {
                 disabled(this@TextAreaComponent.disabled.values)
                 readOnly(this@TextAreaComponent.readonly.values)
                 placeholder(this@TextAreaComponent.placeholder.values)

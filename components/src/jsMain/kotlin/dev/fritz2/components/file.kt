@@ -4,9 +4,9 @@ import dev.fritz2.components.data.File
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
@@ -149,7 +149,7 @@ open class SingleFileSelectionComponent : FileSelectionBaseComponent(), Componen
     ): Flow<File> {
         var file: Flow<File>? = null
         context.apply {
-            (::div.styled(styling, baseClass, id, prefix) {}) {
+            div({}, styling, baseClass, id, prefix) {
                 val inputElement = input(inputStyle.name) {
                     type("file")
                     this@SingleFileSelectionComponent.accept?.invoke(this)
@@ -184,7 +184,7 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(), Component
     ): Flow<List<File>> {
         var files: Flow<List<File>>? = null
         context.apply {
-            (::div.styled(styling, baseClass, id, prefix) {}) {
+            div({}, styling, baseClass, id, prefix) {
                 val inputElement = input(inputStyle.name) {
                     type("file")
                     multiple(true)

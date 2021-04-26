@@ -4,13 +4,10 @@ import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.selectedValue
 import dev.fritz2.identification.uniqueId
-import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.name
+import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -98,12 +95,11 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                     this@SelectFieldComponent.items.indexOf(selectedItem).let { if (it == -1) null else it }
                 } handledBy internalStore.update
 
-            (::div.styled(styling, baseClass + staticCss, grpId, prefix) {}) {
-
-                (::select.styled(styling, baseClass) {
+            div({}, styling, baseClass + staticCss, grpId, prefix) {
+                select({
                     this@SelectFieldComponent.variant.value.invoke(Theme().select.variants)()
                     this@SelectFieldComponent.size.value.invoke(Theme().select.sizes)()
-                }){
+                }, styling, baseClass) {
                     disabled(this@SelectFieldComponent.disabled.values)
 
                     internalStore.data.render {
@@ -130,10 +126,10 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                     changes.selectedValue().map { it.toInt() } handledBy internalStore.toggle
                 }
 
-                (::div.styled(prefix = "icon-wrapper") {
+                div({
                     this@SelectFieldComponent.size.value.invoke(Theme().select.sizes)()
                     this@SelectFieldComponent.iconWrapperStyle()
-                }){
+                }, prefix = "icon-wrapper") {
                     icon({
                         this@SelectFieldComponent.iconStyle()
                     }) { def(this@SelectFieldComponent.icon.value(Theme().icons)) }
