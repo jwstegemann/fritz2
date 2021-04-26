@@ -217,16 +217,16 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
 
     open fun inputField(
         styling: BasicParams.() -> Unit = {},
-        store: Store<String>? = null,
+        value: Store<String>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = ControlNames.inputField,
         build: InputFieldComponent.() -> Unit = {}
     ) {
-        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        val validationMessagesBuilder = ValidationResult.builderOf(this, value)
         registerControl(ControlNames.inputField,
             {
-                inputField(styling, store, baseClass, id, prefix) {
+                inputField(styling, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
                     build()
@@ -238,16 +238,16 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
 
     open fun switch(
         styling: BasicParams.() -> Unit = {},
-        store: Store<Boolean>? = null,
+        value: Store<Boolean>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = ControlNames.switch,
         build: SwitchComponent.() -> Unit = {}
     ) {
-        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        val validationMessagesBuilder = ValidationResult.builderOf(this, value)
         registerControl(ControlNames.inputField,
             {
-                switch(styling, store, baseClass, id, prefix) {
+                switch(styling, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
                     build()
@@ -281,17 +281,17 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
     open fun checkbox(
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass = StyleClass.None,
-        store: Store<Boolean>? = null,
+        value: Store<Boolean>? = null,
         id: String? = null,
         prefix: String = ControlNames.checkbox,
         build: CheckboxComponent.() -> Unit = {}
     ) {
-        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        val validationMessagesBuilder = ValidationResult.builderOf(this, value)
         registerControl(ControlNames.checkbox,
             {
                 checkbox({
                     styling()
-                }, store, baseClass, id, prefix) {
+                }, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
                     build()
@@ -304,16 +304,16 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
     open fun <T> checkboxGroup(
         styling: BasicParams.() -> Unit = {},
         items: List<T>,
-        store: Store<List<T>>? = null,
+        values: Store<List<T>>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = ControlNames.checkboxGroup,
         build: CheckboxGroupComponent<T>.() -> Unit = {}
     ) {
-        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        val validationMessagesBuilder = ValidationResult.builderOf(this, values)
         registerControl(ControlNames.checkboxGroup,
             {
-                checkboxGroup(styling, items, store, baseClass, id, prefix) {
+                checkboxGroup(styling, items, values, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
                     build()
@@ -326,16 +326,16 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
     open fun <T> radioGroup(
         styling: BasicParams.() -> Unit = {},
         items: List<T>,
-        store: Store<T>? = null,
+        value: Store<T>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = ControlNames.radioGroup,
         build: RadioGroupComponent<T>.() -> Unit = {}
     ) {
-        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        val validationMessagesBuilder = ValidationResult.builderOf(this, value)
         registerControl(ControlNames.radioGroup,
             {
-                radioGroup(styling, items, store, baseClass, id, prefix) {
+                radioGroup(styling, items, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
                     build()
@@ -348,19 +348,19 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
     open fun <T> selectField(
         styling: BasicParams.() -> Unit = {},
         items: List<T>,
-        store: Store<T>? = null,
+        value: Store<T>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = ControlNames.selectField,
         build: SelectFieldComponent<T>.() -> Unit = {}
     ) {
-        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        val validationMessagesBuilder = ValidationResult.builderOf(this, value)
         registerControl(ControlNames.selectField,
             {
                 selectField(
                     styling,
                     items,
-                    store,
+                    value,
                     baseClass,
                     id,
                     prefix
@@ -527,7 +527,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
  *         flowOf(errorMessage("id", "Sorry, always wrong in this case"))
  *     }
  *     // just use the appropriate control with its specific API!
- *     inputField(store = someStore) {
+ *     inputField(value = someStore) {
  *         placeholder("Some text to type")
  *     }
  * }
@@ -539,7 +539,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
  *     // leave out label and so on
  *     // ...
  *     // first control function called -> ok, will get rendered
- *     inputField(store = someStore) {
+ *     inputField(value = someStore) {
  *         placeholder("Some text to type")
  *     }
  *     // second call -> more than one control -> will not get rendered, but instead be logged as error!

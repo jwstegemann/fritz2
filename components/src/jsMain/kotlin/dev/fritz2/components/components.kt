@@ -152,7 +152,7 @@ class NullableDynamicComponentProperty<T>(var values: Flow<T?>) {
  * RenderContext.myComponent(
  *      styling: BasicParams.() -> Unit,
  *      items: List<String>,          // two additional parameters
- *      store: Store<String>? = null, // after ``styling`` and before ``baseClass``!
+ *      value: Store<String>? = null, // after ``styling`` and before ``baseClass``!
  *      baseClass: StyleClass,
  *      id: String?,
  *      prefix: String

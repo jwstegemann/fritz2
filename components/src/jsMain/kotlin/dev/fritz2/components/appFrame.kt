@@ -5,16 +5,13 @@ import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.TextElement
-import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.name
+import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
-import dev.fritz2.styling.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -39,6 +36,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 open class AppFrameComponent : Component<Unit> {
     companion object {
         init {
+            // Needs to reference header heigth from Theme even though sttic style needs to be used to style the body.
+            // Header heigth might not update when the Theme is changed.
+            // FIXME: Find more elegant solution to style body
             staticStyle(
                 """
                 body {
@@ -63,14 +63,14 @@ open class AppFrameComponent : Component<Unit> {
     private val sidebarStatus = storeOf(false)
     private val toggleSidebar = sidebarStatus.handle { !it }
 
-    private val openSideBar = staticStyle(
+    private val openSideBar = style(
         "open-sidebar", """
             @media (max-width: ${Theme().breakPoints.md}) {
                 transform: translateX(0) !important;
          }""".trimIndent()
     )
 
-    private val showBackdrop = staticStyle(
+    private val showBackdrop = style(
         "show-backdrop", """
             @media (max-width: ${Theme().breakPoints.md}) {
                 left : 0 !important;
