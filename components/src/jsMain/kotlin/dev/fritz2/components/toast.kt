@@ -224,7 +224,7 @@ open class ToastComponent : ManagedComponent<Unit>,
     val content = ComponentProperty<(RenderContext.() -> Unit)?>(null)
     val placement = ComponentProperty<Placement.() -> String> { bottomRight }
     val duration = ComponentProperty(5000L)
-    val background = ComponentProperty<Colors.() -> ColorProperty> { info }
+    val background = ComponentProperty<Colors.() -> ColorProperty> { info.main }
 
     /**
      * This method registers one toast at the central toast store and creates a rendering expression that will be

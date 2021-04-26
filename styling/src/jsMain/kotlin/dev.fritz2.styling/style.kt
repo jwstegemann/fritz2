@@ -128,6 +128,11 @@ inline class StyleClass(val name: String) {
 /**
  * adds some static css to your app's dynamic style sheet.
  *
+ * This function is mainly intended for internal use; use [style] whenever possible!
+ * Calling this function multiple times with identical styles will cause css-errors to be raised.
+ * Also make sure not to reference values from the Theme in the style passed to this function. They will not be updated
+ * when the Theme changes (hence 'static').
+ *
  * @param css well formed content of the css-rule to add
  */
 fun staticStyle(css: String) {
@@ -136,6 +141,11 @@ fun staticStyle(css: String) {
 
 /**
  * adds a static css-class to your app's dynamic style sheet.
+ *
+ * This function is mainly intended for internal use; use [style] whenever possible!
+ * Calling this function multiple times with identical styles will cause css-errors to be raised.
+ * Also make sure not to reference values from the Theme in the style passed to this function. They will not be updated
+ * when the Theme changes (hence 'static').
  *
  * @param name of the class to create
  * @param css well formed content of the css-rule to add
@@ -148,6 +158,11 @@ fun staticStyle(name: String, css: String): StyleClass {
 
 /**
  * adds a static css-class to your app's dynamic style sheet.
+ *
+ * This function is mainly intended for internal use; use [style] whenever possible!
+ * Calling this function multiple times with identical styles will cause css-errors to be raised.
+ * Also make sure not to reference values from the Theme in the style passed to this function. They will not be updated
+ * when the Theme changes (hence 'static').
  *
  * @param name of the class to create
  * @param styling styling DSL expression

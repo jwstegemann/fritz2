@@ -49,20 +49,70 @@ open class DefaultTheme : Theme {
             override val gray800 = "#1A202C"
             override val gray900 = "#171923"
 
-            override val primary = // blue
-                ColorScheme(base = "#0C5173", baseContrast = gray100, highlight = "#CAE4EA", highlightContrast = gray600)
+            override val neutral = // white
+                ColorScheme(
+                    main = "#ffffff",
+                    mainContrast = gray700,
+                    highlight = gray100,
+                    highlightContrast = gray700
+                )
 
-            override val secondary = // yellow
-                ColorScheme(base = "#E6A300", baseContrast = gray100, highlight = "#FFEDCB", highlightContrast = gray600)
+            override val primary =
+                ColorScheme(
+                    main = "#0C5173",
+                    mainContrast = gray100,
+                    highlight = "#CAE4EA",
+                    highlightContrast = gray600
+                )
 
-            override val tertiary = // grey
-                ColorScheme(base = gray600, baseContrast = gray100, highlight = gray300, highlightContrast = gray600)
+            override val secondary =
+                ColorScheme(
+                    main = "#E6A300",
+                    mainContrast = gray100,
+                    highlight = "#FFEDCB",
+                    highlightContrast = gray600
+                )
 
-            override val info = "#219EBC"       // blue
-            override val success = "#00A848"    // green
-            override val warning = "#F08B3A"    // orange
-            override val danger = "#E14F2A"     // red
-            override val neutral = "#ffffff"    // white
+            override val tertiary =
+                ColorScheme(
+                    main = gray600,
+                    mainContrast = gray100,
+                    highlight = gray300,
+                    highlightContrast = gray600
+                )
+
+            // Signal Colors
+            override val info =
+                ColorScheme(
+                    main = "#219EBC",
+                    mainContrast = neutral.main,
+                    highlight = "#d2ebf1",
+                    highlightContrast = gray700
+                )
+
+            override val success =
+                ColorScheme(
+                    main = "#00A848",
+                    mainContrast = neutral.main,
+                    highlight = "#ccedda",
+                    highlightContrast = gray700
+                )
+
+            override val warning =
+                ColorScheme(
+                    main = "#F08B3A",
+                    mainContrast = neutral.main,
+                    highlight = "#fce7d7",
+                    highlightContrast = gray700
+                )
+
+            override val danger =
+                ColorScheme(
+                    main = "#E14F2A",
+                    mainContrast = neutral.main,
+                    highlight = "#f9dbd4",
+                    highlightContrast = gray700
+                )
 
             override val disabled = gray300
             override val focus = primary.highlight
@@ -71,10 +121,10 @@ open class DefaultTheme : Theme {
     //FIXME: move to typography section
 
     override val backgroundColor
-        get() = colors.neutral
+        get() = colors.neutral.main
 
     override val fontColor
-        get() = colors.gray700
+        get() = colors.neutral.mainContrast
 
     override val fontFamilies = object : FontFamilies {
         override val normal =
@@ -174,7 +224,7 @@ open class DefaultTheme : Theme {
                 "2px",
                 color = colors.primary.highlight
             ),
-            danger = shadow("0", "0", "0", "1px", color = colors.danger)
+            danger = shadow("0", "0", "0", "1px", color = colors.danger.main)
         )
 
     override val zIndices = ZIndices(1, 100, 2, 200, 300, 2, 400, 2)
@@ -189,7 +239,8 @@ open class DefaultTheme : Theme {
     }
 
     // extra css for general layout by using theme props
-    override val global: String by lazy { """
+    override val global: String by lazy {
+        """
         html {
             line-height: ${lineHeights.large};
             -webkit-text-size-adjust: 100%;
@@ -408,6 +459,9 @@ open class DefaultTheme : Theme {
             private val basic: Style<BasicParams> = {
                 radius { normal }
                 fontWeight { normal }
+                color { fontColor }
+                background { color { backgroundColor } }
+
                 border {
                     width { thin }
                     style { solid }
@@ -428,7 +482,7 @@ open class DefaultTheme : Theme {
 
                 disabled {
                     background {
-                        color { neutral }
+                        color { neutral.main }
                     }
                     color { disabled }
                     hover {
@@ -440,7 +494,7 @@ open class DefaultTheme : Theme {
 
                 focus {
                     border {
-                        color { primary.base }
+                        color { primary.main }
                     }
                     boxShadow { outline }
                 }
@@ -454,7 +508,7 @@ open class DefaultTheme : Theme {
                 background {
                     color { primary.highlight }
                 }
-                color { neutral }
+                color { neutral.main }
 
                 hover {
                     background { color { gray200 } }
@@ -496,7 +550,7 @@ open class DefaultTheme : Theme {
             override val success: Style<BasicParams> = {}
             override val warning: Style<BasicParams> = {}
             override val error: Style<BasicParams>
-                get() = basic(colors.danger, shadows.danger)
+                get() = basic(colors.danger.main, shadows.danger)
         }
     }
 
@@ -573,7 +627,7 @@ open class DefaultTheme : Theme {
             }
             width { "var(--cb-size)" }
             height { "var(--cb-size)" }
-            background { color { neutral } }
+            background { color { neutral.main } }
             border {
                 width { "1px" }
                 style { solid }
@@ -582,9 +636,9 @@ open class DefaultTheme : Theme {
             radius { "var(--cb-radius)" }
         }
         override val checked: Style<BasicParams> = {
-            background { color { primary.base } }
-            border { color { primary.base } }
-            color { neutral }
+            background { color { primary.main } }
+            border { color { primary.highlight } }
+            color { primary.mainContrast }
         }
 
         override val severity = object : SeverityStyles {
@@ -611,7 +665,7 @@ open class DefaultTheme : Theme {
             override val success: Style<BasicParams> = {}
             override val warning: Style<BasicParams> = {}
             override val error: Style<BasicParams>
-                get() = apply(colors.danger, colors.warning)
+                get() = apply(colors.danger.main, colors.danger.main)
         }
     }
 
@@ -646,7 +700,7 @@ open class DefaultTheme : Theme {
         override val input: Style<BasicParams> = {
             children("&:focus + div") {
                 border {
-                    color { primary.base }
+                    color { primary.main }
                 }
                 boxShadow { outline }
             }
@@ -672,7 +726,7 @@ open class DefaultTheme : Theme {
             css("justify-content:center;")
             width { "var(--rb-size)" }
             height { "var(--rb-size)" }
-            background { color { neutral } }
+            background { color { neutral.main } }
             border {
                 width { "2px" }
                 style { solid }
@@ -681,10 +735,10 @@ open class DefaultTheme : Theme {
             radius { "9999px" }
         }
         override val selected: Style<BasicParams> = {
-            background { color { primary.base } }
+            background { color { primary.main } }
             color { gray300 }
             border {
-                color { primary.base }
+                color { primary.main }
             }
             before {
                 css("content:\"\";")
@@ -698,7 +752,7 @@ open class DefaultTheme : Theme {
                 height { "50%" }
                 radius { "50%" }
                 background {
-                    color { neutral }
+                    color { neutral.main }
                 }
             }
         }
@@ -765,7 +819,7 @@ open class DefaultTheme : Theme {
             height { "var(--sw-height)" }
             radius { "9999px" }
             background {
-                color { neutral }
+                color { neutral.main }
             }
             css("transition: transform 250ms ease 0s;")
 
@@ -791,7 +845,7 @@ open class DefaultTheme : Theme {
             css("transition: all 120ms ease 0s;")
         }
         override val checked: Style<BasicParams> = {
-            background { color { primary.base } }
+            background { color { primary.main } }
         }
 
         override val severity: SeverityStyles
@@ -799,6 +853,21 @@ open class DefaultTheme : Theme {
     }
 
     override val button = object : PushButtonStyles {
+        override val types: PushButtonTypes = object : PushButtonTypes {
+            override val primary
+                get() = colors.primary
+            override val secondary
+                get() = colors.secondary
+            override val info
+                get() = colors.info
+            override val success
+                get() = colors.success
+            override val warning
+                get() = colors.warning
+            override val danger
+                get() = colors.danger
+        }
+
         override val variants = object : PushButtonVariants {
             private val basic: Style<BasicParams> = {
                 lineHeight { smaller }
@@ -809,50 +878,56 @@ open class DefaultTheme : Theme {
                 }
             }
 
-            override val solid: Style<BasicParams> = {
+            override val solid: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 basic()
-                background { color { "var(--main-color)" } }
-                color { neutral }
+                background { color { colorScheme.main } }
+                color { colorScheme.mainContrast }
                 hover {
-                    css("filter: brightness(80%);")
+                    background {
+                        color { colorScheme.highlight }
+                    }
+                    color { colorScheme.highlightContrast }
                 }
                 active {
-                    css("filter: brightness(120%);")
+                    background {
+                        color { colorScheme.highlight }
+                    }
+                    color { colorScheme.highlightContrast }
                 }
             }
 
-            override val outline: Style<BasicParams> = {
+            override val outline: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 basic()
-                color { "var(--main-color)" }
+                color { colorScheme.main }
                 border {
                     width { thin }
                     style { solid }
-                    color { "var(--main-color)" }
+                    color { colorScheme.main }
                 }
                 hover {
                     background {
-                        color { gray200 }
+                        color { colorScheme.main }
                     }
-                    css("filter: brightness(80%);")
+                    color { colorScheme.mainContrast }
                 }
             }
 
-            override val ghost: Style<BasicParams> = {
+            override val ghost: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 basic()
-                color { "var(--main-color)" }
+                color { colorScheme.main }
             }
 
-            override val link: Style<BasicParams> = {
+            override val link: BasicParams.(ColorScheme) -> Unit = { colorScheme ->
                 basic()
                 paddings { all { none } }
                 height { auto }
                 lineHeight { normal }
-                color { "var(--main-color)" }
+                color { colorScheme.main }
                 hover {
                     textDecoration { underline }
                 }
                 active {
-                    css("filter: brightness(120%);")
+                    color { colorScheme.highlightContrast }
                 }
             }
         }
@@ -905,7 +980,7 @@ open class DefaultTheme : Theme {
 
             private val basic: Style<BasicParams> = {
                 background {
-                    color { neutral }
+                    color { neutral.main }
                 }
                 padding { normal }
                 radius { tiny }
@@ -997,7 +1072,7 @@ open class DefaultTheme : Theme {
         override val size: PopoverSizes = object : PopoverSizes {
             private val basic: Style<BasicParams> = {
                 background {
-                    color { neutral }
+                    color { neutral.main }
                 }
                 paddings {
                     top { tiny }
@@ -1370,87 +1445,109 @@ open class DefaultTheme : Theme {
             }
         }
 
+        override val variants = object : TextAreaVariants {
+            override val basic: Style<BasicParams> = {
+                radius { normal }
+                fontWeight { normal }
+
+                border {
+                    width { thin }
+                    style { solid }
+                    color { gray300 }
+
+                }
+
+                background { backgroundColor }
+                color { fontColor }
+
+                disabled {
+                    background {
+                        color { neutral.highlight }
+                    }
+                    color { disabled }
+                }
+
+                focus {
+                    border {
+                        color { focus }
+                    }
+                    boxShadow { outline }
+                }
+            }
+        }
+
         override val severity: SeverityStyles
             get() = input.severity
     }
 
     override val alert: AlertStyles = object : AlertStyles {
+        override val severities: AlertSeverities
+            get() = object : AlertSeverities {
+                override val info: AlertSeverity = object : AlertSeverity {
+                    override val colorScheme = colors.info
+                    override val icon = icons.circleInformation
+                }
+                override val success: AlertSeverity = object : AlertSeverity {
+                    override val colorScheme = colors.success
+                    override val icon = icons.circleCheck
+                }
+                override val warning: AlertSeverity = object : AlertSeverity {
+                    override val colorScheme = colors.warning
+                    override val icon = icons.circleWarning
+                }
+                override val error: AlertSeverity = object : AlertSeverity {
+                    override val colorScheme = colors.danger
+                    override val icon = icons.circleError
+                }
+            }
+
         override val variants: AlertVariants = object : AlertVariants {
-            /*
-            TODO: Use text colors from theme
-             */
-            private val textColorDark = rgb(0, 0, 0)
-            private val textColorLight = rgb(255, 255, 255)
-
-            override val subtle: AlertVariantStyleFactory = { color ->
-                object : AlertVariantStyles {
-                    override val background: Style<BasicParams> = {
-                        background { color { alterHexColorBrightness(color, 1.5) } }
-                    }
-                    override val foreground: Style<BasicParams> = {
-                        color { textColorDark }
-                    }
-                    override val decoration: Style<BasicParams> = { }
+            override val subtle: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+                background {
+                    color { alertSeverity.colorScheme.highlight }
                 }
+                color { alertSeverity.colorScheme.highlightContrast }
             }
-            override val solid: AlertVariantStyleFactory = { color ->
-                object : AlertVariantStyles {
-                    override val background: Style<BasicParams> = {
-                        background { color { color } }
-                    }
-                    override val foreground: Style<BasicParams> = {
-                        color { textColorLight }
-                    }
-                    override val decoration: Style<BasicParams> = { }
+            override val solid: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+                background {
+                    color { alertSeverity.colorScheme.main }
                 }
-            }
-            override val leftAccent: AlertVariantStyleFactory = { color ->
-                object : AlertVariantStyles {
-                    override val background: Style<BasicParams> = {
-                        background { color { alterHexColorBrightness(color, 1.5) } }
-                    }
-                    override val foreground: Style<BasicParams> = {
-                        color { textColorDark }
-                    }
-                    override val decoration: Style<BasicParams> = {
-                        borders {
-                            left {
-                                color { color }
-                                width { "var(--al-border-width)" }
-                            }
-                        }
-                    }
-                }
-            }
-            override val topAccent: AlertVariantStyleFactory = { color ->
-                object : AlertVariantStyles {
-                    override val background: Style<BasicParams> = {
-                        background { color { alterHexColorBrightness(color, 1.5) } }
-                    }
-                    override val foreground: Style<BasicParams> = {
-                        color { textColorDark }
-                    }
-                    override val decoration: Style<BasicParams> = {
-                        borders {
-                            top {
-                                color { color }
-                                width { "var(--al-border-width)" }
-                            }
-                        }
-                    }
-                }
+                color { alertSeverity.colorScheme.mainContrast }
             }
 
-            override val discreet: AlertVariantStyleFactory = { color ->
-                object : AlertVariantStyles {
-                    override val background: Style<BasicParams> = {
-                        background { inherit }
-                    }
-                    override val foreground: Style<BasicParams> = {
-                        color { color }
-                    }
-                    override val decoration: Style<BasicParams> = { }
+            override val leftAccent: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+                background {
+                    color { alertSeverity.colorScheme.highlight }
                 }
+                color { alertSeverity.colorScheme.highlightContrast }
+
+                borders {
+                    left {
+                        width { fat }
+                        color { alertSeverity.colorScheme.main }
+                        style { solid }
+                    }
+                }
+            }
+            override val topAccent: BasicParams.(AlertSeverity) -> Unit = { alertSeverity ->
+                background {
+                    color { alertSeverity.colorScheme.highlight }
+                }
+                color { alertSeverity.colorScheme.highlightContrast }
+
+                borders {
+                    top {
+                        width { fat }
+                        color { alertSeverity.colorScheme.main }
+                        style { solid }
+                    }
+                }
+            }
+            override val discreet: BasicParams.(AlertSeverity) -> Unit = { _ ->
+                background {
+                    color { backgroundColor }
+                }
+                color { fontColor }
             }
         }
 
@@ -1480,7 +1577,7 @@ open class DefaultTheme : Theme {
 
         override val stacking = object : AlertStacking {
             override val compact: Style<BasicParams> = {
-                margin { "0" }
+                margin { none }
             }
             override val separated: Style<BasicParams> = {
                 margin { normal }
@@ -1491,7 +1588,6 @@ open class DefaultTheme : Theme {
     override val toast = object : ToastStyles {
         override val placement = object : ToastPlacement {
             override val top: Style<BasicParams> = {
-
                 css("top:0px")
                 css("right:0px")
                 css("left:0px")
@@ -1526,18 +1622,20 @@ open class DefaultTheme : Theme {
         }
         override val status = object : ToastStatus {
             override val success: Style<BasicParams> = {
-
-                background { color { success } }
+                background { color { success.main } }
+                color { success.mainContrast }
             }
-
             override val error: Style<BasicParams> = {
-                background { color { danger } }
+                background { color { danger.main } }
+                color { danger.mainContrast }
             }
             override val warning: Style<BasicParams> = {
-                background { color { warning } }
+                background { color { warning.main } }
+                color { warning.mainContrast }
             }
             override val info: Style<BasicParams> = {
-                background { color { info } }
+                background { color { info.main } }
+                color { info.mainContrast }
             }
 
         }
@@ -1565,7 +1663,53 @@ open class DefaultTheme : Theme {
     override val select = object : SelectFieldStyles {
 
         override val variants = object : SelectFieldVariants {
+            private val basic: Style<BasicParams> = {
+                width { full }
+                paddings {
+                    left { "0.75rem" }
+                    right { "1.5rem" }
+                    bottom { "1px" }
+                }
+                lineHeight { normal }
+                fontSize { "1rem" }
+                height { "2.5rem" }
+                radius { normal }
+                background { backgroundColor }
+                color { fontColor }
+                focus {
+                    focus {
+                        border {
+                            color { focus }
+                        }
+                        boxShadow { outline }
+                    }
+                }
+                hover {
+                    border {
+                        color { gray700 }
+                    }
+                }
+
+                disabled {
+                    background {
+                        color { neutral.highlight }
+                    }
+                    color { disabled }
+                    hover {
+                        border {
+                            color { gray300 }
+                        }
+                    }
+                }
+                position { relative { } }
+                minWidth { "2.5rem" }
+
+                css("outline: 0px;")
+                css("appearance: none;")
+                css("transition: all 0.2s ease 0s;")
+            }
             override val outline: Style<BasicParams> = {
+                basic()
                 border {
                     width { thin }
                     style { solid }
@@ -1574,12 +1718,16 @@ open class DefaultTheme : Theme {
             }
 
             override val filled: Style<BasicParams> = {
+                basic()
                 background {
                     color { gray300 }
                 }
 
                 hover {
-                    css("filter: brightness(90%);")
+                    background {
+                        color { primary.highlight }
+                    }
+                    color { primary.highlightContrast }
                 }
 
                 focus {
@@ -1658,12 +1806,12 @@ open class DefaultTheme : Theme {
 
         override val brand: Style<FlexParams> = {
             //background { color { "rgb(44, 49, 54)"} }
-            background { color { primary.base } }
+            background { color { primary.main } }
             paddings {
                 all { small }
                 left { normal }
             }
-            color { gray200 }
+            color { primary.mainContrast }
             alignItems { center }
             borders {
                 bottom {
@@ -1678,8 +1826,8 @@ open class DefaultTheme : Theme {
 //                sm = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary.base} 20%);",
 //                lg = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary.base} 20%);"
 //            )
-            background { color { primary.base } }
-            color { gray200 }
+            background { color { primary.main } }
+            color { primary.mainContrast }
             minWidth { "22vw" }
         }
 
@@ -1759,7 +1907,7 @@ open class DefaultTheme : Theme {
                 vertical { "0.6rem" }
                 horizontal { small }
             }
-            alignItems { AlignItemsValues.center }
+            alignItems { center }
             borders {
                 left {
                     width { "0.2rem" }

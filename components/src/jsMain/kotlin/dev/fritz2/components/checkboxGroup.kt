@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
+import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLElement
 
 
 /**
@@ -45,7 +47,7 @@ import kotlinx.coroutines.flow.map
  * // simple use case showing the core functionality
  * val options = listOf("A", "B", "C")
  * val myStore = storeOf(listOf("B"))
- * checkboxGroup(items = options, store = myStore) {
+ * checkboxGroup(items = options, values = myStore) {
  * }
  *
  * // one can handle the events and preselected item also manually if needed:
@@ -61,7 +63,7 @@ import kotlinx.coroutines.flow.map
  * // use case showing some styling options and a store of List<Pair<Int,String>>
  *   val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
  *  val myStore = storeOf(<List<Pair<Int,String>>)
- * checkboxGroup(items = myPairs, store = myStore) {
+ * checkboxGroup(items = myPairs, values = myStore) {
  *      label { it.second }
  *      size { large }
  *      checkedStyle {
@@ -72,7 +74,7 @@ import kotlinx.coroutines.flow.map
  */
 open class CheckboxGroupComponent<T>(
     protected val items: List<T>,
-    protected val store: Store<List<T>>?
+    protected val values: Store<List<T>>?
 ) : Component<Unit>,
     InputFormProperties by InputFormMixin(),
     SeverityProperties by SeverityMixin() {
@@ -102,8 +104,8 @@ open class CheckboxGroupComponent<T>(
 
     val selectedItems = DynamicComponentProperty<List<T>>(flowOf(emptyList()))
 
-    class EventsContext<T>(val selected: Flow<List<T>>) {
-    }
+    class EventsContext<T>(private val element: RenderContext, val selected: Flow<List<T>>) :
+        EventContext<HTMLElement> by element
 
     val events = ComponentProperty<EventsContext<T>.() -> Unit> {}
 
@@ -121,7 +123,7 @@ open class CheckboxGroupComponent<T>(
             (::div.styled(styling, baseClass, id, prefix) {
                 this@CheckboxGroupComponent.direction.value(CheckboxGroupLayouts)()
             }) {
-                (this@CheckboxGroupComponent.store?.data
+                (this@CheckboxGroupComponent.values?.data
                     ?: this@CheckboxGroupComponent.selectedItems.values) handledBy multiSelectionStore.update
 
                 this@CheckboxGroupComponent.items.forEach { item ->
@@ -144,9 +146,9 @@ open class CheckboxGroupComponent<T>(
                     }
                 }
 
-                EventsContext(multiSelectionStore.toggle).apply {
+                EventsContext(this, multiSelectionStore.toggle).apply {
                     this@CheckboxGroupComponent.events.value(this)
-                    this@CheckboxGroupComponent.store?.let { selected handledBy it.update }
+                    this@CheckboxGroupComponent.values?.let { selected handledBy it.update }
                 }
             }
         }
@@ -167,13 +169,13 @@ open class CheckboxGroupComponent<T>(
  * // simple use case showing the core functionality
  * val options = listOf("A", "B", "C")
  * val myStore = storeOf(<List<String>>)
- * checkboxGroup(items = options, store = myStore) {
+ * checkboxGroup(items = options, values = myStore) {
  * }
  *
  * // use case showing some styling options and a store of List<Pair<Int,String>>
  * val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
  * val myStore = storeOf(<List<Pair<Int,String>>)
- * checkboxGroup(items = myPairs, store = myStore) {
+ * checkboxGroup(items = myPairs, values = myStore) {
  *      label { it.second }
  *      size { large }
  *      checkedStyle {
@@ -186,7 +188,7 @@ open class CheckboxGroupComponent<T>(
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param items a list of all available options
- * @param store a store of List<T>
+ * @param values a store of List<T>
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
@@ -195,12 +197,12 @@ open class CheckboxGroupComponent<T>(
 fun <T> RenderContext.checkboxGroup(
     styling: BasicParams.() -> Unit = {},
     items: List<T>,
-    store: Store<List<T>>? = null,
+    values: Store<List<T>>? = null,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "checkboxGroupComponent",
     build: CheckboxGroupComponent<T>.() -> Unit = {}
 ) {
-    CheckboxGroupComponent<T>(items, store).apply(build).render(this, styling, baseClass, id, prefix)
+    CheckboxGroupComponent<T>(items, values).apply(build).render(this, styling, baseClass, id, prefix)
 }
 

@@ -64,18 +64,25 @@ open class AlertComponent : Component<Unit> {
         }
     }
 
-    // the icon specified in AlertSeverity is used if no icon is specified manually
+    enum class AlertVariant {
+        SOLID, SUBTLE, LEFT_ACCENT, TOP_ACCENT, DISCREET
+    }
+
+    object VariantContext {
+        val solid : AlertVariant = AlertVariant.SOLID
+        val subtle = AlertVariant.SUBTLE
+        val leftAccent = AlertVariant.LEFT_ACCENT
+        val topAccent = AlertVariant.TOP_ACCENT
+        val discreet = AlertVariant.DISCREET
+    }
+
+    // icon and color from severity are used if either of them is not specified manually
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)
-    val color = ComponentProperty<Colors.() -> ColorProperty> { info }
-    val variant = ComponentProperty<AlertVariants.() -> AlertVariantStyleFactory> { solid }
+    val color = ComponentProperty<Colors.() -> ColorScheme> { info }
+    val severity = ComponentProperty<AlertSeverities.() -> AlertSeverity> { info }
+    val variant = ComponentProperty<VariantContext.() -> AlertVariant> { solid }
     val sizes = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
     val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
-
-    private val variantStyles: AlertVariantStyles
-        get() {
-            val alertVariantFactory = variant.value.invoke(Theme().alert.variants)
-            return alertVariantFactory.invoke(color.value.invoke(Theme().colors))
-        }
 
 
     private var title: (RenderContext.() -> Unit)? = null
@@ -124,26 +131,39 @@ open class AlertComponent : Component<Unit> {
             flexBox(baseClass = alertCss, styling = {
                 this@AlertComponent.sizes.value(Theme().alert.sizes)()
                 this@AlertComponent.stacking.value(Theme().alert.stacking)()
-                this@AlertComponent.variantStyles.background()
-                this@AlertComponent.variantStyles.decoration()
+
+                when (this@AlertComponent.variant.value(VariantContext)) {
+                    VariantContext.solid ->
+                        Theme().alert.variants
+                            .solid(this, this@AlertComponent.severity.value(Theme().alert.severities))
+                    VariantContext.subtle ->
+                        Theme().alert.variants
+                            .subtle(this, this@AlertComponent.severity.value(Theme().alert.severities))
+                    VariantContext.leftAccent ->
+                        Theme().alert.variants
+                            .leftAccent(this, this@AlertComponent.severity.value(Theme().alert.severities))
+                    VariantContext.topAccent ->
+                        Theme().alert.variants
+                            .topAccent(this, this@AlertComponent.severity.value(Theme().alert.severities))
+                }
             }) {
-                this@AlertComponent.icon.value?.let {
-                    box(styling = {
-                        css("margin-right: var(--al-icon-margin)")
-                        this@AlertComponent.variantStyles.foreground()
+                box(styling = {
+                    css("margin-right: var(--al-icon-margin)")
+                    //this@AlertComponent.variantStyles.foreground()
+                }) {
+                    icon({
+                        css("width: var(--al-icon-size)")
+                        css("height: var(--al-icon-size)")
                     }) {
-                        icon({
-                            css("width: var(--al-icon-size)")
-                            css("height: var(--al-icon-size)")
-                        }) {
-                            fromTheme { it.invoke(Theme().icons) }
+                        fromTheme {
+                            this@AlertComponent.icon.value
+                                ?.invoke(Theme().icons)
+                                ?: this@AlertComponent.severity.value(Theme().alert.severities).icon
                         }
                     }
                 }
 
-                box(baseClass = alertContentCss, styling = {
-                    this@AlertComponent.variantStyles.foreground()
-                }) {
+                box(baseClass = alertContentCss) {
                     this@AlertComponent.title?.invoke(this)
                     this@AlertComponent.content?.invoke(this)
                 }
@@ -188,20 +208,12 @@ fun ComponentValidationMessage.asAlert(
 ) {
     val receiver = this
     renderContext.alert {
-        color {
+        severity {
             when (receiver.severity) {
                 Severity.Info -> info
                 Severity.Success -> success
                 Severity.Warning -> warning
-                Severity.Error -> danger
-            }
-        }
-        icon {
-            when (receiver.severity) {
-                Severity.Info -> circleInformation
-                Severity.Success -> circleCheck
-                Severity.Warning -> circleWarning
-                Severity.Error -> circleError
+                Severity.Error -> error
             }
         }
         variant { discreet }
