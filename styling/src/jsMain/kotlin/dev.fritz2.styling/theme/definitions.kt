@@ -691,3 +691,18 @@ interface AppFrameStyles {
     val navSection: Style<BasicParams>
 }
 
+interface DataTableStyles {
+    val headerStyle: BasicParams.(sorted: Boolean) -> Unit
+
+    /**
+     * TODO: find possibility to remove separate parameters and go back to ``IndexedValue<StatefulItem<Any>>``!
+     */
+    val cellStyle: BasicParams.(value: IndexedValue<Any>, selected: Boolean, sorted: Boolean) -> Unit
+
+    /**
+     * TODO: find possibility to remove separate parameters and go back to ``IndexedValue<StatefulItem<Any>>``!
+     */
+    val hoveringStyle: BasicParams.(value: IndexedValue<Any>, selected: Boolean, sorted: Boolean) -> Unit
+
+    val sorterStyle: BasicParams.(sorted: Boolean) -> Unit
+}
