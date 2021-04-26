@@ -4,10 +4,8 @@ import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
+import dev.fritz2.styling.params.*
+import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -23,7 +21,7 @@ import kotlinx.coroutines.flow.flowOf
  * - Error
  * Specifying a severity will change the alert's color scheme based on the colors defined in the application theme as
  * well as the icon displayed. If no severity is specified, 'info' will be used by default.
- * The alert's icon can manually be set via the 'icon'-property in which case the severity's icon will be ignored.
+ * The alert's icon can manually be overridden by setting the respective dsl property.
  *
  * Additionally, a number of different layout options are available. These are:
  * - 'subtle': A subtle style using different shades of the severity's base color defined in the application theme.
@@ -47,12 +45,29 @@ import kotlinx.coroutines.flow.flowOf
  *     severity { error }
  *     variant { leftAccent }
  * }
+ *
+ * alert {
+ *     title("Alert")
+ *     content("This is an alert.")
+ *     icon { fritz2 }
+ * }
  * ```
  */
 open class AlertComponent : Component<Unit> {
-    val sizes = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
-    val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
-    val severity = ComponentProperty<AlertSeverities.() -> AlertSeverity> { info }
+
+    companion object {
+        private val alertCss = style("alert") {
+            alignItems { center }
+            padding { normal }
+        }
+
+        private val alertContentCss = style("alert-content") {
+            display { inlineBlock }
+            verticalAlign { middle }
+            width { "100%" }
+            lineHeight { "1.2em" }
+        }
+    }
 
     enum class AlertVariant {
         SOLID, SUBTLE, LEFT_ACCENT, TOP_ACCENT, DISCREET
@@ -66,13 +81,18 @@ open class AlertComponent : Component<Unit> {
         val discreet = AlertVariant.DISCREET
     }
 
-    val variant = ComponentProperty<VariantContext.() -> AlertVariant> { solid }
-
-    // the icon specified in AlertSeverity is used if no icon is specified manually
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)
+    val severity = ComponentProperty<(AlertSeverities.() -> AlertSeverity)> { info }
+    val variant = ComponentProperty<VariantContext.() -> AlertVariant> { solid }
+    val sizes = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
+    val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
+
+    private val actualIcon: IconDefinition
+        get() = icon.value?.invoke(Theme().icons)
+            ?: severity.value(Theme().alert.severities).icon
+
 
     private var title: (RenderContext.() -> Unit)? = null
-    private var content: (RenderContext.() -> Unit)? = null
 
     fun title(value: RenderContext.() -> Unit) {
         title = value
@@ -90,21 +110,22 @@ open class AlertComponent : Component<Unit> {
     }
 
     fun title(value: String) = title(flowOf(value))
+
+
+    private var content: (RenderContext.() -> Unit)? = null
+
     fun content(value: RenderContext.() -> Unit) {
         content = value
     }
 
     fun content(value: Flow<String>) {
         content {
-            (::span.styled {
-                // To be added
-            }) {
-                value.asText()
-            }
+            span { value.asText() }
         }
     }
 
     fun content(value: String) = content(flowOf(value))
+
 
     override fun render(
         context: RenderContext,
@@ -114,58 +135,32 @@ open class AlertComponent : Component<Unit> {
         prefix: String,
     ) {
         context.apply {
-            (::div.styled(baseClass = baseClass, id = id, prefix = prefix) {
-                styling()
-                display { flex }
-                position { relative { } }
-                when (this@AlertComponent.variant.value(VariantContext)) {
-                    AlertVariant.SOLID ->
-                        Theme().alert.variants
-                            .solid(this, this@AlertComponent.severity.value(Theme().alert.severities))
-                    AlertVariant.SUBTLE ->
-                        Theme().alert.variants
-                            .subtle(this, this@AlertComponent.severity.value(Theme().alert.severities))
-                    AlertVariant.LEFT_ACCENT ->
-                        Theme().alert.variants
-                            .leftAccent(this, this@AlertComponent.severity.value(Theme().alert.severities))
-                    AlertVariant.TOP_ACCENT ->
-                        Theme().alert.variants
-                            .topAccent(this, this@AlertComponent.severity.value(Theme().alert.severities))
-                    AlertVariant.DISCREET ->
-                        Theme().alert.variants
-                            .discreet(this, this@AlertComponent.severity.value(Theme().alert.severities))
-                }
+            flexBox(baseClass = alertCss, styling = {
+                this@AlertComponent.sizes.value(Theme().alert.sizes)()
+                this@AlertComponent.stacking.value(Theme().alert.stacking)()
+
+                when(this@AlertComponent.variant.value(VariantContext)) {
+                    AlertVariant.SOLID -> Theme().alert.variants.solid
+                    AlertVariant.SUBTLE -> Theme().alert.variants.subtle
+                    AlertVariant.LEFT_ACCENT -> Theme().alert.variants.leftAccent
+                    AlertVariant.TOP_ACCENT -> Theme().alert.variants.topAccent
+                    AlertVariant.DISCREET -> Theme().alert.variants.discreet
+                }.invoke(this, this@AlertComponent.severity.value(Theme().alert.severities).colorScheme)
             }) {
-                (::div.styled {
-                    display { flex }
-                    css("flex-direction: row")
-                    alignItems { center }
-                    this@AlertComponent.sizes.value(Theme().alert.sizes)()
-                    this@AlertComponent.stacking.value(Theme().alert.stacking)()
+                box(styling = {
+                    css("margin-right: var(--al-icon-margin)")
                 }) {
-                    (::div.styled {
-                        css("margin-right: var(--al-icon-margin)")
+                    icon({
+                        css("width: var(--al-icon-size)")
+                        css("height: var(--al-icon-size)")
                     }) {
-                        icon({
-                            css("width: var(--al-icon-size)")
-                            css("height: var(--al-icon-size)")
-                        }) {
-                            fromTheme {
-                                this@AlertComponent.icon.value
-                                    ?.invoke(Theme().icons)
-                                    ?: this@AlertComponent.severity.value(Theme().alert.severities).icon
-                            }
-                        }
+                        fromTheme { this@AlertComponent.actualIcon }
                     }
-                    (::div.styled {
-                        display { inlineBlock }
-                        verticalAlign { middle }
-                        width { "100%" }
-                        lineHeight { "1.2em" }
-                    }) {
-                        this@AlertComponent.title?.invoke(this)
-                        this@AlertComponent.content?.invoke(this)
-                    }
+                }
+
+                box(baseClass = alertContentCss) {
+                    this@AlertComponent.title?.invoke(this)
+                    this@AlertComponent.content?.invoke(this)
                 }
             }
         }
