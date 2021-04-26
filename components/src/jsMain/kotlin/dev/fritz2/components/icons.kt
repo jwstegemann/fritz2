@@ -1,40 +1,15 @@
 package dev.fritz2.components
 
-import dev.fritz2.dom.HtmlTagMarker
-import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.svg
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme
-import kotlinx.browser.document
-import kotlinx.coroutines.Job
 import org.w3c.dom.svg.SVGElement
-
-const val xmlns = "http://www.w3.org/2000/svg"
-
-fun createIconSvgElement(baseClass: String?): SVGElement {
-    val elem = document.createElementNS(xmlns, "svg").unsafeCast<SVGElement>()
-    baseClass?.let { elem.setAttributeNS(null, "class", it) }
-    return elem
-}
-
-@HtmlTagMarker
-class Svg(
-    id: String? = null,
-    baseClass: String? = null,
-    override val domNode: SVGElement = createIconSvgElement(baseClass),
-    job: Job
-) : Tag<SVGElement>(domNode = domNode, tagName = "", id = id, job = job)
-
-
-fun RenderContext.svg(baseClass: String?, id: String?, init: Svg.() -> Unit): Svg {
-    return register(Svg(id = id, baseClass = baseClass, job = job), init)
-}
 
 /**
  * Class for configuring the appearance of an icon.
@@ -80,9 +55,9 @@ open class IconComponent : Component<Unit>, EventProperties<SVGElement> by Event
         prefix: String
     ) {
         context.apply {
-            (::svg.styled(baseClass + staticCss, id, prefix) {
+            svg({
                 styling()
-            }) {
+            }, baseClass + staticCss, id, prefix) {
                 this@IconComponent.def.value?.let {
                     domNode.setAttributeNS(null, "viewBox", it.viewBox)
                     domNode.setAttributeNS(null, "focusable", "false")

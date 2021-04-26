@@ -2431,3 +2431,24 @@ fun TagContext.command(
         job
     ), content
 )
+
+fun TagContext.svg(
+    style: Style<BoxParams>,
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    content: Svg.() -> Unit
+): Svg = register(Svg(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job = job), content)
+
+fun TagContext.svg(
+    style: Style<BoxParams>,
+    parentStyling: Style<BoxParams> = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    content: Svg.() -> Unit
+): Svg = register(
+    Svg(id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job = job
+    ), content
+)

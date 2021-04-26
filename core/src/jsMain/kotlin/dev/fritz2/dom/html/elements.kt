@@ -5,10 +5,12 @@ import dev.fritz2.binding.mountSingle
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
 import dev.fritz2.dom.WithText
+import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
+import org.w3c.dom.svg.SVGElement
 
 
 /**
@@ -1244,6 +1246,28 @@ open class Ul(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTM
 
 
 /**
+ * Exposes the JavaScript [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement) to Kotlin
+ */
+class Svg(
+    id: String? = null,
+    baseClass: String? = null,
+    override val domNode: SVGElement = createIconSvgElement(baseClass),
+    job: Job
+) : Tag<SVGElement>("", id, null, job) {
+
+    companion object {
+        const val xmlns = "http://www.w3.org/2000/svg"
+
+        fun createIconSvgElement(baseClass: String?): SVGElement {
+            val elem = document.createElementNS(xmlns, "svg").unsafeCast<SVGElement>()
+            baseClass?.let { elem.setAttributeNS(null, "class", it) }
+            return elem
+        }
+    }
+}
+
+
+/**
  * Special [Tag] for HTML5 with no attributes
  */
 open class TextElement(tagName: String, id: String? = null, baseClass: String? = null, job: Job) :
@@ -1595,4 +1619,8 @@ interface TagContext : WithJob {
 
     fun command(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
         register(TextElement("command", id, baseClass, job), content)
+
+    fun svg(baseClass: String?, id: String? = null, content: Svg.() -> Unit): Svg {
+        return register(Svg(id, baseClass, job = job), content)
+    }
 }
