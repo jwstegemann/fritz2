@@ -76,10 +76,10 @@ open class DefaultTheme : Theme {
 
             override val tertiary =
                 ColorScheme(
-                    main = gray600,
-                    mainContrast = gray100,
-                    highlight = gray300,
-                    highlightContrast = gray600
+                    main = gray300,
+                    mainContrast = gray800,
+                    highlight = gray100,
+                    highlightContrast = gray800
                 )
 
             // Signal Colors
@@ -1970,22 +1970,15 @@ open class DefaultTheme : Theme {
          */
         val columnColors: List<ColorScheme>
             get() = listOf(
-                ColorScheme(
-                    colors.gray100,
-                    colors.gray700,
-                    colors.gray700,
-                    colors.gray100
-                ),
-                ColorScheme(
-                    colors.gray300,
-                    colors.gray900,
-                    colors.gray900,
-                    colors.gray300
-                )
+                colors.tertiary,
+                colors.tertiary.inverted()
             )
 
         val selectionColor: ColorScheme
             get() = colors.secondary
+
+        val hoveringColors: ColorScheme
+            get() = colors.tertiary
 
         private val basic: Style<BasicParams> = {
             paddings {
@@ -2056,14 +2049,13 @@ open class DefaultTheme : Theme {
             selected: Boolean,
             sorted: Boolean
         ) -> Unit
-            get() = { (index, _), selected, _ ->
-                with((index + 1) % 2) {
-                    if (selected) {
-                        background { color { selectionColor.highlight } }
-                        color { selectionColor.highlightContrast }
-                    } else {
-                        background { color { columnColors[this@with].highlight } }
-                        color { columnColors[this@with].highlightContrast }
+            get() = { _, _, _ ->
+                color { hoveringColors.mainContrast }
+                borders {
+                    horizontal {
+                        color { hoveringColors.mainContrast }
+                        width { thin }
+                        style { solid }
                     }
                 }
             }
