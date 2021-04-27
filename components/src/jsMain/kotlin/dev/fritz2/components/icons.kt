@@ -59,10 +59,10 @@ open class IconComponent : Component<Unit>, EventProperties<SVGElement> by Event
                 styling()
             }, baseClass + staticCss, id, prefix) {
                 this@IconComponent.def.value?.let {
-                    domNode.setAttributeNS(null, "viewBox", it.viewBox)
-                    domNode.setAttributeNS(null, "focusable", "false")
-                    domNode.setAttributeNS(null, "role", "presentation")
-                    domNode.innerHTML = it.svg
+                    attr("viewBox", it.viewBox)
+                    attr("focusable", "false")
+                    attr("role", "presentation")
+                    content(it.svg)
                 }
                 this@IconComponent.events.value.invoke(this)
             }
