@@ -4,7 +4,6 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.MountTargetNotFoundException
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.render
-import dev.fritz2.styling.params.ColorProperty
 import dev.fritz2.styling.resetCss
 import kotlinx.browser.document
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -111,16 +110,6 @@ interface Theme {
      * definition of the theme's colors
      */
     val colors: Colors
-
-    /**
-     * definition of the theme's background color
-     */
-    val backgroundColor: ColorProperty
-
-    /**
-     * definition of the theme's font colors
-     */
-    val fontColor: ColorProperty
 
     /**
      * definition of the theme's fonts

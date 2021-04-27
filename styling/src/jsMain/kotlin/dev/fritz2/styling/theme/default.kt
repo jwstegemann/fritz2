@@ -115,17 +115,12 @@ open class DefaultTheme : Theme {
                     highlightContrast = gray700
                 )
 
+            //FIXME: move to typography section
+            override val font = neutral.mainContrast
+            override val background = neutral.main
             override val disabled = gray300
             override val focus = primary.highlight
         }
-
-    //FIXME: move to typography section
-
-    override val backgroundColor
-        get() = colors.neutral.main
-
-    override val fontColor
-        get() = colors.neutral.mainContrast
 
     override val fontFamilies = object : FontFamilies {
         override val normal =
@@ -250,9 +245,9 @@ open class DefaultTheme : Theme {
         }
             
         body {
-            color: ${fontColor};
+            color: ${colors.font};
             font-family: ${fontFamilies.normal};
-            background-color: ${backgroundColor};
+            background-color: ${colors.background};
             font-feature-settings: "kern";
         }
         
@@ -460,8 +455,8 @@ open class DefaultTheme : Theme {
             private val basic: Style<BasicParams> = {
                 radius { normal }
                 fontWeight { normal }
-                color { fontColor }
-                background { color { backgroundColor } }
+                color { font }
+                background { color { background } }
 
                 border {
                     width { thin }
@@ -1458,8 +1453,8 @@ open class DefaultTheme : Theme {
 
                 }
 
-                background { backgroundColor }
-                color { fontColor }
+                background { color { background } }
+                color { font }
 
                 disabled {
                     background {
@@ -1545,10 +1540,8 @@ open class DefaultTheme : Theme {
                 }
             }
             override val discreet: BasicParams.(ColorScheme) -> Unit = { _ ->
-                background {
-                    color { backgroundColor }
-                }
-                color { fontColor }
+                background { color { background } }
+                color { font }
             }
         }
 
@@ -1675,8 +1668,8 @@ open class DefaultTheme : Theme {
                 fontSize { "1rem" }
                 height { "2.5rem" }
                 radius { normal }
-                background { backgroundColor }
-                color { fontColor }
+                background { color { background } }
+                color { font }
                 focus {
                     focus {
                         border {
