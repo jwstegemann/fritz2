@@ -5,7 +5,11 @@ import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.button
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.plus
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.ColorScheme
 import dev.fritz2.styling.theme.FormSizes
@@ -224,19 +228,19 @@ open class PushButtonComponent :
         prefix: String
     ) {
         context.apply {
-            (::button.styled(styling, baseClass + staticCss, id, prefix) {
-               when(this@PushButtonComponent.variant.value(VariantContext)) {
-                   ButtonVariant.SOLID ->
-                       Theme().button.variants.solid(this, this@PushButtonComponent.type.value(Theme().button.types))
-                   ButtonVariant.LINK ->
-                       Theme().button.variants.link(this, this@PushButtonComponent.type.value(Theme().button.types))
-                   ButtonVariant.OUTLINE ->
-                       Theme().button.variants.outline(this, this@PushButtonComponent.type.value(Theme().button.types))
-                   ButtonVariant.GHOST ->
-                       Theme().button.variants.ghost(this, this@PushButtonComponent.type.value(Theme().button.types))
+            button({
+                when (this@PushButtonComponent.variant.value(VariantContext)) {
+                    ButtonVariant.SOLID ->
+                        Theme().button.variants.solid(this, this@PushButtonComponent.type.value(Theme().button.types))
+                    ButtonVariant.LINK ->
+                        Theme().button.variants.link(this, this@PushButtonComponent.type.value(Theme().button.types))
+                    ButtonVariant.OUTLINE ->
+                        Theme().button.variants.outline(this, this@PushButtonComponent.type.value(Theme().button.types))
+                    ButtonVariant.GHOST ->
+                        Theme().button.variants.ghost(this, this@PushButtonComponent.type.value(Theme().button.types))
                 }
                 this@PushButtonComponent.size.value.invoke(Theme().button.sizes)()
-            }) {
+            }, styling, baseClass + staticCss, id, prefix) {
                 disabled(this@PushButtonComponent.disabled.values)
                 if (this@PushButtonComponent.text == null) {
                     this@PushButtonComponent.renderIcon(

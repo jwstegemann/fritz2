@@ -4,10 +4,8 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.sub
 import dev.fritz2.components.*
 import dev.fritz2.dom.html.*
-import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.*
 import dev.fritz2.styling.params.*
-import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.*
 import kotlin.collections.Map
@@ -172,7 +170,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                 else -> Unit
             }
 
-            (::div.styled {
+            div({
                 styling()
                 this@DataTableComponent.options.value.width.value?.also { width { it } }
                 this@DataTableComponent.options.value.height.value?.also { height { it } }
@@ -281,7 +279,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
     ) {
         val component = this
         RenderContext.apply {
-            (::table.styled({
+            table({
                 height { component.header.value.fixedHeaderHeight.value }
                 overflow { OverflowValues.hidden }
                 position {
@@ -290,7 +288,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                     }
                 }
                 zIndex { "1" }
-            }, baseClass, "$id-fixedHeader", "$prefix-fixedHeader") {}){
+            }, baseClass, "$id-fixedHeader", "$prefix-fixedHeader") {
                 attr("style", gridCols)
                 this@DataTableComponent.renderHeader({}, this)
                 this@DataTableComponent.renderRows({
@@ -298,12 +296,12 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                 }, rowIdProvider, this)
             }
 
-            (::table.styled({
+            table({
                 margins {
                     top { "-${component.header.value.fixedHeaderHeight.value}" }
                 }
                 height { "fit-content" }
-            }, baseClass, id, prefix) {}){
+            }, baseClass, id, prefix) {
                 attr("style", gridCols)
                 this@DataTableComponent.renderHeader({
                     css("visibility:hidden")
@@ -322,7 +320,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
         RenderContext: RenderContext
     ) {
         RenderContext.apply {
-            (::table.styled({ }, baseClass, id, prefix) {}){
+            table({}, baseClass, id, prefix) {
                 attr("style", gridCols)
                 this@DataTableComponent.renderHeader({}, this)
                 this@DataTableComponent.renderRows({}, rowIdProvider, this)
@@ -336,13 +334,13 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
     ) {
         val component = this
         renderContext.apply {
-            (::thead.styled() {
+            thead({
                 styling()
             }) {
                 tr {
                     component.stateStore.renderingHeaderData(component)
                         .renderEach(component.columnStateIdProvider) { (column, sorting) ->
-                            (::th.styled {
+                           th({
                                 Sorting.sorted(sorting.strategy)
                                 Theme().dataTableStyles.headerStyle(
                                     this,
@@ -360,26 +358,30 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                                     column.headerContent(this, column)
 
                                     // Sorting
-                                    (::div.styled({
+                                    div({
                                         Sorting.sorted(sorting.strategy)
                                         Theme().dataTableStyles.sorterStyle(
                                             this,
                                             Sorting.sorted(sorting.strategy)
                                         )
-                                    }) {}){
-                                        if (column.id == sorting.id) {
-                                            component.options.value.sorting.value.renderer.value.renderSortingActive(
-                                                this,
-                                                sorting.strategy
-                                            )
-                                        } else if (column.sorting != Sorting.DISABLED) {
-                                            component.options.value.sorting.value.renderer.value.renderSortingLost(
-                                                this
-                                            )
-                                        } else {
-                                            component.options.value.sorting.value.renderer.value.renderSortingDisabled(
-                                                this
-                                            )
+                                    }) {
+                                        when {
+                                            column.id == sorting.id -> {
+                                                component.options.value.sorting.value.renderer.value.renderSortingActive(
+                                                    this,
+                                                    sorting.strategy
+                                                )
+                                            }
+                                            column.sorting != Sorting.DISABLED -> {
+                                                component.options.value.sorting.value.renderer.value.renderSortingLost(
+                                                    this
+                                                )
+                                            }
+                                            else -> {
+                                                component.options.value.sorting.value.renderer.value.renderSortingDisabled(
+                                                    this
+                                                )
+                                            }
                                         }
                                         clicks.events.map {
                                             ColumnIdSorting.of(column)
@@ -400,7 +402,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
     ) {
         val component = this
         renderContext.apply {
-            (::tbody.styled {
+            tbody({
                 styling()
             }) {
                 component.stateStore.renderingRowsData(component)
@@ -414,7 +416,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                             dblclicks.events.map { rowStore.current } handledBy component.selectionStore.dbClickedRow
                             component.stateStore.renderingCellsData(component, index, rowData, isSelected)
                                 .renderEach { (column, statefulIndex) ->
-                                    (::td.styled {
+                                    td({
                                         IndexedValue(
                                             index,
                                             rowData as Any, // cast necessary, as theme can't depend on ``T``!

@@ -6,12 +6,10 @@ import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.PopoverArrowPlacements
 import dev.fritz2.styling.theme.PopoverPlacements
 import dev.fritz2.styling.theme.PopoverSizes
@@ -66,9 +64,9 @@ open class PopoverComponent : Component<Unit>,
     private var header: (RenderContext.() -> Unit)? = null
     fun header(value: (RenderContext.() -> Unit)) {
         header = {
-            (::header.styled(prefix = "popover-header") {
+            header({
                 Theme().popover.header()
-            }){ value() }
+            }, prefix = "popover-header") { value() }
         }
     }
 
@@ -78,18 +76,18 @@ open class PopoverComponent : Component<Unit>,
 
     fun header(value: Flow<String>) {
         header = {
-            (::header.styled(prefix = "popover-header") {
+            header({
                 Theme().popover.header()
-            }){ value.asText() }
+            }, prefix = "popover-header") { value.asText() }
         }
     }
 
     private var footer: (RenderContext.() -> Unit)? = null
     fun footer(value: (RenderContext.() -> Unit)) {
         footer = {
-            (::footer.styled(prefix = "popover-footer") {
+            footer({
                 Theme().popover.footer()
-            }){ value() }
+            }, prefix = "popover-footer") { value() }
         }
     }
 
@@ -99,18 +97,18 @@ open class PopoverComponent : Component<Unit>,
 
     fun footer(value: Flow<String>) {
         footer = {
-            (::footer.styled(prefix = "popover-footer") {
+            footer({
                 Theme().popover.footer()
-            }){ value.asText() }
+            }, prefix = "popover-footer") { value.asText() }
         }
     }
 
     private var content: (RenderContext.() -> Unit)? = null
     fun content(value: (RenderContext.() -> Unit)) {
         content = {
-            (::section.styled(prefix = "popover-content") {
+            section({
                 Theme().popover.section()
-            }){ value(this) }
+            }, prefix = "popover-content") { value(this) }
         }
     }
 
@@ -120,9 +118,9 @@ open class PopoverComponent : Component<Unit>,
 
     fun content(value: Flow<String>) {
         content = {
-            (::section.styled(prefix = "popover-content") {
+            section({
                 Theme().popover.section()
-            }){ value.asText() }
+            }, prefix = "popover-content") { value.asText() }
         }
     }
 
@@ -159,11 +157,11 @@ open class PopoverComponent : Component<Unit>,
                 } handledBy clickStore.close
             }
 
-            (::div.styled({ }, staticCss, null, prefix) {
-            }){
-                (::div.styled(prefix = "popover-toggle", id = "popover-toggle-$popoverId") {
+            div({
+            }, staticCss, null, prefix) {
+                div({
                     Theme().popover.toggle()
-                }) {
+                }, prefix = "popover-toggle", id = "popover-toggle-$popoverId") {
                     attr("data-popover-for", popoverId)
                     clicks.events.map { } handledBy clickStore.toggle
                     this@PopoverComponent.toggle.value?.invoke(this)
@@ -202,13 +200,13 @@ open class PopoverComponent : Component<Unit>,
     ) {
         RenderContext.apply {
 
-            (::section.styled(styling, baseClass, id, prefix) {
+            section({
                 this@PopoverComponent.placementStyle.invoke(Theme().popover.placement)()
                 this@PopoverComponent.size.value.invoke(Theme().popover.size)()
                 focus {
                     css("outline:none")
                 }
-            }){
+            }, styling, baseClass, id, prefix) {
                 attr("tabindex", "-1")
                 if (this@PopoverComponent.hasArrow.value) {
                     this@PopoverComponent.renderArrow(this)
@@ -230,9 +228,9 @@ open class PopoverComponent : Component<Unit>,
 
     private fun renderArrow(RenderContext: RenderContext) {
         RenderContext.apply {
-            (::div.styled(prefix = "popover-arrow") {
+            div({
                 this@PopoverComponent.arrowPlacement.value.invoke(Theme().popover.arrowPlacement)()
-            }){}
+            }, prefix = "popover-arrow") {}
         }
     }
 }

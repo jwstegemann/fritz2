@@ -1,10 +1,11 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.*
-import dev.fritz2.components.datatable.*
+import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.Store
+import dev.fritz2.components.datatable.DataTableComponent
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.GridParams
 
 /**
  * This component factory generates a data table.

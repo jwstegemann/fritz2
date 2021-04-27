@@ -5,6 +5,8 @@ import dev.fritz2.binding.SubStore
 import dev.fritz2.components.ComponentProperty
 import dev.fritz2.components.DynamicComponentProperty
 import dev.fritz2.components.NullableDynamicComponentProperty
+import dev.fritz2.components.datatable.ColumnsContext.ColumnContext
+import dev.fritz2.components.datatable.OptionsContext.SortingContext
 import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
@@ -400,7 +402,7 @@ class SelectionContext<T, I> {
  * This context class integrates the configuration and the DSL for some general and optional properties.
  *
  * The following aspects can be configured:
- * - different customizations related to sorting functionalities ([Sorting])
+ * - different customizations related to sorting functionalities ([SortingContext])
  * - the hovering effect
  * - width and heights properties, including the maximum values for the whole table
  * - width and max width for a cell
@@ -408,27 +410,27 @@ class SelectionContext<T, I> {
  */
 class OptionsContext<T> {
 
-    class Sorting<T> {
+    class SortingContext<T> {
         val reducer = ComponentProperty<SortingPlanReducer>(TogglingSortingPlanReducer())
         val sorter = ComponentProperty<RowSorter<T>>(OneColumnSorter())
         val renderer = ComponentProperty<SortingRenderer>(SingleArrowSortingRenderer())
     }
 
     /**
-     * @see [Sorting]
+     * @see [SortingContext]
      */
-    val sorting = ComponentProperty<Sorting<T>>(Sorting())
-    fun sorting(value: Sorting<T>.() -> Unit) {
+    val sorting = ComponentProperty<SortingContext<T>>(SortingContext())
+    fun sorting(value: SortingContext<T>.() -> Unit) {
         sorting.value.apply { value() }
     }
 
-    class Hovering<T> {
+    class HoveringContext<T> {
         val active = ComponentProperty(true)
         val style = ComponentProperty<BasicParams.(IndexedValue<StatefulItem<T>>) -> Unit> {}
     }
 
-    val hovering = ComponentProperty<Hovering<T>>(Hovering())
-    fun hovering(value: Hovering<T>.() -> Unit) {
+    val hovering = ComponentProperty<HoveringContext<T>>(HoveringContext())
+    fun hovering(value: HoveringContext<T>.() -> Unit) {
         hovering.value.apply(value)
     }
 

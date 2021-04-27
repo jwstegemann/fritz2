@@ -2,9 +2,9 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 
 open class NavbarComponent : Component<Unit> {
@@ -66,7 +66,7 @@ open class NavbarComponent : Component<Unit> {
     ) {
         with(context) {
             nav((staticHeaderCss + baseClass).name, id) {
-                (::div.styled(baseClass = staticContentCss, prefix = prefix) {
+                div({
                     borders {
                         top {
                             width { "6px" }
@@ -81,7 +81,7 @@ open class NavbarComponent : Component<Unit> {
                         }
                     }
                     styling()
-                }) {
+                }, baseClass = staticContentCss, prefix = prefix) {
                     div(staticBrandCss.name) {
                         this@NavbarComponent.brand.value(this)
                     }

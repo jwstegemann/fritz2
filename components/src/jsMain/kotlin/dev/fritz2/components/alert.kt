@@ -4,7 +4,10 @@ import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.span
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
@@ -74,7 +77,7 @@ open class AlertComponent : Component<Unit> {
     }
 
     object VariantContext {
-        val solid : AlertVariant = AlertVariant.SOLID
+        val solid = AlertVariant.SOLID
         val subtle = AlertVariant.SUBTLE
         val leftAccent = AlertVariant.LEFT_ACCENT
         val topAccent = AlertVariant.TOP_ACCENT
@@ -100,7 +103,7 @@ open class AlertComponent : Component<Unit> {
 
     fun title(value: Flow<String>) {
         title {
-            (::span.styled {
+            span({
                 margins { right { smaller } }
                 fontWeight { bold }
             }) {

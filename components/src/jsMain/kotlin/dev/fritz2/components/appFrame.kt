@@ -9,7 +9,6 @@ import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -155,7 +154,7 @@ open class AppFrameComponent : Component<Unit> {
                 clicks handledBy this@AppFrameComponent.toggleSidebar
             }
 
-            (::header.styled {
+            header({
                 grid(sm = { area { "header" } }, md = { area { "brand" } })
                 this@AppFrameComponent.mobileSidebar("none")()
                 height(sm = { Theme().appFrame.headerHeight }, md = { unset })
@@ -169,7 +168,7 @@ open class AppFrameComponent : Component<Unit> {
                 }
             }
 
-            (::header.styled {
+            header({
                 grid { area { "header" } }
             }) {
                 flexBox({
@@ -191,7 +190,7 @@ open class AppFrameComponent : Component<Unit> {
                 }
             }
 
-            (::aside.styled {
+            aside({
                 grid(sm = { area { "main" } }, md = { area { "sidebar" } })
                 this@AppFrameComponent.mobileSidebar(Theme().appFrame.headerHeight)()
                 overflow { hidden }
@@ -208,13 +207,13 @@ open class AppFrameComponent : Component<Unit> {
                     maxHeight { "-webkit-fill-available" }
                     overflow { auto }
                 }) {
-                    (::section.styled {
+                    section({
                         Theme().appFrame.nav()
                     }) {
                         this@AppFrameComponent.nav.value(this)
                     }
                     this@AppFrameComponent.footer.value?.let { footer ->
-                        (::section.styled {
+                        section({
                             Theme().appFrame.footer()
                         }) {
                             footer(this)
@@ -223,12 +222,12 @@ open class AppFrameComponent : Component<Unit> {
                 }
             }
 
-            (::main.styled(styling, baseClass, id, prefix) {
+            main({
                 grid { area { "main" } }
                 overflow { dev.fritz2.styling.params.OverflowValues.auto }
                 Theme().appFrame.main()
                 styling()
-            }) {
+            }, styling, baseClass, id, prefix) {
                 this@AppFrameComponent.main.value(this)
             }
 

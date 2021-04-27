@@ -6,14 +6,10 @@ import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.name
+import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
@@ -133,26 +129,18 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
         }
 
         return with(context) {
-            (::label.styled(
-                baseClass = baseClass,
-                id = id,
-                prefix = prefix
-            ) {
+            label({
                 this@RadioComponent.size.value.invoke(Theme().radio.sizes)()
-            }) {
+            }, baseClass = baseClass, id = id, prefix = prefix) {
                 inputId?.let {
                     `for`(inputId)
                 }
-                (::input.styled(
-                    baseClass = this@RadioComponent.radioInputStaticCss,
-                    prefix = prefix,
-                    id = inputId
-                ) {
+                input({
                     Theme().radio.input()
                     children("&[checked] + div") {
                         this@RadioComponent.selectedStyle.value()
                     }
-                }) {
+                }, baseClass = this@RadioComponent.radioInputStaticCss, prefix = prefix, id = inputId) {
                     disabled(this@RadioComponent.disabled.values)
                     readOnly(this@RadioComponent.readonly.values)
                     type("radio")
@@ -165,15 +153,15 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
                     this@RadioComponent.element.value.invoke(this)
                 }
 
-                (::div.styled() {
+                div({
                     Theme().radio.default()
                     styling()
                 }) { }
 
                 this@RadioComponent.label?.let {
-                    (::div.styled() {
+                    div({
                         this@RadioComponent.labelStyle.value()
-                    }){
+                    }) {
                         it(this)
                     }
                 }

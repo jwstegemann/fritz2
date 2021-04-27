@@ -2,9 +2,9 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
 import org.w3c.dom.HTMLDivElement
@@ -79,12 +79,12 @@ open class SpinnerComponent : Component<Unit>,
 
         context.apply {
             if (this@SpinnerComponent.icon.value == null) {
-                (::div.styled(styling, baseClass + staticCss, id, prefix) {
+                div({
                     css("animation: loading ${this@SpinnerComponent.speed.value} linear infinite;")
                     border { width { this@SpinnerComponent.thickness.value(Theme().borderWidths) } }
                     width { "1rem" }
                     height { "1rem" }
-                }) {
+                }, styling, baseClass + staticCss, id, prefix) {
                     this@SpinnerComponent.events.value.invoke(this)
                 }
             } else {

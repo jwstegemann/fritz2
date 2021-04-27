@@ -6,10 +6,10 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
@@ -120,9 +120,9 @@ open class CheckboxGroupComponent<T>(
         val grpId = id ?: uniqueId()
 
         context.apply {
-            (::div.styled(styling, baseClass, id, prefix) {
+            div({
                 this@CheckboxGroupComponent.direction.value(CheckboxGroupLayouts)()
-            }) {
+            }, styling, baseClass, id, prefix) {
                 (this@CheckboxGroupComponent.values?.data
                     ?: this@CheckboxGroupComponent.selectedItems.values) handledBy multiSelectionStore.update
 
@@ -203,6 +203,6 @@ fun <T> RenderContext.checkboxGroup(
     prefix: String = "checkboxGroupComponent",
     build: CheckboxGroupComponent<T>.() -> Unit = {}
 ) {
-    CheckboxGroupComponent<T>(items, values).apply(build).render(this, styling, baseClass, id, prefix)
+    CheckboxGroupComponent(items, values).apply(build).render(this, styling, baseClass, id, prefix)
 }
 

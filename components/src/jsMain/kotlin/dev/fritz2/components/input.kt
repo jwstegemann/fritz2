@@ -6,11 +6,11 @@ import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.input
 import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.InputFieldVariants
@@ -73,10 +73,10 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
         prefix: String
     ) {
         context.apply {
-            (::input.styled(styling, baseClass + staticCss, id, prefix) {
+            input({
                 this@InputFieldComponent.size.value.invoke(Theme().input.sizes)()
                 this@InputFieldComponent.variant.value.invoke(Theme().input.variants)()
-            }) {
+            }, styling, baseClass + staticCss, id, prefix) {
                 disabled(this@InputFieldComponent.disabled.values)
                 readOnly(this@InputFieldComponent.readonly.values)
                 placeholder(this@InputFieldComponent.placeholder.values)

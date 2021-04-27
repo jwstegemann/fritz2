@@ -5,13 +5,10 @@ import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.name
+import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.styled
-import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
@@ -111,27 +108,19 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
         id: String?,
         prefix: String
     ): Label = with(context) {
-        (::label.styled(
-            baseClass = baseClass,
-            id = id,
-            prefix = prefix
-        ) {
+        label({
             this@CheckboxComponent.size.value.invoke(Theme().checkbox.sizes)()
-        }) {
+        }, baseClass = baseClass, id = id, prefix = prefix) {
             val inputId = id?.let { "$it-input" }
             inputId?.let {
                 `for`(inputId)
             }
-            (::input.styled(
-                baseClass = checkboxInputStaticCss,
-                prefix = prefix,
-                id = inputId
-            ) {
+            input({
                 Theme().checkbox.input()
                 children("&[checked] + div") {
                     this@CheckboxComponent.checkedStyle.value()
                 }
-            }) {
+            }, baseClass = checkboxInputStaticCss, prefix = prefix, id = inputId) {
                 disabled(this@CheckboxComponent.disabled.values)
                 readOnly(this@CheckboxComponent.readonly.values)
                 type("checkbox")
@@ -142,7 +131,7 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
                 this@CheckboxComponent.element.value.invoke(this)
             }
 
-            (::div.styled() {
+            div({
                 Theme().checkbox.default()
                 styling()
             }) {
@@ -154,9 +143,9 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
             }
 
             this@CheckboxComponent.labelField?.let {
-                (::div.styled {
+                div({
                     this@CheckboxComponent.labelStyle.value()
-                }){
+                }) {
                     it(this)
                 }
             }
