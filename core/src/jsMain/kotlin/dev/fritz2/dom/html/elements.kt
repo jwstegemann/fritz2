@@ -1250,7 +1250,7 @@ open class Ul(id: String? = null, baseClass: String? = null, job: Job) :
  * Exposes the JavaScript [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement) to Kotlin
  */
 class Svg(id: String? = null, baseClass: String? = null, job: Job) :
-    Tag<SVGElement>("", id, null, job, createSVGElement(baseClass)), WithText<SVGElement> {
+    Tag<SVGElement>("", id, null, job, createSVGElement(baseClass)) {
 
     companion object {
         const val xmlns = "http://www.w3.org/2000/svg"
@@ -1260,6 +1260,15 @@ class Svg(id: String? = null, baseClass: String? = null, job: Job) :
             baseClass?.let { elem.setAttributeNS(null, "class", it) }
             return elem
         }
+    }
+
+    /**
+     * Sets the given [xml] string to the *innerHTML* of the [SVGElement].
+     *
+     * @param xml svg xml content
+     */
+    fun content(xml: String) {
+        domNode.innerHTML = xml
     }
 }
 

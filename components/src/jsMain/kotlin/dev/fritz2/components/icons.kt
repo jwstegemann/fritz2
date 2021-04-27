@@ -62,7 +62,7 @@ open class IconComponent : Component<Unit>, EventProperties<SVGElement> by Event
                     attr("viewBox", it.viewBox)
                     attr("focusable", "false")
                     attr("role", "presentation")
-                    +it.svg
+                    content(it.svg)
                 }
                 this@IconComponent.events.value.invoke(this)
             }
