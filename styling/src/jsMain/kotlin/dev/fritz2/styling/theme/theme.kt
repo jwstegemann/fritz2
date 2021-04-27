@@ -210,6 +210,8 @@ interface Theme {
 
     val toast: ToastStyles
 
+    val menu: MenuStyles
+
     val appFrame: AppFrameStyles
 
     val dataTableStyles: DataTableStyles

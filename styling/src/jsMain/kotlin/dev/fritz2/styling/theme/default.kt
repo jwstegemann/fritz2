@@ -1793,6 +1793,87 @@ open class DefaultTheme : Theme {
         }
     }
 
+
+    override val menu: MenuStyles = object : MenuStyles {
+        override val dropdown: Style<BasicParams>
+            get() = {
+                width(
+                    sm = { "100%" },
+                    md = { maxContent }
+                )
+                overflow(
+                    sm = { hidden },
+                    md = { visible }
+                )
+                radius { "6px" }
+
+                paddings { vertical { smaller } }
+                zIndex { overlay }
+                boxShadow { raised }
+                background { color { background } }
+
+                // FIXME: Animation not working
+                //opacity { "1" }
+                //css("transition: opacity 1s ease-in-out;")
+            }
+
+        override val placements = object : MenuPlacements {
+            override val left: Style<BasicParams>
+                get() = {
+                    position(
+                        sm = { absolute { left { "0px" } } },
+                        md = {
+                            absolute {
+                                left { auto }
+                                right { "100%" }
+                            }
+                        }
+                    )
+                }
+
+            override val right: Style<BasicParams>
+                get() = {
+                    position(
+                        sm = { absolute { left { "0px" } } },
+                        md = {
+                            absolute {
+                                left { "100%" }
+                            }
+                        }
+                    )
+                }
+
+            override val bottomLeftFacing: Style<BasicParams>
+                get() = {
+                    position(
+                        sm = { absolute { left { "0px" } } }
+                    )
+                    position(
+                        md = {
+                            absolute {
+                                top { "100%" }
+                                left { auto }
+                                right { "0px" }
+                            }
+                        }
+                    )
+                }
+
+            override val bottomRightFacing: Style<BasicParams>
+                get() = {
+                    position(
+                        sm = { absolute { left { "0px" } } },
+                        md = {
+                            absolute {
+                                top { "100%" }
+                            }
+                        }
+                    )
+                }
+        }
+    }
+
+
     override val appFrame: AppFrameStyles = object : AppFrameStyles {
         override val headerHeight: Property = "3.6rem"
         override val footerMinHeight: Property = "2.8rem"

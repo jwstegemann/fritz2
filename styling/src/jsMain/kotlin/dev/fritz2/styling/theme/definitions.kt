@@ -674,6 +674,23 @@ interface ToastButton {
     val close: Style<BasicParams>
 }
 
+
+/**
+ * definition of the theme's menus
+ */
+interface MenuStyles {
+    val dropdown: Style<BasicParams>
+    val placements: MenuPlacements
+}
+
+interface MenuPlacements {
+    val left: Style<BasicParams>
+    val right: Style<BasicParams>
+    val bottomLeftFacing: Style<BasicParams>
+    val bottomRightFacing: Style<BasicParams>
+}
+
+
 /**
  * definition of the theme's appFrame
  */
