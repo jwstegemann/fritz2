@@ -169,7 +169,7 @@ class ColumnsContext<T> {
         fun build(): Column<T> = Column(
             id.value,
             lens.value,
-            header.title,
+            title.value,
             width?.min?.value,
             width?.max?.value,
             hidden.value,
@@ -218,7 +218,6 @@ class ColumnsContext<T> {
          * ```
          */
         data class Header<T>(
-            val title: String = "",
             val styling: BasicParams.(sorting: Sorting) -> Unit = {},
             val content: Div.(column: Column<T>) -> Unit = { column ->
                 +column.title
@@ -227,14 +226,14 @@ class ColumnsContext<T> {
 
         var header: Header<T> = Header()
 
+        /**
+         * @see HeaderContext
+         */
         fun header(styling: BasicParams.(sorting: Sorting) -> Unit = {}, content: Div.(column: Column<T>) -> Unit) {
-            header = Header<T>(header.title, styling, content)
+            header = Header(styling, content)
         }
 
-        fun title(title: String) {
-            header = header.copy(title = title)
-        }
-
+        val title = ComponentProperty("")
         val hidden = ComponentProperty(false)
         val position = ComponentProperty(0)
 
@@ -269,6 +268,9 @@ class ColumnsContext<T> {
 
     val columns: MutableMap<String, Column<T>> = mutableMapOf()
 
+    /**
+     * @see ColumnContext
+     */
     fun column(
         styling: BasicParams.(value: IndexedValue<StatefulItem<T>>) -> Unit = {},
         expression: ColumnContext<T>.() -> Unit
@@ -280,6 +282,11 @@ class ColumnsContext<T> {
         }
     }
 
+    /**
+     * Kurzer Satz....
+     *
+     * @see ColumnContext
+     */
     fun column(
         styling: BasicParams.(value: IndexedValue<StatefulItem<T>>) -> Unit = {},
         title: String,
