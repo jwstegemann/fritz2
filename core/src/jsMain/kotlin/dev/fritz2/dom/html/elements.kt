@@ -1242,23 +1242,20 @@ open class Track(id: String? = null, baseClass: String? = null, job: Job) :
 /**
  * Exposes the JavaScript [HTMLUListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLUListElement) to Kotlin
  */
-open class Ul(id: String? = null, baseClass: String? = null, job: Job) : Tag<HTMLUListElement>("ul", id, baseClass, job)
+open class Ul(id: String? = null, baseClass: String? = null, job: Job) :
+    Tag<HTMLUListElement>("ul", id, baseClass, job)
 
 
 /**
  * Exposes the JavaScript [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement) to Kotlin
  */
-class Svg(
-    id: String? = null,
-    baseClass: String? = null,
-    override val domNode: SVGElement = createIconSvgElement(baseClass),
-    job: Job
-) : Tag<SVGElement>("", id, null, job) {
+class Svg(id: String? = null, baseClass: String? = null, job: Job) :
+    Tag<SVGElement>("", id, null, job, createSVGElement(baseClass)) {
 
     companion object {
         const val xmlns = "http://www.w3.org/2000/svg"
 
-        fun createIconSvgElement(baseClass: String?): SVGElement {
+        fun createSVGElement(baseClass: String?): SVGElement {
             val elem = document.createElementNS(xmlns, "svg").unsafeCast<SVGElement>()
             baseClass?.let { elem.setAttributeNS(null, "class", it) }
             return elem
