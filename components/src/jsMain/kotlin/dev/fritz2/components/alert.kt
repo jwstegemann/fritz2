@@ -138,7 +138,7 @@ open class AlertComponent : Component<Unit> {
         prefix: String,
     ) {
         context.apply {
-            flexBox(baseClass = alertCss, styling = {
+            flexBox(baseClass = alertCss, styling = { this as BoxParams
                 this@AlertComponent.sizes.value(Theme().alert.sizes)()
                 this@AlertComponent.stacking.value(Theme().alert.stacking)()
 
@@ -149,6 +149,8 @@ open class AlertComponent : Component<Unit> {
                     AlertVariant.TOP_ACCENT -> Theme().alert.variants.topAccent
                     AlertVariant.DISCREET -> Theme().alert.variants.discreet
                 }.invoke(this, this@AlertComponent.severity.value(Theme().alert.severities).colorScheme)
+
+                styling()
             }) {
                 box(styling = {
                     css("margin-right: var(--al-icon-margin)")
@@ -195,17 +197,17 @@ fun RenderContext.alert(
  * Convenience extension to display a [ComponentValidationMessage] as an alert.
  * The alert's severity and content are determined from the validation message's properties.
  *
- * @param renderContext RenderContext to render the alert in.
- * @param size Optional property for the text and icon size.
- * @param stacking Optional property for the margins around one alert.
+ * @param renderContext RenderContext to render the alert in
+ * @param styling a lambda expression for declaring the styling of the toast using fritz2's styling DSL
+ * @param build a lambda expression for setting up the component itself
  */
 fun ComponentValidationMessage.asAlert(
     renderContext: RenderContext,
-    size: FormSizes.() -> Style<BasicParams> = { normal },
-    stacking: AlertStacking.() -> Style<BasicParams> = { separated }
+    styling: BasicParams.() -> Unit = { },
+    build: AlertComponent.() -> Unit = { }
 ) {
     val receiver = this
-    renderContext.alert {
+    renderContext.alert(styling) {
         severity {
             when (receiver.severity) {
                 Severity.Info -> info
@@ -215,8 +217,7 @@ fun ComponentValidationMessage.asAlert(
             }
         }
         variant { discreet }
-        sizes { size() }
-        stacking { stacking() }
         content(message)
+        build()
     }
 }
