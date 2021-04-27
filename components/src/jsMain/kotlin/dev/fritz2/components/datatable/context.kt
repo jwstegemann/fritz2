@@ -227,7 +227,13 @@ class ColumnsContext<T> {
         var header: Header<T> = Header()
 
         /**
-         * @see HeaderContext
+         * This function enables the configuration for the header of one column.
+         *
+         * @see Header
+         *
+         * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+         * @param content a lambda expression with a [Div] based render context as receiver and a passed [Column]
+         *                instance
          */
         fun header(styling: BasicParams.(sorting: Sorting) -> Unit = {}, content: Div.(column: Column<T>) -> Unit) {
             header = Header(styling, content)
@@ -269,7 +275,12 @@ class ColumnsContext<T> {
     val columns: MutableMap<String, Column<T>> = mutableMapOf()
 
     /**
+     * This context function opens the [ColumnContext] for configuring one column of the table.
+     *
      * @see ColumnContext
+     *
+     * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+     * @param expression a lambda expression with the [ColumnContext] based configuration expressions
      */
     fun column(
         styling: BasicParams.(value: IndexedValue<StatefulItem<T>>) -> Unit = {},
@@ -283,9 +294,15 @@ class ColumnsContext<T> {
     }
 
     /**
-     * Kurzer Satz....
+     * This context function opens the [ColumnContext] for configuring one column of the table.
+     *
+     * This variant offers an additional [title] parameter in order to set the title of the column.
      *
      * @see ColumnContext
+     *
+     * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+     * @param title the [String] based title of the column
+     * @param expression a lambda expression with the [ColumnContext] based configuration expressions
      */
     fun column(
         styling: BasicParams.(value: IndexedValue<StatefulItem<T>>) -> Unit = {},
