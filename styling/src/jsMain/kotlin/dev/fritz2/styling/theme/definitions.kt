@@ -203,6 +203,8 @@ interface Colors {
     val info: ColorScheme
     val neutral: ColorScheme
 
+    val background: ColorProperty
+    val font: ColorProperty
     val disabled: ColorProperty
     val focus: ColorProperty
 
