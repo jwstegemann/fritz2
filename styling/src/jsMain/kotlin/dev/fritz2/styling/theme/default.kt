@@ -50,9 +50,9 @@ open class DefaultTheme : Theme {
             override val gray800 = "#1A202C"
             override val gray900 = "#171923"
 
-            override val neutral = // white
+            override val neutral =
                 ColorScheme(
-                    main = "#ffffff",
+                    main = "#FFFFFF",
                     mainContrast = gray700,
                     highlight = gray100,
                     highlightContrast = gray700
@@ -63,7 +63,7 @@ open class DefaultTheme : Theme {
                     main = "#0C5173",
                     mainContrast = gray100,
                     highlight = "#CAE4EA",
-                    highlightContrast = gray600
+                    highlightContrast = gray700
                 )
 
             override val secondary =
@@ -71,15 +71,15 @@ open class DefaultTheme : Theme {
                     main = "#E6A300",
                     mainContrast = gray100,
                     highlight = "#FFEDCB",
-                    highlightContrast = gray600
+                    highlightContrast = gray700
                 )
 
             override val tertiary =
                 ColorScheme(
                     main = gray300,
-                    mainContrast = gray800,
+                    mainContrast = gray700,
                     highlight = gray100,
-                    highlightContrast = gray800
+                    highlightContrast = gray700
                 )
 
             // Signal Colors
@@ -87,7 +87,7 @@ open class DefaultTheme : Theme {
                 ColorScheme(
                     main = "#219EBC",
                     mainContrast = neutral.main,
-                    highlight = "#d2ebf1",
+                    highlight = "#D2EBF1",
                     highlightContrast = gray700
                 )
 
@@ -95,7 +95,7 @@ open class DefaultTheme : Theme {
                 ColorScheme(
                     main = "#00A848",
                     mainContrast = neutral.main,
-                    highlight = "#ccedda",
+                    highlight = "#CCEDDA",
                     highlightContrast = gray700
                 )
 
@@ -103,7 +103,7 @@ open class DefaultTheme : Theme {
                 ColorScheme(
                     main = "#F08B3A",
                     mainContrast = neutral.main,
-                    highlight = "#fce7d7",
+                    highlight = "#FCE7D7",
                     highlightContrast = gray700
                 )
 
@@ -111,7 +111,7 @@ open class DefaultTheme : Theme {
                 ColorScheme(
                     main = "#E14F2A",
                     mainContrast = neutral.main,
-                    highlight = "#f9dbd4",
+                    highlight = "#F9DBD4",
                     highlightContrast = gray700
                 )
 
