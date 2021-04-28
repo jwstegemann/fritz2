@@ -39,6 +39,7 @@ publishing {
             val isRelease = System.getenv("GITHUB_EVENT_NAME").equals("release", true)
 
             url = uri(if (isRelease && !version.toString().endsWith("SNAPSHOT")) releaseUrl else snapshotUrl)
+            println("publish artifacts to: $url")
 
             credentials {
                 username = System.getenv("OSSRH_USERNAME")
@@ -52,20 +53,20 @@ publishing {
             artifact(javadocJar)
 
             pom {
-                name.set("core")
+                name.set("fritz2")
                 description.set("Easily build reactive web-apps in Kotlin based on flows and coroutines")
-                url.set("http://github.com/jwstegemann/fritz2")
+                url.set("https://www.fritz2.dev/")
 
                 scm {
-                    connection.set("scm:git:http://github.com/jwstegemann/fritz2/")
-                    developerConnection.set("scm:git:http://github.com/jwstegemann/")
-                    url.set("http://github.com/jwstegemann/fritz2/")
+                    connection.set("scm:git:https://github.com/jwstegemann/fritz2/")
+                    developerConnection.set("scm:git:https://github.com/jwstegemann/")
+                    url.set("https://github.com/jwstegemann/fritz2/")
                 }
 
                 licenses {
                     license {
                         name.set("MIT")
-                        url.set("https://opensource.org/licenses/MIT")
+                        url.set("https://github.com/jwstegemann/fritz2/blob/master/LICENSE")
                     }
                 }
 
