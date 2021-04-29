@@ -87,6 +87,17 @@ inline fun <reified T, I> RootInspector<List<T>>.sub(
 }
 
 /**
+ * Performs the given [action] on each [SubInspector].
+ *
+ * @param idProvider to get the id from an instance
+ * @param action function which gets applied to all [SubInspector]s
+ */
+inline fun <reified T, I> RootInspector<List<T>>.onEach(
+    noinline idProvider: IdProvider<T, I>,
+    action: (SubInspector<List<T>, List<T>, T>) -> Unit
+) { this.data.onEach { element -> action(sub(element, idProvider)) } }
+
+/**
  * creates a [Inspector] for an element in your [Inspector]'s list.
  *
  * @param index you need the [Inspector] for
@@ -95,6 +106,15 @@ inline fun <reified X> RootInspector<List<X>>.sub(index: Int): SubInspector<List
     val lens = positionLens<X>(index)
     return SubInspector(this, lens, this, lens)
 }
+
+/**
+ * Performs the given [action] on each [SubInspector].
+ *
+ * @param action function which gets applied to all [SubInspector]s
+ */
+inline fun <reified X> RootInspector<List<X>>.onEach(
+    action: (SubInspector<List<X>, List<X>, X>) -> Unit
+) { this.data.onEachIndexed { index, _ -> action(sub(index)) } }
 
 /**
  * creates a [Inspector] for an element in your [Inspector]'s list.
@@ -107,8 +127,19 @@ inline fun <R, P, reified T, I> SubInspector<R, P, List<T>>.sub(
     noinline idProvider: IdProvider<T, I>
 ): SubInspector<R, List<T>, T> {
     val lens = elementLens(element, idProvider)
-    return SubInspector<R, List<T>, T>(this, lens, this.rootModelId, this.rootLens + lens)
+    return SubInspector(this, lens, this.rootModelId, this.rootLens + lens)
 }
+
+/**
+ * Performs the given [action] on each [SubInspector].
+ *
+ * @param idProvider to get the id from an instance
+ * @param action function which gets applied to all [SubInspector]s
+ */
+inline fun <R, P, reified T, I> SubInspector<R, P, List<T>>.onEach(
+    noinline idProvider: IdProvider<T, I>,
+    action: (SubInspector<R, List<T>, T>) -> Unit
+) { this.data.onEach { element -> action(sub(element, idProvider)) } }
 
 /**
  * creates a [Inspector] for an element in your [Inspector]'s list.
@@ -117,5 +148,14 @@ inline fun <R, P, reified T, I> SubInspector<R, P, List<T>>.sub(
  */
 inline fun <R, P, reified X> SubInspector<R, P, List<X>>.sub(index: Int): SubInspector<R, List<X>, X> {
     val lens = positionLens<X>(index)
-    return SubInspector<R, List<X>, X>(this, lens, this.rootModelId, this.rootLens + lens)
+    return SubInspector(this, lens, this.rootModelId, this.rootLens + lens)
 }
+
+/**
+ * Performs the given [action] on each [SubInspector].
+ *
+ * @param action function which gets applied to all [SubInspector]s
+ */
+inline fun <R, P, reified X> SubInspector<R, P, List<X>>.onEach(
+    action: (SubInspector<R, List<X>, X>) -> Unit
+) { this.data.onEachIndexed { index, _ -> action(sub(index)) } }
