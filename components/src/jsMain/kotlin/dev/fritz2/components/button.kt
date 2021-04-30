@@ -36,7 +36,7 @@ import org.w3c.dom.events.MouseEvent
  *  - link events of the button like ``clicks`` with external handlers
  *
  *  This can be done within a functional expression that is the last parameter of the two button functions, called
- *  ``build``. It offers an initialized instance of this [PushButtonComponent] class as receiver, so every mutating
+ *  ``build``. It offers an initialized instance of this [ButtonComponent] class as receiver, so every mutating
  *  method can be called for configuring the desired state for rendering the button.
  *
  *  The following example shows the usage:
@@ -57,7 +57,7 @@ import org.w3c.dom.events.MouseEvent
  *  }
  *  ```
  */
-open class PushButtonComponent :
+open class ButtonComponent :
     Component<Unit>,
     EventProperties<HTMLButtonElement> by EventMixin(),
     ElementProperties<Button> by ElementMixin(),
@@ -103,16 +103,16 @@ open class PushButtonComponent :
     }
 
     val centerSpinnerStyle: Style<BasicParams> = {
-        width { this@PushButtonComponent.iconSize }
-        height { this@PushButtonComponent.iconSize }
+        width { this@ButtonComponent.iconSize }
+        height { this@ButtonComponent.iconSize }
     }
 
     val leftSpinnerStyle: Style<BasicParams> = {
         width { "1.0em" }
         height { "1.0em" }
         margins {
-            left { this@PushButtonComponent.marginToBorder }
-            right { this@PushButtonComponent.marginToText }
+            left { this@ButtonComponent.marginToBorder }
+            right { this@ButtonComponent.marginToText }
         }
     }
 
@@ -120,26 +120,26 @@ open class PushButtonComponent :
         width { "1.0em" }
         height { "1.0em" }
         margins {
-            left { this@PushButtonComponent.marginToText }
-            right { this@PushButtonComponent.marginToBorder }
+            left { this@ButtonComponent.marginToText }
+            right { this@ButtonComponent.marginToBorder }
         }
     }
 
     val leftIconStyle: Style<BasicParams> = {
-        width { this@PushButtonComponent.iconSize }
-        height { this@PushButtonComponent.iconSize }
+        width { this@ButtonComponent.iconSize }
+        height { this@ButtonComponent.iconSize }
         margins {
-            left { this@PushButtonComponent.marginToBorder }
-            right { this@PushButtonComponent.marginToText }
+            left { this@ButtonComponent.marginToBorder }
+            right { this@ButtonComponent.marginToText }
         }
     }
 
     val rightIconStyle: Style<BasicParams> = {
-        width { this@PushButtonComponent.iconSize }
-        height { this@PushButtonComponent.iconSize }
+        width { this@ButtonComponent.iconSize }
+        height { this@ButtonComponent.iconSize }
         margins {
-            right { this@PushButtonComponent.marginToBorder }
-            left { this@PushButtonComponent.marginToText }
+            right { this@ButtonComponent.marginToBorder }
+            left { this@ButtonComponent.marginToText }
         }
     }
 
@@ -229,50 +229,50 @@ open class PushButtonComponent :
     ) {
         context.apply {
             button({
-                when (this@PushButtonComponent.variant.value(VariantContext)) {
+                when (this@ButtonComponent.variant.value(VariantContext)) {
                     ButtonVariant.SOLID ->
-                        Theme().button.variants.solid(this, this@PushButtonComponent.type.value(Theme().button.types))
+                        Theme().button.variants.solid(this, this@ButtonComponent.type.value(Theme().button.types))
                     ButtonVariant.LINK ->
-                        Theme().button.variants.link(this, this@PushButtonComponent.type.value(Theme().button.types))
+                        Theme().button.variants.link(this, this@ButtonComponent.type.value(Theme().button.types))
                     ButtonVariant.OUTLINE ->
-                        Theme().button.variants.outline(this, this@PushButtonComponent.type.value(Theme().button.types))
+                        Theme().button.variants.outline(this, this@ButtonComponent.type.value(Theme().button.types))
                     ButtonVariant.GHOST ->
-                        Theme().button.variants.ghost(this, this@PushButtonComponent.type.value(Theme().button.types))
+                        Theme().button.variants.ghost(this, this@ButtonComponent.type.value(Theme().button.types))
                 }
-                this@PushButtonComponent.size.value.invoke(Theme().button.sizes)()
+                this@ButtonComponent.size.value.invoke(Theme().button.sizes)()
             }, styling, baseClass + staticCss, id, prefix) {
-                disabled(this@PushButtonComponent.disabled.values)
-                if (this@PushButtonComponent.text == null) {
-                    this@PushButtonComponent.renderIcon(
+                disabled(this@ButtonComponent.disabled.values)
+                if (this@ButtonComponent.text == null) {
+                    this@ButtonComponent.renderIcon(
                         this,
-                        this@PushButtonComponent.centerIconStyle,
-                        this@PushButtonComponent.centerSpinnerStyle
+                        this@ButtonComponent.centerIconStyle,
+                        this@ButtonComponent.centerSpinnerStyle
                     )
                 } else {
-                    if (this@PushButtonComponent.icon != null && this@PushButtonComponent.iconPlacement.value(
+                    if (this@ButtonComponent.icon != null && this@ButtonComponent.iconPlacement.value(
                             iconPlacementContext
                         ) == IconPlacement.Left
                     ) {
-                        this@PushButtonComponent.renderIcon(
+                        this@ButtonComponent.renderIcon(
                             this,
-                            this@PushButtonComponent.leftIconStyle,
-                            this@PushButtonComponent.leftSpinnerStyle
+                            this@ButtonComponent.leftIconStyle,
+                            this@ButtonComponent.leftSpinnerStyle
                         )
                     }
-                    this@PushButtonComponent.renderText(this)
-                    if (this@PushButtonComponent.icon != null && this@PushButtonComponent.iconPlacement.value(
+                    this@ButtonComponent.renderText(this)
+                    if (this@ButtonComponent.icon != null && this@ButtonComponent.iconPlacement.value(
                             iconPlacementContext
                         ) == IconPlacement.Right
                     ) {
-                        this@PushButtonComponent.renderIcon(
+                        this@ButtonComponent.renderIcon(
                             this,
-                            this@PushButtonComponent.rightIconStyle,
-                            this@PushButtonComponent.rightSpinnerStyle
+                            this@ButtonComponent.rightIconStyle,
+                            this@ButtonComponent.rightSpinnerStyle
                         )
                     }
                 }
-                this@PushButtonComponent.events.value.invoke(this)
-                this@PushButtonComponent.element.value.invoke(this)
+                this@ButtonComponent.events.value.invoke(this)
+                this@ButtonComponent.element.value.invoke(this)
             }
         }
     }
@@ -282,11 +282,11 @@ open class PushButtonComponent :
             icon?.invoke(renderContext, iconStyle)
         } else {
             renderContext.apply {
-                this@PushButtonComponent.loading?.render { running ->
+                this@ButtonComponent.loading?.render { running ->
                     if (running) {
                         spinner(spinnerStyle) {}
                     } else {
-                        this@PushButtonComponent.icon?.invoke(this, iconStyle)
+                        this@ButtonComponent.icon?.invoke(this, iconStyle)
                     }
                 }
             }
@@ -298,21 +298,21 @@ open class PushButtonComponent :
             text?.invoke(renderContext, false)
         } else {
             renderContext.apply {
-                this@PushButtonComponent.loading?.render { running ->
+                this@ButtonComponent.loading?.render { running ->
                     if (running) {
                         spinner({
-                            if (this@PushButtonComponent.loadingText == null) {
+                            if (this@ButtonComponent.loadingText == null) {
                                 css("position: absolute;")
-                                this@PushButtonComponent.centerSpinnerStyle()
-                            } else this@PushButtonComponent.leftSpinnerStyle()
+                                this@ButtonComponent.centerSpinnerStyle()
+                            } else this@ButtonComponent.leftSpinnerStyle()
                         }) {}
-                        if (this@PushButtonComponent.loadingText != null) {
-                            this@PushButtonComponent.loadingText!!.invoke(this)
+                        if (this@ButtonComponent.loadingText != null) {
+                            this@ButtonComponent.loadingText!!.invoke(this)
                         } else {
-                            this@PushButtonComponent.text?.invoke(this, true)
+                            this@ButtonComponent.text?.invoke(this, true)
                         }
                     } else {
-                        this@PushButtonComponent.text?.invoke(this, false)
+                        this@ButtonComponent.text?.invoke(this, false)
                     }
                 }
             }
@@ -325,27 +325,27 @@ open class PushButtonComponent :
  *
  * You can set the label, an icon, the position of the icon and access its events.
  * For a detailed overview about the possible properties of the component object itself, have a look at
- * [PushButtonComponent]
+ * [ButtonComponent]
  *
  * In contrast to the [clickButton] component, this one does not return a [Listener] (basically a [Flow]) and so
  * the event handling has to be done manually!
  *
- * @see PushButtonComponent
+ * @see ButtonComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
+ * @param build a lambda expression for setting up the component itself. Details in [ButtonComponent]
  */
 fun RenderContext.pushButton(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "push-button",
-    build: PushButtonComponent.() -> Unit = {}
+    build: ButtonComponent.() -> Unit = {}
 ) {
-    PushButtonComponent().apply(build).render(this, styling, baseClass, id, prefix)
+    ButtonComponent().apply(build).render(this, styling, baseClass, id, prefix)
 }
 
 /**
@@ -353,7 +353,7 @@ fun RenderContext.pushButton(
  *
  * You can set the label, an icon, the position of the icon and access its events.
  * For a detailed overview about the possible properties of the component object itself, have a look at
- * [PushButtonComponent]
+ * [ButtonComponent]
  *
  * In contrast to the [pushButton] component, this variant returns a [Listener] (basically a [Flow]) in order
  * to combine the button declaration directly to a fitting _handler_. Some other components
@@ -364,13 +364,13 @@ fun RenderContext.pushButton(
  * }
  * ```
  *
- * @see PushButtonComponent
+ * @see ButtonComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
+ * @param build a lambda expression for setting up the component itself. Details in [ButtonComponent]
  * @return a listener (think of a flow!) that offers the clicks of the button
  */
 fun RenderContext.clickButton(
@@ -378,7 +378,7 @@ fun RenderContext.clickButton(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "push-button",
-    build: PushButtonComponent.() -> Unit = {}
+    build: ButtonComponent.() -> Unit = {}
 ): DomListener<MouseEvent, HTMLButtonElement> {
     var clickEvents: DomListener<MouseEvent, HTMLButtonElement>? = null
     pushButton(styling, baseClass, id, prefix) {
