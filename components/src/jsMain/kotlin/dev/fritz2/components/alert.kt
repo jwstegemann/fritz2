@@ -196,14 +196,16 @@ fun RenderContext.alert(
 /**
  * Convenience extension to display a [ComponentValidationMessage] as an alert.
  * The alert's severity and content are determined from the validation message's properties.
+ * Custom styling via the [styling] parameter is optionally supported, as well as any other customization via the
+ * [build]-lambda.
  *
  * @param renderContext RenderContext to render the alert in
  * @param styling a lambda expression for declaring the styling of the toast using fritz2's styling DSL
  * @param build a lambda expression for setting up the component itself
  */
 fun ComponentValidationMessage.asAlert(
-    renderContext: RenderContext,
     styling: BasicParams.() -> Unit = { },
+    renderContext: RenderContext,
     build: AlertComponent.() -> Unit = { }
 ) {
     val receiver = this
@@ -221,3 +223,17 @@ fun ComponentValidationMessage.asAlert(
         build()
     }
 }
+
+/**
+ * Convenience extension to display a [ComponentValidationMessage] as an alert.
+ * The alert's severity and content are determined from the validation message's properties.
+ * Customization of the underlying [AlertComponent] is supported via the [build]-lambda. Custom styling can be applyied
+ * via the overloaded [ComponentValidationMessage.asAlert] method.
+ *
+ * @param renderContext RenderContext to render the alert in
+ * @param build a lambda expression for setting up the component itself
+ */
+fun ComponentValidationMessage.asAlert(
+    renderContext: RenderContext,
+    build: AlertComponent.() -> Unit = { }
+) = asAlert({ }, renderContext, build)
