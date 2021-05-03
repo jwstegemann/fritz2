@@ -119,7 +119,7 @@ abstract class FileSelectionBaseComponent {
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = "file-button",
-        build: ButtonComponent.() -> Unit = {}
+        build: PushButtonComponent.() -> Unit = {}
     ) {
         context = { input ->
             pushButton(styling, baseClass, id, prefix) {
@@ -221,7 +221,7 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(), Component
  *
  * In there you can create a button with a label, an icon, the position of the icon and access its events.
  * For a detailed overview about the possible properties of the button component object itself, have a look at
- * [ButtonComponent]
+ * [PushButtonComponent]
  *
  * The [File] function then returns a [Flow] of [File] in order
  * to combine the [Flow] directly to a fitting _handler_ which accepts a [File]:
@@ -238,13 +238,13 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(), Component
  * } handledBy textFileStore.upload
  * ```
  *
- * @see ButtonComponent
+ * @see PushButtonComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself. Details in [ButtonComponent]
+ * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
  * @return a [Flow] that offers the selected [File]
  */
 fun RenderContext.file(
@@ -261,7 +261,7 @@ fun RenderContext.file(
  *
  * In there you can create a button with a label, an icon, the position of the icon and access its events.
  * For a detailed overview about the possible properties of the button component object itself, have a look at
- * [ButtonComponent].
+ * [PushButtonComponent].
  *
  * The [File] function then returns a [Flow] of a [List] of [File]s in order
  * to combine the [Flow] directly to a fitting _handler_ which accepts a [List] of [File]s:
@@ -277,13 +277,13 @@ fun RenderContext.file(
  *   }
  * } handledBy textFileStore.upload
  * ```
- * @see ButtonComponent
+ * @see PushButtonComponent
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself. Details in [ButtonComponent]
+ * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
  * @return a [Flow] that offers the selected [File]
  */
 fun RenderContext.files(
