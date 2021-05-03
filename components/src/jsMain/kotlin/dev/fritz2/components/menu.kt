@@ -4,6 +4,7 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.h5
 import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.style
@@ -12,7 +13,6 @@ import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.events.MouseEvent
 
@@ -291,35 +291,27 @@ open class MenuEntriesContext {
  *
  * @see MenuItemComponent
  */
-open class MenuItemComponent : MenuEntryComponent {
+open class MenuItemComponent : MenuEntryComponent, FormProperties by FormMixin() {
 
-    companion object {
-        private val staticMenuItemCss = staticStyle("menu-item") {
-            width { "100%" }
-            alignItems { center }
-            radius { "6px" }
-        }
-    }
+    private val menuItemButtonCss = style("menu-item-button") {
+        display { flex }
+        justifyContent { start }
+        css("user-select: none")
 
-    private val menuItemActiveStyle: Style<FlexParams> = {
         hover {
-            background { color { gray200 } }
+            background { color { neutral.highlight } }
             css("filter: brightness(90%);")
         }
-    }
 
-    private val menuItemButtonVariant: Style<BasicParams> = {
-        fontWeight { normal }
-        color { Theme().colors.font }
-        focus {
-            boxShadow { none }
+        disabled {
+            opacity { "0.4" }
+            css("cursor: not-allowed")
         }
     }
 
 
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)
     val text = ComponentProperty("")
-    val enabled = ComponentProperty(flowOf(true))
 
 
     private val clickStore = object : RootStore<Unit>(Unit) {
@@ -338,23 +330,18 @@ open class MenuItemComponent : MenuEntryComponent {
         prefix: String
     ) {
         context.apply {
-            this@MenuItemComponent.enabled.value.render { enabled ->
-                box(
-                    baseClass = staticMenuItemCss,
-                    styling = if (enabled) this@MenuItemComponent.menuItemActiveStyle else ({ })
-                ) {
-                    clickButton {
-                        this@MenuItemComponent.icon.value?.let {
-                            icon {
-                                def(it(Theme().icons))
-                            }
-                        }
-                        // FIXME: Button can no longer be styled this way, find other method
-                        // variant { this@MenuItemComponent.menuItemButtonVariant }
-                        text(this@MenuItemComponent.text.value)
-                        disabled(!enabled)
-                    }.map { it } handledBy this@MenuItemComponent.clickStore.forwardMouseEvents
+            button((staticMenuEntryCss + this@MenuItemComponent.menuItemButtonCss).name) {
+                this@MenuItemComponent.icon.value?.let {
+                    icon({
+                        margins { right { smaller } }
+                    }) {
+                        fromTheme(it)
+                    }
                 }
+                span { +this@MenuItemComponent.text.value }
+
+                disabled(this@MenuItemComponent.disabled.values)
+                clicks.events handledBy this@MenuItemComponent.clickStore.forwardMouseEvents
             }
         }
     }
@@ -411,9 +398,11 @@ open class MenuSubheaderComponent : MenuEntryComponent {
         prefix: String
     ) {
         context.apply {
-            (::h5.styled(baseClass = staticMenuEntryCss) {
+            h5(baseClass = staticMenuEntryCss, style = {
                 css("white-space: nowrap")
-            }) { +this@MenuSubheaderComponent.text.value }
+            }) {
+                +this@MenuSubheaderComponent.text.value
+            }
         }
     }
 }
