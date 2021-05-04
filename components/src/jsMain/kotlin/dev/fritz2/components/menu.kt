@@ -14,7 +14,7 @@ import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.events.MouseEvent
+import org.w3c.dom.HTMLButtonElement
 
 private val staticMenuEntryCss = staticStyle("menu-entry") {
     width { "100%" }
@@ -262,10 +262,9 @@ open class MenuEntriesContext {
     }
 
 
-    fun item(build: MenuItemComponent.() -> Unit): Flow<MouseEvent> = MenuItemComponent()
+    fun item(build: MenuItemComponent.() -> Unit) = MenuItemComponent()
         .apply(build)
-        .also(::addEntry)
-        .run { clicks }
+        .run(::addEntry)
 
     fun custom(build: RenderContext.() -> Unit) = CustomMenuItemComponent()
         .apply { content(build) }
@@ -291,7 +290,11 @@ open class MenuEntriesContext {
  *
  * @see MenuItemComponent
  */
-open class MenuItemComponent : MenuEntryComponent, FormProperties by FormMixin() {
+open class MenuItemComponent :
+    MenuEntryComponent,
+    EventProperties<HTMLButtonElement> by EventMixin(),
+    FormProperties by FormMixin()
+{
 
     private val menuItemButtonCss = style("menu-item-button") {
         display { flex }
@@ -314,14 +317,6 @@ open class MenuItemComponent : MenuEntryComponent, FormProperties by FormMixin()
     val text = ComponentProperty("")
 
 
-    private val clickStore = object : RootStore<Unit>(Unit) {
-        val forwardMouseEvents = handleAndEmit<MouseEvent, MouseEvent> { _, e -> emit(e) }
-    }
-
-    val clicks: Flow<MouseEvent>
-        get() = clickStore.forwardMouseEvents
-
-
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
@@ -341,7 +336,7 @@ open class MenuItemComponent : MenuEntryComponent, FormProperties by FormMixin()
                 span { +this@MenuItemComponent.text.value }
 
                 disabled(this@MenuItemComponent.disabled.values)
-                clicks.events handledBy this@MenuItemComponent.clickStore.forwardMouseEvents
+                this@MenuItemComponent.events.value.invoke(this)
             }
         }
     }
