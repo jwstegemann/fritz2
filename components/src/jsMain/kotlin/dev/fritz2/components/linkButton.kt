@@ -26,9 +26,6 @@ import kotlinx.coroutines.flow.Flow
  *     element {
  *         // exposes the underlying HTML button element for direct access. Use with caution!
  *     }
- *     elementLink {
- *         // exposes the underlying HTML anchor element for direct access. Use with caution!
- *     }
  * }
  * ```
  *
@@ -62,8 +59,6 @@ open class LinkButtonComponent : PushButtonComponent() {
         }
     }
 
-    val elementLink: ComponentProperty<A.() -> Unit> = ComponentProperty {}
-
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
@@ -73,7 +68,6 @@ open class LinkButtonComponent : PushButtonComponent() {
     ) {
         context.apply {
             a {
-                this@LinkButtonComponent.elementLink.value(this)
                 this@LinkButtonComponent.href(this)
                 this@LinkButtonComponent.target(this)
                 super.render(this, styling, baseClass, id, prefix)
