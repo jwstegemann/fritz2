@@ -2068,4 +2068,116 @@ open class DefaultTheme : Theme {
                 }
             }
     }
+
+    override val slider = object : SliderStyles {
+
+        val self = this
+
+        override val sizes = object : FormSizes {
+            override val large: Style<BasicParams> = {
+                css("--sl-size: 1.5rem")
+                fontSize { tiny }
+                lineHeight { tiny }
+            }
+            override val normal: Style<BasicParams> = {
+                css("--sl-size: 1rem")
+                fontSize { small }
+                lineHeight { small }
+            }
+            override val small: Style<BasicParams> = {
+                css("--sl-size: 0.75rem")
+                fontSize { normal }
+                lineHeight { normal }
+            }
+        }
+
+        override val horizontal = object : SliderCoreStyles {
+            override val main: Style<FlexParams> = {
+                alignItems { center }
+                height { "calc(var(--sl-size) + 4px)" }
+                width { full }
+                position { relative { } }
+                hover {
+                    css("cursor: pointer")
+                }
+
+                children("&:focus, &[data-focus]") {
+                    radius { "9999px" }
+                    border {
+                        color { gray300 }
+                    }
+                    boxShadow { outline }
+                }
+            }
+            override val track: Style<BoxParams> = {
+                paddings { right { "var(--sl-size)" } }
+                width { full }
+                height { "calc(var(--sl-size) + 4px)" }
+                radius { "9999px" }
+                background { color { gray300 } }
+            }
+            override val trackFilled: BoxParams.(Int) -> Unit = { percent ->
+                width { "min(calc(${percent}% + var(--sl-size) + 4px), calc(100% + var(--sl-size)))" }
+                height { "calc(var(--sl-size) + 4px)" }
+                radius { "9999px" }
+                position { relative { } }
+                background { color { primary.main } }
+
+                children("&[data-disabled]") {
+                    opacity { ".5" }
+                }
+            }
+            override val thumb: BoxParams.(Int) -> Unit = { _ ->
+                display { flex }
+                justifyContent { center }
+                alignItems { center }
+                position {
+                    absolute {
+                        right { "2px" }
+                        top { "calc(50% - var(--sl-size) / 2)" }
+                    }
+                }
+                width { "var(--sl-size)" }
+                height { "var(--sl-size)" }
+                radius { "9999px" }
+                background { color { neutral.main } }
+                border { color { gray300 } }
+            }
+        }
+
+        override val vertical = object : SliderCoreStyles {
+            override val main: Style<FlexParams> = {
+                self.horizontal.main()
+                direction { columnReverse }
+                height { full }
+                width { "calc(var(--sl-size) + 4px)" }
+            }
+            override val track: Style<BoxParams> = {
+                display { flex }
+                alignItems { end }
+                paddings { top { "var(--sl-size)" } }
+                height { full }
+                width { "calc(var(--sl-size) + 4px)" }
+                radius { "9999px" }
+                background { color { gray300 } }
+            }
+            override val trackFilled: BoxParams.(Int) -> Unit = { percent ->
+                self.horizontal.trackFilled(this, percent)
+                height { "min(calc(${percent}% + var(--sl-size) + 4px), calc(100% + var(--sl-size)))" }
+                width { "calc(var(--sl-size) + 4px)" }
+            }
+            override val thumb: BoxParams.(Int) -> Unit = { percent ->
+                self.horizontal.thumb(this, percent)
+                position {
+                    absolute {
+                        top { "2px" }
+                        right { "calc(50% - var(--sl-size) / 2)" }
+                    }
+                }
+            }
+        }
+
+        override val severity: SeverityStyles
+            get() = input.severity
+    }
 }
