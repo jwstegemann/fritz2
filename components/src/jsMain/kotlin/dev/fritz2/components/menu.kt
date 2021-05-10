@@ -1,20 +1,17 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.h5
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
-import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
+
 
 private val staticMenuEntryCss = staticStyle("menu-entry") {
     width { "100%" }
@@ -25,22 +22,12 @@ private val staticMenuEntryCss = staticStyle("menu-entry") {
     radius { "6px" }
 }
 
-
 /**
  * This class combines the _configuration_ and the core rendering of a menu.
  *
- * A menu consists of a toggle element as well as it's actual content in form of a drop-down with customizable entries.
- * The dropdown floats around the toggle-element and can be closed by simply clicking outside the dropdown.
- *
- * The toggle-element can be any component and is passed via the `toggle` property. A button with a standard
- * menu-icon is used if no toggle-element is specified.
- *
- * The dropdown can be placed _to the left_, _to the right_ or _below_ the toggle-element. This can be specified via the
- * `placement` property. The default placement is below the toggle.
- *
- * Menu entries are specified via a dedicated context exposed by the `items` property.
- * By default the following types of entries can be added to the menu:
- * - Items
+ * A Menu consists of different types of entries that are aligned vertically.
+ * By default the following types can be added to the menu:
+ * - Items (menu buttons)
  * - Subheaders
  * - Dividers
  *
@@ -50,9 +37,7 @@ private val staticMenuEntryCss = staticStyle("menu-entry") {
  * Example usage:
  * ```kotlin
  * menu {
- *      toggle { pushButton { text("Toggle") } }
- *      placement { below }
- *      items {
+ *      entries {
  *          item {
  *              leftIcon { add }
  *              text("Item")
@@ -69,50 +54,10 @@ private val staticMenuEntryCss = staticStyle("menu-entry") {
  *
  * Additionally, it is also possible to extend the menu-DSL by writing extension methods. See [MenuEntriesContext] for
  * more information.
- * ```
  */
 open class MenuComponent : Component<Unit> {
 
-    private val containerCss = style("menu-container") {
-        position(
-            sm = { static },
-            md = { relative { } }
-        )
-        display { inlineFlex }
-        width { minContent }
-    }
-
-
-    enum class DropdownPlacement {
-        Left,
-        Right,
-        BottomLeftFacing,
-        BottomRightFacing
-    }
-
-    object DropdownPlacementContext {
-        val left = DropdownPlacement.Left
-        val right = DropdownPlacement.Right
-        val bottomLeftFacing = DropdownPlacement.BottomLeftFacing
-        val bottomRightFacing = DropdownPlacement.BottomRightFacing
-    }
-
-
-    private val visibilityStore = object : RootStore<Boolean>(false) {
-        val show = handle { true }
-        val dismiss = handle { false }
-    }
-
-
-    val toggle = ComponentProperty<RenderContext.() -> Unit> {
-        pushButton {
-            icon { fromTheme { menu } }
-            variant { dev.fritz2.components.PushButtonComponent.VariantContext.outline }
-        }
-    }
-    val entries = ComponentProperty<(MenuEntriesContext.() -> Unit)?>(value = null)
-    val placement = ComponentProperty<DropdownPlacementContext.() -> DropdownPlacement> { bottomRightFacing }
-
+    val entries = ComponentProperty<MenuEntriesContext.() -> Unit> { }
 
     override fun render(
         context: RenderContext,
@@ -121,90 +66,19 @@ open class MenuComponent : Component<Unit> {
         id: String?,
         prefix: String
     ) {
+        val entriesContext = MenuEntriesContext().apply(entries.value)
         context.apply {
-            box(baseClass = this@MenuComponent.containerCss) {
-
-                box(id = "menu-toggle-${uniqueId()}") {
-                    this@MenuComponent.toggle.value(this)
-                    clicks.events.map { } handledBy this@MenuComponent.visibilityStore.show
-                }
-
-                this@MenuComponent.visibilityStore.data.render { visible ->
-                    if (visible) {
-                        this@MenuComponent.renderDropdown(this, styling, baseClass, id, prefix)
-                    } else {
-                        box { /* just an empty placeholder */ }
-                    }
+            box({ this as BoxParams; styling() }, baseClass, id, prefix) {
+                entriesContext.entries.forEach {
+                    it.render(this, { }, StyleClass.None, null, "menu-entry")
                 }
             }
-        }
-    }
-
-    private fun renderDropdown(
-        renderContext: RenderContext,
-        styling: BoxParams.() -> Unit,
-        baseClass: StyleClass,
-        id: String?,
-        prefix: String
-    ) {
-        val uniqueDropdownId = id ?: "menu-dropdown-${uniqueId()}"
-
-        renderContext.apply {
-            box(
-                styling = { this as BoxParams
-                    styling()
-                    Theme().menu.dropdown()
-                    when(this@MenuComponent.placement.value.invoke(DropdownPlacementContext)) {
-                        DropdownPlacement.Left -> Theme().menu.placements.left
-                        DropdownPlacement.Right -> Theme().menu.placements.right
-                        DropdownPlacement.BottomLeftFacing -> Theme().menu.placements.bottomLeftFacing
-                        DropdownPlacement.BottomRightFacing -> Theme().menu.placements.bottomRightFacing
-                    }.invoke()
-                },
-                baseClass = baseClass,
-                id = uniqueDropdownId,
-                prefix = prefix
-            ) {
-                this@MenuComponent.entries.value?.let {
-                    val entriesContext = MenuEntriesContext().apply(it)
-
-                    entriesContext.entries.forEach { entry ->
-                        entry.render(context = this, styling = {}, dev.fritz2.styling.StyleClass.None, id = null, prefix)
-                    }
-                }
-            }
-            this@MenuComponent.listenToWindowEvents(this, uniqueDropdownId)
-        }
-    }
-
-    private fun listenToWindowEvents(renderContext: RenderContext, dropdownId: String) {
-        renderContext.apply {
-            // delay listening so the dropdown is not closed immediately:
-            val startListeningMillis = kotlin.js.Date.now() + 200
-
-            dev.fritz2.dom.Window.clicks.events
-                .filter { event ->
-                    if (kotlin.js.Date.now() < startListeningMillis)
-                        return@filter false
-
-                    val dropdownElement = kotlinx.browser.document.getElementById(dropdownId)
-                    dropdownElement?.let {
-                        val bounds = it.getBoundingClientRect()
-                        // Only handle clicks outside of the menu dropdown
-                        return@filter !(event.x >= bounds.left
-                                && event.x <= bounds.right
-                                && event.y >= bounds.top
-                                && event.y <= bounds.bottom)
-                    }
-                    false
-                }
-                .map { } handledBy this@MenuComponent.visibilityStore.dismiss
         }
     }
 }
 
 /**
- * Creates a standard menu.
+ * Creates a Menu.
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
@@ -214,14 +88,13 @@ open class MenuComponent : Component<Unit> {
  */
 fun RenderContext.menu(
     styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass = dev.fritz2.styling.StyleClass.None,
-    id: String = "menu-dropdown-${uniqueId()}",
-    prefix: String = "menu-dropdown",
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "menu",
     build: MenuComponent.() -> Unit,
 ) = MenuComponent()
     .apply(build)
     .render(this, styling, baseClass, id, prefix)
-
 
 /**
  * A special [Component] that can be used as an entry in a [MenuComponent].
@@ -257,9 +130,7 @@ open class MenuEntriesContext {
     val entries: List<MenuEntryComponent>
         get() = _entries.toList()
 
-    fun addEntry(entry: MenuEntryComponent) {
-        _entries += entry
-    }
+    fun addEntry(entry: MenuEntryComponent) = _entries.add(entry)
 
 
     fun item(build: MenuItemComponent.() -> Unit) = MenuItemComponent()
@@ -287,8 +158,6 @@ open class MenuEntriesContext {
  * Just like a regular button it is clickable and can be enabled/disabled.
  *
  * It can be configured with an _icon_, a _text_ and a boolean-[Flow] to determine whether the item is enabled.
- *
- * @see MenuItemComponent
  */
 open class MenuItemComponent :
     MenuEntryComponent,
