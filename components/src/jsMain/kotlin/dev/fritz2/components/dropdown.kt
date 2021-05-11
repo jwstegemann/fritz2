@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.storeOf
+import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
@@ -8,6 +9,7 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.Theme
+import kotlinx.browser.document
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlin.js.Date
@@ -133,14 +135,14 @@ open class DropdownComponent : Component<Unit> {
     private fun listenToWindowEvents(renderContext: RenderContext, dropdownId: String) {
         renderContext.apply {
             // delay listening so the dropdown is not closed immediately:
-            val startListeningMillis = Date.now() + 200
+            val startingTimeMillis = Date.now() + 200
 
-            dev.fritz2.dom.Window.clicks.events
+            Window.clicks.events
                 .filter { event ->
-                    if (Date.now() < startListeningMillis)
+                    if (Date.now() < startingTimeMillis)
                         return@filter false
 
-                    val dropdownElement = kotlinx.browser.document.getElementById(dropdownId)
+                    val dropdownElement = document.getElementById(dropdownId)
                     dropdownElement?.let {
                         val bounds = it.getBoundingClientRect()
                         // Only handle clicks outside of the menu dropdown
