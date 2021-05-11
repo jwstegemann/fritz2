@@ -96,6 +96,59 @@ fun RenderContext.menu(
     .apply(build)
     .render(this, styling, baseClass, id, prefix)
 
+
+/**
+ * This class combines the _configuration_ and the core rendering of a dropdown menu.
+ *
+ * A dropdown menu is a special kind of [MenuComponent] that floats around a toggle element and is revealed when the
+ * latter is clicked.
+ * It is configured the same way as a regular [MenuComponent] but has an additional `dropdown`-property for
+ * customization of the menu-dropdown.
+ *
+ * Have a look at the usage example of [MenuComponent] for more information. Note that the factory method is
+ * `dropdownMenu { ... }` in this case!
+ */
+open class DropdownMenuComponent : Component<Unit>, DropdownProperties by DropdownMixin() {
+
+    val entries = ComponentProperty<MenuEntriesContext.() -> Unit> { }
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass,
+        id: String?,
+        prefix: String
+    ) {
+        context.renderDropdown {
+            content {
+                menu {
+                    entries(this@DropdownMenuComponent.entries.value)
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Creates a dropdown menu.
+ *
+ * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the element
+ * @param id the ID of the element
+ * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param build a lambda expression for setting up the component itself.
+ */
+fun RenderContext.dropdownMenu(
+    styling: BasicParams.() -> Unit = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "dropdown-menu",
+    build: DropdownMenuComponent.() -> Unit,
+) = DropdownMenuComponent()
+    .apply(build)
+    .render(this, styling, baseClass, id, prefix)
+
+
 /**
  * A special [Component] that can be used as an entry in a [MenuComponent].
  *

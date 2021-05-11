@@ -1,6 +1,6 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
@@ -13,20 +13,39 @@ import kotlinx.coroutines.flow.map
 import kotlin.js.Date
 
 
+enum class DropdownPlacement {
+    Left,
+    Right,
+    BottomLeftFacing,
+    BottomRightFacing
+}
+
+object DropdownPlacementContext {
+    val left = DropdownPlacement.Left
+    val right = DropdownPlacement.Right
+    val bottomLeftFacing = DropdownPlacement.BottomLeftFacing
+    val bottomRightFacing = DropdownPlacement.BottomRightFacing
+}
+
+
 /**
  * This class combines the _configuration_ and the core rendering of a dropdown.
  *
- * A menu consists of a toggle element as well as it's actual content in form of a drop-down with customizable entries.
- * The dropdown floats around the toggle-element and can be closed by simply clicking outside the dropdown.
+ * A dropdown consists of a toggle element as well as it's actual content in form of any fritz2-component. The
+ * `content` property is used to specify the dropdown's content.
  *
- * The toggle-element can be any component and is passed via the `toggle` property. A button with a standard
+ * The dropdown floats around the toggle-element and can be closed by simply clicking outside the dropdown.
+ * The opening an closing behavior can manually be controlled as well by specifying the `visible` property. It takes
+ * a flow of values that determine whether the dropdown should be visible or not.
+ *
+ * The toggle-element can be any component as well and is passed via the `toggle` property. A button with a standard
  * menu-icon is used if no toggle-element is specified.
  *
  * The dropdown can be placed _to the left_, _to the right_ or _below_ the toggle-element. This can be specified via the
  * `placement` property. The default placement is below the toggle.
  * ```
  */
-// TODO: Adjust documentation
+// TODO: Rework placement (split up into 'placement' and 'justifyContent')
 open class DropdownComponent : Component<Unit> {
 
     private val containerCss = style("menu-container") {
@@ -39,35 +58,19 @@ open class DropdownComponent : Component<Unit> {
     }
 
 
-    enum class DropdownPlacement {
-        Left,
-        Right,
-        BottomLeftFacing,
-        BottomRightFacing
-    }
-
-    object DropdownPlacementContext {
-        val left = DropdownPlacement.Left
-        val right = DropdownPlacement.Right
-        val bottomLeftFacing = DropdownPlacement.BottomLeftFacing
-        val bottomRightFacing = DropdownPlacement.BottomRightFacing
-    }
-
-
-    private val visibilityStore = object : RootStore<Boolean>(false) {
-        val show = handle { true }
-        val dismiss = handle { false }
-    }
-
-
     val toggle = ComponentProperty<RenderContext.() -> Unit> {
         pushButton {
             icon { fromTheme { menu } }
-            variant { outline }
+            variant { ghost }
         }
     }
     val placement = ComponentProperty<DropdownPlacementContext.() -> DropdownPlacement> { bottomRightFacing }
     val content = ComponentProperty<RenderContext.() -> Unit> { }
+
+    // Visibility is controlled by the DropdownComponent itself by default but can manually be controlled via the
+    // 'visible' property:
+    private val visibilityStore = storeOf(false)
+    val visible = DynamicComponentProperty(visibilityStore.data)
 
 
     override fun render(
@@ -80,16 +83,16 @@ open class DropdownComponent : Component<Unit> {
         context.apply {
             box(baseClass = this@DropdownComponent.containerCss) {
 
-                box(id = "menu-toggle-${uniqueId()}") {
+                box {
                     this@DropdownComponent.toggle.value(this)
-                    clicks.events.map { } handledBy this@DropdownComponent.visibilityStore.show
+                    clicks.events.map { true } handledBy this@DropdownComponent.visibilityStore.update
                 }
 
-                this@DropdownComponent.visibilityStore.data.render { visible ->
+                this@DropdownComponent.visible.values.render { visible ->
                     if (visible) {
                         this@DropdownComponent.renderDropdown(this, styling, baseClass, id, prefix)
                     } else {
-                        box { /* just an empty placeholder */ }
+                        box { }
                     }
                 }
             }
@@ -103,7 +106,7 @@ open class DropdownComponent : Component<Unit> {
         id: String?,
         prefix: String
     ) {
-        val uniqueDropdownId = id ?: "menu-dropdown-${uniqueId()}"
+        val uniqueDropdownId = id ?: "dropdown-${uniqueId()}"
 
         renderContext.apply {
             box(
@@ -134,7 +137,7 @@ open class DropdownComponent : Component<Unit> {
 
             dev.fritz2.dom.Window.clicks.events
                 .filter { event ->
-                    if (kotlin.js.Date.now() < startListeningMillis)
+                    if (Date.now() < startListeningMillis)
                         return@filter false
 
                     val dropdownElement = kotlinx.browser.document.getElementById(dropdownId)
@@ -148,7 +151,7 @@ open class DropdownComponent : Component<Unit> {
                     }
                     false
                 }
-                .map { } handledBy this@DropdownComponent.visibilityStore.dismiss
+                .map { false } handledBy this@DropdownComponent.visibilityStore.update
         }
     }
 }
@@ -162,13 +165,35 @@ open class DropdownComponent : Component<Unit> {
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself.
  */
-// TODO: Adjust documentation
 fun RenderContext.dropdown(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
-    id: String = "menu-dropdown-${uniqueId()}",
-    prefix: String = "menu-dropdown",
+    id: String = "dropdown-${uniqueId()}",
+    prefix: String = "dropdown",
     build: DropdownComponent.() -> Unit,
 ) = DropdownComponent()
     .apply(build)
     .render(this, styling, baseClass, id, prefix)
+
+
+interface DropdownProperties {
+    val dropdown: ComponentProperty<DropdownComponent.() -> Unit>
+
+    fun RenderContext.renderDropdown(build: DropdownComponent.() -> Unit = { }) = DropdownComponent()
+        .apply(dropdown.value)
+        .apply(build)
+        .render(this, { }, StyleClass.None, null, "dropdown")
+
+    fun RenderContext.renderWithDropdown(
+        build: DropdownComponent.() -> Unit = { },
+        component: RenderContext.() -> Unit
+    ) = DropdownComponent()
+        .apply(dropdown.value)
+        .apply(build)
+        .apply { toggle { component() } }
+        .render(this, { }, StyleClass.None, null, "dropdown")
+}
+
+class DropdownMixin : DropdownProperties {
+    override val dropdown = ComponentProperty<DropdownComponent.() -> Unit> { }
+}
