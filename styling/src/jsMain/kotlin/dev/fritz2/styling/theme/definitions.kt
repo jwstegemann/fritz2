@@ -681,13 +681,21 @@ interface ToastButton {
 interface MenuStyles {
     val dropdown: Style<BasicParams>
     val placements: MenuPlacements
+    val alignments: MenuAlignments
 }
 
 interface MenuPlacements {
     val left: Style<BasicParams>
     val right: Style<BasicParams>
-    val bottomLeftFacing: Style<BasicParams>
-    val bottomRightFacing: Style<BasicParams>
+    val top: Style<BasicParams>
+    val bottom: Style<BasicParams>
+}
+
+interface MenuAlignments {
+    val horizontalStart: Style<BasicParams>
+    val verticalStart: Style<BasicParams>
+    val horizontalEnd: Style<BasicParams>
+    val verticalEnd: Style<BasicParams>
 }
 
 

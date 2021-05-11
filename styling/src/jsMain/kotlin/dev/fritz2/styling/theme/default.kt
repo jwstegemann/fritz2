@@ -1795,81 +1795,113 @@ open class DefaultTheme : Theme {
 
 
     override val menu: MenuStyles = object : MenuStyles {
-        override val dropdown: Style<BasicParams>
-            get() = {
-                width(
-                    sm = { "100%" },
-                    md = { maxContent }
-                )
-                overflow(
-                    sm = { hidden },
-                    md = { visible }
-                )
-                radius { "6px" }
+        override val dropdown: Style<BasicParams> = {
+            width(
+                sm = { "100%" },
+                md = { maxContent }
+            )
+            overflow(
+                sm = { hidden },
+                md = { visible }
+            )
+            radius { "6px" }
 
-                paddings { vertical { smaller } }
-                zIndex { overlay }
-                boxShadow { raised }
-                background { color { background } }
+            paddings { vertical { smaller } }
+            zIndex { overlay }
+            boxShadow { raised }
+            background { color { background } }
 
-                // FIXME: Animation not working
-                //opacity { "1" }
-                //css("transition: opacity 1s ease-in-out;")
-            }
+            // FIXME: Animation not working
+            //opacity { "1" }
+            //css("transition: opacity 1s ease-in-out;")
+        }
 
         override val placements = object : MenuPlacements {
-            override val left: Style<BasicParams>
-                get() = {
-                    position(
-                        sm = { absolute { left { "0px" } } },
-                        md = {
-                            absolute {
-                                left { auto }
-                                right { "100%" }
-                            }
+            override val left: Style<BasicParams> = {
+                position(
+                    sm = { absolute { left { "0px" } } },
+                    md = {
+                        absolute {
+                            left { auto }
+                            right { "100%" }
                         }
-                    )
-                }
-
-            override val right: Style<BasicParams>
-                get() = {
-                    position(
-                        sm = { absolute { left { "0px" } } },
-                        md = {
-                            absolute {
-                                left { "100%" }
-                            }
+                    }
+                )
+            }
+            override val right: Style<BasicParams> = {
+                position(
+                    sm = { absolute { left { "0px" } } },
+                    md = {
+                        absolute {
+                            left { "100%" }
                         }
-                    )
+                    }
+                )
                 }
-
-            override val bottomLeftFacing: Style<BasicParams>
-                get() = {
-                    position(
-                        sm = { absolute { left { "0px" } } }
-                    )
-                    position(
-                        md = {
-                            absolute {
-                                top { "100%" }
-                                left { auto }
-                                right { "0px" }
-                            }
+            override val top: Style<BasicParams> = {
+                position(
+                    sm = { absolute { left { "0px" } } }
+                )
+                position(
+                    md = {
+                        absolute {
+                            bottom { "100%" }
                         }
-                    )
-                }
-
-            override val bottomRightFacing: Style<BasicParams>
-                get() = {
-                    position(
-                        sm = { absolute { left { "0px" } } },
-                        md = {
-                            absolute {
-                                top { "100%" }
-                            }
+                    }
+                )
+            }
+            override val bottom: Style<BasicParams> = {
+                position(
+                    sm = { absolute { left { "0px" } } },
+                    md = {
+                        absolute {
+                            top { "100%" }
                         }
-                    )
-                }
+                    }
+                )
+            }
+        }
+        override val alignments: MenuAlignments = object : MenuAlignments {
+            override val horizontalStart: Style<BasicParams> = {
+                position(
+                    md = {
+                        absolute {
+                            left { "0px" }
+                            right { auto }
+                        }
+                    }
+                )
+            }
+            override val verticalStart: Style<BasicParams> = {
+                position(
+                    md = {
+                        absolute {
+                            top { "0px" }
+                            bottom { auto }
+                        }
+                    }
+                )
+            }
+            override val horizontalEnd: Style<BasicParams> = {
+                position(
+                    md = {
+                        absolute {
+                            left { auto }
+                            right { "0px" }
+                        }
+                    }
+                )
+            }
+            override val verticalEnd: Style<BasicParams> = {
+                position(
+                    md = {
+                        absolute {
+                            top { auto }
+                            bottom { "0px" }
+                        }
+                    }
+                )
+            }
         }
     }
 

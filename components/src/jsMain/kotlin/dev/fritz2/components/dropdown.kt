@@ -15,21 +15,6 @@ import kotlinx.coroutines.flow.map
 import kotlin.js.Date
 
 
-enum class DropdownPlacement {
-    Left,
-    Right,
-    BottomLeftFacing,
-    BottomRightFacing
-}
-
-object DropdownPlacementContext {
-    val left = DropdownPlacement.Left
-    val right = DropdownPlacement.Right
-    val bottomLeftFacing = DropdownPlacement.BottomLeftFacing
-    val bottomRightFacing = DropdownPlacement.BottomRightFacing
-}
-
-
 /**
  * This class combines the _configuration_ and the core rendering of a dropdown.
  *
@@ -60,13 +45,39 @@ open class DropdownComponent : Component<Unit> {
     }
 
 
+    enum class Placement {
+        Left,
+        Right,
+        Top,
+        Bottom,
+    }
+
+    object PlacementContext {
+        val left = Placement.Left
+        val right = Placement.Right
+        val top = Placement.Top
+        val bottom = Placement.Bottom
+    }
+
+    enum class Alignment {
+        Start,
+        End
+    }
+
+    object AlignmentContext {
+        val start = Alignment.Start
+        val end = Alignment.End
+    }
+
+
     val toggle = ComponentProperty<RenderContext.() -> Unit> {
         pushButton {
             icon { fromTheme { menu } }
             variant { ghost }
         }
     }
-    val placement = ComponentProperty<DropdownPlacementContext.() -> DropdownPlacement> { bottomRightFacing }
+    val placement = ComponentProperty<PlacementContext.() -> Placement> { bottom }
+    val alignment = ComponentProperty<AlignmentContext.() -> Alignment> { start }
     val content = ComponentProperty<RenderContext.() -> Unit> { }
 
     // Visibility is controlled by the DropdownComponent itself by default but can manually be controlled via the
@@ -115,11 +126,20 @@ open class DropdownComponent : Component<Unit> {
                 styling = { this as BoxParams
                     styling()
                     Theme().menu.dropdown()
-                    when(this@DropdownComponent.placement.value.invoke(DropdownPlacementContext)) {
-                        DropdownPlacement.Left -> Theme().menu.placements.left
-                        DropdownPlacement.Right -> Theme().menu.placements.right
-                        DropdownPlacement.BottomLeftFacing -> Theme().menu.placements.bottomLeftFacing
-                        DropdownPlacement.BottomRightFacing -> Theme().menu.placements.bottomRightFacing
+
+                    val placement = this@DropdownComponent.placement.value.invoke(PlacementContext)
+                    val isVerticalPlacement = (placement == Placement.Top || placement == Placement.Bottom)
+                    when(placement) {
+                        Placement.Left -> Theme().menu.placements.left
+                        Placement.Right -> Theme().menu.placements.right
+                        Placement.Top -> Theme().menu.placements.top
+                        Placement.Bottom -> Theme().menu.placements.bottom
+                    }.invoke()
+
+                    val alignments = Theme().menu.alignments
+                    when(this@DropdownComponent.alignment.value.invoke(AlignmentContext)) {
+                        Alignment.Start -> if (isVerticalPlacement) alignments.horizontalStart else alignments.verticalStart
+                        Alignment.End -> if (isVerticalPlacement) alignments.horizontalEnd else alignments.verticalEnd
                     }.invoke()
                 },
                 baseClass = baseClass,
