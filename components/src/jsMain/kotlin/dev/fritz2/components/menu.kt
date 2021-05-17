@@ -5,6 +5,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.h5
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.IconDefinition
@@ -57,6 +58,16 @@ private val staticMenuEntryCss = staticStyle("menu-entry") {
  */
 open class MenuComponent : Component<Unit> {
 
+    companion object {
+        private val menuContainerCss = staticStyle("menu-container") {
+            minWidth { "50px" }
+            maxWidth { maxContent }
+            paddings {
+                vertical { smaller }
+            }
+        }
+    }
+
     val entries = ComponentProperty<MenuEntriesContext.() -> Unit> { }
 
     override fun render(
@@ -68,7 +79,7 @@ open class MenuComponent : Component<Unit> {
     ) {
         val entriesContext = MenuEntriesContext().apply(entries.value)
         context.apply {
-            box({ this as BoxParams; styling() }, baseClass, id, prefix) {
+            box({ this as BoxParams; styling() }, baseClass + menuContainerCss, id, prefix) {
                 entriesContext.entries.forEach {
                     it.render(this, { }, StyleClass.None, null, "menu-entry")
                 }
@@ -112,6 +123,7 @@ open class DropdownMenuComponent : Component<Unit>, WithDropdown by DropdownMixi
 
     val entries = ComponentProperty<MenuEntriesContext.() -> Unit> { }
 
+    // TODO: Pass down styling params
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
@@ -218,14 +230,13 @@ open class MenuItemComponent :
     FormProperties by FormMixin()
 {
 
-    private val menuItemButtonCss = style("menu-item-button") {
+    private val itemButtonCss = style("menu-item-button") {
         display { flex }
         justifyContent { start }
         css("user-select: none")
 
         hover {
-            background { color { neutral.highlight } }
-            css("filter: brightness(90%);")
+            background { color { primary.highlight } }
         }
 
         disabled {
@@ -247,7 +258,7 @@ open class MenuItemComponent :
         prefix: String
     ) {
         context.apply {
-            button((staticMenuEntryCss + this@MenuItemComponent.menuItemButtonCss).name) {
+            button((staticMenuEntryCss + this@MenuItemComponent.itemButtonCss).name) {
                 this@MenuItemComponent.icon.value?.let {
                     icon({
                         margins { right { smaller } }
@@ -305,6 +316,11 @@ open class CustomMenuItemComponent : MenuEntryComponent {
  */
 open class MenuSubheaderComponent : MenuEntryComponent {
 
+    private val subheaderStyle: Style<BasicParams> = {
+        color { secondary.main }
+        css("white-space: nowrap")
+    }
+
     val text = ComponentProperty("")
 
     override fun render(
@@ -315,9 +331,7 @@ open class MenuSubheaderComponent : MenuEntryComponent {
         prefix: String
     ) {
         context.apply {
-            h5(baseClass = staticMenuEntryCss, style = {
-                css("white-space: nowrap")
-            }) {
+            h5(baseClass = staticMenuEntryCss, style = this@MenuSubheaderComponent.subheaderStyle) {
                 +this@MenuSubheaderComponent.text.value
             }
         }
