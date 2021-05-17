@@ -208,11 +208,11 @@ fun RenderContext.dropdown(
  * on the underlying 'dropdown'-property.
  * See [renderDropdown] and [renderWithDropdown] for more information.
  */
-interface DropdownProperties {
+interface WithDropdown {
     val dropdown: ComponentProperty<DropdownComponent.() -> Unit>
 
     /**
-     * This method configures a [DropdownComponent] based on the configuration that has been done via the `dropdown`-
+     * This method sets up a [DropdownComponent] based on the configuration that has been done via the `dropdown`-
      * property of the component and renders it. Optional overrides can be specified via the [build] parameter.
      */
     fun RenderContext.renderDropdown(build: DropdownComponent.() -> Unit = { }) = DropdownComponent()
@@ -221,7 +221,7 @@ interface DropdownProperties {
         .render(this, { }, StyleClass.None, null, "dropdown")
 
     /**
-     * This method configures a [DropdownComponent] based on the configuration that has been done via the `dropdown`-
+     * This method sets up a [DropdownComponent] based on the configuration that has been done via the `dropdown`-
      * property of the component and uses it as a dropdown for the given [component].
      * Optional overrides can be specified via the [build] parameter.
      */
@@ -236,8 +236,8 @@ interface DropdownProperties {
 }
 
 /**
- * Default implementation of [DropdownProperties] to be used as a mixin for components.
+ * Default implementation of [WithDropdown] to be used as a mixin for components.
  */
-class DropdownMixin : DropdownProperties {
+class DropdownMixin : WithDropdown {
     override val dropdown = ComponentProperty<DropdownComponent.() -> Unit> { }
 }

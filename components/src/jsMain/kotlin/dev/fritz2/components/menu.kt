@@ -108,7 +108,7 @@ fun RenderContext.menu(
  * Have a look at the usage example of [MenuComponent] for more information. Note that the factory method is
  * `dropdownMenu { ... }` in this case!
  */
-open class DropdownMenuComponent : Component<Unit>, DropdownProperties by DropdownMixin() {
+open class DropdownMenuComponent : Component<Unit>, WithDropdown by DropdownMixin() {
 
     val entries = ComponentProperty<MenuEntriesContext.() -> Unit> { }
 
