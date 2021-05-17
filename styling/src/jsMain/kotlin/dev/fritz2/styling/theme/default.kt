@@ -1807,7 +1807,7 @@ open class DefaultTheme : Theme {
             radius { "6px" }
 
             paddings { vertical { smaller } }
-            zIndex { overlay }
+            zIndex { layer(1) }
             boxShadow { raised }
             background { color { background } }
 

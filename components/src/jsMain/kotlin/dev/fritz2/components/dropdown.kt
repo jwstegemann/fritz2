@@ -119,7 +119,7 @@ open class DropdownComponent : Component<Unit> {
         id: String?,
         prefix: String
     ) {
-        val uniqueDropdownId = id ?: "dropdown-${uniqueId()}"
+        val uniqueDropdownId = id ?: "dropdown-${randomId()}"
 
         renderContext.apply {
             box(
