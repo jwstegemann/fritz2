@@ -35,8 +35,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 open class AppFrameComponent : Component<Unit> {
     companion object {
         init {
-            // Needs to reference header heigth from Theme even though sttic style needs to be used to style the body.
-            // Header heigth might not update when the Theme is changed.
+            // Needs to reference header height from Theme even though static style needs to be used to style the body.
+            // Header height might not update when the Theme is changed.
             // FIXME: Find more elegant solution to style body
             staticStyle(
                 """
@@ -63,19 +63,16 @@ open class AppFrameComponent : Component<Unit> {
     private val toggleSidebar = sidebarStatus.handle { !it }
 
     private val openSideBar = style(
-        "open-sidebar", """
-            @media (max-width: ${Theme().breakPoints.md}) {
+        """@media (max-width: ${Theme().breakPoints.md}) {
                 transform: translateX(0) !important;
-         }""".trimIndent()
+         }""".trimIndent(), "open-sidebar"
     )
 
     private val showBackdrop = style(
-        "show-backdrop", """
-            @media (max-width: ${Theme().breakPoints.md}) {
+        """@media (max-width: ${Theme().breakPoints.md}) {
                 left : 0 !important;
                 opacity: 1 !important;
-            }
-        """.trimIndent()
+        }""".trimIndent(), "show-backdrop"
     )
 
     private fun mobileSidebar(topPosition: Property): Style<BasicParams> = {
@@ -143,12 +140,7 @@ open class AppFrameComponent : Component<Unit> {
                 height { "min(100vh, 100%)" }
                 css("height: -webkit-fill-available;")
                 zIndex { "4000" }
-                css(
-                    """
-            transition: 
-                opacity .3s ease-in;        
-        """.trimIndent()
-                )
+                css("transition: opacity .3s ease-in;")
             }, prefix = "backdrop") {
                 className(this@AppFrameComponent.showBackdrop.whenever(this@AppFrameComponent.sidebarStatus.data).name)
                 clicks handledBy this@AppFrameComponent.toggleSidebar
