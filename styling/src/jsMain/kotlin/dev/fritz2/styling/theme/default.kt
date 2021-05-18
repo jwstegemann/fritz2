@@ -1905,6 +1905,16 @@ open class DefaultTheme : Theme {
     }
 
 
+    override val menu: MenuStyles = object : MenuStyles {
+        override val header: Style<BasicParams> = {
+            color { secondary.main }
+            fontSize { fontSizes.normal }
+            fontWeight { bold }
+            css("white-space: nowrap")
+        }
+    }
+
+
     override val appFrame: AppFrameStyles = object : AppFrameStyles {
         override val headerHeight: Property = "3.6rem"
         override val footerMinHeight: Property = "2.8rem"

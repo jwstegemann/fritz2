@@ -676,7 +676,7 @@ interface ToastButton {
 
 
 /**
- * definition of the theme's menus
+ * definition of the theme's dropdown
  */
 interface DropdownStyles {
     val dropdown: Style<BasicParams>
@@ -696,6 +696,14 @@ interface DropdownAlignments {
     val verticalStart: Style<BasicParams>
     val horizontalEnd: Style<BasicParams>
     val verticalEnd: Style<BasicParams>
+}
+
+
+/**
+ * definition of the theme's menu
+ */
+interface MenuStyles {
+    val header: Style<BasicParams>
 }
 
 

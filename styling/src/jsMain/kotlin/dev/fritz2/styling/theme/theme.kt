@@ -212,6 +212,8 @@ interface Theme {
 
     val dropdown: DropdownStyles
 
+    val menu: MenuStyles
+
     val appFrame: AppFrameStyles
 
     val dataTableStyles: DataTableStyles

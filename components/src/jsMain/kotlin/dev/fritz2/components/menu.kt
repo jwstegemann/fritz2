@@ -10,6 +10,7 @@ import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
 
@@ -166,7 +167,7 @@ fun RenderContext.dropdownMenu(
  *
  * @see MenuItemComponent
  * @see MenuDividerComponent
- * @see MenuSubheaderComponent
+ * @see MenuHeaderComponent
  */
 typealias MenuEntryComponent = Component<Unit>
 
@@ -206,11 +207,11 @@ open class MenuEntriesContext {
         .apply { content(build) }
         .run(::addEntry)
 
-    fun subheader(build: MenuSubheaderComponent.() -> Unit) = MenuSubheaderComponent()
+    fun header(build: MenuHeaderComponent.() -> Unit) = MenuHeaderComponent()
         .apply(build)
         .run(::addEntry)
 
-    fun subheader(text: String) = subheader { text(text) }
+    fun header(text: String) = header { text(text) }
 
     fun divider() = addEntry(MenuDividerComponent())
 }
@@ -309,17 +310,12 @@ open class CustomMenuItemComponent : MenuEntryComponent {
 }
 
 /**
- * This class combines the _configuration_ and the core rendering of a MenuSubheaderComponent.
+ * This class combines the _configuration_ and the core rendering of a MenuHeaderComponent.
  *
- * A subheader can be used to introduce a group of menu entries and separate them from the entries above.
- * It simply is a styled header consisting of a static _text_.
+ * A header can be used to introduce a group of menu entries and separate them from the entries above.
+ * It simply consists of a static, styled _text_.
  */
-open class MenuSubheaderComponent : MenuEntryComponent {
-
-    private val subheaderStyle: Style<BasicParams> = {
-        color { secondary.main }
-        css("white-space: nowrap")
-    }
+open class MenuHeaderComponent : MenuEntryComponent {
 
     val text = ComponentProperty("")
 
@@ -331,8 +327,8 @@ open class MenuSubheaderComponent : MenuEntryComponent {
         prefix: String
     ) {
         context.apply {
-            h5(baseClass = staticMenuEntryCss, style = this@MenuSubheaderComponent.subheaderStyle) {
-                +this@MenuSubheaderComponent.text.value
+            box(baseClass = staticMenuEntryCss, styling = Theme().menu.header) {
+                +this@MenuHeaderComponent.text.value
             }
         }
     }
