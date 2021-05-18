@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.styling.*
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
 
 
-private val staticMenuEntryCss = staticStyle("menu-entry") {
+private val staticMenuChildCss = staticStyle("menu-child") {
     width { "100%" }
     paddings {
         horizontal { normal }
@@ -84,11 +85,11 @@ open class MenuComponent : Component<Unit> {
     fun addEntry(entry: Component<Unit>) = entries.add(entry)
 
 
-    fun item(build: MenuItemComponent.() -> Unit) = MenuItemComponent()
+    fun entry(build: MenuEntryComponent.() -> Unit) = MenuEntryComponent()
         .apply(build)
         .run(::addEntry)
 
-    fun custom(build: RenderContext.() -> Unit) = CustomMenuItemComponent()
+    fun custom(build: RenderContext.() -> Unit) = CustomMenuEntryComponent()
         .apply { content(build) }
         .run(::addEntry)
 
@@ -139,38 +140,20 @@ fun RenderContext.menu(
 
 
 /**
- * This class combines the _configuration_ and the core rendering of a MenuItemComponent.
+ * This class combines the _configuration_ and the core rendering of a MenuEntryComponent.
  *
- * A MenuItem is a special kind of button consisting of a label and an optional icon used in dropdown menus.
+ * An entry is a special kind of button consisting of a label and an optional icon used in dropdown menus.
  * Just like a regular button it is clickable and can be enabled/disabled.
  *
  * It can be configured with an _icon_, a _text_ and a boolean-[Flow] to determine whether the item is enabled.
  */
-open class MenuItemComponent :
+open class MenuEntryComponent :
     Component<Unit>,
     EventProperties<HTMLButtonElement> by EventMixin(),
     FormProperties by FormMixin()
 {
-
-    private val itemButtonCss = style("menu-item-button") {
-        display { flex }
-        justifyContent { start }
-        css("user-select: none")
-
-        hover {
-            background { color { primary.highlight } }
-        }
-
-        disabled {
-            opacity { "0.4" }
-            css("cursor: not-allowed")
-        }
-    }
-
-
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)
     val text = ComponentProperty("")
-
 
     override fun render(
         context: RenderContext,
@@ -180,18 +163,18 @@ open class MenuItemComponent :
         prefix: String
     ) {
         context.apply {
-            button((staticMenuEntryCss + this@MenuItemComponent.itemButtonCss).name) {
-                this@MenuItemComponent.icon.value?.let {
+            button(Theme().menu.entry, staticMenuChildCss) {
+                this@MenuEntryComponent.icon.value?.let {
                     icon({
                         margins { right { smaller } }
                     }) {
                         fromTheme(it)
                     }
                 }
-                span { +this@MenuItemComponent.text.value }
+                span { +this@MenuEntryComponent.text.value }
 
-                disabled(this@MenuItemComponent.disabled.values)
-                this@MenuItemComponent.events.value.invoke(this)
+                disabled(this@MenuEntryComponent.disabled.values)
+                this@MenuEntryComponent.events.value.invoke(this)
             }
         }
     }
@@ -200,10 +183,10 @@ open class MenuItemComponent :
 /**
  * This class combines the _configuration_ and the core rendering of a CustomMenuItemComponent.
  *
- * A custom menu item can be any fritz2 component. The component simply wraps any layout in a container and renders it
+ * A custom menu entry can be any fritz2 component. The component simply wraps any layout in a container and renders it
  * to the menu.
  */
-open class CustomMenuItemComponent : Component<Unit> {
+open class CustomMenuEntryComponent : Component<Unit> {
 
     val content = ComponentProperty<RenderContext.() -> Unit> { }
 
@@ -220,11 +203,11 @@ open class CustomMenuItemComponent : Component<Unit> {
                     this as BoxParams
                     styling()
                 },
-                baseClass + staticMenuEntryCss,
+                baseClass + staticMenuChildCss,
                 id,
                 prefix
             ) {
-                this@CustomMenuItemComponent.content.value(this)
+                this@CustomMenuEntryComponent.content.value(this)
             }
         }
     }
@@ -248,7 +231,7 @@ open class MenuHeaderComponent : Component<Unit> {
         prefix: String
     ) {
         context.apply {
-            box(baseClass = staticMenuEntryCss, styling = Theme().menu.header) {
+            box(baseClass = staticMenuChildCss, styling = Theme().menu.header) {
                 +this@MenuHeaderComponent.text.value
             }
         }

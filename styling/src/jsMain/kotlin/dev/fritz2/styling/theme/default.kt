@@ -1906,6 +1906,21 @@ open class DefaultTheme : Theme {
 
 
     override val menu: MenuStyles = object : MenuStyles {
+        override val entry: Style<FlexParams> = {
+            display { flex }
+            justifyContent { JustifyContentValues.start }
+            css("user-select: none")
+
+            hover {
+                background { color { primary.highlight } }
+            }
+
+            disabled {
+                opacity { "0.4" }
+                css("cursor: not-allowed")
+            }
+        }
+
         override val header: Style<BasicParams> = {
             color { secondary.main }
             fontSize { fontSizes.normal }

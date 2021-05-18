@@ -703,6 +703,7 @@ interface DropdownAlignments {
  * definition of the theme's menu
  */
 interface MenuStyles {
+    val entry: Style<FlexParams>
     val header: Style<BasicParams>
 }
 
