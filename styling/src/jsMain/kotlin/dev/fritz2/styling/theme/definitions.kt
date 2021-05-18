@@ -678,20 +678,20 @@ interface ToastButton {
 /**
  * definition of the theme's menus
  */
-interface MenuStyles {
+interface DropdownStyles {
     val dropdown: Style<BasicParams>
-    val placements: MenuPlacements
-    val alignments: MenuAlignments
+    val placements: DropdownPlacements
+    val alignments: DropdownAlignments
 }
 
-interface MenuPlacements {
+interface DropdownPlacements {
     val left: Style<BasicParams>
     val right: Style<BasicParams>
     val top: Style<BasicParams>
     val bottom: Style<BasicParams>
 }
 
-interface MenuAlignments {
+interface DropdownAlignments {
     val horizontalStart: Style<BasicParams>
     val verticalStart: Style<BasicParams>
     val horizontalEnd: Style<BasicParams>

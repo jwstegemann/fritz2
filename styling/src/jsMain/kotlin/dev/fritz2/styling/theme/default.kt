@@ -1794,7 +1794,7 @@ open class DefaultTheme : Theme {
     }
 
 
-    override val menu: MenuStyles = object : MenuStyles {
+    override val dropdown: DropdownStyles = object : DropdownStyles {
         override val dropdown: Style<BasicParams> = {
             width(
                 sm = { "100%" },
@@ -1815,7 +1815,7 @@ open class DefaultTheme : Theme {
             //css("transition: opacity 1s ease-in-out;")
         }
 
-        override val placements = object : MenuPlacements {
+        override val placements = object : DropdownPlacements {
             override val left: Style<BasicParams> = {
                 position(
                     sm = { absolute { left { "0px" } } },
@@ -1860,7 +1860,7 @@ open class DefaultTheme : Theme {
                 )
             }
         }
-        override val alignments: MenuAlignments = object : MenuAlignments {
+        override val alignments: DropdownAlignments = object : DropdownAlignments {
             override val horizontalStart: Style<BasicParams> = {
                 position(
                     md = {

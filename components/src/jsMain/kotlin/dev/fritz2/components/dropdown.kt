@@ -125,18 +125,18 @@ open class DropdownComponent : Component<Unit> {
             box(
                 styling = { this as BoxParams
                     styling()
-                    Theme().menu.dropdown()
+                    Theme().dropdown.dropdown()
 
                     val placement = this@DropdownComponent.placement.value.invoke(PlacementContext)
                     val isVerticalPlacement = (placement == Placement.Top || placement == Placement.Bottom)
                     when(placement) {
-                        Placement.Left -> Theme().menu.placements.left
-                        Placement.Right -> Theme().menu.placements.right
-                        Placement.Top -> Theme().menu.placements.top
-                        Placement.Bottom -> Theme().menu.placements.bottom
+                        Placement.Left -> Theme().dropdown.placements.left
+                        Placement.Right -> Theme().dropdown.placements.right
+                        Placement.Top -> Theme().dropdown.placements.top
+                        Placement.Bottom -> Theme().dropdown.placements.bottom
                     }.invoke()
 
-                    val alignments = Theme().menu.alignments
+                    val alignments = Theme().dropdown.alignments
                     when(this@DropdownComponent.alignment.value.invoke(AlignmentContext)) {
                         Alignment.Start -> if (isVerticalPlacement) alignments.horizontalStart else alignments.verticalStart
                         Alignment.End -> if (isVerticalPlacement) alignments.horizontalEnd else alignments.verticalEnd

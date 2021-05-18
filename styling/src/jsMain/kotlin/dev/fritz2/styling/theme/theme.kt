@@ -210,7 +210,7 @@ interface Theme {
 
     val toast: ToastStyles
 
-    val menu: MenuStyles
+    val dropdown: DropdownStyles
 
     val appFrame: AppFrameStyles
 
