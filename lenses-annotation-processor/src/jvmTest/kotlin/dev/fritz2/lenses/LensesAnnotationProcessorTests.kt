@@ -5,11 +5,9 @@ import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import org.assertj.core.api.Assertions
-import kotlin.test.Test
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.createTempDirectory
-import kotlin.test.Ignore
-import kotlin.test.assertEquals
+import kotlin.test.Test
 
 class LensesAnnotationProcessorTests {
 
@@ -217,6 +215,7 @@ class LensesAnnotationProcessorTests {
     private fun compileSource(vararg sourceFiles: SourceFile): KotlinCompilation.Result =
         KotlinCompilation().apply {
             sources = sourceFiles.asList()
+            jvmTarget = "1.8"
             annotationProcessors = listOf(LensesAnnotationProcessor())
             workingDir = createTempDirectory("fritz2-tests").toFile()
             inheritClassPath = true
