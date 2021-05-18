@@ -66,7 +66,7 @@ publishing {
                 licenses {
                     license {
                         name.set("MIT")
-                        url.set("https://github.com/jwstegemann/fritz2/blob/master/LICENSE")
+                        url.set("https://opensource.org/licenses/MIT")
                     }
                 }
 
