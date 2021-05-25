@@ -152,7 +152,7 @@ open class MenuEntryComponent :
     EventProperties<HTMLButtonElement> by EventMixin(),
     FormProperties by FormMixin()
 {
-    val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)
+    val icon = ComponentProperty<(IconComponent.() -> Unit)?>(value = null)
     val text = ComponentProperty("")
 
     override fun render(
@@ -167,9 +167,7 @@ open class MenuEntryComponent :
                 this@MenuEntryComponent.icon.value?.let {
                     icon({
                         margins { right { smaller } }
-                    }) {
-                        fromTheme(it)
-                    }
+                    }, build = it)
                 }
                 span { +this@MenuEntryComponent.text.value }
 
