@@ -28,38 +28,35 @@ private val staticMenuChildCss = staticStyle("menu-child") {
  *
  * A Menu consists of different types of entries that are aligned vertically.
  * By default the following types can be added to the menu:
- * - Items (menu buttons)
- * - Subheaders
+ * - Entries
+ * - Headers
  * - Dividers
  *
- * It is also possible to add any other fritz2 component. In this case all menu-specific styling (such as paddings) has
- * to be done manually, however.
+ * It is also possible to add any other fritz2 component via the `custom` context.
+ * All menu items are created directly within the Menu'Component's build context.
  *
  * Example usage:
  * ```kotlin
  * menu {
- *      entries {
- *          item {
- *              leftIcon { add }
- *              text("Item")
- *          }
- *          divider()
- *          subheader("A subsection starts here")
- *          custom {
- *              // custom content
- *              spinner { }
- *          }
+ *      entry {
+ *          leftIcon { add }
+ *          text("Item")
+ *      }
+ *      divider()
+ *      subheader("A subsection starts here")
+ *      custom {
+ *          // custom content
+ *          spinner { }
  *      }
  * }
  * ```
  *
  * The menu-entry-DSL can be extended via standard Kotlin extension methods. Custom entries must implement the
  * `Component<Unit>` interface and are added to the Menu via [MenuComponent.addEntry]
- * which is accessibly from within the extension method.
+ * which is accessible from within the extension method.
  * In a way these extension methods are similar to standard fritz2 factory methods.
  *
- * The following method adds an instance of `MyMenuEntry` to the Menu. It can simply be called from within the `entries`
- * context of [MenuComponent].
+ * The following example adds an instance of `MyMenuEntry` to the Menu.
  * Notice that `addEntry` is invoked in the end; the entry wouldn't be added otherwise!
  *
  * ```kotlin

@@ -28,8 +28,9 @@ import kotlinx.coroutines.flow.map
  * The toggle-element can be any component as well and is passed via the `toggle` property. A button with a standard
  * menu-icon is used if no toggle-element is specified.
  *
- * The dropdown can be placed _to the left_, _to the right_ or _below_ the toggle-element. This can be specified via the
- * `placement` property. The default placement is below the toggle.
+ * The dropdown can be placed _to the left_, _to the right_, on top of, or _below_ the toggle-element.
+ * This can be specified via the `placement` property. The default placement is below the toggle. It's alignment on the
+ * placement's cross-axis can be specified via the `alignment` property.
  * ```
  */
 open class DropdownComponent : Component<Unit> {
