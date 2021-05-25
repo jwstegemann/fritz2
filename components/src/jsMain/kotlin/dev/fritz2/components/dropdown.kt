@@ -1,18 +1,17 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.section
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.Theme
 import kotlinx.browser.document
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
-import kotlin.js.Date
 
 
 /**
@@ -93,18 +92,26 @@ open class DropdownComponent : Component<Unit> {
         prefix: String
     ) {
         context.apply {
-            box(baseClass = this@DropdownComponent.containerCss) {
-
+            box(baseClass = this@DropdownComponent.containerCss, id = id) {
                 box {
                     this@DropdownComponent.toggle.value(this)
                     clicks.events.map { true } handledBy this@DropdownComponent.visibilityStore.update
                 }
 
+                val dropdownId = "dropdown-${randomId()}"
                 this@DropdownComponent.visible.values.render { visible ->
                     if (visible) {
-                        this@DropdownComponent.renderDropdown(this, styling, baseClass, id, prefix)
+                        this@DropdownComponent.renderDropdown(this, styling, baseClass, dropdownId, prefix)
                     } else {
                         box { }
+                    }
+                }
+                this@DropdownComponent.visible.values.render { visible ->
+                    if (visible) {
+                        try {
+                            document.getElementById(dropdownId).asDynamic().focus()
+                        } catch (e: Exception) {
+                        }
                     }
                 }
             }
@@ -115,14 +122,12 @@ open class DropdownComponent : Component<Unit> {
         renderContext: RenderContext,
         styling: BoxParams.() -> Unit,
         baseClass: StyleClass,
-        id: String?,
+        id: String,
         prefix: String
     ) {
-        val uniqueDropdownId = id ?: "dropdown-${randomId()}"
-
         renderContext.apply {
-            box(
-                styling = { this as BoxParams
+            section(
+                style = {
                     styling()
                     Theme().dropdown.dropdown()
 
@@ -142,37 +147,14 @@ open class DropdownComponent : Component<Unit> {
                     }.invoke()
                 },
                 baseClass = baseClass,
-                id = uniqueDropdownId,
+                id = id,
                 prefix = prefix
             ) {
+                attr("tabindex", "-1")
+                blurs.events.map { false } handledBy this@DropdownComponent.visibilityStore.update
+
                 this@DropdownComponent.content.value(this)
             }
-            this@DropdownComponent.listenToWindowEvents(this, uniqueDropdownId)
-        }
-    }
-
-    private fun listenToWindowEvents(renderContext: RenderContext, dropdownId: String) {
-        renderContext.apply {
-            // delay listening so the dropdown is not closed immediately:
-            val startingTimeMillis = Date.now() + 200
-
-            Window.clicks.events
-                .filter { event ->
-                    if (Date.now() < startingTimeMillis)
-                        return@filter false
-
-                    val dropdownElement = document.getElementById(dropdownId)
-                    dropdownElement?.let {
-                        val bounds = it.getBoundingClientRect()
-                        // Only handle clicks outside of the menu dropdown
-                        return@filter !(event.x >= bounds.left
-                                && event.x <= bounds.right
-                                && event.y >= bounds.top
-                                && event.y <= bounds.bottom)
-                    }
-                    false
-                }
-                .map { false } handledBy this@DropdownComponent.visibilityStore.update
         }
     }
 }
@@ -180,16 +162,16 @@ open class DropdownComponent : Component<Unit> {
 /**
  * Creates a dropdown.
  *
- * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
- * @param baseClass optional CSS class that should be applied to the element
- * @param id the ID of the element
- * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param styling a lambda expression for declaring the styling of the actual dropdown as fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the dropdown
+ * @param id the ID of the dropdown/toggle container
+ * @param prefix the prefix for the dropdown's generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself.
  */
 fun RenderContext.dropdown(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
-    id: String = "dropdown-${uniqueId()}",
+    id: String? = null,
     prefix: String = "dropdown",
     build: DropdownComponent.() -> Unit,
 ) = DropdownComponent()

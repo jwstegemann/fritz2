@@ -1810,6 +1810,10 @@ open class DefaultTheme : Theme {
             boxShadow { raised }
             background { color { background } }
 
+            focus {
+                css("outline:none")
+            }
+
             // FIXME: Animation not working
             //opacity { "1" }
             //css("transition: opacity 1s ease-in-out;")
