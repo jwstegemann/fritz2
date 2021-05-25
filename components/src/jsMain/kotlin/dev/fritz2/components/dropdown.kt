@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
@@ -80,7 +81,9 @@ open class DropdownComponent : Component<Unit> {
 
     // Visibility is controlled by the DropdownComponent itself by default but can manually be controlled via the
     // 'visible' property:
-    private val visibilityStore = storeOf(false)
+    private val visibilityStore = object : RootStore<Boolean>(false) {
+        val toggle = handle { current -> !current }
+    }
     val visible = DynamicComponentProperty(visibilityStore.data)
 
 
@@ -95,7 +98,7 @@ open class DropdownComponent : Component<Unit> {
             box(baseClass = this@DropdownComponent.containerCss, id = id) {
                 box {
                     this@DropdownComponent.toggle.value(this)
-                    clicks.events.map { true } handledBy this@DropdownComponent.visibilityStore.update
+                    clicks.events.map { } handledBy this@DropdownComponent.visibilityStore.toggle
                 }
 
                 val dropdownId = "dropdown-${randomId()}"
@@ -151,7 +154,9 @@ open class DropdownComponent : Component<Unit> {
                 prefix = prefix
             ) {
                 attr("tabindex", "-1")
-                blurs.events.map { false } handledBy this@DropdownComponent.visibilityStore.update
+                blurs.events
+                    .debounce(100)
+                    .map { } handledBy this@DropdownComponent.visibilityStore.toggle
 
                 this@DropdownComponent.content.value(this)
             }
