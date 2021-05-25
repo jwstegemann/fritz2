@@ -32,7 +32,6 @@ import kotlin.js.Date
  * `placement` property. The default placement is below the toggle.
  * ```
  */
-// TODO: Rework placement (split up into 'placement' and 'justifyContent')
 open class DropdownComponent : Component<Unit> {
 
     private val containerCss = style("menu-container") {
@@ -196,48 +195,3 @@ fun RenderContext.dropdown(
 ) = DropdownComponent()
     .apply(build)
     .render(this, styling, baseClass, id, prefix)
-
-
-/**
- * Properties for components that have a dropdown. Mainly used in combination with [DropdownMixin].
- *
- * Adds a `dropdown` context that can be used to specify commonly used dropdown-properties such as placement,
- * visibility etc.
- *
- * Furthermore this interface defines a couple of helper functions that can be used to render a dropdown directly based
- * on the underlying 'dropdown'-property.
- * See [renderDropdown] and [renderWithDropdown] for more information.
- */
-interface WithDropdown {
-    val dropdown: ComponentProperty<DropdownComponent.() -> Unit>
-
-    /**
-     * This method sets up a [DropdownComponent] based on the configuration that has been done via the `dropdown`-
-     * property of the component and renders it. Optional overrides can be specified via the [build] parameter.
-     */
-    fun RenderContext.renderDropdown(build: DropdownComponent.() -> Unit = { }) = DropdownComponent()
-        .apply(dropdown.value)
-        .apply(build)
-        .render(this, { }, StyleClass.None, null, "dropdown")
-
-    /**
-     * This method sets up a [DropdownComponent] based on the configuration that has been done via the `dropdown`-
-     * property of the component and uses it as a dropdown for the given [component].
-     * Optional overrides can be specified via the [build] parameter.
-     */
-    fun RenderContext.renderWithDropdown(
-        build: DropdownComponent.() -> Unit = { },
-        component: RenderContext.() -> Unit
-    ) = DropdownComponent()
-        .apply(dropdown.value)
-        .apply(build)
-        .apply { toggle { component() } }
-        .render(this, { }, StyleClass.None, null, "dropdown")
-}
-
-/**
- * Default implementation of [WithDropdown] to be used as a mixin for components.
- */
-class DropdownMixin : WithDropdown {
-    override val dropdown = ComponentProperty<DropdownComponent.() -> Unit> { }
-}
