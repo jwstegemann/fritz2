@@ -62,17 +62,17 @@ open class AppFrameComponent : Component<Unit> {
     private val sidebarStatus = storeOf(false)
     private val toggleSidebar = sidebarStatus.handle { !it }
 
-    private val openSideBar = style(
+    private val openSideBar = staticStyle("open-sidebar",
         """@media (max-width: ${Theme().breakPoints.md}) {
                 transform: translateX(0) !important;
-         }""".trimIndent(), "open-sidebar"
+         }""".trimIndent()
     )
 
-    private val showBackdrop = style(
+    private val showBackdrop = staticStyle("show-backdrop",
         """@media (max-width: ${Theme().breakPoints.md}) {
                 left : 0 !important;
                 opacity: 1 !important;
-        }""".trimIndent(), "show-backdrop"
+        }""".trimIndent()
     )
 
     private fun mobileSidebar(topPosition: Property): Style<BasicParams> = {
