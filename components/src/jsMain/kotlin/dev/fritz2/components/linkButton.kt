@@ -14,15 +14,15 @@ import kotlinx.coroutines.flow.Flow
  * Example:
  * ```
  * linkButton {
+ *     text("fritz2") // define the default label
+ *     href("//www.fritz2.dev") // specifies the URL of the page the link goes to
+ *     target("_blank") // specifies where to open the linked document
+ *
  *     icon { fromTheme { check } } // set up an icon
  *     iconPlacement { right } // place the icon on the right side (``left`` is the default)
  *     loading(someStore.loading) // pass in some [Flow<Boolean>] that shows a spinner if ``true`` is passed
  *     loadingText("saving") // show an _alternate_ label, if store sends ``true``
- *     text("save") // define the default label
  *     disabled(true) // disable the button; could also be a ``Flow<Boolean>`` for dynamic disabling
- *     events { // open inner context with all DOM-element events
- *         clicks handledBy someStore.update // react to click event
- *     }
  *     element {
  *         // exposes the underlying HTML button element for direct access. Use with caution!
  *     }
