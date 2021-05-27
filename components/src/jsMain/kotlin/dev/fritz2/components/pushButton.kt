@@ -35,27 +35,27 @@ import org.w3c.dom.events.MouseEvent
  *  - some predefined styling variants
  *  - link events of the button like ``clicks`` with external handlers
  *
- *  This can be done within a functional expression that is the last parameter of the two button functions, called
- *  ``build``. It offers an initialized instance of this [PushButtonComponent] class as receiver, so every mutating
- *  method can be called for configuring the desired state for rendering the button.
+ * This can be done within a functional expression that is the last parameter of the two button functions, called
+ * ``build``. It offers an initialized instance of this [PushButtonComponent] class as receiver, so every mutating
+ * method can be called for configuring the desired state for rendering the button.
  *
- *  The following example shows the usage:
- *  ```
- *  pushButton { /* this == PushButtonComponent() */
- *      icon { fromTheme { check } } // set up an icon
- *      iconPlacement { right } // place the icon on the right side (``left`` is the default)
- *      loading(someStore.loading) // pass in some [Flow<Boolean>] that shows a spinner if ``true`` is passed
- *      loadingText("saving") // show an _alternate_ label, if store sends ``true``
- *      text("save") // define the default label
- *      disabled(true) // disable the button; could also be a ``Flow<Boolean>`` for dynamic disabling
- *      events { // open inner context with all DOM-element events
- *          clicks handledBy someStore.update // react to click event
- *      }
- *      element {
- *          // exposes the underlying HTML button element for direct access. Use with caution!
- *      }
- *  }
- *  ```
+ * The following example shows the usage:
+ * ```
+ * pushButton {
+ *     icon { fromTheme { check } } // set up an icon
+ *     iconPlacement { right } // place the icon on the right side (``left`` is the default)
+ *     loading(someStore.loading) // pass in some [Flow<Boolean>] that shows a spinner if ``true`` is passed
+ *     loadingText("saving") // show an _alternate_ label, if store sends ``true``
+ *     text("save") // define the default label
+ *     disabled(true) // disable the button; could also be a ``Flow<Boolean>`` for dynamic disabling
+ *     events { // open inner context with all DOM-element events
+ *         clicks handledBy someStore.update // react to click event
+ *     }
+ *     element {
+ *         // exposes the underlying HTML button element for direct access. Use with caution!
+ *     }
+ * }
+ * ```
  */
 open class PushButtonComponent :
     Component<Unit>,
@@ -377,7 +377,7 @@ fun RenderContext.clickButton(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
-    prefix: String = "push-button",
+    prefix: String = "click-button",
     build: PushButtonComponent.() -> Unit = {}
 ): DomListener<MouseEvent, HTMLButtonElement> {
     var clickEvents: DomListener<MouseEvent, HTMLButtonElement>? = null
