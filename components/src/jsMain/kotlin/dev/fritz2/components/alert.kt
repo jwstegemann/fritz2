@@ -149,6 +149,8 @@ open class AlertComponent : Component<Unit> {
                     AlertVariant.TOP_ACCENT -> Theme().alert.variants.topAccent
                     AlertVariant.DISCREET -> Theme().alert.variants.discreet
                 }.invoke(this, this@AlertComponent.severity.value(Theme().alert.severities).colorScheme)
+
+                this as BoxParams; styling()
             }) {
                 box(styling = {
                     css("margin-right: var(--al-icon-margin)")
