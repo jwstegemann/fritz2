@@ -69,7 +69,7 @@ const val cssDelimiter = ";"
 fun StyleParams.property(
     key: String,
     value: Property,
-    target: StringBuilder = smProperties
+    target: StringBuilder
 ) {
     target.append(key, value, cssDelimiter)
 }
@@ -108,7 +108,7 @@ inline fun <T> StyleParams.property(
     key: String,
     base: T,
     value: T.() -> Property,
-    target: StringBuilder = smProperties
+    target: StringBuilder
 ) =
     property(key, base.value(), target)
 

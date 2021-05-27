@@ -412,7 +412,7 @@ class BackgroundContext(
      *
      * @param value function parameter in order to return an arbitrary [String]
      */
-    fun color(value: Colors.() -> Property): Unit = property(backgroundColorKey, Theme().colors, value)
+    fun color(value: Colors.() -> Property): Unit = property(backgroundColorKey, Theme().colors, value, target)
 }
 
 /**
