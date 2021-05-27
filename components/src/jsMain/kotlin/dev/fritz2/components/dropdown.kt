@@ -1,18 +1,18 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.storeOf
+import dev.fritz2.binding.watch
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.dom.html.TextElement
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.section
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.Theme
-import kotlinx.browser.document
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 
 
 /**
@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.map
  */
 open class DropdownComponent : Component<Unit> {
 
-    private val containerCss = style("menu-container") {
+    private val containerCss = style("dropdown-container") {
         position(
             sm = { static },
             md = { relative { } }
@@ -96,28 +96,21 @@ open class DropdownComponent : Component<Unit> {
         prefix: String
     ) {
         context.apply {
-            box(baseClass = this@DropdownComponent.containerCss, id = id) {
-                box {
+            div(this@DropdownComponent.containerCss.name, id) {
+                div {
                     this@DropdownComponent.toggle.value(this)
                     clicks.events.map { } handledBy this@DropdownComponent.visibilityStore.toggle
                 }
 
-                val dropdownId = "dropdown-${randomId()}"
+                var dropDown: TextElement? = null
                 this@DropdownComponent.visible.values.render { visible ->
                     if (visible) {
-                        this@DropdownComponent.renderDropdown(this, styling, baseClass, dropdownId, prefix)
-                    } else {
-                        box { }
+                        dropDown = this@DropdownComponent.renderDropdown(this, styling, baseClass, prefix)
                     }
                 }
-                this@DropdownComponent.visible.values.render { visible ->
-                    if (visible) {
-                        try {
-                            document.getElementById(dropdownId).asDynamic().focus()
-                        } catch (e: Exception) {
-                        }
-                    }
-                }
+                this@DropdownComponent.visible.values.onEach { visible ->
+                    if (visible) { dropDown?.domNode?.focus() }
+                }.watch()
             }
         }
     }
@@ -126,12 +119,10 @@ open class DropdownComponent : Component<Unit> {
         renderContext: RenderContext,
         styling: BoxParams.() -> Unit,
         baseClass: StyleClass,
-        id: String,
         prefix: String
-    ) {
-        renderContext.apply {
-            section(
-                style = {
+    ): TextElement {
+        return with(renderContext) {
+            section(style = {
                     styling()
                     Theme().dropdown.dropdown()
 
@@ -151,7 +142,6 @@ open class DropdownComponent : Component<Unit> {
                     }.invoke()
                 },
                 baseClass = baseClass,
-                id = id,
                 prefix = prefix
             ) {
                 attr("tabindex", "-1")

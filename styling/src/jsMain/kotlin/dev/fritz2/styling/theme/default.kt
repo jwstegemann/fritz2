@@ -1912,7 +1912,7 @@ open class DefaultTheme : Theme {
     override val menu: MenuStyles = object : MenuStyles {
         override val entry: Style<FlexParams> = {
             display { flex }
-            justifyContent { JustifyContentValues.start }
+            justifyContent { start }
             css("user-select: none")
 
             hover {
