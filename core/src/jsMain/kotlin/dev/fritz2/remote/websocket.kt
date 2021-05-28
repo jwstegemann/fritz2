@@ -170,7 +170,7 @@ open class Session(private val webSocket: WebSocket) {
     val errors: Flow<Event> by lazy {
         callbackFlow {
             val listener: (Event) -> Unit = {
-                offer(it)
+                trySend(it)
             }
             webSocket.addEventListener("error", listener)
             awaitClose { webSocket.removeEventListener("error", listener) }
@@ -182,7 +182,7 @@ open class Session(private val webSocket: WebSocket) {
      */
     val messages: Flow<MessageEvent> = callbackFlow {
         val listener: (Event) -> Unit = {
-            offer(it.unsafeCast<MessageEvent>())
+            trySend(it.unsafeCast<MessageEvent>())
         }
         webSocket.addEventListener("message", listener)
         awaitClose { webSocket.removeEventListener("message", listener) }

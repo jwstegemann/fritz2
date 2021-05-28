@@ -21,7 +21,7 @@ import javax.tools.Diagnostic.Kind.ERROR
 
 @KotlinPoetMetadataPreview
 @SupportedAnnotationTypes("dev.fritz2.lenses.Lenses")
-@SupportedSourceVersion(SourceVersion.RELEASE_9)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedOptions(KAPT_KOTLIN_GENERATED_OPTION_NAME, FRITZ2_VISIBILITY_OPTION_NAME)
 //@IncrementalAnnotationProcessor(IncrementalAnnotationProcessorType.AGGREGATING)
 class LensesAnnotationProcessor : AbstractProcessor() {
@@ -102,7 +102,7 @@ class LensesAnnotationProcessor : AbstractProcessor() {
         classData.propertySpecs
             .filter { ctorParamNames.contains(it.name) }
             .forEach { propertyData ->
-                classSpec.addProperty((handleField(element.kind.declaringClass.asClassName(), propertyData)))
+                classSpec.addProperty((handleField(element.asClassName(), propertyData)))
             }
 
         return classSpec.build()
