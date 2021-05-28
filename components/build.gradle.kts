@@ -15,11 +15,8 @@ kotlin {
     sourceSets {
         all {
             languageSettings.apply {
-                enableLanguageFeature("InlineClasses") // language feature name
-                useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes") // annotation FQ-name
                 useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
-                useExperimentalAnnotation("kotlinx.coroutines.InternalCoroutinesApi")
                 useExperimentalAnnotation("kotlinx.coroutines.FlowPreview")
             }
         }
