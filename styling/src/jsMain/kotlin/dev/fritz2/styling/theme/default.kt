@@ -2154,7 +2154,7 @@ open class DefaultTheme : Theme {
             }
             override val track: Style<BoxParams> = {
                 display { flex }
-                alignItems { end }
+                alignItems { flexEnd }
                 paddings { top { "var(--sl-size)" } }
                 height { full }
                 width { "calc(var(--sl-size) + 4px)" }

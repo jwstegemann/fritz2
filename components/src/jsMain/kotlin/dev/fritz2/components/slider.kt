@@ -43,7 +43,7 @@ fun RenderContext.slider(
  */
 fun RenderContext.slider(
     styling: BasicParams.() -> Unit = {},
-    value: Int = 0,
+    value: Int,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "slider",
