@@ -50,9 +50,9 @@ open class DefaultTheme : Theme {
             override val gray800 = "#1A202C"
             override val gray900 = "#171923"
 
-            override val neutral = // white
+            override val neutral =
                 ColorScheme(
-                    main = "#ffffff",
+                    main = "#FFFFFF",
                     mainContrast = gray700,
                     highlight = gray100,
                     highlightContrast = gray700
@@ -63,7 +63,7 @@ open class DefaultTheme : Theme {
                     main = "#0C5173",
                     mainContrast = gray100,
                     highlight = "#CAE4EA",
-                    highlightContrast = gray600
+                    highlightContrast = gray700
                 )
 
             override val secondary =
@@ -71,15 +71,15 @@ open class DefaultTheme : Theme {
                     main = "#E6A300",
                     mainContrast = gray100,
                     highlight = "#FFEDCB",
-                    highlightContrast = gray600
+                    highlightContrast = gray700
                 )
 
             override val tertiary =
                 ColorScheme(
                     main = gray300,
-                    mainContrast = gray800,
+                    mainContrast = gray700,
                     highlight = gray100,
-                    highlightContrast = gray800
+                    highlightContrast = gray700
                 )
 
             // Signal Colors
@@ -87,7 +87,7 @@ open class DefaultTheme : Theme {
                 ColorScheme(
                     main = "#219EBC",
                     mainContrast = neutral.main,
-                    highlight = "#d2ebf1",
+                    highlight = "#D2EBF1",
                     highlightContrast = gray700
                 )
 
@@ -95,7 +95,7 @@ open class DefaultTheme : Theme {
                 ColorScheme(
                     main = "#00A848",
                     mainContrast = neutral.main,
-                    highlight = "#ccedda",
+                    highlight = "#CCEDDA",
                     highlightContrast = gray700
                 )
 
@@ -103,7 +103,7 @@ open class DefaultTheme : Theme {
                 ColorScheme(
                     main = "#F08B3A",
                     mainContrast = neutral.main,
-                    highlight = "#fce7d7",
+                    highlight = "#FCE7D7",
                     highlightContrast = gray700
                 )
 
@@ -111,7 +111,7 @@ open class DefaultTheme : Theme {
                 ColorScheme(
                     main = "#E14F2A",
                     mainContrast = neutral.main,
-                    highlight = "#f9dbd4",
+                    highlight = "#F9DBD4",
                     highlightContrast = gray700
                 )
 
@@ -2067,5 +2067,117 @@ open class DefaultTheme : Theme {
                     color { headerColors.highlight }
                 }
             }
+    }
+
+    override val slider = object : SliderStyles {
+
+        val self = this
+
+        override val sizes = object : FormSizes {
+            override val large: Style<BasicParams> = {
+                css("--sl-size: 1.5rem")
+                fontSize { tiny }
+                lineHeight { tiny }
+            }
+            override val normal: Style<BasicParams> = {
+                css("--sl-size: 1rem")
+                fontSize { small }
+                lineHeight { small }
+            }
+            override val small: Style<BasicParams> = {
+                css("--sl-size: 0.75rem")
+                fontSize { normal }
+                lineHeight { normal }
+            }
+        }
+
+        override val horizontal = object : SliderCoreStyles {
+            override val main: Style<FlexParams> = {
+                alignItems { center }
+                height { "calc(var(--sl-size) + 4px)" }
+                width { full }
+                position { relative { } }
+                hover {
+                    css("cursor: pointer")
+                }
+
+                children("&:focus, &[data-focus]") {
+                    radius { "9999px" }
+                    border {
+                        color { gray300 }
+                    }
+                    boxShadow { outline }
+                }
+            }
+            override val track: Style<BoxParams> = {
+                paddings { right { "var(--sl-size)" } }
+                width { full }
+                height { "calc(var(--sl-size) + 4px)" }
+                radius { "9999px" }
+                background { color { gray300 } }
+            }
+            override val trackFilled: BoxParams.(Int) -> Unit = { percent ->
+                width { "min(calc(${percent}% + var(--sl-size) + 4px), calc(100% + var(--sl-size)))" }
+                height { "calc(var(--sl-size) + 4px)" }
+                radius { "9999px" }
+                position { relative { } }
+                background { color { primary.main } }
+
+                children("&[data-disabled]") {
+                    opacity { ".5" }
+                }
+            }
+            override val thumb: BoxParams.(Int) -> Unit = { _ ->
+                display { flex }
+                justifyContent { center }
+                alignItems { center }
+                position {
+                    absolute {
+                        right { "2px" }
+                        top { "calc(50% - var(--sl-size) / 2)" }
+                    }
+                }
+                width { "var(--sl-size)" }
+                height { "var(--sl-size)" }
+                radius { "9999px" }
+                background { color { neutral.main } }
+                border { color { gray300 } }
+            }
+        }
+
+        override val vertical = object : SliderCoreStyles {
+            override val main: Style<FlexParams> = {
+                self.horizontal.main()
+                direction { columnReverse }
+                height { full }
+                width { "calc(var(--sl-size) + 4px)" }
+            }
+            override val track: Style<BoxParams> = {
+                display { flex }
+                alignItems { end }
+                paddings { top { "var(--sl-size)" } }
+                height { full }
+                width { "calc(var(--sl-size) + 4px)" }
+                radius { "9999px" }
+                background { color { gray300 } }
+            }
+            override val trackFilled: BoxParams.(Int) -> Unit = { percent ->
+                self.horizontal.trackFilled(this, percent)
+                height { "min(calc(${percent}% + var(--sl-size) + 4px), calc(100% + var(--sl-size)))" }
+                width { "calc(var(--sl-size) + 4px)" }
+            }
+            override val thumb: BoxParams.(Int) -> Unit = { percent ->
+                self.horizontal.thumb(this, percent)
+                position {
+                    absolute {
+                        top { "2px" }
+                        right { "calc(50% - var(--sl-size) / 2)" }
+                    }
+                }
+            }
+        }
+
+        override val severity: SeverityStyles
+            get() = input.severity
     }
 }

@@ -187,7 +187,7 @@ open class ColorScheme(
     val highlight: ColorProperty,
     val highlightContrast: ColorProperty
 ) {
-    fun inverted() : ColorScheme = ColorScheme(this.highlight, this.highlightContrast, this.main, this.mainContrast)
+    fun inverted(): ColorScheme = ColorScheme(this.highlight, this.highlightContrast, this.main, this.mainContrast)
 }
 
 /**
@@ -651,7 +651,7 @@ interface AlertVariants {
 interface ToastStyles {
     val placement: ToastPlacement
     val status: ToastStatus
-    val closeButton : ToastButton
+    val closeButton: ToastButton
 }
 
 interface ToastPlacement {
@@ -707,4 +707,22 @@ interface DataTableStyles {
     val hoveringStyle: BasicParams.(value: IndexedValue<Any>, selected: Boolean, sorted: Boolean) -> Unit
 
     val sorterStyle: BasicParams.(sorted: Boolean) -> Unit
+}
+
+interface SliderCoreStyles {
+    val main: Style<FlexParams>
+    val track: Style<BoxParams>
+    val trackFilled: BoxParams.(Int) -> Unit
+    val thumb: BoxParams.(Int) -> Unit
+}
+
+interface SliderStyles : SeverityAware {
+    val sizes: FormSizes
+    val horizontal: SliderCoreStyles
+    val vertical: SliderCoreStyles
+
+    fun core(orientation: String) = when (orientation) {
+        "HORIZONTAL" -> horizontal
+        else -> vertical
+    }
 }

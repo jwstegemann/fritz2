@@ -158,15 +158,24 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
         context.apply {
             this@DataTableComponent.dataStore.data handledBy this@DataTableComponent.selectionStore.syncHandler
 
-            // preset selection via external store or flow
+            // preset selection via external store or flow and forward selection to external store
             when (this@DataTableComponent.selection.value.selectionMode) {
-                SelectionMode.Single ->
+                SelectionMode.Single -> {
                     (this@DataTableComponent.selection.value.single?.store?.value?.data
                         ?: this@DataTableComponent.selection.value.single?.row!!.values) handledBy
                             this@DataTableComponent.selectionStore.updateRow
-                SelectionMode.Multi -> (this@DataTableComponent.selection.value.multi?.store?.value?.data
-                    ?: this@DataTableComponent.selection.value.multi?.rows!!.values) handledBy
-                        this@DataTableComponent.selectionStore.update
+                    this@DataTableComponent.selection.value.single!!.store.value?.let {
+                        this@DataTableComponent.selectionStore.selectedData.map { it.firstOrNull() } handledBy it.update
+                    }
+                }
+                SelectionMode.Multi -> {
+                    (this@DataTableComponent.selection.value.multi?.store?.value?.data
+                        ?: this@DataTableComponent.selection.value.multi?.rows!!.values) handledBy
+                            this@DataTableComponent.selectionStore.update
+                    this@DataTableComponent.selection.value.multi!!.store.value?.let {
+                        this@DataTableComponent.selectionStore.selectedData handledBy it.update
+                    }
+                }
                 else -> Unit
             }
 
@@ -185,18 +194,6 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                 position { relative { } }
             }) {
                 this@DataTableComponent.renderTable(baseClass, id, prefix, this@DataTableComponent.rowIdProvider, this)
-
-                // tie selection to external store if needed
-                when (this@DataTableComponent.selection.value.selectionMode) {
-                    SelectionMode.Single -> this@DataTableComponent.selection.value.single!!.store.value?.let {
-                        this@DataTableComponent.events { selectedRow handledBy it.update }
-                    }
-                    SelectionMode.Multi -> this@DataTableComponent.selection.value.multi!!.store.value?.let {
-                        this@DataTableComponent.events { selectedRows handledBy it.update }
-                    }
-                    else -> Unit
-                }
-
                 EventsContext(this, this@DataTableComponent.selectionStore).apply {
                     this@DataTableComponent.events.value(this)
                 }
@@ -340,7 +337,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                 tr {
                     component.stateStore.renderingHeaderData(component)
                         .renderEach(component.columnStateIdProvider) { (column, sorting) ->
-                           th({
+                            th({
                                 Sorting.sorted(sorting.strategy)
                                 Theme().dataTableStyles.headerStyle(
                                     this,
@@ -348,7 +345,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                                 )
                                 component.header.value.styling.value()
                                 column.headerStyling(this, sorting.strategy)
-                            })  {
+                            }) {
                                 flexBox({
                                     height { "100%" }
                                     position { relative { } }
