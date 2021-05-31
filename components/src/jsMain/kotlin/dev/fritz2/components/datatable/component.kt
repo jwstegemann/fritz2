@@ -403,7 +403,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                 styling()
             }) {
                 component.stateStore.renderingRowsData(component)
-                    .renderEach(IndexedValue<T>::hashCode) { (index, rowData) ->
+                    .renderEach({ rowIdProvider(it.value) }) { (index, rowData) ->
                         val rowStore = component.dataStore.sub(rowData, rowIdProvider)
                         val isSelected = this@DataTableComponent.selectionStore.isDataRowSelected(rowStore.current)
                         tr {
