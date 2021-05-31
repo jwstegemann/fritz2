@@ -3,7 +3,6 @@ package dev.fritz2.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.watch
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.TextElement
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -13,6 +12,7 @@ import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import org.w3c.dom.HTMLElement
 
 
 /**
@@ -102,14 +102,16 @@ open class DropdownComponent : Component<Unit> {
                     clicks.events.map { } handledBy this@DropdownComponent.visibilityStore.toggle
                 }
 
-                var dropDown: TextElement? = null
+                lateinit var dropDown: HTMLElement
                 this@DropdownComponent.visible.values.render { visible ->
                     if (visible) {
                         dropDown = this@DropdownComponent.renderDropdown(this, styling, baseClass, prefix)
                     }
                 }
                 this@DropdownComponent.visible.values.onEach { visible ->
-                    if (visible) { dropDown?.domNode?.focus() }
+                    if (visible) {
+                        dropDown.focus()
+                    }
                 }.watch()
             }
         }
@@ -120,7 +122,7 @@ open class DropdownComponent : Component<Unit> {
         styling: BoxParams.() -> Unit,
         baseClass: StyleClass,
         prefix: String
-    ): TextElement {
+    ): HTMLElement {
         return with(renderContext) {
             section(style = {
                     styling()
@@ -151,7 +153,7 @@ open class DropdownComponent : Component<Unit> {
 
                 this@DropdownComponent.content.value(this)
             }
-        }
+        }.domNode
     }
 }
 
