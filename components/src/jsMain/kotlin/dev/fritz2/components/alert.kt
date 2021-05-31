@@ -4,6 +4,7 @@ import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
@@ -150,9 +151,9 @@ open class AlertComponent : Component<Unit> {
                     AlertVariant.DISCREET -> Theme().alert.variants.discreet
                 }.invoke(this, this@AlertComponent.severity.value(Theme().alert.severities).colorScheme)
 
-                this as BoxParams; styling()
+                styling(this as BoxParams)
             }) {
-                box(styling = {
+                div({
                     css("margin-right: var(--al-icon-margin)")
                 }) {
                     icon({
@@ -163,7 +164,7 @@ open class AlertComponent : Component<Unit> {
                     }
                 }
 
-                box(baseClass = alertContentCss) {
+                div(baseClass = alertContentCss.name) {
                     this@AlertComponent.title?.invoke(this)
                     this@AlertComponent.content?.invoke(this)
                 }
