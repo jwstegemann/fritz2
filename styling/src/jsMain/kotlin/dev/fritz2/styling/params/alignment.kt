@@ -84,7 +84,7 @@ interface Alignment : StyleParams {
      *
      * Example call:
      * ```
-     * justify-content { flexStart }
+     * justifyContent { flexStart }
      * ```
      *
      * @param value extension function parameter for small media devices, recommended to use
@@ -99,7 +99,7 @@ interface Alignment : StyleParams {
      *
      * Example call:
      * ```
-     * justify-content(
+     * justifyContent(
      *     sm = { flexStart },
      *     lg = { center }
      * )
@@ -131,7 +131,7 @@ interface Alignment : StyleParams {
      *
      * Example call:
      * ```
-     * align-items { flexStart }
+     * alignItems { flexStart }
      * ```
      *
      * @param value extension function parameter for small media devices, recommended to use
@@ -146,7 +146,7 @@ interface Alignment : StyleParams {
      *
      * Example call:
      * ```
-     * align-items(
+     * alignItems(
      *     sm = { flexStart },
      *     lg = { center }
      * )

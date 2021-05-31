@@ -148,7 +148,7 @@ class BorderContext(
      *              into the scope of the functional expression
      */
     fun style(value: BorderStyleValues.() -> BorderStyleProperty) =
-        property(styleKey, BorderStyleValues.value(), smProperties)
+        property(styleKey, BorderStyleValues.value(), target)
 
     /**
      * This function is used to set the _color_ of a border for the
