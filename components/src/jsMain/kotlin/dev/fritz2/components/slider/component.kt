@@ -1,29 +1,31 @@
 package dev.fritz2.components.slider
 
 
-import dev.fritz2.components.*
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.watch
+import dev.fritz2.components.*
 import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.*
-import kotlinx.browser.document
-import org.w3c.dom.events.MouseEvent
+import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.IconDefinition
+import dev.fritz2.styling.theme.Icons
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.DOMRect
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.events.MouseEvent
 
 /**
  * Foundation class of the slider data handling that bundles the value and its percentage.
@@ -97,11 +99,12 @@ data class Range(val lower: Int = 0, val upper: Int = 100, val step: Int = 1) {
  */
 internal class StateStore(
     private val range: Range,
-    private val sliderId: String,
     private val orientation: Orientation,
     initialData: State
 ) :
     RootStore<State>(initialData) {
+
+    lateinit var sliderElement: HTMLDivElement
 
     /**
      * Extracted value of the state as ``Flow<Int>`` that forwards values only after final position is reached,
@@ -150,22 +153,20 @@ internal class StateStore(
     }
 
     private fun updateSliderByUi(state: State, event: MouseEvent): State {
-        if (state.interactive) {
-            val containerRect = document.getElementById(sliderId)?.getBoundingClientRect()
-            return if (containerRect != null) {
-                val percentage = percentageFromRect(containerRect, event)
-                if (percentage == state.progress.percent) {
-                    state
-                } else {
-                    state.copy(
-                        progress = nextProgress(
-                            percentage,
-                            if (percentage > state.progress.percent) Direction.UP else Direction.DOWN
-                        )
+        return if (state.interactive) {
+            val containerRect = sliderElement.getBoundingClientRect()
+            val percentage = percentageFromRect(containerRect, event)
+            if (percentage == state.progress.percent) {
+                state
+            } else {
+                state.copy(
+                    progress = nextProgress(
+                        percentage,
+                        if (percentage > state.progress.percent) Direction.UP else Direction.DOWN
                     )
-                }
-            } else state
-        } else return state
+                )
+            }
+        } else state
     }
 
     private fun percentageFromRect(containerRect: DOMRect, event: MouseEvent): Int = when (orientation) {
@@ -342,8 +343,7 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
         id: String?,
         prefix: String
     ) {
-        val sliderId = "slider-${uniqueId()}"
-        val internalStore = StateStore(range.value, sliderId, orientation.value(OrientationContext), State())
+        val internalStore = StateStore(range.value, orientation.value(OrientationContext), State())
 
         context.apply {
 
@@ -361,10 +361,10 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
                 styling()
             }, baseClass, id, prefix) {
                 className(this@SliderComponent.severityClassOf(Theme().slider.severity).name)
-                flexBox({
+                internalStore.sliderElement = flexBox({
                     this@SliderComponent.size.value.invoke(Theme().slider.sizes)()
                     this@SliderComponent.coreStyles().main(this)
-                }, id = sliderId) {
+                }) {
                     this@SliderComponent.addDataAttributes(this, internalStore)
                     attr("tabindex", internalStore.data.map { if (it.interactive) 0 else -1 })
                     internalStore.data.onEach { state ->
@@ -413,7 +413,7 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
                             }
                         }
                     }
-                }
+                }.domNode
 
                 EventsContext(this, internalStore.value, internalStore.currentValue).apply {
                     this@SliderComponent.events.value(this)
