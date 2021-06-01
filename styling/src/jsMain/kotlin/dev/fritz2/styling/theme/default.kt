@@ -407,7 +407,6 @@ open class DefaultTheme : Theme {
             margin-inline-end: 0px;
             padding-inline-start: 1.5em;
         }
-        
         :-moz-focusring {
             outline: none
         }
@@ -2075,26 +2074,34 @@ open class DefaultTheme : Theme {
 
         override val sizes = object : FormSizes {
             override val large: Style<BasicParams> = {
+                css("outline: 0")
                 css("--sl-size: 1.5rem")
+                css("--sl-track-spacing: 2px")
                 fontSize { tiny }
                 lineHeight { tiny }
             }
             override val normal: Style<BasicParams> = {
+                css("outline: 0")
                 css("--sl-size: 1rem")
+                css("--sl-track-spacing: 2px")
                 fontSize { small }
                 lineHeight { small }
             }
             override val small: Style<BasicParams> = {
+                css("outline: 0")
                 css("--sl-size: 0.75rem")
+                css("--sl-track-spacing: 2px")
                 fontSize { normal }
                 lineHeight { normal }
             }
         }
 
+
+
         override val horizontal = object : SliderCoreStyles {
             override val main: Style<FlexParams> = {
                 alignItems { center }
-                height { "calc(var(--sl-size) + 4px)" }
+                height { "calc(var(--sl-size) + var(--sl-track-spacing) * 2)" }
                 width { full }
                 position { relative { } }
                 hover {
@@ -2110,19 +2117,24 @@ open class DefaultTheme : Theme {
                 }
             }
             override val track: Style<BoxParams> = {
-                paddings { right { "var(--sl-size)" } }
+                paddings {
+                    right { "var(--sl-size)" }
+                }
                 width { full }
-                height { "calc(var(--sl-size) + 4px)" }
+                height { "calc(var(--sl-size) + var(--sl-track-spacing) * 2)" }
                 radius { "9999px" }
                 background { color { gray300 } }
             }
             override val trackFilled: BoxParams.(Int) -> Unit = { percent ->
-                width { "min(calc(${percent}% + var(--sl-size) + 4px), calc(100% + var(--sl-size)))" }
-                height { "calc(var(--sl-size) + 4px)" }
+                width { "min(calc(${percent}% + var(--sl-size) + var(--sl-track-spacing) * 2), calc(100% + var(--sl-size)))" }
+                height { "calc(var(--sl-size) + var(--sl-track-spacing) * 2)" }
+                padding { "var(--sl-track-spacing)" }
                 radius { "9999px" }
                 position { relative { } }
                 background { color { primary.main } }
-
+                display { flex  }
+                justifyContent { flexEnd }
+                alignItems { center }
                 children("&[data-disabled]") {
                     opacity { ".5" }
                 }
@@ -2131,12 +2143,6 @@ open class DefaultTheme : Theme {
                 display { flex }
                 justifyContent { center }
                 alignItems { center }
-                position {
-                    absolute {
-                        right { "2px" }
-                        top { "calc(50% - var(--sl-size) / 2)" }
-                    }
-                }
                 width { "var(--sl-size)" }
                 height { "var(--sl-size)" }
                 radius { "9999px" }
@@ -2150,30 +2156,26 @@ open class DefaultTheme : Theme {
                 self.horizontal.main()
                 direction { columnReverse }
                 height { full }
-                width { "calc(var(--sl-size) + 4px)" }
+                width { "calc(var(--sl-size) + var(--sl-track-spacing) * 2)" }
             }
             override val track: Style<BoxParams> = {
                 display { flex }
-                alignItems { end }
+                alignItems { flexEnd }
                 paddings { top { "var(--sl-size)" } }
                 height { full }
-                width { "calc(var(--sl-size) + 4px)" }
+                width { "calc(var(--sl-size) + var(--sl-track-spacing) * 2)" }
                 radius { "9999px" }
                 background { color { gray300 } }
             }
             override val trackFilled: BoxParams.(Int) -> Unit = { percent ->
                 self.horizontal.trackFilled(this, percent)
-                height { "min(calc(${percent}% + var(--sl-size) + 4px), calc(100% + var(--sl-size)))" }
-                width { "calc(var(--sl-size) + 4px)" }
+                justifyContent { center }
+                alignItems { flexStart }
+                height { "min(calc(${percent}% + var(--sl-size) + var(--sl-track-spacing) * 2), calc(100% + var(--sl-size)))" }
+                width { "calc(var(--sl-size) + var(--sl-track-spacing) * 2)" }
             }
             override val thumb: BoxParams.(Int) -> Unit = { percent ->
                 self.horizontal.thumb(this, percent)
-                position {
-                    absolute {
-                        top { "2px" }
-                        right { "calc(50% - var(--sl-size) / 2)" }
-                    }
-                }
             }
         }
 
