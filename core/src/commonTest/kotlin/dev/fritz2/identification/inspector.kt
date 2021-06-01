@@ -74,7 +74,7 @@ class InspectorTests {
         val rootInspector = RootInspector(personList, "start")
 
         var i = 0
-        rootInspector.onEach(Person::id) {
+        rootInspector.inspectEach(Person::id) {
             assertEquals("start.${personList[i].id}", it.id, "[$i] sub model id for element not correct")
             assertEquals(personList[i], it.data, "[$i] sub model data for element not correct")
 
@@ -124,7 +124,7 @@ class InspectorTests {
         val rootInspector = RootInspector(personList, "start")
 
         var i = 0
-        rootInspector.onEach {
+        rootInspector.inspectEach {
             assertEquals("start.$i", it.id, "[$i] sub model id for element not correct")
             assertEquals(personList[i], it.data, "[$i] sub model data for element not correct")
 

@@ -92,7 +92,7 @@ inline fun <reified T, I> RootInspector<List<T>>.sub(
  * @param idProvider to get the id from an instance
  * @param action function which gets applied to all [SubInspector]s
  */
-inline fun <reified T, I> RootInspector<List<T>>.onEach(
+inline fun <reified T, I> RootInspector<List<T>>.inspectEach(
     noinline idProvider: IdProvider<T, I>,
     action: (SubInspector<List<T>, List<T>, T>) -> Unit
 ) { this.data.onEach { element -> action(sub(element, idProvider)) } }
@@ -112,7 +112,7 @@ inline fun <reified X> RootInspector<List<X>>.sub(index: Int): SubInspector<List
  *
  * @param action function which gets applied to all [SubInspector]s
  */
-inline fun <reified X> RootInspector<List<X>>.onEach(
+inline fun <reified X> RootInspector<List<X>>.inspectEach(
     action: (SubInspector<List<X>, List<X>, X>) -> Unit
 ) { this.data.onEachIndexed { index, _ -> action(sub(index)) } }
 
@@ -136,7 +136,7 @@ inline fun <R, P, reified T, I> SubInspector<R, P, List<T>>.sub(
  * @param idProvider to get the id from an instance
  * @param action function which gets applied to all [SubInspector]s
  */
-inline fun <R, P, reified T, I> SubInspector<R, P, List<T>>.onEach(
+inline fun <R, P, reified T, I> SubInspector<R, P, List<T>>.inspectEach(
     noinline idProvider: IdProvider<T, I>,
     action: (SubInspector<R, List<T>, T>) -> Unit
 ) { this.data.onEach { element -> action(sub(element, idProvider)) } }
@@ -156,6 +156,6 @@ inline fun <R, P, reified X> SubInspector<R, P, List<X>>.sub(index: Int): SubIns
  *
  * @param action function which gets applied to all [SubInspector]s
  */
-inline fun <R, P, reified X> SubInspector<R, P, List<X>>.onEach(
+inline fun <R, P, reified X> SubInspector<R, P, List<X>>.inspectEach(
     action: (SubInspector<R, List<X>, X>) -> Unit
 ) { this.data.onEachIndexed { index, _ -> action(sub(index)) } }
