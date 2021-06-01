@@ -217,6 +217,8 @@ interface Theme {
     val appFrame: AppFrameStyles
 
     val dataTableStyles: DataTableStyles
+
+    val slider: SliderStyles
 }
 
 /**

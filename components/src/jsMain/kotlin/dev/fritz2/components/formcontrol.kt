@@ -3,6 +3,7 @@ package dev.fritz2.components
 import SelectFieldComponent
 import dev.fritz2.binding.Store
 import dev.fritz2.components.FormControlComponent.Control
+import dev.fritz2.components.slider.SliderComponent
 import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.components.validation.validationMessages
@@ -63,6 +64,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
             const val radioGroup = "radioGroup"
             const val checkbox = "checkbox"
             const val checkboxGroup = "checkboxGroup"
+            const val slider = "slider"
         }
     }
 
@@ -212,7 +214,8 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
             ControlNames.switch,
             ControlNames.textArea,
             ControlNames.selectField,
-            ControlNames.checkbox
+            ControlNames.checkbox,
+            ControlNames.slider
         ).forEach { registerRenderStrategy(it, singleRenderer) }
         registerRenderStrategy(ControlNames.checkboxGroup, groupRenderer)
         registerRenderStrategy(ControlNames.radioGroup, groupRenderer)
@@ -248,7 +251,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         build: SwitchComponent.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, value)
-        registerControl(ControlNames.inputField,
+        registerControl(ControlNames.switch,
             {
                 switch(styling, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
@@ -368,6 +371,27 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
                     id,
                     prefix
                 ) {
+                    size { this@FormControlComponent.sizeBuilder(this) }
+                    severity(validationMessagesBuilder().hasSeverity)
+                    build()
+                }
+            },
+            { this.validationMessagesBuilder = validationMessagesBuilder }
+        )
+    }
+
+    open fun slider(
+        styling: BasicParams.() -> Unit = {},
+        value: Store<Int>? = null,
+        baseClass: StyleClass = StyleClass.None,
+        id: String? = null,
+        prefix: String = ControlNames.slider,
+        build: SliderComponent.() -> Unit = {}
+    ) {
+        val validationMessagesBuilder = ValidationResult.builderOf(this, value)
+        registerControl(ControlNames.slider,
+            {
+                slider(styling, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
                     build()
