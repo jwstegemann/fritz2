@@ -1793,6 +1793,147 @@ open class DefaultTheme : Theme {
         }
     }
 
+
+    override val dropdown: DropdownStyles = object : DropdownStyles {
+        override val dropdown: Style<BasicParams> = {
+            width(
+                sm = { "100%" },
+                md = { maxContent }
+            )
+            overflow(
+                sm = { hidden },
+                md = { visible }
+            )
+            radius { "6px" }
+
+            zIndex { layer(1) }
+            boxShadow { raised }
+            background { color { background } }
+
+            focus {
+                css("outline:none")
+            }
+
+            // FIXME: Animation not working
+            //opacity { "1" }
+            //css("transition: opacity 1s ease-in-out;")
+        }
+
+        override val placements = object : DropdownPlacements {
+            override val left: Style<BasicParams> = {
+                position(
+                    sm = { absolute { left { "0px" } } },
+                    md = {
+                        absolute {
+                            left { auto }
+                            right { "100%" }
+                        }
+                    }
+                )
+            }
+            override val right: Style<BasicParams> = {
+                position(
+                    sm = { absolute { left { "0px" } } },
+                    md = {
+                        absolute {
+                            left { "100%" }
+                        }
+                    }
+                )
+                }
+            override val top: Style<BasicParams> = {
+                position(
+                    sm = { absolute { left { "0px" } } }
+                )
+                position(
+                    md = {
+                        absolute {
+                            bottom { "100%" }
+                        }
+                    }
+                )
+            }
+            override val bottom: Style<BasicParams> = {
+                position(
+                    sm = { absolute { left { "0px" } } },
+                    md = {
+                        absolute {
+                            top { "100%" }
+                        }
+                    }
+                )
+            }
+        }
+        override val alignments: DropdownAlignments = object : DropdownAlignments {
+            override val horizontalStart: Style<BasicParams> = {
+                position(
+                    md = {
+                        absolute {
+                            left { "0px" }
+                            right { auto }
+                        }
+                    }
+                )
+            }
+            override val verticalStart: Style<BasicParams> = {
+                position(
+                    md = {
+                        absolute {
+                            top { "0px" }
+                            bottom { auto }
+                        }
+                    }
+                )
+            }
+            override val horizontalEnd: Style<BasicParams> = {
+                position(
+                    md = {
+                        absolute {
+                            left { auto }
+                            right { "0px" }
+                        }
+                    }
+                )
+            }
+            override val verticalEnd: Style<BasicParams> = {
+                position(
+                    md = {
+                        absolute {
+                            top { auto }
+                            bottom { "0px" }
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+
+    override val menu: MenuStyles = object : MenuStyles {
+        override val entry: Style<FlexParams> = {
+            display { flex }
+            justifyContent { start }
+            css("user-select: none")
+
+            hover {
+                background { color { primary.highlight } }
+            }
+
+            disabled {
+                opacity { "0.4" }
+                css("cursor: not-allowed")
+            }
+        }
+
+        override val header: Style<BasicParams> = {
+            color { secondary.main }
+            fontSize { fontSizes.normal }
+            fontWeight { bold }
+            css("white-space: nowrap")
+        }
+    }
+
+
     override val appFrame: AppFrameStyles = object : AppFrameStyles {
         override val headerHeight: Property = "3.6rem"
         override val footerMinHeight: Property = "2.8rem"
