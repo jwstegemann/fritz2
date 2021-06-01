@@ -1,29 +1,31 @@
 package dev.fritz2.components.slider
 
 
-import dev.fritz2.components.*
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.watch
+import dev.fritz2.components.*
 import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.*
-import kotlinx.browser.document
-import org.w3c.dom.events.MouseEvent
+import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.IconDefinition
+import dev.fritz2.styling.theme.Icons
+import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.DOMRect
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.events.MouseEvent
 
 /**
  * Foundation class of the slider data handling that bundles the value and its percentage.
@@ -37,7 +39,7 @@ data class Progress(val percent: Int = 0, val value: Int = 0)
  * Note that this expresses the direction regarding the [Progress.value] of a slider and not the display direction
  * (as those also supports horizontal layout)
  */
-enum class SliderDirection {
+internal enum class Direction {
     UP, DOWN
 }
 
@@ -49,7 +51,7 @@ enum class Orientation {
 }
 
 /**
- * This class acts as central UI model for the [SliderStore] and [SliderComponent].
+ * This class acts as central UI model for the [StateStore] and [SliderComponent].
  * @param progress backups the pure values of a slider managed by [Progress]
  * @param movementTracking this flag signals the current state of movement, that is whether some sliding action takes
  *                         place currently. This is important for providing a dedicated event that also offers
@@ -57,10 +59,10 @@ enum class Orientation {
  * @param interactive shows whether the slider is _enabled_ or in _disabled_ / _readonly_ mode. If ``false`` no
  *                    user action (mouse clicking, dragging or keys) will modify the value.
  *
- * @see SliderStore
+ * @see StateStore
  * @see Progress
  */
-data class SliderState(
+data class State(
     val progress: Progress = Progress(),
     val movementTracking: Boolean = false,
     val interactive: Boolean = true
@@ -85,23 +87,24 @@ data class Range(val lower: Int = 0, val upper: Int = 100, val step: Int = 1) {
 }
 
 /**
- * This store keeps track of the current state ([SliderState]) of the slider.
+ * This store keeps track of the current state ([State]) of the slider.
  *
  * If offers special ``Flow<Int>`` for accessing the values of the slider directly without noise within the UI code.
  *
  * It also offers all needed handlers to manage the state due to user actions.
  *
- * @see SliderState
+ * @see State
  * @see Orientation
  * @see Range
  */
-class SliderStore(
+internal class StateStore(
     private val range: Range,
-    private val sliderId: String,
     private val orientation: Orientation,
-    initialData: SliderState
+    initialData: State
 ) :
-    RootStore<SliderState>(initialData) {
+    RootStore<State>(initialData) {
+
+    lateinit var sliderElement: HTMLDivElement
 
     /**
      * Extracted value of the state as ``Flow<Int>`` that forwards values only after final position is reached,
@@ -123,17 +126,17 @@ class SliderStore(
         updateSliderByValue(state, newValue)
     }
 
-    val updateByKeystroke = handle<SliderDirection> { state, direction ->
+    val updateByKeystroke = handle<Direction> { state, direction ->
         if (state.interactive) {
             val newValue = range.absolute(state.progress.value) + when (direction) {
-                SliderDirection.UP -> range.step
-                SliderDirection.DOWN -> -range.step
+                Direction.UP -> range.step
+                Direction.DOWN -> -range.step
             }
             updateSliderByValue(state, newValue)
         } else state
     }
 
-    private fun updateSliderByValue(state: SliderState, newValue: Int): SliderState {
+    private fun updateSliderByValue(state: State, newValue: Int): State {
         val rangedNewValue = range.ranged(newValue)
         return if (rangedNewValue >= range.lower && rangedNewValue <= range.upper) {
             val percent = (newValue * 100) / range.distance
@@ -149,23 +152,21 @@ class SliderStore(
         if (value.movementTracking) updateSliderByUi(value, event) else value
     }
 
-    private fun updateSliderByUi(state: SliderState, event: MouseEvent): SliderState {
-        if (state.interactive) {
-            val containerRect = document.getElementById(sliderId)?.getBoundingClientRect()
-            return if (containerRect != null) {
-                val percentage = percentageFromRect(containerRect, event)
-                if (percentage == state.progress.percent) {
-                    state
-                } else {
-                    state.copy(
-                        progress = nextProgress(
-                            percentage,
-                            if (percentage > state.progress.percent) SliderDirection.UP else SliderDirection.DOWN
-                        )
+    private fun updateSliderByUi(state: State, event: MouseEvent): State {
+        return if (state.interactive) {
+            val containerRect = sliderElement.getBoundingClientRect()
+            val percentage = percentageFromRect(containerRect, event)
+            if (percentage == state.progress.percent) {
+                state
+            } else {
+                state.copy(
+                    progress = nextProgress(
+                        percentage,
+                        if (percentage > state.progress.percent) Direction.UP else Direction.DOWN
                     )
-                }
-            } else state
-        } else return state
+                )
+            }
+        } else state
     }
 
     private fun percentageFromRect(containerRect: DOMRect, event: MouseEvent): Int = when (orientation) {
@@ -183,12 +184,12 @@ class SliderStore(
         }
     }
 
-    private fun nextProgress(percent: Int, direction: SliderDirection): Progress {
+    private fun nextProgress(percent: Int, direction: Direction): Progress {
         val scaledValue = (range.distance * percent) / 100
         val remainder = (scaledValue % range.step)
         val steppedValue = when (direction) {
-            SliderDirection.UP -> scaledValue - remainder
-            SliderDirection.DOWN -> if (remainder > 0) scaledValue - remainder + range.step else scaledValue
+            Direction.UP -> scaledValue - remainder
+            Direction.DOWN -> if (remainder > 0) scaledValue - remainder + range.step else scaledValue
         }
         val steppedPercentage = (steppedValue * 100) / range.distance
         return Progress(steppedPercentage, range.ranged(steppedValue))
@@ -209,7 +210,7 @@ class SliderStore(
  * - the rendering of the slider (see ``render`` method)
  * - the configuration (with sub-classes) and its DSL including special ``currentValue`` event within ``events``
  *   context.
- * - the state management via [SliderState]
+ * - the state management via [State]
  * - the styling via theme and ad hoc definitions offered within the slider DSL
  *
  * Example usages:
@@ -269,8 +270,8 @@ class SliderStore(
  * }
  * ```
  *
- * @see SliderStore
- * @see SliderState
+ * @see StateStore
+ * @see State
  *
  * @param store an optional store for setting and accessing the value of the slider
  */
@@ -309,13 +310,13 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
 
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
 
-    fun thumb(styling: BoxParams.(Int) -> Unit = {}, content: Div.(SliderState) -> Unit) {
+    fun thumb(styling: BoxParams.(Int) -> Unit = {}, content: Div.(State) -> Unit) {
         thumbStyle(styling)
         thumbContent(content)
     }
 
     protected val thumbStyle = ComponentProperty<BoxParams.(Int) -> Unit> {}
-    protected val thumbContent = ComponentProperty<(Div.(SliderState) -> Unit)> {
+    protected val thumbContent = ComponentProperty<(Div.(State) -> Unit)> {
         this@SliderComponent.icon.value?.let {
             icon({
                 color { primary.main }
@@ -342,8 +343,7 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
         id: String?,
         prefix: String
     ) {
-        val sliderId = "slider-${uniqueId()}"
-        val internalStore = SliderStore(range.value, sliderId, orientation.value(OrientationContext), SliderState())
+        val internalStore = StateStore(range.value, orientation.value(OrientationContext), State())
 
         context.apply {
 
@@ -361,10 +361,10 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
                 styling()
             }, baseClass, id, prefix) {
                 className(this@SliderComponent.severityClassOf(Theme().slider.severity).name)
-                flexBox({
+                internalStore.sliderElement = flexBox({
                     this@SliderComponent.size.value.invoke(Theme().slider.sizes)()
                     this@SliderComponent.coreStyles().main(this)
-                }, id = sliderId) {
+                }) {
                     this@SliderComponent.addDataAttributes(this, internalStore)
                     attr("tabindex", internalStore.data.map { if (it.interactive) 0 else -1 })
                     internalStore.data.onEach { state ->
@@ -380,11 +380,11 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
                         when (Key(it)) {
                             Keys.ArrowDown, Keys.ArrowLeft -> {
                                 it.preventDefault()
-                                SliderDirection.DOWN
+                                Direction.DOWN
                             }
                             Keys.ArrowUp, Keys.ArrowRight -> {
                                 it.preventDefault()
-                                SliderDirection.UP
+                                Direction.UP
                             }
                             else -> null
                         }
@@ -413,7 +413,7 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
                             }
                         }
                     }
-                }
+                }.domNode
 
                 EventsContext(this, internalStore.value, internalStore.currentValue).apply {
                     this@SliderComponent.events.value(this)
@@ -425,7 +425,7 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
 
     private fun coreStyles() = Theme().slider.core(orientation.value(OrientationContext).name)
 
-    private fun addDataAttributes(node: Div, store: SliderStore) {
+    private fun addDataAttributes(node: Div, store: StateStore) {
         node.apply {
             attr(cssDataFocus, store.data.map { it.movementTracking })
             attr(cssDataDisabled, store.data.map { !it.interactive })
