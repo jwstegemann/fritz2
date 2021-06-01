@@ -7,6 +7,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.*
 import dev.fritz2.styling.span
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.*
@@ -60,13 +61,12 @@ open class AlertComponent : Component<Unit> {
 
     companion object {
         private val alertCss = style("alert") {
+            display { flex }
             alignItems { center }
-            padding { normal }
         }
 
         private val alertContentCss = style("alert-content") {
             display { inlineBlock }
-            verticalAlign { middle }
             width { "100%" }
             lineHeight { "1.2em" }
         }
@@ -87,7 +87,7 @@ open class AlertComponent : Component<Unit> {
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)
     val severity = ComponentProperty<(AlertSeverities.() -> AlertSeverity)> { info }
     val variant = ComponentProperty<VariantContext.() -> AlertVariant> { solid }
-    val sizes = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
+    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
     val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
 
     private val actualIcon: IconDefinition
@@ -138,19 +138,20 @@ open class AlertComponent : Component<Unit> {
         prefix: String,
     ) {
         context.apply {
-            flexBox(baseClass = alertCss, styling = {
-                this@AlertComponent.sizes.value(Theme().alert.sizes)()
+            div({
+                this@AlertComponent.size.value(Theme().alert.sizes)()
                 this@AlertComponent.stacking.value(Theme().alert.stacking)()
-
-                when(this@AlertComponent.variant.value(VariantContext)) {
+                when (this@AlertComponent.variant.value(VariantContext)) {
                     AlertVariant.SOLID -> Theme().alert.variants.solid
                     AlertVariant.SUBTLE -> Theme().alert.variants.subtle
                     AlertVariant.LEFT_ACCENT -> Theme().alert.variants.leftAccent
                     AlertVariant.TOP_ACCENT -> Theme().alert.variants.topAccent
                     AlertVariant.DISCREET -> Theme().alert.variants.discreet
                 }.invoke(this, this@AlertComponent.severity.value(Theme().alert.severities).colorScheme)
-            }) {
-                box(styling = {
+                styling()
+            }, alertCss) {
+                div({
+                    display { inlineFlex }
                     css("margin-right: var(--al-icon-margin)")
                 }) {
                     icon({
@@ -161,7 +162,7 @@ open class AlertComponent : Component<Unit> {
                     }
                 }
 
-                box(baseClass = alertContentCss) {
+                div(alertContentCss.name) {
                     this@AlertComponent.title?.invoke(this)
                     this@AlertComponent.content?.invoke(this)
                 }
@@ -194,18 +195,20 @@ fun RenderContext.alert(
 /**
  * Convenience extension to display a [ComponentValidationMessage] as an alert.
  * The alert's severity and content are determined from the validation message's properties.
+ * Custom styling via the [styling] parameter is optionally supported, as well as any other customization via the
+ * [build]-lambda.
  *
- * @param renderContext RenderContext to render the alert in.
- * @param size Optional property for the text and icon size.
- * @param stacking Optional property for the margins around one alert.
+ * @param renderContext RenderContext to render the alert in
+ * @param styling a lambda expression for declaring the styling of the toast using fritz2's styling DSL
+ * @param build a lambda expression for setting up the component itself
  */
 fun ComponentValidationMessage.asAlert(
+    styling: BasicParams.() -> Unit = { },
     renderContext: RenderContext,
-    size: FormSizes.() -> Style<BasicParams> = { normal },
-    stacking: AlertStacking.() -> Style<BasicParams> = { separated }
+    build: AlertComponent.() -> Unit = { }
 ) {
     val receiver = this
-    renderContext.alert {
+    renderContext.alert(styling) {
         severity {
             when (receiver.severity) {
                 Severity.Info -> info
@@ -214,9 +217,21 @@ fun ComponentValidationMessage.asAlert(
                 Severity.Error -> error
             }
         }
-        variant { discreet }
-        sizes { size() }
-        stacking { stacking() }
         content(message)
+        build()
     }
 }
+
+/**
+ * Convenience extension to display a [ComponentValidationMessage] as an alert.
+ * The alert's severity and content are determined from the validation message's properties.
+ * Customization of the underlying [AlertComponent] is supported via the [build]-lambda. Custom styling can be applyied
+ * via the overloaded [ComponentValidationMessage.asAlert] method.
+ *
+ * @param renderContext RenderContext to render the alert in
+ * @param build a lambda expression for setting up the component itself
+ */
+fun ComponentValidationMessage.asAlert(
+    renderContext: RenderContext,
+    build: AlertComponent.() -> Unit = { }
+) = asAlert({ }, renderContext, build)

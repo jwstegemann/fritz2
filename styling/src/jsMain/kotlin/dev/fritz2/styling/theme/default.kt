@@ -1572,9 +1572,11 @@ open class DefaultTheme : Theme {
         override val stacking = object : AlertStacking {
             override val compact: Style<BasicParams> = {
                 margin { none }
+                padding { none }
             }
             override val separated: Style<BasicParams> = {
                 margin { normal }
+                padding { normal }
             }
         }
     }
