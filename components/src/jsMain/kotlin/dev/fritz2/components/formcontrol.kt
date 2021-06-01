@@ -198,8 +198,9 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
     val validationMessageRendering =
         ComponentProperty<RenderContext.(ComponentValidationMessage) -> Unit> { message ->
             message.asAlert(this) {
-                sizes(this@FormControlComponent.sizeBuilder)
+                size(this@FormControlComponent.sizeBuilder)
                 stacking { compact }
+                variant { discreet }
             }
         }
 
