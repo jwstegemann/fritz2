@@ -107,7 +107,7 @@ open class AppFrameComponent : Component<Unit> {
             margins { left { "-.5rem" } }
         }) {
             variant { link }
-            icon { fromTheme { menu } }
+            icon { menu }
         } handledBy sidebarToggle
     }
     val nav = ComponentProperty<TextElement.() -> Unit> {}

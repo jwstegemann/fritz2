@@ -6,7 +6,6 @@ import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -553,9 +552,9 @@ class CloseButtonMixin(
         clickButton({
             defaultStyle()
             closeButtonStyle.value()
-        }, id = "close-button-${uniqueId()}", prefix = closeButtonPrefix) {
+        }, prefix = closeButtonPrefix) {
             variant { ghost }
-            icon { def(closeButtonIcon.value(Theme().icons)) }
+            icon { closeButtonIcon.value(Theme().icons) }
         }
     }
 }
