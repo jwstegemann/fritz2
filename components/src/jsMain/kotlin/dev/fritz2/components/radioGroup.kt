@@ -32,7 +32,7 @@ import org.w3c.dom.HTMLElement
  *  - the style of the items (radio)
  *  - the style selected state
  *  - the style of the label
- *  - choose the direction of checkbox elements (row vs column)
+ *  - choose the orientation of checkbox elements (vertical or horizontal)
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
  *  ``build``. It offers an initialized instance of this [RadioGroupComponent] class as receiver, so every mutating
@@ -70,18 +70,18 @@ import org.w3c.dom.HTMLElement
 open class RadioGroupComponent<T>(protected val items: List<T>, protected val value: Store<T>? = null) :
     Component<Unit>,
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    OrientationProperty by OrientationMixin(Orientation.VERTICAL) {
 
     companion object {
-        object RadioGroupLayouts {
-            val column: Style<BasicParams> = {
-                display {
-                    inlineGrid
-                }
-            }
-            val row: Style<BasicParams> = {
-                display {
+        // TODO: Remove ``direction`` part and therefore ``if`` branch
+        fun layoutOf(orientation: Orientation, direction: Direction): Style<BasicParams> = {
+            display {
+                if (direction == Direction.ROW) {
                     inlineFlex
+                } else when (orientation) {
+                    Orientation.HORIZONTAL -> inlineFlex
+                    Orientation.VERTICAL -> inlineGrid
                 }
             }
         }
@@ -90,7 +90,21 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
-    val direction = ComponentProperty<RadioGroupLayouts.() -> Style<BasicParams>> { column }
+    enum class Direction {
+        COLUMN, ROW
+    }
+
+    object DirectionContext {
+        @Deprecated("Use ``orientation { vertical }`` instead", ReplaceWith("vertical"))
+        val column: Direction = Direction.COLUMN
+
+        @Deprecated("Use ``orientation { horizontal }`` instead", ReplaceWith("horizontal"))
+        val row: Direction = Direction.ROW
+    }
+
+    @Deprecated("Use ``orientation`` instead", ReplaceWith("orientation"))
+    val direction = ComponentProperty<DirectionContext.() -> Direction> { column }
+
     val itemStyle = ComponentProperty(Theme().radio.default)
     val labelStyle = ComponentProperty(Theme().radio.label)
     val selectedStyle = ComponentProperty(Theme().radio.selected)
@@ -114,7 +128,10 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
 
         context.apply {
             div({
-                this@RadioGroupComponent.direction.value(RadioGroupLayouts)()
+                RadioGroupComponent.layoutOf(
+                    this@RadioGroupComponent.orientation.value(OrientationContext),
+                    this@RadioGroupComponent.direction.value(DirectionContext)
+                )()
             }, styling, baseClass, id, prefix) {
                 (this@RadioGroupComponent.value?.data ?: this@RadioGroupComponent.selectedItem.values)
                     .map { selectedItem ->
