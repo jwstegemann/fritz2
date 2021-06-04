@@ -223,7 +223,16 @@ open class DefaultTheme : Theme {
             danger = shadow("0", "0", "0", "1px", color = colors.danger.main)
         )
 
-    override val zIndices = ZIndices(1, 100, 2, 200, 300, 2, 400, 2)
+    override val zIndices = ZIndices(
+        10,
+        100,
+        200,
+        300,
+        1000,
+        1100,
+        2000,
+        3000
+    )
 
     override val opacities = WeightedValue(
         normal = "0.5"
@@ -1934,6 +1943,32 @@ open class DefaultTheme : Theme {
         }
     }
 
+    override val navBar: NavBarStyles = object : NavBarStyles {
+        override val header: Style<BasicParams> = {
+            zIndex { navbar }
+            background { color { neutral.main } }
+        }
+        override val content: Style<BasicParams> = {
+            height { "4.5rem" }
+            paddings {
+                left { larger }
+                right { larger }
+            }
+            borders {
+                top {
+                    width { "6px" }
+                    style { solid }
+                    color { primary.main }
+                }
+
+                bottom {
+                    width { "2px" }
+                    style { solid }
+                    color { gray300 }
+                }
+            }
+        }
+    }
 
     override val appFrame: AppFrameStyles = object : AppFrameStyles {
         override val headerHeight: Property = "3.6rem"
