@@ -76,8 +76,7 @@ open class AppFrameComponent : Component<Unit> {
     )
 
     private fun mobileSidebar(topPosition: Property): Style<BasicParams> = {
-        //FIXME: add to Theme!
-        zIndex { "5000" }
+        zIndex { appFrame }
         width(sm = { Theme().appFrame.mobileSidebarWidth }, md = { unset })
         css(sm = "transform: translateX(-110vw);", md = "transform: unset;")
         position(sm = {
@@ -139,7 +138,7 @@ open class AppFrameComponent : Component<Unit> {
                 width { "100vw" }
                 height { "min(100vh, 100%)" }
                 css("height: -webkit-fill-available;")
-                zIndex { "4000" }
+                zIndex { appFrame - 10 }
                 css("transition: opacity .3s ease-in;")
             }, prefix = "backdrop") {
                 className(this@AppFrameComponent.showBackdrop.whenever(this@AppFrameComponent.sidebarStatus.data).name)

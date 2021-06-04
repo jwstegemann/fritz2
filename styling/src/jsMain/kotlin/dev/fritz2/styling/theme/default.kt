@@ -229,7 +229,7 @@ open class DefaultTheme : Theme {
         200,
         300,
         1000,
-        1100,
+        1000,
         2000,
         3000
     )
@@ -520,7 +520,6 @@ open class DefaultTheme : Theme {
                 }
 
                 focus {
-                    zIndex { "1" }
                     background {
                         color { "transparent" }
                     }
@@ -1086,7 +1085,7 @@ open class DefaultTheme : Theme {
                 }
                 radius { small }
                 boxShadow { flat }
-                zIndex { "20" }
+                zIndex { popover }
 
             }
             override val auto: Style<BasicParams> = {
@@ -1128,7 +1127,7 @@ open class DefaultTheme : Theme {
         override val placement = object : PopoverPlacements {
             private val basic: Style<BasicParams> = {
                 css("transition: transform .2s;")
-                zIndex { "50" }
+                zIndex { popover }
             }
             override val top: Style<BasicParams> = {
                 basic()
@@ -1182,14 +1181,10 @@ open class DefaultTheme : Theme {
                     color { inherit }
                 }
                 before {
-                    zIndex { "-1" }
                     css("content:\"\";")
                     width { "1rem" }
                     height { "1rem" }
-                    position {
-                        absolute {
-                        }
-                    }
+                    position { absolute {} }
                 }
             }
             override val top: Style<BasicParams> = {
@@ -1280,7 +1275,7 @@ open class DefaultTheme : Theme {
                     display { none }
                     overflow { hidden }
                     opacity { "0" }
-                    zIndex { "20" }
+                    zIndex { tooltip }
                     position {
                         absolute {
                             left { "50%" }
@@ -1735,7 +1730,6 @@ open class DefaultTheme : Theme {
                 }
 
                 focus {
-                    zIndex { "1" }
                     background {
                         color { "transparent" }
                     }
@@ -1816,7 +1810,7 @@ open class DefaultTheme : Theme {
             )
             radius { "6px" }
 
-            zIndex { layer(1) }
+            zIndex { dropdown }
             boxShadow { raised }
             background { color { background } }
 

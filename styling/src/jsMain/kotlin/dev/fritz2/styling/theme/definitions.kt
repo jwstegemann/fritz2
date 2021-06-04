@@ -111,6 +111,13 @@ class ZIndices(
     modal: Int,
 ) {
 
+    companion object {
+        /**
+         * key to set z-index-property
+         */
+        const val key: Property = "z-index: "
+    }
+
     val tableHeader: Property = tableHeader.toString()
     val tooltip: Property = tooltip.toString()
     val dropdown: Property = dropdown.toString()
@@ -120,12 +127,11 @@ class ZIndices(
     val toast: Property = toast.toString()
     val modal: Property = modal.toString()
 
-    companion object {
-        /**
-         * key to set z-index-property
-         */
-        const val key: Property = "z-index: "
-    }
+    operator fun Property.minus(value: Int): Property =
+        (this.toInt() - value).toString()
+
+    operator fun Property.plus(value: Int): Property =
+        (this.toInt() + value).toString()
 }
 
 /**
