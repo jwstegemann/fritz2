@@ -1055,10 +1055,10 @@ open class DefaultTheme : Theme {
                 position {
                     fixed {
                         top { "50%" }
+                        left { "50%" }
                     }
                 }
-                // FIXME: does not work! overrides size-settings!
-                css("transform: translateY(-50%);")
+                css("transform: translateX(-50%) translateY(-50%);")
             }
         }
     }
