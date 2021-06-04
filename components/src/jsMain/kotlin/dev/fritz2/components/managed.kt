@@ -46,7 +46,6 @@ interface ManagedComponent<T> {
          * @param job [Job] used in this [RenderContext]
          */
         internal fun managedRenderContext(id: String, job: Job): RenderContext {
-            console.log("neue managedRenderContext Methode aufgerufen...")
             val element = document.getElementById(id)
             return if (element != null) {
                 Tag("div", element.id, job = job, domNode = (element as HTMLElement))
