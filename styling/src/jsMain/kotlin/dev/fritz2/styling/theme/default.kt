@@ -1796,6 +1796,15 @@ open class DefaultTheme : Theme {
 
 
     override val dropdown: DropdownStyles = object : DropdownStyles {
+        override val container: Style<BasicParams> = {
+            position(
+                sm = { static },
+                md = { relative { } }
+            )
+            display { inlineFlex }
+            width { minContent }
+        }
+
         override val dropdown: Style<BasicParams> = {
             width(
                 sm = { "100%" },
@@ -1911,9 +1920,34 @@ open class DefaultTheme : Theme {
 
 
     override val menu: MenuStyles = object : MenuStyles {
+
+        // base css for all menu children ('entry' uses special styling though)
+        private val base: Style<BasicParams> = {
+            width { "calc(100% - ${sizes.normal} * 2)" }
+            margins {
+                horizontal { normal }
+                vertical { smaller }
+            }
+        }
+
+        override val container: Style<BasicParams> = {
+            minWidth { "50px" }
+            maxWidth { maxContent }
+            paddings {
+                vertical { smaller }
+            }
+        }
+
         override val entry: Style<FlexParams> = {
+            width { "100%" }
             display { flex }
             justifyContent { start }
+            margin { auto }
+            paddings {
+                horizontal { normal }
+                vertical { smaller }
+            }
+            radius { "6px" }
             css("user-select: none")
 
             hover {
@@ -1927,10 +1961,21 @@ open class DefaultTheme : Theme {
         }
 
         override val header: Style<BasicParams> = {
+            base()
             color { secondary.main }
             fontSize { fontSizes.normal }
             fontWeight { bold }
             css("white-space: nowrap")
+        }
+
+        override val divider: Style<BasicParams> = {
+            base()
+            height { "1px" }
+            background { color { gray300 } }
+        }
+
+        override val custom: Style<BasicParams> = {
+            base()
         }
     }
 

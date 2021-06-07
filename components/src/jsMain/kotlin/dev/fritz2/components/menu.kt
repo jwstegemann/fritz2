@@ -7,6 +7,7 @@ import dev.fritz2.styling.button
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.plus
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
@@ -58,26 +59,6 @@ import org.w3c.dom.HTMLButtonElement
  */
 open class MenuComponent : Component<Unit> {
 
-    companion object {
-        private val containerCss = staticStyle("menu-container") {
-            minWidth { "50px" }
-            maxWidth { maxContent }
-            paddings {
-                vertical { smaller }
-            }
-        }
-
-        val childCss = staticStyle("menu-child") {
-            width { "100%" }
-            paddings {
-                horizontal { normal }
-                vertical { smaller }
-            }
-            radius { "6px" }
-        }
-    }
-
-
     private val children = mutableListOf<MenuChild>()
     fun addChild(child: MenuChild) = children.add(child)
 
@@ -107,7 +88,7 @@ open class MenuComponent : Component<Unit> {
         prefix: String
     ) {
         context.apply {
-            div(styling, baseClass + containerCss, id, prefix) {
+            div(Theme().menu.container + styling, baseClass, id, prefix) {
                 this@MenuComponent.children.forEach {
                     it.render(this)
                 }
@@ -136,6 +117,9 @@ fun RenderContext.menu(
     .render(this, styling, baseClass, id, prefix)
 
 
+/**
+ * An interface for renderable sub-components of a Menu all children of a Menu must implement.
+ */
 @HtmlTagMarker
 interface MenuChild {
     fun render(context: RenderContext)
@@ -159,7 +143,7 @@ open class MenuEntry :
 
     override fun render(context: RenderContext) {
         context.apply {
-            button(Theme().menu.entry, MenuComponent.childCss) {
+            button(Theme().menu.entry) {
                 this@MenuEntry.icon.value?.let {
                     icon({
                         margins { right { smaller } }
@@ -181,12 +165,11 @@ open class MenuEntry :
  * to the menu.
  */
 open class CustomMenuEntry : MenuChild {
-
     val content = ComponentProperty<RenderContext.() -> Unit> { }
 
     override fun render(context: RenderContext) {
         context.apply {
-            div(MenuComponent.childCss.name) {
+            div(Theme().menu.custom) {
                 this@CustomMenuEntry.content.value(this)
             }
         }
@@ -200,12 +183,11 @@ open class CustomMenuEntry : MenuChild {
  * It simply consists of a static, styled _text_.
  */
 open class MenuHeader : MenuChild {
-
     val text = ComponentProperty("")
 
     override fun render(context: RenderContext) {
         context.apply {
-            div(Theme().menu.header, MenuComponent.childCss) {
+            div(Theme().menu.header) {
                 +this@MenuHeader.text.value
             }
         }
@@ -213,25 +195,16 @@ open class MenuHeader : MenuChild {
 }
 
 /**
- * This class combines the _configuration_ and the core rendering of a [MenuHeader].
+ * This class combines the _configuration_ and the core rendering of a [MenuDivider].
  *
  * Similar to a header a divider can be used to group entries together.
  * Compared to a header a divider displays a thin line rather than text.
  */
 open class MenuDivider : MenuChild {
 
-    companion object {
-        private val menuDividerCss = staticStyle("menu-divider") {
-            width { "100%" }
-            height { "1px" }
-            margins { vertical { smaller } }
-            background { color { gray300 } }
-        }
-    }
-
     override fun render(context: RenderContext) {
         context.apply {
-            div(baseClass = menuDividerCss.name) { }
+            div(Theme().menu.divider) { }
         }
     }
 }

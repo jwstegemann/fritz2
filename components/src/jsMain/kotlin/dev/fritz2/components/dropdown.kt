@@ -4,6 +4,7 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.watch
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.section
@@ -34,16 +35,6 @@ import org.w3c.dom.HTMLElement
  * ```
  */
 open class DropdownComponent : Component<Unit> {
-
-    private val containerCss = style("dropdown-container") {
-        position(
-            sm = { static },
-            md = { relative { } }
-        )
-        display { inlineFlex }
-        width { minContent }
-    }
-
 
     enum class Placement {
         Left,
@@ -96,7 +87,7 @@ open class DropdownComponent : Component<Unit> {
         prefix: String
     ) {
         context.apply {
-            div(this@DropdownComponent.containerCss.name, id) {
+            div(Theme().dropdown.container, id = id) {
                 div {
                     this@DropdownComponent.toggle.value(this)
                     clicks.events.map { } handledBy this@DropdownComponent.visibilityStore.toggle
