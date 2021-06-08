@@ -5,9 +5,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.button
 import dev.fritz2.styling.div
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.plus
+import dev.fritz2.styling.params.*
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
@@ -63,21 +61,59 @@ open class MenuComponent : Component<Unit> {
     fun addChild(child: MenuChild) = children.add(child)
 
 
-    fun entry(build: MenuEntry.() -> Unit) = MenuEntry()
+    /**
+     * Configures and adds a [MenuEntry] to the menu.
+     *
+     * Use the overloaded version of this method to specify additional styling.
+     *
+     * @param build Lambda to configure the component itself
+     */
+    fun entry(build: MenuEntry.() -> Unit) = entry(styling = { }, build)
+
+    /**
+     * Configures and adds a [MenuEntry] to the menu.
+     *
+     * @param styling Styling to be applied to the component
+     * @param build Lambda to configure the component itself
+     */
+    fun entry(styling: Style<FlexParams>, build: MenuEntry.() -> Unit) = MenuEntry(styling)
         .apply(build)
         .run(::addChild)
 
+    /**
+     * Adds a custom fritz2-component to the menu.
+     *
+     * @param build Lambda containing the layout to render
+     */
     fun custom(build: RenderContext.() -> Unit) = CustomMenuEntry()
         .apply { content(build) }
         .run(::addChild)
 
-    fun header(build: MenuHeader.() -> Unit) = MenuHeader()
-        .apply(build)
+    /**
+     * Configures and adds a [MenuHeader] to the menu.
+     *
+     * Use the overloaded version of this method to specify additional styling.
+     *
+     * @param text Text to be displayed in the header
+     */
+    fun header(text: String) = header(styling = { }, text)
+
+    /**
+     * Configures and adds a [MenuHeader] to the menu.
+     *
+     * @param styling Styling to be applied to the underlying component
+     * @param text Text to be displayed in the header
+     */
+    fun header(styling: Style<BasicParams>, text: String) = MenuHeader(styling)
+        .apply { text(text) }
         .run(::addChild)
 
-    fun header(text: String) = header { text(text) }
-
-    fun divider() = addChild(MenuDivider())
+    /**
+     * Adds a [MenuDivider] to the menu.
+     *
+     * @param styling Optional styling to be applied to the underlying component
+     */
+    fun divider(styling: Style<BasicParams> = { }) = addChild(MenuDivider(styling))
 
 
     override fun render(
@@ -132,8 +168,10 @@ interface MenuChild {
  * Just like a regular button it is clickable and can be enabled/disabled.
  *
  * It can be configured with an _icon_, a _text_ and a boolean-[Flow] to determine whether the item is enabled.
+ *
+ * @param styling Optional style to be applied to the underlying button-element
  */
-open class MenuEntry :
+open class MenuEntry(private val styling: Style<FlexParams> = { }) :
     MenuChild,
     EventProperties<HTMLButtonElement> by EventMixin(),
     FormProperties by FormMixin()
@@ -143,7 +181,7 @@ open class MenuEntry :
 
     override fun render(context: RenderContext) {
         context.apply {
-            button(Theme().menu.entry) {
+            button(Theme().menu.entry + this@MenuEntry.styling) {
                 this@MenuEntry.icon.value?.let {
                     icon({
                         margins { right { smaller } }
@@ -181,13 +219,16 @@ open class CustomMenuEntry : MenuChild {
  *
  * A header can be used to introduce a group of menu entries and separate them from the entries above.
  * It simply consists of a static, styled _text_.
+ *
+ * @param styling Optional styling to be applied to the underlying div-element
  */
-open class MenuHeader : MenuChild {
+open class MenuHeader(private val styling: Style<BasicParams> = { }) : MenuChild {
+
     val text = ComponentProperty("")
 
     override fun render(context: RenderContext) {
         context.apply {
-            div(Theme().menu.header) {
+            div(Theme().menu.header + this@MenuHeader.styling) {
                 +this@MenuHeader.text.value
             }
         }
@@ -199,12 +240,14 @@ open class MenuHeader : MenuChild {
  *
  * Similar to a header a divider can be used to group entries together.
  * Compared to a header a divider displays a thin line rather than text.
+ *
+ * @param styling Optional styling to be applied to the underlying div-element
  */
-open class MenuDivider : MenuChild {
+open class MenuDivider(private val styling: Style<BasicParams> = { }) : MenuChild {
 
     override fun render(context: RenderContext) {
         context.apply {
-            div(Theme().menu.divider) { }
+            div(Theme().menu.divider + this@MenuDivider.styling) { }
         }
     }
 }
