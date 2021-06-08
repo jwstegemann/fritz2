@@ -1938,7 +1938,7 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val entry: Style<FlexParams> = {
+        override val entry: Style<BoxParams> = {
             width { "100%" }
             display { flex }
             justifyContent { start }

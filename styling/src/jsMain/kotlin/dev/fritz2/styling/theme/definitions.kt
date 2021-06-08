@@ -705,10 +705,10 @@ interface DropdownAlignments {
  */
 interface MenuStyles {
     val container: Style<BasicParams>
-    val entry: Style<BasicParams>
+    val entry: Style<BoxParams>
     val header: Style<BasicParams>
     val divider: Style<BasicParams>
-    val custom: Style<BasicParams>
+    val custom: Style<BoxParams>
 }
 
 
