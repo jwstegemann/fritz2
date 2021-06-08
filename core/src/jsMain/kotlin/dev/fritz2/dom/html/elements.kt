@@ -1512,12 +1512,6 @@ interface TagContext : WithJob {
     fun bdi(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
         register(TextElement("bdi", id, baseClass, job), content)
 
-    fun details(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("details", id, baseClass, job), content)
-
-    fun dialog(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("dialog", id, baseClass, job), content)
-
     fun figcaption(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
         register(TextElement("figcaption", id, baseClass, job), content)
 
@@ -1542,9 +1536,6 @@ interface TagContext : WithJob {
     fun noscript(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
         register(TextElement("noscript", id, baseClass, job), content)
 
-    fun progress(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("progress", id, baseClass, job), content)
-
     fun rp(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
         register(TextElement("rp", id, baseClass, job), content)
 
@@ -1559,9 +1550,6 @@ interface TagContext : WithJob {
 
     fun summary(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
         register(TextElement("summary", id, baseClass, job), content)
-
-    fun time(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
-        register(TextElement("time", id, baseClass, job), content)
 
     fun wbr(baseClass: String? = null, id: String? = null, content: TextElement.() -> Unit): TextElement =
         register(TextElement("wbr", id, baseClass, job), content)
