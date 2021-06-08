@@ -127,7 +127,7 @@ internal fun generateAlphabeticName(code: Int): String {
 /**
  * Alias class for css classes
  */
-inline class StyleClass(val name: String) {
+value class StyleClass(val name: String) {
     companion object {
         val None = StyleClass("")
     }

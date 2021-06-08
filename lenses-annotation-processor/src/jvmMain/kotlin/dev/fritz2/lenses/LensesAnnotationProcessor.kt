@@ -102,7 +102,6 @@ class LensesAnnotationProcessor : AbstractProcessor() {
         classData.propertySpecs
             .filter { ctorParamNames.contains(it.name) }
             .forEach { propertyData ->
-                //FIXME: replace deprecated function call
                 classSpec.addProperty((handleField(element.asClassName(), propertyData)))
             }
 

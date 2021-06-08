@@ -5,11 +5,9 @@ import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import org.assertj.core.api.Assertions
-import kotlin.test.Test
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.createTempDirectory
-import kotlin.test.Ignore
-import kotlin.test.assertEquals
+import kotlin.test.Test
 
 class LensesAnnotationProcessorTests {
 
@@ -49,16 +47,16 @@ class LensesAnnotationProcessorTests {
             |import kotlin.Int
             |import kotlin.String
             |
-            |object L {
-            |  object Foo {
-            |    val bar: Lens<dev.fritz2.lensetest.Foo, Int> = buildLens("bar", { it.bar }, { p, v -> p.copy(bar
-            |        = v)})
+            |public object L {
+            |  public object Foo {
+            |    public val bar: Lens<dev.fritz2.lensetest.Foo, Int> = buildLens("bar", { it.bar }, { p, v ->
+            |        p.copy(bar = v)})
             |
-            |    val baz: Lens<dev.fritz2.lensetest.Foo, String> = buildLens("baz", { it.baz }, { p, v ->
+            |    public val baz: Lens<dev.fritz2.lensetest.Foo, String> = buildLens("baz", { it.baz }, { p, v ->
             |        p.copy(baz = v)})
             |
-            |    val fooBar: Lens<dev.fritz2.lensetest.Foo, MyType> = buildLens("fooBar", { it.fooBar }, { p,
-            |        v -> p.copy(fooBar = v)})
+            |    public val fooBar: Lens<dev.fritz2.lensetest.Foo, MyType> = buildLens("fooBar", { it.fooBar }, {
+            |        p, v -> p.copy(fooBar = v)})
             |  }
             |}
             """.trimMargin()
@@ -96,10 +94,10 @@ class LensesAnnotationProcessorTests {
             |import dev.fritz2.lenses.buildLens
             |import kotlin.Int
             |
-            |object L {
-            |  object Foo {
-            |    val bar: Lens<dev.fritz2.lensetest.Foo, Int> = buildLens("bar", { it.bar }, { p, v -> p.copy(bar
-            |        = v)})
+            |public object L {
+            |  public object Foo {
+            |    public val bar: Lens<dev.fritz2.lensetest.Foo, Int> = buildLens("bar", { it.bar }, { p, v ->
+            |        p.copy(bar = v)})
             |  }
             |}
             |
@@ -183,9 +181,9 @@ class LensesAnnotationProcessorTests {
             |import dev.fritz2.lenses.buildLens
             |import kotlin.Int
             |
-            |object L {
-            |  object Foo {
-            |    val foo: Lens<dev.fritz2.lensetest.bar.Foo, Int> = buildLens("foo", { it.foo }, { p, v ->
+            |public object L {
+            |  public object Foo {
+            |    public val foo: Lens<dev.fritz2.lensetest.bar.Foo, Int> = buildLens("foo", { it.foo }, { p, v ->
             |        p.copy(foo = v)})
             |  }
             |}
@@ -202,9 +200,9 @@ class LensesAnnotationProcessorTests {
             |import dev.fritz2.lenses.buildLens
             |import kotlin.Int
             |
-            |object L {
-            |  object Foo {
-            |    val foo: Lens<dev.fritz2.lensetest.baz.Foo, Int> = buildLens("foo", { it.foo }, { p, v ->
+            |public object L {
+            |  public object Foo {
+            |    public val foo: Lens<dev.fritz2.lensetest.baz.Foo, Int> = buildLens("foo", { it.foo }, { p, v ->
             |        p.copy(foo = v)})
             |  }
             |}
@@ -217,6 +215,7 @@ class LensesAnnotationProcessorTests {
     private fun compileSource(vararg sourceFiles: SourceFile): KotlinCompilation.Result =
         KotlinCompilation().apply {
             sources = sourceFiles.asList()
+            jvmTarget = "1.8"
             annotationProcessors = listOf(LensesAnnotationProcessor())
             workingDir = createTempDirectory("fritz2-tests").toFile()
             inheritClassPath = true

@@ -13,5 +13,3 @@ include(
     "styling",
     "components"
 )
-
-enableFeaturePreview("GRADLE_METADATA")

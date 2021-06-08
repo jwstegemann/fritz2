@@ -26,7 +26,7 @@ interface WithEvents<out T : Element> : WithDomNode<T> {
     private fun <E : Event> subscribe(type: EventType<E>): DomListener<E, T> = DomListener(
         callbackFlow {
             val listener: (Event) -> Unit = {
-                offer(it.unsafeCast<E>())
+                trySend(it.unsafeCast<E>())
             }
             domNode.addEventListener(type.name, listener)
 

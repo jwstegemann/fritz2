@@ -65,7 +65,7 @@ open class Tag<out E : Element>(
                 ) {
                     override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
                         parent.register(element, content)
-                        add(element)
+                        add(element.unsafeCast<WithDomNode<HTMLElement>>())
                         return element
                     }
                 })

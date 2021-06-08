@@ -6,6 +6,7 @@ import kotlin.js.Date
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
@@ -80,21 +81,21 @@ class MyerTests {
 //        console.log("new: $new \n")
 
         with(measureTime {
-            val patches = Myer.diff(old, new)
+                val patches = Myer.diff(old, new)
 
-            try {
-                patches.forEach { patch ->
-//                    console.log("applying patch: $patch \n")
-                    old.applyPatch(patch)
-//                    console.log("... result: $old \n")
+                try {
+                    patches.forEach { patch ->
+    //                    console.log("applying patch: $patch \n")
+                        old.applyPatch(patch)
+    //                    console.log("... result: $old \n")
+                    }
+                } catch (e: NoSuchElementException) {
+                    //if there is nothing to do this is ok
                 }
-            } catch (e: NoSuchElementException) {
-                //if there is nothing to do this is ok
-            }
 
-            assertEquals(new, old)
+                assertEquals(new, old)
 
-        }.inMilliseconds) {
+            }.toDouble(DurationUnit.MILLISECONDS)) {
 //            console.log("took $this ms \n")
         }
     }

@@ -75,7 +75,7 @@ abstract class FileSelectionBaseComponent {
                 var content = reader.result.toString()
                 val index = content.indexOf("base64,")
                 if (index > -1) content = content.substring(index + 7)
-                offer(File(file.name, file.type, file.size.toLong(), content))
+                trySend(File(file.name, file.type, file.size.toLong(), content))
             }
             reader.addEventListener(eventName, listener)
             reader.readAsDataURL(file)
@@ -88,7 +88,7 @@ abstract class FileSelectionBaseComponent {
             callbackFlow {
                 val reader = FileReader()
                 val listener: (Event) -> Unit = { _ ->
-                    offer(File(file.name, file.type, file.size.toLong(), reader.result.toString()))
+                    trySend(File(file.name, file.type, file.size.toLong(), reader.result.toString()))
                 }
                 reader.addEventListener(eventName, listener)
                 reader.readAsText(file, encoding)

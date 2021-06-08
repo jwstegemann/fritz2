@@ -18,26 +18,26 @@ kotlin {
             dependsOn(":test-server:start")
         }
         // just to have a place to copy it from...
-        /* runTask {
-                devServer = DevServer(
-                    port = 9000,
-                    contentBase = listOf("$projectDir/src/jsMain/resources")
-                ).copy(
-                    proxy = mapOf(
-                        "/get" to "http://postman-echo.com"
+        /*
+        runTask {
+            devServer = devServer?.copy(
+                port = 9000,
+                proxy = mapOf(
+                    "/members" to "http://localhost:8080",
+                    "/chat" to mapOf(
+                        "target" to "ws://localhost:8080",
+                        "ws" to true
                     )
                 )
-            }
+            )
+        }
         */
     }
     sourceSets {
         all {
             languageSettings.apply {
-                enableLanguageFeature("InlineClasses") // language feature name
-                useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes") // annotation FQ-name
                 useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
-                useExperimentalAnnotation("kotlinx.coroutines.InternalCoroutinesApi")
                 useExperimentalAnnotation("kotlinx.coroutines.FlowPreview")
             }
         }

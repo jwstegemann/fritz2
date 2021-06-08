@@ -86,7 +86,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
     val attributeChanges: Flow<Pair<String, String>> = if (observeAttributes) {
         callbackFlow {
             attributeChangedCallback = { name, value ->
-                offer(Pair(name, value))
+                trySend(Pair(name, value))
             }
             awaitClose {}
         }.distinctUntilChanged()

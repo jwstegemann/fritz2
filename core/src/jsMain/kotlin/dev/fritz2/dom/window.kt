@@ -22,7 +22,7 @@ object Window {
     private fun <E : Event> subscribe(type: EventType<E>): WindowListener<E> = WindowListener(
         callbackFlow {
             val listener: (Event) -> Unit = {
-                offer(it.unsafeCast<E>())
+                trySend(it.unsafeCast<E>())
             }
             browserWindow.addEventListener(type.name, listener)
             awaitClose { browserWindow.removeEventListener(type.name, listener) }
