@@ -28,7 +28,7 @@ interface Overlay {
 }
 
 internal fun ZIndices.modal(level: Int, offset: Int = 0): Property {
-    return modal + (10 * (level - 1) + offset)
+    return modal raiseBy (10 * (level - 1) + offset)
 }
 
 class DefaultOverlay(

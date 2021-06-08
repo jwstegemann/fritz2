@@ -138,7 +138,7 @@ open class AppFrameComponent : Component<Unit> {
                 width { "100vw" }
                 height { "min(100vh, 100%)" }
                 css("height: -webkit-fill-available;")
-                zIndex { appFrame - 10 }
+                zIndex { appFrame raiseBy -10 }
                 css("transition: opacity .3s ease-in;")
             }, prefix = "backdrop") {
                 className(this@AppFrameComponent.showBackdrop.whenever(this@AppFrameComponent.sidebarStatus.data).name)

@@ -127,10 +127,7 @@ class ZIndices(
     val toast: Property = toast.toString()
     val modal: Property = modal.toString()
 
-    operator fun Property.minus(value: Int): Property =
-        (this.toInt() - value).toString()
-
-    operator fun Property.plus(value: Int): Property =
+    infix fun Property.raiseBy(value: Int): Property =
         (this.toInt() + value).toString()
 }
 
