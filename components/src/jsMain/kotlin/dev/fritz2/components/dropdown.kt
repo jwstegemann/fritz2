@@ -17,21 +17,34 @@ import org.w3c.dom.HTMLElement
 
 
 /**
- * This class combines the _configuration_ and the core rendering of a dropdown.
+ * This class combines the _configuration_ and rendering of a dropdown.
  *
  * A dropdown consists of a toggle element as well as it's actual content in form of any fritz2-component. The
- * `content` property is used to specify the dropdown's content.
+ * `toggle` property can be used to specify a non-default toggle and the `content` property is used to specify the
+ * dropdown's content.
+ * A button with a standard menu-icon is used if no other toggle-element is specified.
  *
  * The dropdown floats around the toggle-element and can be closed by simply clicking outside the dropdown.
  * The opening an closing behavior can manually be controlled as well by specifying the `visible` property. It takes
- * a flow of values that determine whether the dropdown should be visible or not.
+ * a flow of values to determine whether the dropdown should be visible or not.
  *
- * The toggle-element can be any component as well and is passed via the `toggle` property. A button with a standard
- * menu-icon is used if no toggle-element is specified.
+ * The dropdown can be placed _to the left_, _to the right_, on top of, or _below_ the toggle-element. Additionally it
+ * can either be aligned to the start or end of the placement's cross-axis.
+ * This can be specified via the respective `placement` and `alignment` properties.
+ * The default positioning is bottom start.
  *
- * The dropdown can be placed _to the left_, _to the right_, on top of, or _below_ the toggle-element.
- * This can be specified via the `placement` property. The default placement is below the toggle. It's alignment on the
- * placement's cross-axis can be specified via the `alignment` property.
+ * Example usage:
+ * ```kotlin
+ * dropdown {
+ *     toggle {
+ *         // some layout
+ *     }
+ *     placement { bottom }
+ *     alignment { start }
+ *     content {
+ *         // some layout
+ *     }
+ * }
  * ```
  */
 open class DropdownComponent : Component<Unit> {

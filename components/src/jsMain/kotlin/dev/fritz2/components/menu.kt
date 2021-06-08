@@ -16,11 +16,11 @@ import org.w3c.dom.HTMLButtonElement
 /**
  * This class combines the _configuration_ and the core rendering of a menu.
  *
- * A Menu consists of different types of entries that are aligned vertically.
+ * A Menu consists of different types of children that are aligned vertically.
  * By default the following types can be added to the menu:
- * - Entries
- * - Headers
- * - Dividers
+ * - Entries (see [MenuEntry])
+ * - Headers (see [MenuHeader])
+ * - Dividers (see [MenuDivider])
  *
  * It is also possible to add any other fritz2 component via the `custom` context.
  * All menu items are created directly within the [MenuComponent]'s build context.
@@ -29,7 +29,7 @@ import org.w3c.dom.HTMLButtonElement
  * ```kotlin
  * menu {
  *      entry {
- *          leftIcon { add }
+ *          icon { add }
  *          text("Item")
  *      }
  *      divider()
@@ -42,17 +42,16 @@ import org.w3c.dom.HTMLButtonElement
  * ```
  *
  * The menu-entry-DSL can be extended via standard Kotlin extension methods. Custom entries must implement the
- * `Component<Unit>` interface and are added to the Menu via [MenuComponent.addChild]
+ * `Component<Unit>` interface and are added to the Menu via the [MenuComponent.addChild] method
  * which is accessible from within the extension method.
- * In a way these extension methods are similar to standard fritz2 factory methods.
  *
  * The following example adds an instance of `MyMenuEntry` to the Menu.
- * Notice that `addEntry` is invoked in the end; the entry wouldn't be added otherwise!
+ * Notice that `addChild` is invoked in the end; the entry wouldn't be added otherwise!
  *
  * ```kotlin
  * fun MenuComponent.example(build: MyMenuEntry.() -> Unit) = MyMenuEntry()
  *      .apply(build)
- *      .run(::addEntry)
+ *      .run(::addChild)
  * ```
  */
 open class MenuComponent : Component<Unit> {
@@ -134,7 +133,7 @@ open class MenuComponent : Component<Unit> {
 }
 
 /**
- * Creates a Menu.
+ * Creates a menu.
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
@@ -167,7 +166,7 @@ interface MenuChild {
  * An entry is a special kind of button consisting of a label and an optional icon used in dropdown menus.
  * Just like a regular button it is clickable and can be enabled/disabled.
  *
- * It can be configured with an _icon_, a _text_ and a boolean-[Flow] to determine whether the item is enabled.
+ * It can be configured with an _icon_, a _text_ and can be enabled or disabled the same way as a regular button.
  *
  * @param styling Optional style to be applied to the underlying button-element
  */
@@ -218,7 +217,7 @@ open class CustomMenuEntry : MenuChild {
  * This class combines the _configuration_ and the core rendering of a [MenuHeader].
  *
  * A header can be used to introduce a group of menu entries and separate them from the entries above.
- * It simply consists of a static, styled _text_.
+ * It simply consists of a styled _text_.
  *
  * @param styling Optional styling to be applied to the underlying div-element
  */
@@ -239,7 +238,7 @@ open class MenuHeader(private val styling: Style<BasicParams> = { }) : MenuChild
  * This class combines the _configuration_ and the core rendering of a [MenuDivider].
  *
  * Similar to a header a divider can be used to group entries together.
- * Compared to a header a divider displays a thin line rather than text.
+ * Compared to a header a divider displays a thin line rather than a text.
  *
  * @param styling Optional styling to be applied to the underlying div-element
  */
