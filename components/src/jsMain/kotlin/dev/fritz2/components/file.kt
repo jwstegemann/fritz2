@@ -105,7 +105,7 @@ abstract class FileSelectionBaseComponent {
 
     protected var context: RenderContext.(HTMLInputElement) -> Unit = { input ->
         pushButton(prefix = "file-button") {
-            icon { fromTheme { cloudUpload } }
+            icon { cloudUpload }
             element {
                 domNode.onclick = {
                     input.click()

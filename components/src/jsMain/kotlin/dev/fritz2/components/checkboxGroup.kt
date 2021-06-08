@@ -28,18 +28,18 @@ import org.w3c.dom.HTMLElement
  * In order to render a checkbox group use the [checkboxGroup] factory function!
  *
  * This class offers the following _configuration_ features:
- *  - the items as a List<T>
- *  - the preselected items via a ``Flow<List<T>>``
- *  - the label(mapping) of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext ) the the example below
+ *  - the items as a [List<T>]
+ *  - the preselected items via a [Flow<List<T>>]
+ *  - the label(mapping) of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext) the the example below
  *  - some predefined styling variants (size)
  *  - the style of the items (checkbox)
  *  - the style checked state
  *  - the style of the label
  *  - the checked icon ( use our icon library of our theme )
- *  - choose the direction of checkbox elements (row vs column)
+ *  - choose the orientation of checkbox elements (vertical or horizontal)
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
- *  ``build``. It offers an initialized instance of this [CheckboxGroupComponent] class as receiver, so every mutating
+ *  `build`. It offers an initialized instance of this [CheckboxGroupComponent] class as receiver, so every mutating
  *  method can be called for configuring the desired state for rendering the checkbox.
  *
  * Example usage
@@ -61,8 +61,8 @@ import org.w3c.dom.HTMLElement
  * }
  *
  * // use case showing some styling options and a store of List<Pair<Int,String>>
- *   val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
- *  val myStore = storeOf(<List<Pair<Int,String>>)
+ * val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
+ * val myStore = storeOf(<List<Pair<Int,String>>)
  * checkboxGroup(items = myPairs, values = myStore) {
  *      label { it.second }
  *      size { large }
@@ -77,17 +77,18 @@ open class CheckboxGroupComponent<T>(
     protected val values: Store<List<T>>?
 ) : Component<Unit>,
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    OrientationProperty by OrientationMixin(Orientation.VERTICAL) {
+
     companion object {
-        object CheckboxGroupLayouts {
-            val column: Style<BasicParams> = {
-                display {
-                    inlineGrid
-                }
-            }
-            val row: Style<BasicParams> = {
-                display {
+        // TODO: Remove ``direction`` part and therefore ``if`` branch
+        fun layoutOf(orientation: Orientation, direction: Direction): Style<BasicParams> = {
+            display {
+                if (direction == Direction.ROW) {
                     inlineFlex
+                } else when (orientation) {
+                    Orientation.HORIZONTAL -> inlineFlex
+                    Orientation.VERTICAL -> inlineGrid
                 }
             }
         }
@@ -97,7 +98,21 @@ open class CheckboxGroupComponent<T>(
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
 
-    val direction = ComponentProperty<CheckboxGroupLayouts.() -> Style<BasicParams>> { column }
+    enum class Direction {
+        COLUMN, ROW
+    }
+
+    object DirectionContext {
+        @Deprecated("Use orientation { vertical } instead", ReplaceWith("vertical"))
+        val column: Direction = Direction.COLUMN
+
+        @Deprecated("Use orientation { horizontal } instead", ReplaceWith("horizontal"))
+        val row: Direction = Direction.ROW
+    }
+
+    @Deprecated("Use orientation instead", ReplaceWith("orientation"))
+    val direction = ComponentProperty<DirectionContext.() -> Direction> { column }
+
     val itemStyle = ComponentProperty(Theme().checkbox.default)
     var labelStyle = ComponentProperty(Theme().checkbox.label)
     val checkedStyle = ComponentProperty(Theme().checkbox.checked)
@@ -121,7 +136,10 @@ open class CheckboxGroupComponent<T>(
 
         context.apply {
             div({
-                this@CheckboxGroupComponent.direction.value(CheckboxGroupLayouts)()
+                CheckboxGroupComponent.layoutOf(
+                    this@CheckboxGroupComponent.orientation.value(OrientationContext),
+                    this@CheckboxGroupComponent.direction.value(DirectionContext)
+                )()
             }, styling, baseClass, id, prefix) {
                 (this@CheckboxGroupComponent.values?.data
                     ?: this@CheckboxGroupComponent.selectedItems.values) handledBy multiSelectionStore.update
@@ -191,7 +209,7 @@ open class CheckboxGroupComponent<T>(
  * @param values a store of List<T>
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
- * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param prefix the prefix for the generated CSS class resulting in the form `$prefix-$hash`
  * @param build a lambda expression for setting up the component itself. Details in [CheckboxGroupComponent]
  */
 fun <T> RenderContext.checkboxGroup(

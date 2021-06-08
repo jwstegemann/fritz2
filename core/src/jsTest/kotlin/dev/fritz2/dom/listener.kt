@@ -34,7 +34,7 @@ class ListenerTest {
             section {
                 input(id = inputId) {
                     value(store.data)
-                    changes.values() handledBy store.update
+                    changes.preventDefault().values() handledBy store.update
                     inputs.values() handledBy store.update
                 }
             }
@@ -79,7 +79,7 @@ class ListenerTest {
                     store.data.asText()
                 }
                 button(id = buttonId) {
-                    clicks handledBy store.addADot
+                    clicks.preventDefault() handledBy store.addADot
                 }
             }
         }

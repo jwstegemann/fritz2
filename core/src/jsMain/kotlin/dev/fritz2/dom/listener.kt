@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
+import org.w3c.dom.events.EventTarget
 import org.w3c.dom.events.InputEvent
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.files.FileList
@@ -14,27 +15,42 @@ import org.w3c.files.FileList
 /**
  * Handles a Flow of [Event]s
  */
-open class Listener<E : Event>(val events: Flow<E>) {
-    fun preventDefault() = Listener(events.map { it.preventDefault(); it })
-    
-    fun stopImmediatePropagation() = Listener(events.map { it.stopImmediatePropagation(); it })
-
-    fun stopPropagation() =  Listener(events.map { it.stopPropagation(); it })
-
-    fun composedPath() =  events.map { it.composedPath() }
-
-    inline fun <R> map(crossinline mapper: suspend (E) -> R) = events.map(mapper)
+interface Listener<E : Event> {
+    val events: Flow<E>
+    fun preventDefault(): Listener<E>
+    fun stopImmediatePropagation(): Listener<E>
+    fun stopPropagation(): Listener<E>
+    fun composedPath(): Flow<Array<EventTarget>> = events.map { it.composedPath() }
+    fun <R> map(transform: suspend (E) -> R) = events.map(transform)
 }
 
 /**
  * Handles a Flow of Window [Event]s
  */
-class WindowListener<E: Event>(events: Flow<E>): Listener<E>(events)
+class WindowListener<E : Event>(override val events: Flow<E>) : Listener<E> {
+    override fun preventDefault(): WindowListener<E> =
+        WindowListener(events.map { it.preventDefault(); it })
+
+    override fun stopImmediatePropagation(): WindowListener<E> =
+        WindowListener(events.map { it.stopImmediatePropagation(); it })
+
+    override fun stopPropagation(): WindowListener<E> =
+        WindowListener(events.map { it.stopPropagation(); it })
+}
 
 /**
  * Handles a Flow of Dom [Event]s.
  */
-class DomListener<E : Event, out X : Element>(events: Flow<E>): Listener<E>(events)
+class DomListener<E : Event, out X : Element>(override val events: Flow<E>) : Listener<E> {
+    override fun preventDefault(): DomListener<E, X> =
+        DomListener(events.map { it.preventDefault(); it })
+
+    override fun stopImmediatePropagation(): DomListener<E, X> =
+        DomListener(events.map { it.stopImmediatePropagation(); it })
+
+    override fun stopPropagation(): DomListener<E, X> =
+        DomListener(events.map { it.stopPropagation(); it })
+}
 
 /**
  * Gives you the new value as [String] from the targeting [Element].
@@ -65,7 +81,7 @@ fun DomListener<InputEvent, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
  */
 fun DomListener<KeyboardEvent, HTMLInputElement>.enter(): Flow<String> =
     events.mapNotNull {
-        if(Key(it) == Keys.Enter) it.target.unsafeCast<HTMLInputElement>().value
+        if (Key(it) == Keys.Enter) it.target.unsafeCast<HTMLInputElement>().value
         else null
     }
 
@@ -74,7 +90,7 @@ fun DomListener<KeyboardEvent, HTMLInputElement>.enter(): Flow<String> =
  */
 fun DomListener<KeyboardEvent, HTMLInputElement>.enterAsNumber(): Flow<Double> =
     events.mapNotNull {
-        if(Key(it) == Keys.Enter) it.target.unsafeCast<HTMLInputElement>().valueAsNumber
+        if (Key(it) == Keys.Enter) it.target.unsafeCast<HTMLInputElement>().valueAsNumber
         else null
     }
 
@@ -95,7 +111,7 @@ fun DomListener<Event, HTMLTextAreaElement>.values(): Flow<String> =
  */
 fun DomListener<KeyboardEvent, HTMLTextAreaElement>.enter(): Flow<String> =
     events.mapNotNull {
-        if(Key(it) == Keys.Enter) it.target.unsafeCast<HTMLTextAreaElement>().value
+        if (Key(it) == Keys.Enter) it.target.unsafeCast<HTMLTextAreaElement>().value
         else null
     }
 

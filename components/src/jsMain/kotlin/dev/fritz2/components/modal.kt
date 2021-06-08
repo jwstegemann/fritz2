@@ -10,9 +10,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.ModalSizes
-import dev.fritz2.styling.theme.ModalVariants
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 
@@ -29,13 +27,17 @@ interface Overlay {
     fun render(renderContext: RenderContext, level: Int)
 }
 
+internal fun ZIndices.modal(level: Int, offset: Int = 0): Property {
+    return modal raiseBy (10 * (level - 1) + offset)
+}
+
 class DefaultOverlay(
     override val method: OverlayMethod = OverlayMethod.CoveringTopMost,
     override val styling: Style<BasicParams> = Theme().modal.overlay
 ) : Overlay {
     override fun render(renderContext: RenderContext, level: Int) {
         renderContext.box({
-            zIndex { modal(level, offset = -1) }
+            zIndex { modal(level, -1) }
             styling()
         }, prefix = "modal-overlay") {
         }

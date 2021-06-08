@@ -223,7 +223,16 @@ open class DefaultTheme : Theme {
             danger = shadow("0", "0", "0", "1px", color = colors.danger.main)
         )
 
-    override val zIndices = ZIndices(1, 100, 2, 200, 300, 2, 400, 2)
+    override val zIndices = ZIndices(
+        tableHeader = 10,
+        tooltip = 100,
+        dropdown = 200,
+        popover = 300,
+        appFrame = 1000,
+        navbar = 1000,
+        toast = 2000,
+        modal = 3000
+    )
 
     override val opacities = WeightedValue(
         normal = "0.5"
@@ -511,7 +520,6 @@ open class DefaultTheme : Theme {
                 }
 
                 focus {
-                    zIndex { "1" }
                     background {
                         color { "transparent" }
                     }
@@ -1077,7 +1085,7 @@ open class DefaultTheme : Theme {
                 }
                 radius { small }
                 boxShadow { flat }
-                zIndex { "20" }
+                zIndex { popover }
 
             }
             override val auto: Style<BasicParams> = {
@@ -1119,7 +1127,7 @@ open class DefaultTheme : Theme {
         override val placement = object : PopoverPlacements {
             private val basic: Style<BasicParams> = {
                 css("transition: transform .2s;")
-                zIndex { "50" }
+                zIndex { popover }
             }
             override val top: Style<BasicParams> = {
                 basic()
@@ -1173,14 +1181,10 @@ open class DefaultTheme : Theme {
                     color { inherit }
                 }
                 before {
-                    zIndex { "-1" }
                     css("content:\"\";")
                     width { "1rem" }
                     height { "1rem" }
-                    position {
-                        absolute {
-                        }
-                    }
+                    position { absolute {} }
                 }
             }
             override val top: Style<BasicParams> = {
@@ -1271,7 +1275,7 @@ open class DefaultTheme : Theme {
                     display { none }
                     overflow { hidden }
                     opacity { "0" }
-                    zIndex { "20" }
+                    zIndex { tooltip }
                     position {
                         absolute {
                             left { "50%" }
@@ -1726,7 +1730,6 @@ open class DefaultTheme : Theme {
                 }
 
                 focus {
-                    zIndex { "1" }
                     background {
                         color { "transparent" }
                     }
@@ -1816,7 +1819,7 @@ open class DefaultTheme : Theme {
             )
             radius { "6px" }
 
-            zIndex { layer(1) }
+            zIndex { dropdown }
             boxShadow { raised }
             background { color { background } }
 
@@ -1979,6 +1982,32 @@ open class DefaultTheme : Theme {
         }
     }
 
+    override val navBar: NavBarStyles = object : NavBarStyles {
+        override val header: Style<BasicParams> = {
+            zIndex { navbar }
+            background { color { neutral.main } }
+        }
+        override val content: Style<BasicParams> = {
+            height { "4.5rem" }
+            paddings {
+                left { larger }
+                right { larger }
+            }
+            borders {
+                top {
+                    width { "6px" }
+                    style { solid }
+                    color { primary.main }
+                }
+
+                bottom {
+                    width { "2px" }
+                    style { solid }
+                    color { gray300 }
+                }
+            }
+        }
+    }
 
     override val appFrame: AppFrameStyles = object : AppFrameStyles {
         override val headerHeight: Property = "3.6rem"

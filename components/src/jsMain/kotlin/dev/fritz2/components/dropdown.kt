@@ -75,7 +75,7 @@ open class DropdownComponent : Component<Unit> {
 
     val toggle = ComponentProperty<RenderContext.() -> Unit> {
         pushButton {
-            icon { fromTheme { menu } }
+            icon { menu }
             variant { ghost }
         }
     }

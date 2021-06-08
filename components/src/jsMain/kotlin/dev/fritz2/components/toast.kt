@@ -122,11 +122,9 @@ open class ToastComponent : ManagedComponent<Unit>,
             "toastContainer",
             """
                position: fixed; 
-               z-index: 5500;
                pointer-events: none;
                display: flex;
                flex-direction: column;
-           
                """
         )
 
@@ -152,13 +150,13 @@ open class ToastComponent : ManagedComponent<Unit>,
             radius { "0.375rem" }
 
             css("pointer-events: auto;")
-            css("  -webkit-box-align: start;")
-            css(" align-items: start;")
-            css(" box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;")
+            css("-webkit-box-align: start;")
+            css("align-items: start;")
+            css("box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;")
         }
 
         private val job = Job()
-        private val globalId = "f2c-modals-${randomId()}"
+        private val globalId = "f2c-toasts-${randomId()}"
         const val defaultToastContainerPrefix = "ul-toast-container"
 
         init {
@@ -177,6 +175,7 @@ open class ToastComponent : ManagedComponent<Unit>,
 
                     ul({
                         placementStyle()
+                        zIndex { toast }
                     }, toastContainerStaticCss, uniqueId(), defaultToastContainerPrefix) {
                         ToastStore.data
                             .map { toasts ->

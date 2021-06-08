@@ -44,13 +44,6 @@ internal enum class Direction {
 }
 
 /**
- * Definition of the layout orientation of a slider.
- */
-enum class Orientation {
-    HORIZONTAL, VERTICAL
-}
-
-/**
  * This class acts as central UI model for the [StateStore] and [SliderComponent].
  * @param progress backups the pure values of a slider managed by [Progress]
  * @param movementTracking this flag signals the current state of movement, that is whether some sliding action takes
@@ -278,7 +271,8 @@ internal class StateStore(
 open class SliderComponent(protected val store: Store<Int>? = null) :
     Component<Unit>,
     FormProperties by FormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    OrientationProperty by OrientationMixin(Orientation.HORIZONTAL) {
 
     companion object {
         const val cssDataFocus = "data-focus"
@@ -328,13 +322,6 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
     val track = ComponentProperty<Style<BoxParams>> {}
     val trackFilled = ComponentProperty<BoxParams.(Int) -> Unit> {}
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().slider.sizes.normal }
-
-    object OrientationContext {
-        val horizontal: Orientation = Orientation.HORIZONTAL
-        val vertical: Orientation = Orientation.VERTICAL
-    }
-
-    val orientation = ComponentProperty<OrientationContext.() -> Orientation> { horizontal }
 
     override fun render(
         context: RenderContext,

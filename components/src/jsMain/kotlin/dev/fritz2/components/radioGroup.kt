@@ -25,14 +25,14 @@ import org.w3c.dom.HTMLElement
  * In order to render a checkbox group use the [radioGroup] factory function!
  *
  * This class offers the following _configuration_ features:
- *  - the items as a ``List<T>``
- *  - optionally set a predefined item; if nothing is set or ``null``, nothing gets selected at first
- *  - the label(mapping) of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext ) the the example below
+ *  - the items as a [List<T>]
+ *  - optionally set a predefined item; if nothing is set or "null", nothing gets selected at first
+ *  - the label(mapping) of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext) the the example below
  *  - some predefined styling variants (size)
  *  - the style of the items (radio)
  *  - the style selected state
  *  - the style of the label
- *  - choose the direction of checkbox elements (row vs column)
+ *  - choose the orientation of checkbox elements (vertical or horizontal)
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
  *  ``build``. It offers an initialized instance of this [RadioGroupComponent] class as receiver, so every mutating
@@ -49,7 +49,7 @@ import org.w3c.dom.HTMLElement
  * // one can handle the events and preselected item also manually if needed:
  * val options = listOf("A", "B", "C")
  * radioGroup(items = options) {
- *      selectedItem("A") // or ``null`` (default) if nothing should be selected at all
+ *      selectedItem("A") // or "null" (default) if nothing should be selected at all
  *      events {
  *          selected handledBy someStoreOfString
  *      }
@@ -70,18 +70,18 @@ import org.w3c.dom.HTMLElement
 open class RadioGroupComponent<T>(protected val items: List<T>, protected val value: Store<T>? = null) :
     Component<Unit>,
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    OrientationProperty by OrientationMixin(Orientation.VERTICAL) {
 
     companion object {
-        object RadioGroupLayouts {
-            val column: Style<BasicParams> = {
-                display {
-                    inlineGrid
-                }
-            }
-            val row: Style<BasicParams> = {
-                display {
+        // TODO: Remove `direction` part and therefore `if` branch
+        fun layoutOf(orientation: Orientation, direction: Direction): Style<BasicParams> = {
+            display {
+                if (direction == Direction.ROW) {
                     inlineFlex
+                } else when (orientation) {
+                    Orientation.HORIZONTAL -> inlineFlex
+                    Orientation.VERTICAL -> inlineGrid
                 }
             }
         }
@@ -90,7 +90,21 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
-    val direction = ComponentProperty<RadioGroupLayouts.() -> Style<BasicParams>> { column }
+    enum class Direction {
+        COLUMN, ROW
+    }
+
+    object DirectionContext {
+        @Deprecated("Use orientation { vertical } instead", ReplaceWith("vertical"))
+        val column: Direction = Direction.COLUMN
+
+        @Deprecated("Use orientation { horizontal } instead", ReplaceWith("horizontal"))
+        val row: Direction = Direction.ROW
+    }
+
+    @Deprecated("Use orientation instead", ReplaceWith("orientation"))
+    val direction = ComponentProperty<DirectionContext.() -> Direction> { column }
+
     val itemStyle = ComponentProperty(Theme().radio.default)
     val labelStyle = ComponentProperty(Theme().radio.label)
     val selectedStyle = ComponentProperty(Theme().radio.selected)
@@ -114,7 +128,10 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
 
         context.apply {
             div({
-                this@RadioGroupComponent.direction.value(RadioGroupLayouts)()
+                RadioGroupComponent.layoutOf(
+                    this@RadioGroupComponent.orientation.value(OrientationContext),
+                    this@RadioGroupComponent.direction.value(DirectionContext)
+                )()
             }, styling, baseClass, id, prefix) {
                 (this@RadioGroupComponent.value?.data ?: this@RadioGroupComponent.selectedItem.values)
                     .map { selectedItem ->
@@ -159,7 +176,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
  * ```
  * val options = listOf("A", "B", "C")
  * radioGroup(items = options, value = selectedItemStore) {
- *     selectedItem(options[1]) // pre select "B", or ``null`` (default) to select nothing
+ *     selectedItem(options[1]) // pre select "B", or "null" (default) to select nothing
  * }
  * ```
  *

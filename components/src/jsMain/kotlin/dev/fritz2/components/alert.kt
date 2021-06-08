@@ -4,10 +4,10 @@ import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.*
 import dev.fritz2.styling.span
 import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.*
@@ -84,7 +84,7 @@ open class AlertComponent : Component<Unit> {
         val discreet = AlertVariant.DISCREET
     }
 
-    val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(value = null)
+    val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val severity = ComponentProperty<(AlertSeverities.() -> AlertSeverity)> { info }
     val variant = ComponentProperty<VariantContext.() -> AlertVariant> { solid }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
