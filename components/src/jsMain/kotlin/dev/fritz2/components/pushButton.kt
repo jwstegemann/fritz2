@@ -9,12 +9,8 @@ import dev.fritz2.styling.button
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.params.plus
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.ColorScheme
-import dev.fritz2.styling.theme.FormSizes
-import dev.fritz2.styling.theme.PushButtonTypes
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.MouseEvent
@@ -194,19 +190,7 @@ open class PushButtonComponent :
         loading = value
     }
 
-    private var icon: ((RenderContext, Style<BasicParams>) -> Unit)? = null
-
-    fun icon(
-        styling: BasicParams.() -> Unit = {},
-        baseClass: StyleClass = StyleClass.None,
-        id: String? = null,
-        prefix: String = IconComponent.prefix,
-        build: IconComponent.() -> Unit = {}
-    ) {
-        icon = { context, iconStyle ->
-            context.icon(styling + iconStyle, baseClass, id, prefix, build)
-        }
-    }
+    val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
 
     enum class IconPlacement {
         Right,
@@ -249,7 +233,7 @@ open class PushButtonComponent :
                         this@PushButtonComponent.centerSpinnerStyle
                     )
                 } else {
-                    if (this@PushButtonComponent.icon != null && this@PushButtonComponent.iconPlacement.value(
+                    if (this@PushButtonComponent.icon.value != null && this@PushButtonComponent.iconPlacement.value(
                             iconPlacementContext
                         ) == IconPlacement.Left
                     ) {
@@ -260,7 +244,7 @@ open class PushButtonComponent :
                         )
                     }
                     this@PushButtonComponent.renderText(this)
-                    if (this@PushButtonComponent.icon != null && this@PushButtonComponent.iconPlacement.value(
+                    if (this@PushButtonComponent.icon.value != null && this@PushButtonComponent.iconPlacement.value(
                             iconPlacementContext
                         ) == IconPlacement.Right
                     ) {
@@ -279,14 +263,20 @@ open class PushButtonComponent :
 
     private fun renderIcon(renderContext: Button, iconStyle: Style<BasicParams>, spinnerStyle: Style<BasicParams>) {
         if (loading == null) {
-            icon?.invoke(renderContext, iconStyle)
+            renderContext.apply {
+                icon(iconStyle) {
+                    def(this@PushButtonComponent.icon.value?.invoke(Theme().icons))
+                }
+            }
         } else {
             renderContext.apply {
                 this@PushButtonComponent.loading?.render { running ->
                     if (running) {
                         spinner(spinnerStyle) {}
                     } else {
-                        this@PushButtonComponent.icon?.invoke(this, iconStyle)
+                        icon(iconStyle) {
+                            def(this@PushButtonComponent.icon.value?.invoke(Theme().icons))
+                        }
                     }
                 }
             }
@@ -294,7 +284,7 @@ open class PushButtonComponent :
     }
 
     private fun renderText(renderContext: Button) {
-        if (loading == null || icon != null) {
+        if (loading == null || icon.value != null) {
             text?.invoke(renderContext, false)
         } else {
             renderContext.apply {
