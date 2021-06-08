@@ -284,7 +284,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                         top { "0" }
                     }
                 }
-                zIndex { "1" }
+                zIndex { tableHeader }
             }, baseClass, "$id-fixedHeader", "$prefix-fixedHeader") {
                 attr("style", gridCols)
                 this@DataTableComponent.renderHeader({}, this)

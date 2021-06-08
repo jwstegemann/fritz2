@@ -97,20 +97,18 @@ class Sizes(
 }
 
 /**
- * Defines the scheme for zIndices in fritz2
+ * Defines the scheme for zIndices of fritz2 components
  *
- * @property baseValue z-index for normal content ("bottom")
- * @property layer start z-index for layers
- * @property layerStep step to add for each new layer
- * @property overlayValue z-index for an overlay
- * @property toast start z-index for toasts
- * @property toastStep step to add for each new toast
- * @property modal start z-index for modals
- * @property modalStep step to add for each new modal
  */
 class ZIndices(
-    private val baseValue: Int, private val layer: Int, private val layerStep: Int, private val overlayValue: Int,
-    private val toast: Int, private val toastStep: Int, private val modal: Int, private val modalStep: Int,
+    tableHeader: Int,
+    tooltip: Int,
+    dropdown: Int,
+    popover: Int,
+    appFrame: Int,
+    navbar: Int,
+    toast: Int,
+    modal: Int,
 ) {
 
     companion object {
@@ -120,50 +118,17 @@ class ZIndices(
         const val key: Property = "z-index: "
     }
 
-    /**
-     * [Property] for base z-index
-     */
-    val base: Property = "$baseValue"
+    val tableHeader: Property = tableHeader.toString()
+    val tooltip: Property = tooltip.toString()
+    val dropdown: Property = dropdown.toString()
+    val popover: Property = popover.toString()
+    val appFrame: Property = appFrame.toString()
+    val navbar: Property = navbar.toString()
+    val toast: Property = toast.toString()
+    val modal: Property = modal.toString()
 
-    /**
-     * [Property] for overlay z-index
-     */
-    val overlay: Property = "$overlayValue"
-
-    /**
-     * creates [Property] for a specific layer z-index
-     *
-     * Use self defined constants for the different layers of your UI.
-     *
-     * @param value number of layer the z-index should be calculated for
-     */
-    fun layer(value: Int): Property = zIndexFrom(layer, layerStep, value, 0)
-
-    /**
-     * creates [Property] for a specific toast z-index
-     *
-     * @param value number of toast the z-index should be calculated for
-     */
-    fun toast(value: Int): Property = zIndexFrom(toast, toastStep, value, 0)
-
-    /**
-     * creates [Property] for a specific modals z-index
-     *
-     * @param value number of modal the z-index should be calculated for
-     */
-    fun modal(value: Int): Property = zIndexFrom(modal, modalStep, value, 0)
-
-    /**
-     * creates [Property] for a specific modals z-index shifted by an offset
-     *
-     * @param value number of modal the z-index should be calculated for
-     * @param offset number to add to the final z-index in order to place an element below (negative value!) or on top
-     *               (positive value) of a regularly defined modal.
-     */
-    fun modal(value: Int, offset: Int): Property = zIndexFrom(modal, modalStep, value, offset)
-
-    private fun zIndexFrom(level: Int, step: Int, value: Int, offset: Int) =
-        "${level + step * (value - 1) + offset}"
+    infix fun Property.raiseBy(value: Int): Property =
+        (this.toInt() + value).toString()
 }
 
 /**
@@ -707,6 +672,13 @@ interface MenuStyles {
     val header: Style<BasicParams>
 }
 
+/**
+ * definition of the theme's navbar
+ */
+interface NavBarStyles {
+    val header: Style<BasicParams>
+    val content: Style<BasicParams>
+}
 
 /**
  * definition of the theme's appFrame

@@ -3,9 +3,11 @@ package dev.fritz2.components
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
+import dev.fritz2.styling.nav
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.theme.Theme
 
 open class NavbarComponent : Component<Unit> {
     companion object {
@@ -16,8 +18,6 @@ open class NavbarComponent : Component<Unit> {
                 transition: box-shadow 0.2s;
                 position: fixed;
                 top: 0;
-                z-index: 199;
-                background: #FFFFFF;
                 left: 0;
                 right: 0;
                 width: 100%;
@@ -30,10 +30,7 @@ open class NavbarComponent : Component<Unit> {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                height: 4.5rem;
                 width: 100%;
-                padding-left: 1.5rem;
-                padding-right: 1.5rem;
             """
         )
 
@@ -64,24 +61,14 @@ open class NavbarComponent : Component<Unit> {
         id: String?,
         prefix: String
     ) {
-        with(context) {
-            nav((staticHeaderCss + baseClass).name, id) {
+        context.apply {
+            nav({
+                Theme().navBar.header()
+            }, staticHeaderCss + baseClass, id) {
                 div({
-                    borders {
-                        top {
-                            width { "6px" }
-                            style { solid }
-                            color { primary.main }
-                        }
-
-                        bottom {
-                            width { "2px" }
-                            style { solid }
-                            color { gray300 }
-                        }
-                    }
+                    Theme().navBar.content()
                     styling()
-                }, baseClass = staticContentCss, prefix = prefix) {
+                }, staticContentCss, prefix) {
                     div(staticBrandCss.name) {
                         this@NavbarComponent.brand.value(this)
                     }
