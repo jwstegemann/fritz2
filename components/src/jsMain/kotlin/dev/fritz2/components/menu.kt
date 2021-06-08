@@ -5,12 +5,12 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.button
 import dev.fritz2.styling.div
-import dev.fritz2.styling.params.*
-import dev.fritz2.styling.staticStyle
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.plus
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme
-import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
 
 /**
@@ -67,15 +67,15 @@ open class MenuComponent : Component<Unit> {
      *
      * @param build Lambda to configure the component itself
      */
-    fun entry(build: MenuEntry.() -> Unit) = entry(styling = { }, build)
+    fun entry(build: MenuEntry.() -> Unit) = entry({}, build)
 
     /**
      * Configures and adds a [MenuEntry] to the menu.
      *
-     * @param styling Styling to be applied to the component
+     * @param styling [Style] to be applied to the component
      * @param build Lambda to configure the component itself
      */
-    fun entry(styling: Style<FlexParams>, build: MenuEntry.() -> Unit) = MenuEntry(styling)
+    fun entry(styling: Style<BoxParams>, build: MenuEntry.() -> Unit) = MenuEntry(styling)
         .apply(build)
         .run(::addChild)
 
@@ -84,7 +84,15 @@ open class MenuComponent : Component<Unit> {
      *
      * @param build Lambda containing the layout to render
      */
-    fun custom(build: RenderContext.() -> Unit) = CustomMenuEntry()
+    fun custom(build: RenderContext.() -> Unit) = custom({}, build)
+
+    /**
+     * Adds a custom fritz2-component to the menu.
+     *
+     * @param styling [Style] to be applied to the component
+     * @param build Lambda containing the layout to render
+     */
+    fun custom(styling: Style<BoxParams>, build: RenderContext.() -> Unit) = CustomMenuEntry(styling)
         .apply { content(build) }
         .run(::addChild)
 
@@ -95,24 +103,24 @@ open class MenuComponent : Component<Unit> {
      *
      * @param text Text to be displayed in the header
      */
-    fun header(text: String) = header(styling = { }, text)
+    fun header(text: String) = header({}, text)
 
     /**
      * Configures and adds a [MenuHeader] to the menu.
      *
-     * @param styling Styling to be applied to the underlying component
+     * @param styling [Style] to be applied to the underlying component
      * @param text Text to be displayed in the header
      */
-    fun header(styling: Style<BasicParams>, text: String) = MenuHeader(styling)
+    fun header(styling: Style<BoxParams>, text: String) = MenuHeader(styling)
         .apply { text(text) }
         .run(::addChild)
 
     /**
      * Adds a [MenuDivider] to the menu.
      *
-     * @param styling Optional styling to be applied to the underlying component
+     * @param styling optional [Style] to be applied to the underlying component
      */
-    fun divider(styling: Style<BasicParams> = { }) = addChild(MenuDivider(styling))
+    fun divider(styling: Style<BoxParams> = {}) = addChild(MenuDivider(styling))
 
 
     override fun render(
@@ -142,7 +150,7 @@ open class MenuComponent : Component<Unit> {
  * @param build a lambda expression for setting up the component itself.
  */
 fun RenderContext.menu(
-    styling: BasicParams.() -> Unit = {},
+    styling: BoxParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "menu",
@@ -170,7 +178,7 @@ interface MenuChild {
  *
  * @param styling Optional style to be applied to the underlying button-element
  */
-open class MenuEntry(private val styling: Style<FlexParams> = { }) :
+open class MenuEntry(private val styling: Style<BoxParams> = {}) :
     MenuChild,
     EventProperties<HTMLButtonElement> by EventMixin(),
     FormProperties by FormMixin()
@@ -201,12 +209,12 @@ open class MenuEntry(private val styling: Style<FlexParams> = { }) :
  * A custom menu entry can be any fritz2 component. The component simply wraps any layout in a container and renders it
  * to the menu.
  */
-open class CustomMenuEntry : MenuChild {
+open class CustomMenuEntry(private val styling: Style<BoxParams> = {}) : MenuChild {
     val content = ComponentProperty<RenderContext.() -> Unit> { }
 
     override fun render(context: RenderContext) {
         context.apply {
-            div(Theme().menu.custom) {
+            div(Theme().menu.custom + this@CustomMenuEntry.styling) {
                 this@CustomMenuEntry.content.value(this)
             }
         }
@@ -221,7 +229,7 @@ open class CustomMenuEntry : MenuChild {
  *
  * @param styling Optional styling to be applied to the underlying div-element
  */
-open class MenuHeader(private val styling: Style<BasicParams> = { }) : MenuChild {
+open class MenuHeader(private val styling: Style<BoxParams> = {}) : MenuChild {
 
     val text = ComponentProperty("")
 
@@ -242,7 +250,7 @@ open class MenuHeader(private val styling: Style<BasicParams> = { }) : MenuChild
  *
  * @param styling Optional styling to be applied to the underlying div-element
  */
-open class MenuDivider(private val styling: Style<BasicParams> = { }) : MenuChild {
+open class MenuDivider(private val styling: Style<BoxParams> = {}) : MenuChild {
 
     override fun render(context: RenderContext) {
         context.apply {

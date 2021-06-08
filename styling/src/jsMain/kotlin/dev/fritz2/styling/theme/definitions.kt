@@ -705,7 +705,7 @@ interface DropdownAlignments {
  */
 interface MenuStyles {
     val container: Style<BasicParams>
-    val entry: Style<FlexParams>
+    val entry: Style<BasicParams>
     val header: Style<BasicParams>
     val divider: Style<BasicParams>
     val custom: Style<BasicParams>
