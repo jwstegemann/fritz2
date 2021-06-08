@@ -8,7 +8,6 @@ import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.section
-import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
@@ -122,12 +121,12 @@ open class DropdownComponent : Component<Unit> {
     }
 
     private fun renderDropdown(
-        renderContext: RenderContext,
+        context: RenderContext,
         styling: BoxParams.() -> Unit,
         baseClass: StyleClass,
         prefix: String
     ): HTMLElement {
-        return with(renderContext) {
+        return with(context) {
             section(style = {
                     styling()
                     Theme().dropdown.dropdown()
