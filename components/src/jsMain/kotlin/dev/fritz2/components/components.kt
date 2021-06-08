@@ -558,3 +558,45 @@ class CloseButtonMixin(
         }
     }
 }
+
+
+/**
+ * Definition of the layout orientation of a form.
+ */
+enum class Orientation {
+    HORIZONTAL, VERTICAL
+}
+
+/**
+ * A context class for allowing an expressive DSL for component's configuration:
+ *
+ * ```
+ * // 'orientation' is provided by ``OrientationProperty.orientation``
+ * orientation { horizontal }
+ * orientation { vertical }
+ * ```
+ */
+object OrientationContext {
+    val horizontal: Orientation = Orientation.HORIZONTAL
+    val vertical: Orientation = Orientation.VERTICAL
+}
+
+/**
+ * This interface add an orientation property for position the component's element(s) into an horizontal or
+ * vertical orientation.
+ */
+interface OrientationProperty {
+    val orientation: ComponentProperty<OrientationContext.() -> Orientation>
+}
+
+/**
+ * Default implementation of the [OrientationProperty] interface in order to apply this as mixin for a component
+ *
+ * @param default set the default orientation for the implementing component (checkBoxGroup needs vertical, but
+ *                slider horizontal orientation for example)
+ */
+class OrientationMixin(default: Orientation) : OrientationProperty {
+    override val orientation: ComponentProperty<OrientationContext.() -> Orientation> by lazy {
+        ComponentProperty { default }
+    }
+}
