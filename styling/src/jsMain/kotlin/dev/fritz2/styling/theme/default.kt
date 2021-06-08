@@ -224,14 +224,14 @@ open class DefaultTheme : Theme {
         )
 
     override val zIndices = ZIndices(
-        10,
-        100,
-        200,
-        300,
-        1000,
-        1000,
-        2000,
-        3000
+        tableHeader = 10,
+        tooltip = 100,
+        dropdown = 200,
+        popover = 300,
+        appFrame = 1000,
+        navbar = 1000,
+        toast = 2000,
+        modal = 3000
     )
 
     override val opacities = WeightedValue(
