@@ -25,9 +25,9 @@ import org.w3c.dom.HTMLElement
  * In order to render a checkbox group use the [radioGroup] factory function!
  *
  * This class offers the following _configuration_ features:
- *  - the items as a ``List<T>``
- *  - optionally set a predefined item; if nothing is set or ``null``, nothing gets selected at first
- *  - the label(mapping) of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext ) the the example below
+ *  - the items as a [List<T>]
+ *  - optionally set a predefined item; if nothing is set or "null", nothing gets selected at first
+ *  - the label(mapping) of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext) the the example below
  *  - some predefined styling variants (size)
  *  - the style of the items (radio)
  *  - the style selected state
@@ -49,7 +49,7 @@ import org.w3c.dom.HTMLElement
  * // one can handle the events and preselected item also manually if needed:
  * val options = listOf("A", "B", "C")
  * radioGroup(items = options) {
- *      selectedItem("A") // or ``null`` (default) if nothing should be selected at all
+ *      selectedItem("A") // or "null" (default) if nothing should be selected at all
  *      events {
  *          selected handledBy someStoreOfString
  *      }
@@ -74,7 +74,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
     OrientationProperty by OrientationMixin(Orientation.VERTICAL) {
 
     companion object {
-        // TODO: Remove ``direction`` part and therefore ``if`` branch
+        // TODO: Remove `direction` part and therefore `if` branch
         fun layoutOf(orientation: Orientation, direction: Direction): Style<BasicParams> = {
             display {
                 if (direction == Direction.ROW) {
@@ -95,14 +95,14 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
     }
 
     object DirectionContext {
-        @Deprecated("Use ``orientation { vertical }`` instead", ReplaceWith("vertical"))
+        @Deprecated("Use orientation { vertical } instead", ReplaceWith("vertical"))
         val column: Direction = Direction.COLUMN
 
-        @Deprecated("Use ``orientation { horizontal }`` instead", ReplaceWith("horizontal"))
+        @Deprecated("Use orientation { horizontal } instead", ReplaceWith("horizontal"))
         val row: Direction = Direction.ROW
     }
 
-    @Deprecated("Use ``orientation`` instead", ReplaceWith("orientation"))
+    @Deprecated("Use orientation instead", ReplaceWith("orientation"))
     val direction = ComponentProperty<DirectionContext.() -> Direction> { column }
 
     val itemStyle = ComponentProperty(Theme().radio.default)
@@ -176,7 +176,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
  * ```
  * val options = listOf("A", "B", "C")
  * radioGroup(items = options, value = selectedItemStore) {
- *     selectedItem(options[1]) // pre select "B", or ``null`` (default) to select nothing
+ *     selectedItem(options[1]) // pre select "B", or "null" (default) to select nothing
  * }
  * ```
  *

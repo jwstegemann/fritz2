@@ -28,9 +28,9 @@ import org.w3c.dom.HTMLElement
  * In order to render a checkbox group use the [checkboxGroup] factory function!
  *
  * This class offers the following _configuration_ features:
- *  - the items as a List<T>
- *  - the preselected items via a ``Flow<List<T>>``
- *  - the label(mapping) of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext ) the the example below
+ *  - the items as a [List<T>]
+ *  - the preselected items via a [Flow<List<T>>]
+ *  - the label(mapping) of a switch (static, dynamic via a [Flow<String>] or customized content of a Div.RenderContext) the the example below
  *  - some predefined styling variants (size)
  *  - the style of the items (checkbox)
  *  - the style checked state
@@ -39,7 +39,7 @@ import org.w3c.dom.HTMLElement
  *  - choose the orientation of checkbox elements (vertical or horizontal)
  *
  *  This can be done within a functional expression that is the last parameter of the factory function, called
- *  ``build``. It offers an initialized instance of this [CheckboxGroupComponent] class as receiver, so every mutating
+ *  `build`. It offers an initialized instance of this [CheckboxGroupComponent] class as receiver, so every mutating
  *  method can be called for configuring the desired state for rendering the checkbox.
  *
  * Example usage
@@ -61,8 +61,8 @@ import org.w3c.dom.HTMLElement
  * }
  *
  * // use case showing some styling options and a store of List<Pair<Int,String>>
- *   val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
- *  val myStore = storeOf(<List<Pair<Int,String>>)
+ * val myPairs = listOf((1 to "ffffff"), (2 to "rrrrrr" ), (3 to "iiiiii"), (4 to "tttttt"), ( 5 to "zzzzzz"), (6 to "222222"))
+ * val myStore = storeOf(<List<Pair<Int,String>>)
  * checkboxGroup(items = myPairs, values = myStore) {
  *      label { it.second }
  *      size { large }
@@ -103,14 +103,14 @@ open class CheckboxGroupComponent<T>(
     }
 
     object DirectionContext {
-        @Deprecated("Use ``orientation { vertical }`` instead", ReplaceWith("vertical"))
+        @Deprecated("Use orientation { vertical } instead", ReplaceWith("vertical"))
         val column: Direction = Direction.COLUMN
 
-        @Deprecated("Use ``orientation { horizontal }`` instead", ReplaceWith("horizontal"))
+        @Deprecated("Use orientation { horizontal } instead", ReplaceWith("horizontal"))
         val row: Direction = Direction.ROW
     }
 
-    @Deprecated("Use ``orientation`` instead", ReplaceWith("orientation"))
+    @Deprecated("Use orientation instead", ReplaceWith("orientation"))
     val direction = ComponentProperty<DirectionContext.() -> Direction> { column }
 
     val itemStyle = ComponentProperty(Theme().checkbox.default)
@@ -209,7 +209,7 @@ open class CheckboxGroupComponent<T>(
  * @param values a store of List<T>
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
- * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param prefix the prefix for the generated CSS class resulting in the form `$prefix-$hash`
  * @param build a lambda expression for setting up the component itself. Details in [CheckboxGroupComponent]
  */
 fun <T> RenderContext.checkboxGroup(
