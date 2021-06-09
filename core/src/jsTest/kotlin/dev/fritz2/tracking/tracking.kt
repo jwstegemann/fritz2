@@ -66,4 +66,51 @@ class TrackingTests {
         assertEquals(endValue, valueAfterTransaction)
 
     }
+
+    @Test
+    fun testStopTrackingIfExceptionOccursDuringOperation() = runTest {
+        initDocument()
+
+        val resultElementId = "tracker-${uniqueId()}"
+
+        val store = object : RootStore<Int>(0) {
+            val running = tracker()
+
+            val handler = handle {
+                try {
+                    running.track {
+                        delay(500)
+                        throw Exception("Something unexpected happened")
+                    }
+                } catch (ex: Exception) {
+                    // we just don't want to let this escape to the log...
+                }
+                it
+            }
+        }
+
+        render {
+            div {
+                span(id = resultElementId) { store.running.data.map { if (it) "running" else "stopped" }.asText() }
+            }
+        }
+
+        delay(100)
+
+        store.handler()
+
+        val valueBeforeTransaction = document.getElementById(resultElementId)?.textContent
+        assertEquals("", valueBeforeTransaction)
+
+        delay(200)
+
+        val valueDuringTransaction = document.getElementById(resultElementId)?.textContent
+        assertEquals("running", valueDuringTransaction)
+
+        delay(500)
+
+        val valueAfterTransaction = document.getElementById(resultElementId)?.textContent
+        assertEquals("stopped", valueAfterTransaction)
+
+    }
 }
