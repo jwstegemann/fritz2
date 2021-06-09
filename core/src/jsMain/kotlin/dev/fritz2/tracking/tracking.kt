@@ -36,12 +36,19 @@ class Tracker(
     /**
      * Tracks a given [operation].
      *
+     * Works also with unsafe operations that throw exceptions, as the tracking gets stopped. The exceptions are
+     * not swallowed though.
+     *
      * @param transaction text describing the transaction
      * @param operation function to track
      */
     suspend fun <T> track(transaction: String = defaultTransaction, operation: suspend () -> T): T {
         state.value = transaction
-        return operation().also { state.value = null }
+        return try {
+            operation()
+        } finally {
+            state.value = null
+        }
     }
 
     /**
