@@ -83,11 +83,14 @@ open class DropdownComponent : Component<Unit> {
     val alignment = ComponentProperty<AlignmentContext.() -> Alignment> { start }
     val content = ComponentProperty<RenderContext.() -> Unit> { }
 
-    // Visibility is controlled by the DropdownComponent itself by default but can manually be controlled via the
-    // 'visible' property:
     private val visibilityStore = object : RootStore<Boolean>(false) {
-        val toggle = handle { current -> !current }
+        val toggle = handle { !it }
     }
+
+    /**
+     * Visibility is controlled internally by default but
+     * can manually be controlled via the this property
+     */
     val visible = DynamicComponentProperty(visibilityStore.data)
 
 
@@ -108,13 +111,16 @@ open class DropdownComponent : Component<Unit> {
                 lateinit var dropDown: HTMLElement
                 this@DropdownComponent.visible.values.render { visible ->
                     if (visible) {
-                        dropDown = this@DropdownComponent.renderDropdown(this, styling, baseClass, prefix)
+                        dropDown = this@DropdownComponent.renderDropdown(
+                            this,
+                            styling,
+                            baseClass,
+                            prefix
+                        )
                     }
                 }
                 this@DropdownComponent.visible.values.onEach { visible ->
-                    if (visible) {
-                        dropDown.focus()
-                    }
+                    if (visible) dropDown.focus()
                 }.watch()
             }
         }
@@ -125,49 +131,47 @@ open class DropdownComponent : Component<Unit> {
         styling: BoxParams.() -> Unit,
         baseClass: StyleClass,
         prefix: String
-    ): HTMLElement {
-        return with(context) {
-            section(style = {
-                    styling()
-                    Theme().dropdown.dropdown()
+    ): HTMLElement = with(context) {
+        section({
+                Theme().dropdown.dropdown()
+                val placement = this@DropdownComponent.placement.value.invoke(PlacementContext)
+                val isVerticalPlacement = (placement == Placement.Top || placement == Placement.Bottom)
+                when (placement) {
+                    Placement.Left -> Theme().dropdown.placements.left
+                    Placement.Right -> Theme().dropdown.placements.right
+                    Placement.Top -> Theme().dropdown.placements.top
+                    Placement.Bottom -> Theme().dropdown.placements.bottom
+                }.invoke()
 
-                    val placement = this@DropdownComponent.placement.value.invoke(PlacementContext)
-                    val isVerticalPlacement = (placement == Placement.Top || placement == Placement.Bottom)
-                    when(placement) {
-                        Placement.Left -> Theme().dropdown.placements.left
-                        Placement.Right -> Theme().dropdown.placements.right
-                        Placement.Top -> Theme().dropdown.placements.top
-                        Placement.Bottom -> Theme().dropdown.placements.bottom
-                    }.invoke()
+                val alignments = Theme().dropdown.alignments
+                when (this@DropdownComponent.alignment.value.invoke(AlignmentContext)) {
+                    Alignment.Start -> if (isVerticalPlacement) alignments.horizontalStart else alignments.verticalStart
+                    Alignment.End -> if (isVerticalPlacement) alignments.horizontalEnd else alignments.verticalEnd
+                }.invoke()
+            },
+            styling,
+            baseClass,
+            prefix = prefix
+        ) {
+            attr("tabindex", "-1")
+            blurs.events.debounce(100)
+                .map { } handledBy this@DropdownComponent.visibilityStore.toggle
 
-                    val alignments = Theme().dropdown.alignments
-                    when(this@DropdownComponent.alignment.value.invoke(AlignmentContext)) {
-                        Alignment.Start -> if (isVerticalPlacement) alignments.horizontalStart else alignments.verticalStart
-                        Alignment.End -> if (isVerticalPlacement) alignments.horizontalEnd else alignments.verticalEnd
-                    }.invoke()
-                },
-                baseClass = baseClass,
-                prefix = prefix
-            ) {
-                attr("tabindex", "-1")
-                blurs.events
-                    .debounce(100)
-                    .map { } handledBy this@DropdownComponent.visibilityStore.toggle
+            this@DropdownComponent.content.value(this)
+        }
+    }.domNode
 
-                this@DropdownComponent.content.value(this)
-            }
-        }.domNode
-    }
 }
 
 /**
- * Creates a dropdown.
+ * Creates a dropdown component.
  *
+ * @see DropdownComponent
  * @param styling a lambda expression for declaring the styling of the actual dropdown as fritz2's styling DSL
- * @param baseClass optional CSS class that should be applied to the dropdown
- * @param id the ID of the dropdown/toggle container
- * @param prefix the prefix for the dropdown's generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself.
+ * @param baseClass optional CSS class that should be applied to the element
+ * @param id the ID of element
+ * @param prefix the prefix for the generated CSS class resulting in the form `$prefix-$hash`
+ * @param build a lambda expression for setting up the component itself
  */
 fun RenderContext.dropdown(
     styling: BasicParams.() -> Unit = {},
