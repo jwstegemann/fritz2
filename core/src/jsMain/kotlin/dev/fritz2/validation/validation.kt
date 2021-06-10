@@ -31,6 +31,15 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
         get() = state.value
 
     /**
+     * Resets the validation result.
+     *
+     * @param messages list of messages to reset to. Default is an empty list.
+     */
+    fun reset(messages: List<M> = emptyList()) {
+        state.value = messages
+    }
+
+    /**
      * Finds the first [ValidationMessage] matching the given [predicate].
      * If no such element was found, nothing gets called afterwards.
      */
