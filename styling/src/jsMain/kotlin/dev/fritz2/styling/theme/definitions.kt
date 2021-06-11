@@ -455,22 +455,35 @@ interface PushButtonVariants {
  * definition of the theme's modal
  */
 interface ModalStyles {
+    val base: Style<BasicParams>
     val overlay: Style<BasicParams>
+    val width: BasicParams.(String, Property) -> Unit
+    val widths: ModalWidths
     val sizes: ModalSizes
     val variants: ModalVariants
+    val internalScrolling: Style<BasicParams>
 }
 
+@Deprecated(message = "Use placement property of ModalComponent instead.")
 interface ModalVariants {
     val auto: Style<BasicParams>
     val verticalFilled: Style<BasicParams>
     val centered: Style<BasicParams>
 }
 
+@Deprecated(message = "Use width property of ModalComponent instead.")
 interface ModalSizes {
     val full: Style<BasicParams>
     val small: Style<BasicParams>
     val normal: Style<BasicParams>
     val large: Style<BasicParams>
+}
+
+interface ModalWidths {
+    val full: Property
+    val small: Property
+    val normal: Property
+    val large: Property
 }
 
 
