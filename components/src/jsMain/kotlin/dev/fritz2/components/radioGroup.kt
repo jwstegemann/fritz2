@@ -2,6 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.Store
 import dev.fritz2.dom.EventContext
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
@@ -88,6 +89,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
     }
 
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
+    val labelRenderer = ComponentProperty<(Div.(item: T) -> Unit)?>(value = null)
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
     enum class Direction {
@@ -144,7 +146,12 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
                         this.size { this@RadioGroupComponent.size.value.invoke(Theme().radio.sizes) }
                         labelStyle(this@RadioGroupComponent.labelStyle.value)
                         selectedStyle(this@RadioGroupComponent.selectedStyle.value)
-                        label(this@RadioGroupComponent.label.value(item))
+                        this@RadioGroupComponent.labelRenderer.value
+                            ?.let { renderer ->
+                                label { renderer(this, item) }
+                            } ?: run {
+                                label(this@RadioGroupComponent.label.value(item))
+                            }
                         selected(checkedFlow)
                         disabled(this@RadioGroupComponent.disabled.values)
                         severity(this@RadioGroupComponent.severity.values)
