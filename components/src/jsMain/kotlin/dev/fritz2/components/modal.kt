@@ -17,29 +17,58 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.get
 
+/**
+ * Alias for reducing boilerplate in various places, as this extension signature is used quite often within modal
+ * source code.
+ */
 typealias ModalRenderContext = RenderContext.(level: Int) -> Div
 
+/**
+ * Enum that categorizes the methods of an overlay implementation.
+ */
 enum class OverlayMethod {
+    /**
+     * Only one overlay will be rendered, just beneath the top most modal shown, so that it covers the whole rest
+     * of the screen including other modals opened before.
+     */
     CoveringTopMost,
+
+    /**
+     * An overlay is rendered for each modal opened, so there are arbitrary pairs of overlay and modal on top.
+     * The overall effect is often that the screen becomes darker and darker if the overlay effect is applying
+     * a transparent color to the screen.
+     */
     CoveringEach
 }
 
+/**
+ * This interface defines the overlay type.
+ * It can be used to create custom overlay functionalities.
+ */
 interface Overlay {
     val method: OverlayMethod
     val styling: Style<BasicParams>
     fun render(renderContext: RenderContext, level: Int)
 }
 
+/**
+ * Utility function to calculate the final z-index of an overlay or modal.
+ * Both types are based upon the level of the modal in order to cover other modals already rendered.
+ */
 internal fun ZIndices.modal(level: Int, offset: Int = 0): Property {
     return modal raiseBy (10 * (level - 1) + offset)
 }
 
+/**
+ * Default implementation of an overlay, that simply uses one ``Div`` as surface to apply some styling like
+ * covering the screen with some transparent color.
+ */
 class DefaultOverlay(
     override val method: OverlayMethod = OverlayMethod.CoveringTopMost,
     override val styling: Style<BasicParams> = Theme().modal.overlay
 ) : Overlay {
     override fun render(renderContext: RenderContext, level: Int) {
-        renderContext.box({
+        renderContext.div({
             zIndex { modal(level, -1) }
             styling()
         }, prefix = "modal-overlay") {
