@@ -2,6 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.Store
 import dev.fritz2.dom.EventContext
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
 import dev.fritz2.identification.uniqueId
@@ -96,6 +97,7 @@ open class CheckboxGroupComponent<T>(
 
     val icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.check }
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
+    val labelRenderer = ComponentProperty<(RenderContext.(item: T) -> Unit)?>(value = null)
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
 
     enum class Direction {
@@ -154,7 +156,12 @@ open class CheckboxGroupComponent<T>(
                         icon { this@CheckboxGroupComponent.icon.value(Theme().icons) }
                         labelStyle(this@CheckboxGroupComponent.labelStyle.value)
                         checkedStyle(this@CheckboxGroupComponent.checkedStyle.value)
-                        label(this@CheckboxGroupComponent.label.value(item))
+                        this@CheckboxGroupComponent.labelRenderer.value
+                            ?.let { renderer ->
+                                label { renderer(this, item) }
+                            } ?: run {
+                            label(this@CheckboxGroupComponent.label.value(item))
+                        }
                         checked(checkedFlow)
                         disabled(this@CheckboxGroupComponent.disabled.values)
                         severity(this@CheckboxGroupComponent.severity.values)
