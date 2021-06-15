@@ -66,6 +66,21 @@ import org.w3c.dom.HTMLElement
  *          background { color {"green"} }
  *     }
  * }
+ *
+ * // use custom layouts for the checkbox labels by specifying a label-renderer:
+ * val options = listOf("A", "B", "C")
+ * radioGroup(items = options) {
+ *      labelRendering { item ->
+ *          span({
+ *              fontFamily { mono }
+ *              background {
+ *                  color { primary.highlight }
+ *              }
+ *          }) {
+ *              +item
+ *          }
+ *      }
+ * }
  * ```
  */
 open class RadioGroupComponent<T>(protected val items: List<T>, protected val value: Store<T>? = null) :
@@ -89,7 +104,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
     }
 
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
-    val labelRenderer = ComponentProperty<(Div.(item: T) -> Unit)?>(value = null)
+    val labelRendering = ComponentProperty<Div.(item: T) -> Unit> { +this@RadioGroupComponent.label.value(it) }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
     enum class Direction {
@@ -146,12 +161,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
                         this.size { this@RadioGroupComponent.size.value.invoke(Theme().radio.sizes) }
                         labelStyle(this@RadioGroupComponent.labelStyle.value)
                         selectedStyle(this@RadioGroupComponent.selectedStyle.value)
-                        this@RadioGroupComponent.labelRenderer.value
-                            ?.let { renderer ->
-                                label { renderer(this, item) }
-                            } ?: run {
-                                label(this@RadioGroupComponent.label.value(item))
-                            }
+                        label { this@RadioGroupComponent.labelRendering.value(this, item) }
                         selected(checkedFlow)
                         disabled(this@RadioGroupComponent.disabled.values)
                         severity(this@RadioGroupComponent.severity.values)
