@@ -861,6 +861,8 @@ open class DefaultTheme : Theme {
                 get() = colors.primary
             override val secondary
                 get() = colors.secondary
+            override val tertiary
+                get() = colors.tertiary
             override val info
                 get() = colors.info
             override val success
@@ -869,6 +871,8 @@ open class DefaultTheme : Theme {
                 get() = colors.warning
             override val danger
                 get() = colors.danger
+            override val neutral
+                get() = colors.neutral
         }
 
         override val variants = object : PushButtonVariants {

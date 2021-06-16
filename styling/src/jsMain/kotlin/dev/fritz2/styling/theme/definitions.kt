@@ -438,10 +438,12 @@ interface PushButtonStyles {
 interface PushButtonTypes {
     val primary: ColorScheme
     val secondary: ColorScheme
+    val tertiary: ColorScheme
     val info: ColorScheme
     val success: ColorScheme
     val warning: ColorScheme
     val danger: ColorScheme
+    val neutral: ColorScheme
 }
 
 interface PushButtonVariants {
