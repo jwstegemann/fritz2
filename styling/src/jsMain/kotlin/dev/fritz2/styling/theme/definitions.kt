@@ -730,9 +730,9 @@ interface SliderStyles : SeverityAware {
     val sizes: FormSizes
     val horizontal: SliderCoreStyles
     val vertical: SliderCoreStyles
+}
 
-    fun core(orientation: String) = when (orientation) {
-        "HORIZONTAL" -> Theme().slider.horizontal
-        else -> Theme().slider.vertical
-    }
+fun SliderStyles.core(orientation: String) = when (orientation) {
+    "HORIZONTAL" -> horizontal
+    else -> vertical
 }

@@ -17,10 +17,7 @@ import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.FormSizes
-import dev.fritz2.styling.theme.IconDefinition
-import dev.fritz2.styling.theme.Icons
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLDivElement
