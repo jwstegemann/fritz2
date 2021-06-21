@@ -70,6 +70,21 @@ import org.w3c.dom.HTMLElement
  *           background { color {"green"} }
  *      }
  * }
+ *
+ * // use custom layouts for the checkbox labels by specifying a label-renderer:
+ * val options = listOf("A", "B", "C")
+ * checkboxGroup(items = options) {
+ *      labelRendering { item ->
+ *          span({
+ *              fontFamily { mono }
+ *              background {
+ *                  color { primary.highlight }
+ *              }
+ *          }) {
+ *              +item
+ *          }
+*      }
+ * }
  * ```
  */
 open class CheckboxGroupComponent<T>(
@@ -96,6 +111,11 @@ open class CheckboxGroupComponent<T>(
 
     val icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.check }
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
+    val labelRendering = ComponentProperty<RenderContext.(item: T) -> Unit> {
+        span {
+            +this@CheckboxGroupComponent.label.value(it)
+        }
+    }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
 
     enum class Direction {
@@ -154,7 +174,7 @@ open class CheckboxGroupComponent<T>(
                         icon { this@CheckboxGroupComponent.icon.value(Theme().icons) }
                         labelStyle(this@CheckboxGroupComponent.labelStyle.value)
                         checkedStyle(this@CheckboxGroupComponent.checkedStyle.value)
-                        label(this@CheckboxGroupComponent.label.value(item))
+                        label { this@CheckboxGroupComponent.labelRendering.value(this, item) }
                         checked(checkedFlow)
                         disabled(this@CheckboxGroupComponent.disabled.values)
                         severity(this@CheckboxGroupComponent.severity.values)
