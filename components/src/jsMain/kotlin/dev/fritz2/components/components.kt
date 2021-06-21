@@ -545,11 +545,22 @@ class CloseButtonMixin(
     override val closeButtonPrefix: String = "close-button",
     private val defaultStyle: Style<BasicParams>
 ) : CloseButtonProperty {
+
+    private val resetButtonStyles: Style<BasicParams> = {
+        lineHeight { "unset" }
+        radius { "unset" }
+        fontWeight { "unset" }
+        padding { "unset" }
+        height { "unset" }
+        minWidth { "unset" }
+    }
+
     override val closeButtonStyle = ComponentProperty<Style<BasicParams>> {}
     override val closeButtonIcon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.close }
     override val hasCloseButton = ComponentProperty(true)
     override val closeButtonRendering = ComponentProperty<RenderContext.() -> DomListener<MouseEvent, HTMLElement>> {
         clickButton({
+            resetButtonStyles()
             defaultStyle()
             closeButtonStyle.value()
         }, prefix = closeButtonPrefix) {

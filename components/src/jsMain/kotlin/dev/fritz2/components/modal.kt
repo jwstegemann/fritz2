@@ -11,32 +11,64 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.*
+import dev.fritz2.styling.*
+import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.get
 
+/**
+ * Alias for reducing boilerplate in various places, as this extension signature is used quite often within modal
+ * source code.
+ */
 typealias ModalRenderContext = RenderContext.(level: Int) -> Div
 
+/**
+ * Enum that categorizes the methods of an overlay implementation.
+ */
 enum class OverlayMethod {
+    /**
+     * Only one overlay will be rendered, just beneath the top most modal shown, so that it covers the whole rest
+     * of the screen including other modals opened before.
+     */
     CoveringTopMost,
+
+    /**
+     * An overlay is rendered for each modal opened, so there are arbitrary pairs of overlay and modal on top.
+     * The overall effect is often that the screen becomes darker and darker if the overlay effect is applying
+     * a transparent color to the screen.
+     */
     CoveringEach
 }
 
+/**
+ * This interface defines the overlay type.
+ * It can be used to create custom overlay functionalities.
+ */
 interface Overlay {
     val method: OverlayMethod
     val styling: Style<BasicParams>
     fun render(renderContext: RenderContext, level: Int)
 }
 
+/**
+ * Utility function to calculate the final z-index of an overlay or modal.
+ * Both types are based upon the level of the modal in order to cover other modals already rendered.
+ */
 internal fun ZIndices.modal(level: Int, offset: Int = 0): Property {
     return modal raiseBy (10 * (level - 1) + offset)
 }
 
+/**
+ * Default implementation of an overlay, that simply uses one ``Div`` as surface to apply some styling like
+ * covering the screen with some transparent color.
+ */
 class DefaultOverlay(
     override val method: OverlayMethod = OverlayMethod.CoveringTopMost,
     override val styling: Style<BasicParams> = Theme().modal.overlay
 ) : Overlay {
     override fun render(renderContext: RenderContext, level: Int) {
-        renderContext.box({
+        renderContext.div({
             zIndex { modal(level, -1) }
             styling()
         }, prefix = "modal-overlay") {
@@ -76,8 +108,8 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
     CloseButtonProperty by CloseButtonMixin("modal-close-button", {
         position {
             absolute {
-                right { none }
-                top { none }
+                right { smaller }
+                top { smaller }
             }
         }
     }) {
@@ -98,6 +130,7 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
         val overlay = storeOf<Overlay>(DefaultOverlay())
         private val job = Job()
         private val globalId = "f2c-modals-${randomId()}"
+        private val myStaticStyle = staticStyle("disableOverflowForModal", "overflow:hidden !important;")
 
         fun setOverlayHandler(overlay: Overlay) {
             ModalComponent.overlay.update(overlay)
@@ -105,6 +138,7 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
 
         init {
             stack.data.map { modals ->
+                configureBodyScrolling(modals)
                 ManagedComponent.managedRenderContext(globalId, job).apply {
                     val currentOverlay = overlay.current
                     if (currentOverlay.method == OverlayMethod.CoveringTopMost && modals.isNotEmpty()) {
@@ -122,11 +156,63 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
             }.watch()
         }
 
+        private fun configureBodyScrolling(modals: List<ModalRenderContext>) {
+            val bodyElementClasses = document.getElementsByTagName("body")[0]?.classList
+            if (modals.isNotEmpty()) {
+                bodyElementClasses?.add(myStaticStyle.name)
+            } else {
+                bodyElementClasses?.remove(myStaticStyle.name)
+            }
+        }
+
     }
 
     val content = ComponentProperty<(RenderContext.() -> Unit)?>(null)
-    val size = ComponentProperty<ModalSizes.() -> Style<BasicParams>> { Theme().modal.sizes.normal }
+
+    @Deprecated(message = "Use width property instead.")
+    val size = ComponentProperty<(ModalSizes.() -> Style<BasicParams>)?>(null)
+
+    @Deprecated(message = "Use placement property instead.")
     val variant = ComponentProperty<ModalVariants.() -> Style<BasicParams>> { Theme().modal.variants.auto }
+
+    enum class Placement {
+        TOP, CENTER, BOTTOM, STRETCH
+    }
+
+    object PlacementContext {
+        val top = Placement.TOP
+        val center = Placement.CENTER
+        val bottom = Placement.BOTTOM
+        val stretch = Placement.STRETCH
+
+        fun flexValueOf(placement: Placement) = when (placement) {
+            Placement.TOP -> "flex-start"
+            Placement.CENTER -> "center"
+            Placement.BOTTOM -> "flex-end"
+            Placement.STRETCH -> "stretch"
+        }
+
+        fun externalScrollingPossible(placement: Placement) = placement == Placement.TOP
+    }
+
+    val placement = ComponentProperty<PlacementContext.() -> Placement> { Placement.TOP }
+
+    object WidthContext {
+        val small = "small"
+        val normal = "normal"
+        val large = "large"
+        val full = "full"
+
+        fun asCssWidthExpression(value: Property) = when (value) {
+            small -> Theme().modal.widths.small
+            normal -> Theme().modal.widths.normal
+            large -> Theme().modal.widths.large
+            full -> Theme().modal.widths.full
+            else -> value
+        }
+    }
+
+    val width = ComponentProperty<WidthContext.() -> String> { normal }
 
     override fun render(
         styling: BoxParams.() -> Unit,
@@ -138,17 +224,47 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
         val component = this.apply { build(close) }
 
         val modal: ModalRenderContext = { level ->
-            box({
-                css("--main-level: ${level}rem;")
+            flexBox({
                 zIndex { modal(level) }
-                component.size.value.invoke(Theme().modal.sizes)()
-                component.variant.value.invoke(Theme().modal.variants)()
-                styling(this as BoxParams)
-            }, baseClass, id, prefix) {
-                if (component.hasCloseButton.value) {
-                    component.closeButtonRendering.value(this) handledBy close
+                position {
+                    fixed {
+                        left { "0px" }
+                        top { "0px" }
+                    }
                 }
-                component.content.value?.let { it() }
+                width { "100vw" }
+                height { "100vh" }
+                if (PlacementContext.externalScrollingPossible(component.placement.value(PlacementContext))) {
+                    overflow { auto }
+                }
+                justifyContent { center }
+                alignItems { PlacementContext.flexValueOf(component.placement.value(PlacementContext)) }
+            }) {
+                div({
+                    css("--modal-level: ${level}rem;")
+                    zIndex { modal(level, 1) }
+                    position { relative { } }
+                    Theme().modal.base()
+                    if (component.size.value != null) {
+                        // TODO: remove if-branch when ``size`` gets removed; keep only else body!
+                        component.size.value!!.invoke(Theme().modal.sizes)()
+                    } else {
+                        Theme().modal.width(
+                            this,
+                            component.width.value(WidthContext),
+                            WidthContext.asCssWidthExpression(component.width.value(WidthContext))
+                        )
+                    }
+                    if (!PlacementContext.externalScrollingPossible(component.placement.value(PlacementContext))) {
+                        Theme().modal.internalScrolling()
+                    }
+                    styling(this)
+                }, baseClass, id, prefix) {
+                    if (component.hasCloseButton.value) {
+                        component.closeButtonRendering.value(this) handledBy close
+                    }
+                    component.content.value?.let { it() }
+                }
             }
         }
 

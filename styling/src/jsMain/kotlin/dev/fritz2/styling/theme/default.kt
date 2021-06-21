@@ -967,6 +967,16 @@ open class DefaultTheme : Theme {
 
     override val modal = object : ModalStyles {
 
+        override val base: Style<BasicParams> = {
+            background {
+                color { neutral.main }
+            }
+            padding { normal }
+            radius { tiny }
+            boxShadow { raisedFurther }
+            width { "100%" }
+        }
+
         override val overlay: Style<BasicParams> = {
             position {
                 fixed {
@@ -979,95 +989,70 @@ open class DefaultTheme : Theme {
             }
         }
 
+        override val width: BasicParams.(String, Property) -> Unit = { key, value ->
+            maxWidth { value }
+            if(key.lowercase() != "full") {
+                margins {
+                    top { "var(--modal-level)" }
+                    left { "var(--modal-level)" }
+                    right { "1rem" }
+                    bottom { "1rem" }
+                }
+            }
+        }
+
+        override val widths = object : ModalWidths {
+            override val full = "100vw"
+            override val small = "calc(50vw - var(--modal-level))"
+            override val normal = "calc(70vw - var(--modal-level))"
+            override val large = "100vw"
+        }
+
         override val sizes = object : ModalSizes {
 
-            private val basic: Style<BasicParams> = {
-                background {
-                    color { neutral.main }
+            private val withMargin: Style<BasicParams> = {
+                margins {
+                    top { "var(--modal-level)" }
+                    left { "var(--modal-level)" }
+                    right { "1rem" }
+                    bottom { "1rem" }
                 }
-                padding { normal }
-                radius { tiny }
-                boxShadow { raisedFurther }
             }
 
             override val full: Style<BasicParams> = {
-                basic()
-                width { "100%" }
-                height { "100%" }
-                position {
-                    fixed {
-                        horizontal { "0" }
-                        vertical { "0" }
-                    }
-                }
+                maxWidth { "100vw" }
             }
 
             override val large: Style<BasicParams> = {
-                basic()
-                position {
-                    fixed {
-                        left { "var(--main-level)" }
-                        top { "var(--main-level)" }
-                        right { normal }
-                    }
-                }
-                minHeight { wide.smaller }
+                maxWidth { "100vw" }
+                withMargin()
             }
 
             override val normal: Style<BasicParams> = {
-                basic()
-                position {
-                    fixed {
-                        top { "var(--main-level)" }
-                        left { "50%" }
-                    }
-                }
-                minHeight { wide.smaller }
-                minWidth { "50%" }
-                css("transform: translateX(-50%);")
+                maxWidth { "calc(70vw - var(--modal-level))" }
+                withMargin()
             }
 
             override val small: Style<BasicParams> = {
-                basic()
-                position {
-                    fixed {
-                        top { "var(--main-level)" }
-                        left { "65%" }
-                        bottom { normal }
-                    }
-                }
-                minHeight { wide.smaller }
-                minWidth { "35%" }
-                css("transform: translateX(-90%);")
+                maxWidth { "calc(50vw - var(--modal-level))" }
+                withMargin()
             }
         }
 
         override val variants = object : ModalVariants {
             override val auto: Style<BasicParams> = {
-                position {
-                    fixed {
-                        bottom { auto }
-                    }
-                }
             }
 
             override val verticalFilled: Style<BasicParams> = {
-                position {
-                    fixed {
-                        bottom { normal }
-                    }
-                }
             }
 
             override val centered: Style<BasicParams> = {
-                position {
-                    fixed {
-                        top { "50%" }
-                    }
-                }
-                // FIXME: does not work! overrides size-settings!
-                css("transform: translateY(-50%);")
             }
+        }
+
+        override val internalScrolling: Style<BasicParams> = {
+            overflow { auto }
+            maxHeight { "calc(100vh - var(--modal-level) - 1rem)" }
         }
     }
 
@@ -1853,7 +1838,7 @@ open class DefaultTheme : Theme {
                         }
                     }
                 )
-                }
+            }
             override val top: Style<BasicParams> = {
                 position(
                     sm = { absolute { left { "0px" } } }
@@ -2314,7 +2299,6 @@ open class DefaultTheme : Theme {
         }
 
 
-
         override val horizontal = object : SliderCoreStyles {
             override val main: Style<FlexParams> = {
                 alignItems { center }
@@ -2349,7 +2333,7 @@ open class DefaultTheme : Theme {
                 radius { "9999px" }
                 position { relative { } }
                 background { color { primary.main } }
-                display { flex  }
+                display { flex }
                 justifyContent { flexEnd }
                 alignItems { center }
                 children("&[data-disabled]") {
