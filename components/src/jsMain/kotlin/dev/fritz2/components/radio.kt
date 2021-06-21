@@ -6,6 +6,7 @@ import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
+import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -212,7 +213,7 @@ fun RenderContext.radio(
     styling: BasicParams.() -> Unit = {},
     value: Store<Boolean>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
+    id: String = value?.id ?: "radio-${uniqueId()}",
     prefix: String = "radioComponent",
     build: RadioComponent.() -> Unit = {}
 ): Label = RadioComponent(value).apply(build).render(this, styling, baseClass, id, prefix)

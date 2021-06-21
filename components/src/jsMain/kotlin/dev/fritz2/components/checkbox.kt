@@ -5,6 +5,7 @@ import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
+import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -195,7 +196,7 @@ fun RenderContext.checkbox(
     styling: BasicParams.() -> Unit = {},
     value: Store<Boolean>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
+    id: String = value?.id ?: "checkbox-${uniqueId()}",
     prefix: String = "checkboxComponent",
     build: CheckboxComponent.() -> Unit = {}
 ): Label = CheckboxComponent(value).apply(build).render(this, styling, baseClass, id, prefix)

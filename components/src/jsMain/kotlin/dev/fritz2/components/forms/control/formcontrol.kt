@@ -3,7 +3,7 @@ package dev.fritz2.components.forms.control
 import SelectFieldComponent
 import dev.fritz2.binding.Store
 import dev.fritz2.components.*
-import dev.fritz2.components.forms.control.FormControlComponent.Control
+import dev.fritz2.components.forms.control.FormControlComponent.ControlRegistration
 import dev.fritz2.components.forms.formGroupElementContainerMarker
 import dev.fritz2.components.forms.formGroupElementLabelMarker
 import dev.fritz2.components.forms.formGroupElementLegendMarker
@@ -55,8 +55,8 @@ import selectField
  * - [ControlGroupRenderer] for a control that consists of multiple parts (like checkBoxes etc.)
  *
  * If those do not fit, just implement the [ControlRenderer] interface and pair it with the string based key of the
- * related control wrapping function. Have a look at the init block, [renderStrategies] field and [Control.assignee]
- * field to learn how the mapping between control and rendering strategy is done.
+ * related control wrapping function. Have a look at the init block, [renderStrategies] field and
+ * [ControlRegistration.assignee] field to learn how the mapping between control and rendering strategy is done.
  *
  */
 open class FormControlComponent : Component<Unit>, FormProperties by FormMixin() {
@@ -73,20 +73,28 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         }
     }
 
-    class Control {
+    data class Control(
+        val id: String,
+        val name: String,
+        val rendering: RenderContext.() -> Unit
+    )
 
-        private val overflows: MutableList<String> = mutableListOf()
-        var assignee: Pair<String, (RenderContext.() -> Unit)>? = null
+    class ControlRegistration {
+
+        private val overflows: MutableList<Control> = mutableListOf()
+        var assignee: Control? = null
 
         fun set(
+            controlId: String,
             controlName: String,
             component: (RenderContext.() -> Unit),
         ): Boolean {
+            val control = Control(controlId, controlName, component)
             if (assignee == null) {
-                assignee = Pair(controlName, component)
+                assignee = control
                 return true
             } else {
-                overflows.add(controlName)
+                overflows.add(control)
             }
             return false
         }
@@ -95,9 +103,10 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
             if (overflows.isNotEmpty()) {
                 console.error(
                     UnsupportedOperationException(
-                        message = "Only one control within a formControl is allowed! Accepted control: ${assignee?.first}"
+                        message = "Only one control within a formControl is allowed! Accepted control:"
+                                + "${assignee?.name} (${assignee?.id})"
                                 + " The following controls are not applied and overflow this form: "
-                                + overflows.joinToString(", ")
+                                + overflows.joinToString(", ") { "${it.name} (${it.id})" }
                                 + " Please remove those!"
                     )
                 )
@@ -116,11 +125,12 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
      *                  storage of validation messages from a passed in store.
      */
     protected fun registerControl(
+        controlId: String,
         controlName: String,
         component: (RenderContext.() -> Unit),
         onSuccess: FormControlComponent.() -> Unit = {}
     ) {
-        if (control.set(controlName, component)) {
+        if (controlRegistration.set(controlId, controlName, component)) {
             onSuccess(this)
         }
     }
@@ -141,7 +151,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         renderStrategies[controlName] = renderer
     }
 
-    private val control = Control()
+    val controlRegistration = ControlRegistration()
 
     object FormSizeContext {
         enum class FormSizeSpecifier {
@@ -230,12 +240,13 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         styling: BasicParams.() -> Unit = {},
         value: Store<String>? = null,
         baseClass: StyleClass = StyleClass.None,
-        id: String? = null,
+        id: String = value?.id ?: "inputField-${uniqueId()}",
         prefix: String = ControlNames.inputField,
         build: InputFieldComponent.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, value)
         registerControl(
+            id,
             ControlNames.inputField,
             {
                 inputField(styling, value, baseClass, id, prefix) {
@@ -252,12 +263,13 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         styling: BasicParams.() -> Unit = {},
         value: Store<Boolean>? = null,
         baseClass: StyleClass = StyleClass.None,
-        id: String? = null,
+        id: String = value?.id ?: "switch-${uniqueId()}",
         prefix: String = ControlNames.switch,
         build: SwitchComponent.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, value)
         registerControl(
+            id,
             ControlNames.switch,
             {
                 switch(styling, value, baseClass, id, prefix) {
@@ -274,12 +286,13 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         styling: BasicParams.() -> Unit = {},
         store: Store<String>? = null,
         baseClass: StyleClass = StyleClass.None,
-        id: String? = null,
+        id: String = store?.id ?: "textArea-${uniqueId()}",
         prefix: String = ControlNames.textArea,
         build: TextAreaComponent.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, store)
         registerControl(
+            id,
             ControlNames.textArea,
             {
                 textArea(styling, store, baseClass, id, prefix) {
@@ -296,12 +309,13 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         styling: BasicParams.() -> Unit = {},
         baseClass: StyleClass = StyleClass.None,
         value: Store<Boolean>? = null,
-        id: String? = null,
+        id: String = value?.id ?: "checkbox-${uniqueId()}",
         prefix: String = ControlNames.checkbox,
         build: CheckboxComponent.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, value)
         registerControl(
+            id,
             ControlNames.checkbox,
             {
                 checkbox({
@@ -321,12 +335,13 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         items: List<T>,
         values: Store<List<T>>? = null,
         baseClass: StyleClass = StyleClass.None,
-        id: String? = null,
+        id: String = values?.id ?: "checkboxGroup-${uniqueId()}",
         prefix: String = ControlNames.checkboxGroup,
         build: CheckboxGroupComponent<T>.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, values)
         registerControl(
+            id,
             ControlNames.checkboxGroup,
             {
                 checkboxGroup(styling, items, values, baseClass, id, prefix) {
@@ -344,12 +359,13 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         items: List<T>,
         value: Store<T>? = null,
         baseClass: StyleClass = StyleClass.None,
-        id: String? = null,
+        id: String = value?.id ?: "radioGroup-${uniqueId()}",
         prefix: String = ControlNames.radioGroup,
         build: RadioGroupComponent<T>.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, value)
         registerControl(
+            id,
             ControlNames.radioGroup,
             {
                 radioGroup(styling, items, value, baseClass, id, prefix) {
@@ -367,12 +383,13 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         items: List<T>,
         value: Store<T>? = null,
         baseClass: StyleClass = StyleClass.None,
-        id: String? = null,
+        id: String = value?.id ?: "selectField-${uniqueId()}",
         prefix: String = ControlNames.selectField,
         build: SelectFieldComponent<T>.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, value)
         registerControl(
+            id,
             ControlNames.selectField,
             {
                 selectField(
@@ -396,12 +413,13 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         styling: BasicParams.() -> Unit = {},
         value: Store<Int>? = null,
         baseClass: StyleClass = StyleClass.None,
-        id: String? = null,
+        id: String = value?.id ?: "slider-${uniqueId()}",
         prefix: String = ControlNames.slider,
         build: SliderComponent.() -> Unit = {}
     ) {
         val validationMessagesBuilder = ValidationResult.builderOf(this, value)
         registerControl(
+            id,
             ControlNames.slider,
             {
                 slider(styling, value, baseClass, id, prefix) {
@@ -421,14 +439,14 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         id: String?,
         prefix: String
     ) {
-        control.assignee?.second?.let {
-            renderStrategies[control.assignee?.first]?.render(
+        controlRegistration.assignee?.rendering?.let {
+            renderStrategies[controlRegistration.assignee?.name]?.render(
                 {
                     styling()
                 }, baseClass, id, prefix, context, it
             )
         }
-        control.assert()
+        controlRegistration.assert()
     }
 
     open fun renderHelperText(renderContext: RenderContext) {
@@ -510,7 +528,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
                 label({
                     component.labelStyle.value()
                 }) {
-                    // for
+                    component.controlRegistration.assignee?.let { `for`(it.id) }
                     className(formGroupElementLabelMarker)
                     +component.label.value
                 }

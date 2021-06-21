@@ -1,5 +1,6 @@
 package dev.fritz2.binding
 
+import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
@@ -194,7 +195,7 @@ fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
  */
 open class RootStore<T>(
     initialData: T,
-    override val id: String = ""
+    override val id: String = uniqueId()
 ) : Store<T> {
 
     private val state: MutableStateFlow<T> = MutableStateFlow(initialData)
@@ -255,4 +256,4 @@ open class RootStore<T>(
  * @param initialData the first current value of this [Store]
  * @param id the id of this store. ids of [SubStore]s will be concatenated.
  */
-fun <T> storeOf(initialData: T, id: String = "") = RootStore(initialData, id)
+fun <T> storeOf(initialData: T, id: String = uniqueId()) = RootStore(initialData, id)

@@ -198,7 +198,7 @@ fun <T> RenderContext.selectField(
     items: List<T>,
     value: Store<T>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
+    id: String = value?.id ?: "selectField-${uniqueId()}",
     prefix: String = "selectField",
     build: SelectFieldComponent<T>.() -> Unit,
 ) {
