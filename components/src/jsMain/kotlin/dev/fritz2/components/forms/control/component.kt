@@ -1,6 +1,5 @@
 package dev.fritz2.components.forms.control
 
-import SelectFieldComponent
 import dev.fritz2.binding.Store
 import dev.fritz2.components.*
 import dev.fritz2.components.forms.control.FormControlComponent.ControlRegistration
@@ -20,8 +19,6 @@ import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import selectField
-
 
 /**
  * This interface defines a type for the rendering of one [formControl].

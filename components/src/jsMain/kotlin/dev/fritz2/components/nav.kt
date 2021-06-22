@@ -1,4 +1,5 @@
-import dev.fritz2.components.*
+package dev.fritz2.components
+
 import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.*
@@ -77,7 +78,7 @@ open class NavLinkComponent : Component<Listener<MouseEvent>> {
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
- * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param prefix the prefix for the generated CSS class resulting in the form `$prefix-$hash`
  * @param build a lambda expression for setting up the component itself. Details in [NavLinkComponent]
  * @return a listener that offers the clicks on this link
  */
@@ -102,7 +103,7 @@ fun RenderContext.navLink(
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
- * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param prefix the prefix for the generated CSS class resulting in the form `$prefix-$hash`
  */
 @ExperimentalCoroutinesApi
 fun RenderContext.navSection(

@@ -1,5 +1,6 @@
+package dev.fritz2.components
+
 import dev.fritz2.binding.Store
-import dev.fritz2.components.*
 import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.selectedValue
@@ -16,7 +17,7 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLElement
 
 /**
- * This class offers configuration for a selectField element:
+ * This class offers configuration for a [selectField] element:
  *  - element size
  *  - placeholder text
  *  - icon
@@ -24,9 +25,9 @@ import org.w3c.dom.HTMLElement
  *  - the text which is shown -> label
  *  - disabling the element
  *
- *  The functional expression ``build``, which is the last parameter of the factory function, offers
+ *  The functional expression `build`, which is the last parameter of the factory function, offers
  *  an initialized instance of this [SelectFieldComponent] class as receiver, so every mutating
- *  method can be called for configuring the desired state for rendering the selectField.
+ *  method can be called for configuring the desired state for rendering the [selectField].
  *
  *  For a detailed explanation and examples of usage, have a look at the [selectField] function itself.
  */
@@ -144,7 +145,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
 }
 
 /**
- * This function generates a selectField element.
+ * This function generates a [selectField] element.
  *
  * You have to pass a store as value in order to handle the selected value,
  * and the events will be connected automatically.
@@ -189,7 +190,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
  * @param value for backing up the preselected item and reflecting the selection automatically.
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
- * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
+ * @param prefix the prefix for the generated CSS class resulting in the form `$prefix-$hash`
  * @param build a lambda expression for setting up the component itself. Details in [SelectFieldComponent]
  *
  */
@@ -202,5 +203,5 @@ fun <T> RenderContext.selectField(
     prefix: String = "selectField",
     build: SelectFieldComponent<T>.() -> Unit,
 ) {
-    SelectFieldComponent<T>(items, value).apply(build).render(this, styling, baseClass, id, prefix)
+    SelectFieldComponent(items, value).apply(build).render(this, styling, baseClass, id, prefix)
 }
