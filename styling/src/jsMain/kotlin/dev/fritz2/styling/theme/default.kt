@@ -1782,6 +1782,53 @@ open class DefaultTheme : Theme {
         }
     }
 
+    override val formGroup = object : FormGroupStyles {
+        override val base: Style<GridParams> = {
+            rowGap { normal }
+        }
+
+        override val label = object : FormGroupLabelStyles {
+            override val placement = "top"
+
+            override val alignmentLabel: BasicParams.(Map<String, String>) -> Unit = { breakpoints ->
+                margins(
+                    sm = { applyMarginOnPlacementLeftForLabel(breakpoints["sm"], this) },
+                    md = { applyMarginOnPlacementLeftForLabel(breakpoints["md"], this) },
+                    lg = { applyMarginOnPlacementLeftForLabel(breakpoints["lg"], this) },
+                    xl = { applyMarginOnPlacementLeftForLabel(breakpoints["xl"], this) },
+                )
+            }
+
+            private fun applyMarginOnPlacementLeftForLabel(breakpoint: String?, context: SpacesContext) {
+                if (breakpoint != null && breakpoint == "left") {
+                    context.apply {
+                        top { small }
+                        left { small }
+                        right { small }
+                    }
+                }
+            }
+
+            override val alignmentLegend: BasicParams.(Map<String, String>) -> Unit = { breakpoints ->
+                margins(
+                    sm = { applyMarginOnPlacementLeftForLegend(breakpoints["sm"], this) },
+                    md = { applyMarginOnPlacementLeftForLegend(breakpoints["md"], this) },
+                    lg = { applyMarginOnPlacementLeftForLegend(breakpoints["lg"], this) },
+                    xl = { applyMarginOnPlacementLeftForLegend(breakpoints["xl"], this) },
+                )
+            }
+
+            private fun applyMarginOnPlacementLeftForLegend(breakpoint: String?, context: SpacesContext) {
+                if (breakpoint != null && breakpoint == "left") {
+                    context.apply {
+                        left { small }
+                        right { small }
+                    }
+                }
+            }
+        }
+    }
+
 
     override val dropdown: DropdownStyles = object : DropdownStyles {
         override val container: Style<BasicParams> = {

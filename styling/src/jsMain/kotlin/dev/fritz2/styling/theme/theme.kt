@@ -206,6 +206,8 @@ interface Theme {
 
     val formControl: FormControlStyles
 
+    val formGroup: FormGroupStyles
+
     val alert: AlertStyles
 
     val toast: ToastStyles
