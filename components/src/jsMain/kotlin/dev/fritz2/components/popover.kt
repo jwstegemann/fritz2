@@ -6,6 +6,7 @@ import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.key
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -53,8 +54,8 @@ open class PopoverComponent : Component<Unit>,
         val staticCss = staticStyle(
             "popover",
             """
-                  display: inline-block;
-                  position: relative;  
+              display: inline-block;
+              position: relative;
             """
         )
     }
@@ -145,25 +146,10 @@ open class PopoverComponent : Component<Unit>,
         }
     }
 
-    private val visibilityStore = object : RootStore<Boolean>(false) {
+    private val visible = object : RootStore<Boolean>(false) {
         val toggle = handle { !it }
-        val close = handleAndEmit<Boolean, Unit> { open, close ->
-            if (open && close) {
-                emit(Unit)
-            }
-            open
-        }
-
-        init {
-            close handledBy toggle
-        }
+        val closeOnKey = handle<Key> { _, _ -> false }
     }
-
-    /**
-     * Visibility is controlled internally by default but
-     * can manually be controlled via the this property
-     */
-    val visible = DynamicComponentProperty(visibilityStore.data)
 
     override fun render(
         context: RenderContext,
@@ -175,18 +161,16 @@ open class PopoverComponent : Component<Unit>,
         context.apply {
 
             if (this@PopoverComponent.closeOnEscape.value) {
-                Window.keyups.map {
-                    Key(it) == Keys.Escape
-                } handledBy this@PopoverComponent.visibilityStore.close
+                Window.keyups.key().filter { it == Keys.Escape } handledBy this@PopoverComponent.visible.closeOnKey
             }
 
             div(staticCss.name, id) {
                 div({ Theme().popover.toggle() }, prefix = "popover-toggle") {
-                    clicks.events.map { } handledBy this@PopoverComponent.visibilityStore.toggle
                     this@PopoverComponent.toggle.value?.invoke(this)
+                    clicks handledBy this@PopoverComponent.visible.toggle
                 }
                 lateinit var popoverElement: HTMLElement
-                this@PopoverComponent.visibilityStore.data.render {
+                this@PopoverComponent.visible.data.render {
                     if (it) {
                         popoverElement = this@PopoverComponent.renderPopover(
                             this,
@@ -196,7 +180,7 @@ open class PopoverComponent : Component<Unit>,
                         )
                     }
                 }
-                this@PopoverComponent.visibilityStore.data.onEach {
+                this@PopoverComponent.visible.data.onEach {
                     if (it) popoverElement.focus()
                 }.watch()
             }
@@ -224,15 +208,14 @@ open class PopoverComponent : Component<Unit>,
             }
             if (this@PopoverComponent.hasCloseButton.value) {
                 this@PopoverComponent.closeButtonRendering.value(this) handledBy
-                        this@PopoverComponent.visibilityStore.toggle
+                        this@PopoverComponent.visible.toggle
             }
             this@PopoverComponent.header?.invoke(this)
             this@PopoverComponent.content?.invoke(this)
             this@PopoverComponent.footer?.invoke(this)
 
             if (this@PopoverComponent.closeOnBlur.value) {
-                blurs.events.debounce(100).map { } handledBy
-                        this@PopoverComponent.visibilityStore.toggle
+                blurs.map{}.debounce(100) handledBy this@PopoverComponent.visible.toggle
             }
         }.domNode
     }
@@ -254,6 +237,4 @@ fun RenderContext.popover(
     id: String? = null,
     prefix: String = "popover",
     build: PopoverComponent.() -> Unit = {}
-) {
-    PopoverComponent().apply(build).render(this, styling, baseClass, id, prefix)
-}
+) = PopoverComponent().apply(build).render(this, styling, baseClass, id, prefix)

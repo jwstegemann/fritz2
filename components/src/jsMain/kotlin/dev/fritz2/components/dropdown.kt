@@ -10,7 +10,6 @@ import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.section
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import org.w3c.dom.HTMLElement
 
@@ -83,16 +82,9 @@ open class DropdownComponent : Component<Unit> {
     val alignment = ComponentProperty<AlignmentContext.() -> Alignment> { start }
     val content = ComponentProperty<RenderContext.() -> Unit> { }
 
-    private val visibilityStore = object : RootStore<Boolean>(false) {
+    private val visible = object : RootStore<Boolean>(false) {
         val toggle = handle { !it }
     }
-
-    /**
-     * Visibility is controlled internally by default but
-     * can manually be controlled via the this property
-     */
-    val visible = DynamicComponentProperty(visibilityStore.data)
-
 
     override fun render(
         context: RenderContext,
@@ -105,11 +97,11 @@ open class DropdownComponent : Component<Unit> {
             div(Theme().dropdown.container, id = id) {
                 div {
                     this@DropdownComponent.toggle.value(this)
-                    clicks.events.map { } handledBy this@DropdownComponent.visibilityStore.toggle
+                    clicks handledBy this@DropdownComponent.visible.toggle
                 }
 
                 lateinit var dropDown: HTMLElement
-                this@DropdownComponent.visible.values.render { visible ->
+                this@DropdownComponent.visible.data.render { visible ->
                     if (visible) {
                         dropDown = this@DropdownComponent.renderDropdown(
                             this,
@@ -119,7 +111,7 @@ open class DropdownComponent : Component<Unit> {
                         )
                     }
                 }
-                this@DropdownComponent.visible.values.onEach { visible ->
+                this@DropdownComponent.visible.data.onEach { visible ->
                     if (visible) dropDown.focus()
                 }.watch()
             }
@@ -132,7 +124,8 @@ open class DropdownComponent : Component<Unit> {
         baseClass: StyleClass,
         prefix: String
     ): HTMLElement = with(context) {
-        section({
+        section(
+            {
                 Theme().dropdown.dropdown()
                 val placement = this@DropdownComponent.placement.value.invoke(PlacementContext)
                 val isVerticalPlacement = (placement == Placement.Top || placement == Placement.Bottom)
@@ -154,8 +147,7 @@ open class DropdownComponent : Component<Unit> {
             prefix = prefix
         ) {
             attr("tabindex", "-1")
-            blurs.events.debounce(100)
-                .map { } handledBy this@DropdownComponent.visibilityStore.toggle
+            blurs.map{}.debounce(100) handledBy this@DropdownComponent.visible.toggle
 
             this@DropdownComponent.content.value(this)
         }
@@ -179,6 +171,4 @@ fun RenderContext.dropdown(
     id: String? = null,
     prefix: String = "dropdown",
     build: DropdownComponent.() -> Unit,
-) = DropdownComponent()
-    .apply(build)
-    .render(this, styling, baseClass, id, prefix)
+) = DropdownComponent().apply(build).render(this, styling, baseClass, id, prefix)
