@@ -159,4 +159,4 @@ fun <X : Element> DomListener<KeyboardEvent, X>.key(): Flow<Key> = events.map { 
 /**
  * Gives you the pressed key as [Key] from a [KeyboardEvent].
  */
-fun <X : Element> WindowListener<KeyboardEvent>.key(): Flow<Key> = events.map { Key(it) }
+fun WindowListener<KeyboardEvent>.key(): Flow<Key> = events.map { Key(it) }
