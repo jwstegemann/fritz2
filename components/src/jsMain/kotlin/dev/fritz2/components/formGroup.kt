@@ -1,6 +1,5 @@
 package dev.fritz2.components
 
-import dev.fritz2.components.forms.control.FormControlComponent
 import dev.fritz2.components.forms.group.FormGroupComponent
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass

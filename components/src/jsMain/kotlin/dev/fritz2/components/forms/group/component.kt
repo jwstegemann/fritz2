@@ -2,20 +2,26 @@ package dev.fritz2.components.forms.group
 
 import dev.fritz2.components.Component
 import dev.fritz2.components.ComponentProperty
+import dev.fritz2.components.formGroup
 import dev.fritz2.components.forms.formGroupElementContainerMarker
 import dev.fritz2.components.forms.formGroupElementLabelMarker
 import dev.fritz2.components.forms.formGroupElementLegendMarker
 import dev.fritz2.components.gridBox
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.DisplayProperty
+import dev.fritz2.styling.params.DisplayValues
+import dev.fritz2.styling.params.GridTemplateContext
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
 
 /**
- * This component class manages the configuration of a formGroup and does the rendering.
+ * This component class manages the configuration of a [formGroup] and does the rendering.
  *
- * For details of the usage see its factory function formGroup.
+ * For details of the usage see its factory function [formGroup].
+ *
+ * @see formGroup
  */
 open class FormGroupComponent : Component<Unit> {
 

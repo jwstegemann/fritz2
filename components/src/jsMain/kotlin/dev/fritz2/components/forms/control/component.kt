@@ -5,15 +5,13 @@ import dev.fritz2.binding.Store
 import dev.fritz2.components.*
 import dev.fritz2.components.forms.control.FormControlComponent.ControlRegistration
 import dev.fritz2.components.forms.formGroupElementContainerMarker
-import dev.fritz2.components.forms.formGroupElementLabelMarker
-import dev.fritz2.components.forms.formGroupElementLegendMarker
 import dev.fritz2.components.slider.SliderComponent
 import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.components.validation.validationMessages
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.identification.uniqueId
-import dev.fritz2.styling.*
+import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.p
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
@@ -24,6 +22,26 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import selectField
 
+
+/**
+ * This interface defines a type for the rendering of one [formControl].
+ *
+ * As there are different kind of controls, it is necessary to make the rendering a strategy!
+ * This offers also an easy way to customize the rendering, if the default implementations do not fit.
+ *
+ * Remember to apply necessary CSS marker classes to the container elements [formGroupElementContainerMarker] of the
+ * rendered structure.
+ */
+interface ControlRenderer {
+    fun render(
+        styling: BoxParams.() -> Unit = {},
+        baseClass: StyleClass = StyleClass.None,
+        id: String? = null,
+        prefix: String = "formControl",
+        context: RenderContext,
+        control: RenderContext.() -> Unit
+    )
+}
 
 /**
  * This component class manages the configuration of a [formControl] and some render centric functionalities.
@@ -164,7 +182,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
 
     }
 
-    fun ownSize(): Style<BasicParams> = when (size.value(FormSizeContext)) {
+    val ownSize: Style<BasicParams> get() = when (size.value(FormSizeContext)) {
         FormSizeContext.FormSizeSpecifier.small -> Theme().formControl.sizes.small
         FormSizeContext.FormSizeSpecifier.normal -> Theme().formControl.sizes.normal
         FormSizeContext.FormSizeSpecifier.large -> Theme().formControl.sizes.large
@@ -478,118 +496,3 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         }
     }
 }
-
-/**
- * This interface defines a type for the rendering of one form control.
- *
- * As there are different kind of controls, it is necessary to make the rendering a strategy!
- * This offers also an easy way to customize the rendering, if the default implementations do not fit.
- *
- * Remember to apply necessary CSS marker classes to the container elements [formGroupElementContainerMarker] of the
- * rendered structure.
- */
-interface ControlRenderer {
-    fun render(
-        styling: BoxParams.() -> Unit = {},
-        baseClass: StyleClass = StyleClass.None,
-        id: String? = null,
-        prefix: String = "formControl",
-        renderContext: RenderContext,
-        control: RenderContext.() -> Unit
-    )
-}
-
-/**
- * This implementation of a [ControlRenderer] is meant for controls that offer a single control field, like
- * an [inputField] or a [selectField], which have only the one label, that the form control adds.
- */
-class SingleControlRenderer(private val component: FormControlComponent) : ControlRenderer {
-    override fun render(
-        styling: BoxParams.() -> Unit,
-        baseClass: StyleClass,
-        id: String?,
-        prefix: String,
-        renderContext: RenderContext,
-        control: RenderContext.() -> Unit
-    ) {
-        renderContext.stackUp(
-            {
-                alignItems { start }
-                width { full }
-                component.ownSize()()
-                styling(this as BoxParams)
-            },
-            baseClass = baseClass,
-            id = id,
-            prefix = prefix
-        ) {
-            spacing { tiny }
-            items {
-                label({
-                    component.labelStyle.value()
-                }) {
-                    component.controlRegistration.assignee?.id?.let { `for`(it) }
-                    className(formGroupElementLabelMarker)
-                    +component.label.value
-                }
-                stackUp({
-                    alignItems { start }
-                    width { full }
-                }) {
-                    spacing { none }
-                    items {
-                        control(this)
-                        component.renderHelperText(this)
-                        component.renderValidationMessages(this)
-                    }
-                }
-            }
-        }.apply {
-            className(formGroupElementContainerMarker)
-        }
-    }
-
-}
-
-/**
- * This implementation of a [ControlRenderer] is meant for controls that offer multiple control field, like
- * a [checkboxGroup] or a [radioGroup], which already have labels for each control and rather a legend element that
- * the form control adds.
- */
-class ControlGroupRenderer(private val component: FormControlComponent) : ControlRenderer {
-    override fun render(
-        styling: BoxParams.() -> Unit,
-        baseClass: StyleClass,
-        id: String?,
-        prefix: String,
-        renderContext: RenderContext,
-        control: RenderContext.() -> Unit
-    ) {
-        renderContext.div({
-            width { full }
-        }) {
-            className(formGroupElementContainerMarker)
-            fieldset({
-                component.ownSize()()
-                styling()
-            }, baseClass, id, prefix) {
-                className(formGroupElementContainerMarker)
-                legend({
-                    component.labelStyle.value()
-                }) {
-                    className(formGroupElementLegendMarker)
-                    +component.label.value
-                }
-                stackUp {
-                    spacing { none }
-                    items {
-                        control(this)
-                        component.renderHelperText(this)
-                        component.renderValidationMessages(this)
-                    }
-                }
-            }
-        }
-    }
-}
-
