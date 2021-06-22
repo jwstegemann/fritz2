@@ -422,7 +422,7 @@ open class DefaultTheme : Theme {
         """.trimIndent()
     }
 
-    override val icons = MonoIcons()
+    override val icons: Icons = MonoIcons()
 
     override val input = object : InputFieldStyles {
         override val sizes = object : FormSizes {
