@@ -5,7 +5,6 @@ import dev.fritz2.binding.Store
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
-import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.input
 import dev.fritz2.styling.name
@@ -159,7 +158,7 @@ fun RenderContext.inputField(
     styling: BasicParams.() -> Unit = {},
     value: Store<String>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String = value?.id ?: "inputField-${uniqueId()}",
+    id: String? = null,
     prefix: String = "inputField",
     build: InputFieldComponent.() -> Unit = {}
 ) {

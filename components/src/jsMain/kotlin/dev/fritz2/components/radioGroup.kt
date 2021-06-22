@@ -213,7 +213,7 @@ fun <T> RenderContext.radioGroup(
     items: List<T>,
     value: Store<T>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String = value?.id ?: "inputField-${uniqueId()}",
+    id: String? = null,
     prefix: String = "radioGroupComponent",
     build: RadioGroupComponent<T>.() -> Unit = {}
 ) {

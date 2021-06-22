@@ -201,7 +201,7 @@ fun RenderContext.switch(
     styling: BasicParams.() -> Unit = {},
     value: Store<Boolean>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String = value?.id ?: "switch-${uniqueId()}",
+    id: String? = null,
     prefix: String = "switchComponent",
     build: SwitchComponent.() -> Unit = {}
 ): Label = SwitchComponent(value).apply(build).render(this, styling, baseClass, id, prefix)

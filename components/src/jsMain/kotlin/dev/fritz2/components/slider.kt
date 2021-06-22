@@ -3,7 +3,6 @@ package dev.fritz2.components
 import dev.fritz2.binding.Store
 import dev.fritz2.components.slider.SliderComponent
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 
@@ -23,7 +22,7 @@ fun RenderContext.slider(
     styling: BasicParams.() -> Unit = {},
     value: Store<Int>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String = value?.id ?: "slider-${uniqueId()}",
+    id: String? = null,
     prefix: String = "slider",
     build: SliderComponent.() -> Unit = {}
 ) {

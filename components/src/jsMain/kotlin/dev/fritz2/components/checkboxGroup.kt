@@ -237,7 +237,7 @@ fun <T> RenderContext.checkboxGroup(
     items: List<T>,
     values: Store<List<T>>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String = values?.id ?: "checkboxGroup-${uniqueId()}",
+    id: String? = null,
     prefix: String = "checkboxGroupComponent",
     build: CheckboxGroupComponent<T>.() -> Unit = {}
 ) {

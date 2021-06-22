@@ -153,7 +153,7 @@ fun RenderContext.textArea(
     styling: BasicParams.() -> Unit = {},
     value: Store<String>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String = value?.id ?: "textArea-${uniqueId()}",
+    id: String? = null,
     prefix: String = "textArea",
     build: TextAreaComponent.() -> Unit
 ) {
