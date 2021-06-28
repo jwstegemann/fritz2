@@ -31,8 +31,9 @@ import kotlinx.coroutines.flow.flowOf
  * - 'subtle': A subtle style using different shades of the severity's base color defined in the application theme.
  * - 'solid': A solid style using the severity's color from the application theme and a solid white color for the icon,
  * text and decorations.
- * - 'Top-Accent': A variation of the 'subtle' variant with a decoration element at the top.
- * - 'Left-Accent': A variation of the 'subtle' variant with a decoration element on the left.
+ * - 'leftAccent': A variation of the 'subtle' variant with a decoration element at the top.
+ * - 'topAccent': A variation of the 'subtle' variant with a decoration element on the left.
+ * - 'ghost': This variant does not have any decoration besides the icon (no background, similar to 'ghost' in push-buttons)
  * If no variant is specified, 'solid' is used by default.
  *
  * Usage examples:
@@ -73,7 +74,7 @@ open class AlertComponent : Component<Unit> {
     }
 
     enum class AlertVariant {
-        SOLID, SUBTLE, LEFT_ACCENT, TOP_ACCENT, DISCREET
+        SOLID, SUBTLE, LEFT_ACCENT, TOP_ACCENT, GHOST
     }
 
     object VariantContext {
@@ -81,7 +82,7 @@ open class AlertComponent : Component<Unit> {
         val subtle = AlertVariant.SUBTLE
         val leftAccent = AlertVariant.LEFT_ACCENT
         val topAccent = AlertVariant.TOP_ACCENT
-        val discreet = AlertVariant.DISCREET
+        val ghost = AlertVariant.GHOST
     }
 
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
@@ -146,7 +147,7 @@ open class AlertComponent : Component<Unit> {
                     AlertVariant.SUBTLE -> Theme().alert.variants.subtle
                     AlertVariant.LEFT_ACCENT -> Theme().alert.variants.leftAccent
                     AlertVariant.TOP_ACCENT -> Theme().alert.variants.topAccent
-                    AlertVariant.DISCREET -> Theme().alert.variants.discreet
+                    AlertVariant.GHOST -> Theme().alert.variants.ghost
                 }.invoke(this, this@AlertComponent.severity.value(Theme().alert.severities).colorScheme)
                 styling()
             }, alertCss) {

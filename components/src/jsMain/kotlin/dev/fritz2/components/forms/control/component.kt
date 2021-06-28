@@ -232,7 +232,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
             message.asAlert(this) {
                 size(this@FormControlComponent.sizeBuilder)
                 stacking { compact }
-                variant { discreet }
+                variant { ghost }
             }
         }
 

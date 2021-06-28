@@ -1527,7 +1527,7 @@ open class DefaultTheme : Theme {
                     }
                 }
             }
-            override val discreet: BasicParams.(ColorScheme) -> Unit = { _ ->
+            override val ghost: BasicParams.(ColorScheme) -> Unit = { _ ->
                 background { color { background } }
                 color { font }
             }
