@@ -644,7 +644,7 @@ interface AlertVariants {
     val solid: BasicParams.(ColorScheme) -> Unit
     val leftAccent: BasicParams.(ColorScheme) -> Unit
     val topAccent: BasicParams.(ColorScheme) -> Unit
-    val discreet: BasicParams.(ColorScheme) -> Unit
+    val ghost: BasicParams.(ColorScheme) -> Unit
 }
 
 
