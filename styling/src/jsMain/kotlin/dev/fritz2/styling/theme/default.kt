@@ -1842,32 +1842,61 @@ open class DefaultTheme : Theme {
 
         override val dropdown: Style<BasicParams> = {
             width(
-                sm = { "100%" },
+                sm = { full },
+                md = { maxContent }
+            )
+            height(
+                sm = { full },
                 md = { maxContent }
             )
             overflow(
                 sm = { hidden },
                 md = { visible }
             )
-            radius { "6px" }
+            overflowY(
+                sm = { scroll },
+                md = { auto }
+            )
 
-            zIndex { dropdown }
+            zIndex(
+                sm = { dropdown raiseBy 2000 },
+                md = { dropdown }
+            )
+
             boxShadow { raised }
             background { color { background } }
+            radius { "6px" }
 
             focus {
                 css("outline:none")
             }
+        }
 
-            // FIXME: Animation not working
-            //opacity { "1" }
-            //css("transition: opacity 1s ease-in-out;")
+        override val closeButton: Style<BasicParams> = {
+            display(
+                sm = { block },
+                md = { none }
+            )
+            position {
+                absolute {
+                    top { tiny }
+                    right { tiny }
+                }
+            }
+            color { primary.main }
         }
 
         override val placements = object : DropdownPlacements {
+            private val fullscreenOverlayPositioning: PositionContext.() -> Unit = {
+                fixed {
+                    vertical { none }
+                    horizontal { none }
+                }
+            }
+
             override val left: Style<BasicParams> = {
                 position(
-                    sm = { absolute { left { "0px" } } },
+                    sm = fullscreenOverlayPositioning,
                     md = {
                         absolute {
                             left { auto }
@@ -1878,7 +1907,7 @@ open class DefaultTheme : Theme {
             }
             override val right: Style<BasicParams> = {
                 position(
-                    sm = { absolute { left { "0px" } } },
+                    sm = fullscreenOverlayPositioning,
                     md = {
                         absolute {
                             left { "100%" }
@@ -1888,7 +1917,7 @@ open class DefaultTheme : Theme {
             }
             override val top: Style<BasicParams> = {
                 position(
-                    sm = { absolute { left { "0px" } } }
+                    sm = fullscreenOverlayPositioning
                 )
                 position(
                     md = {
@@ -1900,7 +1929,7 @@ open class DefaultTheme : Theme {
             }
             override val bottom: Style<BasicParams> = {
                 position(
-                    sm = { absolute { left { "0px" } } },
+                    sm = fullscreenOverlayPositioning,
                     md = {
                         absolute {
                             top { "100%" }
@@ -1967,14 +1996,14 @@ open class DefaultTheme : Theme {
 
         override val container: Style<BasicParams> = {
             minWidth { "50px" }
-            maxWidth { maxContent }
+            maxWidth { full }
             paddings {
                 vertical { smaller }
             }
         }
 
         override val entry: Style<BoxParams> = {
-            width { "100%" }
+            width { full }
             display { flex }
             justifyContent { start }
             margin { auto }

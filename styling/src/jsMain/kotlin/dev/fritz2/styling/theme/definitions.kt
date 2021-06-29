@@ -684,6 +684,7 @@ interface ToastButton {
 interface DropdownStyles {
     val container: Style<BasicParams>
     val dropdown: Style<BasicParams>
+    val closeButton: Style<BasicParams>
     val placements: DropdownPlacements
     val alignments: DropdownAlignments
 }

@@ -1,7 +1,9 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.watch
+import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
@@ -9,6 +11,8 @@ import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.section
 import dev.fritz2.styling.theme.Theme
+import kotlinx.browser.document
+import kotlinx.browser.window
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onEach
 import org.w3c.dom.HTMLElement
@@ -45,7 +49,9 @@ import org.w3c.dom.HTMLElement
  * }
  * ```
  */
-open class DropdownComponent : Component<Unit> {
+open class DropdownComponent :
+    Component<Unit>,
+    CloseButtonProperty by CloseButtonMixin(defaultStyle = Theme().dropdown.closeButton) {
 
     enum class Placement {
         Left,
@@ -85,6 +91,8 @@ open class DropdownComponent : Component<Unit> {
     private val visible = object : RootStore<Boolean>(false) {
         val toggle = handle { !it }
     }
+    val toggleVisiblity: SimpleHandler<Unit>
+        get() = visible.toggle
 
     override fun render(
         context: RenderContext,
@@ -147,12 +155,14 @@ open class DropdownComponent : Component<Unit> {
             prefix = prefix
         ) {
             attr("tabindex", "-1")
+
             blurs.map{}.debounce(100) handledBy this@DropdownComponent.visible.toggle
+            // TODO: respect value of hasClosebutton?
+            this@DropdownComponent.closeButtonRendering.value(this) handledBy this@DropdownComponent.visible.toggle
 
             this@DropdownComponent.content.value(this)
         }
     }.domNode
-
 }
 
 /**
