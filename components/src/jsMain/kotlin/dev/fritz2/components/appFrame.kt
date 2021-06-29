@@ -1,17 +1,20 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.TextElement
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+
+internal class StyledContent<S: BasicParams>(
+    val styling: Style<S> = {},
+    val context: RenderContext.() -> Unit = {}
+)
 
 /**
  * This class combines the _configuration_ and the core rendering of the app-frame.
@@ -62,13 +65,15 @@ open class AppFrameComponent : Component<Unit> {
     private val sidebarStatus = storeOf(false)
     private val toggleSidebar = sidebarStatus.handle { !it }
 
-    private val openSideBar = staticStyle("open-sidebar",
+    private val openSideBar = staticStyle(
+        "open-sidebar",
         """@media (max-width: ${Theme().breakPoints.md}) {
                 transform: translateX(0) !important;
          }""".trimIndent()
     )
 
-    private val showBackdrop = staticStyle("show-backdrop",
+    private val showBackdrop = staticStyle(
+        "show-backdrop",
         """@media (max-width: ${Theme().breakPoints.md}) {
                 left : 0 !important;
                 opacity: 1 !important;
@@ -96,24 +101,66 @@ open class AppFrameComponent : Component<Unit> {
         boxShadow(sm = { flat }, md = { none })
     }
 
-    val brand = ComponentProperty<Div.() -> Unit> {}
-    val header = ComponentProperty<RenderContext.() -> Unit> {}
-    val actions = ComponentProperty<RenderContext.() -> Unit> {}
-    val sidebarToggle = ComponentProperty<RenderContext.(SimpleHandler<Unit>) -> Unit> { sidebarToggle ->
-        clickButton({
-            display(md = { none })
-            padding { none }
-            margins { left { "-.5rem" } }
-        }) {
-            variant { link }
-            icon { menu }
-        } handledBy sidebarToggle
+    private var brand = StyledContent<FlexParams>()
+    fun brand(context: RenderContext.() -> Unit) {
+        brand = StyledContent(context = context)
     }
-    val nav = ComponentProperty<TextElement.() -> Unit> {}
-    val main = ComponentProperty<TextElement.() -> Unit> {}
-    val footer = ComponentProperty<(TextElement.() -> Unit)?>(null)
-    val tabs = ComponentProperty<(Div.() -> Unit)?>(null)
+    fun brand(styling: Style<FlexParams>, context: RenderContext.() -> Unit) {
+        brand = StyledContent(styling, context)
+    }
 
+    private var header = StyledContent<FlexParams>()
+    fun header(context: RenderContext.() -> Unit) {
+        header = StyledContent(context = context)
+    }
+    fun header(styling: Style<FlexParams>, context: RenderContext.() -> Unit) {
+        header = StyledContent(styling, context)
+    }
+
+    private var actions = StyledContent<BoxParams>()
+    fun actions(context: RenderContext.() -> Unit) {
+        actions = StyledContent(context = context)
+    }
+    fun actions(styling: Style<BoxParams>, context: RenderContext.() -> Unit) {
+        actions = StyledContent(styling, context)
+    }
+
+    private var nav = StyledContent<BoxParams>()
+    fun nav(context: RenderContext.() -> Unit) {
+        nav = StyledContent(context = context)
+    }
+    fun nav(styling: Style<BoxParams>, context: RenderContext.() -> Unit) {
+        nav = StyledContent(styling, context)
+    }
+
+    private var main = StyledContent<BoxParams>()
+    fun main(context: RenderContext.() -> Unit) {
+        main = StyledContent(context = context)
+    }
+    fun main(styling: Style<BoxParams>, context: RenderContext.() -> Unit) {
+        main = StyledContent(styling, context)
+    }
+
+    private var footer: StyledContent<BoxParams>? = null
+    fun footer(context: RenderContext.() -> Unit) {
+        footer = StyledContent(context = context)
+    }
+    fun footer(styling: Style<BoxParams>, context: RenderContext.() -> Unit) {
+        footer = StyledContent(styling, context)
+    }
+
+    private var tabs: StyledContent<FlexParams>? = null
+    fun tabs(context: RenderContext.() -> Unit) {
+        tabs = StyledContent(context = context)
+    }
+    fun tabs(styling: Style<FlexParams>, context: RenderContext.() -> Unit) {
+        tabs = StyledContent(styling, context)
+    }
+
+    val sidebarToggle = ComponentProperty<PushButtonComponent.() -> Unit> {
+        variant { link }
+        icon { menu }
+    }
 
     override fun render(
         context: RenderContext,
@@ -154,8 +201,9 @@ open class AppFrameComponent : Component<Unit> {
                 flexBox({
                     height { Theme().appFrame.headerHeight }
                     Theme().appFrame.brand()
+                    this@AppFrameComponent.brand.styling()
                 }) {
-                    this@AppFrameComponent.brand.value(this)
+                    this@AppFrameComponent.brand.context(this)
                 }
             }
 
@@ -165,18 +213,27 @@ open class AppFrameComponent : Component<Unit> {
                 flexBox({
                     height { Theme().appFrame.headerHeight }
                     Theme().appFrame.header()
+                    this@AppFrameComponent.header.styling()
                 }) {
                     lineUp({
                         alignItems { center }
                     }) {
                         spacing { tiny }
                         items {
-                            this@AppFrameComponent.sidebarToggle.value(this, this@AppFrameComponent.toggleSidebar)
-                            this@AppFrameComponent.header.value(this)
+                            clickButton({
+                                display(md = { none })
+                                padding { none }
+                                margins { left { "-.5rem" } }
+                            }) {
+                                this@AppFrameComponent.sidebarToggle.value(this)
+                            } handledBy this@AppFrameComponent.toggleSidebar
+                            this@AppFrameComponent.header.context(this)
                         }
                     }
-                    section {
-                        this@AppFrameComponent.actions.value(this)
+                    section({
+                        this@AppFrameComponent.actions.styling()
+                    }) {
+                        this@AppFrameComponent.actions.context(this)
                     }
                 }
             }
@@ -200,14 +257,16 @@ open class AppFrameComponent : Component<Unit> {
                 }) {
                     section({
                         Theme().appFrame.nav()
+                        this@AppFrameComponent.nav.styling()
                     }) {
-                        this@AppFrameComponent.nav.value(this)
+                        this@AppFrameComponent.nav.context(this)
                     }
-                    this@AppFrameComponent.footer.value?.let { footer ->
+                    this@AppFrameComponent.footer?.let { footer ->
                         section({
                             Theme().appFrame.footer()
+                            footer.styling()
                         }) {
-                            footer(this)
+                            footer.context(this)
                         }
                     }
                 }
@@ -218,19 +277,21 @@ open class AppFrameComponent : Component<Unit> {
                 overflow { dev.fritz2.styling.params.OverflowValues.auto }
                 Theme().appFrame.main()
                 styling()
+                this@AppFrameComponent.main.styling()
             }, styling, baseClass, id, prefix) {
-                this@AppFrameComponent.main.value(this)
+                this@AppFrameComponent.main.context(this)
             }
 
-            this@AppFrameComponent.tabs.value?.let { tabs ->
+            this@AppFrameComponent.tabs?.let { tabs ->
                 flexBox({
                     grid { area { "footer" } }
                     direction { row }
                     alignItems { center }
                     justifyContent { spaceEvenly }
                     Theme().appFrame.tabs()
+                    tabs.styling()
                 }) {
-                    tabs(this)
+                    tabs.context(this)
                 }
             }
         }
