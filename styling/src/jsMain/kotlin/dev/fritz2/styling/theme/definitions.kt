@@ -736,9 +736,7 @@ interface AppFrameStyles {
     val header: Style<FlexParams>
     val main: Style<BasicParams>
     val tabs: Style<FlexParams>
-    val navLink: Style<FlexParams>
-    val activeNavLink: Style<FlexParams>
-    val navSection: Style<BasicParams>
+    val backdrop: Style<BasicParams>
 }
 
 interface DataTableStyles {

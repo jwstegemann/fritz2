@@ -1581,7 +1581,6 @@ open class DefaultTheme : Theme {
                 css("top:0px")
             }
             override val topRight: Style<BasicParams> = {
-
                 css("top:0px")
                 css("right:0px")
             }
@@ -1589,16 +1588,12 @@ open class DefaultTheme : Theme {
                 css("bottom:0px")
                 css("right:0px")
                 css("left:0px")
-
-
             }
             override val bottomLeft: Style<BasicParams> = {
-
                 css("bottom:0px")
                 css("left:0px")
             }
             override val bottomRight: Style<BasicParams> = {
-
                 css("bottom:0px")
                 css("right:0px")
             }
@@ -2042,34 +2037,41 @@ open class DefaultTheme : Theme {
     }
 
     override val appFrame: AppFrameStyles = object : AppFrameStyles {
+        val brandColor: ColorScheme
+            get() = colors.primary
+
+        val navColor: ColorScheme
+            get() = colors.tertiary
+
+        val headerColor: ColorScheme
+            get() = colors.neutral
+
+        val mainColor: ColorScheme
+            get() = colors.neutral
+
         override val headerHeight: Property = "3.6rem"
         override val footerMinHeight: Property = "2.8rem"
         override val mobileSidebarWidth: Property = "85vw"
 
         override val brand: Style<FlexParams> = {
-            //background { color { "rgb(44, 49, 54)"} }
-            background { color { primary.main } }
+            background { color { brandColor.main } }
             paddings {
                 all { small }
                 left { normal }
             }
-            color { primary.mainContrast }
+            color { brandColor.mainContrast }
             alignItems { center }
             borders {
                 bottom {
-                    width { "1px " }
-                    color { gray400 }
+                    width { "1px" }
+                    color { navColor.mainContrast }
                 }
             }
         }
 
         override val sidebar: Style<BasicParams> = {
-//            css(
-//                sm = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary.base} 20%);",
-//                lg = "background: linear-gradient(0deg, ${Theme().colors.dark} 0%, ${Theme().colors.primary.base} 20%);"
-//            )
-            background { color { primary.main } }
-            color { primary.mainContrast }
+            background { color { navColor.main } }
+            color { navColor.mainContrast }
             minWidth { "22vw" }
         }
 
@@ -2085,7 +2087,7 @@ open class DefaultTheme : Theme {
             borders {
                 top {
                     width { "1px" }
-                    color { gray400 }
+                    color { navColor.mainContrast }
                 }
             }
         }
@@ -2097,7 +2099,8 @@ open class DefaultTheme : Theme {
             }
             alignItems { center }
             justifyContent { spaceBetween }
-            color { "rgb(44, 49, 54)" }
+            color { headerColor.mainContrast }
+            background { color { headerColor.main } }
             borders {
                 bottom {
                     width { "1px " }
@@ -2109,8 +2112,8 @@ open class DefaultTheme : Theme {
 
         override val main: Style<BasicParams> = {
             padding { normal }
-            background { color { gray100 } }
-            color { "rgb(44, 49, 54)" }
+            background { color { mainColor.main } }
+            color { mainColor.mainContrast }
         }
 
         override val tabs: Style<FlexParams> = {
@@ -2143,51 +2146,10 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val navLink: Style<FlexParams> = {
-            css("cursor: pointer;")
-            paddings {
-                vertical { "0.6rem" }
-                horizontal { small }
-            }
-            alignItems { center }
-            borders {
-                left {
-                    width { "0.2rem" }
-                    color { "transparent" }
-                }
-            }
-            children(" .icon") {
-                size { large }
-                margins {
-                    left { tiny }
-                }
-            }
-            children(" a") {
-                display { block }
-                fontWeight { "500" }
-                fontSize { ".9rem" }
-            }
-        }
-
-        override val activeNavLink: Style<FlexParams> = {
-            background { color { "rgba(0,0,0,0.2)" } }
-            borders {
-                left {
-                    color { gray300.important }
-                }
-            }
-        }
-
-        override val navSection: Style<BasicParams> = {
-            paddings {
-                vertical { "0.5rem" }
-                horizontal { small }
-            }
-            margins { top { small } }
-            textTransform { uppercase }
-            fontWeight { semiBold }
-            fontSize { ".8rem" }
-            color { gray400 }
+        override val backdrop: Style<BasicParams> = {
+            opacity { "0" }
+            background { color { "rgba(0,0,0,0.8)" } }
+            css("transition: opacity .3s ease-in;")
         }
     }
 

@@ -34,7 +34,6 @@ internal class StyledContent<S: BasicParams>(
  * The rendering function is used by the component factory functions [appFrame], so it is
  * not meant to be called directly unless you plan to implement your own appFrame.
  */
-@ExperimentalCoroutinesApi
 open class AppFrameComponent : Component<Unit> {
     companion object {
         init {
@@ -95,7 +94,7 @@ open class AppFrameComponent : Component<Unit> {
             will-change: transform;
             transition: 
                 transform .4s ease-in,
-                visibility .4s linear;        
+                visibility .4s linear;
             """.trimIndent()
         )
         boxShadow(sm = { flat }, md = { none })
@@ -174,8 +173,6 @@ open class AppFrameComponent : Component<Unit> {
                 display(
                     sm = { block },
                     md = { none })
-                opacity { "0" }
-                background { color { "rgba(0,0,0,0.8)" } }
                 position {
                     fixed {
                         top { "0" }
@@ -186,7 +183,7 @@ open class AppFrameComponent : Component<Unit> {
                 height { "min(100vh, 100%)" }
                 css("height: -webkit-fill-available;")
                 zIndex { appFrame raiseBy -10 }
-                css("transition: opacity .3s ease-in;")
+                Theme().appFrame.backdrop()
             }, prefix = "backdrop") {
                 className(this@AppFrameComponent.showBackdrop.whenever(this@AppFrameComponent.sidebarStatus.data).name)
                 clicks handledBy this@AppFrameComponent.toggleSidebar
@@ -202,7 +199,7 @@ open class AppFrameComponent : Component<Unit> {
                     height { Theme().appFrame.headerHeight }
                     Theme().appFrame.brand()
                     this@AppFrameComponent.brand.styling()
-                }) {
+                }, prefix = "brand") {
                     this@AppFrameComponent.brand.context(this)
                 }
             }
@@ -214,7 +211,7 @@ open class AppFrameComponent : Component<Unit> {
                     height { Theme().appFrame.headerHeight }
                     Theme().appFrame.header()
                     this@AppFrameComponent.header.styling()
-                }) {
+                }, prefix = "header") {
                     lineUp({
                         alignItems { center }
                     }) {
@@ -232,7 +229,7 @@ open class AppFrameComponent : Component<Unit> {
                     }
                     section({
                         this@AppFrameComponent.actions.styling()
-                    }) {
+                    }, prefix = "actions") {
                         this@AppFrameComponent.actions.context(this)
                     }
                 }
@@ -258,7 +255,7 @@ open class AppFrameComponent : Component<Unit> {
                     section({
                         Theme().appFrame.nav()
                         this@AppFrameComponent.nav.styling()
-                    }) {
+                    }, prefix = "nav") {
                         this@AppFrameComponent.nav.context(this)
                     }
                     this@AppFrameComponent.footer?.let { footer ->
@@ -290,7 +287,7 @@ open class AppFrameComponent : Component<Unit> {
                     justifyContent { spaceEvenly }
                     Theme().appFrame.tabs()
                     tabs.styling()
-                }) {
+                }, prefix = "tabs") {
                     tabs.context(this)
                 }
             }
@@ -326,7 +323,7 @@ fun RenderContext.appFrame(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
-    prefix: String = "app",
+    prefix: String = "main",
     build: AppFrameComponent.() -> Unit = {}
 ) {
     AppFrameComponent().apply(build).render(this, styling, baseClass, id, prefix)
