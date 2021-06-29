@@ -3,10 +3,7 @@ package dev.fritz2.components
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.*
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.FlexParams
-import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.*
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -124,12 +121,12 @@ open class AppFrameComponent : Component<Unit> {
         actions = StyledContent(styling, context)
     }
 
-    private var nav = StyledContent<BoxParams>()
-    fun nav(context: RenderContext.() -> Unit) {
-        nav = StyledContent(context = context)
+    private var nav = NavSectionComponent()
+    fun nav(context: NavSectionComponent.() -> Unit) {
+        nav = NavSectionComponent().apply(context)
     }
-    fun nav(styling: Style<BoxParams>, context: RenderContext.() -> Unit) {
-        nav = StyledContent(styling, context)
+    fun nav(styling: Style<BoxParams>, context: NavSectionComponent.() -> Unit) {
+        nav = NavSectionComponent(styling).apply(context)
     }
 
     private var main = StyledContent<BoxParams>()
@@ -252,11 +249,8 @@ open class AppFrameComponent : Component<Unit> {
                     maxHeight { "-webkit-fill-available" }
                     overflow { auto }
                 }) {
-                    section({
-                        Theme().appFrame.nav()
-                        this@AppFrameComponent.nav.styling()
-                    }, prefix = "nav") {
-                        this@AppFrameComponent.nav.context(this)
+                    section(Theme().appFrame.nav.container + this@AppFrameComponent.nav.styling, prefix = "nav") {
+                        this@AppFrameComponent.nav.render(this)
                     }
                     this@AppFrameComponent.footer?.let { footer ->
                         section({
@@ -290,6 +284,21 @@ open class AppFrameComponent : Component<Unit> {
                 }, prefix = "tabs") {
                     tabs.context(this)
                 }
+            }
+        }
+    }
+}
+
+open class NavSectionComponent(
+    val styling: Style<BoxParams> = {},
+) : MenuContext<NavSectionComponent>() {
+
+    override val styles = Theme().appFrame.nav.menu
+
+    fun render(context: RenderContext) {
+        context.apply {
+            this@NavSectionComponent.children.forEach {
+                it.render(this, styles)
             }
         }
     }

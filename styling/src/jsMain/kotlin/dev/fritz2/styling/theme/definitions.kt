@@ -708,6 +708,7 @@ interface DropdownAlignments {
  */
 interface MenuStyles {
     val container: Style<BasicParams>
+    val sub: Style<BoxParams>
     val entry: Style<BoxParams>
     val header: Style<BasicParams>
     val divider: Style<BasicParams>
@@ -731,12 +732,17 @@ interface AppFrameStyles {
     val mobileSidebarWidth: Property
     val brand: Style<FlexParams>
     val sidebar: Style<BasicParams>
-    val nav: Style<BasicParams>
+    val nav: NavStyles
     val footer: Style<BasicParams>
     val header: Style<FlexParams>
     val main: Style<BasicParams>
     val tabs: Style<FlexParams>
     val backdrop: Style<BasicParams>
+}
+
+interface NavStyles {
+    val container: Style<BasicParams>
+    val menu: MenuStyles
 }
 
 interface DataTableStyles {

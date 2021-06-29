@@ -1968,6 +1968,12 @@ open class DefaultTheme : Theme {
             }
         }
 
+        override val sub: Style<BoxParams> = {
+            paddings {
+                left { large }
+            }
+        }
+
         override val entry: Style<BoxParams> = {
             width { "100%" }
             display { flex }
@@ -2075,9 +2081,60 @@ open class DefaultTheme : Theme {
             minWidth { "22vw" }
         }
 
-        override val nav: Style<BasicParams> = {
-            paddings {
-                top { tiny }
+        override val nav: NavStyles = object : NavStyles {
+            override val container: Style<BasicParams> = {
+                paddings {
+                    top { tiny }
+                }
+            }
+
+            override val menu: MenuStyles = object : MenuStyles {
+
+                override val container: Style<BasicParams> = {
+                    minWidth { "50px" }
+                    paddings {
+                        vertical { smaller }
+                    }
+                }
+
+                override val sub: Style<BoxParams> = {
+                    children("*") {
+                        paddings {
+                            left { large }
+                        }
+                    }
+                }
+
+                override val entry: Style<BoxParams> = {
+                    width { "100%" }
+                    paddings {
+                        horizontal { normal }
+                        vertical { smaller }
+                    }
+                    hover {
+                        background { color { navColor.highlight } }
+                    }
+                }
+
+                override val header: Style<BasicParams> = {
+                    color { navColor.main }
+                    fontSize { fontSizes.large }
+                    fontWeight { bold }
+                    css("white-space: nowrap")
+                }
+
+                override val divider: Style<BasicParams> = {
+                    height { "1px" }
+                    background { color { navColor.mainContrast } }
+                }
+
+                override val custom: Style<BasicParams> = {
+                    width { "100%" }
+                    paddings {
+                        horizontal { normal }
+                        vertical { smaller }
+                    }
+                }
             }
         }
 
