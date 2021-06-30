@@ -2,7 +2,6 @@ package dev.fritz2.components.typeAhead
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
-import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
 import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.RenderContext
@@ -14,23 +13,34 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.InputFieldVariants
 import dev.fritz2.styling.theme.Theme
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
 
 
-typealias Proposal = (String) -> Flow<List<String>>
+internal typealias Proposal = (String) -> Flow<List<String>>
+internal typealias Accepted = (List<String>, String) -> String
 
-class DraftStore(private val propose: Proposal, timeout: Long) : RootStore<String>("") {
-    val proposals = data
-        .debounce(timeout)
-        .flatMapLatest { propose(it) }
-        .stateIn(MainScope(), SharingStarted.Lazily, emptyList())
+internal data class State(
+    val draft: String = "",
+    val selected: String = "",
+    val proposals: List<String> = emptyList()
+)
 
-    fun acceptOnlyProposals(value: String) = if (isProposal(value)) value else ""
-    fun acceptDraft(value: String) = value
+internal class StateStore(private val propose: Proposal, accepted: Accepted) : RootStore<State>(State()) {
+    val draft = data.map { it.draft }
+    val selected = data.map { it.selected }
+    val proposals = data.map { it.proposals.filter { proposal -> proposal != it.draft } }
 
-    private fun isProposal(draft: String) = proposals.value.contains(draft)
+    private var preselectEnabled = true
+
+    val preselect = handle<String> { state, draft ->
+        if (preselectEnabled) {
+            preselectEnabled = false
+            val proposals = propose(draft).first()
+            State(draft, selected = accepted(proposals, draft), proposals = proposals)
+        } else state
+    }
+
 }
 
 /**
@@ -60,7 +70,11 @@ open class TypeAheadComponent(protected val valueStore: Store<String>?) :
 
     val events = ComponentProperty<EventsContext<String>.() -> Unit> {}
 
-    protected val result = storeOf("")
+    private fun acceptOnlyProposals(proposals: List<String>, value: String) =
+        if (proposals.contains(value)) value else ""
+
+    // TODO: Howto drop warning "unused param" here? (Signature *must* remain imho!)
+    private fun acceptDraft(proposals: List<String>, value: String) = value
 
     override fun render(
         context: RenderContext,
@@ -69,22 +83,20 @@ open class TypeAheadComponent(protected val valueStore: Store<String>?) :
         id: String?,
         prefix: String
     ) {
-        val draft = DraftStore(propose.value, debounce.value)
+        val accepted = if (strict.value) ::acceptOnlyProposals else ::acceptDraft
+        val internalStore = StateStore(propose.value, accepted)
         val proposalsId = "proposals-{${uniqueId()}}"
-        val resultPicker = if (strict.value) draft::acceptOnlyProposals else draft::acceptDraft
 
         context.apply {
             (this@TypeAheadComponent.valueStore?.data
-                ?: this@TypeAheadComponent.value.values) handledBy this@TypeAheadComponent.result.update
-            // TODO: How do take first draft from value flow too if store is null?
-            this@TypeAheadComponent.valueStore?.current?.let { draft.update(it) }
+                ?: this@TypeAheadComponent.value.values) handledBy internalStore.preselect
 
             inputField(
                 {
                     this as BoxParams
                     styling(this)
                 },
-                value = draft, baseClass, id, prefix
+                baseClass = baseClass, id = id, prefix = prefix
             ) {
                 variant { this@TypeAheadComponent.variant.value(Theme().input.variants) }
                 size { this@TypeAheadComponent.size.value(Theme().input.sizes) }
@@ -93,26 +105,30 @@ open class TypeAheadComponent(protected val valueStore: Store<String>?) :
                     attr("list", proposalsId)
                     autocomplete("off") // needed for FF
                 }
+                value(internalStore.draft)
                 events {
-                    inputs.events.map { domNode.value } handledBy draft.update
-                    // TODO: Extract this for better doccumenting!
-                    //  e.g. give examples with states!
-                    blurs.events.combine(this@TypeAheadComponent.result.data) { _, result -> result }.map {
-                        it.ifBlank { "" }
-                    } handledBy draft.update
-                    // must be called *after* blurs!!! -> changing draft after valid result shall not clean draft!
-                    inputs.events.map { resultPicker(domNode.value) } handledBy this@TypeAheadComponent.result.update
+                    inputs.events.debounce(this@TypeAheadComponent.debounce.value)
+                        .flatMapLatest { this@TypeAheadComponent.propose.value(domNode.value) }
+                        .map { proposals ->
+                            with(domNode.value) {
+                                State(this, accepted(proposals, this), proposals)
+                            }
+                        } handledBy internalStore.update
+
+                    blurs.events.map {
+                        with(internalStore.current) { copy(draft = this.selected.ifBlank { "" }) }
+                    } handledBy internalStore.update
                 }
             }
             datalist(id = proposalsId) {
-                draft.proposals.renderEach {
+                internalStore.proposals.renderEach {
                     option {
                         attr("value", it)
                     }
                 }
             }
 
-            EventsContext(this, this@TypeAheadComponent.result.data).apply {
+            EventsContext(this, internalStore.selected).apply {
                 this@TypeAheadComponent.events.value(this)
                 this@TypeAheadComponent.valueStore?.let { value handledBy it.update }
             }
