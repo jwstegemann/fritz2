@@ -1975,10 +1975,8 @@ open class DefaultTheme : Theme {
         }
 
         override val entry: Style<BoxParams> = {
-            width { "100%" }
-            display { flex }
-            justifyContent { start }
-            margin { auto }
+            width { full }
+            textAlign { left }
             paddings {
                 horizontal { normal }
                 vertical { smaller }
@@ -2050,7 +2048,7 @@ open class DefaultTheme : Theme {
             get() = colors.tertiary
 
         val headerColor: ColorScheme
-            get() = colors.neutral
+            get() = colors.primary
 
         val mainColor: ColorScheme
             get() = colors.neutral
@@ -2079,16 +2077,32 @@ open class DefaultTheme : Theme {
             background { color { navColor.main } }
             color { navColor.mainContrast }
             minWidth { "22vw" }
+            borders {
+                right {
+                    width { "1px" }
+                    color { navColor.mainContrast }
+                }
+            }
         }
 
-        override val nav: NavStyles = object : NavStyles {
+        override val navbar: NavStyles = object : NavStyles {
             override val container: Style<BasicParams> = {
+                width { full }
                 paddings {
-                    top { tiny }
+                    horizontal { smaller }
+                    vertical { tiny }
                 }
             }
 
             override val menu: MenuStyles = object : MenuStyles {
+
+                private val base: Style<BasicParams> = {
+                    width { full }
+                    paddings {
+                        vertical { smaller }
+                        horizontal { smaller }
+                    }
+                }
 
                 override val container: Style<BasicParams> = {
                     minWidth { "50px" }
@@ -2098,42 +2112,47 @@ open class DefaultTheme : Theme {
                 }
 
                 override val sub: Style<BoxParams> = {
-                    children("*") {
-                        paddings {
-                            left { large }
-                        }
+                    paddings {
+                        left { large }
                     }
                 }
 
                 override val entry: Style<BoxParams> = {
-                    width { "100%" }
-                    paddings {
-                        horizontal { normal }
-                        vertical { smaller }
-                    }
+                    base()
+                    textAlign { left }
+                    radius { "6px" }
+
                     hover {
+                        color { navColor.highlightContrast }
                         background { color { navColor.highlight } }
+                    }
+
+                    disabled {
+                        opacity { "0.4" }
+                        css("cursor: not-allowed")
                     }
                 }
 
                 override val header: Style<BasicParams> = {
-                    color { navColor.main }
+                    base()
+                    color { navColor.mainContrast }
                     fontSize { fontSizes.large }
                     fontWeight { bold }
                     css("white-space: nowrap")
                 }
 
                 override val divider: Style<BasicParams> = {
-                    height { "1px" }
-                    background { color { navColor.mainContrast } }
-                }
-
-                override val custom: Style<BasicParams> = {
-                    width { "100%" }
-                    paddings {
+                    margins {
                         horizontal { normal }
                         vertical { smaller }
                     }
+                    background { color { navColor.mainContrast } }
+                    height { "1px" }
+                    opacity { "0.4" }
+                }
+
+                override val custom: Style<BasicParams> = {
+                    base()
                 }
             }
         }
