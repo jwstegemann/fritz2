@@ -168,74 +168,6 @@ open class MenuComponent : Component<Unit>, MenuContext<MenuComponent>() {
 }
 
 /**
- * This class combines the _configuration_ and the core rendering of a submenu inside a menu.
- *
- * A submenu consists of different types of children that are aligned vertically.
- * By default the following types can be added to the menu:
- * - entries (see [MenuEntry])
- * - dividers (see [MenuDivider])
- *
- * It is also possible to add any other fritz2 component via the `custom` context.
- * All menu items are created directly within the [SubMenuComponent]'s build context.
- *
- * Example usage:
- * ```kotlin
- * menu {
- *      entry {
- *          icon { add }
- *          text("Item")
- *      }
- *      divider()
- *      submenu {
- *          entry {
- *              icon { add }
- *              text("Item")
- *          }
- *      }
- *      divider()
- *      header("A subsection starts here")
- *      custom {
- *          // custom content
- *          spinner { }
- *      }
- * }
- * ```
- *
- * The menu-entry-DSL can be extended via standard Kotlin extension methods. Custom entries must implement the
- * `Component<Unit>` interface and are added to the Menu via the [MenuComponent.addChild] method
- * which is accessible from within the extension method.
- *
- * The following example adds an instance of `MyMenuEntry` to the Menu.
- * Notice that `addChild` is invoked in the end; the entry wouldn't be added otherwise!
- *
- * ```kotlin
- * fun MenuComponent.example(build: MyMenuEntry.() -> Unit) = MyMenuEntry()
- *      .apply(build)
- *      .run(::addChild)
- * ```
- */
-open class SubMenuComponent(val styling: Style<BoxParams>,
-                            val baseClass: StyleClass,
-                            val id: String?,
-                            val prefix: String) : MenuChild, MenuContext<MenuComponent>() {
-
-    override fun render(context: RenderContext, styles: MenuStyles) {
-        context.apply {
-            div(styles.sub + this@SubMenuComponent.styling,
-                this@SubMenuComponent.baseClass,
-                this@SubMenuComponent.id,
-                this@SubMenuComponent.prefix
-            ) {
-                this@SubMenuComponent.children.forEach {
-                    it.render(this, this@SubMenuComponent.styles)
-                }
-            }
-        }
-    }
-
-}
-
-/**
  * Creates a menu.
  *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
@@ -350,6 +282,73 @@ open class MenuDivider(private val styling: Style<BoxParams> = {}) : MenuChild {
     override fun render(context: RenderContext, styles: MenuStyles) {
         context.apply {
             div(styles.divider + this@MenuDivider.styling) { }
+        }
+    }
+}
+
+/**
+ * This class combines the _configuration_ and the core rendering of a submenu inside a menu.
+ *
+ * A submenu consists of different types of children that are aligned vertically.
+ * By default the following types can be added to the menu:
+ * - entries (see [MenuEntry])
+ * - dividers (see [MenuDivider])
+ *
+ * It is also possible to add any other fritz2 component via the `custom` context.
+ * All menu items are created directly within the [SubMenuComponent]'s build context.
+ *
+ * Example usage:
+ * ```kotlin
+ * menu {
+ *      entry {
+ *          icon { add }
+ *          text("Item")
+ *      }
+ *      divider()
+ *      submenu {
+ *          entry {
+ *              icon { add }
+ *              text("Item")
+ *          }
+ *      }
+ *      divider()
+ *      header("A subsection starts here")
+ *      custom {
+ *          // custom content
+ *          spinner { }
+ *      }
+ * }
+ * ```
+ *
+ * The menu-entry-DSL can be extended via standard Kotlin extension methods. Custom entries must implement the
+ * `Component<Unit>` interface and are added to the Menu via the [MenuComponent.addChild] method
+ * which is accessible from within the extension method.
+ *
+ * The following example adds an instance of `MyMenuEntry` to the Menu.
+ * Notice that `addChild` is invoked in the end; the entry wouldn't be added otherwise!
+ *
+ * ```kotlin
+ * fun MenuComponent.example(build: MyMenuEntry.() -> Unit) = MyMenuEntry()
+ *      .apply(build)
+ *      .run(::addChild)
+ * ```
+ */
+open class SubMenuComponent(val styling: Style<BoxParams>,
+                            val baseClass: StyleClass,
+                            val id: String?,
+                            val prefix: String) : MenuChild, MenuContext<MenuComponent>() {
+
+    override fun render(context: RenderContext, styles: MenuStyles) {
+        context.apply {
+            div(styles.sub + this@SubMenuComponent.styling,
+                this@SubMenuComponent.baseClass,
+                this@SubMenuComponent.id,
+                this@SubMenuComponent.prefix
+            ) {
+                this@SubMenuComponent.children.forEach {
+                    it.render(this, styles)
+                }
+            }
         }
     }
 }
