@@ -121,12 +121,12 @@ open class AppFrameComponent : Component<Unit> {
         actions = StyledContent(styling, context)
     }
 
-    private var nav = NavSectionComponent()
-    fun nav(context: NavSectionComponent.() -> Unit) {
-        nav = NavSectionComponent().apply(context)
+    private var navbar = NavSectionComponent()
+    fun navbar(context: NavSectionComponent.() -> Unit) {
+        navbar = NavSectionComponent().apply(context)
     }
-    fun nav(styling: Style<BoxParams>, context: NavSectionComponent.() -> Unit) {
-        nav = NavSectionComponent(styling).apply(context)
+    fun navbar(styling: Style<BoxParams>, context: NavSectionComponent.() -> Unit) {
+        navbar = NavSectionComponent(styling).apply(context)
     }
 
     private var main = StyledContent<BoxParams>()
@@ -249,8 +249,8 @@ open class AppFrameComponent : Component<Unit> {
                     maxHeight { "-webkit-fill-available" }
                     overflow { auto }
                 }) {
-                    section(Theme().appFrame.nav.container + this@AppFrameComponent.nav.styling, prefix = "nav") {
-                        this@AppFrameComponent.nav.render(this)
+                    section(Theme().appFrame.navbar.container + this@AppFrameComponent.navbar.styling, prefix = "nav") {
+                        this@AppFrameComponent.navbar.render(this)
                     }
                     this@AppFrameComponent.footer?.let { footer ->
                         section({
@@ -265,7 +265,7 @@ open class AppFrameComponent : Component<Unit> {
 
             main({
                 grid { area { "main" } }
-                overflow { dev.fritz2.styling.params.OverflowValues.auto }
+                overflow { auto }
                 Theme().appFrame.main()
                 styling()
                 this@AppFrameComponent.main.styling()
@@ -293,10 +293,13 @@ open class NavSectionComponent(
     val styling: Style<BoxParams> = {},
 ) : MenuContext<NavSectionComponent>() {
 
-    override val styles = Theme().appFrame.nav.menu
+    override val styles = Theme().appFrame.navbar.menu
+
+    val content = ComponentProperty<RenderContext.() -> Unit> {}
 
     fun render(context: RenderContext) {
         context.apply {
+            content.value(this)
             this@NavSectionComponent.children.forEach {
                 it.render(this, styles)
             }
