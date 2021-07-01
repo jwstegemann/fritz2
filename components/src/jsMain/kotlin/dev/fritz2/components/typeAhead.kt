@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.Store
+import dev.fritz2.components.typeAhead.Proposal
 import dev.fritz2.components.typeAhead.TypeAheadComponent
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -20,10 +21,11 @@ import dev.fritz2.styling.params.BasicParams
 fun RenderContext.typeAhead(
     styling: BasicParams.() -> Unit = {},
     value: Store<String>? = null,
+    items: Proposal,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "typeAhead",
     build: TypeAheadComponent.() -> Unit = {}
 ) {
-    TypeAheadComponent(value).apply(build).render(this, styling, baseClass, id, prefix)
+    TypeAheadComponent(value, items).apply(build).render(this, styling, baseClass, id, prefix)
 }
