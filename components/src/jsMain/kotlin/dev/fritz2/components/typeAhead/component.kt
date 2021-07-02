@@ -7,11 +7,7 @@ import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.FormSizes
-import dev.fritz2.styling.theme.InputFieldVariants
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
@@ -133,25 +129,80 @@ internal class StateStore(private val propose: Proposal, accepted: Accepted) : R
 }
 
 /**
- * This component class manages the configuration of a [formGroup] and does the rendering.
+ * This component class manages the configuration of a [TypeAheadComponent] and does the rendering.
  *
- * For details of the usage see its factory function [formGroup].
+ * The corresponding [typeAhead] function creates such a component. It offers the possibility to input some [String]
+ * and get some list of proposals to choose from. Internally this is achieved by adding some datalist to the input field
+ * (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist).
  *
- * @see formGroup
+ * It is intentional that this component is built upon a built-in mechanism of HTML:
+ * Even if there is no way to style the choices list, it will work on any device out of the box, especially on mobiles,
+ * where the native selection methods differ extremely from the desktop browsers!
+ *
+ * The proposals adapt dynamically to the current user input, so it is mandating to provide a function that gets the
+ * current string (it is called "draft" throughout this component) and returns a [List] of [String]s as proposals.
+ * As this function should be easy to integrate with other fritz2's methodologies, the parameter and the return value
+ * are wrapped with a [Flow]. Have a look at [Proposal] for signature details.
+ *
+ * The typical (and minimal) usage might look like this:
+ * ```
+ * val proposals = listOf("Kotlin", "Scala", "Java", "OCaml", "Haskell").asProposals()
+ * val choice = storeOf("")
+ * typeAhead(value = choice, items = proposals) { }
+ * ```
+ * For production UIs consider a really long static list of possibilities. For the above example it would be much
+ * better to use a [selectField] instead! Choose a [typeAhead] if the possibilities are too long for a select
+ * component that displays all possibilities at once, or if the possibilities are gathered from an external source,
+ * like a remote API.
+ *
+ * The configuration deals basically with three big groups:
+ * - the options for forms basic behaviours ([enabled], [disabled] and [readonly])
+ * - the options for visual appearance ([variant], [size] and [placeholder]) that are typical for the internal
+ *   used [InputFieldComponent]
+ * - the options for manipulate the behaviour of getting or accepting the proposals ([value], [strict] and [debounce])
+ *
+ * We focus on the latter ones in the examples:
+ * ```
+ * // handle the events manually if separation of source and destination flow is needed:
+ * val proposals = listOf("Kotlin", "Scala", "Java", "OCaml", "Clojure", "F#").asProposals()
+ *
+ * val preselection = storeOf("Clojure")
+ * val choice = storeOf("")
+ * typeAhead(items = proposals) {
+ *     value(preselection.data)
+ *     events {
+ *         value handledBy choice.update
+ *     }
+ * }
+ *
+ * // enable to accept also none proposal input values:
+ * // this mode resembles a web search: the user gets proposals, but can freely type and commit new Strings if
+ * // no suggestion fits:
+ * typeAhead(value = choice, items = proposals) {
+ *     strict(false) // `true` is default
+ * }
+ *
+ * // react to typing speed or "cost" of a remote call: Change the timeout the component will wait with a new
+ * // execution of the `items` function to fetch new proposals after last key stroke:
+ * typeAhead(value = choice, items = /* some costly remote call */) {
+ *     debounce(1000) // wait one second in this case; `250` (ms) is default
+ * }
+ * ```
+ *
+ * @see [typeAhead]
+ *
+ * @param valueStore an instance of a [StateStore] for holding the state of the component
+ * @param items a function to create the valid proposals based upon the current [State.draft] value.
  */
 open class TypeAheadComponent(protected val valueStore: Store<String>?, protected val items: Proposal) :
     Component<Unit>,
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    InputFieldProperties by InputFieldMixin() {
 
     val value = DynamicComponentProperty(flowOf(""))
     val strict = ComponentProperty(true)
     val debounce = ComponentProperty(250L)
-
-    // TODO: Check if there is a nicer way to expose those input specific properties!
-    val variant = ComponentProperty<InputFieldVariants.() -> Style<BasicParams>> { Theme().input.variants.outline }
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().input.sizes.normal }
-    val placeholder = DynamicComponentProperty(flowOf(""))
 
     class EventsContext<String>(private val element: RenderContext, val value: Flow<String>) :
         EventContext<HTMLElement> by element
@@ -188,9 +239,12 @@ open class TypeAheadComponent(protected val valueStore: Store<String>?, protecte
                 },
                 baseClass = baseClass, id = id, prefix = prefix
             ) {
+                disabled(this@TypeAheadComponent.disabled.values)
+                readonly(this@TypeAheadComponent.readonly.values)
                 variant { this@TypeAheadComponent.variant.value(Theme().input.variants) }
                 size { this@TypeAheadComponent.size.value(Theme().input.sizes) }
                 placeholder(this@TypeAheadComponent.placeholder.values)
+                severity(this@TypeAheadComponent.severity.values)
                 element {
                     attr("list", proposalsId)
                     autocomplete("off") // needed for FF
