@@ -95,10 +95,11 @@ internal data class State(
  *
  * It also offers a function to [preselect] some item initially.
  */
-internal class StateStore(private val propose: Proposal, accepted: Accepted) : RootStore<State>(State()) {
+internal class StateStore(private val propose: Proposal, accepted: Accepted, limit: Int) :
+    RootStore<State>(State()) {
     val draft = data.map { it.draft }
     val selected = data.map { it.selected }
-    val proposals = data.map { it.proposals.filter { proposal -> proposal != it.draft } }
+    val proposals = data.map { it.proposals.filter { proposal -> proposal != it.draft } }.map { it.take(limit) }
 
     /**
      * This flag is used to enable the preselection possibility just for exactly one time at first rendering of
@@ -159,7 +160,8 @@ internal class StateStore(private val propose: Proposal, accepted: Accepted) : R
  * - the options for forms basic behaviours ([enabled], [disabled] and [readonly])
  * - the options for visual appearance ([variant], [size] and [placeholder]) that are typical for the internal
  *   used [InputFieldComponent]
- * - the options for manipulate the behaviour of getting or accepting the proposals ([value], [strict] and [debounce])
+ * - the options for manipulate the behaviour of getting or accepting the proposals ([value], [strict], [limit],
+ *   [draftThreshold] and [debounce])
  *
  * We focus on the latter ones in the examples:
  * ```
@@ -182,6 +184,18 @@ internal class StateStore(private val propose: Proposal, accepted: Accepted) : R
  *     strict(false) // `true` is default
  * }
  *
+ * // limit the proposal list: Show at maximum 5 first entries of the proposals list
+ * typeAhead(value = choice, items = proposals) {
+ *     limit(5) // `20` is default
+ * }
+ *
+ * // set a threshold of minimum string size of a draft, so below this no proposals are generated
+ * // this is especially useful if it is clear, that the smallest proposal is longer in size and there are
+ * // so many results, a longer start value before searching improves the selectivity.
+ * typeAhead(value = choice, items = proposals) {
+ *     draftThreshold(3) // start searching only after input of at least 3 chars; `0` is default
+ * }
+ *
  * // react to typing speed or "cost" of a remote call: Change the timeout the component will wait with a new
  * // execution of the `items` function to fetch new proposals after last key stroke:
  * typeAhead(value = choice, items = /* some costly remote call */) {
@@ -202,6 +216,8 @@ open class TypeAheadComponent(protected val valueStore: Store<String>?, protecte
 
     val value = DynamicComponentProperty(flowOf(""))
     val strict = ComponentProperty(true)
+    val limit = ComponentProperty(20)
+    val draftThreshold = ComponentProperty(0)
     val debounce = ComponentProperty(250L)
 
     class EventsContext<String>(private val element: RenderContext, val value: Flow<String>) :
@@ -225,7 +241,7 @@ open class TypeAheadComponent(protected val valueStore: Store<String>?, protecte
         prefix: String
     ) {
         val accepted = if (strict.value) acceptOnlyProposals else acceptDraft
-        val internalStore = StateStore(items, accepted)
+        val internalStore = StateStore(items, accepted, limit.value)
         val proposalsId = "proposals-{${uniqueId()}}"
 
         context.apply {
@@ -252,6 +268,7 @@ open class TypeAheadComponent(protected val valueStore: Store<String>?, protecte
                 value(internalStore.draft)
                 events {
                     inputs.events.debounce(this@TypeAheadComponent.debounce.value)
+                        .filter { domNode.value.length >= this@TypeAheadComponent.draftThreshold.value }
                         .onEach { this@TypeAheadComponent.draft.value = domNode.value }
                         .flatMapLatest { this@TypeAheadComponent.items(this@TypeAheadComponent.draft) }
                         .map { proposals ->
