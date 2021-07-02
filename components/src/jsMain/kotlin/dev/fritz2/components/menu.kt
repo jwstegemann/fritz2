@@ -3,6 +3,7 @@ package dev.fritz2.components
 import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.a
 import dev.fritz2.styling.button
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BoxParams
@@ -12,6 +13,7 @@ import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.MenuStyles
 import dev.fritz2.styling.theme.Theme
+import org.w3c.dom.HTMLAnchorElement
 import org.w3c.dom.HTMLButtonElement
 
 open class MenuContext<R> {
@@ -58,6 +60,25 @@ open class MenuContext<R> {
      * @param build Lambda to configure the component itself
      */
     fun entry(styling: Style<BoxParams>, build: MenuEntry.() -> Unit) = MenuEntry(styling)
+        .apply(build)
+        .run(::addChild)
+
+    /**
+     * Configures and adds a [MenuLink] to the menu.
+     *
+     * Use the overloaded version of this method to specify additional styling.
+     *
+     * @param build Lambda to configure the component itself
+     */
+    fun link(build: MenuLink.() -> Unit) = link({}, build)
+
+    /**
+     * Configures and adds a [MenuLink] to the menu.
+     *
+     * @param styling [Style] to be applied to the component
+     * @param build Lambda to configure the component itself
+     */
+    fun link(styling: Style<BoxParams>, build: MenuLink.() -> Unit) = MenuLink(styling)
         .apply(build)
         .run(::addChild)
 
@@ -211,7 +232,7 @@ open class MenuEntry(private val styling: Style<BoxParams> = {}) :
     FormProperties by FormMixin()
 {
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
-    val text = ComponentProperty("")
+    val text = ComponentProperty<String?>(null)
 
     override fun render(context: RenderContext, styles: MenuStyles) {
         context.apply {
@@ -219,12 +240,51 @@ open class MenuEntry(private val styling: Style<BoxParams> = {}) :
                 this@MenuEntry.icon.value?.let {
                     icon({
                         margins { right { smaller } }
+                        position { relative { top { "-1px" } } }
                     }) { def(it(Theme().icons)) }
                 }
-                span { +this@MenuEntry.text.value }
-
+                this@MenuEntry.text.value?.let { span { +it } }
                 disabled(this@MenuEntry.disabled.values)
                 this@MenuEntry.events.value.invoke(this)
+            }
+        }
+    }
+}
+
+/**
+ * This class combines the _configuration_ and the core rendering of a [MenuLink].
+ *
+ * A link entry is a special kind of [linkButton] consisting of a label and an optional icon used in dropdown menus.
+ * Just like a regular button it is clickable and can be enabled/disabled.
+ *
+ * It can be configured with an _icon_, a _text_ and can be enabled or disabled the same way as a regular button.
+ *
+ * @param styling Optional style to be applied to the underlying button-element
+ */
+open class MenuLink(private val styling: Style<BoxParams> = {}) :
+    MenuChild,
+    EventProperties<HTMLAnchorElement> by EventMixin(),
+    FormProperties by FormMixin()
+{
+    val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
+    val text = ComponentProperty<String?>(null)
+    val href = ComponentProperty<String?>(null)
+    val target = ComponentProperty<String?>(null)
+
+    override fun render(context: RenderContext, styles: MenuStyles) {
+        context.apply {
+            a(styles.entry + this@MenuLink.styling) {
+                this@MenuLink.icon.value?.let {
+                    icon({
+                        margins { right { smaller } }
+                        position { relative { top { "-1px" } } }
+                    }) { def(it(Theme().icons)) }
+                }
+                this@MenuLink.text.value?.let { span { +it } }
+                this@MenuLink.href.value?.let { href(it) }
+                this@MenuLink.target.value?.let { target(it) }
+                attr("disabled", this@MenuLink.disabled.values)
+                this@MenuLink.events.value.invoke(this)
             }
         }
     }

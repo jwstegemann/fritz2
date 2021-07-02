@@ -1976,7 +1976,9 @@ open class DefaultTheme : Theme {
 
         override val entry: Style<BoxParams> = {
             width { full }
-            textAlign { left }
+            display { flex }
+            justifyContent { start }
+            margin { auto }
             paddings {
                 horizontal { normal }
                 vertical { smaller }
@@ -1997,7 +1999,6 @@ open class DefaultTheme : Theme {
         override val header: Style<BasicParams> = {
             base()
             color { secondary.main }
-            fontSize { fontSizes.normal }
             fontWeight { bold }
             css("white-space: nowrap")
         }
@@ -2048,9 +2049,12 @@ open class DefaultTheme : Theme {
             get() = colors.tertiary
 
         val headerColor: ColorScheme
-            get() = colors.primary
+            get() = colors.secondary
 
         val mainColor: ColorScheme
+            get() = colors.neutral
+
+        val tabsColor: ColorScheme
             get() = colors.neutral
 
         override val headerHeight: Property = "3.6rem"
@@ -2065,24 +2069,19 @@ open class DefaultTheme : Theme {
             }
             color { brandColor.mainContrast }
             alignItems { center }
-            borders {
-                bottom {
-                    width { "1px" }
-                    color { navColor.mainContrast }
-                }
-            }
+//            borders {
+//                bottom {
+//                    width { "1px " }
+//                    style { solid }
+//                    color { gray200 }
+//                }
+//            }
         }
 
         override val sidebar: Style<BasicParams> = {
             background { color { navColor.main } }
             color { navColor.mainContrast }
             minWidth { "22vw" }
-            borders {
-                right {
-                    width { "1px" }
-                    color { navColor.mainContrast }
-                }
-            }
         }
 
         override val navbar: NavStyles = object : NavStyles {
@@ -2117,7 +2116,7 @@ open class DefaultTheme : Theme {
                     }
                 }
 
-                override val entry: Style<BoxParams> = {
+                override val entry: Style<BasicParams> = {
                     base()
                     textAlign { left }
                     radius { "6px" }
@@ -2136,7 +2135,6 @@ open class DefaultTheme : Theme {
                 override val header: Style<BasicParams> = {
                     base()
                     color { navColor.mainContrast }
-                    fontSize { fontSizes.large }
                     fontWeight { bold }
                     css("white-space: nowrap")
                 }
@@ -2177,13 +2175,13 @@ open class DefaultTheme : Theme {
             justifyContent { spaceBetween }
             color { headerColor.mainContrast }
             background { color { headerColor.main } }
-            borders {
-                bottom {
-                    width { "1px " }
-                    style { solid }
-                    color { gray200 }
-                }
-            }
+//            borders {
+//                bottom {
+//                    width { "1px " }
+//                    style { solid }
+//                    color { gray200 }
+//                }
+//            }
         }
 
         override val main: Style<BasicParams> = {
@@ -2193,6 +2191,8 @@ open class DefaultTheme : Theme {
         }
 
         override val tabs: Style<FlexParams> = {
+            color { tabsColor.mainContrast }
+            background { color { tabsColor.main } }
             borders {
                 top {
                     width { "1px " }
