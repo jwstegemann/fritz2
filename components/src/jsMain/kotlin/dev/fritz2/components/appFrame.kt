@@ -3,15 +3,13 @@ package dev.fritz2.components
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.*
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.FlexParams
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-
-internal class StyledContent<S: BasicParams>(
-    val styling: Style<S> = {},
-    val context: RenderContext.() -> Unit = {}
-)
 
 /**
  * This class combines the _configuration_ and the core rendering of the app-frame.
@@ -97,65 +95,45 @@ open class AppFrameComponent : Component<Unit> {
         boxShadow(sm = { flat }, md = { none })
     }
 
-    private var brand = StyledContent<FlexParams>()
-    fun brand(context: RenderContext.() -> Unit) {
-        brand = StyledContent(context = context)
-    }
-    fun brand(styling: Style<FlexParams>, context: RenderContext.() -> Unit) {
-        brand = StyledContent(styling, context)
+    private var brand = Pair<Style<FlexParams>?, (RenderContext.() -> Unit)?>(null, null)
+    fun brand(styling: Style<FlexParams>? = null, context: RenderContext.() -> Unit) {
+        brand = styling to context
     }
 
-    private var header = StyledContent<FlexParams>()
-    fun header(context: RenderContext.() -> Unit) {
-        header = StyledContent(context = context)
-    }
-    fun header(styling: Style<FlexParams>, context: RenderContext.() -> Unit) {
-        header = StyledContent(styling, context)
+    private var header = Pair<Style<FlexParams>?, (RenderContext.() -> Unit)?>(null, null)
+    fun header(styling: Style<FlexParams>? = null, context: RenderContext.() -> Unit) {
+        header = styling to context
     }
 
-    private var actions = StyledContent<BoxParams>()
-    fun actions(context: RenderContext.() -> Unit) {
-        actions = StyledContent(context = context)
-    }
-    fun actions(styling: Style<BoxParams>, context: RenderContext.() -> Unit) {
-        actions = StyledContent(styling, context)
+    private var actions = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
+    fun actions(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
+        actions = styling to context
     }
 
-    private var navbar = NavSectionComponent()
-    fun navbar(context: NavSectionComponent.() -> Unit) {
-        navbar = NavSectionComponent().apply(context)
-    }
-    fun navbar(styling: Style<BoxParams>, context: NavSectionComponent.() -> Unit) {
-        navbar = NavSectionComponent(styling).apply(context)
+    private var main = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
+    fun main(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
+        main = styling to context
     }
 
-    private var main = StyledContent<BoxParams>()
-    fun main(context: RenderContext.() -> Unit) {
-        main = StyledContent(context = context)
-    }
-    fun main(styling: Style<BoxParams>, context: RenderContext.() -> Unit) {
-        main = StyledContent(styling, context)
+    private var footer: Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>? = null
+    fun footer(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
+        footer = styling to context
     }
 
-    private var footer: StyledContent<BoxParams>? = null
-    fun footer(context: RenderContext.() -> Unit) {
-        footer = StyledContent(context = context)
-    }
-    fun footer(styling: Style<BoxParams>, context: RenderContext.() -> Unit) {
-        footer = StyledContent(styling, context)
+    private var tabs: Pair<Style<FlexParams>?, (RenderContext.() -> Unit)?>? = null
+    fun tabs(styling: Style<FlexParams>? = null, context: RenderContext.() -> Unit) {
+        tabs = styling to context
     }
 
-    private var tabs: StyledContent<FlexParams>? = null
-    fun tabs(context: RenderContext.() -> Unit) {
-        tabs = StyledContent(context = context)
-    }
-    fun tabs(styling: Style<FlexParams>, context: RenderContext.() -> Unit) {
-        tabs = StyledContent(styling, context)
+    private var navbar = NavBarComponent()
+    fun navbar(styling: Style<BoxParams>? = null, context: NavBarComponent.() -> Unit) {
+        navbar = NavBarComponent(styling).apply(context)
     }
 
     val sidebarToggle = ComponentProperty<PushButtonComponent.() -> Unit> {
-        variant { link }
+        variant { ghost }
         icon { menu }
+        type { Theme().colors.neutral }
     }
 
     override fun render(
@@ -195,9 +173,9 @@ open class AppFrameComponent : Component<Unit> {
                 flexBox({
                     height { Theme().appFrame.headerHeight }
                     Theme().appFrame.brand()
-                    this@AppFrameComponent.brand.styling()
+                    this@AppFrameComponent.brand.first?.invoke()
                 }, prefix = "brand") {
-                    this@AppFrameComponent.brand.context(this)
+                    this@AppFrameComponent.brand.second?.invoke(this)
                 }
             }
 
@@ -207,7 +185,7 @@ open class AppFrameComponent : Component<Unit> {
                 flexBox({
                     height { Theme().appFrame.headerHeight }
                     Theme().appFrame.header()
-                    this@AppFrameComponent.header.styling()
+                    this@AppFrameComponent.header.first?.invoke()
                 }, prefix = "header") {
                     lineUp({
                         alignItems { center }
@@ -219,15 +197,15 @@ open class AppFrameComponent : Component<Unit> {
                                 padding { none }
                                 margins { left { "-.5rem" } }
                             }) {
-                                this@AppFrameComponent.sidebarToggle.value(this)
+                                this@AppFrameComponent.sidebarToggle.value.invoke(this)
                             } handledBy this@AppFrameComponent.toggleSidebar
-                            this@AppFrameComponent.header.context(this)
+                            this@AppFrameComponent.header.second?.invoke(this)
                         }
                     }
                     section({
-                        this@AppFrameComponent.actions.styling()
+                        this@AppFrameComponent.actions.first?.invoke()
                     }, prefix = "actions") {
-                        this@AppFrameComponent.actions.context(this)
+                        this@AppFrameComponent.actions.second?.invoke(this)
                     }
                 }
             }
@@ -249,15 +227,18 @@ open class AppFrameComponent : Component<Unit> {
                     maxHeight { "-webkit-fill-available" }
                     overflow { auto }
                 }) {
-                    section(Theme().appFrame.navbar.container + this@AppFrameComponent.navbar.styling, prefix = "nav") {
+                    section({
+                        Theme().appFrame.navbar.container()
+                        this@AppFrameComponent.navbar.styling?.invoke()
+                    }, prefix = "nav") {
                         this@AppFrameComponent.navbar.render(this)
                     }
                     this@AppFrameComponent.footer?.let { footer ->
                         section({
                             Theme().appFrame.footer()
-                            footer.styling()
+                            footer.first?.invoke()
                         }) {
-                            footer.context(this)
+                            footer.second?.invoke(this)
                         }
                     }
                 }
@@ -268,9 +249,9 @@ open class AppFrameComponent : Component<Unit> {
                 overflow { auto }
                 Theme().appFrame.main()
                 styling()
-                this@AppFrameComponent.main.styling()
+                this@AppFrameComponent.main.first?.invoke()
             }, styling, baseClass, id, prefix) {
-                this@AppFrameComponent.main.context(this)
+                this@AppFrameComponent.main.second?.invoke(this)
             }
 
             this@AppFrameComponent.tabs?.let { tabs ->
@@ -280,18 +261,18 @@ open class AppFrameComponent : Component<Unit> {
                     alignItems { center }
                     justifyContent { spaceEvenly }
                     Theme().appFrame.tabs()
-                    tabs.styling()
+                    tabs.first?.invoke()
                 }, prefix = "tabs") {
-                    tabs.context(this)
+                    tabs.second?.invoke(this)
                 }
             }
         }
     }
 }
 
-open class NavSectionComponent(
-    val styling: Style<BoxParams> = {},
-) : MenuContext<NavSectionComponent>() {
+open class NavBarComponent(
+    val styling: Style<BoxParams>? = null,
+) : MenuContext<NavBarComponent>() {
 
     override val styles = Theme().appFrame.navbar.menu
 
@@ -300,7 +281,7 @@ open class NavSectionComponent(
     fun render(context: RenderContext) {
         context.apply {
             content.value(this)
-            this@NavSectionComponent.children.forEach {
+            this@NavBarComponent.children.forEach {
                 it.render(this, styles)
             }
         }
