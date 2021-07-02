@@ -95,7 +95,7 @@ internal data class State(
  *
  * It also offers a function to [preselect] some item initially.
  */
-internal class StateStore(private val propose: Proposal, accepted: Accepted, limit: Int) :
+internal class StateStore(private val propose: Proposal, accepted: Accepted, limit: Int, draftThreshold: Int) :
     RootStore<State>(State()) {
     val draft = data.map { it.draft }
     val selected = data.map { it.selected }
@@ -121,7 +121,7 @@ internal class StateStore(private val propose: Proposal, accepted: Accepted, lim
     private var preselectEnabled = true
 
     val preselect = handle<String> { state, draft ->
-        if (preselectEnabled) {
+        if (preselectEnabled && draft.length >= draftThreshold) {
             preselectEnabled = false
             val proposals = propose(flowOf(draft)).first()
             State(draft, selected = accepted(proposals, draft), proposals = proposals)
@@ -241,7 +241,7 @@ open class TypeAheadComponent(protected val valueStore: Store<String>?, protecte
         prefix: String
     ) {
         val accepted = if (strict.value) acceptOnlyProposals else acceptDraft
-        val internalStore = StateStore(items, accepted, limit.value)
+        val internalStore = StateStore(items, accepted, limit.value, draftThreshold.value)
         val proposalsId = "proposals-{${uniqueId()}}"
 
         context.apply {
