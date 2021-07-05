@@ -8,10 +8,7 @@ import dev.fritz2.dom.html.Li
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.*
-import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.ColorProperty
-import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.*
 import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.*
@@ -312,7 +309,7 @@ fun showToast(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = ToastComponent.defaultToastContainerPrefix,
-    build: ToastComponent.() -> Unit,
+    build: ToastComponent.() -> Unit
 ) {
     ToastComponent().apply(build).render(styling, baseClass, id, prefix)
 }
@@ -355,12 +352,115 @@ fun toast(
     id: String? = null,
     prefix: String = ToastComponent.defaultToastContainerPrefix,
     build: ToastComponent.() -> Unit
-): SimpleHandler<Unit> {
+): SimpleHandler<Unit> = launchViaHandler {
+    showToast(styling, baseClass, id, prefix, build)
+}
 
-    val pendingToastStore = object : RootStore<Unit>(Unit) {
-        val show = handle {
-            showToast(styling, baseClass, id, prefix, build)
+/**
+ * This factory method creates a toast with an alert as it's content and displays it _right away_.
+ * Use [alertToast] in order to display a toast delayed, e.g. when a button is pressed.
+ *
+ * The build-lambda of this method configures the _alert_, not the _toast_. Use the [buildToast] parameter to configure
+ * properties of the underlying [ToastComponent].
+ *
+ * Usage example:
+ * ```
+ * showAlertToast({
+ *     duration(9000)
+ *     // configure additional toast-properties here
+ * }) {
+ *     title("AlertToast!")
+ *     content("This is an alert in a toast.")
+ *     // configure additional alert-properties here
+ * }
+ * ```
+ *
+ *
+ * @param styling lambda expression for declaring the styling of the toast using fritz2's styling DSL
+ * @param buildToast lambda expression to configure the enclosing [ToastComponent]
+ * @param baseClass optional CSS class that should be applied to the toast element
+ * @param id ID of the toast element
+ * @param prefix prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
+ * @param build a lambda expression for setting up the component itself.
+ *
+ */
+fun showAlertToast(
+    styling: BasicParams.() -> Unit = {},
+    buildToast: ToastComponent.() -> Unit = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = ToastComponent.defaultToastContainerPrefix,
+    build: AlertComponent.() -> Unit
+) {
+
+    val alertComponent = AlertComponent()
+        .apply(build)
+        .apply {
+            stacking { toast }
         }
+
+    showToast {
+        closeButtonStyle(Theme().toast.closeButton.close + {
+            color {
+                val colorScheme = alertComponent.severity.value(Theme().alert.severities).colorScheme
+                when(alertComponent.variant.value(AlertComponent.VariantContext)) {
+                    AlertComponent.AlertVariant.SUBTLE -> colorScheme.main
+                    AlertComponent.AlertVariant.TOP_ACCENT -> colorScheme.main
+                    AlertComponent.AlertVariant.LEFT_ACCENT -> colorScheme.main
+                    else -> colorScheme.mainContrast
+                }
+            }
+        })
+        content {
+            alertComponent.render(this, styling, baseClass, id, prefix)
+        }
+        buildToast()
     }
-    return pendingToastStore.show
+}
+
+/**
+ * This factory method creates a toast with an alert as it's content that will be shown when the returned handler is
+ * triggered, eg. on a button press (similar to [toast]). The same configuration options as in [showAlertToast] are
+ * provided.
+ *
+ * Usage example:
+ * ```
+ * clickButton {
+ *    variant { outline }
+ *    text("New alert-toast")
+ * } handledBy alertToast({
+ *     duration(9000)
+ *     // configure additional toast-properties here
+ * }) {
+ *     title("AlertToast!")
+ *     content("This is an alert in a toast.")
+ *     // configure additional alert-properties here
+ * }
+ * ```
+ *
+ *
+ * @param styling lambda expression for declaring the styling of the toast using fritz2's styling DSL
+ * @param buildToast lambda expression to configure the enclosing [ToastComponent]
+ * @param baseClass optional CSS class that should be applied to the toast element
+ * @param id ID of the toast element
+ * @param prefix prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
+ * @param build a lambda expression for setting up the component itself
+ */
+fun alertToast(
+    styling: BasicParams.() -> Unit = {},
+    buildToast: ToastComponent.() -> Unit = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = ToastComponent.defaultToastContainerPrefix,
+    build: AlertComponent.() -> Unit
+): SimpleHandler<Unit> = launchViaHandler {
+    showAlertToast(styling, buildToast, baseClass, id, prefix, build)
+}
+
+
+private fun launchViaHandler(action: () -> Unit): SimpleHandler<Unit> {
+    val pendingStore = object : RootStore<Unit>(Unit) {
+        val run = handle { action() }
+    }
+    return pendingStore.run
 }
