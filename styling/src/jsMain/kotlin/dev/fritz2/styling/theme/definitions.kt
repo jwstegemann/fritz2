@@ -625,6 +625,7 @@ interface AlertStyles {
 interface AlertStacking {
     val compact: Style<BasicParams>
     val separated: Style<BasicParams>
+    val toast: Style<BasicParams>
 }
 
 interface AlertSeverity {

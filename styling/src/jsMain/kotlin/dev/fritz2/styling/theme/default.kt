@@ -1566,6 +1566,14 @@ open class DefaultTheme : Theme {
                 margin { normal }
                 padding { normal }
             }
+            override val toast: Style<BasicParams> = {
+                margin { none }
+                paddings {
+                    vertical { normal }
+                    left { normal }
+                    right { huge } // needed to not be overlapped by the close-button
+                }
+            }
         }
     }
 
