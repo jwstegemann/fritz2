@@ -352,7 +352,7 @@ fun toast(
     id: String? = null,
     prefix: String = ToastComponent.defaultToastContainerPrefix,
     build: ToastComponent.() -> Unit
-): SimpleHandler<Unit> = launchViaHandler {
+): SimpleHandler<Unit> = asHandler {
     showToast(styling, baseClass, id, prefix, build)
 }
 
@@ -392,7 +392,6 @@ fun showAlertToast(
     prefix: String = ToastComponent.defaultToastContainerPrefix,
     build: AlertComponent.() -> Unit
 ) {
-
     val alertComponent = AlertComponent()
         .apply(build)
         .apply {
@@ -453,14 +452,11 @@ fun alertToast(
     id: String? = null,
     prefix: String = ToastComponent.defaultToastContainerPrefix,
     build: AlertComponent.() -> Unit
-): SimpleHandler<Unit> = launchViaHandler {
+): SimpleHandler<Unit> = asHandler {
     showAlertToast(styling, buildToast, baseClass, id, prefix, build)
 }
 
 
-private fun launchViaHandler(action: () -> Unit): SimpleHandler<Unit> {
-    val pendingStore = object : RootStore<Unit>(Unit) {
-        val run = handle { action() }
-    }
-    return pendingStore.run
-}
+private fun asHandler(action: () -> Unit): SimpleHandler<Unit> = object : RootStore<Unit>(Unit) {
+    val handler = handle { action() }
+}.handler
