@@ -1571,7 +1571,7 @@ open class DefaultTheme : Theme {
 
     override val toast = object : ToastStyles {
         override val base: Style<BasicParams> = {
-            minHeight { "40px" }
+            minHeight { giant }
         }
         override val placement = object : ToastPlacement {
             override val top: Style<BasicParams> = {
