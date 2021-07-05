@@ -193,7 +193,7 @@ internal class StateStore(private val propose: Proposal, accepted: Accepted, lim
  * // this is especially useful if it is clear, that the smallest proposal is longer in size and there are
  * // so many results, a longer start value before searching improves the selectivity.
  * typeAhead(value = choice, items = proposals) {
- *     draftThreshold(3) // start searching only after input of at least 3 chars; `0` is default
+ *     draftThreshold(3) // start searching only after input of at least 3 chars; `1` is default
  * }
  *
  * // react to typing speed or "cost" of a remote call: Change the timeout the component will wait with a new
@@ -217,7 +217,7 @@ open class TypeAheadComponent(protected val valueStore: Store<String>?, protecte
     val value = DynamicComponentProperty(flowOf(""))
     val strict = ComponentProperty(true)
     val limit = ComponentProperty(20)
-    val draftThreshold = ComponentProperty(0)
+    val draftThreshold = ComponentProperty(1)
     val debounce = ComponentProperty(250L)
 
     class EventsContext<String>(private val element: RenderContext, val value: Flow<String>) :
@@ -267,6 +267,17 @@ open class TypeAheadComponent(protected val valueStore: Store<String>?, protecte
                 }
                 value(internalStore.draft)
                 events {
+                    // short-circuit if draft is already a fetched proposal
+                    inputs.events.flatMapLatest { internalStore.proposals }
+                        .mapNotNull { it.find { item -> item == domNode.value } }
+                        .map { result ->
+                            internalStore.current.copy(draft = result, selected = result)
+                        } handledBy internalStore.update
+
+                    // delay new proposal lookups
+                    // TODO: Would be nice if this won't happen anymore, if above event was been successful!
+                    //  Within the above handling some kind of "new" event would have to be triggered, if no
+                    //  proposal has been found...
                     inputs.events.debounce(this@TypeAheadComponent.debounce.value)
                         .filter { domNode.value.length >= this@TypeAheadComponent.draftThreshold.value }
                         .onEach { this@TypeAheadComponent.draft.value = domNode.value }
@@ -277,6 +288,7 @@ open class TypeAheadComponent(protected val valueStore: Store<String>?, protecte
                             }
                         } handledBy internalStore.update
 
+                    // drop draft if there is no valid result
                     blurs.events.map {
                         with(internalStore.current) { copy(draft = this.selected.ifBlank { "" }) }
                     } handledBy internalStore.update
