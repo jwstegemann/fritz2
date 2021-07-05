@@ -1627,7 +1627,8 @@ open class DefaultTheme : Theme {
             override val close: Style<BasicParams> = {
                 position {
                     absolute {
-                        right { small }
+                        top { smaller }
+                        right { smaller }
                     }
                 }
 
