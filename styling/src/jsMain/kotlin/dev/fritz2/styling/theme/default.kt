@@ -1570,6 +1570,9 @@ open class DefaultTheme : Theme {
     }
 
     override val toast = object : ToastStyles {
+        override val base: Style<BasicParams> = {
+            minHeight { "40px" }
+        }
         override val placement = object : ToastPlacement {
             override val top: Style<BasicParams> = {
                 css("top:0px")
@@ -1581,7 +1584,6 @@ open class DefaultTheme : Theme {
                 css("top:0px")
             }
             override val topRight: Style<BasicParams> = {
-
                 css("top:0px")
                 css("right:0px")
             }
@@ -1589,16 +1591,12 @@ open class DefaultTheme : Theme {
                 css("bottom:0px")
                 css("right:0px")
                 css("left:0px")
-
-
             }
             override val bottomLeft: Style<BasicParams> = {
-
                 css("bottom:0px")
                 css("left:0px")
             }
             override val bottomRight: Style<BasicParams> = {
-
                 css("bottom:0px")
                 css("right:0px")
             }
