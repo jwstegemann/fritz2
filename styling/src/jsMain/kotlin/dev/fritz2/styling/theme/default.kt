@@ -1625,17 +1625,16 @@ open class DefaultTheme : Theme {
         }
         override val closeButton = object : ToastButton {
             override val close: Style<BasicParams> = {
-                radius { "0.375rem" }
-                width { "24px" }
-                height { "1rem" }
+                position {
+                    absolute {
+                        right { small }
+                    }
+                }
+
                 fontSize { "10px" }
                 css("outline: 0px;")
-                flex { shrink { "0" } }
-                display { flex }
-                css("align-items: center;")
-                css("justify-content: center;")
                 css("transition: all 0.2s ease 0s;")
-                paddings { left { "1rem" } }
+
                 focus {
                     css("outline: none;")
                     boxShadow { none }
