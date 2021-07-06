@@ -363,6 +363,8 @@ fun toast(
  * The build-lambda of this method configures the _alert_, not the _toast_. Use the [buildToast] parameter to configure
  * properties of the underlying [ToastComponent].
  *
+ * Please note: All parameters (styling, id, prefix, etc.) are applied to the alert, not the toast.
+ *
  * Usage example:
  * ```
  * showAlertToast({
@@ -389,7 +391,7 @@ fun showAlertToast(
     buildToast: ToastComponent.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
-    prefix: String = ToastComponent.defaultToastContainerPrefix,
+    prefix: String = "toast-alert",
     build: AlertComponent.() -> Unit
 ) {
     val alertComponent = AlertComponent()
@@ -422,6 +424,8 @@ fun showAlertToast(
  * triggered, eg. on a button press (similar to [toast]). The same configuration options as in [showAlertToast] are
  * provided.
  *
+ * Please note: All parameters (styling, id, prefix, etc.) are applied to the alert, not the toast.
+ *
  * Usage example:
  * ```
  * clickButton {
@@ -450,7 +454,7 @@ fun alertToast(
     buildToast: ToastComponent.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
-    prefix: String = ToastComponent.defaultToastContainerPrefix,
+    prefix: String = "toast-alert",
     build: AlertComponent.() -> Unit
 ): SimpleHandler<Unit> = asHandler {
     showAlertToast(styling, buildToast, baseClass, id, prefix, build)
