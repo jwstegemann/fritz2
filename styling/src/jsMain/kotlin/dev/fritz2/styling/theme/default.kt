@@ -1641,6 +1641,7 @@ open class DefaultTheme : Theme {
                 fontSize { "10px" }
                 css("outline: 0px;")
                 css("transition: all 0.2s ease 0s;")
+                color { info.mainContrast }
 
                 focus {
                     css("outline: none;")
