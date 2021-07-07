@@ -25,6 +25,22 @@ value class Payload(private val entries: HashMap<Key<*>, Any> = hashMapOf()) {
     fun <T: Any> contains(key: Key<T>) = entries.contains(key)
 
     fun <T: Any> remove(key: Key<T>) { entries.remove(key) }
+
+    override fun toString(): String = buildString {
+        append("{ ")
+        var count = 0
+        for ((k, v) in entries) {
+            if (++count > 1) append(", ")
+            append("\"")
+            append(k.name)
+            append("\" : \"")
+            append(v)
+            append("\"")
+        }
+        append(" }")
+    }
+
+    operator fun iterator() = entries.toMap().iterator()
 }
 
 @HtmlTagMarker
