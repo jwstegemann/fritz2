@@ -1570,6 +1570,9 @@ open class DefaultTheme : Theme {
     }
 
     override val toast = object : ToastStyles {
+        override val base: Style<BasicParams> = {
+            minHeight { giant }
+        }
         override val placement = object : ToastPlacement {
             override val top: Style<BasicParams> = {
                 css("top:0px")
@@ -1581,7 +1584,6 @@ open class DefaultTheme : Theme {
                 css("top:0px")
             }
             override val topRight: Style<BasicParams> = {
-
                 css("top:0px")
                 css("right:0px")
             }
@@ -1589,16 +1591,12 @@ open class DefaultTheme : Theme {
                 css("bottom:0px")
                 css("right:0px")
                 css("left:0px")
-
-
             }
             override val bottomLeft: Style<BasicParams> = {
-
                 css("bottom:0px")
                 css("left:0px")
             }
             override val bottomRight: Style<BasicParams> = {
-
                 css("bottom:0px")
                 css("right:0px")
             }
@@ -1625,17 +1623,17 @@ open class DefaultTheme : Theme {
         }
         override val closeButton = object : ToastButton {
             override val close: Style<BasicParams> = {
-                radius { "0.375rem" }
-                width { "24px" }
-                height { "1rem" }
+                position {
+                    absolute {
+                        top { smaller }
+                        right { smaller }
+                    }
+                }
+
                 fontSize { "10px" }
                 css("outline: 0px;")
-                flex { shrink { "0" } }
-                display { flex }
-                css("align-items: center;")
-                css("justify-content: center;")
                 css("transition: all 0.2s ease 0s;")
-                paddings { left { "1rem" } }
+
                 focus {
                     css("outline: none;")
                     boxShadow { none }
@@ -1779,6 +1777,53 @@ open class DefaultTheme : Theme {
             color { gray600 }
             css("font-size: var(--formControl-helperText-size) ")
             lineHeight { smaller }
+        }
+    }
+
+    override val formGroup = object : FormGroupStyles {
+        override val base: Style<GridParams> = {
+            rowGap { normal }
+        }
+
+        override val label = object : FormGroupLabelStyles {
+            override val placement = "top"
+
+            override val alignmentLabel: BasicParams.(Map<String, String>) -> Unit = { breakpoints ->
+                margins(
+                    sm = { applyMarginOnPlacementLeftForLabel(breakpoints["sm"], this) },
+                    md = { applyMarginOnPlacementLeftForLabel(breakpoints["md"], this) },
+                    lg = { applyMarginOnPlacementLeftForLabel(breakpoints["lg"], this) },
+                    xl = { applyMarginOnPlacementLeftForLabel(breakpoints["xl"], this) },
+                )
+            }
+
+            private fun applyMarginOnPlacementLeftForLabel(breakpoint: String?, context: SpacesContext) {
+                if (breakpoint != null && breakpoint == "left") {
+                    context.apply {
+                        top { small }
+                        left { small }
+                        right { small }
+                    }
+                }
+            }
+
+            override val alignmentLegend: BasicParams.(Map<String, String>) -> Unit = { breakpoints ->
+                margins(
+                    sm = { applyMarginOnPlacementLeftForLegend(breakpoints["sm"], this) },
+                    md = { applyMarginOnPlacementLeftForLegend(breakpoints["md"], this) },
+                    lg = { applyMarginOnPlacementLeftForLegend(breakpoints["lg"], this) },
+                    xl = { applyMarginOnPlacementLeftForLegend(breakpoints["xl"], this) },
+                )
+            }
+
+            private fun applyMarginOnPlacementLeftForLegend(breakpoint: String?, context: SpacesContext) {
+                if (breakpoint != null && breakpoint == "left") {
+                    context.apply {
+                        left { small }
+                        right { small }
+                    }
+                }
+            }
         }
     }
 

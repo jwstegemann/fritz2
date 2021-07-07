@@ -108,12 +108,30 @@ fun showDynamicStyle(): String = Styling.dynamicStyleText
 
 fun showStaticStyle(): String = Styling.staticStyleText
 
+/**
+ * Defines the size of the latin letters [A-Za-z] (that is two times 26 letters)
+ *
+ * DO NOT CHANGE!
+ */
 internal const val charsLength = 52
 
-/* start at 75 for 'a' until 'z' (25) and then start at 65 for capitalised letters */
+/**
+ * Map [Int] values from range (0..51) to latin letters [A-Za-z] as [Char] (ASCII code)
+ *
+ * @param code values between 0 and 51
+ * @return a [Char] with the ASCII codes between (65..90) [A-Z] and (97..122) [a-z]
+ */
 internal fun getAlphabeticChar(code: Int): Char = (code + if (code > 25) 39 else 97).toChar()
 
-/* input a number, usually a hash and convert it to base-52 */
+/**
+ * This small function transforms **positive** [Int] values into a [String] of only small and large latin letters,
+ * so from the set [A-Za-z].
+ *
+ * @param code pass in a **positive** integer and > [charsLength] only
+ *
+ * @return a [String] of latin letters [A-Za-z] of rather short length (max 6 chars wide) for
+ *         positive and < [charsLength] [code] parameter, else an empty string
+ */
 internal fun generateAlphabeticName(code: Int): String {
     val name = StringBuilder()
     var x = code

@@ -1,11 +1,12 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.binding.watch
 import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.key
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -14,14 +15,35 @@ import dev.fritz2.styling.theme.PopoverArrowPlacements
 import dev.fritz2.styling.theme.PopoverPlacements
 import dev.fritz2.styling.theme.PopoverSizes
 import dev.fritz2.styling.theme.Theme
-import kotlinx.browser.document
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
+import org.w3c.dom.HTMLElement
 
 /**
- * Class for configuring the appearance of a PopoverComponent.
+ * This class combines the _configuration_ and rendering a popover that floats around a toggle element.
+ * The [toggle] can be any HTMLElement or a fritz2 component.
+ * The popover can be containing a [header], a [content] and a [footer].
+ * All "areas" are optional and it can contain a simple [String], a [Flow<String>] or
+ * a [RenderContext] as well as a fritz2 component. The placement of the popover is configurable.
+ *
+ * The popover has a default close-button, which you can hide or you can use your own custom close-button.
+ * The [toggle] element is marked by an arrow, but you can hide the arrow if you want.
+ *
+ * Example usage:
+ * ```
+ * popover {
+ *   toggle {
+ *      icon { fromTheme { arrowForward } }
+ *   }
+ *   placement { right }
+ *   header(flowOf("Our simple Popover"))
+ *   content {
+ *      div {
+ *          text("My Text in a HTMLTag")
+ *      }
+ *   }
+ *   footer("Footer content")
+ * }
+ * ```
  */
 open class PopoverComponent : Component<Unit>,
     CloseButtonProperty by CloseButtonMixin(
@@ -32,8 +54,8 @@ open class PopoverComponent : Component<Unit>,
         val staticCss = staticStyle(
             "popover",
             """
-                  display: inline-block;
-                  position: relative;  
+              display: inline-block;
+              position: relative;
             """
         )
     }
@@ -124,6 +146,11 @@ open class PopoverComponent : Component<Unit>,
         }
     }
 
+    private val visible = object : RootStore<Boolean>(false) {
+        val toggle = handle { !it }
+        val closeOnKey = handle<Key> { _, _ -> false }
+    }
+
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
@@ -131,143 +158,78 @@ open class PopoverComponent : Component<Unit>,
         id: String?,
         prefix: String
     ) {
-        val clickStore = object : RootStore<Boolean>(false) {
-            val toggle = handle {
-                !it
-            }
-            val close = handleAndEmit<Boolean, Unit> { open, close ->
-                if (open && close) {
-                    emit(Unit)
-                }
-                open
-            }
-
-            init {
-                close handledBy toggle
-            }
-        }
-
-
-        val popoverId = id ?: "popover" + randomId()
         context.apply {
 
             if (this@PopoverComponent.closeOnEscape.value) {
-                Window.keyups.map {
-                    Key(it) == Keys.Escape
-                } handledBy clickStore.close
+                Window.keyups.key().filter { it == Keys.Escape } handledBy this@PopoverComponent.visible.closeOnKey
             }
 
-            div({
-            }, staticCss, null, prefix) {
-                div({
-                    Theme().popover.toggle()
-                }, prefix = "popover-toggle", id = "popover-toggle-$popoverId") {
-                    attr("data-popover-for", popoverId)
-                    clicks.events.map { } handledBy clickStore.toggle
+            div(staticCss.name, id) {
+                div({ Theme().popover.toggle() }, prefix = "popover-toggle") {
                     this@PopoverComponent.toggle.value?.invoke(this)
+                    clicks handledBy this@PopoverComponent.visible.toggle
                 }
-                clickStore.data.render {
+                lateinit var popoverElement: HTMLElement
+                this@PopoverComponent.visible.data.render {
                     if (it) {
-                        this@PopoverComponent.renderPopover(
+                        popoverElement = this@PopoverComponent.renderPopover(
+                            this,
                             styling,
                             baseClass,
-                            popoverId,
-                            prefix,
-                            this,
-                            clickStore.toggle
+                            prefix
                         )
                     }
                 }
-                clickStore.data.render {
-                    if (it) {
-                        try {
-                            document.getElementById(popoverId).asDynamic().focus()
-                        } catch (e: Exception) {
-                        }
-                    }
-                }
+                this@PopoverComponent.visible.data.onEach {
+                    if (it) popoverElement.focus()
+                }.watch()
             }
         }
     }
 
     private fun renderPopover(
+        context: RenderContext,
         styling: BoxParams.() -> Unit = {},
         baseClass: StyleClass = StyleClass.None,
-        id: String? = null,
-        prefix: String = "popover",
-        RenderContext: RenderContext,
-        closeHandler: SimpleHandler<Unit>
-    ) {
-        RenderContext.apply {
-
-            section({
-                this@PopoverComponent.placementStyle.invoke(Theme().popover.placement)()
-                this@PopoverComponent.size.value.invoke(Theme().popover.size)()
-                focus {
-                    css("outline:none")
-                }
-            }, styling, baseClass, id, prefix) {
-                attr("tabindex", "-1")
-                if (this@PopoverComponent.hasArrow.value) {
-                    this@PopoverComponent.renderArrow(this)
-                }
-                if (this@PopoverComponent.hasCloseButton.value) {
-                    this@PopoverComponent.closeButtonRendering.value(this) handledBy closeHandler
-                }
-                this@PopoverComponent.header?.invoke(this)
-                this@PopoverComponent.content?.invoke(this)
-                this@PopoverComponent.footer?.invoke(this)
-
-                if (this@PopoverComponent.closeOnBlur.value) {
-                    blurs.events.debounce(200).map { } handledBy closeHandler
-                }
-
+        prefix: String
+    ): HTMLElement = with(context) {
+        section({
+            this@PopoverComponent.placementStyle.invoke(Theme().popover.placement)()
+            this@PopoverComponent.size.value.invoke(Theme().popover.size)()
+            focus {
+                css("outline:none")
             }
-        }
-    }
+        }, styling, baseClass, prefix = prefix) {
+            attr("tabindex", "-1")
+            if (this@PopoverComponent.hasArrow.value) {
+                div({
+                    this@PopoverComponent.arrowPlacement.value.invoke(Theme().popover.arrowPlacement)()
+                }, prefix = "popover-arrow") {}
+            }
+            if (this@PopoverComponent.hasCloseButton.value) {
+                this@PopoverComponent.closeButtonRendering.value(this) handledBy
+                        this@PopoverComponent.visible.toggle
+            }
+            this@PopoverComponent.header?.invoke(this)
+            this@PopoverComponent.content?.invoke(this)
+            this@PopoverComponent.footer?.invoke(this)
 
-    private fun renderArrow(RenderContext: RenderContext) {
-        RenderContext.apply {
-            div({
-                this@PopoverComponent.arrowPlacement.value.invoke(Theme().popover.arrowPlacement)()
-            }, prefix = "popover-arrow") {}
-        }
+            if (this@PopoverComponent.closeOnBlur.value) {
+                blurs.map{}.debounce(100) handledBy this@PopoverComponent.visible.toggle
+            }
+        }.domNode
     }
 }
 
 /**
- * This component enables to render a popover thats floats around a toggle element.
- * The toggle can be a simple HTMLElement or a fritz2 component.
- * The Popover can be containing a header, a section and a footer.
- * All "areas" are optional and it containing a simple String, a flowOf<String> or
- * a HTMLElement as well as a fritz2 component. The placement of the Popover is configurable.
- *
- * The popover has a default close Button, you can hide it or you can use your own custom Button.
- * The toggle element is marked by an arrow, you can hide the arrow.
- *
- * ```
- * popover {
- *   toggle {
- *      icon { fromTheme { arrowForward } }
- *   }
- *   placement { right }
- *   header(flowOf("Our simple Popover"))
- *   content {
- *      div {
- *          text("My Text in a HTMLTag")
- *      }
- *   }
- *   footer("Footercontent")
- * }
- * ```
+ * Creates a popover component.
  *
  * @see PopoverComponent
- *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
- * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself. Details in [PopoverComponent]
+ * @param prefix the prefix for the generated CSS class resulting in the form `$prefix-$hash`
+ * @param build a lambda expression for setting up the component itself
  */
 fun RenderContext.popover(
     styling: BasicParams.() -> Unit = {},
@@ -275,6 +237,4 @@ fun RenderContext.popover(
     id: String? = null,
     prefix: String = "popover",
     build: PopoverComponent.() -> Unit = {}
-) {
-    PopoverComponent().apply(build).render(this, styling, baseClass, id, prefix)
-}
+) = PopoverComponent().apply(build).render(this, styling, baseClass, id, prefix)

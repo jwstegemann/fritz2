@@ -11,7 +11,22 @@ package dev.fritz2.validation
  */
 actual abstract class Validator<D, M : ValidationMessage, T> actual constructor() {
 
-    lateinit var msgs: List<M>
+    private var state: List<M> = emptyList()
+
+    /**
+     * Represents the current [List] of [ValidationMessage]s.
+     */
+    val current: List<M>
+        get() = state
+
+    /**
+     * Resets the validation result.
+     *
+     * @param messages list of messages to reset to. Default is an empty list.
+     */
+    fun reset(messages: List<M> = emptyList()) {
+        state = messages
+    }
 
     actual abstract fun validate(data: D, metadata: T): List<M>
 
@@ -23,5 +38,5 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      * @return a [Boolean] for using in if conditions
      */
     fun isValid(data: D, metadata: T): Boolean = validate(data, metadata)
-        .also { msgs = it }.none(ValidationMessage::isError)
+        .also { state = it }.none(ValidationMessage::isError)
 }

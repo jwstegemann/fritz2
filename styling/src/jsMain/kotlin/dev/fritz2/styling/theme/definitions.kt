@@ -586,6 +586,31 @@ interface FormControlStyles {
     val helperText: Style<BasicParams>
 }
 
+/**
+ * definition of the theme's formGroup
+ */
+interface FormGroupLabelStyles {
+    /**
+     * Could be ``left`` or ``top``
+     * (Has to be modeled as String as the specific type is only part of component module!)
+     */
+    val placement: String
+
+    /**
+     * Styling expression gets a Map with ``breakpoints -> [placement]``, so one can decide when to apply some stylings
+     */
+    val alignmentLabel: BasicParams.(Map<String, String>) -> Unit
+
+    /**
+     * Styling expression gets a Map with ``breakpoints -> [placement]``, so one can decide when to apply some stylings
+     */
+    val alignmentLegend: BasicParams.(Map<String, String>) -> Unit
+}
+
+interface FormGroupStyles {
+    val base: Style<GridParams>
+    val label: FormGroupLabelStyles
+}
 
 /**
  * definition of the theme's alerts
@@ -627,6 +652,7 @@ interface AlertVariants {
  * definition of the theme's toasts
  */
 interface ToastStyles {
+    val base: Style<BasicParams>
     val placement: ToastPlacement
     val status: ToastStatus
     val closeButton: ToastButton
