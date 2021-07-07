@@ -595,4 +595,25 @@ open class Tag<out E : Element>(
     fun inlineStyle(values: Flow<Map<String, Boolean>>) {
         attr("style", values, separator = "; ")
     }
+
+    /**
+     * Sets all payload-entries as data-attributes to the element.
+     */
+    fun Payload.asDataAttr() {
+        for((k, v) in this) {
+            attr("data-${k.name}", v.toString())
+        }
+    }
+
+    /**
+     * Sets payload-entry for the given [key] as data-attribute to the element
+     * when available.
+     *
+     * @param key key of payload-entry to look for in payload
+     */
+    fun <T: Any> Payload.asDataAttr(key: Payload.Key<T>) {
+        this[key]?.let {
+            attr("data-${key.name}", it.toString())
+        }
+    }
 }
