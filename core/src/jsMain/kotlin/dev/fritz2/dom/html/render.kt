@@ -1,5 +1,6 @@
 package dev.fritz2.dom.html
 
+import dev.fritz2.binding.Payload
 import dev.fritz2.dom.Tag
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
@@ -50,6 +51,6 @@ fun render(
 ) {
     targetElement?.let {
         if (override) it.innerHTML = ""
-        content(RenderContext(it.tagName, it.id, job = Job(), domNode = it))
+        content(RenderContext(it.tagName, it.id, null, Job(), Payload(), it))
     } ?: throw MountTargetNotFoundException("targetElement should not be null")
 }

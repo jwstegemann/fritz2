@@ -1,17 +1,15 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.SimpleHandler
-import dev.fritz2.binding.storeOf
-import dev.fritz2.binding.watch
+import dev.fritz2.binding.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
-import dev.fritz2.styling.*
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
@@ -129,6 +127,7 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
         private val stack = ModalsStack()
         val overlay = storeOf<Overlay>(DefaultOverlay())
         private val job = Job()
+        private val payload = Payload()
         private val globalId = "f2c-modals-${randomId()}"
         private val myStaticStyle = staticStyle("disableOverflowForModal", "overflow:hidden !important;")
 
@@ -139,7 +138,7 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
         init {
             stack.data.map { modals ->
                 configureBodyScrolling(modals)
-                ManagedComponent.managedRenderContext(globalId, job).apply {
+                ManagedComponent.managedRenderContext(globalId, job, payload).apply {
                     val currentOverlay = overlay.current
                     if (currentOverlay.method == OverlayMethod.CoveringTopMost && modals.isNotEmpty()) {
                         currentOverlay.render(this, modals.size)
