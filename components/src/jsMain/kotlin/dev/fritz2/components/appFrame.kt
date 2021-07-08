@@ -9,7 +9,6 @@ import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * This class combines the _configuration_ and the core rendering of the app-frame.
@@ -125,9 +124,9 @@ open class AppFrameComponent : Component<Unit> {
         tabs = styling to context
     }
 
-    private var navbar = NavBarComponent()
-    fun navbar(styling: Style<BoxParams>? = null, context: NavBarComponent.() -> Unit) {
-        navbar = NavBarComponent(styling).apply(context)
+    private var navbar = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
+    fun navbar(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
+        navbar = styling to context
     }
 
     val sidebarToggle = ComponentProperty<PushButtonComponent.() -> Unit> {
@@ -228,10 +227,10 @@ open class AppFrameComponent : Component<Unit> {
                     overflow { auto }
                 }) {
                     section({
-                        Theme().appFrame.navbar.container()
-                        this@AppFrameComponent.navbar.styling?.invoke()
-                    }, prefix = "nav") {
-                        this@AppFrameComponent.navbar.render(this)
+                        Theme().appFrame.navbar()
+                        this@AppFrameComponent.navbar.first?.invoke()
+                    }, prefix = "navbar") {
+                        this@AppFrameComponent.navbar.second?.invoke(this)
                     }
                     this@AppFrameComponent.footer?.let { footer ->
                         section({
@@ -270,29 +269,11 @@ open class AppFrameComponent : Component<Unit> {
     }
 }
 
-open class NavBarComponent(
-    val styling: Style<BoxParams>? = null,
-) : MenuContext<NavBarComponent>() {
-
-    override val styles = Theme().appFrame.navbar.menu
-
-    val content = ComponentProperty<RenderContext.() -> Unit> {}
-
-    fun render(context: RenderContext) {
-        context.apply {
-            content.value(this)
-            this@NavBarComponent.children.forEach {
-                it.render(this, styles)
-            }
-        }
-    }
-}
-
 /**
  * This component implements a standard responsive layout for web-apps.
  *
  * It offers the following sections
- * - sidebar with brand, nav section and optional footer on the left
+ * - sidebar with brand, navbar section and optional footer on the left
  * - header at the top with actions section on the right
  * - main section
  * - optional navigation tabs at the bottom of main section
@@ -305,13 +286,39 @@ open class NavBarComponent(
  *
  * You can adopt the appearance of all sections by adjusting the [Theme].
  *
+ * short example:
+ * ```kotlin
+ * appFrame {
+ *     brand {
+ *         //...
+ *     }
+ *     navbar {
+ *         //...
+ *     }
+ *     footer { //optional
+ *         //...
+ *     }
+ *     header { //optional
+ *         //...
+ *     }
+ *     actions { //optional
+ *         //...
+ *     }
+ *     main {
+ *         //...
+ *     }
+ *     tabs { //optional
+ *         //...
+ *     }
+ *}
+ * ```
+ *
  * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of the element
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param build a lambda expression for setting up the component itself.
  */
-@ExperimentalCoroutinesApi
 fun RenderContext.appFrame(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,

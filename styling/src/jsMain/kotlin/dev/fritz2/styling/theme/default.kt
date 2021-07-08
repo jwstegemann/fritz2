@@ -991,7 +991,7 @@ open class DefaultTheme : Theme {
 
         override val width: BasicParams.(String, Property) -> Unit = { key, value ->
             maxWidth { value }
-            if(key.lowercase() != "full") {
+            if (key.lowercase() != "full") {
                 margins {
                     top { "var(--modal-level)" }
                     left { "var(--modal-level)" }
@@ -2072,13 +2072,6 @@ open class DefaultTheme : Theme {
             }
             color { brandColor.mainContrast }
             alignItems { center }
-//            borders {
-//                bottom {
-//                    width { "1px " }
-//                    style { solid }
-//                    color { gray200 }
-//                }
-//            }
         }
 
         override val sidebar: Style<BasicParams> = {
@@ -2087,74 +2080,11 @@ open class DefaultTheme : Theme {
             minWidth { "22vw" }
         }
 
-        override val navbar: NavStyles = object : NavStyles {
-            override val container: Style<BasicParams> = {
-                width { full }
-                paddings {
-                    horizontal { smaller }
-                    vertical { tiny }
-                }
-            }
-
-            override val menu: MenuStyles = object : MenuStyles {
-
-                private val base: Style<BasicParams> = {
-                    width { full }
-                    paddings {
-                        vertical { smaller }
-                        horizontal { smaller }
-                    }
-                }
-
-                override val container: Style<BasicParams> = {
-                    minWidth { "50px" }
-                    paddings {
-                        vertical { smaller }
-                    }
-                }
-
-                override val sub: Style<BoxParams> = {
-                    paddings {
-                        left { large }
-                    }
-                }
-
-                override val entry: Style<BasicParams> = {
-                    base()
-                    textAlign { left }
-                    radius { "6px" }
-
-                    hover {
-                        color { navColor.highlightContrast }
-                        background { color { navColor.highlight } }
-                    }
-
-                    disabled {
-                        opacity { "0.4" }
-                        css("cursor: not-allowed")
-                    }
-                }
-
-                override val header: Style<BasicParams> = {
-                    base()
-                    color { navColor.mainContrast }
-                    fontWeight { bold }
-                    css("white-space: nowrap")
-                }
-
-                override val divider: Style<BasicParams> = {
-                    margins {
-                        horizontal { normal }
-                        vertical { smaller }
-                    }
-                    background { color { navColor.mainContrast } }
-                    height { "1px" }
-                    opacity { "0.4" }
-                }
-
-                override val custom: Style<BasicParams> = {
-                    base()
-                }
+        override val navbar: Style<BasicParams> = {
+            width { full }
+            paddings {
+                horizontal { smaller }
+                vertical { tiny }
             }
         }
 

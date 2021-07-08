@@ -11,14 +11,11 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.plus
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
-import dev.fritz2.styling.theme.MenuStyles
 import dev.fritz2.styling.theme.Theme
 import org.w3c.dom.HTMLAnchorElement
 import org.w3c.dom.HTMLButtonElement
 
-open class MenuContext<R> {
-
-    protected open val styles = Theme().menu
+open class MenuContext {
 
     protected val children = mutableListOf<MenuChild>()
 
@@ -32,7 +29,7 @@ open class MenuContext<R> {
      *
      * @param text Text to be displayed in the header
      */
-    fun R.header(text: String) = header({}, text)
+    fun MenuComponent.header(text: String) = header({}, text)
 
     /**
      * Configures and adds a [MenuHeader] to the menu.
@@ -40,7 +37,7 @@ open class MenuContext<R> {
      * @param styling [Style] to be applied to the underlying component
      * @param text Text to be displayed in the header
      */
-    fun R.header(styling: Style<BoxParams>, text: String) = MenuHeader(styling)
+    fun MenuComponent.header(styling: Style<BoxParams>, text: String) = MenuHeader(styling)
         .apply { text(text) }
         .run(::addChild)
 
@@ -169,7 +166,7 @@ open class MenuContext<R> {
  *      .run(::addChild)
  * ```
  */
-open class MenuComponent : Component<Unit>, MenuContext<MenuComponent>() {
+open class MenuComponent : Component<Unit>, MenuContext() {
 
     override fun render(
         context: RenderContext,
@@ -181,7 +178,7 @@ open class MenuComponent : Component<Unit>, MenuContext<MenuComponent>() {
         context.apply {
             div(Theme().menu.container + styling, baseClass, id, prefix) {
                 this@MenuComponent.children.forEach {
-                    it.render(this, this@MenuComponent.styles)
+                    it.render(this)
                 }
             }
         }
@@ -213,7 +210,7 @@ fun RenderContext.menu(
  */
 @HtmlTagMarker
 interface MenuChild {
-    fun render(context: RenderContext, styles: MenuStyles)
+    fun render(context: RenderContext)
 }
 
 /**
@@ -234,9 +231,9 @@ open class MenuEntry(private val styling: Style<BoxParams> = {}) :
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val text = ComponentProperty<String?>(null)
 
-    override fun render(context: RenderContext, styles: MenuStyles) {
+    override fun render(context: RenderContext) {
         context.apply {
-            button(styles.entry + this@MenuEntry.styling) {
+            button(Theme().menu.entry + this@MenuEntry.styling) {
                 this@MenuEntry.icon.value?.let {
                     icon({
                         margins { right { smaller } }
@@ -271,9 +268,9 @@ open class MenuLink(private val styling: Style<BoxParams> = {}) :
     val href = ComponentProperty<String?>(null)
     val target = ComponentProperty<String?>(null)
 
-    override fun render(context: RenderContext, styles: MenuStyles) {
+    override fun render(context: RenderContext) {
         context.apply {
-            a(styles.entry + this@MenuLink.styling) {
+            a(Theme().menu.entry + this@MenuLink.styling) {
                 this@MenuLink.icon.value?.let {
                     icon({
                         margins { right { smaller } }
@@ -299,9 +296,9 @@ open class MenuLink(private val styling: Style<BoxParams> = {}) :
 open class CustomMenuEntry(private val styling: Style<BoxParams> = {}) : MenuChild {
     val content = ComponentProperty<RenderContext.() -> Unit> { }
 
-    override fun render(context: RenderContext, styles: MenuStyles) {
+    override fun render(context: RenderContext) {
         context.apply {
-            div(styles.custom + this@CustomMenuEntry.styling) {
+            div(Theme().menu.custom + this@CustomMenuEntry.styling) {
                 this@CustomMenuEntry.content.value(this)
             }
         }
@@ -320,9 +317,9 @@ open class MenuHeader(private val styling: Style<BoxParams> = {}) : MenuChild {
 
     val text = ComponentProperty("")
 
-    override fun render(context: RenderContext, styles: MenuStyles) {
+    override fun render(context: RenderContext) {
         context.apply {
-            div(styles.header + this@MenuHeader.styling) {
+            div(Theme().menu.header + this@MenuHeader.styling) {
                 +this@MenuHeader.text.value
             }
         }
@@ -339,9 +336,9 @@ open class MenuHeader(private val styling: Style<BoxParams> = {}) : MenuChild {
  */
 open class MenuDivider(private val styling: Style<BoxParams> = {}) : MenuChild {
 
-    override fun render(context: RenderContext, styles: MenuStyles) {
+    override fun render(context: RenderContext) {
         context.apply {
-            div(styles.divider + this@MenuDivider.styling) { }
+            div(Theme().menu.divider + this@MenuDivider.styling) { }
         }
     }
 }
@@ -396,17 +393,17 @@ open class MenuDivider(private val styling: Style<BoxParams> = {}) : MenuChild {
 open class SubMenuComponent(val styling: Style<BoxParams>,
                             val baseClass: StyleClass,
                             val id: String?,
-                            val prefix: String) : MenuChild, MenuContext<MenuComponent>() {
+                            val prefix: String) : MenuChild, MenuContext() {
 
-    override fun render(context: RenderContext, styles: MenuStyles) {
+    override fun render(context: RenderContext) {
         context.apply {
-            div(styles.sub + this@SubMenuComponent.styling,
+            div(Theme().menu.sub + this@SubMenuComponent.styling,
                 this@SubMenuComponent.baseClass,
                 this@SubMenuComponent.id,
                 this@SubMenuComponent.prefix
             ) {
                 this@SubMenuComponent.children.forEach {
-                    it.render(this, styles)
+                    it.render(this)
                 }
             }
         }
