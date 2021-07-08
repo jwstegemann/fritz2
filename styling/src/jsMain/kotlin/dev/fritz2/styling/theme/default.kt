@@ -1973,7 +1973,7 @@ open class DefaultTheme : Theme {
 
         override val sub: Style<BoxParams> = {
             paddings {
-                left { large }
+                left { normal }
             }
         }
 
@@ -2014,6 +2014,10 @@ open class DefaultTheme : Theme {
 
         override val custom: Style<BasicParams> = {
             base()
+        }
+
+        override val icon: Style<BasicParams> = {
+            margins { right { smaller } }
         }
     }
 

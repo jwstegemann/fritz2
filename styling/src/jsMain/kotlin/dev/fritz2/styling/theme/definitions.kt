@@ -714,6 +714,7 @@ interface MenuStyles {
     val header: Style<BasicParams>
     val divider: Style<BasicParams>
     val custom: Style<BoxParams>
+    val icon: Style<BasicParams>
 }
 
 /**

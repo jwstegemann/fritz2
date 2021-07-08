@@ -226,8 +226,7 @@ interface MenuChild {
 open class MenuEntry(private val styling: Style<BoxParams> = {}) :
     MenuChild,
     EventProperties<HTMLButtonElement> by EventMixin(),
-    FormProperties by FormMixin()
-{
+    FormProperties by FormMixin() {
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val text = ComponentProperty<String?>(null)
 
@@ -235,10 +234,7 @@ open class MenuEntry(private val styling: Style<BoxParams> = {}) :
         context.apply {
             button(Theme().menu.entry + this@MenuEntry.styling) {
                 this@MenuEntry.icon.value?.let {
-                    icon({
-                        margins { right { smaller } }
-                        position { relative { top { "-1px" } } }
-                    }) { def(it(Theme().icons)) }
+                    icon(Theme().menu.icon) { def(it(Theme().icons)) }
                 }
                 this@MenuEntry.text.value?.let { span { +it } }
                 disabled(this@MenuEntry.disabled.values)
@@ -261,8 +257,7 @@ open class MenuEntry(private val styling: Style<BoxParams> = {}) :
 open class MenuLink(private val styling: Style<BoxParams> = {}) :
     MenuChild,
     EventProperties<HTMLAnchorElement> by EventMixin(),
-    FormProperties by FormMixin()
-{
+    FormProperties by FormMixin() {
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val text = ComponentProperty<String?>(null)
     val href = ComponentProperty<String?>(null)
@@ -272,10 +267,7 @@ open class MenuLink(private val styling: Style<BoxParams> = {}) :
         context.apply {
             a(Theme().menu.entry + this@MenuLink.styling) {
                 this@MenuLink.icon.value?.let {
-                    icon({
-                        margins { right { smaller } }
-                        position { relative { top { "-1px" } } }
-                    }) { def(it(Theme().icons)) }
+                    icon(Theme().menu.icon) { def(it(Theme().icons)) }
                 }
                 this@MenuLink.text.value?.let { span { +it } }
                 this@MenuLink.href.value?.let { href(it) }
@@ -390,14 +382,30 @@ open class MenuDivider(private val styling: Style<BoxParams> = {}) : MenuChild {
  *      .run(::addChild)
  * ```
  */
-open class SubMenuComponent(val styling: Style<BoxParams>,
-                            val baseClass: StyleClass,
-                            val id: String?,
-                            val prefix: String) : MenuChild, MenuContext() {
+open class SubMenuComponent(
+    val styling: Style<BoxParams>,
+    val baseClass: StyleClass,
+    val id: String?,
+    val prefix: String
+) : MenuChild,
+    EventProperties<HTMLButtonElement> by EventMixin(),
+    FormProperties by FormMixin(),
+    MenuContext() {
+
+    val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
+    val text = ComponentProperty<String?>(null)
 
     override fun render(context: RenderContext) {
         context.apply {
-            div(Theme().menu.sub + this@SubMenuComponent.styling,
+            button(Theme().menu.entry + this@SubMenuComponent.styling) {
+                this@SubMenuComponent.icon.value?.let {
+                    icon(Theme().menu.icon) { def(it(Theme().icons)) }
+                }
+                this@SubMenuComponent.text.value?.let { span { +it } }
+                disabled(this@SubMenuComponent.disabled.values)
+                this@SubMenuComponent.events.value.invoke(this)
+            }
+            div(Theme().menu.sub,
                 this@SubMenuComponent.baseClass,
                 this@SubMenuComponent.id,
                 this@SubMenuComponent.prefix
