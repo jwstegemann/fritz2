@@ -1082,7 +1082,7 @@ open class DefaultTheme : Theme {
             }
         }
         override val toggle: Style<BasicParams> = {
-            display { "inline-block" }
+            display { inlineBlock }
         }
         override val header: Style<BasicParams> = {
             fontWeight { semiBold }
@@ -1987,6 +1987,7 @@ open class DefaultTheme : Theme {
                 vertical { smaller }
             }
             radius { "6px" }
+            css("transition: 0.4s")
             css("user-select: none")
 
             hover {
@@ -2052,11 +2053,11 @@ open class DefaultTheme : Theme {
         val brandColor: ColorScheme
             get() = colors.primary
 
-        val navColor: ColorScheme
-            get() = colors.tertiary
-
         val headerColor: ColorScheme
-            get() = colors.secondary
+            get() = colors.primary
+
+        val sidebarColor: ColorScheme
+            get() = colors.tertiary
 
         val mainColor: ColorScheme
             get() = colors.neutral
@@ -2065,7 +2066,7 @@ open class DefaultTheme : Theme {
             get() = colors.neutral
 
         override val headerHeight: Property = "3.6rem"
-        override val footerMinHeight: Property = "2.8rem"
+        override val complementaryMinHeight: Property = "2.8rem"
         override val mobileSidebarWidth: Property = "85vw"
 
         override val brand: Style<FlexParams> = {
@@ -2079,12 +2080,12 @@ open class DefaultTheme : Theme {
         }
 
         override val sidebar: Style<BasicParams> = {
-            background { color { navColor.main } }
-            color { navColor.mainContrast }
+            background { color { sidebarColor.main } }
+            color { sidebarColor.mainContrast }
             minWidth { "22vw" }
         }
 
-        override val navbar: Style<BasicParams> = {
+        override val navigation: Style<BasicParams> = {
             width { full }
             paddings {
                 horizontal { smaller }
@@ -2092,15 +2093,9 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val footer: Style<BasicParams> = {
-            minHeight { footerMinHeight }
+        override val complementary: Style<BasicParams> = {
+            minHeight { complementaryMinHeight }
             padding { small }
-            borders {
-                top {
-                    width { "1px" }
-                    color { navColor.mainContrast }
-                }
-            }
         }
 
         override val header: Style<FlexParams> = {
@@ -2112,13 +2107,6 @@ open class DefaultTheme : Theme {
             justifyContent { spaceBetween }
             color { headerColor.mainContrast }
             background { color { headerColor.main } }
-//            borders {
-//                bottom {
-//                    width { "1px " }
-//                    style { solid }
-//                    color { gray200 }
-//                }
-//            }
         }
 
         override val main: Style<BasicParams> = {
@@ -2127,7 +2115,7 @@ open class DefaultTheme : Theme {
             color { mainColor.mainContrast }
         }
 
-        override val tabs: Style<FlexParams> = {
+        override val tablist: Style<FlexParams> = {
             color { tabsColor.mainContrast }
             background { color { tabsColor.main } }
             borders {
@@ -2137,7 +2125,7 @@ open class DefaultTheme : Theme {
                     color { gray200 }
                 }
             }
-            height { footerMinHeight }
+            height { complementaryMinHeight }
             padding { tiny }
             children(" > button") {
                 flex {

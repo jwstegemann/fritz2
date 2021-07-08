@@ -1,11 +1,9 @@
 package dev.fritz2.components
 
+import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.a
-import dev.fritz2.styling.button
-import dev.fritz2.styling.div
+import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.plus
@@ -29,7 +27,7 @@ open class MenuContext {
      *
      * @param text Text to be displayed in the header
      */
-    fun MenuComponent.header(text: String) = header({}, text)
+    fun header(text: String) = header({}, text)
 
     /**
      * Configures and adds a [MenuHeader] to the menu.
@@ -37,7 +35,7 @@ open class MenuContext {
      * @param styling [Style] to be applied to the underlying component
      * @param text Text to be displayed in the header
      */
-    fun MenuComponent.header(styling: Style<BoxParams>, text: String) = MenuHeader(styling)
+    fun header(styling: Style<BoxParams>, text: String) = MenuHeader(styling)
         .apply { text(text) }
         .run(::addChild)
 
@@ -104,7 +102,7 @@ open class MenuContext {
     fun divider(styling: Style<BoxParams> = {}) = addChild(MenuDivider(styling))
 
     /**
-     * Creates a [sub].
+     * Creates a [submenu].
      *
      * @see SubMenuComponent
      *
@@ -114,11 +112,11 @@ open class MenuContext {
      * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
      * @param build a lambda expression for setting up the component itself.
      */
-    fun sub(
+    fun submenu(
         styling: BoxParams.() -> Unit = {},
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
-        prefix: String = "sub",
+        prefix: String = "submenu",
         build: SubMenuComponent.() -> Unit,
     ) = SubMenuComponent(styling, baseClass, id, prefix)
         .apply(build)
@@ -392,8 +390,14 @@ open class SubMenuComponent(
     FormProperties by FormMixin(),
     MenuContext() {
 
+    companion object {
+        val hidden = staticStyle("hidden", "display: none")
+    }
+
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val text = ComponentProperty<String?>(null)
+
+    private val hide = storeOf(true)
 
     override fun render(context: RenderContext) {
         context.apply {
@@ -403,6 +407,7 @@ open class SubMenuComponent(
                 }
                 this@SubMenuComponent.text.value?.let { span { +it } }
                 disabled(this@SubMenuComponent.disabled.values)
+                clicks.stopPropagation() handledBy this@SubMenuComponent.hide.handle { !it }
                 this@SubMenuComponent.events.value.invoke(this)
             }
             div(Theme().menu.sub,
@@ -410,6 +415,7 @@ open class SubMenuComponent(
                 this@SubMenuComponent.id,
                 this@SubMenuComponent.prefix
             ) {
+                className(hidden.whenever(this@SubMenuComponent.hide.data).name)
                 this@SubMenuComponent.children.forEach {
                     it.render(this)
                 }

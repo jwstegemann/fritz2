@@ -19,8 +19,8 @@ import dev.fritz2.styling.theme.Theme
  * - actions
  * - nav
  * - main
- * - footer (only rendered if defined)
- * - tabs (only rendered if defined)
+ * - complementary (only rendered if defined)
+ * - tablist (only rendered if defined)
  *
  * In addition to that you can define how the sidebarToggle on small screens is rendered.
  * By default is a hamburger-button.
@@ -44,7 +44,7 @@ open class AppFrameComponent : Component<Unit> {
                     grid-template-areas:
                         "brand header"
                         "sidebar main"
-                        "sidebar footer";
+                        "sidebar tablist";
                     grid-template-rows: ${Theme().appFrame.headerHeight} 1fr min-content;
                     grid-auto-columns: min-content 1fr;
                     padding: 0;
@@ -114,19 +114,19 @@ open class AppFrameComponent : Component<Unit> {
         main = styling to context
     }
 
-    private var footer: Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>? = null
-    fun footer(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
-        footer = styling to context
+    private var complementary: Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>? = null
+    fun complementary(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
+        complementary = styling to context
     }
 
-    private var tabs: Pair<Style<FlexParams>?, (RenderContext.() -> Unit)?>? = null
-    fun tabs(styling: Style<FlexParams>? = null, context: RenderContext.() -> Unit) {
-        tabs = styling to context
+    private var tablist: Pair<Style<FlexParams>?, (RenderContext.() -> Unit)?>? = null
+    fun tablist(styling: Style<FlexParams>? = null, context: RenderContext.() -> Unit) {
+        tablist = styling to context
     }
 
-    private var navbar = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
+    private var navigation = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
     fun navbar(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
-        navbar = styling to context
+        navigation = styling to context
     }
 
     val sidebarToggle = ComponentProperty<PushButtonComponent.() -> Unit> {
@@ -227,17 +227,17 @@ open class AppFrameComponent : Component<Unit> {
                     overflow { auto }
                 }) {
                     section({
-                        Theme().appFrame.navbar()
-                        this@AppFrameComponent.navbar.first?.invoke()
-                    }, prefix = "navbar") {
-                        this@AppFrameComponent.navbar.second?.invoke(this)
+                        Theme().appFrame.navigation()
+                        this@AppFrameComponent.navigation.first?.invoke()
+                    }, prefix = "navigation") {
+                        this@AppFrameComponent.navigation.second?.invoke(this)
                     }
-                    this@AppFrameComponent.footer?.let { footer ->
+                    this@AppFrameComponent.complementary?.let { complementary ->
                         section({
-                            Theme().appFrame.footer()
-                            footer.first?.invoke()
+                            Theme().appFrame.complementary()
+                            complementary.first?.invoke()
                         }) {
-                            footer.second?.invoke(this)
+                            complementary.second?.invoke(this)
                         }
                     }
                 }
@@ -253,16 +253,16 @@ open class AppFrameComponent : Component<Unit> {
                 this@AppFrameComponent.main.second?.invoke(this)
             }
 
-            this@AppFrameComponent.tabs?.let { tabs ->
+            this@AppFrameComponent.tablist?.let { tablist ->
                 flexBox({
-                    grid { area { "footer" } }
+                    grid { area { "tablist" } }
                     direction { row }
                     alignItems { center }
                     justifyContent { spaceEvenly }
-                    Theme().appFrame.tabs()
-                    tabs.first?.invoke()
-                }, prefix = "tabs") {
-                    tabs.second?.invoke(this)
+                    Theme().appFrame.tablist()
+                    tablist.first?.invoke()
+                }, prefix = "tablist") {
+                    tablist.second?.invoke(this)
                 }
             }
         }
@@ -273,10 +273,10 @@ open class AppFrameComponent : Component<Unit> {
  * This component implements a standard responsive layout for web-apps.
  *
  * It offers the following sections
- * - sidebar with brand, navbar section and optional footer on the left
+ * - sidebar with brand, navbar section and optional complementary on the left
  * - header at the top with actions section on the right
  * - main section
- * - optional navigation tabs at the bottom of main section
+ * - optional navigation tablist at the bottom of main section
  *
  * The sidebar is moved off-screen on small screens and can be opened by a hamburger-button,
  * that appears at the left edge of the header.
@@ -295,7 +295,7 @@ open class AppFrameComponent : Component<Unit> {
  *     navbar {
  *         //...
  *     }
- *     footer { //optional
+ *     complementary { //optional
  *         //...
  *     }
  *     header { //optional
@@ -307,7 +307,7 @@ open class AppFrameComponent : Component<Unit> {
  *     main {
  *         //...
  *     }
- *     tabs { //optional
+ *     tablist { //optional
  *         //...
  *     }
  *}
@@ -323,7 +323,7 @@ fun RenderContext.appFrame(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
-    prefix: String = "main",
+    prefix: String = "appFrame",
     build: AppFrameComponent.() -> Unit = {}
 ) {
     AppFrameComponent().apply(build).render(this, styling, baseClass, id, prefix)
