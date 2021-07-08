@@ -258,6 +258,7 @@ open class ToastComponent : ManagedComponent<Unit>,
                 alignItems { center }
             }, baseClass, id, prefix) {
                 div({
+                    Theme().toast.base()
                     toastStyle()
                     background { color(this@ToastComponent.background.value) }
                     alignItems { center }

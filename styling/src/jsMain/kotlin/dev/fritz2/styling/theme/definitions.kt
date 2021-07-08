@@ -652,6 +652,7 @@ interface AlertVariants {
  * definition of the theme's toasts
  */
 interface ToastStyles {
+    val base: Style<BasicParams>
     val placement: ToastPlacement
     val status: ToastStatus
     val closeButton: ToastButton
