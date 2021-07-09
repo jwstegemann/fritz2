@@ -11,8 +11,9 @@ import dev.fritz2.styling.params.BasicParams
  * The [typeAhead] factory function creates a [TypeAheadComponent].
  *
  * It offers the possibility to input some [String] and get some list of proposals to choose from.
- * Internally this is achieved by adding some datalist to the input field
- * (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist).
+ * Internally this is achieved by adding some
+ * [datalist](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist)
+ * to the input field.
  *
  * The typical (and minimal) usage might look like this:
  * ```
