@@ -33,7 +33,13 @@ import dev.fritz2.styling.params.GridParams
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param content a lambda expression for setting up the content and events of the ``div`` element itself
  */
-@Deprecated("Use 'div' instead of 'box' (same functionality)")
+@Deprecated(
+    "Use 'div' instead of 'box' (same functionality)",
+    ReplaceWith(
+        expression = "div(styling, baseClass, id, prefix) { content() }",
+        imports = ["dev.fritz2.styling.div"]
+    )
+)
 fun RenderContext.box(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
