@@ -72,21 +72,21 @@ open class AlertComponent : Component<Unit> {
         }
     }
 
-    enum class AlertVariant {
+    enum class Variant {
         SOLID, SUBTLE, LEFT_ACCENT, TOP_ACCENT, DISCREET
     }
 
     object VariantContext {
-        val solid = AlertVariant.SOLID
-        val subtle = AlertVariant.SUBTLE
-        val leftAccent = AlertVariant.LEFT_ACCENT
-        val topAccent = AlertVariant.TOP_ACCENT
-        val discreet = AlertVariant.DISCREET
+        val solid = Variant.SOLID
+        val subtle = Variant.SUBTLE
+        val leftAccent = Variant.LEFT_ACCENT
+        val topAccent = Variant.TOP_ACCENT
+        val discreet = Variant.DISCREET
     }
 
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val severity = ComponentProperty<(AlertSeverities.() -> AlertSeverity)> { info }
-    val variant = ComponentProperty<VariantContext.() -> AlertVariant> { solid }
+    val variant = ComponentProperty<VariantContext.() -> Variant> { solid }
     val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
     val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
 
@@ -142,11 +142,11 @@ open class AlertComponent : Component<Unit> {
                 this@AlertComponent.size.value(Theme().alert.sizes)()
                 this@AlertComponent.stacking.value(Theme().alert.stacking)()
                 when (this@AlertComponent.variant.value(VariantContext)) {
-                    AlertVariant.SOLID -> Theme().alert.variants.solid
-                    AlertVariant.SUBTLE -> Theme().alert.variants.subtle
-                    AlertVariant.LEFT_ACCENT -> Theme().alert.variants.leftAccent
-                    AlertVariant.TOP_ACCENT -> Theme().alert.variants.topAccent
-                    AlertVariant.DISCREET -> Theme().alert.variants.discreet
+                    Variant.SOLID -> Theme().alert.variants.solid
+                    Variant.SUBTLE -> Theme().alert.variants.subtle
+                    Variant.LEFT_ACCENT -> Theme().alert.variants.leftAccent
+                    Variant.TOP_ACCENT -> Theme().alert.variants.topAccent
+                    Variant.DISCREET -> Theme().alert.variants.discreet
                 }.invoke(this, this@AlertComponent.severity.value(Theme().alert.severities).colorScheme)
                 styling()
             }, alertCss) {
