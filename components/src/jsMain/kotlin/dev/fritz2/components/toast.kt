@@ -4,6 +4,8 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.components.ToastComponent.Companion.closeAllToasts
 import dev.fritz2.components.ToastComponent.Companion.closeLastToast
+import dev.fritz2.components.ToastComponentBase.Companion.closeAllToasts
+import dev.fritz2.components.ToastComponentBase.Companion.closeLastToast
 import dev.fritz2.dom.html.Li
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
@@ -16,55 +18,18 @@ import kotlinx.coroutines.flow.map
 
 
 /**
- * This class combines the _configuration_ and the core styling of a toast.
+ * This class is the base for different types of toast-components and contains all necesserary logic except the
+ * content-related aspects.
+ * This way, different types of toasts with specific DSL variations can be implemented by inheriting from this base
+ * class and implementing the rendering logic exposed via the avstract [renderContent] method.
  *
- * You can configure the following aspects:
- * - position of the toast: top | topLeft | topRight | bottom (default) | bottomLeft | bottomRight
- * - duration: time in ms before the toast is automatically dismissed - default is 5000 ms
- * - isCloseable : if true, a close button is added for closing the toast before the duration timer hits zero
- * - closeButtonStyle: style of the toast's close button, if displayed
- * - background: background color of the toast
- * - content : actual content of the toast, e.g. some text or an icon.
+ * Currently, the following comppnents are part of the toast family:
+ * - [ToastComponent] (created via [toast] and [showToast])
+ * - [AlertToastComponent] (created via [alertToast] and [showAlertToast])
  *
- * In order to avoid having to build the toast's content manually, it is recommended to use toasts in combination with
- * alerts. This can be done by providing an [AlertComponent] as the toast's content.
- * ```
- * showToast {
- *     content {
- *          alert {
- *              title("Alert-Toast")
- *              content("This is a test-alert in a toast.")
- *          }
- *     }
- *     severity { success }
- *     variant { leftAccent }
- * }
- * ```
- *
- * Example on how to set up a toast manually:
- * ```
- * showToast {
- *     status { warning }
- *     position { bottomRight }
- *     duration { 8000 }
- *
- *     content { ... }
- * }
- * ```
- *
- * Also, there are two static helper functions for the following use cases:
- *  - [closeAllToasts] -> close all visible toasts
- *  - [closeLastToast]  -> close the last toast
- *
- * Example:
- * ```
- * clickButton {
- *      variant { outline }
- *      text("closeAll")
- * } handledBy ToastComponent.closeAllToasts()
- * ```
+ * See the respective subclass's documentation for more information and concrete usage examples.
  */
-open class ToastComponent : ManagedComponent<Unit>,
+abstract class ToastComponentBase : ManagedComponent<Unit>,
     CloseButtonProperty by CloseButtonMixin(
         "toast-close-button",
         Theme().toast.closeButton.close
@@ -112,8 +77,43 @@ open class ToastComponent : ManagedComponent<Unit>,
         }
     }
 
+    /**
+     * This class defines helpful methods to either close all currently open ([closeAllToasts]) or the last created
+     * toast ([closeLastToast]) which can be called via the companion objects of both [ToastComponent] and
+     * [AlertToastComponent].
+     *
+     * Example:
+     * ```
+     * clickButton {
+     *      variant { outline }
+     *      text("closeAll")
+     * } handledBy ToastComponent.closeAllToasts()
+     * ```
+     */
+    open class CloseMethodCompanion {
+        fun closeAllToasts(): SimpleHandler<Unit> {
+            val store = object : RootStore<String>("") {
+                val closeAll = handle {
+                    ToastStore.removeAll.invoke()
+                    it
+                }
+            }
+            return store.closeAll
+        }
 
-    companion object {
+        fun closeLastToast(): SimpleHandler<Unit> {
+            val store = object : RootStore<String>("") {
+                val closeLatest = handle {
+                    ToastStore.removeLast.invoke()
+                    it
+                }
+            }
+            return store.closeLatest
+        }
+    }
+
+
+    companion object : CloseMethodCompanion() {
 
         private val toastContainerStaticCss = staticStyle(
             "toastContainer",
@@ -154,7 +154,6 @@ open class ToastComponent : ManagedComponent<Unit>,
 
         private val job = Job()
         private val globalId = "f2c-toasts-${randomId()}"
-        const val defaultToastContainerPrefix = "ul-toast-container"
 
         init {
             // Rendering of the toast container hosting all toast messages.
@@ -173,7 +172,7 @@ open class ToastComponent : ManagedComponent<Unit>,
                     ul({
                         placementStyle()
                         zIndex { toast }
-                    }, toastContainerStaticCss, uniqueId(), defaultToastContainerPrefix) {
+                    }, toastContainerStaticCss, uniqueId(), "ul-toast-container") {
                         ToastStore.data
                             .map { toasts ->
                                 toasts.filter { toast -> toast.placement == it }
@@ -197,36 +196,15 @@ open class ToastComponent : ManagedComponent<Unit>,
                 }
             }
         }
-
-        fun closeAllToasts(): SimpleHandler<Unit> {
-            val store = object : RootStore<String>("") {
-                val closeAll = handle {
-                    ToastStore.removeAll.invoke()
-                    it
-                }
-            }
-            return store.closeAll
-        }
-
-        fun closeLastToast(): SimpleHandler<Unit> {
-            val store = object : RootStore<String>("") {
-                val closeLatest = handle {
-                    ToastStore.removeLast.invoke()
-                    it
-                }
-            }
-            return store.closeLatest
-        }
     }
 
-    val content = ComponentProperty<(RenderContext.() -> Unit)?>(null)
     val placement = ComponentProperty<Placement.() -> String> { bottomRight }
     val duration = ComponentProperty(5000L)
     val background = ComponentProperty<Colors.() -> ColorProperty> { info.main }
 
     /**
      * This method registers one toast at the central toast store and creates a rendering expression that will be
-     * executed by the central rendering in the companion's object [ToastComponent.Companion] init block.
+     * executed by the central rendering in the companion's object [ToastComponentBase.Companion] init block.
      *
      * @param styling lambda expression for declaring the styling of the toast using fritz2's styling DSL
      * @param baseClass optional CSS class that should be applied to the toast element
@@ -237,7 +215,7 @@ open class ToastComponent : ManagedComponent<Unit>,
         styling: BoxParams.() -> Unit,
         baseClass: StyleClass,
         id: String?,
-        prefix: String,
+        prefix: String
     ) {
         val localId: String = id ?: uniqueId()
 
@@ -257,25 +235,139 @@ open class ToastComponent : ManagedComponent<Unit>,
                 div({
                     Theme().toast.base()
                     toastStyle()
-                    background { color(this@ToastComponent.background.value) }
+                    background { color(this@ToastComponentBase.background.value) }
                     alignItems { center }
                     styling()
                 }) {
-                    this@ToastComponent.content.value?.let {
-                        div({
-                            css("flex: 1 1 0%;")
-                        }) {
-                            it.invoke(this)
-                        }
-                    }
-                    if (this@ToastComponent.hasCloseButton.value) {
-                        this@ToastComponent.closeButtonRendering.value(this).map { localId } handledBy ToastStore.remove
+                    this@ToastComponentBase.renderContent(this, styling, baseClass, id, prefix)
+                    if (this@ToastComponentBase.hasCloseButton.value) {
+                        this@ToastComponentBase.closeButtonRendering.value(this).map { localId } handledBy ToastStore.remove
                     }
                 }
             }
         })
     }
+
+    internal abstract fun renderContent(
+        context: RenderContext, styling: BoxParams.() -> Unit,
+        baseClass: StyleClass,
+        id: String?,
+        prefix: String
+    )
 }
+
+/**
+ * This class combines the _configuration_ and the core styling of a toast.
+ *
+ * You can configure the following aspects:
+ * - position of the toast: top | topLeft | topRight | bottom (default) | bottomLeft | bottomRight
+ * - duration: time in ms before the toast is automatically dismissed - default is 5000 ms
+ * - isCloseable : if true, a close button is added for closing the toast before the duration timer hits zero
+ * - closeButtonStyle: style of the toast's close button, if displayed
+ * - background: background color of the toast
+ * - content : actual content of the toast, e.g. some text or an icon.
+ *
+ * In order to avoid having to build the toast's content manually, it is recommended to use toasts in combination with
+ * alerts. This can be done via the dedicated [AlertToastComponent].
+ *
+ * Example on how to configure a toast (with manually created content):
+ * ```
+ * showToast {
+ *     status { warning }
+ *     position { bottomRight }
+ *     duration { 8000 }
+ *
+ *     content { ... }
+ * }
+ * ```
+ */
+open class ToastComponent : ToastComponentBase() {
+    companion object : ToastComponentBase.CloseMethodCompanion()
+
+    val content = ComponentProperty<(RenderContext.() -> Unit)?>(value = null)
+
+    override fun renderContent(
+        context: RenderContext, styling: BoxParams.() -> Unit,
+        baseClass: StyleClass,
+        id: String?,
+        prefix: String
+    ) {
+        context.apply {
+            this@ToastComponent.content.value?.let {
+                div({
+                    css("flex: 1 1 0%;")
+                }) {
+                    it.invoke(this)
+                }
+            }
+        }
+    }
+}
+
+/**
+ * This class combines the _configuration_ and the core styling of an alert-toast (toast containing an alert as it's
+ * content).
+ *
+ * You can configure the following aspects:
+ * - position of the toast: top | topLeft | topRight | bottom (default) | bottomLeft | bottomRight
+ * - duration: time in ms before the toast is automatically dismissed - default is 5000 ms
+ * - isCloseable : if true, a close button is added for closing the toast before the duration timer hits zero
+ * - closeButtonStyle: style of the toast's close button, if displayed
+ * - background: background color of the toast
+ * - alert : all properties of the underlying alert
+ *
+ * See [ToastComponent] if you need to define custom content.
+ *
+ * Example on how to configure a toast (with manually created content):
+ * ```
+ * showToast {
+ *     status { warning }
+ *     position { bottomRight }
+ *     duration { 8000 }
+ *
+ *     alert {
+ *         title("Alert")
+ *         severity { info }
+ *         // ...
+ *     }
+ * }
+ * ```
+ */
+open class AlertToastComponent : ToastComponentBase() {
+    companion object : ToastComponentBase.CloseMethodCompanion()
+
+    val alert = ComponentProperty<AlertComponent.() -> Unit> {}
+
+    override fun renderContent(
+        context: RenderContext, styling: BoxParams.() -> Unit,
+        baseClass: StyleClass,
+        id: String?,
+        prefix: String
+    ) {
+        context.apply {
+            val alertComponent = AlertComponent()
+                .apply(this@AlertToastComponent.alert.value)
+                .apply {
+                    stacking { toast }
+                }
+
+            this@AlertToastComponent.closeButtonStyle(Theme().toast.closeButton.close + {
+                color {
+                    val colorScheme = alertComponent.severity.value(Theme().alert.severities).colorScheme
+                    when(alertComponent.variant.value(AlertComponent.VariantContext)) {
+                        AlertComponent.Variant.SUBTLE -> colorScheme.main
+                        AlertComponent.Variant.TOP_ACCENT -> colorScheme.main
+                        AlertComponent.Variant.LEFT_ACCENT -> colorScheme.main
+                        else -> colorScheme.mainContrast
+                    }
+                }
+            })
+
+            alertComponent.render(this, styling, baseClass, id, prefix)
+        }
+    }
+}
+
 
 /**
  * This factory method creates a toast and displays it _right away_.
@@ -308,7 +400,7 @@ fun showToast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
-    prefix: String = ToastComponent.defaultToastContainerPrefix,
+    prefix: String = "toast",
     build: ToastComponent.() -> Unit
 ) {
     ToastComponent().apply(build).render(styling, baseClass, id, prefix)
@@ -350,7 +442,7 @@ fun toast(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
-    prefix: String = ToastComponent.defaultToastContainerPrefix,
+    prefix: String = "toast",
     build: ToastComponent.() -> Unit
 ): SimpleHandler<Unit> = asHandler {
     showToast(styling, baseClass, id, prefix, build)
@@ -360,26 +452,22 @@ fun toast(
  * This factory method creates a toast with an alert as it's content and displays it _right away_.
  * Use [alertToast] in order to display a toast delayed, e.g. when a button is pressed.
  *
- * The build-lambda of this method configures the _alert_, not the _toast_. Use the [buildToast] parameter to configure
- * properties of the underlying [ToastComponent].
- *
- * Please note: All parameters (styling, id, prefix, etc.) are applied to the alert, not the toast.
- *
  * Usage example:
  * ```
- * showAlertToast({
+ * showAlertToast {
+ *     // configuration of the toast:
  *     duration(9000)
- *     // configure additional toast-properties here
- * }) {
- *     title("AlertToast!")
- *     content("This is an alert in a toast.")
- *     // configure additional alert-properties here
+ *     position { bottomRight }
+ *
+ *     // configuration of the alert:
+ *     alert {
+ *         title("AlertToast!")
+ *         content("This is an alert in a toast.")
+ *     }
  * }
  * ```
  *
- *
  * @param styling lambda expression for declaring the styling of the toast using fritz2's styling DSL
- * @param buildToast lambda expression to configure the enclosing [ToastComponent]
  * @param baseClass optional CSS class that should be applied to the toast element
  * @param id ID of the toast element
  * @param prefix prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
@@ -388,35 +476,12 @@ fun toast(
  */
 fun showAlertToast(
     styling: BasicParams.() -> Unit = {},
-    buildToast: ToastComponent.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "toast-alert",
-    build: AlertComponent.() -> Unit
+    build: AlertToastComponent.() -> Unit
 ) {
-    val alertComponent = AlertComponent()
-        .apply(build)
-        .apply {
-            stacking { toast }
-        }
-
-    showToast {
-        closeButtonStyle(Theme().toast.closeButton.close + {
-            color {
-                val colorScheme = alertComponent.severity.value(Theme().alert.severities).colorScheme
-                when(alertComponent.variant.value(AlertComponent.VariantContext)) {
-                    AlertComponent.AlertVariant.SUBTLE -> colorScheme.main
-                    AlertComponent.AlertVariant.TOP_ACCENT -> colorScheme.main
-                    AlertComponent.AlertVariant.LEFT_ACCENT -> colorScheme.main
-                    else -> colorScheme.mainContrast
-                }
-            }
-        })
-        content {
-            alertComponent.render(this, styling, baseClass, id, prefix)
-        }
-        buildToast()
-    }
+    AlertToastComponent().apply(build).render(styling, baseClass, id, prefix)
 }
 
 /**
@@ -431,19 +496,20 @@ fun showAlertToast(
  * clickButton {
  *    variant { outline }
  *    text("New alert-toast")
- * } handledBy alertToast({
+ * } handledBy alertToast {
+ *     // configuration of the toast:
  *     duration(9000)
- *     // configure additional toast-properties here
- * }) {
- *     title("AlertToast!")
- *     content("This is an alert in a toast.")
- *     // configure additional alert-properties here
+ *     position { bottomRight }
+ *
+ *     // configuration of the alert:
+ *     alert {
+ *         title("AlertToast!")
+ *         content("This is an alert in a toast.")
+ *     }
  * }
  * ```
  *
- *
  * @param styling lambda expression for declaring the styling of the toast using fritz2's styling DSL
- * @param buildToast lambda expression to configure the enclosing [ToastComponent]
  * @param baseClass optional CSS class that should be applied to the toast element
  * @param id ID of the toast element
  * @param prefix prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
@@ -451,13 +517,12 @@ fun showAlertToast(
  */
 fun alertToast(
     styling: BasicParams.() -> Unit = {},
-    buildToast: ToastComponent.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "toast-alert",
-    build: AlertComponent.() -> Unit
+    build: AlertToastComponent.() -> Unit
 ): SimpleHandler<Unit> = asHandler {
-    showAlertToast(styling, buildToast, baseClass, id, prefix, build)
+    showAlertToast(styling, baseClass, id, prefix, build)
 }
 
 
