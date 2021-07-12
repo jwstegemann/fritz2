@@ -1305,15 +1305,13 @@ interface TagContext : WithJob, WithPayload {
     fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T
 
     /**
-     * Evaluates if payload context is used and only then initializes a [PayloadContext]
+     * Evaluates the payload context and initializes a [PayloadContext]
      * for setting new entries to the payload.
      *
      * @param context to evaluate
      */
-    private fun evalPayload(context: (PayloadContext.() -> Unit)?): Payload {
-        return if (context != null) {
-            PayloadContext(this@TagContext.payload).apply(context).payload
-        } else this@TagContext.payload
+    private inline fun evalPayload(context: (PayloadContext.() -> Unit)): Payload {
+        return PayloadContext(this@TagContext.payload).apply(context).payload
     }
 
     /**
@@ -1321,13 +1319,13 @@ interface TagContext : WithJob, WithPayload {
      *
      * @param tagName Name of the [Tag] in DOM
      * @param content content scope for inner [Tag]s
-     * @return custom [Tag] of type [E]
+     * @return custom [Tag]
      */
     fun custom(
         tagName: String,
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: RenderContext.() -> Unit
     ): RenderContext =
         register(RenderContext(tagName, id, baseClass, job, evalPayload(payload)), content)
@@ -1335,7 +1333,7 @@ interface TagContext : WithJob, WithPayload {
     fun a(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: A.() -> Unit
     ): A =
         register(A(id, baseClass, job, evalPayload(payload)), content)
@@ -1343,7 +1341,7 @@ interface TagContext : WithJob, WithPayload {
     fun area(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Area.() -> Unit
     ): Area =
         register(Area(id, baseClass, job, evalPayload(payload)), content)
@@ -1351,7 +1349,7 @@ interface TagContext : WithJob, WithPayload {
     fun br(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Br.() -> Unit
     ): Br =
         register(Br(id, baseClass, job, evalPayload(payload)), content)
@@ -1359,7 +1357,7 @@ interface TagContext : WithJob, WithPayload {
     fun button(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Button.() -> Unit
     ): Button =
         register(Button(id, baseClass, job, evalPayload(payload)), content)
@@ -1367,7 +1365,7 @@ interface TagContext : WithJob, WithPayload {
     fun canvas(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Canvas.() -> Unit
     ): Canvas =
         register(Canvas(id, baseClass, job, evalPayload(payload)), content)
@@ -1375,7 +1373,7 @@ interface TagContext : WithJob, WithPayload {
     fun dl(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Dl.() -> Unit
     ): Dl =
         register(Dl(id, baseClass, job, evalPayload(payload)), content)
@@ -1383,7 +1381,7 @@ interface TagContext : WithJob, WithPayload {
     fun dt(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("dt", id, baseClass, job, evalPayload(payload)), content)
@@ -1391,7 +1389,7 @@ interface TagContext : WithJob, WithPayload {
     fun dd(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("dd", id, baseClass, job, evalPayload(payload)), content)
@@ -1399,7 +1397,7 @@ interface TagContext : WithJob, WithPayload {
     fun data(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Data.() -> Unit
     ): Data =
         register(Data(id, baseClass, job, evalPayload(payload)), content)
@@ -1407,7 +1405,7 @@ interface TagContext : WithJob, WithPayload {
     fun datalist(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: DataList.() -> Unit
     ): DataList =
         register(DataList(id, baseClass, job, evalPayload(payload)), content)
@@ -1415,7 +1413,7 @@ interface TagContext : WithJob, WithPayload {
     fun details(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Details.() -> Unit
     ): Details =
         register(Details(id, baseClass, job, evalPayload(payload)), content)
@@ -1423,7 +1421,7 @@ interface TagContext : WithJob, WithPayload {
     fun dialog(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Dialog.() -> Unit
     ): Dialog =
         register(Dialog(id, baseClass, job, evalPayload(payload)), content)
@@ -1431,7 +1429,7 @@ interface TagContext : WithJob, WithPayload {
     fun div(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Div.() -> Unit
     ): Div =
         register(Div(id, baseClass, job, evalPayload(payload)), content)
@@ -1439,7 +1437,7 @@ interface TagContext : WithJob, WithPayload {
     fun embed(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Embed.() -> Unit
     ): Embed =
         register(Embed(id, baseClass, job, evalPayload(payload)), content)
@@ -1447,7 +1445,7 @@ interface TagContext : WithJob, WithPayload {
     fun fieldset(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: FieldSet.() -> Unit
     ): FieldSet =
         register(FieldSet(id, baseClass, job, evalPayload(payload)), content)
@@ -1455,7 +1453,7 @@ interface TagContext : WithJob, WithPayload {
     fun form(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Form.() -> Unit
     ): Form =
         register(Form(id, baseClass, job, evalPayload(payload)), content)
@@ -1463,7 +1461,7 @@ interface TagContext : WithJob, WithPayload {
     fun hr(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Hr.() -> Unit
     ): Hr =
         register(Hr(id, baseClass, job, evalPayload(payload)), content)
@@ -1471,7 +1469,7 @@ interface TagContext : WithJob, WithPayload {
     fun h1(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: H.() -> Unit
     ): H =
         register(H(1, id, baseClass, job, evalPayload(payload)), content)
@@ -1479,7 +1477,7 @@ interface TagContext : WithJob, WithPayload {
     fun h2(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: H.() -> Unit
     ): H =
         register(H(2, id, baseClass, job, evalPayload(payload)), content)
@@ -1487,7 +1485,7 @@ interface TagContext : WithJob, WithPayload {
     fun h3(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: H.() -> Unit
     ): H =
         register(H(3, id, baseClass, job, evalPayload(payload)), content)
@@ -1495,7 +1493,7 @@ interface TagContext : WithJob, WithPayload {
     fun h4(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: H.() -> Unit
     ): H =
         register(H(4, id, baseClass, job, evalPayload(payload)), content)
@@ -1503,7 +1501,7 @@ interface TagContext : WithJob, WithPayload {
     fun h5(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: H.() -> Unit
     ): H =
         register(H(5, id, baseClass, job, evalPayload(payload)), content)
@@ -1511,7 +1509,7 @@ interface TagContext : WithJob, WithPayload {
     fun h6(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: H.() -> Unit
     ): H =
         register(H(6, id, baseClass, job, evalPayload(payload)), content)
@@ -1519,7 +1517,7 @@ interface TagContext : WithJob, WithPayload {
     fun iframe(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: IFrame.() -> Unit
     ): IFrame =
         register(IFrame(id, baseClass, job, evalPayload(payload)), content)
@@ -1527,7 +1525,7 @@ interface TagContext : WithJob, WithPayload {
     fun img(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Img.() -> Unit
     ): Img =
         register(Img(id, baseClass, job, evalPayload(payload)), content)
@@ -1535,7 +1533,7 @@ interface TagContext : WithJob, WithPayload {
     fun input(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Input.() -> Unit
     ): Input =
         register(Input(id, baseClass, job, evalPayload(payload)), content)
@@ -1543,7 +1541,7 @@ interface TagContext : WithJob, WithPayload {
     fun li(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Li.() -> Unit
     ): Li =
         register(Li(id, baseClass, job, evalPayload(payload)), content)
@@ -1551,7 +1549,7 @@ interface TagContext : WithJob, WithPayload {
     fun label(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Label.() -> Unit
     ): Label =
         register(Label(id, baseClass, job, evalPayload(payload)), content)
@@ -1559,7 +1557,7 @@ interface TagContext : WithJob, WithPayload {
     fun legend(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Legend.() -> Unit
     ): Legend =
         register(Legend(id, baseClass, job, evalPayload(payload)), content)
@@ -1567,7 +1565,7 @@ interface TagContext : WithJob, WithPayload {
     fun map(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Map.() -> Unit
     ): Map =
         register(Map(id, baseClass, job, evalPayload(payload)), content)
@@ -1575,7 +1573,7 @@ interface TagContext : WithJob, WithPayload {
     fun audio(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Audio.() -> Unit
     ): Audio =
         register(Audio(id, baseClass, job, evalPayload(payload)), content)
@@ -1583,7 +1581,7 @@ interface TagContext : WithJob, WithPayload {
     fun video(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Video.() -> Unit
     ): Video =
         register(Video(id, baseClass, job, evalPayload(payload)), content)
@@ -1591,7 +1589,7 @@ interface TagContext : WithJob, WithPayload {
     fun meter(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Meter.() -> Unit
     ): Meter =
         register(Meter(id, baseClass, job, evalPayload(payload)), content)
@@ -1599,7 +1597,7 @@ interface TagContext : WithJob, WithPayload {
     fun ins(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Ins.() -> Unit
     ): Ins =
         register(Ins(id, baseClass, job, evalPayload(payload)), content)
@@ -1607,7 +1605,7 @@ interface TagContext : WithJob, WithPayload {
     fun del(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Del.() -> Unit
     ): Del =
         register(Del(id, baseClass, job, evalPayload(payload)), content)
@@ -1615,7 +1613,7 @@ interface TagContext : WithJob, WithPayload {
     fun ol(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Ol.() -> Unit
     ): Ol =
         register(Ol(id, baseClass, job, evalPayload(payload)), content)
@@ -1623,7 +1621,7 @@ interface TagContext : WithJob, WithPayload {
     fun `object`(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Object.() -> Unit
     ): Object =
         register(Object(id, baseClass, job, evalPayload(payload)), content)
@@ -1631,7 +1629,7 @@ interface TagContext : WithJob, WithPayload {
     fun optgroup(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Optgroup.() -> Unit
     ): Optgroup =
         register(Optgroup(id, baseClass, job, evalPayload(payload)), content)
@@ -1639,7 +1637,7 @@ interface TagContext : WithJob, WithPayload {
     fun option(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Option.() -> Unit
     ): Option =
         register(Option(id, baseClass, job, evalPayload(payload)), content)
@@ -1647,7 +1645,7 @@ interface TagContext : WithJob, WithPayload {
     fun output(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Output.() -> Unit
     ): Output =
         register(Output(id, baseClass, job, evalPayload(payload)), content)
@@ -1655,7 +1653,7 @@ interface TagContext : WithJob, WithPayload {
     fun p(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: P.() -> Unit
     ): P =
         register(P(id, baseClass, job, evalPayload(payload)), content)
@@ -1663,7 +1661,7 @@ interface TagContext : WithJob, WithPayload {
     fun param(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Param.() -> Unit
     ): Param =
         register(Param(id, baseClass, job, evalPayload(payload)), content)
@@ -1671,7 +1669,7 @@ interface TagContext : WithJob, WithPayload {
     fun picture(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Picture.() -> Unit
     ): Picture =
         register(Picture(id, baseClass, job, evalPayload(payload)), content)
@@ -1679,7 +1677,7 @@ interface TagContext : WithJob, WithPayload {
     fun pre(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Pre.() -> Unit
     ): Pre =
         register(Pre(id, baseClass, job, evalPayload(payload)), content)
@@ -1687,7 +1685,7 @@ interface TagContext : WithJob, WithPayload {
     fun progress(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Progress.() -> Unit
     ): Progress =
         register(Progress(id, baseClass, job, evalPayload(payload)), content)
@@ -1695,7 +1693,7 @@ interface TagContext : WithJob, WithPayload {
     fun quote(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Quote.() -> Unit
     ): Quote =
         register(Quote(id, baseClass, job, evalPayload(payload)), content)
@@ -1703,7 +1701,7 @@ interface TagContext : WithJob, WithPayload {
     fun script(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Script.() -> Unit
     ): Script =
         register(Script(id, baseClass, job, evalPayload(payload)), content)
@@ -1711,7 +1709,7 @@ interface TagContext : WithJob, WithPayload {
     fun select(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Select.() -> Unit
     ): Select =
         register(Select(id, baseClass, job, evalPayload(payload)), content)
@@ -1719,7 +1717,7 @@ interface TagContext : WithJob, WithPayload {
     fun span(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Span.() -> Unit
     ): Span =
         register(Span(id, baseClass, job, evalPayload(payload)), content)
@@ -1727,7 +1725,7 @@ interface TagContext : WithJob, WithPayload {
     fun caption(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Caption.() -> Unit
     ): Caption =
         register(Caption(id, baseClass, job, evalPayload(payload)), content)
@@ -1735,7 +1733,7 @@ interface TagContext : WithJob, WithPayload {
     fun th(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Th.() -> Unit
     ): Th =
         register(Th(id, baseClass, job, evalPayload(payload)), content)
@@ -1743,7 +1741,7 @@ interface TagContext : WithJob, WithPayload {
     fun td(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Td.() -> Unit
     ): Td =
         register(Td(id, baseClass, job, evalPayload(payload)), content)
@@ -1751,7 +1749,7 @@ interface TagContext : WithJob, WithPayload {
     fun col(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Col.() -> Unit
     ): Col =
         register(Col(id, baseClass, job, evalPayload(payload)), content)
@@ -1759,7 +1757,7 @@ interface TagContext : WithJob, WithPayload {
     fun colgroup(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Colgroup.() -> Unit
     ): Colgroup =
         register(Colgroup(id, baseClass, job, evalPayload(payload)), content)
@@ -1767,7 +1765,7 @@ interface TagContext : WithJob, WithPayload {
     fun table(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Table.() -> Unit
     ): Table =
         register(Table(id, baseClass, job, evalPayload(payload)), content)
@@ -1775,7 +1773,7 @@ interface TagContext : WithJob, WithPayload {
     fun tr(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Tr.() -> Unit
     ): Tr =
         register(Tr(id, baseClass, job, evalPayload(payload)), content)
@@ -1783,7 +1781,7 @@ interface TagContext : WithJob, WithPayload {
     fun tfoot(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TFoot.() -> Unit
     ): TFoot =
         register(TFoot(id, baseClass, job, evalPayload(payload)), content)
@@ -1791,7 +1789,7 @@ interface TagContext : WithJob, WithPayload {
     fun thead(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: THead.() -> Unit
     ): THead =
         register(THead(id, baseClass, job, evalPayload(payload)), content)
@@ -1799,7 +1797,7 @@ interface TagContext : WithJob, WithPayload {
     fun tbody(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TBody.() -> Unit
     ): TBody =
         register(TBody(id, baseClass, job, evalPayload(payload)), content)
@@ -1807,7 +1805,7 @@ interface TagContext : WithJob, WithPayload {
     fun textarea(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextArea.() -> Unit
     ): TextArea =
         register(TextArea(id, baseClass, job, evalPayload(payload)), content)
@@ -1815,7 +1813,7 @@ interface TagContext : WithJob, WithPayload {
     fun time(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Time.() -> Unit
     ): Time =
         register(Time(id, baseClass, job, evalPayload(payload)), content)
@@ -1823,7 +1821,7 @@ interface TagContext : WithJob, WithPayload {
     fun track(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Track.() -> Unit
     ): Track =
         register(Track(id, baseClass, job, evalPayload(payload)), content)
@@ -1831,7 +1829,7 @@ interface TagContext : WithJob, WithPayload {
     fun ul(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Ul.() -> Unit
     ): Ul =
         register(Ul(id, baseClass, job, evalPayload(payload)), content)
@@ -1839,7 +1837,7 @@ interface TagContext : WithJob, WithPayload {
     fun address(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("address", id, baseClass, job, evalPayload(payload)), content)
@@ -1847,7 +1845,7 @@ interface TagContext : WithJob, WithPayload {
     fun article(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("article", id, baseClass, job, evalPayload(payload)), content)
@@ -1855,7 +1853,7 @@ interface TagContext : WithJob, WithPayload {
     fun aside(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("aside", id, baseClass, job, evalPayload(payload)), content)
@@ -1863,7 +1861,7 @@ interface TagContext : WithJob, WithPayload {
     fun bdi(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("bdi", id, baseClass, job, evalPayload(payload)), content)
@@ -1871,7 +1869,7 @@ interface TagContext : WithJob, WithPayload {
     fun figcaption(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("figcaption", id, baseClass, job, evalPayload(payload)), content)
@@ -1879,7 +1877,7 @@ interface TagContext : WithJob, WithPayload {
     fun figure(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("figure", id, baseClass, job, evalPayload(payload)), content)
@@ -1887,7 +1885,7 @@ interface TagContext : WithJob, WithPayload {
     fun footer(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("footer", id, baseClass, job, evalPayload(payload)), content)
@@ -1895,7 +1893,7 @@ interface TagContext : WithJob, WithPayload {
     fun header(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("header", id, baseClass, job, evalPayload(payload)), content)
@@ -1903,7 +1901,7 @@ interface TagContext : WithJob, WithPayload {
     fun main(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("main", id, baseClass, job, evalPayload(payload)), content)
@@ -1911,7 +1909,7 @@ interface TagContext : WithJob, WithPayload {
     fun mark(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("mark", id, baseClass, job, evalPayload(payload)), content)
@@ -1919,7 +1917,7 @@ interface TagContext : WithJob, WithPayload {
     fun nav(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("nav", id, baseClass, job, evalPayload(payload)), content)
@@ -1927,7 +1925,7 @@ interface TagContext : WithJob, WithPayload {
     fun noscript(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("noscript", id, baseClass, job, evalPayload(payload)), content)
@@ -1935,7 +1933,7 @@ interface TagContext : WithJob, WithPayload {
     fun rp(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("rp", id, baseClass, job, evalPayload(payload)), content)
@@ -1943,7 +1941,7 @@ interface TagContext : WithJob, WithPayload {
     fun rt(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("rt", id, baseClass, job, evalPayload(payload)), content)
@@ -1951,7 +1949,7 @@ interface TagContext : WithJob, WithPayload {
     fun ruby(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("ruby", id, baseClass, job, evalPayload(payload)), content)
@@ -1959,7 +1957,7 @@ interface TagContext : WithJob, WithPayload {
     fun section(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("section", id, baseClass, job, evalPayload(payload)), content)
@@ -1967,7 +1965,7 @@ interface TagContext : WithJob, WithPayload {
     fun summary(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("summary", id, baseClass, job, evalPayload(payload)), content)
@@ -1975,7 +1973,7 @@ interface TagContext : WithJob, WithPayload {
     fun wbr(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("wbr", id, baseClass, job, evalPayload(payload)), content)
@@ -1983,7 +1981,7 @@ interface TagContext : WithJob, WithPayload {
     fun blockquote(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("blockquote", id, baseClass, job, evalPayload(payload)), content)
@@ -1991,7 +1989,7 @@ interface TagContext : WithJob, WithPayload {
     fun em(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("em", id, baseClass, job, evalPayload(payload)), content)
@@ -1999,7 +1997,7 @@ interface TagContext : WithJob, WithPayload {
     fun strong(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("strong", id, baseClass, job, evalPayload(payload)), content)
@@ -2007,7 +2005,7 @@ interface TagContext : WithJob, WithPayload {
     fun small(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("small", id, baseClass, job, evalPayload(payload)), content)
@@ -2015,7 +2013,7 @@ interface TagContext : WithJob, WithPayload {
     fun s(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("s", id, baseClass, job, evalPayload(payload)), content)
@@ -2023,7 +2021,7 @@ interface TagContext : WithJob, WithPayload {
     fun cite(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("cite", id, baseClass, job, evalPayload(payload)), content)
@@ -2031,7 +2029,7 @@ interface TagContext : WithJob, WithPayload {
     fun q(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("q", id, baseClass, job, evalPayload(payload)), content)
@@ -2039,7 +2037,7 @@ interface TagContext : WithJob, WithPayload {
     fun dfn(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("dfn", id, baseClass, job, evalPayload(payload)), content)
@@ -2047,7 +2045,7 @@ interface TagContext : WithJob, WithPayload {
     fun abbr(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("abbr", id, baseClass, job, evalPayload(payload)), content)
@@ -2055,7 +2053,7 @@ interface TagContext : WithJob, WithPayload {
     fun code(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("code", id, baseClass, job, evalPayload(payload)), content)
@@ -2063,7 +2061,7 @@ interface TagContext : WithJob, WithPayload {
     fun `var`(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("var", id, baseClass, job, evalPayload(payload)), content)
@@ -2071,7 +2069,7 @@ interface TagContext : WithJob, WithPayload {
     fun samp(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("samp", id, baseClass, job, evalPayload(payload)), content)
@@ -2079,7 +2077,7 @@ interface TagContext : WithJob, WithPayload {
     fun kbd(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("kbd", id, baseClass, job, evalPayload(payload)), content)
@@ -2087,7 +2085,7 @@ interface TagContext : WithJob, WithPayload {
     fun sub(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("sub", id, baseClass, job, evalPayload(payload)), content)
@@ -2095,7 +2093,7 @@ interface TagContext : WithJob, WithPayload {
     fun sup(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("sup", id, baseClass, job, evalPayload(payload)), content)
@@ -2103,7 +2101,7 @@ interface TagContext : WithJob, WithPayload {
     fun i(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("i", id, baseClass, job, evalPayload(payload)), content)
@@ -2111,7 +2109,7 @@ interface TagContext : WithJob, WithPayload {
     fun b(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("b", id, baseClass, job, evalPayload(payload)), content)
@@ -2119,7 +2117,7 @@ interface TagContext : WithJob, WithPayload {
     fun u(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("u", id, baseClass, job, evalPayload(payload)), content)
@@ -2127,7 +2125,7 @@ interface TagContext : WithJob, WithPayload {
     fun bdo(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("bdo", id, baseClass, job, evalPayload(payload)), content)
@@ -2135,7 +2133,7 @@ interface TagContext : WithJob, WithPayload {
     fun command(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
         register(TextElement("command", id, baseClass, job, evalPayload(payload)), content)
@@ -2143,7 +2141,7 @@ interface TagContext : WithJob, WithPayload {
     fun svg(
         baseClass: String?,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit)? = null,
+        payload: (PayloadContext.() -> Unit) = {},
         content: Svg.() -> Unit
     ): Svg {
         return register(Svg(id, baseClass, job = job, evalPayload(payload)), content)

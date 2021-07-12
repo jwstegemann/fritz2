@@ -16,8 +16,6 @@ value class Payload(private val entries: HashMap<Key<*>, Any> = hashMapOf()) {
 
     operator fun <T: Any> get(key: Key<T>): T? = entries[key]?.unsafeCast<T>()
 
-//    operator fun <T: Any> invoke(key: Key<T>): T? = entries[key]?.unsafeCast<T>()
-
     val keys: Set<Key<*>> get() = entries.keys
 
     val size: Int get() = entries.size

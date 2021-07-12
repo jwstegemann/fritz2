@@ -1,10 +1,20 @@
 package dev.fritz2.styling
 
+import dev.fritz2.binding.Payload
 import dev.fritz2.binding.PayloadContext
 import dev.fritz2.dom.html.*
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.StyleParamsImpl
+
+/**
+ * Evaluates the payload context and initializes a [PayloadContext]
+ * for setting new entries to the payload.
+ *
+ * @param context to evaluate
+ */
+private inline fun TagContext.evalPayload(context: (PayloadContext.() -> Unit)): Payload =
+    PayloadContext(this.payload).apply(context).payload
 
 fun TagContext.a(
     style: Style<BoxParams>,
@@ -18,7 +28,7 @@ fun TagContext.a(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -35,7 +45,7 @@ fun TagContext.a(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -52,7 +62,7 @@ fun TagContext.area(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -69,7 +79,7 @@ fun TagContext.area(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -85,7 +95,7 @@ fun TagContext.br(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -102,7 +112,7 @@ fun TagContext.br(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -119,7 +129,7 @@ fun TagContext.button(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -136,7 +146,7 @@ fun TagContext.button(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -153,7 +163,7 @@ fun TagContext.canvas(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -170,7 +180,7 @@ fun TagContext.canvas(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -186,7 +196,7 @@ fun TagContext.dl(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -203,7 +213,7 @@ fun TagContext.dl(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -221,7 +231,7 @@ fun TagContext.dt(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ),
         content
     )
@@ -240,7 +250,7 @@ fun TagContext.dt(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -258,7 +268,7 @@ fun TagContext.dd(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ),
         content
     )
@@ -277,7 +287,7 @@ fun TagContext.dd(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -294,7 +304,7 @@ fun TagContext.data(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -311,7 +321,7 @@ fun TagContext.data(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -328,7 +338,7 @@ fun TagContext.datalist(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -345,7 +355,7 @@ fun TagContext.datalist(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -362,7 +372,7 @@ fun TagContext.details(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -379,7 +389,7 @@ fun TagContext.details(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -396,7 +406,7 @@ fun TagContext.dialog(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -413,7 +423,7 @@ fun TagContext.dialog(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -430,7 +440,7 @@ fun TagContext.div(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -447,7 +457,7 @@ fun TagContext.div(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -464,7 +474,7 @@ fun TagContext.embed(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -481,7 +491,7 @@ fun TagContext.embed(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -498,7 +508,7 @@ fun TagContext.fieldset(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -515,7 +525,7 @@ fun TagContext.fieldset(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -532,7 +542,7 @@ fun TagContext.form(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -549,7 +559,7 @@ fun TagContext.form(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -565,7 +575,7 @@ fun TagContext.hr(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -582,7 +592,7 @@ fun TagContext.hr(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -599,7 +609,7 @@ fun TagContext.h1(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -617,7 +627,7 @@ fun TagContext.h1(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -634,7 +644,7 @@ fun TagContext.h2(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -652,7 +662,7 @@ fun TagContext.h2(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -669,7 +679,7 @@ fun TagContext.h3(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -687,7 +697,7 @@ fun TagContext.h3(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -704,7 +714,7 @@ fun TagContext.h4(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -722,7 +732,7 @@ fun TagContext.h4(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -739,7 +749,7 @@ fun TagContext.h5(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -757,7 +767,7 @@ fun TagContext.h5(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -774,7 +784,7 @@ fun TagContext.h6(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -792,7 +802,7 @@ fun TagContext.h6(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -809,7 +819,7 @@ fun TagContext.iframe(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -826,7 +836,7 @@ fun TagContext.iframe(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -842,7 +852,7 @@ fun TagContext.img(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -859,7 +869,7 @@ fun TagContext.img(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -876,7 +886,7 @@ fun TagContext.input(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -893,7 +903,7 @@ fun TagContext.input(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -909,7 +919,7 @@ fun TagContext.li(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -926,7 +936,7 @@ fun TagContext.li(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -943,7 +953,7 @@ fun TagContext.label(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -960,7 +970,7 @@ fun TagContext.label(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -977,7 +987,7 @@ fun TagContext.legend(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -994,7 +1004,7 @@ fun TagContext.legend(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1010,7 +1020,7 @@ fun TagContext.map(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1027,7 +1037,7 @@ fun TagContext.map(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1044,7 +1054,7 @@ fun TagContext.audio(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1061,7 +1071,7 @@ fun TagContext.audio(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1078,7 +1088,7 @@ fun TagContext.video(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1095,7 +1105,7 @@ fun TagContext.video(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1112,7 +1122,7 @@ fun TagContext.meter(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1129,7 +1139,7 @@ fun TagContext.meter(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1145,7 +1155,7 @@ fun TagContext.ins(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1162,7 +1172,7 @@ fun TagContext.ins(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1178,7 +1188,7 @@ fun TagContext.del(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1195,7 +1205,7 @@ fun TagContext.del(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1211,7 +1221,7 @@ fun TagContext.ol(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1228,7 +1238,7 @@ fun TagContext.ol(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1245,7 +1255,7 @@ fun TagContext.`object`(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1262,7 +1272,7 @@ fun TagContext.`object`(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1279,7 +1289,7 @@ fun TagContext.optgroup(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1296,7 +1306,7 @@ fun TagContext.optgroup(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1313,7 +1323,7 @@ fun TagContext.option(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1330,7 +1340,7 @@ fun TagContext.option(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1347,7 +1357,7 @@ fun TagContext.output(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1364,7 +1374,7 @@ fun TagContext.output(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1380,7 +1390,7 @@ fun TagContext.p(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1397,7 +1407,7 @@ fun TagContext.p(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1414,7 +1424,7 @@ fun TagContext.param(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1431,7 +1441,7 @@ fun TagContext.param(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1448,7 +1458,7 @@ fun TagContext.picture(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1465,7 +1475,7 @@ fun TagContext.picture(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1481,7 +1491,7 @@ fun TagContext.pre(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1498,7 +1508,7 @@ fun TagContext.pre(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1515,7 +1525,7 @@ fun TagContext.progress(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1532,7 +1542,7 @@ fun TagContext.progress(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1549,7 +1559,7 @@ fun TagContext.quote(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1566,7 +1576,7 @@ fun TagContext.quote(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1583,7 +1593,7 @@ fun TagContext.script(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1600,7 +1610,7 @@ fun TagContext.script(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1617,7 +1627,7 @@ fun TagContext.select(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1634,7 +1644,7 @@ fun TagContext.select(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1651,7 +1661,7 @@ fun TagContext.span(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1668,7 +1678,7 @@ fun TagContext.span(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1685,7 +1695,7 @@ fun TagContext.caption(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1702,7 +1712,7 @@ fun TagContext.caption(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1718,7 +1728,7 @@ fun TagContext.th(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1735,7 +1745,7 @@ fun TagContext.th(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1751,7 +1761,7 @@ fun TagContext.td(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1768,7 +1778,7 @@ fun TagContext.td(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1784,7 +1794,7 @@ fun TagContext.col(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1801,7 +1811,7 @@ fun TagContext.col(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1818,7 +1828,7 @@ fun TagContext.colgroup(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1835,7 +1845,7 @@ fun TagContext.colgroup(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1852,7 +1862,7 @@ fun TagContext.table(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1869,7 +1879,7 @@ fun TagContext.table(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1885,7 +1895,7 @@ fun TagContext.tr(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1902,7 +1912,7 @@ fun TagContext.tr(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1919,7 +1929,7 @@ fun TagContext.tfoot(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1936,7 +1946,7 @@ fun TagContext.tfoot(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1953,7 +1963,7 @@ fun TagContext.thead(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -1970,7 +1980,7 @@ fun TagContext.thead(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -1987,7 +1997,7 @@ fun TagContext.tbody(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -2004,7 +2014,7 @@ fun TagContext.tbody(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2021,7 +2031,7 @@ fun TagContext.textarea(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -2038,7 +2048,7 @@ fun TagContext.textarea(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2055,7 +2065,7 @@ fun TagContext.time(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -2072,7 +2082,7 @@ fun TagContext.time(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2089,7 +2099,7 @@ fun TagContext.track(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -2106,7 +2116,7 @@ fun TagContext.track(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2122,7 +2132,7 @@ fun TagContext.ul(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2139,7 +2149,7 @@ fun TagContext.ul(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2156,7 +2166,7 @@ fun TagContext.address(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2174,7 +2184,7 @@ fun TagContext.address(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2191,7 +2201,7 @@ fun TagContext.article(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2209,7 +2219,7 @@ fun TagContext.article(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2226,7 +2236,7 @@ fun TagContext.aside(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2244,7 +2254,7 @@ fun TagContext.aside(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2261,7 +2271,7 @@ fun TagContext.bdi(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2279,7 +2289,7 @@ fun TagContext.bdi(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2296,7 +2306,7 @@ fun TagContext.details(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2314,7 +2324,7 @@ fun TagContext.details(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2331,7 +2341,7 @@ fun TagContext.dialog(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2349,7 +2359,7 @@ fun TagContext.dialog(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2366,7 +2376,7 @@ fun TagContext.figcaption(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2384,7 +2394,7 @@ fun TagContext.figcaption(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2401,7 +2411,7 @@ fun TagContext.figure(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2419,7 +2429,7 @@ fun TagContext.figure(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2436,7 +2446,7 @@ fun TagContext.footer(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2454,7 +2464,7 @@ fun TagContext.footer(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2471,7 +2481,7 @@ fun TagContext.header(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2489,7 +2499,7 @@ fun TagContext.header(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2506,7 +2516,7 @@ fun TagContext.main(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2524,7 +2534,7 @@ fun TagContext.main(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2541,7 +2551,7 @@ fun TagContext.mark(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2559,7 +2569,7 @@ fun TagContext.mark(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2576,7 +2586,7 @@ fun TagContext.nav(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2594,7 +2604,7 @@ fun TagContext.nav(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2611,7 +2621,7 @@ fun TagContext.noscript(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2629,7 +2639,7 @@ fun TagContext.noscript(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2646,7 +2656,7 @@ fun TagContext.progress(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2664,7 +2674,7 @@ fun TagContext.progress(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2681,7 +2691,7 @@ fun TagContext.rp(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2699,7 +2709,7 @@ fun TagContext.rp(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2716,7 +2726,7 @@ fun TagContext.rt(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2734,7 +2744,7 @@ fun TagContext.rt(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2751,7 +2761,7 @@ fun TagContext.ruby(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2769,7 +2779,7 @@ fun TagContext.ruby(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2786,7 +2796,7 @@ fun TagContext.section(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2804,7 +2814,7 @@ fun TagContext.section(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2821,7 +2831,7 @@ fun TagContext.summary(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2839,7 +2849,7 @@ fun TagContext.summary(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2856,7 +2866,7 @@ fun TagContext.time(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2874,7 +2884,7 @@ fun TagContext.time(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2891,7 +2901,7 @@ fun TagContext.wbr(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2909,7 +2919,7 @@ fun TagContext.wbr(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2926,7 +2936,7 @@ fun TagContext.blockquote(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2944,7 +2954,7 @@ fun TagContext.blockquote(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2961,7 +2971,7 @@ fun TagContext.em(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2979,7 +2989,7 @@ fun TagContext.em(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -2996,7 +3006,7 @@ fun TagContext.strong(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3014,7 +3024,7 @@ fun TagContext.strong(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3031,7 +3041,7 @@ fun TagContext.small(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3049,7 +3059,7 @@ fun TagContext.small(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3066,7 +3076,7 @@ fun TagContext.s(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3084,7 +3094,7 @@ fun TagContext.s(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3101,7 +3111,7 @@ fun TagContext.cite(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3119,7 +3129,7 @@ fun TagContext.cite(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3136,7 +3146,7 @@ fun TagContext.q(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3154,7 +3164,7 @@ fun TagContext.q(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3171,7 +3181,7 @@ fun TagContext.dfn(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3189,7 +3199,7 @@ fun TagContext.dfn(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3206,7 +3216,7 @@ fun TagContext.abbr(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3224,7 +3234,7 @@ fun TagContext.abbr(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3241,7 +3251,7 @@ fun TagContext.code(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3259,7 +3269,7 @@ fun TagContext.code(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3276,7 +3286,7 @@ fun TagContext.`var`(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3294,7 +3304,7 @@ fun TagContext.`var`(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3311,7 +3321,7 @@ fun TagContext.samp(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3329,7 +3339,7 @@ fun TagContext.samp(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3346,7 +3356,7 @@ fun TagContext.kbd(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3364,7 +3374,7 @@ fun TagContext.kbd(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3381,7 +3391,7 @@ fun TagContext.sub(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3399,7 +3409,7 @@ fun TagContext.sub(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3416,7 +3426,7 @@ fun TagContext.sup(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3434,7 +3444,7 @@ fun TagContext.sup(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3451,7 +3461,7 @@ fun TagContext.i(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3469,7 +3479,7 @@ fun TagContext.i(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3486,7 +3496,7 @@ fun TagContext.b(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3504,7 +3514,7 @@ fun TagContext.b(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3521,7 +3531,7 @@ fun TagContext.u(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3539,7 +3549,7 @@ fun TagContext.u(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3556,7 +3566,7 @@ fun TagContext.bdo(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3574,7 +3584,7 @@ fun TagContext.bdo(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3591,7 +3601,7 @@ fun TagContext.command(
         id,
         (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3609,7 +3619,7 @@ fun TagContext.command(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
 
@@ -3626,7 +3636,7 @@ fun TagContext.svg(
             id,
             (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
             job,
-            PayloadContext(this.payload).apply(payload).payload
+            evalPayload(payload)
         ), content
     )
 
@@ -3643,6 +3653,6 @@ fun TagContext.svg(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
         job,
-        PayloadContext(this.payload).apply(payload).payload
+        evalPayload(payload)
     ), content
 )
