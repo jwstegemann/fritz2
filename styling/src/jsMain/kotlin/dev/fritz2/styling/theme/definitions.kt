@@ -625,6 +625,7 @@ interface AlertStyles {
 interface AlertStacking {
     val compact: Style<BasicParams>
     val separated: Style<BasicParams>
+    val toast: Style<BasicParams>
 }
 
 interface AlertSeverity {
@@ -654,6 +655,13 @@ interface AlertVariants {
 interface ToastStyles {
     val base: Style<BasicParams>
     val placement: ToastPlacement
+
+    /**
+     * Styling to align the messages according to their horizontal position.
+     * Possible values to react are `left`, `center` and `right`.
+     */
+    val alignment: BoxParams.(String) -> Unit
+
     val status: ToastStatus
     val closeButton: ToastButton
 }
