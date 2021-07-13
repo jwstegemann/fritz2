@@ -54,6 +54,22 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
 
         fun appearsFromBottom(toasts: List<ToastFragment>): Boolean = toasts.isNotEmpty()
                 && setOf(bottom, bottomRight, bottomLeft).contains(toasts.first().placement)
+
+        /**
+         * Extracts the horizontal alignment of the toast out of the general placement.
+         * This can be useful for aligning the messages according to their horizontal placement.
+         *
+         * @param placement placement string of a toast
+         */
+        fun alignmentOf(placement: String) = when (placement) {
+            bottom -> "center"
+            top -> "center"
+            bottomLeft -> "left"
+            topLeft -> "left"
+            bottomRight -> "right"
+            topRight -> "right"
+            else -> "center"
+        }
     }
 
     object ToastStore : RootStore<List<ToastFragment>>(listOf(), id = "toast-store") {
@@ -230,7 +246,10 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
         ) {
             li({
                 listStyle()
-                alignItems { center }
+                Theme().toast.alignment(
+                    this,
+                    Placement.alignmentOf(this@ToastComponentBase.placement.value(Placement))
+                )
             }, baseClass, id, prefix) {
                 div({
                     Theme().toast.base()
@@ -241,7 +260,9 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
                 }) {
                     this@ToastComponentBase.renderContent(this, styling, baseClass, id, prefix)
                     if (this@ToastComponentBase.hasCloseButton.value) {
-                        this@ToastComponentBase.closeButtonRendering.value(this).map { localId } handledBy ToastStore.remove
+                        this@ToastComponentBase.closeButtonRendering.value(this).map {
+                            localId
+                        } handledBy ToastStore.remove
                     }
                 }
             }
@@ -354,7 +375,7 @@ open class AlertToastComponent : ToastComponentBase() {
             this@AlertToastComponent.closeButtonStyle(Theme().toast.closeButton.close + {
                 color {
                     val colorScheme = alertComponent.severity.value(Theme().alert.severities).colorScheme
-                    when(alertComponent.variant.value(AlertComponent.VariantContext)) {
+                    when (alertComponent.variant.value(AlertComponent.VariantContext)) {
                         AlertComponent.Variant.SUBTLE -> colorScheme.main
                         AlertComponent.Variant.TOP_ACCENT -> colorScheme.main
                         AlertComponent.Variant.LEFT_ACCENT -> colorScheme.main
@@ -449,7 +470,7 @@ fun toast(
 }
 
 /**
- * This factory method creates a toast with an alert as it's content and displays it _right away_.
+ * This factory method creates a toast with an alert as its content and displays it _right away_.
  * Use [alertToast] in order to display a toast delayed, e.g. when a button is pressed.
  *
  * Usage example:
@@ -526,6 +547,6 @@ fun alertToast(
 }
 
 
-private fun asHandler(action: () -> Unit): SimpleHandler<Unit> = object : RootStore<Unit>(Unit) {
+internal fun asHandler(action: () -> Unit): SimpleHandler<Unit> = object : RootStore<Unit>(Unit) {
     val handler = handle { action() }
 }.handler

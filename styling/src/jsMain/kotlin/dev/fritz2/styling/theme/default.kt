@@ -991,7 +991,7 @@ open class DefaultTheme : Theme {
 
         override val width: BasicParams.(String, Property) -> Unit = { key, value ->
             maxWidth { value }
-            if(key.lowercase() != "full") {
+            if (key.lowercase() != "full") {
                 margins {
                     top { "var(--modal-level)" }
                     left { "var(--modal-level)" }
@@ -1608,8 +1608,18 @@ open class DefaultTheme : Theme {
                 css("bottom:0px")
                 css("right:0px")
             }
-
         }
+
+        override val alignment: BoxParams.(String) -> Unit = { horizontal ->
+            alignItems {
+                when (horizontal) {
+                    "left" -> flexStart
+                    "right" -> flexEnd
+                    else -> center
+                }
+            }
+        }
+
         override val status = object : ToastStatus {
             override val success: Style<BasicParams> = {
                 background { color { success.main } }
