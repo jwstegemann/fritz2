@@ -1,5 +1,6 @@
 package dev.fritz2.webcomponents
 
+import dev.fritz2.binding.Payload
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
 import dev.fritz2.dom.html.TagContext
@@ -67,6 +68,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
     fun initializeInternal(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T> {
         return object : TagContext {
             override val job = Job()
+            override val payload: Payload = Payload()
             override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
                 content(element)
                 return element

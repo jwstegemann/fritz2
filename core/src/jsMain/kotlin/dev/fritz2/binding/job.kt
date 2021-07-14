@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 
+/**
+ * Marks a class that it has a [Job] to start coroutines with.
+ */
 interface WithJob {
     val job: Job
 

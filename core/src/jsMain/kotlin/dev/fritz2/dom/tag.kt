@@ -47,6 +47,7 @@ open class Tag<out E : Element>(
     val id: String? = null,
     val baseClass: String? = null,
     override val job: Job,
+    override val payload: Payload,
     override val domNode: E = window.document.createElement(tagName).also { element ->
         if (id != null) element.id = id
         if (!baseClass.isNullOrBlank()) element.className = baseClass
@@ -61,7 +62,7 @@ open class Tag<out E : Element>(
             buildList {
                 content(object : RenderContext(
                     "", parent.id, parent.baseClass,
-                    job, parent.domNode.unsafeCast<HTMLElement>()
+                    job, parent.payload, parent.domNode.unsafeCast<HTMLElement>()
                 ) {
                     override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
                         parent.register(element, content)
@@ -77,7 +78,7 @@ open class Tag<out E : Element>(
         ): WithDomNode<HTMLElement> =
             content(object : RenderContext(
                 "", parent.id, parent.baseClass,
-                job, parent.domNode.unsafeCast<HTMLElement>()
+                job, parent.payload, parent.domNode.unsafeCast<HTMLElement>()
             ) {
                 var alreadyRegistered: Boolean = false
 
@@ -593,5 +594,26 @@ open class Tag<out E : Element>(
      */
     fun inlineStyle(values: Flow<Map<String, Boolean>>) {
         attr("style", values, separator = "; ")
+    }
+
+    /**
+     * Sets all payload-entries as data-attributes to the element.
+     */
+    fun Payload.asDataAttr() {
+        for((k, v) in this) {
+            attr("data-${k.name}", v.toString())
+        }
+    }
+
+    /**
+     * Sets payload-entry for the given [key] as data-attribute to the element
+     * when available.
+     *
+     * @param key key of payload-entry to look for in payload
+     */
+    fun <T: Any> Payload.asDataAttr(key: Payload.Key<T>) {
+        this[key]?.let {
+            attr("data-${key.name}", it.toString())
+        }
     }
 }
