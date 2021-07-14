@@ -1578,7 +1578,7 @@ open class DefaultTheme : Theme {
     }
 
     override val toast = object : ToastStyles {
-        override val toast: Style<BoxParams> = {
+        override val body: Style<BoxParams> = {
             position { relative { } }
             display { flex }
             direction { row }
