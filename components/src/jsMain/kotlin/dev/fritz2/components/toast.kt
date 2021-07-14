@@ -160,7 +160,8 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
                         ToastStore.data
                             .map { toasts ->
                                 toasts.filter { toast -> toast.placement == it }
-                            }.map { toasts ->
+                            }
+                            .map { toasts ->
                                 /*
                                 New toasts should always be stacked on existing ones, which naturally depends on the
                                 basic placement:
@@ -168,8 +169,7 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
                                 - bottom: the new toast must be rendered *above* the existing ones (reverse order
                                           needed)
                                  */
-                                if (Placement.appearsFromBottom(toasts)
-                                ) {
+                                if (Placement.appearsFromBottom(toasts)) {
                                     toasts.asReversed()
                                 } else {
                                     toasts
@@ -226,9 +226,8 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
                 }) {
                     this@ToastComponentBase.renderContent(this, styling, baseClass, id, prefix)
                     if (this@ToastComponentBase.hasCloseButton.value) {
-                        this@ToastComponentBase.closeButtonRendering.value(this).map {
-                            localId
-                        } handledBy ToastStore.remove
+                        this@ToastComponentBase.closeButtonRendering.value(this)
+                            .map { localId } handledBy ToastStore.remove
                     }
                 }
             }
@@ -280,13 +279,7 @@ open class ToastComponent : ToastComponentBase() {
         prefix: String
     ) {
         context.apply {
-            this@ToastComponent.content.value?.let {
-                div({
-                    css("flex: 1 1 0%;")
-                }) {
-                    it.invoke(this)
-                }
-            }
+            this@ToastComponent.content.value?.invoke(this)
         }
     }
 }
@@ -389,9 +382,7 @@ fun showToast(
     id: String? = null,
     prefix: String = "toast",
     build: ToastComponent.() -> Unit
-) {
-    ToastComponent().apply(build).render(styling, baseClass, id, prefix)
-}
+) = ToastComponent().apply(build).render(styling, baseClass, id, prefix)
 
 /**
  * This factory method creates a toast that will be shown when the returned handler is triggered, eg. on a button press.
@@ -467,9 +458,7 @@ fun showAlertToast(
     id: String? = null,
     prefix: String = "toast-alert",
     build: AlertToastComponent.() -> Unit
-) {
-    AlertToastComponent().apply(build).render(styling, baseClass, id, prefix)
-}
+) = AlertToastComponent().apply(build).render(styling, baseClass, id, prefix)
 
 /**
  * This factory method creates a toast with an alert as it's content that will be shown when the returned handler is
