@@ -84,19 +84,20 @@ value class Payload(private val entries: HashMap<Key<*>, Any> = hashMapOf()) {
  * Context for setting new entries to a [Payload] object.
  */
 @HtmlTagMarker
-class PayloadContext(parent: Payload) {
-    val payload = Payload(parent)
+class PayloadContext(private var current: Payload) {
+    val payload get() = current
 
     /**
      * Sets a new key-value-pair to the [Payload].
      */
-    fun <T: Any> set(key: Payload.Key<T>, value: T) {
-        payload[key] = value
+    fun <T: Any> set(key: Key<T>, value: T) {
+        current = Payload(current)
+        current[key] = value
     }
 }
 
 /**
  * Creates a [Payload.Key] for using it in [Payload].
  */
-inline fun <reified T: Any> keyOf(name: String? = null): Payload.Key<T> =
-    Payload.Key(name ?: T::class.simpleName ?: "unknown")
+inline fun <reified T: Any> keyOf(name: String? = null): Key<T> =
+    Key(name ?: T::class.simpleName ?: "unknown")
