@@ -6,6 +6,10 @@ import dev.fritz2.components.checkboxes.CheckboxComponent
 import dev.fritz2.components.checkboxes.CheckboxGroupComponent
 import dev.fritz2.components.forms.control.FormControlComponent.ControlRegistration
 import dev.fritz2.components.forms.formGroupElementContainerMarker
+import dev.fritz2.components.foundations.Component
+import dev.fritz2.components.foundations.ComponentProperty
+import dev.fritz2.components.foundations.FormMixin
+import dev.fritz2.components.foundations.FormProperties
 import dev.fritz2.components.slider.SliderComponent
 import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity

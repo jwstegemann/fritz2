@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.Listener
 import dev.fritz2.dom.html.Button

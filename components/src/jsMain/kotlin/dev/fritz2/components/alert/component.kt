@@ -1,7 +1,7 @@
 package dev.fritz2.components.alert
 
-import dev.fritz2.components.Component
-import dev.fritz2.components.ComponentProperty
+import dev.fritz2.components.foundations.Component
+import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.components.icon
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass

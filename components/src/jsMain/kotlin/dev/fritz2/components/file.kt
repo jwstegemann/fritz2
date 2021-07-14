@@ -1,6 +1,8 @@
 package dev.fritz2.components
 
 import dev.fritz2.components.data.File
+import dev.fritz2.components.foundations.Component
+import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass

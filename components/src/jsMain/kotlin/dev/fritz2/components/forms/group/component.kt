@@ -1,7 +1,7 @@
 package dev.fritz2.components.forms.group
 
-import dev.fritz2.components.Component
-import dev.fritz2.components.ComponentProperty
+import dev.fritz2.components.foundations.Component
+import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.components.formGroup
 import dev.fritz2.components.forms.formGroupElementContainerMarker
 import dev.fritz2.components.forms.formGroupElementLabelMarker

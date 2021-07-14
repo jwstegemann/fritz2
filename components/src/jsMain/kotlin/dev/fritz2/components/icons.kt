@@ -1,5 +1,9 @@
 package dev.fritz2.components
 
+import dev.fritz2.components.foundations.Component
+import dev.fritz2.components.foundations.ComponentProperty
+import dev.fritz2.components.foundations.EventMixin
+import dev.fritz2.components.foundations.EventProperties
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams

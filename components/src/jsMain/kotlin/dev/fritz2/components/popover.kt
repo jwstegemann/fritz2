@@ -2,6 +2,10 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.watch
+import dev.fritz2.components.foundations.CloseButtonMixin
+import dev.fritz2.components.foundations.CloseButtonProperty
+import dev.fritz2.components.foundations.Component
+import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys

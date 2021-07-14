@@ -2,6 +2,7 @@ package dev.fritz2.components.checkboxes
 
 import dev.fritz2.binding.Store
 import dev.fritz2.components.*
+import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
