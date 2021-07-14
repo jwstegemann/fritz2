@@ -991,7 +991,7 @@ open class DefaultTheme : Theme {
 
         override val width: BasicParams.(String, Property) -> Unit = { key, value ->
             maxWidth { value }
-            if(key.lowercase() != "full") {
+            if (key.lowercase() != "full") {
                 margins {
                     top { "var(--modal-level)" }
                     left { "var(--modal-level)" }
@@ -1527,7 +1527,7 @@ open class DefaultTheme : Theme {
                     }
                 }
             }
-            override val discreet: BasicParams.(ColorScheme) -> Unit = { _ ->
+            override val ghost: BasicParams.(ColorScheme) -> Unit = { _ ->
                 background { color { background } }
                 color { font }
             }
@@ -1566,6 +1566,14 @@ open class DefaultTheme : Theme {
                 margin { normal }
                 padding { normal }
             }
+            override val toast: Style<BasicParams> = {
+                margin { none }
+                paddings {
+                    vertical { normal }
+                    left { normal }
+                    right { huge } // needed to not be overlapped by the close-button
+                }
+            }
         }
     }
 
@@ -1600,8 +1608,18 @@ open class DefaultTheme : Theme {
                 css("bottom:0px")
                 css("right:0px")
             }
-
         }
+
+        override val alignment: BoxParams.(String) -> Unit = { horizontal ->
+            alignItems {
+                when (horizontal) {
+                    "left" -> flexStart
+                    "right" -> flexEnd
+                    else -> center
+                }
+            }
+        }
+
         override val status = object : ToastStatus {
             override val success: Style<BasicParams> = {
                 background { color { success.main } }
@@ -1633,6 +1651,7 @@ open class DefaultTheme : Theme {
                 fontSize { "10px" }
                 css("outline: 0px;")
                 css("transition: all 0.2s ease 0s;")
+                color { info.mainContrast }
 
                 focus {
                     css("outline: none;")
