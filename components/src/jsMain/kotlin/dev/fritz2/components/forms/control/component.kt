@@ -2,6 +2,8 @@ package dev.fritz2.components.forms.control
 
 import dev.fritz2.binding.Store
 import dev.fritz2.components.*
+import dev.fritz2.components.checkboxes.CheckboxComponent
+import dev.fritz2.components.checkboxes.CheckboxGroupComponent
 import dev.fritz2.components.forms.control.FormControlComponent.ControlRegistration
 import dev.fritz2.components.forms.formGroupElementContainerMarker
 import dev.fritz2.components.slider.SliderComponent

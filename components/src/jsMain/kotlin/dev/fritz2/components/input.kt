@@ -2,6 +2,7 @@ package dev.fritz2.components
 
 
 import dev.fritz2.binding.Store
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
@@ -10,6 +11,7 @@ import dev.fritz2.styling.input
 import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.FlexParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.FormSizes
