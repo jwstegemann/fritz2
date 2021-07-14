@@ -220,7 +220,7 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
                 )
             }, baseClass, id, prefix) {
                 div({
-                    Theme().toast.toast()
+                    Theme().toast.body()
                     background { color(this@ToastComponentBase.background.value) }
                     styling()
                 }) {

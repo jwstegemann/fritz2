@@ -653,7 +653,7 @@ interface AlertVariants {
  * definition of the theme's toasts
  */
 interface ToastStyles {
-    val toast: Style<BoxParams>
+    val body: Style<BoxParams>
     val list: Style<BoxParams>
 
     val placement: ToastPlacement
