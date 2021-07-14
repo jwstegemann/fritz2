@@ -1578,9 +1578,32 @@ open class DefaultTheme : Theme {
     }
 
     override val toast = object : ToastStyles {
-        override val base: Style<BasicParams> = {
+        override val toast: Style<BoxParams> = {
+            position { relative { } }
+            display { flex }
+            direction { row }
+            alignItems { center }
+
+            maxWidth { "560px" }
+            minWidth { giant }
             minHeight { giant }
+            overflow { hidden }
+            margin { smaller }
+            radius { normal }
+            boxShadow { raised }
+
+            css("pointer-events: auto;")
+            css("-webkit-box-align: start;")
         }
+
+        override val list: Style<BoxParams> = {
+            display { flex }
+            direction { column }
+            overflow { visible }
+
+            css("transform-origin: 50% 50% 0px;")
+        }
+
         override val placement = object : ToastPlacement {
             override val top: Style<BasicParams> = {
                 css("top:0px")
@@ -1639,6 +1662,7 @@ open class DefaultTheme : Theme {
             }
 
         }
+
         override val closeButton = object : ToastButton {
             override val close: Style<BasicParams> = {
                 position {
