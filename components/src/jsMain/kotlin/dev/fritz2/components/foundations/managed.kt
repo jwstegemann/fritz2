@@ -22,19 +22,20 @@ import kotlin.random.nextUInt
  * This reduces the boilerplate code within the corresponding factory function(s):
  * ```
  * open class MyManagedComponent: ManagedComponent {
- *      override fun render(...) {
- *          // some content rendering
- *      }
+ *     override fun render(...) {
+ *         // some content rendering
+ *     }
  * }
  *
- * RenderContext.myComponent(
+ * // factory don't need to be an extension of `RenderContext`!
+ * myComponent(
  *      // most params omitted
  *      build: MyManagedComponent.() -> Unit = {}
  * ) {
  *      MyComponent().apply(build).render(/* params */)
  *      //                         ^^^^^^ ^^^^^^^^^^^^
  *      //                         |      no reference to parent's `RenderContext` is needed!
- *      //                         |      (compare this to `Component<T>` interface!
+ *      //                         |      (in contrast to `Component<T>` interface!)
  *      //                         |
  *      //                         just start the rendering by one additional call!
  * }
@@ -52,9 +53,9 @@ import kotlin.random.nextUInt
  *         }
  *     }
  *
- *      override fun render(...) {
- *          // some content rendering
- *      }
+ *     override fun render(...) {
+ *         // some content rendering
+ *     }
  * }
  * ```
  *

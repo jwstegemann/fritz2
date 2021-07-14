@@ -1,6 +1,6 @@
 package dev.fritz2.components.foundations
 
-import dev.fritz2.components.PushButtonComponent
+import dev.fritz2.components.buttons.PushButtonComponent
 import dev.fritz2.components.clickButton
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.DomListener
