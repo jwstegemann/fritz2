@@ -2,15 +2,14 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
-import dev.fritz2.components.ToastComponent.Companion.closeAllToasts
-import dev.fritz2.components.ToastComponent.Companion.closeLastToast
-import dev.fritz2.components.ToastComponentBase.Companion.closeAllToasts
-import dev.fritz2.components.ToastComponentBase.Companion.closeLastToast
 import dev.fritz2.dom.html.Li
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.*
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.ColorProperty
+import dev.fritz2.styling.params.plus
 import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.*
@@ -42,7 +41,6 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
     )
 
     object Placement {
-
         const val bottom = "bottom"
         const val bottomLeft = "bottomLeft"
         const val bottomRight = "bottomRight"
@@ -73,7 +71,6 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
     }
 
     object ToastStore : RootStore<List<ToastFragment>>(listOf(), id = "toast-store") {
-
         val add = handle<ToastFragment> { allToasts, newToast ->
             allToasts + newToast
         }
@@ -128,9 +125,7 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
         }
     }
 
-
     companion object : CloseMethodCompanion() {
-
         private val toastContainerStaticCss = staticStyle(
             "toastContainer",
             """
@@ -140,33 +135,6 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
                flex-direction: column;
                """
         )
-
-        private val listStyle: Style<BasicParams> = {
-            display { flex }
-            css("transform-origin: 50% 50% 0px;")
-            css("flex-direction: column;")
-            opacity { "1" }
-            css("transition: opacity 1s ease-in-out;")
-            overflow { auto }
-        }
-
-        private val toastStyle: Style<BasicParams> = {
-            display { flex }
-            css("flex-direction: row")
-            position { relative { } }
-            overflow { hidden }
-
-            maxWidth { "560px" }
-            minWidth { "300px" }
-
-            margin { "0.5rem" }
-            radius { "0.375rem" }
-
-            css("pointer-events: auto;")
-            css("-webkit-box-align: start;")
-            css("align-items: start;")
-            css("box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;")
-        }
 
         private val job = Job()
         private val globalId = "f2c-toasts-${randomId()}"
@@ -245,17 +213,15 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
             placement.value(Placement)
         ) {
             li({
-                listStyle()
+                Theme().toast.list()
                 Theme().toast.alignment(
                     this,
                     Placement.alignmentOf(this@ToastComponentBase.placement.value(Placement))
                 )
             }, baseClass, id, prefix) {
                 div({
-                    Theme().toast.base()
-                    toastStyle()
+                    Theme().toast.toast()
                     background { color(this@ToastComponentBase.background.value) }
-                    alignItems { center }
                     styling()
                 }) {
                     this@ToastComponentBase.renderContent(this, styling, baseClass, id, prefix)
