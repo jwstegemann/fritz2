@@ -1,6 +1,5 @@
-package dev.fritz2.binding
+package dev.fritz2.dom.html
 
-import dev.fritz2.dom.html.render
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest

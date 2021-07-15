@@ -1,10 +1,10 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.Scope
 import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Scope
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BoxParams
 import kotlinx.browser.document

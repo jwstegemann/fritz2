@@ -1,6 +1,5 @@
 package dev.fritz2.dom.html
 
-import dev.fritz2.binding.Scope
 import dev.fritz2.dom.Tag
 import kotlinx.browser.document
 import kotlinx.coroutines.Job

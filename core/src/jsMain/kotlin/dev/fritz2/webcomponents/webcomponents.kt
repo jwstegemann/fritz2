@@ -1,8 +1,8 @@
 package dev.fritz2.webcomponents
 
-import dev.fritz2.binding.Scope
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
+import dev.fritz2.dom.html.Scope
 import dev.fritz2.dom.html.TagContext
 import kotlinx.browser.window
 import kotlinx.coroutines.Job

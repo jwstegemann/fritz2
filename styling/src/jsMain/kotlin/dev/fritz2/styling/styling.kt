@@ -1,7 +1,5 @@
 package dev.fritz2.styling
 
-import dev.fritz2.binding.Scope
-import dev.fritz2.binding.ScopeContext
 import dev.fritz2.dom.html.*
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style

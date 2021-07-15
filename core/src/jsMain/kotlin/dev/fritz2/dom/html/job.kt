@@ -1,5 +1,6 @@
-package dev.fritz2.binding
+package dev.fritz2.dom.html
 
+import dev.fritz2.binding.Handler
 import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.WindowListener
 import kotlinx.coroutines.Job

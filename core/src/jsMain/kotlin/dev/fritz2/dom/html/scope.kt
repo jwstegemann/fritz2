@@ -1,7 +1,7 @@
-package dev.fritz2.binding
+package dev.fritz2.dom.html
 
-import dev.fritz2.binding.Scope.Key
 import dev.fritz2.dom.HtmlTagMarker
+import dev.fritz2.dom.html.Scope.Key
 
 /**
  * Marks a class that it has [Scope] which can be transferred for adding/receiving additional information.
@@ -90,7 +90,7 @@ class ScopeContext(private var current: Scope) {
     /**
      * Sets a new key-value-pair to the [Scope].
      */
-    fun <T: Any> set(key: Key<T>, value: T) {
+    fun <T: Any> set(key: Scope.Key<T>, value: T) {
         current = Scope(current)
         current[key] = value
     }
@@ -99,5 +99,5 @@ class ScopeContext(private var current: Scope) {
 /**
  * Creates a [Scope.Key] for using it in [Scope].
  */
-inline fun <reified T: Any> keyOf(name: String? = null): Key<T> =
-    Key(name ?: T::class.simpleName ?: "unknown")
+inline fun <reified T: Any> keyOf(name: String? = null): Scope.Key<T> =
+    Scope.Key(name ?: T::class.simpleName ?: "unknown")
