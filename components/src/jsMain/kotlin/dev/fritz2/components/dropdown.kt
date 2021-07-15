@@ -2,6 +2,8 @@ package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.watch
+import dev.fritz2.components.foundations.Component
+import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div

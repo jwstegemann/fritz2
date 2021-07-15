@@ -1,5 +1,6 @@
 package dev.fritz2.components
 
+import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass

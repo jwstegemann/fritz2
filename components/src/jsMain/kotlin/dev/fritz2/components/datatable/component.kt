@@ -3,6 +3,7 @@ package dev.fritz2.components.datatable
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.sub
 import dev.fritz2.components.*
+import dev.fritz2.components.foundations.Component
 import dev.fritz2.dom.html.*
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.*

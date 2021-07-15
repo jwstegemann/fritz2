@@ -2,9 +2,9 @@ package dev.fritz2.components.datatable
 
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.SubStore
-import dev.fritz2.components.ComponentProperty
-import dev.fritz2.components.DynamicComponentProperty
-import dev.fritz2.components.NullableDynamicComponentProperty
+import dev.fritz2.components.foundations.ComponentProperty
+import dev.fritz2.components.foundations.DynamicComponentProperty
+import dev.fritz2.components.foundations.NullableDynamicComponentProperty
 import dev.fritz2.components.datatable.ColumnsContext.ColumnContext
 import dev.fritz2.components.datatable.OptionsContext.SortingContext
 import dev.fritz2.dom.EventContext
