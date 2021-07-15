@@ -10,10 +10,10 @@ import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class PayloadTests {
+class ScopeTests {
 
     @Test
-    fun testPayloadInDifferentContexts() = runTest {
+    fun testScopeInDifferentContexts() = runTest {
         initDocument()
 
         val id1 = uniqueId()
@@ -25,26 +25,26 @@ class PayloadTests {
         val id3 = uniqueId()
 
         render {
-            div(payload = {
+            div(scope = {
                 set(key1, value1)
             }) {
                 div(id = id1) {
-                    +payload.toString()
+                    +scope.toString()
                 }
             }
-            div(payload = {
+            div(scope = {
                 set(key2, value2)
             }) {
                 div(id = id2) {
-                    +payload.toString()
+                    +scope.toString()
                 }
             }
-            div(payload = {
+            div(scope = {
                 set(key1, value1)
                 set(key2, value2)
             }) {
                 div(id = id3) {
-                    payload.asDataAttr()
+                    scope.asDataAttr()
                 }
             }
         }

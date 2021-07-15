@@ -15,8 +15,8 @@ import org.w3c.dom.svg.SVGElement
 /**
  * Exposes the JavaScript [HTMLAnchorElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAnchorElement) to Kotlin
  */
-open class A(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLAnchorElement>("a", id, baseClass, job, payload),
+open class A(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLAnchorElement>("a", id, baseClass, job, scope),
     WithText<HTMLAnchorElement> {
     fun target(value: String) = attr("target", value)
     fun target(value: Flow<String>) = attr("target", value)
@@ -75,8 +75,8 @@ open class A(id: String? = null, baseClass: String? = null, job: Job, payload: P
 /**
  * Exposes the JavaScript [HTMLAreaElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAreaElement) to Kotlin
  */
-open class Area(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLAreaElement>("area", id, baseClass, job, payload),
+open class Area(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLAreaElement>("area", id, baseClass, job, scope),
     WithText<HTMLAreaElement> {
     fun alt(value: String) = attr("alt", value)
     fun alt(value: Flow<String>) = attr("alt", value)
@@ -138,15 +138,15 @@ open class Area(id: String? = null, baseClass: String? = null, job: Job, payload
 /**
  * Exposes the JavaScript [HTMLBRElement](https://developer.mozilla.org/en/docs/Web/API/HTMLBRElement) to Kotlin
  */
-open class Br(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLBRElement>("br", id, baseClass, job, payload)
+open class Br(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLBRElement>("br", id, baseClass, job, scope)
 
 
 /**
  * Exposes the JavaScript [HTMLButtonElement](https://developer.mozilla.org/en/docs/Web/API/HTMLButtonElement) to Kotlin
  */
-open class Button(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLButtonElement>("button", id, baseClass, job, payload),
+open class Button(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLButtonElement>("button", id, baseClass, job, scope),
     WithText<HTMLButtonElement> {
     fun autofocus(value: Boolean, trueValue: String = "") = attr("autofocus", value, trueValue)
     fun autofocus(value: Flow<Boolean>, trueValue: String = "") = attr("autofocus", value, trueValue)
@@ -183,8 +183,8 @@ open class Button(id: String? = null, baseClass: String? = null, job: Job, paylo
 /**
  * Exposes the JavaScript [HTMLCanvasElement](https://developer.mozilla.org/en/docs/Web/API/HTMLCanvasElement) to Kotlin
  */
-open class Canvas(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLCanvasElement>("canvas", id, baseClass, job, payload),
+open class Canvas(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLCanvasElement>("canvas", id, baseClass, job, scope),
     WithText<HTMLCanvasElement> {
     fun width(value: Int) = attr("width", value)
     fun width(value: Flow<Int>) = attr("width", value)
@@ -198,16 +198,16 @@ open class Canvas(id: String? = null, baseClass: String? = null, job: Job, paylo
 /**
  * Exposes the JavaScript [HTMLDListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDListElement) to Kotlin
  */
-open class Dl(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLDListElement>("dl", id, baseClass, job, payload),
+open class Dl(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLDListElement>("dl", id, baseClass, job, scope),
     WithText<HTMLDListElement>
 
 
 /**
  * Exposes the JavaScript [HTMLDataElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDataElement) to Kotlin
  */
-open class Data(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLDataElement>("data", id, baseClass, job, payload),
+open class Data(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLDataElement>("data", id, baseClass, job, scope),
     WithText<HTMLDataElement> {
     fun value(value: String) = attr("value", value)
     fun value(value: Flow<String>) = attr("value", value)
@@ -217,16 +217,16 @@ open class Data(id: String? = null, baseClass: String? = null, job: Job, payload
 /**
  * Exposes the JavaScript [HTMLDataListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDataListElement) to Kotlin
  */
-open class DataList(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLDataListElement>("datalist", id, baseClass, job, payload),
+open class DataList(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLDataListElement>("datalist", id, baseClass, job, scope),
     WithText<HTMLDataListElement>
 
 
 /**
  * Exposes the JavaScript [HTMLDetailsElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDetailsElement) to Kotlin
  */
-open class Details(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLDetailsElement>("details", id, baseClass, job, payload),
+open class Details(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLDetailsElement>("details", id, baseClass, job, scope),
     WithText<HTMLDetailsElement> {
     fun open(value: Boolean, trueValue: String = "") = attr("open", value, trueValue)
     fun open(value: Flow<Boolean>, trueValue: String = "") = attr("open", value, trueValue)
@@ -237,8 +237,8 @@ open class Details(id: String? = null, baseClass: String? = null, job: Job, payl
 /**
  * Exposes the JavaScript [HTMLDialogElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDialogElement) to Kotlin
  */
-open class Dialog(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLDialogElement>("dialog", id, baseClass, job, payload),
+open class Dialog(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLDialogElement>("dialog", id, baseClass, job, scope),
     WithText<HTMLDialogElement> {
     fun open(value: Boolean, trueValue: String = "") = attr("open", value, trueValue)
     fun open(value: Flow<Boolean>, trueValue: String = "") = attr("open", value, trueValue)
@@ -252,8 +252,8 @@ open class Dialog(id: String? = null, baseClass: String? = null, job: Job, paylo
 /**
  * Exposes the JavaScript [HTMLDivElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDivElement) to Kotlin
  */
-open class Div(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLDivElement>("div", id, baseClass, job, payload),
+open class Div(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLDivElement>("div", id, baseClass, job, scope),
     WithText<HTMLDivElement> {
     fun align(value: String) = attr("align", value)
     fun align(value: Flow<String>) = attr("align", value)
@@ -264,8 +264,8 @@ open class Div(id: String? = null, baseClass: String? = null, job: Job, payload:
 /**
  * Exposes the JavaScript [HTMLDivElement](https://developer.mozilla.org/en/docs/Web/API/HTMLDivElement) to Kotlin
  */
-open class Embed(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLEmbedElement>("embed", id, baseClass, job, payload) {
+open class Embed(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLEmbedElement>("embed", id, baseClass, job, scope) {
     fun src(value: String) = attr("src", value)
     fun src(value: Flow<String>) = attr("src", value)
 
@@ -284,8 +284,8 @@ open class Embed(id: String? = null, baseClass: String? = null, job: Job, payloa
 /**
  * Exposes the JavaScript [HTMLFieldSetElement](https://developer.mozilla.org/en/docs/Web/API/HTMLFieldSetElement) to Kotlin
  */
-open class FieldSet(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLFieldSetElement>("fieldSet", id, baseClass, job, payload) {
+open class FieldSet(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLFieldSetElement>("fieldSet", id, baseClass, job, scope) {
     fun disabled(value: Boolean, trueValue: String = "") = attr("disabled", value, trueValue)
     fun disabled(value: Flow<Boolean>, trueValue: String = "") = attr("disabled", value, trueValue)
 
@@ -298,8 +298,8 @@ open class FieldSet(id: String? = null, baseClass: String? = null, job: Job, pay
 /**
  * Exposes the JavaScript [HTMLFormElement](https://developer.mozilla.org/en/docs/Web/API/`for`mElement) to Kotlin
  */
-open class Form(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLFormElement>("form", id, baseClass, job, payload),
+open class Form(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLFormElement>("form", id, baseClass, job, scope),
     WithText<HTMLFormElement> {
     fun acceptCharset(value: String) = attr("acceptCharset", value)
     fun acceptCharset(value: Flow<String>) = attr("acceptCharset", value)
@@ -334,23 +334,23 @@ open class Form(id: String? = null, baseClass: String? = null, job: Job, payload
 /**
  * Exposes the JavaScript [HTMLHRElement](https://developer.mozilla.org/en/docs/Web/API/HTMLHRElement) to Kotlin
  */
-open class Hr(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLHRElement>("hr", id, baseClass, job, payload)
+open class Hr(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLHRElement>("hr", id, baseClass, job, scope)
 
 
 /**
  * Exposes the JavaScript [HTMLHeadingElement](https://developer.mozilla.org/en/docs/Web/API/HTMLHeadingElement) to Kotlin
  */
-open class H(num: Int, id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLHeadingElement>("h$num", id, baseClass, job, payload),
+open class H(num: Int, id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLHeadingElement>("h$num", id, baseClass, job, scope),
     WithText<HTMLHeadingElement>
 
 
 /**
  * Exposes the JavaScript [HTMLIFrameElement](https://developer.mozilla.org/en/docs/Web/API/HTMLIFrameElement) to Kotlin
  */
-open class IFrame(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLIFrameElement>("iframe", id, baseClass, job, payload),
+open class IFrame(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLIFrameElement>("iframe", id, baseClass, job, scope),
     WithText<HTMLIFrameElement> {
     fun src(value: String) = attr("src", value)
     fun src(value: Flow<String>) = attr("src", value)
@@ -382,8 +382,8 @@ open class IFrame(id: String? = null, baseClass: String? = null, job: Job, paylo
 /**
  * Exposes the JavaScript [HTMLImageElement](https://developer.mozilla.org/en/docs/Web/API/HTMLImageElement) to Kotlin
  */
-open class Img(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLImageElement>("img", id, baseClass, job, payload),
+open class Img(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLImageElement>("img", id, baseClass, job, scope),
     WithText<HTMLImageElement> {
     fun alt(value: String) = attr("alt", value)
     fun alt(value: Flow<String>) = attr("alt", value)
@@ -421,8 +421,8 @@ open class Img(id: String? = null, baseClass: String? = null, job: Job, payload:
 /**
  * Exposes the JavaScript [HTMLInputElement](https://developer.mozilla.org/en/docs/Web/API/HTMLInputElement) to Kotlin
  */
-open class Input(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLInputElement>("input", id, baseClass, job, payload) {
+open class Input(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLInputElement>("input", id, baseClass, job, scope) {
     fun accept(value: String) = attr("accept", value)
     fun accept(value: Flow<String>) = attr("accept", value)
 
@@ -543,8 +543,8 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job, payloa
 /**
  * Exposes the JavaScript [HTMLLIElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLIElement) to Kotlin
  */
-open class Li(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLLIElement>("li", id, baseClass, job, payload),
+open class Li(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLLIElement>("li", id, baseClass, job, scope),
     WithText<HTMLLIElement> {
     fun value(value: Int) = attr("value", value)
     fun value(value: Flow<Int>) = attr("value", value)
@@ -555,8 +555,8 @@ open class Li(id: String? = null, baseClass: String? = null, job: Job, payload: 
 /**
  * Exposes the JavaScript [HTMLLabelElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLabelElement) to Kotlin
  */
-open class Label(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLLabelElement>("label", id, baseClass, job, payload),
+open class Label(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLLabelElement>("label", id, baseClass, job, scope),
     WithText<HTMLLabelElement> {
     fun `for`(value: String) = attr("for", value)
     fun `for`(value: Flow<String>) = attr("for", value)
@@ -567,16 +567,16 @@ open class Label(id: String? = null, baseClass: String? = null, job: Job, payloa
 /**
  * Exposes the JavaScript [HTMLLegendElement](https://developer.mozilla.org/en/docs/Web/API/HTMLLegendElement) to Kotlin
  */
-open class Legend(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLLegendElement>("legend", id, baseClass, job, payload),
+open class Legend(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLLegendElement>("legend", id, baseClass, job, scope),
     WithText<HTMLLegendElement>
 
 
 /**
  * Exposes the JavaScript [HTMLMapElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMapElement) to Kotlin
  */
-open class Map(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLMapElement>("map", id, baseClass, job, payload),
+open class Map(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLMapElement>("map", id, baseClass, job, scope),
     WithText<HTMLMapElement> {
     fun name(value: String) = attr("name", value)
     fun name(value: Flow<String>) = attr("name", value)
@@ -587,8 +587,8 @@ open class Map(id: String? = null, baseClass: String? = null, job: Job, payload:
 /**
  * Exposes the JavaScript [HTMLAudioElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAudioElement) to Kotlin
  */
-open class Audio(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLAudioElement>("audio", id, baseClass, job, payload),
+open class Audio(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLAudioElement>("audio", id, baseClass, job, scope),
     WithText<HTMLAudioElement> {
     fun src(value: String) = attr("src", value)
     fun src(value: Flow<String>) = attr("src", value)
@@ -643,8 +643,8 @@ open class Audio(id: String? = null, baseClass: String? = null, job: Job, payloa
 /**
  * Exposes the JavaScript [HTMLVideoElement](https://developer.mozilla.org/en/docs/Web/API/HTMLVideoElement) to Kotlin
  */
-open class Video(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLVideoElement>("video", id, baseClass, job, payload),
+open class Video(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLVideoElement>("video", id, baseClass, job, scope),
     WithText<HTMLVideoElement> {
     fun width(value: Int) = attr("width", value)
     fun width(value: Flow<Int>) = attr("width", value)
@@ -711,8 +711,8 @@ open class Video(id: String? = null, baseClass: String? = null, job: Job, payloa
 /**
  * Exposes the JavaScript [HTMLMeterElement](https://developer.mozilla.org/en/docs/Web/API/HTMLMeterElement) to Kotlin
  */
-open class Meter(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLMeterElement>("meter", id, baseClass, job, payload),
+open class Meter(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLMeterElement>("meter", id, baseClass, job, scope),
     WithText<HTMLMeterElement> {
     fun value(value: Double) = attr("value", value)
     fun value(value: Flow<Double>) = attr("value", value)
@@ -738,8 +738,8 @@ open class Meter(id: String? = null, baseClass: String? = null, job: Job, payloa
 /**
  * Exposes the JavaScript [HTMLModElement](https://developer.mozilla.org/en/docs/Web/API/HTMLModElement) to Kotlin
  */
-open class Ins(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLModElement>("ins", id, baseClass, job, payload),
+open class Ins(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLModElement>("ins", id, baseClass, job, scope),
     WithText<HTMLModElement> {
     fun cite(value: String) = attr("cite", value)
     fun cite(value: Flow<String>) = attr("cite", value)
@@ -753,8 +753,8 @@ open class Ins(id: String? = null, baseClass: String? = null, job: Job, payload:
 /**
  * Exposes the JavaScript [HTMLModElement](https://developer.mozilla.org/en/docs/Web/API/HTMLModElement) to Kotlin
  */
-open class Del(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLModElement>("del", id, baseClass, job, payload),
+open class Del(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLModElement>("del", id, baseClass, job, scope),
     WithText<HTMLModElement> {
     fun cite(value: String) = attr("cite", value)
     fun cite(value: Flow<String>) = attr("cite", value)
@@ -768,8 +768,8 @@ open class Del(id: String? = null, baseClass: String? = null, job: Job, payload:
 /**
  * Exposes the JavaScript [HTMLOListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOListElement) to Kotlin
  */
-open class Ol(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLOListElement>("ol", id, baseClass, job, payload),
+open class Ol(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLOListElement>("ol", id, baseClass, job, scope),
     WithText<HTMLOListElement> {
     fun reversed(value: Boolean, trueValue: String = "") = attr("reversed", value, trueValue)
     fun reversed(value: Flow<Boolean>, trueValue: String = "") = attr("reversed", value, trueValue)
@@ -786,8 +786,8 @@ open class Ol(id: String? = null, baseClass: String? = null, job: Job, payload: 
 /**
  * Exposes the JavaScript [HTMLObjectElement](https://developer.mozilla.org/en/docs/Web/API/HTMLObjectElement) to Kotlin
  */
-open class Object(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLObjectElement>("object", id, baseClass, job, payload),
+open class Object(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLObjectElement>("object", id, baseClass, job, scope),
     WithText<HTMLObjectElement> {
     fun data(value: String) = attr("data", value)
     fun data(value: Flow<String>) = attr("data", value)
@@ -816,8 +816,8 @@ open class Object(id: String? = null, baseClass: String? = null, job: Job, paylo
 /**
  * Exposes the JavaScript [HTMLOptGroupElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOptGroupElement) to Kotlin
  */
-open class Optgroup(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLOptGroupElement>("optgroup", id, baseClass, job, payload),
+open class Optgroup(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLOptGroupElement>("optgroup", id, baseClass, job, scope),
     WithText<HTMLOptGroupElement> {
     fun disabled(value: Boolean, trueValue: String = "") = attr("disabled", value, trueValue)
     fun disabled(value: Flow<Boolean>, trueValue: String = "") = attr("disabled", value, trueValue)
@@ -831,8 +831,8 @@ open class Optgroup(id: String? = null, baseClass: String? = null, job: Job, pay
 /**
  * Exposes the JavaScript [HTMLOptionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOptionElement) to Kotlin
  */
-open class Option(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLOptionElement>("option", id, baseClass, job, payload),
+open class Option(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLOptionElement>("option", id, baseClass, job, scope),
     WithText<HTMLOptionElement> {
     fun disabled(value: Boolean, trueValue: String = "") = attr("disabled", value, trueValue)
     fun disabled(value: Flow<Boolean>, trueValue: String = "") = attr("disabled", value, trueValue)
@@ -862,8 +862,8 @@ open class Option(id: String? = null, baseClass: String? = null, job: Job, paylo
 /**
  * Exposes the JavaScript [HTMLOutputElement](https://developer.mozilla.org/en/docs/Web/API/HTMLOutputElement) to Kotlin
  */
-open class Output(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLOutputElement>("output", id, baseClass, job, payload),
+open class Output(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLOutputElement>("output", id, baseClass, job, scope),
     WithText<HTMLOutputElement> {
     fun name(value: String) = attr("name", value)
     fun name(value: Flow<String>) = attr("name", value)
@@ -886,16 +886,16 @@ open class Output(id: String? = null, baseClass: String? = null, job: Job, paylo
 /**
  * Exposes the JavaScript [HTMLParagraphElement](https://developer.mozilla.org/en/docs/Web/API/HTMLParagraphElement) to Kotlin
  */
-open class P(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLParagraphElement>("p", id, baseClass, job, payload),
+open class P(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLParagraphElement>("p", id, baseClass, job, scope),
     WithText<HTMLParagraphElement>
 
 
 /**
  * Exposes the JavaScript [HTMLParamElement](https://developer.mozilla.org/en/docs/Web/API/HTMLParamElement) to Kotlin
  */
-open class Param(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLParamElement>("param", id, baseClass, job, payload),
+open class Param(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLParamElement>("param", id, baseClass, job, scope),
     WithText<HTMLParamElement> {
     fun name(value: String) = attr("name", value)
     fun name(value: Flow<String>) = attr("name", value)
@@ -908,24 +908,24 @@ open class Param(id: String? = null, baseClass: String? = null, job: Job, payloa
 /**
  * Exposes the JavaScript [HTMLPictureElement](https://developer.mozilla.org/en/docs/Web/API/HTMLPictureElement) to Kotlin
  */
-open class Picture(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLPictureElement>("picture", id, baseClass, job, payload),
+open class Picture(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLPictureElement>("picture", id, baseClass, job, scope),
     WithText<HTMLPictureElement>
 
 
 /**
  * Exposes the JavaScript [HTMLPreElement](https://developer.mozilla.org/en/docs/Web/API/HTMLPreElement) to Kotlin
  */
-open class Pre(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLPreElement>("pre", id, baseClass, job, payload),
+open class Pre(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLPreElement>("pre", id, baseClass, job, scope),
     WithText<HTMLPreElement>
 
 
 /**
  * Exposes the JavaScript [HTMLProgressElement](https://developer.mozilla.org/en/docs/Web/API/HTMLProgressElement) to Kotlin
  */
-open class Progress(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLProgressElement>("progress", id, baseClass, job, payload),
+open class Progress(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLProgressElement>("progress", id, baseClass, job, scope),
     WithText<HTMLProgressElement> {
     fun value(value: Double) = attr("value", value)
     fun value(value: Flow<Double>) = attr("value", value)
@@ -939,8 +939,8 @@ open class Progress(id: String? = null, baseClass: String? = null, job: Job, pay
 /**
  * Exposes the JavaScript [HTMLQuoteElement](https://developer.mozilla.org/en/docs/Web/API/HTMLQuoteElement) to Kotlin
  */
-open class Quote(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLQuoteElement>("quote", id, baseClass, job, payload),
+open class Quote(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLQuoteElement>("quote", id, baseClass, job, scope),
     WithText<HTMLQuoteElement> {
     fun cite(value: String) = attr("cite", value)
     fun cite(value: Flow<String>) = attr("cite", value)
@@ -951,8 +951,8 @@ open class Quote(id: String? = null, baseClass: String? = null, job: Job, payloa
 /**
  * Exposes the JavaScript [HTMLScriptElement](https://developer.mozilla.org/en/docs/Web/API/HTMLScriptElement) to Kotlin
  */
-open class Script(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLScriptElement>("script", id, baseClass, job, payload),
+open class Script(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLScriptElement>("script", id, baseClass, job, scope),
     WithText<HTMLScriptElement> {
     fun src(value: String) = attr("src", value)
     fun src(value: Flow<String>) = attr("src", value)
@@ -985,8 +985,8 @@ open class Script(id: String? = null, baseClass: String? = null, job: Job, paylo
 /**
  * Exposes the JavaScript [HTMLSelectElement](https://developer.mozilla.org/en/docs/Web/API/HTMLSelectElement) to Kotlin
  */
-open class Select(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLSelectElement>("select", id, baseClass, job, payload) {
+open class Select(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLSelectElement>("select", id, baseClass, job, scope) {
     fun autocomplete(value: String) = attr("autocomplete", value)
     fun autocomplete(value: Flow<String>) = attr("autocomplete", value)
 
@@ -1022,24 +1022,24 @@ open class Select(id: String? = null, baseClass: String? = null, job: Job, paylo
 /**
  * Exposes the JavaScript [HTMLSpanElement](https://developer.mozilla.org/en/docs/Web/API/HTMLSpanElement) to Kotlin
  */
-open class Span(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLSpanElement>("span", id, baseClass, job, payload),
+open class Span(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLSpanElement>("span", id, baseClass, job, scope),
     WithText<HTMLSpanElement>
 
 
 /**
  * Exposes the JavaScript [HTMLTableCaptionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableCaptionElement) to Kotlin
  */
-open class Caption(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTableCaptionElement>("caption", id, baseClass, job, payload),
+open class Caption(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTableCaptionElement>("caption", id, baseClass, job, scope),
     WithText<HTMLTableCaptionElement>
 
 
 /**
  * Exposes the JavaScript [HTMLTableCellElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableCellElement) to Kotlin
  */
-open class Th(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTableCellElement>("th", id, baseClass, job, payload),
+open class Th(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTableCellElement>("th", id, baseClass, job, scope),
     WithText<HTMLTableCellElement> {
     fun colSpan(value: Int) = attr("colSpan", value)
     fun colSpan(value: Flow<Int>) = attr("colSpan", value)
@@ -1062,8 +1062,8 @@ open class Th(id: String? = null, baseClass: String? = null, job: Job, payload: 
 /**
  * Exposes the JavaScript [HTMLTableCellElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableCellElement) to Kotlin
  */
-open class Td(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTableCellElement>("td", id, baseClass, job, payload),
+open class Td(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTableCellElement>("td", id, baseClass, job, scope),
     WithText<HTMLTableCellElement> {
     fun colSpan(value: Int) = attr("colSpan", value)
     fun colSpan(value: Flow<Int>) = attr("colSpan", value)
@@ -1086,8 +1086,8 @@ open class Td(id: String? = null, baseClass: String? = null, job: Job, payload: 
 /**
  * Exposes the JavaScript [HTMLTableColElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableColElement) to Kotlin
  */
-open class Col(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTableColElement>("col", id, baseClass, job, payload),
+open class Col(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTableColElement>("col", id, baseClass, job, scope),
     WithText<HTMLTableColElement> {
     fun span(value: Int) = attr("span", value)
     fun span(value: Flow<Int>) = attr("span", value)
@@ -1098,8 +1098,8 @@ open class Col(id: String? = null, baseClass: String? = null, job: Job, payload:
 /**
  * Exposes the JavaScript [HTMLTableColElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableColElement) to Kotlin
  */
-open class Colgroup(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTableColElement>("colgroup", id, baseClass, job, payload),
+open class Colgroup(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTableColElement>("colgroup", id, baseClass, job, scope),
     WithText<HTMLTableColElement> {
     fun span(value: Int) = attr("span", value)
     fun span(value: Flow<Int>) = attr("span", value)
@@ -1110,44 +1110,44 @@ open class Colgroup(id: String? = null, baseClass: String? = null, job: Job, pay
 /**
  * Exposes the JavaScript [HTMLTableElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableElement) to Kotlin
  */
-open class Table(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTableElement>("table", id, baseClass, job, payload)
+open class Table(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTableElement>("table", id, baseClass, job, scope)
 
 
 /**
  * Exposes the JavaScript [HTMLTableRowElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableRowElement) to Kotlin
  */
-open class Tr(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTableRowElement>("tr", id, baseClass, job, payload),
+open class Tr(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTableRowElement>("tr", id, baseClass, job, scope),
     WithText<HTMLTableRowElement>
 
 
 /**
  * Exposes the JavaScript [HTMLTableSectionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableSectionElement) to Kotlin
  */
-open class TFoot(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTableSectionElement>("tfoot", id, baseClass, job, payload)
+open class TFoot(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTableSectionElement>("tfoot", id, baseClass, job, scope)
 
 
 /**
  * Exposes the JavaScript [HTMLTableSectionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableSectionElement) to Kotlin
  */
-open class THead(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTableSectionElement>("thead", id, baseClass, job, payload)
+open class THead(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTableSectionElement>("thead", id, baseClass, job, scope)
 
 
 /**
  * Exposes the JavaScript [HTMLTableSectionElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTableSectionElement) to Kotlin
  */
-open class TBody(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTableSectionElement>("tbody", id, baseClass, job, payload)
+open class TBody(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTableSectionElement>("tbody", id, baseClass, job, scope)
 
 
 /**
  * Exposes the JavaScript [HTMLTextAreaElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTextAreaElement) to Kotlin
  */
-open class TextArea(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTextAreaElement>("textarea", id, baseClass, job, payload),
+open class TextArea(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTextAreaElement>("textarea", id, baseClass, job, scope),
     WithText<HTMLTextAreaElement> {
     fun autocomplete(value: String) = attr("autocomplete", value)
     fun autocomplete(value: Flow<String>) = attr("autocomplete", value)
@@ -1209,8 +1209,8 @@ open class TextArea(id: String? = null, baseClass: String? = null, job: Job, pay
 /**
  * Exposes the JavaScript [HTMLTimeElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTimeElement) to Kotlin
  */
-open class Time(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTimeElement>("time", id, baseClass, job, payload),
+open class Time(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTimeElement>("time", id, baseClass, job, scope),
     WithText<HTMLTimeElement> {
     fun dateTime(value: String) = attr("dateTime", value)
     fun dateTime(value: Flow<String>) = attr("dateTime", value)
@@ -1221,8 +1221,8 @@ open class Time(id: String? = null, baseClass: String? = null, job: Job, payload
 /**
  * Exposes the JavaScript [HTMLTrackElement](https://developer.mozilla.org/en/docs/Web/API/HTMLTrackElement) to Kotlin
  */
-open class Track(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLTrackElement>("track", id, baseClass, job, payload),
+open class Track(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLTrackElement>("track", id, baseClass, job, scope),
     WithText<HTMLTrackElement> {
     fun kind(value: String) = attr("kind", value)
     fun kind(value: Flow<String>) = attr("kind", value)
@@ -1245,15 +1245,15 @@ open class Track(id: String? = null, baseClass: String? = null, job: Job, payloa
 /**
  * Exposes the JavaScript [HTMLUListElement](https://developer.mozilla.org/en/docs/Web/API/HTMLUListElement) to Kotlin
  */
-open class Ul(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<HTMLUListElement>("ul", id, baseClass, job, payload)
+open class Ul(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<HTMLUListElement>("ul", id, baseClass, job, scope)
 
 
 /**
  * Exposes the JavaScript [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement) to Kotlin
  */
-class Svg(id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    Tag<SVGElement>("", id, null, job, payload, createSVGElement(baseClass)) {
+class Svg(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<SVGElement>("", id, null, job, scope, createSVGElement(baseClass)) {
 
     companion object {
         const val xmlns = "http://www.w3.org/2000/svg"
@@ -1279,8 +1279,8 @@ class Svg(id: String? = null, baseClass: String? = null, job: Job, payload: Payl
 /**
  * Special [Tag] for HTML5 with no attributes
  */
-open class TextElement(tagName: String, id: String? = null, baseClass: String? = null, job: Job, payload: Payload) :
-    RenderContext(tagName, id, baseClass, job, payload), WithText<HTMLElement>
+open class TextElement(tagName: String, id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    RenderContext(tagName, id, baseClass, job, scope), WithText<HTMLElement>
 
 /**
  * Type alias for the most generic type of a tag. This type should be preferred for HTML structures without
@@ -1292,7 +1292,7 @@ typealias RenderContext = Tag<HTMLElement>
 /**
  * Context for rendering standard HTML5 [Tag]s
  */
-interface TagContext : WithJob, WithPayload {
+interface TagContext : WithJob, WithScope {
 
     /**
      * Converts the content of a [Flow] to [String] by using [toString] method.
@@ -1305,13 +1305,13 @@ interface TagContext : WithJob, WithPayload {
     fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T
 
     /**
-     * Evaluates the payload context and initializes a [PayloadContext]
-     * for setting new entries to the payload.
+     * Evaluates the scope context and initializes a [ScopeContext]
+     * for setting new entries to the scope.
      *
      * @param context to evaluate
      */
-    private inline fun evalPayload(context: (PayloadContext.() -> Unit)): Payload {
-        return PayloadContext(this@TagContext.payload).apply(context).payload
+    private inline fun evalScope(context: (ScopeContext.() -> Unit)): Scope {
+        return ScopeContext(this@TagContext.scope).apply(context).scope
     }
 
     /**
@@ -1325,825 +1325,825 @@ interface TagContext : WithJob, WithPayload {
         tagName: String,
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: RenderContext.() -> Unit
     ): RenderContext =
-        register(RenderContext(tagName, id, baseClass, job, evalPayload(payload)), content)
+        register(RenderContext(tagName, id, baseClass, job, evalScope(scope)), content)
 
     fun a(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: A.() -> Unit
     ): A =
-        register(A(id, baseClass, job, evalPayload(payload)), content)
+        register(A(id, baseClass, job, evalScope(scope)), content)
 
     fun area(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Area.() -> Unit
     ): Area =
-        register(Area(id, baseClass, job, evalPayload(payload)), content)
+        register(Area(id, baseClass, job, evalScope(scope)), content)
 
     fun br(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Br.() -> Unit
     ): Br =
-        register(Br(id, baseClass, job, evalPayload(payload)), content)
+        register(Br(id, baseClass, job, evalScope(scope)), content)
 
     fun button(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Button.() -> Unit
     ): Button =
-        register(Button(id, baseClass, job, evalPayload(payload)), content)
+        register(Button(id, baseClass, job, evalScope(scope)), content)
 
     fun canvas(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Canvas.() -> Unit
     ): Canvas =
-        register(Canvas(id, baseClass, job, evalPayload(payload)), content)
+        register(Canvas(id, baseClass, job, evalScope(scope)), content)
 
     fun dl(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Dl.() -> Unit
     ): Dl =
-        register(Dl(id, baseClass, job, evalPayload(payload)), content)
+        register(Dl(id, baseClass, job, evalScope(scope)), content)
 
     fun dt(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("dt", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("dt", id, baseClass, job, evalScope(scope)), content)
 
     fun dd(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("dd", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("dd", id, baseClass, job, evalScope(scope)), content)
 
     fun data(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Data.() -> Unit
     ): Data =
-        register(Data(id, baseClass, job, evalPayload(payload)), content)
+        register(Data(id, baseClass, job, evalScope(scope)), content)
 
     fun datalist(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: DataList.() -> Unit
     ): DataList =
-        register(DataList(id, baseClass, job, evalPayload(payload)), content)
+        register(DataList(id, baseClass, job, evalScope(scope)), content)
 
     fun details(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Details.() -> Unit
     ): Details =
-        register(Details(id, baseClass, job, evalPayload(payload)), content)
+        register(Details(id, baseClass, job, evalScope(scope)), content)
 
     fun dialog(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Dialog.() -> Unit
     ): Dialog =
-        register(Dialog(id, baseClass, job, evalPayload(payload)), content)
+        register(Dialog(id, baseClass, job, evalScope(scope)), content)
 
     fun div(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Div.() -> Unit
     ): Div =
-        register(Div(id, baseClass, job, evalPayload(payload)), content)
+        register(Div(id, baseClass, job, evalScope(scope)), content)
 
     fun embed(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Embed.() -> Unit
     ): Embed =
-        register(Embed(id, baseClass, job, evalPayload(payload)), content)
+        register(Embed(id, baseClass, job, evalScope(scope)), content)
 
     fun fieldset(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: FieldSet.() -> Unit
     ): FieldSet =
-        register(FieldSet(id, baseClass, job, evalPayload(payload)), content)
+        register(FieldSet(id, baseClass, job, evalScope(scope)), content)
 
     fun form(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Form.() -> Unit
     ): Form =
-        register(Form(id, baseClass, job, evalPayload(payload)), content)
+        register(Form(id, baseClass, job, evalScope(scope)), content)
 
     fun hr(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Hr.() -> Unit
     ): Hr =
-        register(Hr(id, baseClass, job, evalPayload(payload)), content)
+        register(Hr(id, baseClass, job, evalScope(scope)), content)
 
     fun h1(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: H.() -> Unit
     ): H =
-        register(H(1, id, baseClass, job, evalPayload(payload)), content)
+        register(H(1, id, baseClass, job, evalScope(scope)), content)
 
     fun h2(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: H.() -> Unit
     ): H =
-        register(H(2, id, baseClass, job, evalPayload(payload)), content)
+        register(H(2, id, baseClass, job, evalScope(scope)), content)
 
     fun h3(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: H.() -> Unit
     ): H =
-        register(H(3, id, baseClass, job, evalPayload(payload)), content)
+        register(H(3, id, baseClass, job, evalScope(scope)), content)
 
     fun h4(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: H.() -> Unit
     ): H =
-        register(H(4, id, baseClass, job, evalPayload(payload)), content)
+        register(H(4, id, baseClass, job, evalScope(scope)), content)
 
     fun h5(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: H.() -> Unit
     ): H =
-        register(H(5, id, baseClass, job, evalPayload(payload)), content)
+        register(H(5, id, baseClass, job, evalScope(scope)), content)
 
     fun h6(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: H.() -> Unit
     ): H =
-        register(H(6, id, baseClass, job, evalPayload(payload)), content)
+        register(H(6, id, baseClass, job, evalScope(scope)), content)
 
     fun iframe(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: IFrame.() -> Unit
     ): IFrame =
-        register(IFrame(id, baseClass, job, evalPayload(payload)), content)
+        register(IFrame(id, baseClass, job, evalScope(scope)), content)
 
     fun img(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Img.() -> Unit
     ): Img =
-        register(Img(id, baseClass, job, evalPayload(payload)), content)
+        register(Img(id, baseClass, job, evalScope(scope)), content)
 
     fun input(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Input.() -> Unit
     ): Input =
-        register(Input(id, baseClass, job, evalPayload(payload)), content)
+        register(Input(id, baseClass, job, evalScope(scope)), content)
 
     fun li(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Li.() -> Unit
     ): Li =
-        register(Li(id, baseClass, job, evalPayload(payload)), content)
+        register(Li(id, baseClass, job, evalScope(scope)), content)
 
     fun label(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Label.() -> Unit
     ): Label =
-        register(Label(id, baseClass, job, evalPayload(payload)), content)
+        register(Label(id, baseClass, job, evalScope(scope)), content)
 
     fun legend(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Legend.() -> Unit
     ): Legend =
-        register(Legend(id, baseClass, job, evalPayload(payload)), content)
+        register(Legend(id, baseClass, job, evalScope(scope)), content)
 
     fun map(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Map.() -> Unit
     ): Map =
-        register(Map(id, baseClass, job, evalPayload(payload)), content)
+        register(Map(id, baseClass, job, evalScope(scope)), content)
 
     fun audio(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Audio.() -> Unit
     ): Audio =
-        register(Audio(id, baseClass, job, evalPayload(payload)), content)
+        register(Audio(id, baseClass, job, evalScope(scope)), content)
 
     fun video(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Video.() -> Unit
     ): Video =
-        register(Video(id, baseClass, job, evalPayload(payload)), content)
+        register(Video(id, baseClass, job, evalScope(scope)), content)
 
     fun meter(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Meter.() -> Unit
     ): Meter =
-        register(Meter(id, baseClass, job, evalPayload(payload)), content)
+        register(Meter(id, baseClass, job, evalScope(scope)), content)
 
     fun ins(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Ins.() -> Unit
     ): Ins =
-        register(Ins(id, baseClass, job, evalPayload(payload)), content)
+        register(Ins(id, baseClass, job, evalScope(scope)), content)
 
     fun del(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Del.() -> Unit
     ): Del =
-        register(Del(id, baseClass, job, evalPayload(payload)), content)
+        register(Del(id, baseClass, job, evalScope(scope)), content)
 
     fun ol(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Ol.() -> Unit
     ): Ol =
-        register(Ol(id, baseClass, job, evalPayload(payload)), content)
+        register(Ol(id, baseClass, job, evalScope(scope)), content)
 
     fun `object`(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Object.() -> Unit
     ): Object =
-        register(Object(id, baseClass, job, evalPayload(payload)), content)
+        register(Object(id, baseClass, job, evalScope(scope)), content)
 
     fun optgroup(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Optgroup.() -> Unit
     ): Optgroup =
-        register(Optgroup(id, baseClass, job, evalPayload(payload)), content)
+        register(Optgroup(id, baseClass, job, evalScope(scope)), content)
 
     fun option(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Option.() -> Unit
     ): Option =
-        register(Option(id, baseClass, job, evalPayload(payload)), content)
+        register(Option(id, baseClass, job, evalScope(scope)), content)
 
     fun output(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Output.() -> Unit
     ): Output =
-        register(Output(id, baseClass, job, evalPayload(payload)), content)
+        register(Output(id, baseClass, job, evalScope(scope)), content)
 
     fun p(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: P.() -> Unit
     ): P =
-        register(P(id, baseClass, job, evalPayload(payload)), content)
+        register(P(id, baseClass, job, evalScope(scope)), content)
 
     fun param(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Param.() -> Unit
     ): Param =
-        register(Param(id, baseClass, job, evalPayload(payload)), content)
+        register(Param(id, baseClass, job, evalScope(scope)), content)
 
     fun picture(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Picture.() -> Unit
     ): Picture =
-        register(Picture(id, baseClass, job, evalPayload(payload)), content)
+        register(Picture(id, baseClass, job, evalScope(scope)), content)
 
     fun pre(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Pre.() -> Unit
     ): Pre =
-        register(Pre(id, baseClass, job, evalPayload(payload)), content)
+        register(Pre(id, baseClass, job, evalScope(scope)), content)
 
     fun progress(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Progress.() -> Unit
     ): Progress =
-        register(Progress(id, baseClass, job, evalPayload(payload)), content)
+        register(Progress(id, baseClass, job, evalScope(scope)), content)
 
     fun quote(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Quote.() -> Unit
     ): Quote =
-        register(Quote(id, baseClass, job, evalPayload(payload)), content)
+        register(Quote(id, baseClass, job, evalScope(scope)), content)
 
     fun script(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Script.() -> Unit
     ): Script =
-        register(Script(id, baseClass, job, evalPayload(payload)), content)
+        register(Script(id, baseClass, job, evalScope(scope)), content)
 
     fun select(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Select.() -> Unit
     ): Select =
-        register(Select(id, baseClass, job, evalPayload(payload)), content)
+        register(Select(id, baseClass, job, evalScope(scope)), content)
 
     fun span(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Span.() -> Unit
     ): Span =
-        register(Span(id, baseClass, job, evalPayload(payload)), content)
+        register(Span(id, baseClass, job, evalScope(scope)), content)
 
     fun caption(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Caption.() -> Unit
     ): Caption =
-        register(Caption(id, baseClass, job, evalPayload(payload)), content)
+        register(Caption(id, baseClass, job, evalScope(scope)), content)
 
     fun th(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Th.() -> Unit
     ): Th =
-        register(Th(id, baseClass, job, evalPayload(payload)), content)
+        register(Th(id, baseClass, job, evalScope(scope)), content)
 
     fun td(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Td.() -> Unit
     ): Td =
-        register(Td(id, baseClass, job, evalPayload(payload)), content)
+        register(Td(id, baseClass, job, evalScope(scope)), content)
 
     fun col(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Col.() -> Unit
     ): Col =
-        register(Col(id, baseClass, job, evalPayload(payload)), content)
+        register(Col(id, baseClass, job, evalScope(scope)), content)
 
     fun colgroup(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Colgroup.() -> Unit
     ): Colgroup =
-        register(Colgroup(id, baseClass, job, evalPayload(payload)), content)
+        register(Colgroup(id, baseClass, job, evalScope(scope)), content)
 
     fun table(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Table.() -> Unit
     ): Table =
-        register(Table(id, baseClass, job, evalPayload(payload)), content)
+        register(Table(id, baseClass, job, evalScope(scope)), content)
 
     fun tr(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Tr.() -> Unit
     ): Tr =
-        register(Tr(id, baseClass, job, evalPayload(payload)), content)
+        register(Tr(id, baseClass, job, evalScope(scope)), content)
 
     fun tfoot(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TFoot.() -> Unit
     ): TFoot =
-        register(TFoot(id, baseClass, job, evalPayload(payload)), content)
+        register(TFoot(id, baseClass, job, evalScope(scope)), content)
 
     fun thead(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: THead.() -> Unit
     ): THead =
-        register(THead(id, baseClass, job, evalPayload(payload)), content)
+        register(THead(id, baseClass, job, evalScope(scope)), content)
 
     fun tbody(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TBody.() -> Unit
     ): TBody =
-        register(TBody(id, baseClass, job, evalPayload(payload)), content)
+        register(TBody(id, baseClass, job, evalScope(scope)), content)
 
     fun textarea(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextArea.() -> Unit
     ): TextArea =
-        register(TextArea(id, baseClass, job, evalPayload(payload)), content)
+        register(TextArea(id, baseClass, job, evalScope(scope)), content)
 
     fun time(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Time.() -> Unit
     ): Time =
-        register(Time(id, baseClass, job, evalPayload(payload)), content)
+        register(Time(id, baseClass, job, evalScope(scope)), content)
 
     fun track(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Track.() -> Unit
     ): Track =
-        register(Track(id, baseClass, job, evalPayload(payload)), content)
+        register(Track(id, baseClass, job, evalScope(scope)), content)
 
     fun ul(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Ul.() -> Unit
     ): Ul =
-        register(Ul(id, baseClass, job, evalPayload(payload)), content)
+        register(Ul(id, baseClass, job, evalScope(scope)), content)
 
     fun address(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("address", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("address", id, baseClass, job, evalScope(scope)), content)
 
     fun article(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("article", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("article", id, baseClass, job, evalScope(scope)), content)
 
     fun aside(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("aside", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("aside", id, baseClass, job, evalScope(scope)), content)
 
     fun bdi(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("bdi", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("bdi", id, baseClass, job, evalScope(scope)), content)
 
     fun figcaption(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("figcaption", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("figcaption", id, baseClass, job, evalScope(scope)), content)
 
     fun figure(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("figure", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("figure", id, baseClass, job, evalScope(scope)), content)
 
     fun footer(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("footer", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("footer", id, baseClass, job, evalScope(scope)), content)
 
     fun header(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("header", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("header", id, baseClass, job, evalScope(scope)), content)
 
     fun main(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("main", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("main", id, baseClass, job, evalScope(scope)), content)
 
     fun mark(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("mark", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("mark", id, baseClass, job, evalScope(scope)), content)
 
     fun nav(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("nav", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("nav", id, baseClass, job, evalScope(scope)), content)
 
     fun noscript(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("noscript", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("noscript", id, baseClass, job, evalScope(scope)), content)
 
     fun rp(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("rp", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("rp", id, baseClass, job, evalScope(scope)), content)
 
     fun rt(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("rt", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("rt", id, baseClass, job, evalScope(scope)), content)
 
     fun ruby(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("ruby", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("ruby", id, baseClass, job, evalScope(scope)), content)
 
     fun section(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("section", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("section", id, baseClass, job, evalScope(scope)), content)
 
     fun summary(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("summary", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("summary", id, baseClass, job, evalScope(scope)), content)
 
     fun wbr(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("wbr", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("wbr", id, baseClass, job, evalScope(scope)), content)
 
     fun blockquote(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("blockquote", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("blockquote", id, baseClass, job, evalScope(scope)), content)
 
     fun em(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("em", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("em", id, baseClass, job, evalScope(scope)), content)
 
     fun strong(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("strong", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("strong", id, baseClass, job, evalScope(scope)), content)
 
     fun small(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("small", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("small", id, baseClass, job, evalScope(scope)), content)
 
     fun s(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("s", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("s", id, baseClass, job, evalScope(scope)), content)
 
     fun cite(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("cite", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("cite", id, baseClass, job, evalScope(scope)), content)
 
     fun q(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("q", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("q", id, baseClass, job, evalScope(scope)), content)
 
     fun dfn(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("dfn", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("dfn", id, baseClass, job, evalScope(scope)), content)
 
     fun abbr(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("abbr", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("abbr", id, baseClass, job, evalScope(scope)), content)
 
     fun code(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("code", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("code", id, baseClass, job, evalScope(scope)), content)
 
     fun `var`(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("var", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("var", id, baseClass, job, evalScope(scope)), content)
 
     fun samp(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("samp", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("samp", id, baseClass, job, evalScope(scope)), content)
 
     fun kbd(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("kbd", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("kbd", id, baseClass, job, evalScope(scope)), content)
 
     fun sub(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("sub", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("sub", id, baseClass, job, evalScope(scope)), content)
 
     fun sup(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("sup", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("sup", id, baseClass, job, evalScope(scope)), content)
 
     fun i(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("i", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("i", id, baseClass, job, evalScope(scope)), content)
 
     fun b(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("b", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("b", id, baseClass, job, evalScope(scope)), content)
 
     fun u(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("u", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("u", id, baseClass, job, evalScope(scope)), content)
 
     fun bdo(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("bdo", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("bdo", id, baseClass, job, evalScope(scope)), content)
 
     fun command(
         baseClass: String? = null,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: TextElement.() -> Unit
     ): TextElement =
-        register(TextElement("command", id, baseClass, job, evalPayload(payload)), content)
+        register(TextElement("command", id, baseClass, job, evalScope(scope)), content)
 
     fun svg(
         baseClass: String?,
         id: String? = null,
-        payload: (PayloadContext.() -> Unit) = {},
+        scope: (ScopeContext.() -> Unit) = {},
         content: Svg.() -> Unit
     ): Svg {
-        return register(Svg(id, baseClass, job = job, evalPayload(payload)), content)
+        return register(Svg(id, baseClass, job = job, evalScope(scope)), content)
     }
 }

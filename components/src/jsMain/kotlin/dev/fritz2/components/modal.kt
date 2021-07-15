@@ -127,7 +127,7 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
         private val stack = ModalsStack()
         val overlay = storeOf<Overlay>(DefaultOverlay())
         private val job = Job()
-        private val payload = Payload()
+        private val scope = Scope()
         private val globalId = "f2c-modals-${randomId()}"
         private val myStaticStyle = staticStyle("disableOverflowForModal", "overflow:hidden !important;")
 
@@ -138,7 +138,7 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
         init {
             stack.data.map { modals ->
                 configureBodyScrolling(modals)
-                ManagedComponent.managedRenderContext(globalId, job, payload).apply {
+                ManagedComponent.managedRenderContext(globalId, job, scope).apply {
                     val currentOverlay = overlay.current
                     if (currentOverlay.method == OverlayMethod.CoveringTopMost && modals.isNotEmpty()) {
                         currentOverlay.render(this, modals.size)

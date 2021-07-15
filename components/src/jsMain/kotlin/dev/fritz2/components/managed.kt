@@ -1,6 +1,6 @@
 package dev.fritz2.components
 
-import dev.fritz2.binding.Payload
+import dev.fritz2.binding.Scope
 import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Div
@@ -46,12 +46,12 @@ interface ManagedComponent<T> {
          * @param id for [RenderContext] DOM element
          * @param job [Job] used in this [RenderContext]
          */
-        internal fun managedRenderContext(id: String, job: Job, payload: Payload): RenderContext {
+        internal fun managedRenderContext(id: String, job: Job, scope: Scope): RenderContext {
             val element = document.getElementById(id)
             return if (element != null) {
-                Tag("div", element.id, job = job, payload = payload, domNode = (element as HTMLElement))
+                Tag("div", element.id, job = job, scope = scope, domNode = (element as HTMLElement))
             } else {
-                Div(id, job = job, payload = payload).apply { document.body?.appendChild(this.domNode) }
+                Div(id, job = job, scope = scope).apply { document.body?.appendChild(this.domNode) }
             }.apply {
                 domNode.innerHTML = ""
             }
