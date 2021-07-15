@@ -311,18 +311,18 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
 
     open fun textArea(
         styling: BasicParams.() -> Unit = {},
-        store: Store<String>? = null,
+        value: Store<String>? = null,
         baseClass: StyleClass = StyleClass.None,
-        id: String? = store?.id,
+        id: String? = value?.id,
         prefix: String = ControlNames.textArea,
         build: TextAreaComponent.() -> Unit = {}
     ) {
-        val validationMessagesBuilder = ValidationResult.builderOf(this, store)
+        val validationMessagesBuilder = ValidationResult.builderOf(this, value)
         registerControl(
             id,
             ControlNames.textArea,
             {
-                textArea(styling, store, baseClass, id, prefix) {
+                textArea(styling, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
                     build()
