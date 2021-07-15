@@ -6,10 +6,7 @@ import dev.fritz2.components.checkboxes.CheckboxComponent
 import dev.fritz2.components.checkboxes.CheckboxGroupComponent
 import dev.fritz2.components.forms.control.FormControlComponent.ControlRegistration
 import dev.fritz2.components.forms.formGroupElementContainerMarker
-import dev.fritz2.components.foundations.Component
-import dev.fritz2.components.foundations.ComponentProperty
-import dev.fritz2.components.foundations.FormMixin
-import dev.fritz2.components.foundations.FormProperties
+import dev.fritz2.components.foundations.*
 import dev.fritz2.components.inputField.InputFieldComponent
 import dev.fritz2.components.radios.RadioGroupComponent
 import dev.fritz2.components.selectField.SelectFieldComponent
@@ -29,6 +26,7 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.FormSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
@@ -208,7 +206,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
     }
 
 
-    val label = ComponentProperty("")
+    val label = DynamicComponentProperty<String>(emptyFlow())
     val labelStyle = ComponentProperty(Theme().formControl.label)
 
     val helperText = ComponentProperty<String?>(null)
