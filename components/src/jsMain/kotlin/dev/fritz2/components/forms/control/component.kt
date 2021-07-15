@@ -23,7 +23,7 @@ import dev.fritz2.styling.p
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.FormSizesStyles
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -197,7 +197,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
 
     val size = ComponentProperty<FormSizeContext.() -> FormSizeContext.FormSizeSpecifier> { normal }
 
-    protected var sizeBuilder: (FormSizes) -> Style<BasicParams> = { sizes ->
+    protected var sizeBuilder: (FormSizesStyles) -> Style<BasicParams> = { sizes ->
         when (this@FormControlComponent.size.value(FormSizeContext)) {
             FormSizeContext.FormSizeSpecifier.small -> sizes.small
             FormSizeContext.FormSizeSpecifier.normal -> sizes.normal

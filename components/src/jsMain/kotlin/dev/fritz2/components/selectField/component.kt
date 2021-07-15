@@ -106,7 +106,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
     val placeholder = ComponentProperty("...")
     val variant = ComponentProperty<SelectFieldVariants.() -> Style<BasicParams>> { outline }
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { normal }
     val icon = ComponentProperty<Icons.() -> IconDefinition> { chevronDown }
 
     val selectedItem = NullableDynamicComponentProperty<T>(emptyFlow())

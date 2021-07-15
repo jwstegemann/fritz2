@@ -12,7 +12,7 @@ import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.FormSizesStyles
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme
@@ -124,7 +124,7 @@ open class CheckboxGroupComponent<T>(
             +this@CheckboxGroupComponent.label.value(it)
         }
     }
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
 
     enum class Direction {
         COLUMN, ROW

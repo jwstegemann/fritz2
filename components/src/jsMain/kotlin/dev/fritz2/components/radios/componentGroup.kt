@@ -13,7 +13,7 @@ import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.FormSizesStyles
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -107,7 +107,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
 
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
     val labelRendering = ComponentProperty<Div.(item: T) -> Unit> { +this@RadioGroupComponent.label.value(it) }
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
     enum class Direction {
         COLUMN, ROW

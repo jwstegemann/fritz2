@@ -89,7 +89,7 @@ open class AlertComponent : Component<Unit> {
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val severity = ComponentProperty<(AlertSeverities.() -> AlertSeverity)> { info }
     val variant = ComponentProperty<VariantContext.() -> Variant> { solid }
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { normal }
     val stacking = ComponentProperty<AlertStacking.() -> Style<BasicParams>> { separated }
 
     private val actualIcon: IconDefinition
