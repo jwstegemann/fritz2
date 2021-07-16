@@ -80,7 +80,7 @@ interface ControlRenderer {
  * - [ControlGroupRenderer] for a control that consists of multiple parts (like checkBoxes etc.)
  *
  * If those do not fit, just implement the [ControlRenderer] interface and pair it with the string based key of the
- * related control wrapping function. Have a look at the init block, [renderStrategies] field and
+ * related control wrapping function. Have a look at the [initRenderStrategies] and [finalizeRenderStrategies] field and
  * [ControlRegistration.assignee] field to learn how the mapping between control and rendering strategy is done.
  *
  */
@@ -149,7 +149,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
      *                  only *one* control, so normally the *first*, will be accepted!), for example the temporary
      *                  storage of validation messages from a passed in store.
      */
-    protected fun registerControl(
+    protected open fun registerControl(
         controlId: String?,
         controlName: String,
         component: (RenderContext.() -> Unit),
@@ -160,51 +160,35 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
         }
     }
 
-    private val renderStrategies: MutableMap<String, ControlRenderer> = mutableMapOf()
-
-    /**
-     * Use this method to register your custom renderer for existing controls or to register a built-in renderer
-     * for a custom control.
-     *
-     * Remember to prefer to use the predefined [ControlNames] as key for the first case.
-     *
-     * @param controlName a unique String name / key for the control. Prefer the predefined [ControlNames] if possible
-     * @param renderer some instance of a [ControlRenderer] that should be used to render the form for a registered
-     *                 control (match via the name obviously)
-     */
-    protected fun registerRenderStrategy(controlName: String, renderer: ControlRenderer) {
-        renderStrategies[controlName] = renderer
-    }
-
     val controlRegistration = ControlRegistration()
 
     object FormSizeContext {
         enum class FormSizeSpecifier {
-            small, normal, large
+            SMALL, NORMAL, LARGE
         }
 
-        val small = FormSizeSpecifier.small
-        val normal = FormSizeSpecifier.normal
-        val large = FormSizeSpecifier.large
+        val small = FormSizeSpecifier.SMALL
+        val normal = FormSizeSpecifier.NORMAL
+        val large = FormSizeSpecifier.LARGE
 
     }
 
-    val ownSize: Style<BasicParams> get() = when (size.value(FormSizeContext)) {
-        FormSizeContext.FormSizeSpecifier.small -> Theme().formControl.sizes.small
-        FormSizeContext.FormSizeSpecifier.normal -> Theme().formControl.sizes.normal
-        FormSizeContext.FormSizeSpecifier.large -> Theme().formControl.sizes.large
-    }
+    val ownSize: Style<BasicParams>
+        get() = when (size.value(FormSizeContext)) {
+            FormSizeContext.FormSizeSpecifier.SMALL -> Theme().formControl.sizes.small
+            FormSizeContext.FormSizeSpecifier.NORMAL -> Theme().formControl.sizes.normal
+            FormSizeContext.FormSizeSpecifier.LARGE -> Theme().formControl.sizes.large
+        }
 
     val size = ComponentProperty<FormSizeContext.() -> FormSizeContext.FormSizeSpecifier> { normal }
 
     protected var sizeBuilder: (FormSizesStyles) -> Style<BasicParams> = { sizes ->
         when (this@FormControlComponent.size.value(FormSizeContext)) {
-            FormSizeContext.FormSizeSpecifier.small -> sizes.small
-            FormSizeContext.FormSizeSpecifier.normal -> sizes.normal
-            FormSizeContext.FormSizeSpecifier.large -> sizes.large
+            FormSizeContext.FormSizeSpecifier.SMALL -> sizes.small
+            FormSizeContext.FormSizeSpecifier.NORMAL -> sizes.normal
+            FormSizeContext.FormSizeSpecifier.LARGE -> sizes.large
         }
     }
-
 
     val label = DynamicComponentProperty<String>(emptyFlow())
     val labelStyle = ComponentProperty(Theme().formControl.label)
@@ -246,9 +230,9 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
             }
         }
 
-    init {
-        val singleRenderer = SingleControlRenderer(this)
-        val groupRenderer = ControlGroupRenderer(this)
+    private fun initRenderStrategies(): Map<String, ControlRenderer> = buildMap {
+        val singleRenderer = SingleControlRenderer(this@FormControlComponent)
+        val groupRenderer = ControlGroupRenderer(this@FormControlComponent)
         sequenceOf(
             ControlNames.inputField,
             ControlNames.switch,
@@ -256,9 +240,103 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
             ControlNames.selectField,
             ControlNames.checkbox,
             ControlNames.slider
-        ).forEach { registerRenderStrategy(it, singleRenderer) }
-        registerRenderStrategy(ControlNames.checkboxGroup, groupRenderer)
-        registerRenderStrategy(ControlNames.radioGroup, groupRenderer)
+        ).forEach { put(it, singleRenderer) }
+        put(ControlNames.checkboxGroup, groupRenderer)
+        put(ControlNames.radioGroup, groupRenderer)
+        // call hook for custom setup
+        finalizeRenderStrategies(this, singleRenderer, groupRenderer)
+    }
+
+    /**
+     * Use this hook method to register your custom renderer for existing controls or to register a built-in renderer
+     * for a custom control.
+     *
+     * In order to reuse the built-in renderers, they are passed as parameters. So there is no need to create a
+     * new instance of them.
+     *
+     * Remember to prefer to use the predefined [ControlNames] as key for the first case.
+     *
+     * Example usage:
+     * ```
+     * class MyFormControlComponent : FormControlComponent {
+     *
+     *     // some new factory: `creditCardInput` with key of same name; used with `SingleControlRenderer`
+     *
+     *     // another new factory: `colorInput` with key of same name and new renderer
+     *
+     *     override fun finalizeRenderStrategies(
+     *         strategies: MutableMap<String, ControlRenderer>,
+     *         single: ControlRenderer,
+     *         group: ControlRenderer
+     *      ) {
+     *          // override setup for a built-in factory:
+     *          strategies.put(ControlNames.textArea, MySpecialRendererForTextAreas(this))
+     *
+     *          // register new factory
+     *          strategies.put("creditCardInput", single)
+     *
+     *          // register new factory with new renderer
+     *          strategies.put("colorInput", ColorInputRenderer(this))
+     *      }
+     * }
+     * ```
+     *
+     * @param strategies a map filled with the base mapping for all built-in controls.
+     * @param single the built-in renderer for single control field based controls
+     * @param group the built-in renderer for group based controls like [checkboxGroup] or [radioGroup]
+     */
+    protected open fun finalizeRenderStrategies(
+        strategies: MutableMap<String, ControlRenderer>,
+        single: ControlRenderer,
+        group: ControlRenderer
+    ) {
+    }
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass,
+        id: String?,
+        prefix: String
+    ) {
+        val renderStrategies = initRenderStrategies()
+        controlRegistration.assignee?.rendering?.let {
+            renderStrategies[controlRegistration.assignee?.name]?.render(
+                {
+                    styling()
+                }, baseClass, id, prefix, context, it
+            )
+        }
+        controlRegistration.assert()
+    }
+
+    open fun renderHelperText(renderContext: RenderContext) {
+        renderContext.apply {
+            this@FormControlComponent.helperText.value?.let {
+                p({
+                    this@FormControlComponent.helperTextStyle.value()
+                }) { +it }
+            }
+        }
+    }
+
+    open fun renderValidationMessages(renderContext: RenderContext) {
+        renderContext.apply {
+            stackUp({
+                width { "100%" }
+            }) {
+                spacing { none }
+                items {
+                    this@FormControlComponent.validationMessagesBuilder?.invoke()?.messages?.renderEach { message ->
+                        div({
+                            width { "100%" }
+                        }) {
+                            this@FormControlComponent.validationMessageRendering.value.invoke(this, message)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     open fun inputField(
@@ -455,51 +533,5 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
             },
             { this.validationMessagesBuilder = validationMessagesBuilder }
         )
-    }
-
-    override fun render(
-        context: RenderContext,
-        styling: BoxParams.() -> Unit,
-        baseClass: StyleClass,
-        id: String?,
-        prefix: String
-    ) {
-        controlRegistration.assignee?.rendering?.let {
-            renderStrategies[controlRegistration.assignee?.name]?.render(
-                {
-                    styling()
-                }, baseClass, id, prefix, context, it
-            )
-        }
-        controlRegistration.assert()
-    }
-
-    open fun renderHelperText(renderContext: RenderContext) {
-        renderContext.apply {
-            this@FormControlComponent.helperText.value?.let {
-                p({
-                    this@FormControlComponent.helperTextStyle.value()
-                }) { +it }
-            }
-        }
-    }
-
-    open fun renderValidationMessages(renderContext: RenderContext) {
-        renderContext.apply {
-            stackUp({
-                width { "100%" }
-            }) {
-                spacing { none }
-                items {
-                    this@FormControlComponent.validationMessagesBuilder?.invoke()?.messages?.renderEach { message ->
-                        div({
-                            width { "100%" }
-                        }) {
-                            this@FormControlComponent.validationMessageRendering.value.invoke(this, message)
-                        }
-                    }
-                }
-            }
-        }
     }
 }
