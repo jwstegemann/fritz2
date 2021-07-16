@@ -10,6 +10,7 @@ import dev.fritz2.components.validation.Severity
 import dev.fritz2.components.validation.validationMessages
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.div
 import dev.fritz2.styling.p
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -482,7 +483,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
                 spacing { none }
                 items {
                     this@FormControlComponent.validationMessagesBuilder?.invoke()?.messages?.renderEach { message ->
-                        box({
+                        div({
                             width { "100%" }
                         }) {
                             this@FormControlComponent.validationMessageRendering.value.invoke(this, message)

@@ -653,9 +653,10 @@ interface AlertVariants {
  * definition of the theme's toasts
  */
 interface ToastStyles {
-    val base: Style<BasicParams>
-    val placement: ToastPlacement
+    val body: Style<BoxParams>
+    val list: Style<BoxParams>
 
+    val placement: ToastPlacement
     /**
      * Styling to align the messages according to their horizontal position.
      * Possible values to react are `left`, `center` and `right`.
