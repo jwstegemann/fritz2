@@ -8,6 +8,7 @@ import dev.fritz2.components.flexBox
 import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Scope
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
@@ -160,8 +161,9 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
     companion object {
         private val stack = ModalsStack()
         val overlay = storeOf<Overlay>(DefaultOverlay())
-        private val job = Job()
         private val globalId = "f2c-modals-${randomId()}"
+        private val job = Job()
+        private val scope = Scope()
         private val myStaticStyle = staticStyle("disableOverflowForModal", "overflow:hidden !important;")
 
         fun setOverlayHandler(overlay: Overlay) {
@@ -171,7 +173,7 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
         init {
             stack.data.map { modals ->
                 configureBodyScrolling(modals)
-                ManagedComponent.managedRenderContext(globalId, job).apply {
+                ManagedComponent.managedRenderContext(globalId, job, scope).apply {
                     val currentOverlay = overlay.current
                     if (currentOverlay.method == OverlayMethod.CoveringTopMost && modals.isNotEmpty()) {
                         currentOverlay.render(this, modals.size)
