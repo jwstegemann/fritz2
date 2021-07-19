@@ -43,5 +43,5 @@ fun modal(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "modal",
-    build: ModalComponent.(SimpleHandler<Unit>) -> Unit
-): SimpleHandler<Unit> = ModalComponent(build).render(styling, baseClass, id, prefix)
+    build: ModalComponent.() -> Unit
+): SimpleHandler<Unit> = ModalComponent().apply(build).render(styling, baseClass, id, prefix)

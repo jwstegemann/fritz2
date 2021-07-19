@@ -86,7 +86,7 @@ class DefaultOverlay(
  * The content and structure within the modal are completely free to model. Further more there are predefined styles
  * to easily choose a fitting size or to choose some other variants of appearance. Last but not least there is a simple
  * closeButton predefined that automatically closes the modal. Of course the closing mechanism is free to be applied
- * with a custom solution, as a [SimpleHandler<Unit>] is injected as parameter into the [build] expression.
+ * with a custom solution, as a [SimpleHandler<Unit>] is injected as parameter into the [content] property.
  *
  * The modal can be configured for the following aspects:
  *
@@ -110,9 +110,9 @@ class DefaultOverlay(
  * // apply custom close button
  * clickButton {
  *     text("Open")
- * } handledBy modal { closeHandler -> // SimpleHandler<Unit> is injected by default
+ * } handledBy modal {
  *     hasCloseButton(false) // disable the integrated close button
- *     content {
+ *     content { closeHandler -> // SimpleHandler<Unit> is injected by default
  *         p { +"Hello world from a modal!" }
  *         p { +"Please click the X to close this..." }
  *         clickButton { text("Close") } handledBy closeHandler // define a custom button that uses the close handler
@@ -136,7 +136,7 @@ class DefaultOverlay(
  *
  * For a detailed understanding have a look the ``ModalComponent.Companion.init`` block.
  */
-open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Unit>) -> Unit) :
+open class ModalComponent :
     ManagedComponent<SimpleHandler<Unit>>,
     CloseButtonProperty by CloseButtonMixin("modal-close-button", {
         position {
@@ -201,7 +201,7 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
 
     }
 
-    val content = ComponentProperty<(RenderContext.() -> Unit)?>(null)
+    val content = ComponentProperty<(RenderContext.(SimpleHandler<Unit>) -> Unit)?>(null)
 
     @Deprecated(message = "Use width property instead.")
     val size = ComponentProperty<(ModalSizes.() -> Style<BasicParams>)?>(null)
@@ -255,7 +255,6 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
         prefix: String
     ): SimpleHandler<Unit> {
         val close = stack.pop
-        val component = this.apply { build(close) }
 
         val modal: ModalRenderContext = { level ->
             flexBox({
@@ -268,36 +267,39 @@ open class ModalComponent(protected val build: ModalComponent.(SimpleHandler<Uni
                 }
                 width { "100vw" }
                 height { "100vh" }
-                if (PlacementContext.externalScrollingPossible(component.placement.value(PlacementContext))) {
+                if (PlacementContext.externalScrollingPossible(this@ModalComponent.placement.value(PlacementContext))) {
                     overflow { auto }
                 }
                 justifyContent { center }
-                alignItems { PlacementContext.flexValueOf(component.placement.value(PlacementContext)) }
+                alignItems { PlacementContext.flexValueOf(this@ModalComponent.placement.value(PlacementContext)) }
             }) {
                 div({
                     css("--modal-level: ${level}rem;")
                     zIndex { modal(level, 1) }
                     position { relative { } }
                     Theme().modal.base()
-                    if (component.size.value != null) {
+                    if (this@ModalComponent.size.value != null) {
                         // TODO: remove if-branch when ``size`` gets removed; keep only else body!
-                        component.size.value!!.invoke(Theme().modal.sizes)()
+                        this@ModalComponent.size.value!!.invoke(Theme().modal.sizes)()
                     } else {
                         Theme().modal.width(
                             this,
-                            component.width.value(WidthContext),
-                            WidthContext.asCssWidthExpression(component.width.value(WidthContext))
+                            this@ModalComponent.width.value(WidthContext),
+                            WidthContext.asCssWidthExpression(this@ModalComponent.width.value(WidthContext))
                         )
                     }
-                    if (!PlacementContext.externalScrollingPossible(component.placement.value(PlacementContext))) {
+                    if (!PlacementContext.externalScrollingPossible(
+                            this@ModalComponent.placement.value(PlacementContext)
+                        )
+                    ) {
                         Theme().modal.internalScrolling()
                     }
                     styling(this)
                 }, baseClass, id, prefix) {
-                    if (component.hasCloseButton.value) {
-                        component.closeButtonRendering.value(this) handledBy close
+                    if (this@ModalComponent.hasCloseButton.value) {
+                        this@ModalComponent.closeButtonRendering.value(this) handledBy close
                     }
-                    component.content.value?.let { it() }
+                    this@ModalComponent.content.value?.let { it(close) }
                 }
             }
         }
