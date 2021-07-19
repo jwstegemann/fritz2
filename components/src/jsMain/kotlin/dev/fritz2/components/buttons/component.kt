@@ -1,7 +1,9 @@
-package dev.fritz2.components
+package dev.fritz2.components.buttons
 
-import dev.fritz2.dom.DomListener
-import dev.fritz2.dom.Listener
+import dev.fritz2.components.foundations.*
+import dev.fritz2.components.icon
+import dev.fritz2.components.spinner
+import dev.fritz2.dom.html.A
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -13,7 +15,6 @@ import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLButtonElement
-import org.w3c.dom.events.MouseEvent
 
 /**
  * This class combines the _configuration_ and the core rendering of a button.
@@ -311,71 +312,70 @@ open class PushButtonComponent :
 }
 
 /**
- * This component generates a simple button.
+ * This class extends the [PushButtonComponent] and adds link specific properties to it.
  *
- * You can set the label, an icon, the position of the icon and access its events.
- * For a detailed overview about the possible properties of the component object itself, have a look at
- * [PushButtonComponent]
  *
- * In contrast to the [clickButton] component, this one does not return a [Listener] (basically a [Flow]) and so
- * the event handling has to be done manually!
- *
- * @see PushButtonComponent
- *
- * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
- * @param baseClass optional CSS class that should be applied to the element
- * @param id the ID of the element
- * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
- */
-fun RenderContext.pushButton(
-    styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "push-button",
-    build: PushButtonComponent.() -> Unit = {}
-) {
-    PushButtonComponent().apply(build).render(this, styling, baseClass, id, prefix)
-}
-
-/**
- * This component generates a simple button.
- *
- * You can set the label, an icon, the position of the icon and access its events.
- * For a detailed overview about the possible properties of the component object itself, have a look at
- * [PushButtonComponent]
- *
- * In contrast to the [pushButton] component, this variant returns a [Listener] (basically a [Flow]) in order
- * to combine the button declaration directly to a fitting _handler_. Some other components
- * offer such a handler btw, so for example you can combine such a [clickButton] with a [modal] like this:
+ * Example:
  * ```
- * clickButton { text("save") } handledBy modal {
- *      items { p {+"foo"} }
+ * linkButton {
+ *     text("fritz2") // define the default label
+ *     href("//www.fritz2.dev") // specifies the URL of the page the link goes to
+ *     target("_blank") // specifies where to open the linked document
+ *
+ *     icon { fromTheme { check } } // set up an icon
+ *     iconPlacement { right } // place the icon on the right side (``left`` is the default)
+ *     loading(someStore.loading) // pass in some [Flow<Boolean>] that shows a spinner if ``true`` is passed
+ *     loadingText("saving") // show an _alternate_ label, if store sends ``true``
+ *     disabled(true) // disable the button; could also be a ``Flow<Boolean>`` for dynamic disabling
+ *     element {
+ *         // exposes the underlying HTML button element for direct access. Use with caution!
+ *     }
  * }
  * ```
  *
  * @see PushButtonComponent
- *
- * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
- * @param baseClass optional CSS class that should be applied to the element
- * @param id the ID of the element
- * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself. Details in [PushButtonComponent]
- * @return a listener (think of a flow!) that offers the clicks of the button
  */
-fun RenderContext.clickButton(
-    styling: BasicParams.() -> Unit = {},
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "click-button",
-    build: PushButtonComponent.() -> Unit = {}
-): DomListener<MouseEvent, HTMLButtonElement> {
-    var clickEvents: DomListener<MouseEvent, HTMLButtonElement>? = null
-    pushButton(styling, baseClass, id, prefix) {
-        build()
-        events {
-            clickEvents = clicks
+open class LinkButtonComponent : PushButtonComponent() {
+
+    private var href: A.() -> Unit = {}
+    fun href(value: String) {
+        href = {
+            href(value)
         }
     }
-    return clickEvents!!
+
+    fun href(value: Flow<String>) {
+        href = {
+            href(value)
+        }
+    }
+
+    private var target: A.() -> Unit = {}
+    fun target(value: String) {
+        target = {
+            target(value)
+        }
+    }
+
+    fun target(value: Flow<String>) {
+        target = {
+            target(value)
+        }
+    }
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass,
+        id: String?,
+        prefix: String
+    ) {
+        context.apply {
+            a {
+                this@LinkButtonComponent.href(this)
+                this@LinkButtonComponent.target(this)
+                super.render(this, styling, baseClass, id, prefix)
+            }
+        }
+    }
 }
