@@ -749,6 +749,7 @@ interface AppFrameStyles {
     val main: Style<BasicParams>
     val tablist: Style<FlexParams>
     val backdrop: Style<BasicParams>
+    val menu: MenuStyles
 }
 
 interface DataTableStyles {

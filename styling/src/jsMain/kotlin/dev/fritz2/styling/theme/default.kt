@@ -2195,6 +2195,76 @@ open class DefaultTheme : Theme {
             background { color { "rgba(0,0,0,0.8)" } }
             css("transition: opacity .3s ease-in;")
         }
+
+        override val menu: MenuStyles = object : MenuStyles {
+            // base css for all menu children ('entry' uses special styling though)
+            private val base: Style<BasicParams> = {
+                width { "calc(100% - ${sizes.normal} * 2)" }
+                margins {
+                    horizontal { normal }
+                    vertical { smaller }
+                }
+            }
+
+            override val container: Style<BasicParams> = {
+                minWidth { "50px" }
+                maxWidth { maxContent }
+                paddings {
+                    vertical { smaller }
+                }
+                background { color { "red" } }
+            }
+
+            override val sub: Style<BoxParams> = {
+                paddings {
+                    left { normal }
+                }
+            }
+
+            override val entry: Style<BoxParams> = {
+                width { full }
+                display { flex }
+                justifyContent { start }
+                margin { auto }
+                paddings {
+                    horizontal { normal }
+                    vertical { smaller }
+                }
+                radius { "6px" }
+                css("transition: 0.4s")
+                css("user-select: none")
+
+                hover {
+                    background { color { primary.highlight } }
+                }
+
+                disabled {
+                    opacity { "0.4" }
+                    css("cursor: not-allowed")
+                }
+            }
+
+            override val header: Style<BasicParams> = {
+                base()
+                color { secondary.main }
+                fontWeight { bold }
+                css("white-space: nowrap")
+            }
+
+            override val divider: Style<BasicParams> = {
+                base()
+                height { "1px" }
+                background { color { gray300 } }
+            }
+
+            override val custom: Style<BasicParams> = {
+                base()
+            }
+
+            override val icon: Style<BasicParams> = {
+                margins { right { smaller } }
+            }
+        }
     }
 
 

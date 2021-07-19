@@ -2,6 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.FlexParams
@@ -76,8 +77,9 @@ fun RenderContext.flexBox(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "flex-box",
+    scope: ScopeContext.() -> Unit = {},
     content: Div.() -> Unit
-): Div = div({ display { flex } }, styling, baseClass, id, prefix) { content() }
+): Div = div({ display { flex } }, styling, baseClass, id, prefix, scope) { content() }
 
 
 /**
@@ -117,7 +119,8 @@ fun RenderContext.gridBox(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "grid-box",
+    scope: ScopeContext.() -> Unit = {},
     content: Div.() -> Unit
 ): Div =
-    div({ display { grid } }, styling, baseClass, id, prefix) { content() }
+    div({ display { grid } }, styling, baseClass, id, prefix, scope) { content() }
 

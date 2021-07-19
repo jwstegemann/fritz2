@@ -51,6 +51,6 @@ fun RenderContext.menu(
     id: String? = null,
     prefix: String = "menu",
     build: MenuComponent.() -> Unit,
-) = MenuComponent()
+) = MenuComponent(scope)
     .apply(build)
     .render(this, styling, baseClass, id, prefix)

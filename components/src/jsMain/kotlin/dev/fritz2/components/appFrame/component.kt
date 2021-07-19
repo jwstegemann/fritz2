@@ -18,7 +18,7 @@ import dev.fritz2.styling.theme.Theme
  * - brand
  * - header
  * - actions
- * - nav
+ * - navigation
  * - main
  * - complementary (only rendered if defined)
  * - tablist (only rendered if defined)
@@ -126,7 +126,7 @@ open class AppFrameComponent : Component<Unit> {
     }
 
     private var navigation = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
-    fun navbar(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
+    fun navigation(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
         navigation = styling to context
     }
 
@@ -168,6 +168,8 @@ open class AppFrameComponent : Component<Unit> {
                 grid(sm = { area { "header" } }, md = { area { "brand" } })
                 this@AppFrameComponent.mobileSidebar("none")()
                 height(sm = { Theme().appFrame.headerHeight }, md = { unset })
+            }, scope = {
+                set(AppFrameScope.Brand, true)
             }) {
                 className(this@AppFrameComponent.openSideBar.whenever(this@AppFrameComponent.sidebarStatus.data).name)
                 flexBox({
@@ -181,6 +183,8 @@ open class AppFrameComponent : Component<Unit> {
 
             header({
                 grid { area { "header" } }
+            }, scope = {
+                set(AppFrameScope.Header, true)
             }) {
                 flexBox({
                     height { Theme().appFrame.headerHeight }
@@ -230,13 +234,17 @@ open class AppFrameComponent : Component<Unit> {
                     section({
                         Theme().appFrame.navigation()
                         this@AppFrameComponent.navigation.first?.invoke()
-                    }, prefix = "navigation") {
+                    }, prefix = "navigation", scope = {
+                        set(AppFrameScope.Navigation, true)
+                    }) {
                         this@AppFrameComponent.navigation.second?.invoke(this)
                     }
                     this@AppFrameComponent.complementary?.let { complementary ->
                         section({
                             Theme().appFrame.complementary()
                             complementary.first?.invoke()
+                        }, scope = {
+                            set(AppFrameScope.Complementary, true)
                         }) {
                             complementary.second?.invoke(this)
                         }
@@ -250,7 +258,9 @@ open class AppFrameComponent : Component<Unit> {
                 Theme().appFrame.main()
                 styling()
                 this@AppFrameComponent.main.first?.invoke()
-            }, styling, baseClass, id, prefix) {
+            }, styling, baseClass, id, prefix, {
+                set(AppFrameScope.Main, true)
+            }) {
                 this@AppFrameComponent.main.second?.invoke(this)
             }
 
@@ -262,7 +272,9 @@ open class AppFrameComponent : Component<Unit> {
                     justifyContent { spaceEvenly }
                     Theme().appFrame.tablist()
                     tablist.first?.invoke()
-                }, prefix = "tablist") {
+                }, prefix = "tablist", scope = {
+                    set(AppFrameScope.Tablist, true)
+                }) {
                     tablist.second?.invoke(this)
                 }
             }

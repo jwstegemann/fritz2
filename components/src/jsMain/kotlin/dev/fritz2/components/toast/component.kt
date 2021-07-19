@@ -345,7 +345,8 @@ open class AlertToastComponent : ToastComponentBase() {
                     stacking { toast }
                 }
 
-            this@AlertToastComponent.closeButtonStyle(Theme().toast.closeButton.close + {
+            this@AlertToastComponent.closeButtonStyle {
+                Theme().toast.closeButton.close
                 color {
                     val colorScheme = alertComponent.severity.value(Theme().alert.severities).colorScheme
                     when (alertComponent.variant.value(AlertComponent.VariantContext)) {
@@ -355,7 +356,7 @@ open class AlertToastComponent : ToastComponentBase() {
                         else -> colorScheme.mainContrast
                     }
                 }
-            })
+            }
 
             alertComponent.render(this, styling, baseClass, id, prefix)
         }
