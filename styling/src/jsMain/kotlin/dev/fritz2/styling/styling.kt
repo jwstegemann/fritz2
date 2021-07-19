@@ -5,24 +5,46 @@ import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.StyleParamsImpl
 
-fun TagContext.a(
-    style: Style<BoxParams>,
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "css",
-    content: A.() -> Unit
-): A = register(A(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+/**
+ * Evaluates the scope context and initializes a [ScopeContext]
+ * for setting new entries to the scope.
+ *
+ * @param context to evaluate
+ */
+private inline fun TagContext.evalScope(context: (ScopeContext.() -> Unit)): Scope =
+    ScopeContext(this.scope).apply(context).scope
 
 fun TagContext.a(
     style: Style<BoxParams>,
-    parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: A.() -> Unit
 ): A = register(
-    A(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    A(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
+
+fun TagContext.a(
+    style: Style<BoxParams>,
+    parentStyling: Style<BoxParams> = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
+    content: A.() -> Unit
+): A = register(
+    A(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.area(
@@ -30,8 +52,17 @@ fun TagContext.area(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Area.() -> Unit
-): Area = register(Area(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Area =
+    register(
+        Area(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.area(
     style: Style<BoxParams>,
@@ -39,10 +70,15 @@ fun TagContext.area(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Area.() -> Unit
 ): Area = register(
-    Area(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Area(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.br(
@@ -50,19 +86,32 @@ fun TagContext.br(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
-    content: Br.() -> Unit
-): Br = register(Br(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
-
-fun TagContext.br(
-    style: Style<BoxParams>,
-    parentStyling: Style<BoxParams> = {},
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Br.() -> Unit
 ): Br = register(
-    Br(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Br(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
+
+fun TagContext.br(
+    style: Style<BoxParams>,
+    parentStyling: Style<BoxParams> = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
+    content: Br.() -> Unit
+): Br = register(
+    Br(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.button(
@@ -70,8 +119,17 @@ fun TagContext.button(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Button.() -> Unit
-): Button = register(Button(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Button =
+    register(
+        Button(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.button(
     style: Style<BoxParams>,
@@ -79,12 +137,14 @@ fun TagContext.button(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Button.() -> Unit
 ): Button = register(
     Button(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -93,8 +153,17 @@ fun TagContext.canvas(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Canvas.() -> Unit
-): Canvas = register(Canvas(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Canvas =
+    register(
+        Canvas(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.canvas(
     style: Style<BoxParams>,
@@ -102,12 +171,14 @@ fun TagContext.canvas(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Canvas.() -> Unit
 ): Canvas = register(
     Canvas(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -116,8 +187,16 @@ fun TagContext.dl(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Dl.() -> Unit
-): Dl = register(Dl(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Dl = register(
+    Dl(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.dl(
     style: Style<BoxParams>,
@@ -125,10 +204,15 @@ fun TagContext.dl(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Dl.() -> Unit
 ): Dl = register(
-    Dl(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Dl(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.dt(
@@ -136,9 +220,19 @@ fun TagContext.dt(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement =
-    register(TextElement("dt", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+    register(
+        TextElement(
+            "dt",
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ),
+        content
+    )
 
 fun TagContext.dt(
     style: Style<BoxParams>,
@@ -146,13 +240,15 @@ fun TagContext.dt(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "dt",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -161,9 +257,19 @@ fun TagContext.dd(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement =
-    register(TextElement("dd", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+    register(
+        TextElement(
+            "dd",
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ),
+        content
+    )
 
 fun TagContext.dd(
     style: Style<BoxParams>,
@@ -171,13 +277,15 @@ fun TagContext.dd(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "dd",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -186,8 +294,17 @@ fun TagContext.data(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Data.() -> Unit
-): Data = register(Data(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Data =
+    register(
+        Data(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.data(
     style: Style<BoxParams>,
@@ -195,10 +312,15 @@ fun TagContext.data(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Data.() -> Unit
 ): Data = register(
-    Data(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Data(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.datalist(
@@ -206,8 +328,17 @@ fun TagContext.datalist(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: DataList.() -> Unit
-): DataList = register(DataList(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): DataList =
+    register(
+        DataList(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.datalist(
     style: Style<BoxParams>,
@@ -215,12 +346,14 @@ fun TagContext.datalist(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: DataList.() -> Unit
 ): DataList = register(
     DataList(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -229,8 +362,17 @@ fun TagContext.details(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Details.() -> Unit
-): Details = register(Details(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Details =
+    register(
+        Details(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.details(
     style: Style<BoxParams>,
@@ -238,12 +380,14 @@ fun TagContext.details(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Details.() -> Unit
 ): Details = register(
     Details(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -252,8 +396,17 @@ fun TagContext.dialog(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Dialog.() -> Unit
-): Dialog = register(Dialog(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Dialog =
+    register(
+        Dialog(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.dialog(
     style: Style<BoxParams>,
@@ -261,12 +414,14 @@ fun TagContext.dialog(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Dialog.() -> Unit
 ): Dialog = register(
     Dialog(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -275,8 +430,17 @@ fun TagContext.div(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Div.() -> Unit
-): Div = register(Div(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Div =
+    register(
+        Div(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.div(
     style: Style<BoxParams>,
@@ -284,10 +448,15 @@ fun TagContext.div(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Div.() -> Unit
 ): Div = register(
-    Div(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Div(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.embed(
@@ -295,8 +464,17 @@ fun TagContext.embed(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Embed.() -> Unit
-): Embed = register(Embed(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Embed =
+    register(
+        Embed(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.embed(
     style: Style<BoxParams>,
@@ -304,10 +482,15 @@ fun TagContext.embed(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Embed.() -> Unit
 ): Embed = register(
-    Embed(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Embed(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.fieldset(
@@ -315,8 +498,17 @@ fun TagContext.fieldset(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: FieldSet.() -> Unit
-): FieldSet = register(FieldSet(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): FieldSet =
+    register(
+        FieldSet(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.fieldset(
     style: Style<BoxParams>,
@@ -324,12 +516,14 @@ fun TagContext.fieldset(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: FieldSet.() -> Unit
 ): FieldSet = register(
     FieldSet(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -338,8 +532,17 @@ fun TagContext.form(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Form.() -> Unit
-): Form = register(Form(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Form =
+    register(
+        Form(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.form(
     style: Style<BoxParams>,
@@ -347,10 +550,15 @@ fun TagContext.form(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Form.() -> Unit
 ): Form = register(
-    Form(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Form(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.hr(
@@ -358,19 +566,32 @@ fun TagContext.hr(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
-    content: Hr.() -> Unit
-): Hr = register(Hr(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
-
-fun TagContext.hr(
-    style: Style<BoxParams>,
-    parentStyling: Style<BoxParams> = {},
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Hr.() -> Unit
 ): Hr = register(
-    Hr(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Hr(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
+
+fun TagContext.hr(
+    style: Style<BoxParams>,
+    parentStyling: Style<BoxParams> = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
+    content: Hr.() -> Unit
+): Hr = register(
+    Hr(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.h1(
@@ -378,8 +599,17 @@ fun TagContext.h1(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: H.() -> Unit
-): H = register(H(1, id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): H = register(
+    H(
+        1,
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.h1(
     style: Style<BoxParams>,
@@ -387,10 +617,16 @@ fun TagContext.h1(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: H.() -> Unit
 ): H = register(
-    H(1, id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    H(
+        1,
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.h2(
@@ -398,8 +634,17 @@ fun TagContext.h2(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: H.() -> Unit
-): H = register(H(2, id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): H = register(
+    H(
+        2,
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.h2(
     style: Style<BoxParams>,
@@ -407,10 +652,16 @@ fun TagContext.h2(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: H.() -> Unit
 ): H = register(
-    H(2, id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    H(
+        2,
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.h3(
@@ -418,8 +669,17 @@ fun TagContext.h3(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: H.() -> Unit
-): H = register(H(3, id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): H = register(
+    H(
+        3,
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.h3(
     style: Style<BoxParams>,
@@ -427,10 +687,16 @@ fun TagContext.h3(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: H.() -> Unit
 ): H = register(
-    H(3, id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    H(
+        3,
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.h4(
@@ -438,8 +704,17 @@ fun TagContext.h4(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: H.() -> Unit
-): H = register(H(4, id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): H = register(
+    H(
+        4,
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.h4(
     style: Style<BoxParams>,
@@ -447,10 +722,16 @@ fun TagContext.h4(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: H.() -> Unit
 ): H = register(
-    H(4, id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    H(
+        4,
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.h5(
@@ -458,8 +739,17 @@ fun TagContext.h5(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: H.() -> Unit
-): H = register(H(5, id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): H = register(
+    H(
+        5,
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.h5(
     style: Style<BoxParams>,
@@ -467,10 +757,16 @@ fun TagContext.h5(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: H.() -> Unit
 ): H = register(
-    H(5, id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    H(
+        5,
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.h6(
@@ -478,8 +774,17 @@ fun TagContext.h6(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: H.() -> Unit
-): H = register(H(6, id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): H = register(
+    H(
+        6,
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.h6(
     style: Style<BoxParams>,
@@ -487,10 +792,16 @@ fun TagContext.h6(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: H.() -> Unit
 ): H = register(
-    H(6, id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    H(
+        6,
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.iframe(
@@ -498,8 +809,17 @@ fun TagContext.iframe(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: IFrame.() -> Unit
-): IFrame = register(IFrame(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): IFrame =
+    register(
+        IFrame(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.iframe(
     style: Style<BoxParams>,
@@ -507,12 +827,14 @@ fun TagContext.iframe(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: IFrame.() -> Unit
 ): IFrame = register(
     IFrame(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -521,8 +843,16 @@ fun TagContext.img(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Img.() -> Unit
-): Img = register(Img(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Img = register(
+    Img(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.img(
     style: Style<BoxParams>,
@@ -530,10 +860,15 @@ fun TagContext.img(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Img.() -> Unit
 ): Img = register(
-    Img(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Img(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.input(
@@ -541,8 +876,17 @@ fun TagContext.input(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Input.() -> Unit
-): Input = register(Input(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Input =
+    register(
+        Input(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.input(
     style: Style<BoxParams>,
@@ -550,10 +894,15 @@ fun TagContext.input(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Input.() -> Unit
 ): Input = register(
-    Input(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Input(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.li(
@@ -561,19 +910,32 @@ fun TagContext.li(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
-    content: Li.() -> Unit
-): Li = register(Li(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
-
-fun TagContext.li(
-    style: Style<BoxParams>,
-    parentStyling: Style<BoxParams> = {},
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Li.() -> Unit
 ): Li = register(
-    Li(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Li(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
+
+fun TagContext.li(
+    style: Style<BoxParams>,
+    parentStyling: Style<BoxParams> = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
+    content: Li.() -> Unit
+): Li = register(
+    Li(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.label(
@@ -581,8 +943,17 @@ fun TagContext.label(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Label.() -> Unit
-): Label = register(Label(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Label =
+    register(
+        Label(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.label(
     style: Style<BoxParams>,
@@ -590,10 +961,15 @@ fun TagContext.label(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Label.() -> Unit
 ): Label = register(
-    Label(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Label(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.legend(
@@ -601,8 +977,17 @@ fun TagContext.legend(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Legend.() -> Unit
-): Legend = register(Legend(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Legend =
+    register(
+        Legend(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.legend(
     style: Style<BoxParams>,
@@ -610,12 +995,14 @@ fun TagContext.legend(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Legend.() -> Unit
 ): Legend = register(
     Legend(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -624,8 +1011,16 @@ fun TagContext.map(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Map.() -> Unit
-): Map = register(Map(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Map = register(
+    Map(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.map(
     style: Style<BoxParams>,
@@ -633,10 +1028,15 @@ fun TagContext.map(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Map.() -> Unit
 ): Map = register(
-    Map(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Map(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.audio(
@@ -644,8 +1044,17 @@ fun TagContext.audio(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Audio.() -> Unit
-): Audio = register(Audio(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Audio =
+    register(
+        Audio(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.audio(
     style: Style<BoxParams>,
@@ -653,10 +1062,15 @@ fun TagContext.audio(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Audio.() -> Unit
 ): Audio = register(
-    Audio(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Audio(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.video(
@@ -664,8 +1078,17 @@ fun TagContext.video(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Video.() -> Unit
-): Video = register(Video(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Video =
+    register(
+        Video(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.video(
     style: Style<BoxParams>,
@@ -673,10 +1096,15 @@ fun TagContext.video(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Video.() -> Unit
 ): Video = register(
-    Video(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Video(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.meter(
@@ -684,8 +1112,17 @@ fun TagContext.meter(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Meter.() -> Unit
-): Meter = register(Meter(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Meter =
+    register(
+        Meter(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.meter(
     style: Style<BoxParams>,
@@ -693,10 +1130,15 @@ fun TagContext.meter(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Meter.() -> Unit
 ): Meter = register(
-    Meter(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Meter(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.ins(
@@ -704,19 +1146,32 @@ fun TagContext.ins(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
-    content: Ins.() -> Unit
-): Ins = register(Ins(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
-
-fun TagContext.ins(
-    style: Style<BoxParams>,
-    parentStyling: Style<BoxParams> = {},
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Ins.() -> Unit
 ): Ins = register(
-    Ins(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Ins(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
+
+fun TagContext.ins(
+    style: Style<BoxParams>,
+    parentStyling: Style<BoxParams> = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
+    content: Ins.() -> Unit
+): Ins = register(
+    Ins(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.del(
@@ -724,19 +1179,32 @@ fun TagContext.del(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
-    content: Del.() -> Unit
-): Del = register(Del(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
-
-fun TagContext.del(
-    style: Style<BoxParams>,
-    parentStyling: Style<BoxParams> = {},
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Del.() -> Unit
 ): Del = register(
-    Del(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Del(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
+
+fun TagContext.del(
+    style: Style<BoxParams>,
+    parentStyling: Style<BoxParams> = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
+    content: Del.() -> Unit
+): Del = register(
+    Del(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.ol(
@@ -744,19 +1212,32 @@ fun TagContext.ol(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
-    content: Ol.() -> Unit
-): Ol = register(Ol(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
-
-fun TagContext.ol(
-    style: Style<BoxParams>,
-    parentStyling: Style<BoxParams> = {},
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Ol.() -> Unit
 ): Ol = register(
-    Ol(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Ol(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
+
+fun TagContext.ol(
+    style: Style<BoxParams>,
+    parentStyling: Style<BoxParams> = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
+    content: Ol.() -> Unit
+): Ol = register(
+    Ol(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.`object`(
@@ -764,8 +1245,17 @@ fun TagContext.`object`(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Object.() -> Unit
-): Object = register(Object(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Object =
+    register(
+        Object(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.`object`(
     style: Style<BoxParams>,
@@ -773,12 +1263,14 @@ fun TagContext.`object`(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Object.() -> Unit
 ): Object = register(
     Object(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -787,8 +1279,17 @@ fun TagContext.optgroup(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Optgroup.() -> Unit
-): Optgroup = register(Optgroup(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Optgroup =
+    register(
+        Optgroup(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.optgroup(
     style: Style<BoxParams>,
@@ -796,12 +1297,14 @@ fun TagContext.optgroup(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Optgroup.() -> Unit
 ): Optgroup = register(
     Optgroup(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -810,8 +1313,17 @@ fun TagContext.option(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Option.() -> Unit
-): Option = register(Option(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Option =
+    register(
+        Option(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.option(
     style: Style<BoxParams>,
@@ -819,12 +1331,14 @@ fun TagContext.option(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Option.() -> Unit
 ): Option = register(
     Option(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -833,8 +1347,17 @@ fun TagContext.output(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Output.() -> Unit
-): Output = register(Output(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Output =
+    register(
+        Output(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.output(
     style: Style<BoxParams>,
@@ -842,12 +1365,14 @@ fun TagContext.output(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Output.() -> Unit
 ): Output = register(
     Output(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -856,8 +1381,16 @@ fun TagContext.p(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: P.() -> Unit
-): P = register(P(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): P = register(
+    P(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.p(
     style: Style<BoxParams>,
@@ -865,10 +1398,15 @@ fun TagContext.p(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: P.() -> Unit
 ): P = register(
-    P(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    P(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.param(
@@ -876,8 +1414,17 @@ fun TagContext.param(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Param.() -> Unit
-): Param = register(Param(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Param =
+    register(
+        Param(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.param(
     style: Style<BoxParams>,
@@ -885,10 +1432,15 @@ fun TagContext.param(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Param.() -> Unit
 ): Param = register(
-    Param(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Param(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.picture(
@@ -896,8 +1448,17 @@ fun TagContext.picture(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Picture.() -> Unit
-): Picture = register(Picture(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Picture =
+    register(
+        Picture(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.picture(
     style: Style<BoxParams>,
@@ -905,12 +1466,14 @@ fun TagContext.picture(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Picture.() -> Unit
 ): Picture = register(
     Picture(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -919,8 +1482,16 @@ fun TagContext.pre(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Pre.() -> Unit
-): Pre = register(Pre(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Pre = register(
+    Pre(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.pre(
     style: Style<BoxParams>,
@@ -928,10 +1499,15 @@ fun TagContext.pre(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Pre.() -> Unit
 ): Pre = register(
-    Pre(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Pre(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.progress(
@@ -939,8 +1515,17 @@ fun TagContext.progress(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Progress.() -> Unit
-): Progress = register(Progress(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Progress =
+    register(
+        Progress(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.progress(
     style: Style<BoxParams>,
@@ -948,12 +1533,14 @@ fun TagContext.progress(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Progress.() -> Unit
 ): Progress = register(
     Progress(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -962,8 +1549,17 @@ fun TagContext.quote(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Quote.() -> Unit
-): Quote = register(Quote(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Quote =
+    register(
+        Quote(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.quote(
     style: Style<BoxParams>,
@@ -971,10 +1567,15 @@ fun TagContext.quote(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Quote.() -> Unit
 ): Quote = register(
-    Quote(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Quote(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.script(
@@ -982,8 +1583,17 @@ fun TagContext.script(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Script.() -> Unit
-): Script = register(Script(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Script =
+    register(
+        Script(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.script(
     style: Style<BoxParams>,
@@ -991,12 +1601,14 @@ fun TagContext.script(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Script.() -> Unit
 ): Script = register(
     Script(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1005,8 +1617,17 @@ fun TagContext.select(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Select.() -> Unit
-): Select = register(Select(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Select =
+    register(
+        Select(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.select(
     style: Style<BoxParams>,
@@ -1014,12 +1635,14 @@ fun TagContext.select(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Select.() -> Unit
 ): Select = register(
     Select(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1028,8 +1651,17 @@ fun TagContext.span(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Span.() -> Unit
-): Span = register(Span(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Span =
+    register(
+        Span(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.span(
     style: Style<BoxParams>,
@@ -1037,10 +1669,15 @@ fun TagContext.span(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Span.() -> Unit
 ): Span = register(
-    Span(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Span(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.caption(
@@ -1048,8 +1685,17 @@ fun TagContext.caption(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Caption.() -> Unit
-): Caption = register(Caption(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Caption =
+    register(
+        Caption(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.caption(
     style: Style<BoxParams>,
@@ -1057,12 +1703,14 @@ fun TagContext.caption(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Caption.() -> Unit
 ): Caption = register(
     Caption(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1071,8 +1719,16 @@ fun TagContext.th(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Th.() -> Unit
-): Th = register(Th(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Th = register(
+    Th(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.th(
     style: Style<BoxParams>,
@@ -1080,10 +1736,15 @@ fun TagContext.th(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Th.() -> Unit
 ): Th = register(
-    Th(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Th(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.td(
@@ -1091,19 +1752,32 @@ fun TagContext.td(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
-    content: Td.() -> Unit
-): Td = register(Td(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
-
-fun TagContext.td(
-    style: Style<BoxParams>,
-    parentStyling: Style<BoxParams> = {},
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Td.() -> Unit
 ): Td = register(
-    Td(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Td(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
+
+fun TagContext.td(
+    style: Style<BoxParams>,
+    parentStyling: Style<BoxParams> = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
+    content: Td.() -> Unit
+): Td = register(
+    Td(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.col(
@@ -1111,19 +1785,32 @@ fun TagContext.col(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
-    content: Col.() -> Unit
-): Col = register(Col(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
-
-fun TagContext.col(
-    style: Style<BoxParams>,
-    parentStyling: Style<BoxParams> = {},
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Col.() -> Unit
 ): Col = register(
-    Col(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Col(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
+
+fun TagContext.col(
+    style: Style<BoxParams>,
+    parentStyling: Style<BoxParams> = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
+    content: Col.() -> Unit
+): Col = register(
+    Col(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.colgroup(
@@ -1131,8 +1818,17 @@ fun TagContext.colgroup(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Colgroup.() -> Unit
-): Colgroup = register(Colgroup(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Colgroup =
+    register(
+        Colgroup(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.colgroup(
     style: Style<BoxParams>,
@@ -1140,12 +1836,14 @@ fun TagContext.colgroup(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Colgroup.() -> Unit
 ): Colgroup = register(
     Colgroup(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1154,8 +1852,17 @@ fun TagContext.table(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Table.() -> Unit
-): Table = register(Table(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Table =
+    register(
+        Table(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.table(
     style: Style<BoxParams>,
@@ -1163,10 +1870,15 @@ fun TagContext.table(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Table.() -> Unit
 ): Table = register(
-    Table(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Table(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.tr(
@@ -1174,19 +1886,32 @@ fun TagContext.tr(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
-    content: Tr.() -> Unit
-): Tr = register(Tr(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
-
-fun TagContext.tr(
-    style: Style<BoxParams>,
-    parentStyling: Style<BoxParams> = {},
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Tr.() -> Unit
 ): Tr = register(
-    Tr(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Tr(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
+
+fun TagContext.tr(
+    style: Style<BoxParams>,
+    parentStyling: Style<BoxParams> = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
+    content: Tr.() -> Unit
+): Tr = register(
+    Tr(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.tfoot(
@@ -1194,8 +1919,17 @@ fun TagContext.tfoot(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TFoot.() -> Unit
-): TFoot = register(TFoot(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TFoot =
+    register(
+        TFoot(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.tfoot(
     style: Style<BoxParams>,
@@ -1203,10 +1937,15 @@ fun TagContext.tfoot(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TFoot.() -> Unit
 ): TFoot = register(
-    TFoot(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    TFoot(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.thead(
@@ -1214,8 +1953,17 @@ fun TagContext.thead(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: THead.() -> Unit
-): THead = register(THead(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): THead =
+    register(
+        THead(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.thead(
     style: Style<BoxParams>,
@@ -1223,10 +1971,15 @@ fun TagContext.thead(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: THead.() -> Unit
 ): THead = register(
-    THead(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    THead(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.tbody(
@@ -1234,8 +1987,17 @@ fun TagContext.tbody(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TBody.() -> Unit
-): TBody = register(TBody(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TBody =
+    register(
+        TBody(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.tbody(
     style: Style<BoxParams>,
@@ -1243,10 +2005,15 @@ fun TagContext.tbody(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TBody.() -> Unit
 ): TBody = register(
-    TBody(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    TBody(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.textarea(
@@ -1254,8 +2021,17 @@ fun TagContext.textarea(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextArea.() -> Unit
-): TextArea = register(TextArea(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextArea =
+    register(
+        TextArea(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.textarea(
     style: Style<BoxParams>,
@@ -1263,12 +2039,14 @@ fun TagContext.textarea(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextArea.() -> Unit
 ): TextArea = register(
     TextArea(
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1277,8 +2055,17 @@ fun TagContext.time(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Time.() -> Unit
-): Time = register(Time(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Time =
+    register(
+        Time(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.time(
     style: Style<BoxParams>,
@@ -1286,10 +2073,15 @@ fun TagContext.time(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Time.() -> Unit
 ): Time = register(
-    Time(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Time(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.track(
@@ -1297,8 +2089,17 @@ fun TagContext.track(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Track.() -> Unit
-): Track = register(Track(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): Track =
+    register(
+        Track(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.track(
     style: Style<BoxParams>,
@@ -1306,10 +2107,15 @@ fun TagContext.track(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Track.() -> Unit
 ): Track = register(
-    Track(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Track(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.ul(
@@ -1317,19 +2123,32 @@ fun TagContext.ul(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
-    content: Ul.() -> Unit
-): Ul = register(Ul(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
-
-fun TagContext.ul(
-    style: Style<BoxParams>,
-    parentStyling: Style<BoxParams> = {},
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Ul.() -> Unit
 ): Ul = register(
-    Ul(id, (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job),
-    content
+    Ul(
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
+
+fun TagContext.ul(
+    style: Style<BoxParams>,
+    parentStyling: Style<BoxParams> = {},
+    baseClass: StyleClass = StyleClass.None,
+    id: String? = null,
+    prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
+    content: Ul.() -> Unit
+): Ul = register(
+    Ul(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.address(
@@ -1337,10 +2156,16 @@ fun TagContext.address(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("address", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "address",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.address(
@@ -1349,13 +2174,15 @@ fun TagContext.address(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "address",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1364,10 +2191,16 @@ fun TagContext.article(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("article", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "article",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.article(
@@ -1376,13 +2209,15 @@ fun TagContext.article(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "article",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1391,10 +2226,16 @@ fun TagContext.aside(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("aside", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "aside",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.aside(
@@ -1403,13 +2244,15 @@ fun TagContext.aside(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "aside",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1418,9 +2261,17 @@ fun TagContext.bdi(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("bdi", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "bdi",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.bdi(
     style: Style<BoxParams>,
@@ -1428,13 +2279,15 @@ fun TagContext.bdi(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "bdi",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1443,10 +2296,16 @@ fun TagContext.details(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("details", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "details",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.details(
@@ -1455,13 +2314,15 @@ fun TagContext.details(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "details",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1470,10 +2331,16 @@ fun TagContext.dialog(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("dialog", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "dialog",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.dialog(
@@ -1482,13 +2349,15 @@ fun TagContext.dialog(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "dialog",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1497,10 +2366,16 @@ fun TagContext.figcaption(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("figcaption", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "figcaption",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.figcaption(
@@ -1509,13 +2384,15 @@ fun TagContext.figcaption(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "figcaption",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1524,10 +2401,16 @@ fun TagContext.figure(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("figure", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "figure",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.figure(
@@ -1536,13 +2419,15 @@ fun TagContext.figure(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "figure",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1551,10 +2436,16 @@ fun TagContext.footer(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("footer", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "footer",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.footer(
@@ -1563,13 +2454,15 @@ fun TagContext.footer(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "footer",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1578,10 +2471,16 @@ fun TagContext.header(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("header", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "header",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.header(
@@ -1590,13 +2489,15 @@ fun TagContext.header(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "header",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1605,10 +2506,16 @@ fun TagContext.main(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("main", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "main",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.main(
@@ -1617,13 +2524,15 @@ fun TagContext.main(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "main",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1632,10 +2541,16 @@ fun TagContext.mark(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("mark", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "mark",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.mark(
@@ -1644,13 +2559,15 @@ fun TagContext.mark(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "mark",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1659,9 +2576,17 @@ fun TagContext.nav(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("nav", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "nav",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.nav(
     style: Style<BoxParams>,
@@ -1669,13 +2594,15 @@ fun TagContext.nav(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "nav",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1684,10 +2611,16 @@ fun TagContext.noscript(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("noscript", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "noscript",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.noscript(
@@ -1696,13 +2629,15 @@ fun TagContext.noscript(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "noscript",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1711,10 +2646,16 @@ fun TagContext.progress(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("progress", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "progress",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.progress(
@@ -1723,13 +2664,15 @@ fun TagContext.progress(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "progress",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1738,9 +2681,17 @@ fun TagContext.rp(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("rp", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "rp",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.rp(
     style: Style<BoxParams>,
@@ -1748,13 +2699,15 @@ fun TagContext.rp(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "rp",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1763,9 +2716,17 @@ fun TagContext.rt(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("rt", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "rt",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.rt(
     style: Style<BoxParams>,
@@ -1773,13 +2734,15 @@ fun TagContext.rt(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "rt",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1788,10 +2751,16 @@ fun TagContext.ruby(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("ruby", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "ruby",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.ruby(
@@ -1800,13 +2769,15 @@ fun TagContext.ruby(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "ruby",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1815,10 +2786,16 @@ fun TagContext.section(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("section", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "section",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.section(
@@ -1827,13 +2804,15 @@ fun TagContext.section(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "section",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1842,10 +2821,16 @@ fun TagContext.summary(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("summary", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "summary",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.summary(
@@ -1854,13 +2839,15 @@ fun TagContext.summary(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "summary",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1869,10 +2856,16 @@ fun TagContext.time(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("time", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "time",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.time(
@@ -1881,13 +2874,15 @@ fun TagContext.time(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "time",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1896,9 +2891,17 @@ fun TagContext.wbr(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("wbr", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "wbr",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.wbr(
     style: Style<BoxParams>,
@@ -1906,13 +2909,15 @@ fun TagContext.wbr(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "wbr",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1921,10 +2926,16 @@ fun TagContext.blockquote(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("blockquote", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "blockquote",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.blockquote(
@@ -1933,13 +2944,15 @@ fun TagContext.blockquote(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "blockquote",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1948,9 +2961,17 @@ fun TagContext.em(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("em", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "em",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.em(
     style: Style<BoxParams>,
@@ -1958,13 +2979,15 @@ fun TagContext.em(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "em",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -1973,10 +2996,16 @@ fun TagContext.strong(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("strong", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "strong",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.strong(
@@ -1985,13 +3014,15 @@ fun TagContext.strong(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "strong",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2000,10 +3031,16 @@ fun TagContext.small(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("small", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "small",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.small(
@@ -2012,13 +3049,15 @@ fun TagContext.small(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "small",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2027,9 +3066,17 @@ fun TagContext.s(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("s", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "s",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.s(
     style: Style<BoxParams>,
@@ -2037,13 +3084,15 @@ fun TagContext.s(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "s",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2052,10 +3101,16 @@ fun TagContext.cite(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("cite", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "cite",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.cite(
@@ -2064,13 +3119,15 @@ fun TagContext.cite(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "cite",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2079,9 +3136,17 @@ fun TagContext.q(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("q", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "q",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.q(
     style: Style<BoxParams>,
@@ -2089,13 +3154,15 @@ fun TagContext.q(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "q",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2104,9 +3171,17 @@ fun TagContext.dfn(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("dfn", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "dfn",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.dfn(
     style: Style<BoxParams>,
@@ -2114,13 +3189,15 @@ fun TagContext.dfn(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "dfn",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2129,10 +3206,16 @@ fun TagContext.abbr(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("abbr", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "abbr",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.abbr(
@@ -2141,13 +3224,15 @@ fun TagContext.abbr(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "abbr",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2156,10 +3241,16 @@ fun TagContext.code(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("code", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "code",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.code(
@@ -2168,13 +3259,15 @@ fun TagContext.code(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "code",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2183,9 +3276,17 @@ fun TagContext.`var`(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("var", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "var",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.`var`(
     style: Style<BoxParams>,
@@ -2193,13 +3294,15 @@ fun TagContext.`var`(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "var",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2208,10 +3311,16 @@ fun TagContext.samp(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("samp", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "samp",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.samp(
@@ -2220,13 +3329,15 @@ fun TagContext.samp(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "samp",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2235,9 +3346,17 @@ fun TagContext.kbd(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("kbd", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "kbd",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.kbd(
     style: Style<BoxParams>,
@@ -2245,13 +3364,15 @@ fun TagContext.kbd(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "kbd",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2260,9 +3381,17 @@ fun TagContext.submenu(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("sub", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "sub",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.submenu(
     style: Style<BoxParams>,
@@ -2270,13 +3399,15 @@ fun TagContext.submenu(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "sub",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2285,9 +3416,17 @@ fun TagContext.sup(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("sup", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "sup",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.sup(
     style: Style<BoxParams>,
@@ -2295,13 +3434,15 @@ fun TagContext.sup(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "sup",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2310,9 +3451,17 @@ fun TagContext.i(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("i", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "i",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.i(
     style: Style<BoxParams>,
@@ -2320,13 +3469,15 @@ fun TagContext.i(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "i",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2335,9 +3486,17 @@ fun TagContext.b(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("b", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "b",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.b(
     style: Style<BoxParams>,
@@ -2345,13 +3504,15 @@ fun TagContext.b(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "b",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2360,9 +3521,17 @@ fun TagContext.u(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("u", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "u",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.u(
     style: Style<BoxParams>,
@@ -2370,13 +3539,15 @@ fun TagContext.u(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "u",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2385,9 +3556,17 @@ fun TagContext.bdo(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
-): TextElement =
-    register(TextElement("bdo", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job), content)
+): TextElement = register(
+    TextElement(
+        "bdo",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
+)
 
 fun TagContext.bdo(
     style: Style<BoxParams>,
@@ -2395,13 +3574,15 @@ fun TagContext.bdo(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "bdo",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2410,10 +3591,16 @@ fun TagContext.command(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
-    TextElement("command", id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job),
-    content
+    TextElement(
+        "command",
+        id,
+        (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
+    ), content
 )
 
 fun TagContext.command(
@@ -2422,13 +3609,15 @@ fun TagContext.command(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: TextElement.() -> Unit
 ): TextElement = register(
     TextElement(
         "command",
         id,
         (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
-        job
+        job,
+        evalScope(scope)
     ), content
 )
 
@@ -2437,8 +3626,17 @@ fun TagContext.svg(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Svg.() -> Unit
-): Svg = register(Svg(id, (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name, job = job), content)
+): Svg =
+    register(
+        Svg(
+            id,
+            (baseClass + StyleParamsImpl().apply(style).cssClasses(prefix)).name,
+            job,
+            evalScope(scope)
+        ), content
+    )
 
 fun TagContext.svg(
     style: Style<BoxParams>,
@@ -2446,9 +3644,13 @@ fun TagContext.svg(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "css",
+    scope: ScopeContext.() -> Unit = {},
     content: Svg.() -> Unit
 ): Svg = register(
-    Svg(id,
-        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name, job = job
+    Svg(
+        id,
+        (baseClass + StyleParamsImpl().apply { style(); parentStyling() }.cssClasses(prefix)).name,
+        job,
+        evalScope(scope)
     ), content
 )

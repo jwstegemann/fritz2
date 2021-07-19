@@ -1,5 +1,6 @@
 package dev.fritz2.binding
 
+import dev.fritz2.dom.html.WithJob
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket

@@ -1,8 +1,8 @@
 package dev.fritz2.dom
 
-import dev.fritz2.binding.WithJob
 import dev.fritz2.dom.html.EventType
 import dev.fritz2.dom.html.Events
+import dev.fritz2.dom.html.WithJob
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import org.w3c.dom.Element
