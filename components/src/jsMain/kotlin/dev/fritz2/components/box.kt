@@ -33,6 +33,7 @@ import dev.fritz2.styling.params.GridParams
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param content a lambda expression for setting up the content and events of the ``div`` element itself
  */
+@Deprecated("Use 'div' instead of 'box' (same functionality)")
 fun RenderContext.box(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
@@ -44,7 +45,7 @@ fun RenderContext.box(
 
 /**
  * This component represents a layout component with *flex* property.
- * That is the ``display`` property is set to ``flex``. Besides that is totally resembles the [box] component
+ * That is the ``display`` property is set to ``flex``. Besides that is totally resembles the [div] component
  *
  * Example usage:
  * ```
@@ -81,7 +82,7 @@ fun RenderContext.flexBox(
 
 /**
  * This component represents a layout component with *grid* property.
- * That is the ``display`` property is set to ``grid``. Besides that is totally resembles the [box] component
+ * That is the ``display`` property is set to ``grid``. Besides that is totally resembles the [div] component
  *
  * Example usage:
  * ```

@@ -2,14 +2,26 @@ package dev.fritz2.components.forms.control
 
 import dev.fritz2.binding.Store
 import dev.fritz2.components.*
+import dev.fritz2.components.checkboxes.CheckboxComponent
+import dev.fritz2.components.checkboxes.CheckboxGroupComponent
 import dev.fritz2.components.forms.control.FormControlComponent.ControlRegistration
 import dev.fritz2.components.forms.formGroupElementContainerMarker
+import dev.fritz2.components.foundations.Component
+import dev.fritz2.components.foundations.ComponentProperty
+import dev.fritz2.components.foundations.FormMixin
+import dev.fritz2.components.foundations.FormProperties
+import dev.fritz2.components.inputField.InputFieldComponent
+import dev.fritz2.components.radios.RadioGroupComponent
+import dev.fritz2.components.selectField.SelectFieldComponent
 import dev.fritz2.components.slider.SliderComponent
+import dev.fritz2.components.switch.SwitchComponent
+import dev.fritz2.components.textarea.TextAreaComponent
 import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.components.validation.validationMessages
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
+import dev.fritz2.styling.div
 import dev.fritz2.styling.p
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -232,7 +244,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
             message.asAlert(this) {
                 size(this@FormControlComponent.sizeBuilder)
                 stacking { compact }
-                variant { discreet }
+                variant { ghost }
             }
         }
 
@@ -482,7 +494,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
                 spacing { none }
                 items {
                     this@FormControlComponent.validationMessagesBuilder?.invoke()?.messages?.renderEach { message ->
-                        box({
+                        div({
                             width { "100%" }
                         }) {
                             this@FormControlComponent.validationMessageRendering.value.invoke(this, message)

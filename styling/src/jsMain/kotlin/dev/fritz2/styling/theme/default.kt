@@ -1527,7 +1527,7 @@ open class DefaultTheme : Theme {
                     }
                 }
             }
-            override val discreet: BasicParams.(ColorScheme) -> Unit = { _ ->
+            override val ghost: BasicParams.(ColorScheme) -> Unit = { _ ->
                 background { color { background } }
                 color { font }
             }
@@ -1566,13 +1566,44 @@ open class DefaultTheme : Theme {
                 margin { normal }
                 padding { normal }
             }
+            override val toast: Style<BasicParams> = {
+                margin { none }
+                paddings {
+                    vertical { normal }
+                    left { normal }
+                    right { huge } // needed to not be overlapped by the close-button
+                }
+            }
         }
     }
 
     override val toast = object : ToastStyles {
-        override val base: Style<BasicParams> = {
+        override val body: Style<BoxParams> = {
+            position { relative { } }
+            display { flex }
+            direction { row }
+            alignItems { center }
+
+            maxWidth { "560px" }
+            minWidth { giant }
             minHeight { giant }
+            overflow { hidden }
+            margin { smaller }
+            radius { normal }
+            boxShadow { raised }
+
+            css("pointer-events: auto;")
+            css("-webkit-box-align: start;")
         }
+
+        override val list: Style<BoxParams> = {
+            display { flex }
+            direction { column }
+            overflow { visible }
+
+            css("transform-origin: 50% 50% 0px;")
+        }
+
         override val placement = object : ToastPlacement {
             override val top: Style<BasicParams> = {
                 css("top:0px")
@@ -1600,8 +1631,18 @@ open class DefaultTheme : Theme {
                 css("bottom:0px")
                 css("right:0px")
             }
-
         }
+
+        override val alignment: BoxParams.(String) -> Unit = { horizontal ->
+            alignItems {
+                when (horizontal) {
+                    "left" -> flexStart
+                    "right" -> flexEnd
+                    else -> center
+                }
+            }
+        }
+
         override val status = object : ToastStatus {
             override val success: Style<BasicParams> = {
                 background { color { success.main } }
@@ -1621,6 +1662,7 @@ open class DefaultTheme : Theme {
             }
 
         }
+
         override val closeButton = object : ToastButton {
             override val close: Style<BasicParams> = {
                 position {
@@ -1633,6 +1675,7 @@ open class DefaultTheme : Theme {
                 fontSize { "10px" }
                 css("outline: 0px;")
                 css("transition: all 0.2s ease 0s;")
+                color { info.mainContrast }
 
                 focus {
                     css("outline: none;")

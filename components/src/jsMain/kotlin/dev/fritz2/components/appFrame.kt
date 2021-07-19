@@ -143,7 +143,7 @@ open class AppFrameComponent : Component<Unit> {
         prefix: String
     ) {
         context.apply {
-            box({
+            div({
                 display(
                     sm = { block },
                     md = { none })

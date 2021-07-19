@@ -1,15 +1,15 @@
-package dev.fritz2.components
+package dev.fritz2.components.foundations
 
-import dev.fritz2.binding.RootStore
+import dev.fritz2.components.buttons.PushButtonComponent
+import dev.fritz2.components.clickButton
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.EventContext
-import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.*
+import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
-import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.style
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.SeverityStyles
@@ -18,172 +18,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.*
+import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.MouseEvent
-
-/**
- * Generic container for modeling a property for a component class.
- * Use it like this:
- * ```
- * open class SomeComponent {
- *      val myProp = ComponentProperty("some text")
- *      val myBooleanProp = ComponentProperty(false)
- *
- *      // should rather be some implementation in the default theme of course!
- *      class SizesContext {
- *          small: Style<BasicParams> = { fontSize { small } }
- *          normal: Style<BasicParams> = { fontSize { small } }
- *          large: Style<BasicParams> = { fontSize { small } }
- *      }
- *
- *      val sizes = ComponentProperty<SizesContext.() -> Style<BasicParams>> { normal }
- * }
- * // within your UI declaration:
- * someComponent {
- *      myProp("Some specific content") // pass simple parameter
- *      myBooleanProp(true)
- *      sizes { large } // use expression syntax
- * }
- * ```
- */
-class ComponentProperty<T>(var value: T) {
-    operator fun invoke(newValue: T) {
-        value = newValue
-    }
-}
-
-/**
- * Generic container for modeling a property for a component class that could be either consist on a value or on a
- * [Flow] of a value.
- *
- * Use it like this:
- * ```
- * open class SomeComponent {
- *      val myProp = DynamicComponentProperty("some text")
- *      val myBooleanProp = DynamicComponentProperty(false)
- * }
- * // within your UI declaration and static values:
- * someComponent {
- *      myProp("Some specific content")
- *      myBooleanProp(true)
- * }
- * // within your UI declaration and dynamic values:
- * val contentStore = storeOf("Empty")
- * val toggle = storeOf(false)
- * someComponent {
- *      myProp(contentStore.data)
- *      myBooleanProp(toggle.data)
- * }
- * ```
- */
-class DynamicComponentProperty<T>(var values: Flow<T>) {
-    operator fun invoke(newValue: T) {
-        values = flowOf(newValue)
-    }
-
-    operator fun invoke(newValues: Flow<T>) {
-        values = newValues
-    }
-}
-
-/**
- * Generic container for modeling a property for a component class that could be either consist on a nullable value
- * or on a [Flow] of a nullable value. This specific implementation could be useful for properties where the distinction
- * between some states and the "not yet set" state is important.
- *
- * Use it like this:
- * ```
- * open class SomeComponent<T> {
- *      val selectedItem = NullableDynamicComponentProperty<T>(emptyFlow())
- * }
- * // within your UI declaration and static values:
- * val selectedStore = storeOf<String>(null)
- * someComponent<String> {
- *      selectedItem(selectedStore.data) // no selection at start up!
- * }
- * ```
- */
-class NullableDynamicComponentProperty<T>(var values: Flow<T?>) {
-    operator fun invoke(newValue: T?) {
-        values = flowOf(newValue)
-    }
-
-    operator fun invoke(newValues: Flow<T?>) {
-        values = newValues
-    }
-}
-
-/**
- * Marker interface that *every* component should implement, so that the central render method appears in a unified way
- * throughout this framework.
- *
- * The render method has to be implemented in order to do the actual rendering of one component.
- * This reduces the boilerplate code within the corresponding factory function(s):
- * ```
- * open class MyComponent: Component {
- *      override fun render(...) {
- *          // some content rendering
- *      }
- * }
- *
- * RenderContext.myComponent(
- *      // most params omitted
- *      build: MyComponent.() -> Unit = {}
- * ) {
- *      MyComponent().apply(build).render(this, /* params */)
- *      //                         ^^^^^^
- *      //                         just start the rendering by one additional call!
- * }
- * ```
- *
- * Often a component needs *additional* parameters that are passed into the factory functions (remember that those
- * should be located starting after the ``styling`` parameter in first position and before the ``baseClass`` parameter)
- * Typical use cases are [Store]s or list of items, as for [RenderContext.checkboxGroup] for example.
- * Those additional parameters should be passed via contructor injection into the component class:
- * ```
- * open class MyComponent(protected val items: List<String>, protected val store: Store<String>?): Component {
- *      override fun render(...) {
- *          // some content rendering with access to the ``items`` and the ``store``
- *      }
- * }
- *
- * RenderContext.myComponent(
- *      styling: BasicParams.() -> Unit,
- *      items: List<String>,          // two additional parameters
- *      value: Store<String>? = null, // after ``styling`` and before ``baseClass``!
- *      baseClass: StyleClass,
- *      id: String?,
- *      prefix: String
- *      build: MyComponent.() -> Unit = {}
- * ) {
- *      MyComponent(items, store) // inject additional parameters
- *          .apply(build)
- *          .render(this, styling, baseClass, id, prefix) // pass context + regular parameters
- * }
- * ```
- */
-@HtmlTagMarker
-interface Component<T> {
-
-    /**
-     * Central method that should do the actual rendering of a component.
-     *
-     * Consider to declare your implementation as ``open`` in order to allow the customization of a component.
-     *
-     * @param context the receiver to render the component into
-     * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
-     * @param baseClass optional CSS class that should be applied to the element
-     * @param id the ID of the element
-     * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
-     */
-    fun render(
-        context: RenderContext,
-        styling: BoxParams.() -> Unit,
-        baseClass: StyleClass,
-        id: String?,
-        prefix: String
-    ): T
-}
 
 /**
  * An interface for exposing an HTML element. Use this vor components that more or less wrap a single basic HTML
@@ -434,66 +271,6 @@ class SeverityMixin : SeverityProperties {
 }
 
 /**
- * This store can be used for components with an *internal* store that has to deal with a [List] of some type T.
- *
- * Use the [toggle] method to add or remove an selected item from the current selection:
- * ```
- * val selection = MultiSelectionStore<String>()
- * lineUp {
- *     items {
- *         listOf("One", "Two", "Three", "Four", "Five").forEach { value ->
- *             box({
- *                 background { color { info } }
- *             }) {
- *                 +value
- *                 clicks.events.map { value } handledBy selection.toggle
- *                 //                  ^^^^^                       ^^^^^^
- *                 //                  pass current value to the ``toggle`` handler!
- *             }
- *         }
- *     }
- * }
- * div {
- *     +"Selection:"
- *     ul {
- *         selection.data.renderEach { value ->
- *             li { +value }
- *         }
- *     }
- * }
- * ```
- *
- * RFC: Never ever expose the internal store directly to the client side! Only accept values or [Flow]s and return
- * those in order to exchange data with the client!
- */
-open class MultiSelectionStore<T> : RootStore<List<T>>(emptyList()) {
-    val toggle = handleAndEmit<T, List<T>> { selectedRows, new ->
-        val newSelection = if (selectedRows.contains(new))
-            selectedRows - new
-        else
-            selectedRows + new
-        emit(newSelection)
-        newSelection
-    }
-}
-
-/**
- * This store can be used for components with an *internal* store that has to deal with a single element *selection*
- * from a collection of predefined values (like for a [selectField] or [radioGroup] component)
- *
- * It is based upon the *index* of an item from the list represented by the [Int] type.
- *
- * RFC: Never ever expose the internal store directly to the client side! Only accept values or [Flow]s and return
- * those in order to exchange data with the client!
- */
-open class SingleSelectionStore : RootStore<Int?>(null) {
-    val toggle = handleAndEmit<Int, Int> { _, new ->
-        emit(new)
-        new
-    }
-}
-
-/**
  * This interface offers some convenience properties for adding a close button to a component.
  *
  * If offers the possibilities to:
@@ -564,12 +341,11 @@ class CloseButtonMixin(
             defaultStyle()
             closeButtonStyle.value()
         }, prefix = closeButtonPrefix) {
-            variant { ghost }
+            variant { PushButtonComponent.VariantContext.ghost }
             icon { closeButtonIcon.value(Theme().icons) }
         }
     }
 }
-
 
 /**
  * Definition of the layout orientation of a form.
