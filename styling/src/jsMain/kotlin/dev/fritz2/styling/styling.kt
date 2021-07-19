@@ -3376,7 +3376,7 @@ fun TagContext.kbd(
     ), content
 )
 
-fun TagContext.sub(
+fun TagContext.submenu(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3393,7 +3393,7 @@ fun TagContext.sub(
     ), content
 )
 
-fun TagContext.sub(
+fun TagContext.submenu(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
