@@ -4,114 +4,69 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
-import dev.fritz2.dom.Window
-import dev.fritz2.dom.WithDomNode
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.theme.Theme
-import kotlinx.browser.window
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
-import org.w3c.dom.*
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.EventTarget
 
-data class TriggerInformation(
-    val id: String = "",
-    val active: Boolean = false,
-    val clientRect: DOMRect = DOMRect()
-)
-
-
-class Positioning(
-    val triggerInformation: TriggerInformation,
-    val element: HTMLDivElement,
-    val offset: Double,
-    val placement: PopperComponent.Placement,
-    val flipping: Boolean = true
-) {
-    private fun spaceAvailable(placement: PopperComponent.Placement?): Boolean {
-        console.log(triggerInformation.clientRect.top)
-        console.log(triggerInformation.clientRect.left)
-        console.log(triggerInformation.clientRect.height)
-        console.log(triggerInformation.clientRect.width)
-        console.log(triggerInformation.clientRect.y)
-        console.log(triggerInformation.clientRect.x)
-        console.log("#####")
-
-        return when (placement) {
-            PopperComponent.Placement.Top,
-            PopperComponent.Placement.TopStart,
-            PopperComponent.Placement.TopEnd -> {
-                triggerInformation.clientRect.top - element.offsetHeight > 0
-            }
-            PopperComponent.Placement.Bottom,
-            PopperComponent.Placement.BottomStart,
-            PopperComponent.Placement.BottomEnd -> {
-                triggerInformation.clientRect.top + element.offsetHeight - window.innerHeight < 0
-            }
-            PopperComponent.Placement.Left,
-            PopperComponent.Placement.LeftStart,
-            PopperComponent.Placement.LeftEnd -> {
-                triggerInformation.clientRect.left - element.offsetWidth > 0
-            }
-            PopperComponent.Placement.Right,
-            PopperComponent.Placement.RightStart,
-            PopperComponent.Placement.RightEnd -> {
-                triggerInformation.clientRect.left + triggerInformation.clientRect.width + element.offsetWidth - window.innerWidth < 0
-            }
-            else -> true
-        }
-    }
-
-    val position: Pair<Double, Double>
-        get() {
-            val default = this.placement.position(triggerInformation, element, offset)
-            return if (flipping) {
-                when {
-                    spaceAvailable(this.placement) -> {
-                        default
-                    }
-                    spaceAvailable(this.placement.flipMain) -> {
-                        console.info("flipMain")
-                        this.placement.flipMain.position(triggerInformation, element, offset)
-                    }
-                    spaceAvailable(this.placement.flipAlternative) -> {
-                        console.info("flipAlternative")
-                        this.placement.flipAlternative.position(triggerInformation, element, offset)
-                    }
-                    spaceAvailable(this.placement.flipAlternative.flipMain) -> {
-                        console.info("flipAlternative.flipMain")
-                        this.placement.flipAlternative.flipMain.position(triggerInformation, element, offset)
-                    }
-                    else -> {
-                        console.info("default")
-                        default
-                    }
-                }
-            } else {
-                default
-            }
-        }
-
-
-    val inlineStyle = buildString {
-        if (triggerInformation.active) {
-            append(
-                "transform: translate(${(position.first + window.scrollX).toInt()}px, " +
-                        "${(position.second + window.scrollY).toInt()}px);"
-            )
-        }
-    }
-}
-
+/**
+ * This component creates a popper.
+ *
+ * A popper should be used for to positioning `content` like `tooltip` or `popover` automatically
+ * in the right place near a `trigger`. It will popped up on every event which `handledBy` given handler.
+ *
+ * A popper mainly consists of
+ * [trigger] the Elements which calls the [content]
+ * [content] which will be display after call the [trigger]. It will be rendered on an own managed context.
+ *
+ * It can cen configured by
+ * [offset] the space (in px) between [trigger] and  [content]
+ * [flipping] if no space on chosen available it will be find a right placement automatically
+ * [placement] of the [content] around the [trigger]
+ *
+ * [trigger] provides two handler which can be used.
+ * The first is important to open/toggle the [content] the second close it.
+ *
+ * [content] provides one handler which can be used to close it.
+ *
+ * Example:
+ * ```kotlin
+ * popper {
+ *      placement { topStart }
+ *      trigger { toggleHandler, closeHandler ->
+ *          span {
+ *              +"hover me"
+ *              mouseenters.events.map { it.currentTarget } handledBy toggle
+                mouseleaves.events.map {} handledBy close
+ *          }
+ *      }
+ *      content { closeHandler ->
+ *          div {
+ *              +"my content"
+ *              clicks.events handledBy closeHandler
+ *          }
+ *      }
+ * }
+ * ```
+ *
+ * The popper use an internal `store` [popperStore] of [TriggerInformation] to find the right position of the [content]
+ *
+ * @see [Placement]
+ * @See [Positioning]
+ * @See [TriggerInformation]
+ *
+ */
 open class PopperComponent :
     EventProperties<HTMLInputElement> by EventMixin(),
-    Component<Unit> {
+    Component<Div> {
 
     companion object {
         const val leftRenderPosition: Double = 9999.0
@@ -136,141 +91,7 @@ open class PopperComponent :
         val rightStart = Placement.RightStart
         val rightEnd = Placement.RightEnd
     }
-
     val placement = ComponentProperty<PlacementContext.() -> Placement> { Placement.Top }
-
-    sealed class Placement(
-        val position: (trigger: TriggerInformation, element: HTMLDivElement, offset: Double) -> Pair<Double, Double>,
-        val flipMain: Placement,
-        val flipAlternative: Placement
-    ) {
-        object Top : Placement(
-            position = { trigger, element, offset ->
-                val left =
-                    leftRenderPosition + trigger.clientRect.left + trigger.clientRect.width * .5 - element.offsetWidth * .5
-                val top = trigger.clientRect.top - offset - element.offsetHeight
-                left to top
-            },
-            flipMain = Bottom,
-            flipAlternative = Left
-        )
-
-        object TopStart : Placement(
-            position = { trigger, element, offset ->
-                val left = leftRenderPosition + trigger.clientRect.left
-                val top = trigger.clientRect.top - offset - element.offsetHeight
-                left to top.toDouble()
-            },
-            flipMain = BottomStart,
-            flipAlternative = LeftStart
-        )
-
-        object TopEnd : Placement(
-            position = { trigger, element, offset ->
-                val left =
-                    leftRenderPosition + trigger.clientRect.left + trigger.clientRect.width - element.offsetWidth
-                val top = trigger.clientRect.top - offset - element.offsetHeight
-                left to top.toDouble()
-            },
-            flipMain = BottomEnd,
-            flipAlternative = LeftEnd
-        )
-
-        object Bottom : Placement(
-            position = { trigger, element, offset ->
-                val left =
-                    leftRenderPosition + trigger.clientRect.left + trigger.clientRect.width * .5 - element.offsetWidth * .5
-                val top = trigger.clientRect.top + offset + trigger.clientRect.height
-                left to top.toDouble()
-            },
-            flipMain = Top,
-            flipAlternative = Left
-        )
-
-        object BottomStart : Placement(
-            position = { trigger, element, offset ->
-                val left = leftRenderPosition + trigger.clientRect.left
-                val top = trigger.clientRect.top + offset + trigger.clientRect.height
-                left to top.toDouble()
-            },
-            flipMain = TopStart,
-            flipAlternative = LeftStart
-        )
-
-        object BottomEnd : Placement(
-            position = { trigger, element, offset ->
-                val left =
-                    leftRenderPosition + trigger.clientRect.left + trigger.clientRect.width - element.offsetWidth
-                val top = trigger.clientRect.top + offset + trigger.clientRect.height
-                left to top
-            },
-            flipMain = TopEnd,
-            flipAlternative = LeftEnd
-        )
-
-        object Left : Placement(
-            position = { trigger, element, offset ->
-                val left = leftRenderPosition - offset + trigger.clientRect.left - element.offsetWidth
-                val top = trigger.clientRect.top + trigger.clientRect.height * .5 - element.offsetHeight * .5
-                left to top
-            },
-            flipMain = Right,
-            flipAlternative = Top
-        )
-
-        object LeftStart : Placement(
-            position = { trigger, element, offset ->
-                val left = leftRenderPosition - offset + trigger.clientRect.left - element.offsetWidth
-                val top = trigger.clientRect.top
-                left to top.toDouble()
-            },
-            flipMain = RightStart,
-            flipAlternative = TopStart
-        )
-
-        object LeftEnd : Placement(
-            position = { trigger, element, offset ->
-                val left = leftRenderPosition - offset + trigger.clientRect.left - element.offsetWidth
-                val top = trigger.clientRect.top + trigger.clientRect.height - element.offsetHeight
-                left to top.toDouble()
-            },
-            flipMain = RightEnd,
-            flipAlternative = TopEnd
-        )
-
-        object Right : Placement(
-            position = { trigger, element, offset ->
-                val left =
-                    leftRenderPosition + offset + trigger.clientRect.left + trigger.clientRect.width
-                val top = trigger.clientRect.top + trigger.clientRect.height * .5 - element.offsetHeight * .5
-                left to top
-            },
-            flipMain = Left,
-            flipAlternative = Top
-        )
-
-        object RightStart : Placement(
-            position = { trigger, element, offset ->
-                val left =
-                    leftRenderPosition + offset + trigger.clientRect.left + trigger.clientRect.width
-                val top = trigger.clientRect.top
-                left to top.toDouble()
-            },
-            flipMain = LeftStart,
-            flipAlternative = TopStart
-        )
-
-        object RightEnd : Placement(
-            position = { trigger, element, offset ->
-                val left =
-                    leftRenderPosition + offset + trigger.clientRect.left + trigger.clientRect.width
-                val top = trigger.clientRect.top + trigger.clientRect.height - element.offsetHeight
-                left to top
-            },
-            flipMain = LeftEnd,
-            flipAlternative = TopEnd
-        )
-    }
 
     private val popperStore = object : RootStore<TriggerInformation>(TriggerInformation()) {
         fun toggle(id: String) = handle<EventTarget?> { triggerInformation, eventTarget ->
@@ -283,21 +104,12 @@ open class PopperComponent :
                     TriggerInformation(
                         id = id,
                         active = true,
-                        clientRect = target.getBoundingClientRect()
+                        domRect = target.getBoundingClientRect()
                     )
                 }
                 else -> {
                     triggerInformation
                 }
-            }
-        }
-
-        val windowClicked = handle<Array<EventTarget>> { triggerInformation, composedPath ->
-            console.info(composedPath)
-            if( triggerInformation.active && composedPath.firstOrNull { it.asDynamic().id == triggerInformation.id } == null ) {
-                triggerInformation.copy(active = false)
-            } else {
-                triggerInformation
             }
         }
 
@@ -319,7 +131,6 @@ open class PopperComponent :
         val active =  this@PopperComponent.popperStore.data.map { it.active }
 
         ManagedComponent.managedRenderContext(id + "ctx", job).apply {
-
             popperElement = div({
                 Theme().popper.wrapper(this, leftRenderPosition.toInt())
                 styling()
@@ -330,7 +141,6 @@ open class PopperComponent :
             }
 
             this@PopperComponent.popperStore.data.debounce(100).map { triggerInformation ->
-                console.info(triggerInformation.toString())
                 this@PopperComponent.getStyling(triggerInformation, popperElement)
             } handledBy style.update
         }
@@ -358,7 +168,7 @@ open class PopperComponent :
         baseClass: StyleClass,
         id: String?,
         prefix: String
-    ) {
+    ): Div {
         val popperId = id ?: "fc2-popper-" + randomId()
         context.apply {
             this@PopperComponent.trigger.value?.invoke(
@@ -366,8 +176,7 @@ open class PopperComponent :
                 this@PopperComponent.popperStore.toggle(popperId),
                 this@PopperComponent.popperStore.close
             )
-            attr("data-popper", popperId)
         }
-        renderPopper(styling, baseClass, popperId, prefix)
+        return renderPopper(styling, baseClass, popperId, prefix)
     }
 }
