@@ -2199,7 +2199,6 @@ open class DefaultTheme : Theme {
         override val menu: MenuStyles = object : MenuStyles {
             // base css for all menu children ('entry' uses special styling though)
             private val base: Style<BasicParams> = {
-                width { "calc(100% - ${sizes.normal} * 2)" }
                 margins {
                     horizontal { normal }
                     vertical { smaller }
@@ -2207,35 +2206,35 @@ open class DefaultTheme : Theme {
             }
 
             override val container: Style<BasicParams> = {
-                minWidth { "50px" }
-                maxWidth { maxContent }
+                color { sidebarColor.mainContrast }
                 paddings {
                     vertical { smaller }
                 }
-                background { color { "red" } }
             }
 
             override val sub: Style<BoxParams> = {
-                paddings {
-                    left { normal }
+                children("*") {
+                    paddings {
+                        left { normal }
+                    }
                 }
             }
 
             override val entry: Style<BoxParams> = {
-                width { full }
                 display { flex }
-                justifyContent { start }
-                margin { auto }
+                width { full }
+                alignItems { center }
+                textAlign { "start" }
                 paddings {
-                    horizontal { normal }
+                    horizontal { small }
                     vertical { smaller }
                 }
-                radius { "6px" }
+                radius { normal }
                 css("transition: 0.4s")
                 css("user-select: none")
 
                 hover {
-                    background { color { primary.highlight } }
+                    background { color { sidebarColor.highlight } }
                 }
 
                 disabled {
@@ -2246,7 +2245,7 @@ open class DefaultTheme : Theme {
 
             override val header: Style<BasicParams> = {
                 base()
-                color { secondary.main }
+                color { headerColor.main }
                 fontWeight { bold }
                 css("white-space: nowrap")
             }
@@ -2254,7 +2253,7 @@ open class DefaultTheme : Theme {
             override val divider: Style<BasicParams> = {
                 base()
                 height { "1px" }
-                background { color { gray300 } }
+                background { color { sidebarColor.highlightContrast } }
             }
 
             override val custom: Style<BasicParams> = {
