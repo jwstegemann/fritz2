@@ -1,7 +1,7 @@
-package dev.fritz2.components
-
+package dev.fritz2.components.inputField
 
 import dev.fritz2.binding.Store
+import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.values
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLInputElement
 
 /**
- * This class deals with the _configuration_ of an input element.
+ * This class deals with the configuration and rendering of an input element.
  *
  * The inputField can be configured for the following aspects:
  *  - the size of the element
@@ -27,7 +27,46 @@ import org.w3c.dom.HTMLInputElement
  *  - the element options of the HTML input element can be set.
  *    [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes)
  *
- *  * For a detailed explanation and examples of usage have a look at the [inputField] function!
+ * You can optionally pass in a store in order to set the value and react to updates _automatically_.
+ *
+ * Example usages:
+ * ```
+ * inputField(value = dataStore /* inject a store so all user inputs are automatically reflected! */) {
+ *     placeholder("Placeholder") // render a placeholder text for empty field
+ * }
+ *
+ * // all state management can also be done manually if needed:
+ * val someStore = storeOf("")
+ * inputField {
+ *     placeholder("Enter text")
+ *     value(someStore.data) // connect a flow to the component for setting its value
+ *     events {
+ *         changes.values() handledBy someStore.update // connect an handler for emitting the user input made
+ *     }
+ *     element {
+ *         // exposes the underlying HTML input element for direct access. Use with caution!
+ *     }
+ * }
+ *
+ * // apply predefined size and variant
+ * inputField(value = dataStore) {
+ *      size { small } // render a smaller input
+ *      variant { filled } // fill the background with ``light`` color
+ *      placeholder("Placeholder") // render a placeholder text for empty field
+ * }
+ *
+ * // Of course you can apply custom styling as well
+ * inputField({ // just use the ``styling`` parameter!
+ *      background {
+ *          color { dark }
+ *      }
+ *      radius { "1rem" }
+ * },
+ * value = dataStore) {
+ *      size { small } // render a smaller input
+ *      placeholder("Placeholder") // render a placeholder text for empty field
+ * }
+ * ```
  */
 open class InputFieldComponent(protected val valueStore: Store<String>?) :
     Component<Unit>,
@@ -37,7 +76,6 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
     SeverityProperties by SeverityMixin() {
 
     companion object {
-
         val staticCss = staticStyle(
             "inputBox",
             """
@@ -54,7 +92,6 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
                 width: 100%
             """
         )
-
     }
 
     val variant = ComponentProperty<InputFieldVariants.() -> Style<BasicParams>> { Theme().input.variants.outline }
@@ -93,74 +130,4 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
             }
         }
     }
-}
-
-
-/**
- * This component generates a text based input field.
- *
- * You can optionally pass in a store in order to set the value and react to updates _automatically_.
- *
- * There are options to choose from predefined sizes and some variants from the Theme.
- *
- * To enable or disable it or to make it readOnly just use the well known attributes of the HTML
- * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Input). To manually set the value or
- * react to a change refer also to its event's. All that can be achieved via the [ElementMixin.element] property!
- *
- * ```
- * inputField(value = dataStore /* inject a store so all user inputs are automatically reflected! */) {
- *     placeholder("Placeholder") // render a placeholder text for empty field
- * }
- *
- * // all state management can also be done manually if needed:
- * val someStore = storeOf("")
- * inputField {
- *     placeholder("Enter text")
- *     value(someStore.data) // connect a flow to the component for setting its value
- *     events {
- *         changes.values() handledBy someStore.update // connect an handler for emitting the user input made
- *     }
- *     element {
- *         // exposes the underlying HTML input element for direct access. Use with caution!
- *     }
- * }
- *
- * // apply predefined size and variant
- * inputField(value = dataStore) {
- *      size { small } // render a smaller input
- *      variant { filled } // fill the background with ``light`` color
- *      placeholder("Placeholder") // render a placeholder text for empty field
- * }
- *
- * // Of course you can apply custom styling as well
- * inputField({ // just use the ``styling`` parameter!
- *      background {
- *          color { dark }
- *      }
- *      radius { "1rem" }
- * },
- * value = dataStore) {
- *      size { small } // render a smaller input
- *      placeholder("Placeholder") // render a placeholder text for empty field
- * }
- * ```
- *
- * @see InputFieldComponent
- *
- * @param styling a lambda expression for declaring the styling as fritz2's styling DSL
- * @param value optional [Store] that holds the data of the input
- * @param baseClass optional CSS class that should be applied to the element
- * @param id the ID of the element
- * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself. Details in [InputFieldComponent]
- */
-fun RenderContext.inputField(
-    styling: BasicParams.() -> Unit = {},
-    value: Store<String>? = null,
-    baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
-    prefix: String = "inputField",
-    build: InputFieldComponent.() -> Unit = {}
-) {
-    InputFieldComponent(value).apply(build).render(this, styling, baseClass, id, prefix)
 }

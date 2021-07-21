@@ -50,6 +50,6 @@ fun render(
 ) {
     targetElement?.let {
         if (override) it.innerHTML = ""
-        content(RenderContext(it.tagName, it.id, job = Job(), domNode = it))
+        content(RenderContext(it.tagName, it.id, null, Job(), Scope(), it))
     } ?: throw MountTargetNotFoundException("targetElement should not be null")
 }

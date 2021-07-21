@@ -2,6 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.FlexParams
@@ -33,6 +34,7 @@ import dev.fritz2.styling.params.GridParams
  * @param prefix the prefix for the generated CSS class resulting in the form ``$prefix-$hash``
  * @param content a lambda expression for setting up the content and events of the ``div`` element itself
  */
+@Deprecated("Use 'div' instead of 'box' (same functionality)")
 fun RenderContext.box(
     styling: FlexParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
@@ -44,7 +46,7 @@ fun RenderContext.box(
 
 /**
  * This component represents a layout component with *flex* property.
- * That is the ``display`` property is set to ``flex``. Besides that is totally resembles the [box] component
+ * That is the ``display`` property is set to ``flex``. Besides that is totally resembles the [div] component
  *
  * Example usage:
  * ```
@@ -75,13 +77,14 @@ fun RenderContext.flexBox(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "flex-box",
+    scope: ScopeContext.() -> Unit = {},
     content: Div.() -> Unit
-): Div = div({ display { flex } }, styling, baseClass, id, prefix) { content() }
+): Div = div({ display { flex } }, styling, baseClass, id, prefix, scope) { content() }
 
 
 /**
  * This component represents a layout component with *grid* property.
- * That is the ``display`` property is set to ``grid``. Besides that is totally resembles the [box] component
+ * That is the ``display`` property is set to ``grid``. Besides that is totally resembles the [div] component
  *
  * Example usage:
  * ```
@@ -116,7 +119,8 @@ fun RenderContext.gridBox(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "grid-box",
+    scope: ScopeContext.() -> Unit = {},
     content: Div.() -> Unit
 ): Div =
-    div({ display { grid } }, styling, baseClass, id, prefix) { content() }
+    div({ display { grid } }, styling, baseClass, id, prefix, scope) { content() }
 

@@ -627,6 +627,7 @@ interface AlertStyles {
 interface AlertStacking {
     val compact: Style<BasicParams>
     val separated: Style<BasicParams>
+    val toast: Style<BasicParams>
 }
 
 interface AlertSeverity {
@@ -646,7 +647,7 @@ interface AlertVariants {
     val solid: BasicParams.(ColorScheme) -> Unit
     val leftAccent: BasicParams.(ColorScheme) -> Unit
     val topAccent: BasicParams.(ColorScheme) -> Unit
-    val discreet: BasicParams.(ColorScheme) -> Unit
+    val ghost: BasicParams.(ColorScheme) -> Unit
 }
 
 
@@ -654,8 +655,16 @@ interface AlertVariants {
  * definition of the theme's toasts
  */
 interface ToastStyles {
-    val base: Style<BasicParams>
+    val body: Style<BoxParams>
+    val list: Style<BoxParams>
+
     val placement: ToastPlacement
+    /**
+     * Styling to align the messages according to their horizontal position.
+     * Possible values to react are `left`, `center` and `right`.
+     */
+    val alignment: BoxParams.(String) -> Unit
+
     val status: ToastStatus
     val closeButton: ToastButton
 }
@@ -711,10 +720,12 @@ interface DropdownAlignments {
  */
 interface MenuStyles {
     val container: Style<BasicParams>
+    val sub: Style<BoxParams>
     val entry: Style<BoxParams>
     val header: Style<BasicParams>
     val divider: Style<BasicParams>
     val custom: Style<BoxParams>
+    val icon: Style<BasicParams>
 }
 
 /**
@@ -730,18 +741,17 @@ interface NavBarStyles {
  */
 interface AppFrameStyles {
     val headerHeight: Property
-    val footerMinHeight: Property
+    val complementaryMinHeight: Property
     val mobileSidebarWidth: Property
     val brand: Style<FlexParams>
     val sidebar: Style<BasicParams>
-    val nav: Style<BasicParams>
-    val footer: Style<BasicParams>
+    val navigation: Style<BasicParams>
+    val complementary: Style<BasicParams>
     val header: Style<FlexParams>
     val main: Style<BasicParams>
-    val tabs: Style<FlexParams>
-    val navLink: Style<FlexParams>
-    val activeNavLink: Style<FlexParams>
-    val navSection: Style<BasicParams>
+    val tablist: Style<FlexParams>
+    val backdrop: Style<BasicParams>
+    val menu: MenuStyles
 }
 
 interface DataTableStyles {

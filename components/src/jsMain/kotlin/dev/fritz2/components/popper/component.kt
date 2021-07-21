@@ -4,8 +4,10 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.*
+import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Scope
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BoxParams
@@ -126,11 +128,12 @@ open class PopperComponent :
     ): Div {
         val style = storeOf("")
         val job = Job()
+        val scope = Scope()
         lateinit var popperElement: Div
 
         val active =  this@PopperComponent.popperStore.data.map { it.active }
 
-        ManagedComponent.managedRenderContext(id + "ctx", job).apply {
+        ManagedComponent.managedRenderContext(id + "ctx", job, scope).apply {
             popperElement = div({
                 Theme().popper.wrapper(this, leftRenderPosition.toInt())
                 styling()
