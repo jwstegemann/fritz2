@@ -223,6 +223,8 @@ interface Theme {
     val dataTableStyles: DataTableStyles
 
     val slider: SliderStyles
+
+    val popper: PopperStyles
 }
 
 /**

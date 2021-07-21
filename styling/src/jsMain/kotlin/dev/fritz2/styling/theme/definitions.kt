@@ -103,6 +103,7 @@ class Sizes(
 class ZIndices(
     tableHeader: Int,
     tooltip: Int,
+    popper: Int,
     dropdown: Int,
     popover: Int,
     appFrame: Int,
@@ -120,6 +121,7 @@ class ZIndices(
 
     val tableHeader: Property = tableHeader.toString()
     val tooltip: Property = tooltip.toString()
+    val popper: Property = popper.toString()
     val dropdown: Property = dropdown.toString()
     val popover: Property = popover.toString()
     val appFrame: Property = appFrame.toString()
@@ -784,4 +786,10 @@ interface SliderStyles : SeverityAware {
 fun SliderStyles.core(orientation: String) = when (orientation) {
     "HORIZONTAL" -> horizontal
     else -> vertical
+}
+
+
+interface PopperStyles {
+    val wrapper: BoxParams.(Int) -> Unit
+    val arrow: Style<BoxParams>
 }
