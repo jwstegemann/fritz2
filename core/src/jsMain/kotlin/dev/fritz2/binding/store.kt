@@ -162,6 +162,16 @@ interface Store<T> : WithJob {
             if (last != it) session.send(resource.serialize(it))
         }.watch()
     }
+
+    /**
+     * create a [SubStore] that represents a certain part of your data model.
+     *
+     * @param lens: a [Lens] describing, which part of your data model you will create [SubStore] for.
+     * Use @[Lenses] annotation to let your compiler
+     * create the lenses for you or use the buildLens-factory-method.
+     */
+    fun <X> sub(lens: Lens<T, X>): SubStore<T, X> =
+        SubStore(this, lens)
 }
 
 /**
@@ -237,16 +247,6 @@ open class RootStore<T>(
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
      */
     override val update = this.handle<T> { _, newValue -> newValue }
-
-    /**
-     * create a [SubStore] that represents a certain part of your data model.
-     *
-     * @param lens: a [Lens] describing, which part of your data model you will create [SubStore] for.
-     * Use @[Lenses] annotation to let your compiler
-     * create the lenses for you or use the buildLens-factory-method.
-     */
-    fun <X> sub(lens: Lens<T, X>): SubStore<T, T, X> =
-        SubStore(this, lens, this, lens)
 }
 
 /**

@@ -267,7 +267,7 @@ class ColumnsContext<T> {
             ComponentProperty<Td.(
                 value: IndexedValue<StatefulItem<T>>,
                 cellStore: Store<String>?,
-                rowStore: SubStore<List<T>, List<T>, T>
+                rowStore: SubStore<List<T>, T>
             ) -> Unit>
             { _, store, _ -> store?.data?.asText() }
     }

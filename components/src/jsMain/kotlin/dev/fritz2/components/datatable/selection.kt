@@ -84,7 +84,7 @@ class RowSelectionStore<T, I>(private val rowIdProvider: (T) -> I) : RootStore<L
 interface SelectionStrategy<T, I> {
     fun manageSelectionByExtraColumn(component: DataTableComponent<T, I>)
     fun manageSelectionByRowEvents(
-        component: DataTableComponent<T, I>, rowStore: SubStore<List<T>, List<T>, T>,
+        component: DataTableComponent<T, I>, rowStore: SubStore<List<T>, T>,
         renderContext: Tr
     )
 }
@@ -103,7 +103,7 @@ class NoSelection<T, I> : SelectionStrategy<T, I> {
 
     override fun manageSelectionByRowEvents(
         component: DataTableComponent<T, I>,
-        rowStore: SubStore<List<T>, List<T>, T>,
+        rowStore: SubStore<List<T>, T>,
         renderContext: Tr
     ) {
         // don't wire events -> nothing should get selected!
@@ -197,7 +197,7 @@ class SelectionByCheckBox<T, I> : SelectionStrategy<T, I> {
 
     override fun manageSelectionByRowEvents(
         component: DataTableComponent<T, I>,
-        rowStore: SubStore<List<T>, List<T>, T>,
+        rowStore: SubStore<List<T>, T>,
         renderContext: Tr
     ) {
         // don't wire events -> extra column with checkbox handles everything!
@@ -216,7 +216,7 @@ class SelectionByClick<T, I> : SelectionStrategy<T, I> {
 
     override fun manageSelectionByRowEvents(
         component: DataTableComponent<T, I>,
-        rowStore: SubStore<List<T>, List<T>, T>,
+        rowStore: SubStore<List<T>, T>,
         renderContext: Tr
     ) {
         renderContext.apply {
