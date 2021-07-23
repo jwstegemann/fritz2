@@ -425,7 +425,7 @@ open class DefaultTheme : Theme {
     override val icons: Icons = MonoIcons()
 
     override val input = object : InputFieldStyles {
-        override val sizes = object : FormSizes {
+        override val sizes = object : FormSizesStyles {
             private val basic: Style<BasicParams> = {
                 minWidth { "2.5rem" }
                 lineHeight { normal }
@@ -558,7 +558,7 @@ open class DefaultTheme : Theme {
     }
 
     override val checkbox = object : CheckboxStyles {
-        override val sizes = object : FormSizes {
+        override val sizes = object : FormSizesStyles {
             private val basic: Style<BasicParams> = {
                 display { inlineFlex }
                 css("align-items: center;")
@@ -673,7 +673,7 @@ open class DefaultTheme : Theme {
     }
 
     override val radio = object : RadioStyles {
-        override val sizes = object : FormSizes {
+        override val sizes = object : FormSizesStyles {
             private val basic: Style<BasicParams> = {
                 display { inlineFlex }
                 css("align-items: center;")
@@ -765,7 +765,7 @@ open class DefaultTheme : Theme {
     }
 
     override val switch = object : SwitchStyles {
-        override val sizes = object : FormSizes {
+        override val sizes = object : FormSizesStyles {
             private val basic: Style<BasicParams> = {
                 display { inlineFlex }
                 css("align-items: center;")
@@ -935,7 +935,7 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val sizes = object : FormSizes {
+        override val sizes = object : FormSizesStyles {
             override val normal: Style<BasicParams> = {
                 height { "2.5rem" }
                 minWidth { "2.5rem" }
@@ -1396,7 +1396,7 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val sizes = object : FormSizes {
+        override val sizes = object : FormSizesStyles {
             override val small: Style<BasicParams> = {
                 lineHeight { normal }
                 height { "1rem" }
@@ -1533,7 +1533,7 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val sizes = object : FormSizes {
+        override val sizes = object : FormSizesStyles {
             override val small: Style<BasicParams> = {
                 css("--al-icon-margin: 0.25rem")
                 css("--al-icon-size: ${Theme().fontSizes.small}")
@@ -1763,7 +1763,7 @@ open class DefaultTheme : Theme {
             }
         }
 
-        override val sizes = object : FormSizes {
+        override val sizes = object : FormSizesStyles {
             override val small: Style<BasicParams> = {
                 fontSize { small }
                 css("--select-icon-size: .75rem")
@@ -1788,7 +1788,7 @@ open class DefaultTheme : Theme {
     }
 
     override val formControl = object : FormControlStyles {
-        override val sizes = object : FormSizes {
+        override val sizes = object : FormSizesStyles {
             override val small: Style<BasicParams>
                 get() = {
                     css("--formControl-vertical-margin: ${Theme().sizes.tiny}")
@@ -2327,7 +2327,7 @@ open class DefaultTheme : Theme {
 
         val self = this
 
-        override val sizes = object : FormSizes {
+        override val sizes = object : FormSizesStyles {
             override val large: Style<BasicParams> = {
                 css("outline: 0")
                 css("--sl-size: 1.5rem")

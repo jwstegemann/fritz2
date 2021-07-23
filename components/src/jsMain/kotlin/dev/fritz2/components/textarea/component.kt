@@ -12,7 +12,7 @@ import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.textarea
-import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.FormSizesStyles
 import dev.fritz2.styling.theme.TextAreaResize
 import dev.fritz2.styling.theme.TextAreaVariants
 import dev.fritz2.styling.theme.Theme
@@ -93,7 +93,7 @@ open class TextAreaComponent(protected val valueStore: Store<String>? = null) :
     val variant = ComponentProperty<TextAreaVariants.() -> Style<BasicParams>> { basic }
     val placeholder = DynamicComponentProperty(flowOf(""))
     val resizeBehavior = ComponentProperty<TextAreaResize.() -> Style<BasicParams>> { Theme().textArea.resize.both }
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().textArea.sizes.normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { Theme().textArea.sizes.normal }
 
     override fun render(
         context: RenderContext,
