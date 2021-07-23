@@ -1376,6 +1376,18 @@ open class DefaultTheme : Theme {
                 }
             }
         }
+
+        override val base: Style<BoxParams> = {
+            display { flex }
+            direction { column }
+            background { color { gray700 } }
+            radius { small }
+            color { gray300 }
+            zIndex { tooltip }
+            padding { tiny }
+            fontSize { smaller }
+            lineHeight { smaller }
+        }
     }
 
     override val textArea = object : TextAreaStyles {
@@ -2513,7 +2525,7 @@ open class DefaultTheme : Theme {
             position {
                 absolute {
                     top { "0" }
-                    left {"-${leftPosition}px"}
+                    left { "-${leftPosition}px" }
                 }
             }
             opacity { "0" }

@@ -527,11 +527,16 @@ interface PopoverSizes {
  * definition of the theme's tooltip
  */
 interface TooltipStyles {
+    @Deprecated("since 0.12 - please use TooltipComponent")
     fun write(vararg value: String): Style<BasicParams>
+    @Deprecated("since 0.12 - please use TooltipComponent")
     fun write(vararg value: String, tooltipPlacement: TooltipPlacements.() -> Style<BasicParams>): Style<BasicParams>
+    @Deprecated("since 0.12 - please use TooltipComponent")
     val placement: TooltipPlacements
+    val base: Style<BoxParams>
 }
 
+@Deprecated("since 0.12 - please use TooltipComponent")
 interface TooltipPlacements {
     val top: Style<BasicParams>
     val right: Style<BasicParams>
