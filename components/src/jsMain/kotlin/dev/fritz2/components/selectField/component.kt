@@ -106,7 +106,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
     val placeholder = ComponentProperty("...")
     val variant = ComponentProperty<SelectFieldVariants.() -> Style<BasicParams>> { outline }
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { normal }
     val icon = ComponentProperty<Icons.() -> IconDefinition> { chevronDown }
 
     val selectedItem = NullableDynamicComponentProperty<T>(emptyFlow())
@@ -133,11 +133,11 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                     this@SelectFieldComponent.items.indexOf(selectedItem).let { if (it == -1) null else it }
                 } handledBy internalStore.update
 
-            div({}, styling, baseClass + staticCss, grpId, prefix) {
+            div({}, styling, baseClass + staticCss, prefix = prefix) {
                 select({
                     this@SelectFieldComponent.variant.value.invoke(Theme().select.variants)()
                     this@SelectFieldComponent.size.value.invoke(Theme().select.sizes)()
-                }, styling, baseClass) {
+                }, styling, baseClass, grpId) {
                     disabled(this@SelectFieldComponent.disabled.values)
 
                     internalStore.data.render {

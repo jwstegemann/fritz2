@@ -12,7 +12,7 @@ import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.FormSizesStyles
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -83,7 +83,7 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
         )
     }
 
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().switch.sizes.normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { Theme().switch.sizes.normal }
 
     private var label: (Div.() -> Unit)? = null
     fun label(value: String) {

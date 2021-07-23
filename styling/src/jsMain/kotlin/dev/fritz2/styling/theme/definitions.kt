@@ -367,18 +367,21 @@ interface SeverityAware {
     val severity: SeverityStyles
 }
 
-interface FormSizes {
+interface FormSizesStyles {
     val small: Style<BasicParams>
     val normal: Style<BasicParams>
     val large: Style<BasicParams>
+}
+
+interface FormSizesAware {
+    val sizes: FormSizesStyles
 }
 
 
 /**
  * definition of the theme's checkbox
  */
-interface CheckboxStyles : SeverityAware {
-    val sizes: FormSizes
+interface CheckboxStyles : SeverityAware, FormSizesAware {
     val input: Style<BasicParams>
     val icon: Style<BasicParams>
     val label: Style<BasicParams>
@@ -390,8 +393,7 @@ interface CheckboxStyles : SeverityAware {
 /**
  * definition of the theme's radioButton
  */
-interface RadioStyles : SeverityAware {
-    val sizes: FormSizes
+interface RadioStyles : SeverityAware, FormSizesAware {
     val input: Style<BasicParams>
     val label: Style<BasicParams>
     val default: Style<BasicParams>
@@ -402,8 +404,7 @@ interface RadioStyles : SeverityAware {
 /**
  * definition of the theme's switch
  */
-interface SwitchStyles : SeverityAware {
-    val sizes: FormSizes
+interface SwitchStyles : SeverityAware, FormSizesAware {
     val input: Style<BasicParams>
     val dot: Style<BasicParams>
     val label: Style<BasicParams>
@@ -415,9 +416,8 @@ interface SwitchStyles : SeverityAware {
 /**
  * definition of the theme's inputField
  */
-interface InputFieldStyles : SeverityAware {
+interface InputFieldStyles : SeverityAware, FormSizesAware {
     val variants: InputFieldVariants
-    val sizes: FormSizes
 }
 
 interface InputFieldVariants {
@@ -429,10 +429,9 @@ interface InputFieldVariants {
 /**
  * definition of the theme's pushButton
  */
-interface PushButtonStyles {
+interface PushButtonStyles : FormSizesAware {
     val types: PushButtonTypes
     val variants: PushButtonVariants
-    val sizes: FormSizes
 }
 
 interface PushButtonTypes {
@@ -540,9 +539,8 @@ interface TooltipPlacements {
 /**
  * definition of the theme's textArea styles
  */
-interface TextAreaStyles : SeverityAware {
+interface TextAreaStyles : SeverityAware, FormSizesAware {
     val resize: TextAreaResize
-    val sizes: FormSizes
     val variants: TextAreaVariants
 }
 
@@ -563,9 +561,8 @@ interface TextAreaVariants {
 /**
  * definition of the theme's selectField styles
  */
-interface SelectFieldStyles : SeverityAware {
+interface SelectFieldStyles : SeverityAware, FormSizesAware {
     val variants: SelectFieldVariants
-    val sizes: FormSizes
 }
 
 /**
@@ -581,7 +578,7 @@ interface SelectFieldVariants {
  * definition of the theme's formControl
  */
 interface FormControlStyles {
-    val sizes: FormSizes
+    val sizes: FormSizesStyles
     val label: Style<BasicParams>
     val helperText: Style<BasicParams>
 }
@@ -615,10 +612,9 @@ interface FormGroupStyles {
 /**
  * definition of the theme's alerts
  */
-interface AlertStyles {
+interface AlertStyles : FormSizesAware {
     val severities: AlertSeverities
     val variants: AlertVariants
-    val sizes: FormSizes
     val stacking: AlertStacking
 }
 
@@ -775,8 +771,7 @@ interface SliderCoreStyles {
     val thumb: BoxParams.(Int) -> Unit
 }
 
-interface SliderStyles : SeverityAware {
-    val sizes: FormSizes
+interface SliderStyles : SeverityAware, FormSizesAware {
     val horizontal: SliderCoreStyles
     val vertical: SliderCoreStyles
 }
