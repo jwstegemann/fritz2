@@ -5,7 +5,10 @@ import dev.fritz2.components.icon
 import dev.fritz2.components.linkButton
 import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.*
+import dev.fritz2.styling.a
+import dev.fritz2.styling.button
+import dev.fritz2.styling.div
+import dev.fritz2.styling.hr
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.plus
@@ -141,7 +144,7 @@ open class MenuDivider(private val styling: Style<BoxParams> = {}) : MenuChild {
 
     override fun render(context: RenderContext, styles: MenuStyles) {
         context.apply {
-            div(styles.divider + this@MenuDivider.styling) { }
+            hr(styles.divider + this@MenuDivider.styling) { }
         }
     }
 }
