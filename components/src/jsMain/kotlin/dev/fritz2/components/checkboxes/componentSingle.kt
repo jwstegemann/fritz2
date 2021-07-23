@@ -11,7 +11,7 @@ import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.FormSizesStyles
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme
@@ -85,7 +85,7 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
         )
     }
 
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
     val icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.check }
 
     private var labelField: (RenderContext.() -> Unit)? = null
