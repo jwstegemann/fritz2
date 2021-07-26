@@ -193,6 +193,8 @@ interface Theme {
 
     val modal: ModalStyles
 
+    val card: CardStyles
+
     /**
      * definition of the theme's popover
      */
