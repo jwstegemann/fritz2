@@ -486,6 +486,21 @@ interface ModalWidths {
 }
 
 
+interface CardStyles {
+    val sizes: CardSizes
+    val background: Style<BoxParams>
+    val header: Style<BoxParams>
+    val footer: Style<BoxParams>
+    val content: Style<BoxParams>
+}
+
+interface CardSizes {
+    val small: Style<BoxParams>
+    val normal: Style<BoxParams>
+    val large: Style<BoxParams>
+}
+
+
 /**
  * definition of the theme's popover
  */
