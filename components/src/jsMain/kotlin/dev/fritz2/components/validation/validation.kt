@@ -53,8 +53,8 @@ fun <D> Store<D>.validationMessage(): Flow<ComponentValidationMessage?>? = when 
             null
         }
     }
-    is SubStore<*, *, *> -> {
-        val root = this.root
+    is SubStore<*, *> -> {
+        val root = this.findRootStore()
         if (root is WithValidator<*, *>) {
             root.validator.find { it.id == this@validationMessage.id }
         } else null
@@ -76,11 +76,23 @@ fun <D> Store<D>.validationMessages(): Flow<List<ComponentValidationMessage>>? =
             null
         }
     }
-    is SubStore<*, *, *> -> {
-        val root = this.root
+    is SubStore<*, *> -> {
+        val root = this.findRootStore()
         if (root is WithValidator<*, *>) {
             root.validator.filter { it.id == this@validationMessages.id }
         } else null
     }
     else -> null
+}
+
+/**
+ * recursively get root store of [SubStore]s
+ * @return [Store] which is the root of the [SubStore]
+ */
+private fun <P, T> SubStore<P, T>.findRootStore(): Store<*> {
+    var store: Store<*> = this
+    while (store is SubStore<*, *>) {
+        store = store.parent
+    }
+    return store
 }
