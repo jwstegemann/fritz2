@@ -59,17 +59,6 @@ class SubStore<P, T>(
         lens.get(it)
     }.distinctUntilChanged()
 
-    //TODO: sharedFlow
-
-    /**
-     * the current value of the [SubStore] is derived from the data of it's parent using the given [Lens].
-     */
-//    override val value : T
-//        get() = parent.data.map {
-//        lens.get(it)
-//    }.distinctUntilChanged()
-
-
 }
 
 
