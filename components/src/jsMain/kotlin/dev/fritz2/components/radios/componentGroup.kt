@@ -13,7 +13,7 @@ import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.FormSizesStyles
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -92,12 +92,9 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
     OrientationProperty by OrientationMixin(Orientation.VERTICAL) {
 
     companion object {
-        // TODO: Remove `direction` part and therefore `if` branch
-        fun layoutOf(orientation: Orientation, direction: Direction): Style<BasicParams> = {
+        fun layoutOf(orientation: Orientation): Style<BasicParams> = {
             display {
-                if (direction == Direction.ROW) {
-                    inlineFlex
-                } else when (orientation) {
+                when (orientation) {
                     Orientation.HORIZONTAL -> inlineFlex
                     Orientation.VERTICAL -> inlineGrid
                 }
@@ -107,22 +104,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
 
     val label = ComponentProperty<(item: T) -> String> { it.toString() }
     val labelRendering = ComponentProperty<Div.(item: T) -> Unit> { +this@RadioGroupComponent.label.value(it) }
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
-
-    enum class Direction {
-        COLUMN, ROW
-    }
-
-    object DirectionContext {
-        @Deprecated("Use orientation { vertical } instead", ReplaceWith("vertical"))
-        val column: Direction = Direction.COLUMN
-
-        @Deprecated("Use orientation { horizontal } instead", ReplaceWith("horizontal"))
-        val row: Direction = Direction.ROW
-    }
-
-    @Deprecated("Use orientation instead", ReplaceWith("orientation"))
-    val direction = ComponentProperty<DirectionContext.() -> Direction> { column }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
     val itemStyle = ComponentProperty(Theme().radio.default)
     val labelStyle = ComponentProperty(Theme().radio.label)
@@ -147,10 +129,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
 
         context.apply {
             div({
-                RadioGroupComponent.layoutOf(
-                    this@RadioGroupComponent.orientation.value(OrientationContext),
-                    this@RadioGroupComponent.direction.value(DirectionContext)
-                )()
+                layoutOf(this@RadioGroupComponent.orientation.value(OrientationContext))()
             }, styling, baseClass, id, prefix) {
                 (this@RadioGroupComponent.value?.data ?: this@RadioGroupComponent.selectedItem.values)
                     .map { selectedItem ->
