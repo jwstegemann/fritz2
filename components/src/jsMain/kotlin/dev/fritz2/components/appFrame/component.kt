@@ -1,13 +1,19 @@
 package dev.fritz2.components.appFrame
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.components.*
+import dev.fritz2.components.appFrame
 import dev.fritz2.components.buttons.PushButtonComponent
+import dev.fritz2.components.clickButton
+import dev.fritz2.components.flexBox
 import dev.fritz2.components.foundations.Component
 import dev.fritz2.components.foundations.ComponentProperty
+import dev.fritz2.components.lineUp
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.*
-import dev.fritz2.styling.params.*
+import dev.fritz2.styling.params.BasicParams
+import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.FlexParams
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
 
@@ -58,6 +64,7 @@ open class AppFrameComponent : Component<Unit> {
 
     private val sidebarStatus = storeOf(false)
     private val toggleSidebar = sidebarStatus.handle { !it }
+    val closeSidebar = sidebarStatus.handle { false }
 
     private val openSideBar = staticStyle(
         "open-sidebar",
