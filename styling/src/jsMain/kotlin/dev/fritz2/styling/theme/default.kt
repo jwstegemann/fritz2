@@ -2034,6 +2034,7 @@ open class DefaultTheme : Theme {
             css("user-select: none")
 
             hover {
+                color { primary.highlightContrast }
                 background { color { primary.highlight } }
             }
 
@@ -2238,6 +2239,7 @@ open class DefaultTheme : Theme {
                 css("user-select: none")
 
                 hover {
+                    color { sidebarColor.highlightContrast }
                     background { color { sidebarColor.highlight } }
                 }
 
@@ -2252,7 +2254,7 @@ open class DefaultTheme : Theme {
                     horizontal { smaller }
                     vertical { small }
                 }
-                color { headerColor.main }
+                color { sidebarColor.highlightContrast }
                 fontWeight { bold }
                 css("white-space: nowrap")
             }
