@@ -104,12 +104,9 @@ open class CheckboxGroupComponent<T>(
     OrientationProperty by OrientationMixin(Orientation.VERTICAL) {
 
     companion object {
-        // TODO: Remove ``direction`` part and therefore ``if`` branch
-        fun layoutOf(orientation: Orientation, direction: Direction): Style<BasicParams> = {
+        fun layoutOf(orientation: Orientation): Style<BasicParams> = {
             display {
-                if (direction == Direction.ROW) {
-                    inlineFlex
-                } else when (orientation) {
+                when (orientation) {
                     Orientation.HORIZONTAL -> inlineFlex
                     Orientation.VERTICAL -> inlineGrid
                 }
@@ -125,21 +122,6 @@ open class CheckboxGroupComponent<T>(
         }
     }
     val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
-
-    enum class Direction {
-        COLUMN, ROW
-    }
-
-    object DirectionContext {
-        @Deprecated("Use orientation { vertical } instead", ReplaceWith("vertical"))
-        val column: Direction = Direction.COLUMN
-
-        @Deprecated("Use orientation { horizontal } instead", ReplaceWith("horizontal"))
-        val row: Direction = Direction.ROW
-    }
-
-    @Deprecated("Use orientation instead", ReplaceWith("orientation"))
-    val direction = ComponentProperty<DirectionContext.() -> Direction> { column }
 
     val itemStyle = ComponentProperty(Theme().checkbox.default)
     var labelStyle = ComponentProperty(Theme().checkbox.label)
@@ -164,10 +146,7 @@ open class CheckboxGroupComponent<T>(
 
         context.apply {
             div({
-                layoutOf(
-                    this@CheckboxGroupComponent.orientation.value(OrientationContext),
-                    this@CheckboxGroupComponent.direction.value(DirectionContext)
-                )()
+                layoutOf(this@CheckboxGroupComponent.orientation.value(OrientationContext))()
             }, styling, baseClass, id, prefix) {
                 (this@CheckboxGroupComponent.values?.data
                     ?: this@CheckboxGroupComponent.selectedItems.values) handledBy multiSelectionStore.update

@@ -62,7 +62,7 @@ data class Column<T>(
     val content: Td.(
         value: IndexedValue<StatefulItem<T>>,
         cellStore: Store<String>?,
-        rowStore: SubStore<List<T>, List<T>, T>
+        rowStore: SubStore<List<T>, T>
     ) -> Unit,
     val headerStyling: BasicParams.(sorting: Sorting) -> Unit = {},
     val headerContent: Div.(column: Column<T>) -> Unit
