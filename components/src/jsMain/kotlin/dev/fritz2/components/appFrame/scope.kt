@@ -7,7 +7,7 @@ sealed class AppFrameScope(name: String) : Scope.Key<Boolean>("appFrame-$name") 
     object Brand: AppFrameScope("brand")
     object Actions: AppFrameScope("actions")
     object Navigation: AppFrameScope("navigation")
-    object Main: AppFrameScope("main")
+    object Content: AppFrameScope("content")
     object Complementary: AppFrameScope("complementary")
     object Tablist: AppFrameScope("tablist")
 }

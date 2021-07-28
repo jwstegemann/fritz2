@@ -742,7 +742,7 @@ interface AppFrameStyles {
     val navigation: Style<BasicParams>
     val complementary: Style<BasicParams>
     val header: Style<FlexParams>
-    val main: Style<BasicParams>
+    val content: Style<BasicParams>
     val tablist: Style<FlexParams>
     val backdrop: Style<BasicParams>
     val menu: MenuStyles

@@ -2105,7 +2105,7 @@ open class DefaultTheme : Theme {
         val sidebarColor: ColorScheme
             get() = colors.tertiary
 
-        val mainColor: ColorScheme
+        val contentColor: ColorScheme
             get() = colors.neutral
 
         val tabsColor: ColorScheme
@@ -2155,10 +2155,10 @@ open class DefaultTheme : Theme {
             background { color { headerColor.main } }
         }
 
-        override val main: Style<BasicParams> = {
+        override val content: Style<BasicParams> = {
             padding { normal }
-            background { color { mainColor.main } }
-            color { mainColor.mainContrast }
+            background { color { contentColor.main } }
+            color { contentColor.mainContrast }
         }
 
         override val tablist: Style<FlexParams> = {

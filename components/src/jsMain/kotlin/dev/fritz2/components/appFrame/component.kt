@@ -17,6 +17,8 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
 
+
+
 /**
  * This class combines the _configuration_ and the core rendering of the [appFrame].
  *
@@ -25,7 +27,7 @@ import dev.fritz2.styling.theme.Theme
  * - header
  * - actions
  * - navigation
- * - main
+ * - content
  * - complementary (only rendered if defined)
  * - tablist (only rendered if defined)
  *
@@ -50,7 +52,7 @@ open class AppFrameComponent : Component<Unit> {
                     display: grid;
                     grid-template-areas:
                         "brand header"
-                        "sidebar main"
+                        "sidebar content"
                         "sidebar tablist";
                     grid-template-rows: ${Theme().appFrame.headerHeight} 1fr min-content;
                     grid-auto-columns: min-content 1fr;
@@ -103,37 +105,72 @@ open class AppFrameComponent : Component<Unit> {
     }
 
     private var brand = Pair<Style<FlexParams>?, (RenderContext.() -> Unit)?>(null, null)
-    fun brand(styling: Style<FlexParams>? = null, context: RenderContext.() -> Unit) {
+    fun brand(
+        styling: Style<FlexParams>? = null,
+        baseClass: StyleClass = StyleClass.None,
+        id: String? = null,
+        context: RenderContext.() -> Unit
+    ) {
         brand = styling to context
     }
 
     private var header = Pair<Style<FlexParams>?, (RenderContext.() -> Unit)?>(null, null)
-    fun header(styling: Style<FlexParams>? = null, context: RenderContext.() -> Unit) {
+    fun header(
+        styling: Style<FlexParams>? = null,
+        baseClass: StyleClass = StyleClass.None,
+        id: String? = null,
+        context: RenderContext.() -> Unit
+    ) {
         header = styling to context
     }
 
     private var actions = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
-    fun actions(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
+    fun actions(
+        styling: Style<BoxParams>? = null,
+        baseClass: StyleClass = StyleClass.None,
+        id: String? = null,
+        context: RenderContext.() -> Unit
+    ) {
         actions = styling to context
     }
 
-    private var main = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
-    fun main(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
-        main = styling to context
+    private var content = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
+    fun content(
+        styling: Style<BoxParams>? = null,
+        baseClass: StyleClass = StyleClass.None,
+        id: String? = null,
+        context: RenderContext.() -> Unit
+    ) {
+        content = styling to context
     }
 
     private var complementary: Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>? = null
-    fun complementary(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
+    fun complementary(
+        styling: Style<BoxParams>? = null,
+        baseClass: StyleClass = StyleClass.None,
+        id: String? = null,
+        context: RenderContext.() -> Unit
+    ) {
         complementary = styling to context
     }
 
     private var tablist: Pair<Style<FlexParams>?, (RenderContext.() -> Unit)?>? = null
-    fun tablist(styling: Style<FlexParams>? = null, context: RenderContext.() -> Unit) {
+    fun tablist(
+        styling: Style<FlexParams>? = null,
+        baseClass: StyleClass = StyleClass.None,
+        id: String? = null,
+        context: RenderContext.() -> Unit
+    ) {
         tablist = styling to context
     }
 
     private var navigation = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
-    fun navigation(styling: Style<BoxParams>? = null, context: RenderContext.() -> Unit) {
+    fun navigation(
+        styling: Style<BoxParams>? = null,
+        baseClass: StyleClass = StyleClass.None,
+        id: String? = null,
+        context: RenderContext.() -> Unit
+    ) {
         navigation = styling to context
     }
 
@@ -222,7 +259,7 @@ open class AppFrameComponent : Component<Unit> {
             }
 
             aside({
-                grid(sm = { area { "main" } }, md = { area { "sidebar" } })
+                grid(sm = { area { "content" } }, md = { area { "sidebar" } })
                 this@AppFrameComponent.mobileSidebar(Theme().appFrame.headerHeight)()
                 overflow { hidden }
                 height(sm = { "calc(100% - ${Theme().appFrame.headerHeight})" }, md = { unset })
@@ -260,15 +297,15 @@ open class AppFrameComponent : Component<Unit> {
             }
 
             main({
-                grid { area { "main" } }
+                grid { area { "content" } }
                 overflow { auto }
-                Theme().appFrame.main()
+                Theme().appFrame.content()
                 styling()
-                this@AppFrameComponent.main.first?.invoke()
+                this@AppFrameComponent.content.first?.invoke()
             }, styling, baseClass, id, prefix, {
-                set(AppFrameScope.Main, true)
+                set(AppFrameScope.Content, true)
             }) {
-                this@AppFrameComponent.main.second?.invoke(this)
+                this@AppFrameComponent.content.second?.invoke(this)
             }
 
             this@AppFrameComponent.tablist?.let { tablist ->
