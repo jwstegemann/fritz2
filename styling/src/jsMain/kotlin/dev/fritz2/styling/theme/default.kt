@@ -2250,6 +2250,9 @@ open class DefaultTheme : Theme {
             }
 
             override val header: Style<BasicParams> = {
+                not(":first-child") {
+                    paddings { top { huge } }
+                }
                 margins {
                     horizontal { smaller }
                     vertical { small }
