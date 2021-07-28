@@ -17,7 +17,12 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
 
-
+internal class AppFrameSection<S : BasicParams>(
+    val styling: Style<S>? = null,
+    val baseClass: StyleClass = StyleClass.None,
+    val id: String? = null,
+    val context: RenderContext.() -> Unit = {}
+)
 
 /**
  * This class combines the _configuration_ and the core rendering of the [appFrame].
@@ -104,74 +109,74 @@ open class AppFrameComponent : Component<Unit> {
         boxShadow(sm = { flat }, md = { none })
     }
 
-    private var brand = Pair<Style<FlexParams>?, (RenderContext.() -> Unit)?>(null, null)
+    private var brand = AppFrameSection<FlexParams>()
     fun brand(
         styling: Style<FlexParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         context: RenderContext.() -> Unit
     ) {
-        brand = styling to context
+        brand = AppFrameSection(styling, baseClass, id, context)
     }
 
-    private var header = Pair<Style<FlexParams>?, (RenderContext.() -> Unit)?>(null, null)
+    private var header = AppFrameSection<FlexParams>()
     fun header(
         styling: Style<FlexParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         context: RenderContext.() -> Unit
     ) {
-        header = styling to context
+        header = AppFrameSection(styling, baseClass, id, context)
     }
 
-    private var actions = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
+    private var actions = AppFrameSection<BoxParams>()
     fun actions(
         styling: Style<BoxParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         context: RenderContext.() -> Unit
     ) {
-        actions = styling to context
+        actions = AppFrameSection(styling, baseClass, id, context)
     }
 
-    private var content = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
+    private var content = AppFrameSection<BoxParams>()
     fun content(
         styling: Style<BoxParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         context: RenderContext.() -> Unit
     ) {
-        content = styling to context
+        content = AppFrameSection(styling, baseClass, id, context)
     }
 
-    private var complementary: Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>? = null
+    private var complementary: AppFrameSection<BoxParams>? = null
     fun complementary(
         styling: Style<BoxParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         context: RenderContext.() -> Unit
     ) {
-        complementary = styling to context
+        complementary = AppFrameSection(styling, baseClass, id, context)
     }
 
-    private var tablist: Pair<Style<FlexParams>?, (RenderContext.() -> Unit)?>? = null
+    private var tablist: AppFrameSection<FlexParams>? = null
     fun tablist(
         styling: Style<FlexParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         context: RenderContext.() -> Unit
     ) {
-        tablist = styling to context
+        tablist = AppFrameSection(styling, baseClass, id, context)
     }
 
-    private var navigation = Pair<Style<BoxParams>?, (RenderContext.() -> Unit)?>(null, null)
+    private var navigation = AppFrameSection<BoxParams>()
     fun navigation(
         styling: Style<BoxParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         context: RenderContext.() -> Unit
     ) {
-        navigation = styling to context
+        navigation = AppFrameSection(styling, baseClass, id, context)
     }
 
     val sidebarToggle = ComponentProperty<PushButtonComponent.() -> Unit> {
@@ -219,9 +224,9 @@ open class AppFrameComponent : Component<Unit> {
                 flexBox({
                     height { Theme().appFrame.headerHeight }
                     Theme().appFrame.brand()
-                    this@AppFrameComponent.brand.first?.invoke()
-                }, prefix = "brand") {
-                    this@AppFrameComponent.brand.second?.invoke(this)
+                    this@AppFrameComponent.brand.styling?.invoke()
+                }, this@AppFrameComponent.brand.baseClass, this@AppFrameComponent.brand.id, "brand") {
+                    this@AppFrameComponent.brand.context(this)
                 }
             }
 
@@ -233,27 +238,27 @@ open class AppFrameComponent : Component<Unit> {
                 flexBox({
                     height { Theme().appFrame.headerHeight }
                     Theme().appFrame.header()
-                    this@AppFrameComponent.header.first?.invoke()
-                }, prefix = "header") {
+                    this@AppFrameComponent.header.styling?.invoke()
+                }, this@AppFrameComponent.header.baseClass, this@AppFrameComponent.header.id, "header") {
                     lineUp({
-                        alignItems { dev.fritz2.styling.params.AlignItemsValues.center }
+                        alignItems { center }
                     }) {
                         spacing { tiny }
                         items {
                             clickButton({
-                                display(md = { dev.fritz2.styling.params.DisplayValues.none })
+                                display(md = { none })
                                 padding { none }
                                 margins { left { "-.5rem" } }
                             }) {
-                                this@AppFrameComponent.sidebarToggle.value.invoke(this)
+                                this@AppFrameComponent.sidebarToggle.value(this)
                             } handledBy this@AppFrameComponent.toggleSidebar
-                            this@AppFrameComponent.header.second?.invoke(this)
+                            this@AppFrameComponent.header.context(this)
                         }
                     }
                     section({
-                        this@AppFrameComponent.actions.first?.invoke()
-                    }, prefix = "actions") {
-                        this@AppFrameComponent.actions.second?.invoke(this)
+                        this@AppFrameComponent.actions.styling?.invoke()
+                    }, this@AppFrameComponent.actions.baseClass, this@AppFrameComponent.actions.id, "actions") {
+                        this@AppFrameComponent.actions.context(this)
                     }
                 }
             }
@@ -277,20 +282,18 @@ open class AppFrameComponent : Component<Unit> {
                 }) {
                     section({
                         Theme().appFrame.navigation()
-                        this@AppFrameComponent.navigation.first?.invoke()
-                    }, prefix = "navigation", scope = {
-                        set(AppFrameScope.Navigation, true)
-                    }) {
-                        this@AppFrameComponent.navigation.second?.invoke(this)
+                        this@AppFrameComponent.navigation.styling?.invoke()
+                    }, this@AppFrameComponent.navigation.baseClass, this@AppFrameComponent.navigation.id,
+                        "navigation", { set(AppFrameScope.Navigation, true) }) {
+                        this@AppFrameComponent.navigation.context(this)
                     }
                     this@AppFrameComponent.complementary?.let { complementary ->
                         section({
                             Theme().appFrame.complementary()
-                            complementary.first?.invoke()
-                        }, scope = {
-                            set(AppFrameScope.Complementary, true)
-                        }) {
-                            complementary.second?.invoke(this)
+                            complementary.styling?.invoke()
+                        }, complementary.baseClass, complementary.id,
+                            "complementary", { set(AppFrameScope.Complementary, true) }) {
+                            complementary.context(this)
                         }
                     }
                 }
@@ -301,11 +304,12 @@ open class AppFrameComponent : Component<Unit> {
                 overflow { auto }
                 Theme().appFrame.content()
                 styling()
-                this@AppFrameComponent.content.first?.invoke()
-            }, styling, baseClass, id, prefix, {
+                this@AppFrameComponent.content.styling?.invoke()
+            }, this@AppFrameComponent.content.baseClass + baseClass,
+                this@AppFrameComponent.content.id ?: id, "content", {
                 set(AppFrameScope.Content, true)
             }) {
-                this@AppFrameComponent.content.second?.invoke(this)
+                this@AppFrameComponent.content.context(this)
             }
 
             this@AppFrameComponent.tablist?.let { tablist ->
@@ -315,11 +319,9 @@ open class AppFrameComponent : Component<Unit> {
                     alignItems { center }
                     justifyContent { spaceEvenly }
                     Theme().appFrame.tablist()
-                    tablist.first?.invoke()
-                }, prefix = "tablist", scope = {
-                    set(AppFrameScope.Tablist, true)
-                }) {
-                    tablist.second?.invoke(this)
+                    tablist.styling?.invoke()
+                }, tablist.baseClass, tablist.id, "tablist", { set(AppFrameScope.Tablist, true) }) {
+                    tablist.context(this)
                 }
             }
         }
