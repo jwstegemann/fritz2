@@ -3,6 +3,7 @@ package dev.fritz2.components.typeAhead
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.components.*
+import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.uniqueId

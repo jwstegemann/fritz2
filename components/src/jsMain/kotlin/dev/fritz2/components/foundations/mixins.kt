@@ -205,7 +205,7 @@ class InputFormMixin : InputFormProperties, FormMixin() {
  */
 interface InputFieldProperties {
     val variant: ComponentProperty<InputFieldVariants.() -> Style<BasicParams>>
-    val size: ComponentProperty<FormSizes.() -> Style<BasicParams>>
+    val size: ComponentProperty<FormSizesStyles.() -> Style<BasicParams>>
     val placeholder: DynamicComponentProperty<String>
 }
 
@@ -216,7 +216,7 @@ class InputFieldMixin : InputFieldProperties {
     override val variant = ComponentProperty<InputFieldVariants.() -> Style<BasicParams>> {
         Theme().input.variants.outline
     }
-    override val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> {
+    override val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> {
         Theme().input.sizes.normal
     }
     override val placeholder = DynamicComponentProperty(flowOf(""))
