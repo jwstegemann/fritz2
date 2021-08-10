@@ -52,6 +52,7 @@ open class AppFrameComponent : Component<Unit> {
                 """
                 body {
                     height: 100vh;
+                    overflow: hidden;
                     max-height: -webkit-fill-available;
                     width: 100vw;
                     display: grid;
