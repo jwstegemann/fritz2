@@ -1,5 +1,6 @@
 package dev.fritz2.binding
 
+import dev.fritz2.identification.RootInspector
 import dev.fritz2.dom.html.WithJob
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
@@ -257,3 +258,5 @@ open class RootStore<T>(
  * @param id the id of this store. ids of [SubStore]s will be concatenated.
  */
 fun <T> storeOf(initialData: T, id: String = "") = RootStore(initialData, id)
+
+fun <T> Store<T>.inspect(data: T) = RootInspector(data, id)
