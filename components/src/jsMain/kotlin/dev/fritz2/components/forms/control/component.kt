@@ -13,6 +13,8 @@ import dev.fritz2.components.selectField.SelectFieldComponent
 import dev.fritz2.components.slider.SliderComponent
 import dev.fritz2.components.switch.SwitchComponent
 import dev.fritz2.components.textarea.TextAreaComponent
+import dev.fritz2.components.typeAhead.Proposal
+import dev.fritz2.components.typeAhead.TypeAheadComponent
 import dev.fritz2.components.validation.ComponentValidationMessage
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.components.validation.validationMessages
@@ -95,6 +97,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
             const val checkbox = "checkbox"
             const val checkboxGroup = "checkboxGroup"
             const val slider = "slider"
+            const val typeAhead = "typeAhead"
         }
     }
 
@@ -239,7 +242,8 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
             ControlNames.textArea,
             ControlNames.selectField,
             ControlNames.checkbox,
-            ControlNames.slider
+            ControlNames.slider,
+            ControlNames.typeAhead
         ).forEach { put(it, singleRenderer) }
         put(ControlNames.checkboxGroup, groupRenderer)
         put(ControlNames.radioGroup, groupRenderer)
@@ -353,6 +357,30 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
             ControlNames.inputField,
             {
                 inputField(styling, value, baseClass, id, prefix) {
+                    size { this@FormControlComponent.sizeBuilder(this) }
+                    severity(validationMessagesBuilder().hasSeverity)
+                    build()
+                }
+            },
+            { this.validationMessagesBuilder = validationMessagesBuilder }
+        )
+    }
+
+    open fun typeAhead(
+        styling: BasicParams.() -> Unit = {},
+        value: Store<String>? = null,
+        items: Proposal,
+        baseClass: StyleClass = StyleClass.None,
+        id: String? = value?.id,
+        prefix: String = ControlNames.typeAhead,
+        build: TypeAheadComponent.() -> Unit = {}
+    ) {
+        val validationMessagesBuilder = ValidationResult.builderOf(this, value)
+        registerControl(
+            id,
+            ControlNames.typeAhead,
+            {
+                typeAhead(styling, value, items, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
                     build()
