@@ -2131,6 +2131,10 @@ open class DefaultTheme : Theme {
             minWidth { "22vw" }
         }
 
+        override val sidebarClose: Style<BasicParams> = {
+            color { brandColor.mainContrast }
+        }
+
         override val navigation: Style<BasicParams> = {
             width { full }
             paddings {

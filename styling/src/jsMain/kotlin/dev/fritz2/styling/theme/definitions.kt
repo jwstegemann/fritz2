@@ -739,6 +739,7 @@ interface AppFrameStyles {
     val mobileSidebarWidth: Property
     val brand: Style<FlexParams>
     val sidebar: Style<BasicParams>
+    val sidebarClose: Style<BasicParams>
     val navigation: Style<BasicParams>
     val complementary: Style<BasicParams>
     val header: Style<FlexParams>

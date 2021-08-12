@@ -5,6 +5,8 @@ import dev.fritz2.components.appFrame
 import dev.fritz2.components.buttons.PushButtonComponent
 import dev.fritz2.components.clickButton
 import dev.fritz2.components.flexBox
+import dev.fritz2.components.foundations.CloseButtonMixin
+import dev.fritz2.components.foundations.CloseButtonProperty
 import dev.fritz2.components.foundations.Component
 import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.components.lineUp
@@ -42,7 +44,12 @@ internal class AppFrameSection<S : BasicParams>(
  * The rendering function is used by the component factory functions [appFrame], so it is
  * not meant to be called directly unless you plan to implement your own appFrame.
  */
-open class AppFrameComponent : Component<Unit> {
+open class AppFrameComponent : Component<Unit>,
+    CloseButtonProperty by CloseButtonMixin("sidebar-close-button", {
+        margins { left { auto } }
+        display(sm = { unset }, md = { none })
+        Theme().appFrame.sidebarClose()
+    }) {
     companion object {
         init {
             // Needs to reference header height from Theme even though static style needs to be used to style the body.
@@ -228,6 +235,10 @@ open class AppFrameComponent : Component<Unit> {
                     this@AppFrameComponent.brand.styling?.invoke()
                 }, this@AppFrameComponent.brand.baseClass, this@AppFrameComponent.brand.id, "brand") {
                     this@AppFrameComponent.brand.context(this)
+                    if (this@AppFrameComponent.hasCloseButton.value) {
+                        this@AppFrameComponent.closeButtonRendering.value(this) handledBy
+                                this@AppFrameComponent.closeSidebar
+                    }
                 }
             }
 
@@ -308,8 +319,9 @@ open class AppFrameComponent : Component<Unit> {
                 this@AppFrameComponent.content.styling?.invoke()
             }, this@AppFrameComponent.content.baseClass + baseClass,
                 this@AppFrameComponent.content.id ?: id, "content", {
-                set(AppFrameScope.Content, true)
-            }) {
+                    set(AppFrameScope.Content, true)
+                }
+            ) {
                 this@AppFrameComponent.content.context(this)
             }
 
