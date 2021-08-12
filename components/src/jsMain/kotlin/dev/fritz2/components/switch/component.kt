@@ -70,12 +70,13 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
             "switch",
             """
             position: absolute;
-            height: 1px;                
-            width: 1px;                
+            border: 0px;
+            clip: rect(0px, 0px, 0px, 0px);
+            height: 0px;
+            width: 0px;
+            white-space: nowrap;
             overflow: hidden;
-            clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
-            clip: rect(1px, 1px, 1px, 1px);
-            outline: none;           
+            outline: none;
             &:focus{
                 outline: none;
             }           

@@ -725,8 +725,8 @@ open class DefaultTheme : Theme {
             flex {
                 shrink { "0" }
             }
-            css("align-items:center;")
-            css("justify-content:center;")
+            css("align-items: center;")
+            css("justify-content: center;")
             width { "var(--rb-size)" }
             height { "var(--rb-size)" }
             background { color { neutral.main } }
@@ -739,10 +739,8 @@ open class DefaultTheme : Theme {
         }
         override val selected: Style<BasicParams> = {
             background { color { primary.main } }
-            color { gray300 }
-            border {
-                color { primary.main }
-            }
+            border { color { primary.main } }
+            color { primary.mainContrast }
             before {
                 css("content:\"\";")
                 display {

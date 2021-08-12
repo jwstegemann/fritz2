@@ -68,12 +68,12 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
     private val radioInputStaticCss = style(
         """
             position: absolute;
-            height: 1px; 
-            width: 1px;
+            border: 0px;
+            clip: rect(0px, 0px, 0px, 0px);
+            height: 0px;
+            width: 0px;
             overflow: hidden;
-            clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
-            clip: rect(1px, 1px, 1px, 1px);
-            outline: none;
+            white-space: nowrap;
             &:focus{
                 outline: none;
             }
