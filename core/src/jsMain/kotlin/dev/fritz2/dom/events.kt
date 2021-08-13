@@ -17,7 +17,6 @@ interface EventContext<out T : Element> : WithJob, WithEvents<T>
  * Offers [DomListener]s for all DOM-events available.
  */
 interface WithEvents<out T : Element> : WithDomNode<T> {
-
     /**
      * Creates a [DomListener] on a DOM-element.
      *

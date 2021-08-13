@@ -13,6 +13,10 @@ class EventType<T : Event>(val name: String)
 /**
  * Contains all javascript event types.
  * Take a look [here](https://www.w3schools.com/jsref/dom_obj_event.asp).
+ *
+ * Sometimes it is necessary to use a more generic type (like UIEvent or even Event)
+ * because the type that is offered to the listener is not always consistent
+ * (on different browsers, different actions, etc.)
  */
 object Events {
 
@@ -101,7 +105,8 @@ object Events {
     val hashchange = EventType<HashChangeEvent>("hashchange")
 
     // The event occurs when an element gets user input
-    val input = EventType<InputEvent>("input")
+    // has to use Event as type because Chrome and Safari offer Events instead of InputEvents when selecting from a datalist
+    val input = EventType<Event>("input")
 
     // The event occurs when an element is invalid
     val invalid = EventType<Event>("invalid")
