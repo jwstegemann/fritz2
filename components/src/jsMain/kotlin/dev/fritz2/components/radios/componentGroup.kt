@@ -130,6 +130,9 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
         context.apply {
             div({
                 layoutOf(this@RadioGroupComponent.orientation.value(OrientationContext))()
+                verticalAlign { top }
+                css("-webkit-box-align: center;")
+                alignItems { center }
             }, styling, baseClass, id, prefix) {
                 (this@RadioGroupComponent.value?.data ?: this@RadioGroupComponent.selectedItem.values)
                     .map { selectedItem ->
