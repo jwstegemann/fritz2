@@ -17,15 +17,16 @@ import dev.fritz2.dom.html.Scope.Key
  *
  * To give a practical example:
  * Imagine some button component, which normally uses the "primary" color as background. This works fine for most of
- * the time. But now imagine some buttons bar on the bottom edge of a modal for example to provide the typical buttons
+ * the time. But now imagine a buttons-bar on the bottom edge of a modal for example to provide the typical buttons
  * like "ok", "cancel", "yes", "no" or alike. This bar uses the primary color as background too, to have a high contrast
  * against the content above. The two components do not work well together this way!
  * The user would have to manually apply some other color to the buttons when using them inside the bar, in order to
  * preserve a good contrast to it. To achieve this behaviour automatically, the scope comes to the rescue:
- * The buttons bar component can just add some key-value pair to the scope like ``set("buttonsBar", true)`` in order
+ * The buttons-bar component can define a global scope-key `buttonsBar` by using the [keyOf] function.
+ * Then it can add some key-value pair to the scope like `set(buttonsBar, true)` in order
  * to signal all child nodes that they appear within the context of a buttons bar. The button component could be
  * aware of the key and implement some different behaviour concerning the color, if it detects that it is used within
- * a buttons bar.
+ * a buttons-bar.
  *
  * The scope only changes conformal to the node hierarchy. That is the scope is empty at the top level [render] function
  * call and may be filled or changed by each child. But a change by some node is only propagated to the children of
@@ -34,15 +35,16 @@ import dev.fritz2.dom.html.Scope.Key
  * Example:
  * ```
  * div { // initial scope -> empty!
+ *     val sizes = keyOf<String>("sizes") // normally define scope-keys globally
  *     div(scope = {
- *         set("sizes", "small") // add some key-value to the scope
+ *         set(sizes, "small") // add some key-value to the scope
  *     }) {
  *         // all children will get this scope instance
  *         p {
  *             scope.asDataAttr() // -> { "sizes": "small" }
  *         }
  *         section {
- *             when (scope["sizes"]) {
+ *             when (scope[sizes]) {
  *                 "small" -> div({ fontSize { "0.8rem" } }) { +"small text" }
  *                 "normal" -> div({ fontSize { "1rem" } }) { +"normal text" }
  *                 "large" -> div({ fontSize { "1.2rem" } }) { +"large text" }
@@ -53,7 +55,7 @@ import dev.fritz2.dom.html.Scope.Key
  *     }
  *     // next sibling -> only parent scope available, which is empty!
  *     p {
- *         scope.asDataAttr()
+ *         scope.asDataAttr() // -> {}
  *     }
  * }
  * ```
@@ -64,9 +66,9 @@ import dev.fritz2.dom.html.Scope.Key
  * instead of setting a client node tailored rule. This enables more freedom for future usages and adaptions by other
  * consuming components.
  *
- * To continue the first example: A buttons bar component should better not inject some "buttonsColor" into the scope,
- * but better just some "buttonsBar" key without any value. As a creator you just cannot anticipate all situations
- * and future usage of the bar component. It might be possible that a client wants to put something different to a
+ * To continue the first example: A buttons-bar component should better not inject some "buttonsColor" into the scope,
+ * but better just some "buttonsBar" key without any value (Unit). As a creator you just cannot anticipate all situations
+ * and future usage of the buttons-bar component. It might be possible that a client wants to put something different to a
  * button into the bar, that also should react to the context. Then a key (and value) tailored to the button does not
  * make sense anymore.
  *
