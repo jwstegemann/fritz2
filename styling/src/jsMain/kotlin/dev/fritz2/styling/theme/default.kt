@@ -1057,39 +1057,31 @@ open class DefaultTheme : Theme {
     override val card: CardStyles = object : CardStyles {
         override val sizes: CardSizes = object : CardSizes {
             override val small: Style<BoxParams> = {
-                padding { smaller }
                 fontSize { small }
                 // TODO: Use size smaller than 'tiny' once available:
                 //css("--card-spacing-header-footer: ${Theme().sizes.tinier}")
                 css("--card-spacing-header-footer: 0.12rem")
                 css("--card-spacing-content: ${Theme().sizes.smaller}")
                 css("--card-separator-width: ${Theme().borderWidths.hair}")
-                css("--card-radius: ${Theme().radii.normal}")
             }
 
             override val normal: Style<BoxParams> = {
-                padding { small }
                 fontSize { normal }
                 css("--card-spacing-header-footer: ${Theme().sizes.tiny}")
                 css("--card-spacing-content: ${Theme().sizes.small}")
                 css("--card-separator-width: ${Theme().borderWidths.thin}")
-                css("--card-radius: ${Theme().radii.large}")
             }
 
             override val large: Style<BoxParams> = {
-                padding { normal }
                 fontSize { large }
                 css("--card-spacing-header-footer: ${Theme().sizes.smaller}")
                 css("--card-spacing-content: ${Theme().sizes.normal}")
                 css("--card-separator-width: ${Theme().borderWidths.normal}")
-                css("--card-radius: ${Theme().radii.huge}")
             }
         }
 
         override val background: Style<BoxParams> = {
-            radius { "var(--card-radius)" }
-            boxShadow { raised }
-            background { color { neutral.main } }
+            // No background by default
         }
 
         override val header: Style<BoxParams> = {

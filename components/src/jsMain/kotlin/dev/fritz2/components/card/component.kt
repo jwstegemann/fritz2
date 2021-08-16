@@ -4,6 +4,7 @@ import dev.fritz2.components.card
 import dev.fritz2.components.foundations.Component
 import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Scope
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.theme.Theme
@@ -47,12 +48,21 @@ import kotlinx.coroutines.flow.flowOf
  * }
  * ```
  */
-open class CardComponent : Component<Unit> {
+open class CardComponent(private val scope: Scope) : Component<Unit> {
 
     companion object {
         private const val headerStylePrefix = "card-header"
         private const val footerStylePrefix = "card-footer"
         private const val contentStylePrefix = "card-content"
+    }
+
+
+    /**
+     * This component styles itself differently if it is rendered in the scope of a [PopoverComponent].
+     * @see Scope
+     */
+    private val scopedStyles = when {
+        else -> Theme().card
     }
 
 
@@ -74,7 +84,7 @@ open class CardComponent : Component<Unit> {
     fun header(value: (RenderContext.() -> Unit)) {
         header = {
             header({
-                Theme().card.header()
+               this@CardComponent.scopedStyles.header()
             }, prefix = headerStylePrefix) { value() }
         }
     }
@@ -86,7 +96,7 @@ open class CardComponent : Component<Unit> {
     fun header(value: Flow<String>) {
         header = {
             header({
-                Theme().card.header()
+                this@CardComponent.scopedStyles.header()
             }, prefix = headerStylePrefix) { value.asText() }
         }
     }
@@ -97,7 +107,7 @@ open class CardComponent : Component<Unit> {
     fun footer(value: (RenderContext.() -> Unit)) {
         footer = {
             footer({
-                Theme().card.footer()
+                this@CardComponent.scopedStyles.footer()
             }, prefix = footerStylePrefix) { value() }
         }
     }
@@ -109,7 +119,7 @@ open class CardComponent : Component<Unit> {
     fun footer(value: Flow<String>) {
         footer = {
             footer({
-                Theme().card.footer()
+                this@CardComponent.scopedStyles.footer()
             }, prefix = footerStylePrefix) { value.asText() }
         }
     }
@@ -120,7 +130,7 @@ open class CardComponent : Component<Unit> {
     fun content(value: (RenderContext.() -> Unit)) {
         content = {
             section({
-                Theme().card.content()
+                this@CardComponent.scopedStyles.content()
             }, prefix = contentStylePrefix) { value(this) }
         }
     }
@@ -132,7 +142,7 @@ open class CardComponent : Component<Unit> {
     fun content(value: Flow<String>) {
         content = {
             section({
-                Theme().card.content()
+                this@CardComponent.scopedStyles.content()
             }, prefix = contentStylePrefix) { value.asText() }
         }
     }
@@ -148,11 +158,13 @@ open class CardComponent : Component<Unit> {
         context.apply {
             div({
                 when (this@CardComponent.size.value(SizesContext)) {
-                    Sizes.Small -> Theme().card.sizes.small
-                    Sizes.Normal -> Theme().card.sizes.normal
-                    Sizes.Large -> Theme().card.sizes.large
+                    Sizes.Small -> this@CardComponent.scopedStyles.sizes.small
+                    Sizes.Normal -> this@CardComponent.scopedStyles.sizes.normal
+                    Sizes.Large -> this@CardComponent.scopedStyles.sizes.large
                 }.invoke()
-                Theme().card.background()
+
+                this@CardComponent.scopedStyles.background()
+
                 styling()
             }, baseClass, id, prefix) {
                 this@CardComponent.header?.invoke(this)
