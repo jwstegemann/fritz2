@@ -2,6 +2,8 @@ package dev.fritz2.components
 
 import dev.fritz2.components.card.CardComponent
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Scope
+import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 
@@ -19,5 +21,9 @@ fun RenderContext.card(
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
     prefix: String = "card",
+    scope: ScopeContext.() -> Unit = {},
     build: CardComponent.() -> Unit,
-) = CardComponent().apply(build).render(this, styling, baseClass, id, prefix)
+) {
+    val scope = ScopeContext(Scope()).apply(scope).scope
+    CardComponent(scope).apply(build).render(this, styling, baseClass, id, prefix)
+}
