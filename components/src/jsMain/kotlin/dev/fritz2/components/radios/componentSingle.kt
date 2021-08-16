@@ -138,7 +138,7 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
         return with(context) {
             label({
                 this@RadioComponent.size.value.invoke(Theme().radio.sizes)()
-            }, baseClass = baseClass, id = id, prefix = prefix) {
+            }, baseClass = baseClass, prefix = prefix) {
                 `for`(inputId)
                 input({
                     Theme().radio.input()

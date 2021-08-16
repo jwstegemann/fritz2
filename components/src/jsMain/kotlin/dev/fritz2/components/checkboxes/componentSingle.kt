@@ -121,7 +121,7 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
 
         return label({
             this@CheckboxComponent.size.value.invoke(Theme().checkbox.sizes)()
-        }, baseClass = baseClass, id = id, prefix = prefix) {
+        }, baseClass = baseClass, prefix = prefix) {
             `for`(inputId)
             input({
                 Theme().checkbox.input()
