@@ -2,6 +2,7 @@ package dev.fritz2.dom
 
 import dev.fritz2.binding.*
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Scope
 import dev.fritz2.dom.html.TagContext
 import dev.fritz2.dom.html.render
 import dev.fritz2.lenses.IdProvider
@@ -38,6 +39,7 @@ annotation class HtmlTagMarker
  * @property baseClass a static base value for the class-attribute.
  * All dynamic values for this attribute will be concatenated to this base-value.
  * @property job used for launching coroutines in
+ * @property scope set some arbitrary scope entries into the [Tag]'s scope
  * @property domNode the [Element]-instance that is wrapped by this [Tag]
  * (you should never have to pass this by yourself, just let it be created by the default)
  */
@@ -47,6 +49,7 @@ open class Tag<out E : Element>(
     val id: String? = null,
     val baseClass: String? = null,
     override val job: Job,
+    override val scope: Scope,
     override val domNode: E = window.document.createElement(tagName).also { element ->
         if (id != null) element.id = id
         if (!baseClass.isNullOrBlank()) element.className = baseClass
@@ -61,7 +64,7 @@ open class Tag<out E : Element>(
             buildList {
                 content(object : RenderContext(
                     "", parent.id, parent.baseClass,
-                    job, parent.domNode.unsafeCast<HTMLElement>()
+                    job, parent.scope, parent.domNode.unsafeCast<HTMLElement>()
                 ) {
                     override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
                         parent.register(element, content)
@@ -77,7 +80,7 @@ open class Tag<out E : Element>(
         ): WithDomNode<HTMLElement> =
             content(object : RenderContext(
                 "", parent.id, parent.baseClass,
-                job, parent.domNode.unsafeCast<HTMLElement>()
+                job, parent.scope, parent.domNode.unsafeCast<HTMLElement>()
             ) {
                 var alreadyRegistered: Boolean = false
 
@@ -593,5 +596,26 @@ open class Tag<out E : Element>(
      */
     fun inlineStyle(values: Flow<Map<String, Boolean>>) {
         attr("style", values, separator = "; ")
+    }
+
+    /**
+     * Sets all scope-entries as data-attributes to the element.
+     */
+    fun Scope.asDataAttr() {
+        for((k, v) in this) {
+            attr("data-${k.name}", v.toString())
+        }
+    }
+
+    /**
+     * Sets scope-entry for the given [key] as data-attribute to the element
+     * when available.
+     *
+     * @param key key of scope-entry to look for in scope
+     */
+    fun <T: Any> Scope.asDataAttr(key: Scope.Key<T>) {
+        this[key]?.let {
+            attr("data-${key.name}", it.toString())
+        }
     }
 }

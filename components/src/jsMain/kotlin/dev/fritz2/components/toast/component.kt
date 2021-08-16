@@ -2,10 +2,11 @@ package dev.fritz2.components.toast
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
-import dev.fritz2.components.foundations.*
 import dev.fritz2.components.alert.*
+import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.html.Li
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Scope
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BoxParams
@@ -149,12 +150,13 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
                """
         )
 
-        private val job = Job()
         private val globalId = "f2c-toasts-${randomId()}"
+        private val job = Job()
+        private val scope = Scope()
 
         init {
             // Rendering of the toast container hosting all toast messages.
-            ManagedComponent.managedRenderContext(globalId, job).apply {
+            ManagedComponent.managedRenderContext(globalId, job, scope).apply {
                 Placement.placements.forEach {
                     val placementStyle = when (it) {
                         Placement.bottom -> Theme().toast.placement.bottom
