@@ -125,7 +125,7 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
         id: String?,
         prefix: String
     ): Label {
-        val inputId = id?.let { "$it-input" }
+        val inputId = id ?: "radio-${randomId()}"
         val alternativeGroupname = id?.let { "$it-groupName" }
         val inputName = groupName.values.map {
             if (it.isEmpty()) {
@@ -139,9 +139,7 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
             label({
                 this@RadioComponent.size.value.invoke(Theme().radio.sizes)()
             }, baseClass = baseClass, id = id, prefix = prefix) {
-                inputId?.let {
-                    `for`(inputId)
-                }
+                `for`(inputId)
                 input({
                     Theme().radio.input()
                     children("&[checked] + div") {

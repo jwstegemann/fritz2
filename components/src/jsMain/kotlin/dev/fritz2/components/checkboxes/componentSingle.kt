@@ -117,13 +117,12 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
         id: String?,
         prefix: String
     ): Label = with(context) {
-        label({
+        val inputId = id ?: "checkbox-${randomId()}"
+
+        return label({
             this@CheckboxComponent.size.value.invoke(Theme().checkbox.sizes)()
         }, baseClass = baseClass, id = id, prefix = prefix) {
-            val inputId = id?.let { "$it-input" }
-            inputId?.let {
-                `for`(inputId)
-            }
+            `for`(inputId)
             input({
                 Theme().checkbox.input()
                 children("&[checked] + div") {
@@ -159,6 +158,5 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
                 }
             }
         }
-
     }
 }

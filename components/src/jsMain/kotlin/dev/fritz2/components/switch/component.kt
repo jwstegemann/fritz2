@@ -7,7 +7,6 @@ import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -115,8 +114,7 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
         id: String?,
         prefix: String
     ): Label {
-        val inputId = (id ?: uniqueId()) + "-input"
-
+        val inputId = id ?: "switch-${randomId()}"
         return with(context) {
             label({
                 this@SwitchComponent.size.value.invoke(Theme().switch.sizes)()
