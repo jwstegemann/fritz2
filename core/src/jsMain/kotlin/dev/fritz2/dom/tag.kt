@@ -233,7 +233,7 @@ open class Tag<out E : Element>(
      */
     fun <V, I> RootStore<List<V>>.renderEach(
         idProvider: IdProvider<V, I>,
-        content: RenderContext.(SubStore<List<V>, List<V>, V>) -> RenderContext
+        content: RenderContext.(SubStore<List<V>, V>) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
 
@@ -263,7 +263,7 @@ open class Tag<out E : Element>(
      * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
     fun <V> RootStore<List<V>>.renderEach(
-        content: RenderContext.(SubStore<List<V>, List<V>, V>) -> RenderContext
+        content: RenderContext.(SubStore<List<V>, V>) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
@@ -291,9 +291,9 @@ open class Tag<out E : Element>(
      * @param idProvider function to identify a unique entity in the list
      * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
-    fun <R, P, V, I> SubStore<R, P, List<V>>.renderEach(
+    fun <P, V, I> SubStore<P, List<V>>.renderEach(
         idProvider: IdProvider<V, I>,
-        content: RenderContext.(SubStore<R, List<V>, V>) -> RenderContext
+        content: RenderContext.(SubStore<List<V>, V>) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
@@ -321,8 +321,8 @@ open class Tag<out E : Element>(
      *
      * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
      */
-    fun <R, P, V> SubStore<R, P, List<V>>.renderEach(
-        content: RenderContext.(SubStore<R, List<V>, V>) -> RenderContext
+    fun <P, V> SubStore<P, List<V>>.renderEach(
+        content: RenderContext.(SubStore<List<V>, V>) -> RenderContext
     ) {
         val jobs = mutableMapOf<Node, Job>()
         mountDomNodePatch(job, domNode,
