@@ -8,7 +8,7 @@ import dev.fritz2.lenses.positionLens
 /**
  *  gives you the a new [RootInspector] as starting point.
  */
-fun <T> inspect(data: T, id: String = "") = RootInspector(data, id)
+fun <T> inspect(data: T, id: String? = null) = RootInspector(data, id)
 
 /**
  * represents the data and corresponding id of certain value
