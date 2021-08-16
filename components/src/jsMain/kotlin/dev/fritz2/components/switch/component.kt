@@ -114,18 +114,16 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
         id: String?,
         prefix: String
     ): Label {
-        val inputId = id ?: "switch-${randomId()}"
         return with(context) {
             label({
                 this@SwitchComponent.size.value.invoke(Theme().switch.sizes)()
-            }, baseClass = baseClass, prefix = prefix) {
-                `for`(inputId)
+            }, baseClass, prefix = prefix) {
                 input({
                     Theme().switch.input()
                     children("&[checked] + div") {
                         this@SwitchComponent.checkedStyle.value()
                     }
-                }, baseClass = switchInputStaticCss, prefix = prefix, id = inputId) {
+                }, switchInputStaticCss, id, prefix) {
                     disabled(this@SwitchComponent.disabled.values)
                     readOnly(this@SwitchComponent.readonly.values)
                     type("checkbox")

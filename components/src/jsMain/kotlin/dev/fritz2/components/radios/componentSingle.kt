@@ -125,27 +125,21 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
         id: String?,
         prefix: String
     ): Label {
-        val inputId = id ?: "radio-${randomId()}"
-        val alternativeGroupname = id?.let { "$it-groupName" }
-        val inputName = groupName.values.map {
-            if (it.isEmpty()) {
-                alternativeGroupname ?: ""
-            } else {
-                it
-            }
+        val inputName = groupName.values.map { groupName ->
+            if (groupName.isEmpty()) id?.let { "$it-groupName" } ?: ""
+            else groupName
         }
 
         return with(context) {
             label({
                 this@RadioComponent.size.value.invoke(Theme().radio.sizes)()
-            }, baseClass = baseClass, prefix = prefix) {
-                `for`(inputId)
+            }, baseClass, prefix = prefix) {
                 input({
                     Theme().radio.input()
                     children("&[checked] + div") {
                         this@RadioComponent.selectedStyle.value()
                     }
-                }, baseClass = this@RadioComponent.radioInputStaticCss, prefix = prefix, id = inputId) {
+                }, this@RadioComponent.radioInputStaticCss, prefix = prefix) {
                     disabled(this@RadioComponent.disabled.values)
                     readOnly(this@RadioComponent.readonly.values)
                     type("radio")
