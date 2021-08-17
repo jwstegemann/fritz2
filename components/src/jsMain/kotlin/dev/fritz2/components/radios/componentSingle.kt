@@ -126,6 +126,10 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
     ): Label {
         return with(context) {
             label({
+                display { inlineFlex }
+                alignItems { center }
+                verticalAlign { top }
+                css("-webkit-box-align: center;")
                 this@RadioComponent.size.value.invoke(Theme().radio.sizes)()
             }, baseClass, prefix = prefix) {
                 input({

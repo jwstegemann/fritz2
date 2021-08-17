@@ -116,6 +116,8 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
     ): Label {
         return with(context) {
             label({
+                display { inlineFlex }
+                alignItems { center }
                 this@SwitchComponent.size.value.invoke(Theme().switch.sizes)()
             }, baseClass, prefix = prefix) {
                 input({

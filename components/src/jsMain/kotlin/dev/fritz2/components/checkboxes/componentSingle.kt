@@ -118,6 +118,8 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
         prefix: String
     ): Label = with(context) {
         return label({
+            display { inlineFlex }
+            alignItems { center }
             this@CheckboxComponent.size.value.invoke(Theme().checkbox.sizes)()
         }, baseClass, prefix = prefix) {
             input({
