@@ -15,7 +15,6 @@ import dev.fritz2.styling.theme.FormSizesStyles
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLInputElement
 
 /**
@@ -116,7 +115,7 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
     val labelStyle = ComponentProperty(Theme().radio.label)
     val selectedStyle = ComponentProperty(Theme().radio.selected)
     val selected = DynamicComponentProperty(flowOf(false))
-    val groupName = DynamicComponentProperty(flowOf(""))
+    val groupName = ComponentProperty<String?>(null)
 
     override fun render(
         context: RenderContext,
@@ -125,11 +124,6 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
         id: String?,
         prefix: String
     ): Label {
-        val inputName = groupName.values.map { groupName ->
-            if (groupName.isEmpty()) id?.let { "$it-groupName" } ?: ""
-            else groupName
-        }
-
         return with(context) {
             label({
                 this@RadioComponent.size.value.invoke(Theme().radio.sizes)()
@@ -143,7 +137,7 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
                     disabled(this@RadioComponent.disabled.values)
                     readOnly(this@RadioComponent.readonly.values)
                     type("radio")
-                    name(inputName)
+                    this@RadioComponent.groupName.value?.let { name(it) }
                     checked(this@RadioComponent.value?.data ?: this@RadioComponent.selected.values)
                     value("X")
                     className(this@RadioComponent.severityClassOf(Theme().radio.severity).name)
