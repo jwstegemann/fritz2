@@ -3,6 +3,8 @@ package dev.fritz2.components.card
 import dev.fritz2.components.card
 import dev.fritz2.components.foundations.Component
 import dev.fritz2.components.foundations.ComponentProperty
+import dev.fritz2.components.paper
+import dev.fritz2.components.paper.PaperComponent
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BoxParams
@@ -25,10 +27,16 @@ import kotlinx.coroutines.flow.flowOf
  * Strings for your convenience.
  * Cards are created via the [card] factory function.
  *
+ * Cards can have different types which are the same as in [PaperComponent]. This is due to the fact, that the
+ * CardComponent uses a [PaperComponent] internally.
+ * The type can be specified via the [type] property.
+ *
  * Usage example:
  * ```
  * card {
  *     size { small }
+ *     type { normal }
+ *     paperType { normal }
  *     header("Header")
  *     content("Lorem ipsum, dolor sit amet...")
  *     footer("Footer")
@@ -114,6 +122,9 @@ open class CardComponent : Component<Unit> {
     }
 
 
+    val type = ComponentProperty<PaperComponent.TypesContext.() -> PaperComponent.Types> { normal }
+
+
     override fun render(
         context: RenderContext,
         styling: BoxParams.() -> Unit,
@@ -122,23 +133,34 @@ open class CardComponent : Component<Unit> {
         prefix: String
     ) {
         context.apply {
-            div({
-                when (this@CardComponent.size.value(SizesContext)) {
-                    Sizes.Small -> Theme().card.sizes.small
-                    Sizes.Normal -> Theme().card.sizes.normal
-                    Sizes.Large -> Theme().card.sizes.large
-                }.invoke()
-
-                styling()
-            }, baseClass, id, prefix) {
-                this@CardComponent.header?.let {
-                    header(Theme().card.header, prefix = headerStylePrefix) { it() }
+            paper {
+                size {
+                    when(this@CardComponent.size.value(SizesContext)) {
+                        Sizes.Small -> PaperComponent.Sizes.Small
+                        Sizes.Normal -> PaperComponent.Sizes.Normal
+                        Sizes.Large -> PaperComponent.Sizes.Large
+                    }
                 }
-                this@CardComponent.content?.let {
-                    section(Theme().card.content, prefix = contentStylePrefix) { it() }
-                }
-                this@CardComponent.footer?.let {
-                    footer(Theme().card.footer, prefix = footerStylePrefix) { it() }
+                type { this@CardComponent.type.value(PaperComponent.TypesContext) }
+                content {
+                    div({
+                        when (this@CardComponent.size.value(SizesContext)) {
+                            Sizes.Small -> Theme().card.sizes.small
+                            Sizes.Normal -> Theme().card.sizes.normal
+                            Sizes.Large -> Theme().card.sizes.large
+                        }.invoke()
+                        styling()
+                    }, baseClass, id, prefix) {
+                        this@CardComponent.header?.let {
+                            header(Theme().card.header, prefix = headerStylePrefix) { it() }
+                        }
+                        this@CardComponent.content?.let {
+                            section(Theme().card.content, prefix = contentStylePrefix) { it() }
+                        }
+                        this@CardComponent.footer?.let {
+                            footer(Theme().card.footer, prefix = footerStylePrefix) { it() }
+                        }
+                    }
                 }
             }
         }
