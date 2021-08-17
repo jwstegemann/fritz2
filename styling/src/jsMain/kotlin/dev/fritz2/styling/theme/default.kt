@@ -1054,6 +1054,54 @@ open class DefaultTheme : Theme {
         }
     }
 
+    override val paper: PaperStyles = object : PaperStyles {
+        override val sizes = object : PaperSizes {
+            override val small: Style<BoxParams> = {
+                padding { smaller }
+                css("--paper-radius: ${Theme().radii.normal}")
+                css("--paper-line-width: ${Theme().borderWidths.hair}")
+            }
+
+            override val normal: Style<BoxParams> = {
+                padding { small }
+                css("--paper-radius: ${Theme().radii.large}")
+                css("--paper-line-width: ${Theme().borderWidths.thin}")
+            }
+
+            override val large: Style<BoxParams> = {
+                padding { normal }
+                css("--paper-radius: ${Theme().radii.huge}")
+                css("--paper-line-width: ${Theme().borderWidths.normal}")
+            }
+        }
+
+        override val types = object : PaperTypes {
+            override val normal: Style<BoxParams> = {
+                boxShadow { raised }
+            }
+
+            override val outline: Style<BoxParams> = {
+                border {
+                    color { neutral.highlight }
+                    style { solid }
+                    width { "var(--paper-line-width)" }
+                }
+            }
+
+            override val ghost: Style<BoxParams> = {
+                // TODO: Still needed?
+                // No specific style
+            }
+        }
+
+        override val background: Style<BoxParams> = {
+            background {
+                color { neutral.main }
+            }
+            radius { "var(--paper-radius)" }
+        }
+    }
+
     override val card: CardStyles = object : CardStyles {
         override val sizes: CardSizes = object : CardSizes {
             override val small: Style<BoxParams> = {
@@ -1078,10 +1126,6 @@ open class DefaultTheme : Theme {
                 css("--card-spacing-content: ${Theme().sizes.normal}")
                 css("--card-separator-width: ${Theme().borderWidths.normal}")
             }
-        }
-
-        override val background: Style<BoxParams> = {
-            // No background by default
         }
 
         override val header: Style<BoxParams> = {
