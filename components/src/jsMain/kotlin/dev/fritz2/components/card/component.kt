@@ -129,8 +129,6 @@ open class CardComponent : Component<Unit> {
                     Sizes.Large -> Theme().card.sizes.large
                 }.invoke()
 
-                Theme().card.background()
-
                 styling()
             }, baseClass, id, prefix) {
                 this@CardComponent.header?.let {

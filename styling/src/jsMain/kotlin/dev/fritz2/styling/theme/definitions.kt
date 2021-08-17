@@ -486,9 +486,27 @@ interface ModalWidths {
 }
 
 
+interface PaperStyles {
+    val sizes: PaperSizes
+    val types: PaperTypes
+    val background: Style<BoxParams>
+}
+
+interface PaperTypes {
+    val normal: Style<BoxParams>
+    val outline: Style<BoxParams>
+    val ghost: Style<BoxParams>
+}
+
+interface PaperSizes {
+    val small: Style<BoxParams>
+    val normal: Style<BoxParams>
+    val large: Style<BoxParams>
+}
+
+
 interface CardStyles {
     val sizes: CardSizes
-    val background: Style<BoxParams>
     val header: Style<BoxParams>
     val footer: Style<BoxParams>
     val content: Style<BoxParams>

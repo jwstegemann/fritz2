@@ -193,6 +193,8 @@ interface Theme {
 
     val modal: ModalStyles
 
+    val paper: PaperStyles
+
     val card: CardStyles
 
     /**
