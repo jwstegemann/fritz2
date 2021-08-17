@@ -4,10 +4,8 @@ import dev.fritz2.components.card
 import dev.fritz2.components.foundations.Component
 import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.Scope
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.theme.CardStyles
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -49,23 +47,12 @@ import kotlinx.coroutines.flow.flowOf
  * }
  * ```
  */
-open class CardComponent(private val scope: Scope) : Component<Unit> {
+open class CardComponent : Component<Unit> {
 
     companion object {
         private const val headerStylePrefix = "card-header"
         private const val footerStylePrefix = "card-footer"
         private const val contentStylePrefix = "card-content"
-    }
-
-
-    /**
-     * This component is able to style itself differently based on the scope it is rendered in.
-     * A different style may be applied, e.g., if rendered as part of a popover.
-     * @see Scope
-     */
-    private val scopedStyles: CardStyles = when {
-        // scope.contains... -> scope-specific style
-        else -> Theme().card
     }
 
 
@@ -137,23 +124,23 @@ open class CardComponent(private val scope: Scope) : Component<Unit> {
         context.apply {
             div({
                 when (this@CardComponent.size.value(SizesContext)) {
-                    Sizes.Small -> this@CardComponent.scopedStyles.sizes.small
-                    Sizes.Normal -> this@CardComponent.scopedStyles.sizes.normal
-                    Sizes.Large -> this@CardComponent.scopedStyles.sizes.large
+                    Sizes.Small -> Theme().card.sizes.small
+                    Sizes.Normal -> Theme().card.sizes.normal
+                    Sizes.Large -> Theme().card.sizes.large
                 }.invoke()
 
-                this@CardComponent.scopedStyles.background()
+                Theme().card.background()
 
                 styling()
             }, baseClass, id, prefix) {
                 this@CardComponent.header?.let {
-                    header(this@CardComponent.scopedStyles.header, prefix = headerStylePrefix) { it() }
+                    header(Theme().card.header, prefix = headerStylePrefix) { it() }
                 }
                 this@CardComponent.content?.let {
-                    section(this@CardComponent.scopedStyles.content, prefix = contentStylePrefix) { it() }
+                    section(Theme().card.content, prefix = contentStylePrefix) { it() }
                 }
                 this@CardComponent.footer?.let {
-                    footer(this@CardComponent.scopedStyles.footer, prefix = footerStylePrefix) { it() }
+                    footer(Theme().card.footer, prefix = footerStylePrefix) { it() }
                 }
             }
         }
