@@ -62,6 +62,7 @@ open class CardComponent(private val scope: Scope) : Component<Unit> {
      * @see Scope
      */
     private val scopedStyles = when {
+        // scope.contains... -> scope-specific style
         else -> Theme().card
     }
 
@@ -82,22 +83,14 @@ open class CardComponent(private val scope: Scope) : Component<Unit> {
     private var header: (RenderContext.() -> Unit)? = null
 
     fun header(value: (RenderContext.() -> Unit)) {
-        header = {
-            header({
-               this@CardComponent.scopedStyles.header()
-            }, prefix = headerStylePrefix) { value() }
-        }
+        header = value
     }
 
-    fun header(value: String) {
-        this.header(flowOf(value))
-    }
+    fun header(value: String) = this.header(flowOf(value))
 
     fun header(value: Flow<String>) {
         header = {
-            header({
-                this@CardComponent.scopedStyles.header()
-            }, prefix = headerStylePrefix) { value.asText() }
+            span { value.asText() }
         }
     }
 
@@ -105,22 +98,14 @@ open class CardComponent(private val scope: Scope) : Component<Unit> {
     private var footer: (RenderContext.() -> Unit)? = null
 
     fun footer(value: (RenderContext.() -> Unit)) {
-        footer = {
-            footer({
-                this@CardComponent.scopedStyles.footer()
-            }, prefix = footerStylePrefix) { value() }
-        }
+        footer = value
     }
 
-    fun footer(value: String) {
-        this.footer(flowOf(value))
-    }
+    fun footer(value: String) = this.footer(flowOf(value))
 
     fun footer(value: Flow<String>) {
         footer = {
-            footer({
-                this@CardComponent.scopedStyles.footer()
-            }, prefix = footerStylePrefix) { value.asText() }
+            span { value.asText() }
         }
     }
 
@@ -128,22 +113,14 @@ open class CardComponent(private val scope: Scope) : Component<Unit> {
     private var content: (RenderContext.() -> Unit)? = null
 
     fun content(value: (RenderContext.() -> Unit)) {
-        content = {
-            section({
-                this@CardComponent.scopedStyles.content()
-            }, prefix = contentStylePrefix) { value(this) }
-        }
+        content = value
     }
 
-    fun content(value: String) {
-        this.content(flowOf(value))
-    }
+    fun content(value: String) = this.content(flowOf(value))
 
     fun content(value: Flow<String>) {
         content = {
-            section({
-                this@CardComponent.scopedStyles.content()
-            }, prefix = contentStylePrefix) { value.asText() }
+            span { value.asText() }
         }
     }
 
@@ -167,9 +144,15 @@ open class CardComponent(private val scope: Scope) : Component<Unit> {
 
                 styling()
             }, baseClass, id, prefix) {
-                this@CardComponent.header?.invoke(this)
-                this@CardComponent.content?.invoke(this)
-                this@CardComponent.footer?.invoke(this)
+                this@CardComponent.header?.let {
+                    header(this@CardComponent.scopedStyles.header, prefix = headerStylePrefix) { it() }
+                }
+                this@CardComponent.content?.let {
+                    section(this@CardComponent.scopedStyles.content, prefix = contentStylePrefix) { it() }
+                }
+                this@CardComponent.footer?.let {
+                    footer(this@CardComponent.scopedStyles.footer, prefix = footerStylePrefix) { it() }
+                }
             }
         }
     }
