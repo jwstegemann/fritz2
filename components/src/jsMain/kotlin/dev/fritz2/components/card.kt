@@ -14,6 +14,7 @@ import dev.fritz2.styling.params.BasicParams
  * @param baseClass optional CSS class that should be applied to the toast element
  * @param id the ID of the toast element
  * @param prefix the prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
+ * @param scope the scope in which the component is rendered
  * @param build a lambda expression for setting up the component itself
  */
 fun RenderContext.card(
@@ -24,6 +25,6 @@ fun RenderContext.card(
     scope: ScopeContext.() -> Unit = {},
     build: CardComponent.() -> Unit,
 ) {
-    val scope = ScopeContext(Scope()).apply(scope).scope
-    CardComponent(scope).apply(build).render(this, styling, baseClass, id, prefix)
+    val actualScope = ScopeContext(Scope()).apply(scope).scope
+    CardComponent(actualScope).apply(build).render(this, styling, baseClass, id, prefix)
 }
