@@ -7,6 +7,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.theme.CardStyles
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -58,10 +59,11 @@ open class CardComponent(private val scope: Scope) : Component<Unit> {
 
 
     /**
-     * This component styles itself differently if it is rendered in the scope of a [PopoverComponent].
+     * This component is able to style itself differently based on the scope it is rendered in.
+     * A different style may be applied, e.g., if rendered as part of a popover.
      * @see Scope
      */
-    private val scopedStyles = when {
+    private val scopedStyles: CardStyles = when {
         // scope.contains... -> scope-specific style
         else -> Theme().card
     }
