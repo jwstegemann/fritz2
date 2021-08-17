@@ -39,6 +39,7 @@ annotation class HtmlTagMarker
  * @property baseClass a static base value for the class-attribute.
  * All dynamic values for this attribute will be concatenated to this base-value.
  * @property job used for launching coroutines in
+ * @property scope set some arbitrary scope entries into the [Tag]'s scope
  * @property domNode the [Element]-instance that is wrapped by this [Tag]
  * (you should never have to pass this by yourself, just let it be created by the default)
  */
