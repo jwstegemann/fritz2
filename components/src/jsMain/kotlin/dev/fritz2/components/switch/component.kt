@@ -12,7 +12,7 @@ import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.FormSizesStyles
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -70,12 +70,13 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
             "switch",
             """
             position: absolute;
-            height: 1px;                
-            width: 1px;                
+            border: 0px;
+            clip: rect(0px, 0px, 0px, 0px);
+            height: 0px;
+            width: 0px;
+            white-space: nowrap;
             overflow: hidden;
-            clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
-            clip: rect(1px, 1px, 1px, 1px);
-            outline: none;           
+            outline: none;
             &:focus{
                 outline: none;
             }           
@@ -83,7 +84,7 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
         )
     }
 
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().switch.sizes.normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { Theme().switch.sizes.normal }
 
     private var label: (Div.() -> Unit)? = null
     fun label(value: String) {

@@ -224,7 +224,7 @@ interface Theme {
 
     val slider: SliderStyles
 
-    val popper: PopperStyles
+    val popup: PopupStyles
 }
 
 /**

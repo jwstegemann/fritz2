@@ -32,7 +32,7 @@ class SubStoreTests {
         val store = object : RootStore<Person>(person) {}
 
         val nameSub = store.sub(nameLens)
-        val addressSub: SubStore<Person, Person, Address> = store.sub(addressLens)
+        val addressSub = store.sub(addressLens)
         val streetSub = addressSub.sub(streetLens)
         val postalCodeSub = addressSub.sub(postalCodeLens)
         val codeSub = postalCodeSub.sub(codeLens)

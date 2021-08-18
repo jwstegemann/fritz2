@@ -39,7 +39,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
                 }) {
                     component.controlRegistration.assignee?.id?.let { `for`(it) }
                     className(formGroupElementLabelMarker)
-                    +component.label.value
+                    component.label.values.asText()
                 }
                 stackUp({
                     alignItems { start }
@@ -87,7 +87,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
                     component.labelStyle.value()
                 }) {
                     className(formGroupElementLegendMarker)
-                    +component.label.value
+                    component.label.values.asText()
                 }
                 stackUp {
                     spacing { none }

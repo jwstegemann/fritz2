@@ -11,7 +11,7 @@ import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.FormSizesStyles
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme
@@ -72,12 +72,13 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
             "checkbox",
             """
             position: absolute;
-            height: 1px;                
-            width: 1px;                
+            border: 0px;
+            clip: rect(0px, 0px, 0px, 0px);
+            height: 0px;
+            width: 0px;
             overflow: hidden;
-            clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
-            clip: rect(1px, 1px, 1px, 1px);
-            outline: none;           
+            white-space: nowrap;
+            outline: none;
             &:focus{
                 outline: none;
             }           
@@ -85,25 +86,24 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
         )
     }
 
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { Theme().checkbox.sizes.normal }
     val icon = ComponentProperty<Icons.() -> IconDefinition> { Theme().icons.check }
 
-    private var labelField: (RenderContext.() -> Unit)? = null
-
+    private var label: (RenderContext.() -> Unit)? = null
     fun label(value: String) {
-        labelField = {
+        label = {
             span { +value }
         }
     }
 
     fun label(value: Flow<String>) {
-        labelField = {
+        label = {
             span { value.asText() }
         }
     }
 
     fun label(value: (RenderContext.() -> Unit)) {
-        labelField = value
+        label = value
     }
 
     val labelStyle = ComponentProperty(Theme().checkbox.label)
@@ -151,7 +151,7 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
                 }
             }
 
-            this@CheckboxComponent.labelField?.let {
+            this@CheckboxComponent.label?.let {
                 div({
                     this@CheckboxComponent.labelStyle.value()
                 }) {

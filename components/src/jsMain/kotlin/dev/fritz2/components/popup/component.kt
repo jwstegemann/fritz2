@@ -1,4 +1,4 @@
-package dev.fritz2.components.popper
+package dev.fritz2.components.popup
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
@@ -19,12 +19,12 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.EventTarget
 
 /**
- * This component creates a popper.
+ * This component creates a popup.
  *
- * A popper should be used for to positioning `content` like `tooltip` or `popover` automatically
+ * A popup should be used for to positioning `content` like `tooltip` or `popover` automatically
  * in the right place near a `trigger`. It will popped up on every event which `handledBy` given handler.
  *
- * A popper mainly consists of
+ * A popup mainly consists of
  * [trigger] the Elements which calls the [content]
  * [content] which will be display after call the [trigger]. It will be rendered on an own managed context.
  *
@@ -40,7 +40,7 @@ import org.w3c.dom.events.EventTarget
  *
  * Example:
  * ```kotlin
- * popper {
+ * popup {
  *      placement { topStart }
  *      trigger { toggleHandler, closeHandler ->
  *          span {
@@ -58,14 +58,14 @@ import org.w3c.dom.events.EventTarget
  * }
  * ```
  *
- * The popper use an internal `store` [popperStore] of [TriggerInformation] to find the right position of the [content]
+ * The popup use an internal `store` [popupStore] of [TriggerInformation] to find the right position of the [content]
  *
  * @see [Placement]
  * @See [Positioning]
  * @See [TriggerInformation]
  *
  */
-open class PopperComponent :
+open class PopupComponent :
     EventProperties<HTMLInputElement> by EventMixin(),
     Component<Div> {
 
@@ -94,7 +94,7 @@ open class PopperComponent :
     }
     val placement = ComponentProperty<PlacementContext.() -> Placement> { Placement.Top }
 
-    private val popperStore = object : RootStore<TriggerInformation>(TriggerInformation()) {
+    private val popupStore = object : RootStore<TriggerInformation>(TriggerInformation()) {
         fun toggle(id: String) = handle<EventTarget?> { triggerInformation, eventTarget ->
             when {
                 triggerInformation.active -> {
@@ -119,7 +119,7 @@ open class PopperComponent :
         }
     }
 
-    private fun renderPopper(
+    private fun renderPopup(
         styling: BoxParams.() -> Unit,
         baseClass: StyleClass,
         id: String,
@@ -128,26 +128,26 @@ open class PopperComponent :
         val style = storeOf("")
         val job = Job()
         val scope = Scope()
-        lateinit var popperElement: Div
+        lateinit var popupElement: Div
 
-        val active =  this@PopperComponent.popperStore.data.map { it.active }
+        val active =  this@PopupComponent.popupStore.data.map { it.active }
 
         ManagedComponent.managedRenderContext(id + "ctx", job, scope).apply {
-            popperElement = div({
-                Theme().popper.wrapper(this, leftRenderPosition.toInt())
+            popupElement = div({
+                Theme().popup.wrapper(this, leftRenderPosition.toInt())
                 styling()
             }, baseClass = baseClass, id = id, prefix = prefix) {
                 attr("style", style.data)
                 attr("data-active", active)
-                this@PopperComponent.content.value?.invoke(this, this@PopperComponent.popperStore.close)
+                this@PopupComponent.content.value?.invoke(this, this@PopupComponent.popupStore.close)
             }
 
-            this@PopperComponent.popperStore.data.debounce(100).map { triggerInformation ->
-                this@PopperComponent.getStyling(triggerInformation, popperElement)
+            this@PopupComponent.popupStore.data.debounce(100).map { triggerInformation ->
+                this@PopupComponent.getStyling(triggerInformation, popupElement)
             } handledBy style.update
         }
 
-        return popperElement
+        return popupElement
     }
 
     private fun getStyling(triggerInformation: TriggerInformation, element: Div): String {
@@ -155,9 +155,9 @@ open class PopperComponent :
             Positioning(
                 triggerInformation,
                 element.domNode,
-                this@PopperComponent.offset.value,
-                this@PopperComponent.placement.value.invoke(PlacementContext),
-                this@PopperComponent.flipping.value
+                this@PopupComponent.offset.value,
+                this@PopupComponent.placement.value.invoke(PlacementContext),
+                this@PopupComponent.flipping.value
             ).inlineStyle
         } else {
             ""
@@ -171,14 +171,14 @@ open class PopperComponent :
         id: String?,
         prefix: String
     ): Div {
-        val popperId = id ?: "fc2-popper-" + randomId()
+        val popupId = id ?: ("fc2-popup-" + randomId())
         context.apply {
-            this@PopperComponent.trigger.value?.invoke(
+            this@PopupComponent.trigger.value?.invoke(
                 this,
-                this@PopperComponent.popperStore.toggle(popperId),
-                this@PopperComponent.popperStore.close
+                this@PopupComponent.popupStore.toggle(popupId),
+                this@PopupComponent.popupStore.close
             )
         }
-        return renderPopper(styling, baseClass, popperId, prefix)
+        return renderPopup(styling, baseClass, popupId, prefix)
     }
 }

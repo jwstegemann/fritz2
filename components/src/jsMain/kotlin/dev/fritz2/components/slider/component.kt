@@ -319,7 +319,7 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
 
     val track = ComponentProperty<Style<BoxParams>> {}
     val trackFilled = ComponentProperty<BoxParams.(Int) -> Unit> {}
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().slider.sizes.normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { Theme().slider.sizes.normal }
 
     override fun render(
         context: RenderContext,

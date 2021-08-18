@@ -1,4 +1,4 @@
-package dev.fritz2.components.popper
+package dev.fritz2.components.popup
 
 import org.w3c.dom.DOMRect
 
@@ -9,7 +9,7 @@ import org.w3c.dom.DOMRect
  * @property active the actual state of `content`
  * @property domRect the size and position of `trigger`
  *
- * @see PopperComponent
+ * @see PopupComponent
  */
 data class TriggerInformation(
     val id: String = "",

@@ -153,7 +153,7 @@ open class PushButtonComponent :
 
     val type = ComponentProperty<PushButtonTypes.() -> ColorScheme> { Theme().button.types.primary }
     val variant = ComponentProperty<VariantContext.() -> ButtonVariant> { solid }
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().button.sizes.normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { Theme().button.sizes.normal }
 
     private var text: (RenderContext.(hide: Boolean) -> Unit)? = null
 
