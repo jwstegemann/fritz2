@@ -312,6 +312,7 @@ open class AppFrameComponent : Component<Unit>,
             }
 
             main({
+                position { relative {  } }
                 grid { area { "content" } }
                 overflow { auto }
                 Theme().appFrame.content()

@@ -138,6 +138,8 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
         return with(context) {
             label({
                 this@RadioComponent.size.value.invoke(Theme().radio.sizes)()
+                // to "capture" the invisible, absolute positioned `input`, see `radioInputStaticCss`
+                position { relative {  } }
             }, baseClass = baseClass, id = id, prefix = prefix) {
                 inputId?.let {
                     `for`(inputId)
