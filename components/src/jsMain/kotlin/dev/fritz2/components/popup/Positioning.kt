@@ -1,10 +1,10 @@
-package dev.fritz2.components.popper
+package dev.fritz2.components.popup
 
 import kotlinx.browser.window
 import org.w3c.dom.HTMLDivElement
 
 /**
- * This class helps to find the right positioning of the [PopperComponent.content]
+ * This class helps to find the right positioning of the [PopupComponent.content]
  *
  * @property triggerInformation
  * @property element
@@ -12,7 +12,7 @@ import org.w3c.dom.HTMLDivElement
  * @property placement
  * @property flipping
  *
- * @see PopperComponent
+ * @see PopupComponent
  * @see TriggerInformation
  * @see Placement
  */
@@ -85,7 +85,7 @@ class Positioning(
 
 
     /**
-     * Inline style for the wrapper of [PopperComponent.content]
+     * Inline style for the wrapper of [PopupComponent.content]
      */
     val inlineStyle = buildString {
         if (triggerInformation.active) {
