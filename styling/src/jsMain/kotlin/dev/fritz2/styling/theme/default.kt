@@ -226,7 +226,7 @@ open class DefaultTheme : Theme {
     override val zIndices = ZIndices(
         tableHeader = 10,
         tooltip = 100,
-        popper = 100,
+        popup = 100,
         dropdown = 200,
         popover = 300,
         appFrame = 1000,
@@ -2505,9 +2505,9 @@ open class DefaultTheme : Theme {
             get() = input.severity
     }
 
-    override val popper = object : PopperStyles {
+    override val popup = object : PopupStyles {
         override val wrapper: BoxParams.(Int) -> Unit = { leftPosition ->
-            zIndex { popper }
+            zIndex { popup }
             position {
                 absolute {
                     top { "0" }
