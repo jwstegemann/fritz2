@@ -10,10 +10,7 @@ import dev.fritz2.styling.input
 import dev.fritz2.styling.name
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
-import dev.fritz2.styling.theme.FormSizes
-import dev.fritz2.styling.theme.InputFieldVariants
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLInputElement
@@ -73,7 +70,8 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    InputFieldProperties by InputFieldMixin() {
 
     companion object {
         val staticCss = staticStyle(
@@ -94,11 +92,7 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
         )
     }
 
-    val variant = ComponentProperty<InputFieldVariants.() -> Style<BasicParams>> { Theme().input.variants.outline }
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().input.sizes.normal }
-
     val value = DynamicComponentProperty(flowOf(""))
-    val placeholder = DynamicComponentProperty(flowOf(""))
     val type = DynamicComponentProperty(flowOf(""))
     val step = DynamicComponentProperty(flowOf(""))
 

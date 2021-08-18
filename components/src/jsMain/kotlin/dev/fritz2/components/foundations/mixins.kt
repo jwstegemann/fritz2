@@ -10,10 +10,7 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.style
-import dev.fritz2.styling.theme.IconDefinition
-import dev.fritz2.styling.theme.Icons
-import dev.fritz2.styling.theme.SeverityStyles
-import dev.fritz2.styling.theme.Theme
+import dev.fritz2.styling.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
@@ -188,6 +185,41 @@ interface InputFormProperties : FormProperties {
  */
 class InputFormMixin : InputFormProperties, FormMixin() {
     override val readonly = DynamicComponentProperty(flowOf(false))
+}
+
+/**
+ * This interface offers a convenience property for inputField based components.
+ *
+ * Example usage:
+ * ```
+ * open class MyComponent : InputFieldProperties by InputFieldMixin() {
+ * }
+ *
+ * // use the property offered by the interface
+ * myControl {
+ *      variant { outline }
+ *      size { small }
+ *      placeholder("Password")
+ * }
+ * ```
+ */
+interface InputFieldProperties {
+    val variant: ComponentProperty<InputFieldVariants.() -> Style<BasicParams>>
+    val size: ComponentProperty<FormSizesStyles.() -> Style<BasicParams>>
+    val placeholder: DynamicComponentProperty<String>
+}
+
+/**
+ * Default implementation of the [InputFieldProperties] interface in order to apply this as mixin for a component
+ */
+class InputFieldMixin : InputFieldProperties {
+    override val variant = ComponentProperty<InputFieldVariants.() -> Style<BasicParams>> {
+        Theme().input.variants.outline
+    }
+    override val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> {
+        Theme().input.sizes.normal
+    }
+    override val placeholder = DynamicComponentProperty(flowOf(""))
 }
 
 /**

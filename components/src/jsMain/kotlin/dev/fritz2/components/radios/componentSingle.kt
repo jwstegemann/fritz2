@@ -11,7 +11,7 @@ import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
-import dev.fritz2.styling.theme.FormSizes
+import dev.fritz2.styling.theme.FormSizesStyles
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -68,12 +68,12 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
     private val radioInputStaticCss = style(
         """
             position: absolute;
-            height: 1px; 
-            width: 1px;
+            border: 0px;
+            clip: rect(0px, 0px, 0px, 0px);
+            height: 0px;
+            width: 0px;
             overflow: hidden;
-            clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
-            clip: rect(1px, 1px, 1px, 1px);
-            outline: none;
+            white-space: nowrap;
             &:focus{
                 outline: none;
             }
@@ -94,7 +94,7 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
         prefix = "radioInput"
     )
 
-    val size = ComponentProperty<FormSizes.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
+    val size = ComponentProperty<FormSizesStyles.() -> Style<BasicParams>> { Theme().radio.sizes.normal }
 
     private var label: (Div.() -> Unit)? = null
     fun label(value: String) {
