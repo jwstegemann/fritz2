@@ -11,7 +11,6 @@ import dev.fritz2.styling.params.BasicParams
  *
  * @see PopupComponent
  * @param styling a lambda expression for declaring the styling of the actual dropdown as fritz2's styling DSL
- * @param styling a lambda expression for declaring the styling of the actual dropdown as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of element
  * @param prefix the prefix for the generated CSS class resulting in the form `$prefix-$hash`

@@ -4,51 +4,46 @@ import dev.fritz2.components.foundations.Component
 import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.components.foundations.EventMixin
 import dev.fritz2.components.foundations.EventProperties
-import dev.fritz2.components.popper
-import dev.fritz2.components.popper.Placement
-import dev.fritz2.dom.html.Div
+import dev.fritz2.components.popup
+import dev.fritz2.components.popup.Placement
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
-import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
-import dev.fritz2.styling.span
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLInputElement
 
 
-
-open class TooltipComponent :
+open class TooltipComponent(private val textFromParam: String?) :
     EventProperties<HTMLInputElement> by EventMixin(),
     Component<Unit> {
 
-    /**
-     * TODO to be discussed
-     */
-    private var text: Flow<List<String>> = emptyFlow()
+    private var textFromContext: Flow<List<String>> = emptyFlow()
     fun text(vararg value: String) {
-        text = flowOf(value.asList())
+        textFromContext = flowOf(value.asList())
     }
 
     fun text(value: String) {
-        text = flowOf(listOf(value))
+        textFromContext = flowOf(listOf(value))
     }
 
     fun text(value: Flow<String>) {
-        text = value.map { listOf(it) }
+        textFromContext = value.map { listOf(it) }
     }
 
     fun text(value: List<String>) {
-        text = flowOf(value)
+        textFromContext = flowOf(value)
     }
 
     fun text(value: Flow<List<String>>) {
-        text = value
+        textFromContext = value
     }
+
+    private fun content() = if (textFromParam != null) flowOf(listOf(textFromParam)) else textFromContext
 
     /**
      * PlacementContext
-     * uses the [Placement] of [dev.fritz2.components.popper.PopperComponent]
+     * uses the [Placement] of [dev.fritz2.components.popup.PopupComponent]
      */
     object PlacementContext {
         val top = Placement.Top
@@ -75,7 +70,7 @@ open class TooltipComponent :
         prefix: String
     ) {
         context.apply {
-            popper({
+            popup({
                 this as BoxParams
                 Theme().tooltip.base.invoke()
                 styling.invoke()
@@ -91,7 +86,7 @@ open class TooltipComponent :
                     }
                 }
                 content {
-                    this@TooltipComponent.text.renderEach { text ->
+                    this@TooltipComponent.content().renderEach { text ->
                         span { +text }
                     }
                 }

@@ -1,8 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.components.foundations.randomId
-import dev.fritz2.components.popper.Placement
-import dev.fritz2.components.popper.PopperComponent
+import dev.fritz2.components.popup.Placement
 import dev.fritz2.components.tooltip.TooltipComponent
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -21,29 +20,28 @@ fun StyleParams.tooltip(vararg text: String, tooltipPlacement: TooltipPlacements
 
 fun RenderContext.tooltip(
     styling: BasicParams.() -> Unit = {},
+    text: String? = null,
     baseClass: StyleClass = StyleClass.None,
     id: String = "fc2-tooltip-${randomId()}",
     prefix: String = "tooltip",
     build: TooltipComponent.() -> Unit
-) = TooltipComponent().apply(build).render(this, styling, baseClass, id, prefix)
+) = TooltipComponent(text).apply(build).render(this, styling, baseClass, id, prefix)
 
 fun RenderContext.tooltip(
     text: String,
-    placement: TooltipComponent.PlacementContext.() -> Placement = { Placement.Top }
+    build: TooltipComponent.() -> Unit
 ) {
-    tooltip({}) {
-        text(text)
-        placement { placement.invoke(TooltipComponent.PlacementContext) }
+    tooltip({}, text) {
+        build()
     }
 }
 
 fun RenderContext.tooltip(
     vararg text: String,
-    placement: TooltipComponent.PlacementContext.() -> Placement = { Placement.Top }
+    build: TooltipComponent.() -> Unit
 ) {
     tooltip({}) {
+        build()
         text(*text)
-        placement { placement.invoke(TooltipComponent.PlacementContext) }
     }
-
 }
