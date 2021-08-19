@@ -18,6 +18,28 @@ fun StyleParams.tooltip(vararg text: String) = Theme().tooltip.write(*text)
 fun StyleParams.tooltip(vararg text: String, tooltipPlacement: TooltipPlacements.() -> Style<BasicParams>) =
     Theme().tooltip.write(*text, tooltipPlacement = tooltipPlacement)
 
+/**
+ * This component creates a Tooltip
+ * A `tooltip` should be used to display fast information for the user.
+ * The individual `text` will be shown on hover the `RenderContext` in which be called.
+ *
+ * Example usage:
+ * ```
+ *   tooltip(text = "my Tooltip") { }
+ *
+ *   tooltip({
+ *       color { danger.mainContrast }
+ *       background {
+ *           color { danger.main }
+ *       }
+ *   }) {
+ *       text(listOf("first line, second line"))
+ *       placement { TooltipComponent.PlacementContext.bottomEnd }
+ *   }
+ * ```
+ *
+ * @see TooltipComponent
+ */
 fun RenderContext.tooltip(
     styling: BasicParams.() -> Unit = {},
     text: String? = null,
@@ -27,6 +49,17 @@ fun RenderContext.tooltip(
     build: TooltipComponent.() -> Unit
 ) = TooltipComponent(text).apply(build).render(this, styling, baseClass, id, prefix)
 
+
+/**
+ * `tooltip` convenience function
+ *
+ * Example usage:
+ * ```
+ *   tooltip("my Tooltip") { }
+ * ```
+ *
+ * @see TooltipComponent
+ */
 fun RenderContext.tooltip(
     text: String,
     build: TooltipComponent.() -> Unit
@@ -36,6 +69,16 @@ fun RenderContext.tooltip(
     }
 }
 
+/**
+ * `tooltip` convenience function
+ *
+ * Example usage:
+ * ```
+ *   tooltip("my Tooltip", "second tooltip line") { }
+ * ```
+ *
+ *  @see TooltipComponent
+ */
 fun RenderContext.tooltip(
     vararg text: String,
     build: TooltipComponent.() -> Unit

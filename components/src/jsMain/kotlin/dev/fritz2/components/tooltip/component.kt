@@ -6,6 +6,7 @@ import dev.fritz2.components.foundations.EventMixin
 import dev.fritz2.components.foundations.EventProperties
 import dev.fritz2.components.popup
 import dev.fritz2.components.popup.Placement
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BoxParams
@@ -13,10 +14,47 @@ import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLInputElement
 
+/**
+ * This component creates a Tooltip
+ *
+ * A `tooltip` should be used to display fast information for the user.
+ * The individual `text` will be shown on hover the `RenderContext` in which be called.
+ *
+ * This class offers the following _configuration_ features:
+ * [text] can be a `vararg`, a flow, a list, a flow of list of String or a simple string,
+ * optional can be use the @property textFromParam.
+ * [placement] of the [text] around the `RenderContext`in which be called.
+ * Available placements are `top`, `topStart`, `topEnd`, `bottom`, `bottomStart`, `bottomEnd`, `left`, `leftStart`,
+ * `leftEnd`, `right`, `rightStart`, `rightEnd`.
+ *
+ * The `render` function of [TooltipComponent] uses the fritz2 [dev.fritz2.components.popup.PopupComponent]
+ *
+ * Example usage:
+ * ```
+ *   tooltip("my Tooltip") {
+ *       placement { right }
+ *   }
+ *
+ *   tooltip("first line, second line"){}
+ *
+ *   tooltip({
+ *       color { danger.mainContrast }
+ *       background {
+ *           color { danger.main }
+ *       }
+ *   }) {
+ *       text(listOf("first line, second line"))
+ *       placement { TooltipComponent.PlacementContext.bottomEnd }
+ *   }
+ * ```
+ *
+ * @see [Placement]
+ *
+ */
 
 open class TooltipComponent(private val textFromParam: String?) :
     EventProperties<HTMLInputElement> by EventMixin(),
-    Component<Unit> {
+    Component<Div> {
 
     private var textFromContext: Flow<List<String>> = emptyFlow()
     fun text(vararg value: String) {
@@ -43,7 +81,7 @@ open class TooltipComponent(private val textFromParam: String?) :
 
     /**
      * PlacementContext
-     * uses the [Placement] of [dev.fritz2.components.popup.PopupComponent]
+     * uses [Placement] of [dev.fritz2.components.popup.PopupComponent]
      */
     object PlacementContext {
         val top = Placement.Top
@@ -68,27 +106,25 @@ open class TooltipComponent(private val textFromParam: String?) :
         baseClass: StyleClass,
         id: String?,
         prefix: String
-    ) {
-        context.apply {
-            popup({
-                this as BoxParams
-                Theme().tooltip.base.invoke()
-                styling.invoke()
-            }, id = id ?: "") {
-                placement { this@TooltipComponent.placement.value.invoke(PlacementContext) }
-                offset(5.0)
-                trigger { toggle, close ->
-                    context.domNode.apply {
-                        mouseenters.events.map {
-                            it.currentTarget
-                        } handledBy toggle
-                        mouseleaves.events.map { } handledBy close
-                    }
+    ): Div = with(context) {
+        popup({
+            this as BoxParams
+            Theme().tooltip.base.invoke()
+            styling.invoke()
+        }, id = id ?: "") {
+            placement { this@TooltipComponent.placement.value.invoke(PlacementContext) }
+            offset(5.0)
+            trigger { toggle, close ->
+                context.domNode.apply {
+                    mouseenters.events.map {
+                        it.currentTarget
+                    } handledBy toggle
+                    mouseleaves.events.map { } handledBy close
                 }
-                content {
-                    this@TooltipComponent.content().renderEach { text ->
-                        span { +text }
-                    }
+            }
+            content {
+                this@TooltipComponent.content().renderEach { text ->
+                    span { +text }
                 }
             }
         }
