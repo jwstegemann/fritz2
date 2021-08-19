@@ -42,6 +42,8 @@ data class State(
         sortingPlan.map { (colId, sorting) -> columns[colId]!! to sorting }
 }
 
+typealias ComplexDataBeast<T> = Triple<IndexedValue<T>, Boolean, List<Pair<Column<T>, IndexedValue<StatefulItem<T>>>>>
+
 /**
  * Store for the column configuration that holds a [State] object.
  * It does **not** manage the actual data of the table; this is done by [RowSelectionStore]!
@@ -59,22 +61,58 @@ class StateStore<T, I>(private val sortingPlanReducer: SortingPlanReducer) : Roo
     fun renderingHeaderData(component: DataTableComponent<T, I>) =
         data.map { it.orderedColumnsWithSorting(component.columns.value.columns) }
 
-    fun renderingRowsData(component: DataTableComponent<T, I>) = component.dataStore.data.combine(data) { data, state ->
-        component.options.value.sorting.value.sorter.value.sortedBy(
-            data,
-            state.columnSortingPlan(component.columns.value.columns)
-        ).withIndex().toList()
-    }
-
-    fun renderingCellsData(component: DataTableComponent<T, I>, index: Int, row: T, selected: Flow<Boolean>) =
-        renderingHeaderData(component).combine(selected) { columns, sel ->
-            columns.map { (column, sorting) ->
-                column to IndexedValue(
-                    index,
-                    StatefulItem(row, sel, sorting.strategy)
-                )
+    fun renderingRowsData(component: DataTableComponent<T, I>) =
+    // create two flows:
+    // 1.) List von Index + Row
+    // 2.) Map von ID auf Liste von Paaren von Columns und StatefulItem
+    // -> Client captures both flows
+    // -> erster für <tr>
+        // -> zweiter für <td>s *einer* bestimmten <tr> (via ID)
+        component.dataStore.data.combine(data) { data, state -> data to state }
+            .combine(component.selectionStore.data) { (data, state), selectedItems ->
+                val columnsSorting = state.orderedColumnsWithSorting(component.columns.value.columns)
+                val result = component.options.value.sorting.value.sorter.value.sortedBy(
+                    data,
+                    state.columnSortingPlan(component.columns.value.columns)
+                ).withIndex().map { (index, row) ->
+                    val isSelected = selectedItems.contains(row)
+                    Triple(
+                        IndexedValue(index, row),
+                        isSelected,
+                        columnsSorting.map { (column, columnIdSorting) ->
+                            column to IndexedValue(
+                                index,
+                                StatefulItem(row, isSelected, columnIdSorting.strategy)
+                            )
+                        }
+                    )
+                }
+                result.toList()
             }
-        }
+
+    fun renderingCellsData(component: DataTableComponent<T, I>) =
+        component.dataStore.data.combine(data) { data, state -> data to state }
+            .combine(component.selectionStore.data) { (data, state), selectedItems ->
+                val columnsSorting = state.orderedColumnsWithSorting(component.columns.value.columns)
+                val result = component.options.value.sorting.value.sorter.value.sortedBy(
+                    data,
+                    state.columnSortingPlan(component.columns.value.columns)
+                ).withIndex().map { (index, row) ->
+                    val isSelected = selectedItems.contains(row)
+                    Triple(
+                        IndexedValue(index, row),
+                        isSelected,
+                        columnsSorting.map { (column, columnIdSorting) ->
+                            column to IndexedValue(
+                                index,
+                                StatefulItem(row, isSelected, columnIdSorting.strategy)
+                            )
+                        }
+                    )
+                }
+                result.toList()
+            }
+
 
     val sortingChanged = handle { state, activated: ColumnIdSorting ->
         state.copy(sortingPlan = sortingPlanReducer.reduce(state.sortingPlan, activated))
@@ -398,22 +436,27 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
         rowIdProvider: (T) -> I,
         renderContext: RenderContext
     ) {
+        val indexedRowIdProvider: (ComplexDataBeast<T>) -> I = { (indexedRowData, _, _) ->
+            rowIdProvider(indexedRowData.value)
+        }
         val component = this
         renderContext.apply {
             tbody({
                 styling()
             }) {
                 component.stateStore.renderingRowsData(component)
-                    .renderEach(IndexedValue<T>::hashCode) { (index, rowData) ->
+                    .renderEach(indexedRowIdProvider) { (indexedRowData, isSelected, columnsData) ->
+                        val (index, rowData) = indexedRowData
                         val rowStore = component.dataStore.sub(rowData, rowIdProvider)
-                        val isSelected = this@DataTableComponent.selectionStore.isDataRowSelected(rowStore.current)
                         tr {
                             this@DataTableComponent.applySelectionStyle(this, isSelected, index, rowData)
                             this@DataTableComponent.selection.value.strategy.value
                                 ?.manageSelectionByRowEvents(component, rowStore, this)
                             dblclicks.events.map { rowStore.current } handledBy component.selectionStore.dbClickedRow
-                            component.stateStore.renderingCellsData(component, index, rowData, isSelected)
-                                .renderEach { (column, statefulIndex) ->
+
+                            columnsData.onEach { console.log(it.first.title, it.second.value.selected) }
+                                .forEach { (column, statefulIndex) ->
+                                    //.renderEach { (column, statefulIndex) ->
                                     td({
                                         IndexedValue(
                                             index,
@@ -446,10 +489,10 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
         }
     }
 
-    private fun applySelectionStyle(renderContext: Tr, isSelected: Flow<Boolean>, index: Int, rowData: T) {
+    private fun applySelectionStyle(renderContext: Tr, isSelected: Boolean, index: Int, rowData: T) {
         renderContext.apply {
             if (this@DataTableComponent.options.value.hovering.value.active.value) {
-                className(isSelected.map { sel ->
+                className(
                     style {
                         children("&:hover td") {
                             IndexedValue(
@@ -462,7 +505,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                                     index,
                                     rowData as Any, // cast necessary, as theme can't depend on ``T``!
                                 ),
-                                sel,
+                                isSelected,
                                 false
                             )
                             this@DataTableComponent.options.value.hovering.value.style.value(
@@ -470,14 +513,14 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                                     index,
                                     StatefulItem(
                                         rowData,
-                                        sel,
+                                        isSelected,
                                         Sorting.NONE
                                     )
                                 )
                             )
                         }
                     }.name
-                })
+                )
             }
         }
     }
