@@ -34,7 +34,7 @@ fun StyleParams.tooltip(vararg text: String, tooltipPlacement: TooltipPlacements
  *       }
  *   }) {
  *       text(listOf("first line, second line"))
- *       placement { TooltipComponent.PlacementContext.bottomEnd }
+ *       placement { bottomEnd }
  *   }
  * ```
  *
@@ -56,6 +56,7 @@ fun RenderContext.tooltip(
  * Example usage:
  * ```
  *   tooltip("my Tooltip") { }
+ *   tooltip("my Tooltip") { placement { bottom } }
  * ```
  *
  * @see TooltipComponent
