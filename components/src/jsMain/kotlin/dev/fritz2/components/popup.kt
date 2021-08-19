@@ -7,10 +7,30 @@ import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 
 /**
- * Creates a popup component
+ * This component creates a popup.
+ * A popup should be used for to positioning `content` like `tooltip` or `popover` automatically
+ * in the right place near a `trigger`. It will pop(ped)up on every event which `handledBy` given handler.
+ *
+ * Example usage
+ * ```
+ * popup {
+ *      placement { topStart }
+ *      trigger { toggleHandler, closeHandler ->
+ *          button {
+ *              +"toggle"
+ *              clicks.events.map { it.currentTarget } handledBy toggle
+ *          }
+ *      }
+ *      content {
+ *          div {
+ *              +"my content"
+ *          }
+ *      }
+ * }
+ * ```
  *
  * @see PopupComponent
- * @param styling a lambda expression for declaring the styling of the actual dropdown as fritz2's styling DSL
+ *
  * @param styling a lambda expression for declaring the styling of the actual dropdown as fritz2's styling DSL
  * @param baseClass optional CSS class that should be applied to the element
  * @param id the ID of element

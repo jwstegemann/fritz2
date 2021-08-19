@@ -22,7 +22,7 @@ import org.w3c.dom.events.EventTarget
  * This component creates a popup.
  *
  * A popup should be used for to positioning `content` like `tooltip` or `popover` automatically
- * in the right place near a `trigger`. It will popped up on every event which `handledBy` given handler.
+ * in the right place near a `trigger`. It will pop(ped)up on every event which `handledBy` given handler.
  *
  * A popup mainly consists of
  * [trigger] the Elements which calls the [content]
@@ -38,15 +38,17 @@ import org.w3c.dom.events.EventTarget
  *
  * [content] provides one handler which can be used to close it.
  *
- * Example:
- * ```kotlin
+ * Example usage:
+ * ```
  * popup {
+ *      offset(10.0)
+ *      flipping(false)
  *      placement { topStart }
  *      trigger { toggleHandler, closeHandler ->
  *          span {
  *              +"hover me"
  *              mouseenters.events.map { it.currentTarget } handledBy toggle
-                mouseleaves.events.map {} handledBy close
+ *              mouseleaves.events.map {} handledBy close
  *          }
  *      }
  *      content { closeHandler ->
