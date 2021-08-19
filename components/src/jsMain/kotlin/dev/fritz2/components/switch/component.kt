@@ -120,6 +120,8 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
         return with(context) {
             label({
                 this@SwitchComponent.size.value.invoke(Theme().switch.sizes)()
+                // to "capture" the invisible, absolute positioned `input`, see `switchInputStaticCss`
+                position { relative {  } }
             }, baseClass = baseClass, id = id, prefix = prefix) {
                 `for`(inputId)
                 input({
