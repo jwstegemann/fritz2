@@ -72,10 +72,28 @@ open class AppFrameComponent : Component<Unit>,
                     padding: 0;
                     margin: 0; 
                 }
-             """.trimIndent()
+                """.trimIndent()
             )
         }
     }
+
+    private var sidebarWith: Property? = null
+
+    /**
+     * sets the min-width of sidebar
+     *
+     * @param value value between 0 - 100
+     */
+    fun sidebarWith(value: Int) { sidebarWith = "${value}vw"}
+
+    private var mobileSidebarWith: Property? = null
+
+    /**
+     * sets the min-with of mobile sidebar
+     *
+     * @param value value between 0 - 100
+     */
+    fun mobileSidebarWith(value: Int) { sidebarWith = "${value}vw"}
 
     private val sidebarStatus = storeOf(false)
     private val toggleSidebar = sidebarStatus.handle { !it }
@@ -98,7 +116,7 @@ open class AppFrameComponent : Component<Unit>,
 
     private fun mobileSidebar(topPosition: Property): Style<BasicParams> = {
         zIndex { appFrame }
-        width(sm = { Theme().appFrame.mobileSidebarWidth }, md = { unset })
+        width(sm = { this@AppFrameComponent.mobileSidebarWith ?: Theme().appFrame.mobileSidebarWidth }, md = { unset })
         css(sm = "transform: translateX(-110vw);", md = "transform: unset;")
         position(sm = {
             fixed { top { topPosition } }
@@ -280,6 +298,7 @@ open class AppFrameComponent : Component<Unit>,
                 this@AppFrameComponent.mobileSidebar(Theme().appFrame.headerHeight)()
                 overflow { hidden }
                 height(sm = { "calc(100% - ${Theme().appFrame.headerHeight})" }, md = { unset })
+                minWidth { this@AppFrameComponent.sidebarWith ?: Theme().appFrame.sidebarWidth }
                 Theme().appFrame.sidebar()
             }) {
                 className(this@AppFrameComponent.openSideBar.whenever(this@AppFrameComponent.sidebarStatus.data).name)

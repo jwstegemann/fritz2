@@ -736,6 +736,7 @@ interface NavBarStyles {
 interface AppFrameStyles {
     val headerHeight: Property
     val complementaryMinHeight: Property
+    val sidebarWidth: Property
     val mobileSidebarWidth: Property
     val brand: Style<FlexParams>
     val sidebar: Style<BasicParams>
