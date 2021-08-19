@@ -26,6 +26,9 @@ class Positioning(
 
     private val defaultPosition = placement.position(triggerInformation, element, offset)
 
+    /**
+     * Calculations of individual availability of placements
+     */
     private val topAvailable =
         triggerInformation.domRect.top - offset - element.offsetHeight > 0
     private val bottomAvailable =
