@@ -444,57 +444,64 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
             tbody({
                 styling()
             }) {
-                component.stateStore.renderingRowsData(component)
-                    .renderEach(indexedRowIdProvider) { (indexedRowData, isSelected, columnsData) ->
+                component.stateStore.renderingRowsData(component).let { renderingRowsFlow ->
+                    renderingRowsFlow.renderEach(indexedRowIdProvider) { (indexedRowData, isSelected, _) ->
                         val (index, rowData) = indexedRowData
                         val rowStore = component.dataStore.sub(rowData, rowIdProvider)
                         tr {
-                            this@DataTableComponent.applySelectionStyle(this, isSelected, index, rowData)
                             this@DataTableComponent.selection.value.strategy.value
                                 ?.manageSelectionByRowEvents(component, rowStore, this)
                             dblclicks.events.map { rowStore.current } handledBy component.selectionStore.dbClickedRow
 
-                            columnsData.onEach { console.log(it.first.title, it.second.value.selected) }
-                                .forEach { (column, statefulIndex) ->
-                                    //.renderEach { (column, statefulIndex) ->
-                                    td({
-                                        IndexedValue(
-                                            index,
-                                            rowData as Any, // cast necessary, as theme can't depend on ``T``!
-                                        )
-                                        Sorting.sorted(statefulIndex.value.sorting)
-                                        Theme().dataTableStyles.cellStyle(
-                                            this,
+                            renderingRowsFlow.map { it[index].third }.distinctUntilChanged()
+                                .let { renderingColumnsFlow ->
+                                    renderingColumnsFlow.renderEach { (column, statefulIndex) ->
+                                        td({
                                             IndexedValue(
                                                 index,
                                                 rowData as Any, // cast necessary, as theme can't depend on ``T``!
-                                            ),
-                                            statefulIndex.value.selected,
+                                            )
                                             Sorting.sorted(statefulIndex.value.sorting)
-                                        )
-                                        this@DataTableComponent.columns.value.styling.value(this, statefulIndex)
-                                        column.styling(this, statefulIndex)
-                                    }) {
-                                        column.content(
-                                            this,
-                                            statefulIndex,
-                                            if (column.lens != null) rowStore.sub(column.lens) else null,
-                                            rowStore,
-                                        )
+                                            Theme().dataTableStyles.cellStyle(
+                                                this,
+                                                IndexedValue(
+                                                    index,
+                                                    rowData as Any, // cast necessary, as theme can't depend on ``T``!
+                                                ),
+                                                statefulIndex.value.selected,
+                                                Sorting.sorted(statefulIndex.value.sorting)
+                                            )
+                                            this@DataTableComponent.columns.value.styling.value(this, statefulIndex)
+                                            column.styling(this, statefulIndex)
+                                        }) {
+                                            this@DataTableComponent.applySelectionStyle(
+                                                this,
+                                                statefulIndex.value.selected,
+                                                index,
+                                                rowData
+                                            )
+                                            column.content(
+                                                this,
+                                                statefulIndex,
+                                                if (column.lens != null) rowStore.sub(column.lens) else null,
+                                                rowStore,
+                                            )
+                                        }
                                     }
                                 }
                         }
                     }
+                }
             }
         }
     }
 
-    private fun applySelectionStyle(renderContext: Tr, isSelected: Boolean, index: Int, rowData: T) {
+    private fun applySelectionStyle(renderContext: Td, isSelected: Boolean, index: Int, rowData: T) {
         renderContext.apply {
             if (this@DataTableComponent.options.value.hovering.value.active.value) {
                 className(
                     style {
-                        children("&:hover td") {
+                        hover {
                             IndexedValue(
                                 index,
                                 rowData as Any, // cast necessary, as theme can't depend on ``T``!
