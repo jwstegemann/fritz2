@@ -58,7 +58,9 @@ open class PushButtonComponent :
     Component<Unit>,
     EventProperties<HTMLButtonElement> by EventMixin(),
     ElementProperties<Button> by ElementMixin(),
-    FormProperties by FormMixin() {
+    FormProperties by FormMixin(),
+    TooltipProperties by TooltipMixin()
+    {
     companion object {
         val staticCss = staticStyle(
             "button",
@@ -258,6 +260,7 @@ open class PushButtonComponent :
                 }
                 this@PushButtonComponent.events.value.invoke(this)
                 this@PushButtonComponent.element.value.invoke(this)
+                this@PushButtonComponent.renderTooltip(this)
             }
         }
     }

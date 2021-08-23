@@ -2,6 +2,8 @@ package dev.fritz2.components.foundations
 
 import dev.fritz2.components.buttons.PushButtonComponent
 import dev.fritz2.components.clickButton
+import dev.fritz2.components.tooltip
+import dev.fritz2.components.tooltip.TooltipComponent
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.EventContext
@@ -418,4 +420,46 @@ class OrientationMixin(default: Orientation) : OrientationProperty {
     override val orientation: ComponentProperty<OrientationContext.() -> Orientation> by lazy {
         ComponentProperty { default }
     }
+}
+
+interface TooltipProperties {
+    val tooltipStyling: ComponentProperty<BasicParams.() -> Unit>
+    val tooltipText: DynamicComponentProperty<List<String>>
+    val tooltipBuild: ComponentProperty<TooltipComponent.() -> Unit>
+
+    fun tooltip(
+        styling: BasicParams.() -> Unit,
+        text: String?,
+       //baseClass: StyleClass,
+       //id: String,
+       //prefix: String,
+        build: TooltipComponent.() -> Unit
+    ){
+        tooltipStyling(styling)
+        tooltipText(listOf(text ?: ""))
+        tooltipBuild(build)
+    }
+
+    fun renderTooltip(context: RenderContext) {
+        context.apply {
+            tooltipText.values.render {
+                if( it.isNotEmpty() ) {
+                    tooltip(
+                        tooltipStyling.value
+                    ) {
+                        tooltipBuild.value(this@tooltip)
+                        text(it)
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
+open class TooltipMixin: TooltipProperties {
+    override val tooltipStyling = ComponentProperty<BasicParams.() -> Unit> {}
+    override val tooltipText =  DynamicComponentProperty<List<String>>(flowOf(listOf("")))
+    override val tooltipBuild =  ComponentProperty<TooltipComponent.() -> Unit> {}
 }
