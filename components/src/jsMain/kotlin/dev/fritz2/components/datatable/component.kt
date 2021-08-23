@@ -410,7 +410,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
             }) {
                 this@DataTableComponent.stateStore
                     .renderingRowsData(this@DataTableComponent, rowIdProvider).let { renderingData ->
-                        renderingData.map { it.first }.renderEach(indexedRowIdProvider) { (index, rowData) ->
+                        renderingData.map { it.first }.renderEach(indexedRowIdProvider) { (_, rowData) ->
                             val rowStore = this@DataTableComponent.dataStore.sub(rowData, rowIdProvider)
                             tr {
                                 this@DataTableComponent.selection.value.strategy.value
@@ -420,17 +420,20 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                                 } handledBy this@DataTableComponent.selectionStore.dbClickedRow
 
                                 renderingData.mapNotNull { it.second[rowIdProvider(rowData)] }
+                                    // provide data structure that only relies on String representation of the
+                                    // column for `equals`. This way we can still provide the whole `T` for the styling
+                                    // and content, but also able to render only cells, which content has changed!
                                     .renderEach { (column, statefulIndex) ->
-                                        console.log(column.title, statefulIndex.index, statefulIndex.value.item)
+                                        val (index, stateful) = statefulIndex
+                                        console.log(column.title, index, stateful.item)
                                         td({
-                                            Sorting.sorted(statefulIndex.value.sorting)
                                             Theme().dataTableStyles.cellStyle(
                                                 this,
                                                 IndexedValue(
                                                     index,
-                                                    rowData as Any, // cast necessary, as theme can't depend on ``T``!
+                                                    stateful.item as Any, // cast necessary, as theme can't depend on ``T``!
                                                 ),
-                                                statefulIndex.value.selected,
+                                                stateful.selected,
                                                 Sorting.sorted(statefulIndex.value.sorting)
                                             )
                                             this@DataTableComponent.columns.value.styling.value(this, statefulIndex)
@@ -441,7 +444,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                                                 this,
                                                 statefulIndex.value.selected,
                                                 index,
-                                                rowData
+                                                stateful.item
                                             )
                                             column.content(
                                                 this,
