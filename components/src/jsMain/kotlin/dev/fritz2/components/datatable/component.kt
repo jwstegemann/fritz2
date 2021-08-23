@@ -420,12 +420,8 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                                 } handledBy this@DataTableComponent.selectionStore.dbClickedRow
 
                                 renderingData.mapNotNull { it.second[rowIdProvider(rowData)] }
-                                    // provide data structure that only relies on String representation of the
-                                    // column for `equals`. This way we can still provide the whole `T` for the styling
-                                    // and content, but also able to render only cells, which content has changed!
-                                    .renderEach { (column, statefulIndex) ->
+                                    .renderEach({ columnIdProvider(it) }) { (column, statefulIndex) ->
                                         val (index, stateful) = statefulIndex
-                                        console.log(column.title, index, stateful.item)
                                         td({
                                             Theme().dataTableStyles.cellStyle(
                                                 this,
@@ -439,10 +435,9 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                                             this@DataTableComponent.columns.value.styling.value(this, statefulIndex)
                                             column.styling(this, statefulIndex)
                                         }) {
-                                            console.log("rendere neu: ", column.title)
                                             this@DataTableComponent.applySelectionStyle(
-                                                this,
-                                                statefulIndex.value.selected,
+                                                this@tr,
+                                                stateful.selected,
                                                 index,
                                                 stateful.item
                                             )
@@ -461,12 +456,12 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
         }
     }
 
-    private fun applySelectionStyle(renderContext: Td, isSelected: Boolean, index: Int, rowData: T) {
+    private fun applySelectionStyle(renderContext: Tr, isSelected: Boolean, index: Int, rowData: T) {
         renderContext.apply {
             if (this@DataTableComponent.options.value.hovering.value.active.value) {
                 className(
                     style {
-                        hover {
+                        children("&:hover td") {
                             Theme().dataTableStyles.hoveringStyle(
                                 this,
                                 IndexedValue(
