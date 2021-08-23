@@ -1,7 +1,6 @@
 package dev.fritz2.components
 
 import dev.fritz2.components.foundations.randomId
-import dev.fritz2.components.popup.Placement
 import dev.fritz2.components.tooltip.TooltipComponent
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
