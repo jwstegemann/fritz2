@@ -260,7 +260,7 @@ open class PushButtonComponent :
                 }
                 this@PushButtonComponent.events.value.invoke(this)
                 this@PushButtonComponent.element.value.invoke(this)
-                this@PushButtonComponent.renderTooltip(this)
+                this@PushButtonComponent.renderTooltip.value.invoke(this)
             }
         }
     }

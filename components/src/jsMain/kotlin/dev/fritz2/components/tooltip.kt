@@ -31,6 +31,7 @@ fun StyleParams.tooltip(vararg text: String, tooltipPlacement: TooltipPlacements
  *       text("some tooltip text")
  *       placement { bottomEnd }
  *   }
+ *  }
  * ```
  *
  * There exist also one convenience functions, that allow a terser creation! This one offers the whole freedom

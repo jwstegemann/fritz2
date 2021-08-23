@@ -422,44 +422,96 @@ class OrientationMixin(default: Orientation) : OrientationProperty {
     }
 }
 
+/**
+ * This interface offer convenience functions to call a tooltip in a component.
+ * Also adds a property to invoke it in the component.
+ *
+ * Example integration:
+ * ```
+ * open class MyComponent : Component<Unit>, TooltipProperties by TooltipMixin()  {
+ * //                                        ^^^^^^^^^^^^^^^^     ^^^^^^^^^^^^^
+ * //                                        implement interface    delegate to mixin
+ *      override fun render(/* params omitted */) {
+ *          context.apply {
+ *              div {
+ *               this@MyComponent.renderTooltip.value.invoke(this)
+ *            }
+ *          }
+ *      }
+ * }
+ * ```
+ *
+ * Example usage:
+ * ```
+ *  myComponent() {
+ *       tooltip(text = "my Tooltip") { }
+ *  }
+ *
+ *  myComponent() {
+ *   tooltip({
+ *       color { danger.mainContrast }
+ *       background {
+ *           color { danger.main }
+ *       }
+ *   }) {
+ *       text(listOf("first line, second line"))
+ *       placement { bottomEnd }
+ *   }
+ *  }
+ *
+ *  myComponent() {
+ *      tooltip("my tooltip") {}
+ *  }
+ *
+ *  myComponent() {
+ *      tooltip("my tooltip", "second line") { placement { bottom }}
+ *  }
+ *```
+ */
 interface TooltipProperties {
-    val tooltipStyling: ComponentProperty<BasicParams.() -> Unit>
-    val tooltipText: DynamicComponentProperty<List<String>>
-    val tooltipBuild: ComponentProperty<TooltipComponent.() -> Unit>
-
+    val renderTooltip: ComponentProperty<RenderContext.() -> Unit>
     fun tooltip(
-        styling: BasicParams.() -> Unit,
-        text: String?,
-       //baseClass: StyleClass,
-       //id: String,
-       //prefix: String,
+        styling: BasicParams.() -> Unit = {},
+        text: String? = null,
+        baseClass: StyleClass = StyleClass.None,
+        id: String = "fc2-tooltip-${randomId()}",
+        prefix: String = "tooltip",
         build: TooltipComponent.() -> Unit
-    ){
-        tooltipStyling(styling)
-        tooltipText(listOf(text ?: ""))
-        tooltipBuild(build)
-    }
-
-    fun renderTooltip(context: RenderContext) {
-        context.apply {
-            tooltipText.values.render {
-                if( it.isNotEmpty() ) {
-                    tooltip(
-                        tooltipStyling.value
-                    ) {
-                        tooltipBuild.value(this@tooltip)
-                        text(it)
-                    }
-                }
+    ) {
+        renderTooltip {
+            tooltip(styling, text, baseClass, id, prefix) {
+                build()
             }
         }
     }
 
+    fun tooltip(
+        text: String,
+        build: TooltipComponent.() -> Unit
+    ) {
+        renderTooltip {
+            tooltip({}, text) {
+                build()
+            }
+        }
+    }
+
+    fun tooltip(
+        vararg text: String,
+        build: TooltipComponent.() -> Unit
+    ) {
+        renderTooltip {
+            tooltip({}) {
+                build()
+                text(*text)
+            }
+        }
+    }
 }
 
-
-open class TooltipMixin: TooltipProperties {
-    override val tooltipStyling = ComponentProperty<BasicParams.() -> Unit> {}
-    override val tooltipText =  DynamicComponentProperty<List<String>>(flowOf(listOf("")))
-    override val tooltipBuild =  ComponentProperty<TooltipComponent.() -> Unit> {}
+/**
+ * Default implementation of [TooltipProperties] interface in order to apply this as mixin for a component
+ */
+open class TooltipMixin : TooltipProperties {
+    override val renderTooltip = ComponentProperty<RenderContext.() -> Unit> {}
 }
