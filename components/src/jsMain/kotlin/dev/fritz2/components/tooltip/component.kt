@@ -40,7 +40,7 @@ import org.w3c.dom.HTMLInputElement
  *
  *   span {
  *       +"hover me for see a multiline tooltip"
- *       tooltip("first line, second line"){}
+ *       tooltip("first line", "second line"){}
  *   }
  *
  *   span {
@@ -51,7 +51,7 @@ import org.w3c.dom.HTMLInputElement
  *               color { danger.main }
  *           }
  *       }) {
- *           text(listOf("first line, second line"))
+ *           text(listOf("first line", "second line"))
  *           placement { TooltipComponent.PlacementContext.bottomEnd }
  *       }
  *   }
