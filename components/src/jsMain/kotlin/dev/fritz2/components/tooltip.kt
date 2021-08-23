@@ -40,6 +40,7 @@ fun StyleParams.tooltip(vararg text: String, tooltipPlacement: TooltipPlacements
  *       text(listOf("first line, second line"))
  *       placement { bottomEnd }
  *   }
+ *  }
  * ```
  *
  * @see TooltipComponent
