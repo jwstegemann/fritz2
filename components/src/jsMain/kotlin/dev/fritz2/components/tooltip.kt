@@ -1,7 +1,6 @@
 package dev.fritz2.components
 
 import dev.fritz2.components.foundations.randomId
-import dev.fritz2.components.popup.Placement
 import dev.fritz2.components.tooltip.TooltipComponent
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -25,8 +24,13 @@ fun StyleParams.tooltip(vararg text: String, tooltipPlacement: TooltipPlacements
  *
  * Example usage:
  * ```
- *   tooltip(text = "my Tooltip") { }
+ *   span {
+ *      +"hover me"
+ *      tooltip(text = "my Tooltip") { }
+ *   }
  *
+ *   span {
+ *   +"hover me"
  *   tooltip({
  *       color { danger.mainContrast }
  *       background {
@@ -55,8 +59,15 @@ fun RenderContext.tooltip(
  *
  * Example usage:
  * ```
- *   tooltip("my Tooltip") { }
- *   tooltip("my Tooltip") { placement { bottom } }
+ *   span {
+ *      +"hover me"
+ *      tooltip("my Tooltip") { }
+ *   }
+ *
+ *   span {
+ *      +"hover me"
+ *      tooltip("my Tooltip") { placement { bottom } }
+ *   }
  * ```
  *
  * @see TooltipComponent
@@ -75,7 +86,10 @@ fun RenderContext.tooltip(
  *
  * Example usage:
  * ```
- *   tooltip("my Tooltip", "second tooltip line") { }
+ *  span {
+ *      +"hover me"
+ *      tooltip("my Tooltip", "second tooltip line") { }
+ *  }
  * ```
  *
  *  @see TooltipComponent

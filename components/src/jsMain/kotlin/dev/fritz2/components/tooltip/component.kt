@@ -31,20 +31,29 @@ import org.w3c.dom.HTMLInputElement
  *
  * Example usage:
  * ```
- *   tooltip("my Tooltip") {
- *       placement { right }
+ *   span {
+ *       +"hover me"
+ *       tooltip("my Tooltip on right side") {
+ *           placement { right }
+ *       }
  *   }
  *
- *   tooltip("first line, second line"){}
+ *   span {
+ *       +"hover me for see a multiline tooltip"
+ *       tooltip("first line", "second line"){}
+ *   }
  *
- *   tooltip({
- *       color { danger.mainContrast }
- *       background {
- *           color { danger.main }
+ *   span {
+ *       +"hover me for custom colored tooltip"
+ *       tooltip({
+ *           color { danger.mainContrast }
+ *           background {
+ *               color { danger.main }
+ *           }
+ *       }) {
+ *           text(listOf("first line", "second line"))
+ *           placement { TooltipComponent.PlacementContext.bottomEnd }
  *       }
- *   }) {
- *       text(listOf("first line, second line"))
- *       placement { TooltipComponent.PlacementContext.bottomEnd }
  *   }
  * ```
  *
