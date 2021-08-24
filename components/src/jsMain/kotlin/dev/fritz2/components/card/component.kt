@@ -7,6 +7,7 @@ import dev.fritz2.components.paper
 import dev.fritz2.components.paper.PaperComponent
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.*
+import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
@@ -65,13 +66,13 @@ open class CardComponent : Component<Unit> {
 
 
     enum class Sizes {
-        Small, Normal, Large
+        SMALL, NORMAL, LARGE
     }
 
     object SizesContext {
-        val small = Sizes.Small
-        val normal = Sizes.Normal
-        val large = Sizes.Large
+        val small = Sizes.SMALL
+        val normal = Sizes.NORMAL
+        val large = Sizes.LARGE
     }
 
     val size = ComponentProperty<SizesContext.() -> Sizes> { normal }
@@ -133,24 +134,24 @@ open class CardComponent : Component<Unit> {
         prefix: String
     ) {
         context.apply {
-            paper {
+            // TODO: Remove unsafe cast when issue #498 is resolved!
+            paper({ styling(this as BoxParams) }, baseClass, id, prefix) {
                 size {
                     when(this@CardComponent.size.value(SizesContext)) {
-                        Sizes.Small -> PaperComponent.Sizes.Small
-                        Sizes.Normal -> PaperComponent.Sizes.Normal
-                        Sizes.Large -> PaperComponent.Sizes.Large
+                        Sizes.SMALL -> PaperComponent.Sizes.SMALL
+                        Sizes.NORMAL -> PaperComponent.Sizes.NORMAL
+                        Sizes.LARGE -> PaperComponent.Sizes.LARGE
                     }
                 }
                 type { this@CardComponent.type.value(PaperComponent.TypesContext) }
                 content {
                     div({
                         when (this@CardComponent.size.value(SizesContext)) {
-                            Sizes.Small -> Theme().card.sizes.small
-                            Sizes.Normal -> Theme().card.sizes.normal
-                            Sizes.Large -> Theme().card.sizes.large
+                            Sizes.SMALL -> Theme().card.sizes.small
+                            Sizes.NORMAL -> Theme().card.sizes.normal
+                            Sizes.LARGE -> Theme().card.sizes.large
                         }.invoke()
-                        styling()
-                    }, baseClass, id, prefix) {
+                    }) {
                         this@CardComponent.header?.let {
                             header(Theme().card.header, prefix = headerStylePrefix) { it() }
                         }

@@ -18,6 +18,6 @@ fun RenderContext.paper(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
-    prefix: String = "card",
+    prefix: String = "paper",
     build: PaperComponent.() -> Unit,
 ) = PaperComponent().apply(build).render(this, styling, baseClass, id, prefix)
