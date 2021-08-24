@@ -8,7 +8,6 @@ import dev.fritz2.dom.values
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.input
 import dev.fritz2.styling.name
-import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.Theme
@@ -88,7 +87,8 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
                 transition: all 250ms;
                 white-space: nowrap;
                 outline: none;
-                width: 100%
+                width: 100%;
+                -webkit-appearance: none;
             """
         )
     }
