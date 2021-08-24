@@ -85,7 +85,7 @@ open class TextAreaComponent(protected val valueStore: Store<String>? = null) :
             appearance: none;
             transition: all 0.2s ease 0s;
             min-height: 80px;
-            
+            -webkit-appearance: none;
             """
         )
     }

@@ -83,6 +83,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                   position: relative;
                   outline:none;
                   appearance:none;
+                  -webkit-appearance: none;
               """
         )
     }
