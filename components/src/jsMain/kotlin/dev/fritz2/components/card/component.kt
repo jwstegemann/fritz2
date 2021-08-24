@@ -7,8 +7,9 @@ import dev.fritz2.components.paper
 import dev.fritz2.components.paper.PaperComponent
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.*
-import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.Style
+import dev.fritz2.styling.params.plus
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -23,6 +24,9 @@ import kotlinx.coroutines.flow.flowOf
  * - [content]: The main content of the card
  * - [header]: The header area of the card
  * - [footer]: The footer area of the card
+ *
+ * An optional styling parameter can be passed to the above properties in case you specify _custom content_ via
+ * `RenderContext`.
  *
  * The content-related properties (header, footer and content) don't only take layouts but also Strings and Flows of
  * Strings for your convenience.
@@ -46,10 +50,11 @@ import kotlinx.coroutines.flow.flowOf
  * card {
  *     size { normal }
  *     header("Simple Header")
- *     content {
- *         div({
- *             background { color { gray300 } }
- *         }) {
+ *     content({
+ *         // Optional additional styling
+ *         background { color { gray300 } }
+ *     }) {
+ *         span {
  *             +"Custom Content"
  *         }
  *     }
@@ -78,46 +83,61 @@ open class CardComponent : Component<Unit> {
     val size = ComponentProperty<SizesContext.() -> Sizes> { normal }
 
 
-    private var header: (RenderContext.() -> Unit)? = null
+    data class CardSection(
+        val styling: Style<BoxParams> = {},
+        val value: RenderContext.() -> Unit
+    )
 
-    fun header(value: (RenderContext.() -> Unit)) {
-        header = value
+
+    protected var header: CardSection? = null
+
+    fun header(
+        styling: Style<BoxParams> = {},
+        value: (RenderContext.() -> Unit)
+    ) {
+        header = CardSection(styling, value)
     }
 
     fun header(value: String) = this.header(flowOf(value))
 
     fun header(value: Flow<String>) {
-        header = {
+        header = CardSection {
             span { value.asText() }
         }
     }
 
 
-    private var footer: (RenderContext.() -> Unit)? = null
+    protected var footer: CardSection? = null
 
-    fun footer(value: (RenderContext.() -> Unit)) {
-        footer = value
+    fun footer(
+        styling: Style<BoxParams> = {},
+        value: (RenderContext.() -> Unit)
+    ) {
+        footer = CardSection(styling, value)
     }
 
     fun footer(value: String) = this.footer(flowOf(value))
 
     fun footer(value: Flow<String>) {
-        footer = {
+        footer = CardSection {
             span { value.asText() }
         }
     }
 
 
-    private var content: (RenderContext.() -> Unit)? = null
+    protected var content: CardSection? = null
 
-    fun content(value: (RenderContext.() -> Unit)) {
-        content = value
+    fun content(
+        styling: Style<BoxParams> = {},
+        value: (RenderContext.() -> Unit)
+    ) {
+        content = CardSection(styling, value)
     }
 
     fun content(value: String) = this.content(flowOf(value))
 
     fun content(value: Flow<String>) {
-        content = {
+        content = CardSection {
             span { value.asText() }
         }
     }
@@ -153,13 +173,13 @@ open class CardComponent : Component<Unit> {
                         }.invoke()
                     }) {
                         this@CardComponent.header?.let {
-                            header(Theme().card.header, prefix = headerStylePrefix) { it() }
+                            header(Theme().card.header + it.styling, prefix = headerStylePrefix) { it.value(this) }
                         }
                         this@CardComponent.content?.let {
-                            section(Theme().card.content, prefix = contentStylePrefix) { it() }
+                            section(Theme().card.content + it.styling, prefix = contentStylePrefix) { it.value(this) }
                         }
                         this@CardComponent.footer?.let {
-                            footer(Theme().card.footer, prefix = footerStylePrefix) { it() }
+                            footer(Theme().card.footer + it.styling, prefix = footerStylePrefix) { it.value(this) }
                         }
                     }
                 }
