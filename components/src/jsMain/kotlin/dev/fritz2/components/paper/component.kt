@@ -6,6 +6,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BoxParams
+import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.Theme
 
 /**
@@ -19,7 +20,8 @@ import dev.fritz2.styling.theme.Theme
  * - `outline` ([Types.OUTLINE]): Paper sheet does not appear elevated but with an outline instead.
  * - `ghost` ([Types.GHOST]): Paper sheet neither appears elevated nor outlined.
  *
- * The content is specified via the [content] property.
+ * The content is specified via the [content] property. In addition to the atual content an optional styling parameter
+ * can be specified as well.
  *
  *
  * Usage example:
@@ -28,6 +30,14 @@ import dev.fritz2.styling.theme.Theme
  *     size { normal }
  *     type { normal }
  *     content {
+ *         span { +"This is paper." }
+ *     }
+ * }
+ *
+ * paper {
+ *     content({
+ *         // Custom styled content
+ *     }) {
  *         span { +"This is paper." }
  *     }
  * }
@@ -61,7 +71,19 @@ open class PaperComponent : Component<Unit> {
     val type = ComponentProperty<TypesContext.() -> Types> { normal }
 
 
-    val content = ComponentProperty<RenderContext.() -> Unit> {}
+    data class PaperContent(
+        val styling: Style<BoxParams>,
+        val value: RenderContext.() -> Unit
+    )
+
+    protected var content: PaperContent? = null
+
+    fun content(
+        styling: Style<BoxParams> = {},
+        value: RenderContext.() -> Unit
+    ) {
+        content = PaperContent(styling, value)
+    }
 
 
     override fun render(
@@ -89,7 +111,9 @@ open class PaperComponent : Component<Unit> {
 
                 styling()
             }, baseClass, id, prefix) {
-                this@PaperComponent.content.value(this)
+                this@PaperComponent.content?.let {
+                    div(it.styling) { it.value(this) }
+                }
             }
         }
     }
