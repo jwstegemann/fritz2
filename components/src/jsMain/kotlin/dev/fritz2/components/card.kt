@@ -8,11 +8,25 @@ import dev.fritz2.styling.params.BasicParams
 /**
  * This factory function creates a [CardComponent].
  *
- * @param styling a lambda expression for declaring the styling of the toast using fritz2's styling DSL
- * @param baseClass optional CSS class that should be applied to the toast element
- * @param id the ID of the toast element
- * @param prefix the prefix for the generated CSS class of the toast element resulting in the form ``$prefix-$hash``
- * @param build a lambda expression for setting up the component itself
+ * Usage example:
+ * ```
+ * card {
+ *     size { small }
+ *     type { normal }
+ *     paperType { normal }
+ *     header("Header")
+ *     content("Lorem ipsum, dolor sit amet...")
+ *     footer("Footer")
+ * }
+ * ```
+ *
+ * Have a look at [CardComponent] for the full explanation and additional examples.
+ *
+ * @param styling a lambda expression for declaring the styling of the underlying PaperComponent using fritz2's styling DSL
+ * @param baseClass optional CSS class that should be applied to the underlying PaperComponent
+ * @param id the ID of the underlying PaperComponent
+ * @param prefix the prefix for the generated CSS class of the underlying PaperComponent resulting in the form ``$prefix-$hash``
+ * @param build a lambda expression for setting up the underlying PaperComponent
  */
 fun RenderContext.card(
     styling: BasicParams.() -> Unit = {},
