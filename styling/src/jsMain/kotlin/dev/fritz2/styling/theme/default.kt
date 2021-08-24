@@ -1089,7 +1089,6 @@ open class DefaultTheme : Theme {
             }
 
             override val ghost: Style<BoxParams> = {
-                // TODO: Still needed?
                 // No specific style
             }
         }

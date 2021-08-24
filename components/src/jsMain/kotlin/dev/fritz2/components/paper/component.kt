@@ -15,9 +15,9 @@ import dev.fritz2.styling.theme.Theme
  * depending on the specified [size] of the component.
  *
  * There are different [type]s of paper:
- * - `normal` ([Types.Normal]): Paper sheet appears card-like with a box-shadow.
- * - `outline` ([Types.Outline]): Paper sheet does not appear elevated but with an outline instead.
- * - `ghost` ([Types.Ghost]): Paper sheet neither appears elevated nor outlined.
+ * - `normal` ([Types.NORMAL]): Paper sheet appears card-like with a box-shadow.
+ * - `outline` ([Types.OUTLINE]): Paper sheet does not appear elevated but with an outline instead.
+ * - `ghost` ([Types.GHOST]): Paper sheet neither appears elevated nor outlined.
  *
  * The content is specified via the [content] property.
  *
@@ -36,26 +36,26 @@ import dev.fritz2.styling.theme.Theme
 open class PaperComponent : Component<Unit> {
 
     enum class Sizes {
-        Small, Normal, Large
+        SMALL, NORMAL, LARGE
     }
 
     object SizesContext {
-        val small = Sizes.Small
-        val normal = Sizes.Normal
-        val large = Sizes.Large
+        val small = Sizes.SMALL
+        val normal = Sizes.NORMAL
+        val large = Sizes.LARGE
     }
 
     val size = ComponentProperty<SizesContext.() -> Sizes> { normal }
 
 
     enum class Types {
-        Normal, Outline, Ghost
+        NORMAL, OUTLINE, GHOST
     }
 
     object TypesContext {
-        val normal = Types.Normal
-        val outline = Types.Outline
-        val ghost = Types.Ghost
+        val normal = Types.NORMAL
+        val outline = Types.OUTLINE
+        val ghost = Types.GHOST
     }
 
     val type = ComponentProperty<TypesContext.() -> Types> { normal }
@@ -74,21 +74,21 @@ open class PaperComponent : Component<Unit> {
         context.apply {
             div({
                 when (this@PaperComponent.size.value(SizesContext)) {
-                    Sizes.Small -> Theme().paper.sizes.small
-                    Sizes.Normal -> Theme().paper.sizes.normal
-                    Sizes.Large -> Theme().paper.sizes.large
+                    Sizes.SMALL -> Theme().paper.sizes.small
+                    Sizes.NORMAL -> Theme().paper.sizes.normal
+                    Sizes.LARGE -> Theme().paper.sizes.large
                 }.invoke()
 
                 when(this@PaperComponent.type.value(TypesContext)) {
-                    Types.Normal -> Theme().paper.types.normal
-                    Types.Outline -> Theme().paper.types.outline
-                    Types.Ghost -> Theme().paper.types.ghost
+                    Types.NORMAL -> Theme().paper.types.normal
+                    Types.OUTLINE -> Theme().paper.types.outline
+                    Types.GHOST -> Theme().paper.types.ghost
                 }.invoke()
 
                 Theme().paper.background()
 
                 styling()
-            }) {
+            }, baseClass, id, prefix) {
                 this@PaperComponent.content.value(this)
             }
         }
