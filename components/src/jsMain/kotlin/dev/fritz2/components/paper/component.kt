@@ -22,7 +22,7 @@ import dev.fritz2.styling.theme.Theme
  * The content is specified via the [content] property.
  *
  *
- * Example:
+ * Usage example:
  * ```
  * paper {
  *     size { normal }
