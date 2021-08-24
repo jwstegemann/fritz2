@@ -84,7 +84,14 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                   outline:none;
                   appearance:none;
                   -webkit-appearance: none;
-              """
+              """.trimIndent()
+        )
+
+        val staticCssSelect = staticStyle(
+            "selectFieldContainer",
+            """
+                  -webkit-appearance: none;            
+            """.trimIndent()
         )
     }
 
@@ -139,7 +146,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                 select({
                     this@SelectFieldComponent.variant.value.invoke(Theme().select.variants)()
                     this@SelectFieldComponent.size.value.invoke(Theme().select.sizes)()
-                }, styling, baseClass, grpId) {
+                }, styling, baseClass + staticCssSelect, grpId) {
                     disabled(this@SelectFieldComponent.disabled.values)
 
                     internalStore.data.render {
