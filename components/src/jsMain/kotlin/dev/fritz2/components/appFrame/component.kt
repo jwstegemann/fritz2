@@ -97,7 +97,7 @@ open class AppFrameComponent : Component<Unit>,
      *
      * @param value value between 0 - 100
      */
-    fun mobileSidebarWith(value: Int) { sidebarWith = "${value}vw"}
+    fun mobileSidebarWith(value: Int) { mobileSidebarWith = "${value}vw"}
 
     private val sidebarStatus = storeOf(false)
     private val toggleSidebar = sidebarStatus.handle { !it }
