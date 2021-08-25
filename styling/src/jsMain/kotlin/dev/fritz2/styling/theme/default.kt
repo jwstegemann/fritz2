@@ -1055,6 +1055,117 @@ open class DefaultTheme : Theme {
         }
     }
 
+    override val paper: PaperStyles = object : PaperStyles {
+        override val sizes = object : PaperSizes {
+            override val small: Style<BoxParams> = {
+                padding { smaller }
+                css("--paper-radius: ${Theme().radii.normal}")
+                css("--paper-line-width: ${Theme().borderWidths.hair}")
+            }
+
+            override val normal: Style<BoxParams> = {
+                padding { small }
+                css("--paper-radius: ${Theme().radii.large}")
+                css("--paper-line-width: ${Theme().borderWidths.thin}")
+            }
+
+            override val large: Style<BoxParams> = {
+                padding { normal }
+                css("--paper-radius: ${Theme().radii.huge}")
+                css("--paper-line-width: ${Theme().borderWidths.normal}")
+            }
+        }
+
+        override val types = object : PaperTypes {
+            override val normal: Style<BoxParams> = {
+                boxShadow { raised }
+            }
+
+            override val outline: Style<BoxParams> = {
+                border {
+                    color { neutral.highlight }
+                    style { solid }
+                    width { "var(--paper-line-width)" }
+                }
+            }
+
+            override val ghost: Style<BoxParams> = {
+                // No specific style
+            }
+        }
+
+        override val background: Style<BoxParams> = {
+            background {
+                color { neutral.main }
+            }
+            radius { "var(--paper-radius)" }
+        }
+    }
+
+    override val card: CardStyles = object : CardStyles {
+        override val sizes: CardSizes = object : CardSizes {
+            override val small: Style<BoxParams> = {
+                fontSize { small }
+                // TODO: Use size smaller than 'tiny' once available:
+                //css("--card-spacing-header-footer: ${Theme().sizes.tinier}")
+                css("--card-spacing-header-footer: 0.12rem")
+                css("--card-spacing-content: ${Theme().sizes.smaller}")
+                css("--card-separator-width: ${Theme().borderWidths.hair}")
+            }
+
+            override val normal: Style<BoxParams> = {
+                fontSize { normal }
+                css("--card-spacing-header-footer: ${Theme().sizes.tiny}")
+                css("--card-spacing-content: ${Theme().sizes.small}")
+                css("--card-separator-width: ${Theme().borderWidths.thin}")
+            }
+
+            override val large: Style<BoxParams> = {
+                fontSize { large }
+                css("--card-spacing-header-footer: ${Theme().sizes.smaller}")
+                css("--card-spacing-content: ${Theme().sizes.normal}")
+                css("--card-separator-width: ${Theme().borderWidths.normal}")
+            }
+        }
+
+        override val header: Style<BoxParams> = {
+            paddings {
+                bottom { "var(--card-spacing-header-footer)" }
+            }
+            margins {
+                bottom { "var(--card-spacing-content)" }
+            }
+            borders {
+                bottom {
+                    color { neutral.highlight }
+                    style { solid }
+                    width { "var(--card-separator-width)" }
+                }
+            }
+            fontWeight { bold }
+        }
+
+        override val footer: Style<BoxParams> = {
+            paddings {
+                top { "var(--card-spacing-header-footer)" }
+            }
+            margins {
+                top { "var(--card-spacing-content)" }
+            }
+            borders {
+                top {
+                    color { neutral.highlight }
+                    style { solid }
+                    width { "var(--card-separator-width)" }
+                }
+            }
+        }
+
+        override val content: Style<BoxParams> = {
+            // No particular style in this theme
+        }
+    }
+
     override val popover = object : PopoverStyles {
         override val size: PopoverSizes = object : PopoverSizes {
             private val basic: Style<BasicParams> = {
@@ -2045,6 +2156,7 @@ open class DefaultTheme : Theme {
             css("user-select: none")
 
             hover {
+                color { primary.highlightContrast }
                 background { color { primary.highlight } }
             }
 
@@ -2063,8 +2175,7 @@ open class DefaultTheme : Theme {
 
         override val divider: Style<BasicParams> = {
             base()
-            height { "1px" }
-            background { color { gray300 } }
+            opacity { "0.6" }
         }
 
         override val custom: Style<BasicParams> = {
@@ -2072,7 +2183,10 @@ open class DefaultTheme : Theme {
         }
 
         override val icon: Style<BasicParams> = {
-            margins { right { smaller } }
+            margins {
+                right { smaller }
+                top { "1px" }
+            }
         }
     }
 
@@ -2113,7 +2227,7 @@ open class DefaultTheme : Theme {
         val sidebarColor: ColorScheme
             get() = colors.tertiary
 
-        val mainColor: ColorScheme
+        val contentColor: ColorScheme
             get() = colors.neutral
 
         val tabsColor: ColorScheme
@@ -2121,6 +2235,7 @@ open class DefaultTheme : Theme {
 
         override val headerHeight: Property = "3.6rem"
         override val complementaryMinHeight: Property = "2.8rem"
+        override val sidebarWidth: Property = "15vw"
         override val mobileSidebarWidth: Property = "85vw"
 
         override val brand: Style<FlexParams> = {
@@ -2136,7 +2251,10 @@ open class DefaultTheme : Theme {
         override val sidebar: Style<BasicParams> = {
             background { color { sidebarColor.main } }
             color { sidebarColor.mainContrast }
-            minWidth { "22vw" }
+        }
+
+        override val sidebarClose: Style<BasicParams> = {
+            color { brandColor.mainContrast }
         }
 
         override val navigation: Style<BasicParams> = {
@@ -2163,10 +2281,10 @@ open class DefaultTheme : Theme {
             background { color { headerColor.main } }
         }
 
-        override val main: Style<BasicParams> = {
+        override val content: Style<BasicParams> = {
             padding { normal }
-            background { color { mainColor.main } }
-            color { mainColor.mainContrast }
+            background { color { contentColor.main } }
+            color { contentColor.mainContrast }
         }
 
         override val tablist: Style<FlexParams> = {
@@ -2210,8 +2328,8 @@ open class DefaultTheme : Theme {
         override val menu: MenuStyles = object : MenuStyles {
             // base css for all menu children ('entry' uses special styling though)
             private val base: Style<BasicParams> = {
-                margins {
-                    horizontal { normal }
+                paddings {
+                    horizontal { small }
                     vertical { smaller }
                 }
             }
@@ -2229,22 +2347,25 @@ open class DefaultTheme : Theme {
                         left { normal }
                     }
                 }
+                children("hr") {
+                    margins {
+                        left { large }
+                    }
+                }
             }
 
             override val entry: Style<BoxParams> = {
+                base()
                 display { flex }
                 width { full }
                 alignItems { center }
                 textAlign { "start" }
-                paddings {
-                    horizontal { small }
-                    vertical { smaller }
-                }
                 radius { normal }
                 css("transition: 0.4s")
                 css("user-select: none")
 
                 hover {
+                    color { sidebarColor.highlightContrast }
                     background { color { sidebarColor.highlight } }
                 }
 
@@ -2255,16 +2376,27 @@ open class DefaultTheme : Theme {
             }
 
             override val header: Style<BasicParams> = {
-                base()
-                color { headerColor.main }
+                not(":first-child") {
+                    paddings { top { huge } }
+                }
+                margins {
+                    horizontal { smaller }
+                    vertical { small }
+                }
+                color { sidebarColor.highlightContrast }
                 fontWeight { bold }
                 css("white-space: nowrap")
             }
 
             override val divider: Style<BasicParams> = {
-                base()
-                height { "1px" }
-                background { color { sidebarColor.highlightContrast } }
+                margins {
+                    horizontal { smaller }
+                    vertical { smaller }
+                }
+                border {
+                    color { colors.gray500 }
+                }
+                opacity { "0.6" }
             }
 
             override val custom: Style<BasicParams> = {
@@ -2376,13 +2508,12 @@ open class DefaultTheme : Theme {
             selected: Boolean,
             sorted: Boolean
         ) -> Unit
-            get() = { _, _, _ ->
+            get() = { value, _, _ ->
                 color { hoveringColors.mainContrast }
-                borders {
-                    horizontal {
-                        color { hoveringColors.mainContrast }
-                        width { thin }
-                        style { solid }
+                boxShadow {
+                    with(columnColors[(value.index + 1) % 2].mainContrast) {
+                        shadow("0px", "1px", color = this@with, inset = true) and
+                        shadow("0px", "-1px", color = this@with, inset = true)
                     }
                 }
             }

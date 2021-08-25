@@ -341,7 +341,7 @@ class EventsContext<T, I>(element: RenderContext, rowSelectionStore: RowSelectio
     EventContext<HTMLElement> by element {
     val selectedRows: Flow<List<T>> = rowSelectionStore.selectedData
     val selectedRow: Flow<T?> = rowSelectionStore.selectedData.map { it.firstOrNull() }
-    val dbdClicks: Flow<T> = rowSelectionStore.dbClickedRow
+    val dbClicks: Flow<T> = rowSelectionStore.dbClickedRow
 }
 
 /**

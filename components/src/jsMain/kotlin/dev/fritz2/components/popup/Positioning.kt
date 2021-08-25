@@ -36,11 +36,12 @@ class Positioning(
     private val leftAvailable =
         triggerInformation.domRect.left - offset - element.offsetWidth > 0
     private val rightAvailable =
-        triggerInformation.domRect.left + triggerInformation.domRect.width + offset + element.offsetWidth - window.innerWidth < 0
+        triggerInformation.domRect.left + triggerInformation.domRect.width + offset +
+                element.offsetWidth - window.innerWidth < 0
     private val horizontalStartAvailable =
         triggerInformation.domRect.left + element.offsetWidth - window.innerWidth < 0
     private val horizontalEndAvailable =
-        triggerInformation.domRect.left + triggerInformation.domRect.width -  element.offsetWidth > 0
+        triggerInformation.domRect.left + triggerInformation.domRect.width - element.offsetWidth > 0
     private val verticalStartAvailable =
         triggerInformation.domRect.top + element.offsetHeight > 0
     private val verticalEndAvailable =
@@ -72,7 +73,7 @@ class Positioning(
     /**
      * Position(top/left) of [Placement]
      */
-    val position: Pair<Double, Double>
+    private val position: Pair<Double, Double>
         get() {
             return if (flipping) {
                 if (spaceAvailable(this.placement)) {

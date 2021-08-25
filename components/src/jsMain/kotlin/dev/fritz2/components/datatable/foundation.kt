@@ -69,6 +69,18 @@ data class Column<T>(
 )
 
 /**
+ * This helper function determines for the inner rendering loop of the cells (`td`), which cell really needs to
+ * be re-rendered! Only changes to the column itself, that is its [String] representation or its state, requires such
+ * a new rendering process.
+ */
+fun <T> columnIdProvider(param: Pair<Column<T>, IndexedValue<StatefulItem<T>>>) =
+    param.first.lens?.get(param.second.value.item).hashCode() * 31 +
+            param.second.index * 31 +
+            param.second.value.selected.hashCode() * 31 +
+            param.second.value.sorting.hashCode() * 31
+
+
+/**
  * Wrapping class to group the id of a [Column] with the sorting strategy.
  * This is the base for the type ``T`` independent [SortingPlan] which itself is necessary for the *internal*
  * [State].
