@@ -103,6 +103,7 @@ class Sizes(
 class ZIndices(
     tableHeader: Int,
     tooltip: Int,
+    popup: Int,
     dropdown: Int,
     popover: Int,
     appFrame: Int,
@@ -120,6 +121,7 @@ class ZIndices(
 
     val tableHeader: Property = tableHeader.toString()
     val tooltip: Property = tooltip.toString()
+    val popup: Property = popup.toString()
     val dropdown: Property = dropdown.toString()
     val popover: Property = popover.toString()
     val appFrame: Property = appFrame.toString()
@@ -814,4 +816,10 @@ interface SliderStyles : SeverityAware, FormSizesAware {
 fun SliderStyles.core(orientation: String) = when (orientation) {
     "HORIZONTAL" -> horizontal
     else -> vertical
+}
+
+
+interface PopupStyles {
+    val wrapper: BoxParams.(Int) -> Unit
+    val arrow: Style<BoxParams>
 }
