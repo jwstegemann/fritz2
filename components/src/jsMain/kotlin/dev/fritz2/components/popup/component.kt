@@ -19,6 +19,28 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.EventTarget
 
 /**
+ * This object offers some values for setting up the placement of some popup.
+ *
+ * Should be also used as context for custom popup based components as context for some placement property.
+ *
+ * @see [Placement]
+ */
+object PlacementContext {
+    val top = Placement.Top
+    val topStart = Placement.TopStart
+    val topEnd = Placement.TopEnd
+    val bottom = Placement.Bottom
+    val bottomStart = Placement.BottomStart
+    val bottomEnd = Placement.BottomEnd
+    val left = Placement.Left
+    val leftStart = Placement.LeftStart
+    val leftEnd = Placement.LeftEnd
+    val right = Placement.Right
+    val rightStart = Placement.RightStart
+    val rightEnd = Placement.RightEnd
+}
+
+/**
  * This component creates a popup.
  *
  * A popup should be used to position `content` like `tooltip` or `popover` automatically
@@ -102,20 +124,6 @@ open class PopupComponent :
     val content = ComponentProperty<(RenderContext.(SimpleHandler<Unit>) -> Unit)?>(null)
     val trigger = ComponentProperty<(RenderContext.(SimpleHandler<EventTarget?>, SimpleHandler<Unit>) -> Unit)?>(null)
 
-    object PlacementContext {
-        val top = Placement.Top
-        val topStart = Placement.TopStart
-        val topEnd = Placement.TopEnd
-        val bottom = Placement.Bottom
-        val bottomStart = Placement.BottomStart
-        val bottomEnd = Placement.BottomEnd
-        val left = Placement.Left
-        val leftStart = Placement.LeftStart
-        val leftEnd = Placement.LeftEnd
-        val right = Placement.Right
-        val rightStart = Placement.RightStart
-        val rightEnd = Placement.RightEnd
-    }
     val placement = ComponentProperty<PlacementContext.() -> Placement> { Placement.Top }
 
     private val popupStore = object : RootStore<TriggerInformation>(TriggerInformation()) {
