@@ -119,6 +119,8 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
     ): Label = with(context) {
         label({
             this@CheckboxComponent.size.value.invoke(Theme().checkbox.sizes)()
+            // to "capture" the invisible, absolute positioned `input`, see `checkboxInputStaticCss`
+            position { relative {  } }
         }, baseClass = baseClass, id = id, prefix = prefix) {
             val inputId = id?.let { "$it-input" }
             inputId?.let {

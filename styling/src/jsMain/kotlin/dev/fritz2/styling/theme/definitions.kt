@@ -488,6 +488,39 @@ interface ModalWidths {
 }
 
 
+interface PaperStyles {
+    val sizes: PaperSizes
+    val types: PaperTypes
+    val background: Style<BoxParams>
+}
+
+interface PaperTypes {
+    val normal: Style<BoxParams>
+    val outline: Style<BoxParams>
+    val ghost: Style<BoxParams>
+}
+
+interface PaperSizes {
+    val small: Style<BoxParams>
+    val normal: Style<BoxParams>
+    val large: Style<BoxParams>
+}
+
+
+interface CardStyles {
+    val sizes: CardSizes
+    val header: Style<BoxParams>
+    val footer: Style<BoxParams>
+    val content: Style<BoxParams>
+}
+
+interface CardSizes {
+    val small: Style<BoxParams>
+    val normal: Style<BoxParams>
+    val large: Style<BoxParams>
+}
+
+
 /**
  * definition of the theme's popover
  */
@@ -738,13 +771,15 @@ interface NavBarStyles {
 interface AppFrameStyles {
     val headerHeight: Property
     val complementaryMinHeight: Property
+    val sidebarWidth: Property
     val mobileSidebarWidth: Property
     val brand: Style<FlexParams>
     val sidebar: Style<BasicParams>
+    val sidebarClose: Style<BasicParams>
     val navigation: Style<BasicParams>
     val complementary: Style<BasicParams>
     val header: Style<FlexParams>
-    val main: Style<BasicParams>
+    val content: Style<BasicParams>
     val tablist: Style<FlexParams>
     val backdrop: Style<BasicParams>
     val menu: MenuStyles

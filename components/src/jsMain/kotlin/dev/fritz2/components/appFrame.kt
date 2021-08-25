@@ -13,8 +13,8 @@ import dev.fritz2.styling.theme.Theme
  * It offers the following sections
  * - sidebar with brand, navbar section and optional complementary on the left
  * - header at the top with actions section on the right
- * - main section
- * - optional navigation tablist at the bottom of main section
+ * - content section
+ * - optional navigation tablist at the bottom of content section
  *
  * The sidebar is moved off-screen on small screens and can be opened by a hamburger-button,
  * that appears at the left edge of the header.
@@ -42,7 +42,7 @@ import dev.fritz2.styling.theme.Theme
  *     actions { //optional
  *         //...
  *     }
- *     main {
+ *     content {
  *         //...
  *     }
  *     tablist { //optional
