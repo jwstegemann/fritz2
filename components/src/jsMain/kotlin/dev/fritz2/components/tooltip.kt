@@ -18,29 +18,25 @@ fun StyleParams.tooltip(vararg text: String, tooltipPlacement: TooltipPlacements
     Theme().tooltip.write(*text, tooltipPlacement = tooltipPlacement)
 
 /**
- * This component creates a Tooltip
+ * This factory function creates a Tooltip.
+ *
  * A `tooltip` should be used to display fast information for the user.
- * The individual `text` will be shown on hover the `RenderContext` in which be called.
+ * The individual `text` will be shown on hovering the `RenderContext`'s element in which it is called.
  *
  * Example usage:
  * ```
  *   span {
- *      +"hover me"
- *      tooltip(text = "my Tooltip") { }
- *   }
- *
- *   span {
  *   +"hover me"
- *   tooltip({
- *       color { danger.mainContrast }
- *       background {
- *           color { danger.main }
- *       }
- *   }) {
- *       text(listOf("first line, second line"))
+ *   tooltip {
+ *       text("some tooltip text")
  *       placement { bottomEnd }
  *   }
  * ```
+ *
+ * There exist also one convenience functions, that allow a terser creation! This one offers the whole freedom
+ * to provide the common component's parameters though.
+ *
+ * Especially dynamic text content (`Flow<String>`) is only possible to set up within the context itself.
  *
  * @see TooltipComponent
  */
@@ -53,9 +49,8 @@ fun RenderContext.tooltip(
     build: TooltipComponent.() -> Unit
 ) = TooltipComponent(text).apply(build).render(this, styling, baseClass, id, prefix)
 
-
 /**
- * `tooltip` convenience function
+ * `tooltip` factory function that allow a terser creation for just static text as tooltip's content.
  *
  * Example usage:
  * ```
@@ -63,36 +58,28 @@ fun RenderContext.tooltip(
  *      +"hover me"
  *      tooltip("my Tooltip") { }
  *   }
+ * ```
  *
+ * One can configure the placement too:
+ * ```
  *   span {
  *      +"hover me"
  *      tooltip("my Tooltip") { placement { bottom } }
  *   }
  * ```
  *
- * @see TooltipComponent
- */
-fun RenderContext.tooltip(
-    text: String,
-    build: TooltipComponent.() -> Unit
-) {
-    tooltip({}, text) {
-        build()
-    }
-}
-
-/**
- * `tooltip` convenience function
- *
- * Example usage:
+ * One can pass multiple text values as parameters, which will result in multi line tooltip:
  * ```
- *  span {
+ *   span {
  *      +"hover me"
- *      tooltip("my Tooltip", "second tooltip line") { }
- *  }
+ *      tooltip("first line", "second line") { }
+ *   }
  * ```
  *
- *  @see TooltipComponent
+ * @see TooltipComponent
+ *
+ * @param text the content of the tooltip; pass multiple text parameters to create multi line content
+ * @param build a lambda expression for setting up the component itself
  */
 fun RenderContext.tooltip(
     vararg text: String,

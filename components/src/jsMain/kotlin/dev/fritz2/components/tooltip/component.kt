@@ -6,6 +6,7 @@ import dev.fritz2.components.foundations.EventMixin
 import dev.fritz2.components.foundations.EventProperties
 import dev.fritz2.components.popup
 import dev.fritz2.components.popup.Placement
+import dev.fritz2.components.popup.PlacementContext
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -18,14 +19,14 @@ import org.w3c.dom.HTMLInputElement
  * This component creates a Tooltip
  *
  * A `tooltip` should be used to display fast information for the user.
- * The individual `text` will be shown on hover the `RenderContext` in which be called.
+ * The individual `text` will be shown on hovering the `RenderContext`' element in which it is called.
  *
  * This class offers the following _configuration_ features:
- * [text] can be a `vararg`, a flow, a list, a flow of list of String or a simple string,
- * optional can be use the @property textFromParam.
- * [placement] of the [text] around the `RenderContext`in which be called.
- * Available placements are `top`, `topStart`, `topEnd`, `bottom`, `bottomStart`, `bottomEnd`, `left`, `leftStart`,
- * `leftEnd`, `right`, `rightStart`, `rightEnd`.
+ * - [text] can be a `vararg`, a flow, a list, a flow of list of String or a simple string,
+ *   optional can be use the @property textFromParam.
+ * - [placement] of the [text] around the `RenderContext`in which be called.
+ *   Available placements are `top`, `topStart`, `topEnd`, `bottom`, `bottomStart`, `bottomEnd`, `left`, `leftStart`,
+ *   `leftEnd`, `right`, `rightStart`, `rightEnd`.
  *
  * The `render` function of [TooltipComponent] uses the fritz2 [dev.fritz2.components.popup.PopupComponent]
  *
@@ -39,7 +40,7 @@ import org.w3c.dom.HTMLInputElement
  *   }
  *
  *   span {
- *       +"hover me for see a multiline tooltip"
+ *       +"hover me to see a multiline tooltip"
  *       tooltip("first line", "second line"){}
  *   }
  *
@@ -52,15 +53,15 @@ import org.w3c.dom.HTMLInputElement
  *           }
  *       }) {
  *           text(listOf("first line", "second line"))
- *           placement { TooltipComponent.PlacementContext.bottomEnd }
+ *           placement { bottomEnd }
  *       }
  *   }
  * ```
  *
  * @see [Placement]
+ * @see [PopupComponent]
  *
  */
-
 open class TooltipComponent(private val textFromParam: String?) :
     EventProperties<HTMLInputElement> by EventMixin(),
     Component<Div> {
@@ -87,25 +88,6 @@ open class TooltipComponent(private val textFromParam: String?) :
     }
 
     private fun content() = if (textFromParam != null) flowOf(listOf(textFromParam)) else textFromContext
-
-    /**
-     * PlacementContext
-     * uses [Placement] of [dev.fritz2.components.popup.PopupComponent]
-     */
-    object PlacementContext {
-        val top = Placement.Top
-        val topStart = Placement.TopStart
-        val topEnd = Placement.TopEnd
-        val bottom = Placement.Bottom
-        val bottomStart = Placement.BottomStart
-        val bottomEnd = Placement.BottomEnd
-        val left = Placement.Left
-        val leftStart = Placement.LeftStart
-        val leftEnd = Placement.LeftEnd
-        val right = Placement.Right
-        val rightStart = Placement.RightStart
-        val rightEnd = Placement.RightEnd
-    }
 
     val placement = ComponentProperty<PlacementContext.() -> Placement> { Placement.Top }
 
