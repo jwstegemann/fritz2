@@ -62,6 +62,7 @@ open class AppFrameComponent : Component<Unit>,
             staticStyle(
                 """
                 body {
+                    position: relative;
                     height: 100vh;
                     overflow: hidden;
                     max-height: -webkit-fill-available;
@@ -81,23 +82,37 @@ open class AppFrameComponent : Component<Unit>,
         }
     }
 
-    private var sidebarWith: Property? = null
+    private var sidebarWidth: Property? = null
 
     /**
      * sets the min-width of sidebar
      *
-     * @param value value between 0 - 100
+     * @param value percentage between 0 - 100
      */
-    fun sidebarWith(value: Int) { sidebarWith = "${value}vw"}
+    fun sidebarWidth(value: Int) { sidebarWidth = "${value}vw"}
 
-    private var mobileSidebarWith: Property? = null
+    /**
+     * sets the min-width of sidebar
+     *
+     * @param value some valid CSS length or percentage value
+     */
+    fun sidebarWidth(value: String) { sidebarWidth = value }
+
+    private var mobileSidebarWidth: Property? = null
 
     /**
      * sets the min-with of mobile sidebar
      *
-     * @param value value between 0 - 100
+     * @param value percentage between 0 - 100
      */
-    fun mobileSidebarWith(value: Int) { mobileSidebarWith = "${value}vw"}
+    fun mobileSidebarWidth(value: Int) { mobileSidebarWidth = "${value}vw"}
+
+    /**
+     * sets the min-width of sidebar
+     *
+     * @param value some valid CSS length or percentage value
+     */
+    fun mobileSidebarWidth(value: String) { mobileSidebarWidth = value }
 
     private val sidebarStatus = storeOf(false)
     private val toggleSidebar = sidebarStatus.handle { !it }
@@ -120,7 +135,7 @@ open class AppFrameComponent : Component<Unit>,
 
     private fun mobileSidebar(topPosition: Property): Style<BasicParams> = {
         zIndex { appFrame }
-        width(sm = { this@AppFrameComponent.mobileSidebarWith ?: Theme().appFrame.mobileSidebarWidth }, md = { unset })
+        width(sm = { this@AppFrameComponent.mobileSidebarWidth ?: Theme().appFrame.mobileSidebarWidth }, md = { unset })
         css(sm = "transform: translateX(-110vw);", md = "transform: unset;")
         position(sm = {
             fixed { top { topPosition } }
@@ -305,7 +320,7 @@ open class AppFrameComponent : Component<Unit>,
                 this@AppFrameComponent.mobileSidebar(Theme().appFrame.headerHeight)()
                 overflow { hidden }
                 height(sm = { "calc(100% - ${Theme().appFrame.headerHeight})" }, md = { unset })
-                minWidth { this@AppFrameComponent.sidebarWith ?: Theme().appFrame.sidebarWidth }
+                minWidth { this@AppFrameComponent.sidebarWidth ?: Theme().appFrame.sidebarWidth }
                 Theme().appFrame.sidebar()
             }) {
                 className(this@AppFrameComponent.openSideBar.whenever(this@AppFrameComponent.sidebarStatus.data).name)

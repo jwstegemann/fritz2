@@ -2111,7 +2111,7 @@ open class DefaultTheme : Theme {
 
         override val headerHeight: Property = "3.6rem"
         override val complementaryMinHeight: Property = "2.8rem"
-        override val sidebarWidth: Property = "22vw"
+        override val sidebarWidth: Property = "15vw"
         override val mobileSidebarWidth: Property = "85vw"
 
         override val brand: Style<FlexParams> = {
