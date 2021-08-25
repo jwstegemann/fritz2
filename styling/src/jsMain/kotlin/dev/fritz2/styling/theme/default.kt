@@ -2496,13 +2496,12 @@ open class DefaultTheme : Theme {
             selected: Boolean,
             sorted: Boolean
         ) -> Unit
-            get() = { _, _, _ ->
+            get() = { value, _, _ ->
                 color { hoveringColors.mainContrast }
-                borders {
-                    horizontal {
-                        color { hoveringColors.mainContrast }
-                        width { thin }
-                        style { solid }
+                boxShadow {
+                    with(columnColors[(value.index + 1) % 2].mainContrast) {
+                        shadow("0px", "1px", color = this@with, inset = true) and
+                        shadow("0px", "-1px", color = this@with, inset = true)
                     }
                 }
             }
