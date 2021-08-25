@@ -1,15 +1,18 @@
 package dev.fritz2.components.menu
 
 import dev.fritz2.binding.storeOf
+import dev.fritz2.components.appFrame.AppFrameScope
 import dev.fritz2.components.foundations.*
 import dev.fritz2.components.icon
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Scope
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.plus
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
+import dev.fritz2.styling.theme.MenuStyles
 import dev.fritz2.styling.theme.Theme
 import org.w3c.dom.HTMLButtonElement
 
@@ -48,7 +51,9 @@ import org.w3c.dom.HTMLButtonElement
  *      .run(::addChild)
  * ```
  */
-open class MenuComponent : Component<Unit>, MenuContext() {
+open class MenuComponent(scope: Scope) : Component<Unit>, MenuContext() {
+
+    val styles: MenuStyles = if(scope[AppFrameScope.Navigation] == true) Theme().appFrame.menu else Theme().menu
 
     override fun render(
         context: RenderContext,
@@ -58,9 +63,9 @@ open class MenuComponent : Component<Unit>, MenuContext() {
         prefix: String
     ) {
         context.apply {
-            div(Theme().menu.container + styling, baseClass, id, prefix) {
+            div(this@MenuComponent.styles.container + styling, baseClass, id, prefix) {
                 this@MenuComponent.children.forEach {
-                    it.render(this)
+                    it.render(this, this@MenuComponent.styles)
                 }
             }
         }
@@ -133,11 +138,11 @@ open class SubMenuComponent(
 
     private val hide = storeOf(true)
 
-    override fun render(context: RenderContext) {
+    override fun render(context: RenderContext, styles: MenuStyles) {
         context.apply {
-            button(Theme().menu.entry + this@SubMenuComponent.styling) {
+            button(styles.entry + this@SubMenuComponent.styling) {
                 this@SubMenuComponent.icon.value?.let {
-                    icon(Theme().menu.icon) { def(it(Theme().icons)) }
+                    icon(styles.icon) { def(it(Theme().icons)) }
                 }
                 this@SubMenuComponent.text.value?.let { span { +it } }
                 disabled(this@SubMenuComponent.disabled.values)
@@ -145,14 +150,14 @@ open class SubMenuComponent(
                 this@SubMenuComponent.events.value.invoke(this)
             }
             div(
-                Theme().menu.sub,
+                styles.sub,
                 this@SubMenuComponent.baseClass,
                 this@SubMenuComponent.id,
                 this@SubMenuComponent.prefix
             ) {
                 className(hidden.whenever(this@SubMenuComponent.hide.data).name)
                 this@SubMenuComponent.children.forEach {
-                    it.render(this)
+                    it.render(this, styles)
                 }
             }
         }

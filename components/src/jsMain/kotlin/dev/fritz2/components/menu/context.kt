@@ -28,9 +28,11 @@ open class MenuContext {
      * @param styling [Style] to be applied to the underlying component
      * @param text Text to be displayed in the header
      */
-    fun header(styling: Style<BoxParams>, text: String) = MenuHeader(styling)
-        .apply { text(text) }
-        .run(::addChild)
+    fun header(styling: Style<BoxParams>, text: String) {
+        MenuHeader(styling)
+            .apply { text(text) }
+            .run(::addChild)
+    }
 
     /**
      * Configures and adds a [MenuEntry] to the menu.
@@ -47,9 +49,11 @@ open class MenuContext {
      * @param styling [Style] to be applied to the component
      * @param build Lambda to configure the component itself
      */
-    fun entry(styling: Style<BoxParams>, build: MenuEntry.() -> Unit) = MenuEntry(styling)
-        .apply(build)
-        .run(::addChild)
+    fun entry(styling: Style<BoxParams>, build: MenuEntry.() -> Unit) {
+        MenuEntry(styling)
+            .apply(build)
+            .run(::addChild)
+    }
 
     /**
      * Configures and adds a [MenuLink] to the menu.
@@ -66,9 +70,11 @@ open class MenuContext {
      * @param styling [Style] to be applied to the component
      * @param build Lambda to configure the component itself
      */
-    fun link(styling: Style<BoxParams>, build: MenuLink.() -> Unit) = MenuLink(styling)
-        .apply(build)
-        .run(::addChild)
+    fun link(styling: Style<BoxParams>, build: MenuLink.() -> Unit) {
+        MenuLink(styling)
+            .apply(build)
+            .run(::addChild)
+    }
 
     /**
      * Adds a custom fritz2-component to the menu.
@@ -83,16 +89,18 @@ open class MenuContext {
      * @param styling [Style] to be applied to the component
      * @param build Lambda containing the layout to render
      */
-    fun custom(styling: Style<BoxParams>, build: RenderContext.() -> Unit) = CustomMenuEntry(styling)
-        .apply { content(build) }
-        .run(::addChild)
+    fun custom(styling: Style<BoxParams>, build: RenderContext.() -> Unit) {
+        CustomMenuEntry(styling)
+            .apply { content(build) }
+            .run(::addChild)
+    }
 
     /**
      * Adds a [MenuDivider] to the menu.
      *
      * @param styling optional [Style] to be applied to the underlying component
      */
-    fun divider(styling: Style<BoxParams> = {}) = addChild(MenuDivider(styling))
+    fun divider(styling: Style<BoxParams> = {}) { addChild(MenuDivider(styling)) }
 
     /**
      * Creates a [submenu].

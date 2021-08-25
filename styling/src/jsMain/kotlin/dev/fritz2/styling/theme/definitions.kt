@@ -769,15 +769,18 @@ interface NavBarStyles {
 interface AppFrameStyles {
     val headerHeight: Property
     val complementaryMinHeight: Property
+    val sidebarWidth: Property
     val mobileSidebarWidth: Property
     val brand: Style<FlexParams>
     val sidebar: Style<BasicParams>
+    val sidebarClose: Style<BasicParams>
     val navigation: Style<BasicParams>
     val complementary: Style<BasicParams>
     val header: Style<FlexParams>
-    val main: Style<BasicParams>
+    val content: Style<BasicParams>
     val tablist: Style<FlexParams>
     val backdrop: Style<BasicParams>
+    val menu: MenuStyles
 }
 
 interface DataTableStyles {
