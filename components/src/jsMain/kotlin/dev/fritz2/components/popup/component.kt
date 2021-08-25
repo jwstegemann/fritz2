@@ -21,46 +21,61 @@ import org.w3c.dom.events.EventTarget
 /**
  * This component creates a popup.
  *
- * A popup should be used for to positioning `content` like `tooltip` or `popover` automatically
+ * A popup should be used to position `content` like `tooltip` or `popover` automatically
  * in the right place near a `trigger`. It will pop(ped)up on every event which `handledBy` given handler.
  *
  * A popup mainly consists of
  * [trigger] the Elements which calls the [content]
  * [content] which will be display after call the [trigger]. It will be rendered on an own managed context.
  *
- * It can cen configured by
- * [offset] the space (in px) between [trigger] and  [content]
- * [flipping] if no space on chosen available it will be find a right placement automatically
- * [placement] of the [content] around the [trigger]
+ * It can be configured by
+ * - [offset] the space (in px) between [trigger] and  [content]
+ * - [placement] of the [content] around the [trigger]
+ * - [flipping] if there is not enough space near chosen [placement] available, it will try to find a fitting placement
+ *   automatically
  *
- * [trigger] provides two handler which can be used.
- * The first is important to open/toggle the [content] the second close it.
+ * [trigger] provides two handlers which can be used within the trigger context:
+ * - The first is used to open/toggle the [content].
+ * - The second closes it.
  *
- * [content] provides one handler which can be used to close it.
+ * [content] provides only one close handler.
  *
  * Example usage:
  * ```
+ * // tooltip alike behaviour: opens and closes by hovering the trigger with the mouse
  * popup {
- *      offset(10.0)
- *      flipping(false)
- *      placement { topStart }
- *      trigger { toggleHandler, closeHandler ->
- *          span {
- *              +"hover me"
- *              mouseenters.events.map { it.currentTarget } handledBy toggle
- *              mouseleaves.events.map {} handledBy close
- *          }
- *      }
- *      content { closeHandler ->
- *          div {
- *              +"my content"
- *              clicks.events handledBy closeHandler
- *          }
- *      }
+ *     trigger { toggle, close ->
+ *         span {
+ *             +"hover me"
+ *             mouseenters.map { it.currentTarget } handledBy toggle
+ *             mouseleaves.map { } handledBy close
+ *         }
+ *     }
+ *     content {
+ *         div { +"my content" }
+ *     }
+ *     // some positioning stuff
+ *     offset(10.0)
+ *     flipping(false)
+ *     placement { bottomEnd }
+ * }
+ *
+ * // popover alike behaviour: opens / closes by click; additional closing by click into popup content!
+ * popup {
+ *     trigger { toggle, _ ->
+ *         span {
+ *             +"click me to toggle"
+ *             clicks.map { it.currentTarget } handledBy toggle
+ *         }
+ *     }
+ *     content { close ->
+ *         div { +"click me to close " }
+ *         clicks.map { } handledBy close
+ *     }
  * }
  * ```
  *
- * The popup use an internal `store` [popupStore] of [TriggerInformation] to find the right position of the [content]
+ * The popup uses an internal `store` [popupStore] of [TriggerInformation] to find the right position of the [content]
  *
  * @see [Placement]
  * @See [Positioning]
@@ -75,7 +90,14 @@ open class PopupComponent :
         const val leftRenderPosition: Double = 9999.0
     }
 
+    /**
+     * Property for the offset between the trigger element and the popup itself.
+     *
+     * Must be a pure pixel based value, as it is used for the [Positioning] calculations and could therefore not
+     * accept arbitrary spacing units.
+     */
     val offset = ComponentProperty(10.0)
+
     val flipping = ComponentProperty(true)
     val content = ComponentProperty<(RenderContext.(SimpleHandler<Unit>) -> Unit)?>(null)
     val trigger = ComponentProperty<(RenderContext.(SimpleHandler<EventTarget?>, SimpleHandler<Unit>) -> Unit)?>(null)
