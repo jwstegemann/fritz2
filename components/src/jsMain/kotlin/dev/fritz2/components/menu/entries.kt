@@ -4,8 +4,13 @@ import dev.fritz2.components.foundations.*
 import dev.fritz2.components.icon
 import dev.fritz2.components.linkButton
 import dev.fritz2.dom.HtmlTagMarker
+import dev.fritz2.dom.html.A
+import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.*
+import dev.fritz2.styling.a
+import dev.fritz2.styling.button
+import dev.fritz2.styling.div
+import dev.fritz2.styling.hr
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.plus
@@ -37,6 +42,7 @@ interface MenuChild {
 open class MenuEntry(private val styling: Style<BoxParams> = {}) :
     MenuChild,
     EventProperties<HTMLButtonElement> by EventMixin(),
+    ElementProperties<Button> by ElementMixin(),
     FormProperties by FormMixin() {
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val text = ComponentProperty<String?>(null)
@@ -49,6 +55,7 @@ open class MenuEntry(private val styling: Style<BoxParams> = {}) :
                 }
                 this@MenuEntry.text.value?.let { span { +it } }
                 disabled(this@MenuEntry.disabled.values)
+                this@MenuEntry.element.value.invoke(this)
                 this@MenuEntry.events.value.invoke(this)
             }
         }
@@ -68,6 +75,7 @@ open class MenuEntry(private val styling: Style<BoxParams> = {}) :
 open class MenuLink(private val styling: Style<BoxParams> = {}) :
     MenuChild,
     EventProperties<HTMLAnchorElement> by EventMixin(),
+    ElementProperties<A> by ElementMixin(),
     FormProperties by FormMixin() {
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val text = ComponentProperty<String?>(null)
@@ -84,6 +92,7 @@ open class MenuLink(private val styling: Style<BoxParams> = {}) :
                 this@MenuLink.href.value?.let { href(it) }
                 this@MenuLink.target.value?.let { target(it) }
                 attr("disabled", this@MenuLink.disabled.values)
+                this@MenuLink.element.value.invoke(this)
                 this@MenuLink.events.value.invoke(this)
             }
         }
@@ -141,7 +150,7 @@ open class MenuDivider(private val styling: Style<BoxParams> = {}) : MenuChild {
 
     override fun render(context: RenderContext, styles: MenuStyles) {
         context.apply {
-            div(styles.divider + this@MenuDivider.styling) { }
+            hr(styles.divider + this@MenuDivider.styling) { }
         }
     }
 }

@@ -8,6 +8,7 @@ import dev.fritz2.styling.params.BasicParams
 
 /**
  * This component creates a popup.
+ *
  * A popup should be used for to positioning `content` like `tooltip` or `popover` automatically
  * in the right place near a `trigger`. It will pop(ped)up on every event which `handledBy` given handler.
  *
@@ -15,16 +16,14 @@ import dev.fritz2.styling.params.BasicParams
  * ```
  * popup {
  *      placement { topStart }
- *      trigger { toggleHandler, closeHandler ->
+ *      trigger { toggle, _ -> // close handler not needed here
  *          button {
  *              +"toggle"
- *              clicks.events.map { it.currentTarget } handledBy toggle
+ *              clicks.map { it.currentTarget } handledBy toggle
  *          }
  *      }
  *      content {
- *          div {
- *              +"my content"
- *          }
+ *          div { +"my content" }
  *      }
  * }
  * ```

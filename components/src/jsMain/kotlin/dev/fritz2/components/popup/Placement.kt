@@ -3,8 +3,10 @@ package dev.fritz2.components.popup
 import org.w3c.dom.HTMLDivElement
 
 /**
- * Placement consists the [position] information and the `Placement` which to try on `flipping` mode
- * It will be used for the [PopupComponent.PlacementContext] and it's the basis of [Positioning]
+ * Placement combines the [position] information (top and left coordinates) and the possible placement alternatives
+ * used by the [PopupComponent.flipping] automatic placement mode.
+ *
+ * It will be used internally by the [PopupComponent.PlacementContext] as data foundation for the [Positioning].
  *
  * @property position calculate the default position of Placement
  * @property flips listOf alternative placements for `content`
@@ -19,7 +21,8 @@ sealed class Placement(
     object Top : Placement(
         position = { triggerInformation, element, offset ->
             val left =
-                PopupComponent.leftRenderPosition + triggerInformation.domRect.left + triggerInformation.domRect.width * .5 - element.offsetWidth * .5
+                PopupComponent.leftRenderPosition + triggerInformation.domRect.left +
+                        triggerInformation.domRect.width * .5 - element.offsetWidth * .5
             val top = triggerInformation.domRect.top - offset - element.offsetHeight
             left to top
         },
@@ -38,7 +41,8 @@ sealed class Placement(
     object TopEnd : Placement(
         position = { triggerInformation, element, offset ->
             val left =
-                PopupComponent.leftRenderPosition + triggerInformation.domRect.left + triggerInformation.domRect.width - element.offsetWidth
+                PopupComponent.leftRenderPosition + triggerInformation.domRect.left +
+                        triggerInformation.domRect.width - element.offsetWidth
             val top = triggerInformation.domRect.top - offset - element.offsetHeight
             left to top
         },
@@ -48,7 +52,8 @@ sealed class Placement(
     object Bottom : Placement(
         position = { triggerInformation, element, offset ->
             val left =
-                PopupComponent.leftRenderPosition + triggerInformation.domRect.left + triggerInformation.domRect.width * .5 - element.offsetWidth * .5
+                PopupComponent.leftRenderPosition + triggerInformation.domRect.left +
+                        triggerInformation.domRect.width * .5 - element.offsetWidth * .5
             val top = triggerInformation.domRect.top + offset + triggerInformation.domRect.height
             left to top
         },
@@ -67,7 +72,8 @@ sealed class Placement(
     object BottomEnd : Placement(
         position = { triggerInformation, element, offset ->
             val left =
-                PopupComponent.leftRenderPosition + triggerInformation.domRect.left + triggerInformation.domRect.width - element.offsetWidth
+                PopupComponent.leftRenderPosition + triggerInformation.domRect.left +
+                        triggerInformation.domRect.width - element.offsetWidth
             val top = triggerInformation.domRect.top + offset + triggerInformation.domRect.height
             left to top
         },
@@ -108,7 +114,8 @@ sealed class Placement(
     object Right : Placement(
         position = { triggerInformation, element, offset ->
             val left =
-                PopupComponent.leftRenderPosition + offset + triggerInformation.domRect.left + triggerInformation.domRect.width
+                PopupComponent.leftRenderPosition + offset + triggerInformation.domRect.left +
+                        triggerInformation.domRect.width
             val top =
                 triggerInformation.domRect.top + triggerInformation.domRect.height * .5 - element.offsetHeight * .5
             left to top
@@ -119,7 +126,8 @@ sealed class Placement(
     object RightStart : Placement(
         position = { triggerInformation, element, offset ->
             val left =
-                PopupComponent.leftRenderPosition + offset + triggerInformation.domRect.left + triggerInformation.domRect.width
+                PopupComponent.leftRenderPosition + offset + triggerInformation.domRect.left +
+                        triggerInformation.domRect.width
             val top = triggerInformation.domRect.top
             left to top
         },
@@ -129,7 +137,8 @@ sealed class Placement(
     object RightEnd : Placement(
         position = { triggerInformation, element, offset ->
             val left =
-                PopupComponent.leftRenderPosition + offset + triggerInformation.domRect.left + triggerInformation.domRect.width
+                PopupComponent.leftRenderPosition + offset + triggerInformation.domRect.left +
+                        triggerInformation.domRect.width
             val top = triggerInformation.domRect.top + triggerInformation.domRect.height - element.offsetHeight
             left to top
         },
