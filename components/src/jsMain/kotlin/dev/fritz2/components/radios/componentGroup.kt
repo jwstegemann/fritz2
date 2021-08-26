@@ -89,7 +89,8 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
     Component<Unit>,
     InputFormProperties by InputFormMixin(),
     SeverityProperties by SeverityMixin(),
-    OrientationProperty by OrientationMixin(Orientation.VERTICAL) {
+    OrientationProperty by OrientationMixin(Orientation.VERTICAL),
+    TooltipProperties by TooltipMixin() {
 
     companion object {
         fun layoutOf(orientation: Orientation): Style<BasicParams> = {
@@ -158,6 +159,8 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
                     this@RadioGroupComponent.events.value(this)
                     this@RadioGroupComponent.value?.let { selected handledBy it.update }
                 }
+
+                this@RadioGroupComponent.renderTooltip.value.invoke(this)
             }
         }
     }

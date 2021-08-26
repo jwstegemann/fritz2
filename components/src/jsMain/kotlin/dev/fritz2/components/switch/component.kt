@@ -63,7 +63,8 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    TooltipProperties by TooltipMixin() {
 
     companion object {
         val switchInputStaticCss = staticStyle(
@@ -157,6 +158,8 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
                         it(this)
                     }
                 }
+
+                this@SwitchComponent.renderTooltip.value.invoke(this)
             }
         }
     }

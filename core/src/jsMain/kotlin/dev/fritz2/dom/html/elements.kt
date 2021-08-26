@@ -2143,7 +2143,7 @@ interface TagContext : WithJob, WithScope {
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         content: Svg.() -> Unit
-    ): Svg {
-        return register(Svg(id, baseClass, job = job, evalScope(scope)), content)
-    }
+    ): Svg =
+        register(Svg(id, baseClass, job = job, evalScope(scope)), content)
+
 }

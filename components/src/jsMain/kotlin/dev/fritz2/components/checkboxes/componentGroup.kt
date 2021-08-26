@@ -101,7 +101,8 @@ open class CheckboxGroupComponent<T>(
 ) : Component<Unit>,
     InputFormProperties by InputFormMixin(),
     SeverityProperties by SeverityMixin(),
-    OrientationProperty by OrientationMixin(Orientation.VERTICAL) {
+    OrientationProperty by OrientationMixin(Orientation.VERTICAL),
+    TooltipProperties by TooltipMixin() {
 
     companion object {
         fun layoutOf(orientation: Orientation): Style<BasicParams> = {
@@ -175,6 +176,8 @@ open class CheckboxGroupComponent<T>(
                     this@CheckboxGroupComponent.events.value(this)
                     this@CheckboxGroupComponent.values?.let { selected handledBy it.update }
                 }
+
+                this@CheckboxGroupComponent.renderTooltip.value.invoke(this)
             }
         }
     }

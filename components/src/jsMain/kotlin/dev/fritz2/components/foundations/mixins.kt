@@ -423,8 +423,8 @@ class OrientationMixin(default: Orientation) : OrientationProperty {
 }
 
 /**
- * This interface offer convenience functions to call a tooltip in a component.
- * Also adds a property to invoke it in the component.
+ * This interface offers convenience functions to call a tooltip from withiin a component.
+ * It also provides a property to render the tooltip, that must be manually applied by an implementing component.
  *
  * Example integration:
  * ```
@@ -434,7 +434,7 @@ class OrientationMixin(default: Orientation) : OrientationProperty {
  *      override fun render(/* params omitted */) {
  *          context.apply {
  *              div {
- *               this@MyComponent.renderTooltip.value.invoke(this)
+ *               this@MyComponent.renderTooltip.value.invoke(this) // render tooltip here
  *            }
  *          }
  *      }
@@ -454,7 +454,7 @@ class OrientationMixin(default: Orientation) : OrientationProperty {
  *           color { danger.main }
  *       }
  *   }) {
- *       text(listOf("first line, second line"))
+ *       text("first line, second line")
  *       placement { bottomEnd }
  *   }
  *  }
@@ -480,17 +480,6 @@ interface TooltipProperties {
     ) {
         renderTooltip {
             tooltip(styling, text, baseClass, id, prefix) {
-                build()
-            }
-        }
-    }
-
-    fun tooltip(
-        text: String,
-        build: TooltipComponent.() -> Unit
-    ) {
-        renderTooltip {
-            tooltip({}, text) {
                 build()
             }
         }
