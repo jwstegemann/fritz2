@@ -270,7 +270,8 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
     Component<Unit>,
     FormProperties by FormMixin(),
     SeverityProperties by SeverityMixin(),
-    OrientationProperty by OrientationMixin(Orientation.HORIZONTAL) {
+    OrientationProperty by OrientationMixin(Orientation.HORIZONTAL),
+    TooltipProperties by TooltipMixin() {
 
     companion object {
         const val cssDataFocus = "data-focus"
@@ -404,6 +405,8 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
                     this@SliderComponent.events.value(this)
                     this@SliderComponent.store?.let { value handledBy it.update }
                 }
+
+                this@SliderComponent.renderTooltip.value.invoke(this)
             }
         }
     }

@@ -65,7 +65,8 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    TooltipProperties by TooltipMixin() {
 
     companion object {
         val checkboxInputStaticCss = staticStyle(
@@ -160,6 +161,8 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
                     it(this)
                 }
             }
+
+            this@CheckboxComponent.renderTooltip.value.invoke(this)
         }
 
     }

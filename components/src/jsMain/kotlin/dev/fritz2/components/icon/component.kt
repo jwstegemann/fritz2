@@ -1,14 +1,12 @@
 package dev.fritz2.components.icon
 
-import dev.fritz2.components.foundations.Component
-import dev.fritz2.components.foundations.ComponentProperty
-import dev.fritz2.components.foundations.EventMixin
-import dev.fritz2.components.foundations.EventProperties
+import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.svg
+import dev.fritz2.styling.span
 import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.Theme

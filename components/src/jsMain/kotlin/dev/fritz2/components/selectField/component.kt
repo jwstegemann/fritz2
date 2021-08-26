@@ -71,7 +71,8 @@ import org.w3c.dom.HTMLElement
 open class SelectFieldComponent<T>(protected val items: List<T>, protected val value: Store<T>? = null) :
     Component<Unit>,
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    TooltipProperties by TooltipMixin() {
 
     companion object {
         val staticCss = staticStyle(
@@ -176,6 +177,8 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                     this@SelectFieldComponent.events.value(this)
                     this@SelectFieldComponent.value?.let { selected handledBy it.update }
                 }
+
+                this@SelectFieldComponent.renderTooltip.value.invoke(this)
             }
         }
     }

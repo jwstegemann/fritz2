@@ -63,7 +63,8 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    TooltipProperties by TooltipMixin() {
 
     private val radioInputStaticCss = style(
         """
@@ -174,6 +175,8 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
                         it(this)
                     }
                 }
+
+                this@RadioComponent.renderTooltip.value.invoke(this)
             }
         }
     }

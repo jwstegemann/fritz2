@@ -43,7 +43,9 @@ open class MenuEntry(private val styling: Style<BoxParams> = {}) :
     MenuChild,
     EventProperties<HTMLButtonElement> by EventMixin(),
     ElementProperties<Button> by ElementMixin(),
-    FormProperties by FormMixin() {
+    FormProperties by FormMixin(),
+    TooltipProperties by TooltipMixin() {
+
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val text = ComponentProperty<String?>(null)
 
@@ -57,6 +59,7 @@ open class MenuEntry(private val styling: Style<BoxParams> = {}) :
                 disabled(this@MenuEntry.disabled.values)
                 this@MenuEntry.element.value.invoke(this)
                 this@MenuEntry.events.value.invoke(this)
+                this@MenuEntry.renderTooltip.value.invoke(this)
             }
         }
     }
@@ -76,7 +79,9 @@ open class MenuLink(private val styling: Style<BoxParams> = {}) :
     MenuChild,
     EventProperties<HTMLAnchorElement> by EventMixin(),
     ElementProperties<A> by ElementMixin(),
-    FormProperties by FormMixin() {
+    FormProperties by FormMixin(),
+    TooltipProperties by TooltipMixin() {
+
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val text = ComponentProperty<String?>(null)
     val href = ComponentProperty<String?>(null)
@@ -94,6 +99,7 @@ open class MenuLink(private val styling: Style<BoxParams> = {}) :
                 attr("disabled", this@MenuLink.disabled.values)
                 this@MenuLink.element.value.invoke(this)
                 this@MenuLink.events.value.invoke(this)
+                this@MenuLink.renderTooltip.value.invoke(this)
             }
         }
     }
@@ -105,13 +111,17 @@ open class MenuLink(private val styling: Style<BoxParams> = {}) :
  * A custom menu entry can be any fritz2 component. The component simply wraps any layout in a container and renders it
  * to the menu.
  */
-open class CustomMenuEntry(private val styling: Style<BoxParams> = {}) : MenuChild {
+open class CustomMenuEntry(private val styling: Style<BoxParams> = {}) :
+    MenuChild,
+    TooltipProperties by TooltipMixin() {
+
     val content = ComponentProperty<RenderContext.() -> Unit> { }
 
     override fun render(context: RenderContext, styles: MenuStyles) {
         context.apply {
             div(styles.custom + this@CustomMenuEntry.styling) {
                 this@CustomMenuEntry.content.value(this)
+                this@CustomMenuEntry.renderTooltip.value.invoke(this)
             }
         }
     }
