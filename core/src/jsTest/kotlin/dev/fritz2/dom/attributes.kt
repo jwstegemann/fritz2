@@ -1,7 +1,7 @@
 package dev.fritz2.dom
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -21,7 +21,7 @@ class AttributeTests {
         initDocument()
 
         val testRange = (0..4)
-        val testId = uniqueId()
+        val testId = Id.next()
 
         val (name0, value0) = "test0" to "value0"
         val (name1, value1) = "test1" to "value1"

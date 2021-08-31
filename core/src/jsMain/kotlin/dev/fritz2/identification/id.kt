@@ -6,6 +6,7 @@ import kotlin.random.Random
 /**
  * create a unique id quite similar (but not really) to a UUID
  */
+@Deprecated("use Id.next() instead", ReplaceWith("Id.next()"))
 actual fun uniqueId(): String {
     inline fun createChar(dt: Int) = (dt + Random.nextInt(16)).toString(16)  //toString(16)
     inline fun createOther(dt: Int) = ((dt + Random.nextInt(16)) and 0x3 or 0x8).toString(16)

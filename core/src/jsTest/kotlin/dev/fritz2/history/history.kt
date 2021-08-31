@@ -2,7 +2,7 @@ package dev.fritz2.history
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -17,9 +17,9 @@ class HistoryTests {
     fun testSyncedHistory() = runTest {
         initDocument()
 
-        val valueId = "value-${uniqueId()}"
-        val historyId = "history-${uniqueId()}"
-        val availableId = "available-${uniqueId()}"
+        val valueId = "value-${Id.next()}"
+        val historyId = "history-${Id.next()}"
+        val availableId = "available-${Id.next()}"
         val values = listOf("A", "B", "C", "D")
 
         fun getValue() = document.getElementById(valueId)?.textContent
@@ -82,8 +82,8 @@ class HistoryTests {
     fun testHistoryLongerMax() = runTest {
         initDocument()
 
-        val valueId = "value-${uniqueId()}"
-        val historyId = "history-${uniqueId()}"
+        val valueId = "value-${Id.next()}"
+        val historyId = "history-${Id.next()}"
         val values = listOf("A", "B", "C", "D", "E", "F", "G")
 
         fun getValue() = document.getElementById(valueId)?.textContent
@@ -122,8 +122,8 @@ class HistoryTests {
     fun testManualHistory() = runTest {
         initDocument()
 
-        val valueId = "value-${uniqueId()}"
-        val historyId = "history-${uniqueId()}"
+        val valueId = "value-${Id.next()}"
+        val historyId = "history-${Id.next()}"
         val values = listOf("A", "B", "C")
 
         fun getValue() = document.getElementById(valueId)?.textContent

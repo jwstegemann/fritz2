@@ -1,7 +1,7 @@
 package dev.fritz2.dom
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -20,8 +20,8 @@ class TextTests {
 
         initDocument()
 
-        val id1 = uniqueId()
-        val id2 = uniqueId()
+        val id1 = Id.next()
+        val id2 = Id.next()
 
         render {
             div {
@@ -47,8 +47,8 @@ class TextTests {
     fun testTextOnString() = runTest {
         initDocument()
 
-        val id1 = uniqueId()
-        val id2 = uniqueId()
+        val id1 = Id.next()
+        val id2 = Id.next()
         val text = "testText"
 
         render {
@@ -79,7 +79,7 @@ class TextTests {
     fun testTextOnFlowOfString() = runTest {
         initDocument()
 
-        val testId = uniqueId()
+        val testId = Id.next()
         val text = "testText"
 
         render {

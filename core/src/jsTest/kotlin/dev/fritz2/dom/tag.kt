@@ -2,7 +2,7 @@ package dev.fritz2.dom
 
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -19,7 +19,7 @@ class TagTests {
     fun testSingleTag() = runTest {
         initDocument()
 
-        val testId = uniqueId()
+        val testId = Id.next()
         val testClass = "testClass"
 
         render {
@@ -41,7 +41,7 @@ class TagTests {
     fun testSingleTagWithBaseClass() = runTest {
         initDocument()
 
-        val testId = uniqueId()
+        val testId = Id.next()
         val baseClass = "baseClass"
         val testClass = "testClass"
 
@@ -64,7 +64,7 @@ class TagTests {
     fun testSingleTagWithBaseClassOnly() = runTest {
         initDocument()
 
-        val testId = uniqueId()
+        val testId = Id.next()
         val baseClass = "baseClass"
 
         render {
@@ -114,8 +114,8 @@ class TagTests {
     fun testRenderWithCondition() = runTest {
         initDocument()
 
-        val outerId = uniqueId()
-        val innerId = uniqueId()
+        val outerId = Id.next()
+        val innerId = Id.next()
 
         val switch = storeOf(false)
         val data = storeOf("Test")

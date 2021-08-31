@@ -1,5 +1,7 @@
 package dev.fritz2.validation
 
+import dev.fritz2.identification.Inspector
+import dev.fritz2.identification.inspect
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,14 +54,25 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
     fun filter(predicate: (M) -> Boolean): Flow<List<M>> = data.map { it.filter(predicate) }
 
     /**
-     * validates the given data by using the given metadata and returns
+     * validates the given [inspector] and it's containing data
+     * by using the given [metadata] and returns
+     * a [List] of [ValidationMessage]s.
+     *
+     * @param inspector inspector containing the data to validate
+     * @param metadata extra information for the validation process
+     * @return [List] of [ValidationMessage]s
+     */
+    actual abstract fun validate(inspector: Inspector<D>, metadata: T): List<M>
+
+    /**
+     * validates the given [data] by using the given [metadata] and returns
      * a [List] of [ValidationMessage]s.
      *
      * @param data data to validate
      * @param metadata extra information for the validation process
      * @return [List] of [ValidationMessage]s
      */
-    actual abstract fun validate(data: D, metadata: T): List<M>
+    actual fun validate(data: D, metadata: T): List<M> = validate(inspect(data), metadata)
 
     /**
      * validates the given model by using the [validate] functions
@@ -70,7 +83,7 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      * @return a [Boolean] for using in if conditions
      */
     fun isValid(data: D, metadata: T): Boolean {
-        val messages = validate(data, metadata)
+        val messages = validate(inspect(data), metadata)
         state.value = messages
         return messages.none(ValidationMessage::isError)
     }

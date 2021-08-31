@@ -2,7 +2,7 @@ package dev.fritz2.validation
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -34,10 +34,10 @@ class ValidationJSTests {
                 }
             }
 
-        val idData = "data-${uniqueId()}"
-        val idMessages = "messages-${uniqueId()}"
-        val idFind = "find-${uniqueId()}"
-        val idFilter = "filter-${uniqueId()}"
+        val idData = "data-${Id.next()}"
+        val idMessages = "messages-${Id.next()}"
+        val idFind = "find-${Id.next()}"
+        val idFilter = "filter-${Id.next()}"
 
         render {
             div {

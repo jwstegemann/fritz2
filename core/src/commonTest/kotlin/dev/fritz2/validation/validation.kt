@@ -1,5 +1,6 @@
 package dev.fritz2.validation
 
+import dev.fritz2.identification.Inspector
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -16,16 +17,16 @@ val colorValuesAreToLow = Message("color members are lower then 0")
 val colorValuesAreToHigh = Message("color members are greater then 255")
 
 val carValidator = object: Validator<Car, Message, Unit>() {
-    override fun validate(data: Car, metadata: Unit): List<Message> {
+    override fun validate(inspector: Inspector<Car>, metadata: Unit): List<Message> {
         val msgs = mutableListOf<Message>()
 
-        if (data.name.isBlank())
+        if (inspector.data.name.isBlank())
             msgs.add(carNameIsBlank)
 
-        if (data.color.r < 0 || data.color.g < 0 || data.color.b < 0)
+        if (inspector.data.color.r < 0 || inspector.data.color.g < 0 || inspector.data.color.b < 0)
             msgs.add(colorValuesAreToLow)
 
-        if (data.color.r > 255 || data.color.g > 255 || data.color.b > 255)
+        if (inspector.data.color.r > 255 || inspector.data.color.g > 255 || inspector.data.color.b > 255)
             msgs.add(colorValuesAreToHigh)
 
         return msgs

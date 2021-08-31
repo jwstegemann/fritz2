@@ -88,7 +88,7 @@ class LocalStorageTests {
         delay(200)
 
         val idAfterSave = document.getElementById(idId)?.textContent
-        assertTrue(idAfterSave?.length ?: 0 > 10, "no id after save")
+        assertTrue((idAfterSave?.length ?: 0) > 10, "no id after save")
 
         ageSubStore.update(data = changedAge)
         entityStore.saveOrUpdate()

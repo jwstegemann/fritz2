@@ -1,7 +1,7 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.lenses.format
 import dev.fritz2.test.initDocument
@@ -37,9 +37,9 @@ class SubStoreTests {
         val postalCodeSub = addressSub.sub(postalCodeLens)
         val codeSub = postalCodeSub.sub(codeLens)
 
-        val nameId = "name-${uniqueId()}"
-        val streetId = "street-${uniqueId()}"
-        val postalCodeId = "postalCode-${uniqueId()}"
+        val nameId = "name-${Id.next()}"
+        val streetId = "street-${Id.next()}"
+        val postalCodeId = "postalCode-${Id.next()}"
 
         render {
             div {

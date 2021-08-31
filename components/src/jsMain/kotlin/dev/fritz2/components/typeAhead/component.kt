@@ -8,7 +8,7 @@ import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.theme.Theme
@@ -245,7 +245,7 @@ open class TypeAheadComponent(protected val valueStore: Store<String>?, protecte
     ): Input {
         val accepted = if (strict.value) acceptOnlyProposals else acceptDraft
         val internalStore = StateStore(items, accepted, limit.value, draftThreshold.value)
-        val proposalsId = "proposals-{${uniqueId()}}"
+        val proposalsId = "proposals-{${Id.next()}}"
 
         return with(context) {
             (this@TypeAheadComponent.valueStore?.data

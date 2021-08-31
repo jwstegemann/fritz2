@@ -6,9 +6,9 @@ import dev.fritz2.lenses.elementLens
 import dev.fritz2.lenses.positionLens
 
 /**
- *  gives you the a new [RootInspector] as starting point.
+ *  gives you a new [RootInspector] as starting point.
  */
-fun <T> inspect(data: T, id: String? = null) = RootInspector(data, id)
+fun <T> inspect(data: T) = RootInspector(data)
 
 /**
  * represents the data and corresponding id of certain value
@@ -19,7 +19,7 @@ fun <T> inspect(data: T, id: String? = null) = RootInspector(data, id)
  */
 interface Inspector<T> {
     val data: T
-    val id: String?
+    val id: String
 
     /**
      * creates a new [Inspector] for a part of your underlying data-model
@@ -39,9 +39,10 @@ interface Inspector<T> {
  * (when they are rendered with an store.id) are not valid.
  */
 class RootInspector<T>(
-    override val data: T,
-    override val id: String? = null
+    override val data: T
 ) : Inspector<T> {
+
+    override val id: String = ""
 
     override fun <X> sub(lens: Lens<T, X>): SubInspector<T, T, X> =
         SubInspector(this, lens, this, lens)

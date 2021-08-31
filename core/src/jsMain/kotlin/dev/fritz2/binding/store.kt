@@ -1,5 +1,6 @@
 package dev.fritz2.binding
 
+import dev.fritz2.identification.Id
 import dev.fritz2.identification.RootInspector
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
@@ -119,7 +120,7 @@ interface Store<T> : WithJob {
     /**
      * base-id of this [Store]. ids of depending [Store]s are concatenated separated by a dot.
      */
-    val id: String?
+    val id: String
 
     /**
      * the [Flow] representing the current value of the [Store]. Use this to bind it to ui-elements or derive calculated values by using [map] for example.
@@ -205,7 +206,7 @@ fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
  */
 open class RootStore<T>(
     initialData: T,
-    override val id: String? = null
+    override val id: String = Id.next()
 ) : Store<T> {
 
     private val state: MutableStateFlow<T> = MutableStateFlow(initialData)
@@ -256,6 +257,7 @@ open class RootStore<T>(
  * @param initialData the first current value of this [Store]
  * @param id the id of this store. ids of [SubStore]s will be concatenated.
  */
-fun <T> storeOf(initialData: T, id: String? = null) = RootStore(initialData, id)
+fun <T> storeOf(initialData: T, id: String = Id.next()) = RootStore(initialData, id)
 
-fun <T> Store<T>.inspect(data: T) = RootInspector(data, id)
+@Deprecated("Not needed anymore. Use given inspector in validate method.", ReplaceWith(""))
+fun <T> Store<T>.inspect(data: T) = RootInspector(data)

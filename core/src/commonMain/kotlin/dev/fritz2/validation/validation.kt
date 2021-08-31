@@ -1,12 +1,14 @@
 package dev.fritz2.validation
 
+import dev.fritz2.identification.Inspector
+
 
 /**
  * convenience method for creating a new [Validator]
  */
-fun <D, M : ValidationMessage, T> validator(doValidation: (D, T) -> List<M>) =
+fun <D, M : ValidationMessage, T> validator(doValidation: (Inspector<D>, T) -> List<M>) =
     object : Validator<D, M, T>() {
-        override fun validate(data: D, metadata: T): List<M> = doValidation(data, metadata)
+        override fun validate(inspector: Inspector<D>, metadata: T): List<M> = doValidation(inspector, metadata)
     }
 
 /**
@@ -21,13 +23,25 @@ fun <D, M : ValidationMessage, T> validator(doValidation: (D, T) -> List<M>) =
 expect abstract class Validator<D, M : ValidationMessage, T>() {
 
     /**
-     * method that has to be implemented to describe the validation-rules
+     * validates the given [inspector] and it's containing data
+     * by using the given [metadata] and returns
+     * a [List] of [ValidationMessage]s.
      *
-     * @param data model-instance to be validated
-     * @param metadata some data to be used as parameters for the validation (validate differently for the steps in a process)
-     * @return a [List] of messages (your result-type implementing [ValidationMessage])
+     * @param inspector inspector containing the data to validate
+     * @param metadata extra information for the validation process
+     * @return [List] of [ValidationMessage]s
      */
-    abstract fun validate(data: D, metadata: T): List<M>
+    abstract fun validate(inspector: Inspector<D>, metadata: T): List<M>
+
+    /**
+     * validates the given [data] by using the given [metadata] and returns
+     * a [List] of [ValidationMessage]s.
+     *
+     * @param data data to validate
+     * @param metadata extra information for the validation process
+     * @return [List] of [ValidationMessage]s
+     */
+    fun validate(data: D, metadata: T): List<M>
 }
 
 /**

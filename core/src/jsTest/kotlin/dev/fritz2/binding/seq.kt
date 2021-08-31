@@ -1,7 +1,7 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -27,11 +27,11 @@ class SeqTests {
 
     @Test
     fun testEachElement() = runTest {
-        val listId = "list" + uniqueId()
-        val appendBtnId = "btn-append" + uniqueId()
-        val changeBtnId = "btn-change" + uniqueId()
-        val insertBtnId = "btn-insert" + uniqueId()
-        val deleteBtnId = "btn-delete" + uniqueId()
+        val listId = "list" + Id.next()
+        val appendBtnId = "btn-append" + Id.next()
+        val changeBtnId = "btn-change" + Id.next()
+        val insertBtnId = "btn-insert" + Id.next()
+        val deleteBtnId = "btn-delete" + Id.next()
 
         initDocument()
 
@@ -74,11 +74,11 @@ class SeqTests {
 
     @Test
     fun testEachIndexStore() = runTest {
-        val listId = "list" + uniqueId()
-        val appendBtnId = "btn-append" + uniqueId()
-        val changeBtnId = "btn-change" + uniqueId()
-        val insertBtnId = "btn-insert" + uniqueId()
-        val deleteBtnId = "btn-delete" + uniqueId()
+        val listId = "list" + Id.next()
+        val appendBtnId = "btn-append" + Id.next()
+        val changeBtnId = "btn-change" + Id.next()
+        val insertBtnId = "btn-insert" + Id.next()
+        val deleteBtnId = "btn-delete" + Id.next()
 
         initDocument()
 
@@ -140,11 +140,11 @@ class SeqTests {
 
     @Test
     fun testEachEntity() = runTest {
-        val listId = "list" + uniqueId()
-        val appendBtnId = "btn-append" + uniqueId()
-        val changeBtnId = "btn-change" + uniqueId()
-        val insertBtnId = "btn-insert" + uniqueId()
-        val deleteBtnId = "btn-delete" + uniqueId()
+        val listId = "list" + Id.next()
+        val appendBtnId = "btn-append" + Id.next()
+        val changeBtnId = "btn-change" + Id.next()
+        val insertBtnId = "btn-insert" + Id.next()
+        val deleteBtnId = "btn-delete" + Id.next()
 
         initDocument()
 
@@ -187,11 +187,11 @@ class SeqTests {
 
     @Test
     fun testEachEntityStore() = runTest {
-        val listId = "list" + uniqueId()
-        val appendBtnId = "btn-append" + uniqueId()
-        val changeBtnId = "btn-change" + uniqueId()
-        val insertBtnId = "btn-insert" + uniqueId()
-        val deleteBtnId = "btn-delete" + uniqueId()
+        val listId = "list" + Id.next()
+        val appendBtnId = "btn-append" + Id.next()
+        val changeBtnId = "btn-change" + Id.next()
+        val insertBtnId = "btn-insert" + Id.next()
+        val deleteBtnId = "btn-delete" + Id.next()
 
         initDocument()
 

@@ -1,13 +1,14 @@
 package dev.fritz2.components.checkboxes
 
 import dev.fritz2.binding.Store
-import dev.fritz2.components.*
+import dev.fritz2.components.checkbox
+import dev.fritz2.components.checkboxGroup
 import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
@@ -143,7 +144,7 @@ open class CheckboxGroupComponent<T>(
         prefix: String
     ): Div {
         val multiSelectionStore: MultiSelectionStore<T> = MultiSelectionStore()
-        val grpId = id ?: uniqueId()
+        val grpId = id ?: Id.next()
 
         return with(context) {
             div({
@@ -156,7 +157,7 @@ open class CheckboxGroupComponent<T>(
                     val checkedFlow = multiSelectionStore.data.map { it.contains(item) }.distinctUntilChanged()
                     checkbox(
                         styling = this@CheckboxGroupComponent.itemStyle.value,
-                        id = grpId + "-grp-item-" + uniqueId()
+                        id = grpId + "-grp-item-" + Id.next()
                     ) {
                         size { this@CheckboxGroupComponent.size.value.invoke(Theme().checkbox.sizes) }
                         icon { this@CheckboxGroupComponent.icon.value(Theme().icons) }

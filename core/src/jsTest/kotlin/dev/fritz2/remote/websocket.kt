@@ -3,7 +3,7 @@ package dev.fritz2.remote
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.watch
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.resource.Resource
@@ -149,7 +149,7 @@ class WebSocketTests {
     }
 
     @Serializable
-    data class SocketPerson(val name: String, val age: Int, val _id: String = uniqueId())
+    data class SocketPerson(val name: String, val age: Int, val _id: String = Id.next())
 
     private val nameLens = buildLens("name", SocketPerson::name) { p, v -> p.copy(name = v) }
     private val ageLens = buildLens("age", SocketPerson::age) { p, v -> p.copy(age = v) }
@@ -183,11 +183,11 @@ class WebSocketTests {
             }
         }
 
-        val nameId = "name-${uniqueId()}"
+        val nameId = "name-${Id.next()}"
         val nameSubStore = entityStore.sub(nameLens)
-        val ageId = "age-${uniqueId()}"
+        val ageId = "age-${Id.next()}"
         val ageSubStore = entityStore.sub(ageLens)
-        val idId = "id-${uniqueId()}"
+        val idId = "id-${Id.next()}"
         val idSubStore = entityStore.sub(idLens)
 
 

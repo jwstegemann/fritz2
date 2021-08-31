@@ -1,7 +1,7 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -19,7 +19,7 @@ class RenderTests {
 
         val store = storeOf(true)
 
-        val divId = uniqueId()
+        val divId = Id.next()
 
         render {
             section {
@@ -52,7 +52,7 @@ class RenderTests {
 
         val store = storeOf(true)
 
-        val divId = uniqueId()
+        val divId = Id.next()
 
         render("#target") {
             div(id = divId) {
