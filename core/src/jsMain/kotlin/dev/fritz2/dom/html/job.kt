@@ -1,5 +1,6 @@
-package dev.fritz2.binding
+package dev.fritz2.dom.html
 
+import dev.fritz2.binding.Handler
 import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.WindowListener
 import kotlinx.coroutines.Job
@@ -8,6 +9,9 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 
+/**
+ * Marks a class that it has a [Job] to start coroutines with.
+ */
 interface WithJob {
     val job: Job
 

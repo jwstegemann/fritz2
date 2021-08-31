@@ -4,6 +4,7 @@ import dev.fritz2.dom.HtmlTagMarker
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Scope
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BoxParams
 import kotlinx.browser.document
@@ -91,12 +92,12 @@ interface ManagedComponent<T> {
          * @param id for [RenderContext] DOM element
          * @param job [Job] used in this [RenderContext]
          */
-        internal fun managedRenderContext(id: String, job: Job): RenderContext {
+        internal fun managedRenderContext(id: String, job: Job, scope: Scope): RenderContext {
             val element = document.getElementById(id)
             return if (element != null) {
-                Tag("div", element.id, job = job, domNode = (element as HTMLElement))
+                Tag("div", element.id, job = job, scope = scope, domNode = (element as HTMLElement))
             } else {
-                Div(id, job = job).apply { document.body?.appendChild(this.domNode) }
+                Div(id, job = job, scope = scope).apply { document.body?.appendChild(this.domNode) }
             }.apply {
                 domNode.innerHTML = ""
             }

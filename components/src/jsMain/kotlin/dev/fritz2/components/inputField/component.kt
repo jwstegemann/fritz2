@@ -70,7 +70,8 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
     SeverityProperties by SeverityMixin(),
-    InputFieldProperties by InputFieldMixin() {
+    InputFieldProperties by InputFieldMixin(),
+    TooltipProperties by TooltipMixin() {
 
     companion object {
         val staticCss = staticStyle(
@@ -86,7 +87,8 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
                 transition: all 250ms;
                 white-space: nowrap;
                 outline: none;
-                width: 100%
+                width: 100%;
+                -webkit-appearance: none;
             """
         )
     }
@@ -120,6 +122,7 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
                 }
                 this@InputFieldComponent.events.value.invoke(this)
                 this@InputFieldComponent.element.value.invoke(this)
+                this@InputFieldComponent.renderTooltip.value.invoke(this)
             }
         }
     }

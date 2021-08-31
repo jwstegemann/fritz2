@@ -62,7 +62,8 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    TooltipProperties by TooltipMixin() {
 
     companion object {
         val switchInputStaticCss = staticStyle(
@@ -119,6 +120,8 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
                 display { inlineFlex }
                 alignItems { center }
                 this@SwitchComponent.size.value.invoke(Theme().switch.sizes)()
+                // to "capture" the invisible, absolute positioned `input`, see `switchInputStaticCss`
+                position { relative {  } }
             }, baseClass, prefix = prefix) {
                 input({
                     Theme().switch.input()
@@ -153,6 +156,8 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
                         it(this)
                     }
                 }
+
+                this@SwitchComponent.renderTooltip.value.invoke(this)
             }
         }
     }

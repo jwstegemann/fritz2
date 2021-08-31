@@ -7,6 +7,7 @@ import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.html.Li
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.Id
+import dev.fritz2.dom.html.Scope
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.ColorProperty
@@ -149,12 +150,13 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
                """
         )
 
-        private val job = Job()
         private val globalId = "f2c-toasts-${randomId()}"
+        private val job = Job()
+        private val scope = Scope()
 
         init {
             // Rendering of the toast container hosting all toast messages.
-            ManagedComponent.managedRenderContext(globalId, job).apply {
+            ManagedComponent.managedRenderContext(globalId, job, scope).apply {
                 Placement.placements.forEach {
                     val placementStyle = when (it) {
                         Placement.bottom -> Theme().toast.placement.bottom
@@ -344,7 +346,8 @@ open class AlertToastComponent : ToastComponentBase() {
                     stacking { toast }
                 }
 
-            this@AlertToastComponent.closeButtonStyle(Theme().toast.closeButton.close + {
+            this@AlertToastComponent.closeButtonStyle {
+                Theme().toast.closeButton.close
                 color {
                     val colorScheme = alertComponent.severity.value(Theme().alert.severities).colorScheme
                     when (alertComponent.variant.value(AlertComponent.VariantContext)) {
@@ -354,7 +357,7 @@ open class AlertToastComponent : ToastComponentBase() {
                         else -> colorScheme.mainContrast
                     }
                 }
-            })
+            }
 
             alertComponent.render(this, styling, baseClass, id, prefix)
         }

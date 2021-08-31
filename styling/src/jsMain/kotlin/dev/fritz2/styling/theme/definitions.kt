@@ -103,6 +103,7 @@ class Sizes(
 class ZIndices(
     tableHeader: Int,
     tooltip: Int,
+    popup: Int,
     dropdown: Int,
     popover: Int,
     appFrame: Int,
@@ -120,6 +121,7 @@ class ZIndices(
 
     val tableHeader: Property = tableHeader.toString()
     val tooltip: Property = tooltip.toString()
+    val popup: Property = popup.toString()
     val dropdown: Property = dropdown.toString()
     val popover: Property = popover.toString()
     val appFrame: Property = appFrame.toString()
@@ -486,6 +488,39 @@ interface ModalWidths {
 }
 
 
+interface PaperStyles {
+    val sizes: PaperSizes
+    val types: PaperTypes
+    val background: Style<BoxParams>
+}
+
+interface PaperTypes {
+    val normal: Style<BoxParams>
+    val outline: Style<BoxParams>
+    val ghost: Style<BoxParams>
+}
+
+interface PaperSizes {
+    val small: Style<BoxParams>
+    val normal: Style<BoxParams>
+    val large: Style<BoxParams>
+}
+
+
+interface CardStyles {
+    val sizes: CardSizes
+    val header: Style<BoxParams>
+    val footer: Style<BoxParams>
+    val content: Style<BoxParams>
+}
+
+interface CardSizes {
+    val small: Style<BoxParams>
+    val normal: Style<BoxParams>
+    val large: Style<BoxParams>
+}
+
+
 /**
  * definition of the theme's popover
  */
@@ -524,11 +559,16 @@ interface PopoverSizes {
  * definition of the theme's tooltip
  */
 interface TooltipStyles {
+    @Deprecated("since 0.12 - please use TooltipComponent")
     fun write(vararg value: String): Style<BasicParams>
+    @Deprecated("since 0.12 - please use TooltipComponent")
     fun write(vararg value: String, tooltipPlacement: TooltipPlacements.() -> Style<BasicParams>): Style<BasicParams>
+    @Deprecated("since 0.12 - please use TooltipComponent")
     val placement: TooltipPlacements
+    val base: Style<BoxParams>
 }
 
+@Deprecated("since 0.12 - please use TooltipComponent")
 interface TooltipPlacements {
     val top: Style<BasicParams>
     val right: Style<BasicParams>
@@ -714,10 +754,12 @@ interface DropdownAlignments {
  */
 interface MenuStyles {
     val container: Style<BasicParams>
+    val sub: Style<BoxParams>
     val entry: Style<BoxParams>
     val header: Style<BasicParams>
     val divider: Style<BasicParams>
     val custom: Style<BoxParams>
+    val icon: Style<BasicParams>
 }
 
 /**
@@ -733,18 +775,19 @@ interface NavBarStyles {
  */
 interface AppFrameStyles {
     val headerHeight: Property
-    val footerMinHeight: Property
+    val complementaryMinHeight: Property
+    val sidebarWidth: Property
     val mobileSidebarWidth: Property
     val brand: Style<FlexParams>
     val sidebar: Style<BasicParams>
-    val nav: Style<BasicParams>
-    val footer: Style<BasicParams>
+    val sidebarClose: Style<BasicParams>
+    val navigation: Style<BasicParams>
+    val complementary: Style<BasicParams>
     val header: Style<FlexParams>
-    val main: Style<BasicParams>
-    val tabs: Style<FlexParams>
-    val navLink: Style<FlexParams>
-    val activeNavLink: Style<FlexParams>
-    val navSection: Style<BasicParams>
+    val content: Style<BasicParams>
+    val tablist: Style<FlexParams>
+    val backdrop: Style<BasicParams>
+    val menu: MenuStyles
 }
 
 interface DataTableStyles {
@@ -778,4 +821,10 @@ interface SliderStyles : SeverityAware, FormSizesAware {
 fun SliderStyles.core(orientation: String) = when (orientation) {
     "HORIZONTAL" -> horizontal
     else -> vertical
+}
+
+
+interface PopupStyles {
+    val wrapper: BoxParams.(Int) -> Unit
+    val arrow: Style<BoxParams>
 }

@@ -62,7 +62,8 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    TooltipProperties by TooltipMixin() {
 
     private val radioInputStaticCss = style(
         """
@@ -131,6 +132,8 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
                 verticalAlign { top }
                 css("-webkit-box-align: center;")
                 this@RadioComponent.size.value.invoke(Theme().radio.sizes)()
+                // to "capture" the invisible, absolute positioned `input`, see `radioInputStaticCss`
+                position { relative {  } }
             }, baseClass, prefix = prefix) {
                 input({
                     Theme().radio.input()
@@ -162,6 +165,8 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
                         it(this)
                     }
                 }
+
+                this@RadioComponent.renderTooltip.value.invoke(this)
             }
         }
     }

@@ -71,7 +71,8 @@ import org.w3c.dom.HTMLElement
 open class SelectFieldComponent<T>(protected val items: List<T>, protected val value: Store<T>? = null) :
     Component<Label>,
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    TooltipProperties by TooltipMixin() {
 
     companion object {
         val staticCss = staticStyle(
@@ -82,7 +83,15 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                   position: relative;
                   outline:none;
                   appearance:none;
-              """
+                  -webkit-appearance: none;
+              """.trimIndent()
+        )
+
+        val staticCssSelect = staticStyle(
+            "selectFieldContainer",
+            """
+                  -webkit-appearance: none;            
+            """.trimIndent()
         )
     }
 
@@ -135,7 +144,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                 select({
                     this@SelectFieldComponent.variant.value.invoke(Theme().select.variants)()
                     this@SelectFieldComponent.size.value.invoke(Theme().select.sizes)()
-                }, styling, baseClass, id) {
+                }, styling, baseClass + staticCssSelect, id) {
                     disabled(this@SelectFieldComponent.disabled.values)
 
                     internalStore.data.render {
@@ -174,6 +183,8 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                     this@SelectFieldComponent.events.value(this)
                     this@SelectFieldComponent.value?.let { selected handledBy it.update }
                 }
+
+                this@SelectFieldComponent.renderTooltip.value.invoke(this)
             }
         }
     }

@@ -73,7 +73,8 @@ open class TextAreaComponent(protected val valueStore: Store<String>? = null) :
     EventProperties<HTMLTextAreaElement> by EventMixin(),
     ElementProperties<TextArea> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
-    SeverityProperties by SeverityMixin() {
+    SeverityProperties by SeverityMixin(),
+    TooltipProperties by TooltipMixin() {
 
     companion object {
         val staticCss = staticStyle(
@@ -84,7 +85,7 @@ open class TextAreaComponent(protected val valueStore: Store<String>? = null) :
             appearance: none;
             transition: all 0.2s ease 0s;
             min-height: 80px;
-            
+            -webkit-appearance: none;
             """
         )
     }
@@ -119,6 +120,7 @@ open class TextAreaComponent(protected val valueStore: Store<String>? = null) :
                 }
                 this@TextAreaComponent.events.value.invoke(this)
                 this@TextAreaComponent.element.value.invoke(this)
+                this@TextAreaComponent.renderTooltip.value.invoke(this)
             }
         }
     }

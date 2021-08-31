@@ -2,6 +2,8 @@ package dev.fritz2.components.foundations
 
 import dev.fritz2.components.buttons.PushButtonComponent
 import dev.fritz2.components.clickButton
+import dev.fritz2.components.tooltip
+import dev.fritz2.components.tooltip.TooltipComponent
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.EventContext
@@ -418,4 +420,87 @@ class OrientationMixin(default: Orientation) : OrientationProperty {
     override val orientation: ComponentProperty<OrientationContext.() -> Orientation> by lazy {
         ComponentProperty { default }
     }
+}
+
+/**
+ * This interface offers convenience functions to call a tooltip from withiin a component.
+ * It also provides a property to render the tooltip, that must be manually applied by an implementing component.
+ *
+ * Example integration:
+ * ```
+ * open class MyComponent : Component<Unit>, TooltipProperties by TooltipMixin()  {
+ * //                                        ^^^^^^^^^^^^^^^^     ^^^^^^^^^^^^^
+ * //                                        implement interface    delegate to mixin
+ *      override fun render(/* params omitted */) {
+ *          context.apply {
+ *              div {
+ *               this@MyComponent.renderTooltip.value.invoke(this) // render tooltip here
+ *            }
+ *          }
+ *      }
+ * }
+ * ```
+ *
+ * Example usage:
+ * ```
+ *  myComponent() {
+ *       tooltip(text = "my Tooltip") { }
+ *  }
+ *
+ *  myComponent() {
+ *   tooltip({
+ *       color { danger.mainContrast }
+ *       background {
+ *           color { danger.main }
+ *       }
+ *   }) {
+ *       text("first line, second line")
+ *       placement { bottomEnd }
+ *   }
+ *  }
+ *
+ *  myComponent() {
+ *      tooltip("my tooltip") {}
+ *  }
+ *
+ *  myComponent() {
+ *      tooltip("my tooltip", "second line") { placement { bottom }}
+ *  }
+ *```
+ */
+interface TooltipProperties {
+    val renderTooltip: ComponentProperty<RenderContext.() -> Unit>
+    fun tooltip(
+        styling: BasicParams.() -> Unit = {},
+        text: String? = null,
+        baseClass: StyleClass = StyleClass.None,
+        id: String = "fc2-tooltip-${randomId()}",
+        prefix: String = "tooltip",
+        build: TooltipComponent.() -> Unit
+    ) {
+        renderTooltip {
+            tooltip(styling, text, baseClass, id, prefix) {
+                build()
+            }
+        }
+    }
+
+    fun tooltip(
+        vararg text: String,
+        build: TooltipComponent.() -> Unit
+    ) {
+        renderTooltip {
+            tooltip({}) {
+                build()
+                text(*text)
+            }
+        }
+    }
+}
+
+/**
+ * Default implementation of [TooltipProperties] interface in order to apply this as mixin for a component
+ */
+open class TooltipMixin : TooltipProperties {
+    override val renderTooltip = ComponentProperty<RenderContext.() -> Unit> {}
 }

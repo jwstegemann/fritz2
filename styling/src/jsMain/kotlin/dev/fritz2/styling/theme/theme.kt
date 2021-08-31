@@ -193,6 +193,10 @@ interface Theme {
 
     val modal: ModalStyles
 
+    val paper: PaperStyles
+
+    val card: CardStyles
+
     /**
      * definition of the theme's popover
      */
@@ -223,6 +227,8 @@ interface Theme {
     val dataTableStyles: DataTableStyles
 
     val slider: SliderStyles
+
+    val popup: PopupStyles
 }
 
 /**

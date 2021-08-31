@@ -16,7 +16,7 @@ import org.w3c.dom.events.MouseEvent
  *
  * You can set the label, an icon, the position of the icon and access its events.
  * For a detailed overview about the possible properties of the component object itself, have a look at
- * [PushButtonComponent]
+ * [PushButtonComponent].
  *
  * Example:
  * ```
