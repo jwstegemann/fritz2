@@ -1,5 +1,6 @@
 package dev.fritz2.components.menu
 
+import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.appFrame.AppFrameScope
 import dev.fritz2.components.foundations.*
@@ -121,6 +122,7 @@ open class MenuComponent(scope: Scope) : Component<Unit>, MenuContext() {
  */
 open class SubMenuComponent(
     val styling: Style<BoxParams>,
+    val value: Store<Boolean>? = null,
     val baseClass: StyleClass,
     val id: String?,
     val prefix: String
@@ -136,7 +138,10 @@ open class SubMenuComponent(
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val text = ComponentProperty<String?>(null)
 
-    private val hide = storeOf(true)
+    private val hide = value ?: storeOf(true)
+    val close = hide.handle { false }
+    val open = hide.handle { true }
+    val toggle = hide.handle { !it }
 
     override fun render(context: RenderContext, styles: MenuStyles) {
         context.apply {

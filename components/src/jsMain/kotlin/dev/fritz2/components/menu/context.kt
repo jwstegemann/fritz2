@@ -1,5 +1,6 @@
 package dev.fritz2.components.menu
 
+import dev.fritz2.binding.Store
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BoxParams
@@ -115,11 +116,12 @@ open class MenuContext {
      */
     fun submenu(
         styling: BoxParams.() -> Unit = {},
+        value: Store<Boolean>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
         prefix: String = "submenu",
         build: SubMenuComponent.() -> Unit,
-    ) = SubMenuComponent(styling, baseClass, id, prefix)
+    ) = SubMenuComponent(styling, value, baseClass, id, prefix)
         .apply(build)
         .run(::addChild)
 }
