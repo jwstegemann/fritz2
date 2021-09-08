@@ -19,12 +19,17 @@ object Window {
      *
      * @param type [EventType] to listen for
      */
-    private fun <E : Event> subscribe(type: EventType<E>): WindowListener<E> = WindowListener(
+    private inline fun <reified E : Event> subscribe(type: EventType<E>): WindowListener<E> = WindowListener(
         callbackFlow {
             val listener: (Event) -> Unit = {
-                trySend(it.unsafeCast<E>())
+                if (it is E) {
+                    trySend(it.unsafeCast<E>())
+                } else {
+                    console.error("Unexpected type while listening for `${type.name}` events in Window object")
+                }
             }
             browserWindow.addEventListener(type.name, listener)
+
             awaitClose { browserWindow.removeEventListener(type.name, listener) }
         })
 

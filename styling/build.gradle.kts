@@ -14,8 +14,8 @@ kotlin {
     sourceSets {
         all {
             languageSettings.apply {
-                useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
-                useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                optIn("kotlin.ExperimentalStdlibApi")
+                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
             }
         }
 

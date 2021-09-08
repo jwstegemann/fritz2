@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 import org.w3c.dom.svg.SVGElement
+import org.w3c.dom.svg.SVGPathElement
 
 
 /**
@@ -1273,8 +1274,42 @@ class Svg(id: String? = null, baseClass: String? = null, job: Job, scope: Scope)
     fun content(xml: String) {
         domNode.innerHTML = xml
     }
+
+    fun xmlns(value: String) = attr("xmlns", value)
+
+    fun viewBox(value: String) = attr("viewBox", value)
+    fun viewBox(value: Flow<String>) = attr("viewBox", value)
+
+    fun fill(value: String) = attr("fill", value)
+    fun fill(value: Flow<String>) = attr("fill", value)
 }
 
+/**
+ * Exposes the JavaScript Path(https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths) to Kotlin
+ */
+class Path(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
+    Tag<SVGPathElement>("", id, null, job, scope, createPathElement(baseClass)) {
+
+    companion object {
+        const val xmlns = "http://www.w3.org/2000/svg"
+
+        fun createPathElement(baseClass: String?): SVGPathElement {
+            val elem = document.createElementNS(xmlns, "path").unsafeCast<SVGPathElement>()
+            baseClass?.let { elem.setAttributeNS(null, "class", it) }
+            return elem
+        }
+    }
+
+    /**
+     * Sets the given [xml] string to the *innerHTML* of the [SVGElement].
+     *
+     * @param xml svg xml content
+     */
+    fun xmlns(value: String) = attr("xmlns", value)
+
+    fun d(value: String) = attr("d", value)
+    fun d(value: Flow<String>) = attr("d", value)
+}
 
 /**
  * Special [Tag] for HTML5 with no attributes
@@ -2139,11 +2174,18 @@ interface TagContext : WithJob, WithScope {
         register(TextElement("command", id, baseClass, job, evalScope(scope)), content)
 
     fun svg(
-        baseClass: String?,
+        baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         content: Svg.() -> Unit
     ): Svg =
         register(Svg(id, baseClass, job = job, evalScope(scope)), content)
 
+    fun path(
+        baseClass: String? = null,
+        id: String? = null,
+        scope: (ScopeContext.() -> Unit) = {},
+        content: Path.() -> Unit
+    ): Path =
+        register(Path(id, baseClass, job = job, evalScope(scope)), content)
 }
