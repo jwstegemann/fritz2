@@ -1,6 +1,6 @@
 package dev.fritz2.dom.html
 
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -15,13 +15,13 @@ class ScopeTests {
     fun testScopeInDifferentContexts() = runTest {
         initDocument()
 
-        val id1 = uniqueId()
+        val id1 = Id.next()
         val key1 = keyOf<String>("key1")
         val value1 = "value1"
-        val id2 = uniqueId()
+        val id2 = Id.next()
         val key2 = keyOf<String>("key2")
         val value2 = "value2"
-        val id3 = uniqueId()
+        val id3 = Id.next()
 
         render {
             div(scope = {

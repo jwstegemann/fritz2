@@ -15,11 +15,11 @@ fun <T> inspect(data: T) = RootInspector(data)
  * in a deep nested model structure.
  *
  * @property data [T] representation of stored data
- * @property id [String] representation of the corresponding id
+ * @property path [String] representation of the corresponding path in model
  */
 interface Inspector<T> {
     val data: T
-    val id: String
+    val path: String
 
     /**
      * creates a new [Inspector] for a part of your underlying data-model
@@ -42,7 +42,7 @@ class RootInspector<T>(
     override val data: T
 ) : Inspector<T> {
 
-    override val id: String = ""
+    override val path: String = ""
 
     override fun <X> sub(lens: Lens<T, X>): SubInspector<T, T, X> =
         SubInspector(this, lens, this, lens)
@@ -62,7 +62,7 @@ class SubInspector<R, P, T>(
     /**
      * generates the corresponding id
      */
-    override val id: String by lazy { "${parent.id}.${lens.id}".trimEnd('.') }
+    override val path: String by lazy { "${parent.path}.${lens.id}".trimEnd('.') }
 
     /**
      * returns the underlying data

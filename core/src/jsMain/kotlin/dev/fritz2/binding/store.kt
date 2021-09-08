@@ -1,8 +1,8 @@
 package dev.fritz2.binding
 
+import dev.fritz2.dom.html.WithJob
 import dev.fritz2.identification.Id
 import dev.fritz2.identification.RootInspector
-import dev.fritz2.dom.html.WithJob
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
@@ -119,9 +119,16 @@ interface Store<T> : WithJob {
     suspend fun enqueue(update: QueuedUpdate<T>)
 
     /**
-     * base-id of this [Store]. ids of depending [Store]s are concatenated separated by a dot.
+     * Id of this [Store].
+     * ids of depending [Store]s are concatenated and separated by a dot.
      */
     val id: String
+
+    /**
+     * Path of this [Store] derived from the underlying model.
+     * Paths of depending [Store]s are concatenated and separated by a dot.
+     */
+    val path: String
 
     /**
      * the [Flow] representing the current value of the [Store]. Use this to bind it to ui-elements or derive calculated values by using [map] for example.
@@ -212,6 +219,8 @@ open class RootStore<T>(
 
     private val state: MutableStateFlow<T> = MutableStateFlow(initialData)
     private val mutex = Mutex()
+
+    override val path: String = ""
 
     /**
      * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]

@@ -1,7 +1,7 @@
 package dev.fritz2.identification
 
 object Id {
-    const val defaultLength = 6
+    private const val defaultLength = 6
     private val chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray()
 
     fun next(length: Int = defaultLength) = buildString {
@@ -12,7 +12,7 @@ object Id {
 }
 
 /**
- * creates something like an UUID
+ * creates something like a UUID
  *
  * @return UUID as String
  */
