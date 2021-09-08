@@ -34,23 +34,20 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
         ) {
             spacing { tiny }
             items {
-                val label = label({
+                label({
                     component.labelStyle.value()
                 }) {
+                    component.controlRegistration.assignee?.id?.let { `for`(it) }
                     className(formGroupElementLabelMarker)
                     component.label.values.asText()
-                }.domNode
+                }
                 stackUp({
                     alignItems { start }
                     width { full }
                 }) {
                     spacing { none }
                     items {
-                        control(this).apply {
-                            label.addEventListener("click", {
-                                this.domNode.focus()
-                            })
-                        }
+                        control(this)
                         component.renderHelperText(this)
                         component.renderValidationMessages(this)
                     }
