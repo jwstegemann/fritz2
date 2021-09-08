@@ -359,6 +359,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
                 inputField(styling, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
+                    disabled(this@FormControlComponent.disabled.values)
                     build()
                 }
             },
@@ -383,6 +384,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
                 typeAhead(styling, value, items, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
+                    disabled(this@FormControlComponent.disabled.values)
                     build()
                 }
             },
@@ -406,6 +408,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
                 switch(styling, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
+                    disabled(this@FormControlComponent.disabled.values)
                     build()
                 }
             },
@@ -429,6 +432,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
                 textArea(styling, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
+                    disabled(this@FormControlComponent.disabled.values)
                     build()
                 }
             },
@@ -454,6 +458,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
                 }, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
+                    disabled(this@FormControlComponent.disabled.values)
                     build()
                 }
             },
@@ -478,6 +483,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
                 checkboxGroup(styling, items, values, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
+                    disabled(this@FormControlComponent.disabled.values)
                     build()
                 }
             },
@@ -502,6 +508,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
                 radioGroup(styling, items, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
+                    disabled(this@FormControlComponent.disabled.values)
                     build()
                 }
             },
@@ -526,6 +533,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
                 selectField(styling, items, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
+                    disabled(this@FormControlComponent.disabled.values)
                     build()
                 }
             },
@@ -549,6 +557,7 @@ open class FormControlComponent : Component<Unit>, FormProperties by FormMixin()
                 slider(styling, value, baseClass, id, prefix) {
                     size { this@FormControlComponent.sizeBuilder(this) }
                     severity(validationMessagesBuilder().hasSeverity)
+                    disabled(this@FormControlComponent.disabled.values)
                     build()
                 }
             },
