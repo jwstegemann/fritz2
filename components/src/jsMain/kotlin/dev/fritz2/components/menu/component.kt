@@ -15,6 +15,7 @@ import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.MenuStyles
 import dev.fritz2.styling.theme.Theme
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 
 /**
@@ -138,10 +139,7 @@ open class SubMenuComponent(
     val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
     val text = ComponentProperty<String?>(null)
 
-    private val hide = value ?: storeOf(true)
-    val close = hide.handle { false }
-    val open = hide.handle { true }
-    val toggle = hide.handle { !it }
+    private val visible = value ?: storeOf(false)
 
     override fun render(context: RenderContext, styles: MenuStyles) {
         context.apply {
@@ -151,7 +149,7 @@ open class SubMenuComponent(
                 }
                 this@SubMenuComponent.text.value?.let { span { +it } }
                 disabled(this@SubMenuComponent.disabled.values)
-                clicks.stopPropagation() handledBy this@SubMenuComponent.hide.handle { !it }
+                clicks handledBy this@SubMenuComponent.visible.handle { !it }
                 this@SubMenuComponent.events.value.invoke(this)
             }
             div(
@@ -160,7 +158,7 @@ open class SubMenuComponent(
                 this@SubMenuComponent.id,
                 this@SubMenuComponent.prefix
             ) {
-                className(hidden.whenever(this@SubMenuComponent.hide.data).name)
+                className(hidden.whenever(this@SubMenuComponent.visible.data.map { !it }).name)
                 this@SubMenuComponent.children.forEach {
                     it.render(this, styles)
                 }
