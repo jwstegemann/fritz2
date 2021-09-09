@@ -35,7 +35,7 @@ import org.w3c.dom.HTMLTextAreaElement
  *
  * Example usage
  * ```
- * // Basic useage
+ * // Basic usage
  * textArea(value = dataStore) {
  *     placeholder { "My placeholder" } // render a placeholder text for empty textarea
  * }

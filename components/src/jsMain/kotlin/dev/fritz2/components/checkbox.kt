@@ -4,7 +4,7 @@ import dev.fritz2.binding.Store
 import dev.fritz2.components.checkboxes.CheckboxComponent
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.*
+import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 
 /**
@@ -33,7 +33,7 @@ fun RenderContext.checkbox(
     styling: BasicParams.() -> Unit = {},
     value: Store<Boolean>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
+    id: String? = value?.id,
     prefix: String = "checkboxComponent",
     build: CheckboxComponent.() -> Unit = {}
 ): Label = CheckboxComponent(value).apply(build).render(this, styling, baseClass, id, prefix)

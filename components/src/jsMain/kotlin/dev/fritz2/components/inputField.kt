@@ -42,7 +42,7 @@ fun RenderContext.inputField(
     styling: BasicParams.() -> Unit = {},
     value: Store<String>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
+    id: String? = value?.id,
     prefix: String = "inputField",
     build: InputFieldComponent.() -> Unit = {}
 ): Input = InputFieldComponent(value).apply(build).render(this, styling, baseClass, id, prefix)

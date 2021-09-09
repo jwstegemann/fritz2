@@ -1,8 +1,8 @@
 package dev.fritz2.components.checkboxes
 
 import dev.fritz2.binding.Store
-import dev.fritz2.components.*
 import dev.fritz2.components.foundations.*
+import dev.fritz2.components.icon
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
@@ -125,12 +125,13 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
             // to "capture" the invisible, absolute positioned `input`, see `checkboxInputStaticCss`
             position { relative {  } }
         }, baseClass, prefix = prefix) {
+            if (id != null) `for`(id)
             input({
                 Theme().checkbox.input()
                 children("&[checked] + div") {
                     this@CheckboxComponent.checkedStyle.value()
                 }
-            }, checkboxInputStaticCss, prefix = prefix) {
+            }, checkboxInputStaticCss, id, prefix) {
                 disabled(this@CheckboxComponent.disabled.values)
                 readOnly(this@CheckboxComponent.readonly.values)
                 type("checkbox")

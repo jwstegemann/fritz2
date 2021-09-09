@@ -140,7 +140,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                     this@SelectFieldComponent.items.indexOf(selectedItem).let { if (it == -1) null else it }
                 } handledBy internalStore.update
 
-            label(styling, baseClass + staticCss, prefix = prefix) {
+            label(styling, baseClass + staticCss, id, prefix) {
                 select({
                     this@SelectFieldComponent.variant.value.invoke(Theme().select.variants)()
                     this@SelectFieldComponent.size.value.invoke(Theme().select.sizes)()

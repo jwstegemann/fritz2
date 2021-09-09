@@ -22,7 +22,7 @@ fun RenderContext.slider(
     styling: BasicParams.() -> Unit = {},
     value: Store<Int>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
+    id: String? = value?.id,
     prefix: String = "slider",
     build: SliderComponent.() -> Unit = {}
 ) = SliderComponent(value).apply(build).render(this, styling, baseClass, id, prefix)

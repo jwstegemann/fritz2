@@ -40,7 +40,7 @@ fun <T> RenderContext.radioGroup(
     items: List<T>,
     value: Store<T>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
+    id: String? = value?.id,
     prefix: String = "radioGroupComponent",
     build: RadioGroupComponent<T>.() -> Unit = {}
 ) = RadioGroupComponent(items, value).apply(build).render(this, styling, baseClass, id, prefix)

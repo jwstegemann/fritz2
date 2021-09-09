@@ -141,7 +141,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
 
                 this@RadioGroupComponent.items.withIndex().forEach { (index, item) ->
                     val checkedFlow = internalStore.data.map { it == index }.distinctUntilChanged()
-                    radio(styling = this@RadioGroupComponent.itemStyle.value) {
+                    radio(styling = this@RadioGroupComponent.itemStyle.value, id = "$id.$index") {
                         this.size { this@RadioGroupComponent.size.value.invoke(Theme().radio.sizes) }
                         groupName(groupName)
                         labelStyle(this@RadioGroupComponent.labelStyle.value)

@@ -123,6 +123,7 @@ open class SwitchComponent(protected val value: Store<Boolean>? = null) :
                 // to "capture" the invisible, absolute positioned `input`, see `switchInputStaticCss`
                 position { relative {  } }
             }, baseClass, prefix = prefix) {
+                if(id != null) `for`(id)
                 input({
                     Theme().switch.input()
                     children("&[checked] + div") {

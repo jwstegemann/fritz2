@@ -135,12 +135,13 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
                 // to "capture" the invisible, absolute positioned `input`, see `radioInputStaticCss`
                 position { relative {  } }
             }, baseClass, prefix = prefix) {
+                if (id != null) `for`(id)
                 input({
                     Theme().radio.input()
                     children("&[checked] + div") {
                         this@RadioComponent.selectedStyle.value()
                     }
-                }, this@RadioComponent.radioInputStaticCss, prefix = prefix) {
+                }, this@RadioComponent.radioInputStaticCss, id, prefix) {
                     disabled(this@RadioComponent.disabled.values)
                     readOnly(this@RadioComponent.readonly.values)
                     type("radio")
