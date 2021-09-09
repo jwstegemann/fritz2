@@ -19,7 +19,7 @@ class InspectorTests {
     val addressLens = buildLens(Person::address.name, Person::address) { p, v -> p.copy(address = v) }
 
     @Test
-    fun testInspectorIds() {
+    fun testInspectorPaths() {
 
         val rootData = Person("Foo", Address("Street 5"))
         val rootInspector = RootInspector(rootData)
@@ -40,7 +40,7 @@ class InspectorTests {
     }
 
     @Test
-    fun testIdsByElementLens() {
+    fun testPathsByElementLens() {
 
         val personList = listOf(
             Person("p1", Address("p1s1")),
@@ -91,7 +91,7 @@ class InspectorTests {
     }
 
     @Test
-    fun testIdsByPositionLens() {
+    fun testPathsByPositionLens() {
         val personList = listOf(
             Person("p1", Address("p1s1")),
             Person("p2", Address("p2s1")),

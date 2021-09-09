@@ -32,11 +32,10 @@ interface Inspector<T> {
 
 
 /**
- * [RootInspector] is the starting point for getting your data and corresponding ids from your
+ * [RootInspector] is the starting point for getting your [data] and corresponding [path]s from your
  * deep nested model structure. Get this by calling the factory method [inspect].
  *
- * [Inspector] is useful in validation process to know which html elements
- * (when they are rendered with an store.id) are not valid.
+ * [Inspector] is useful in validation process to know which model attribute is not valid.
  */
 class RootInspector<T>(
     override val data: T
@@ -60,12 +59,12 @@ class SubInspector<R, P, T>(
 ) : Inspector<T> {
 
     /**
-     * generates the corresponding id
+     * generates the corresponding [path]
      */
     override val path: String by lazy { "${parent.path}.${lens.id}".trimEnd('.') }
 
     /**
-     * returns the underlying data
+     * returns the underlying [data]
      */
     override val data: T = lens.get(parent.data)
 
