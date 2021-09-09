@@ -1,8 +1,8 @@
 package dev.fritz2.components.checkboxes
 
 import dev.fritz2.binding.Store
-import dev.fritz2.components.*
 import dev.fritz2.components.foundations.*
+import dev.fritz2.components.icon
 import dev.fritz2.dom.html.Input
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
@@ -118,21 +118,20 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
         id: String?,
         prefix: String
     ): Label = with(context) {
-        label({
+        return label({
+            display { inlineFlex }
+            alignItems { center }
             this@CheckboxComponent.size.value.invoke(Theme().checkbox.sizes)()
             // to "capture" the invisible, absolute positioned `input`, see `checkboxInputStaticCss`
             position { relative {  } }
-        }, baseClass = baseClass, id = id, prefix = prefix) {
-            val inputId = id?.let { "$it-input" }
-            inputId?.let {
-                `for`(inputId)
-            }
+        }, baseClass, prefix = prefix) {
+            if (id != null) `for`(id)
             input({
                 Theme().checkbox.input()
                 children("&[checked] + div") {
                     this@CheckboxComponent.checkedStyle.value()
                 }
-            }, baseClass = checkboxInputStaticCss, prefix = prefix, id = inputId) {
+            }, checkboxInputStaticCss, id, prefix) {
                 disabled(this@CheckboxComponent.disabled.values)
                 readOnly(this@CheckboxComponent.readonly.values)
                 type("checkbox")
@@ -164,6 +163,5 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
 
             this@CheckboxComponent.renderTooltip.value.invoke(this)
         }
-
     }
 }

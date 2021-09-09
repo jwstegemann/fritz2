@@ -5,7 +5,7 @@ import dev.fritz2.binding.SubStore
 import dev.fritz2.components.checkbox
 import dev.fritz2.dom.html.Tr
 import dev.fritz2.dom.states
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
@@ -130,7 +130,7 @@ class SelectionByCheckBox<T, I> : SelectionStrategy<T, I> {
             checkbox(
                 {
                     margin { "0" }
-                }, id = uniqueId()
+                }, id = Id.next()
             ) {
                 checked(
                     component.selectionStore.data.map { selectedRows ->
@@ -154,7 +154,7 @@ class SelectionByCheckBox<T, I> : SelectionStrategy<T, I> {
         component: DataTableComponent<T, I>
     ) -> Unit = { component ->
         header {
-            checkbox({ display { inlineBlock } }, id = uniqueId()) {
+            checkbox({ display { inlineBlock } }, id = Id.next()) {
                 checked(
                     component.selectionStore.data.map {
                         it.isNotEmpty() && it == component.dataStore.current

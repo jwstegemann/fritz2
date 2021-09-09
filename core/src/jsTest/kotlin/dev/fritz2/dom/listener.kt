@@ -4,7 +4,7 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -26,7 +26,7 @@ class ListenerTest {
     fun testListenerForChangeAndInputEvent() = runTest {
         initDocument()
 
-        val inputId = uniqueId()
+        val inputId = Id.next()
 
         val store = object : RootStore<String>("start") {}
 
@@ -61,8 +61,8 @@ class ListenerTest {
     fun testListenerForClickEvent() = runTest {
         initDocument()
 
-        val resultId = uniqueId()
-        val buttonId = uniqueId()
+        val resultId = Id.next()
+        val buttonId = Id.next()
 
         val store = object : RootStore<String>("start") {
             var countHandlerCalls = 0
@@ -107,8 +107,8 @@ class ListenerTest {
     fun testListenerForMultipleClickEvent() = runTest {
         initDocument()
 
-        val resultId = uniqueId()
-        val buttonId = uniqueId()
+        val resultId = Id.next()
+        val buttonId = Id.next()
 
         val store = object : RootStore<String>("") {
             var countHandlerCalls = 0
@@ -166,8 +166,8 @@ class ListenerTest {
     fun testListenerForKeyboardEvent() = runTest {
         initDocument()
 
-        val resultId = uniqueId()
-        val inputId = uniqueId()
+        val resultId = Id.next()
+        val inputId = Id.next()
 
         val store = object : RootStore<String>("") {
             var countHandlerCalls = 0
@@ -249,8 +249,8 @@ class ListenerTest {
         // TODO: Evaluate pre test execution by framework
         initDocument()
 
-        val inputId = uniqueId()
-        val resultId = uniqueId()
+        val inputId = Id.next()
+        val resultId = Id.next()
 
         val store = object : RootStore<String>("start") {}
 

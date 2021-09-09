@@ -2,7 +2,7 @@ package dev.fritz2.dom.html
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.selectedText
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -21,7 +21,7 @@ class MountTests {
     fun testValueAttributeMountPoint() = runTest {
         initDocument()
 
-        val id = uniqueId()
+        val id = Id.next()
 
         val store = object : RootStore<String>("test") {
             val modify = handle {
@@ -56,7 +56,7 @@ class MountTests {
     fun testCheckedAttributeMountPoint() = runTest {
         initDocument()
 
-        val id = uniqueId()
+        val id = Id.next()
 
         val store = object : RootStore<Boolean>(true) {
             val modify = handle { model ->
@@ -91,9 +91,9 @@ class MountTests {
     fun testSelectedAttributeMountPoint() = runTest {
         initDocument()
 
-        val id = uniqueId()
-        val option1Id = "option1-${uniqueId()}"
-        val option2Id = "option2-${uniqueId()}"
+        val id = Id.next()
+        val option1Id = "option1-${Id.next()}"
+        val option2Id = "option2-${Id.next()}"
 
         val store = object : RootStore<String>("option1") {
             val select = handle<String> { _, action ->

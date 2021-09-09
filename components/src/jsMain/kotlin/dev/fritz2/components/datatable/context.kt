@@ -2,16 +2,16 @@ package dev.fritz2.components.datatable
 
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.SubStore
+import dev.fritz2.components.datatable.ColumnsContext.ColumnContext
+import dev.fritz2.components.datatable.OptionsContext.SortingContext
 import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.components.foundations.DynamicComponentProperty
 import dev.fritz2.components.foundations.NullableDynamicComponentProperty
-import dev.fritz2.components.datatable.ColumnsContext.ColumnContext
-import dev.fritz2.components.datatable.OptionsContext.SortingContext
 import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Td
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.lenses.Lens
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -182,7 +182,7 @@ class ColumnsContext<T> {
             header.content
         )
 
-        val id = ComponentProperty(uniqueId())
+        val id = ComponentProperty(Id.next())
         val lens = ComponentProperty<Lens<T, String>?>(null)
 
         class WidthContext {

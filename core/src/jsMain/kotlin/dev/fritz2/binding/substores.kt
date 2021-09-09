@@ -29,6 +29,11 @@ class SubStore<P, T>(
     override val id: String by lazy { "${parent.id}.${lens.id}".trimEnd('.') }
 
     /**
+     * defines how to infer the id of the sub-part from the parent's id.
+     */
+    override val path: String by lazy { "${parent.path}.${lens.id}".trimEnd('.') }
+
+    /**
      * represents the current value of the [Store]
      */
     override val current: T

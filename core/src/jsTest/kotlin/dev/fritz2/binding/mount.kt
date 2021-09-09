@@ -1,7 +1,7 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.checkSingleFlow
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -55,9 +55,9 @@ class MountTests {
     fun testOrderOfSingleMountPointCreation() = runTest {
         initDocument()
 
-        val outer = uniqueId()
-        val inner1 = uniqueId()
-        val inner2 = uniqueId()
+        val outer = Id.next()
+        val inner1 = Id.next()
+        val inner2 = Id.next()
 
         val text = flowOf("test")
 
@@ -85,10 +85,10 @@ class MountTests {
     fun testOrderOfMultiMountPointCreation() = runTest {
         initDocument()
 
-        val outer = uniqueId()
-        val inner1 = uniqueId()
-        val inner2 = uniqueId()
-        val inner3 = uniqueId()
+        val outer = Id.next()
+        val inner1 = Id.next()
+        val inner2 = Id.next()
+        val inner3 = Id.next()
 
         val text = flowOf(listOf(inner1, inner2))
 
@@ -113,7 +113,7 @@ class MountTests {
     fun testOrderOfTextNodeCreation() = runTest {
         initDocument()
 
-        val id = uniqueId()
+        val id = Id.next()
 
         val text = flowOf("test")
 

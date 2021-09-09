@@ -6,20 +6,20 @@ import dev.fritz2.lenses.elementLens
 import dev.fritz2.lenses.positionLens
 
 /**
- *  gives you the a new [RootInspector] as starting point.
+ *  gives you a new [RootInspector] as starting point.
  */
-fun <T> inspect(data: T, id: String = "") = RootInspector<T>(data, id)
+fun <T> inspect(data: T) = RootInspector(data)
 
 /**
  * represents the data and corresponding id of certain value
  * in a deep nested model structure.
  *
  * @property data [T] representation of stored data
- * @property id [String] representation of the corresponding id
+ * @property path [String] representation of the corresponding path in model
  */
 interface Inspector<T> {
     val data: T
-    val id: String
+    val path: String
 
     /**
      * creates a new [Inspector] for a part of your underlying data-model
@@ -32,16 +32,16 @@ interface Inspector<T> {
 
 
 /**
- * [RootInspector] is the starting point for getting your data and corresponding ids from your
+ * [RootInspector] is the starting point for getting your [data] and corresponding [path]s from your
  * deep nested model structure. Get this by calling the factory method [inspect].
  *
- * [Inspector] is useful in validation process to know which html elements
- * (when they are rendered with an store.id) are not valid.
+ * [Inspector] is useful in validation process to know which model attribute is not valid.
  */
 class RootInspector<T>(
-    override val data: T,
-    override val id: String = ""
+    override val data: T
 ) : Inspector<T> {
+
+    override val path: String = ""
 
     override fun <X> sub(lens: Lens<T, X>): SubInspector<T, T, X> =
         SubInspector(this, lens, this, lens)
@@ -59,12 +59,12 @@ class SubInspector<R, P, T>(
 ) : Inspector<T> {
 
     /**
-     * generates the corresponding id
+     * generates the corresponding [path]
      */
-    override val id: String by lazy { "${parent.id}.${lens.id}".trimEnd('.') }
+    override val path: String by lazy { "${parent.path}.${lens.id}".trimEnd('.') }
 
     /**
-     * returns the underlying data
+     * returns the underlying [data]
      */
     override val data: T = lens.get(parent.data)
 

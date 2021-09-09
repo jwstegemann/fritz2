@@ -4,7 +4,7 @@ import dev.fritz2.binding.Store
 import dev.fritz2.components.switch.SwitchComponent
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.styling.*
+import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 
 /**
@@ -37,7 +37,7 @@ fun RenderContext.switch(
     styling: BasicParams.() -> Unit = {},
     value: Store<Boolean>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
+    id: String? = value?.id,
     prefix: String = "switchComponent",
     build: SwitchComponent.() -> Unit = {}
 ): Label = SwitchComponent(value).apply(build).render(this, styling, baseClass, id, prefix)

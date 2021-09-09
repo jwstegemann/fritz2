@@ -1,7 +1,8 @@
 package dev.fritz2.binding
 
-import dev.fritz2.identification.RootInspector
 import dev.fritz2.dom.html.WithJob
+import dev.fritz2.identification.Id
+import dev.fritz2.identification.RootInspector
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
@@ -118,9 +119,16 @@ interface Store<T> : WithJob {
     suspend fun enqueue(update: QueuedUpdate<T>)
 
     /**
-     * base-id of this [Store]. ids of depending [Store]s are concatenated separated by a dot.
+     * Id of this [Store].
+     * ids of depending [Store]s are concatenated and separated by a dot.
      */
     val id: String
+
+    /**
+     * Path of this [Store] derived from the underlying model.
+     * Paths of depending [Store]s are concatenated and separated by a dot.
+     */
+    val path: String
 
     /**
      * the [Flow] representing the current value of the [Store]. Use this to bind it to ui-elements or derive calculated values by using [map] for example.
@@ -206,11 +214,13 @@ fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
  */
 open class RootStore<T>(
     initialData: T,
-    override val id: String = ""
+    override val id: String = Id.next()
 ) : Store<T> {
 
     private val state: MutableStateFlow<T> = MutableStateFlow(initialData)
     private val mutex = Mutex()
+
+    override val path: String = ""
 
     /**
      * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
@@ -257,6 +267,7 @@ open class RootStore<T>(
  * @param initialData the first current value of this [Store]
  * @param id the id of this store. ids of [SubStore]s will be concatenated.
  */
-fun <T> storeOf(initialData: T, id: String = "") = RootStore(initialData, id)
+fun <T> storeOf(initialData: T, id: String = Id.next()) = RootStore(initialData, id)
 
-fun <T> Store<T>.inspect(data: T) = RootInspector(data, id)
+@Deprecated("Not needed anymore. Use given inspector in validate method.", ReplaceWith(""))
+fun <T> Store<T>.inspect(data: T) = RootInspector(data)

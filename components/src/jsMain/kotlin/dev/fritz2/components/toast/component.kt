@@ -6,8 +6,8 @@ import dev.fritz2.components.alert.*
 import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.html.Li
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.identification.Id
 import dev.fritz2.dom.html.Scope
-import dev.fritz2.identification.uniqueId
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.ColorProperty
@@ -171,7 +171,7 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
                     ul({
                         placementStyle()
                         zIndex { toast }
-                    }, toastContainerStaticCss, uniqueId(), "ul-toast-container") {
+                    }, toastContainerStaticCss, Id.next(), "ul-toast-container") {
                         ToastStore.data
                             .map { toasts ->
                                 toasts.filter { toast -> toast.placement == it }
@@ -216,7 +216,7 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
         id: String?,
         prefix: String
     ) {
-        val localId: String = id ?: uniqueId()
+        val localId: String = id ?: Id.next()
 
         (MainScope() + job).launch {
             delay(duration.value)

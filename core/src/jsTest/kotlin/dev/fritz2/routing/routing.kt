@@ -1,7 +1,7 @@
 package dev.fritz2.routing
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -26,8 +26,8 @@ class RoutingTests {
 
         val router = router(defaultRoute)
         val testRange = 0..2
-        val testId = uniqueId()
-        val buttons = testRange.map { "btn-${uniqueId()}" to "page$it" }
+        val testId = Id.next()
+        val buttons = testRange.map { "btn-${Id.next()}" to "page$it" }
 
         render {
             div(id = testId) {
@@ -71,9 +71,9 @@ class RoutingTests {
         val router = router(defaultRoute)
 
         val testRange = 0..2
-        val pageId = "page-${uniqueId()}"
-        val btnId = "btn-${uniqueId()}"
-        val buttons = testRange.map { "btn-${uniqueId()}" to "page-$it" }
+        val pageId = "page-${Id.next()}"
+        val btnId = "btn-${Id.next()}"
+        val buttons = testRange.map { "btn-${Id.next()}" to "page-$it" }
 
         render {
             div {
@@ -120,7 +120,7 @@ class RoutingTests {
 
         val router = router(mapOf("test" to "123"))
 
-        val divId = "div-${uniqueId()}"
+        val divId = "div-${Id.next()}"
 
         render {
             div(id = divId) {

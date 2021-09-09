@@ -1,7 +1,7 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -18,9 +18,9 @@ class StoreTests {
     fun testStoreHandleAndOfferHandler() = runTest {
         initDocument()
 
-        val id1 = uniqueId()
-        val id2 = uniqueId()
-        val buttonId = uniqueId()
+        val id1 = Id.next()
+        val id2 = Id.next()
+        val buttonId = Id.next()
 
         val store2 = object : RootStore<Int>(0) {}
 
@@ -70,10 +70,10 @@ class StoreTests {
     fun testStoreHandleAndOfferHandleAndOfferHandler() = runTest {
         initDocument()
 
-        val id1 = uniqueId()
-        val id2 = uniqueId()
-        val id3 = uniqueId()
-        val buttonId = uniqueId()
+        val id1 = Id.next()
+        val id2 = Id.next()
+        val id3 = Id.next()
+        val buttonId = Id.next()
 
         val s3 = object : RootStore<String>("s3.start") {}
 
@@ -140,10 +140,10 @@ class StoreTests {
     fun testErrorHandling() = runTest {
         initDocument()
 
-        val errorMsg = uniqueId()
-        val valueId = uniqueId()
+        val errorMsg = Id.next()
+        val valueId = Id.next()
         fun getValue() = document.getElementById(valueId)?.textContent
-        val buttonId = uniqueId()
+        val buttonId = Id.next()
 
         var errorHandlerResult = ""
         val startValue = "start"

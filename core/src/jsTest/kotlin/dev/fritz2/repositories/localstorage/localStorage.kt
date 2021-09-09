@@ -2,6 +2,7 @@ package dev.fritz2.repositories.localstorage
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.render
+import dev.fritz2.identification.Id
 import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
@@ -62,11 +63,11 @@ class LocalStorageTests {
             entityStore.localStorage.load("unknown")
         }
 
-        val nameId = "name-${uniqueId()}"
+        val nameId = "name-${Id.next()}"
         val nameSubStore = entityStore.sub(nameLens)
-        val ageId = "age-${uniqueId()}"
+        val ageId = "age-${Id.next()}"
         val ageSubStore = entityStore.sub(ageLens)
-        val idId = "id-${uniqueId()}"
+        val idId = "id-${Id.next()}"
         val idSubStore = entityStore.sub(idLens)
 
 
@@ -88,7 +89,7 @@ class LocalStorageTests {
         delay(200)
 
         val idAfterSave = document.getElementById(idId)?.textContent
-        assertTrue(idAfterSave?.length ?: 0 > 10, "no id after save")
+        assertTrue((idAfterSave?.length ?: 0) > 10, "no id after save")
 
         ageSubStore.update(data = changedAge)
         entityStore.saveOrUpdate()

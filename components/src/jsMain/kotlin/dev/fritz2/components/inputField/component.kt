@@ -65,7 +65,7 @@ import org.w3c.dom.HTMLInputElement
  * ```
  */
 open class InputFieldComponent(protected val valueStore: Store<String>?) :
-    Component<Unit>,
+    Component<Input>,
     EventProperties<HTMLInputElement> by EventMixin(),
     ElementProperties<Input> by ElementMixin(),
     InputFormProperties by InputFormMixin(),
@@ -93,9 +93,9 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
         )
     }
 
-    val value = DynamicComponentProperty(flowOf(""))
-    val type = DynamicComponentProperty(flowOf(""))
-    val step = DynamicComponentProperty(flowOf(""))
+    val value = DynamicComponentProperty<String>()
+    val type = DynamicComponentProperty(flowOf("text"))
+    val step = DynamicComponentProperty<String>()
 
     override fun render(
         context: RenderContext,
@@ -103,8 +103,8 @@ open class InputFieldComponent(protected val valueStore: Store<String>?) :
         baseClass: StyleClass,
         id: String?,
         prefix: String
-    ) {
-        context.apply {
+    ): Input {
+        return with(context) {
             input({
                 this@InputFieldComponent.size.value.invoke(Theme().input.sizes)()
                 this@InputFieldComponent.variant.value.invoke(Theme().input.variants)()

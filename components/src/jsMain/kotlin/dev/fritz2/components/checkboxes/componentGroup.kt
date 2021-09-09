@@ -1,12 +1,14 @@
 package dev.fritz2.components.checkboxes
 
 import dev.fritz2.binding.Store
-import dev.fritz2.components.*
+import dev.fritz2.components.checkbox
+import dev.fritz2.components.checkboxGroup
 import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.EventContext
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
@@ -98,7 +100,7 @@ import org.w3c.dom.HTMLElement
 open class CheckboxGroupComponent<T>(
     protected val items: List<T>,
     protected val values: Store<List<T>>?
-) : Component<Unit>,
+) : Component<Div>,
     InputFormProperties by InputFormMixin(),
     SeverityProperties by SeverityMixin(),
     OrientationProperty by OrientationMixin(Orientation.VERTICAL),
@@ -141,11 +143,11 @@ open class CheckboxGroupComponent<T>(
         baseClass: StyleClass,
         id: String?,
         prefix: String
-    ) {
+    ): Div {
         val multiSelectionStore: MultiSelectionStore<T> = MultiSelectionStore()
-        val grpId = id ?: uniqueId()
+        val grpId = id ?: Id.next()
 
-        context.apply {
+        return with(context) {
             div({
                 layoutOf(this@CheckboxGroupComponent.orientation.value(OrientationContext))()
             }, styling, baseClass, id, prefix) {
@@ -156,7 +158,7 @@ open class CheckboxGroupComponent<T>(
                     val checkedFlow = multiSelectionStore.data.map { it.contains(item) }.distinctUntilChanged()
                     checkbox(
                         styling = this@CheckboxGroupComponent.itemStyle.value,
-                        id = grpId + "-grp-item-" + uniqueId()
+                        id = grpId + "-grp-item-" + Id.next()
                     ) {
                         size { this@CheckboxGroupComponent.size.value.invoke(Theme().checkbox.sizes) }
                         icon { this@CheckboxGroupComponent.icon.value(Theme().icons) }
@@ -171,7 +173,6 @@ open class CheckboxGroupComponent<T>(
                         }
                     }
                 }
-
                 EventsContext(this, multiSelectionStore.toggle).apply {
                     this@CheckboxGroupComponent.events.value(this)
                     this@CheckboxGroupComponent.values?.let { selected handledBy it.update }

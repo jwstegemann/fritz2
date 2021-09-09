@@ -37,9 +37,7 @@ fun RenderContext.typeAhead(
     value: Store<String>? = null,
     items: Proposal,
     baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
+    id: String? = value?.id,
     prefix: String = "typeAhead",
     build: TypeAheadComponent.() -> Unit = {}
-) {
-    TypeAheadComponent(value, items).apply(build).render(this, styling, baseClass, id, prefix)
-}
+) = TypeAheadComponent(value, items).apply(build).render(this, styling, baseClass, id, prefix)

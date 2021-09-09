@@ -48,7 +48,7 @@ interface WithValidator<D, T> : Store<D> {
 fun <D> Store<D>.validationMessage(): Flow<ComponentValidationMessage?>? = when (this) {
     is RootStore<*> -> {
         if (this is WithValidator<*, *>) {
-            this.validator.find { it.id == this@validationMessage.id }
+            this.validator.find { it.path == this@validationMessage.path }
         } else {
             null
         }
@@ -56,7 +56,7 @@ fun <D> Store<D>.validationMessage(): Flow<ComponentValidationMessage?>? = when 
     is SubStore<*, *> -> {
         val root = this.findRootStore()
         if (root is WithValidator<*, *>) {
-            root.validator.find { it.id == this@validationMessage.id }
+            root.validator.find { it.path == this@validationMessage.path }
         } else null
     }
     else -> null
@@ -71,7 +71,7 @@ fun <D> Store<D>.validationMessage(): Flow<ComponentValidationMessage?>? = when 
 fun <D> Store<D>.validationMessages(): Flow<List<ComponentValidationMessage>>? = when (this) {
     is RootStore<*> -> {
         if (this is WithValidator<*, *>) {
-            this.validator.filter { it.id == this@validationMessages.id }
+            this.validator.filter { it.path == this@validationMessages.path }
         } else {
             null
         }
@@ -79,7 +79,7 @@ fun <D> Store<D>.validationMessages(): Flow<List<ComponentValidationMessage>>? =
     is SubStore<*, *> -> {
         val root = this.findRootStore()
         if (root is WithValidator<*, *>) {
-            root.validator.filter { it.id == this@validationMessages.id }
+            root.validator.filter { it.path == this@validationMessages.path }
         } else null
     }
     else -> null

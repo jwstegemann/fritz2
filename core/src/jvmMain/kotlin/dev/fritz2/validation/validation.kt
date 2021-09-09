@@ -1,5 +1,8 @@
 package dev.fritz2.validation
 
+import dev.fritz2.identification.Inspector
+import dev.fritz2.identification.inspect
+
 /**
  * Describes the logic for validating a given data-model.
  * By implementing this you must describe, how a certain data-model should be validated.
@@ -28,7 +31,26 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
         state = messages
     }
 
-    actual abstract fun validate(data: D, metadata: T): List<M>
+    /**
+     * validates the given [inspector] and it's containing data
+     * by using the given [metadata] and returns
+     * a [List] of [ValidationMessage]s.
+     *
+     * @param inspector inspector containing the data to validate
+     * @param metadata extra information for the validation process
+     * @return [List] of [ValidationMessage]s
+     */
+    actual abstract fun validate(inspector: Inspector<D>, metadata: T): List<M>
+
+    /**
+     * validates the given [data] by using the given [metadata] and returns
+     * a [List] of [ValidationMessage]s.
+     *
+     * @param data data to validate
+     * @param metadata extra information for the validation process
+     * @return [List] of [ValidationMessage]s
+     */
+    actual fun validate(data: D, metadata: T): List<M> = validate(inspect(data), metadata)
 
     /**
      * evaluates the [List] of [ValidationMessage] to see if your [data] is valid or not
@@ -37,6 +59,6 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      * @param metadata extra information for the validation process
      * @return a [Boolean] for using in if conditions
      */
-    fun isValid(data: D, metadata: T): Boolean = validate(data, metadata)
+    fun isValid(data: D, metadata: T): Boolean = validate(inspect(data), metadata)
         .also { state = it }.none(ValidationMessage::isError)
 }

@@ -2,7 +2,7 @@ package dev.fritz2.tracking
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -19,11 +19,11 @@ class TrackingTests {
         initDocument()
 
         val transactionText = "long running"
-        val transactionId = "transaction-${uniqueId()}"
+        val transactionId = "transaction-${Id.next()}"
 
         val startValue = "start"
         val endValue = "end"
-        val valueId = "value-${uniqueId()}"
+        val valueId = "value-${Id.next()}"
 
         val store = object : RootStore<String>(startValue) {
             val running = tracker()
@@ -71,7 +71,7 @@ class TrackingTests {
     fun testStopTrackingIfExceptionOccursDuringOperation() = runTest {
         initDocument()
 
-        val resultElementId = "tracker-${uniqueId()}"
+        val resultElementId = "tracker-${Id.next()}"
 
         val store = object : RootStore<Int>(0) {
             val running = tracker()

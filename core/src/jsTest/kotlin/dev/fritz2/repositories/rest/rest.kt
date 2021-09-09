@@ -2,13 +2,15 @@ package dev.fritz2.repositories.rest
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.render
-import dev.fritz2.identification.uniqueId
+import dev.fritz2.identification.Id
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
-
-import dev.fritz2.test.*
+import dev.fritz2.test.initDocument
+import dev.fritz2.test.rest
+import dev.fritz2.test.runTest
+import dev.fritz2.test.testHttpServer
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -66,11 +68,11 @@ class RestTests {
             entityStore.rest.load("unknown")
         }
 
-        val idId = "id-${uniqueId()}"
+        val idId = "id-${Id.next()}"
         val idSubStore = entityStore.sub(idLens)
-        val nameId = "name-${uniqueId()}"
+        val nameId = "name-${Id.next()}"
         val nameSubStore = entityStore.sub(nameLens)
-        val ageId = "age-${uniqueId()}"
+        val ageId = "age-${Id.next()}"
         val ageSubStore = entityStore.sub(ageLens)
 
         render {
@@ -139,8 +141,8 @@ class RestTests {
             val delete = handle<String> { entities, id -> rest.delete(entities, id) }
         }
 
-        val listId = "list-${uniqueId()}"
-        val firstPersonId = "first-${uniqueId()}"
+        val listId = "list-${Id.next()}"
+        val firstPersonId = "first-${Id.next()}"
 
         render {
             div {
@@ -220,7 +222,7 @@ class RestTests {
             }
         }
 
-        val listId = "list-${uniqueId()}"
+        val listId = "list-${Id.next()}"
 
         render {
             div {

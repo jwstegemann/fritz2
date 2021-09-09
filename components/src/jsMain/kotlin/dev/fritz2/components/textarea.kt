@@ -31,9 +31,7 @@ fun RenderContext.textArea(
     styling: BasicParams.() -> Unit = {},
     value: Store<String>? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String? = null,
+    id: String? = value?.id,
     prefix: String = "textArea",
     build: TextAreaComponent.() -> Unit
-) {
-    TextAreaComponent(value).apply(build).render(this, styling, baseClass, id, prefix)
-}
+) = TextAreaComponent(value).apply(build).render(this, styling, baseClass, id, prefix)

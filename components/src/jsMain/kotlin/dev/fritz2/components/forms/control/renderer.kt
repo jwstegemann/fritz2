@@ -19,7 +19,7 @@ class SingleControlRenderer(private val component: FormControlComponent) : Contr
         id: String?,
         prefix: String,
         context: RenderContext,
-        control: RenderContext.() -> Unit
+        control: RenderContext.() -> RenderContext
     ) {
         context.stackUp(
             {
@@ -72,7 +72,7 @@ class ControlGroupRenderer(private val component: FormControlComponent) : Contro
         id: String?,
         prefix: String,
         context: RenderContext,
-        control: RenderContext.() -> Unit
+        control: RenderContext.() -> RenderContext
     ) {
         context.div({
             width { full }
