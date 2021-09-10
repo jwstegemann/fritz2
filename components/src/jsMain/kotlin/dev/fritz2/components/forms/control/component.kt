@@ -86,7 +86,7 @@ interface ControlRenderer {
  * [ControlRegistration.assignee] field to learn how the mapping between control and rendering strategy is done.
  *
  */
-open class FormControlComponent : Component<Unit>, FormProperties by FormMixin() {
+open class FormControlComponent : Component<Unit> {
     companion object {
         object ControlNames {
             const val inputField = "inputField"
