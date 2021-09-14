@@ -55,6 +55,12 @@ class DomListener<E : Event, out X : Element>(override val events: Flow<E>) : Li
 /**
  * Gives you the new value as [String] from the targeting [Element].
  */
+fun DomListener<Event, HTMLFieldSetElement>.values(): Flow<String> =
+    events.map { it.target.unsafeCast<HTMLInputElement>().value }
+
+/**
+ * Gives you the new value as [String] from the targeting [Element].
+ */
 fun DomListener<Event, HTMLInputElement>.values(): Flow<String> =
     events.map { it.target.unsafeCast<HTMLInputElement>().value }
 

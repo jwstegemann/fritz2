@@ -1254,7 +1254,7 @@ open class Ul(id: String? = null, baseClass: String? = null, job: Job, scope: Sc
  * Exposes the JavaScript [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement) to Kotlin
  */
 class Svg(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
-    Tag<SVGElement>("", id, null, job, scope, createSVGElement(baseClass)) {
+    Tag<SVGElement>("", id, baseClass, job, scope, createSVGElement(baseClass)) {
 
     companion object {
         const val xmlns = "http://www.w3.org/2000/svg"
@@ -1288,7 +1288,7 @@ class Svg(id: String? = null, baseClass: String? = null, job: Job, scope: Scope)
  * Exposes the JavaScript Path(https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths) to Kotlin
  */
 class Path(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
-    Tag<SVGPathElement>("", id, null, job, scope, createPathElement(baseClass)) {
+    Tag<SVGPathElement>("", id, baseClass, job, scope, createPathElement(baseClass)) {
 
     companion object {
         const val xmlns = "http://www.w3.org/2000/svg"
