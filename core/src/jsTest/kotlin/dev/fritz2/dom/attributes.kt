@@ -1,5 +1,6 @@
 package dev.fritz2.dom
 
+import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
@@ -83,7 +84,7 @@ class AttributeTests {
                 attr("nullableT", null as Int?)
                 attr("nullableFlowOfT", flowOf(null as Int?))
                 attr("nullableBoolean", null as Boolean?, "nullableBoolean")
-                attr("nullableFlowOfBoolean", null as Boolean?, "nullableFlowOfBoolean")
+                attr("nullableFlowOfBoolean", flowOf(null as Boolean?), "nullableFlowOfBoolean")
             }
         }
 
@@ -96,5 +97,68 @@ class AttributeTests {
         assertFalse(element.hasAttribute("nullableFlowOfT"))
         assertFalse(element.hasAttribute("nullableBoolean"))
         assertFalse(element.hasAttribute("nullableFlowOfBoolean"))
+    }
+
+    @Test
+    fun testAlternatingNullableStringFlows() = runTest {
+        initDocument()
+        val testId = Id.next()
+
+        val nullableFlow = storeOf<String?>("a")
+
+        render {
+            div(id = testId) {
+                attr("test", nullableFlow.data)
+            }
+        }
+
+        delay(50)
+        val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
+
+        assertTrue(element.hasAttribute("test"))
+        assertEquals("a", element.getAttribute("test"))
+
+        nullableFlow.update(null)
+        delay(50)
+
+        assertFalse(element.hasAttribute("test"))
+
+        nullableFlow.update("c")
+        delay(50)
+
+        assertTrue(element.hasAttribute("test"))
+        assertEquals("c", element.getAttribute("test"))
+    }
+
+
+    @Test
+    fun testAlternatingNullableTFlows() = runTest {
+        initDocument()
+        val testId = Id.next()
+
+        val nullableFlow = storeOf<Int?>(42)
+
+        render {
+            div(id = testId) {
+                attr("test", nullableFlow.data)
+            }
+        }
+
+        delay(50)
+        val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
+
+        assertTrue(element.hasAttribute("test"))
+        assertEquals("42", element.getAttribute("test"))
+
+        nullableFlow.update(null)
+        delay(50)
+
+        assertFalse(element.hasAttribute("test"))
+
+        nullableFlow.update(99)
+        delay(50)
+
+        assertTrue(element.hasAttribute("test"))
+        assertEquals("99", element.getAttribute("test"))
     }
 }

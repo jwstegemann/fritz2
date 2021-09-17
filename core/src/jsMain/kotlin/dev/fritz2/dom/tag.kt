@@ -403,7 +403,10 @@ open class Tag<out E : Element>(
      * @param value to use
      */
     fun attr(name: String, value: Flow<String?>) {
-        mountSingle(job, value) { v, _ -> attr(name, v) }
+        mountSingle(job, value) { v, _ ->
+            if (v != null) attr(name, v)
+            else domNode.removeAttribute(name)
+        }
     }
 
     /**
@@ -423,7 +426,10 @@ open class Tag<out E : Element>(
      * @param value to use
      */
     fun <T> attr(name: String, value: Flow<T>) {
-        mountSingle(job, value.mapNotNull { it?.toString() }) { v, _ -> attr(name, v) }
+        mountSingle(job, value.map { it?.toString() }) { v, _ ->
+            if (v != null) attr(name, v)
+            else domNode.removeAttribute(name)
+        }
     }
 
     /**
