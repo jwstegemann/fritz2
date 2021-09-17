@@ -70,4 +70,31 @@ class AttributeTests {
         assertTrue(element.hasAttribute("test6"))
         assertEquals("foo", element.getAttribute("test6"))
     }
+
+    @Test
+    fun testNullableAttributes() = runTest {
+        initDocument()
+        val testId = Id.next()
+
+        render {
+            div(id = testId) {
+                attr("nullableString", null as String?)
+                attr("nullableFlowOfString", flowOf(null as String?))
+                attr("nullableT", null as Int?)
+                attr("nullableFlowOfT", flowOf(null as Int?))
+                attr("nullableBoolean", null as Boolean?, "nullableBoolean")
+                attr("nullableFlowOfBoolean", null as Boolean?, "nullableFlowOfBoolean")
+            }
+        }
+
+        delay(200)
+        val element = document.getElementById(testId).unsafeCast<HTMLDivElement>()
+
+        assertFalse(element.hasAttribute("nullableString"))
+        assertFalse(element.hasAttribute("nullableFlowOfString"))
+        assertFalse(element.hasAttribute("nullableT"))
+        assertFalse(element.hasAttribute("nullableFlowOfT"))
+        assertFalse(element.hasAttribute("nullableBoolean"))
+        assertFalse(element.hasAttribute("nullableFlowOfBoolean"))
+    }
 }
