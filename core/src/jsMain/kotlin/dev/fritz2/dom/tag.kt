@@ -377,6 +377,16 @@ open class Tag<out E : Element>(
     }
 
     /**
+     * Sets an attribute only if its [value] is not null.
+     *
+     * @param name to use
+     * @param value to use
+     */
+    fun attr(name: String, value: String?) {
+        value?.let { domNode.setAttribute(name, it) }
+    }
+
+    /**
      * Sets an attribute.
      *
      * @param name to use
@@ -387,13 +397,26 @@ open class Tag<out E : Element>(
     }
 
     /**
+     * Sets an attribute only for all none null values of the flow.
+     *
+     * @param name to use
+     * @param value to use
+     */
+    fun attr(name: String, value: Flow<String?>) {
+        mountSingle(job, value) { v, _ ->
+            if (v != null) attr(name, v)
+            else domNode.removeAttribute(name)
+        }
+    }
+
+    /**
      * Sets an attribute.
      *
      * @param name to use
      * @param value to use
      */
     fun <T> attr(name: String, value: T) {
-        domNode.setAttribute(name, value.toString())
+        value?.let { domNode.setAttribute(name, it.toString()) }
     }
 
     /**
@@ -403,11 +426,14 @@ open class Tag<out E : Element>(
      * @param value to use
      */
     fun <T> attr(name: String, value: Flow<T>) {
-        mountSingle(job, value.map { it.toString() }) { v, _ -> attr(name, v) }
+        mountSingle(job, value.map { it?.toString() }) { v, _ ->
+            if (v != null) attr(name, v)
+            else domNode.removeAttribute(name)
+        }
     }
 
     /**
-     * Sets an attribute when [value] is true other removes it.
+     * Sets an attribute when [value] is true otherwise removes it.
      *
      * @param name to use
      * @param value for decision
@@ -419,13 +445,38 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * Sets an attribute when [value] is true other removes it.
+     * Sets an attribute when [value] is true otherwise removes it.
+     *
+     * @param name to use
+     * @param value for decision
+     * @param trueValue value to use if attribute is set (default "")
+     */
+    fun attr(name: String, value: Boolean?, trueValue: String = "") {
+        value?.let {
+            if (it) domNode.setAttribute(name, trueValue)
+            else domNode.removeAttribute(name)
+        }
+    }
+
+    /**
+     * Sets an attribute when [value] is true otherwise removes it.
      *
      * @param name to use
      * @param value for decision
      * @param trueValue value to use if attribute is set (default "")
      */
     fun attr(name: String, value: Flow<Boolean>, trueValue: String = "") {
+        mountSingle(job, value) { v, _ -> attr(name, v, trueValue) }
+    }
+
+    /**
+     * Sets an attribute when [value] is true otherwise removes it.
+     *
+     * @param name to use
+     * @param value for decision
+     * @param trueValue value to use if attribute is set (default "")
+     */
+    fun attr(name: String, value: Flow<Boolean?>, trueValue: String = "") {
         mountSingle(job, value) { v, _ -> attr(name, v, trueValue) }
     }
 
@@ -602,7 +653,7 @@ open class Tag<out E : Element>(
      * Sets all scope-entries as data-attributes to the element.
      */
     fun Scope.asDataAttr() {
-        for((k, v) in this) {
+        for ((k, v) in this) {
             attr("data-${k.name}", v.toString())
         }
     }
@@ -613,7 +664,7 @@ open class Tag<out E : Element>(
      *
      * @param key key of scope-entry to look for in scope
      */
-    fun <T: Any> Scope.asDataAttr(key: Scope.Key<T>) {
+    fun <T : Any> Scope.asDataAttr(key: Scope.Key<T>) {
         this[key]?.let {
             attr("data-${key.name}", it.toString())
         }
