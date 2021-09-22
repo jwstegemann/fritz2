@@ -67,7 +67,7 @@ open class Tag<out E : Element>(
                     job, parent.scope, parent.domNode.unsafeCast<HTMLElement>()
                 ) {
                     override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
-                        parent.register(element, content)
+                        content(element)
                         add(element.unsafeCast<WithDomNode<HTMLElement>>())
                         return element
                     }
@@ -88,7 +88,8 @@ open class Tag<out E : Element>(
                     if (alreadyRegistered) {
                         throw MultipleRootElementsException("You can have only one root-tag per html-context!")
                     } else {
-                        parent.register(element, content)
+                        content(element)
+                        //parent.register(element, content)
                         alreadyRegistered = true
                         return element
                     }
