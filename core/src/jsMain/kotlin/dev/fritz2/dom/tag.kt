@@ -45,7 +45,7 @@ annotation class HtmlTagMarker
  */
 @HtmlTagMarker
 open class Tag<out E : Element>(
-    tagName: String,
+    private val tagName: String,
     val id: String? = null,
     val baseClass: String? = null,
     override val job: Job,
@@ -62,39 +62,67 @@ open class Tag<out E : Element>(
             content: RenderContext.() -> Unit
         ): List<WithDomNode<HTMLElement>> =
             buildList {
-                content(object : RenderContext(
-                    "", parent.id, parent.baseClass,
-                    job, parent.scope, parent.domNode.unsafeCast<HTMLElement>()
-                ) {
-                    override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
-                        content(element)
-                        add(element.unsafeCast<WithDomNode<HTMLElement>>())
-                        return element
+                // use parent as context if it is another mount point, or create a new RenderContext if it is a regular Tag
+                val targetContext = if (parent.tagName.isNotEmpty()) {
+                    object : RenderContext(
+                        "", parent.id, parent.baseClass,
+                        job, parent.scope, parent.domNode.unsafeCast<HTMLElement>()
+                    ) {
+                        override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
+                            content(element)
+                            add(element.unsafeCast<WithDomNode<HTMLElement>>())
+                            return element
+                        }
                     }
-                })
+                } else parent
+
+                content(targetContext)
             }
 
         private inline fun registerSingle(
             job: Job, parent: RenderContext,
             content: RenderContext.() -> RenderContext
-        ): WithDomNode<HTMLElement> =
-            content(object : RenderContext(
-                "", parent.id, parent.baseClass,
-                job, parent.scope, parent.domNode.unsafeCast<HTMLElement>()
-            ) {
-                var alreadyRegistered: Boolean = false
+        ): WithDomNode<HTMLElement> {
+            // use parent as context if it is another mount point, or create a new RenderContext if it is a regular Tag
+            val targetContext = if (parent.tagName.isNotEmpty()) {
+                object : RenderContext(
+                    "", parent.id, parent.baseClass,
+                    job, parent.scope, parent.domNode.unsafeCast<HTMLElement>()
+                ) {
+                    var alreadyRegistered: Boolean = false
 
-                override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
-                    if (alreadyRegistered) {
-                        throw MultipleRootElementsException("You can have only one root-tag per html-context!")
-                    } else {
-                        content(element)
-                        //parent.register(element, content)
-                        alreadyRegistered = true
-                        return element
+                    override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
+                        if (alreadyRegistered) {
+                            throw MultipleRootElementsException("You can have only one root-tag per html-context!")
+                        } else {
+                            content(element)
+                            alreadyRegistered = true
+                            return element
+                        }
                     }
                 }
-            })
+            } else parent
+
+            return content(targetContext)
+        }
+
+//            content(object : RenderContext(
+//                "", parent.id, parent.baseClass,
+//                job, parent.scope, parent.domNode.unsafeCast<HTMLElement>()
+//            ) {
+//                var alreadyRegistered: Boolean = false
+//
+//                override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
+//                    if (alreadyRegistered) {
+//                        throw MultipleRootElementsException("You can have only one root-tag per html-context!")
+//                    } else {
+//                        content(element)
+////                        parent.register(element, content)
+//                        alreadyRegistered = true
+//                        return element
+//                    }
+//                }
+//            })
 
         /**
          * Accumulates a [Pair] and a [List] to a new [Pair] of [List]s
@@ -128,12 +156,12 @@ open class Tag<out E : Element>(
      */
     fun <V> Flow<V>.render(content: RenderContext.(V) -> Unit) {
         val newJob = Job(job)
-        mountDomNodeList(job, domNode, this.map { data ->
+        mountDomNodeList(job, domNode, this.onEach { console.log("before map: $it\n") }.map { data ->
             newJob.cancelChildren()
             registerMulti(newJob, this@Tag.unsafeCast<RenderContext>()) {
                 content(data)
             }
-        })
+        }.onEach { console.log("new Value: ${it.map { it.domNode.textContent }}\n") })
     }
 
     /**
