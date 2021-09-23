@@ -106,24 +106,6 @@ open class Tag<out E : Element>(
             return content(targetContext)
         }
 
-//            content(object : RenderContext(
-//                "", parent.id, parent.baseClass,
-//                job, parent.scope, parent.domNode.unsafeCast<HTMLElement>()
-//            ) {
-//                var alreadyRegistered: Boolean = false
-//
-//                override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
-//                    if (alreadyRegistered) {
-//                        throw MultipleRootElementsException("You can have only one root-tag per html-context!")
-//                    } else {
-//                        content(element)
-////                        parent.register(element, content)
-//                        alreadyRegistered = true
-//                        return element
-//                    }
-//                }
-//            })
-
         /**
          * Accumulates a [Pair] and a [List] to a new [Pair] of [List]s
          *
