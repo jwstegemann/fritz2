@@ -156,12 +156,12 @@ open class Tag<out E : Element>(
      */
     fun <V> Flow<V>.render(content: RenderContext.(V) -> Unit) {
         val newJob = Job(job)
-        mountDomNodeList(job, domNode, this.onEach { console.log("before map: $it\n") }.map { data ->
+        mountDomNodeList(job, domNode, this.map { data ->
             newJob.cancelChildren()
             registerMulti(newJob, this@Tag.unsafeCast<RenderContext>()) {
                 content(data)
             }
-        }.onEach { console.log("new Value: ${it.map { it.domNode.textContent }}\n") })
+        })
     }
 
     /**
