@@ -2,11 +2,74 @@ package dev.fritz2.dom
 
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.mountSingle
+import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Scope
+import dev.fritz2.dom.html.TagContext
+import dev.fritz2.lenses.LensException
 import kotlinx.browser.document
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.dom.clear
 import org.w3c.dom.Comment
+import org.w3c.dom.Element
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.Node
+
+//TODO: collect all registered children in a documentfragment first?
+class MountPoint(
+    override val job: Job,
+    override val scope: Scope,
+) : Tag<HTMLDivElement>(job = job, scope = scope, tagName = "div", baseClass = "contents")
+
+@OptIn(InternalCoroutinesApi::class)
+inline fun <E : Element, T : Tag<E>, V> TagContext.mountPoint(
+    parentJob: Job,
+    target: Tag<E>,
+    upstream: Flow<V>,
+    crossinline render: suspend RenderContext.(V) -> Unit
+): MountPoint {
+    val newJob = Job(parentJob)
+    return register(MountPoint(job = newJob, scope = scope)) { mp ->
+        (MainScope() + parentJob).launch(start = CoroutineStart.UNDISPATCHED) {
+            upstream.onEach { data ->
+                newJob.cancelChildren()
+                //FIXME: find faster way to do so
+                mp.domNode.clear()
+                mp.render(data)
+            }.catch {
+                when (it) {
+                    is LensException -> {
+                    }
+                    else -> console.error(it)
+                }
+                // do not do anything here but canceling the coroutine, because this is an expected
+                // behaviour when dealing with filtering, renderEach and idProvider
+                cancel("error mounting", it)
+            }.collect()
+        }
+    }
+}
+
+
+//class Fragment(
+//    override val job: Job,
+//    override val scope: Scope,
+//) : TagContext, WithJob, WithDomNode<DocumentFragment>, WithScope {
+//
+//    override val domNode: DocumentFragment = document.createDocumentFragment()
+//
+//    //TODO: move from tag to TagContext
+//    override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+//        content(element)
+//        domNode.appendChild(element.domNode)
+//        return element
+//    }
+//}
+
+//fun TagContext.fragment(newJob: Job, content: TagContext.() -> Unit) = Fragment(newJob, scope).also(content)
 
 /**
  * Mounts the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.

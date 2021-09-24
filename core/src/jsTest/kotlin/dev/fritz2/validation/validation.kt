@@ -71,8 +71,8 @@ class ValidationJSTests {
         delay(100)
         val divData = document.getElementById(idData) as HTMLDivElement
         val divMessages = document.getElementById(idMessages) as HTMLDivElement
-        val findMessages = document.getElementById(idFind) as HTMLDivElement
-        val filterMessages = document.getElementById(idFilter) as HTMLDivElement
+        val findMessages = document.getElementById(idFind)?.firstElementChild as HTMLDivElement
+        val filterMessages = document.getElementById(idFilter)?.firstElementChild as HTMLDivElement
 
         assertEquals(carName, divData.textContent, "initial car name is wrong")
         assertEquals(0, divMessages.childElementCount, "there are messages")

@@ -77,7 +77,7 @@ class MountTests {
         delay(250)
 
         val outerElement = document.getElementById(outer) as HTMLDivElement
-        assertEquals(inner1, outerElement.firstElementChild?.id, "first element id does not match")
+        assertEquals(inner1, outerElement.firstElementChild?.firstElementChild?.id, "first element id does not match")
         assertEquals(inner2, outerElement.lastElementChild?.id, "last element id does not match")
     }
 

@@ -136,15 +136,20 @@ open class Tag<out E : Element>(
      * @receiver [Flow] containing the data
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    fun <V> Flow<V>.render(content: RenderContext.(V) -> Unit) {
-        val newJob = Job(job)
-        mountDomNodeList(job, domNode, this.map { data ->
-            newJob.cancelChildren()
-            registerMulti(newJob, this@Tag.unsafeCast<RenderContext>()) {
-                content(data)
-            }
-        })
-    }
+//    fun <V> Flow<V>.render(content: RenderContext.(V) -> Unit) {
+//        console.error("################## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n\n")
+//        val newJob = Job(job)
+//        mountDomNodeList(job, domNode, this.map { data ->
+//            newJob.cancelChildren()
+//            registerMulti(newJob, this@Tag.unsafeCast<RenderContext>()) {
+//                content(data)
+//            }
+//        })
+//    }
+
+    inline fun <V> Flow<V>.render(crossinline content: suspend RenderContext.(V) -> Unit) =
+        mountPoint(job, this@Tag, this, content)
+
 
     /**
      * Renders the data of a [Flow] as [Tag]s to the DOM.

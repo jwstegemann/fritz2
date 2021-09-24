@@ -137,19 +137,19 @@ class TagTests {
         val outer = document.getElementById(outerId) as HTMLDivElement
         fun inner() = document.getElementById(innerId) as HTMLDivElement
 
-        assertEquals(0, outer.childElementCount, "outer element has a children")
+        assertEquals(0, outer.firstElementChild?.childElementCount, "outer element has a children")
 
         for(i in 0..2) {
             switch.update(true)
             delay(200)
 
-            assertEquals(1, outer.childElementCount, "[$i] outer element has no children")
+            assertEquals(1, outer.firstElementChild?.childElementCount, "[$i] outer element has no children")
             assertEquals("Test", inner().textContent, "[$i] inner has no text")
 
             switch.update(false)
             delay(200)
 
-            assertEquals(0, outer.childElementCount, "[$i] outer element has no children")
+            assertEquals(0, outer.firstElementChild?.childElementCount, "[$i] outer element has no children")
         }
     }
 
