@@ -3,8 +3,6 @@ package dev.fritz2.utils
 import dev.fritz2.binding.Patch
 import dev.fritz2.lenses.IdProvider
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.flow
 
 /**
  * Implementation of Myer's diff algorithm on two [List]s creating a [Flow] of [Patch]es.
