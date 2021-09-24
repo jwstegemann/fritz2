@@ -112,7 +112,7 @@ open class Tag<out E : Element>(
          * @param accumulator [Pair] of two [List]s
          * @param newValue new [List] to accumulate
          */
-        private fun <T> accumulate(
+        fun <T> accumulate(
             accumulator: Pair<List<T>, List<T>>,
             newValue: List<T>
         ): Pair<List<T>, List<T>> = Pair(accumulator.second, newValue)
@@ -148,6 +148,9 @@ open class Tag<out E : Element>(
 //    }
 
     inline fun <V> Flow<V>.render(crossinline content: suspend RenderContext.(V) -> Unit) =
+        mountPoint(job, this@Tag, this, content)
+
+    fun <V> Flow<List<V>>.renderEach2(content: TagContext.(V) -> RenderContext) =
         mountPoint(job, this@Tag, this, content)
 
 

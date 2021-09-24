@@ -6,17 +6,32 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import dev.fritz2.dom.html.TagContext
 import dev.fritz2.lenses.LensException
+import dev.fritz2.utils.Myer
 import kotlinx.browser.document
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.dom.clear
 import org.w3c.dom.Comment
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.Node
+
+
+fun <T> mount(parentJob: Job, upstream: Flow<T>, collect: suspend (T) -> Unit) {
+    (MainScope() + parentJob).launch(start = CoroutineStart.UNDISPATCHED) {
+        upstream.onEach(collect).catch {
+            when (it) {
+                is LensException -> {
+                }
+                else -> console.error(it)
+            }
+            // do not do anything here but canceling the coroutine, because this is an expected
+            // behaviour when dealing with filtering, renderEach and idProvider
+            cancel("error mounting", it)
+        }.collect()
+    }
+}
+
 
 //TODO: collect all registered children in a documentfragment first?
 class MountPoint(
@@ -33,22 +48,54 @@ inline fun <E : Element, T : Tag<E>, V> TagContext.mountPoint(
 ): MountPoint {
     val newJob = Job(parentJob)
     return register(MountPoint(job = newJob, scope = scope)) { mp ->
-        (MainScope() + parentJob).launch(start = CoroutineStart.UNDISPATCHED) {
-            upstream.onEach { data ->
-                newJob.cancelChildren()
-                //FIXME: find faster way to do so
-                mp.domNode.clear()
-                mp.render(data)
-            }.catch {
-                when (it) {
-                    is LensException -> {
+        mount(parentJob, upstream) { data ->
+            newJob.cancelChildren()
+            mp.domNode.clear()
+            mp.render(data)
+        }
+    }
+}
+
+
+class DummyContext(override val job: Job, override val scope: Scope) : TagContext {
+    override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+        content(element)
+        return element
+    }
+}
+
+//seq
+inline fun <E : Element, T : Tag<E>, V> TagContext.mountPoint(
+    parentJob: Job,
+    target: Tag<E>,
+    upstream: Flow<List<V>>,
+
+    crossinline render: TagContext.(V) -> RenderContext
+): MountPoint {
+    return register(MountPoint(job = job, scope = scope)) { mp ->
+        val jobs = mutableMapOf<Node, Job>()
+        val patchesFlow = upstream.scan(Pair(emptyList(), emptyList()), Tag.Companion::accumulate).map { (old, new) ->
+            Myer.diff(old, new).map { patch ->
+                patch.map(job) { value, newJob ->
+                    render(DummyContext(newJob, scope), value).also {
+                        jobs[it.domNode] = newJob
                     }
-                    else -> console.error(it)
                 }
-                // do not do anything here but canceling the coroutine, because this is an expected
-                // behaviour when dealing with filtering, renderEach and idProvider
-                cancel("error mounting", it)
-            }.collect()
+            }
+        }
+        mount(parentJob, patchesFlow) { patches ->
+            patches.forEach { patch ->
+                when (patch) {
+                    is Patch.Insert -> mp.domNode.insert(patch.element, patch.index)
+                    is Patch.InsertMany -> mp.domNode.insertMany(patch.elements, patch.index)
+                    is Patch.Delete -> mp.domNode.delete(patch.start, patch.count) { node ->
+                        val job = jobs.remove(node)
+                        if (job != null) job.cancelChildren()
+                        else console.error("could not cancel renderEach-jobs!")
+                    }
+                    is Patch.Move -> mp.domNode.move(patch.from, patch.to)
+                }
+            }
         }
     }
 }
@@ -202,7 +249,7 @@ private fun <N : Node> N.insertOrAppend(child: Node, index: Int) {
  * @param element from type [WithDomNode]
  * @param index place to insert or append
  */
-private fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrAppend(element.domNode, index)
+fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrAppend(element.domNode, index)
 
 /**
  * Inserts a [List] of elements to the DOM.
@@ -211,7 +258,7 @@ private fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = ins
  * @param elements [List] of [WithDomNode]s elements to insert
  * @param index place to insert or append
  */
-private fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
+fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
     if (index == childNodes.length) {
         for (child in elements.reversed()) appendChild(child.domNode)
     } else {
@@ -230,7 +277,7 @@ private fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) 
  * @param start position for deleting
  * @param count of elements to delete
  */
-private fun <N : Node> N.delete(start: Int, count: Int, cancelJob: (Node) -> Unit) {
+fun <N : Node> N.delete(start: Int, count: Int, cancelJob: (Node) -> Unit) {
     var itemToDelete = childNodes.item(start)
     repeat(count) {
         itemToDelete?.let {
@@ -248,7 +295,7 @@ private fun <N : Node> N.delete(start: Int, count: Int, cancelJob: (Node) -> Uni
  * @param from position index
  * @param to position index
  */
-private fun <N : Node> N.move(from: Int, to: Int) {
+fun <N : Node> N.move(from: Int, to: Int) {
     val itemToMove = childNodes.item(from)
     if (itemToMove != null) insertOrAppend(itemToMove, to)
 }
