@@ -70,7 +70,7 @@ open class Tag<out E : Element>(
     inline fun <V> Flow<List<V>>.renderEach(
         noinline idProvider: IdProvider<V, *>? = null,
         into: RenderContext? = null,
-        crossinline content: TagContext.(V) -> RenderContext
+        crossinline content: RenderContext.(V) -> RenderContext
     ) =
         mount(into, this, idProvider, content)
 
@@ -86,7 +86,7 @@ open class Tag<out E : Element>(
     inline fun <V> Store<List<V>>.renderEach(
         noinline idProvider: IdProvider<V, *>,
         into: RenderContext? = null,
-        crossinline content: TagContext.(Store<V>) -> RenderContext
+        crossinline content: RenderContext.(Store<V>) -> RenderContext
     ) =
         mount(into, this, idProvider, content)
 
@@ -99,7 +99,7 @@ open class Tag<out E : Element>(
      */
     inline fun <V> Store<List<V>>.renderEach(
         into: RenderContext? = null,
-        crossinline content: TagContext.(Store<V>) -> RenderContext
+        crossinline content: RenderContext.(Store<V>) -> RenderContext
     ) =
         mount(into, this, content)
 

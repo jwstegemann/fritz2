@@ -9,6 +9,7 @@ import dev.fritz2.dom.html.Scope
 import dev.fritz2.dom.html.TagContext
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.utils.Myer
+import kotlinx.browser.window
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
@@ -30,10 +31,15 @@ class ProxyContext<T : HTMLElement>(
     override val job: Job,
     override val scope: Scope,
     private val proxee: WithDomNode<T>
-) : RenderContext(job = job, scope = scope, domNode = proxee.domNode, tagName = "") {
-}
+) : RenderContext(job = job, scope = scope, domNode = proxee.domNode, tagName = "")
 
-class DummyContext(override val job: Job, override val scope: Scope) : TagContext {
+
+internal val dummyDom = window.document.createElement("div") as HTMLElement
+
+class DummyContext(
+    override val job: Job,
+    override val scope: Scope,
+) : RenderContext(job = job, scope = scope, domNode = dummyDom, tagName = "") {
     override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
         content(element)
         return element
@@ -83,7 +89,7 @@ inline fun <V> TagContext.mount(
     target: RenderContext?,
     upstream: Flow<List<V>>,
     noinline idProvider: IdProvider<V, *>?,
-    crossinline content: TagContext.(V) -> RenderContext
+    crossinline content: RenderContext.(V) -> RenderContext
 ): RenderContext = mountPatches(target, upstream) { upstream, jobs ->
     upstream.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
         val diff = if (idProvider != null) Myer.diff(old, new, idProvider) else Myer.diff(old, new)
@@ -101,7 +107,7 @@ inline fun <V> TagContext.mount(
     target: RenderContext?,
     store: Store<List<V>>,
     noinline idProvider: IdProvider<V, *>,
-    crossinline content: TagContext.(Store<V>) -> RenderContext
+    crossinline content: RenderContext.(Store<V>) -> RenderContext
 ): RenderContext = mount(target, store.data, idProvider) { value ->
     content(store.sub(value, idProvider))
 }
@@ -110,7 +116,7 @@ inline fun <V> TagContext.mount(
 inline fun <V> TagContext.mount(
     target: RenderContext?,
     store: Store<List<V>>,
-    crossinline content: TagContext.(Store<V>) -> RenderContext
+    crossinline content: RenderContext.(Store<V>) -> RenderContext
 ): RenderContext = mountPatches(target, store.data) { upstream, jobs ->
     upstream.map { it.withIndex().toList() }.eachIndex().map { patch ->
         listOf(patch.map(job) { value, newJob ->
