@@ -166,3 +166,11 @@ fun <X : Element> DomListener<KeyboardEvent, X>.key(): Flow<Key> = events.map { 
  * Gives you the pressed key as [Key] from a [KeyboardEvent].
  */
 fun WindowListener<KeyboardEvent>.key(): Flow<Key> = events.map { Key(it) }
+
+/**
+ * Merges mutiple [DomListener] like the analog method on [Flow]s
+ *
+ * @param listener the [DomListener] to merge
+ */
+fun merge(vararg listener: DomListener<*, *>): Flow<Unit> =
+    kotlinx.coroutines.flow.merge(*listener.map { it.events }.toTypedArray()).map {}
