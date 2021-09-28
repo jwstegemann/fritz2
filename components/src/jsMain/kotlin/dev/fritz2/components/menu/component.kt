@@ -15,6 +15,8 @@ import dev.fritz2.styling.theme.IconDefinition
 import dev.fritz2.styling.theme.Icons
 import dev.fritz2.styling.theme.MenuStyles
 import dev.fritz2.styling.theme.Theme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 
@@ -55,7 +57,7 @@ import org.w3c.dom.HTMLButtonElement
  */
 open class MenuComponent(scope: Scope) : Component<Unit>, MenuContext() {
 
-    val styles: MenuStyles = if(scope[AppFrameScope.Navigation] == true) Theme().appFrame.menu else Theme().menu
+    val styles: MenuStyles = if (scope[AppFrameScope.Navigation] == true) Theme().appFrame.menu else Theme().menu
 
     override fun render(
         context: RenderContext,
@@ -136,7 +138,16 @@ open class SubMenuComponent(
         val hidden = staticStyle("hidden", "display: none")
     }
 
-    val icon = ComponentProperty<(Icons.() -> IconDefinition)?>(null)
+    fun icon(def: Icons.() -> IconDefinition) {
+        icon = flowOf(def(Theme().icons))
+    }
+
+    fun icon(def: Flow<IconDefinition>) {
+        icon = def
+    }
+
+    var icon: Flow<IconDefinition>? = null
+
     val text = ComponentProperty<String?>(null)
 
     private val visible = value ?: storeOf(false)
@@ -144,8 +155,8 @@ open class SubMenuComponent(
     override fun render(context: RenderContext, styles: MenuStyles) {
         context.apply {
             button(styles.entry + this@SubMenuComponent.styling) {
-                this@SubMenuComponent.icon.value?.let {
-                    icon(styles.icon) { def(it(Theme().icons)) }
+                this@SubMenuComponent.icon?.render {
+                     icon(styles.icon) { def(it) }
                 }
                 this@SubMenuComponent.text.value?.let { span { +it } }
                 disabled(this@SubMenuComponent.disabled.values)
