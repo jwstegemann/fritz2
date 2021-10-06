@@ -9,9 +9,11 @@ import kotlinx.coroutines.flow.launchIn
 /**
  * If a data-[Flow] is never mounted, use this method to start the updating of derived values.
  */
+@Deprecated("use handledBy function with lambda expression instead of onEach{}.watch().")
 fun <T> Flow<T>.watch(scope: CoroutineScope = MainScope()) { this.catch {}.launchIn(scope) }
 
 /**
  * If a [Store]'s data-[Flow] is never mounted, use this method to start the updating of derived values.
  */
+@Deprecated("use handledBy function with lambda expression instead of onEach{}.watch().")
 fun <T> Store<T>.watch(scope: CoroutineScope = MainScope()): Store<T> = this.also { data.catch {}.launchIn(scope) }
