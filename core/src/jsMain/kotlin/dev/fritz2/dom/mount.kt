@@ -4,6 +4,7 @@ import dev.fritz2.binding.Patch
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.mountSimple
 import dev.fritz2.binding.sub
+import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import dev.fritz2.dom.html.TagContext
@@ -16,7 +17,6 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.*
 import kotlinx.dom.clear
 import org.w3c.dom.Element
-import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import kotlin.collections.set
@@ -25,7 +25,7 @@ import kotlin.collections.set
 class MountContext(
     override val job: Job,
     override val scope: Scope,
-) : Tag<HTMLDivElement>(job = job, scope = scope, tagName = "div", baseClass = "contents")
+) : Div(job = job, scope = scope, baseClass = "mount-point")
 
 class ProxyContext<T : HTMLElement>(
     override val job: Job,
