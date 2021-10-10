@@ -35,7 +35,7 @@ class MountTests {
 
 
         val done = CompletableDeferred<Boolean>()
-        checkSingleFlow(done, store.data) { _, value, _ ->
+        checkSingleFlow(done, store.data) { _, value ->
             assertTrue(values.contains(value))
             value == values.last()
         }

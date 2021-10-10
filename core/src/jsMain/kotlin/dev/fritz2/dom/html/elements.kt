@@ -447,7 +447,7 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job, scope:
     }
 
     fun checked(value: Flow<Boolean>, trueValue: String = "") {
-        mountSingle(job, value) { v, _ -> checked(v, trueValue) }
+        mountSimple(job, value) { v -> checked(v, trueValue) }
     }
 
     fun dirName(value: String) = attr("dirName", value)
@@ -532,7 +532,7 @@ open class Input(id: String? = null, baseClass: String? = null, job: Job, scope:
     }
 
     fun value(value: Flow<String>) {
-        mountSingle(job, value) { v, _ -> value(v) }
+        mountSimple(job, value) { v -> value(v) }
     }
 
     fun width(value: Int) = attr("width", value)
@@ -610,7 +610,7 @@ open class Audio(id: String? = null, baseClass: String? = null, job: Job, scope:
     }
 
     fun playbackRate(value: Flow<Double>) {
-        mountSingle(job, value) { v, _ -> playbackRate(v) }
+        mountSimple(job, value) { v -> playbackRate(v) }
     }
 
     fun autoplay(value: Boolean, trueValue: String = "") = attr("autoplay", value, trueValue)
@@ -636,7 +636,7 @@ open class Audio(id: String? = null, baseClass: String? = null, job: Job, scope:
     }
 
     fun muted(value: Flow<Boolean>, trueValue: String = "") {
-        mountSingle(job, value) { v, _ -> muted(v, trueValue) }
+        mountSimple(job, value) { v -> muted(v, trueValue) }
     }
 }
 
@@ -678,7 +678,7 @@ open class Video(id: String? = null, baseClass: String? = null, job: Job, scope:
     }
 
     fun playbackRate(value: Flow<Double>) {
-        mountSingle(job, value) { v, _ -> playbackRate(v) }
+        mountSimple(job, value) { v -> playbackRate(v) }
     }
 
     fun autoplay(value: Boolean, trueValue: String = "") = attr("autoplay", value, trueValue)
@@ -704,7 +704,7 @@ open class Video(id: String? = null, baseClass: String? = null, job: Job, scope:
     }
 
     fun muted(value: Flow<Boolean>, trueValue: String = "") {
-        mountSingle(job, value) { v, _ -> muted(v, trueValue) }
+        mountSimple(job, value) { v -> muted(v, trueValue) }
     }
 }
 
@@ -852,7 +852,7 @@ open class Option(id: String? = null, baseClass: String? = null, job: Job, scope
     }
 
     fun selected(value: Flow<Boolean>, trueValue: String = "") {
-        mountSingle(job, value) { v, _ -> selected(v, trueValue) }
+        mountSimple(job, value) { v -> selected(v, trueValue) }
     }
 
     fun value(value: String) = attr("value", value)
@@ -879,7 +879,7 @@ open class Output(id: String? = null, baseClass: String? = null, job: Job, scope
     }
 
     fun value(value: Flow<String>) {
-        mountSingle(job, value) { v, _ -> value(v) }
+        mountSimple(job, value) { v -> value(v) }
     }
 }
 
@@ -1202,7 +1202,7 @@ open class TextArea(id: String? = null, baseClass: String? = null, job: Job, sco
     }
 
     fun value(value: Flow<String>) {
-        mountSingle(job, value) { v, _ -> value(v) }
+        mountSimple(job, value) { v -> value(v) }
     }
 }
 

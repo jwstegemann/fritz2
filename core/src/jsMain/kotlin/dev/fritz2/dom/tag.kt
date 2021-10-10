@@ -2,7 +2,7 @@ package dev.fritz2.dom
 
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.Store
-import dev.fritz2.binding.mountSingle
+import dev.fritz2.binding.mountSimple
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import dev.fritz2.dom.html.TagContext
@@ -131,7 +131,7 @@ open class Tag<out E : Element>(
      * @param value to use
      */
     fun attr(name: String, value: Flow<String>) {
-        mountSingle(job, value) { v, _ -> attr(name, v) }
+        mountSimple(job, value) { v -> attr(name, v) }
     }
 
     /**
@@ -141,7 +141,7 @@ open class Tag<out E : Element>(
      * @param value to use
      */
     fun attr(name: String, value: Flow<String?>) {
-        mountSingle(job, value) { v, _ ->
+        mountSimple(job, value) { v ->
             if (v != null) attr(name, v)
             else domNode.removeAttribute(name)
         }
@@ -164,7 +164,7 @@ open class Tag<out E : Element>(
      * @param value to use
      */
     fun <T> attr(name: String, value: Flow<T>) {
-        mountSingle(job, value.map { it?.toString() }) { v, _ ->
+        mountSimple(job, value.map { it?.toString() }) { v ->
             if (v != null) attr(name, v)
             else domNode.removeAttribute(name)
         }
@@ -204,7 +204,7 @@ open class Tag<out E : Element>(
      * @param trueValue value to use if attribute is set (default "")
      */
     fun attr(name: String, value: Flow<Boolean>, trueValue: String = "") {
-        mountSingle(job, value) { v, _ -> attr(name, v, trueValue) }
+        mountSimple(job, value) { v -> attr(name, v, trueValue) }
     }
 
     /**
@@ -215,7 +215,7 @@ open class Tag<out E : Element>(
      * @param trueValue value to use if attribute is set (default "")
      */
     fun attr(name: String, value: Flow<Boolean?>, trueValue: String = "") {
-        mountSingle(job, value) { v, _ -> attr(name, v, trueValue) }
+        mountSimple(job, value) { v -> attr(name, v, trueValue) }
     }
 
     /**
@@ -239,7 +239,7 @@ open class Tag<out E : Element>(
      * @param separator [String] for separation
      */
     fun attr(name: String, values: Flow<List<String>>, separator: String = " ") {
-        mountSingle(job, values) { v, _ -> attr(name, v, separator) }
+        mountSimple(job, values) { v -> attr(name, v, separator) }
     }
 
     /**
@@ -265,7 +265,7 @@ open class Tag<out E : Element>(
      * @param separator [String] for separation
      */
     fun attr(name: String, values: Flow<Map<String, Boolean>>, separator: String = " ") {
-        mountSingle(job, values) { v, _ -> attr(name, v, separator) }
+        mountSimple(job, values) { v -> attr(name, v, separator) }
     }
 
     private fun setClassName(className: String): String =
