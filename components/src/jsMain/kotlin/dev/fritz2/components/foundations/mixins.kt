@@ -8,6 +8,7 @@ import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
@@ -474,7 +475,7 @@ interface TooltipProperties {
         styling: BasicParams.() -> Unit = {},
         text: String? = null,
         baseClass: StyleClass = StyleClass.None,
-        id: String = "fc2-tooltip-${randomId()}",
+        id: String = "fc2-tooltip-${Id.next()}",
         prefix: String = "tooltip",
         build: TooltipComponent.() -> Unit
     ) {

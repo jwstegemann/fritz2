@@ -11,7 +11,6 @@ import dev.fritz2.dom.html.Scope
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.params.ColorProperty
-import dev.fritz2.styling.params.plus
 import dev.fritz2.styling.theme.Colors
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.*
@@ -150,7 +149,7 @@ abstract class ToastComponentBase : ManagedComponent<Unit>,
                """
         )
 
-        private val globalId = "f2c-toasts-${randomId()}"
+        private val globalId = "f2c-toasts-${Id.next()}"
         private val job = Job()
         private val scope = Scope()
 
