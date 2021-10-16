@@ -25,13 +25,21 @@ import kotlin.collections.set
 class MountContext(
     override val job: Job,
     override val scope: Scope,
-) : Div(job = job, scope = scope, baseClass = "mount-point")
+) : Div(job = job, scope = scope, baseClass = "mount-point") {
+    init {
+        attr("data-mount-point", true)
+    }
+}
 
 class ProxyContext<T : HTMLElement>(
     override val job: Job,
     override val scope: Scope,
     private val proxee: WithDomNode<T>
-) : RenderContext(job = job, scope = scope, domNode = proxee.domNode, tagName = "")
+) : RenderContext(job = job, scope = scope, domNode = proxee.domNode, tagName = "") {
+    init {
+        attr("data-mount-point", true)
+    }
+}
 
 
 internal val dummyDom = window.document.createElement("div") as HTMLElement
