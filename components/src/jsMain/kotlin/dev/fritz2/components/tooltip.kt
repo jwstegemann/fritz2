@@ -1,8 +1,8 @@
 package dev.fritz2.components
 
-import dev.fritz2.components.foundations.randomId
 import dev.fritz2.components.tooltip.TooltipComponent
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.Style
@@ -45,7 +45,7 @@ fun RenderContext.tooltip(
     styling: BasicParams.() -> Unit = {},
     text: String? = null,
     baseClass: StyleClass = StyleClass.None,
-    id: String = "fc2-tooltip-${randomId()}",
+    id: String = "fc2-tooltip-${Id.next()}",
     prefix: String = "tooltip",
     build: TooltipComponent.() -> Unit
 ) = TooltipComponent(text).apply(build).render(this, styling, baseClass, id, prefix)

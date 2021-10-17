@@ -1,8 +1,8 @@
 package dev.fritz2.components
 
-import dev.fritz2.components.foundations.randomId
 import dev.fritz2.components.popup.PopupComponent
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
 
@@ -39,7 +39,7 @@ import dev.fritz2.styling.params.BasicParams
 fun RenderContext.popup(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
-    id: String = "fc2-popup-${randomId()}",
+    id: String = "fc2-popup-${Id.next()}",
     prefix: String = "popup",
     build: PopupComponent.() -> Unit
 ) = PopupComponent().apply(build).render(this, styling, baseClass, id, prefix)

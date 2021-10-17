@@ -9,6 +9,7 @@ import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
+import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
@@ -161,7 +162,7 @@ open class ModalComponent :
     companion object {
         private val stack = ModalsStack()
         val overlay = storeOf<Overlay>(DefaultOverlay())
-        private val globalId = "f2c-modals-${randomId()}"
+        private val globalId = "f2c-modals-${Id.next()}"
         private val job = Job()
         private val scope = Scope()
         private val myStaticStyle = staticStyle("disableOverflowForModal", "overflow:hidden !important;")

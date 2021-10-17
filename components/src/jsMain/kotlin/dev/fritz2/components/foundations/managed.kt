@@ -108,6 +108,7 @@ interface ManagedComponent<T> {
 /**
  * Creates a random id based on random number and timestamp.
  */
+@Deprecated("use Id.next() instead", ReplaceWith("Id.next()"))
 fun randomId(): String {
     val random = Random.nextUInt(10000U, 99999U).toString()
     val time = Date().getMilliseconds().toString()

@@ -7,6 +7,7 @@ import dev.fritz2.dom.EventContext
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
+import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BasicParams
@@ -125,7 +126,7 @@ open class RadioGroupComponent<T>(protected val items: List<T>, protected val va
         prefix: String
     ): Div {
         val internalStore = SingleSelectionStore()
-        val groupName = "radioGroup-${randomId()}"
+        val groupName = "radioGroup-${Id.next()}"
 
         return with(context) {
             div({
