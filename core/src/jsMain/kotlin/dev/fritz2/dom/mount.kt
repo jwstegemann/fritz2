@@ -71,8 +71,8 @@ inline fun <V> TagContext.mount(
         }
     }
 
-    return target?.also { doMount(ProxyContext(target.job, target.scope, it)) }
-        ?: register(MountContext(job = this.job, scope = scope)) { doMount(it) }
+    return target?.also { doMount(ProxyContext(newJob, target.scope, it)) }
+        ?: register(MountContext(job = newJob, scope = scope)) { doMount(it) }
 }
 
 /**
