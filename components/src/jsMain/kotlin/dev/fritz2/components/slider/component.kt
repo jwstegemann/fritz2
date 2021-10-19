@@ -352,11 +352,11 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
                 }) {
                     this@SliderComponent.addDataAttributes(this, internalStore)
                     attr("tabindex", internalStore.data.map { if (it.interactive) 0 else -1 })
-                    internalStore.data.onEach { state ->
+                    internalStore.data handledBy { state ->
                         if (state.movementTracking) domNode.apply {
                             focus()
                         }
-                    }.watch()
+                    }
 
                     clicks.events handledBy internalStore.updateByClick
                     Window.mousemoves.events handledBy internalStore.updateByMovement

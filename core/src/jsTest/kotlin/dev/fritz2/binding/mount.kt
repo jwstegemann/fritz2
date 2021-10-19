@@ -1,5 +1,6 @@
 package dev.fritz2.binding
 
+import dev.fritz2.dom.html.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
 import dev.fritz2.test.checkSingleFlow
@@ -40,7 +41,7 @@ class MountTests {
             value == values.last()
         }
 
-        store.data.watch()
+        store.data handledBy {}
 
         return GlobalScope.promise {
             values.forEach { value ->
