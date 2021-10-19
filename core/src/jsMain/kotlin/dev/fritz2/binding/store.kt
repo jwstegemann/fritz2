@@ -168,9 +168,9 @@ interface Store<T> : WithJob {
             received
         } handledBy update
 
-        data.drop(1).onEach {
+        data.drop(1) handledBy {
             if (last != it) session.send(resource.serialize(it))
-        }.watch()
+        }
     }
 
     /**
@@ -200,9 +200,9 @@ fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
         received
     } handledBy update
 
-    data.drop(1).onEach {
+    data.drop(1) handledBy {
         if (last != it) session.send(resource.serializeList(it))
-    }.watch()
+    }
 }
 
 /**

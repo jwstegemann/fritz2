@@ -13,6 +13,7 @@ import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.components.lineUp
 import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.handledBy
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -237,8 +238,7 @@ open class AppFrameComponent : Component<Unit>,
         id: String?,
         prefix: String
     ) {
-        Window.touchends.events
-            .onEach { document.documentElement?.scrollTo(0.0,0.0) }.watch()
+        Window.touchends.events handledBy { document.documentElement?.scrollTo(0.0,0.0) }
 
         context.apply {
             div({

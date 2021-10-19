@@ -9,6 +9,7 @@ import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
+import dev.fritz2.dom.html.handledBy
 import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
@@ -172,7 +173,7 @@ open class ModalComponent :
         }
 
         init {
-            stack.data.map { modals ->
+            stack.data handledBy { modals ->
                 configureBodyScrolling(modals)
                 ManagedComponent.managedRenderContext(globalId, job, scope).apply {
                     val currentOverlay = overlay.current
@@ -188,7 +189,7 @@ open class ModalComponent :
                         } else this.modal(index + 1)
                     }
                 }
-            }.watch()
+            }
         }
 
         private fun configureBodyScrolling(modals: List<ModalRenderContext>) {
