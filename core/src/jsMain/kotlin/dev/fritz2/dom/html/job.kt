@@ -29,15 +29,15 @@ interface WithJob {
      * Connects a [Flow] to a [Handler].
      *
      * @param handler [Handler] that will be called for each action/event on the [Flow]
-     * @receiver [Flow] of action/events to bind to an [Handler]
+     * @receiver [Flow] of action/events to bind to a [Handler]
      */
     infix fun <A> Flow<A>.handledBy(handler: Handler<A>) = handler.collect(this, job)
 
     /**
-     * Connects a [Flow] to a [Handler].
+     * Connects a [Flow] to a suspendable [execute] function.
      *
      * @param execute function that will be called for each action/event on the [Flow]
-     * @receiver [Flow] of action/events to bind to an [Handler]
+     * @receiver [Flow] of action/events to bind to
      */
     infix fun <A> Flow<A>.handledBy(execute: suspend (A) -> Unit) =
         this.catch { errorHandler(it) }.onEach { execute(it) }.launchIn(MainScope() + job)
@@ -53,7 +53,7 @@ interface WithJob {
         handler.collect(this.events.map { }, job)
 
     /**
-     * Connects [Event]s to a [Handler].
+     * Connects a [Flow] to a suspendable [execute] function.
      *
      * @receiver [DomListener] which contains the [Event]
      * @param execute function that will handle the fired [Event]
@@ -72,7 +72,7 @@ interface WithJob {
         handler.collect(this.events.map { }, job)
 
     /**
-     * Connects [Event]s to a [Handler].
+     * Connects a [Flow] to a suspendable [execute] function.
      *
      * @receiver [WindowListener] which contains the [Event]
      * @param execute function that will handle the fired [Event]
@@ -85,9 +85,17 @@ interface WithJob {
 /**
  * Connects a [Flow] to a [Handler].
  *
+ * @param handler [Handler] that will be called for each action/event on the [Flow]
+ * @receiver [Flow] of action/events to bind to an [Handler]
+ */
+infix fun <A> Flow<A>.handledBy(handler: Handler<A>) = handler.collect(this, Job())
+
+/**
+ * Connects a [Flow] to a suspendable [execute] function.
+ *
  * @param execute function that will be called for each action/event on the [Flow]
  * @receiver [Flow] of action/events to bind to an [Handler]
  */
 infix fun <A> Flow<A>.handledBy(execute: suspend (A) -> Unit) =
     this.catch { console.error("ERROR: ${it.message}", it) }
-        .onEach { execute(it) }.launchIn(MainScope())
+        .onEach { execute(it) }.launchIn(MainScope() + Job())
