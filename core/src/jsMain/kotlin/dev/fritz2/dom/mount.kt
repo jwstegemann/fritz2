@@ -190,7 +190,7 @@ inline fun <V> TagContext.mount(
 /**
  * Compares each new [List] on a [Flow] to its predecessor element by element to create [Patch]es.
  *
- * @return [Flow] of [Patches]
+ * @return [Flow] of [Patch]es
  */
 fun <V> Flow<List<V>>.eachIndex(): Flow<Patch<V>> =
     this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
