@@ -7,6 +7,7 @@ import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
+import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.params.BoxParams
@@ -203,7 +204,7 @@ open class PopupComponent :
         id: String?,
         prefix: String
     ): Div {
-        val popupId = id ?: ("fc2-popup-" + randomId())
+        val popupId = id ?: ("fc2-popup-" + Id.next())
         context.apply {
             this@PopupComponent.trigger.value?.invoke(
                 this,
