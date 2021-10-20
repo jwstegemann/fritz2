@@ -184,9 +184,9 @@ open class PopoverComponent : Component<Unit>,
                         )
                     }
                 }
-                this@PopoverComponent.visible.data.onEach {
+                this@PopoverComponent.visible.data handledBy {
                     if (it) popoverElement.focus()
-                }.watch()
+                }
             }
         }
     }
@@ -219,7 +219,7 @@ open class PopoverComponent : Component<Unit>,
             this@PopoverComponent.footer?.invoke(this)
 
             if (this@PopoverComponent.closeOnBlur.value) {
-                blurs.map{}.debounce(100) handledBy this@PopoverComponent.visible.toggle
+                blurs.map {}.debounce(100) handledBy this@PopoverComponent.visible.toggle
             }
         }.domNode
     }

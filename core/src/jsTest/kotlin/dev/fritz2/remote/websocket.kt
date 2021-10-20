@@ -2,6 +2,7 @@ package dev.fritz2.remote
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.watch
+import dev.fritz2.dom.html.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
 import dev.fritz2.lenses.IdProvider
@@ -32,16 +33,16 @@ class WebSocketTests {
         val session = socket.connect()
         var counter = 0
 
-        session.state.map {
+        session.state handledBy {
             println("Connection state is: $it\n")
             when (counter) {
                 0 -> assertTrue(it is SessionState.Connecting, "state not matching")
                 1 -> assertTrue(it is SessionState.Open, "state not matching")
                 2 -> assertTrue(it is SessionState.Closed, "state not matching")
             }
-        }.watch()
+        }
 
-        session.messages.body.onEach {
+        session.messages.body handledBy {
             println("Server said: ${it}\n")
             when (counter) {
                 0 -> assertEquals("Server said: Client said: A", it, "message not matching")
@@ -49,7 +50,7 @@ class WebSocketTests {
                 2 -> assertEquals("Server said: Client said: C", it, "message not matching")
             }
             counter++
-        }.watch()
+        }
 
         session.send("A")
         delay(100)
@@ -114,10 +115,10 @@ class WebSocketTests {
         session.send(data.buffer)
         delay(100)
 
-        session.messages.arrayBuffer.onEach {
+        session.messages.arrayBuffer handledBy {
             val array = Uint8Array(it)
             assertEquals(data, array, "binary data is not matched")
-        }.watch()
+        }
 
 
         session.close(reason = "test done")
@@ -135,12 +136,12 @@ class WebSocketTests {
         session.send(data)
         delay(100)
 
-        session.messages.blob.onEach {
+        session.messages.blob handledBy {
             val reader = FileReader()
             reader.onload = {
                 assertEquals("Hello World", reader.result, "blob data is not matched")
             }
-        }.watch()
+        }
 
 
         session.close(reason = "test done")
@@ -158,7 +159,8 @@ class WebSocketTests {
     object PersonResource : Resource<SocketPerson, String> {
         override val idProvider: IdProvider<SocketPerson, String> = SocketPerson::_id
         override fun serialize(item: SocketPerson): String = Json.encodeToString(SocketPerson.serializer(), item)
-        override fun deserialize(source: String): SocketPerson = Json.decodeFromString(SocketPerson.serializer(), source)
+        override fun deserialize(source: String): SocketPerson =
+            Json.decodeFromString(SocketPerson.serializer(), source)
     }
 
     @Test

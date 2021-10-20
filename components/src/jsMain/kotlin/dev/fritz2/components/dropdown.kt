@@ -113,9 +113,9 @@ open class DropdownComponent : Component<Unit> {
                         )
                     }
                 }
-                this@DropdownComponent.visible.data.onEach { visible ->
+                this@DropdownComponent.visible.data handledBy { visible ->
                     if (visible) dropDown.focus()
-                }.watch()
+                }
             }
         }
     }
@@ -149,7 +149,7 @@ open class DropdownComponent : Component<Unit> {
             prefix = prefix
         ) {
             attr("tabindex", "-1")
-            blurs.map{}.debounce(100) handledBy this@DropdownComponent.visible.toggle
+            blurs.map {}.debounce(100) handledBy this@DropdownComponent.visible.toggle
 
             this@DropdownComponent.content.value(this)
         }
