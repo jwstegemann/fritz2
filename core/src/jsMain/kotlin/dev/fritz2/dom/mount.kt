@@ -47,6 +47,9 @@ class ProxyContext<T : HTMLElement>(
     proxee: Tag<T>
 ) : RenderContext(job = mountJob, scope = proxee.scope, domNode = proxee.domNode, tagName = "") {
     init {
+        if (domNode.getAttribute("data-mount-point") != null) {
+            console.error("You are mounting a flow to a tag, which is already used as mount-point by another flow")
+        }
         proxee.attr("data-mount-point", true)
     }
 }
@@ -127,8 +130,8 @@ inline fun <V> TagContext.mount(
     upstream: Flow<List<V>>,
     noinline idProvider: IdProvider<V, *>?,
     crossinline content: RenderContext.(V) -> RenderContext
-) = mountPatches(into, upstream) { upstream, jobs ->
-    upstream.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
+) = mountPatches(into, upstream) { upstreamValues, jobs ->
+    upstreamValues.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
         val diff = if (idProvider != null) Myer.diff(old, new, idProvider) else Myer.diff(old, new)
         diff.map { patch ->
             patch.map(job) { value, newJob ->
@@ -223,7 +226,10 @@ inline fun <V> TagContext.mountPatches(
     upstream: Flow<List<V>>,
     crossinline createPatches: (Flow<List<V>>, MutableMap<Node, Job>) -> Flow<List<Patch<RenderContext>>>,
 ) {
-    val target = if (into != null) ProxyContext(job, into) else mountContext(job)
+    val target = if (into != null) {
+        into.domNode.clear()
+        ProxyContext(job, into)
+    } else mountContext(job)
     val jobs = mutableMapOf<Node, Job>()
 
     mountSimple(target.job, createPatches(upstream, jobs)) { patches ->
