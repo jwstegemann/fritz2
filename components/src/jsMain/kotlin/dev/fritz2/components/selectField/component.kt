@@ -147,7 +147,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                 }, styling, baseClass + staticCssSelect, id) {
                     disabled(this@SelectFieldComponent.disabled.values)
 
-                    internalStore.data.render {
+                    internalStore.data.render(into = this) {
                         if (it == null) {
                             option {
                                 value("null")
@@ -155,14 +155,13 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
                                 +this@SelectFieldComponent.placeholder.value
                             }
                         }
-                    }
-
-                    this@SelectFieldComponent.items.withIndex().forEach { (index, item) ->
-                        val checkedFlow = internalStore.data.map { it == index }.distinctUntilChanged()
-                        option {
-                            value(index.toString())
-                            selected(checkedFlow)
-                            +this@SelectFieldComponent.label.value(item)
+                        this@SelectFieldComponent.items.withIndex().forEach { (index, item) ->
+                            val checkedFlow = internalStore.data.map { it == index }.distinctUntilChanged()
+                            option {
+                                value(index.toString())
+                                selected(checkedFlow)
+                                +this@SelectFieldComponent.label.value(item)
+                            }
                         }
                     }
 
