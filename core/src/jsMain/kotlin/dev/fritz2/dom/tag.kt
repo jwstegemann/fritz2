@@ -60,13 +60,24 @@ open class Tag<out E : Element>(
     /**
      * Renders the data of a [Flow] as [Tag]s to the DOM.
      *
-     * FIXME
      * @receiver [Flow] containing the data
+     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
     inline fun <V> Flow<V>.render(into: RenderContext? = null, crossinline content: RenderContext.(V) -> Unit) =
         mount(into, this, content)
 
+
+    /**
+     * Renders each element of a [Flow]s content.
+     * Internally the [Patch]es are determined using Myer's diff-algorithm.
+     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
+     * when an element stays the same, but changes its internal values.
+     *
+     * @param idProvider function to identify a unique entity in the list
+     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
+     * @param content [RenderContext] for rendering the data to the DOM
+     */
     inline fun <V> Flow<List<V>>.renderEach(
         noinline idProvider: IdProvider<V, *>? = null,
         into: RenderContext? = null,
@@ -78,9 +89,10 @@ open class Tag<out E : Element>(
      * Renders each element of a [Store]s [List] content.
      * Internally the [Patch]es are determined using Myer's diff-algorithm.
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
-     * when an element stays the same, but changes it's internal values.
+     * when an element stays the same, but changes its internal values.
      *
      * @param idProvider function to identify a unique entity in the list
+     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
     inline fun <V> Store<List<V>>.renderEach(
@@ -96,6 +108,7 @@ open class Tag<out E : Element>(
      * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
      *
      * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
+     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
      */
     inline fun <V> Store<List<V>>.renderEach(
         into: RenderContext? = null,

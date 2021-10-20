@@ -86,7 +86,7 @@ inline fun <V> TagContext.mount(
     upstream: Flow<V>,
     crossinline content: RenderContext.(V) -> Unit
 ) {
-    val target = if (into != null) ProxyContext(Job(job), into) else mountContext(Job(this.job))
+    val target = if (into != null) ProxyContext(Job(job), into) else mountContext(Job(job))
 
     mountSimple(this.job, upstream) { data ->
         target.job.cancelChildren()
