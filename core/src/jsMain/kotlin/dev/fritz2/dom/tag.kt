@@ -64,7 +64,7 @@ open class Tag<out E : Element>(
      * @receiver [Flow] containing the data
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    inline fun <V> Flow<V>.render(into: RenderContext? = null, crossinline content: suspend RenderContext.(V) -> Unit) =
+    inline fun <V> Flow<V>.render(into: RenderContext? = null, crossinline content: RenderContext.(V) -> Unit) =
         mount(into, this, content)
 
     inline fun <V> Flow<List<V>>.renderEach(
