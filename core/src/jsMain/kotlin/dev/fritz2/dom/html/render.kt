@@ -4,6 +4,8 @@ import dev.fritz2.dom.Tag
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLStyleElement
+import org.w3c.dom.css.CSSStyleSheet
 
 /**
  * Occurs when the targeted html element is not present in document.
@@ -48,8 +50,39 @@ fun render(
     override: Boolean = true,
     content: RenderContext.() -> Unit
 ) {
+    //add style sheet continaing mount-point-class
+    addGlobalStyle(".mount-point { display: contents; }")
     targetElement?.let {
         if (override) it.innerHTML = ""
         content(RenderContext(it.tagName, it.id, null, Job(), Scope(), it))
     } ?: throw MountTargetNotFoundException("targetElement should not be null")
+}
+
+const val FRITZ2_GLOBAL_STYLESHEET_ID = "fritz2-global-styles"
+
+internal fun getOrCreateGlobalStylesheet() = (document.getElementById(FRITZ2_GLOBAL_STYLESHEET_ID)?.let {
+    (it as HTMLStyleElement).sheet
+} ?: (document.createElement("style") as HTMLStyleElement).also {
+    it.setAttribute("id", FRITZ2_GLOBAL_STYLESHEET_ID)
+    it.appendChild(document.createTextNode(""))
+    document.head!!.appendChild(it)
+}.sheet!!) as CSSStyleSheet
+
+/**
+ * Adds global css-rules to a fritz2-specific stylesheet added to the document when first called
+ *
+ * @param css the valid css-code to insert
+ */
+fun addGlobalStyle(css: String) {
+    getOrCreateGlobalStylesheet().insertRule(css, 0)
+}
+
+/**
+ * Adds global css-rules to a fritz2-specific stylesheet added to the document when first called
+ *
+ * @param css the valid rules to insert
+ */
+fun addGlobalStyles(css: List<String>) {
+    val stylesheet = getOrCreateGlobalStylesheet()
+    css.forEach { stylesheet.insertRule(it, 0) }
 }

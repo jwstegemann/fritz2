@@ -23,7 +23,7 @@ class RenderTests {
 
         render {
             section {
-                store.data.renderElement { value ->
+                store.data.render { value ->
                     div(id = divId) {
                         +if (value) "on" else "off"
                     }
@@ -71,16 +71,16 @@ class RenderTests {
 
         val div = document.getElementById(divId) as HTMLDivElement
 
-        assertEquals(1, div.childElementCount)
-        assertEquals("DIV", div.firstChild?.nodeName)
-        assertEquals("on", div.textContent)
+        assertEquals(1, div.firstElementChild?.childElementCount)
+        assertEquals("DIV", div.firstElementChild?.firstChild?.nodeName)
+        assertEquals("on", div.firstElementChild?.textContent)
 
         store.update(false)
         delay(200)
 
         val span = document.getElementById(divId) as HTMLDivElement
-        assertEquals(1, span.childElementCount)
-        assertEquals("SPAN", span.firstChild?.nodeName)
-        assertEquals("off", span.textContent)
+        assertEquals(1, span.firstElementChild?.childElementCount)
+        assertEquals("SPAN", span.firstElementChild?.firstChild?.nodeName)
+        assertEquals("off", span.firstElementChild?.textContent)
     }
 }

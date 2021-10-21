@@ -1,6 +1,6 @@
 package dev.fritz2.test
 
-import dev.fritz2.binding.mountSingle
+import dev.fritz2.binding.mountSimple
 import dev.fritz2.remote.Authentication
 import dev.fritz2.remote.Request
 import dev.fritz2.remote.http
@@ -22,11 +22,11 @@ fun initDocument() {
 fun <T> checkSingleFlow(
     done: CompletableDeferred<Boolean> = CompletableDeferred(),
     upstream: Flow<T>,
-    check: (Int, T, T?) -> Boolean
+    check: (Int, T) -> Boolean
 ) {
     var count = 0
-    mountSingle(Job(), upstream) { value, last ->
-        val result = check(count, value, last)
+    mountSimple(Job(), upstream) { value ->
+        val result = check(count, value)
         count++
         if (result) done.complete(true)
     }

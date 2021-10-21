@@ -36,7 +36,7 @@ class MountTests {
 
 
         val done = CompletableDeferred<Boolean>()
-        checkSingleFlow(done, store.data) { _, value, _ ->
+        checkSingleFlow(done, store.data) { _, value ->
             assertTrue(values.contains(value))
             value == values.last()
         }
@@ -78,7 +78,7 @@ class MountTests {
         delay(250)
 
         val outerElement = document.getElementById(outer) as HTMLDivElement
-        assertEquals(inner1, outerElement.firstElementChild?.id, "first element id does not match")
+        assertEquals(inner1, outerElement.firstElementChild?.firstElementChild?.id, "first element id does not match")
         assertEquals(inner2, outerElement.lastElementChild?.id, "last element id does not match")
     }
 
@@ -105,8 +105,12 @@ class MountTests {
         delay(250)
 
         val outerElement = document.getElementById(outer) as HTMLDivElement
-        assertEquals(inner1, outerElement.firstElementChild?.id, "first element id does not match")
-        assertEquals(inner2, outerElement.firstElementChild?.nextElementSibling?.id, "second element id does not match")
+        assertEquals(inner1, outerElement.firstElementChild?.firstElementChild?.id, "first element id does not match")
+        assertEquals(
+            inner2,
+            outerElement.firstElementChild?.firstElementChild?.nextElementSibling?.id,
+            "second element id does not match"
+        )
         assertEquals(inner3, outerElement.lastElementChild?.id, "last element id does not match")
     }
 

@@ -1,28 +1,17 @@
 package dev.fritz2.dom
 
-import dev.fritz2.binding.*
+import dev.fritz2.binding.Patch
+import dev.fritz2.binding.Store
+import dev.fritz2.binding.mountSimple
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import dev.fritz2.dom.html.TagContext
-import dev.fritz2.dom.html.render
 import dev.fritz2.lenses.IdProvider
-import dev.fritz2.lenses.elementLens
-import dev.fritz2.utils.Myer
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.Node
-
-/**
- * Occurs when more then one root [Tag] is defined in a [render] context.
- *
- * @param message exception message text
- */
-class MultipleRootElementsException(message: String) : Exception(message)
-
 
 /**
  * A marker to separate the layers of calls in the type-safe-builder pattern.
@@ -45,7 +34,7 @@ annotation class HtmlTagMarker
  */
 @HtmlTagMarker
 open class Tag<out E : Element>(
-    tagName: String,
+    private val tagName: String,
     val id: String? = null,
     val baseClass: String? = null,
     override val job: Job,
@@ -55,57 +44,6 @@ open class Tag<out E : Element>(
         if (!baseClass.isNullOrBlank()) element.className = baseClass
     }.unsafeCast<E>()
 ) : WithDomNode<E>, WithComment<E>, EventContext<E>, TagContext {
-
-    companion object {
-        private inline fun registerMulti(
-            job: Job, parent: RenderContext,
-            content: RenderContext.() -> Unit
-        ): List<WithDomNode<HTMLElement>> =
-            buildList {
-                content(object : RenderContext(
-                    "", parent.id, parent.baseClass,
-                    job, parent.scope, parent.domNode.unsafeCast<HTMLElement>()
-                ) {
-                    override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
-                        parent.register(element, content)
-                        add(element.unsafeCast<WithDomNode<HTMLElement>>())
-                        return element
-                    }
-                })
-            }
-
-        private inline fun registerSingle(
-            job: Job, parent: RenderContext,
-            content: RenderContext.() -> RenderContext
-        ): WithDomNode<HTMLElement> =
-            content(object : RenderContext(
-                "", parent.id, parent.baseClass,
-                job, parent.scope, parent.domNode.unsafeCast<HTMLElement>()
-            ) {
-                var alreadyRegistered: Boolean = false
-
-                override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
-                    if (alreadyRegistered) {
-                        throw MultipleRootElementsException("You can have only one root-tag per html-context!")
-                    } else {
-                        parent.register(element, content)
-                        alreadyRegistered = true
-                        return element
-                    }
-                }
-            })
-
-        /**
-         * Accumulates a [Pair] and a [List] to a new [Pair] of [List]s
-         *
-         * @param accumulator [Pair] of two [List]s
-         * @param newValue new [List] to accumulate
-         */
-        private fun <T> accumulate(
-            accumulator: Pair<List<T>, List<T>>,
-            newValue: List<T>
-        ): Pair<List<T>, List<T>> = Pair(accumulator.second, newValue)
-    }
 
     /**
      * Creates the content of the [Tag] and appends it as a child to the wrapped [Element].
@@ -123,140 +61,46 @@ open class Tag<out E : Element>(
      * Renders the data of a [Flow] as [Tag]s to the DOM.
      *
      * @receiver [Flow] containing the data
+     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    fun <V> Flow<V>.render(content: RenderContext.(V) -> Unit) {
-        val newJob = Job(job)
-        mountDomNodeList(job, domNode, this.map { data ->
-            newJob.cancelChildren()
-            registerMulti(newJob, this@Tag.unsafeCast<RenderContext>()) {
-                content(data)
-            }
-        })
-    }
+    inline fun <V> Flow<V>.render(into: RenderContext? = null, crossinline content: RenderContext.(V) -> Unit) =
+        mount(into, this, content)
+
 
     /**
-     * Renders the data of a [Flow] as [Tag]s to the DOM.
-     * [content] should only contain one root [Tag] otherwise a
-     * [MultipleRootElementsException] will be thrown.
-     *
-     * @receiver [Flow] containing the data
-     * @param preserveOrder use a placeholder to keep the rendered [Tag]s in order with static [Tag]s at
-     * the same level (default true)
-     * @param content [RenderContext] for rendering the data to the DOM
-     */
-    fun <V> Flow<V>.renderElement(
-        preserveOrder: Boolean = true,
-        content: RenderContext.(V) -> RenderContext
-    ) {
-        val newJob = Job(job)
-
-        val upstream = this.map { data ->
-            newJob.cancelChildren()
-            registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
-                content(data)
-            }
-        }
-
-        if (preserveOrder) mountDomNode(job, domNode, upstream)
-        else mountDomNodeUnordered(job, domNode, upstream)
-    }
-
-    /**
-     * Renders each element of a [List].
+     * Renders each element of a [Flow]s content.
      * Internally the [Patch]es are determined using Myer's diff-algorithm.
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
-     * when an element stays the same, but changes it's internal values.
+     * when an element stays the same, but changes its internal values.
      *
      * @param idProvider function to identify a unique entity in the list
+     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    fun <V, I> Flow<List<V>>.renderEach(
-        idProvider: IdProvider<V, I>,
-        content: RenderContext.(V) -> RenderContext
-    ) {
-        val jobs = mutableMapOf<Node, Job>()
-        mountDomNodePatch(job, domNode,
-            this.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
-                Myer.diff(old, new, idProvider).map { patch ->
-                    patch.map(job) { value, newJob ->
-                        registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
-                            content(value)
-                        }.also {
-                            jobs[it.domNode] = newJob
-                        }
-                    }
-                }
-            }) { node ->
-            val job = jobs.remove(node)
-            if (job != null) job.cancelChildren()
-            else console.error("could not cancel renderEach-jobs!")
-        }
-    }
-
-
-    /**
-     * Renders each element of a [List].
-     * Internally the [Patch]es are determined using instance comparison.
-     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
-     * when an element stays the same, but changes it's internal values.
-     *
-     * @param content [RenderContext] for rendering the data to the DOM
-     */
-    fun <V> Flow<List<V>>.renderEach(
-        content: RenderContext.(V) -> RenderContext
-    ) {
-        val jobs = mutableMapOf<Node, Job>()
-        mountDomNodePatch(job, domNode,
-            this.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
-                Myer.diff(old, new).map { patch ->
-                    patch.map(job) { value, newJob ->
-                        registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
-                            content(value)
-                        }.also {
-                            jobs[it.domNode] = newJob
-                        }
-                    }
-                }
-            }) { node ->
-            val job = jobs.remove(node)
-            if (job != null) job.cancelChildren()
-            else console.error("could not cancel renderEach-jobs!")
-        }
-    }
+    inline fun <V> Flow<List<V>>.renderEach(
+        noinline idProvider: IdProvider<V, *>? = null,
+        into: RenderContext? = null,
+        crossinline content: RenderContext.(V) -> RenderContext
+    ) =
+        mount(into, this, idProvider, content)
 
     /**
      * Renders each element of a [Store]s [List] content.
      * Internally the [Patch]es are determined using Myer's diff-algorithm.
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
-     * when an element stays the same, but changes it's internal values.
+     * when an element stays the same, but changes its internal values.
      *
      * @param idProvider function to identify a unique entity in the list
+     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    fun <V, I> RootStore<List<V>>.renderEach(
-        idProvider: IdProvider<V, I>,
-        content: RenderContext.(SubStore<List<V>, V>) -> RenderContext
-    ) {
-        val jobs = mutableMapOf<Node, Job>()
-
-        mountDomNodePatch(job, domNode,
-            this.data.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
-                Myer.diff(old, new, idProvider).map { patch ->
-                    patch.map(job) { value, newJob ->
-                        registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
-                            content(sub(elementLens(value, idProvider)))
-                        }.also {
-                            jobs[it.domNode] = newJob
-                        }
-                    }
-                }
-            }) { node ->
-            val job = jobs.remove(node)
-            if (job != null) job.cancelChildren()
-            else console.error("could not cancel renderEach-jobs!")
-        }
-    }
+    inline fun <V> Store<List<V>>.renderEach(
+        noinline idProvider: IdProvider<V, *>,
+        into: RenderContext? = null,
+        crossinline content: RenderContext.(Store<V>) -> RenderContext
+    ) =
+        mount(into, this, idProvider, content)
 
     /**
      * Renders each element of a [Store]s list content.
@@ -264,107 +108,14 @@ open class Tag<out E : Element>(
      * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
      *
      * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
+     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
      */
-    fun <V> RootStore<List<V>>.renderEach(
-        content: RenderContext.(SubStore<List<V>, V>) -> RenderContext
-    ) {
-        val jobs = mutableMapOf<Node, Job>()
-        mountDomNodePatch(job, domNode,
-            this.data.map { it.withIndex().toList() }.eachIndex().map { patch ->
-                listOf(patch.map(job) { (i, _), newJob ->
-                    registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
-                        content(sub(i))
-                    }.also {
-                        jobs[it.domNode] = newJob
-                    }
-                })
-            }) { node ->
-            val job = jobs.remove(node)
-            if (job != null) job.cancelChildren()
-            else console.error("could not cancel renderEach-jobs!")
-        }
-    }
+    inline fun <V> Store<List<V>>.renderEach(
+        into: RenderContext? = null,
+        crossinline content: RenderContext.(Store<V>) -> RenderContext
+    ) =
+        mount(into, this, content)
 
-    /**
-     * Renders each element of a [Store]s list content.
-     * Internally the [Patch]es are determined using Myer's diff-algorithm.
-     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
-     * when an element stays the same, but changes it's internal values.
-     *
-     * @param idProvider function to identify a unique entity in the list
-     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
-     */
-    fun <P, V, I> SubStore<P, List<V>>.renderEach(
-        idProvider: IdProvider<V, I>,
-        content: RenderContext.(SubStore<List<V>, V>) -> RenderContext
-    ) {
-        val jobs = mutableMapOf<Node, Job>()
-        mountDomNodePatch(job, domNode,
-            this.data.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
-                Myer.diff(old, new, idProvider).map { patch ->
-                    patch.map(job) { value, newJob ->
-                        registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
-                            content(sub(elementLens(value, idProvider)))
-                        }.also {
-                            jobs[it.domNode] = newJob
-                        }
-                    }
-                }
-            }) { node ->
-            val job = jobs.remove(node)
-            if (job != null) job.cancelChildren()
-            else console.error("could not cancel renderEach-jobs!")
-        }
-    }
-
-    /**
-     * Renders each element of a [Store]s list content.
-     * Internally the [Patch]es are determined using the position of an item in the list.
-     * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
-     *
-     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
-     */
-    fun <P, V> SubStore<P, List<V>>.renderEach(
-        content: RenderContext.(SubStore<List<V>, V>) -> RenderContext
-    ) {
-        val jobs = mutableMapOf<Node, Job>()
-        mountDomNodePatch(job, domNode,
-            this.data.map { it.withIndex().toList() }.eachIndex().map { patch ->
-                listOf(patch.map(job) { (i, _), newJob ->
-                    registerSingle(newJob, this@Tag.unsafeCast<RenderContext>()) {
-                        content(sub(i))
-                    }.also {
-                        jobs[it.domNode] = newJob
-                    }
-                })
-            }) { node ->
-            val job = jobs.remove(node)
-            if (job != null) job.cancelChildren()
-            else console.error("could not cancel renderEach-jobs!")
-        }
-    }
-
-    /**
-     * Creates a [Flow] of [Patch]es representing the changes between the current list in a [Flow] and it's predecessor.
-     *
-     * @receiver [Flow] of lists to create [Patch]es for
-     * @return [Flow] of patches
-     */
-    private fun <V> Flow<List<V>>.eachIndex(): Flow<Patch<V>> =
-        this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
-            val oldSize = old.size
-            val newSize = new.size
-            when {
-                oldSize < newSize -> flowOf<Patch<V>>(
-                    Patch.InsertMany(
-                        new.subList(oldSize, newSize).reversed(),
-                        oldSize
-                    )
-                )
-                oldSize > newSize -> flowOf<Patch<V>>(Patch.Delete(newSize, (oldSize - newSize)))
-                else -> emptyFlow()
-            }
-        }
 
     /**
      * Sets an attribute.
@@ -393,7 +144,7 @@ open class Tag<out E : Element>(
      * @param value to use
      */
     fun attr(name: String, value: Flow<String>) {
-        mountSingle(job, value) { v, _ -> attr(name, v) }
+        mountSimple(job, value) { v -> attr(name, v) }
     }
 
     /**
@@ -403,7 +154,7 @@ open class Tag<out E : Element>(
      * @param value to use
      */
     fun attr(name: String, value: Flow<String?>) {
-        mountSingle(job, value) { v, _ ->
+        mountSimple(job, value) { v ->
             if (v != null) attr(name, v)
             else domNode.removeAttribute(name)
         }
@@ -426,7 +177,7 @@ open class Tag<out E : Element>(
      * @param value to use
      */
     fun <T> attr(name: String, value: Flow<T>) {
-        mountSingle(job, value.map { it?.toString() }) { v, _ ->
+        mountSimple(job, value.map { it?.toString() }) { v ->
             if (v != null) attr(name, v)
             else domNode.removeAttribute(name)
         }
@@ -466,7 +217,7 @@ open class Tag<out E : Element>(
      * @param trueValue value to use if attribute is set (default "")
      */
     fun attr(name: String, value: Flow<Boolean>, trueValue: String = "") {
-        mountSingle(job, value) { v, _ -> attr(name, v, trueValue) }
+        mountSimple(job, value) { v -> attr(name, v, trueValue) }
     }
 
     /**
@@ -477,7 +228,7 @@ open class Tag<out E : Element>(
      * @param trueValue value to use if attribute is set (default "")
      */
     fun attr(name: String, value: Flow<Boolean?>, trueValue: String = "") {
-        mountSingle(job, value) { v, _ -> attr(name, v, trueValue) }
+        mountSimple(job, value) { v -> attr(name, v, trueValue) }
     }
 
     /**
@@ -501,7 +252,7 @@ open class Tag<out E : Element>(
      * @param separator [String] for separation
      */
     fun attr(name: String, values: Flow<List<String>>, separator: String = " ") {
-        mountSingle(job, values) { v, _ -> attr(name, v, separator) }
+        mountSimple(job, values) { v -> attr(name, v, separator) }
     }
 
     /**
@@ -527,7 +278,7 @@ open class Tag<out E : Element>(
      * @param separator [String] for separation
      */
     fun attr(name: String, values: Flow<Map<String, Boolean>>, separator: String = " ") {
-        mountSingle(job, values) { v, _ -> attr(name, v, separator) }
+        mountSimple(job, values) { v -> attr(name, v, separator) }
     }
 
     private fun setClassName(className: String): String =

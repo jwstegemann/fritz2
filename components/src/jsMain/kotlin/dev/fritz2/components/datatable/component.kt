@@ -342,7 +342,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
             }) {
                 tr {
                     component.stateStore.renderingHeaderData(component)
-                        .renderEach(component.columnStateIdProvider) { (column, sorting) ->
+                        .renderEach(component.columnStateIdProvider, into = this) { (column, sorting) ->
                             th({
                                 Sorting.sorted(sorting.strategy)
                                 Theme().dataTableStyles.headerStyle(
@@ -410,7 +410,7 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
             }) {
                 this@DataTableComponent.stateStore
                     .renderingRowsData(this@DataTableComponent, rowIdProvider).let { renderingData ->
-                        renderingData.map { it.first }.renderEach(indexedRowIdProvider) { (_, rowData) ->
+                        renderingData.map { it.first }.renderEach(indexedRowIdProvider, into = this) { (_, rowData) ->
                             val rowStore = this@DataTableComponent.dataStore.sub(rowData, rowIdProvider)
                             tr {
                                 this@DataTableComponent.selection.value.strategy.value

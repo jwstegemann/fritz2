@@ -1,122 +1,253 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.Patch
-import dev.fritz2.binding.mountSingle
-import kotlinx.browser.document
+import dev.fritz2.binding.Store
+import dev.fritz2.binding.mountSimple
+import dev.fritz2.binding.sub
+import dev.fritz2.dom.html.Div
+import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.Scope
+import dev.fritz2.dom.html.TagContext
+import dev.fritz2.lenses.IdProvider
+import dev.fritz2.utils.Myer
+import kotlinx.browser.window
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import org.w3c.dom.Comment
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.*
+import kotlinx.dom.clear
+import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
+import kotlin.collections.set
 
 /**
- * Mounts the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * Creates a [Div] as context for the mounted content using the given job and adds it to the receiver of this function
+ * inheriting its scope.
+ * Also adds a style-class "mount-point" that adds a "display: contents" property to the created [Div] and
+ * an attribute "data-mount-point" to the created [Div].
  *
- * @param job to collect values
- * @param target DOM mounting target
- * @param upstream returns the [Flow] that should be mounted at this point
+ * @param mountJob [Job] to use downstream from this mountpoint
+ * @receiver TagContext parent to add the [Div] to
  */
-fun <N : Node> mountDomNode(
-    job: Job,
-    target: N,
-    upstream: Flow<WithDomNode<N>>
-) {
-    var placeholder: Comment? = document.createComment("")
+inline fun TagContext.mountContext(mountJob: Job) =
+    register(Div(baseClass = "mount-point", job = mountJob, scope = this.scope)) {
+        it.attr("data-mount-point", true)
+    }
 
-    target.appendChild(placeholder!!)
-
-    mountSingle(job, upstream) { value, last ->
-        if (last?.domNode != null) {
-            target.replaceChild(value.domNode, last.domNode)
-        } else {
-            target.replaceChild(value.domNode, placeholder!!)
-            placeholder = null // so it can be garbage collected
+/**
+ * Implementation of [RenderContext] that forwards all registrations of children to the element it proxies.
+ * Also adds "data-mount-point" as a marker-attribute to the element it proxies.
+ *
+ * @param mountJob [Job] to use downstream from this context
+ * @param proxee [Tag] to proxy
+ */
+class ProxyContext<T : HTMLElement>(
+    mountJob: Job,
+    proxee: Tag<T>
+) : RenderContext(job = mountJob, scope = proxee.scope, domNode = proxee.domNode, tagName = "") {
+    init {
+        if (domNode.getAttribute("data-mount-point") != null) {
+            console.error("You are mounting a flow to a tag, which is already used as mount-point by another flow")
         }
+        proxee.attr("data-mount-point", true)
+    }
+}
+
+internal val dummyDom = window.document.createElement("div") as HTMLElement
+
+/**
+ * Implementation of [RenderContext] that just renders its children but does not add them anywhere to the Dom.
+ *
+ * @param mountJob [Job] to use downstream from this context
+ * @param mountScope [Scope] to use downstream from this context
+ */
+class DummyContext(
+    mountJob: Job,
+    mountScope: Scope,
+) : RenderContext(job = mountJob, scope = mountScope, domNode = dummyDom, tagName = "") {
+    override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+        content(element)
+        return element
+    }
+}
+
+
+/**
+ * Uses the [content]-lambda to render a subtree for each value on the [upstream]-[Flow] and
+ * mounts it to the DOM either
+ *  - creating a new context-[Div] as a child of the receiver and adding the content as children to this [Div]
+ *  - of, if [into] is set, replacing all children of this [Tag].
+ *
+ * @param into if set defines the target to mount the content to (replacing its static content)
+ * @param upstream the [Flow] that should be mounted at this point
+ * @param content lambda definining what to render for a given value on [upstream]
+ */
+@OptIn(InternalCoroutinesApi::class)
+inline fun <V> TagContext.mount(
+    into: RenderContext?,
+    upstream: Flow<V>,
+    crossinline content: RenderContext.(V) -> Unit
+) {
+    val target = if (into != null) ProxyContext(Job(job), into) else mountContext(Job(job))
+
+    mountSimple(this.job, upstream) { data ->
+        target.job.cancelChildren()
+        target.domNode.clear()
+        target.content(data)
     }
 }
 
 /**
- * Mounts the values of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
- * It is fast then [mountDomNode], but if you mix constant [Tag]s with one or more of mounted [Flow]s,
- * the order ist not guaranteed. Wrap your mounted elements in a constant [Tag] or use
- * [mountDomNode] function instead (for example by setting preserveOrder when binding).
+ * Accumulates a [Pair] and a [List] to a new [Pair] of [List]s
  *
- * @param job to collect values
- * @param target DOM mounting target
- * @param upstream returns the [Flow] that should be mounted at this point
+ * @param accumulator [Pair] of two [List]s
+ * @param newValue new [List] to accumulate
  */
-fun <N : Node> mountDomNodeUnordered(
-    job: Job,
-    target: N,
-    upstream: Flow<WithDomNode<N>>
-) {
-    mountSingle(job, upstream) { value, last ->
-        if (last?.domNode != null) {
-            target.replaceChild(value.domNode, last.domNode)
-        } else {
-            target.appendChild(value.domNode)
-        }
-    }
-}
+fun <T> accumulate(
+    accumulator: Pair<List<T>, List<T>>,
+    newValue: List<T>
+): Pair<List<T>, List<T>> = Pair(accumulator.second, newValue)
+
 
 /**
- * Mounts the a [List] of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * Compares each new [List] on [upstream] to its predecessor to create [Patch]es using Myer's diff-algorithm.
+ * For each element that is newly inserted it uses the [content]-lambda to render a subtree.
+ * The resulting [Patch]es are then applied to the DOM either
+ *  - creating a new context-[Div] as a child of the receiver
+ *  - or, if [into] is set, replacing all children of this [Tag].
+ *  Keep in mind, that if you do not offer an [idProvider] a changed value of a list-item will render a new subtree
+ *  for this item. When you provide an [idProvider] though, a new subtree will only be rendered if a new id appears
+ *  in the list, and you are responsible for updating the dynamic content (by using sub-[Store]s).
  *
- * @param job to collect values
- * @param target DOM mounting target
- * @param upstream returns the [Flow] with the [List] of [WithDomNode]s that should be mounted at this point
+ * @param into if set defines the target to mount the content to (replacing its static content)
+ * @param idProvider optional function to identify a unique entity in the list
+ * @param upstream the [Flow] that should be mounted
+ * @param content lambda definining what to render for a given value on [upstream]
  */
-fun <N : Node> mountDomNodeList(
-    job: Job,
-    target: N,
-    upstream: Flow<List<WithDomNode<N>>>
-) {
-    val placeholder: Comment = document.createComment("")
-    target.appendChild(placeholder)
-
-    mountSingle(job, upstream) { value, last ->
-        if (last != null) {
-            if (last.isNotEmpty()) {
-                if (value.isNotEmpty()) value.forEach { target.insertBefore(it.domNode, last.first().domNode) }
-                else target.insertBefore(placeholder, last.first().domNode)
-                last.forEach { target.removeChild(it.domNode) }
-            } else if (value.isNotEmpty()) {
-                value.forEach { target.insertBefore(it.domNode, placeholder) }
-                target.removeChild(placeholder)
+inline fun <V> TagContext.mount(
+    into: RenderContext?,
+    upstream: Flow<List<V>>,
+    noinline idProvider: IdProvider<V, *>?,
+    crossinline content: RenderContext.(V) -> RenderContext
+) = mountPatches(into, upstream) { upstreamValues, jobs ->
+    upstreamValues.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
+        val diff = if (idProvider != null) Myer.diff(old, new, idProvider) else Myer.diff(old, new)
+        diff.map { patch ->
+            patch.map(job) { value, newJob ->
+                content(DummyContext(newJob, scope), value).also {
+                    jobs[it.domNode] = newJob
+                }
             }
-        } else { // first call
-            if (value.isNotEmpty()) {
-                value.forEach { target.insertBefore(it.domNode, placeholder) }
-                target.removeChild(placeholder)
-            }
         }
     }
 }
 
 /**
- * Mounts [Patch]es of a [Flow] of [WithDomNode]s (mostly [Tag]s) at this point in the DOM.
+ * Compares each new [List] on [store]'s data-[Flow] to its predecessor to create [Patch]es using Myer's diff-algorithm.
+ * For each element that is newly inserted it uses the [content]-lambda to render a subtree.
+ * The resulting [Patch]es are then applied to the DOM either
+ *  - creating a new context-[Div] as a child of the receiver
+ *  - or, if [into] is set, replacing all children of this [Tag].
  *
- * @param job to collect values
- * @param target DOM mounting target
- * @param upstream [Flow] of [List] of [Patch]es of [WithDomNode]s that should be mounted at this point
- * @cancelJob lambda expression to cancel coroutines when not needed anymore
+ * @param into if set defines the target to mount the content to (replacing its static content)
+ * @param idProvider function to identify a unique entity in the list
+ * @param store the [Store] that's values should be mounted at
+ * @param content lambda definining what to render for a given value on [store]'s data-[Flow]
  */
-fun <N : Node> mountDomNodePatch(
-    job: Job,
-    target: N,
-    upstream: Flow<List<Patch<WithDomNode<N>>>>,
-    cancelJob: (Node) -> Unit
+inline fun <V> TagContext.mount(
+    into: RenderContext?,
+    store: Store<List<V>>,
+    noinline idProvider: IdProvider<V, *>,
+    crossinline content: RenderContext.(Store<V>) -> RenderContext
+) = mount(into, store.data, idProvider) { value ->
+    content(store.sub(value, idProvider))
+}
+
+/**
+ * Compares each new [List] on [store]'s data-[Flow] to its predecessor element by element to create [Patch]es.
+ * For each element that is newly inserted it uses the [content]-lambda to render a subtree.
+ * The resulting [Patch]es are then applied to the DOM either
+ *  - creating a new context-[Div] as a child of the receiver
+ *  - or, if [into] is set, replacing all children of this [Tag].
+ *
+ * @param into if set defines the target to mount the content to (replacing its static content)
+ * @param store the [Store] that's values should be mounted at
+ * @param content lambda definining what to render for a given value on [store]'s data-[Flow]
+ */
+inline fun <V> TagContext.mount(
+    into: RenderContext?,
+    store: Store<List<V>>,
+    crossinline content: RenderContext.(Store<V>) -> RenderContext
+) = mountPatches(into, store.data) { upstream, jobs ->
+    upstream.map { it.withIndex().toList() }.eachIndex().map { patch ->
+        listOf(patch.map(job) { value, newJob ->
+            content(DummyContext(newJob, scope), store.sub(value.index)).also {
+                jobs[it.domNode] = newJob
+            }
+        })
+    }
+}
+
+
+/**
+ * Compares each new [List] on a [Flow] to its predecessor element by element to create [Patch]es.
+ *
+ * @return [Flow] of [Patch]es
+ */
+fun <V> Flow<List<V>>.eachIndex(): Flow<Patch<V>> =
+    this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
+        val oldSize = old.size
+        val newSize = new.size
+        when {
+            oldSize < newSize -> flowOf<Patch<V>>(
+                Patch.InsertMany(
+                    new.subList(oldSize, newSize).reversed(),
+                    oldSize
+                )
+            )
+            oldSize > newSize -> flowOf<Patch<V>>(Patch.Delete(newSize, (oldSize - newSize)))
+            else -> emptyFlow()
+        }
+    }
+
+
+/**
+ * Mounts a [Flow] of [Patch]es to the DOM either
+ *  - creating a new context-[Div] as a child of the receiver
+ *  - or, if [into] is set, replacing all children of this [Tag].
+ *
+ * @param into if set defines the target to mount the content to (replacing its static content)
+ * @param upstream the [Flow] that should be mounted
+ * @param createPatches lambda defining, how to compare two versions of a [List]
+ */
+inline fun <V> TagContext.mountPatches(
+    into: RenderContext?,
+    upstream: Flow<List<V>>,
+    crossinline createPatches: (Flow<List<V>>, MutableMap<Node, Job>) -> Flow<List<Patch<RenderContext>>>,
 ) {
-    mountSingle(job, upstream) { patches, _ ->
+    val target = if (into != null) {
+        into.domNode.clear()
+        ProxyContext(job, into)
+    } else mountContext(job)
+    val jobs = mutableMapOf<Node, Job>()
+
+    mountSimple(target.job, createPatches(upstream, jobs)) { patches ->
         patches.forEach { patch ->
             when (patch) {
-                is Patch.Insert -> target.insert(patch.element, patch.index)
-                is Patch.InsertMany -> target.insertMany(patch.elements, patch.index)
-                is Patch.Delete -> target.delete(patch.start, patch.count, cancelJob)
-                is Patch.Move -> target.move(patch.from, patch.to)
+                is Patch.Insert -> target.domNode.insert(patch.element, patch.index)
+                is Patch.InsertMany -> target.domNode.insertMany(patch.elements, patch.index)
+                is Patch.Delete -> target.domNode.delete(patch.start, patch.count) { node ->
+                    val job = jobs.remove(node)
+                    if (job != null) job.cancelChildren()
+                    else console.error("could not cancel renderEach-jobs!")
+                }
+                is Patch.Move -> target.domNode.move(patch.from, patch.to)
             }
         }
     }
 }
+
 
 /**
  * Inserts or appends elements to the DOM.
@@ -139,7 +270,7 @@ private fun <N : Node> N.insertOrAppend(child: Node, index: Int) {
  * @param element from type [WithDomNode]
  * @param index place to insert or append
  */
-private fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrAppend(element.domNode, index)
+fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrAppend(element.domNode, index)
 
 /**
  * Inserts a [List] of elements to the DOM.
@@ -148,7 +279,7 @@ private fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = ins
  * @param elements [List] of [WithDomNode]s elements to insert
  * @param index place to insert or append
  */
-private fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
+fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
     if (index == childNodes.length) {
         for (child in elements.reversed()) appendChild(child.domNode)
     } else {
@@ -167,7 +298,7 @@ private fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) 
  * @param start position for deleting
  * @param count of elements to delete
  */
-private fun <N : Node> N.delete(start: Int, count: Int, cancelJob: (Node) -> Unit) {
+fun <N : Node> N.delete(start: Int, count: Int, cancelJob: (Node) -> Unit) {
     var itemToDelete = childNodes.item(start)
     repeat(count) {
         itemToDelete?.let {
@@ -185,7 +316,7 @@ private fun <N : Node> N.delete(start: Int, count: Int, cancelJob: (Node) -> Uni
  * @param from position index
  * @param to position index
  */
-private fun <N : Node> N.move(from: Int, to: Int) {
+fun <N : Node> N.move(from: Int, to: Int) {
     val itemToMove = childNodes.item(from)
     if (itemToMove != null) insertOrAppend(itemToMove, to)
 }

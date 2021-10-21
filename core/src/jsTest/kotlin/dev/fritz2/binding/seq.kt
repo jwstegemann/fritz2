@@ -41,7 +41,7 @@ class SeqTests {
             div {
                 ul(id = listId) {
                     store.data.renderEach {
-                        li { +it }
+                        li() { +it }
                     }
                 }
                 button(id = appendBtnId) { clicks handledBy store.append }

@@ -4,7 +4,6 @@ import dev.fritz2.dom.html.TagContext
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.Node
 import org.w3c.dom.Text
 
@@ -19,18 +18,24 @@ interface WithText<N : Node> : WithDomNode<N>, TagContext {
      *
      * @receiver text-content
      */
-    fun Flow<String>.asText() {
-        mountDomNode(job, domNode, this.map { TextNode(it) })
-    }
+    fun Flow<String>.asText(classes: String? = null, id: String? = null) =
+        span(classes, id) {
+            mount(this, this@asText) {
+                domNode.appendChild(TextNode(it).domNode)
+            }
+        }
 
     /**
      * Adds text-content of a [Flow] at this position
      *
      * @receiver text-content
      */
-    fun <T> Flow<T>.asText() {
-        mountDomNode(job, domNode, this.map { TextNode(it.toString()) })
-    }
+    fun <T> Flow<T>.asText(classes: String? = null, id: String? = null) =
+        span(classes, id) {
+            mount(this, this@asText) {
+                domNode.appendChild(TextNode(it.toString()).domNode)
+            }
+        }
 
     /**
      * Adds static text-content at this position
