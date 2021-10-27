@@ -11,7 +11,7 @@ ext {
     set("kotlinVersion", "1.5.31")
     set("coroutinesVersion", "1.5.2")
     set("kotlinpoetVersion", "1.9.0")
-    set("compileTestingVersion", "1.5.4")
+    set("compileTestingVersion", "1.4.5")
     set("stylisVersion", "4.0.2")
     set("murmurhashVersion", "2.0.0")
     set("logbackVersion", "1.2.1")

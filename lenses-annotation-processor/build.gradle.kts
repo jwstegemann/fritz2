@@ -15,7 +15,6 @@ kotlin {
             dependencies {
                 api(kotlin("stdlib"))
                 api(project(":core"))
-                api(kotlin("stdlib-jdk8"))
                 api("com.squareup:kotlinpoet:${rootProject.ext["kotlinpoetVersion"]}")
                 api("com.squareup:kotlinpoet-classinspector-elements:${rootProject.ext["kotlinpoetVersion"]}")
                 api("com.squareup:kotlinpoet-metadata:${rootProject.ext["kotlinpoetVersion"]}")
