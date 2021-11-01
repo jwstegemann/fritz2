@@ -88,7 +88,7 @@ class RoutingTests {
                         li {
                             button(id = id) {
                                 +page
-                                clicks.map { mapOf(pageKey to page, btnKey to id) } handledBy router.navTo
+                                clicks.map { mutableMapOf(pageKey to page, btnKey to id) } handledBy router.navTo
                             }
                         }
                     }
