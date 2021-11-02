@@ -1,6 +1,6 @@
 package dev.fritz2.lenses
 
-
+/*
 import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
@@ -9,8 +9,11 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.createTempDirectory
 import kotlin.test.Test
 
+ */
+
 class LensesAnnotationProcessorTests {
 
+    /*
     @KotlinPoetMetadataPreview
     @ExperimentalPathApi
     @Test
@@ -221,4 +224,6 @@ class LensesAnnotationProcessorTests {
             inheritClassPath = true
             verbose = false
         }.compile()
+
+     */
 }

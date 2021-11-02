@@ -1,5 +1,7 @@
 package dev.fritz2.lenses
 
+/*
+
 //import net.ltgt.gradle.incap.IncrementalAnnotationProcessor
 //import net.ltgt.gradle.incap.IncrementalAnnotationProcessorType
 import com.squareup.kotlinpoet.*
@@ -123,3 +125,6 @@ class LensesAnnotationProcessor : AbstractProcessor() {
     }
 
 }
+
+
+ */

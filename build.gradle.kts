@@ -10,7 +10,7 @@ ext {
     // Dependencies
     set("kotlinVersion", "1.5.31")
     set("coroutinesVersion", "1.5.2")
-    set("kotlinpoetVersion", "1.9.0")
+    set("kotlinpoetVersion", "1.10.1")
     set("compileTestingVersion", "1.4.5")
     set("stylisVersion", "4.0.2")
     set("murmurhashVersion", "2.0.0")
