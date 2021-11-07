@@ -1,12 +1,8 @@
 package dev.fritz2.dom
 
-import dev.fritz2.binding.Patch
-import dev.fritz2.binding.Store
 import dev.fritz2.binding.mountSimple
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
-import dev.fritz2.dom.html.TagContext
-import dev.fritz2.lenses.IdProvider
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -39,11 +35,13 @@ open class Tag<out E : Element>(
     val baseClass: String? = null,
     override val job: Job,
     override val scope: Scope,
-    override val domNode: E = window.document.createElement(tagName).also { element ->
+) : WithDomNode<E>, WithComment<E>, EventContext<E>, RenderContext {
+
+    //FIXME: This is not nice (if...)
+    override val domNode: E = if (tagName.isNotEmpty()) window.document.createElement(tagName).also { element ->
         if (id != null) element.id = id
         if (!baseClass.isNullOrBlank()) element.className = baseClass
-    }.unsafeCast<E>()
-) : WithDomNode<E>, WithComment<E>, EventContext<E>, TagContext {
+    }.unsafeCast<E>() else dummyDom.unsafeCast<E>()
 
     /**
      * Creates the content of the [Tag] and appends it as a child to the wrapped [Element].
@@ -56,66 +54,6 @@ open class Tag<out E : Element>(
         domNode.appendChild(element.domNode)
         return element
     }
-
-    /**
-     * Renders the data of a [Flow] as [Tag]s to the DOM.
-     *
-     * @receiver [Flow] containing the data
-     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
-     * @param content [RenderContext] for rendering the data to the DOM
-     */
-    inline fun <V> Flow<V>.render(into: RenderContext? = null, crossinline content: RenderContext.(V) -> Unit) =
-        mount(into, this, content)
-
-
-    /**
-     * Renders each element of a [Flow]s content.
-     * Internally the [Patch]es are determined using Myer's diff-algorithm.
-     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
-     * when an element stays the same, but changes its internal values.
-     *
-     * @param idProvider function to identify a unique entity in the list
-     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
-     * @param content [RenderContext] for rendering the data to the DOM
-     */
-    inline fun <V> Flow<List<V>>.renderEach(
-        noinline idProvider: IdProvider<V, *>? = null,
-        into: RenderContext? = null,
-        crossinline content: RenderContext.(V) -> RenderContext
-    ) =
-        mount(into, this, idProvider, content)
-
-    /**
-     * Renders each element of a [Store]s [List] content.
-     * Internally the [Patch]es are determined using Myer's diff-algorithm.
-     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
-     * when an element stays the same, but changes its internal values.
-     *
-     * @param idProvider function to identify a unique entity in the list
-     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
-     * @param content [RenderContext] for rendering the data to the DOM
-     */
-    inline fun <V> Store<List<V>>.renderEach(
-        noinline idProvider: IdProvider<V, *>,
-        into: RenderContext? = null,
-        crossinline content: RenderContext.(Store<V>) -> RenderContext
-    ) =
-        mount(into, this, idProvider, content)
-
-    /**
-     * Renders each element of a [Store]s list content.
-     * Internally the [Patch]es are determined using the position of an item in the list.
-     * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
-     *
-     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
-     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
-     */
-    inline fun <V> Store<List<V>>.renderEach(
-        into: RenderContext? = null,
-        crossinline content: RenderContext.(Store<V>) -> RenderContext
-    ) =
-        mount(into, this, content)
-
 
     /**
      * Sets an attribute.

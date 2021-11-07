@@ -2,8 +2,8 @@ package dev.fritz2.webcomponents
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
-import dev.fritz2.dom.html.TagContext
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
@@ -62,11 +62,11 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
      * @param shadowRoot the shadowRoot the content will be added to
      * @return a [Tag] representing the content of the component
      */
-    abstract fun TagContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T>
+    abstract fun RenderContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T>
 
     @JsName("initializeInternal")
     fun initializeInternal(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T> {
-        return object : TagContext {
+        return object : RenderContext {
             override val job = Job()
             override val scope: Scope = Scope()
             override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {

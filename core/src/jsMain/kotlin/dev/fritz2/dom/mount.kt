@@ -7,7 +7,6 @@ import dev.fritz2.binding.sub
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
-import dev.fritz2.dom.html.TagContext
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.utils.Myer
 import kotlinx.browser.window
@@ -21,6 +20,23 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import kotlin.collections.set
 
+class MountContext(mountJob: Job, mountScope: Scope, proxee: Tag<*>? = null) : Tag<HTMLElement>(
+    tagName = if (proxee == null) "div" else "",
+    baseClass = if (proxee == null) "mount-point" else "",
+    job = mountJob,
+    scope = mountScope
+) {
+
+    override val domNode: HTMLElement = (proxee?.domNode ?: super.domNode).unsafeCast<HTMLElement>()
+
+    init {
+        if (proxee?.domNode?.getAttribute("data-mount-point") != null) {
+            console.error("You are mounting a flow to a tag, which is already used as mount-point by another flow")
+        }
+        attr("data-mount-point", true)
+    }
+}
+
 /**
  * Creates a [Div] as context for the mounted content using the given job and adds it to the receiver of this function
  * inheriting its scope.
@@ -30,10 +46,7 @@ import kotlin.collections.set
  * @param mountJob [Job] to use downstream from this mountpoint
  * @receiver TagContext parent to add the [Div] to
  */
-inline fun TagContext.mountContext(mountJob: Job) =
-    register(Div(baseClass = "mount-point", job = mountJob, scope = this.scope)) {
-        it.attr("data-mount-point", true)
-    }
+fun RenderContext.mountContext(mountJob: Job) = register(MountContext(mountJob, this.scope)) {}
 
 /**
  * Implementation of [RenderContext] that forwards all registrations of children to the element it proxies.
@@ -45,7 +58,10 @@ inline fun TagContext.mountContext(mountJob: Job) =
 class ProxyContext<T : HTMLElement>(
     mountJob: Job,
     proxee: Tag<T>
-) : RenderContext(job = mountJob, scope = proxee.scope, domNode = proxee.domNode, tagName = "") {
+) : Tag<HTMLElement>(job = mountJob, scope = proxee.scope, tagName = "") {
+
+    override val domNode = proxee.domNode
+
     init {
         if (domNode.getAttribute("data-mount-point") != null) {
             console.error("You are mounting a flow to a tag, which is already used as mount-point by another flow")
@@ -65,7 +81,10 @@ internal val dummyDom = window.document.createElement("div") as HTMLElement
 class DummyContext(
     mountJob: Job,
     mountScope: Scope,
-) : RenderContext(job = mountJob, scope = mountScope, domNode = dummyDom, tagName = "") {
+) : Tag<HTMLElement>(job = mountJob, scope = mountScope, tagName = "") {
+
+    override val domNode = dummyDom
+
     override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
         content(element)
         return element
@@ -84,10 +103,10 @@ class DummyContext(
  * @param content lambda definining what to render for a given value on [upstream]
  */
 @OptIn(InternalCoroutinesApi::class)
-inline fun <V> TagContext.mount(
-    into: RenderContext?,
+fun <V> RenderContext.mount(
+    into: Tag<HTMLElement>?,
     upstream: Flow<V>,
-    crossinline content: RenderContext.(V) -> Unit
+    content: RenderContext.(V) -> Unit
 ) {
     val target = if (into != null) ProxyContext(Job(job), into) else mountContext(Job(job))
 
@@ -125,11 +144,11 @@ fun <T> accumulate(
  * @param upstream the [Flow] that should be mounted
  * @param content lambda definining what to render for a given value on [upstream]
  */
-inline fun <V> TagContext.mount(
-    into: RenderContext?,
+fun <V> RenderContext.mount(
+    into: Tag<HTMLElement>?,
     upstream: Flow<List<V>>,
-    noinline idProvider: IdProvider<V, *>?,
-    crossinline content: RenderContext.(V) -> RenderContext
+    idProvider: IdProvider<V, *>?,
+    content: RenderContext.(V) -> Tag<HTMLElement>
 ) = mountPatches(into, upstream) { upstreamValues, jobs ->
     upstreamValues.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
         val diff = if (idProvider != null) Myer.diff(old, new, idProvider) else Myer.diff(old, new)
@@ -155,11 +174,11 @@ inline fun <V> TagContext.mount(
  * @param store the [Store] that's values should be mounted at
  * @param content lambda definining what to render for a given value on [store]'s data-[Flow]
  */
-inline fun <V> TagContext.mount(
-    into: RenderContext?,
+fun <V> RenderContext.mount(
+    into: Tag<HTMLElement>?,
     store: Store<List<V>>,
-    noinline idProvider: IdProvider<V, *>,
-    crossinline content: RenderContext.(Store<V>) -> RenderContext
+    idProvider: IdProvider<V, *>,
+    content: RenderContext.(Store<V>) -> Tag<HTMLElement>
 ) = mount(into, store.data, idProvider) { value ->
     content(store.sub(value, idProvider))
 }
@@ -175,10 +194,10 @@ inline fun <V> TagContext.mount(
  * @param store the [Store] that's values should be mounted at
  * @param content lambda definining what to render for a given value on [store]'s data-[Flow]
  */
-inline fun <V> TagContext.mount(
-    into: RenderContext?,
+fun <V> RenderContext.mount(
+    into: Tag<HTMLElement>?,
     store: Store<List<V>>,
-    crossinline content: RenderContext.(Store<V>) -> RenderContext
+    content: RenderContext.(Store<V>) -> Tag<HTMLElement>
 ) = mountPatches(into, store.data) { upstream, jobs ->
     upstream.map { it.withIndex().toList() }.eachIndex().map { patch ->
         listOf(patch.map(job) { value, newJob ->
@@ -221,10 +240,10 @@ fun <V> Flow<List<V>>.eachIndex(): Flow<Patch<V>> =
  * @param upstream the [Flow] that should be mounted
  * @param createPatches lambda defining, how to compare two versions of a [List]
  */
-inline fun <V> TagContext.mountPatches(
-    into: RenderContext?,
+fun <V> RenderContext.mountPatches(
+    into: Tag<HTMLElement>?,
     upstream: Flow<List<V>>,
-    crossinline createPatches: (Flow<List<V>>, MutableMap<Node, Job>) -> Flow<List<Patch<RenderContext>>>,
+    createPatches: (Flow<List<V>>, MutableMap<Node, Job>) -> Flow<List<Patch<Tag<HTMLElement>>>>,
 ) {
     val target = if (into != null) {
         into.domNode.clear()

@@ -1,9 +1,13 @@
+@file:Suppress("unused")
+
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.*
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
 import dev.fritz2.dom.WithText
+import dev.fritz2.dom.mount
+import dev.fritz2.lenses.IdProvider
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +15,6 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 import org.w3c.dom.svg.SVGElement
 import org.w3c.dom.svg.SVGPathElement
-
 
 /**
  * Exposes the JavaScript [HTMLAnchorElement](https://developer.mozilla.org/en/docs/Web/API/HTMLAnchorElement) to Kotlin
@@ -1254,16 +1257,10 @@ open class Ul(id: String? = null, baseClass: String? = null, job: Job, scope: Sc
  * Exposes the JavaScript [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement) to Kotlin
  */
 class Svg(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
-    Tag<SVGElement>("", id, baseClass, job, scope, createSVGElement(baseClass)) {
+    Tag<SVGElement>("", id, baseClass, job, scope) {
 
-    companion object {
-        const val xmlns = "http://www.w3.org/2000/svg"
-
-        fun createSVGElement(baseClass: String?): SVGElement {
-            val elem = document.createElementNS(xmlns, "svg").unsafeCast<SVGElement>()
-            baseClass?.let { elem.setAttributeNS(null, "class", it) }
-            return elem
-        }
+    override val domNode: SVGElement = document.createElementNS(SVG_XMLNS, "svg").unsafeCast<SVGElement>().apply {
+        if (baseClass != null) setAttributeNS(null, "class", baseClass)
     }
 
     /**
@@ -1284,26 +1281,23 @@ class Svg(id: String? = null, baseClass: String? = null, job: Job, scope: Scope)
     fun fill(value: Flow<String>) = attr("fill", value)
 }
 
+const val SVG_XMLNS = "http://www.w3.org/2000/svg"
+
 /**
  * Exposes the JavaScript Path(https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths) to Kotlin
  */
 class Path(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
-    Tag<SVGPathElement>("", id, baseClass, job, scope, createPathElement(baseClass)) {
+    Tag<SVGPathElement>("", id, baseClass, job, scope) {
 
-    companion object {
-        const val xmlns = "http://www.w3.org/2000/svg"
-
-        fun createPathElement(baseClass: String?): SVGPathElement {
-            val elem = document.createElementNS(xmlns, "path").unsafeCast<SVGPathElement>()
-            baseClass?.let { elem.setAttributeNS(null, "class", it) }
-            return elem
+    override val domNode: SVGPathElement =
+        document.createElementNS(SVG_XMLNS, "path").unsafeCast<SVGPathElement>().apply {
+            if (baseClass != null) setAttributeNS(null, "class", baseClass)
         }
-    }
 
     /**
-     * Sets the given [xml] string to the *innerHTML* of the [SVGElement].
+     * Sets the namespace for this [SVGElement].
      *
-     * @param xml svg xml content
+     * @param value xml namespace
      */
     fun xmlns(value: String) = attr("xmlns", value)
 
@@ -1315,19 +1309,73 @@ class Path(id: String? = null, baseClass: String? = null, job: Job, scope: Scope
  * Special [Tag] for HTML5 with no attributes
  */
 open class TextElement(tagName: String, id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
-    RenderContext(tagName, id, baseClass, job, scope), WithText<HTMLElement>
+    Tag<HTMLElement>(tagName, id, baseClass, job, scope), WithText<HTMLElement>
 
-/**
- * Type alias for the most generic type of a tag. This type should be preferred for HTML structures without
- * restrictions. This is very useful for sub-structures of a component that a client can freely inject, like the
- * items of a stack or the content of a modal for example.
- */
-typealias RenderContext = Tag<HTMLElement>
 
 /**
  * Context for rendering standard HTML5 [Tag]s
  */
-interface TagContext : WithJob, WithScope {
+interface RenderContext : WithJob, WithScope {
+
+    /**
+     * Renders the data of a [Flow] as [Tag]s to the DOM.
+     *
+     * @receiver [Flow] containing the data
+     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
+     * @param content [RenderContext] for rendering the data to the DOM
+     */
+    fun <V> Flow<V>.render(into: Tag<HTMLElement>? = null, content: RenderContext.(V) -> Unit) =
+        mount(into, this, content)
+
+
+    /**
+     * Renders each element of a [Flow]s content.
+     * Internally the [Patch]es are determined using Myer's diff-algorithm.
+     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
+     * when an element stays the same, but changes its internal values.
+     *
+     * @param idProvider function to identify a unique entity in the list
+     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
+     * @param content [RenderContext] for rendering the data to the DOM
+     */
+    fun <V> Flow<List<V>>.renderEach(
+        idProvider: IdProvider<V, *>? = null,
+        into: Tag<HTMLElement>? = null,
+        content: RenderContext.(V) -> Tag<HTMLElement>
+    ) =
+        mount(into, this, idProvider, content)
+
+    /**
+     * Renders each element of a [Store]s [List] content.
+     * Internally the [Patch]es are determined using Myer's diff-algorithm.
+     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
+     * when an element stays the same, but changes its internal values.
+     *
+     * @param idProvider function to identify a unique entity in the list
+     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
+     * @param content [RenderContext] for rendering the data to the DOM
+     */
+    fun <V> Store<List<V>>.renderEach(
+        idProvider: IdProvider<V, *>,
+        into: Tag<HTMLElement>? = null,
+        content: RenderContext.(Store<V>) -> Tag<HTMLElement>
+    ) =
+        mount(into, this, idProvider, content)
+
+    /**
+     * Renders each element of a [Store]s list content.
+     * Internally the [Patch]es are determined using the position of an item in the list.
+     * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
+     *
+     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
+     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
+     */
+    fun <V> Store<List<V>>.renderEach(
+        into: Tag<HTMLElement>? = null,
+        content: RenderContext.(Store<V>) -> Tag<HTMLElement>
+    ) =
+        mount(into, this, content)
+
 
     /**
      * Converts the content of a [Flow] to [String] by using [toString] method.
@@ -1346,7 +1394,7 @@ interface TagContext : WithJob, WithScope {
      * @param context to evaluate
      */
     private inline fun evalScope(context: (ScopeContext.() -> Unit)): Scope {
-        return ScopeContext(this@TagContext.scope).apply(context).scope
+        return ScopeContext(this@RenderContext.scope).apply(context).scope
     }
 
     /**
@@ -1363,7 +1411,7 @@ interface TagContext : WithJob, WithScope {
         scope: (ScopeContext.() -> Unit) = {},
         content: RenderContext.() -> Unit
     ): RenderContext =
-        register(RenderContext(tagName, id, baseClass, job, evalScope(scope)), content)
+        register(Tag(tagName, id, baseClass, job, evalScope(scope)), content)
 
     fun a(
         baseClass: String? = null,

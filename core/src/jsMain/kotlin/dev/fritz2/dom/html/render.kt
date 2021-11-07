@@ -3,6 +3,7 @@ package dev.fritz2.dom.html
 import dev.fritz2.dom.Tag
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
+import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLStyleElement
 import org.w3c.dom.css.CSSStyleSheet
@@ -53,8 +54,10 @@ fun render(
     //add style sheet continaing mount-point-class
     addGlobalStyle(".mount-point { display: contents; }")
     targetElement?.let {
-        if (override) it.innerHTML = ""
-        content(RenderContext(it.tagName, it.id, null, Job(), Scope(), it))
+        if (override) it.clear()
+        content(object : Tag<HTMLElement>("", it.id, null, Job(), Scope()) {
+            override val domNode: HTMLElement = it
+        })
     } ?: throw MountTargetNotFoundException("targetElement should not be null")
 }
 

@@ -11,10 +11,10 @@ import dev.fritz2.styling.params.StyleParamsImpl
  *
  * @param context to evaluate
  */
-private inline fun TagContext.evalScope(context: (ScopeContext.() -> Unit)): Scope =
+private inline fun RenderContext.evalScope(context: (ScopeContext.() -> Unit)): Scope =
     ScopeContext(this.scope).apply(context).scope
 
-fun TagContext.a(
+fun RenderContext.a(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -30,7 +30,7 @@ fun TagContext.a(
     ), content
 )
 
-fun TagContext.a(
+fun RenderContext.a(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -47,7 +47,7 @@ fun TagContext.a(
     ), content
 )
 
-fun TagContext.area(
+fun RenderContext.area(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -64,7 +64,7 @@ fun TagContext.area(
         ), content
     )
 
-fun TagContext.area(
+fun RenderContext.area(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -81,7 +81,7 @@ fun TagContext.area(
     ), content
 )
 
-fun TagContext.br(
+fun RenderContext.br(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -97,7 +97,7 @@ fun TagContext.br(
     ), content
 )
 
-fun TagContext.br(
+fun RenderContext.br(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -114,7 +114,7 @@ fun TagContext.br(
     ), content
 )
 
-fun TagContext.button(
+fun RenderContext.button(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -131,7 +131,7 @@ fun TagContext.button(
         ), content
     )
 
-fun TagContext.button(
+fun RenderContext.button(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -148,7 +148,7 @@ fun TagContext.button(
     ), content
 )
 
-fun TagContext.canvas(
+fun RenderContext.canvas(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -165,7 +165,7 @@ fun TagContext.canvas(
         ), content
     )
 
-fun TagContext.canvas(
+fun RenderContext.canvas(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -182,7 +182,7 @@ fun TagContext.canvas(
     ), content
 )
 
-fun TagContext.dl(
+fun RenderContext.dl(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -198,7 +198,7 @@ fun TagContext.dl(
     ), content
 )
 
-fun TagContext.dl(
+fun RenderContext.dl(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -215,7 +215,7 @@ fun TagContext.dl(
     ), content
 )
 
-fun TagContext.dt(
+fun RenderContext.dt(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -234,7 +234,7 @@ fun TagContext.dt(
         content
     )
 
-fun TagContext.dt(
+fun RenderContext.dt(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -252,7 +252,7 @@ fun TagContext.dt(
     ), content
 )
 
-fun TagContext.dd(
+fun RenderContext.dd(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -271,7 +271,7 @@ fun TagContext.dd(
         content
     )
 
-fun TagContext.dd(
+fun RenderContext.dd(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -289,7 +289,7 @@ fun TagContext.dd(
     ), content
 )
 
-fun TagContext.data(
+fun RenderContext.data(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -306,7 +306,7 @@ fun TagContext.data(
         ), content
     )
 
-fun TagContext.data(
+fun RenderContext.data(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -323,7 +323,7 @@ fun TagContext.data(
     ), content
 )
 
-fun TagContext.datalist(
+fun RenderContext.datalist(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -340,7 +340,7 @@ fun TagContext.datalist(
         ), content
     )
 
-fun TagContext.datalist(
+fun RenderContext.datalist(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -357,7 +357,7 @@ fun TagContext.datalist(
     ), content
 )
 
-fun TagContext.details(
+fun RenderContext.details(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -374,7 +374,7 @@ fun TagContext.details(
         ), content
     )
 
-fun TagContext.details(
+fun RenderContext.details(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -391,7 +391,7 @@ fun TagContext.details(
     ), content
 )
 
-fun TagContext.dialog(
+fun RenderContext.dialog(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -408,7 +408,7 @@ fun TagContext.dialog(
         ), content
     )
 
-fun TagContext.dialog(
+fun RenderContext.dialog(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -425,7 +425,7 @@ fun TagContext.dialog(
     ), content
 )
 
-fun TagContext.div(
+fun RenderContext.div(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -442,7 +442,7 @@ fun TagContext.div(
         ), content
     )
 
-fun TagContext.div(
+fun RenderContext.div(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -459,7 +459,7 @@ fun TagContext.div(
     ), content
 )
 
-fun TagContext.embed(
+fun RenderContext.embed(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -476,7 +476,7 @@ fun TagContext.embed(
         ), content
     )
 
-fun TagContext.embed(
+fun RenderContext.embed(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -493,7 +493,7 @@ fun TagContext.embed(
     ), content
 )
 
-fun TagContext.fieldset(
+fun RenderContext.fieldset(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -510,7 +510,7 @@ fun TagContext.fieldset(
         ), content
     )
 
-fun TagContext.fieldset(
+fun RenderContext.fieldset(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -527,7 +527,7 @@ fun TagContext.fieldset(
     ), content
 )
 
-fun TagContext.form(
+fun RenderContext.form(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -544,7 +544,7 @@ fun TagContext.form(
         ), content
     )
 
-fun TagContext.form(
+fun RenderContext.form(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -561,7 +561,7 @@ fun TagContext.form(
     ), content
 )
 
-fun TagContext.hr(
+fun RenderContext.hr(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -577,7 +577,7 @@ fun TagContext.hr(
     ), content
 )
 
-fun TagContext.hr(
+fun RenderContext.hr(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -594,7 +594,7 @@ fun TagContext.hr(
     ), content
 )
 
-fun TagContext.h1(
+fun RenderContext.h1(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -611,7 +611,7 @@ fun TagContext.h1(
     ), content
 )
 
-fun TagContext.h1(
+fun RenderContext.h1(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -629,7 +629,7 @@ fun TagContext.h1(
     ), content
 )
 
-fun TagContext.h2(
+fun RenderContext.h2(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -646,7 +646,7 @@ fun TagContext.h2(
     ), content
 )
 
-fun TagContext.h2(
+fun RenderContext.h2(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -664,7 +664,7 @@ fun TagContext.h2(
     ), content
 )
 
-fun TagContext.h3(
+fun RenderContext.h3(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -681,7 +681,7 @@ fun TagContext.h3(
     ), content
 )
 
-fun TagContext.h3(
+fun RenderContext.h3(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -699,7 +699,7 @@ fun TagContext.h3(
     ), content
 )
 
-fun TagContext.h4(
+fun RenderContext.h4(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -716,7 +716,7 @@ fun TagContext.h4(
     ), content
 )
 
-fun TagContext.h4(
+fun RenderContext.h4(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -734,7 +734,7 @@ fun TagContext.h4(
     ), content
 )
 
-fun TagContext.h5(
+fun RenderContext.h5(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -751,7 +751,7 @@ fun TagContext.h5(
     ), content
 )
 
-fun TagContext.h5(
+fun RenderContext.h5(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -769,7 +769,7 @@ fun TagContext.h5(
     ), content
 )
 
-fun TagContext.h6(
+fun RenderContext.h6(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -786,7 +786,7 @@ fun TagContext.h6(
     ), content
 )
 
-fun TagContext.h6(
+fun RenderContext.h6(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -804,7 +804,7 @@ fun TagContext.h6(
     ), content
 )
 
-fun TagContext.iframe(
+fun RenderContext.iframe(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -821,7 +821,7 @@ fun TagContext.iframe(
         ), content
     )
 
-fun TagContext.iframe(
+fun RenderContext.iframe(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -838,7 +838,7 @@ fun TagContext.iframe(
     ), content
 )
 
-fun TagContext.img(
+fun RenderContext.img(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -854,7 +854,7 @@ fun TagContext.img(
     ), content
 )
 
-fun TagContext.img(
+fun RenderContext.img(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -871,7 +871,7 @@ fun TagContext.img(
     ), content
 )
 
-fun TagContext.input(
+fun RenderContext.input(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -888,7 +888,7 @@ fun TagContext.input(
         ), content
     )
 
-fun TagContext.input(
+fun RenderContext.input(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -905,7 +905,7 @@ fun TagContext.input(
     ), content
 )
 
-fun TagContext.li(
+fun RenderContext.li(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -921,7 +921,7 @@ fun TagContext.li(
     ), content
 )
 
-fun TagContext.li(
+fun RenderContext.li(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -938,7 +938,7 @@ fun TagContext.li(
     ), content
 )
 
-fun TagContext.label(
+fun RenderContext.label(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -955,7 +955,7 @@ fun TagContext.label(
         ), content
     )
 
-fun TagContext.label(
+fun RenderContext.label(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -972,7 +972,7 @@ fun TagContext.label(
     ), content
 )
 
-fun TagContext.legend(
+fun RenderContext.legend(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -989,7 +989,7 @@ fun TagContext.legend(
         ), content
     )
 
-fun TagContext.legend(
+fun RenderContext.legend(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1006,7 +1006,7 @@ fun TagContext.legend(
     ), content
 )
 
-fun TagContext.map(
+fun RenderContext.map(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1022,7 +1022,7 @@ fun TagContext.map(
     ), content
 )
 
-fun TagContext.map(
+fun RenderContext.map(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1039,7 +1039,7 @@ fun TagContext.map(
     ), content
 )
 
-fun TagContext.audio(
+fun RenderContext.audio(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1056,7 +1056,7 @@ fun TagContext.audio(
         ), content
     )
 
-fun TagContext.audio(
+fun RenderContext.audio(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1073,7 +1073,7 @@ fun TagContext.audio(
     ), content
 )
 
-fun TagContext.video(
+fun RenderContext.video(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1090,7 +1090,7 @@ fun TagContext.video(
         ), content
     )
 
-fun TagContext.video(
+fun RenderContext.video(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1107,7 +1107,7 @@ fun TagContext.video(
     ), content
 )
 
-fun TagContext.meter(
+fun RenderContext.meter(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1124,7 +1124,7 @@ fun TagContext.meter(
         ), content
     )
 
-fun TagContext.meter(
+fun RenderContext.meter(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1141,7 +1141,7 @@ fun TagContext.meter(
     ), content
 )
 
-fun TagContext.ins(
+fun RenderContext.ins(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1157,7 +1157,7 @@ fun TagContext.ins(
     ), content
 )
 
-fun TagContext.ins(
+fun RenderContext.ins(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1174,7 +1174,7 @@ fun TagContext.ins(
     ), content
 )
 
-fun TagContext.del(
+fun RenderContext.del(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1190,7 +1190,7 @@ fun TagContext.del(
     ), content
 )
 
-fun TagContext.del(
+fun RenderContext.del(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1207,7 +1207,7 @@ fun TagContext.del(
     ), content
 )
 
-fun TagContext.ol(
+fun RenderContext.ol(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1223,7 +1223,7 @@ fun TagContext.ol(
     ), content
 )
 
-fun TagContext.ol(
+fun RenderContext.ol(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1240,7 +1240,7 @@ fun TagContext.ol(
     ), content
 )
 
-fun TagContext.`object`(
+fun RenderContext.`object`(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1257,7 +1257,7 @@ fun TagContext.`object`(
         ), content
     )
 
-fun TagContext.`object`(
+fun RenderContext.`object`(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1274,7 +1274,7 @@ fun TagContext.`object`(
     ), content
 )
 
-fun TagContext.optgroup(
+fun RenderContext.optgroup(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1291,7 +1291,7 @@ fun TagContext.optgroup(
         ), content
     )
 
-fun TagContext.optgroup(
+fun RenderContext.optgroup(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1308,7 +1308,7 @@ fun TagContext.optgroup(
     ), content
 )
 
-fun TagContext.option(
+fun RenderContext.option(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1325,7 +1325,7 @@ fun TagContext.option(
         ), content
     )
 
-fun TagContext.option(
+fun RenderContext.option(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1342,7 +1342,7 @@ fun TagContext.option(
     ), content
 )
 
-fun TagContext.output(
+fun RenderContext.output(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1359,7 +1359,7 @@ fun TagContext.output(
         ), content
     )
 
-fun TagContext.output(
+fun RenderContext.output(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1376,7 +1376,7 @@ fun TagContext.output(
     ), content
 )
 
-fun TagContext.p(
+fun RenderContext.p(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1392,7 +1392,7 @@ fun TagContext.p(
     ), content
 )
 
-fun TagContext.p(
+fun RenderContext.p(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1409,7 +1409,7 @@ fun TagContext.p(
     ), content
 )
 
-fun TagContext.param(
+fun RenderContext.param(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1426,7 +1426,7 @@ fun TagContext.param(
         ), content
     )
 
-fun TagContext.param(
+fun RenderContext.param(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1443,7 +1443,7 @@ fun TagContext.param(
     ), content
 )
 
-fun TagContext.picture(
+fun RenderContext.picture(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1460,7 +1460,7 @@ fun TagContext.picture(
         ), content
     )
 
-fun TagContext.picture(
+fun RenderContext.picture(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1477,7 +1477,7 @@ fun TagContext.picture(
     ), content
 )
 
-fun TagContext.pre(
+fun RenderContext.pre(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1493,7 +1493,7 @@ fun TagContext.pre(
     ), content
 )
 
-fun TagContext.pre(
+fun RenderContext.pre(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1510,7 +1510,7 @@ fun TagContext.pre(
     ), content
 )
 
-fun TagContext.progress(
+fun RenderContext.progress(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1527,7 +1527,7 @@ fun TagContext.progress(
         ), content
     )
 
-fun TagContext.progress(
+fun RenderContext.progress(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1544,7 +1544,7 @@ fun TagContext.progress(
     ), content
 )
 
-fun TagContext.quote(
+fun RenderContext.quote(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1561,7 +1561,7 @@ fun TagContext.quote(
         ), content
     )
 
-fun TagContext.quote(
+fun RenderContext.quote(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1578,7 +1578,7 @@ fun TagContext.quote(
     ), content
 )
 
-fun TagContext.script(
+fun RenderContext.script(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1595,7 +1595,7 @@ fun TagContext.script(
         ), content
     )
 
-fun TagContext.script(
+fun RenderContext.script(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1612,7 +1612,7 @@ fun TagContext.script(
     ), content
 )
 
-fun TagContext.select(
+fun RenderContext.select(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1629,7 +1629,7 @@ fun TagContext.select(
         ), content
     )
 
-fun TagContext.select(
+fun RenderContext.select(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1646,7 +1646,7 @@ fun TagContext.select(
     ), content
 )
 
-fun TagContext.span(
+fun RenderContext.span(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1663,7 +1663,7 @@ fun TagContext.span(
         ), content
     )
 
-fun TagContext.span(
+fun RenderContext.span(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1680,7 +1680,7 @@ fun TagContext.span(
     ), content
 )
 
-fun TagContext.caption(
+fun RenderContext.caption(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1697,7 +1697,7 @@ fun TagContext.caption(
         ), content
     )
 
-fun TagContext.caption(
+fun RenderContext.caption(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1714,7 +1714,7 @@ fun TagContext.caption(
     ), content
 )
 
-fun TagContext.th(
+fun RenderContext.th(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1730,7 +1730,7 @@ fun TagContext.th(
     ), content
 )
 
-fun TagContext.th(
+fun RenderContext.th(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1747,7 +1747,7 @@ fun TagContext.th(
     ), content
 )
 
-fun TagContext.td(
+fun RenderContext.td(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1763,7 +1763,7 @@ fun TagContext.td(
     ), content
 )
 
-fun TagContext.td(
+fun RenderContext.td(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1780,7 +1780,7 @@ fun TagContext.td(
     ), content
 )
 
-fun TagContext.col(
+fun RenderContext.col(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1796,7 +1796,7 @@ fun TagContext.col(
     ), content
 )
 
-fun TagContext.col(
+fun RenderContext.col(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1813,7 +1813,7 @@ fun TagContext.col(
     ), content
 )
 
-fun TagContext.colgroup(
+fun RenderContext.colgroup(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1830,7 +1830,7 @@ fun TagContext.colgroup(
         ), content
     )
 
-fun TagContext.colgroup(
+fun RenderContext.colgroup(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1847,7 +1847,7 @@ fun TagContext.colgroup(
     ), content
 )
 
-fun TagContext.table(
+fun RenderContext.table(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1864,7 +1864,7 @@ fun TagContext.table(
         ), content
     )
 
-fun TagContext.table(
+fun RenderContext.table(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1881,7 +1881,7 @@ fun TagContext.table(
     ), content
 )
 
-fun TagContext.tr(
+fun RenderContext.tr(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1897,7 +1897,7 @@ fun TagContext.tr(
     ), content
 )
 
-fun TagContext.tr(
+fun RenderContext.tr(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1914,7 +1914,7 @@ fun TagContext.tr(
     ), content
 )
 
-fun TagContext.tfoot(
+fun RenderContext.tfoot(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1931,7 +1931,7 @@ fun TagContext.tfoot(
         ), content
     )
 
-fun TagContext.tfoot(
+fun RenderContext.tfoot(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1948,7 +1948,7 @@ fun TagContext.tfoot(
     ), content
 )
 
-fun TagContext.thead(
+fun RenderContext.thead(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1965,7 +1965,7 @@ fun TagContext.thead(
         ), content
     )
 
-fun TagContext.thead(
+fun RenderContext.thead(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -1982,7 +1982,7 @@ fun TagContext.thead(
     ), content
 )
 
-fun TagContext.tbody(
+fun RenderContext.tbody(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -1999,7 +1999,7 @@ fun TagContext.tbody(
         ), content
     )
 
-fun TagContext.tbody(
+fun RenderContext.tbody(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2016,7 +2016,7 @@ fun TagContext.tbody(
     ), content
 )
 
-fun TagContext.textarea(
+fun RenderContext.textarea(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2033,7 +2033,7 @@ fun TagContext.textarea(
         ), content
     )
 
-fun TagContext.textarea(
+fun RenderContext.textarea(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2050,7 +2050,7 @@ fun TagContext.textarea(
     ), content
 )
 
-fun TagContext.time(
+fun RenderContext.time(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2067,7 +2067,7 @@ fun TagContext.time(
         ), content
     )
 
-fun TagContext.time(
+fun RenderContext.time(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2084,7 +2084,7 @@ fun TagContext.time(
     ), content
 )
 
-fun TagContext.track(
+fun RenderContext.track(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2101,7 +2101,7 @@ fun TagContext.track(
         ), content
     )
 
-fun TagContext.track(
+fun RenderContext.track(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2118,7 +2118,7 @@ fun TagContext.track(
     ), content
 )
 
-fun TagContext.ul(
+fun RenderContext.ul(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2134,7 +2134,7 @@ fun TagContext.ul(
     ), content
 )
 
-fun TagContext.ul(
+fun RenderContext.ul(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2151,7 +2151,7 @@ fun TagContext.ul(
     ), content
 )
 
-fun TagContext.address(
+fun RenderContext.address(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2168,7 +2168,7 @@ fun TagContext.address(
     ), content
 )
 
-fun TagContext.address(
+fun RenderContext.address(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2186,7 +2186,7 @@ fun TagContext.address(
     ), content
 )
 
-fun TagContext.article(
+fun RenderContext.article(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2203,7 +2203,7 @@ fun TagContext.article(
     ), content
 )
 
-fun TagContext.article(
+fun RenderContext.article(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2221,7 +2221,7 @@ fun TagContext.article(
     ), content
 )
 
-fun TagContext.aside(
+fun RenderContext.aside(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2238,7 +2238,7 @@ fun TagContext.aside(
     ), content
 )
 
-fun TagContext.aside(
+fun RenderContext.aside(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2256,7 +2256,7 @@ fun TagContext.aside(
     ), content
 )
 
-fun TagContext.bdi(
+fun RenderContext.bdi(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2273,7 +2273,7 @@ fun TagContext.bdi(
     ), content
 )
 
-fun TagContext.bdi(
+fun RenderContext.bdi(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2291,7 +2291,7 @@ fun TagContext.bdi(
     ), content
 )
 
-fun TagContext.details(
+fun RenderContext.details(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2308,7 +2308,7 @@ fun TagContext.details(
     ), content
 )
 
-fun TagContext.details(
+fun RenderContext.details(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2326,7 +2326,7 @@ fun TagContext.details(
     ), content
 )
 
-fun TagContext.dialog(
+fun RenderContext.dialog(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2343,7 +2343,7 @@ fun TagContext.dialog(
     ), content
 )
 
-fun TagContext.dialog(
+fun RenderContext.dialog(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2361,7 +2361,7 @@ fun TagContext.dialog(
     ), content
 )
 
-fun TagContext.figcaption(
+fun RenderContext.figcaption(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2378,7 +2378,7 @@ fun TagContext.figcaption(
     ), content
 )
 
-fun TagContext.figcaption(
+fun RenderContext.figcaption(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2396,7 +2396,7 @@ fun TagContext.figcaption(
     ), content
 )
 
-fun TagContext.figure(
+fun RenderContext.figure(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2413,7 +2413,7 @@ fun TagContext.figure(
     ), content
 )
 
-fun TagContext.figure(
+fun RenderContext.figure(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2431,7 +2431,7 @@ fun TagContext.figure(
     ), content
 )
 
-fun TagContext.footer(
+fun RenderContext.footer(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2448,7 +2448,7 @@ fun TagContext.footer(
     ), content
 )
 
-fun TagContext.footer(
+fun RenderContext.footer(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2466,7 +2466,7 @@ fun TagContext.footer(
     ), content
 )
 
-fun TagContext.header(
+fun RenderContext.header(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2483,7 +2483,7 @@ fun TagContext.header(
     ), content
 )
 
-fun TagContext.header(
+fun RenderContext.header(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2501,7 +2501,7 @@ fun TagContext.header(
     ), content
 )
 
-fun TagContext.main(
+fun RenderContext.main(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2518,7 +2518,7 @@ fun TagContext.main(
     ), content
 )
 
-fun TagContext.main(
+fun RenderContext.main(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2536,7 +2536,7 @@ fun TagContext.main(
     ), content
 )
 
-fun TagContext.mark(
+fun RenderContext.mark(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2553,7 +2553,7 @@ fun TagContext.mark(
     ), content
 )
 
-fun TagContext.mark(
+fun RenderContext.mark(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2571,7 +2571,7 @@ fun TagContext.mark(
     ), content
 )
 
-fun TagContext.nav(
+fun RenderContext.nav(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2588,7 +2588,7 @@ fun TagContext.nav(
     ), content
 )
 
-fun TagContext.nav(
+fun RenderContext.nav(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2606,7 +2606,7 @@ fun TagContext.nav(
     ), content
 )
 
-fun TagContext.noscript(
+fun RenderContext.noscript(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2623,7 +2623,7 @@ fun TagContext.noscript(
     ), content
 )
 
-fun TagContext.noscript(
+fun RenderContext.noscript(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2641,7 +2641,7 @@ fun TagContext.noscript(
     ), content
 )
 
-fun TagContext.progress(
+fun RenderContext.progress(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2658,7 +2658,7 @@ fun TagContext.progress(
     ), content
 )
 
-fun TagContext.progress(
+fun RenderContext.progress(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2676,7 +2676,7 @@ fun TagContext.progress(
     ), content
 )
 
-fun TagContext.rp(
+fun RenderContext.rp(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2693,7 +2693,7 @@ fun TagContext.rp(
     ), content
 )
 
-fun TagContext.rp(
+fun RenderContext.rp(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2711,7 +2711,7 @@ fun TagContext.rp(
     ), content
 )
 
-fun TagContext.rt(
+fun RenderContext.rt(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2728,7 +2728,7 @@ fun TagContext.rt(
     ), content
 )
 
-fun TagContext.rt(
+fun RenderContext.rt(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2746,7 +2746,7 @@ fun TagContext.rt(
     ), content
 )
 
-fun TagContext.ruby(
+fun RenderContext.ruby(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2763,7 +2763,7 @@ fun TagContext.ruby(
     ), content
 )
 
-fun TagContext.ruby(
+fun RenderContext.ruby(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2781,7 +2781,7 @@ fun TagContext.ruby(
     ), content
 )
 
-fun TagContext.section(
+fun RenderContext.section(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2798,7 +2798,7 @@ fun TagContext.section(
     ), content
 )
 
-fun TagContext.section(
+fun RenderContext.section(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2816,7 +2816,7 @@ fun TagContext.section(
     ), content
 )
 
-fun TagContext.summary(
+fun RenderContext.summary(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2833,7 +2833,7 @@ fun TagContext.summary(
     ), content
 )
 
-fun TagContext.summary(
+fun RenderContext.summary(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2851,7 +2851,7 @@ fun TagContext.summary(
     ), content
 )
 
-fun TagContext.time(
+fun RenderContext.time(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2868,7 +2868,7 @@ fun TagContext.time(
     ), content
 )
 
-fun TagContext.time(
+fun RenderContext.time(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2886,7 +2886,7 @@ fun TagContext.time(
     ), content
 )
 
-fun TagContext.wbr(
+fun RenderContext.wbr(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2903,7 +2903,7 @@ fun TagContext.wbr(
     ), content
 )
 
-fun TagContext.wbr(
+fun RenderContext.wbr(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2921,7 +2921,7 @@ fun TagContext.wbr(
     ), content
 )
 
-fun TagContext.blockquote(
+fun RenderContext.blockquote(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2938,7 +2938,7 @@ fun TagContext.blockquote(
     ), content
 )
 
-fun TagContext.blockquote(
+fun RenderContext.blockquote(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2956,7 +2956,7 @@ fun TagContext.blockquote(
     ), content
 )
 
-fun TagContext.em(
+fun RenderContext.em(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -2973,7 +2973,7 @@ fun TagContext.em(
     ), content
 )
 
-fun TagContext.em(
+fun RenderContext.em(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -2991,7 +2991,7 @@ fun TagContext.em(
     ), content
 )
 
-fun TagContext.strong(
+fun RenderContext.strong(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3008,7 +3008,7 @@ fun TagContext.strong(
     ), content
 )
 
-fun TagContext.strong(
+fun RenderContext.strong(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3026,7 +3026,7 @@ fun TagContext.strong(
     ), content
 )
 
-fun TagContext.small(
+fun RenderContext.small(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3043,7 +3043,7 @@ fun TagContext.small(
     ), content
 )
 
-fun TagContext.small(
+fun RenderContext.small(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3061,7 +3061,7 @@ fun TagContext.small(
     ), content
 )
 
-fun TagContext.s(
+fun RenderContext.s(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3078,7 +3078,7 @@ fun TagContext.s(
     ), content
 )
 
-fun TagContext.s(
+fun RenderContext.s(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3096,7 +3096,7 @@ fun TagContext.s(
     ), content
 )
 
-fun TagContext.cite(
+fun RenderContext.cite(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3113,7 +3113,7 @@ fun TagContext.cite(
     ), content
 )
 
-fun TagContext.cite(
+fun RenderContext.cite(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3131,7 +3131,7 @@ fun TagContext.cite(
     ), content
 )
 
-fun TagContext.q(
+fun RenderContext.q(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3148,7 +3148,7 @@ fun TagContext.q(
     ), content
 )
 
-fun TagContext.q(
+fun RenderContext.q(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3166,7 +3166,7 @@ fun TagContext.q(
     ), content
 )
 
-fun TagContext.dfn(
+fun RenderContext.dfn(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3183,7 +3183,7 @@ fun TagContext.dfn(
     ), content
 )
 
-fun TagContext.dfn(
+fun RenderContext.dfn(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3201,7 +3201,7 @@ fun TagContext.dfn(
     ), content
 )
 
-fun TagContext.abbr(
+fun RenderContext.abbr(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3218,7 +3218,7 @@ fun TagContext.abbr(
     ), content
 )
 
-fun TagContext.abbr(
+fun RenderContext.abbr(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3236,7 +3236,7 @@ fun TagContext.abbr(
     ), content
 )
 
-fun TagContext.code(
+fun RenderContext.code(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3253,7 +3253,7 @@ fun TagContext.code(
     ), content
 )
 
-fun TagContext.code(
+fun RenderContext.code(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3271,7 +3271,7 @@ fun TagContext.code(
     ), content
 )
 
-fun TagContext.`var`(
+fun RenderContext.`var`(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3288,7 +3288,7 @@ fun TagContext.`var`(
     ), content
 )
 
-fun TagContext.`var`(
+fun RenderContext.`var`(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3306,7 +3306,7 @@ fun TagContext.`var`(
     ), content
 )
 
-fun TagContext.samp(
+fun RenderContext.samp(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3323,7 +3323,7 @@ fun TagContext.samp(
     ), content
 )
 
-fun TagContext.samp(
+fun RenderContext.samp(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3341,7 +3341,7 @@ fun TagContext.samp(
     ), content
 )
 
-fun TagContext.kbd(
+fun RenderContext.kbd(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3358,7 +3358,7 @@ fun TagContext.kbd(
     ), content
 )
 
-fun TagContext.kbd(
+fun RenderContext.kbd(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3376,7 +3376,7 @@ fun TagContext.kbd(
     ), content
 )
 
-fun TagContext.submenu(
+fun RenderContext.submenu(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3393,7 +3393,7 @@ fun TagContext.submenu(
     ), content
 )
 
-fun TagContext.submenu(
+fun RenderContext.submenu(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3411,7 +3411,7 @@ fun TagContext.submenu(
     ), content
 )
 
-fun TagContext.sup(
+fun RenderContext.sup(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3428,7 +3428,7 @@ fun TagContext.sup(
     ), content
 )
 
-fun TagContext.sup(
+fun RenderContext.sup(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3446,7 +3446,7 @@ fun TagContext.sup(
     ), content
 )
 
-fun TagContext.i(
+fun RenderContext.i(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3463,7 +3463,7 @@ fun TagContext.i(
     ), content
 )
 
-fun TagContext.i(
+fun RenderContext.i(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3481,7 +3481,7 @@ fun TagContext.i(
     ), content
 )
 
-fun TagContext.b(
+fun RenderContext.b(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3498,7 +3498,7 @@ fun TagContext.b(
     ), content
 )
 
-fun TagContext.b(
+fun RenderContext.b(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3516,7 +3516,7 @@ fun TagContext.b(
     ), content
 )
 
-fun TagContext.u(
+fun RenderContext.u(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3533,7 +3533,7 @@ fun TagContext.u(
     ), content
 )
 
-fun TagContext.u(
+fun RenderContext.u(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3551,7 +3551,7 @@ fun TagContext.u(
     ), content
 )
 
-fun TagContext.bdo(
+fun RenderContext.bdo(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3568,7 +3568,7 @@ fun TagContext.bdo(
     ), content
 )
 
-fun TagContext.bdo(
+fun RenderContext.bdo(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3586,7 +3586,7 @@ fun TagContext.bdo(
     ), content
 )
 
-fun TagContext.command(
+fun RenderContext.command(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3603,7 +3603,7 @@ fun TagContext.command(
     ), content
 )
 
-fun TagContext.command(
+fun RenderContext.command(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
@@ -3621,7 +3621,7 @@ fun TagContext.command(
     ), content
 )
 
-fun TagContext.svg(
+fun RenderContext.svg(
     style: Style<BoxParams>,
     baseClass: StyleClass = StyleClass.None,
     id: String? = null,
@@ -3638,7 +3638,7 @@ fun TagContext.svg(
         ), content
     )
 
-fun TagContext.svg(
+fun RenderContext.svg(
     style: Style<BoxParams>,
     parentStyling: Style<BoxParams> = {},
     baseClass: StyleClass = StyleClass.None,
