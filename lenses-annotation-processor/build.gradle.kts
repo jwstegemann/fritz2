@@ -19,19 +19,9 @@ kotlin {
                 implementation("com.squareup:kotlinpoet:${rootProject.ext["kotlinpoetVersion"]}")
                 implementation("com.squareup:kotlinpoet-ksp:${rootProject.ext["kotlinpoetVersion"]}")
                 implementation("com.google.devtools.ksp:symbol-processing-api:1.5.31-1.0.0")
-
-                /*
-                api("com.squareup:kotlinpoet-classinspector-elements:${rootProject.ext["kotlinpoetVersion"]}")
-                api("com.squareup:kotlinpoet-metadata:${rootProject.ext["kotlinpoetVersion"]}")
-                api("com.squareup:kotlinpoet-metadata-specs:${rootProject.ext["kotlinpoetVersion"]}")
-
-                 */
                 api(kotlin("reflect:1.5.0"))
                 api(kotlin("script-runtime:1.5.0"))
-
                 implementation("com.google.auto.service:auto-service-annotations:1.0")
-
-
             }
         }
 
@@ -41,8 +31,6 @@ kotlin {
                 implementation("org.assertj:assertj-core:3.19.0")
                 implementation("com.github.tschuchortdev:kotlin-compile-testing:${rootProject.ext["compileTestingVersion"]}")
                 implementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:${rootProject.ext["compileTestingVersion"]}")
-
-                //testImplementation("junit:junit:4.13.2")
             }
         }
     }
