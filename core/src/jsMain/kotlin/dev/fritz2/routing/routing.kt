@@ -43,72 +43,6 @@ fun router(default: Map<String, String> = emptyMap()) = MapRouter(default.toMuta
 fun <T> router(default: Route<T>): Router<T> = Router(default)
 
 /**
- * A Route is an abstraction for routes
- * which needed for routing
- *
- * @param T type to de-/serialize from
- */
-interface Route<T> {
-    /**
-     * Gives the default value when initialising the routing
-     */
-    val default: T
-
-    /**
-     * Deserializes the *window.location.hash* to the
-     * given type [T] after the hashchange-event is fired.
-     */
-    fun deserialize(hash: String): T
-
-    /**
-     * Serializes a given object of type [T] to [String]
-     * for setting it to the *window.location.hash*
-     */
-    fun serialize(route: T): String
-}
-
-/**
- * [StringRoute] is a simple [Route] which
- * serializes and deserializes nothing.
- *
- * @param default [String] to use when no explicit *window.location.hash* was set before
- */
-open class StringRoute(override val default: String = "") : Route<String> {
-    override fun deserialize(hash: String): String = decodeURIComponent(hash)
-    override fun serialize(route: String): String = encodeURIComponent(route)
-}
-
-/**
- * [MapRoute] serializes and deserializes a [Map] to and from *window.location.hash*.
- * It is like using url parameters with pairs of key and value.
- * At the start of the route is only a **#** instead of **?**.
- *
- * @param default [Map] to use when no explicit *window.location.hash* was set before
- */
-open class MapRoute(override val default: MutableMap<String, String> = mutableMapOf()) :
-    Route<MutableMap<String, String>> {
-
-    private val assignment = "="
-    private val divider = "&"
-
-    override fun deserialize(hash: String): MutableMap<String, String> =
-        hash.split(divider).filter { s -> s.isNotBlank() }.asReversed().associate(::extractPair).toMutableMap()
-
-    override fun serialize(route: MutableMap<String, String>): String =
-        route.map { (key, value) -> "$key$assignment${encodeURIComponent(value)}" }
-            .joinToString(separator = divider)
-
-    private fun extractPair(param: String): Pair<String, String> {
-        val equalsPos = param.indexOf(assignment)
-        return if (equalsPos > 0) {
-            val key = param.substring(0, equalsPos)
-            val value = decodeURIComponent(param.substring(equalsPos + 1))
-            key to value
-        } else param to "true"
-    }
-}
-
-/**
  * Router register the event-listener for hashchange-event and
  * handles route-changes. Therefore, it uses a [Route] object
  * which can [Route.serialize] and [Route.deserialize] the given type.
@@ -191,6 +125,72 @@ open class MapRouter(defaultRoute: MutableMap<String, String> = mutableMapOf()) 
      * @return [Flow] of [String] with the value
      */
     fun select(key: String, orElse: String): Flow<String> = this.data.map { m -> m[key] ?: orElse }
+}
+
+/**
+ * A Route is an abstraction for routes
+ * which needed for routing
+ *
+ * @param T type to de-/serialize from
+ */
+interface Route<T> {
+    /**
+     * Gives the default value when initialising the routing
+     */
+    val default: T
+
+    /**
+     * Deserializes the *window.location.hash* to the
+     * given type [T] after the hashchange-event is fired.
+     */
+    fun deserialize(hash: String): T
+
+    /**
+     * Serializes a given object of type [T] to [String]
+     * for setting it to the *window.location.hash*
+     */
+    fun serialize(route: T): String
+}
+
+/**
+ * [StringRoute] is a simple [Route] which
+ * serializes and deserializes nothing.
+ *
+ * @param default [String] to use when no explicit *window.location.hash* was set before
+ */
+open class StringRoute(override val default: String = "") : Route<String> {
+    override fun deserialize(hash: String): String = decodeURIComponent(hash)
+    override fun serialize(route: String): String = encodeURIComponent(route)
+}
+
+/**
+ * [MapRoute] serializes and deserializes a [Map] to and from *window.location.hash*.
+ * It is like using url parameters with pairs of key and value.
+ * At the start of the route is only a **#** instead of **?**.
+ *
+ * @param default [Map] to use when no explicit *window.location.hash* was set before
+ */
+open class MapRoute(override val default: MutableMap<String, String> = mutableMapOf()) :
+    Route<MutableMap<String, String>> {
+
+    private val assignment = "="
+    private val divider = "&"
+
+    override fun deserialize(hash: String): MutableMap<String, String> =
+        hash.split(divider).filter { s -> s.isNotBlank() }.asReversed().associate(::extractPair).toMutableMap()
+
+    override fun serialize(route: MutableMap<String, String>): String =
+        route.map { (key, value) -> "$key$assignment${encodeURIComponent(value)}" }
+            .joinToString(separator = divider)
+
+    private fun extractPair(param: String): Pair<String, String> {
+        val equalsPos = param.indexOf(assignment)
+        return if (equalsPos > 0) {
+            val key = param.substring(0, equalsPos)
+            val value = decodeURIComponent(param.substring(equalsPos + 1))
+            key to value
+        } else param to "true"
+    }
 }
 
 external fun decodeURIComponent(encodedURI: String): String
