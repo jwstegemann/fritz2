@@ -37,11 +37,10 @@ open class Tag<out E : Element>(
     override val scope: Scope,
 ) : WithDomNode<E>, WithComment<E>, EventContext<E>, RenderContext {
 
-    //FIXME: This is not nice (if...)
-    override val domNode: E = if (tagName.isNotEmpty()) window.document.createElement(tagName).also { element ->
+    override val domNode: E = window.document.createElement(tagName).also { element ->
         if (id != null) element.id = id
         if (!baseClass.isNullOrBlank()) element.className = baseClass
-    }.unsafeCast<E>() else dummyDom.unsafeCast<E>()
+    }.unsafeCast<E>()
 
     /**
      * Creates the content of the [Tag] and appends it as a child to the wrapped [Element].
