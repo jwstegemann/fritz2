@@ -98,6 +98,11 @@ open class Router<T>(
     }
 }
 
+/**
+ * Represents the current [Route] as [Map] of [String]s.
+ *
+ * @param defaultRoute default [Route] to start with.
+ */
 open class MapRouter(defaultRoute: Map<String, String> = emptyMap()) :
     Router<Map<String, String>>(MapRoute(defaultRoute)) {
 
