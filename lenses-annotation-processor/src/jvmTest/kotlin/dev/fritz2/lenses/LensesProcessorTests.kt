@@ -79,29 +79,29 @@ class LensesProcessorTests {
             |import kotlin.Int
             |import kotlin.String
             |
-            |public fun Foo.Companion.bar(): Lens<Foo, Int> = buildLens(
-            |  "bar", 
-            |  { it.bar }, 
-            |  { p, v -> p.copy(bar = v)}
-            |)
+            |public val Foo.Companion.bar: Lens<Foo, Int> = buildLens(
+            |    "bar", 
+            |    { it.bar }, 
+            |    { p, v -> p.copy(bar = v)}
+            |    )
             |
-            |public fun Foo.Companion.foo(): Lens<Foo, String> = buildLens(
-            |  "foo", 
-            |  { it.foo }, 
-            |  { p, v -> p.copy(foo = v)}
-            |)
+            |public val Foo.Companion.foo: Lens<Foo, String> = buildLens(
+            |    "foo", 
+            |    { it.foo }, 
+            |    { p, v -> p.copy(foo = v)}
+            |    )
             |
-            |public fun Foo.Companion.fooBar(): Lens<Foo, MyType> = buildLens(
-            |  "fooBar", 
-            |  { it.fooBar }, 
-            |  { p, v -> p.copy(fooBar = v)}
-            |)
+            |public val Foo.Companion.fooBar: Lens<Foo, MyType> = buildLens(
+            |    "fooBar", 
+            |    { it.fooBar }, 
+            |    { p, v -> p.copy(fooBar = v)}
+            |    )
             |
-            |public fun Foo.Companion.baz(): Lens<Foo, MyGenericType<Int>> = buildLens(
-            |  "baz", 
-            |  { it.baz }, 
-            |  { p, v -> p.copy(baz = v)}
-            |)
+            |public val Foo.Companion.baz: Lens<Foo, MyGenericType<Int>> = buildLens(
+            |    "baz", 
+            |    { it.baz }, 
+            |    { p, v -> p.copy(baz = v)}
+            |    )
             """.trimMargin()
             )
         }
@@ -144,11 +144,11 @@ class LensesProcessorTests {
             |import dev.fritz2.lenses.Lens
             |import kotlin.Int
             |
-            |public fun Foo.Companion.bar(): Lens<Foo, Int> = buildLens(
-            |  "bar", 
-            |  { it.bar }, 
-            |  { p, v -> p.copy(bar = v)}
-            |)
+            |public val Foo.Companion.bar: Lens<Foo, Int> = buildLens(
+            |    "bar", 
+            |    { it.bar }, 
+            |    { p, v -> p.copy(bar = v)}
+            |    )
             """.trimMargin()
             )
             softly.assertThat(
@@ -161,11 +161,11 @@ class LensesProcessorTests {
             |import dev.fritz2.lenses.Lens
             |import kotlin.Int
             |
-            |public fun Bar.Companion.bar(): Lens<Bar, Int> = buildLens(
-            |  "bar", 
-            |  { it.bar }, 
-            |  { p, v -> p.copy(bar = v)}
-            |)
+            |public val Bar.Companion.bar: Lens<Bar, Int> = buildLens(
+            |    "bar", 
+            |    { it.bar }, 
+            |    { p, v -> p.copy(bar = v)}
+            |    )
             """.trimMargin()
             )
         }
@@ -201,11 +201,11 @@ class LensesProcessorTests {
             |import dev.fritz2.lenses.Lens
             |import kotlin.Int
             |
-            |public fun Foo.MySpecialCompanion.bar(): Lens<Foo, Int> = buildLens(
-            |  "bar", 
-            |  { it.bar }, 
-            |  { p, v -> p.copy(bar = v)}
-            |)
+            |public val Foo.MySpecialCompanion.bar: Lens<Foo, Int> = buildLens(
+            |    "bar", 
+            |    { it.bar }, 
+            |    { p, v -> p.copy(bar = v)}
+            |    )
             """.trimMargin()
             )
         }
@@ -336,123 +336,52 @@ class LensesProcessorTests {
             |import dev.fritz2.lenses.Lens
             |import kotlin.Int
             |
-            |public fun Foo.Companion.bar(): Lens<Foo, Int> = buildLens(
-            |  "bar", 
-            |  { it.bar }, 
-            |  { p, v -> p.copy(bar = v)}
-            |)
+            |public val Foo.Companion.bar: Lens<Foo, Int> = buildLens(
+            |    "bar", 
+            |    { it.bar }, 
+            |    { p, v -> p.copy(bar = v)}
+            |    )
             """.trimMargin()
             )
         }
     }
 
     @ExperimentalPathApi
-    @Test
-    fun `lenses can handle generic data classes`() {
-        val kotlinSource = SourceFile.kotlin(
-            "dataClassesForLensesTests.kt", """
+    @ParameterizedTest
+    @MethodSource("getGenericDataClasses")
+    fun `lenses will throw error if ctor property refers to a type parameter of a generic data class`(kotlinSource: SourceFile) {
+        val compilationResult = compileSource(kotlinSource)
+
+        SoftAssertions.assertSoftly { softly ->
+            softly.assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.COMPILATION_ERROR)
+            softly.assertThat(compilationResult.messages)
+                .contains("The data class Foo has some properties depending on a type:")
+        }
+    }
+
+
+    @ExperimentalPathApi
+    @ParameterizedTest
+    @MethodSource("getGenericDataClasses")
+    fun `lenses will work with generic data classes if properties do not depend on type parameters`(kotlinSource: SourceFile): Unit =
+        TODO()
+
+    /*
+            SourceFile.kotlin(
+                "dataClassesForLensesTests.kt", """
                 package dev.fritz2.lenstest
 
                 import dev.fritz2.lenses.Lenses
 
                 @Lenses
-                data class Foo<T>(val bar: T) {
-                    companion object
-                }
-
-                @Lenses
-                data class Bar<T, E>(val foo: T, val fooBar: E) {
+                // Need this example for "positive" tests!!!
+                data class Foo<T, E>(val foo: Pair<Set<Int>, List<Int>>) {
                     companion object
                 }
             """
-        )
-
-        val compilationResult = compileSource(kotlinSource)
-
-        SoftAssertions.assertSoftly { softly ->
-            softly.assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
-            softly.assertThat(
-                compilationResult.kspGeneratedSources.find { it.name == "FooLenses.kt" }
-            ).usingCharset(StandardCharsets.UTF_8).hasContent(
-                """
-            |// GENERATED by fritz2 - NEVER CHANGE CONTENT MANUALLY!
-            |package dev.fritz2.lenstest
-            |
-            |import dev.fritz2.lenses.Lens
-            |
-            |public fun <T> Foo.Companion.bar(): Lens<Foo<T>, T> = buildLens(
-            |  "bar", 
-            |  { it.bar }, 
-            |  { p, v -> p.copy(bar = v)}
-            |)
-            """.trimMargin()
             )
-            softly.assertThat(
-                compilationResult.kspGeneratedSources.find { it.name == "BarLenses.kt" }
-            ).usingCharset(StandardCharsets.UTF_8).hasContent(
-                """
-            |// GENERATED by fritz2 - NEVER CHANGE CONTENT MANUALLY!
-            |package dev.fritz2.lenstest
-            |
-            |import dev.fritz2.lenses.Lens
-            |
-            |public fun <T, E> Bar.Companion.foo(): Lens<Bar<T, E>, T> = buildLens(
-            |  "foo", 
-            |  { it.foo }, 
-            |  { p, v -> p.copy(foo = v)}
-            |)
-            |
-            |public fun <T, E> Bar.Companion.fooBar(): Lens<Bar<T, E>, E> = buildLens(
-            |  "fooBar", 
-            |  { it.fooBar }, 
-            |  { p, v -> p.copy(fooBar = v)}
-            |)
-            """.trimMargin()
-            )
-        }
-    }
 
-    /**
-     * See use case: https://github.com/jwstegemann/fritz2/issues/480
      */
-    @ExperimentalPathApi
-    @Test
-    fun `lenses with nullable generic property works`() {
-        val kotlinSource = SourceFile.kotlin(
-            "dataClassesForLensesTests.kt", """
-                package dev.fritz2.lenstest
-
-                import dev.fritz2.lenses.Lenses
-
-                @Lenses
-                data class Data<T> (val item : T? = null) {
-                    companion object
-                }
-            """
-        )
-
-        val compilationResult = compileSource(kotlinSource)
-
-        SoftAssertions.assertSoftly { softly ->
-            softly.assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
-            softly.assertThat(
-                compilationResult.kspGeneratedSources.find { it.name == "DataLenses.kt" }
-            ).usingCharset(StandardCharsets.UTF_8).hasContent(
-                """
-            |// GENERATED by fritz2 - NEVER CHANGE CONTENT MANUALLY!
-            |package dev.fritz2.lenstest
-            |
-            |import dev.fritz2.lenses.Lens
-            |
-            |public fun <T> Data.Companion.item(): Lens<Data<T>, T?> = buildLens(
-            |  "item", 
-            |  { it.item }, 
-            |  { p, v -> p.copy(item = v)}
-            |)
-            """.trimMargin()
-            )
-        }
-    }
 
     companion object {
         @JvmStatic
@@ -498,5 +427,58 @@ class LensesProcessorTests {
 
             return listOf(resultForSimpleClass, resultForInterface, resultForObject)
         }
+
+        @JvmStatic
+        fun getGenericDataClasses() = listOf(
+            SourceFile.kotlin(
+                "dataClassesForLensesTests.kt", """
+                package dev.fritz2.lenstest
+
+                import dev.fritz2.lenses.Lenses
+
+                @Lenses
+                data class Foo<T>(val bar: T) {
+                    companion object
+                }
+            """
+            ),
+            SourceFile.kotlin(
+                "dataClassesForLensesTests.kt", """
+                package dev.fritz2.lenstest
+
+                import dev.fritz2.lenses.Lenses
+
+                @Lenses
+                data class Foo<T, E>(val foo: T, val fooBar: E) {
+                    companion object
+                }
+            """
+            ),
+            SourceFile.kotlin(
+                "dataClassesForLensesTests.kt", """
+                package dev.fritz2.lenstest
+
+                import dev.fritz2.lenses.Lenses
+
+                @Lenses
+                data class Foo<T, E>(val foo: Pair<T, E>) {
+                    companion object
+                }
+            """
+            ),
+            SourceFile.kotlin(
+                "dataClassesForLensesTests.kt", """
+                package dev.fritz2.lenstest
+
+                import dev.fritz2.lenses.Lenses
+
+                // test deeply nested type parameters too!
+                @Lenses
+                data class Foo<T, E>(val foo: Pair<Set<Int>, List<Map<Set<E>, T>>>) {
+                    companion object
+                }
+            """
+            )
+        )
     }
 }
