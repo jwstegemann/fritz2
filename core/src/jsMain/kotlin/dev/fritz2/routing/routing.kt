@@ -25,14 +25,7 @@ fun router(default: String = ""): Router<String> = Router(StringRoute(default))
  *
  * @param default default route
  */
-fun router(default: MutableMap<String, String> = mutableMapOf()) = MapRouter(default)
-
-/**
- * Creates a new [Map] based [Router]
- *
- * @param default default route
- */
-fun router(default: Map<String, String> = emptyMap()) = MapRouter(default.toMutableMap())
+fun router(default: Map<String, String> = emptyMap()) = MapRouter(default)
 
 /**
  * Creates a new type based [Router].
@@ -105,8 +98,8 @@ open class Router<T>(
     }
 }
 
-open class MapRouter(defaultRoute: MutableMap<String, String> = mutableMapOf()) :
-    Router<MutableMap<String, String>>(MapRoute(defaultRoute)) {
+open class MapRouter(defaultRoute: Map<String, String> = emptyMap()) :
+    Router<Map<String, String>>(MapRoute(defaultRoute)) {
 
     /**
      * Selects with the given [key] a [Pair] of the value
@@ -115,7 +108,7 @@ open class MapRouter(defaultRoute: MutableMap<String, String> = mutableMapOf()) 
      * @param key for getting the value from the parameter [Map]
      * @return [Flow] of the resulting [Pair]
      */
-    fun select(key: String): Flow<Pair<String?, Map<String, String>>> = this.data.map { m -> m[key] to m }
+    open fun select(key: String): Flow<Pair<String?, Map<String, String>>> = this.data.map { m -> m[key] to m }
 
     /**
      * Returns the value for the given [key] from the routing parameters.
@@ -124,7 +117,7 @@ open class MapRouter(defaultRoute: MutableMap<String, String> = mutableMapOf()) 
      * @param orElse if [key] is not in [Map]
      * @return [Flow] of [String] with the value
      */
-    fun select(key: String, orElse: String): Flow<String> = this.data.map { m -> m[key] ?: orElse }
+    open fun select(key: String, orElse: String): Flow<String> = this.data.map { m -> m[key] ?: orElse }
 }
 
 /**
@@ -170,16 +163,16 @@ open class StringRoute(override val default: String = "") : Route<String> {
  *
  * @param default [Map] to use when no explicit *window.location.hash* was set before
  */
-open class MapRoute(override val default: MutableMap<String, String> = mutableMapOf()) :
-    Route<MutableMap<String, String>> {
+open class MapRoute(override val default: Map<String, String> = emptyMap()) :
+    Route<Map<String, String>> {
 
     private val assignment = "="
     private val divider = "&"
 
-    override fun deserialize(hash: String): MutableMap<String, String> =
-        hash.split(divider).filter { s -> s.isNotBlank() }.asReversed().associate(::extractPair).toMutableMap()
+    override fun deserialize(hash: String): Map<String, String> =
+        hash.split(divider).filter { s -> s.isNotBlank() }.asReversed().associate(::extractPair)
 
-    override fun serialize(route: MutableMap<String, String>): String =
+    override fun serialize(route: Map<String, String>): String =
         route.map { (key, value) -> "$key$assignment${encodeURIComponent(value)}" }
             .joinToString(separator = divider)
 
