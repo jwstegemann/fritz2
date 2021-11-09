@@ -9,8 +9,11 @@ ksp {
 }
 
 kotlin {
-    jvm()
-
+    jvm {
+        testRuns["test"].executionTask.configure {
+            useJUnitPlatform()
+        }
+    }
     sourceSets {
         val jvmMain by getting {
             dependencies {
@@ -27,7 +30,8 @@ kotlin {
 
         val jvmTest by getting {
             dependencies {
-                implementation(kotlin("test-junit"))
+                implementation(kotlin("test-junit5"))
+                implementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
                 implementation("org.assertj:assertj-core:3.19.0")
                 implementation("com.github.tschuchortdev:kotlin-compile-testing:${rootProject.ext["compileTestingVersion"]}")
                 implementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:${rootProject.ext["compileTestingVersion"]}")

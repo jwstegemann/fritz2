@@ -153,7 +153,7 @@ class LensesProcessor(
 
                  */
             } else {
-                logger.error("$classDeclaration is not a data class")
+                logger.error("$classDeclaration is not a data class!")
             }
         }
 
