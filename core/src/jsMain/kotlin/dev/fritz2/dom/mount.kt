@@ -20,34 +20,6 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import kotlin.collections.set
 
-class MountContext(mountJob: Job, mountScope: Scope, proxee: Tag<*>? = null) : Tag<HTMLElement>(
-    tagName = if (proxee == null) "div" else "",
-    baseClass = if (proxee == null) "mount-point" else "",
-    job = mountJob,
-    scope = mountScope
-) {
-
-    override val domNode: HTMLElement = (proxee?.domNode ?: super.domNode).unsafeCast<HTMLElement>()
-
-    init {
-        if (proxee?.domNode?.getAttribute("data-mount-point") != null) {
-            console.error("You are mounting a flow to a tag, which is already used as mount-point by another flow")
-        }
-        attr("data-mount-point", true)
-    }
-}
-
-/**
- * Creates a [Div] as context for the mounted content using the given job and adds it to the receiver of this function
- * inheriting its scope.
- * Also adds a style-class "mount-point" that adds a "display: contents" property to the created [Div] and
- * an attribute "data-mount-point" to the created [Div].
- *
- * @param mountJob [Job] to use downstream from this mountpoint
- * @receiver TagContext parent to add the [Div] to
- */
-fun RenderContext.mountContext(mountJob: Job) = register(MountContext(mountJob, this.scope)) {}
-
 /**
  * Implementation of [RenderContext] that forwards all registrations of children to the element it proxies.
  * Also adds "data-mount-point" as a marker-attribute to the element it proxies.
@@ -55,18 +27,26 @@ fun RenderContext.mountContext(mountJob: Job) = register(MountContext(mountJob, 
  * @param mountJob [Job] to use downstream from this context
  * @param proxee [Tag] to proxy
  */
-class ProxyContext<T : HTMLElement>(
-    mountJob: Job,
-    proxee: Tag<T>
-) : Tag<HTMLElement>(job = mountJob, scope = proxee.scope, tagName = "") {
+class MountContext<T : HTMLElement>(
+    override val job: Job,
+    val target: Tag<T>,
+    override val scope: Scope = target.scope,
+) : RenderContext {
 
-    override val domNode = proxee.domNode
+    override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+        return target.register(element, content)
+    }
+
+    fun <V> render(data: V, content: RenderContext.(V) -> Unit) {
+        target.domNode.clear()
+        content(data)
+    }
 
     init {
-        if (domNode.getAttribute("data-mount-point") != null) {
+        if (target.domNode.getAttribute("data-mount-point") != null) {
             console.error("You are mounting a flow to a tag, which is already used as mount-point by another flow")
         }
-        proxee.attr("data-mount-point", true)
+        target.attr("data-mount-point", true)
     }
 }
 
@@ -75,22 +55,24 @@ internal val dummyDom = window.document.createElement("div") as HTMLElement
 /**
  * Implementation of [RenderContext] that just renders its children but does not add them anywhere to the Dom.
  *
- * @param mountJob [Job] to use downstream from this context
- * @param mountScope [Scope] to use downstream from this context
+ * @param job [Job] to use downstream from this context
+ * @param scope [Scope] to use downstream from this context
  */
-class DummyContext(
-    mountJob: Job,
-    mountScope: Scope,
-) : Tag<HTMLElement>(job = mountJob, scope = mountScope, tagName = "") {
-
-    override val domNode = dummyDom
-
+class BuildContext(
+    override val job: Job,
+    override val scope: Scope,
+) : RenderContext {
     override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
         content(element)
         return element
     }
 }
 
+
+internal const val MOUNT_POINT_STYLE_CLASS = "mount-point"
+internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: Tag<HTMLElement>.() -> Unit = {
+    attr("data-mount-point", true)
+}
 
 /**
  * Uses the [content]-lambda to render a subtree for each value on the [upstream]-[Flow] and
@@ -108,12 +90,14 @@ fun <V> RenderContext.mount(
     upstream: Flow<V>,
     content: RenderContext.(V) -> Unit
 ) {
-    val target = if (into != null) ProxyContext(Job(job), into) else mountContext(Job(job))
+    val target = into?.apply(SET_MOUNT_POINT_DATA_ATTRIBUTE)
+        ?: div(MOUNT_POINT_STYLE_CLASS, content = SET_MOUNT_POINT_DATA_ATTRIBUTE)
 
-    mountSimple(this.job, upstream) { data ->
-        target.job.cancelChildren()
-        target.domNode.clear()
-        target.content(data)
+    val mountContext = MountContext(Job(job), target)
+
+    mountSimple(this.job, upstream) {
+        mountContext.job.cancelChildren()
+        mountContext.render(it, content)
     }
 }
 
@@ -154,7 +138,7 @@ fun <V> RenderContext.mount(
         val diff = if (idProvider != null) Myer.diff(old, new, idProvider) else Myer.diff(old, new)
         diff.map { patch ->
             patch.map(job) { value, newJob ->
-                content(DummyContext(newJob, scope), value).also {
+                content(BuildContext(newJob, scope), value).also {
                     jobs[it.domNode] = newJob
                 }
             }
@@ -201,7 +185,7 @@ fun <V> RenderContext.mount(
 ) = mountPatches(into, store.data) { upstream, jobs ->
     upstream.map { it.withIndex().toList() }.eachIndex().map { patch ->
         listOf(patch.map(job) { value, newJob ->
-            content(DummyContext(newJob, scope), store.sub(value.index)).also {
+            content(BuildContext(newJob, scope), store.sub(value.index)).also {
                 jobs[it.domNode] = newJob
             }
         })
@@ -245,10 +229,12 @@ fun <V> RenderContext.mountPatches(
     upstream: Flow<List<V>>,
     createPatches: (Flow<List<V>>, MutableMap<Node, Job>) -> Flow<List<Patch<Tag<HTMLElement>>>>,
 ) {
-    val target = if (into != null) {
-        into.domNode.clear()
-        ProxyContext(job, into)
-    } else mountContext(job)
+    val target = into?.apply {
+        this.domNode.clear()
+        SET_MOUNT_POINT_DATA_ATTRIBUTE()
+    }
+        ?: div(MOUNT_POINT_STYLE_CLASS, content = SET_MOUNT_POINT_DATA_ATTRIBUTE)
+
     val jobs = mutableMapOf<Node, Job>()
 
     mountSimple(target.job, createPatches(upstream, jobs)) { patches ->
@@ -339,3 +325,4 @@ fun <N : Node> N.move(from: Int, to: Int) {
     val itemToMove = childNodes.item(from)
     if (itemToMove != null) insertOrAppend(itemToMove, to)
 }
+
