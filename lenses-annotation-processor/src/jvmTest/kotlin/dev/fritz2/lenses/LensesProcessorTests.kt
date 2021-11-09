@@ -3,12 +3,10 @@ package dev.fritz2.lenses
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.SoftAssertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.junit.jupiter.params.provider.ValueSource
 import java.io.File
 import java.nio.charset.StandardCharsets
 import kotlin.io.path.ExperimentalPathApi
@@ -20,7 +18,7 @@ class LensesProcessorTests {
     @ExperimentalPathApi
     private fun compileSource(vararg source: SourceFile) = KotlinCompilation().apply {
         sources = source.toList()
-        symbolProcessorProviders = listOf(LensesGeneratorProcessorProvider())
+        symbolProcessorProviders = listOf(LensesProcessorProvider())
         workingDir = createTempDirectory("fritz2-tests").toFile()
         inheritClassPath = true
         verbose = false
@@ -249,6 +247,31 @@ class LensesProcessorTests {
         SoftAssertions.assertSoftly { softly ->
             softly.assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.COMPILATION_ERROR)
             softly.assertThat(compilationResult.messages).contains("Foo is not a data class!")
+        }
+    }
+
+
+    @ExperimentalPathApi
+    @Test
+    fun `lenses will throw error if companion object is missing`() {
+        val kotlinSource = SourceFile.kotlin(
+            "dataClassesForLensesTests.kt", """
+                package dev.fritz2.lenstest
+
+                import dev.fritz2.lenses.Lenses
+
+                @Lenses
+                data class Foo(val bar: Int)
+                // no companion declared 
+            """
+        )
+
+        val compilationResult = compileSource(kotlinSource)
+
+        SoftAssertions.assertSoftly { softly ->
+            softly.assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.COMPILATION_ERROR)
+            softly.assertThat(compilationResult.messages)
+                .contains("The companion object for data class Foo is missing!")
         }
     }
 
