@@ -18,14 +18,14 @@ import org.w3c.dom.events.Event
  *
  * @param default default route
  */
-fun router(default: String = ""): Router<String> = Router(StringRoute(default))
+fun routerOf(default: String = ""): Router<String> = Router(StringRoute(default))
 
 /**
  * Creates a new [Map] based [Router]
  *
  * @param default default route
  */
-fun router(default: Map<String, String> = emptyMap()) = MapRouter(default)
+fun routerOf(default: Map<String, String> = emptyMap()) = MapRouter(default)
 
 /**
  * Creates a new type based [Router].
@@ -33,7 +33,7 @@ fun router(default: Map<String, String> = emptyMap()) = MapRouter(default)
  *
  * @param default default route
  */
-fun <T> router(default: Route<T>): Router<T> = Router(default)
+fun <T> routerOf(default: Route<T>): Router<T> = Router(default)
 
 /**
  * Router register the event-listener for hashchange-event and
