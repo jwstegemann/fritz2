@@ -119,7 +119,7 @@ interface Store<T> : WithJob {
     suspend fun enqueue(update: QueuedUpdate<T>)
 
     /**
-     * Id of this [Store].
+     * [id] of this [Store].
      * ids of depending [Store]s are concatenated and separated by a dot.
      */
     val id: String
