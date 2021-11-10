@@ -3,6 +3,7 @@ package dev.fritz2.lenses
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.SoftAssertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -348,8 +349,10 @@ class LensesProcessorTests {
 
     @ExperimentalPathApi
     @ParameterizedTest
-    @MethodSource("getGenericDataClasses")
-    fun `lenses will throw error if ctor property refers to a type parameter of a generic data class`(kotlinSource: SourceFile) {
+    @MethodSource("getGenericDataClassesWithDependentProps")
+    fun `lenses will throw error if ctor property refers to a type parameter of a generic data class`(
+        kotlinSource: SourceFile
+    ) {
         val compilationResult = compileSource(kotlinSource)
 
         SoftAssertions.assertSoftly { softly ->
@@ -362,26 +365,14 @@ class LensesProcessorTests {
 
     @ExperimentalPathApi
     @ParameterizedTest
-    @MethodSource("getGenericDataClasses")
-    fun `lenses will work with generic data classes if properties do not depend on type parameters`(kotlinSource: SourceFile): Unit =
-        TODO()
+    @MethodSource("getGenericDataClassesWithIndependentProps")
+    fun `lenses will work with generic data classes if ctor properties do not depend on type parameters`(
+        kotlinSource: SourceFile
+    ) {
+        val compilationResult = compileSource(kotlinSource)
 
-    /*
-            SourceFile.kotlin(
-                "dataClassesForLensesTests.kt", """
-                package dev.fritz2.lenstest
-
-                import dev.fritz2.lenses.Lenses
-
-                @Lenses
-                // Need this example for "positive" tests!!!
-                data class Foo<T, E>(val foo: Pair<Set<Int>, List<Int>>) {
-                    companion object
-                }
-            """
-            )
-
-     */
+        Assertions.assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
+    }
 
     companion object {
         @JvmStatic
@@ -429,7 +420,7 @@ class LensesProcessorTests {
         }
 
         @JvmStatic
-        fun getGenericDataClasses() = listOf(
+        fun getGenericDataClassesWithDependentProps() = listOf(
             SourceFile.kotlin(
                 "dataClassesForLensesTests.kt", """
                 package dev.fritz2.lenstest
@@ -479,6 +470,39 @@ class LensesProcessorTests {
                 }
             """
             )
+        )
+
+        @JvmStatic
+        fun getGenericDataClassesWithIndependentProps() = listOf(
+            SourceFile.kotlin(
+                "dataClassesForLensesTests.kt", """
+                package dev.fritz2.lenstest
+
+                import dev.fritz2.lenses.Lenses
+
+                @Lenses
+                data class Foo<T, E>(val foo: Pair<Set<Int>, List<Int>>) {
+                    companion object
+                }
+
+            """
+            ),
+            SourceFile.kotlin(
+                "dataClassesForLensesTests.kt", """
+                package dev.fritz2.lenstest
+
+                import dev.fritz2.lenses.Lenses
+
+                @Lenses
+                data class Foo<T, E>(val foo: String) {
+                    companion object
+
+                    val someProp: T
+                    val someOtherProp: Map<E, T>
+                }
+
+            """
+            ),
         )
     }
 }
