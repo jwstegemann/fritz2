@@ -76,18 +76,15 @@ class LensesProcessor(
             val packageName = classDeclaration.packageName.asString()
 
             if (classDeclaration.isDataClass()) {
-                val compObj = classDeclaration.declarations
-                    .filterIsInstance<KSClassDeclaration>()
-                    .filter { it.isCompanionObject }
-                    .firstOrNull()
+                val companionObject = extractCompanionObject(classDeclaration)
 
-                if (compObj != null) {
+                if (companionObject != null) {
                     val lensableProps = determineLensableProperties(classDeclaration)
-                    if (!assertLensesPropertyNamesAreAvailable(compObj, lensableProps, classDeclaration)) return
-                    if (!assertLensesPropertiesAreNotGeneric(lensableProps, classDeclaration)) return
+                    if (!assertLensesPropertyNamesAreAvailable(companionObject, lensableProps, classDeclaration)) return
+                    if (!assertDataClassIsNotGeneric(classDeclaration)) return
 
                     if (lensableProps.isNotEmpty()) {
-                        generateLensesCode(packageName, classDeclaration, lensableProps, compObj)
+                        generateLensesCode(packageName, classDeclaration, lensableProps, companionObject)
                     } else {
                         logger.warn(
                             "@Lenses annotated data class $classDeclaration found, but it has no public"
@@ -104,6 +101,62 @@ class LensesProcessor(
                 logger.error("$classDeclaration is not a data class!")
             }
         }
+    }
+
+    private fun KSClassDeclaration.isDataClass() =
+        modifiers.contains(Modifier.DATA)
+
+    private fun extractCompanionObject(classDeclaration: KSClassDeclaration) = classDeclaration.declarations
+        .filterIsInstance<KSClassDeclaration>()
+        .filter { it.isCompanionObject }
+        .firstOrNull()
+
+    private fun determineLensableProperties(classDeclaration: KSClassDeclaration): List<KSPropertyDeclaration> {
+        val allPublicCtorProps = classDeclaration.primaryConstructor!!.parameters.filter { it.isVal }.map { it.name }
+        return classDeclaration.getDeclaredProperties()
+            .filter { it.isPublic() && allPublicCtorProps.contains(it.simpleName) }.toList()
+    }
+
+    private fun assertLensesPropertyNamesAreAvailable(
+        compObj: KSClassDeclaration,
+        lensableProps: List<KSPropertyDeclaration>,
+        classDeclaration: KSClassDeclaration
+    ): Boolean {
+        val neededFunNamesAlreadyInUse = compObj.getDeclaredFunctions()
+            .filter { declaredFunctions ->
+                lensableProps.any {
+                    it.simpleName.getShortName() == declaredFunctions.simpleName.getShortName()
+                }
+            }
+            .toList()
+
+        return if (neededFunNamesAlreadyInUse.isNotEmpty()) {
+            logger.error(
+                "The companion object of $classDeclaration already defines the following function(s): "
+                        + neededFunNamesAlreadyInUse.joinToString("; ")
+                        + " -> Those names must not be defined! They are used for the automatic lenses generation. "
+                        + "Please rename those existing function(s) to bypass this problem!"
+            )
+            false
+        } else true
+    }
+
+    /**
+     * As generated lenses are represented as properties within the companion object, there is no possibility to
+     * support generic type parameters! That's why it is important to detect this during code generation process to
+     * give the user a meaningful error message.
+     */
+    private fun assertDataClassIsNotGeneric(classDeclaration: KSClassDeclaration): Boolean {
+        val relevantTypeParameters = classDeclaration.typeParameters.map { it.simpleName.getShortName() }.toList()
+
+        return if (relevantTypeParameters.isNotEmpty()) {
+            logger.error(
+                "The data class $classDeclaration is generic with the following type parameters: "
+                        + relevantTypeParameters.joinToString("; ")
+                        + " -> But generic data classes are not supported for lenses generation!"
+            )
+            false
+        } else true
     }
 
     @OptIn(KotlinPoetKspPreview::class)
@@ -141,87 +194,4 @@ class LensesProcessor(
 
         fileSpec.writeTo(codeGenerator = codeGenerator, aggregating = false)
     }
-
-    private fun determineLensableProperties(classDeclaration: KSClassDeclaration): List<KSPropertyDeclaration> {
-        val allPublicCtorProps = classDeclaration.primaryConstructor!!.parameters.filter { it.isVal }.map { it.name }
-        return classDeclaration.getDeclaredProperties()
-            .filter { it.isPublic() && allPublicCtorProps.contains(it.simpleName) }.toList()
-    }
-
-    private fun assertLensesPropertyNamesAreAvailable(
-        compObj: KSClassDeclaration,
-        lensableProps: List<KSPropertyDeclaration>,
-        classDeclaration: KSClassDeclaration
-    ): Boolean {
-        val neededFunNamesAlreadyInUse = compObj.getDeclaredFunctions()
-            .filter { declaredFunctions ->
-                lensableProps.any {
-                    it.simpleName.getShortName() == declaredFunctions.simpleName.getShortName()
-                }
-            }
-            .toList()
-
-        return if (neededFunNamesAlreadyInUse.isNotEmpty()) {
-            logger.error(
-                "The companion object of $classDeclaration already defines the following function(s): "
-                        + neededFunNamesAlreadyInUse.joinToString("; ")
-                        + " -> Those names must not be defined! They are used for the automatic lenses generation. "
-                        + "Please rename those existing function(s) to bypass this problem!"
-            )
-            false
-        } else true
-    }
-
-    /**
-     * As generated lenses are represented as properties within the companion object, there is no possibility to
-     * support generic type parameters! That's why it is important to detect this during code generation process to
-     * give the user a meaningful error message.
-     */
-    private fun assertLensesPropertiesAreNotGeneric(
-        lensableProps: List<KSPropertyDeclaration>,
-        classDeclaration: KSClassDeclaration
-    ): Boolean {
-        val relevantTypeParameters = classDeclaration.typeParameters.map { it.simpleName.getShortName() }.toSet()
-
-        /**
-         * Remember types can be nested arbitrary - so depth first search for the rescue.
-         * ```
-         * List<T>
-         * Pair<Int, List<List<T>>>
-         * List<Map<Pair<T, E>, E>>
-         * ```
-         *
-         * This implementation is NOT tail call optimized; but we can assume, that nesting types will not go to deep
-         * and so not lead to a stack overflow ;-)
-         */
-        fun depthFirstSearchChildTypes(typeNode: KSTypeReference): Boolean {
-            return (
-                    typeNode.element?.typeArguments
-                        ?.map { it.type?.resolve()?.declaration?.simpleName?.getShortName() }
-                        ?.any { t -> relevantTypeParameters.contains(t) } ?: false
-                    )
-                    ||
-                    typeNode.element?.typeArguments?.any {
-                        it.type?.let { childTypeNode -> depthFirstSearchChildTypes(childTypeNode) } ?: false
-                    } ?: false
-        }
-
-        val dependentProps = lensableProps.filter {
-            val ref = it.type.resolve().declaration
-            ref is KSTypeParameter && relevantTypeParameters.contains(ref.simpleName.getShortName()) ||
-                    depthFirstSearchChildTypes(it.type)
-        }
-
-        return if (dependentProps.isNotEmpty()) {
-            logger.error(
-                "The data class $classDeclaration has some properties depending on a type: "
-                        + dependentProps.joinToString("; ")
-                        + " -> But generic type parameters are not supported for lenses generation!"
-            )
-            false
-        } else true
-    }
-
-    private fun KSClassDeclaration.isDataClass() =
-        modifiers.contains(Modifier.DATA)
 }

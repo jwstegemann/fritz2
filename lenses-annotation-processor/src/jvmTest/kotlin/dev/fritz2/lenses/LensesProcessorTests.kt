@@ -3,7 +3,6 @@ package dev.fritz2.lenses
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.SoftAssertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -349,29 +348,15 @@ class LensesProcessorTests {
 
     @ExperimentalPathApi
     @ParameterizedTest
-    @MethodSource("getGenericDataClassesWithDependentProps")
-    fun `lenses will throw error if ctor property refers to a type parameter of a generic data class`(
-        kotlinSource: SourceFile
-    ) {
+    @MethodSource("getGenericDataClasses")
+    fun `lenses will throw error for generic data classes`(kotlinSource: SourceFile) {
         val compilationResult = compileSource(kotlinSource)
 
         SoftAssertions.assertSoftly { softly ->
             softly.assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.COMPILATION_ERROR)
             softly.assertThat(compilationResult.messages)
-                .contains("The data class Foo has some properties depending on a type:")
+                .contains("The data class Foo is generic with the following type parameters")
         }
-    }
-
-
-    @ExperimentalPathApi
-    @ParameterizedTest
-    @MethodSource("getGenericDataClassesWithIndependentProps")
-    fun `lenses will work with generic data classes if ctor properties do not depend on type parameters`(
-        kotlinSource: SourceFile
-    ) {
-        val compilationResult = compileSource(kotlinSource)
-
-        Assertions.assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
     }
 
     companion object {
@@ -420,7 +405,7 @@ class LensesProcessorTests {
         }
 
         @JvmStatic
-        fun getGenericDataClassesWithDependentProps() = listOf(
+        fun getGenericDataClasses() = listOf(
             SourceFile.kotlin(
                 "dataClassesForLensesTests.kt", """
                 package dev.fritz2.lenstest
@@ -428,7 +413,7 @@ class LensesProcessorTests {
                 import dev.fritz2.lenses.Lenses
 
                 @Lenses
-                data class Foo<T>(val bar: T) {
+                data class Foo<T> {
                     companion object
                 }
             """
@@ -440,7 +425,7 @@ class LensesProcessorTests {
                 import dev.fritz2.lenses.Lenses
 
                 @Lenses
-                data class Foo<T, E>(val foo: T, val fooBar: E) {
+                data class Foo<T, E> {
                     companion object
                 }
             """
@@ -452,57 +437,11 @@ class LensesProcessorTests {
                 import dev.fritz2.lenses.Lenses
 
                 @Lenses
-                data class Foo<T, E>(val foo: Pair<T, E>) {
-                    companion object
-                }
-            """
-            ),
-            SourceFile.kotlin(
-                "dataClassesForLensesTests.kt", """
-                package dev.fritz2.lenstest
-
-                import dev.fritz2.lenses.Lenses
-
-                // test deeply nested type parameters too!
-                @Lenses
-                data class Foo<T, E>(val foo: Pair<Set<Int>, List<Map<Set<E>, T>>>) {
+                data class Foo<T, E, V> {
                     companion object
                 }
             """
             )
-        )
-
-        @JvmStatic
-        fun getGenericDataClassesWithIndependentProps() = listOf(
-            SourceFile.kotlin(
-                "dataClassesForLensesTests.kt", """
-                package dev.fritz2.lenstest
-
-                import dev.fritz2.lenses.Lenses
-
-                @Lenses
-                data class Foo<T, E>(val foo: Pair<Set<Int>, List<Int>>) {
-                    companion object
-                }
-
-            """
-            ),
-            SourceFile.kotlin(
-                "dataClassesForLensesTests.kt", """
-                package dev.fritz2.lenstest
-
-                import dev.fritz2.lenses.Lenses
-
-                @Lenses
-                data class Foo<T, E>(val foo: String) {
-                    companion object
-
-                    val someProp: T
-                    val someOtherProp: Map<E, T>
-                }
-
-            """
-            ),
         )
     }
 }
