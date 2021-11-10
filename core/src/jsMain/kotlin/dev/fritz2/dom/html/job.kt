@@ -14,6 +14,10 @@ import org.w3c.dom.events.Event
  * Marks a class that it has a [Job] to start coroutines with.
  */
 interface WithJob {
+
+    /**
+     * [Job] for launching coroutines in.
+     */
     val job: Job
 
     /**

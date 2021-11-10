@@ -24,7 +24,7 @@ class RoutingTests {
 
         val defaultRoute = ""
 
-        val router = router(defaultRoute)
+        val router = routerOf(defaultRoute)
         val testRange = 0..2
         val testId = Id.next()
         val buttons = testRange.map { "btn-${Id.next()}" to "page$it" }
@@ -68,7 +68,7 @@ class RoutingTests {
         val btnKey = "btn"
         val defaultRoute = mapOf(pageKey to "start", btnKey to "")
 
-        val router = router(defaultRoute)
+        val router = routerOf(defaultRoute)
 
         val testRange = 0..2
         val pageId = "page-${Id.next()}"
@@ -118,7 +118,7 @@ class RoutingTests {
 
         window.location.hash = ""
 
-        val router = router(mapOf("test" to "123"))
+        val router = routerOf(mapOf("test" to "123"))
 
         val divId = "div-${Id.next()}"
 
@@ -133,5 +133,48 @@ class RoutingTests {
         val divElement = document.getElementById(divId) as HTMLDivElement
 
         assertEquals("error", divElement.textContent, "expected default value not occur")
+    }
+
+    @Test
+    fun testMapRouterHandler() = runTest {
+        initDocument()
+
+        window.location.hash = ""
+
+        val router = routerOf(mapOf("page" to "123", "extra" to "abc"))
+        val navTo = router.handle<String> { route, page ->
+            route + ("page" to page) + ("extra" to "123")
+        }
+
+        val btnId = "btn-${Id.next()}"
+        val divId = "div-${Id.next()}"
+
+        render {
+            button(id = btnId) {
+                clicks.map { "abc" } handledBy navTo
+            }
+            router.data.render { route ->
+                when(route["page"]) {
+                    "123" -> div(id = divId) {
+                        +"123 "
+                        +(route["extra"] ?: "")
+                    }
+                    "abc" -> div(id = divId) {
+                        +"abc "
+                        +(route["extra"] ?: "")
+                    }
+                    else -> div(id = divId) {}
+                }
+            }
+        }
+        delay(250)
+        fun divElement() = document.getElementById(divId) as HTMLDivElement
+        val btnElement = document.getElementById(btnId) as HTMLButtonElement
+
+        assertEquals("123 abc", divElement().textContent, "expected first page")
+        btnElement.click()
+        delay(250)
+
+        assertEquals("abc 123", divElement().textContent, "expected second page")
     }
 }
