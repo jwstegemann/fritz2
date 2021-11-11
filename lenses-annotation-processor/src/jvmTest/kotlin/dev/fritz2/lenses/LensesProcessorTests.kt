@@ -76,6 +76,7 @@ class LensesProcessorTests {
             |package dev.fritz2.lenstest
             |
             |import dev.fritz2.lenses.Lens
+            |import dev.fritz2.lenses.buildLens
             |import kotlin.Int
             |import kotlin.String
             |
@@ -142,6 +143,7 @@ class LensesProcessorTests {
             |package dev.fritz2.lenstest
             |
             |import dev.fritz2.lenses.Lens
+            |import dev.fritz2.lenses.buildLens
             |import kotlin.Int
             |
             |public val Foo.Companion.bar: Lens<Foo, Int> = buildLens(
@@ -159,6 +161,7 @@ class LensesProcessorTests {
             |package dev.fritz2.lenstest
             |
             |import dev.fritz2.lenses.Lens
+            |import dev.fritz2.lenses.buildLens
             |import kotlin.Int
             |
             |public val Bar.Companion.bar: Lens<Bar, Int> = buildLens(
@@ -199,6 +202,7 @@ class LensesProcessorTests {
             |package dev.fritz2.lenstest
             |
             |import dev.fritz2.lenses.Lens
+            |import dev.fritz2.lenses.buildLens
             |import kotlin.Int
             |
             |public val Foo.MySpecialCompanion.bar: Lens<Foo, Int> = buildLens(
@@ -276,30 +280,15 @@ class LensesProcessorTests {
     }
 
     @ExperimentalPathApi
-    @Test
-    fun `lenses will throw error if lens fun's name is already in use`() {
-        val kotlinSource = SourceFile.kotlin(
-            "dataClassesForLensesTests.kt", """
-                package dev.fritz2.lenstest
-
-                import dev.fritz2.lenses.Lenses
-
-                @Lenses
-                data class Foo(val bar: Int, val foo: Int) {
-                    companion object {
-                        fun bar() = 42 // block name for lens creation!
-                        // foo() is available though
-                    }
-                }
-            """
-        )
-
+    @ParameterizedTest
+    @MethodSource("getNameBlockingDataClasses")
+    fun `lenses will throw error if lens fun's name is already in use`(kotlinSource: SourceFile) {
         val compilationResult = compileSource(kotlinSource)
 
         SoftAssertions.assertSoftly { softly ->
             softly.assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.COMPILATION_ERROR)
             softly.assertThat(compilationResult.messages)
-                .contains("The companion object of Foo already defines the following function(s)")
+                .contains("The companion object of Foo already defines the following functions / properties")
         }
     }
 
@@ -334,6 +323,7 @@ class LensesProcessorTests {
             |package dev.fritz2.lenstest
             |
             |import dev.fritz2.lenses.Lens
+            |import dev.fritz2.lenses.buildLens
             |import kotlin.Int
             |
             |public val Foo.Companion.bar: Lens<Foo, Int> = buildLens(
@@ -403,6 +393,40 @@ class LensesProcessorTests {
 
             return listOf(resultForSimpleClass, resultForInterface, resultForObject)
         }
+
+        @JvmStatic
+        fun getNameBlockingDataClasses() = listOf(
+            SourceFile.kotlin(
+                "dataClassesForLensesTests.kt", """
+                package dev.fritz2.lenstest
+
+                import dev.fritz2.lenses.Lenses
+
+                @Lenses
+                data class Foo(val bar: Int, val foo: Int) {
+                    companion object {
+                        val bar = 42 // block name for lens creation!
+                        // foo() is available though
+                    }
+                }
+            """
+            ),
+            SourceFile.kotlin(
+                "dataClassesForLensesTests.kt", """
+                package dev.fritz2.lenstest
+
+                import dev.fritz2.lenses.Lenses
+
+                @Lenses
+                data class Foo(val bar: Int, val foo: Int) {
+                    companion object {
+                        fun bar() = 42 // block name for lens creation!
+                        // foo() is available though
+                    }
+                }
+            """
+            ),
+        )
 
         @JvmStatic
         fun getGenericDataClasses() = listOf(

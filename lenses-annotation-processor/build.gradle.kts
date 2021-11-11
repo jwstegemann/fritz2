@@ -14,6 +14,9 @@ kotlin {
             useJUnitPlatform()
         }
     }
+    js(IR) {
+        browser()
+    }.binaries.executable()
     sourceSets {
         val jvmMain by getting {
             dependencies {
