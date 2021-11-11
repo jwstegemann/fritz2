@@ -179,17 +179,23 @@ class LensesProcessor(
                         Lens::class.asClassName()
                             .parameterizedBy(classDeclaration.toClassName(), prop.type.toTypeName())
                     ).receiver(compObj.asType(emptyList()).toTypeName())
-                        .initializer(
-                            """ |%M(
-                                |"%L", 
-                                |{ it.%M }, 
-                                |{ p, v -> p.copy(%M = v)}
-                                |)
-                            """.trimMargin(),
-                            MemberName("dev.fritz2.lenses", "buildLens"),
-                            attributeName,
-                            attributeName,
-                            attributeName
+                        .getter(
+                            FunSpec
+                                .getterBuilder()
+                                .addStatement(
+                                    """ 
+                                    |return %M(
+                                    |  "%L", 
+                                    |  { it.%M }, 
+                                    |  { p, v -> p.copy(%M = v)}
+                                    |)
+                                    """.trimMargin(),
+                                    MemberName("dev.fritz2.lenses", "buildLens"),
+                                    attributeName,
+                                    attributeName,
+                                    attributeName
+                                )
+                                .build()
                         ).build()
                 )
             }

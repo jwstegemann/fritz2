@@ -80,29 +80,33 @@ class LensesProcessorTests {
             |import kotlin.Int
             |import kotlin.String
             |
-            |public val Foo.Companion.bar: Lens<Foo, Int> = buildLens(
+            |public val Foo.Companion.bar: Lens<Foo, Int>
+            |  get() = buildLens(
             |    "bar", 
             |    { it.bar }, 
             |    { p, v -> p.copy(bar = v)}
-            |    )
+            |  )
             |
-            |public val Foo.Companion.foo: Lens<Foo, String> = buildLens(
+            |public val Foo.Companion.foo: Lens<Foo, String>
+            |  get() = buildLens(
             |    "foo", 
             |    { it.foo }, 
             |    { p, v -> p.copy(foo = v)}
-            |    )
+            |  )
             |
-            |public val Foo.Companion.fooBar: Lens<Foo, MyType> = buildLens(
+            |public val Foo.Companion.fooBar: Lens<Foo, MyType>
+            |  get() = buildLens(
             |    "fooBar", 
             |    { it.fooBar }, 
             |    { p, v -> p.copy(fooBar = v)}
-            |    )
+            |  )
             |
-            |public val Foo.Companion.baz: Lens<Foo, MyGenericType<Int>> = buildLens(
+            |public val Foo.Companion.baz: Lens<Foo, MyGenericType<Int>>
+            |  get() = buildLens(
             |    "baz", 
             |    { it.baz }, 
             |    { p, v -> p.copy(baz = v)}
-            |    )
+            |  )
             """.trimMargin()
             )
         }
@@ -146,11 +150,12 @@ class LensesProcessorTests {
             |import dev.fritz2.lenses.buildLens
             |import kotlin.Int
             |
-            |public val Foo.Companion.bar: Lens<Foo, Int> = buildLens(
+            |public val Foo.Companion.bar: Lens<Foo, Int>
+            |  get() = buildLens(
             |    "bar", 
             |    { it.bar }, 
             |    { p, v -> p.copy(bar = v)}
-            |    )
+            |  )
             """.trimMargin()
             )
             softly.assertThat(
@@ -164,11 +169,12 @@ class LensesProcessorTests {
             |import dev.fritz2.lenses.buildLens
             |import kotlin.Int
             |
-            |public val Bar.Companion.bar: Lens<Bar, Int> = buildLens(
+            |public val Bar.Companion.bar: Lens<Bar, Int>
+            |  get() = buildLens(
             |    "bar", 
             |    { it.bar }, 
             |    { p, v -> p.copy(bar = v)}
-            |    )
+            |  )
             """.trimMargin()
             )
         }
@@ -205,11 +211,12 @@ class LensesProcessorTests {
             |import dev.fritz2.lenses.buildLens
             |import kotlin.Int
             |
-            |public val Foo.MySpecialCompanion.bar: Lens<Foo, Int> = buildLens(
+            |public val Foo.MySpecialCompanion.bar: Lens<Foo, Int>
+            |  get() = buildLens(
             |    "bar", 
             |    { it.bar }, 
             |    { p, v -> p.copy(bar = v)}
-            |    )
+            |  )
             """.trimMargin()
             )
         }
@@ -326,11 +333,12 @@ class LensesProcessorTests {
             |import dev.fritz2.lenses.buildLens
             |import kotlin.Int
             |
-            |public val Foo.Companion.bar: Lens<Foo, Int> = buildLens(
+            |public val Foo.Companion.bar: Lens<Foo, Int>
+            |  get() = buildLens(
             |    "bar", 
             |    { it.bar }, 
             |    { p, v -> p.copy(bar = v)}
-            |    )
+            |  )
             """.trimMargin()
             )
         }
