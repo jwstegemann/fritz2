@@ -9,7 +9,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.utils.Myer
-import kotlinx.browser.window
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
@@ -19,6 +19,19 @@ import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import kotlin.collections.set
+
+typealias DomLifecycleHandler<P> = (Tag<HTMLElement>, P?) -> Deferred<Unit>
+
+data class DomLifecycleDefinition<P>(val tag: Tag<HTMLElement>, val handler: DomLifecycleHandler<P>, val payload: P)
+
+interface DomLifecycle {
+    fun <P> afterMount(def: DomLifecycleDefinition<P>)
+    fun <P> beforeUnmount(def: DomLifecycleDefinition<P>)
+    fun <P> beforeMove(def: DomLifecycleDefinition<P>)
+    fun <P> afterMove(def: DomLifecycleDefinition<P>)
+}
+
+val MOUNT_CONTEXT_KEY = Scope.Key<DomLifecycle>("MOUNT_CONTEXT_LIFECYCLE")
 
 /**
  * Implementation of [RenderContext] that forwards all registrations of children to the element it proxies.
@@ -30,8 +43,10 @@ import kotlin.collections.set
 class MountContext<T : HTMLElement>(
     override val job: Job,
     val target: Tag<T>,
-    override val scope: Scope = target.scope,
-) : RenderContext {
+    mountScope: Scope = target.scope,
+) : RenderContext, DomLifecycle {
+
+    override val scope: Scope = mountScope.set(MOUNT_CONTEXT_KEY, this)//FIXME
 
     override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
         return target.register(element, content)
@@ -42,6 +57,30 @@ class MountContext<T : HTMLElement>(
         content(data)
     }
 
+    private val afterMountListener: MutableList<DomLifecycleDefinition<*>> by lazy {
+        mutableListOf()
+    }
+
+    private val beforeUnmountListener: MutableList<DomLifecycleDefinition<*>> by lazy {
+        mutableListOf()
+    }
+
+    override fun <P> afterMount(def: DomLifecycleDefinition<P>) {
+        afterMountListener + def
+    }
+
+    override fun <P> beforeUnmount(def: DomLifecycleDefinition<P>) {
+        beforeUnmountListener + def
+    }
+
+    override fun <P> beforeMove(def: DomLifecycleDefinition<P>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun <P> afterMove(def: DomLifecycleDefinition<P>) {
+        TODO("Not yet implemented")
+    }
+
     init {
         if (target.domNode.getAttribute("data-mount-point") != null) {
             console.error("You are mounting a flow to a tag, which is already used as mount-point by another flow")
@@ -50,7 +89,7 @@ class MountContext<T : HTMLElement>(
     }
 }
 
-internal val dummyDom = window.document.createElement("div") as HTMLElement
+fun Tag<*>.mountPoint(): DomLifecycle? = this.scope[MOUNT_CONTEXT_KEY]
 
 /**
  * Implementation of [RenderContext] that just renders its children but does not add them anywhere to the Dom.
