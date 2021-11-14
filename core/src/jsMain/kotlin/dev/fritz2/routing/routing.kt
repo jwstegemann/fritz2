@@ -1,11 +1,16 @@
 package dev.fritz2.routing
 
-import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.binding.QueuedUpdate
+import dev.fritz2.binding.Store
 import dev.fritz2.dom.html.Events
 import kotlinx.browser.window
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.plus
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.w3c.dom.events.Event
 
 /**
@@ -13,45 +18,115 @@ import org.w3c.dom.events.Event
  *
  * @param default default route
  */
-fun router(default: String): Router<String> = Router(StringRoute(default))
+fun routerOf(default: String = ""): Router<String> = Router(StringRoute(default))
 
 /**
  * Creates a new [Map] based [Router]
  *
  * @param default default route
  */
-fun router(default: Map<String, String>): Router<Map<String, String>> = Router(MapRoute(default))
+fun routerOf(default: Map<String, String> = emptyMap()) = MapRouter(default)
 
 /**
  * Creates a new type based [Router].
- * Therefore the given type must implement the [Route] interface.
+ * Therefore, the given type must implement the [Route] interface.
  *
  * @param default default route
  */
-fun <T> router(default: Route<T>): Router<T> = Router(default)
+fun <T> routerOf(default: Route<T>): Router<T> = Router(default)
 
 /**
- * Selects with the given [key] a [Pair] of the value
- * and all routing parameters as [Map].
+ * Router register the event-listener for hashchange-event and
+ * handles route-changes. Therefore, it uses a [Route] object
+ * which can [Route.serialize] and [Route.deserialize] the given type.
  *
- * @param key for getting the value from the parameter [Map]
- * @return [Flow] of the resulting [Pair]
+ * @param T type to marshal and unmarshal
+ * @property defaultRoute default route to use when page is called and no hash is set
  */
-fun Router<Map<String, String>>.select(key: String): Flow<Pair<String?, Map<String, String>>> =
-    this.data.map { m -> m[key] to m }
+open class Router<T>(
+    private val defaultRoute: Route<T>,
+) : Store<T> {
+
+    override val id: String = ""
+
+    override val path: String = ""
+
+    override val job: Job = Job()
+
+    private val state: MutableStateFlow<T> = MutableStateFlow(defaultRoute.default)
+
+    private val prefix = "#"
+
+    private val mutex = Mutex()
+
+    override val data: Flow<T> = state.asStateFlow()
+
+    override val current: T
+        get() = state.value
+
+    override val update = this.handle<T> { _, newValue -> newValue }
+
+    /**
+     * Navigates to the new given route provided as [T].
+     */
+    open val navTo = this.handle<T> { _, newValue -> newValue }
+
+    override suspend fun enqueue(update: QueuedUpdate<T>) {
+        try {
+            mutex.withLock {
+                val newRoute = update.update(state.value)
+                state.value = newRoute
+                window.location.hash = prefix + defaultRoute.serialize(newRoute)
+            }
+        } catch (e: Throwable) {
+            update.errorHandler(e, state.value)
+        }
+    }
+
+    init {
+        if (window.location.hash.isBlank()) {
+            window.location.hash = prefix + defaultRoute.serialize(defaultRoute.default)
+        } else {
+            state.value = defaultRoute.deserialize(window.location.hash.removePrefix(prefix))
+        }
+
+        val listener: (Event) -> Unit = {
+            it.preventDefault()
+            state.value = defaultRoute.deserialize(window.location.hash.removePrefix(prefix))
+        }
+        window.addEventListener(Events.hashchange.name, listener)
+    }
+}
 
 /**
- * Returns the value for the given [key] from the routing parameters.
+ * Represents the current [Route] as [Map] of [String]s.
  *
- * @param key for getting the value from the parameter [Map]
- * @param orElse if [key] is not in [Map]
- * @return [Flow] of [String] with the value
+ * @param defaultRoute default [Route] to start with.
  */
-fun Router<Map<String, String>>.select(key: String, orElse: String): Flow<String> =
-    this.data.map { m -> m[key] ?: orElse }
+open class MapRouter(defaultRoute: Map<String, String> = emptyMap()) :
+    Router<Map<String, String>>(MapRoute(defaultRoute)) {
+
+    /**
+     * Selects with the given [key] a [Pair] of the value
+     * and all routing parameters as [Map].
+     *
+     * @param key for getting the value from the parameter [Map]
+     * @return [Flow] of the resulting [Pair]
+     */
+    open fun select(key: String): Flow<Pair<String?, Map<String, String>>> = this.data.map { m -> m[key] to m }
+
+    /**
+     * Returns the value for the given [key] from the routing parameters.
+     *
+     * @param key for getting the value from the parameter [Map]
+     * @param orElse if [key] is not in [Map]
+     * @return [Flow] of [String] with the value
+     */
+    open fun select(key: String, orElse: String): Flow<String> = this.data.map { m -> m[key] ?: orElse }
+}
 
 /**
- * A Route is a abstraction for routes
+ * A Route is an abstraction for routes
  * which needed for routing
  *
  * @param T type to de-/serialize from
@@ -81,7 +156,7 @@ interface Route<T> {
  *
  * @param default [String] to use when no explicit *window.location.hash* was set before
  */
-open class StringRoute(override val default: String) : Route<String> {
+open class StringRoute(override val default: String = "") : Route<String> {
     override fun deserialize(hash: String): String = decodeURIComponent(hash)
     override fun serialize(route: String): String = encodeURIComponent(route)
 }
@@ -89,16 +164,18 @@ open class StringRoute(override val default: String) : Route<String> {
 /**
  * [MapRoute] serializes and deserializes a [Map] to and from *window.location.hash*.
  * It is like using url parameters with pairs of key and value.
- * In the begin there is only a **#** instead of **?**.
+ * At the start of the route is only a **#** instead of **?**.
  *
  * @param default [Map] to use when no explicit *window.location.hash* was set before
  */
-open class MapRoute(override val default: Map<String, String>) : Route<Map<String, String>> {
+open class MapRoute(override val default: Map<String, String> = emptyMap()) :
+    Route<Map<String, String>> {
+
     private val assignment = "="
     private val divider = "&"
 
     override fun deserialize(hash: String): Map<String, String> =
-        hash.split(divider).filter { s -> s.isNotBlank() }.asReversed().map(::extractPair).toMap()
+        hash.split(divider).filter { s -> s.isNotBlank() }.asReversed().associate(::extractPair)
 
     override fun serialize(route: Map<String, String>): String =
         route.map { (key, value) -> "$key$assignment${encodeURIComponent(value)}" }
@@ -111,59 +188,6 @@ open class MapRoute(override val default: Map<String, String>) : Route<Map<Strin
             val value = decodeURIComponent(param.substring(equalsPos + 1))
             key to value
         } else param to "true"
-    }
-}
-
-/**
- * Router register the event-listener for hashchange-event and
- * handles route-changes. Therefore it uses a [Route] object
- * which can [Route.serialize] and [Route.deserialize] the given type.
- *
- * @param T type to marshal and unmarshal
- * @property defaultRoute default route to use when page is called and no hash is set
- */
-class Router<T>(
-    private val defaultRoute: Route<T>
-) {
-
-    private val state: MutableStateFlow<T> = MutableStateFlow(defaultRoute.default)
-    private val prefix = "#"
-
-    /**
-     * Gives a [Flow] of [T] for rendering the site depending on the current route.
-     */
-    val data: Flow<T> = state.asStateFlow()
-
-    /**
-     * Gives the current route [T].
-     */
-    val current: T
-        get() = state.value
-
-    /**
-     * Handler for setting a new [Route] based on given Flow.
-     */
-    val navTo: SimpleHandler<T> = SimpleHandler { flow, job ->
-        flow.onEach { setRoute(it) }.launchIn(MainScope() + job)
-    }
-
-    init {
-        if (window.location.hash.isBlank()) {
-            setRoute(defaultRoute.default)
-        } else {
-            state.value = defaultRoute.deserialize(window.location.hash.removePrefix(prefix))
-        }
-
-        val listener: (Event) -> Unit = {
-            it.preventDefault()
-            state.value = defaultRoute.deserialize(window.location.hash.removePrefix(prefix))
-        }
-        window.addEventListener(Events.hashchange.name, listener)
-    }
-
-    private fun setRoute(newRoute: T) {
-        state.value = newRoute
-        window.location.hash = prefix + defaultRoute.serialize(newRoute)
     }
 }
 
