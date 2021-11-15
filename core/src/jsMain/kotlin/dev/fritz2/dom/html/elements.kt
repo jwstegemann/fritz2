@@ -1259,9 +1259,10 @@ open class Ul(id: String? = null, baseClass: String? = null, job: Job, scope: Sc
 class Svg(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
     Tag<SVGElement>("", id, baseClass, job, scope) {
 
-    override val domNode: SVGElement = document.createElementNS(SVG_XMLNS, "svg").unsafeCast<SVGElement>().apply {
-        if (baseClass != null) setAttributeNS(null, "class", baseClass)
-    }
+    override fun createDomNode(): SVGElement =
+        document.createElementNS(SVG_XMLNS, "svg").unsafeCast<SVGElement>().apply {
+            if (baseClass != null) setAttributeNS(null, "class", baseClass)
+        }
 
     /**
      * Sets the given [xml] string to the *innerHTML* of the [SVGElement].
@@ -1289,7 +1290,7 @@ const val SVG_XMLNS = "http://www.w3.org/2000/svg"
 class Path(id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
     Tag<SVGPathElement>("", id, baseClass, job, scope) {
 
-    override val domNode: SVGPathElement =
+    override fun createDomNode(): SVGPathElement =
         document.createElementNS(SVG_XMLNS, "path").unsafeCast<SVGPathElement>().apply {
             if (baseClass != null) setAttributeNS(null, "class", baseClass)
         }
@@ -1409,8 +1410,8 @@ interface RenderContext : WithJob, WithScope {
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: RenderContext.() -> Unit
-    ): RenderContext =
+        content: Tag<*>.() -> Unit
+    ): Tag<*> =
         register(Tag(tagName, id, baseClass, job, evalScope(scope)), content)
 
     fun a(
