@@ -50,9 +50,9 @@ class MountContext<T : HTMLElement>(
     }
 
     fun runBeforeUnmounts(): List<Deferred<Any>> = beforeUnmountListener.apply {
-        console.log("unmounts: ${this.size}")
+//        console.log("unmounts: ${this.size}")
     }.map {
-        console.log("calling handler for ${it.tag.id}")
+//        console.log("calling handler for ${it.tag.id}")
         it.handler(it.tag, it.payload)
     }.also {
         beforeUnmountListener.clear()
@@ -71,7 +71,7 @@ class MountContext<T : HTMLElement>(
     }
 
     override fun beforeUnmount(def: DomLifecycle<Any>) {
-        console.log("register $def")
+//        console.log("register $def")
         beforeUnmountListener.add(def)
     }
 
