@@ -5,9 +5,9 @@ import dev.fritz2.dom.WithDomNode
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.dom.clear
-import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLStyleElement
+import org.w3c.dom.Node
 import org.w3c.dom.css.CSSStyleSheet
 
 /**
@@ -58,7 +58,7 @@ fun render(
     targetElement?.let {
         if (override) it.clear()
         content(object : RenderContext {
-            override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+            override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
                 content(element)
                 it.appendChild(element.domNode)
                 return element

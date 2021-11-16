@@ -69,7 +69,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
         return object : RenderContext {
             override val job = Job()
             override val scope: Scope = Scope()
-            override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+            override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
                 content(element)
                 return element
             }

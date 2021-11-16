@@ -7,25 +7,25 @@ import dev.fritz2.binding.sub
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
+import dev.fritz2.dom.html.WithScope
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.utils.Myer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.dom.clear
-import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import kotlin.collections.set
 
-typealias DomLifecycleHandler<P> = (Tag<HTMLElement>, P?) -> Deferred<Unit>
+typealias DomLifecycleHandler = (WithDomNode<*>, Any?) -> Deferred<Unit>?
 
-data class DomLifecycle<P>(val tag: Tag<HTMLElement>, val handler: DomLifecycleHandler<P>, val payload: P?)
+data class DomLifecycle(val target: WithDomNode<*>, val handler: DomLifecycleHandler, val payload: Any? = null)
 
 interface MountPoint {
-    fun <P> afterMount(def: DomLifecycle<P>)
-    fun beforeUnmount(def: DomLifecycle<Any>)
-    fun <P> beforeMove(def: DomLifecycle<P>)
-    fun <P> afterMove(def: DomLifecycle<P>)
+    fun afterMount(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any? = null)
+    fun beforeUnmount(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any? = null)
+    fun beforeMove(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any? = null)
+    fun afterMove(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any? = null)
 }
 
 val MOUNT_POINT_KEY = Scope.Key<MountPoint>("MOUNT_CONTEXT_LIFECYCLE")
@@ -45,46 +45,48 @@ class MountContext<T : HTMLElement>(
 
     override val scope: Scope = Scope(mountScope).apply { set(MOUNT_POINT_KEY, this@MountContext) }
 
-    override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+    override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
         return target.register(element, content)
     }
 
-    fun runBeforeUnmounts(): List<Deferred<Any>> = beforeUnmountListener.apply {
-//        console.log("unmounts: ${this.size}")
-    }.map {
-//        console.log("calling handler for ${it.tag.id}")
-        it.handler(it.tag, it.payload)
+    fun runBeforeUnmounts(): List<Deferred<Any>> = beforeUnmountListener.mapNotNull {
+        it.handler(it.target, it.payload)
     }.also {
         beforeUnmountListener.clear()
     }
 
-    private val afterMountListener: MutableList<DomLifecycle<Any>> by lazy {
+    fun runAfterMounts(): List<Deferred<Any>> = afterMountListener.mapNotNull {
+        it.handler(it.target, it.payload)
+    }.also {
+        afterMountListener.clear()
+    }
+
+    private val afterMountListener: MutableList<DomLifecycle> by lazy {
         mutableListOf()
     }
 
-    private val beforeUnmountListener: MutableList<DomLifecycle<Any>> by lazy {
+    private val beforeUnmountListener: MutableList<DomLifecycle> by lazy {
         mutableListOf()
     }
 
-    override fun <P> afterMount(def: DomLifecycle<P>) {
-        afterMountListener + def
+    override fun afterMount(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any?) {
+        afterMountListener.add(DomLifecycle(target, handler, payload))
     }
 
-    override fun beforeUnmount(def: DomLifecycle<Any>) {
-//        console.log("register $def")
-        beforeUnmountListener.add(def)
+    override fun beforeUnmount(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any?) {
+        beforeUnmountListener.add(DomLifecycle(target, handler, payload))
     }
 
-    override fun <P> beforeMove(def: DomLifecycle<P>) {
+    override fun beforeMove(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any?) {
         TODO("Not yet implemented")
     }
 
-    override fun <P> afterMove(def: DomLifecycle<P>) {
+    override fun afterMove(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any?) {
         TODO("Not yet implemented")
     }
 }
 
-fun Tag<*>.mountPoint(): MountPoint? = this.scope[MOUNT_POINT_KEY]
+fun WithScope.mountPoint(): MountPoint? = this.scope[MOUNT_POINT_KEY]
 
 /**
  * Implementation of [RenderContext] that just renders its children but does not add them anywhere to the Dom.
@@ -96,7 +98,7 @@ class BuildContext(
     override val job: Job,
     override val scope: Scope,
 ) : RenderContext {
-    override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+    override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
         content(element)
         return element
     }
@@ -118,7 +120,6 @@ internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: Tag<HTMLElement>.() -> Unit = {
  * @param upstream the [Flow] that should be mounted at this point
  * @param content lambda definining what to render for a given value on [upstream]
  */
-@OptIn(InternalCoroutinesApi::class)
 fun <V> RenderContext.mount(
     into: Tag<HTMLElement>?,
     upstream: Flow<V>,
@@ -134,6 +135,7 @@ fun <V> RenderContext.mount(
         mountContext.runBeforeUnmounts().awaitAll()
         target.domNode.clear()
         mountContext.content(it)
+        mountContext.runAfterMounts().awaitAll()
     }
 }
 

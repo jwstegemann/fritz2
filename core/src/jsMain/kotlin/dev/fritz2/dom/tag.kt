@@ -8,6 +8,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
+import org.w3c.dom.Node
 
 /**
  * A marker to separate the layers of calls in the type-safe-builder pattern.
@@ -49,7 +50,7 @@ open class Tag<out E : Element>(
      * @param element the parent element of the new content
      * @param content lambda building the content (following the type-safe-builder pattern)
      */
-    override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
+    override fun <E : Node, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
         content(element)
         domNode.appendChild(element.domNode)
         return element
