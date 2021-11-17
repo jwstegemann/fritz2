@@ -17,6 +17,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import kotlin.collections.set
 
+
 typealias DomLifecycleHandler = (WithDomNode<*>, Any?) -> Deferred<Unit>?
 
 data class DomLifecycle(val target: WithDomNode<*>, val handler: DomLifecycleHandler, val payload: Any? = null)
@@ -28,27 +29,7 @@ interface MountPoint {
     fun afterMove(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any? = null)
 }
 
-val MOUNT_POINT_KEY = Scope.Key<MountPoint>("MOUNT_CONTEXT_LIFECYCLE")
-
-/**
- * Implementation of [RenderContext] that forwards all registrations of children to the element it proxies.
- * Also adds "data-mount-point" as a marker-attribute to the element it proxies.
- *
- * @param mountJob [Job] to use downstream from this context
- * @param proxee [Tag] to proxy
- */
-class MountContext<T : HTMLElement>(
-    override val job: Job,
-    val target: Tag<T>,
-    mountScope: Scope = target.scope,
-) : RenderContext, MountPoint {
-
-    override val scope: Scope = Scope(mountScope).apply { set(MOUNT_POINT_KEY, this@MountContext) }
-
-    override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
-        return target.register(element, content)
-    }
-
+internal abstract class MountPointImpl : MountPoint {
     fun runBeforeUnmounts(): List<Deferred<Any>> = beforeUnmountListener.mapNotNull {
         it.handler(it.target, it.payload)
     }.also {
@@ -86,7 +67,30 @@ class MountContext<T : HTMLElement>(
     }
 }
 
+internal val MOUNT_POINT_KEY = Scope.Key<MountPoint>("MOUNT_CONTEXT_LIFECYCLE")
 fun WithScope.mountPoint(): MountPoint? = this.scope[MOUNT_POINT_KEY]
+
+
+/**
+ * Implementation of [RenderContext] that forwards all registrations of children to the element it proxies.
+ * Also adds "data-mount-point" as a marker-attribute to the element it proxies.
+ *
+ * @param mountJob [Job] to use downstream from this context
+ * @param proxee [Tag] to proxy
+ */
+internal class MountContext<T : HTMLElement>(
+    override val job: Job,
+    val target: Tag<T>,
+    mountScope: Scope = target.scope,
+) : RenderContext, MountPointImpl() {
+
+    override val scope: Scope = Scope(mountScope).apply { set(MOUNT_POINT_KEY, this@MountContext) }
+
+    override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+        return target.register(element, content)
+    }
+}
+
 
 /**
  * Implementation of [RenderContext] that just renders its children but does not add them anywhere to the Dom.
@@ -94,10 +98,13 @@ fun WithScope.mountPoint(): MountPoint? = this.scope[MOUNT_POINT_KEY]
  * @param job [Job] to use downstream from this context
  * @param scope [Scope] to use downstream from this context
  */
-class BuildContext(
+internal class BuildContext(
     override val job: Job,
-    override val scope: Scope,
-) : RenderContext {
+    mountScope: Scope,
+) : RenderContext, MountPointImpl() {
+
+    override val scope: Scope = Scope(mountScope).apply { set(MOUNT_POINT_KEY, this@BuildContext) }
+
     override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
         content(element)
         return element
@@ -273,6 +280,7 @@ fun <V> RenderContext.mountPatches(
     }
         ?: div(MOUNT_POINT_STYLE_CLASS, content = SET_MOUNT_POINT_DATA_ATTRIBUTE)
 
+    //FIXME: memoize MountPointImpl here
     val jobs = mutableMapOf<Node, Job>()
 
     mountSimple(target.job, createPatches(upstream, jobs)) { patches ->
