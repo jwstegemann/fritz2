@@ -128,35 +128,6 @@ internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: Tag<HTMLElement>.() -> Unit = {
 }
 
 /**
- * Uses the [content]-lambda to render a subtree for each value on the [upstream]-[Flow] and
- * mounts it to the DOM either
- *  - creating a new context-[Div] as a child of the receiver and adding the content as children to this [Div]
- *  - of, if [into] is set, replacing all children of this [Tag].
- *
- * @param into if set defines the target to mount the content to (replacing its static content)
- * @param upstream the [Flow] that should be mounted at this point
- * @param content lambda definining what to render for a given value on [upstream]
- */
-fun <V> RenderContext.mount(
-    into: Tag<HTMLElement>?,
-    upstream: Flow<V>,
-    content: RenderContext.(V) -> Unit
-) {
-    val target = into?.apply(SET_MOUNT_POINT_DATA_ATTRIBUTE)
-        ?: div(MOUNT_POINT_STYLE_CLASS, content = SET_MOUNT_POINT_DATA_ATTRIBUTE)
-
-    val mountContext = MountContext(Job(job), target)
-
-    mountSimple(this.job, upstream) {
-        mountContext.job.cancelChildren()
-        mountContext.runBeforeUnmounts().awaitAll()
-        target.domNode.clear()
-        mountContext.content(it)
-        mountContext.runAfterMounts().awaitAll()
-    }
-}
-
-/**
  * Accumulates a [Pair] and a [List] to a new [Pair] of [List]s
  *
  * @param accumulator [Pair] of two [List]s

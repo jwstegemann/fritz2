@@ -3,15 +3,15 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.*
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.WithDomNode
-import dev.fritz2.dom.WithText
-import dev.fritz2.dom.mount
+import dev.fritz2.dom.*
 import dev.fritz2.lenses.IdProvider
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.dom.clear
 import org.w3c.dom.*
 import org.w3c.dom.svg.SVGElement
 import org.w3c.dom.svg.SVGPathElement
@@ -1325,8 +1325,20 @@ interface RenderContext : WithJob, WithScope {
      * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    fun <V> Flow<V>.render(into: Tag<HTMLElement>? = null, content: RenderContext.(V) -> Unit) =
-        mount(into, this, content)
+    fun <V> Flow<V>.render(into: Tag<HTMLElement>? = null, content: RenderContext.(V) -> Unit) {
+        val target = into?.apply(SET_MOUNT_POINT_DATA_ATTRIBUTE)
+            ?: div(MOUNT_POINT_STYLE_CLASS, content = SET_MOUNT_POINT_DATA_ATTRIBUTE)
+
+        val mountContext = MountContext(Job(job), target)
+
+        mountSimple(job, this) {
+            mountContext.job.cancelChildren()
+            mountContext.runBeforeUnmounts().awaitAll()
+            target.domNode.clear()
+            content(mountContext, it)
+            mountContext.runAfterMounts().awaitAll()
+        }
+    }
 
 
     /**
