@@ -7,29 +7,58 @@ import dev.fritz2.binding.sub
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
-import dev.fritz2.dom.html.WithScope
+import dev.fritz2.dom.html.WithJob
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.utils.Myer
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.*
 import kotlinx.dom.clear
+import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import kotlin.collections.set
 
+/**
+ * Defines type for a handler for lifecycle-events
+ */
+typealias DomLifecycleHandler = (WithDomNode<Element>, Any?) -> Deferred<Unit>?
 
-typealias DomLifecycleHandler = (WithDomNode<*>, Any?) -> Deferred<Unit>?
+internal class DomLifecycle(
+    val target: WithDomNode<Element>,
+    val handler: DomLifecycleHandler,
+    val payload: Any? = null
+)
 
-data class DomLifecycle(val target: WithDomNode<*>, val handler: DomLifecycleHandler, val payload: Any? = null)
-
+/**
+ * External interface to access the MountPoint where the lifecycle of [Tag]s and subtrees is handled.
+ */
 interface MountPoint {
-    fun afterMount(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any? = null)
-    fun beforeUnmount(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any? = null)
-    fun beforeMove(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any? = null)
-    fun afterMove(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any? = null)
+
+    /**
+     * Registers a [DomLifecycleHandler] on a given target that ist called right after the target is mounted to the DOM.
+     * The [MountPoint] waits for the [Deferred] to be completed.
+     *
+     * @param target the element the lifecycle-handler will be registered for
+     * @param payload some optional data that might be used by the [handler] to do its work
+     * @param handler defines, what to do (with [payload]), when [target] has just been mounted to the DOM
+     */
+    fun afterMount(target: WithDomNode<Element>, payload: Any? = null, handler: DomLifecycleHandler)
+
+    /**
+     * Registers a [DomLifecycleHandler] on a given target that ist called right before the target is removed from the DOM.
+     * The [MountPoint] waits for the [Deferred] to be completed.
+     *
+     * @param target the element the lifecycle-handler will be registered for
+     * @param payload some optional data that might be used by the [handler] to do its work
+     * @param handler defines, what to do (with [payload]), when [target] has just been mounted to the DOM
+     */
+    fun beforeUnmount(target: WithDomNode<Element>, handler: DomLifecycleHandler, payload: Any? = null)
 }
 
-internal abstract class MountPointImpl : MountPoint {
+internal abstract class MountPointImpl : MountPoint, WithJob {
     fun runBeforeUnmounts(): List<Deferred<Any>> = beforeUnmountListener.mapNotNull {
         it.handler(it.target, it.payload)
     }.also {
@@ -50,34 +79,22 @@ internal abstract class MountPointImpl : MountPoint {
         mutableListOf()
     }
 
-    override fun afterMount(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any?) {
+    override fun afterMount(target: WithDomNode<Element>, payload: Any?, handler: DomLifecycleHandler) {
         afterMountListener.add(DomLifecycle(target, handler, payload))
     }
 
-    override fun beforeUnmount(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any?) {
+    override fun beforeUnmount(target: WithDomNode<Element>, handler: DomLifecycleHandler, payload: Any?) {
         beforeUnmountListener.add(DomLifecycle(target, handler, payload))
-    }
-
-    override fun beforeMove(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun afterMove(target: WithDomNode<*>, handler: DomLifecycleHandler, payload: Any?) {
-        TODO("Not yet implemented")
     }
 }
 
 internal val MOUNT_POINT_KEY = Scope.Key<MountPoint>("MOUNT_CONTEXT_LIFECYCLE")
-fun WithScope.mountPoint(): MountPoint? = this.scope[MOUNT_POINT_KEY]
-
 
 /**
- * Implementation of [RenderContext] that forwards all registrations of children to the element it proxies.
- * Also adds "data-mount-point" as a marker-attribute to the element it proxies.
- *
- * @param mountJob [Job] to use downstream from this context
- * @param proxee [Tag] to proxy
+ * Allows to access the nearest [MountPoint] from any [Tag]
  */
+fun Tag<*>.mountPoint(): MountPoint? = this.scope[MOUNT_POINT_KEY]
+
 internal class MountContext<T : HTMLElement>(
     override val job: Job,
     val target: Tag<T>,
@@ -91,13 +108,6 @@ internal class MountContext<T : HTMLElement>(
     }
 }
 
-
-/**
- * Implementation of [RenderContext] that just renders its children but does not add them anywhere to the Dom.
- *
- * @param job [Job] to use downstream from this context
- * @param scope [Scope] to use downstream from this context
- */
 internal class BuildContext(
     override val job: Job,
     mountScope: Scope,
@@ -178,13 +188,14 @@ fun <V> RenderContext.mount(
     upstream: Flow<List<V>>,
     idProvider: IdProvider<V, *>?,
     content: RenderContext.(V) -> Tag<HTMLElement>
-) = mountPatches(into, upstream) { upstreamValues, jobs ->
+) = mountPatches(into, upstream) { upstreamValues, mountPoints ->
     upstreamValues.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
         val diff = if (idProvider != null) Myer.diff(old, new, idProvider) else Myer.diff(old, new)
         diff.map { patch ->
             patch.map(job) { value, newJob ->
-                content(BuildContext(newJob, scope), value).also {
-                    jobs[it.domNode] = newJob
+                val mountPoint = BuildContext(newJob, scope)
+                content(mountPoint, value).also {
+                    mountPoints[it.domNode] = mountPoint
                 }
             }
         }
@@ -227,11 +238,12 @@ fun <V> RenderContext.mount(
     into: Tag<HTMLElement>?,
     store: Store<List<V>>,
     content: RenderContext.(Store<V>) -> Tag<HTMLElement>
-) = mountPatches(into, store.data) { upstream, jobs ->
+) = mountPatches(into, store.data) { upstream, mountPoints ->
     upstream.map { it.withIndex().toList() }.eachIndex().map { patch ->
         listOf(patch.map(job) { value, newJob ->
-            content(BuildContext(newJob, scope), store.sub(value.index)).also {
-                jobs[it.domNode] = newJob
+            val mountPoint = BuildContext(newJob, scope)
+            content(mountPoint, store.sub(value.index)).also {
+                mountPoints[it.domNode] = mountPoint
             }
         })
     }
@@ -269,10 +281,10 @@ fun <V> Flow<List<V>>.eachIndex(): Flow<Patch<V>> =
  * @param upstream the [Flow] that should be mounted
  * @param createPatches lambda defining, how to compare two versions of a [List]
  */
-fun <V> RenderContext.mountPatches(
+internal fun <V> RenderContext.mountPatches(
     into: Tag<HTMLElement>?,
     upstream: Flow<List<V>>,
-    createPatches: (Flow<List<V>>, MutableMap<Node, Job>) -> Flow<List<Patch<Tag<HTMLElement>>>>,
+    createPatches: (Flow<List<V>>, MutableMap<Node, MountPointImpl>) -> Flow<List<Patch<Tag<HTMLElement>>>>,
 ) {
     val target = into?.apply {
         this.domNode.clear()
@@ -280,18 +292,31 @@ fun <V> RenderContext.mountPatches(
     }
         ?: div(MOUNT_POINT_STYLE_CLASS, content = SET_MOUNT_POINT_DATA_ATTRIBUTE)
 
-    //FIXME: memoize MountPointImpl here
-    val jobs = mutableMapOf<Node, Job>()
+    val mountPoints = mutableMapOf<Node, MountPointImpl>()
 
-    mountSimple(target.job, createPatches(upstream, jobs)) { patches ->
+    mountSimple(target.job, createPatches(upstream, mountPoints)) { patches ->
         patches.forEach { patch ->
             when (patch) {
-                is Patch.Insert -> target.domNode.insert(patch.element, patch.index)
-                is Patch.InsertMany -> target.domNode.insertMany(patch.elements, patch.index)
+                is Patch.Insert -> {
+                    target.domNode.insert(patch.element, patch.index)
+                    val mountPointImpl = mountPoints[patch.element.domNode]
+                    if (mountPointImpl != null) mountPointImpl.runAfterMounts()
+                    else console.error("could not run afterMount on inserting ${patch.element}")
+                }
+                is Patch.InsertMany -> {
+                    target.domNode.insertMany(patch.elements, patch.index)
+                    patch.elements.forEach { element ->
+                        val mountPointImpl = mountPoints[element.domNode]
+                        if (mountPointImpl != null) mountPointImpl.runAfterMounts()
+                        else console.error("could not run afterMount on inserting $element")
+                    }
+                }
                 is Patch.Delete -> target.domNode.delete(patch.start, patch.count) { node ->
-                    val job = jobs.remove(node)
-                    if (job != null) job.cancelChildren()
-                    else console.error("could not cancel renderEach-jobs!")
+                    val mountPointImpl = mountPoints.remove(node)
+                    if (mountPointImpl != null) {
+                        mountPointImpl.job.cancelChildren()
+                        mountPointImpl.runBeforeUnmounts().awaitAll()
+                    } else console.error("could not cancel renderEach-job for node $node!")
                 }
                 is Patch.Move -> target.domNode.move(patch.from, patch.to)
             }
@@ -349,7 +374,7 @@ fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
  * @param start position for deleting
  * @param count of elements to delete
  */
-fun <N : Node> N.delete(start: Int, count: Int, cancelJob: (Node) -> Unit) {
+suspend fun <N : Node> N.delete(start: Int, count: Int, cancelJob: suspend (Node) -> Unit) {
     var itemToDelete = childNodes.item(start)
     repeat(count) {
         itemToDelete?.let {
