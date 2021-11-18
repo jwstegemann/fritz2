@@ -2,15 +2,18 @@
 
 package dev.fritz2.dom.html
 
-import dev.fritz2.binding.*
+import dev.fritz2.binding.Patch
+import dev.fritz2.binding.Store
+import dev.fritz2.binding.mountSimple
+import dev.fritz2.binding.sub
 import dev.fritz2.dom.*
 import dev.fritz2.lenses.IdProvider
+import dev.fritz2.utils.Myer
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.dom.clear
 import org.w3c.dom.*
 import org.w3c.dom.svg.SVGElement
@@ -1322,7 +1325,7 @@ interface RenderContext : WithJob, WithScope {
      * Renders the data of a [Flow] as [Tag]s to the DOM.
      *
      * @receiver [Flow] containing the data
-     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
     fun <V> Flow<V>.render(into: Tag<HTMLElement>? = null, content: RenderContext.(V) -> Unit) {
@@ -1340,6 +1343,16 @@ interface RenderContext : WithJob, WithScope {
         }
     }
 
+    /**
+     * Accumulates a [Pair] and a [List] to a new [Pair] of [List]s
+     *
+     * @param accumulator [Pair] of two [List]s
+     * @param newValue new [List] to accumulate
+     */
+    fun <T> accumulate(
+        accumulator: Pair<List<T>, List<T>>,
+        newValue: List<T>
+    ): Pair<List<T>, List<T>> = Pair(accumulator.second, newValue)
 
     /**
      * Renders each element of a [Flow]s content.
@@ -1348,15 +1361,28 @@ interface RenderContext : WithJob, WithScope {
      * when an element stays the same, but changes its internal values.
      *
      * @param idProvider function to identify a unique entity in the list
-     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
     fun <V> Flow<List<V>>.renderEach(
         idProvider: IdProvider<V, *>? = null,
         into: Tag<HTMLElement>? = null,
         content: RenderContext.(V) -> Tag<HTMLElement>
-    ) =
-        mount(into, this, idProvider, content)
+    ) {
+        mountPatches(into, this) { upstreamValues, mountPoints ->
+            upstreamValues.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
+                val diff = if (idProvider != null) Myer.diff(old, new, idProvider) else Myer.diff(old, new)
+                diff.map { patch ->
+                    patch.map(job) { value, newJob ->
+                        val mountPoint = BuildContext(newJob, scope)
+                        content(mountPoint, value).also {
+                            mountPoints[it.domNode] = mountPoint
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Renders each element of a [Store]s [List] content.
@@ -1365,15 +1391,39 @@ interface RenderContext : WithJob, WithScope {
      * when an element stays the same, but changes its internal values.
      *
      * @param idProvider function to identify a unique entity in the list
-     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
     fun <V> Store<List<V>>.renderEach(
         idProvider: IdProvider<V, *>,
         into: Tag<HTMLElement>? = null,
         content: RenderContext.(Store<V>) -> Tag<HTMLElement>
-    ) =
-        mount(into, this, idProvider, content)
+    ) {
+        data.renderEach(idProvider, into) { value ->
+            content(this@renderEach.sub(value, idProvider))
+        }
+    }
+
+    /**
+     * Compares each new [List] on a [Flow] to its predecessor element by element to create [Patch]es.
+     *
+     * @return [Flow] of [Patch]es
+     */
+    fun <V> Flow<List<V>>.eachIndex(): Flow<Patch<V>> =
+        this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
+            val oldSize = old.size
+            val newSize = new.size
+            when {
+                oldSize < newSize -> flowOf<Patch<V>>(
+                    Patch.InsertMany(
+                        new.subList(oldSize, newSize).reversed(),
+                        oldSize
+                    )
+                )
+                oldSize > newSize -> flowOf<Patch<V>>(Patch.Delete(newSize, (oldSize - newSize)))
+                else -> emptyFlow()
+            }
+        }
 
     /**
      * Renders each element of a [Store]s list content.
@@ -1381,14 +1431,23 @@ interface RenderContext : WithJob, WithScope {
      * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
      *
      * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
-     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
      */
     fun <V> Store<List<V>>.renderEach(
         into: Tag<HTMLElement>? = null,
         content: RenderContext.(Store<V>) -> Tag<HTMLElement>
-    ) =
-        mount(into, this, content)
-
+    ) {
+        mountPatches(into, this.data) { upstream, mountPoints ->
+            upstream.map { it.withIndex().toList() }.eachIndex().map { patch ->
+                listOf(patch.map(this@RenderContext.job) { value, newJob ->
+                    val mountPoint = BuildContext(newJob, scope)
+                    content(mountPoint, this.sub(value.index)).also {
+                        mountPoints[it.domNode] = mountPoint
+                    }
+                })
+            }
+        }
+    }
 
     /**
      * Converts the content of a [Flow] to [String] by using [toString] method.

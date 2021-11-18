@@ -1,25 +1,20 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.Patch
-import dev.fritz2.binding.Store
 import dev.fritz2.binding.mountSimple
-import dev.fritz2.binding.sub
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import dev.fritz2.dom.html.WithJob
-import dev.fritz2.lenses.IdProvider
-import dev.fritz2.utils.Myer
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.dom.clear
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
-import kotlin.collections.set
 
 /**
  * Defines type for a handler for lifecycle-events
@@ -126,121 +121,6 @@ internal const val MOUNT_POINT_STYLE_CLASS = "mount-point"
 internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: Tag<HTMLElement>.() -> Unit = {
     attr("data-mount-point", true)
 }
-
-/**
- * Accumulates a [Pair] and a [List] to a new [Pair] of [List]s
- *
- * @param accumulator [Pair] of two [List]s
- * @param newValue new [List] to accumulate
- */
-fun <T> accumulate(
-    accumulator: Pair<List<T>, List<T>>,
-    newValue: List<T>
-): Pair<List<T>, List<T>> = Pair(accumulator.second, newValue)
-
-
-/**
- * Compares each new [List] on [upstream] to its predecessor to create [Patch]es using Myer's diff-algorithm.
- * For each element that is newly inserted it uses the [content]-lambda to render a subtree.
- * The resulting [Patch]es are then applied to the DOM either
- *  - creating a new context-[Div] as a child of the receiver
- *  - or, if [into] is set, replacing all children of this [Tag].
- *  Keep in mind, that if you do not offer an [idProvider] a changed value of a list-item will render a new subtree
- *  for this item. When you provide an [idProvider] though, a new subtree will only be rendered if a new id appears
- *  in the list, and you are responsible for updating the dynamic content (by using sub-[Store]s).
- *
- * @param into if set defines the target to mount the content to (replacing its static content)
- * @param idProvider optional function to identify a unique entity in the list
- * @param upstream the [Flow] that should be mounted
- * @param content lambda definining what to render for a given value on [upstream]
- */
-fun <V> RenderContext.mount(
-    into: Tag<HTMLElement>?,
-    upstream: Flow<List<V>>,
-    idProvider: IdProvider<V, *>?,
-    content: RenderContext.(V) -> Tag<HTMLElement>
-) = mountPatches(into, upstream) { upstreamValues, mountPoints ->
-    upstreamValues.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
-        val diff = if (idProvider != null) Myer.diff(old, new, idProvider) else Myer.diff(old, new)
-        diff.map { patch ->
-            patch.map(job) { value, newJob ->
-                val mountPoint = BuildContext(newJob, scope)
-                content(mountPoint, value).also {
-                    mountPoints[it.domNode] = mountPoint
-                }
-            }
-        }
-    }
-}
-
-/**
- * Compares each new [List] on [store]'s data-[Flow] to its predecessor to create [Patch]es using Myer's diff-algorithm.
- * For each element that is newly inserted it uses the [content]-lambda to render a subtree.
- * The resulting [Patch]es are then applied to the DOM either
- *  - creating a new context-[Div] as a child of the receiver
- *  - or, if [into] is set, replacing all children of this [Tag].
- *
- * @param into if set defines the target to mount the content to (replacing its static content)
- * @param idProvider function to identify a unique entity in the list
- * @param store the [Store] that's values should be mounted at
- * @param content lambda definining what to render for a given value on [store]'s data-[Flow]
- */
-fun <V> RenderContext.mount(
-    into: Tag<HTMLElement>?,
-    store: Store<List<V>>,
-    idProvider: IdProvider<V, *>,
-    content: RenderContext.(Store<V>) -> Tag<HTMLElement>
-) = mount(into, store.data, idProvider) { value ->
-    content(store.sub(value, idProvider))
-}
-
-/**
- * Compares each new [List] on [store]'s data-[Flow] to its predecessor element by element to create [Patch]es.
- * For each element that is newly inserted it uses the [content]-lambda to render a subtree.
- * The resulting [Patch]es are then applied to the DOM either
- *  - creating a new context-[Div] as a child of the receiver
- *  - or, if [into] is set, replacing all children of this [Tag].
- *
- * @param into if set defines the target to mount the content to (replacing its static content)
- * @param store the [Store] that's values should be mounted at
- * @param content lambda definining what to render for a given value on [store]'s data-[Flow]
- */
-fun <V> RenderContext.mount(
-    into: Tag<HTMLElement>?,
-    store: Store<List<V>>,
-    content: RenderContext.(Store<V>) -> Tag<HTMLElement>
-) = mountPatches(into, store.data) { upstream, mountPoints ->
-    upstream.map { it.withIndex().toList() }.eachIndex().map { patch ->
-        listOf(patch.map(job) { value, newJob ->
-            val mountPoint = BuildContext(newJob, scope)
-            content(mountPoint, store.sub(value.index)).also {
-                mountPoints[it.domNode] = mountPoint
-            }
-        })
-    }
-}
-
-
-/**
- * Compares each new [List] on a [Flow] to its predecessor element by element to create [Patch]es.
- *
- * @return [Flow] of [Patch]es
- */
-fun <V> Flow<List<V>>.eachIndex(): Flow<Patch<V>> =
-    this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
-        val oldSize = old.size
-        val newSize = new.size
-        when {
-            oldSize < newSize -> flowOf<Patch<V>>(
-                Patch.InsertMany(
-                    new.subList(oldSize, newSize).reversed(),
-                    oldSize
-                )
-            )
-            oldSize > newSize -> flowOf<Patch<V>>(Patch.Delete(newSize, (oldSize - newSize)))
-            else -> emptyFlow()
-        }
-    }
 
 
 /**
