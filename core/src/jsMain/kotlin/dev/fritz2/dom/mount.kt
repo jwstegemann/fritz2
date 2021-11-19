@@ -23,8 +23,8 @@ typealias DomLifecycleHandler = (WithDomNode<Element>, Any?) -> Deferred<Unit>?
 
 internal class DomLifecycle(
     val target: WithDomNode<Element>,
-    val handler: DomLifecycleHandler,
-    val payload: Any? = null
+    val payload: Any? = null,
+    val handler: DomLifecycleHandler
 )
 
 /**
@@ -50,7 +50,7 @@ interface MountPoint {
      * @param payload some optional data that might be used by the [handler] to do its work
      * @param handler defines, what to do (with [payload]), when [target] has just been mounted to the DOM
      */
-    fun beforeUnmount(target: WithDomNode<Element>, handler: DomLifecycleHandler, payload: Any? = null)
+    fun beforeUnmount(target: WithDomNode<Element>, payload: Any? = null, handler: DomLifecycleHandler)
 }
 
 internal abstract class MountPointImpl : MountPoint, WithJob {
@@ -75,11 +75,11 @@ internal abstract class MountPointImpl : MountPoint, WithJob {
     }
 
     override fun afterMount(target: WithDomNode<Element>, payload: Any?, handler: DomLifecycleHandler) {
-        afterMountListener.add(DomLifecycle(target, handler, payload))
+        afterMountListener.add(DomLifecycle(target, payload, handler))
     }
 
-    override fun beforeUnmount(target: WithDomNode<Element>, handler: DomLifecycleHandler, payload: Any?) {
-        beforeUnmountListener.add(DomLifecycle(target, handler, payload))
+    override fun beforeUnmount(target: WithDomNode<Element>, payload: Any?, handler: DomLifecycleHandler) {
+        beforeUnmountListener.add(DomLifecycle(target, payload, handler))
     }
 }
 
