@@ -34,7 +34,7 @@ class LifecycleTests {
                             mounts += 1;
                             null
                         }
-                        mountPoint()?.beforeUnmount(this) { _, _ ->
+                        beforeUnmount { _, _ ->
                             unmounts += 1
                             null
                         }
@@ -72,7 +72,7 @@ class LifecycleTests {
 
         render {
             div {
-                mountPoint()?.afterMount(this) { _, _ ->
+                afterMount { _, _ ->
                     mounts += 1;
                     null
                 }

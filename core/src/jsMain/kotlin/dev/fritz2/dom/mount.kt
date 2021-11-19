@@ -90,6 +90,28 @@ internal val MOUNT_POINT_KEY = Scope.Key<MountPoint>("MOUNT_POINT")
  */
 fun Tag<*>.mountPoint(): MountPoint? = this.scope[MOUNT_POINT_KEY]
 
+/**
+ * Convenience method to register lifecycle handler for after a [Tag] is mounted
+ *
+ * @param handler [DomLifecycleHandler] to be called on this [Tag] after it is mounted to the DOM
+ * @param payload optional payload the handler requires
+ * @receiver the [Tag] to register the lifecycle handler for
+ */
+fun <T : Element> Tag<T>.afterMount(payload: Any? = null, handler: DomLifecycleHandler) {
+    this.scope[MOUNT_POINT_KEY]?.afterMount(this, payload, handler)
+}
+
+/**
+ * Convenience method to register lifecycle handler for before a [Tag] is unmounted
+ *
+ * @param handler [DomLifecycleHandler] to be called on this [Tag] before it is removed from the DOM
+ * @param payload optional payload the handler requires
+ * @receiver the [Tag] to register the lifecycle handler for
+ */
+fun <T : Element> Tag<T>.beforeUnmount(payload: Any? = null, handler: DomLifecycleHandler) {
+    this.scope[MOUNT_POINT_KEY]?.beforeUnmount(this, payload, handler)
+}
+
 internal class MountContext<T : HTMLElement>(
     override val job: Job,
     val target: Tag<T>,
