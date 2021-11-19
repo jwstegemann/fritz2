@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 /**
- * A [Store] that is derived from your [RootStore] or another [SubStore] that represents a part of the data-model of it's parent.
+ * A [Store] that is derived from your [RootStore] or another [SubStore] that represents a part of the data-model of its parent.
  * Use the .sub-factory-method on the parent [Store] to create it.
  */
 class SubStore<P, T>(

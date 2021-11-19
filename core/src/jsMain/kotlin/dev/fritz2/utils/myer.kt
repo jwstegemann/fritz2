@@ -13,7 +13,7 @@ object Myer {
      * diffs to versions of a [List] by providing an [IdProvider].
      * The definition of an id to identify the same object in both [List]s makes it possible to detect,
      * if an object is moved from one position to another.
-     * Also this method does not emit a [Patch] if values within an element change.
+     * Also, this method does not emit a [Patch] if values within an element change.
      *
      * @param oldList old version of the [List]
      * @param newList new version of the [List]

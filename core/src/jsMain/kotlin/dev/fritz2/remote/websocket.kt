@@ -38,7 +38,7 @@ class ConnectionException(message: String, throwable: Throwable) : Exception(mes
 fun websocket(url: String, vararg protocols: String): Socket = Socket(url, protocols)
 
 /**
- * [Socket] defines how to connect via websocket. Therefore it needs an
+ * [Socket] defines how to connect via websocket. Therefore, it needs an
  * [baseUrl] and an optional list of [protocols]. The [Session] will be established
  * after calling the [connect] method.
  *
@@ -71,7 +71,7 @@ open class Socket(
 
     /**
      * Creates a [Session] by trying to connect to the websocket endpoint.
-     * When connection was successful made, you can send and receive message via websockets.
+     * When connection was successfully made, you can send and receive message via websockets.
      *
      * @param subUrl optional Url to append
      * @return [Session] when connection was successful
@@ -137,7 +137,7 @@ sealed class SessionState {
 
 /**
  * [Session] represents a session via websocket after connection was successful. Within a [Session]
- * you can bidirectional exchange data with the remote endpoint.
+ * you can exchange data with the remote endpoint bi-directionaly.
  *
  * @property webSocket [WebSocket] running websocket instance
  */

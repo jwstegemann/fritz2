@@ -172,7 +172,7 @@ open class Tag<out E : Element>(
 
     /**
      * Sets an attribute from a [List] of [String]s.
-     * Therefore it concatenates the [String]s to the final value [String].
+     * Therefore, it concatenates the [String]s to the final value [String].
      *
      * @param name to use
      * @param values for concatenation
@@ -184,7 +184,7 @@ open class Tag<out E : Element>(
 
     /**
      * Sets an attribute from a [List] of [String]s.
-     * Therefore it concatenates the [String]s to the final value [String].
+     * Therefore, it concatenates the [String]s to the final value [String].
      *
      * @param name to use
      * @param values for concatenation

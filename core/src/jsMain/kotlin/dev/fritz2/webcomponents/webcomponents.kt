@@ -162,7 +162,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
 }
 
 /**
- * registers a [WebComponent] at the browser's registry so you can use it in fritz2 by custom-[Tag] or in HTML.
+ * registers a [WebComponent] at the browser's registry, so you can use it in fritz2 by custom-[Tag] or in HTML.
  * So to make a component that can be added by just importing your javascript, call this in main.
  *
  *  @param localName name of the new custom tag (must contain a '-')
@@ -178,7 +178,7 @@ fun <X : Element, T : WebComponent<X>> registerWebComponent(
 }
 
 /**
- * registers a [WebComponent] at the browser's registry so you can use it in fritz2 by custom-[Tag] or in HTML.
+ * registers a [WebComponent] at the browser's registry, so you can use it in fritz2 by custom-[Tag] or in HTML.
  * So to make a component that can be added by just importing your javascript, call this in main.
  *
  *  @param localName name of the new custom tag (must contain a '-')

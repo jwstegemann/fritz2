@@ -78,7 +78,7 @@ inline fun <P> format(crossinline parse: (String) -> P, crossinline format: (P) 
 typealias IdProvider<T, I> = (T) -> I
 
 /**
- * Occurs when [Lens] points to non existing element.
+ * Occurs when [Lens] points to non-existing element.
  */
 class LensException: Exception()
 
