@@ -62,4 +62,23 @@ class LifecycleTests {
             countingStore.update(i + 1)
         }
     }
+
+
+    @Test
+    fun testLifecycleOnGlobalRender() = runTest {
+        initDocument()
+
+        var mounts = 0
+
+        render {
+            div {
+                mountPoint()?.afterMount(this) { _, _ ->
+                    mounts += 1;
+                    null
+                }
+            }
+        }
+
+        assertEquals(1, mounts, "afterMount not called")
+    }
 }

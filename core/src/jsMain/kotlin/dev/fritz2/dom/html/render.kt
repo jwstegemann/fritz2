@@ -1,5 +1,7 @@
 package dev.fritz2.dom.html
 
+import dev.fritz2.dom.MOUNT_POINT_KEY
+import dev.fritz2.dom.MountPointImpl
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
 import kotlinx.browser.document
@@ -53,21 +55,28 @@ fun render(
     override: Boolean = true,
     content: RenderContext.() -> Unit
 ) {
-    //add style sheet continaing mount-point-class
+    //add style sheet containing mount-point-class
     addGlobalStyle(".mount-point { display: contents; }")
-    targetElement?.let {
-        if (override) it.clear()
-        content(object : RenderContext {
+
+    if (targetElement != null) {
+        if (override) targetElement.clear()
+
+        val mountPoint = object : RenderContext, MountPointImpl() {
+            override val scope: Scope = Scope().also { scope -> scope[MOUNT_POINT_KEY] = this }
+
             override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
                 content(element)
-                it.appendChild(element.domNode)
+                targetElement.appendChild(element.domNode)
                 return element
             }
 
             override val job = Job()
-            override val scope = Scope()
-        })
-    } ?: throw MountTargetNotFoundException("targetElement should not be null")
+        }
+
+        content(mountPoint)
+        mountPoint.runAfterMounts()
+
+    } else throw MountTargetNotFoundException("targetElement should not be null")
 }
 
 const val FRITZ2_GLOBAL_STYLESHEET_ID = "fritz2-global-styles"
