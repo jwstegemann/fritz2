@@ -36,7 +36,7 @@ import dev.fritz2.binding.RootStore
  * those in order to exchange data with the client!
  */
 open class MultiSelectionStore<T> : RootStore<List<T>>(emptyList()) {
-    val toggle = handleAndEmit<T, List<T>> { selectedRows, new ->
+    val toggle = this.handleAndEmit<T, List<T>> { selectedRows, new ->
         val newSelection = if (selectedRows.contains(new))
             selectedRows - new
         else
@@ -56,7 +56,7 @@ open class MultiSelectionStore<T> : RootStore<List<T>>(emptyList()) {
  * those in order to exchange data with the client!
  */
 open class SingleSelectionStore : RootStore<Int?>(null) {
-    val toggle = handleAndEmit<Int, Int> { _, new ->
+    val toggle = this.handleAndEmit<Int, Int> { _, new ->
         emit(new)
         new
     }

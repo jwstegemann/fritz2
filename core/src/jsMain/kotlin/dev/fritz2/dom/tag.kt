@@ -42,7 +42,7 @@ open class Tag<out E : Element>(
         if (!baseClass.isNullOrBlank()) element.className = baseClass
     }.unsafeCast<E>()
 
-    override val domNode: E = createDomNode()
+    override val domNode: E = this.createDomNode()
 
     /**
      * Creates the content of the [Tag] and appends it as a child to the wrapped [Element].
