@@ -1316,7 +1316,7 @@ open class TextElement(tagName: String, id: String? = null, baseClass: String? =
 
 
 /**
- * Context for rendering standard HTML5 [Tag]s
+ * Context for rendering static and dynamical content
  */
 interface RenderContext : WithJob, WithScope {
 

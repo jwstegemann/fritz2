@@ -26,8 +26,6 @@ annotation class HtmlTagMarker
  * All dynamic values for this attribute will be concatenated to this base-value.
  * @property job used for launching coroutines in
  * @property scope set some arbitrary scope entries into the [Tag]'s scope
- * @property domNode the [Element]-instance that is wrapped by this [Tag]
- * (you should never have to pass this by yourself, just let it be created by the default)
  */
 @HtmlTagMarker
 open class Tag<out E : Element>(
@@ -37,6 +35,10 @@ open class Tag<out E : Element>(
     override val job: Job,
     override val scope: Scope,
 ) : WithDomNode<E>, WithComment<E>, EventContext<E>, RenderContext {
+
+    /**
+     * factory funtion that defines how the DOM-node represented by this Tag is created
+     */
     protected open fun createDomNode(): E = window.document.createElement(tagName).also { element ->
         if (id != null) element.id = id
         if (!baseClass.isNullOrBlank()) element.className = baseClass
