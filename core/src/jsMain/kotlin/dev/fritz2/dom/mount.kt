@@ -52,33 +52,35 @@ interface MountPoint {
 
 internal abstract class MountPointImpl : MountPoint, WithJob {
     suspend fun runBeforeUnmounts() {
-        beforeUnmountListener.forEach {
-            it.handler(it.target, it.payload)
+        if (beforeUnmountListener != null) {
+            beforeUnmountListener!!.forEach {
+                it.handler(it.target, it.payload)
+            }
+            beforeUnmountListener!!.clear()
         }
-        beforeUnmountListener.clear()
     }
 
     suspend fun runAfterMounts() {
-        afterMountListener.forEach {
-            it.handler(it.target, it.payload)
+        if (afterMountListener != null) {
+            afterMountListener!!.forEach {
+                it.handler(it.target, it.payload)
+            }
+            afterMountListener!!.clear()
         }
-        afterMountListener.clear()
     }
 
-    private val afterMountListener: MutableList<DomLifecycle> by lazy {
-        mutableListOf()
-    }
+    private var afterMountListener: MutableList<DomLifecycle>? = null
 
-    private val beforeUnmountListener: MutableList<DomLifecycle> by lazy {
-        mutableListOf()
-    }
+    private var beforeUnmountListener: MutableList<DomLifecycle>? = null
 
     override fun afterMount(target: WithDomNode<Element>, payload: Any?, handler: DomLifecycleHandler) {
-        afterMountListener.add(DomLifecycle(target, payload, handler))
+        if (afterMountListener == null) afterMountListener = mutableListOf()
+        afterMountListener!!.add(DomLifecycle(target, payload, handler))
     }
 
     override fun beforeUnmount(target: WithDomNode<Element>, payload: Any?, handler: DomLifecycleHandler) {
-        beforeUnmountListener.add(DomLifecycle(target, payload, handler))
+        if (beforeUnmountListener == null) beforeUnmountListener = mutableListOf()
+        beforeUnmountListener!!.add(DomLifecycle(target, payload, handler))
     }
 }
 
