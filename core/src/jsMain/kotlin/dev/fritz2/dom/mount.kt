@@ -6,10 +6,7 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import dev.fritz2.dom.html.WithJob
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.dom.clear
 import org.w3c.dom.Element
@@ -19,7 +16,7 @@ import org.w3c.dom.Node
 /**
  * Defines type for a handler for lifecycle-events
  */
-typealias DomLifecycleHandler = (WithDomNode<Element>, Any?) -> Deferred<Unit>?
+typealias DomLifecycleHandler = suspend (WithDomNode<Element>, Any?) -> Unit
 
 internal class DomLifecycle(
     val target: WithDomNode<Element>,
@@ -54,15 +51,17 @@ interface MountPoint {
 }
 
 internal abstract class MountPointImpl : MountPoint, WithJob {
-    fun runBeforeUnmounts(): List<Deferred<Any>> = beforeUnmountListener.mapNotNull {
-        it.handler(it.target, it.payload)
-    }.also {
+    suspend fun runBeforeUnmounts() {
+        beforeUnmountListener.forEach {
+            it.handler(it.target, it.payload)
+        }
         beforeUnmountListener.clear()
     }
 
-    fun runAfterMounts(): List<Deferred<Any>> = afterMountListener.mapNotNull {
-        it.handler(it.target, it.payload)
-    }.also {
+    suspend fun runAfterMounts() {
+        afterMountListener.forEach {
+            it.handler(it.target, it.payload)
+        }
         afterMountListener.clear()
     }
 
@@ -184,11 +183,11 @@ internal fun <V> RenderContext.mountPatches(
                         else console.error("could not run afterMount on inserting $element")
                     }
                 }
-                is Patch.Delete -> target.domNode.delete(patch.start, patch.count) { node ->
+                is Patch.Delete -> target.domNode.delete(patch.start, patch.count, target.job) { node ->
                     val mountPointImpl = mountPoints.remove(node)
                     if (mountPointImpl != null) {
                         mountPointImpl.job.cancelChildren()
-                        mountPointImpl.runBeforeUnmounts().awaitAll()
+                        mountPointImpl.runBeforeUnmounts()
                     } else console.error("could not cancel renderEach-job for node $node!")
                 }
                 is Patch.Move -> target.domNode.move(patch.from, patch.to)
@@ -247,13 +246,16 @@ fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
  * @param start position for deleting
  * @param count of elements to delete
  */
-suspend fun <N : Node> N.delete(start: Int, count: Int, cancelJob: suspend (Node) -> Unit) {
+suspend fun <N : Node> N.delete(start: Int, count: Int, parentJob: Job, cancelJob: suspend (Node) -> Unit) {
     var itemToDelete = childNodes.item(start)
     repeat(count) {
         itemToDelete?.let {
-            cancelJob(it)
+            //FIXME: get parentJob here?
+            (MainScope() + parentJob).launch {
+                cancelJob(it)
+                removeChild(it)
+            }
             itemToDelete = it.nextSibling
-            removeChild(it)
         }
     }
 }

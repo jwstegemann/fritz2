@@ -11,7 +11,6 @@ import dev.fritz2.lenses.IdProvider
 import dev.fritz2.utils.Myer
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.*
 import kotlinx.dom.clear
@@ -1336,10 +1335,10 @@ interface RenderContext : WithJob, WithScope {
 
         mountSimple(job, this) {
             mountContext.job.cancelChildren()
-            mountContext.runBeforeUnmounts().awaitAll()
+            mountContext.runBeforeUnmounts()
             target.domNode.clear()
             content(mountContext, it)
-            mountContext.runAfterMounts().awaitAll()
+            mountContext.runAfterMounts()
         }
     }
 

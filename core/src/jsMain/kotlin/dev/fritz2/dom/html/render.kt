@@ -6,6 +6,8 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLStyleElement
@@ -73,8 +75,10 @@ fun render(
             override val job = Job()
         }
 
-        content(mountPoint)
-        mountPoint.runAfterMounts()
+        MainScope().launch {
+            content(mountPoint)
+            mountPoint.runAfterMounts()
+        }
 
     } else throw MountTargetNotFoundException("targetElement should not be null")
 }
