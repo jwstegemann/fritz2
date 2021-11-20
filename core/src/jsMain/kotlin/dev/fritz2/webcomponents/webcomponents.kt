@@ -4,16 +4,13 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
+import dev.fritz2.utils.nativeFunction
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 import kotlin.reflect.KClass
-
-@JsName("Function")
-private external fun <T> nativeFunction(vararg params: String, block: String): T
-
 
 internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsClass<T>, observedAttributes: Array<out String>) -> () -> dynamic =
     nativeFunction(
