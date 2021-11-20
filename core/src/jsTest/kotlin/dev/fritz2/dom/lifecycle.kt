@@ -32,11 +32,9 @@ class LifecycleTests {
 
                         mountPoint()?.afterMount(this) { _, _ ->
                             mounts += 1;
-                            null
                         }
                         beforeUnmount { _, _ ->
                             unmounts += 1
-                            null
                         }
                     }
                 }
@@ -74,11 +72,11 @@ class LifecycleTests {
             div {
                 afterMount { _, _ ->
                     mounts += 1;
-                    null
                 }
             }
         }
 
+        delay(100)
         assertEquals(1, mounts, "afterMount not called")
     }
 }

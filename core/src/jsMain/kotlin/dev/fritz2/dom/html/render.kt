@@ -64,6 +64,7 @@ fun render(
         if (override) targetElement.clear()
 
         val mountPoint = object : RenderContext, MountPointImpl() {
+            override val job = Job()
             override val scope: Scope = Scope().also { scope -> scope[MOUNT_POINT_KEY] = this }
 
             override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
@@ -72,7 +73,6 @@ fun render(
                 return element
             }
 
-            override val job = Job()
         }
 
         MainScope().launch {

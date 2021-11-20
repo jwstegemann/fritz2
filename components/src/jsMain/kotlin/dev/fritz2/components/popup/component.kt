@@ -4,6 +4,7 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.storeOf
 import dev.fritz2.components.foundations.*
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
@@ -123,7 +124,8 @@ open class PopupComponent :
 
     val flipping = ComponentProperty(true)
     val content = ComponentProperty<(RenderContext.(SimpleHandler<Unit>) -> Unit)?>(null)
-    val trigger = ComponentProperty<(RenderContext.(SimpleHandler<EventTarget?>, SimpleHandler<Unit>) -> Unit)?>(null)
+    val trigger =
+        ComponentProperty<(Tag<HTMLElement>.(SimpleHandler<EventTarget?>, SimpleHandler<Unit>) -> Unit)?>(null)
 
     val placement = ComponentProperty<PlacementContext.() -> Placement> { Placement.Top }
 
@@ -197,8 +199,8 @@ open class PopupComponent :
         }
     }
 
-    override fun render(
-        context: RenderContext,
+    fun render(
+        context: Tag<HTMLElement>,
         styling: BoxParams.() -> Unit,
         baseClass: StyleClass,
         id: String?,
@@ -213,5 +215,15 @@ open class PopupComponent :
             )
         }
         return renderPopup(styling, baseClass, popupId, prefix)
+    }
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass,
+        id: String?,
+        prefix: String
+    ): Div {
+        throw NotImplementedError()
     }
 }

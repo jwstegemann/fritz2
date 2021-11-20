@@ -7,12 +7,14 @@ import dev.fritz2.components.foundations.EventProperties
 import dev.fritz2.components.popup
 import dev.fritz2.components.popup.Placement
 import dev.fritz2.components.popup.PlacementContext
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BoxParams
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 
 /**
@@ -91,8 +93,8 @@ open class TooltipComponent(private val textFromParam: String?) :
 
     val placement = ComponentProperty<PlacementContext.() -> Placement> { Placement.Top }
 
-    override fun render(
-        context: RenderContext,
+    fun render(
+        context: Tag<HTMLElement>,
         styling: BoxParams.() -> Unit,
         baseClass: StyleClass,
         id: String?,
@@ -119,5 +121,15 @@ open class TooltipComponent(private val textFromParam: String?) :
                 }
             }
         }
+    }
+
+    override fun render(
+        context: RenderContext,
+        styling: BoxParams.() -> Unit,
+        baseClass: StyleClass,
+        id: String?,
+        prefix: String
+    ): Div {
+        throw NotImplementedError()
     }
 }

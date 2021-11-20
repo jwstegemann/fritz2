@@ -1,7 +1,6 @@
 package dev.fritz2.components.appFrame
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.binding.watch
 import dev.fritz2.components.appFrame
 import dev.fritz2.components.buttons.PushButtonComponent
 import dev.fritz2.components.clickButton
@@ -11,6 +10,7 @@ import dev.fritz2.components.foundations.CloseButtonProperty
 import dev.fritz2.components.foundations.Component
 import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.components.lineUp
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.handledBy
@@ -22,13 +22,13 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.theme.Property
 import dev.fritz2.styling.theme.Theme
 import kotlinx.browser.document
-import kotlinx.coroutines.flow.onEach
+import org.w3c.dom.HTMLElement
 
 internal class AppFrameSection<S : BasicParams>(
     val styling: Style<S>? = null,
     val baseClass: StyleClass = StyleClass.None,
     val id: String? = null,
-    val context: RenderContext.() -> Unit = {}
+    val context: Tag<HTMLElement>.() -> Unit = {}
 )
 
 /**

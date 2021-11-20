@@ -3,10 +3,11 @@ package dev.fritz2.components.slider
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
-import dev.fritz2.binding.watch
-import dev.fritz2.components.*
+import dev.fritz2.components.flexBox
 import dev.fritz2.components.foundations.*
+import dev.fritz2.components.icon
 import dev.fritz2.dom.EventContext
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Key
@@ -293,7 +294,7 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
     val value = NullableDynamicComponentProperty<Int>(emptyFlow())
 
     class EventsContext(
-        private val element: RenderContext,
+        private val element: Tag<HTMLElement>,
         val value: Flow<Int>,
         val currentValue: Flow<Int>
     ) : EventContext<HTMLElement> by element
