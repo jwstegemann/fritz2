@@ -83,7 +83,8 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
      * this callback is used, when building the component in native-js (since ES2015-classes are not supported by Kotlin/JS by now)
      */
     //cannot be private or internal because it is used in native js
-    val attributeChangedCallback: (name: String, value: String) -> Unit = { name, value ->
+    @JsName("attributeChangedCallback")
+    fun attributeChangedCallback(name: String, value: String) {
         _attributeChanges.tryEmit(Pair(name, value))
     }
 
