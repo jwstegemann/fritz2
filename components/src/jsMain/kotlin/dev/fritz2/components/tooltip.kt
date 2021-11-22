@@ -1,6 +1,7 @@
 package dev.fritz2.components
 
 import dev.fritz2.components.tooltip.TooltipComponent
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
@@ -9,6 +10,7 @@ import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.params.StyleParams
 import dev.fritz2.styling.theme.Theme
 import dev.fritz2.styling.theme.TooltipPlacements
+import org.w3c.dom.HTMLElement
 
 @Deprecated("since 0.12 - please use TooltipComponent")
 fun StyleParams.tooltip(vararg text: String) = Theme().tooltip.write(*text)
@@ -41,7 +43,7 @@ fun StyleParams.tooltip(vararg text: String, tooltipPlacement: TooltipPlacements
  *
  * @see TooltipComponent
  */
-fun RenderContext.tooltip(
+fun Tag<HTMLElement>.tooltip(
     styling: BasicParams.() -> Unit = {},
     text: String? = null,
     baseClass: StyleClass = StyleClass.None,
@@ -82,7 +84,7 @@ fun RenderContext.tooltip(
  * @param text the content of the tooltip; pass multiple text parameters to create multi line content
  * @param build a lambda expression for setting up the component itself
  */
-fun RenderContext.tooltip(
+fun Tag<HTMLElement>.tooltip(
     vararg text: String,
     build: TooltipComponent.() -> Unit
 ) {

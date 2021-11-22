@@ -65,8 +65,7 @@ import org.w3c.dom.HTMLInputElement
  *
  */
 open class TooltipComponent(private val textFromParam: String?) :
-    EventProperties<HTMLInputElement> by EventMixin(),
-    Component<Div> {
+    EventProperties<HTMLElement> by EventMixin() {
 
     private var textFromContext: Flow<List<String>> = emptyFlow()
     fun text(vararg value: String) {
@@ -121,15 +120,5 @@ open class TooltipComponent(private val textFromParam: String?) :
                 }
             }
         }
-    }
-
-    override fun render(
-        context: RenderContext,
-        styling: BoxParams.() -> Unit,
-        baseClass: StyleClass,
-        id: String?,
-        prefix: String
-    ): Div {
-        throw NotImplementedError()
     }
 }
