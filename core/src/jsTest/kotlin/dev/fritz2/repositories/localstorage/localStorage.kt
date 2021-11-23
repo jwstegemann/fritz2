@@ -3,12 +3,10 @@ package dev.fritz2.repositories.localstorage
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
-import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
-
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -21,7 +19,7 @@ import kotlin.test.*
 
 class LocalStorageTests {
     @Serializable
-    data class LocalPerson(val name: String, val age: Int, val _id: String = uniqueId())
+    data class LocalPerson(val name: String, val age: Int, val _id: String = Id.next())
 
     private val nameLens = buildLens("name", LocalPerson::name) { p, v -> p.copy(name = v) }
     private val ageLens = buildLens("age", LocalPerson::age) { p, v -> p.copy(age = v) }
@@ -139,8 +137,8 @@ class LocalStorageTests {
             val delete = handle<String> { entities, id -> localStorage.delete(entities, id) }
         }
 
-        val listId = "list-${uniqueId()}"
-        val firstPersonId = "first-${uniqueId()}"
+        val listId = "list-${Id.next()}"
+        val firstPersonId = "first-${Id.next()}"
 
         render {
             div {
@@ -214,7 +212,7 @@ class LocalStorageTests {
             val updateMany = handle<List<LocalPerson>> { entities, updatedEntities -> localStorage.updateMany(entities, updatedEntities) }
         }
 
-        val listId = "list-${uniqueId()}"
+        val listId = "list-${Id.next()}"
 
         render {
             div {
