@@ -81,13 +81,11 @@ class LocalStorageTests {
         delay(100)
 
         val nameAfterStart = document.getElementById(nameId)?.textContent
-        assertEquals(startPerson.name, nameAfterStart, "no name after start")
-
-        entityStore.saveOrUpdate()
-        delay(200)
-
-        val idAfterSave = document.getElementById(idId)?.textContent
-        assertTrue((idAfterSave?.length ?: 0) > 10, "no id after save")
+        assertEquals(startPerson.name, nameAfterStart, "wrong name on start")
+        val idAfterStart = document.getElementById(idId)?.textContent
+        assertEquals(startPerson._id, idAfterStart, "wrong id on start")
+        val ageAfterStart = document.getElementById(ageId)?.textContent
+        assertEquals(startPerson.age.toString(), ageAfterStart, "wrong age on start")
 
         ageSubStore.update(data = changedAge)
         entityStore.saveOrUpdate()
@@ -97,7 +95,7 @@ class LocalStorageTests {
         assertEquals(changedAge.toString(), ageAfterUpdate, "wrong age after update")
 
         ageSubStore.update(data = 0)
-        entityStore.load(idAfterSave.orEmpty())
+        entityStore.load(startPerson._id)
         delay(200)
 
         val ageAfterLoad = document.getElementById(ageId)?.textContent
@@ -172,7 +170,7 @@ class LocalStorageTests {
         assertEquals(testList.joinToString("") { it.name }, listAfterQuery, "wrong list after query")
 
         val firstId = document.getElementById(firstPersonId)?.textContent
-        assertTrue(firstId != null && firstId.length > 10)
+        assertTrue(firstId != null && firstId.isNotEmpty())
 
         queryStore.delete(firstId)
         delay(250)
