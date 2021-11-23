@@ -1415,7 +1415,7 @@ interface RenderContext : WithJob, WithScope {
             when {
                 oldSize < newSize -> flowOf<Patch<V>>(
                     Patch.InsertMany(
-                        new.subList(oldSize, newSize).reversed(),
+                        new.subList(oldSize, newSize),
                         oldSize
                     )
                 )

@@ -101,10 +101,13 @@ object Myer {
                         // combine adjacent inserts
                         if (lastPatch is Patch.Insert && lastPatch.index == index) {
                             //turn oder of elements!
-                            lastPatch = Patch.InsertMany(listOf(lastPatch.element, element), lastPatch.index)
+                            lastPatch = Patch.InsertMany(listOf(element, lastPatch.element), lastPatch.index)
                         } else if (lastPatch is Patch.InsertMany && lastPatch.index == index) {
                             //turn oder of elements!
-                            lastPatch = Patch.InsertMany(lastPatch.elements + element, lastPatch.index)
+                            lastPatch = Patch.InsertMany(buildList {
+                                add(element)
+                                addAll((lastPatch as Patch.InsertMany<T>).elements)
+                            }, lastPatch.index)
                         }
                         // combine directly following insert and delete of same element as move
                         else if (lastPatch is Patch.Delete && lastPatch.count == 1 && isSame(

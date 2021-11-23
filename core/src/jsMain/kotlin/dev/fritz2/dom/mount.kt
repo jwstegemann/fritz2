@@ -229,10 +229,10 @@ fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrApp
  */
 fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
     if (index == childNodes.length) {
-        for (child in elements.reversed()) appendChild(child.domNode)
+        for (child in elements) appendChild(child.domNode)
     } else {
         childNodes.item(index)?.let {
-            for (child in elements.reversed()) {
+            for (child in elements) {
                 insertBefore(child.domNode, it)
             }
         }
