@@ -1,9 +1,6 @@
 package dev.fritz2.dom.html
 
-import dev.fritz2.dom.MOUNT_POINT_KEY
-import dev.fritz2.dom.MountPointImpl
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.WithDomNode
+import dev.fritz2.dom.*
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
@@ -58,7 +55,7 @@ fun render(
     content: RenderContext.() -> Unit
 ) {
     //add style sheet containing mount-point-class
-    addGlobalStyle(".mount-point { display: contents; }")
+    addGlobalStyle(".$MOUNT_POINT_STYLE_CLASS { display: contents; }")
 
     if (targetElement != null) {
         if (override) targetElement.clear()
