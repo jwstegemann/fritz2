@@ -16,6 +16,7 @@ import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.EventTarget
@@ -107,8 +108,7 @@ object PlacementContext {
  *
  */
 open class PopupComponent :
-    EventProperties<HTMLInputElement> by EventMixin(),
-    Component<Div> {
+    EventProperties<HTMLElement> by EventMixin() {
 
     companion object {
         const val leftRenderPosition: Double = 9999.0
@@ -123,7 +123,7 @@ open class PopupComponent :
     val offset = ComponentProperty(10.0)
 
     val flipping = ComponentProperty(true)
-    val content = ComponentProperty<(RenderContext.(SimpleHandler<Unit>) -> Unit)?>(null)
+    val content = ComponentProperty<(Tag<HTMLElement>.(SimpleHandler<Unit>) -> Unit)?>(null)
     val trigger =
         ComponentProperty<(Tag<HTMLElement>.(SimpleHandler<EventTarget?>, SimpleHandler<Unit>) -> Unit)?>(null)
 
@@ -215,15 +215,5 @@ open class PopupComponent :
             )
         }
         return renderPopup(styling, baseClass, popupId, prefix)
-    }
-
-    override fun render(
-        context: RenderContext,
-        styling: BoxParams.() -> Unit,
-        baseClass: StyleClass,
-        id: String?,
-        prefix: String
-    ): Div {
-        throw NotImplementedError()
     }
 }

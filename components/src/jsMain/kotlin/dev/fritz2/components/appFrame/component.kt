@@ -160,7 +160,7 @@ open class AppFrameComponent : Component<Unit>,
         styling: Style<FlexParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
-        context: RenderContext.() -> Unit
+        context: Tag<HTMLElement>.() -> Unit
     ) {
         brand = AppFrameSection(styling, baseClass, id, context)
     }
@@ -170,7 +170,7 @@ open class AppFrameComponent : Component<Unit>,
         styling: Style<FlexParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
-        context: RenderContext.() -> Unit
+        context: Tag<HTMLElement>.() -> Unit
     ) {
         header = AppFrameSection(styling, baseClass, id, context)
     }
@@ -180,7 +180,7 @@ open class AppFrameComponent : Component<Unit>,
         styling: Style<BoxParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
-        context: RenderContext.() -> Unit
+        context: Tag<HTMLElement>.() -> Unit
     ) {
         actions = AppFrameSection(styling, baseClass, id, context)
     }
@@ -190,7 +190,7 @@ open class AppFrameComponent : Component<Unit>,
         styling: Style<BoxParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
-        context: RenderContext.() -> Unit
+        context: Tag<HTMLElement>.() -> Unit
     ) {
         content = AppFrameSection(styling, baseClass, id, context)
     }
@@ -200,7 +200,7 @@ open class AppFrameComponent : Component<Unit>,
         styling: Style<BoxParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
-        context: RenderContext.() -> Unit
+        context: Tag<HTMLElement>.() -> Unit
     ) {
         complementary = AppFrameSection(styling, baseClass, id, context)
     }
@@ -210,7 +210,7 @@ open class AppFrameComponent : Component<Unit>,
         styling: Style<FlexParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
-        context: RenderContext.() -> Unit
+        context: Tag<HTMLElement>.() -> Unit
     ) {
         tablist = AppFrameSection(styling, baseClass, id, context)
     }
@@ -220,7 +220,7 @@ open class AppFrameComponent : Component<Unit>,
         styling: Style<BoxParams>? = null,
         baseClass: StyleClass = StyleClass.None,
         id: String? = null,
-        context: RenderContext.() -> Unit
+        context: Tag<HTMLElement>.() -> Unit
     ) {
         navigation = AppFrameSection(styling, baseClass, id, context)
     }

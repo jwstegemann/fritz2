@@ -1,10 +1,12 @@
 package dev.fritz2.components
 
 import dev.fritz2.components.popup.PopupComponent
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.params.BasicParams
+import org.w3c.dom.HTMLElement
 
 /**
  * This component creates a popup.
@@ -36,7 +38,7 @@ import dev.fritz2.styling.params.BasicParams
  * @param prefix the prefix for the generated CSS class resulting in the form `$prefix-$hash`
  * @param build a lambda expression for setting up the component itself
  */
-fun RenderContext.popup(
+fun Tag<HTMLElement>.popup(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
     id: String = "fc2-popup-${Id.next()}",
