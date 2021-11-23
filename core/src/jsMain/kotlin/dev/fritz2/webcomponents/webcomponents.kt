@@ -6,7 +6,7 @@ import dev.fritz2.dom.html.Scope
 import dev.fritz2.dom.html.TagContext
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 import kotlin.reflect.KClass
@@ -76,23 +76,23 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
         }.init(element, shadowRoot)
     }
 
+    private val _attributeChanges: MutableSharedFlow<Pair<String, String>> =
+        MutableSharedFlow(replay = 10, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+
     /**
      * this callback is used, when building the component in native-js (since ES2015-classes are not supported by Kotlin/JS by now)
      */
     //cannot be private or internal because it is used in native js
-    lateinit var attributeChangedCallback: (name: String, value: String) -> Unit
+    @JsName("attributeChangedCallback")
+    fun attributeChangedCallback(name: String, value: String) {
+        _attributeChanges.tryEmit(Pair(name, value))
+    }
 
     /**
      * a [Flow] of all changes made to observed attributes.
      */
     val attributeChanges: Flow<Pair<String, String>> = if (observeAttributes) {
-        callbackFlow {
-            attributeChangedCallback = { name, value ->
-                trySend(Pair(name, value))
-            }
-            awaitClose {}
-        }.distinctUntilChanged()
-        //TODO: sharedFlow
+        _attributeChanges.distinctUntilChanged()
     } else {
         flowOf()
     }
