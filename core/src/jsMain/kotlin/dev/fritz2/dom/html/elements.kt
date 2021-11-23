@@ -12,7 +12,9 @@ import dev.fritz2.utils.Myer
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.scan
 import kotlinx.dom.clear
 import org.w3c.dom.*
 import org.w3c.dom.svg.SVGElement
@@ -1343,17 +1345,6 @@ interface RenderContext : WithJob, WithScope {
     }
 
     /**
-     * Accumulates a [Pair] and a [List] to a new [Pair] of [List]s
-     *
-     * @param accumulator [Pair] of two [List]s
-     * @param newValue new [List] to accumulate
-     */
-    fun <T> accumulate(
-        accumulator: Pair<List<T>, List<T>>,
-        newValue: List<T>
-    ): Pair<List<T>, List<T>> = Pair(accumulator.second, newValue)
-
-    /**
      * Renders each element of a [Flow]s content.
      * Internally the [Patch]es are determined using Myer's diff-algorithm.
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
@@ -1369,7 +1360,9 @@ interface RenderContext : WithJob, WithScope {
         content: RenderContext.(V) -> Tag<HTMLElement>
     ) {
         mountPatches(into, this) { upstreamValues, mountPoints ->
-            upstreamValues.scan(Pair(emptyList(), emptyList()), ::accumulate).map { (old, new) ->
+            upstreamValues.scan(Pair(emptyList(), emptyList())) { acc: Pair<List<V>, List<V>>, new ->
+                Pair(acc.second, new)
+            }.map { (old, new) ->
                 val diff = if (idProvider != null) Myer.diff(old, new, idProvider) else Myer.diff(old, new)
                 diff.map { patch ->
                     patch.map(job) { value, newJob ->
@@ -1400,51 +1393,6 @@ interface RenderContext : WithJob, WithScope {
     ) {
         data.renderEach(idProvider, into) { value ->
             content(this@renderEach.sub(value, idProvider))
-        }
-    }
-
-    /**
-     * Compares each new [List] on a [Flow] to its predecessor element by element to create [Patch]es.
-     *
-     * @return [Flow] of [Patch]es
-     */
-    fun <V> Flow<List<V>>.eachIndex(): Flow<Patch<V>> =
-        this.scan(Pair(emptyList(), emptyList()), ::accumulate).flatMapConcat { (old, new) ->
-            val oldSize = old.size
-            val newSize = new.size
-            when {
-                oldSize < newSize -> flowOf<Patch<V>>(
-                    Patch.InsertMany(
-                        new.subList(oldSize, newSize).reversed(),
-                        oldSize
-                    )
-                )
-                oldSize > newSize -> flowOf<Patch<V>>(Patch.Delete(newSize, (oldSize - newSize)))
-                else -> emptyFlow()
-            }
-        }
-
-    /**
-     * Renders each element of a [Store]s list content.
-     * Internally the [Patch]es are determined using the position of an item in the list.
-     * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
-     *
-     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
-     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
-     */
-    fun <V> Store<List<V>>.renderEach(
-        into: Tag<HTMLElement>? = null,
-        content: RenderContext.(Store<V>) -> Tag<HTMLElement>
-    ) {
-        mountPatches(into, this.data) { upstream, mountPoints ->
-            upstream.map { it.withIndex().toList() }.eachIndex().map { patch ->
-                listOf(patch.map(this@RenderContext.job) { value, newJob ->
-                    val mountPoint = BuildContext(newJob, scope)
-                    content(mountPoint, this.sub(value.index)).also {
-                        mountPoints[it.domNode] = mountPoint
-                    }
-                })
-            }
         }
     }
 
