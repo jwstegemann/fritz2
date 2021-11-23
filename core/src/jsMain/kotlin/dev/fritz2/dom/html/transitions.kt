@@ -16,7 +16,8 @@ import kotlin.js.Promise
  */
 class Transition(
     /**
-     * Mandatory classes to controll the enter-transition.
+     * Classes to control the enter-transition.
+     * Needs to be defined for the enter-transition to be executed.
      */
     val enter: String? = null,
     /**
@@ -28,7 +29,8 @@ class Transition(
      */
     val enterEnd: String? = null,
     /**
-     * Mandatory classes to controll the leave-transition.
+     * Classes to control the leave-transition.
+     * Needs to be defined for the leave-transition to be executed.
      */
     val leave: String? = null,
     /**
@@ -104,10 +106,10 @@ fun RenderContext.transition(transition: Transition, content: RenderContext.() -
  * The leave-transition will be executed right before the [Tag] is removed from the DOM.
  * Further operation of the MountPoint rendering the [Tag] is suspended until the leave-animation is done.
  *
- * @param enter mandatory classes to controll the enter-transition.
+ * @param enter mandatory classes to control the enter-transition.
  * @param enterStart optional classes to define the starting point of the enter-transition
  * @param enterEnd optional classes to define the end point of the enter-transition
- * @param leave mandatory classes to controll the leave-transition.
+ * @param leave mandatory classes to control the leave-transition.
  * @param leaveStart optional classes to define the starting point of the leave-transition
  * @param leaveEnd optional classes to define the end point of the leave-transition
  * @param content Lambda returning the [Tag] the transition will be applied to
