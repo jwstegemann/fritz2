@@ -37,7 +37,7 @@ open class Tag<out E : Element>(
 ) : WithDomNode<E>, WithComment<E>, EventContext<E>, RenderContext {
 
     /**
-     * factory funtion that defines how the DOM-node represented by this Tag is created
+     * factory function that defines how the DOM-node represented by this Tag is created
      */
     protected open fun createDomNode(): E = window.document.createElement(tagName).also { element ->
         if (id != null) element.id = id

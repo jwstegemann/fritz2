@@ -18,7 +18,7 @@ import org.w3c.dom.Node
  */
 typealias DomLifecycleHandler = suspend (WithDomNode<Element>, Any?) -> Unit
 
-internal class DomLifecycle(
+internal class DomLifecycleListener(
     val target: WithDomNode<Element>,
     val payload: Any? = null,
     val handler: DomLifecycleHandler
@@ -31,7 +31,6 @@ interface MountPoint {
 
     /**
      * Registers a [DomLifecycleHandler] on a given target that ist called right after the target is mounted to the DOM.
-     * The [MountPoint] waits for the [Deferred] to be completed.
      *
      * @param target the element the lifecycle-handler will be registered for
      * @param payload some optional data that might be used by the [handler] to do its work
@@ -41,7 +40,6 @@ interface MountPoint {
 
     /**
      * Registers a [DomLifecycleHandler] on a given target that ist called right before the target is removed from the DOM.
-     * The [MountPoint] waits for the [Deferred] to be completed.
      *
      * @param target the element the lifecycle-handler will be registered for
      * @param payload some optional data that might be used by the [handler] to do its work
@@ -52,35 +50,35 @@ interface MountPoint {
 
 internal abstract class MountPointImpl : MountPoint, WithJob {
     suspend fun runBeforeUnmounts() {
-        if (beforeUnmountListener != null) {
-            beforeUnmountListener!!.forEach {
+        if (beforeUnmountListeners != null) {
+            beforeUnmountListeners!!.forEach {
                 it.handler(it.target, it.payload)
             }
-            beforeUnmountListener!!.clear()
+            beforeUnmountListeners!!.clear()
         }
     }
 
     suspend fun runAfterMounts() {
-        if (afterMountListener != null) {
-            afterMountListener!!.forEach {
+        if (afterMountListeners != null) {
+            afterMountListeners!!.forEach {
                 it.handler(it.target, it.payload)
             }
-            afterMountListener!!.clear()
+            afterMountListeners!!.clear()
         }
     }
 
-    private var afterMountListener: MutableList<DomLifecycle>? = null
+    private var afterMountListeners: MutableList<DomLifecycleListener>? = null
 
-    private var beforeUnmountListener: MutableList<DomLifecycle>? = null
+    private var beforeUnmountListeners: MutableList<DomLifecycleListener>? = null
 
     override fun afterMount(target: WithDomNode<Element>, payload: Any?, handler: DomLifecycleHandler) {
-        if (afterMountListener == null) afterMountListener = mutableListOf()
-        afterMountListener!!.add(DomLifecycle(target, payload, handler))
+        if (afterMountListeners == null) afterMountListeners = mutableListOf()
+        afterMountListeners!!.add(DomLifecycleListener(target, payload, handler))
     }
 
     override fun beforeUnmount(target: WithDomNode<Element>, payload: Any?, handler: DomLifecycleHandler) {
-        if (beforeUnmountListener == null) beforeUnmountListener = mutableListOf()
-        beforeUnmountListener!!.add(DomLifecycle(target, payload, handler))
+        if (beforeUnmountListeners == null) beforeUnmountListeners = mutableListOf()
+        beforeUnmountListeners!!.add(DomLifecycleListener(target, payload, handler))
     }
 }
 
