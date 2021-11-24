@@ -173,14 +173,14 @@ internal fun <V> RenderContext.mountPatches(
                     target.domNode.insert(patch.element, patch.index)
                     val mountPointImpl = mountPoints[patch.element.domNode]
                     if (mountPointImpl != null) mountPointImpl.runAfterMounts()
-                    else console.error("could not run afterMount on inserting ${patch.element}")
+                    else console.error("No MountPoint found for node ${patch.element}. This should not have happened!")
                 }
                 is Patch.InsertMany -> {
                     target.domNode.insertMany(patch.elements, patch.index)
                     patch.elements.forEach { element ->
                         val mountPointImpl = mountPoints[element.domNode]
                         if (mountPointImpl != null) mountPointImpl.runAfterMounts()
-                        else console.error("could not run afterMount on inserting $element")
+                        else console.error("No MountPoint found for node $element. This should not have happened!")
                     }
                 }
                 is Patch.Delete -> target.domNode.delete(patch.start, patch.count, target.job) { node ->
@@ -188,7 +188,7 @@ internal fun <V> RenderContext.mountPatches(
                     if (mountPointImpl != null) {
                         mountPointImpl.job.cancelChildren()
                         mountPointImpl.runBeforeUnmounts()
-                    } else console.error("could not cancel renderEach-job for node $node!")
+                    } else console.error("No MountPoint found for node $node. This should not have happened!")
                 }
                 is Patch.Move -> target.domNode.move(patch.from, patch.to)
             }
