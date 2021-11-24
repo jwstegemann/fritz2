@@ -1,6 +1,6 @@
 package dev.fritz2.styling.params
 
-import dev.fritz2.dom.html.TagContext
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
 
 
@@ -67,7 +67,7 @@ fun <E> BasicComponent<E>.styled(
     id: String? = null,
     prefix: String = "css",
     styling: BoxParams.() -> Unit
-): TagContext.(E.() -> Unit) -> E {
+): RenderContext.(E.() -> Unit) -> E {
     val additionalClass = StyleParamsImpl().apply(styling).cssClasses(prefix)
     return { init ->
         this@styled((baseClass + additionalClass).name, id, init)
@@ -142,7 +142,7 @@ fun <E> BasicComponent<E>.styled(
     id: String? = null,
     prefix: String = "css",
     styling: BoxParams.() -> Unit
-): TagContext.(E.() -> Unit) -> E {
+): RenderContext.(E.() -> Unit) -> E {
     val additionalClass = StyleParamsImpl().apply {
         styling()
         parentStyling()

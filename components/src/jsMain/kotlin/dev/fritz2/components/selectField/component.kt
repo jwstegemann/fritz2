@@ -4,6 +4,7 @@ import dev.fritz2.binding.Store
 import dev.fritz2.components.foundations.*
 import dev.fritz2.components.icon
 import dev.fritz2.dom.EventContext
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Label
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.selectedValue
@@ -120,7 +121,7 @@ open class SelectFieldComponent<T>(protected val items: List<T>, protected val v
 
     val selectedItem = NullableDynamicComponentProperty<T>(emptyFlow())
 
-    class EventsContext<T>(private val element: RenderContext, val selected: Flow<T>) :
+    class EventsContext<T>(private val element: Tag<HTMLElement>, val selected: Flow<T>) :
         EventContext<HTMLElement> by element
 
     val events = ComponentProperty<EventsContext<T>.() -> Unit> {}

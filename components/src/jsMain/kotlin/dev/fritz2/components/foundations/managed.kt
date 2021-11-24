@@ -86,16 +86,21 @@ interface ManagedComponent<T> {
     ): T
 
     companion object {
+        internal class ManagedTag(element: HTMLElement, job: Job, scope: Scope) :
+            Tag<HTMLElement>("div", element.id, job = job, scope = scope) {
+            override val domNode: HTMLElement = element
+        }
+
         /**
          * Gives a global [RenderContext] which is appended to the html body element.
          *
          * @param id for [RenderContext] DOM element
          * @param job [Job] used in this [RenderContext]
          */
-        internal fun managedRenderContext(id: String, job: Job, scope: Scope): RenderContext {
+        internal fun managedRenderContext(id: String, job: Job, scope: Scope): Tag<HTMLElement> {
             val element = document.getElementById(id)
             return if (element != null) {
-                Tag("div", element.id, job = job, scope = scope, domNode = (element as HTMLElement))
+                ManagedTag(element as HTMLElement, job, scope)
             } else {
                 Div(id, job = job, scope = scope).apply { document.body?.appendChild(this.domNode) }
             }.apply {

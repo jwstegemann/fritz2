@@ -2,11 +2,11 @@ package dev.fritz2.webcomponents
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
-import dev.fritz2.dom.html.TagContext
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 import kotlin.reflect.KClass
@@ -62,37 +62,37 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
      * @param shadowRoot the shadowRoot the content will be added to
      * @return a [Tag] representing the content of the component
      */
-    abstract fun TagContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T>
+    abstract fun RenderContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T>
 
     @JsName("initializeInternal")
     fun initializeInternal(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T> {
-        return object : TagContext {
+        return object : RenderContext {
             override val job = Job()
             override val scope: Scope = Scope()
-            override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+            override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
                 content(element)
                 return element
             }
         }.init(element, shadowRoot)
     }
 
+    private val _attributeChanges: MutableSharedFlow<Pair<String, String>> =
+        MutableSharedFlow(replay = 10, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+
     /**
      * this callback is used, when building the component in native-js (since ES2015-classes are not supported by Kotlin/JS by now)
      */
     //cannot be private or internal because it is used in native js
-    lateinit var attributeChangedCallback: (name: String, value: String) -> Unit
+    @JsName("attributeChangedCallback")
+    fun attributeChangedCallback(name: String, value: String) {
+        _attributeChanges.tryEmit(Pair(name, value))
+    }
 
     /**
      * a [Flow] of all changes made to observed attributes.
      */
     val attributeChanges: Flow<Pair<String, String>> = if (observeAttributes) {
-        callbackFlow {
-            attributeChangedCallback = { name, value ->
-                trySend(Pair(name, value))
-            }
-            awaitClose {}
-        }.distinctUntilChanged()
-        //TODO: sharedFlow
+        _attributeChanges.distinctUntilChanged()
     } else {
         flowOf()
     }
@@ -162,7 +162,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
 }
 
 /**
- * registers a [WebComponent] at the browser's registry so you can use it in fritz2 by custom-[Tag] or in HTML.
+ * registers a [WebComponent] at the browser's registry, so you can use it in fritz2 by custom-[Tag] or in HTML.
  * So to make a component that can be added by just importing your javascript, call this in main.
  *
  *  @param localName name of the new custom tag (must contain a '-')
@@ -178,7 +178,7 @@ fun <X : Element, T : WebComponent<X>> registerWebComponent(
 }
 
 /**
- * registers a [WebComponent] at the browser's registry so you can use it in fritz2 by custom-[Tag] or in HTML.
+ * registers a [WebComponent] at the browser's registry, so you can use it in fritz2 by custom-[Tag] or in HTML.
  * So to make a component that can be added by just importing your javascript, call this in main.
  *
  *  @param localName name of the new custom tag (must contain a '-')

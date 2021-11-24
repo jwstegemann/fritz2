@@ -1,10 +1,14 @@
 package dev.fritz2.dom.html
 
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.*
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLStyleElement
+import org.w3c.dom.Node
 import org.w3c.dom.css.CSSStyleSheet
 
 /**
@@ -50,12 +54,30 @@ fun render(
     override: Boolean = true,
     content: RenderContext.() -> Unit
 ) {
-    //add style sheet continaing mount-point-class
-    addGlobalStyle(".mount-point { display: contents; }")
-    targetElement?.let {
-        if (override) it.innerHTML = ""
-        content(RenderContext(it.tagName, it.id, null, Job(), Scope(), it))
-    } ?: throw MountTargetNotFoundException("targetElement should not be null")
+    //add style sheet containing mount-point-class
+    addGlobalStyle(".$MOUNT_POINT_STYLE_CLASS { display: contents; }")
+
+    if (targetElement != null) {
+        if (override) targetElement.clear()
+
+        val mountPoint = object : RenderContext, MountPointImpl() {
+            override val job = Job()
+            override val scope: Scope = Scope().also { scope -> scope[MOUNT_POINT_KEY] = this }
+
+            override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+                content(element)
+                targetElement.appendChild(element.domNode)
+                return element
+            }
+
+        }
+
+        MainScope().launch {
+            content(mountPoint)
+            mountPoint.runAfterMounts()
+        }
+
+    } else throw MountTargetNotFoundException("targetElement should not be null")
 }
 
 const val FRITZ2_GLOBAL_STYLESHEET_ID = "fritz2-global-styles"

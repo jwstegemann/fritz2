@@ -3,12 +3,10 @@ package dev.fritz2.repositories.localstorage
 import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
-import dev.fritz2.identification.uniqueId
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.buildLens
 import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
-
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -21,7 +19,7 @@ import kotlin.test.*
 
 class LocalStorageTests {
     @Serializable
-    data class LocalPerson(val name: String, val age: Int, val _id: String = uniqueId())
+    data class LocalPerson(val name: String, val age: Int, val _id: String = Id.next())
 
     private val nameLens = buildLens("name", LocalPerson::name) { p, v -> p.copy(name = v) }
     private val ageLens = buildLens("age", LocalPerson::age) { p, v -> p.copy(age = v) }
@@ -83,13 +81,11 @@ class LocalStorageTests {
         delay(100)
 
         val nameAfterStart = document.getElementById(nameId)?.textContent
-        assertEquals(startPerson.name, nameAfterStart, "no name after start")
-
-        entityStore.saveOrUpdate()
-        delay(200)
-
-        val idAfterSave = document.getElementById(idId)?.textContent
-        assertTrue((idAfterSave?.length ?: 0) > 10, "no id after save")
+        assertEquals(startPerson.name, nameAfterStart, "wrong name on start")
+        val idAfterStart = document.getElementById(idId)?.textContent
+        assertEquals(startPerson._id, idAfterStart, "wrong id on start")
+        val ageAfterStart = document.getElementById(ageId)?.textContent
+        assertEquals(startPerson.age.toString(), ageAfterStart, "wrong age on start")
 
         ageSubStore.update(data = changedAge)
         entityStore.saveOrUpdate()
@@ -99,7 +95,7 @@ class LocalStorageTests {
         assertEquals(changedAge.toString(), ageAfterUpdate, "wrong age after update")
 
         ageSubStore.update(data = 0)
-        entityStore.load(idAfterSave.orEmpty())
+        entityStore.load(startPerson._id)
         delay(200)
 
         val ageAfterLoad = document.getElementById(ageId)?.textContent
@@ -139,8 +135,8 @@ class LocalStorageTests {
             val delete = handle<String> { entities, id -> localStorage.delete(entities, id) }
         }
 
-        val listId = "list-${uniqueId()}"
-        val firstPersonId = "first-${uniqueId()}"
+        val listId = "list-${Id.next()}"
+        val firstPersonId = "first-${Id.next()}"
 
         render {
             div {
@@ -174,7 +170,7 @@ class LocalStorageTests {
         assertEquals(testList.joinToString("") { it.name }, listAfterQuery, "wrong list after query")
 
         val firstId = document.getElementById(firstPersonId)?.textContent
-        assertTrue(firstId != null && firstId.length > 10)
+        assertTrue(firstId != null && firstId.isNotEmpty())
 
         queryStore.delete(firstId)
         delay(250)
@@ -214,7 +210,7 @@ class LocalStorageTests {
             val updateMany = handle<List<LocalPerson>> { entities, updatedEntities -> localStorage.updateMany(entities, updatedEntities) }
         }
 
-        val listId = "list-${uniqueId()}"
+        val listId = "list-${Id.next()}"
 
         render {
             div {

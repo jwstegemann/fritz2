@@ -53,7 +53,7 @@ interface ValidationMessage {
      * decides if the [ValidationMessage] is an error which is needed
      * to determine if validation is successful or not
      *
-     * @return if it is a error or not
+     * @return if it is an error or not
      */
     fun isError(): Boolean
 }

@@ -40,6 +40,9 @@ class WindowTest {
 
             }
         }
+
+        delay(100)
+
         val div = document.getElementById(divId).unsafeCast<HTMLDivElement>()
         val label = document.getElementById(labelId).unsafeCast<HTMLLabelElement>()
 

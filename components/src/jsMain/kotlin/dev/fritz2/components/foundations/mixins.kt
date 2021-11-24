@@ -7,6 +7,7 @@ import dev.fritz2.components.tooltip.TooltipComponent
 import dev.fritz2.components.validation.Severity
 import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.EventContext
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.identification.Id
 import dev.fritz2.styling.StyleClass
@@ -470,7 +471,7 @@ class OrientationMixin(default: Orientation) : OrientationProperty {
  *```
  */
 interface TooltipProperties {
-    val renderTooltip: ComponentProperty<RenderContext.() -> Unit>
+    val renderTooltip: ComponentProperty<Tag<HTMLElement>.() -> Unit>
     fun tooltip(
         styling: BasicParams.() -> Unit = {},
         text: String? = null,
@@ -503,5 +504,5 @@ interface TooltipProperties {
  * Default implementation of [TooltipProperties] interface in order to apply this as mixin for a component
  */
 open class TooltipMixin : TooltipProperties {
-    override val renderTooltip = ComponentProperty<RenderContext.() -> Unit> {}
+    override val renderTooltip = ComponentProperty<Tag<HTMLElement>.() -> Unit> {}
 }

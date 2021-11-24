@@ -5,7 +5,7 @@ import dev.fritz2.binding.RootStore
 /**
  * This store can be used for components with an *internal* store that has to deal with a [List] of some type T.
  *
- * Use the [toggle] method to add or remove an selected item from the current selection:
+ * Use the [toggle] method to add or remove a selected item from the current selection:
  * ```
  * val selection = MultiSelectionStore<String>()
  * lineUp {
@@ -32,11 +32,11 @@ import dev.fritz2.binding.RootStore
  * }
  * ```
  *
- * RFC: Never ever expose the internal store directly to the client side! Only accept values or [Flow]s and return
+ * RFC: Never ever expose the internal store directly to the client side! Only accept values or Flow]s and return
  * those in order to exchange data with the client!
  */
 open class MultiSelectionStore<T> : RootStore<List<T>>(emptyList()) {
-    val toggle = handleAndEmit<T, List<T>> { selectedRows, new ->
+    val toggle = this.handleAndEmit<T, List<T>> { selectedRows, new ->
         val newSelection = if (selectedRows.contains(new))
             selectedRows - new
         else
@@ -56,7 +56,7 @@ open class MultiSelectionStore<T> : RootStore<List<T>>(emptyList()) {
  * those in order to exchange data with the client!
  */
 open class SingleSelectionStore : RootStore<Int?>(null) {
-    val toggle = handleAndEmit<Int, Int> { _, new ->
+    val toggle = this.handleAndEmit<Int, Int> { _, new ->
         emit(new)
         new
     }
