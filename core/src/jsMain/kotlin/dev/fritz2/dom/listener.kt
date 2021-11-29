@@ -3,6 +3,7 @@ package dev.fritz2.dom
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.*
@@ -163,12 +164,46 @@ fun DomListener<Event, HTMLSelectElement>.selectedText(): Flow<String> =
 fun <X : Element> DomListener<KeyboardEvent, X>.key(): Flow<Key> = events.map { Key(it) }
 
 /**
+ * Gives you the pressed key as [Key] combined with the [KeyboardEvent] filtered by a given set of keys.
+ * All other events from other keys will be dropped!
+ *
+ * This is very helpful if the event bubbling should be stopped for example, as the filtering has to be done before
+ * and the bubbling should in most cases only be stopped for the handled keys and not the other ones!
+ *
+ * @param keys a set with all keys that should be handled
+ */
+fun <X : Element> DomListener<KeyboardEvent, X>.keys(keys: Set<Key>) =
+    events.map { Key(it) to it }.filter { keys.contains(it.first) }
+
+/**
+ * Gives you the pressed key as [Key] combined with the [KeyboardEvent] filtered by arbitrary given keys.
+ * All other events from other keys will be dropped!
+ *
+ * This is very helpful if the event bubbling should be stopped for example, as the filtering has to be done before
+ * and the bubbling should in most cases only be stopped for the handled keys and not the other ones!
+ *
+ * @param keys an arbitrary amount of keys which should be handled
+ */
+fun <X : Element> DomListener<KeyboardEvent, X>.keys(vararg keys: Key) = this.keys(keys.toSet())
+
+/**
+ * Gives you the pressed key as [Key] combined with the [KeyboardEvent] filtered by exactly one key.
+ * All other events from other keys will be dropped!
+ *
+ * This is very helpful if the event bubbling should be stopped for example, as the filtering has to be done before
+ * and the bubbling should in most cases only be stopped for the handled key and for other ones!
+ *
+ * @param key the key to be handled
+ */
+fun <X : Element> DomListener<KeyboardEvent, X>.keys(key: Key) = events.map { Key(it) to it }.filter { it.first == key }
+
+/**
  * Gives you the pressed key as [Key] from a [KeyboardEvent].
  */
 fun WindowListener<KeyboardEvent>.key(): Flow<Key> = events.map { Key(it) }
 
 /**
- * Merges mutiple [DomListener] like the analog method on [Flow]s
+ * Merges multiple [DomListener] like the analog method on [Flow]s
  *
  * @param listener the [DomListener] to merge
  */
