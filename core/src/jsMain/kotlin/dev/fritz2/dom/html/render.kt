@@ -64,7 +64,7 @@ fun render(
             override val job = Job()
             override val scope: Scope = Scope().also { scope -> scope[MOUNT_POINT_KEY] = this }
 
-            override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+            override fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W {
                 content(element)
                 targetElement.appendChild(element.domNode)
                 return element

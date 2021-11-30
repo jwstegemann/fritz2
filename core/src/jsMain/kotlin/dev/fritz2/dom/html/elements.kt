@@ -1404,7 +1404,7 @@ interface RenderContext : WithJob, WithScope {
      */
     fun <T> Flow<T>.asString(): Flow<String> = this.map { it.toString() }
 
-    fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T
+    fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W
 
     /**
      * Evaluates the scope context and initializes a [ScopeContext]

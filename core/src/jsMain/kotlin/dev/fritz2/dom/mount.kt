@@ -119,7 +119,7 @@ internal class MountContext<T : HTMLElement>(
 
     override val scope: Scope = Scope(mountScope).apply { set(MOUNT_POINT_KEY, this@MountContext) }
 
-    override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+    override fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W {
         return target.register(element, content)
     }
 }
@@ -131,7 +131,7 @@ internal class BuildContext(
 
     override val scope: Scope = Scope(mountScope).apply { set(MOUNT_POINT_KEY, this@BuildContext) }
 
-    override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+    override fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W {
         content(element)
         return element
     }
