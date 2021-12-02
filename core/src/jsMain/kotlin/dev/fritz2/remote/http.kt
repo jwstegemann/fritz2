@@ -1,6 +1,10 @@
 package dev.fritz2.remote
 
+import dev.fritz2.binding.storeOf
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.await
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.khronos.webgl.ArrayBuffer
 import org.w3c.fetch.*
 import org.w3c.files.Blob
@@ -46,7 +50,7 @@ open class Request(
     private val integrity: String? = undefined,
     private val keepalive: Boolean? = undefined,
     private val reqWindow: Any? = undefined,
-    private val authentication: Authentication? = null
+    private val authentication: Authentication<*>? = null
 ) {
 
     /**
@@ -62,10 +66,30 @@ open class Request(
                 append("/${subUrl.trimStart('/')}")
             }
         }
+
+        //TODO !!!!!
+
+        return if(authentication == null) {
+            console.log("Authentication ist null")
+            executeRequest(url, init)
+        } else {
+            console.log("StartAuthentication...")
+            executeRequest(url, init)
+        }
+
+    }
+
+    // define internal function
+    private suspend fun executeRequest(url: String, init: RequestInit): Response{
         var response = browserWindow.fetch(url, init).await()
         if (authentication != null) {
             if (authentication.errorcodesEnforcingAuthentication.contains(response.status)) {
-                authentication.authenticate()
+                //authentication.startAuthentication()
+                if (!authentication.isAuthRunning()) {
+                    authentication.startAuthentication()
+                }
+                // Wir warten aufs Login...
+                authentication.getPrincipal()
                 val redo = authentication.enrichRequest(this).buildInit(init.method!!)
                 response = browserWindow.fetch(url, redo).await()
             }
@@ -357,7 +381,7 @@ open class Request(
      *
      * @param auth [Authentication] mechanism
      */
-    fun authentication(auth: Authentication) = Request(
+    fun <T>authentication(auth: Authentication<T>) = Request(
         baseUrl, headers, body, referrer, referrerPolicy, mode,
         credentials, cache, redirect, integrity, keepalive, reqWindow, auth
     )
@@ -401,13 +425,17 @@ external fun btoa(decoded: String): String
  * Represents the functions needed to authenticate a user
  * and in which cases the authentication should be made.
  */
-interface Authentication {
+abstract class Authentication<P> {
+
+    private val principalStore = storeOf<P?>(null)
+
+    private var state: CompletableDeferred<P>? = null
 
     /**
      * List of HTTP-Status-Codes forcing an authentication.
      * Defaults are 401 (unauthorized) and 403 (forbidden)
      */
-    val errorcodesEnforcingAuthentication: List<Short>
+    open val errorcodesEnforcingAuthentication: List<Short>
         get() = listOf(401, 403)
 
     /**
@@ -417,20 +445,42 @@ interface Authentication {
      *
      * @param request the request-object that is enriched with the login-information.
      */
-    suspend fun enrichRequest(request: Request): Request
+    abstract suspend fun enrichRequest(request: Request): Request
 
     /**
      * function doing the authentication
      */
-    suspend fun authenticate()
-
-    /**
-     * shows whether there is a successful authentication or not.
-     */
-    fun isAuthenticated(): Boolean
+    abstract fun authenticate()
 
     /**
      * performing a logout
      */
-    suspend fun logout()
+    fun logout() {
+        state = null
+        principalStore.update(null)
+    }
+
+    internal fun startAuthentication() {
+        state = CompletableDeferred()
+        authenticate()
+    }
+
+    fun isAuthenticated(): Boolean = state != null && !isAuthRunning()
+
+    val authenticated: Flow<Boolean> = principalStore.data.map { it != null }
+
+    val principal = principalStore.data
+
+    internal fun isAuthRunning() = state.let {it?.isActive} ?: false
+
+    suspend fun getPrincipal(): P? = state.let {it?.await()}
+
+    fun login(p: P){
+
+        if(state==null) {
+            state = CompletableDeferred()
+        }
+        state?.complete(p)
+        principalStore.update(p)
+    }
 }
