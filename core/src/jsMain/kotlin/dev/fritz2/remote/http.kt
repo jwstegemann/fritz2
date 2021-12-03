@@ -67,20 +67,6 @@ open class Request(
             }
         }
 
-        //TODO !!!!!
-
-        return if(authentication == null) {
-            console.log("Authentication ist null")
-            executeRequest(url, init)
-        } else {
-            console.log("StartAuthentication...")
-            executeRequest(url, init)
-        }
-
-    }
-
-    // define internal function
-    private suspend fun executeRequest(url: String, init: RequestInit): Response{
         var response = browserWindow.fetch(url, init).await()
         if (authentication != null) {
             if (authentication.errorcodesEnforcingAuthentication.contains(response.status)) {
@@ -97,6 +83,7 @@ open class Request(
         if (response.ok) return response
         else throw FetchException(response.status, response.getBody(), response)
     }
+
 
     /**
      * builds a [RequestInit] with a body from the template using [method]
