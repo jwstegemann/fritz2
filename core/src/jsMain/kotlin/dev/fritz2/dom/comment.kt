@@ -8,7 +8,7 @@ import org.w3c.dom.Node
 /**
  * Provides functionality to handle comments.
  */
-interface WithComment<out T : Node> : WithDomNode<T> {
+interface WithComment<out N : Node> : WithDomNode<N> {
 
     /**
      * Adds a comment in your HTML by using !"Comment Text".

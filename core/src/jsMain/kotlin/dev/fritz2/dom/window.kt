@@ -33,84 +33,163 @@ object Window {
             awaitClose { browserWindow.removeEventListener(type.name, listener) }
         })
 
-    val aborts by lazy { subscribe(Events.abort) }
-    val afterprints by lazy { subscribe(Events.afterprint) }
-    val beforeprints by lazy { subscribe(Events.beforeprint) }
-    val beforeunloads by lazy { subscribe(Events.beforeunload) }
-    val blurs by lazy { subscribe(Events.blur) }
-    val canplays by lazy { subscribe(Events.canplay) }
-    val canplaythroughs by lazy { subscribe(Events.canplaythrough) }
-    val changes by lazy { subscribe(Events.change) }
-    val clicks by lazy { subscribe(Events.click) }
-    val contextmenus by lazy { subscribe(Events.contextmenu) }
-    val copys by lazy { subscribe(Events.copy) }
-    val cuts by lazy { subscribe(Events.cut) }
-    val dblclicks by lazy { subscribe(Events.dblclick) }
-    val drags by lazy { subscribe(Events.drag) }
-    val dragends by lazy { subscribe(Events.dragend) }
-    val dragenters by lazy { subscribe(Events.dragenter) }
-    val dragleaves by lazy { subscribe(Events.dragleave) }
-    val dragovers by lazy { subscribe(Events.dragover) }
-    val dragstarts by lazy { subscribe(Events.dragstart) }
-    val drops by lazy { subscribe(Events.drop) }
-    val durationchanges by lazy { subscribe(Events.durationchange) }
-    val endeds by lazy { subscribe(Events.ended) }
-    val focuss by lazy { subscribe(Events.focus) }
-    val focusins by lazy { subscribe(Events.focusin) }
-    val focusouts by lazy { subscribe(Events.focusout) }
-    val fullscreenchanges by lazy { subscribe(Events.fullscreenchange) }
-    val fullscreenerrors by lazy { subscribe(Events.fullscreenerror) }
-    val hashchanges by lazy { subscribe(Events.hashchange) }
-    val inputs by lazy { subscribe(Events.input) }
-    val invalids by lazy { subscribe(Events.invalid) }
-    val keydowns by lazy { subscribe(Events.keydown) }
-    val keypresss by lazy { subscribe(Events.keypress) }
-    val keyups by lazy { subscribe(Events.keyup) }
-    val loads by lazy { subscribe(Events.load) }
-    val loadeddatas by lazy { subscribe(Events.loadeddata) }
-    val loadedmetadatas by lazy { subscribe(Events.loadedmetadata) }
-    val loadstarts by lazy { subscribe(Events.loadstart) }
-    val messages by lazy { subscribe(Events.message) }
-    val mousedowns by lazy { subscribe(Events.mousedown) }
-    val mouseenters by lazy { subscribe(Events.mouseenter) }
-    val mouseleaves by lazy { subscribe(Events.mouseleave) }
-    val mousemoves by lazy { subscribe(Events.mousemove) }
-    val mouseovers by lazy { subscribe(Events.mouseover) }
-    val mouseouts by lazy { subscribe(Events.mouseout) }
-    val mouseups by lazy { subscribe(Events.mouseup) }
-    val offlines by lazy { subscribe(Events.offline) }
-    val onlines by lazy { subscribe(Events.online) }
-    val opens by lazy { subscribe(Events.open) }
-    val pagehides by lazy { subscribe(Events.pagehide) }
-    val pageshows by lazy { subscribe(Events.pageshow) }
-    val pastes by lazy { subscribe(Events.paste) }
-    val pauses by lazy { subscribe(Events.pause) }
-    val plays by lazy { subscribe(Events.play) }
-    val playings by lazy { subscribe(Events.playing) }
-    val popstates by lazy { subscribe(Events.popstate) }
-    val progresss by lazy { subscribe(Events.progress) }
-    val ratechanges by lazy { subscribe(Events.ratechange) }
-    val resizes by lazy { subscribe(Events.resize) }
-    val resets by lazy { subscribe(Events.reset) }
-    val scrolls by lazy { subscribe(Events.scroll) }
-    val searchs by lazy { subscribe(Events.search) }
-    val seekeds by lazy { subscribe(Events.seeked) }
-    val seekings by lazy { subscribe(Events.seeking) }
-    val selects by lazy { subscribe(Events.select) }
-    val shows by lazy { subscribe(Events.show) }
-    val stalleds by lazy { subscribe(Events.stalled) }
-    val storages by lazy { subscribe(Events.storage) }
-    val submits by lazy { subscribe(Events.submit) }
-    val suspends by lazy { subscribe(Events.suspend) }
-    val timeupdates by lazy { subscribe(Events.timeupdate) }
-    val toggles by lazy { subscribe(Events.toggle) }
-    val touchcancels by lazy { subscribe(Events.touchcancel) }
-    val touchends by lazy { subscribe(Events.touchend) }
-    val touchmoves by lazy { subscribe(Events.touchmove) }
-    val touchstarts by lazy { subscribe(Events.touchstart) }
-    val unloads by lazy { subscribe(Events.unload) }
-    val volumechanges by lazy { subscribe(Events.volumechange) }
-    val waitings by lazy { subscribe(Events.waiting) }
-    val wheels by lazy { subscribe(Events.wheel) }
+    val aborts
+        get() = subscribe(Events.abort)
+    val afterprints
+        get() = subscribe(Events.afterprint)
+    val beforeprints
+        get() = subscribe(Events.beforeprint)
+    val beforeunloads
+        get() = subscribe(Events.beforeunload)
+    val blurs
+        get() = subscribe(Events.blur)
+    val canplays
+        get() = subscribe(Events.canplay)
+    val canplaythroughs
+        get() = subscribe(Events.canplaythrough)
+    val changes
+        get() = subscribe(Events.change)
+    val clicks
+        get() = subscribe(Events.click)
+    val contextmenus
+        get() = subscribe(Events.contextmenu)
+    val copys
+        get() = subscribe(Events.copy)
+    val cuts
+        get() = subscribe(Events.cut)
+    val dblclicks
+        get() = subscribe(Events.dblclick)
+    val drags
+        get() = subscribe(Events.drag)
+    val dragends
+        get() = subscribe(Events.dragend)
+    val dragenters
+        get() = subscribe(Events.dragenter)
+    val dragleaves
+        get() = subscribe(Events.dragleave)
+    val dragovers
+        get() = subscribe(Events.dragover)
+    val dragstarts
+        get() = subscribe(Events.dragstart)
+    val drops
+        get() = subscribe(Events.drop)
+    val durationchanges
+        get() = subscribe(Events.durationchange)
+    val endeds
+        get() = subscribe(Events.ended)
+    val focuss
+        get() = subscribe(Events.focus)
+    val focusins
+        get() = subscribe(Events.focusin)
+    val focusouts
+        get() = subscribe(Events.focusout)
+    val fullscreenchanges
+        get() = subscribe(Events.fullscreenchange)
+    val fullscreenerrors
+        get() = subscribe(Events.fullscreenerror)
+    val hashchanges
+        get() = subscribe(Events.hashchange)
+    val inputs
+        get() = subscribe(Events.input)
+    val invalids
+        get() = subscribe(Events.invalid)
+    val keydowns
+        get() = subscribe(Events.keydown)
+    val keypresss
+        get() = subscribe(Events.keypress)
+    val keyups
+        get() = subscribe(Events.keyup)
+    val loads
+        get() = subscribe(Events.load)
+    val loadeddatas
+        get() = subscribe(Events.loadeddata)
+    val loadedmetadatas
+        get() = subscribe(Events.loadedmetadata)
+    val loadstarts
+        get() = subscribe(Events.loadstart)
+    val messages
+        get() = subscribe(Events.message)
+    val mousedowns
+        get() = subscribe(Events.mousedown)
+    val mouseenters
+        get() = subscribe(Events.mouseenter)
+    val mouseleaves
+        get() = subscribe(Events.mouseleave)
+    val mousemoves
+        get() = subscribe(Events.mousemove)
+    val mouseovers
+        get() = subscribe(Events.mouseover)
+    val mouseouts
+        get() = subscribe(Events.mouseout)
+    val mouseups
+        get() = subscribe(Events.mouseup)
+    val offlines
+        get() = subscribe(Events.offline)
+    val onlines
+        get() = subscribe(Events.online)
+    val opens
+        get() = subscribe(Events.open)
+    val pagehides
+        get() = subscribe(Events.pagehide)
+    val pageshows
+        get() = subscribe(Events.pageshow)
+    val pastes
+        get() = subscribe(Events.paste)
+    val pauses
+        get() = subscribe(Events.pause)
+    val plays
+        get() = subscribe(Events.play)
+    val playings
+        get() = subscribe(Events.playing)
+    val popstates
+        get() = subscribe(Events.popstate)
+    val progresss
+        get() = subscribe(Events.progress)
+    val ratechanges
+        get() = subscribe(Events.ratechange)
+    val resizes
+        get() = subscribe(Events.resize)
+    val resets
+        get() = subscribe(Events.reset)
+    val scrolls
+        get() = subscribe(Events.scroll)
+    val searchs
+        get() = subscribe(Events.search)
+    val seekeds
+        get() = subscribe(Events.seeked)
+    val seekings
+        get() = subscribe(Events.seeking)
+    val selects
+        get() = subscribe(Events.select)
+    val shows
+        get() = subscribe(Events.show)
+    val stalleds
+        get() = subscribe(Events.stalled)
+    val storages
+        get() = subscribe(Events.storage)
+    val submits
+        get() = subscribe(Events.submit)
+    val suspends
+        get() = subscribe(Events.suspend)
+    val timeupdates
+        get() = subscribe(Events.timeupdate)
+    val toggles
+        get() = subscribe(Events.toggle)
+    val touchcancels
+        get() = subscribe(Events.touchcancel)
+    val touchends
+        get() = subscribe(Events.touchend)
+    val touchmoves
+        get() = subscribe(Events.touchmove)
+    val touchstarts
+        get() = subscribe(Events.touchstart)
+    val unloads
+        get() = subscribe(Events.unload)
+    val volumechanges
+        get() = subscribe(Events.volumechange)
+    val waitings
+        get() = subscribe(Events.waiting)
+    val wheels
+        get() = subscribe(Events.wheel)
 }
 
