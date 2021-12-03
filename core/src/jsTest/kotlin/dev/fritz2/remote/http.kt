@@ -121,17 +121,16 @@ class AuthenticatedRemoteTests {
         */
 
         override suspend fun enrichRequest(request: Request): Request {
-            return getPrincipal()?.token?.let { request.header("test-header", it) } ?: request
+            return getPrincipal()?.token?.let { request.header("authtoken", it) } ?: request
         }
 
         override  fun authenticate() {
-            val principalToSet = Principal("NameOfUser", "12345678")
+            val principalToSet = Principal("NameOfUser", "123456789")
             login(principalToSet)
         }
 
         // just for test-purposes to have an invalid token
         fun setTokenInvalid() {
-            println("Peter wars")
             logout()
         }
 
