@@ -7,6 +7,6 @@ import org.w3c.dom.Node
  *
  * @property domNode the wrapped [Node]
  */
-external interface WithDomNode<out T : Node> {
-    val domNode: T
+external interface WithDomNode<out N : Node> {
+    val domNode: N
 }

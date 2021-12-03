@@ -21,7 +21,7 @@ interface WithText<N : Node> : WithDomNode<N>, RenderContext {
      * @param target element to mount the [Flow] to
      * @param upstream [Flow] to mount to [target]
      */
-    fun mountTextNode(target: WithDomNode<*>, upstream: Flow<String>) {
+    private fun mountTextNode(target: WithDomNode<*>, upstream: Flow<String>) {
         mountSimple(job, upstream) {
             target.domNode.clear()
             target.domNode.appendChild(TextNode(it).domNode)

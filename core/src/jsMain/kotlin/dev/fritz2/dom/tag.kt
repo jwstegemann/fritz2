@@ -54,7 +54,7 @@ open class Tag<out E : Element>(
      * @param element the parent element of the new content
      * @param content lambda building the content (following the type-safe-builder pattern)
      */
-    override fun <E : Node, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
+    override fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W {
         content(element)
         domNode.appendChild(element.domNode)
         return element
