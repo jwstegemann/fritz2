@@ -58,14 +58,16 @@ class Transition(
             if (transition?.enter != null) {
                 val classes = target.domNode.getAttribute("class").orEmpty()
                 target.domNode.setAttribute("class", "$classes ${transition.enterStart.orEmpty()}")
-                //TODO: is this needed a second time in some browsers?
+                //this has to be called two times to ensure, that the enterStart classes are really rendered by the browser
                 kotlinx.browser.window.requestAnimationFrame {
-                    target.domNode.setAttribute(
-                        "class",
-                        "$classes ${transition.enter} ${transition.enterEnd.orEmpty()}"
-                    )
-                    animationDone(target.domNode).then {
-                        target.domNode.setAttribute("class", classes)
+                    kotlinx.browser.window.requestAnimationFrame {
+                        target.domNode.setAttribute(
+                            "class",
+                            "$classes ${transition.enter} ${transition.enterEnd.orEmpty()}"
+                        )
+                        animationDone(target.domNode).then {
+                            target.domNode.setAttribute("class", classes)
+                        }
                     }
                 }
             }
