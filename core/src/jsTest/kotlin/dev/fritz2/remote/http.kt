@@ -1,6 +1,8 @@
 package dev.fritz2.remote
 
+import dev.fritz2.lenses.Lenses
 import dev.fritz2.test.*
+import kotlinx.serialization.Serializable
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
 import kotlin.random.Random
@@ -100,35 +102,37 @@ class RemoteTests {
 
 }
 
-class AuthenticatedRemoteTests {
+@Serializable
+data class Principal(
+    val username: String = "",
+    val token: String? = null,
+)
 
-    private val authentication = object : Authentication {
-        private val EMPTY_TOKEN = ""
-        private var token = EMPTY_TOKEN
+class AuthenticatedRemoteTests {
+    private val authentication = object : Authentication<Principal>() {
+
 
         override val errorcodesEnforcingAuthentication: List<Short> = listOf(401, 403)
 
-        override suspend fun enrichRequest(request: Request): Request {
-            if (this.token == EMPTY_TOKEN) {
-                this.authenticate()
+        /*
+           override suspend fun enrichRequest(request: Request): Request {
+                return getPrincipal()?.token?.let { request.header("oe-auth-token", it) } ?: request
             }
-            return request.header("authtoken", token)
+        */
+
+        override suspend fun enrichRequest(request: Request): Request {
+            return getPrincipal()?.token?.let { request.header("test-header", it) } ?: request
         }
 
-        override suspend fun authenticate() {
-            token = "123456789"
-        }
-
-        override fun isAuthenticated(): Boolean = this.token != EMPTY_TOKEN
-
-
-        override suspend fun logout() {
-            token = EMPTY_TOKEN
+        override  fun authenticate() {
+            val principalToSet = Principal("NameOfUser", "12345678")
+            login(principalToSet)
         }
 
         // just for test-purposes to have an invalid token
         fun setTokenInvalid() {
-            token = "invalid"
+            println("Peter wars")
+            logout()
         }
 
     }

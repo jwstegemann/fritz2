@@ -2,6 +2,7 @@ package dev.fritz2.test
 
 import dev.fritz2.binding.mountSimple
 import dev.fritz2.remote.Authentication
+import dev.fritz2.remote.Principal
 import dev.fritz2.remote.Request
 import dev.fritz2.remote.http
 import kotlinx.browser.document
@@ -46,6 +47,6 @@ suspend fun testHttpServer(endpoint: Endpoint): Request {
     return r
 }
 
-suspend fun testHttpServerAuthenticated(endpoint: Endpoint, authentication: Authentication): Request {
+suspend fun testHttpServerAuthenticated(endpoint: Endpoint, authentication: Authentication<Principal>): Request {
     return http("http://localhost:3000/$endpoint").authentication(authentication)
 }
