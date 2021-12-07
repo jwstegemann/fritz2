@@ -55,6 +55,7 @@ open class Request(
 
     /**
      * builds a request, sends it to the server, awaits the response (async), creates a flow of it and attaches the defined errorHandler
+     * if needed,an authentication-process is started
      *
      * @param subUrl function do derive the url (so you can use baseUrl)
      * @param init an instance of [RequestInit] defining the attributes of the request
@@ -411,6 +412,13 @@ external fun btoa(decoded: String): String
 /**
  * Represents the functions needed to authenticate a user
  * and in which cases the authentication should be made.
+ * The typeparameter P represents a class for a principal,
+ * an object containing all login-information needed by the
+ * user of this api. The principal-object is held in a fritz2-store
+ * and could be read as a flow [principal].
+ * There are two functions reading whether the authentication is done,
+ * [authenticated] delivers a flow of Boolean-type
+ * [isAuthenticated] delivers the boolean itself.
  */
 abstract class Authentication<P> {
 
@@ -440,7 +448,7 @@ abstract class Authentication<P> {
     abstract fun authenticate()
 
     /**
-     * performing a logout
+     * function performing a logout
      */
     fun logout() {
         state = null
@@ -452,16 +460,38 @@ abstract class Authentication<P> {
         authenticate()
     }
 
+    /**
+     * function returning a boolean showing whether the user is authenticated or not
+     */
     fun isAuthenticated(): Boolean = state != null && !isAuthRunning()
 
+    /**
+     * function returning a flow with the information whether the user is authenticated or not
+     */
     val authenticated: Flow<Boolean> = principalStore.data.map { it != null }
 
+    /**
+     * function returning a flow with the principal-information.
+     *
+     */
     val principal = principalStore.data
 
+    /**
+     * function returning the information wether an authentication-process is running
+     */
     internal fun isAuthRunning() = state.let {it?.isActive} ?: false
 
+    /**
+     * function returning the principal-information:
+     * if the prinicpal is available it is returned
+     * if an authentication-process is running  the function is waiting for the process to be finished
+     * else null is returned, if no authentication-process is running nor a principal is available.
+     */
     suspend fun getPrincipal(): P? = state.let {it?.await()}
 
+    /**
+     * function offering the possibility to set the principal after a successfull authentication
+     */
     fun login(p: P){
 
         if(state==null) {
