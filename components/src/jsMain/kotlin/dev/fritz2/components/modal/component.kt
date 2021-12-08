@@ -3,7 +3,6 @@ package dev.fritz2.components.modal
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.binding.storeOf
-import dev.fritz2.binding.watch
 import dev.fritz2.components.flexBox
 import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.html.Div
@@ -20,7 +19,6 @@ import dev.fritz2.styling.staticStyle
 import dev.fritz2.styling.theme.*
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.get
 
 /**
@@ -155,8 +153,8 @@ open class ModalComponent :
             stack + dialog
         }
 
-        val pop = handle { stack ->
-            stack.dropLast(1)
+        fun pop(dialog: ModalRenderContext) = handle { stack ->
+            stack - dialog
         }
     }
 
@@ -256,7 +254,7 @@ open class ModalComponent :
         id: String?,
         prefix: String
     ): SimpleHandler<Unit> {
-        val close = stack.pop
+        lateinit var close: SimpleHandler<Unit>
 
         val modal: ModalRenderContext = { level ->
             flexBox({
@@ -305,6 +303,8 @@ open class ModalComponent :
                 }
             }
         }
+
+        close = stack.pop(modal)
 
         return stack.push(modal)
     }
