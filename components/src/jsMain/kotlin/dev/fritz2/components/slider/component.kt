@@ -13,6 +13,7 @@ import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.keys
 import dev.fritz2.styling.StyleClass
 import dev.fritz2.styling.div
 import dev.fritz2.styling.name
@@ -362,16 +363,11 @@ open class SliderComponent(protected val store: Store<Int>? = null) :
                     clicks.events handledBy internalStore.updateByClick
                     Window.mousemoves.events handledBy internalStore.updateByMovement
                     Window.mouseups.events.map { false } handledBy internalStore.updateMovementTracking
-                    keydowns.events.mapNotNull {
-                        when (Key(it)) {
-                            Keys.ArrowDown, Keys.ArrowLeft -> {
-                                it.preventDefault()
-                                Direction.DOWN
-                            }
-                            Keys.ArrowUp, Keys.ArrowRight -> {
-                                it.preventDefault()
-                                Direction.UP
-                            }
+                    keydowns.keys(Keys.ArrowDown, Keys.ArrowUp, Keys.ArrowLeft, Keys.ArrowRight).mapNotNull {
+                        it.event.preventDefault()
+                        when(it.key) {
+                            Keys.ArrowDown, Keys.ArrowLeft -> Direction.DOWN
+                            Keys.ArrowUp, Keys.ArrowRight -> Direction.UP
                             else -> null
                         }
                     } handledBy internalStore.updateByKeystroke
