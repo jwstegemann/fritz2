@@ -181,7 +181,7 @@ class ListenerTest {
                     key.meta -> pressed = "meta+"
                     key.shift -> pressed = "shift+"
                 }
-                pressed += when (key) {
+                pressed += when (key.key) {
                     Keys.ArrowUp -> "up"
                     Keys.ArrowDown -> "down"
                     else -> "unknown"
@@ -214,10 +214,10 @@ class ListenerTest {
         val keyboardEvents = listOf(Keys.ArrowUp, Keys.ArrowDown)
             .flatMap {
                 listOf(
-                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, ctrlKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, altKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, shiftKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, metaKey = true))
+                    KeyboardEvent("keydown", KeyboardEventInit(it, it, ctrlKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it, it, altKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it, it, shiftKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it, it, metaKey = true))
                 )
             }
 
@@ -233,7 +233,7 @@ class ListenerTest {
                 e.metaKey -> expected = "meta+"
                 e.shiftKey -> expected = "shift+"
             }
-            expected += when (Key(e)) {
+            expected += when (Key(e).key) {
                 Keys.ArrowUp -> "up"
                 Keys.ArrowDown -> "down"
                 else -> "unknown"
@@ -274,7 +274,7 @@ class ListenerTest {
         assertEquals("start", resultNode.textContent, "wrong dom content of result-node")
 
         input.value = "some other content"
-        val event = KeyboardEvent("keyup", KeyboardEventInit(Keys.Enter.key, code = Keys.Enter.key))
+        val event = KeyboardEvent("keyup", KeyboardEventInit(Keys.Enter, code = Keys.Enter))
         input.dispatchEvent(event)
         delay(200)
 

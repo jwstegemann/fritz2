@@ -265,16 +265,16 @@ object Events {
  *
  * More info [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values)
  */
-class Key(
-    val code: String,
+data class Key(
     val key: String,
-    val ctrl: Boolean = false,
-    val alt: Boolean = false,
-    val shift: Boolean = false,
-    val meta: Boolean = false
+    val event: KeyboardEvent
 ) {
-    constructor(key: String) : this(key, key)
-    constructor(e: KeyboardEvent) : this(e.code, e.key, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey)
+    constructor(event: KeyboardEvent) : this(event.key, event)
+
+    val ctrl: Boolean = event.ctrlKey
+    val alt: Boolean = event.altKey
+    val shift: Boolean = event.shiftKey
+    val meta: Boolean = event.metaKey
 
     override fun equals(other: Any?): Boolean =
         if (other is Key) key == other.key else super.equals(other)
@@ -285,80 +285,80 @@ class Key(
 }
 
 object Keys {
-    val Unidentified = Key("Unidentified")
-    val Alt = Key("Alt")
-    val AltGraph = Key("AltGraph")
-    val CapsLock = Key("CapsLock")
-    val Control = Key("Control")
-    val Fn = Key("Fn")
-    val FnLock = Key("FnLock")
-    val Hyper = Key("Hyper")
-    val Meta = Key("Meta")
-    val NumLock = Key("NumLock")
-    val ScrollLock = Key("ScrollLock")
-    val Shift = Key("Shift")
-    val Super = Key("Super")
-    val Symbol = Key("Symbol")
-    val SymbolLock = Key("SymbolLock")
-    val Enter = Key("Enter")
-    val Tab = Key("Tab")
-    val Space = Key(" ")
-    val ArrowDown = Key("ArrowDown")
-    val ArrowLeft = Key("ArrowLeft")
-    val ArrowRight = Key("ArrowRight")
-    val ArrowUp = Key("ArrowUp")
-    val End = Key("End")
-    val Home = Key("Home")
-    val PageDown = Key("PageDown")
-    val PageUp = Key("PageUp")
-    val Backspace = Key("Backspace")
-    val Clear = Key("Clear")
-    val Copy = Key("Copy")
-    val CrSel = Key("CrSel")
-    val Cut = Key("Cut")
-    val Delete = Key("Delete")
-    val EraseEof = Key("EraseEof")
-    val ExSel = Key("ExSel")
-    val Insert = Key("Insert")
-    val Paste = Key("Paste")
-    val Redo = Key("Redo")
-    val Undo = Key("Undo")
-    val Accept = Key("Accept")
-    val Again = Key("Again")
-    val Attn = Key("Attn")
-    val Cancel = Key("Cancel")
-    val ContextMenu = Key("ContextMenu")
-    val Escape = Key("Escape")
-    val Execute = Key("Execute")
-    val Find = Key("Find")
-    val Help = Key("Help")
-    val Pause = Key("Pause")
-    val Play = Key("Play")
-    val Props = Key("Props")
-    val Select = Key("Select")
-    val ZoomIn = Key("ZoomIn")
-    val ZoomOut = Key("ZoomOut")
-    val F1 = Key("F1")
-    val F2 = Key("F2")
-    val F3 = Key("F3")
-    val F4 = Key("F4")
-    val F5 = Key("F5")
-    val F6 = Key("F6")
-    val F7 = Key("F7")
-    val F8 = Key("F8")
-    val F9 = Key("F9")
-    val F10 = Key("F10")
-    val F11 = Key("F11")
-    val F12 = Key("F12")
-    val Num0 = Key("0")
-    val Num1 = Key("1")
-    val Num2 = Key("2")
-    val Num3 = Key("3")
-    val Num4 = Key("4")
-    val Num5 = Key("5")
-    val Num6 = Key("6")
-    val Num7 = Key("7")
-    val Num8 = Key("8")
-    val Num9 = Key("9")
-    val Separator = Key("Separator")
+    const val Unidentified = "Unidentified"
+    const val Alt = "Alt"
+    const val AltGraph = "AltGraph"
+    const val CapsLock = "CapsLock"
+    const val Control = "Control"
+    const val Fn = "Fn"
+    const val FnLock = "FnLock"
+    const val Hyper = "Hyper"
+    const val Meta = "Meta"
+    const val NumLock = "NumLock"
+    const val ScrollLock = "ScrollLock"
+    const val Shift = "Shift"
+    const val Super = "Super"
+    const val Symbol = "Symbol"
+    const val SymbolLock = "SymbolLock"
+    const val Enter = "Enter"
+    const val Tab = "Tab"
+    const val Space = " "
+    const val ArrowDown = "ArrowDown"
+    const val ArrowLeft = "ArrowLeft"
+    const val ArrowRight = "ArrowRight"
+    const val ArrowUp = "ArrowUp"
+    const val End = "End"
+    const val Home = "Home"
+    const val PageDown = "PageDown"
+    const val PageUp = "PageUp"
+    const val Backspace = "Backspace"
+    const val Clear = "Clear"
+    const val Copy = "Copy"
+    const val CrSel = "CrSel"
+    const val Cut = "Cut"
+    const val Delete = "Delete"
+    const val EraseEof = "EraseEof"
+    const val ExSel = "ExSel"
+    const val Insert = "Insert"
+    const val Paste = "Paste"
+    const val Redo = "Redo"
+    const val Undo = "Undo"
+    const val Accept = "Accept"
+    const val Again = "Again"
+    const val Attn = "Attn"
+    const val Cancel = "Cancel"
+    const val ContextMenu = "ContextMenu"
+    const val Escape = "Escape"
+    const val Execute = "Execute"
+    const val Find = "Find"
+    const val Help = "Help"
+    const val Pause = "Pause"
+    const val Play = "Play"
+    const val Props = "Props"
+    const val Select = "Select"
+    const val ZoomIn = "ZoomIn"
+    const val ZoomOut = "ZoomOut"
+    const val F1 = "F1"
+    const val F2 = "F2"
+    const val F3 = "F3"
+    const val F4 = "F4"
+    const val F5 = "F5"
+    const val F6 = "F6"
+    const val F7 = "F7"
+    const val F8 = "F8"
+    const val F9 = "F9"
+    const val F10 = "F10"
+    const val F11 = "F11"
+    const val F12 = "F12"
+    const val Num0 = "0"
+    const val Num1 = "1"
+    const val Num2 = "2"
+    const val Num3 = "3"
+    const val Num4 = "4"
+    const val Num5 = "5"
+    const val Num6 = "6"
+    const val Num7 = "7"
+    const val Num8 = "8"
+    const val Num9 = "9"
+    const val Separator = "Separator"
 }
