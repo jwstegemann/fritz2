@@ -385,10 +385,10 @@ data class Key(
      * @see ExtraKey
      */
     operator fun plus(other: ExtraKey): Key = copy(
-        ctrl = other.ctrl,
-        alt = other.alt,
-        shift = other.shift,
-        meta = other.meta
+        ctrl = ctrl || other.ctrl,
+        alt = alt || other.alt,
+        shift = shift || other.shift,
+        meta = meta || other.meta
     )
 }
 
