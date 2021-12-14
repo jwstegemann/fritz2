@@ -376,10 +376,10 @@ data class Key(
      * This operator function enables the concatenation with additional extra keys:
      * ```
      * Key("F") + Keys.Alt
-     * // of even
-     * val searchKey = Key("F") + Keys.Alt + Keys.Shift
-     * //              ^^^^^^^^^^^^^^^^^^^
-     * //              will already result in a `Key`
+     * // or even
+     * Key("F") + Keys.Alt + Keys.Shift
+     * ^^^^^^^^^^^^^^^^^^^
+     * will already result in a `Key`
      * ```
      *
      * @see ExtraKey
@@ -400,7 +400,7 @@ data class Key(
  * // define a commonly used combination
  * val searchKey = Keys.Shift + Keys.Alt + "F"
  *
- * // react only to a set of Keys to enable keyboard navigation of some component
+ * // react only to a set of Keys e.g. to enable keyboard navigation of some component
  * div {
  *     keydowns.keys(Keys.Space, Keys.Enter).map { } handledBy selectItem
  * }
