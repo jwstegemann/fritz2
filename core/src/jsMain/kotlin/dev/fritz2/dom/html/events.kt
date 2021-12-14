@@ -261,104 +261,247 @@ object Events {
 }
 
 /**
- * [Key] represents a key from [KeyboardEvent]
+ * This interface models the extra keys, that enables combination of key shortcuts like "Strg + F" or alike.
  *
- * More info [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values)
+ * If offers default implementation for concatenating extra keys with "real" keys and just Strings to offer a
+ * beautiful readable shortcut combination:
+ * ```
+ * // Start with extra key and append just a String
+ * Keys.Control + "K"
+ * // or other way round
+ * Key("K") + Keys.Control
+ * ```
+ *
+ * @see Key
+ * @see Keys
  */
-data class Key(
-    val key: String,
-    val event: KeyboardEvent
-) {
-    constructor(event: KeyboardEvent) : this(event.key, event)
+interface ExtraKey {
+    val ctrl: Boolean
+    val alt: Boolean
+    val shift: Boolean
+    val meta: Boolean
 
-    val ctrl: Boolean = event.ctrlKey
-    val alt: Boolean = event.altKey
-    val shift: Boolean = event.shiftKey
-    val meta: Boolean = event.metaKey
+    /**
+     * This operator function enables the concatenation with a key:
+     * ```
+     * Keys.Alt + Key("K")
+     * ```
+     *
+     * @see ExtraKey
+     */
+    operator fun plus(other: Key): Key = Key(
+        other.name,
+        ctrl || other.ctrl,
+        alt || other.alt,
+        shift || other.shift,
+        meta || other.meta,
+    )
 
-    override fun equals(other: Any?): Boolean =
-        if (other is Key) key == other.key else super.equals(other)
-
-    override fun hashCode(): Int = key.hashCode()
-
-    override fun toString() = key
+    /**
+     * This operator function enables the concatenation with simply a [String] to enable a nice readable keyboard
+     * combination:
+     * ```
+     * Keys.Shift + "F"
+     * ```
+     *
+     * @see ExtraKey
+     */
+    operator fun plus(other: String): Key = Key(
+        name = other,
+        ctrl,
+        alt,
+        shift,
+        meta
+    )
 }
 
+/**
+ * Enables combination of [ExtraKey]s like "Strg + Alt + F":
+ * ```
+ * Keys.Control + Keys.Alt + "F"
+ * ```
+ *
+ * @param other the extra key to concatenate
+ */
+operator fun ExtraKey.plus(other: ExtraKey): ExtraKey = object : ExtraKey {
+    override val ctrl = this@plus.ctrl || other.ctrl
+    override val alt = this@plus.alt || other.alt
+    override val shift = this@plus.shift || other.shift
+    override val meta = this@plus.meta || other.meta
+}
+
+/**
+ * [Key] represents a key based upon the "key" property of a [KeyboardEvent].
+ * More info [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values)
+ *
+ * A key can be easily constructed by a [KeyboardEvent] which makes this abstraction so feasible to use with the
+ * keyboard event handling like:
+ * ```
+ * div {
+ *     // raw usage (prefer next example!)
+ *     keydowns.map { Key(it) } handledBy { /* use Key-object for further processing */ }
+ *
+ *     // stick to `keys` functions in most cases:
+ *     keydowns.keys(Keys.Control + "K") handledBy { (key, event) ->
+ *         // only if combination was pressed and with access to the original event too!
+ *     }
+ * }
+ * ```
+ *
+ * This class enables by its implementation of [ExtraKey] the concatenation with other extra keys, but it prevents
+ * the meaningless combination of "real" keys:
+ * ```
+ * // this works:
+ * Key("F") + Keys.Alt + Keys.Shift
+ * // this won't work:
+ * Key("F") + Key("P")
+ *
+ * // Ths first example could also be constructed by appropriate ctor call:
+ * Key("F", alt = true, shift = true)
+ * ```
+ *
+ * @see ExtraKey
+ * @see Keys
+ */
+data class Key(
+    val name: String,
+    override val ctrl: Boolean = false,
+    override val alt: Boolean = false,
+    override val shift: Boolean = false,
+    override val meta: Boolean = false
+) : ExtraKey {
+    constructor(event: KeyboardEvent) : this(event.key, event.ctrlKey, event.altKey, event.shiftKey, event.metaKey)
+
+    /**
+     * This operator function enables the concatenation with additional extra keys:
+     * ```
+     * Key("F") + Keys.Alt
+     * // of even
+     * val searchKey = Key("F") + Keys.Alt + Keys.Shift
+     * //              ^^^^^^^^^^^^^^^^^^^
+     * //              will already result in a `Key`
+     * ```
+     *
+     * @see ExtraKey
+     */
+    operator fun plus(other: ExtraKey): Key = copy(
+        ctrl = other.ctrl,
+        alt = other.alt,
+        shift = other.shift,
+        meta = other.meta
+    )
+}
+
+/**
+ * This object offers expressive access to predefined [Key]s and [ExtraKey]s.
+ *
+ * This enables a beautiful definition of Keys and keyboard shortcuts combinations:
+ * ```
+ * // define a commonly used combination
+ * val searchKey = Keys.Shift + Keys.Alt + "F"
+ *
+ * // react only to a set of Keys to enable keyboard navigation of some component
+ * div {
+ *     keydowns.keys(Keys.Space, Keys.Enter).map { } handledBy selectItem
+ * }
+ * ```
+ */
 object Keys {
-    const val Unidentified = "Unidentified"
-    const val Alt = "Alt"
-    const val AltGraph = "AltGraph"
-    const val CapsLock = "CapsLock"
-    const val Control = "Control"
-    const val Fn = "Fn"
-    const val FnLock = "FnLock"
-    const val Hyper = "Hyper"
-    const val Meta = "Meta"
-    const val NumLock = "NumLock"
-    const val ScrollLock = "ScrollLock"
-    const val Shift = "Shift"
-    const val Super = "Super"
-    const val Symbol = "Symbol"
-    const val SymbolLock = "SymbolLock"
-    const val Enter = "Enter"
-    const val Tab = "Tab"
-    const val Space = " "
-    const val ArrowDown = "ArrowDown"
-    const val ArrowLeft = "ArrowLeft"
-    const val ArrowRight = "ArrowRight"
-    const val ArrowUp = "ArrowUp"
-    const val End = "End"
-    const val Home = "Home"
-    const val PageDown = "PageDown"
-    const val PageUp = "PageUp"
-    const val Backspace = "Backspace"
-    const val Clear = "Clear"
-    const val Copy = "Copy"
-    const val CrSel = "CrSel"
-    const val Cut = "Cut"
-    const val Delete = "Delete"
-    const val EraseEof = "EraseEof"
-    const val ExSel = "ExSel"
-    const val Insert = "Insert"
-    const val Paste = "Paste"
-    const val Redo = "Redo"
-    const val Undo = "Undo"
-    const val Accept = "Accept"
-    const val Again = "Again"
-    const val Attn = "Attn"
-    const val Cancel = "Cancel"
-    const val ContextMenu = "ContextMenu"
-    const val Escape = "Escape"
-    const val Execute = "Execute"
-    const val Find = "Find"
-    const val Help = "Help"
-    const val Pause = "Pause"
-    const val Play = "Play"
-    const val Props = "Props"
-    const val Select = "Select"
-    const val ZoomIn = "ZoomIn"
-    const val ZoomOut = "ZoomOut"
-    const val F1 = "F1"
-    const val F2 = "F2"
-    const val F3 = "F3"
-    const val F4 = "F4"
-    const val F5 = "F5"
-    const val F6 = "F6"
-    const val F7 = "F7"
-    const val F8 = "F8"
-    const val F9 = "F9"
-    const val F10 = "F10"
-    const val F11 = "F11"
-    const val F12 = "F12"
-    const val Num0 = "0"
-    const val Num1 = "1"
-    const val Num2 = "2"
-    const val Num3 = "3"
-    const val Num4 = "4"
-    const val Num5 = "5"
-    const val Num6 = "6"
-    const val Num7 = "7"
-    const val Num8 = "8"
-    const val Num9 = "9"
-    const val Separator = "Separator"
+    val Alt = object : ExtraKey {
+        override val ctrl = false
+        override val alt = true
+        override val shift = false
+        override val meta = false
+    }
+    val Control = object : ExtraKey {
+        override val ctrl = true
+        override val alt = false
+        override val shift = false
+        override val meta = false
+    }
+    val Meta = object : ExtraKey {
+        override val ctrl = false
+        override val alt = false
+        override val shift = false
+        override val meta = true
+    }
+    val Shift = object : ExtraKey {
+        override val ctrl = false
+        override val alt = false
+        override val shift = true
+        override val meta = false
+    }
+
+    val Unidentified = Key("Unidentified")
+    val AltGraph = Key("AltGraph")
+    val CapsLock = Key("CapsLock")
+    val Fn = Key("Fn")
+    val FnLock = Key("FnLock")
+    val Hyper = Key("Hyper")
+    val NumLock = Key("NumLock")
+    val ScrollLock = Key("ScrollLock")
+    val Super = Key("Super")
+    val Symbol = Key("Symbol")
+    val SymbolLock = Key("SymbolLock")
+    val Enter = Key("Enter")
+    val Tab = Key("Tab")
+    val Space = Key(" ")
+    val ArrowDown = Key("ArrowDown")
+    val ArrowLeft = Key("ArrowLeft")
+    val ArrowRight = Key("ArrowRight")
+    val ArrowUp = Key("ArrowUp")
+    val End = Key("End")
+    val Home = Key("Home")
+    val PageDown = Key("PageDown")
+    val PageUp = Key("PageUp")
+    val Backspace = Key("Backspace")
+    val Clear = Key("Clear")
+    val Copy = Key("Copy")
+    val CrSel = Key("CrSel")
+    val Cut = Key("Cut")
+    val Delete = Key("Delete")
+    val EraseEof = Key("EraseEof")
+    val ExSel = Key("ExSel")
+    val Insert = Key("Insert")
+    val Paste = Key("Paste")
+    val Redo = Key("Redo")
+    val Undo = Key("Undo")
+    val Accept = Key("Accept")
+    val Again = Key("Again")
+    val Attn = Key("Attn")
+    val Cancel = Key("Cancel")
+    val ContextMenu = Key("ContextMenu")
+    val Escape = Key("Escape")
+    val Execute = Key("Execute")
+    val Find = Key("Find")
+    val Help = Key("Help")
+    val Pause = Key("Pause")
+    val Play = Key("Play")
+    val Props = Key("Props")
+    val Select = Key("Select")
+    val ZoomIn = Key("ZoomIn")
+    val ZoomOut = Key("ZoomOut")
+    val F1 = Key("F1")
+    val F2 = Key("F2")
+    val F3 = Key("F3")
+    val F4 = Key("F4")
+    val F5 = Key("F5")
+    val F6 = Key("F6")
+    val F7 = Key("F7")
+    val F8 = Key("F8")
+    val F9 = Key("F9")
+    val F10 = Key("F10")
+    val F11 = Key("F11")
+    val F12 = Key("F12")
+    val Num0 = Key("0")
+    val Num1 = Key("1")
+    val Num2 = Key("2")
+    val Num3 = Key("3")
+    val Num4 = Key("4")
+    val Num5 = Key("5")
+    val Num6 = Key("6")
+    val Num7 = Key("7")
+    val Num8 = Key("8")
+    val Num9 = Key("9")
+    val Separator = Key("Separator")
 }
