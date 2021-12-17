@@ -13,7 +13,7 @@ object Myer {
      * diffs to versions of a [List] by providing an [IdProvider].
      * The definition of an id to identify the same object in both [List]s makes it possible to detect,
      * if an object is moved from one position to another.
-     * Also this method does not emit a [Patch] if values within an element change.
+     * Also, this method does not emit a [Patch] if values within an element change.
      *
      * @param oldList old version of the [List]
      * @param newList new version of the [List]
@@ -101,10 +101,13 @@ object Myer {
                         // combine adjacent inserts
                         if (lastPatch is Patch.Insert && lastPatch.index == index) {
                             //turn oder of elements!
-                            lastPatch = Patch.InsertMany(listOf(lastPatch.element, element), lastPatch.index)
+                            lastPatch = Patch.InsertMany(listOf(element, lastPatch.element), lastPatch.index)
                         } else if (lastPatch is Patch.InsertMany && lastPatch.index == index) {
                             //turn oder of elements!
-                            lastPatch = Patch.InsertMany(lastPatch.elements + element, lastPatch.index)
+                            lastPatch = Patch.InsertMany(buildList {
+                                add(element)
+                                addAll((lastPatch as Patch.InsertMany<T>).elements)
+                            }, lastPatch.index)
                         }
                         // combine directly following insert and delete of same element as move
                         else if (lastPatch is Patch.Delete && lastPatch.count == 1 && isSame(

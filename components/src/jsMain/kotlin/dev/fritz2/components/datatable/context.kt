@@ -8,8 +8,8 @@ import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.components.foundations.DynamicComponentProperty
 import dev.fritz2.components.foundations.NullableDynamicComponentProperty
 import dev.fritz2.dom.EventContext
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Div
-import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Td
 import dev.fritz2.identification.Id
 import dev.fritz2.lenses.Lens
@@ -269,7 +269,7 @@ class ColumnsContext<T> {
                 cellStore: Store<String>?,
                 rowStore: SubStore<List<T>, T>
             ) -> Unit>
-            { _, store, _ -> store?.data?.asText() }
+            { _, store, _ -> store?.data?.renderText() }
     }
 
     val columns: MutableMap<String, Column<T>> = mutableMapOf()
@@ -337,7 +337,7 @@ class ColumnsContext<T> {
  * }
  * ```
  */
-class EventsContext<T, I>(element: RenderContext, rowSelectionStore: RowSelectionStore<T, I>) :
+class EventsContext<T, I>(element: Tag<HTMLElement>, rowSelectionStore: RowSelectionStore<T, I>) :
     EventContext<HTMLElement> by element {
     val selectedRows: Flow<List<T>> = rowSelectionStore.selectedData
     val selectedRow: Flow<T?> = rowSelectionStore.selectedData.map { it.firstOrNull() }

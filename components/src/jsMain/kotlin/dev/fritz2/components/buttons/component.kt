@@ -171,7 +171,7 @@ open class PushButtonComponent :
     fun text(value: Flow<String>) {
         text = { hide ->
             span {
-                value.asText()
+                value.renderText()
                 if (hide) className(hidden.name)
             }
         }
@@ -184,7 +184,7 @@ open class PushButtonComponent :
     }
 
     fun loadingText(value: Flow<String>) {
-        loadingText = { span { value.asText() } }
+        loadingText = { span { value.renderText() } }
     }
 
     private var loading: Flow<Boolean>? = null

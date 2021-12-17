@@ -41,62 +41,13 @@ class SeqTests {
             div {
                 ul(id = listId) {
                     store.data.renderEach {
-                        li() { +it }
+                        li { +it }
                     }
                 }
                 button(id = appendBtnId) { clicks handledBy store.append }
                 button(id = changeBtnId) { clicks handledBy store.change }
                 button(id = insertBtnId) { clicks handledBy store.insert }
                 button(id = deleteBtnId) { clicks handledBy store.delete }
-            }
-        }
-
-        delay(200)
-        assertEquals("abcd", listContent(listId), "list incorrect after init")
-
-        clickButton(appendBtnId)
-        delay(100)
-        assertEquals("abcde", listContent(listId), "list incorrect after append")
-
-        clickButton(changeBtnId)
-        delay(100)
-        assertEquals("axcde", listContent(listId), "list incorrect after change")
-
-        clickButton(insertBtnId)
-        delay(100)
-        assertEquals("yaxcde", listContent(listId), "list incorrect after insert")
-
-        clickButton(deleteBtnId)
-        delay(100)
-        assertEquals("yaxde", listContent(listId), "list incorrect after delete")
-    }
-
-
-    @Test
-    fun testEachIndexStore() = runTest {
-        val listId = "list" + Id.next()
-        val appendBtnId = "btn-append" + Id.next()
-        val changeBtnId = "btn-change" + Id.next()
-        val insertBtnId = "btn-insert" + Id.next()
-        val deleteBtnId = "btn-delete" + Id.next()
-
-        initDocument()
-
-        val store = TestListStore()
-
-        render {
-            div {
-                ul(id = listId) {
-                    store.renderEach {
-                        li { it.data.asText() }
-                    }
-                }
-                button(id = appendBtnId) { clicks handledBy store.append }
-                button(id = changeBtnId) { clicks handledBy store.change }
-                button(id = insertBtnId) { clicks handledBy store.insert }
-                button(id = deleteBtnId) { clicks handledBy store.delete }
-
-                div(id = "hugo") { store.data.asText() }
             }
         }
 
@@ -202,7 +153,7 @@ class SeqTests {
                 ul(id = listId) {
                     store.renderEach(Entity::id) {
                         val valueStore = it.sub(valueLens)
-                        li { valueStore.data.asText() }
+                        li { valueStore.data.renderText() }
                     }
                 }
                 button(id = appendBtnId) { clicks handledBy store.append }

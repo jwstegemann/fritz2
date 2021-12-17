@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.onEach
  * @param upstream returns the Flow that should be mounted at this point
  * @param collect function which getting called when values are changing (rerender)
  */
-inline fun <T> mountSimple(parentJob: Job, upstream: Flow<T>, crossinline collect: (T) -> Unit) {
+inline fun <T> mountSimple(parentJob: Job, upstream: Flow<T>, crossinline collect: suspend (T) -> Unit) {
     (MainScope() + parentJob).launch(start = CoroutineStart.UNDISPATCHED) {
         upstream.onEach { collect(it) }.catch {
             when (it) {

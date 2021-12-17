@@ -1,7 +1,6 @@
 package dev.fritz2.components
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.watch
 import dev.fritz2.components.foundations.CloseButtonMixin
 import dev.fritz2.components.foundations.CloseButtonProperty
 import dev.fritz2.components.foundations.Component
@@ -19,7 +18,10 @@ import dev.fritz2.styling.theme.PopoverArrowPlacements
 import dev.fritz2.styling.theme.PopoverPlacements
 import dev.fritz2.styling.theme.PopoverSizes
 import dev.fritz2.styling.theme.Theme
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLElement
 
 /**
@@ -104,7 +106,7 @@ open class PopoverComponent : Component<Unit>,
         header = {
             header({
                 Theme().popover.header()
-            }, prefix = "popover-header") { value.asText() }
+            }, prefix = "popover-header") { value.renderText() }
         }
     }
 
@@ -125,7 +127,7 @@ open class PopoverComponent : Component<Unit>,
         footer = {
             footer({
                 Theme().popover.footer()
-            }, prefix = "popover-footer") { value.asText() }
+            }, prefix = "popover-footer") { value.renderText() }
         }
     }
 
@@ -146,7 +148,7 @@ open class PopoverComponent : Component<Unit>,
         content = {
             section({
                 Theme().popover.section()
-            }, prefix = "popover-content") { value.asText() }
+            }, prefix = "popover-content") { value.renderText() }
         }
     }
 

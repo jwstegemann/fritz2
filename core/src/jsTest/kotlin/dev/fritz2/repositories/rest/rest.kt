@@ -77,9 +77,9 @@ class RestTests {
 
         render {
             div {
-                div(id = idId) { idSubStore.data.asText() }
-                div(id = nameId) { nameSubStore.data.asText() }
-                div(id = ageId) { ageSubStore.data.asText() }
+                div(id = idId) { idSubStore.data.renderText() }
+                div(id = nameId) { nameSubStore.data.renderText() }
+                div(id = ageId) { ageSubStore.data.renderText() }
             }
         }
 
@@ -148,14 +148,14 @@ class RestTests {
             div {
                 ul(id = listId) {
                     queryStore.renderEach(RestPerson::_id) { p ->
-                        li { p.data.map { it.name }.asText() }
+                        li { p.data.map { it.name }.renderText() }
                     }
                 }
                 span(id = firstPersonId) {
                     queryStore.data.map {
                         if (it.isEmpty()) ""
                         else it.first()._id
-                    }.asText()
+                    }.renderText()
                 }
             }
         }
@@ -229,7 +229,7 @@ class RestTests {
                 ul(id = listId) {
                     queryStore.renderEach(RestPerson::_id) { p ->
                         li {
-                            p.data.map { it.name }.asText()
+                            p.data.map { it.name }.renderText()
                         }
                     }
                 }

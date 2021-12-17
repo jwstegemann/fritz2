@@ -1,6 +1,5 @@
 package dev.fritz2.dom
 
-import dev.fritz2.dom.html.TagContext
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.Comment
@@ -9,7 +8,7 @@ import org.w3c.dom.Node
 /**
  * Provides functionality to handle comments.
  */
-interface WithComment<out T : Node> : WithDomNode<T>, TagContext {
+interface WithComment<out N : Node> : WithDomNode<N> {
 
     /**
      * Adds a comment in your HTML by using !"Comment Text".

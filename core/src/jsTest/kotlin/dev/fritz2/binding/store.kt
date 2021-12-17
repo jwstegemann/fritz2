@@ -39,10 +39,10 @@ class StoreTests {
         render {
             section {
                 div(id = id1) {
-                    store1.data.asText()
+                    store1.data.renderText()
                 }
                 div(id = id2) {
-                    store2.data.asText()
+                    store2.data.renderText()
                 }
                 button(id = buttonId) {
                     clicks handledBy store1.finish
@@ -103,13 +103,13 @@ class StoreTests {
         render {
             section {
                 div(id = id1) {
-                    s1.data.asText()
+                    s1.data.renderText()
                 }
                 div(id = id2) {
-                    s2.data.asText()
+                    s2.data.renderText()
                 }
                 div(id = id3) {
-                    s3.data.asText()
+                    s3.data.renderText()
                 }
                 button(id = buttonId) {
                     clicks handledBy s1.finish
@@ -161,7 +161,7 @@ class StoreTests {
 
         render {
             div {
-                span(id = valueId) { store.data.asText() }
+                span(id = valueId) { store.data.renderText() }
                 button(id = buttonId) {
                     clicks handledBy store.testHandler
                 }

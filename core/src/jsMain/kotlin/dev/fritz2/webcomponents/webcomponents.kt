@@ -2,8 +2,8 @@ package dev.fritz2.webcomponents
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
-import dev.fritz2.dom.html.TagContext
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
@@ -55,21 +55,21 @@ internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsC
  * Implement this class to build a WebComponent.
  */
 @JsName("WebComponent")
-abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
+abstract class WebComponent<E : Element>(observeAttributes: Boolean = true) {
     /**
      * this method builds the content of the WebComponent that will be added to it's shadow-DOM.
      * @param element the newly created element, when the component is used
      * @param shadowRoot the shadowRoot the content will be added to
      * @return a [Tag] representing the content of the component
      */
-    abstract fun TagContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T>
+    abstract fun RenderContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<E>
 
     @JsName("initializeInternal")
-    fun initializeInternal(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T> {
-        return object : TagContext {
+    fun initializeInternal(element: HTMLElement, shadowRoot: ShadowRoot): Tag<E> {
+        return object : RenderContext {
             override val job = Job()
             override val scope: Scope = Scope()
-            override fun <E : Element, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+            override fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W {
                 content(element)
                 return element
             }
@@ -162,7 +162,7 @@ abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
 }
 
 /**
- * registers a [WebComponent] at the browser's registry so you can use it in fritz2 by custom-[Tag] or in HTML.
+ * registers a [WebComponent] at the browser's registry, so you can use it in fritz2 by custom-[Tag] or in HTML.
  * So to make a component that can be added by just importing your javascript, call this in main.
  *
  *  @param localName name of the new custom tag (must contain a '-')
@@ -178,18 +178,18 @@ fun <X : Element, T : WebComponent<X>> registerWebComponent(
 }
 
 /**
- * registers a [WebComponent] at the browser's registry so you can use it in fritz2 by custom-[Tag] or in HTML.
+ * registers a [WebComponent] at the browser's registry, so you can use it in fritz2 by custom-[Tag] or in HTML.
  * So to make a component that can be added by just importing your javascript, call this in main.
  *
  *  @param localName name of the new custom tag (must contain a '-')
  *  @param constructor class describing the component to register implementing [WebComponent]
  *  @param observedAttributes attributes to be observed, changes will occur on [WebComponent.attributeChanges]
  */
-fun <X : Element, T : WebComponent<X>> registerWebComponent(
+fun <E : Element, T : WebComponent<E>> registerWebComponent(
     localName: String,
     constructor: KClass<T>,
     vararg observedAttributes: String
 ) {
-    val customElementConstructor = createClass<X, T>()(constructor.js, observedAttributes)
+    val customElementConstructor = createClass<E, T>()(constructor.js, observedAttributes)
     window.customElements.define(localName, customElementConstructor)
 }
