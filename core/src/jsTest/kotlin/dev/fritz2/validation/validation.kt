@@ -42,7 +42,7 @@ class ValidationJSTests {
         render {
             div {
                 div(id = idData) {
-                    store.data.map { it.name }.asText()
+                    store.data.map { it.name }.renderText()
                 }
                 div(id = idMessages) {
                     carValidator.data.renderEach(Message::text, into = this) {

@@ -45,15 +45,15 @@ class SubStoreTests {
             div {
                 label {
                     +"Name: "
-                    div(id = nameId) { nameSub.data.asText() }
+                    div(id = nameId) { nameSub.data.renderText() }
                 }
                 label {
                     +"Street: "
-                    div(id = streetId) { streetSub.data.asText() }
+                    div(id = streetId) { streetSub.data.renderText() }
                 }
                 label {
                     +"Postal code: "
-                    div(id = postalCodeId) { codeSub.data.asText() }
+                    div(id = postalCodeId) { codeSub.data.renderText() }
                 }
             }
         }
@@ -104,7 +104,7 @@ class SubStoreTests {
             div {
                 label {
                     +"Person: "
-                    div(id = completeSub.id) { completeSub.data.asText() }
+                    div(id = completeSub.id) { completeSub.data.renderText() }
                 }
             }
         }

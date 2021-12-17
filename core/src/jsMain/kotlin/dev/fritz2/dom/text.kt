@@ -16,13 +16,15 @@ import org.w3c.dom.Text
 interface WithText<N : Node> : WithDomNode<N>, RenderContext {
 
     /**
-     * Mounts a [Flow] of [String]s to a [WithDomNode]
+     * Adds text-content of a [Flow] at this position
      *
-     * @param target element to mount the [Flow] to
-     * @param upstream [Flow] to mount to [target]
+     * @param into target to render text-content to
+     * @receiver text-content
      */
-    private fun mountTextNode(target: WithDomNode<*>, upstream: Flow<String>) {
-        mountSimple(job, upstream) {
+    fun Flow<String>.renderText(into: WithText<N>? = null) {
+        val target = into ?: span {}
+
+        mountSimple(job, this) {
             target.domNode.clear()
             target.domNode.appendChild(TextNode(it).domNode)
         }
@@ -31,24 +33,11 @@ interface WithText<N : Node> : WithDomNode<N>, RenderContext {
     /**
      * Adds text-content of a [Flow] at this position
      *
-     * @param classes css-classes to apply to the generated span-element
-     * @param id id of the generated span-element
+     * @param into target to render text-content to
      * @receiver text-content
      */
-    fun Flow<String>.asText(classes: String? = null, id: String? = null) =
-        span(classes, id) {
-            mountTextNode(this, this@asText)
-        }
-
-    /**
-     * Adds text-content of a [Flow] at this position
-     *
-     * @param classes css-classes to apply to the generated span-element
-     * @param id id of the generated span-element
-     * @receiver text-content
-     */
-    fun <T> Flow<T>.asText(classes: String? = null, id: String? = null) =
-        this.map { it.toString() }.asText(classes, id)
+    fun <T> Flow<T>.renderText(into: WithText<N>? = null) =
+        this.map { it.toString() }.renderText(into)
 
     /**
      * Adds static text-content at this position

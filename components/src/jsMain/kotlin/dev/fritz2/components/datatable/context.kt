@@ -269,7 +269,7 @@ class ColumnsContext<T> {
                 cellStore: Store<String>?,
                 rowStore: SubStore<List<T>, T>
             ) -> Unit>
-            { _, store, _ -> store?.data?.asText() }
+            { _, store, _ -> store?.data?.renderText() }
     }
 
     val columns: MutableMap<String, Column<T>> = mutableMapOf()

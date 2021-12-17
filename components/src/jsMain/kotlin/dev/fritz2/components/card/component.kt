@@ -102,7 +102,7 @@ open class CardComponent : Component<Unit> {
 
     fun header(value: Flow<String>) {
         header = CardSection {
-            span { value.asText() }
+            span { value.renderText() }
         }
     }
 
@@ -120,7 +120,7 @@ open class CardComponent : Component<Unit> {
 
     fun footer(value: Flow<String>) {
         footer = CardSection {
-            span { value.asText() }
+            span { value.renderText() }
         }
     }
 
@@ -138,7 +138,7 @@ open class CardComponent : Component<Unit> {
 
     fun content(value: Flow<String>) {
         content = CardSection {
-            span { value.asText() }
+            span { value.renderText() }
         }
     }
 
