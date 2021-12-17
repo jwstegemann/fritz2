@@ -50,20 +50,22 @@ interface MountPoint {
 
 internal abstract class MountPointImpl : MountPoint, WithJob {
     suspend fun runBeforeUnmounts() {
-        (MainScope() + job).launch {
-            if (beforeUnmountListeners != null) {
-                beforeUnmountListeners!!.map {
-                    async { it.handler(it.target, it.payload) }
-                }.joinAll()
-                beforeUnmountListeners!!.clear()
-            }
+        if (beforeUnmountListeners != null) {
+            beforeUnmountListeners!!.map {
+                (MainScope() + job).launch {
+                    it.handler(it.target, it.payload)
+                }
+            }.joinAll()
+            beforeUnmountListeners!!.clear()
         }
     }
 
     suspend fun runAfterMounts() {
         if (afterMountListeners != null) {
-            afterMountListeners!!.forEach {
-                it.handler(it.target, it.payload)
+            afterMountListeners!!.map {
+                (MainScope() + job).launch {
+                    it.handler(it.target, it.payload)
+                }
             }
             afterMountListeners!!.clear()
         }
