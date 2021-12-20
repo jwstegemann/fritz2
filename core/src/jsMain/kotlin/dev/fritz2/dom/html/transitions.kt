@@ -6,6 +6,7 @@ import dev.fritz2.dom.afterMount
 import dev.fritz2.dom.beforeUnmount
 import dev.fritz2.utils.nativeFunction
 import kotlinx.coroutines.await
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import kotlin.js.Promise
 
@@ -94,13 +95,12 @@ internal val animationDone = nativeFunction<(Node) -> Promise<Unit>>(
  * Further operation of the MountPoint rendering the [Tag] is suspended until the leave-animation is done.
  *
  * @param transition definition of the enter- and leave-transition
- * @param content lambda returning the [Tag] the transition will be applied to
+ * @receiver the [Tag] the transition will be applied to
  */
-fun RenderContext.transition(transition: Transition, content: RenderContext.() -> Tag<*>) =
-    content().apply {
-        if (transition.leave != null) beforeUnmount(transition, Transition.leaveTransition)
-        if (transition.enter != null) afterMount(transition, Transition.enterTransition)
-    }
+fun Tag<HTMLElement>.transition(transition: Transition) {
+    if (transition.leave != null) beforeUnmount(transition, Transition.leaveTransition)
+    if (transition.enter != null) afterMount(transition, Transition.enterTransition)
+}
 
 /**
  * Applies a transition (enter and/or leave) to a [Tag].
@@ -114,16 +114,16 @@ fun RenderContext.transition(transition: Transition, content: RenderContext.() -
  * @param leave mandatory classes to control the leave-transition.
  * @param leaveStart optional classes to define the starting point of the leave-transition
  * @param leaveEnd optional classes to define the end point of the leave-transition
- * @param content Lambda returning the [Tag] the transition will be applied to
+ * @receiver the [Tag] the transition will be applied to
  */
-fun RenderContext.transition(
+fun Tag<HTMLElement>.transition(
     enter: String? = null,
     enterStart: String? = null,
     enterEnd: String? = null,
     leave: String? = null,
     leaveStart: String? = null,
-    leaveEnd: String? = null, content: RenderContext.() -> Tag<*>
-) = transition(Transition(enter, enterStart, enterEnd, leave, leaveStart, leaveEnd), content)
+    leaveEnd: String? = null
+) = transition(Transition(enter, enterStart, enterEnd, leave, leaveStart, leaveEnd))
 
 
 

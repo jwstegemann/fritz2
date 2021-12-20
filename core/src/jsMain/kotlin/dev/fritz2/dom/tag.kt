@@ -381,7 +381,7 @@ open class Tag<out E : Element>(
         }
     }
 
-    inner class AnnexContext : RenderContext {
+    internal inner class AnnexContext : RenderContext {
         override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
             domNode.parentElement?.let {
                 content(element)
@@ -390,13 +390,17 @@ open class Tag<out E : Element>(
             return element
         }
 
-        override val job: Job
-            get() = this@Tag.job
-        override val scope: Scope
-            get() = this@Tag.scope
+        override val job: Job = this@Tag.job
+
+        override val scope: Scope = this@Tag.scope
     }
 
-    fun <E : Element> annex(app: RenderContext.() -> Tag<E>) {
-        AnnexContext().app()
+    /**
+     * renders some context next to this Tag on the same DOM-level
+     *
+     * @param content lambda building the content to render
+     */
+    fun <E : Element> annex(content: RenderContext.() -> Tag<E>) {
+        AnnexContext().content()
     }
 }
