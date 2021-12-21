@@ -1,6 +1,5 @@
 package dev.fritz2.remote
 
-import dev.fritz2.lenses.Lenses
 import dev.fritz2.test.*
 import kotlinx.serialization.Serializable
 import org.khronos.webgl.Uint8Array
@@ -54,7 +53,7 @@ class RemoteTests {
             .acceptJson()
             .cacheControl("no-cache")
             .header("test", "this is a test")
-            .get("headers").getBody()
+            .get("headers").body()
         assertTrue(body.contains(Regex("""accept.+application/json""")), "Accept header not found")
         assertTrue(body.contains(Regex("""cache-control.+no-cache""")), "Cache-Control header not found")
         assertTrue(body.contains(Regex("""test.+this is a test""")), "Test header not found")
@@ -69,19 +68,19 @@ class RemoteTests {
             val text = Random.nextLong().toString()
             texts.add(text)
             val saved = remote.body("""{"text": "$text"}""")
-                .contentType("application/json").post().getBody()
+                .contentType("application/json").post().body()
             val id = JSON.parse<dynamic>(saved)._id as String
             ids.add(id)
             assertTrue(saved.contains(text), "saved entity not like posted")
         }
-        val load = remote.acceptJson().get().getBody()
+        val load = remote.acceptJson().get().body()
         for (text in texts) {
             assertTrue(load.contains(text), "posted entity is not in list")
         }
         for (id in ids) {
             remote.delete(id)
         }
-        val empty = remote.acceptJson().get().getBody()
+        val empty = remote.acceptJson().get().body()
         for (text in texts) {
             assertFalse(empty.contains(text), "deleted entity is in list")
         }
@@ -242,7 +241,7 @@ class AuthenticatedRemoteTests {
             .acceptJson()
             .cacheControl("no-cache")
             .header("test", "this is a test")
-            .get("headers").getBody()
+            .get("headers").body()
         assertTrue(body.contains(Regex("""accept.+application/json""")), "Accept header not found")
         assertTrue(body.contains(Regex("""cache-control.+no-cache""")), "Cache-Control header not found")
         assertTrue(body.contains(Regex("""test.+this is a test""")), "Test header not found")
@@ -256,7 +255,7 @@ class AuthenticatedRemoteTests {
             .acceptJson()
             .cacheControl("no-cache")
             .header("test", "this is a test")
-            .get("headers").getBody()
+            .get("headers").body()
         assertTrue(body.contains(Regex("""accept.+application/json""")), "Accept header not found")
         assertTrue(body.contains(Regex("""cache-control.+no-cache""")), "Cache-Control header not found")
         assertTrue(body.contains(Regex("""test.+this is a test""")), "Test header not found")
@@ -272,13 +271,13 @@ class AuthenticatedRemoteTests {
             val text = Random.nextLong().toString()
             texts.add(text)
             val saved = remoteWithoutServerCheck.body("""{"text": "$text"}""")
-                .contentType("application/json").post().getBody()
+                .contentType("application/json").post().body()
             val id = JSON.parse<dynamic>(saved)._id as String
             ids.add(id)
             assertTrue(saved.contains(text), "saved entity not like posted")
         }
         authentication.setTokenInvalid()
-        val load = remoteWithoutServerCheck.acceptJson().get().getBody()
+        val load = remoteWithoutServerCheck.acceptJson().get().body()
         for (text in texts) {
             assertTrue(load.contains(text), "posted entity is not in list")
         }
@@ -287,7 +286,7 @@ class AuthenticatedRemoteTests {
             remoteWithoutServerCheck.delete(id)
         }
         authentication.setTokenInvalid()
-        val empty = remoteWithoutServerCheck.acceptJson().get().getBody()
+        val empty = remoteWithoutServerCheck.acceptJson().get().body()
         for (text in texts) {
             assertFalse(empty.contains(text), "deleted entity is in list")
         }
@@ -303,13 +302,13 @@ class AuthenticatedRemoteTests {
             val text = Random.nextLong().toString()
             texts.add(text)
             val saved = remoteWithServerCheck.body("""{"text": "$text"}""")
-                .contentType("application/json").post().getBody()
+                .contentType("application/json").post().body()
             val id = JSON.parse<dynamic>(saved)._id as String
             ids.add(id)
             assertTrue(saved.contains(text), "saved entity not like posted")
         }
         authentication.setTokenInvalid()
-        val load = remoteWithServerCheck.acceptJson().get().getBody()
+        val load = remoteWithServerCheck.acceptJson().get().body()
         for (text in texts) {
             assertTrue(load.contains(text), "posted entity is not in list")
         }
@@ -318,7 +317,7 @@ class AuthenticatedRemoteTests {
             remoteWithServerCheck.delete(id)
         }
         authentication.setTokenInvalid()
-        val empty = remoteWithServerCheck.acceptJson().get().getBody()
+        val empty = remoteWithServerCheck.acceptJson().get().body()
         for (text in texts) {
             assertFalse(empty.contains(text), "deleted entity is in list")
         }

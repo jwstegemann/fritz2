@@ -1,15 +1,14 @@
 package dev.fritz2.remote
 
-import dev.fritz2.binding.storeOf
+import dev.fritz2.binding.Store
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.await
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import org.khronos.webgl.ArrayBuffer
 import org.w3c.fetch.*
 import org.w3c.files.Blob
 import org.w3c.xhr.FormData
 import kotlinx.browser.window as browserWindow
+import org.w3c.fetch.Response as FetchResponse
 
 
 /**
@@ -18,7 +17,7 @@ import kotlinx.browser.window as browserWindow
  * @property statusCode the http response status code
  * @property body the body of the error-response
  */
-class FetchException(val statusCode: Short, val body: String, val response: Response) : Exception(
+class FetchException(val statusCode: Int, val body: String, val response: Response) : Exception(
     "code=$statusCode, url=${response.url}, body=$body"
 )
 
@@ -27,7 +26,59 @@ class FetchException(val statusCode: Short, val body: String, val response: Resp
  *
  * @param baseUrl the common base of all urls that you want to call using the template
  */
-fun http(baseUrl: String = "") = Request(baseUrl = baseUrl)
+fun http(baseUrl: String = "") = Request(url = baseUrl)
+
+interface RequestEnricher {
+    suspend fun enrichRequest(request: Request): Request
+}
+
+interface ResponseInterceptor {
+    suspend fun handleResponse(response: Response): Response
+}
+
+open class Response(
+    private val response: FetchResponse,
+    val request: Request
+) {
+
+    val ok: Boolean get() = response.ok
+
+    val status: Int get() = response.status.toInt()
+
+    val url: String get() = response.url
+
+    val statusText: String get() = response.statusText
+
+    /**
+     * returns the [Headers] from the given [Response]
+     */
+    val headers get() = response.headers
+
+    /**
+     * extracts the body as string from the given [Response]
+     */
+    suspend fun body() = response.text().await()
+
+    /**
+     * extracts the body as blob from the given [Response]
+     */
+    suspend fun blob() = response.blob().await()
+
+    /**
+     * extracts the body as arrayBuffer from the given [Response]
+     */
+    suspend fun arrayBuffer() = response.arrayBuffer().await()
+
+    /**
+     * extracts the body as formData from the given [Response]
+     */
+    suspend fun formData() = response.formData().await()
+
+    /**
+     * extracts the body as json from the given [Response]
+     */
+    suspend fun json() = response.json().await()
+}
 
 /**
  * Represents the common fields an attributes of a given set of http requests.
@@ -35,10 +86,11 @@ fun http(baseUrl: String = "") = Request(baseUrl = baseUrl)
  * Use it to define common headers, error-handling, base url, etc. for a specific API for example.
  * By calling one of the executing methods like [get] or [post] a specific request is built from the template and send to the server.
  *
- * @property baseUrl the common base of all urls that you want to call using this template
+ * @property url the common base of all urls that you want to call using this template
  */
 open class Request(
-    private val baseUrl: String = "",
+    private val method: String = "",
+    private val url: String = "",
     private val headers: Map<String, String> = emptyMap(),
     private val body: dynamic = undefined,
     private val referrer: String? = undefined,
@@ -50,66 +102,87 @@ open class Request(
     private val integrity: String? = undefined,
     private val keepalive: Boolean? = undefined,
     private val reqWindow: Any? = undefined,
-    private val authentication: Authentication<*>? = null
+    private val requestEnricher: RequestEnricher? = null,
+    private val responseInterceptor: ResponseInterceptor? = null
 ) {
 
+    open fun copy(
+        method: String = this.method,
+        url: String = this.url,
+        headers: Map<String, String> = this.headers,
+        body: dynamic = this.body,
+        referrer: String? = this.referrer,
+        referrerPolicy: dynamic = this.referrerPolicy,
+        mode: RequestMode? = this.mode,
+        credentials: RequestCredentials? = this.credentials,
+        cache: RequestCache? = this.cache,
+        redirect: RequestRedirect? = this.redirect,
+        integrity: String? = this.integrity,
+        keepalive: Boolean? = this.keepalive,
+        reqWindow: Any? = this.reqWindow,
+        requestEnrichers: RequestEnricher? = this.requestEnricher,
+        responseInterceptor: ResponseInterceptor? = this.responseInterceptor
+    ) = Request(
+        method, url, headers, body, referrer, referrerPolicy,
+        mode, credentials, cache, redirect, integrity, keepalive,
+        reqWindow, requestEnrichers, responseInterceptor
+    )
+
     /**
-     * builds a request, sends it to the server, awaits the response (async), creates a flow of it and attaches the defined errorHandler
-     * if needed,an authentication-process is started
+     * builds a request, sends it to the server, awaits the response (async), creates a flow of it.
+     * When request failed a [FetchException] will be thrown.
      *
-     * @param subUrl function do derive the url (so you can use baseUrl)
-     * @param init an instance of [RequestInit] defining the attributes of the request
+     * @throws FetchException when request failed
      */
-    private suspend fun execute(subUrl: String, init: RequestInit): Response {
-        val url = buildString {
-            append(baseUrl.trimEnd('/'))
-            if (subUrl.isNotEmpty()) {
-                append("/${subUrl.trimStart('/')}")
-            }
+    suspend fun execute(): Response {
+
+        var request = this
+        if(requestEnricher != null) request = requestEnricher.enrichRequest(request)
+
+        val init = request.buildInit()
+
+        var response = Response(browserWindow.fetch(url, init).await(), request)
+        if(responseInterceptor != null) {
+            response = responseInterceptor.handleResponse(response)
         }
 
-        var response = browserWindow.fetch(url, init).await()
-        if (authentication != null) {
-            if (authentication.errorcodesEnforcingAuthentication.contains(response.status)) {
-                //authentication.startAuthentication()
-                if (!authentication.isAuthRunning()) {
-                    authentication.startAuthentication()
-                }
-                // Wir warten aufs Login...
-                authentication.getPrincipal()
-                val redo = authentication.enrichRequest(this).buildInit(init.method!!)
-                response = browserWindow.fetch(url, redo).await()
-            }
-        }
+//        if (authentication != null) {
+//            if (authentication.errorcodesEnforcingAuthentication.contains(response.status)) {
+//                //authentication.startAuthentication()
+//                if (!authentication.isAuthRunning()) {
+//                    authentication.startAuthentication()
+//                }
+//                // Wir warten aufs Login...
+//                authentication.getPrincipal()
+//                val redo = authentication.enrichRequest(this).buildInit(init.method!!)
+//                response = browserWindow.fetch(url, redo).await()
+//            }
+//        }
         if (response.ok) return response
-        else throw FetchException(response.status, response.getBody(), response)
+        else throw FetchException(response.status, response.body(), response)
     }
 
 
     /**
      * builds a [RequestInit] with a body from the template using [method]
-     *
-     * @param method the http method to use (GET, POST, etc.)
      */
-    private suspend fun buildInit(method: String): RequestInit {
-        // enrich request if authentication is available
-        val request = authentication?.enrichRequest(this) ?: this
-        // Headers has no methods for reading key-value-pairs
+    private fun buildInit(): RequestInit {
+        // Headers class has no methods for reading key-value-pairs
         val reqHeader = Headers()
-        for ((k, v) in request.headers) reqHeader.set(k, v)
+        for ((k, v) in headers) reqHeader.set(k, v)
         return RequestInit(
             method = method,
-            body = request.body,
+            body = body,
             headers = reqHeader,
-            referrer = request.referrer,
-            referrerPolicy = request.referrerPolicy,
-            mode = request.mode,
-            credentials = request.credentials,
-            cache = request.cache,
-            redirect = request.redirect,
-            integrity = request.integrity,
-            keepalive = request.keepalive,
-            window = request.reqWindow
+            referrer = referrer,
+            referrerPolicy = referrerPolicy,
+            mode = mode,
+            credentials = credentials,
+            cache = cache,
+            redirect = redirect,
+            integrity = integrity,
+            keepalive = keepalive,
+            window = reqWindow
         )
     }
 
@@ -118,110 +191,102 @@ open class Request(
     /**
      * issues a get request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
+     * @param subUrl endpoint url which getting appended to the [url] with `/`
      */
-    suspend fun get(subUrl: String = "") = execute(subUrl, buildInit("GET"))
+    suspend fun get(subUrl: String? = null): Response =
+        (subUrl?.let { append(it) } ?: this).copy(method = "GET").execute()
 
     /**
      * issues a head request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
+     * @param subUrl endpoint url which getting appended to the [url] with `/`
      */
-    suspend fun head(subUrl: String = "") = execute(subUrl, buildInit("HEAD"))
+    suspend fun head(subUrl: String? = null): Response =
+        (subUrl?.let { append(it) } ?: this).copy(method = "HEAD").execute()
 
     /**
      * issues a connect request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
+     * @param subUrl endpoint url which getting appended to the [url] with `/`
      */
-    suspend fun connect(subUrl: String = "") = execute(subUrl, buildInit("CONNECT"))
+    suspend fun connect(subUrl: String? = null): Response =
+        (subUrl?.let { append(it) } ?: this).copy(method = "CONNECT").execute()
 
     /**
      * issues a options request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
+     * @param subUrl endpoint url which getting appended to the [url] with `/`
      */
-    suspend fun options(subUrl: String = "") = execute(subUrl, buildInit("OPTIONS"))
+    suspend fun options(subUrl: String? = null): Response =
+        (subUrl?.let { append(it) } ?: this).copy(method = "OPTIONS").execute()
 
     /**
      * issues a delete request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
+     * @param subUrl endpoint url which getting appended to the [url] with `/`
      */
-    open suspend fun delete(subUrl: String = "") = execute(subUrl, buildInit("DELETE"))
+    open suspend fun delete(subUrl: String? = null): Response =
+        (subUrl?.let { append(it) } ?: this).copy(method = "DELETE").execute()
 
     /**
      * issues a post request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
+     * @param subUrl endpoint url which getting appended to the [url] with `/`
      */
-    suspend fun post(subUrl: String = "") = execute(subUrl, buildInit("POST"))
+    suspend fun post(subUrl: String? = null): Response =
+        (subUrl?.let { append(it) } ?: this).copy(method = "POST").execute()
 
     /**
      * issues a put request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
+     * @param subUrl endpoint url which getting appended to the [url] with `/`
      */
-    suspend fun put(subUrl: String = "") = execute(subUrl, buildInit("PUT"))
+    suspend fun put(subUrl: String? = null): Response =
+        (subUrl?.let { append(it) } ?: this).copy(method = "PUT").execute()
 
 
     /**
      * issues a patch request returning a flow of it's response
      *
-     * @param subUrl endpoint url which getting appended to the [baseUrl] with `/`
+     * @param subUrl endpoint url which getting appended to the [url] with `/`
      */
-    suspend fun patch(subUrl: String = "") = execute(subUrl, buildInit("PATCH"))
+    suspend fun patch(subUrl: String? = null): Response =
+        (subUrl?.let { append(it) } ?: this).copy(method = "PATCH").execute()
 
     /**
-     * appends the given [subUrl] to the [baseUrl]
+     * appends the given [subUrl] to the [url]
      *
-     * @param subUrl url which getting appended to the [baseUrl] with `/`
+     * @param subUrl url which getting appended to the [url] with `/`
      */
-    fun append(subUrl: String) = Request(
-        "${baseUrl.trimEnd('/')}/${subUrl.trimStart('/')}",
-        headers, body, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
-    )
+    fun append(subUrl: String): Request = copy(url = "${url.trimEnd('/')}/${subUrl.trimStart('/')}")
 
     /**
      * sets the body content to the request
      *
      * @param content body as [String]
      */
-    fun body(content: String) = Request(
-        baseUrl, headers, content, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
-    )
+    fun body(content: String): Request = copy(body = content)
 
     /**
      * sets the [ArrayBuffer] content to the request
      *
      * @param content body as [ArrayBuffer]
      */
-    fun arrayBuffer(content: ArrayBuffer) = Request(
-        baseUrl, headers, content, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
-    )
+    fun arrayBuffer(content: ArrayBuffer): Request = copy(body = content)
 
     /**
      * sets the [FormData] content to the request
      *
      * @param content body as [FormData]
      */
-    fun formData(content: FormData) = Request(
-        baseUrl, headers, content, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
-    )
+    fun formData(content: FormData): Request = copy(body = content)
 
     /**
      * sets the [Blob] content to the request
      *
      * @param content body as [Blob]
      */
-    fun blob(content: Blob) = Request(
-        baseUrl, headers, content, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
-    )
+    fun blob(content: Blob): Request = copy(body = content)
 
     /**
      * adds the given http header to the request
@@ -229,10 +294,7 @@ open class Request(
      * @param name name of the http header to add
      * @param value value of the header field
      */
-    fun header(name: String, value: String) = Request(
-        baseUrl, headers.plus(name to value), body, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
-    )
+    fun header(name: String, value: String): Request = copy(headers = headers + (name to value))
 
     /**
      * adds the given [Content-Type](https://developer.mozilla.org/en/docs/Web/HTTP/Headers/Content-Type)
@@ -240,7 +302,7 @@ open class Request(
      *
      * @param value cache-control value
      */
-    fun contentType(value: String) = header("Content-Type", value)
+    fun contentType(value: String): Request = header("Content-Type", value)
 
     /**
      * adds the basic [Authorization](https://developer.mozilla.org/en/docs/Web/HTTP/Headers/Authorization)
@@ -249,7 +311,7 @@ open class Request(
      * @param username name of the user
      * @param password password of the user
      */
-    fun basicAuth(username: String, password: String) =
+    fun basicAuth(username: String, password: String): Request =
         header("Authorization", "Basic ${btoa("$username:$password")}")
 
     /**
@@ -258,7 +320,7 @@ open class Request(
      *
      * @param value cache-control value
      */
-    fun cacheControl(value: String) = header("Cache-Control", value)
+    fun cacheControl(value: String): Request = header("Cache-Control", value)
 
     /**
      * adds the given [Accept](https://developer.mozilla.org/en/docs/Web/HTTP/Headers/Accept)
@@ -266,238 +328,189 @@ open class Request(
      *
      * @param value media type to accept
      */
-    fun accept(value: String) = header("Accept", value)
+    fun accept(value: String): Request = header("Accept", value)
 
     /**
      * adds a header to accept JSON as response
      */
-    fun acceptJson() = accept("application/json")
+    fun acceptJson(): Request = accept("application/json")
 
     /**
      * sets the referrer property of the [Request]
      *
      * @param value of the property
      */
-    fun referrer(value: String) = Request(
-        baseUrl, headers, body, value, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
-    )
+    fun referrer(value: String): Request = copy(referrer = value)
 
     /**
      * sets the referrerPolicy property of the [Request]
      *
      * @param value of the property
      */
-    fun referrerPolicy(value: dynamic) = Request(
-        baseUrl, headers, body, referrer, value, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
-    )
+    fun referrerPolicy(value: dynamic): Request = copy(referrerPolicy = value)
 
     /**
      * sets the requestMode property of the [Request]
      *
      * @param value of the property
      */
-    fun requestMode(value: RequestMode) = Request(
-        baseUrl, headers, body, referrer, referrerPolicy, value,
-        credentials, cache, redirect, integrity, keepalive, reqWindow, authentication
-    )
+    fun requestMode(value: RequestMode): Request = copy(mode = value)
 
     /**
      * sets the credentials property of the [Request]
      *
      * @param value of the property
      */
-    fun credentials(value: RequestCredentials) = Request(
-        baseUrl, headers, body, referrer, referrerPolicy, mode,
-        value, cache, redirect, integrity, keepalive, reqWindow, authentication
-    )
+    fun credentials(value: RequestCredentials): Request = copy(credentials = value)
 
     /**
      * sets the cache property of the [Request]
      *
      * @param value of the property
      */
-    fun cache(value: RequestCache) = Request(
-        baseUrl, headers, body, referrer, referrerPolicy, mode,
-        credentials, value, redirect, integrity, keepalive, reqWindow, authentication
-    )
+    fun cache(value: RequestCache): Request = copy(cache = value)
 
     /**
      * sets the redirect property of the [Request]
      *
      * @param value of the property
      */
-    fun redirect(value: RequestRedirect) = Request(
-        baseUrl, headers, body, referrer, referrerPolicy, mode,
-        credentials, cache, value, integrity, keepalive, reqWindow, authentication
-    )
+    fun redirect(value: RequestRedirect): Request = copy(redirect = value)
 
     /**
      * sets the integrity property of the [Request]
      *
      * @param value of the property
      */
-    fun integrity(value: String) = Request(
-        baseUrl, headers, body, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, value, keepalive, reqWindow, authentication
-    )
+    fun integrity(value: String): Request = copy(integrity = value)
 
     /**
      * sets the keepalive property of the [Request]
      *
      * @param value of the property
      */
-    fun keepalive(value: Boolean) = Request(
-        baseUrl, headers, body, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, value, reqWindow, authentication
-    )
+    fun keepalive(value: Boolean): Request = copy(keepalive = value)
 
     /**
      * sets the reqWindow property of the [Request]
      *
      * @param value of the property
      */
-    fun reqWindow(value: Any) = Request(
-        baseUrl, headers, body, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, value, authentication
-    )
+    fun reqWindow(value: Any): Request = copy(reqWindow = value)
 
+    fun enrichReq(enricher: RequestEnricher): Request = copy(requestEnrichers = enricher)
 
-    /**
-     * sets the general [Authentication] mechanism of the [Request]
-     *
-     * @param auth [Authentication] mechanism
-     */
-    fun <T>authentication(auth: Authentication<T>) = Request(
-        baseUrl, headers, body, referrer, referrerPolicy, mode,
-        credentials, cache, redirect, integrity, keepalive, reqWindow, auth
-    )
+    fun responseInterceptor(interceptor: ResponseInterceptor): Request = copy(responseInterceptor = interceptor)
 }
-
-// Response
-
-/**
- * extracts the body as string from the given [Response]
- */
-suspend fun Response.getBody() = this.text().await()
-
-/**
- * returns the [Headers] from the given [Response]
- */
-fun Response.getHeaders() = this.headers
-
-/**
- * extracts the body as blob from the given [Response]
- */
-suspend fun Response.getBlob() = this.blob().await()
-
-/**
- * extracts the body as arrayBuffer from the given [Response]
- */
-suspend fun Response.getArrayBuffer() = this.arrayBuffer().await()
-
-/**
- * extracts the body as formData from the given [Response]
- */
-suspend fun Response.getFormData() = this.formData().await()
-
-/**
- * extracts the body as json from the given [Response]
- */
-suspend fun Response.getJson() = json().await()
 
 external fun btoa(decoded: String): String
 
-/**
- * Represents the functions needed to authenticate a user
- * and in which cases the authentication should be made.
- * The typeparameter P represents a class for a principal,
- * an object containing all login-information needed by the
- * user of this api. The principal-object is held in a fritz2-store
- * and could be read as a flow [principal].
- * There are two functions reading whether the authentication is done,
- * [authenticated] delivers a flow of Boolean-type
- * [isAuthenticated] delivers the boolean itself.
- */
-abstract class Authentication<P> {
+interface Authentication<P>: RequestEnricher, ResponseInterceptor, Store<P> {
 
-    private val principalStore = storeOf<P?>(null)
-
-    private var state: CompletableDeferred<P>? = null
-
-    /**
-     * List of HTTP-Status-Codes forcing an authentication.
-     * Defaults are 401 (unauthorized) and 403 (forbidden)
-     */
-    open val errorcodesEnforcingAuthentication: List<Short>
+    val statusCodesEnforcingAuthentication: List<Int>
         get() = listOf(401, 403)
 
-    /**
-     * function enriching the request with authentication information depending on the
-     * servers need. For example the server could expect sepcial header-information, that could be
-     * set by this function.
-     *
-     * @param request the request-object that is enriched with the login-information.
-     */
-    abstract suspend fun enrichRequest(request: Request): Request
+    fun CompletableDeferred<P>.authenticate()
 
-    /**
-     * function doing the authentication
-     */
-    abstract fun authenticate()
-
-    /**
-     * function performing a logout
-     */
-    fun logout() {
-        state = null
-        principalStore.update(null)
-    }
-
-    internal fun startAuthentication() {
-        state = CompletableDeferred()
-        authenticate()
-    }
-
-    /**
-     * function returning a boolean showing whether the user is authenticated or not
-     */
-    fun isAuthenticated(): Boolean = state != null && !isAuthRunning()
-
-    /**
-     * function returning a flow with the information whether the user is authenticated or not
-     */
-    val authenticated: Flow<Boolean> = principalStore.data.map { it != null }
-
-    /**
-     * function returning a flow with the principal-information.
-     *
-     */
-    val principal = principalStore.data
-
-    /**
-     * function returning the information wether an authentication-process is running
-     */
-    internal fun isAuthRunning() = state.let {it?.isActive} ?: false
-
-    /**
-     * function returning the principal-information:
-     * if the prinicpal is available it is returned
-     * if an authentication-process is running  the function is waiting for the process to be finished
-     * else null is returned, if no authentication-process is running nor a principal is available.
-     */
-    suspend fun getPrincipal(): P? = state.let {it?.await()}
-
-    /**
-     * function offering the possibility to set the principal after a successfull authentication
-     */
-    fun login(p: P){
-
-        if(state==null) {
-            state = CompletableDeferred()
-        }
-        state?.complete(p)
-        principalStore.update(p)
+    override suspend fun handleResponse(response: Response): Response {
+        return if (statusCodesEnforcingAuthentication.contains(response.status)) {
+            val state = CompletableDeferred<P>(job)
+            state.authenticate()
+            update(state.await())
+            enrichRequest(response.request).execute()
+        } else response
     }
 }
+
+///**
+// * Represents the functions needed to authenticate a user
+// * and in which cases the authentication should be made.
+// * The typeparameter P represents a class for a principal,
+// * an object containing all login-information needed by the
+// * user of this api. The principal-object is held in a fritz2-store
+// * and could be read as a flow [principal].
+// * There are two functions reading whether the authentication is done,
+// * [authenticated] delivers a flow of Boolean-type
+// * [isAuthenticated] delivers the boolean itself.
+// */
+//abstract class Authentication<P> {
+//
+//    private val principalStore = storeOf<P?>(null)
+//
+//    private var state: CompletableDeferred<P>? = null
+//
+//    /**
+//     * List of HTTP-Status-Codes forcing an authentication.
+//     * Defaults are 401 (unauthorized) and 403 (forbidden)
+//     */
+//    open val errorcodesEnforcingAuthentication: List<Short>
+//        get() = listOf(401, 403)
+//
+//    /**
+//     * function enriching the request with authentication information depending on the
+//     * servers need. For example the server could expect sepcial header-information, that could be
+//     * set by this function.
+//     *
+//     * @param request the request-object that is enriched with the login-information.
+//     */
+//    abstract suspend fun enrichRequest(request: Request): Request
+//
+//    /**
+//     * function doing the authentication
+//     */
+//    abstract fun authenticate()
+//
+//    /**
+//     * function performing a logout
+//     */
+//    fun logout() {
+//        state = null
+//        principalStore.update(null)
+//    }
+//
+//    internal fun startAuthentication() {
+//        state = CompletableDeferred()
+//        authenticate()
+//    }
+//
+//    /**
+//     * function returning a boolean showing whether the user is authenticated or not
+//     */
+//    fun isAuthenticated(): Boolean = state != null && !isAuthRunning()
+//
+//    /**
+//     * function returning a flow with the information whether the user is authenticated or not
+//     */
+//    val authenticated: Flow<Boolean> = principalStore.data.map { it != null }
+//
+//    /**
+//     * function returning a flow with the principal-information.
+//     *
+//     */
+//    val principal = principalStore.data
+//
+//    /**
+//     * function returning the information wether an authentication-process is running
+//     */
+//    internal fun isAuthRunning() = state.let {it?.isActive} ?: false
+//
+//    /**
+//     * function returning the principal-information:
+//     * if the prinicpal is available it is returned
+//     * if an authentication-process is running  the function is waiting for the process to be finished
+//     * else null is returned, if no authentication-process is running nor a principal is available.
+//     */
+//    suspend fun getPrincipal(): P? = state.let {it?.await()}
+//
+//    /**
+//     * function offering the possibility to set the principal after a successfull authentication
+//     */
+//    fun login(p: P){
+//
+//        if(state==null) {
+//            state = CompletableDeferred()
+//        }
+//        state?.complete(p)
+//        principalStore.update(p)
+//    }
+//}
