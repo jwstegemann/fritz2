@@ -7,7 +7,32 @@ import kotlin.test.assertTrue
 class KeyTests {
 
     @Test
-    fun testCanCombineKeyWithExtraKey() {
+    fun testCreateKeyWithUpperCaseWillConvertToLowercase() {
+        assertEquals(Key("K"), Key("k"))
+        assertEquals(Keys.Control + "K", Key("k", ctrl = true))
+    }
+
+    @Test
+    fun testKeysOfPredefinedKeyValuesWillRemainMixedCase() {
+        assertEquals(Keys.ArrowDown.name, "ArrowDown")
+        assertEquals(Key("ArrowDown").name, "ArrowDown")
+    }
+
+    /**
+     * This is a drawback of using private constructors with data classes!
+     * So this test is rather documentation of the pure fact than useful expected behaviour ;-)
+     *
+     * But keep in mind that the normalization process to convert all none predefined key names (that is all keys with
+     * a name longer than one character) is just a benevolent act to users - if somehow one would like to create a
+     * `Key` object with uppercase letter we cannot prevent this for all cases!
+     */
+    @Test
+    fun testUsingCopyCanCreateKeysWithSingleUppercaseLetter() {
+        assertEquals("k", Key("Foo").copy(name = "k").name)
+    }
+
+    @Test
+    fun testCanCombineKeyWithModifierKey() {
         // single concatenation
         assertEquals(Key("K", shift = true), Key("K") + Keys.Shift)
         assertEquals(Key("K", alt = true), Key("K") + Keys.Alt)
@@ -41,7 +66,7 @@ class KeyTests {
     }
 
     @Test
-    fun testCanCombineExtraKeyWithKey() {
+    fun testCanCombineModifierKeyWithKey() {
         // single concatenation
         assertEquals(Key("K", shift = true), Keys.Shift + Key("K"))
         assertEquals(Key("K", alt = true), Keys.Alt + Key("K"))
@@ -68,12 +93,12 @@ class KeyTests {
     }
 
     @Test
-    fun testCanCombineExtraKeyWithString() {
+    fun testCanCombineModifierKeyWithString() {
         assertEquals(Key("K", alt = true, shift = true), Keys.Alt + Keys.Shift + "K")
     }
 
     @Test
-    fun testCanCombineMultipleExtraKeys() {
+    fun testCanCombineMultipleModifierKeys() {
         with(Keys.Alt + Keys.Shift) {
             assertTrue(this.alt)
             assertTrue(this.shift)
