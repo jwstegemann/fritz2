@@ -125,7 +125,7 @@ class MountTests {
         render {
             div(id = id) {
                 +"start-"
-                text.asText()
+                text.renderText()
                 +"-end"
             }
         }

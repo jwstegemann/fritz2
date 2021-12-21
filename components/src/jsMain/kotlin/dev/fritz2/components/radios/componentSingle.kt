@@ -105,7 +105,7 @@ open class RadioComponent(protected val value: Store<Boolean>? = null) :
 
     fun label(value: Flow<String>) {
         label = {
-            value.asText()
+            value.renderText()
         }
     }
 

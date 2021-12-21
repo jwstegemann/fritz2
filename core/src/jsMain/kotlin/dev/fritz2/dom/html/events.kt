@@ -126,7 +126,7 @@ object Events {
     // The event occurs when media data is loaded
     val loadeddata = EventType<Event>("loadeddata")
 
-    // The event occurs when meta data (like dimensions and duration) are loaded
+    // The event occurs when metadata (like dimensions and duration) are loaded
     val loadedmetadata = EventType<Event>("loadedmetadata")
 
     // The event occurs when the browser starts looking for the specified media

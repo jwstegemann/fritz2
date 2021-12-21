@@ -34,12 +34,15 @@ class WindowTest {
 
             section {
                 div(id = divId) {
-                    store.data.asText()
+                    store.data.renderText()
                     label(id = labelId) { }
                 }
 
             }
         }
+
+        delay(100)
+
         val div = document.getElementById(divId).unsafeCast<HTMLDivElement>()
         val label = document.getElementById(labelId).unsafeCast<HTMLLabelElement>()
 
@@ -74,7 +77,7 @@ class WindowTest {
 
             section {
                 div(id = divId) {
-                    store.data.asText()
+                    store.data.renderText()
                     label(id = labelId) { }
                 }
 
@@ -123,7 +126,7 @@ class WindowTest {
 
             section {
                 div(id = divId) {
-                    windowStore.data.asText()
+                    windowStore.data.renderText()
                 }
 
                 button(id = buttonId) {}

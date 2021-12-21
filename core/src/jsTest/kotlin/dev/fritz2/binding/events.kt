@@ -40,7 +40,7 @@ class EventTests {
                 }
                 div(id = resultId) {
                     +"value: "
-                    store.data.asText()
+                    store.data.renderText()
                 }
                 button(id = buttonId) {
                     +"add one more little dot"

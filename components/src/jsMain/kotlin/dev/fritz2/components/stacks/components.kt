@@ -5,6 +5,7 @@ import dev.fritz2.components.foundations.Component
 import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.components.foundations.EventMixin
 import dev.fritz2.components.foundations.EventProperties
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.styling.StyleClass
@@ -14,6 +15,7 @@ import dev.fritz2.styling.params.ScaledValueProperty
 import dev.fritz2.styling.params.Style
 import dev.fritz2.styling.staticStyle
 import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLElement
 
 /**
  * This base component class for stacking components offer some _configuration_ properties.
@@ -78,7 +80,7 @@ abstract class StackComponent : Component<Div>, EventProperties<HTMLDivElement> 
 
     val reversed = ComponentProperty(false)
     val spacing = ComponentProperty<ScaledValueProperty> { normal }
-    val items = ComponentProperty<(RenderContext.() -> Unit)> {}
+    val items = ComponentProperty<(Tag<HTMLElement>.() -> Unit)> {}
 
     abstract val stackStyles: Style<FlexParams>
 

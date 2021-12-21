@@ -89,10 +89,11 @@ class TagTests {
         val testRange = (0..4)
         val testIds = testRange.map { "testId$it" }
         val testClasses = testRange.map { "testClass$it" }
+        val testFLow = flowOf(testIds)
 
         render {
             ul(id = "list") {
-                (flowOf(testIds)).renderEach {
+                (flowOf(testIds)).renderEach(into = this) {
                     li(id = it) {
                         classList(flowOf(testClasses))
                     }
@@ -103,6 +104,10 @@ class TagTests {
         delay(500)
 
         for (i in testRange) {
+            val e = document.getElementById("list")
+            console.error(e?.outerHTML + "\n\n\n")
+
+
             val element = document.getElementById(testIds[i]).unsafeCast<HTMLDivElement>()
             assertEquals(testIds[i], element.id)
             assertEquals("li", element.localName)
@@ -151,6 +156,31 @@ class TagTests {
 
             assertEquals(0, outer.firstElementChild?.childElementCount, "[$i] outer element has no children")
         }
+    }
+
+    @Test
+    fun testAnnex() = runTest {
+        initDocument()
+
+        val contentId = Id.next()
+
+        render {
+            div(id = contentId) {
+                div {
+                    +"inner div"
+                }.annex {
+                    span { +"outer div" }
+                }
+                span { +"after inner div" }
+            }
+        }
+
+        delay(100)
+
+        assertEquals(
+            document.getElementById(contentId)?.innerHTML,
+            "<div>inner div</div><span>outer div</span><span>after inner div</span>"
+        )
     }
 
 }

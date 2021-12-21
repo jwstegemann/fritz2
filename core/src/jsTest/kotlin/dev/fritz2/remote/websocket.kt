@@ -1,7 +1,6 @@
 package dev.fritz2.remote
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.watch
 import dev.fritz2.dom.html.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
@@ -12,7 +11,6 @@ import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -195,9 +193,9 @@ class WebSocketTests {
 
         render {
             div {
-                div(id = idId) { idSubStore.data.asText() }
-                div(id = nameId) { nameSubStore.data.asText() }
-                div(id = ageId) { ageSubStore.data.asText() }
+                div(id = idId) { idSubStore.data.renderText() }
+                div(id = nameId) { nameSubStore.data.renderText() }
+                div(id = ageId) { ageSubStore.data.renderText() }
             }
         }
 

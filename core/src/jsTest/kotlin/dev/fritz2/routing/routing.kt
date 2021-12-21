@@ -31,7 +31,7 @@ class RoutingTests {
 
         render {
             div(id = testId) {
-                router.data.asText()
+                router.data.renderText()
                 ul {
                     buttons.forEach { (id, page) ->
                         li {
@@ -78,10 +78,10 @@ class RoutingTests {
         render {
             div {
                 div(id = pageId) {
-                    router.select(pageKey, "").asText()
+                    router.select(pageKey, "").renderText()
                 }
                 div(id = btnId) {
-                    router.select(btnKey).map { it.first ?: "" }.asText()
+                    router.select(btnKey).map { it.first ?: "" }.renderText()
                 }
                 ul {
                     buttons.forEach { (id, page) ->
@@ -124,7 +124,7 @@ class RoutingTests {
 
         render {
             div(id = divId) {
-                router.select("fail", "error").asText()
+                router.select("fail", "error").renderText()
             }
         }
 

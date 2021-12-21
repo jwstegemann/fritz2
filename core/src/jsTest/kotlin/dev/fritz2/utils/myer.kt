@@ -19,7 +19,7 @@ class MyerTests {
                 add(patch.index, patch.element)
             }
             is Patch.InsertMany<T> -> {
-                for (element in patch.elements) {
+                for (element in patch.elements.reversed()) {
                     add(patch.index, element)
                 }
             }

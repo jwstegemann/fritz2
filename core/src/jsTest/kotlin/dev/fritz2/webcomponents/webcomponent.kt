@@ -2,7 +2,7 @@ package dev.fritz2.webcomponents
 
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.TagContext
+import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 class WebComponentTests {
 
     object MyComponent : WebComponent<HTMLParagraphElement>() {
-        override fun TagContext.init(element: HTMLElement, shadowRoot: ShadowRoot) =
+        override fun RenderContext.init(element: HTMLElement, shadowRoot: ShadowRoot) =
             p(id = "paragraph-in-web-component") {
                 +"I am a WebComponent"
             }
@@ -42,12 +42,12 @@ class WebComponentTests {
     }
 
     object AttributeComponent : WebComponent<HTMLElement>() {
-        override fun TagContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<HTMLElement> {
+        override fun RenderContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<HTMLElement> {
             val store = storeOf("Initial")
             attributeChanges("test") handledBy { store.update(it) }
 
             return div(id = "contents") {
-                store.data.asText()
+                store.data.renderText()
             }
         }
     }

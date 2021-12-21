@@ -5,6 +5,7 @@ import dev.fritz2.components.checkbox
 import dev.fritz2.components.checkboxGroup
 import dev.fritz2.components.foundations.*
 import dev.fritz2.dom.EventContext
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.states
@@ -132,7 +133,7 @@ open class CheckboxGroupComponent<T>(
 
     val selectedItems = DynamicComponentProperty<List<T>>(flowOf(emptyList()))
 
-    class EventsContext<T>(private val element: RenderContext, val selected: Flow<List<T>>) :
+    class EventsContext<T>(private val element: Tag<HTMLElement>, val selected: Flow<List<T>>) :
         EventContext<HTMLElement> by element
 
     val events = ComponentProperty<EventsContext<T>.() -> Unit> {}

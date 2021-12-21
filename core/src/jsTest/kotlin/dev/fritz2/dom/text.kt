@@ -84,7 +84,7 @@ class TextTests {
 
         render {
             div(id = testId) {
-                flowOf(text).asText()
+                flowOf(text).renderText()
             }
         }
 

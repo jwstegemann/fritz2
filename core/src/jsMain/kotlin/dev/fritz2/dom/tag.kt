@@ -1,17 +1,16 @@
 package dev.fritz2.dom
 
-import dev.fritz2.binding.Patch
-import dev.fritz2.binding.Store
 import dev.fritz2.binding.mountSimple
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
-import dev.fritz2.dom.html.TagContext
-import dev.fritz2.lenses.IdProvider
+import dev.fritz2.utils.classes
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
+import org.w3c.dom.Node
 
 /**
  * A marker to separate the layers of calls in the type-safe-builder pattern.
@@ -29,8 +28,6 @@ annotation class HtmlTagMarker
  * All dynamic values for this attribute will be concatenated to this base-value.
  * @property job used for launching coroutines in
  * @property scope set some arbitrary scope entries into the [Tag]'s scope
- * @property domNode the [Element]-instance that is wrapped by this [Tag]
- * (you should never have to pass this by yourself, just let it be created by the default)
  */
 @HtmlTagMarker
 open class Tag<out E : Element>(
@@ -39,11 +36,17 @@ open class Tag<out E : Element>(
     val baseClass: String? = null,
     override val job: Job,
     override val scope: Scope,
-    override val domNode: E = window.document.createElement(tagName).also { element ->
+) : WithDomNode<E>, WithComment<E>, EventContext<E>, RenderContext {
+
+    /**
+     * factory function that defines how the DOM-node represented by this Tag is created
+     */
+    protected open fun createDomNode(): E = window.document.createElement(tagName).also { element ->
         if (id != null) element.id = id
         if (!baseClass.isNullOrBlank()) element.className = baseClass
     }.unsafeCast<E>()
-) : WithDomNode<E>, WithComment<E>, EventContext<E>, TagContext {
+
+    override val domNode: E = this.createDomNode()
 
     /**
      * Creates the content of the [Tag] and appends it as a child to the wrapped [Element].
@@ -51,71 +54,11 @@ open class Tag<out E : Element>(
      * @param element the parent element of the new content
      * @param content lambda building the content (following the type-safe-builder pattern)
      */
-    override fun <E : Element, W : WithDomNode<E>> register(element: W, content: (W) -> Unit): W {
+    override fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W {
         content(element)
         domNode.appendChild(element.domNode)
         return element
     }
-
-    /**
-     * Renders the data of a [Flow] as [Tag]s to the DOM.
-     *
-     * @receiver [Flow] containing the data
-     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
-     * @param content [RenderContext] for rendering the data to the DOM
-     */
-    inline fun <V> Flow<V>.render(into: RenderContext? = null, crossinline content: RenderContext.(V) -> Unit) =
-        mount(into, this, content)
-
-
-    /**
-     * Renders each element of a [Flow]s content.
-     * Internally the [Patch]es are determined using Myer's diff-algorithm.
-     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
-     * when an element stays the same, but changes its internal values.
-     *
-     * @param idProvider function to identify a unique entity in the list
-     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
-     * @param content [RenderContext] for rendering the data to the DOM
-     */
-    inline fun <V> Flow<List<V>>.renderEach(
-        noinline idProvider: IdProvider<V, *>? = null,
-        into: RenderContext? = null,
-        crossinline content: RenderContext.(V) -> RenderContext
-    ) =
-        mount(into, this, idProvider, content)
-
-    /**
-     * Renders each element of a [Store]s [List] content.
-     * Internally the [Patch]es are determined using Myer's diff-algorithm.
-     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
-     * when an element stays the same, but changes its internal values.
-     *
-     * @param idProvider function to identify a unique entity in the list
-     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
-     * @param content [RenderContext] for rendering the data to the DOM
-     */
-    inline fun <V> Store<List<V>>.renderEach(
-        noinline idProvider: IdProvider<V, *>,
-        into: RenderContext? = null,
-        crossinline content: RenderContext.(Store<V>) -> RenderContext
-    ) =
-        mount(into, this, idProvider, content)
-
-    /**
-     * Renders each element of a [Store]s list content.
-     * Internally the [Patch]es are determined using the position of an item in the list.
-     * Moves cannot be detected that way and replacing an item at a certain position will be treated as a change of the item.
-     *
-     * @param content [RenderContext] for rendering the data to the DOM given a [Store] of the list's item-type
-     * @param into target to mount content to. If not set a child [DIV] is added to the [Tag] this method is called on
-     */
-    inline fun <V> Store<List<V>>.renderEach(
-        into: RenderContext? = null,
-        crossinline content: RenderContext.(Store<V>) -> RenderContext
-    ) =
-        mount(into, this, content)
-
 
     /**
      * Sets an attribute.
@@ -233,7 +176,7 @@ open class Tag<out E : Element>(
 
     /**
      * Sets an attribute from a [List] of [String]s.
-     * Therefore it concatenates the [String]s to the final value [String].
+     * Therefore, it concatenates the [String]s to the final value [String].
      *
      * @param name to use
      * @param values for concatenation
@@ -245,7 +188,7 @@ open class Tag<out E : Element>(
 
     /**
      * Sets an attribute from a [List] of [String]s.
-     * Therefore it concatenates the [String]s to the final value [String].
+     * Therefore, it concatenates the [String]s to the final value [String].
      *
      * @param name to use
      * @param values for concatenation
@@ -281,12 +224,29 @@ open class Tag<out E : Element>(
         mountSimple(job, values) { v -> attr(name, v, separator) }
     }
 
-    private fun setClassName(className: String): String =
-        when {
-            baseClass.isNullOrBlank() -> className
-            className.isNotBlank() -> "$baseClass $className"
-            else -> baseClass
+    private var className: String? = baseClass
+    private var classFlow: Flow<String>? = null
+
+    private fun updateClasses() {
+        if (classFlow == null) {
+            attr("class", className)
+        } else if (className == null) {
+            attr("class", classFlow!!)
+        } else {
+            attr("class", classFlow!!.map { classes(className, it) })
         }
+    }
+
+    private fun addToClasses(classesToAdd: String) {
+        className = classes(className, classesToAdd)
+        console.error("****" + className)
+        updateClasses()
+    }
+
+    private fun addToClasses(classesToAdd: Flow<String>) {
+        classFlow = if (classFlow == null) classesToAdd else classFlow!!.combine(classesToAdd) { a, b -> classes(a, b) }
+        updateClasses()
+    }
 
     /**
      * Sets the *class* attribute.
@@ -294,7 +254,7 @@ open class Tag<out E : Element>(
      * @param value as [String]
      */
     fun className(value: String) {
-        attr("class", setClassName(value))
+        addToClasses(value)
     }
 
     /**
@@ -303,7 +263,7 @@ open class Tag<out E : Element>(
      * @param value [Flow] with [String]
      */
     fun className(value: Flow<String>) {
-        attr("class", value.map { setClassName(it) })
+        addToClasses(value)
     }
 
     /**
@@ -312,7 +272,7 @@ open class Tag<out E : Element>(
      * @param values as [List] of [String]s
      */
     fun classList(values: List<String>) {
-        attr("class", if (baseClass.isNullOrBlank()) values else values + baseClass)
+        addToClasses(values.joinToString(" "))
     }
 
     /**
@@ -321,7 +281,7 @@ open class Tag<out E : Element>(
      * @param values [Flow] with [List] of [String]s
      */
     fun classList(values: Flow<List<String>>) {
-        attr("class", if (baseClass.isNullOrBlank()) values else values.map { it + baseClass })
+        addToClasses(values.map { it.joinToString(" ") })
     }
 
     /**
@@ -331,7 +291,7 @@ open class Tag<out E : Element>(
      * @param values as [Map] with key to set and corresponding values to decide
      */
     fun classMap(values: Map<String, Boolean>) {
-        attr("class", if (baseClass.isNullOrBlank()) values else values + (baseClass to true))
+        addToClasses(values.filter { it.value }.keys.joinToString(" "))
     }
 
     /**
@@ -341,7 +301,7 @@ open class Tag<out E : Element>(
      * @param values [Flow] of [Map] with key to set and corresponding values to decide
      */
     fun classMap(values: Flow<Map<String, Boolean>>) {
-        attr("class", if (baseClass.isNullOrBlank()) values else values.map { it + (baseClass to true) })
+        addToClasses(values.map { it.filter { it.value }.keys.joinToString(" ") })
     }
 
     /**
@@ -419,5 +379,28 @@ open class Tag<out E : Element>(
         this[key]?.let {
             attr("data-${key.name}", it.toString())
         }
+    }
+
+    internal inner class AnnexContext : RenderContext {
+        override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+            domNode.parentElement?.let {
+                content(element)
+                it.appendChild(element.domNode)
+            }
+            return element
+        }
+
+        override val job: Job = this@Tag.job
+
+        override val scope: Scope = this@Tag.scope
+    }
+
+    /**
+     * renders some context next to this Tag on the same DOM-level
+     *
+     * @param content lambda building the content to render
+     */
+    fun <E : Element> annex(content: RenderContext.() -> Tag<E>) {
+        AnnexContext().content()
     }
 }

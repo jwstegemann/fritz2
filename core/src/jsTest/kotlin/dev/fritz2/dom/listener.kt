@@ -76,7 +76,7 @@ class ListenerTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.asText()
+                    store.data.renderText()
                 }
                 button(id = buttonId) {
                     clicks.preventDefault() handledBy store.addADot
@@ -133,7 +133,7 @@ class ListenerTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.asText()
+                    store.data.renderText()
                 }
                 button(id = buttonId) {
                     clicks handledBy store.addDot
@@ -194,7 +194,7 @@ class ListenerTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.asText()
+                    store.data.renderText()
                 }
                 input(id = inputId) {
                     keydowns.key() handledBy store.keyPressed
@@ -261,7 +261,7 @@ class ListenerTest {
                     keyups.enter() handledBy store.update
                 }
                 p(id = resultId) {
-                    store.data.asText()
+                    store.data.renderText()
                 }
             }
         }
