@@ -398,9 +398,9 @@ open class Request(
      */
     fun reqWindow(value: Any): Request = copy(reqWindow = value)
 
-    fun enrichReq(enricher: RequestEnricher): Request = copy(requestEnrichers = enricher)
+    fun enrichRequest(enricher: RequestEnricher): Request = copy(requestEnrichers = enricher)
 
-    fun responseInterceptor(interceptor: ResponseInterceptor): Request = copy(responseInterceptor = interceptor)
+    fun interceptResponse(interceptor: ResponseInterceptor): Request = copy(responseInterceptor = interceptor)
 }
 
 external fun btoa(decoded: String): String
@@ -409,6 +409,9 @@ interface Authentication<P>: RequestEnricher, ResponseInterceptor, Store<P> {
 
     val statusCodesEnforcingAuthentication: List<Int>
         get() = listOf(401, 403)
+
+    private fun http(baseUrl: String = ""): Request = dev.fritz2.remote.http(baseUrl)
+        .enrichRequest(this).interceptResponse(this)
 
     fun CompletableDeferred<P>.authenticate()
 
