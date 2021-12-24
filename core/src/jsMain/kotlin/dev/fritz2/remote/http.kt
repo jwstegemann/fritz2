@@ -1,7 +1,5 @@
 package dev.fritz2.remote
 
-import dev.fritz2.binding.Store
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.await
 import org.khronos.webgl.ArrayBuffer
 import org.w3c.fetch.*
@@ -10,6 +8,13 @@ import org.w3c.xhr.FormData
 import kotlinx.browser.window as browserWindow
 import org.w3c.fetch.Response as FetchResponse
 
+
+/**
+ * creates a new [Request]
+ *
+ * @param baseUrl the common base of all urls that you want to call using the template
+ */
+fun http(baseUrl: String = "") = Request(url = baseUrl)
 
 /**
  * [Exception] type for handling http exceptions
@@ -22,25 +27,13 @@ class FetchException(val statusCode: Int, val body: String, val response: Respon
 )
 
 /**
- * creates a new [Request]
- *
- * @param baseUrl the common base of all urls that you want to call using the template
+ * Represents the common fields and attributes of an HTTP response.
+ * It contains also the original [Request] which was made to get this [Response].
  */
-fun http(baseUrl: String = "") = Request(url = baseUrl)
-
-interface RequestEnricher {
-    suspend fun enrichRequest(request: Request): Request
-}
-
-interface ResponseInterceptor {
-    suspend fun handleResponse(response: Response): Response
-}
-
 open class Response(
     private val response: FetchResponse,
     val request: Request
 ) {
-
     val ok: Boolean get() = response.ok
 
     val status: Int get() = response.status.toInt()
@@ -78,37 +71,64 @@ open class Response(
      * extracts the body as json from the given [Response]
      */
     suspend fun json() = response.json().await()
+
 }
 
 /**
- * Represents the common fields an attributes of a given set of http requests.
+ * interface to do interceptions at http calls.
+ * It can modify each request and handle all responses in a specified way.
+ */
+interface Interceptor {
+
+    /**
+     * enriches requests with additional information.
+     * E.g. it could append special header-information, which are needed for authentication.
+     *
+     * @param request [Request] that gets enriched
+     * @return enriched [Request]
+     */
+    suspend fun enrichRequest(request: Request): Request
+
+    /**
+     * handles responses.
+     * E.g. it could handle specific status-codes and log error messages.
+     *
+     * @param response [Response] to handle
+     * @return handled [Response]
+     */
+    suspend fun handleResponse(response: Response): Response
+}
+
+/**
+ * Represents the common fields and attributes of an HTTP request.
  *
  * Use it to define common headers, error-handling, base url, etc. for a specific API for example.
- * By calling one of the executing methods like [get] or [post] a specific request is built from the template and send to the server.
- *
- * @property url the common base of all urls that you want to call using this template
+ * By calling one of the executing methods like [get] or [post] a specific request is built from
+ * the template and send to the server.
  */
 open class Request(
-    private val method: String = "",
-    private val url: String = "",
-    private val headers: Map<String, String> = emptyMap(),
-    private val body: dynamic = undefined,
-    private val referrer: String? = undefined,
-    private val referrerPolicy: dynamic = undefined,
-    private val mode: RequestMode? = undefined,
-    private val credentials: RequestCredentials? = undefined,
-    private val cache: RequestCache? = undefined,
-    private val redirect: RequestRedirect? = undefined,
-    private val integrity: String? = undefined,
-    private val keepalive: Boolean? = undefined,
-    private val reqWindow: Any? = undefined,
-    private val requestEnricher: RequestEnricher? = null,
-    private val responseInterceptor: ResponseInterceptor? = null
+    val url: String = "",
+    val method: String = "",
+    val headers: Map<String, String> = emptyMap(),
+    val body: dynamic = undefined,
+    val referrer: String? = undefined,
+    val referrerPolicy: dynamic = undefined,
+    val mode: RequestMode? = undefined,
+    val credentials: RequestCredentials? = undefined,
+    val cache: RequestCache? = undefined,
+    val redirect: RequestRedirect? = undefined,
+    val integrity: String? = undefined,
+    val keepalive: Boolean? = undefined,
+    val reqWindow: Any? = undefined,
+    val interceptors: List<Interceptor> = emptyList()
 ) {
 
+    /**
+     * creates a copy of the [Request].
+     */
     open fun copy(
-        method: String = this.method,
         url: String = this.url,
+        method: String = this.method,
         headers: Map<String, String> = this.headers,
         body: dynamic = this.body,
         referrer: String? = this.referrer,
@@ -120,16 +140,15 @@ open class Request(
         integrity: String? = this.integrity,
         keepalive: Boolean? = this.keepalive,
         reqWindow: Any? = this.reqWindow,
-        requestEnrichers: RequestEnricher? = this.requestEnricher,
-        responseInterceptor: ResponseInterceptor? = this.responseInterceptor
+        interceptors: List<Interceptor> = this.interceptors,
     ) = Request(
-        method, url, headers, body, referrer, referrerPolicy,
+        url, method, headers, body, referrer, referrerPolicy,
         mode, credentials, cache, redirect, integrity, keepalive,
-        reqWindow, requestEnrichers, responseInterceptor
+        reqWindow, interceptors
     )
 
     /**
-     * builds a request, sends it to the server, awaits the response (async), creates a flow of it.
+     * executes the HTTP call and sends it to the server, awaits the response (async) and returns a [Response].
      * When request failed a [FetchException] will be thrown.
      *
      * @throws FetchException when request failed
@@ -137,34 +156,20 @@ open class Request(
     suspend fun execute(): Response {
 
         var request = this
-        if(requestEnricher != null) request = requestEnricher.enrichRequest(request)
+        for(interceptor in interceptors) request = interceptor.enrichRequest(request)
 
         val init = request.buildInit()
 
         var response = Response(browserWindow.fetch(url, init).await(), request)
-        if(responseInterceptor != null) {
-            response = responseInterceptor.handleResponse(response)
-        }
+        for(interceptor in interceptors) response = interceptor.handleResponse(response)
 
-//        if (authentication != null) {
-//            if (authentication.errorcodesEnforcingAuthentication.contains(response.status)) {
-//                //authentication.startAuthentication()
-//                if (!authentication.isAuthRunning()) {
-//                    authentication.startAuthentication()
-//                }
-//                // Wir warten aufs Login...
-//                authentication.getPrincipal()
-//                val redo = authentication.enrichRequest(this).buildInit(init.method!!)
-//                response = browserWindow.fetch(url, redo).await()
-//            }
-//        }
         if (response.ok) return response
         else throw FetchException(response.status, response.body(), response)
     }
 
 
     /**
-     * builds a [RequestInit] with a body from the template using [method]
+     * builds a [RequestInit] object.
      */
     private fun buildInit(): RequestInit {
         // Headers class has no methods for reading key-value-pairs
@@ -185,8 +190,6 @@ open class Request(
             window = reqWindow
         )
     }
-
-    // Methods
 
     /**
      * issues a get request returning a flow of it's response
@@ -398,122 +401,12 @@ open class Request(
      */
     fun reqWindow(value: Any): Request = copy(reqWindow = value)
 
-    fun enrichRequest(enricher: RequestEnricher): Request = copy(requestEnrichers = enricher)
-
-    fun interceptResponse(interceptor: ResponseInterceptor): Request = copy(responseInterceptor = interceptor)
+    /**
+     * adds an [Interceptor] to handle all requests and responses.
+     *
+     * @param interceptor [Interceptor] to use by this request
+     */
+    fun use(interceptor: Interceptor): Request = copy(interceptors = interceptors + interceptor)
 }
 
 external fun btoa(decoded: String): String
-
-interface Authentication<P>: RequestEnricher, ResponseInterceptor, Store<P> {
-
-    val statusCodesEnforcingAuthentication: List<Int>
-        get() = listOf(401, 403)
-
-    private fun http(baseUrl: String = ""): Request = dev.fritz2.remote.http(baseUrl)
-        .enrichRequest(this).interceptResponse(this)
-
-    fun CompletableDeferred<P>.authenticate()
-
-    override suspend fun handleResponse(response: Response): Response {
-        return if (statusCodesEnforcingAuthentication.contains(response.status)) {
-            val state = CompletableDeferred<P>(job)
-            state.authenticate()
-            update(state.await())
-            enrichRequest(response.request).execute()
-        } else response
-    }
-}
-
-///**
-// * Represents the functions needed to authenticate a user
-// * and in which cases the authentication should be made.
-// * The typeparameter P represents a class for a principal,
-// * an object containing all login-information needed by the
-// * user of this api. The principal-object is held in a fritz2-store
-// * and could be read as a flow [principal].
-// * There are two functions reading whether the authentication is done,
-// * [authenticated] delivers a flow of Boolean-type
-// * [isAuthenticated] delivers the boolean itself.
-// */
-//abstract class Authentication<P> {
-//
-//    private val principalStore = storeOf<P?>(null)
-//
-//    private var state: CompletableDeferred<P>? = null
-//
-//    /**
-//     * List of HTTP-Status-Codes forcing an authentication.
-//     * Defaults are 401 (unauthorized) and 403 (forbidden)
-//     */
-//    open val errorcodesEnforcingAuthentication: List<Short>
-//        get() = listOf(401, 403)
-//
-//    /**
-//     * function enriching the request with authentication information depending on the
-//     * servers need. For example the server could expect sepcial header-information, that could be
-//     * set by this function.
-//     *
-//     * @param request the request-object that is enriched with the login-information.
-//     */
-//    abstract suspend fun enrichRequest(request: Request): Request
-//
-//    /**
-//     * function doing the authentication
-//     */
-//    abstract fun authenticate()
-//
-//    /**
-//     * function performing a logout
-//     */
-//    fun logout() {
-//        state = null
-//        principalStore.update(null)
-//    }
-//
-//    internal fun startAuthentication() {
-//        state = CompletableDeferred()
-//        authenticate()
-//    }
-//
-//    /**
-//     * function returning a boolean showing whether the user is authenticated or not
-//     */
-//    fun isAuthenticated(): Boolean = state != null && !isAuthRunning()
-//
-//    /**
-//     * function returning a flow with the information whether the user is authenticated or not
-//     */
-//    val authenticated: Flow<Boolean> = principalStore.data.map { it != null }
-//
-//    /**
-//     * function returning a flow with the principal-information.
-//     *
-//     */
-//    val principal = principalStore.data
-//
-//    /**
-//     * function returning the information wether an authentication-process is running
-//     */
-//    internal fun isAuthRunning() = state.let {it?.isActive} ?: false
-//
-//    /**
-//     * function returning the principal-information:
-//     * if the prinicpal is available it is returned
-//     * if an authentication-process is running  the function is waiting for the process to be finished
-//     * else null is returned, if no authentication-process is running nor a principal is available.
-//     */
-//    suspend fun getPrincipal(): P? = state.let {it?.await()}
-//
-//    /**
-//     * function offering the possibility to set the principal after a successfull authentication
-//     */
-//    fun login(p: P){
-//
-//        if(state==null) {
-//            state = CompletableDeferred()
-//        }
-//        state?.complete(p)
-//        principalStore.update(p)
-//    }
-//}

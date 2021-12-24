@@ -91,7 +91,7 @@ class RemoteTests {
         val remote = testHttpServer("extra/arraybuffer")
         val data = Uint8Array(arrayOf(1, 2, 3))
         val response = remote.arrayBuffer(data.buffer).post()
-        val result = Uint8Array(response.getArrayBuffer())
+        val result = Uint8Array(response.arrayBuffer())
         var i = 0
         while (i < result.length) {
             assertEquals(data[i], result[i], "binary data is not matched")
@@ -110,27 +110,14 @@ data class Principal(
 class AuthenticatedRemoteTests {
     private val authentication = object : Authentication<Principal>() {
 
-
-        override val errorcodesEnforcingAuthentication: List<Short> = listOf(401, 403)
-
-        /*
-           override suspend fun enrichRequest(request: Request): Request {
-                return getPrincipal()?.token?.let { request.header("oe-auth-token", it) } ?: request
-            }
-        */
-
-        override suspend fun enrichRequest(request: Request): Request {
-            return getPrincipal()?.token?.let { request.header("authtoken", it) } ?: request
-        }
+        override val statusCodesEnforcingAuthentication: List<Int> = listOf(401, 403)
 
         override  fun authenticate() {
-            val principalToSet = Principal("NameOfUser", "123456789")
-            login(principalToSet)
+            complete(Principal("NameOfUser", "123456789"))
         }
 
-        // just for test-purposes to have an invalid token
-        fun setTokenInvalid() {
-            logout()
+        override fun addAuthentication(request: Request, principal: Principal?): Request {
+            return principal?.token?.let { request.header("authtoken", it) } ?: request
         }
 
     }
@@ -140,54 +127,54 @@ class AuthenticatedRemoteTests {
         val remoteWithoutServerCheck = testHttpServerAuthenticated(test, authentication)
         val remoteWithServerCheck = testHttpServerAuthenticated(testauthenticated, authentication)
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         remoteWithoutServerCheck.get("get")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         remoteWithServerCheck.get("get")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         remoteWithoutServerCheck.delete("delete")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         remoteWithServerCheck.delete("delete")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         remoteWithoutServerCheck.head("head")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         remoteWithServerCheck.head("head")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         remoteWithoutServerCheck.body("").patch("patch")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         remoteWithServerCheck.body("").patch("patch")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         remoteWithoutServerCheck.body("").post("post")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         remoteWithServerCheck.body("").post("post")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         remoteWithoutServerCheck.body("").put("put")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         remoteWithServerCheck.body("").put("put")
 
     }
 
     @Test
     fun testBasicAuthWithoutServerCheck() = runTest {
-        authentication.setTokenInvalid()
+        authentication.clear()
         val remoteWithoutServerCheck = testHttpServerAuthenticated(test, authentication)
 
         val user = "test"
         val password = "password"
         remoteWithoutServerCheck.basicAuth(user, password).get("basicAuth")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
         assertFailsWith(FetchException::class) {
             remoteWithoutServerCheck.basicAuth(user, password+"w").get("basicAuth")
         }
@@ -195,7 +182,7 @@ class AuthenticatedRemoteTests {
 
     @Test
     fun testBasicAuthWithServerCheck() = runTest {
-        authentication.setTokenInvalid()
+        authentication.clear()
         val remoteWithServerCheck = testHttpServerAuthenticated(testauthenticated, authentication)
 
         val user = "test"
@@ -203,7 +190,7 @@ class AuthenticatedRemoteTests {
 
         remoteWithServerCheck.basicAuth(user, password).get("basicAuth")
 
-        authentication.setTokenInvalid()
+        authentication.clear()
 
         assertFailsWith(FetchException::class) {
             remoteWithServerCheck.basicAuth(user, password+"w").get("basicAuth")
@@ -213,7 +200,7 @@ class AuthenticatedRemoteTests {
 
     @Test
     fun testErrorStatusCodesWithoutServerCheck() = runTest {
-        authentication.setTokenInvalid()
+        authentication.clear()
         val remoteWithoutServerCheck = testHttpServerAuthenticated(test, authentication)
         for(code in codes) {
             assertFailsWith(FetchException::class) {
@@ -224,7 +211,7 @@ class AuthenticatedRemoteTests {
 
     @Test
     fun testErrorStatusCodesWithServerCheck() = runTest {
-        authentication.setTokenInvalid()
+        authentication.clear()
         val remoteWithServerCheck = testHttpServerAuthenticated(testauthenticated, authentication)
         for(code in codes) {
             assertFailsWith(FetchException::class) {
@@ -235,7 +222,7 @@ class AuthenticatedRemoteTests {
 
     @Test
     fun testHeadersWithoutServerCheck() = runTest {
-        authentication.setTokenInvalid()
+        authentication.clear()
         val remoteWithoutServerCheck = testHttpServerAuthenticated(test, authentication)
         val body: String = remoteWithoutServerCheck
             .acceptJson()
@@ -249,7 +236,7 @@ class AuthenticatedRemoteTests {
 
     @Test
     fun testHeadersWithServerCheck() = runTest {
-        authentication.setTokenInvalid()
+        authentication.clear()
         val remoteWithServerCheck = testHttpServerAuthenticated(testauthenticated, authentication)
         val body: String = remoteWithServerCheck
             .acceptJson()
@@ -263,7 +250,7 @@ class AuthenticatedRemoteTests {
 
     @Test
     fun testCRUDMethodsWithoutServerCheck() = runTest {
-        authentication.setTokenInvalid()
+        authentication.clear()
         val remoteWithoutServerCheck = testHttpServerAuthenticated(rest, authentication)
         val texts = mutableListOf<String>()
         val ids = mutableListOf<String>()
@@ -276,16 +263,16 @@ class AuthenticatedRemoteTests {
             ids.add(id)
             assertTrue(saved.contains(text), "saved entity not like posted")
         }
-        authentication.setTokenInvalid()
+        authentication.clear()
         val load = remoteWithoutServerCheck.acceptJson().get().body()
         for (text in texts) {
             assertTrue(load.contains(text), "posted entity is not in list")
         }
         for (id in ids) {
-            authentication.setTokenInvalid()
+            authentication.clear()
             remoteWithoutServerCheck.delete(id)
         }
-        authentication.setTokenInvalid()
+        authentication.clear()
         val empty = remoteWithoutServerCheck.acceptJson().get().body()
         for (text in texts) {
             assertFalse(empty.contains(text), "deleted entity is in list")
@@ -294,7 +281,7 @@ class AuthenticatedRemoteTests {
 
     @Test
     fun testCRUDMethodsWithServerCheck() = runTest {
-        authentication.setTokenInvalid()
+        authentication.clear()
         val remoteWithServerCheck = testHttpServerAuthenticated(restauthenticated, authentication)
         val texts = mutableListOf<String>()
         val ids = mutableListOf<String>()
@@ -307,16 +294,16 @@ class AuthenticatedRemoteTests {
             ids.add(id)
             assertTrue(saved.contains(text), "saved entity not like posted")
         }
-        authentication.setTokenInvalid()
+        authentication.clear()
         val load = remoteWithServerCheck.acceptJson().get().body()
         for (text in texts) {
             assertTrue(load.contains(text), "posted entity is not in list")
         }
         for (id in ids) {
-            authentication.setTokenInvalid()
+            authentication.clear()
             remoteWithServerCheck.delete(id)
         }
-        authentication.setTokenInvalid()
+        authentication.clear()
         val empty = remoteWithServerCheck.acceptJson().get().body()
         for (text in texts) {
             assertFalse(empty.contains(text), "deleted entity is in list")
@@ -325,11 +312,11 @@ class AuthenticatedRemoteTests {
 
     @Test
     fun testByteArrayWithoutServerCheck() = runTest {
-        authentication.setTokenInvalid()
+        authentication.clear()
         val remoteWithoutServerCheck = testHttpServerAuthenticated("extra/arraybuffer", authentication)
         val data = Uint8Array(arrayOf(1, 2, 3))
         val response = remoteWithoutServerCheck.arrayBuffer(data.buffer).post()
-        val result = Uint8Array(response.getArrayBuffer())
+        val result = Uint8Array(response.arrayBuffer())
         var i = 0
         while (i < result.length) {
             assertEquals(data[i], result[i], "binary data is not matched")
@@ -339,11 +326,11 @@ class AuthenticatedRemoteTests {
 
     @Test
     fun testByteArrayWithServerCheck() = runTest {
-        authentication.setTokenInvalid()
+        authentication.clear()
         val remoteWithServerCheck = testHttpServerAuthenticated("extraauthenticated/arraybuffer", authentication)
         val data = Uint8Array(arrayOf(1, 2, 3))
         val response = remoteWithServerCheck.arrayBuffer(data.buffer).post()
-        val result = Uint8Array(response.getArrayBuffer())
+        val result = Uint8Array(response.arrayBuffer())
         var i = 0
         while (i < result.length) {
             assertEquals(data[i], result[i], "binary data is not matched")

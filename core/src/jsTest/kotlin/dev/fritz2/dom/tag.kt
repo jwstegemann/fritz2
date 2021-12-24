@@ -89,7 +89,6 @@ class TagTests {
         val testRange = (0..4)
         val testIds = testRange.map { "testId$it" }
         val testClasses = testRange.map { "testClass$it" }
-        val testFLow = flowOf(testIds)
 
         render {
             ul(id = "list") {

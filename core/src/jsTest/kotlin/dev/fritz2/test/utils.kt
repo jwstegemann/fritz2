@@ -48,5 +48,5 @@ suspend fun testHttpServer(endpoint: Endpoint): Request {
 }
 
 suspend fun testHttpServerAuthenticated(endpoint: Endpoint, authentication: Authentication<Principal>): Request {
-    return http("http://localhost:3000/$endpoint").authentication(authentication)
+    return http("http://localhost:3000/$endpoint").use(authentication)
 }
