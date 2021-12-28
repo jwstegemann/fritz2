@@ -14,6 +14,10 @@ import kotlinx.coroutines.flow.map
  * get the principal information, when available, to append it to your requests.
  * To start the authentication process you also need to implement the [authenticate] method in which
  * you specify what is needed to authenticate the user (e.g. open up a login modal).
+ * When your authentication process is done you have to call the [complete] function and set your
+ * principal. Then all requests, that were made in the meantime, getting re-executed with the additional
+ * authentication information provided by the [addAuthentication] method.
+ * When the user logs out you have to call the [clear] function to clear all authentication information.
  */
 abstract class Authentication<P> : Interceptor {
 
