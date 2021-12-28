@@ -100,5 +100,5 @@ abstract class Authentication<P> : Interceptor {
     /**
      * flow with the principal information
      */
-    val principal = principalStore.data
+    val principal: Flow<P?> = principalStore.data
 }
