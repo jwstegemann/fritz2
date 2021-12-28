@@ -179,134 +179,12 @@ fun Application.main() {
             }
         }
 
-        // RESTFul API with authentication-check
-        route("/restauthenticated") {
-            get {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    val body = CRUDRepo.read()
-                    log.info("GET: $body")
-                    call.respond(body)
-                }
-            }
-            get("{id}") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    val id = call.parameters["id"] ?: throw MissingRequestParameterException("id")
-                    val json = CRUDRepo.read(id) ?: throw NotFoundException("item with id=$id not found")
-                    log.info("GET: id=$id; json=$json")
-                    call.respond(json)
-                }
-            }
-            post {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    val body = call.receive<Json>()
-                    log.info("POST: $body")
-                    call.respond(CRUDRepo.create(body))
-                }
-            }
-            put("{id}") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    val id = call.parameters["id"] ?: throw MissingRequestParameterException("id")
-                    val body = call.receive<Json>()
-                    log.info("PUT: $id; $body")
-                    call.respond(CRUDRepo.update(id, body))
-                }
-            }
-            delete("{id}") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    val id = call.parameters["id"] ?: throw MissingRequestParameterException("id")
-                    CRUDRepo.delete(id)
-                    call.response.status(HttpStatusCode.OK)
-                }
-            }
-            get("/clear") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    CRUDRepo.clear()
-                    call.response.status(HttpStatusCode.OK)
-                }
-            }
-        }
-
-        // Remote Basics with authentication-check
-        route("testauthenticated") {
+        // Authentication-Interceptor test
+        route("authenticated") {
             get("/get") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    call.respondText("GET")
-                }
-
-            }
-            delete("/delete") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    call.respondText("DELETE")
-                }
-            }
-            patch("/patch") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    call.respondText("PATCH")
-                }
-            }
-            post("/post") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    call.respondText("POST")
-                }
-            }
-            put("/put") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    call.respondText("PUT")
-                }
-            }
-            head("/head") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    call.respondText("HEAD")
-                }
-            }
-            get("/status/{code}") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    val code = call.parameters["code"] ?: throw MissingRequestParameterException("code")
-                    call.respond(HttpStatusCode.fromValue(code.toInt()))
-                }
-            }
-            authenticate("auth") {
-                get("/basicAuth") {
-                    if(call.request.headers["authtoken"] != "123456789"){
-                        call.respond(HttpStatusCode.Unauthorized)
-                    } else {
-                        val principal = call.principal<UserIdPrincipal>()!!
-                        call.respondText("Hello ${principal.name}")
-                    }
-                }
-            }
-            get("/headers") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    call.respond(call.request.headers.toMap())
-                }
+                val isValid = call.request.headers["authtoken"] != "123456789"
+                if(isValid) call.respond(HttpStatusCode.Unauthorized)
+                else call.respondText("GET")
             }
         }
 
@@ -322,31 +200,6 @@ fun Application.main() {
                         is PartData.FormItem -> log.info("[formData] received: ${it.value}")
                         is PartData.FileItem -> log.info("[formData] received: ${it.originalFileName}")
                         else -> log.info("[formData] received: name=${it.name}, contentType=${it.contentType}")
-                    }
-                }
-            }
-        }
-
-        route("/extraauthenticated") {
-            post("/arraybuffer") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    val received = call.receiveChannel().toByteArray()
-                    log.info("[arraybuffer] received: $received")
-                    call.respondBytes(received)
-                }
-            }
-            post("/formData") {
-                if(call.request.headers["authtoken"] != "123456789"){
-                    call.respond(HttpStatusCode.Unauthorized)
-                } else {
-                    call.receiveMultipart().forEachPart {
-                        when (it) {
-                            is PartData.FormItem -> log.info("[formData] received: ${it.value}")
-                            is PartData.FileItem -> log.info("[formData] received: ${it.originalFileName}")
-                            else -> log.info("[formData] received: name=${it.name}, contentType=${it.contentType}")
-                        }
                     }
                 }
             }
