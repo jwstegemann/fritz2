@@ -6,20 +6,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
- * Special [Interceptor] to use in at [http] API to provide an authentication
+ * Special [Middleware] to use in at [http] API to provide an authentication
  * for every request. The type-parameter [P] represents the principal information,
  * which contains all login-information needed to authenticate against the external HTTP API.
  * The principal information is held inside and available as flow by calling [principal].
- * To use this [Interceptor] you need to implement the [addAuthentication] method, where you
- * get the principal information, when available, to append it to your requests.
- * To start the authentication process you also need to implement the [authenticate] method in which
+ * To use this [Middleware] you need to implement the [addAuthentication] method, where you
+ * get the principal information, when available, to add it to your requests.
+ * To implement the client side of authentication process you also need to implement the [authenticate] method in which
  * you specify what is needed to authenticate the user (e.g. open up a login modal).
  * When your authentication process is done you have to call the [complete] function and set your
- * principal. Then all requests, that were made in the meantime, getting re-executed with the additional
+ * principal. Then all requests, that have been initialized while the authentication was running, will be re-executed with the additional
  * authentication information provided by the [addAuthentication] method.
  * When the user logs out you have to call the [clear] function to clear all authentication information.
  */
-abstract class Authentication<P> : Interceptor {
+abstract class Authentication<P> : Middleware {
 
     private val principalStore = storeOf<P?>(null)
 
@@ -29,7 +29,7 @@ abstract class Authentication<P> : Interceptor {
 
     final override suspend fun handleResponse(response: Response): Response =
         if (statusCodesEnforcingAuthentication.contains(response.status)) {
-            if (state.let {it?.isActive} != true) {
+            if (state.let { it?.isActive } != true) {
                 start()
             }
             getPrincipal()
@@ -62,7 +62,7 @@ abstract class Authentication<P> : Interceptor {
     suspend fun getPrincipal(): P? = state?.await()
 
     /**
-     * handles the authentication process.
+     * implements the authentication process.
      * E.g. opens up a login-modal or brwosing to the login-page.
      */
     abstract fun authenticate()
@@ -78,7 +78,7 @@ abstract class Authentication<P> : Interceptor {
     }
 
     /**
-     * completes the authentication by setting the principal
+     * completes the authentication process by setting the principal
      *
      * @param principal principal to set
      */
@@ -100,12 +100,12 @@ abstract class Authentication<P> : Interceptor {
     }
 
     /**
-     * flow with the information whether the user is authenticated or not
+     * flow of the information whether the user is authenticated or not
      */
     val authenticated: Flow<Boolean> = principalStore.data.map { it != null }
 
     /**
-     * flow with the principal information
+     * flow of the current principal
      */
     val principal: Flow<P?> = principalStore.data
 }

@@ -13,7 +13,7 @@ data class Principal(
     val token: String? = null,
 )
 
-abstract class TestAuthenticationInterceptor : Authentication<Principal>() {
+abstract class TestAuthenticationMiddleware : Authentication<Principal>() {
 
     val valid = Principal("NameOfUser", "123456789")
 
@@ -28,7 +28,7 @@ class AuthenticatedRemoteTests {
 
     @Test
     fun testSingleAuthentication() = runTest {
-        val simple = object : TestAuthenticationInterceptor() {
+        val simple = object : TestAuthenticationMiddleware() {
             override fun authenticate() {
                 complete(valid)
             }
@@ -46,7 +46,7 @@ class AuthenticatedRemoteTests {
 
     @Test
     fun testMultipleAuthentication() = runTest {
-        val simple = object : TestAuthenticationInterceptor() {
+        val simple = object : TestAuthenticationMiddleware() {
             override fun authenticate() {
                 window.setTimeout({
                     complete(valid)

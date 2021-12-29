@@ -8,13 +8,7 @@ import org.w3c.xhr.FormData
 import kotlinx.browser.window as browserWindow
 import org.w3c.fetch.Response as FetchResponse
 
-
-/**
- * creates a new [Request]
- *
- * @param baseUrl the common base of all urls that you want to call using the template
- */
-fun http(baseUrl: String = "") = Request(url = baseUrl)
+external fun btoa(decoded: String): String
 
 /**
  * [Exception] type for handling http exceptions
@@ -32,7 +26,8 @@ class FetchException(val statusCode: Int, val body: String, val response: Respon
  */
 open class Response(
     private val response: FetchResponse,
-    val request: Request
+    val request: Request,
+    val propagate: Boolean = true
 ) {
     val ok: Boolean get() = response.ok
 
@@ -41,6 +36,13 @@ open class Response(
     val url: String get() = response.url
 
     val statusText: String get() = response.statusText
+
+    fun copy(
+        response: FetchResponse = this.response,
+        request: Request = this.request,
+        propagate: Boolean = this.propagate
+    ) =
+        Response(response, request, propagate)
 
     /**
      * returns the [Headers] from the given [Response]
@@ -75,31 +77,6 @@ open class Response(
 }
 
 /**
- * interface to do interceptions at http calls.
- * It can modify each request and handle all responses in a specified way.
- */
-interface Interceptor {
-
-    /**
-     * enriches requests with additional information.
-     * E.g. it could append special header-information, which are needed for authentication.
-     *
-     * @param request [Request] that gets enriched
-     * @return enriched [Request]
-     */
-    suspend fun enrichRequest(request: Request): Request
-
-    /**
-     * handles responses.
-     * E.g. it could handle specific status-codes and log error messages.
-     *
-     * @param response [Response] to handle
-     * @return handled [Response]
-     */
-    suspend fun handleResponse(response: Response): Response
-}
-
-/**
  * Represents the common fields and attributes of an HTTP request.
  *
  * Use it to define common headers, error-handling, base url, etc. for a specific API for example.
@@ -120,7 +97,7 @@ open class Request(
     val integrity: String? = undefined,
     val keepalive: Boolean? = undefined,
     val reqWindow: Any? = undefined,
-    val interceptors: List<Interceptor> = emptyList()
+    val middlewares: List<Middleware> = emptyList(),
 ) {
 
     /**
@@ -140,11 +117,11 @@ open class Request(
         integrity: String? = this.integrity,
         keepalive: Boolean? = this.keepalive,
         reqWindow: Any? = this.reqWindow,
-        interceptors: List<Interceptor> = this.interceptors,
+        middlewares: List<Middleware> = this.middlewares,
     ) = Request(
         url, method, headers, body, referrer, referrerPolicy,
         mode, credentials, cache, redirect, integrity, keepalive,
-        reqWindow, interceptors
+        reqWindow, middlewares
     )
 
     /**
@@ -156,12 +133,15 @@ open class Request(
     suspend fun execute(): Response {
 
         var request = this
-        for(interceptor in interceptors) request = interceptor.enrichRequest(request)
+        for (interceptor in middlewares) request = interceptor.enrichRequest(request)
 
         val init = request.buildInit()
 
         var response = Response(browserWindow.fetch(url, init).await(), request)
-        for(interceptor in interceptors) response = interceptor.handleResponse(response)
+        for (interceptor in middlewares.reversed()) {
+            if (!response.propagate) break;
+            response = interceptor.handleResponse(response)
+        }
 
         if (response.ok) return response
         else throw FetchException(response.status, response.body(), response)
@@ -402,11 +382,25 @@ open class Request(
     fun reqWindow(value: Any): Request = copy(reqWindow = value)
 
     /**
-     * adds an [Interceptor] to handle all requests and responses.
+     * adds an [Middleware] to handle all requests and responses.
      *
-     * @param interceptor [Interceptor] to use by this request
+     * @param middleware [Middleware] to use by this request
      */
-    fun use(interceptor: Interceptor): Request = copy(interceptors = interceptors + interceptor)
+    fun use(middleware: Middleware): Request = copy(middlewares = middlewares + middleware)
+
+    /**
+     * adds [Middleware]s to handle all requests and responses.
+     *
+     * @param middlewares [Middleware] to use by this request
+     */
+    fun use(vararg middlewares: Middleware): Request = copy(middlewares = this.middlewares + middlewares.asList())
+
 }
 
-external fun btoa(decoded: String): String
+/**
+ * creates a new [Request]
+ *
+ * @param baseUrl the common base of all urls that you want to call using the template
+ */
+fun http(baseUrl: String = "") = Request(url = baseUrl)
+
