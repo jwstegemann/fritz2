@@ -1,13 +1,12 @@
 package dev.fritz2.repositories.rest
 
 import dev.fritz2.remote.Request
-import dev.fritz2.remote.getBody
+import dev.fritz2.remote.Response
 import dev.fritz2.remote.http
 import dev.fritz2.repositories.EntityRepository
 import dev.fritz2.repositories.QueryRepository
 import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
-import org.w3c.fetch.Response
 
 
 /**
@@ -68,7 +67,7 @@ class RestEntity<T, I>(
         try {
             resource.deserialize(
                 remote.accept(contentType).get(resource.serializeId(id))
-                    .getBody()
+                    .body()
             )
         } catch (throwable: Throwable) {
             throw ResourceNotFoundException(resource.serializeId(id), throwable)
@@ -87,7 +86,7 @@ class RestEntity<T, I>(
             .body(resource.serialize(entity)).run {
                 if (resource.idProvider(entity) == initialId) {
                     resource.deserialize(
-                        accept(contentType).post().getBody()
+                        accept(contentType).post().body()
                     )
                 } else {
                     put(resource.serializeId(resource.idProvider(entity)))
@@ -165,7 +164,7 @@ class RestQuery<T, I, Q>(
      * @return result of the query
      */
     override suspend fun query(query: Q): List<T> =
-        resource.deserializeList(remote.buildQuery(query).getBody())
+        resource.deserializeList(remote.buildQuery(query).body())
 
     /**
      * updates given entities in the [entities] list
@@ -201,7 +200,7 @@ class RestQuery<T, I, Q>(
             .body(resource.serialize(entity)).run {
                 if (resource.idProvider(entity) == initialId) {
                     entities + resource.deserialize(
-                        accept(contentType).post().getBody()
+                        accept(contentType).post().body()
                     )
                 } else {
                     put(resource.serializeId(resource.idProvider(entity)))
