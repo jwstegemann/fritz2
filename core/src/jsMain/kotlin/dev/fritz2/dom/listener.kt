@@ -3,6 +3,7 @@ package dev.fritz2.dom
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.*
@@ -85,6 +86,7 @@ fun DomListener<InputEvent, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
 /**
  * Gives you the new value as [String] from the targeting [Element] when enter is pressed.
  */
+@Deprecated("use keys functions instead in order to filter and handle specific keys")
 fun DomListener<KeyboardEvent, HTMLInputElement>.enter(): Flow<String> =
     events.mapNotNull {
         if (Key(it) == Keys.Enter) it.target.unsafeCast<HTMLInputElement>().value
@@ -94,6 +96,7 @@ fun DomListener<KeyboardEvent, HTMLInputElement>.enter(): Flow<String> =
 /**
  * Gives you the new value as [Double] from the targeting [Element] when enter is pressed.
  */
+@Deprecated("use keys functions instead in order to filter and handle specific keys")
 fun DomListener<KeyboardEvent, HTMLInputElement>.enterAsNumber(): Flow<Double> =
     events.mapNotNull {
         if (Key(it) == Keys.Enter) it.target.unsafeCast<HTMLInputElement>().valueAsNumber
@@ -115,6 +118,7 @@ fun DomListener<Event, HTMLTextAreaElement>.values(): Flow<String> =
 /**
  * Gives you the new value as [String] from the targeting [Element].
  */
+@Deprecated("use keys functions instead in order to filter and handle specific keys")
 fun DomListener<KeyboardEvent, HTMLTextAreaElement>.enter(): Flow<String> =
     events.mapNotNull {
         if (Key(it) == Keys.Enter) it.target.unsafeCast<HTMLTextAreaElement>().value
@@ -160,15 +164,84 @@ fun DomListener<Event, HTMLSelectElement>.selectedText(): Flow<String> =
 /**
  * Gives you the pressed key as [Key] from a [KeyboardEvent].
  */
+@Deprecated("use keys functions instead in order to filter and handle specific keys")
 fun <X : Element> DomListener<KeyboardEvent, X>.key(): Flow<Key> = events.map { Key(it) }
+
+/**
+ * Gives you the pressed key as [Key] (including the [KeyboardEvent]) filtered by a given set of keys.
+ * All other events from other keys will be dropped!
+ *
+ * This is very helpful if the event bubbling should be stopped for example, as the filtering has to be done before
+ * and the bubbling should in most cases only be stopped for the handled keys and not the other ones!
+ *
+ * @param keys a set with all keys that should be handled. Use [Keys] object for predefined key constants.
+ */
+fun <X : Element> DomListener<KeyboardEvent, X>.keys(keys: Set<Key>) =
+    events.map { Key(it) to it }.filter { keys.contains(it.first) }
+
+/**
+ * Gives you the pressed key as [Key] paired with the [KeyboardEvent] filtered by arbitrary given keys.
+ * All other events from other keys will be dropped!
+ *
+ * This is very helpful if the event bubbling should be stopped for example, as the filtering has to be done before
+ * and the bubbling should in most cases only be stopped for the handled keys and not the other ones!
+ *
+ * @param keys an arbitrary amount of keys which should be handled. Use [Keys] object for predefined key constants.
+ */
+fun <X : Element> DomListener<KeyboardEvent, X>.keys(vararg keys: Key) = this.keys(keys.toSet())
+
+/**
+ * Gives you the pressed key as [Key] paired with the [KeyboardEvent] filtered by exactly one key.
+ * All other events from other keys will be dropped!
+ *
+ * This is very helpful if the event bubbling should be stopped for example, as the filtering has to be done before
+ * and the bubbling should in most cases only be stopped for the handled key and for other ones!
+ *
+ * @param key the key to be handled. Use [Keys] object for predefined key constants.
+ */
+fun <X : Element> DomListener<KeyboardEvent, X>.keys(key: Key) = events.map { Key(it) to it }.filter { it.first == key }
 
 /**
  * Gives you the pressed key as [Key] from a [KeyboardEvent].
  */
+@Deprecated("use keys functions instead in order to filter and handle specific keys")
 fun WindowListener<KeyboardEvent>.key(): Flow<Key> = events.map { Key(it) }
 
 /**
- * Merges mutiple [DomListener] like the analog method on [Flow]s
+ * Gives you the pressed key as [Key] paired with the [KeyboardEvent] filtered by a given set of keys.
+ * All other events from other keys will be dropped!
+ *
+ * This is very helpful if the event bubbling should be stopped for example, as the filtering has to be done before
+ * and the bubbling should in most cases only be stopped for the handled keys and not the other ones!
+ *
+ * @param keys a set with all keys that should be handled. Use [Keys] object for predefined key constants.
+ */
+fun WindowListener<KeyboardEvent>.keys(keys: Set<Key>) = events.map { Key(it) to it }.filter { keys.contains(it.first) }
+
+/**
+ * Gives you the pressed key as [Key] paired with the [KeyboardEvent] filtered by arbitrary given keys.
+ * All other events from other keys will be dropped!
+ *
+ * This is very helpful if the event bubbling should be stopped for example, as the filtering has to be done before
+ * and the bubbling should in most cases only be stopped for the handled keys and not the other ones!
+ *
+ * @param keys an arbitrary amount of keys which should be handled. Use [Keys] object for predefined key constants.
+ */
+fun WindowListener<KeyboardEvent>.keys(vararg keys: Key) = this.keys(keys.toSet())
+
+/**
+ * Gives you the pressed key as [Key] paired with the [KeyboardEvent] filtered by exactly one key.
+ * All other events from other keys will be dropped!
+ *
+ * This is very helpful if the event bubbling should be stopped for example, as the filtering has to be done before
+ * and the bubbling should in most cases only be stopped for the handled key and for other ones!
+ *
+ * @param key the key to be handled. Use [Keys] object for predefined key constants.
+ */
+fun WindowListener<KeyboardEvent>.keys(key: Key) = events.map { Key(it) to it }.filter { it.first == key }
+
+/**
+ * Merges multiple [DomListener] like the analog method on [Flow]s
  *
  * @param listener the [DomListener] to merge
  */

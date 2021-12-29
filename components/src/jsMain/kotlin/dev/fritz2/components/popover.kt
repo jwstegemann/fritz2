@@ -9,7 +9,7 @@ import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.key
+import dev.fritz2.dom.keys
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -20,8 +20,8 @@ import dev.fritz2.styling.theme.PopoverSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLElement
 
 /**
@@ -154,7 +154,7 @@ open class PopoverComponent : Component<Unit>,
 
     private val visible = object : RootStore<Boolean>(false) {
         val toggle = handle { !it }
-        val closeOnKey = handle<Key> { _, _ -> false }
+        val closeOnKey = handle<Unit> { _, _ -> false }
     }
 
     override fun render(
@@ -167,7 +167,7 @@ open class PopoverComponent : Component<Unit>,
         context.apply {
 
             if (this@PopoverComponent.closeOnEscape.value) {
-                Window.keyups.key().filter { it == Keys.Escape } handledBy this@PopoverComponent.visible.closeOnKey
+                Window.keyups.keys(Keys.Escape).map { } handledBy this@PopoverComponent.visible.closeOnKey
             }
 
             div(staticCss.name, id) {
