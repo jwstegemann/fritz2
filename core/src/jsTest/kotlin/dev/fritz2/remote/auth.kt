@@ -17,7 +17,7 @@ abstract class TestAuthenticationInterceptor : Authentication<Principal>() {
 
     val valid = Principal("NameOfUser", "123456789")
 
-    override fun addAuthentication(request: Request, principal: Principal?): Request {
+    final override fun addAuthentication(request: Request, principal: Principal?): Request {
         println("add principal: ${principal?.username}\n")
         return principal?.token?.let { request.header("authtoken", it) } ?: request
     }

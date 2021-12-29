@@ -25,17 +25,9 @@ abstract class Authentication<P> : Interceptor {
 
     private var state: CompletableDeferred<P>? = null
 
-    /**
-     * List of HTTP-Status-Codes forcing an authentication.
-     * Defaults are 401 (unauthorized) and 403 (forbidden).
-     */
-    open val statusCodesEnforcingAuthentication: List<Int> = listOf(401, 403)
+    final override suspend fun enrichRequest(request: Request): Request = addAuthentication(request, getPrincipal())
 
-    abstract fun addAuthentication(request: Request, principal: P?): Request
-
-    override suspend fun enrichRequest(request: Request): Request = addAuthentication(request, getPrincipal())
-
-    override suspend fun handleResponse(response: Response): Response =
+    final override suspend fun handleResponse(response: Response): Response =
         if (statusCodesEnforcingAuthentication.contains(response.status)) {
             if (state.let {it?.isActive} != true) {
                 start()
@@ -43,6 +35,21 @@ abstract class Authentication<P> : Interceptor {
             getPrincipal()
             response.request.execute()
         } else response
+
+    /**
+     * List of HTTP-Status-Codes forcing an authentication.
+     * Defaults are 401 (unauthorized) and 403 (forbidden).
+     */
+    open val statusCodesEnforcingAuthentication: Set<Int> = setOf(401, 403)
+
+    /**
+     * Adds the authentication information to all requests by using the given [principal].
+     *
+     * @param request [Request] to enrich
+     * @param principal principle containing authentication information
+     * @return enriched [Request]
+     */
+    abstract fun addAuthentication(request: Request, principal: P?): Request
 
     /**
      * Returns the current principal information.
