@@ -153,7 +153,7 @@ class SeqTests {
                 ul(id = listId) {
                     store.renderEach(Entity::id) {
                         val valueStore = it.sub(valueLens)
-                        li { valueStore.data.asText() }
+                        li { valueStore.data.renderText() }
                     }
                 }
                 button(id = appendBtnId) { clicks handledBy store.append }

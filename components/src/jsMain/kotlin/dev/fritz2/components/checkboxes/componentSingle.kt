@@ -99,7 +99,7 @@ open class CheckboxComponent(protected val value: Store<Boolean>?) :
 
     fun label(value: Flow<String>) {
         label = {
-            span { value.asText() }
+            span { value.renderText() }
         }
     }
 

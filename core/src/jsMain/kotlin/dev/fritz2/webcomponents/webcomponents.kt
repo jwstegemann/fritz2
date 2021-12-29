@@ -4,16 +4,13 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.WithDomNode
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
+import dev.fritz2.utils.nativeFunction
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 import kotlin.reflect.KClass
-
-@JsName("Function")
-private external fun <T> nativeFunction(vararg params: String, block: String): T
-
 
 internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsClass<T>, observedAttributes: Array<out String>) -> () -> dynamic =
     nativeFunction(
@@ -55,21 +52,21 @@ internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsC
  * Implement this class to build a WebComponent.
  */
 @JsName("WebComponent")
-abstract class WebComponent<T : Element>(observeAttributes: Boolean = true) {
+abstract class WebComponent<E : Element>(observeAttributes: Boolean = true) {
     /**
      * this method builds the content of the WebComponent that will be added to it's shadow-DOM.
      * @param element the newly created element, when the component is used
      * @param shadowRoot the shadowRoot the content will be added to
      * @return a [Tag] representing the content of the component
      */
-    abstract fun RenderContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T>
+    abstract fun RenderContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<E>
 
     @JsName("initializeInternal")
-    fun initializeInternal(element: HTMLElement, shadowRoot: ShadowRoot): Tag<T> {
+    fun initializeInternal(element: HTMLElement, shadowRoot: ShadowRoot): Tag<E> {
         return object : RenderContext {
             override val job = Job()
             override val scope: Scope = Scope()
-            override fun <E : Node, T : WithDomNode<E>> register(element: T, content: (T) -> Unit): T {
+            override fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W {
                 content(element)
                 return element
             }
@@ -185,11 +182,11 @@ fun <X : Element, T : WebComponent<X>> registerWebComponent(
  *  @param constructor class describing the component to register implementing [WebComponent]
  *  @param observedAttributes attributes to be observed, changes will occur on [WebComponent.attributeChanges]
  */
-fun <X : Element, T : WebComponent<X>> registerWebComponent(
+fun <E : Element, T : WebComponent<E>> registerWebComponent(
     localName: String,
     constructor: KClass<T>,
     vararg observedAttributes: String
 ) {
-    val customElementConstructor = createClass<X, T>()(constructor.js, observedAttributes)
+    val customElementConstructor = createClass<E, T>()(constructor.js, observedAttributes)
     window.customElements.define(localName, customElementConstructor)
 }

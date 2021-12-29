@@ -158,4 +158,29 @@ class TagTests {
         }
     }
 
+    @Test
+    fun testAnnex() = runTest {
+        initDocument()
+
+        val contentId = Id.next()
+
+        render {
+            div(id = contentId) {
+                div {
+                    +"inner div"
+                }.annex {
+                    span { +"outer div" }
+                }
+                span { +"after inner div" }
+            }
+        }
+
+        delay(100)
+
+        assertEquals(
+            document.getElementById(contentId)?.innerHTML,
+            "<div>inner div</div><span>outer div</span><span>after inner div</span>"
+        )
+    }
+
 }

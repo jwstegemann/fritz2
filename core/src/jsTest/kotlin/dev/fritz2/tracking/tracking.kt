@@ -38,8 +38,8 @@ class TrackingTests {
 
         render {
             div {
-                span(id = transactionId) { store.running.data.map { if (it) transactionText else "" }.asText() }
-                span(id = valueId) { store.data.asText() }
+                span(id = transactionId) { store.running.data.map { if (it) transactionText else "" }.renderText() }
+                span(id = valueId) { store.data.renderText() }
             }
         }
         delay(200)
@@ -91,7 +91,7 @@ class TrackingTests {
 
         render {
             div {
-                span(id = resultElementId) { store.running.data.map { if (it) "running" else "stopped" }.asText() }
+                span(id = resultElementId) { store.running.data.map { if (it) "running" else "stopped" }.renderText() }
             }
         }
 

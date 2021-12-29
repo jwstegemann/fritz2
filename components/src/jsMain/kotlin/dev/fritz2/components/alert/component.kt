@@ -109,7 +109,7 @@ open class AlertComponent : Component<Unit> {
                 margins { right { smaller } }
                 fontWeight { bold }
             }) {
-                value.asText()
+                value.renderText()
             }
         }
     }
@@ -125,7 +125,7 @@ open class AlertComponent : Component<Unit> {
 
     fun content(value: Flow<String>) {
         content {
-            span { value.asText() }
+            span { value.renderText() }
         }
     }
 

@@ -47,7 +47,7 @@ class WebComponentTests {
             attributeChanges("test") handledBy { store.update(it) }
 
             return div(id = "contents") {
-                store.data.asText()
+                store.data.renderText()
             }
         }
     }

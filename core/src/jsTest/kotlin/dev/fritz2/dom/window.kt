@@ -34,7 +34,7 @@ class WindowTest {
 
             section {
                 div(id = divId) {
-                    store.data.asText()
+                    store.data.renderText()
                     label(id = labelId) { }
                 }
 
@@ -77,7 +77,7 @@ class WindowTest {
 
             section {
                 div(id = divId) {
-                    store.data.asText()
+                    store.data.renderText()
                     label(id = labelId) { }
                 }
 
@@ -126,7 +126,7 @@ class WindowTest {
 
             section {
                 div(id = divId) {
-                    windowStore.data.asText()
+                    windowStore.data.renderText()
                 }
 
                 button(id = buttonId) {}

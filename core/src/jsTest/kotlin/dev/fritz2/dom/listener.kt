@@ -76,7 +76,7 @@ class ListenerTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.asText()
+                    store.data.renderText()
                 }
                 button(id = buttonId) {
                     clicks.preventDefault() handledBy store.addADot
@@ -133,7 +133,7 @@ class ListenerTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.asText()
+                    store.data.renderText()
                 }
                 button(id = buttonId) {
                     clicks handledBy store.addDot
@@ -194,7 +194,7 @@ class ListenerTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.asText()
+                    store.data.renderText()
                 }
                 input(id = inputId) {
                     keydowns.key() handledBy store.keyPressed
@@ -214,10 +214,10 @@ class ListenerTest {
         val keyboardEvents = listOf(Keys.ArrowUp, Keys.ArrowDown)
             .flatMap {
                 listOf(
-                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, ctrlKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, altKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, shiftKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, metaKey = true))
+                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, ctrlKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, altKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, shiftKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, metaKey = true))
                 )
             }
 
@@ -261,7 +261,7 @@ class ListenerTest {
                     keyups.enter() handledBy store.update
                 }
                 p(id = resultId) {
-                    store.data.asText()
+                    store.data.renderText()
                 }
             }
         }
@@ -274,7 +274,7 @@ class ListenerTest {
         assertEquals("start", resultNode.textContent, "wrong dom content of result-node")
 
         input.value = "some other content"
-        val event = KeyboardEvent("keyup", KeyboardEventInit(Keys.Enter.key, code = Keys.Enter.key))
+        val event = KeyboardEvent("keyup", KeyboardEventInit(Keys.Enter.name, code = Keys.Enter.name))
         input.dispatchEvent(event)
         delay(200)
 

@@ -238,8 +238,6 @@ open class AppFrameComponent : Component<Unit>,
         id: String?,
         prefix: String
     ) {
-        Window.touchends.events handledBy { document.documentElement?.scrollTo(0.0,0.0) }
-
         context.apply {
             div({
                 display(
