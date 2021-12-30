@@ -1,6 +1,6 @@
 plugins {
-    kotlin("multiplatform") version "1.6.0" apply false
-    kotlin("plugin.serialization") version "1.6.0" apply false
+    kotlin("multiplatform") version "1.6.10" apply false
+    kotlin("plugin.serialization") version "1.6.10" apply false
     id("org.jetbrains.dokka") version "1.4.32"
     id("maven-publish")
     signing
@@ -8,15 +8,15 @@ plugins {
 
 ext {
     // Dependencies
-    set("kotlinVersion", "1.6.0")
-    set("coroutinesVersion", "1.6.0-RC")
+    set("kotlinVersion", "1.6.10")
+    set("coroutinesVersion", "1.6.0")
     set("kotlinpoetVersion", "1.10.2")
-    set("compileTestingVersion", "1.4.5")
+    set("compileTestingVersion", "1.4.7")
     set("stylisVersion", "4.0.2")
     set("murmurhashVersion", "2.0.0")
     set("logbackVersion", "1.2.1")
     set("ktorVersion", "1.6.4") // upgrade to 1.5 produces test errors
-    set("serializationVersion", "1.3.0")
+    set("serializationVersion", "1.3.1")
 }
 
 allprojects {

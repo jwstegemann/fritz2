@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    id("com.google.devtools.ksp") version "1.6.0-1.0.1"
+    id("com.google.devtools.ksp") version "1.6.10-1.0.2"
 }
 
 ksp {
@@ -24,10 +24,10 @@ kotlin {
                 api(project(":core"))
                 implementation("com.squareup:kotlinpoet:${rootProject.ext["kotlinpoetVersion"]}")
                 implementation("com.squareup:kotlinpoet-ksp:${rootProject.ext["kotlinpoetVersion"]}")
-                implementation("com.google.devtools.ksp:symbol-processing-api:1.5.31-1.0.0")
-                api(kotlin("reflect:1.5.0"))
-                api(kotlin("script-runtime:1.5.0"))
-                implementation("com.google.auto.service:auto-service-annotations:1.0")
+                implementation("com.google.devtools.ksp:symbol-processing-api:1.6.10-1.0.2")
+                api(kotlin("reflect:1.6.10"))
+                api(kotlin("script-runtime:1.6.10"))
+                implementation("com.google.auto.service:auto-service-annotations:1.0.1")
             }
         }
 
