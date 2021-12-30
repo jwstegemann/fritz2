@@ -527,44 +527,5 @@ class LensesProcessorTests {
             ),
         )
 
-        @JvmStatic
-        fun getGenericDataClasses() = listOf(
-            SourceFile.kotlin(
-                "dataClassesForLensesTests.kt", """
-                package dev.fritz2.lenstest
-
-                import dev.fritz2.lenses.Lenses
-
-                @Lenses
-                data class Foo<T> {
-                    companion object
-                }
-            """
-            ),
-            SourceFile.kotlin(
-                "dataClassesForLensesTests.kt", """
-                package dev.fritz2.lenstest
-
-                import dev.fritz2.lenses.Lenses
-
-                @Lenses
-                data class Foo<T, E> {
-                    companion object
-                }
-            """
-            ),
-            SourceFile.kotlin(
-                "dataClassesForLensesTests.kt", """
-                package dev.fritz2.lenstest
-
-                import dev.fritz2.lenses.Lenses
-
-                @Lenses
-                data class Foo<T, E, V> {
-                    companion object
-                }
-            """
-            )
-        )
     }
 }
