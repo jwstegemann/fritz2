@@ -6,6 +6,8 @@ plugins {
     signing
 }
 
+// consider moving to idiomatic solution of gradle for dependency sharing once it is ready:
+// https://docs.gradle.org/current/userguide/platforms.html
 ext {
     // Dependencies
     set("kotlinVersion", "1.6.10")
@@ -15,8 +17,12 @@ ext {
     set("stylisVersion", "4.0.2")
     set("murmurhashVersion", "2.0.0")
     set("logbackVersion", "1.2.1")
-    set("ktorVersion", "1.6.4") // upgrade to 1.5 produces test errors
+    set("ktorVersion", "1.6.4") // upgrade to 1.6.5 produces test errors
     set("serializationVersion", "1.3.1")
+    set("kspVersion", "1.6.10-1.0.2")
+    set("autoServiceVersion", "1.0.1")
+    set("junitJupiterParamsVersion", "5.8.1")
+    set("assertJVersion", "3.19.0")
 }
 
 allprojects {
