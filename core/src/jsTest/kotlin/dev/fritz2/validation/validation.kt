@@ -2,6 +2,7 @@ package dev.fritz2.validation
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
@@ -128,6 +129,37 @@ class ValidationJSTests {
 
         assertEquals(carName, divData.innerText, "c4: car name has changed")
         assertEquals(3, divMessages.childElementCount, "c4: there is not 3 message")
+    }
+
+    @Test
+    fun testSimpleValidation() = runTest {
+        initDocument()
+
+val store = storeOf<String, Message, Unit>("foo") { inspector, _ ->
+    if(inspector.data.isBlank()) add(Message("input is blank"))
+}.apply { enableContinuousValidation(Unit) }
+
+        val idMessages = "div-${Id.next()}"
+
+        render {
+            div(id = idMessages) {
+                store.validator.data.renderEach(into = this) {
+                    span { +it.text }
+                }
+            }
+        }
+
+        delay(200)
+        val messageElem = document.getElementById(idMessages) as HTMLDivElement
+        assertEquals(0, messageElem.childElementCount)
+
+        store.update("123")
+        delay(200)
+        assertEquals(0, messageElem.childElementCount, "wrong number of messages after update")
+
+        store.update(" ")
+        delay(200)
+        assertEquals(1, messageElem.childElementCount, "expected validation message")
     }
 
 }
