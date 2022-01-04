@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
  * A [Store] that is derived from your [RootStore] or another [SubStore] that represents a part of the data-model of its parent.
  * Use the .sub-factory-method on the parent [Store] to create it.
  */
-class SubStore<P, T>(
+open class SubStore<P, T>(
     val parent: Store<P>,
     private val lens: Lens<P, T>
 ) : Store<T> {
@@ -40,7 +40,8 @@ class SubStore<P, T>(
         get() = lens.get(parent.current)
 
     /**
-     * Since a [SubStore] is just a view on a [RootStore] holding the real value, it forwards the [Update] to it, using it's [Lens] to transform it.
+     * Since a [SubStore] is just a view on its parent [Store],
+     * it forwards the [Update] to it, using its [Lens] to transform it.
      */
     override suspend fun enqueue(update: QueuedUpdate<T>) {
         parent.enqueue(QueuedUpdate({

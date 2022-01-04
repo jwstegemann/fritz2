@@ -16,22 +16,16 @@ val carNameIsBlank = Message("car name can not be blank")
 val colorValuesAreToLow = Message("color members are lower then 0")
 val colorValuesAreToHigh = Message("color members are greater then 255")
 
-val carValidator = object: Validator<Car, Message, Unit>() {
-    override fun validate(inspector: Inspector<Car>, metadata: Unit): List<Message> {
-        val msgs = mutableListOf<Message>()
-
-        if (inspector.data.name.isBlank())
-            msgs.add(carNameIsBlank)
+val carValidator get() = object : Validator<Car, Message, Unit>() {
+    override fun MutableList<Message>.validate(inspector: Inspector<Car>, metadata: Unit) {
+        if (inspector.data.name.isBlank()) add(carNameIsBlank)
 
         if (inspector.data.color.r < 0 || inspector.data.color.g < 0 || inspector.data.color.b < 0)
-            msgs.add(colorValuesAreToLow)
+            add(colorValuesAreToLow)
 
         if (inspector.data.color.r > 255 || inspector.data.color.g > 255 || inspector.data.color.b > 255)
-            msgs.add(colorValuesAreToHigh)
-
-        return msgs
+            add(colorValuesAreToHigh)
     }
-
 }
 
 class ValidationTests {
@@ -43,9 +37,9 @@ class ValidationTests {
         val c3 = Car("car2", Color(256, 256, 256))
         val c4 = Car(" ", Color(256, -1, 120))
 
-        assertEquals(carNameIsBlank, carValidator.validate(c1, Unit).first())
-        assertEquals(colorValuesAreToLow, carValidator.validate(c2, Unit).first())
-        assertEquals(colorValuesAreToHigh, carValidator.validate(c3, Unit).first())
-        assertEquals(3, carValidator.validate(c4, Unit).size, "number of messages not right")
+        assertEquals(carNameIsBlank, carValidator.getMessages(c1, Unit).first())
+        assertEquals(colorValuesAreToLow, carValidator.getMessages(c2, Unit).first())
+        assertEquals(colorValuesAreToHigh, carValidator.getMessages(c3, Unit).first())
+        assertEquals(3, carValidator.getMessages(c4, Unit).size, "number of messages not right")
     }
 }

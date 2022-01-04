@@ -2,12 +2,15 @@ package dev.fritz2.binding
 
 import dev.fritz2.dom.html.WithJob
 import dev.fritz2.identification.Id
-import dev.fritz2.identification.RootInspector
+import dev.fritz2.identification.Inspector
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.resource.Resource
+import dev.fritz2.validation.ValidatingStore
+import dev.fritz2.validation.ValidationMessage
+import dev.fritz2.validation.Validator
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -262,12 +265,26 @@ open class RootStore<T>(
 }
 
 /**
- * convenience method to create a simple [RootStore] without any handlers, etc.
+ * convenience function to create a simple [RootStore] without any handlers, etc.
  *
  * @param initialData the first current value of this [Store]
  * @param id the id of this store. ids of [SubStore]s will be concatenated.
  */
 fun <T> storeOf(initialData: T, id: String = Id.next()) = RootStore(initialData, id)
 
-@Deprecated("Not needed anymore. Use given inspector in validate method.", ReplaceWith(""))
-fun <T> Store<T>.inspect(data: T) = RootInspector(data)
+/**
+ * convenience function to create a simple [RootStore] without any handlers and with an [Validator]
+ * which gets implemented by the given [validate] function.
+ *
+ * @param initialData the first current value of this [Store]
+ * @param id the id of this store. ids of [SubStore]s will be concatenated.
+ * @param validate function to validate the data inside the [Store]
+ */
+inline fun <D, M: ValidationMessage, T> storeOf(
+    initialData: D, id: String = Id.next(),
+    crossinline validate: MutableList<M>.(Inspector<D>, T) -> Unit
+): ValidatingStore<D, M, T> = object : RootStore<D>(initialData, id), ValidatingStore<D,M,T> {
+    override val validator: Validator<D, M, T> = object : Validator<D, M, T>() {
+        override fun MutableList<M>.validate(inspector: Inspector<D>, metadata: T) = validate(inspector, metadata)
+    }
+}

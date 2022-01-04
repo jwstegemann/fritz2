@@ -1,7 +1,7 @@
 package dev.fritz2.validation
 
 import dev.fritz2.identification.Inspector
-import dev.fritz2.identification.inspect
+import dev.fritz2.identification.inspectorOf
 
 /**
  * Describes the logic for validating a given data-model.
@@ -12,35 +12,17 @@ import dev.fritz2.identification.inspect
  * in the `commonMain` section of your Kotlin multiplatform project.
  * Then you can write the validation logic once and use them in the JS and JVM world.
  */
-actual abstract class Validator<D, M : ValidationMessage, T> actual constructor() {
-
-    private var state: List<M> = emptyList()
-
-    /**
-     * Represents the current [List] of [ValidationMessage]s.
-     */
-    val current: List<M>
-        get() = state
-
-    /**
-     * Resets the validation result.
-     *
-     * @param messages list of messages to reset to. Default is an empty list.
-     */
-    fun reset(messages: List<M> = emptyList()) {
-        state = messages
-    }
+actual abstract class Validator<D, M : ValidationMessage, T> {
 
     /**
      * validates the given [inspector] and it's containing data
-     * by using the given [metadata] and returns
-     * a [List] of [ValidationMessage]s.
+     * by using the given [metadata] and adds validation messages if needed.
+     * To add a message use the [MutableList.add] function.
      *
      * @param inspector inspector containing the data to validate
      * @param metadata extra information for the validation process
-     * @return [List] of [ValidationMessage]s
      */
-    actual abstract fun validate(inspector: Inspector<D>, metadata: T): List<M>
+    actual abstract fun MutableList<M>.validate(inspector: Inspector<D>, metadata: T)
 
     /**
      * validates the given [data] by using the given [metadata] and returns
@@ -50,7 +32,7 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      * @param metadata extra information for the validation process
      * @return [List] of [ValidationMessage]s
      */
-    actual fun validate(data: D, metadata: T): List<M> = validate(inspect(data), metadata)
+    actual fun getMessages(data: D, metadata: T): List<M> = buildList { validate(inspectorOf(data), metadata) }
 
     /**
      * evaluates the [List] of [ValidationMessage] to see if your [data] is valid or not
@@ -59,6 +41,5 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      * @param metadata extra information for the validation process
      * @return a [Boolean] for using in if conditions
      */
-    fun isValid(data: D, metadata: T): Boolean = validate(inspect(data), metadata)
-        .also { state = it }.none(ValidationMessage::isError)
+    fun isValid(data: D, metadata: T): Boolean = getMessages(data, metadata).none(ValidationMessage::isError)
 }

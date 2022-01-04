@@ -1,7 +1,8 @@
 package dev.fritz2.validation
 
+import dev.fritz2.binding.Store
 import dev.fritz2.identification.Inspector
-import dev.fritz2.identification.inspect
+import dev.fritz2.identification.inspectorOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,7 @@ import kotlinx.coroutines.flow.map
  * in the `commonMain` section of your Kotlin multiplatform project.
  * Then you can write the validation logic once and use them in the JS and JVM world.
  */
-actual abstract class Validator<D, M : ValidationMessage, T> actual constructor() {
+actual abstract class Validator<D, M : ValidationMessage, T> {
 
     private val state = MutableStateFlow<List<M>>(emptyList())
 
@@ -55,14 +56,13 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
 
     /**
      * validates the given [inspector] and it's containing data
-     * by using the given [metadata] and returns
-     * a [List] of [ValidationMessage]s.
+     * by using the given [metadata] and adds validation messages if needed.
+     * To add a message use the [MutableList.add] function.
      *
      * @param inspector inspector containing the data to validate
      * @param metadata extra information for the validation process
-     * @return [List] of [ValidationMessage]s
      */
-    actual abstract fun validate(inspector: Inspector<D>, metadata: T): List<M>
+    actual abstract fun MutableList<M>.validate(inspector: Inspector<D>, metadata: T)
 
     /**
      * validates the given [data] by using the given [metadata] and returns
@@ -72,7 +72,8 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      * @param metadata extra information for the validation process
      * @return [List] of [ValidationMessage]s
      */
-    actual fun validate(data: D, metadata: T): List<M> = validate(inspect(data), metadata)
+    actual fun getMessages(data: D, metadata: T): List<M> =
+        buildList { validate(inspectorOf(data), metadata) }.also { state.value = it }
 
     /**
      * validates the given model by using the [validate] functions
@@ -80,17 +81,35 @@ actual abstract class Validator<D, M : ValidationMessage, T> actual constructor(
      *
      * @param data model to validate
      * @param metadata extra information for the validation process
-     * @return a [Boolean] for using in if conditions
+     * @return a [Boolean] when data is valid for using in if conditions
      */
-    fun isValid(data: D, metadata: T): Boolean {
-        val messages = validate(inspect(data), metadata)
-        state.value = messages
-        return messages.none(ValidationMessage::isError)
-    }
+    fun isValid(data: D, metadata: T): Boolean =
+        getMessages(data, metadata).none(ValidationMessage::isError)
 
     /**
      * A [Flow] representing the current state of the model (valid or not).
      */
-    val isValid: Flow<Boolean> by lazy { data.map { list -> list.none(ValidationMessage::isError) } }
+    val valid: Flow<Boolean> = data.map { it.none(ValidationMessage::isError) }
 }
 
+/**
+ * Extending a [Store] with validation possibility.
+ * Therefore, you need to specify the [validator] to use.
+ */
+interface ValidatingStore<D, M : ValidationMessage, T>: Store<D> {
+    /**
+     * [Validator] to be used.
+     */
+    val validator: Validator<D, M, T>
+
+    /**
+     * Call this function inside the init-block of your [Store] to
+     * enable automatic validation of new data.
+     */
+    fun enableContinuousValidation(metadata: T) {
+        syncBy(handle {
+            validator.isValid(it, metadata)
+            it
+        })
+    }
+}

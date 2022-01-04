@@ -1,6 +1,7 @@
 package dev.fritz2.validation
 
 import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
@@ -25,14 +26,13 @@ class ValidationJSTests {
         val c3 = Car("car2", Color(256, 256, 256))
         val c4 = Car(" ", Color(256, -1, 120))
 
-        val store =
-            object : RootStore<Car>(
-                Car(carName, Color(120, 120, 120))
-            ) {
-                override val update = handle<Car> { old, new ->
-                    if (carValidator.isValid(new, Unit)) new else old
-                }
+        val store = object : RootStore<Car>(Car(carName, Color(120, 120, 120))), ValidatingStore<Car, Message, Unit> {
+            override val validator: Validator<Car, Message, Unit> = carValidator
+
+            override val update: SimpleHandler<Car> = handle { old, new ->
+                if(validator.isValid(new, Unit)) new else old
             }
+        }
 
         val idData = "data-${Id.next()}"
         val idMessages = "messages-${Id.next()}"
@@ -45,21 +45,21 @@ class ValidationJSTests {
                     store.data.map { it.name }.renderText()
                 }
                 div(id = idMessages) {
-                    carValidator.data.renderEach(Message::text, into = this) {
+                    store.validator.data.renderEach(Message::text, into = this) {
                         p {
                             +it.text
                         }
                     }
                 }
                 div(id = idFind) {
-                    carValidator.find { it == colorValuesAreToLow }.mapNotNull { it }.render {
+                    store.validator.find { it == colorValuesAreToLow }.mapNotNull { it }.render {
                         p {
                             +it.text
                         }
                     }
                 }
                 div(id = idFilter) {
-                    carValidator.filter { it == colorValuesAreToLow }.render {
+                    store.validator.filter { it == colorValuesAreToLow }.render {
                         p {
                             +(it.firstOrNull()?.text ?: "")
                         }
@@ -85,7 +85,7 @@ class ValidationJSTests {
         assertEquals(
             carNameIsBlank.text,
             divMessages.firstElementChild?.textContent,
-            "c1: there is not expected message"
+            "c1: there is no expected message"
         )
         assertEquals(0, findMessages.childElementCount, "c1 find: there is not 0 message")
 
@@ -109,7 +109,7 @@ class ValidationJSTests {
         assertEquals(
             colorValuesAreToLow.text,
             filterMessages.firstElementChild?.textContent,
-            "c2 filter: there is not expected message"
+            "c2 filter: there is no expected message"
         )
 
         store.update(c3)
@@ -120,7 +120,7 @@ class ValidationJSTests {
         assertEquals(
             colorValuesAreToHigh.text,
             divMessages.firstElementChild?.textContent,
-            "c3: there is not expected message"
+            "c3: there is no expected message"
         )
 
         store.update(c4)
