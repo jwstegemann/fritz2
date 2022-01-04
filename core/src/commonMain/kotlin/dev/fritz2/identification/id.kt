@@ -10,11 +10,3 @@ object Id {
         }
     }
 }
-
-/**
- * creates something like a UUID
- *
- * @return UUID as String
- */
-@Deprecated("use Id.next() instead", ReplaceWith("Id.next()"))
-expect fun uniqueId(): String
