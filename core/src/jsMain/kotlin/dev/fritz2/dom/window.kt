@@ -1,10 +1,14 @@
+@file:Suppress("unused")
 package dev.fritz2.dom
 
 import dev.fritz2.dom.html.EventType
 import dev.fritz2.dom.html.Events
 import kotlinx.browser.window
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.shareIn
 import org.w3c.dom.Window
 import org.w3c.dom.events.Event
 
@@ -13,6 +17,8 @@ import org.w3c.dom.events.Event
  */
 object Window {
     private val browserWindow: Window = window
+
+    private val scope = MainScope()
 
     /**
      * Creates a [WindowListener] for the given [EventType]
@@ -31,165 +37,166 @@ object Window {
             browserWindow.addEventListener(type.name, listener)
 
             awaitClose { browserWindow.removeEventListener(type.name, listener) }
-        })
+        }.shareIn(scope, SharingStarted.Lazily)
+    )
 
     val aborts
-        get() = subscribe(Events.abort)
+            by lazy { subscribe(Events.abort) }
     val afterprints
-        get() = subscribe(Events.afterprint)
+            by lazy { subscribe(Events.afterprint) }
     val beforeprints
-        get() = subscribe(Events.beforeprint)
+            by lazy { subscribe(Events.beforeprint) }
     val beforeunloads
-        get() = subscribe(Events.beforeunload)
+            by lazy { subscribe(Events.beforeunload) }
     val blurs
-        get() = subscribe(Events.blur)
+            by lazy { subscribe(Events.blur) }
     val canplays
-        get() = subscribe(Events.canplay)
+            by lazy { subscribe(Events.canplay) }
     val canplaythroughs
-        get() = subscribe(Events.canplaythrough)
+            by lazy { subscribe(Events.canplaythrough) }
     val changes
-        get() = subscribe(Events.change)
+            by lazy { subscribe(Events.change) }
     val clicks
-        get() = subscribe(Events.click)
+            by lazy { subscribe(Events.click) }
     val contextmenus
-        get() = subscribe(Events.contextmenu)
+            by lazy { subscribe(Events.contextmenu) }
     val copys
-        get() = subscribe(Events.copy)
+            by lazy { subscribe(Events.copy) }
     val cuts
-        get() = subscribe(Events.cut)
+            by lazy { subscribe(Events.cut) }
     val dblclicks
-        get() = subscribe(Events.dblclick)
+            by lazy { subscribe(Events.dblclick) }
     val drags
-        get() = subscribe(Events.drag)
+            by lazy { subscribe(Events.drag) }
     val dragends
-        get() = subscribe(Events.dragend)
+            by lazy { subscribe(Events.dragend) }
     val dragenters
-        get() = subscribe(Events.dragenter)
+            by lazy { subscribe(Events.dragenter) }
     val dragleaves
-        get() = subscribe(Events.dragleave)
+            by lazy { subscribe(Events.dragleave) }
     val dragovers
-        get() = subscribe(Events.dragover)
+            by lazy { subscribe(Events.dragover) }
     val dragstarts
-        get() = subscribe(Events.dragstart)
+            by lazy { subscribe(Events.dragstart) }
     val drops
-        get() = subscribe(Events.drop)
+            by lazy { subscribe(Events.drop) }
     val durationchanges
-        get() = subscribe(Events.durationchange)
+            by lazy { subscribe(Events.durationchange) }
     val endeds
-        get() = subscribe(Events.ended)
+            by lazy { subscribe(Events.ended) }
     val focuss
-        get() = subscribe(Events.focus)
+            by lazy { subscribe(Events.focus) }
     val focusins
-        get() = subscribe(Events.focusin)
+            by lazy { subscribe(Events.focusin) }
     val focusouts
-        get() = subscribe(Events.focusout)
+            by lazy { subscribe(Events.focusout) }
     val fullscreenchanges
-        get() = subscribe(Events.fullscreenchange)
+            by lazy { subscribe(Events.fullscreenchange) }
     val fullscreenerrors
-        get() = subscribe(Events.fullscreenerror)
+            by lazy { subscribe(Events.fullscreenerror) }
     val hashchanges
-        get() = subscribe(Events.hashchange)
+            by lazy { subscribe(Events.hashchange) }
     val inputs
-        get() = subscribe(Events.input)
+            by lazy { subscribe(Events.input) }
     val invalids
-        get() = subscribe(Events.invalid)
+            by lazy { subscribe(Events.invalid) }
     val keydowns
-        get() = subscribe(Events.keydown)
+            by lazy { subscribe(Events.keydown) }
     val keypresss
-        get() = subscribe(Events.keypress)
+            by lazy { subscribe(Events.keypress) }
     val keyups
-        get() = subscribe(Events.keyup)
+            by lazy { subscribe(Events.keyup) }
     val loads
-        get() = subscribe(Events.load)
+            by lazy { subscribe(Events.load) }
     val loadeddatas
-        get() = subscribe(Events.loadeddata)
+            by lazy { subscribe(Events.loadeddata) }
     val loadedmetadatas
-        get() = subscribe(Events.loadedmetadata)
+            by lazy { subscribe(Events.loadedmetadata) }
     val loadstarts
-        get() = subscribe(Events.loadstart)
+            by lazy { subscribe(Events.loadstart) }
     val messages
-        get() = subscribe(Events.message)
+            by lazy { subscribe(Events.message) }
     val mousedowns
-        get() = subscribe(Events.mousedown)
+            by lazy { subscribe(Events.mousedown) }
     val mouseenters
-        get() = subscribe(Events.mouseenter)
+            by lazy { subscribe(Events.mouseenter) }
     val mouseleaves
-        get() = subscribe(Events.mouseleave)
+            by lazy { subscribe(Events.mouseleave) }
     val mousemoves
-        get() = subscribe(Events.mousemove)
+            by lazy { subscribe(Events.mousemove) }
     val mouseovers
-        get() = subscribe(Events.mouseover)
+            by lazy { subscribe(Events.mouseover) }
     val mouseouts
-        get() = subscribe(Events.mouseout)
+            by lazy { subscribe(Events.mouseout) }
     val mouseups
-        get() = subscribe(Events.mouseup)
+            by lazy { subscribe(Events.mouseup) }
     val offlines
-        get() = subscribe(Events.offline)
+            by lazy { subscribe(Events.offline) }
     val onlines
-        get() = subscribe(Events.online)
+            by lazy { subscribe(Events.online) }
     val opens
-        get() = subscribe(Events.open)
+            by lazy { subscribe(Events.open) }
     val pagehides
-        get() = subscribe(Events.pagehide)
+            by lazy { subscribe(Events.pagehide) }
     val pageshows
-        get() = subscribe(Events.pageshow)
+            by lazy { subscribe(Events.pageshow) }
     val pastes
-        get() = subscribe(Events.paste)
+            by lazy { subscribe(Events.paste) }
     val pauses
-        get() = subscribe(Events.pause)
+            by lazy { subscribe(Events.pause) }
     val plays
-        get() = subscribe(Events.play)
+            by lazy { subscribe(Events.play) }
     val playings
-        get() = subscribe(Events.playing)
+            by lazy { subscribe(Events.playing) }
     val popstates
-        get() = subscribe(Events.popstate)
+            by lazy { subscribe(Events.popstate) }
     val progresss
-        get() = subscribe(Events.progress)
+            by lazy { subscribe(Events.progress) }
     val ratechanges
-        get() = subscribe(Events.ratechange)
+            by lazy { subscribe(Events.ratechange) }
     val resizes
-        get() = subscribe(Events.resize)
+            by lazy { subscribe(Events.resize) }
     val resets
-        get() = subscribe(Events.reset)
+            by lazy { subscribe(Events.reset) }
     val scrolls
-        get() = subscribe(Events.scroll)
+            by lazy { subscribe(Events.scroll) }
     val searchs
-        get() = subscribe(Events.search)
+            by lazy { subscribe(Events.search) }
     val seekeds
-        get() = subscribe(Events.seeked)
+            by lazy { subscribe(Events.seeked) }
     val seekings
-        get() = subscribe(Events.seeking)
+            by lazy { subscribe(Events.seeking) }
     val selects
-        get() = subscribe(Events.select)
+            by lazy { subscribe(Events.select) }
     val shows
-        get() = subscribe(Events.show)
+            by lazy { subscribe(Events.show) }
     val stalleds
-        get() = subscribe(Events.stalled)
+            by lazy { subscribe(Events.stalled) }
     val storages
-        get() = subscribe(Events.storage)
+            by lazy { subscribe(Events.storage) }
     val submits
-        get() = subscribe(Events.submit)
+            by lazy { subscribe(Events.submit) }
     val suspends
-        get() = subscribe(Events.suspend)
+            by lazy { subscribe(Events.suspend) }
     val timeupdates
-        get() = subscribe(Events.timeupdate)
+            by lazy { subscribe(Events.timeupdate) }
     val toggles
-        get() = subscribe(Events.toggle)
+            by lazy { subscribe(Events.toggle) }
     val touchcancels
-        get() = subscribe(Events.touchcancel)
+            by lazy { subscribe(Events.touchcancel) }
     val touchends
-        get() = subscribe(Events.touchend)
+            by lazy { subscribe(Events.touchend) }
     val touchmoves
-        get() = subscribe(Events.touchmove)
+            by lazy { subscribe(Events.touchmove) }
     val touchstarts
-        get() = subscribe(Events.touchstart)
+            by lazy { subscribe(Events.touchstart) }
     val unloads
-        get() = subscribe(Events.unload)
+            by lazy { subscribe(Events.unload) }
     val volumechanges
-        get() = subscribe(Events.volumechange)
+            by lazy { subscribe(Events.volumechange) }
     val waitings
-        get() = subscribe(Events.waiting)
+            by lazy { subscribe(Events.waiting) }
     val wheels
-        get() = subscribe(Events.wheel)
+            by lazy { subscribe(Events.wheel) }
 }
 
