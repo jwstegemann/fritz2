@@ -185,6 +185,7 @@ open class SingleFileSelectionComponent : FileSelectionBaseComponent(),
  *
  * For the common configuration options @see [FileSelectionBaseComponent].
  */
+/*
 open class MultiFileSelectionComponent : FileSelectionBaseComponent(),
     Component<Flow<List<dev.fritz2.components.data.File>>> {
     override fun render(
@@ -226,3 +227,5 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(),
         return files!!
     }
 }
+
+ */
