@@ -239,7 +239,6 @@ open class Tag<out E : Element>(
 
     private fun addToClasses(classesToAdd: String) {
         className = classes(className, classesToAdd)
-        console.error("****" + className)
         updateClasses()
     }
 
