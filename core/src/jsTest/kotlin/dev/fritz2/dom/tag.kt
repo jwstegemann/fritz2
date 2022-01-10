@@ -167,7 +167,7 @@ class TagTests {
             div(id = contentId) {
                 div {
                     +"inner div"
-                }.annex {
+                }.annex.apply {
                     span { +"outer div" }
                 }
                 span { +"after inner div" }
