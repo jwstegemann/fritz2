@@ -395,11 +395,8 @@ open class Tag<out E : Element>(
     }
 
     /**
-     * renders some context next to this Tag on the same DOM-level
+     * provides [RenderContext] next to this [Tag] on the same DOM-level.
      *
-     * @param content lambda building the content to render
      */
-    fun <E : Element> annex(content: RenderContext.() -> Tag<E>) {
-        AnnexContext().content()
-    }
+    val annex: RenderContext by lazy { AnnexContext() }
 }
