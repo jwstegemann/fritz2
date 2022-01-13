@@ -1,7 +1,7 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.dom.html.Key
+import dev.fritz2.dom.html.Shortcut
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
@@ -172,16 +172,16 @@ class ListenerTest {
         val store = object : RootStore<String>("") {
             var countHandlerCalls = 0
 
-            val keyPressed = handle { _, key: Key ->
+            val keyPressed = handle { _, shortcut: Shortcut ->
                 countHandlerCalls++
                 var pressed = ""
                 when {
-                    key.alt -> pressed = "alt+"
-                    key.ctrl -> pressed = "ctrl+"
-                    key.meta -> pressed = "meta+"
-                    key.shift -> pressed = "shift+"
+                    shortcut.alt -> pressed = "alt+"
+                    shortcut.ctrl -> pressed = "ctrl+"
+                    shortcut.meta -> pressed = "meta+"
+                    shortcut.shift -> pressed = "shift+"
                 }
-                pressed += when (key) {
+                pressed += when (shortcut) {
                     Keys.ArrowUp -> "up"
                     Keys.ArrowDown -> "down"
                     else -> "unknown"
@@ -214,10 +214,10 @@ class ListenerTest {
         val keyboardEvents = listOf(Keys.ArrowUp, Keys.ArrowDown)
             .flatMap {
                 listOf(
-                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, ctrlKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, altKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, shiftKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.name, it.name, metaKey = true))
+                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, ctrlKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, altKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, shiftKey = true)),
+                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, metaKey = true))
                 )
             }
 
@@ -233,7 +233,7 @@ class ListenerTest {
                 e.metaKey -> expected = "meta+"
                 e.shiftKey -> expected = "shift+"
             }
-            expected += when (Key(e)) {
+            expected += when (Shortcut(e)) {
                 Keys.ArrowUp -> "up"
                 Keys.ArrowDown -> "down"
                 else -> "unknown"
@@ -274,7 +274,7 @@ class ListenerTest {
         assertEquals("start", resultNode.textContent, "wrong dom content of result-node")
 
         input.value = "some other content"
-        val event = KeyboardEvent("keyup", KeyboardEventInit(Keys.Enter.name, code = Keys.Enter.name))
+        val event = KeyboardEvent("keyup", KeyboardEventInit(Keys.Enter.key, code = Keys.Enter.key))
         input.dispatchEvent(event)
         delay(200)
 

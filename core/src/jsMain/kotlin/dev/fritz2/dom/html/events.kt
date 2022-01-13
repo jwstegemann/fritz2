@@ -261,36 +261,36 @@ object Events {
 }
 
 /**
- * This interface models the modifier keys, that enable combination of key shortcuts like "Strg + F" or alike.
+ * This interface models the modifier shortcuts, that enable combination of shortcuts like "STRG + F" or alike.
  *
- * If offers default implementation for concatenating modifier keys with "real" keys or just Strings to offer a
+ * If offers default implementation for concatenating modifiers with "real" shortcuts or just Strings to offer a
  * beautiful readable shortcut combination:
  * ```
- * // Start with modifier key and append just a String
+ * // Start with modifier shortcut and append just a String
  * Keys.Control + "K"
  * // or other way round
- * Key("K") + Keys.Control
+ * Shortcut("K") + Keys.Control
  * ```
  *
- * @see Key
+ * @see Shortcut
  * @see Keys
  */
-interface ModifierKey {
+interface ModifierShortcut {
     val ctrl: Boolean
     val alt: Boolean
     val shift: Boolean
     val meta: Boolean
 
     /**
-     * This operator function enables the concatenation with a key:
+     * This operator function enables the concatenation with a [Shortcut]:
      * ```
-     * Keys.Alt + Key("K")
+     * Keys.Alt + Shortcut("K")
      * ```
      *
-     * @see ModifierKey
+     * @see ModifierShortcut
      */
-    operator fun plus(other: Key): Key = Key(
-        other.name,
+    operator fun plus(other: Shortcut): Shortcut = Shortcut(
+        other.key,
         ctrl || other.ctrl,
         alt || other.alt,
         shift || other.shift,
@@ -304,19 +304,21 @@ interface ModifierKey {
      * Keys.Shift + "F"
      * ```
      *
-     * By default, the provided key name will be converted to lower-case if it is exactly one character long.
-     * This is a nice safety belt as most of the time one will compare a declared key to some key generated out of
-     * a keyboard event. The latter will always emit events with lower-case single letters, which requires the
-     * defined key also to hold the name of the key as lower-case:
+     * Be aware that the [Shortcut.key] property is *case sensitive* just likte the [KeyboardEvent.key] property.
+     * So in order to match a shortcut with a capital key of an event, you must the [Shortcut.shift] flag to `true`.
      * ```
-     * // some user hit "K" on keyboard -> event with key = "k" will be emitted
-     * keydowns.map { Key("K") == Key(it) } // would emit `false` without automatic normalization
+     * // A capital "K" should be matched, but would fail here:
+     * keydowns.map { shortcutOf(it) == Shortcut("K") } // would emit `false`!
+     * // Instead this will work:
+     * keydowns.map { shortcutOf(it) == Shortcut("K", shift = true) }
+     * // or with this operator an better readbility:
+     * keydowns.map { shortcutOf(it) == Keys.Shift + "K" }
      * ```
      *
-     * @see ModifierKey
+     * @see ModifierShortcut
      */
-    operator fun plus(other: String): Key = Key(
-        name = other,
+    operator fun plus(other: String): Shortcut = Shortcut(
+        key = other,
         ctrl,
         alt,
         shift,
@@ -325,14 +327,14 @@ interface ModifierKey {
 }
 
 /**
- * Enables combination of [ModifierKey]s like "Strg + Alt + F":
+ * Enables combination of [ModifierShortcut]s like "STRG + ALT + F":
  * ```
  * Keys.Control + Keys.Alt + "F"
  * ```
  *
- * @param other the modifier key to concatenate
+ * @param other the modifier shortcut to concatenate
  */
-operator fun ModifierKey.plus(other: ModifierKey): ModifierKey = object : ModifierKey {
+operator fun ModifierShortcut.plus(other: ModifierShortcut): ModifierShortcut = object : ModifierShortcut {
     override val ctrl = this@plus.ctrl || other.ctrl
     override val alt = this@plus.alt || other.alt
     override val shift = this@plus.shift || other.shift
@@ -340,93 +342,75 @@ operator fun ModifierKey.plus(other: ModifierKey): ModifierKey = object : Modifi
 }
 
 /**
- * [Key] represents a key based upon the "key" property of a [KeyboardEvent].
+ * [Shortcut] represents a grouping type upon the "key" and the modifier key properties of a [KeyboardEvent].
  * More info [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values)
  *
- * A key can be easily constructed by a [KeyboardEvent] which makes this abstraction so feasible to use with the
+ * A shortcut can be easily constructed by a [KeyboardEvent] which makes this abstraction so feasible to use with the
  * keyboard event handling like:
  * ```
  * div {
  *     // raw usage (prefer next example!)
- *     keydowns.map { Key(it) } handledBy { /* use Key-object for further processing */ }
+ *     keydowns.map { Shortcut(it) } handledBy { /* use object for further processing */ }
  *
- *     // stick to `keys` functions in most cases:
- *     keydowns.keys(Keys.Control + "K") handledBy { (key, event) ->
+ *     // use factory function to create a Shortcut object
+ *     keydowns.map { shortcutOf(it) } handledBy { /* use object for further processing */ }
+ *
+ *     // combine with `filter` functions is a common pattern:
+ *     keydowns.filter { shortcutOf(it) == Keys.Control + "k") handledBy {
  *         // only if combination was pressed and with access to the original event too!
  *         // all other key events will be ignored
  *     }
  * }
  * ```
  *
- * This class enables by its implementation of [ModifierKey] the concatenation with other modifier keys, but it prevents
- * the meaningless combination of "real" keys:
+ * This class enables by its implementation of [ModifierShortcut] the concatenation with other modifiers, but it
+ * prevents the meaningless combination of shortcuts:
  * ```
  * // this works:
- * Key("F") + Keys.Alt + Keys.Shift
+ * Shortcut("F") + Keys.Alt + Keys.Shift
  * // this won't work:
- * Key("F") + Key("P")
+ * Shortcut("F") + Shortcut("P")
  *
- * // Ths first example could also be constructed by appropriate ctor call:
- * Key("F", alt = true, shift = true)
+ * // Ths first example could also be constructed by an appropriate constructor call:
+ * Shortcut("F", alt = true, shift = true)
  * ```
  *
- * By default, the provided key name will be converted to lower-case if it is exactly one character long.
- * This is a nice safety belt as most of the time one will compare a declared key to some key generated out of
- * a keyboard event. The latter will always emit events with lower-case single letters, which requires the
- * defined key also to hold the name of the key as lower-case:
+ * Be aware that the [Shortcut.key] property is *case sensitive* just likte the [KeyboardEvent.key] property.
+ * So in order to match a shortcut with a capital key of an event, you must the [Shortcut.shift] flag to `true`.
  * ```
- * // some user hit "K" on keyboard -> event with key = "k" will be emitted
- * keydowns.map { Key("K") == Key(it) } // would emit `false` without automatic normalization
- * // Key("K") -> Key(name = "k", ...)
+ * // A capital "K" should be matched, but would fail here:
+ * keydowns.map { shortcutOf(it) == Shortcut("K") } // would emit `false`!
+ * // Instead this will work:
+ * keydowns.map { shortcutOf(it) == Shortcut("K", shift = true) }
+ * // or with this operator an better readbility:
+ * keydowns.map { shortcutOf(it) == Keys.Shift + "K" }
  * ```
+ * On the other hand there will be no matching for a lowercase key with `shift` property set to `true` either!
  *
- * It is known that the former behaviour can be bypassed by using the `copy` method of this data class.
- * As the automatic conversion can be considered rather as a benevolent tool to support the user than a strictly
- * enforced behaviour, this drawback is totally acceptable.
- *
- * @see ModifierKey
+ * @see ModifierShortcut
  * @see Keys
  */
-data class Key private constructor(
-    val name: String,
+data class Shortcut(
+    val key: String,
     override val ctrl: Boolean = false,
     override val alt: Boolean = false,
     override val shift: Boolean = false,
     override val meta: Boolean = false
-) : ModifierKey {
+) : ModifierShortcut {
     constructor(event: KeyboardEvent) : this(event.key, event.ctrlKey, event.altKey, event.shiftKey, event.metaKey)
 
-    companion object {
-        /**
-         * Use this factory instead of the primary constructor (which is intentionally private!), as this method
-         * will ensure that single letter key names will be converted automatically to lower-case.
-         * This acts as a safety belt when comparing a manual constructed `Key` with some key object from a
-         * keyboard event, which will always represent key names as lower-case in case of single letter ones.
-         *
-         * @see Key
-         */
-        operator fun invoke(
-            name: String,
-            ctrl: Boolean = false,
-            alt: Boolean = false,
-            shift: Boolean = false,
-            meta: Boolean = false
-        ) = Key(if (name.length > 1) name else name.lowercase(), ctrl, alt, shift, meta)
-    }
-
     /**
-     * This operator function enables the concatenation with additional modifier keys:
+     * This operator function enables the concatenation with additional modifier shortcuts:
      * ```
-     * Key("F") + Keys.Alt
+     * Shortcut("F") + Keys.Alt
      * // or even
-     * Key("F") + Keys.Alt + Keys.Shift
-     * ^^^^^^^^^^^^^^^^^^^
-     * will already result in a `Key`
+     * Shortcut("F") + Keys.Alt + Keys.Shift
+     * // will already result in a `Shortcut`
      * ```
      *
-     * @see ModifierKey
+     * @see ModifierShortcut
      */
-    operator fun plus(other: ModifierKey): Key = copy(
+    operator fun plus(other: ModifierShortcut): Shortcut = copy(
         ctrl = ctrl || other.ctrl,
         alt = alt || other.alt,
         shift = shift || other.shift,
@@ -435,327 +419,628 @@ data class Key private constructor(
 }
 
 /**
- * This object offers expressive access to predefined [Key]s and [ModifierKey]s taken from the
+ * The function generates a [Shortcut] object out of a [KeyboardEvent].
+ *
+ * @param event the event to convert into a [Shortcut]
+ */
+fun shortcutOf(event: KeyboardEvent) = Shortcut(event)
+
+/**
+ * This object offers expressive access to predefined [Shortcut]s and [ModifierShortcut]s taken from the
  * [specification](https://www.w3.org/TR/uievents-key/#named-key-attribute-values) extended with `Space` as
  * symbol for simple space.
  *
- * This enables a beautiful definition of Keys and keyboard shortcut combinations:
+ * This enables a beautiful definition of shortcuts:
  * ```
  * // define a commonly used combination
  * val searchKey = Keys.Shift + Keys.Alt + "F"
  *
  * // react only to a set of Keys e.g. to enable keyboard navigation of some component
  * div {
- *     keydowns.keys(Keys.Space, Keys.Enter).map { } handledBy selectItem
+ *     keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) }.map { } handledBy selectItem
  * }
  * ```
+ *
+ * In some cases, you need to check, whether an event contains a named-key as key property. There is a [Set] with all
+ * named-keys ready for this: [NamedKeys]
  */
 object Keys {
-    val Alt = object : ModifierKey {
+    val Alt = object : ModifierShortcut {
         override val ctrl = false
         override val alt = true
         override val shift = false
         override val meta = false
     }
-    val Control = object : ModifierKey {
+    val Control = object : ModifierShortcut {
         override val ctrl = true
         override val alt = false
         override val shift = false
         override val meta = false
     }
-    val Meta = object : ModifierKey {
+    val Meta = object : ModifierShortcut {
         override val ctrl = false
         override val alt = false
         override val shift = false
         override val meta = true
     }
-    val Shift = object : ModifierKey {
+    val Shift = object : ModifierShortcut {
         override val ctrl = false
         override val alt = false
         override val shift = true
         override val meta = false
     }
 
-    val AVRInput = Key("AVRInput")
-    val AVRPower = Key("AVRPower")
-    val Accept = Key("Accept")
-    val Again = Key("Again")
-    val AllCandidates = Key("AllCandidates")
-    val Alphanumeric = Key("Alphanumeric")
-    val AltGraph = Key("AltGraph")
-    val AppSwitch = Key("AppSwitch")
-    val ArrowDown = Key("ArrowDown")
-    val ArrowLeft = Key("ArrowLeft")
-    val ArrowRight = Key("ArrowRight")
-    val ArrowUp = Key("ArrowUp")
-    val Attn = Key("Attn")
-    val AudioBalanceLeft = Key("AudioBalanceLeft")
-    val AudioBalanceRight = Key("AudioBalanceRight")
-    val AudioBassBoostDown = Key("AudioBassBoostDown")
-    val AudioBassBoostToggle = Key("AudioBassBoostToggle")
-    val AudioBassBoostUp = Key("AudioBassBoostUp")
-    val AudioFaderFront = Key("AudioFaderFront")
-    val AudioFaderRear = Key("AudioFaderRear")
-    val AudioSurroundModeNext = Key("AudioSurroundModeNext")
-    val AudioTrebleDown = Key("AudioTrebleDown")
-    val AudioTrebleUp = Key("AudioTrebleUp")
-    val AudioVolumeDown = Key("AudioVolumeDown")
-    val AudioVolumeMute = Key("AudioVolumeMute")
-    val AudioVolumeUp = Key("AudioVolumeUp")
-    val Backspace = Key("Backspace")
-    val BrightnessDown = Key("BrightnessDown")
-    val BrightnessUp = Key("BrightnessUp")
-    val BrowserBack = Key("BrowserBack")
-    val BrowserFavorites = Key("BrowserFavorites")
-    val BrowserForward = Key("BrowserForward")
-    val BrowserHome = Key("BrowserHome")
-    val BrowserRefresh = Key("BrowserRefresh")
-    val BrowserSearch = Key("BrowserSearch")
-    val BrowserStop = Key("BrowserStop")
-    val Call = Key("Call")
-    val Camera = Key("Camera")
-    val CameraFocus = Key("CameraFocus")
-    val Cancel = Key("Cancel")
-    val CapsLock = Key("CapsLock")
-    val ChannelDown = Key("ChannelDown")
-    val ChannelUp = Key("ChannelUp")
-    val Clear = Key("Clear")
-    val Close = Key("Close")
-    val ClosedCaptionToggle = Key("ClosedCaptionToggle")
-    val CodeInput = Key("CodeInput")
-    val ColorF0Red = Key("ColorF0Red")
-    val ColorF1Green = Key("ColorF1Green")
-    val ColorF2Yellow = Key("ColorF2Yellow")
-    val ColorF3Blue = Key("ColorF3Blue")
-    val ColorF4Grey = Key("ColorF4Grey")
-    val ColorF5Brown = Key("ColorF5Brown")
-    val Compose = Key("Compose")
-    val ContextMenu = Key("ContextMenu")
-    val Convert = Key("Convert")
-    val Copy = Key("Copy")
-    val CrSel = Key("CrSel")
-    val Cut = Key("Cut")
-    val DVR = Key("DVR")
-    val Dead = Key("Dead")
-    val Delete = Key("Delete")
-    val Dimmer = Key("Dimmer")
-    val DisplaySwap = Key("DisplaySwap")
-    val Eisu = Key("Eisu")
-    val Eject = Key("Eject")
-    val End = Key("End")
-    val EndCall = Key("EndCall")
-    val Enter = Key("Enter")
-    val EraseEof = Key("EraseEof")
-    val Escape = Key("Escape")
-    val ExSel = Key("ExSel")
-    val Execute = Key("Execute")
-    val Exit = Key("Exit")
-    val F1 = Key("F1")
-    val F10 = Key("F10")
-    val F11 = Key("F11")
-    val F12 = Key("F12")
-    val F2 = Key("F2")
-    val F3 = Key("F3")
-    val F4 = Key("F4")
-    val F5 = Key("F5")
-    val F6 = Key("F6")
-    val F7 = Key("F7")
-    val F8 = Key("F8")
-    val F9 = Key("F9")
-    val FavoriteClear0 = Key("FavoriteClear0")
-    val FavoriteClear1 = Key("FavoriteClear1")
-    val FavoriteClear2 = Key("FavoriteClear2")
-    val FavoriteClear3 = Key("FavoriteClear3")
-    val FavoriteRecall0 = Key("FavoriteRecall0")
-    val FavoriteRecall1 = Key("FavoriteRecall1")
-    val FavoriteRecall2 = Key("FavoriteRecall2")
-    val FavoriteRecall3 = Key("FavoriteRecall3")
-    val FavoriteStore0 = Key("FavoriteStore0")
-    val FavoriteStore1 = Key("FavoriteStore1")
-    val FavoriteStore2 = Key("FavoriteStore2")
-    val FavoriteStore3 = Key("FavoriteStore3")
-    val FinalMode = Key("FinalMode")
-    val Find = Key("Find")
-    val Fn = Key("Fn")
-    val FnLock = Key("FnLock")
-    val GoBack = Key("GoBack")
-    val GoHome = Key("GoHome")
-    val GroupFirst = Key("GroupFirst")
-    val GroupLast = Key("GroupLast")
-    val GroupNext = Key("GroupNext")
-    val GroupPrevious = Key("GroupPrevious")
-    val Guide = Key("Guide")
-    val GuideNextDay = Key("GuideNextDay")
-    val GuidePreviousDay = Key("GuidePreviousDay")
-    val HangulMode = Key("HangulMode")
-    val HanjaMode = Key("HanjaMode")
-    val Hankaku = Key("Hankaku")
-    val HeadsetHook = Key("HeadsetHook")
-    val Help = Key("Help")
-    val Hibernate = Key("Hibernate")
-    val Hiragana = Key("Hiragana")
-    val HiraganaKatakana = Key("HiraganaKatakana")
-    val Home = Key("Home")
-    val Hyper = Key("Hyper")
-    val Info = Key("Info")
-    val Insert = Key("Insert")
-    val InstantReplay = Key("InstantReplay")
-    val JunjaMode = Key("JunjaMode")
-    val KanaMode = Key("KanaMode")
-    val KanjiMode = Key("KanjiMode")
-    val Katakana = Key("Katakana")
-    val Key11 = Key("Key11")
-    val Key12 = Key("Key12")
-    val LastNumberRedial = Key("LastNumberRedial")
-    val LaunchApplication1 = Key("LaunchApplication1")
-    val LaunchApplication2 = Key("LaunchApplication2")
-    val LaunchCalendar = Key("LaunchCalendar")
-    val LaunchContacts = Key("LaunchContacts")
-    val LaunchMail = Key("LaunchMail")
-    val LaunchMediaPlayer = Key("LaunchMediaPlayer")
-    val LaunchMusicPlayer = Key("LaunchMusicPlayer")
-    val LaunchPhone = Key("LaunchPhone")
-    val LaunchScreenSaver = Key("LaunchScreenSaver")
-    val LaunchSpreadsheet = Key("LaunchSpreadsheet")
-    val LaunchWebBrowser = Key("LaunchWebBrowser")
-    val LaunchWebCam = Key("LaunchWebCam")
-    val LaunchWordProcessor = Key("LaunchWordProcessor")
-    val Link = Key("Link")
-    val ListProgram = Key("ListProgram")
-    val LiveContent = Key("LiveContent")
-    val Lock = Key("Lock")
-    val LogOff = Key("LogOff")
-    val MailForward = Key("MailForward")
-    val MailReply = Key("MailReply")
-    val MailSend = Key("MailSend")
-    val MannerMode = Key("MannerMode")
-    val MediaApps = Key("MediaApps")
-    val MediaAudioTrack = Key("MediaAudioTrack")
-    val MediaClose = Key("MediaClose")
-    val MediaFastForward = Key("MediaFastForward")
-    val MediaLast = Key("MediaLast")
-    val MediaNextTrack = Key("MediaNextTrack")
-    val MediaPause = Key("MediaPause")
-    val MediaPlay = Key("MediaPlay")
-    val MediaPlayPause = Key("MediaPlayPause")
-    val MediaPreviousTrack = Key("MediaPreviousTrack")
-    val MediaRecord = Key("MediaRecord")
-    val MediaRewind = Key("MediaRewind")
-    val MediaSkipBackward = Key("MediaSkipBackward")
-    val MediaSkipForward = Key("MediaSkipForward")
-    val MediaStepBackward = Key("MediaStepBackward")
-    val MediaStepForward = Key("MediaStepForward")
-    val MediaStop = Key("MediaStop")
-    val MediaTopMenu = Key("MediaTopMenu")
-    val MediaTrackNext = Key("MediaTrackNext")
-    val MediaTrackPrevious = Key("MediaTrackPrevious")
-    val MicrophoneToggle = Key("MicrophoneToggle")
-    val MicrophoneVolumeDown = Key("MicrophoneVolumeDown")
-    val MicrophoneVolumeMute = Key("MicrophoneVolumeMute")
-    val MicrophoneVolumeUp = Key("MicrophoneVolumeUp")
-    val ModeChange = Key("ModeChange")
-    val NavigateIn = Key("NavigateIn")
-    val NavigateNext = Key("NavigateNext")
-    val NavigateOut = Key("NavigateOut")
-    val NavigatePrevious = Key("NavigatePrevious")
-    val New = Key("New")
-    val NextCandidate = Key("NextCandidate")
-    val NextFavoriteChannel = Key("NextFavoriteChannel")
-    val NextUserProfile = Key("NextUserProfile")
-    val NonConvert = Key("NonConvert")
-    val Notification = Key("Notification")
-    val NumLock = Key("NumLock")
-    val OnDemand = Key("OnDemand")
-    val Open = Key("Open")
-    val PageDown = Key("PageDown")
-    val PageUp = Key("PageUp")
-    val Pairing = Key("Pairing")
-    val Paste = Key("Paste")
-    val Pause = Key("Pause")
-    val PinPDown = Key("PinPDown")
-    val PinPMove = Key("PinPMove")
-    val PinPToggle = Key("PinPToggle")
-    val PinPUp = Key("PinPUp")
-    val PlaySpeedDown = Key("PlaySpeedDown")
-    val PlaySpeedReset = Key("PlaySpeedReset")
-    val PlaySpeedUp = Key("PlaySpeedUp")
-    val Power = Key("Power")
-    val PowerOff = Key("PowerOff")
-    val PreviousCandidate = Key("PreviousCandidate")
-    val Print = Key("Print")
-    val PrintScreen = Key("PrintScreen")
-    val Process = Key("Process")
-    val Props = Key("Props")
-    val RandomToggle = Key("RandomToggle")
-    val RcLowBattery = Key("RcLowBattery")
-    val RecordSpeedNext = Key("RecordSpeedNext")
-    val Redo = Key("Redo")
-    val RfBypass = Key("RfBypass")
-    val Romaji = Key("Romaji")
-    val STBInput = Key("STBInput")
-    val STBPower = Key("STBPower")
-    val Save = Key("Save")
-    val ScanChannelsToggle = Key("ScanChannelsToggle")
-    val ScreenModeNext = Key("ScreenModeNext")
-    val ScrollLock = Key("ScrollLock")
-    val Select = Key("Select")
-    val Settings = Key("Settings")
-    val SingleCandidate = Key("SingleCandidate")
-    val Soft1 = Key("Soft1")
-    val Soft2 = Key("Soft2")
-    val Soft3 = Key("Soft3")
-    val Soft4 = Key("Soft4")
-    val Space = Key(" ")
-    val SpeechCorrectionList = Key("SpeechCorrectionList")
-    val SpeechInputToggle = Key("SpeechInputToggle")
-    val SpellCheck = Key("SpellCheck")
-    val SplitScreenToggle = Key("SplitScreenToggle")
-    val Standby = Key("Standby")
-    val Subtitle = Key("Subtitle")
-    val Super = Key("Super")
-    val Symbol = Key("Symbol")
-    val SymbolLock = Key("SymbolLock")
-    val TV = Key("TV")
-    val TV3DMode = Key("TV3DMode")
-    val TVAntennaCable = Key("TVAntennaCable")
-    val TVAudioDescription = Key("TVAudioDescription")
-    val TVAudioDescriptionMixDown = Key("TVAudioDescriptionMixDown")
-    val TVAudioDescriptionMixUp = Key("TVAudioDescriptionMixUp")
-    val TVContentsMenu = Key("TVContentsMenu")
-    val TVDataService = Key("TVDataService")
-    val TVInput = Key("TVInput")
-    val TVInputComponent1 = Key("TVInputComponent1")
-    val TVInputComponent2 = Key("TVInputComponent2")
-    val TVInputComposite1 = Key("TVInputComposite1")
-    val TVInputComposite2 = Key("TVInputComposite2")
-    val TVInputHDMI1 = Key("TVInputHDMI1")
-    val TVInputHDMI2 = Key("TVInputHDMI2")
-    val TVInputHDMI3 = Key("TVInputHDMI3")
-    val TVInputHDMI4 = Key("TVInputHDMI4")
-    val TVInputVGA1 = Key("TVInputVGA1")
-    val TVMediaContext = Key("TVMediaContext")
-    val TVNetwork = Key("TVNetwork")
-    val TVNumberEntry = Key("TVNumberEntry")
-    val TVPower = Key("TVPower")
-    val TVRadioService = Key("TVRadioService")
-    val TVSatellite = Key("TVSatellite")
-    val TVSatelliteBS = Key("TVSatelliteBS")
-    val TVSatelliteCS = Key("TVSatelliteCS")
-    val TVSatelliteToggle = Key("TVSatelliteToggle")
-    val TVTerrestrialAnalog = Key("TVTerrestrialAnalog")
-    val TVTerrestrialDigital = Key("TVTerrestrialDigital")
-    val TVTimer = Key("TVTimer")
-    val Tab = Key("Tab")
-    val Teletext = Key("Teletext")
-    val Undo = Key("Undo")
-    val Unidentified = Key("Unidentified")
-    val VideoModeNext = Key("VideoModeNext")
-    val VoiceDial = Key("VoiceDial")
-    val WakeUp = Key("WakeUp")
-    val Wink = Key("Wink")
-    val Zenkaku = Key("Zenkaku")
-    val ZenkakuHankaku = Key("ZenkakuHankaku")
-    val ZoomIn = Key("ZoomIn")
-    val ZoomOut = Key("ZoomOut")
-    val ZoomToggle = Key("ZoomToggle")
+    val AVRInput = Shortcut("AVRInput")
+    val AVRPower = Shortcut("AVRPower")
+    val Accept = Shortcut("Accept")
+    val Again = Shortcut("Again")
+    val AllCandidates = Shortcut("AllCandidates")
+    val Alphanumeric = Shortcut("Alphanumeric")
+    val AltGraph = Shortcut("AltGraph")
+    val AppSwitch = Shortcut("AppSwitch")
+    val ArrowDown = Shortcut("ArrowDown")
+    val ArrowLeft = Shortcut("ArrowLeft")
+    val ArrowRight = Shortcut("ArrowRight")
+    val ArrowUp = Shortcut("ArrowUp")
+    val Attn = Shortcut("Attn")
+    val AudioBalanceLeft = Shortcut("AudioBalanceLeft")
+    val AudioBalanceRight = Shortcut("AudioBalanceRight")
+    val AudioBassBoostDown = Shortcut("AudioBassBoostDown")
+    val AudioBassBoostToggle = Shortcut("AudioBassBoostToggle")
+    val AudioBassBoostUp = Shortcut("AudioBassBoostUp")
+    val AudioFaderFront = Shortcut("AudioFaderFront")
+    val AudioFaderRear = Shortcut("AudioFaderRear")
+    val AudioSurroundModeNext = Shortcut("AudioSurroundModeNext")
+    val AudioTrebleDown = Shortcut("AudioTrebleDown")
+    val AudioTrebleUp = Shortcut("AudioTrebleUp")
+    val AudioVolumeDown = Shortcut("AudioVolumeDown")
+    val AudioVolumeMute = Shortcut("AudioVolumeMute")
+    val AudioVolumeUp = Shortcut("AudioVolumeUp")
+    val Backspace = Shortcut("Backspace")
+    val BrightnessDown = Shortcut("BrightnessDown")
+    val BrightnessUp = Shortcut("BrightnessUp")
+    val BrowserBack = Shortcut("BrowserBack")
+    val BrowserFavorites = Shortcut("BrowserFavorites")
+    val BrowserForward = Shortcut("BrowserForward")
+    val BrowserHome = Shortcut("BrowserHome")
+    val BrowserRefresh = Shortcut("BrowserRefresh")
+    val BrowserSearch = Shortcut("BrowserSearch")
+    val BrowserStop = Shortcut("BrowserStop")
+    val Call = Shortcut("Call")
+    val Camera = Shortcut("Camera")
+    val CameraFocus = Shortcut("CameraFocus")
+    val Cancel = Shortcut("Cancel")
+    val CapsLock = Shortcut("CapsLock")
+    val ChannelDown = Shortcut("ChannelDown")
+    val ChannelUp = Shortcut("ChannelUp")
+    val Clear = Shortcut("Clear")
+    val Close = Shortcut("Close")
+    val ClosedCaptionToggle = Shortcut("ClosedCaptionToggle")
+    val CodeInput = Shortcut("CodeInput")
+    val ColorF0Red = Shortcut("ColorF0Red")
+    val ColorF1Green = Shortcut("ColorF1Green")
+    val ColorF2Yellow = Shortcut("ColorF2Yellow")
+    val ColorF3Blue = Shortcut("ColorF3Blue")
+    val ColorF4Grey = Shortcut("ColorF4Grey")
+    val ColorF5Brown = Shortcut("ColorF5Brown")
+    val Compose = Shortcut("Compose")
+    val ContextMenu = Shortcut("ContextMenu")
+    val Convert = Shortcut("Convert")
+    val Copy = Shortcut("Copy")
+    val CrSel = Shortcut("CrSel")
+    val Cut = Shortcut("Cut")
+    val DVR = Shortcut("DVR")
+    val Dead = Shortcut("Dead")
+    val Delete = Shortcut("Delete")
+    val Dimmer = Shortcut("Dimmer")
+    val DisplaySwap = Shortcut("DisplaySwap")
+    val Eisu = Shortcut("Eisu")
+    val Eject = Shortcut("Eject")
+    val End = Shortcut("End")
+    val EndCall = Shortcut("EndCall")
+    val Enter = Shortcut("Enter")
+    val EraseEof = Shortcut("EraseEof")
+    val Escape = Shortcut("Escape")
+    val ExSel = Shortcut("ExSel")
+    val Execute = Shortcut("Execute")
+    val Exit = Shortcut("Exit")
+    val F1 = Shortcut("F1")
+    val F10 = Shortcut("F10")
+    val F11 = Shortcut("F11")
+    val F12 = Shortcut("F12")
+    val F2 = Shortcut("F2")
+    val F3 = Shortcut("F3")
+    val F4 = Shortcut("F4")
+    val F5 = Shortcut("F5")
+    val F6 = Shortcut("F6")
+    val F7 = Shortcut("F7")
+    val F8 = Shortcut("F8")
+    val F9 = Shortcut("F9")
+    val FavoriteClear0 = Shortcut("FavoriteClear0")
+    val FavoriteClear1 = Shortcut("FavoriteClear1")
+    val FavoriteClear2 = Shortcut("FavoriteClear2")
+    val FavoriteClear3 = Shortcut("FavoriteClear3")
+    val FavoriteRecall0 = Shortcut("FavoriteRecall0")
+    val FavoriteRecall1 = Shortcut("FavoriteRecall1")
+    val FavoriteRecall2 = Shortcut("FavoriteRecall2")
+    val FavoriteRecall3 = Shortcut("FavoriteRecall3")
+    val FavoriteStore0 = Shortcut("FavoriteStore0")
+    val FavoriteStore1 = Shortcut("FavoriteStore1")
+    val FavoriteStore2 = Shortcut("FavoriteStore2")
+    val FavoriteStore3 = Shortcut("FavoriteStore3")
+    val FinalMode = Shortcut("FinalMode")
+    val Find = Shortcut("Find")
+    val Fn = Shortcut("Fn")
+    val FnLock = Shortcut("FnLock")
+    val GoBack = Shortcut("GoBack")
+    val GoHome = Shortcut("GoHome")
+    val GroupFirst = Shortcut("GroupFirst")
+    val GroupLast = Shortcut("GroupLast")
+    val GroupNext = Shortcut("GroupNext")
+    val GroupPrevious = Shortcut("GroupPrevious")
+    val Guide = Shortcut("Guide")
+    val GuideNextDay = Shortcut("GuideNextDay")
+    val GuidePreviousDay = Shortcut("GuidePreviousDay")
+    val HangulMode = Shortcut("HangulMode")
+    val HanjaMode = Shortcut("HanjaMode")
+    val Hankaku = Shortcut("Hankaku")
+    val HeadsetHook = Shortcut("HeadsetHook")
+    val Help = Shortcut("Help")
+    val Hibernate = Shortcut("Hibernate")
+    val Hiragana = Shortcut("Hiragana")
+    val HiraganaKatakana = Shortcut("HiraganaKatakana")
+    val Home = Shortcut("Home")
+    val Hyper = Shortcut("Hyper")
+    val Info = Shortcut("Info")
+    val Insert = Shortcut("Insert")
+    val InstantReplay = Shortcut("InstantReplay")
+    val JunjaMode = Shortcut("JunjaMode")
+    val KanaMode = Shortcut("KanaMode")
+    val KanjiMode = Shortcut("KanjiMode")
+    val Katakana = Shortcut("Katakana")
+    val Key11 = Shortcut("Key11")
+    val Key12 = Shortcut("Key12")
+    val LastNumberRedial = Shortcut("LastNumberRedial")
+    val LaunchApplication1 = Shortcut("LaunchApplication1")
+    val LaunchApplication2 = Shortcut("LaunchApplication2")
+    val LaunchCalendar = Shortcut("LaunchCalendar")
+    val LaunchContacts = Shortcut("LaunchContacts")
+    val LaunchMail = Shortcut("LaunchMail")
+    val LaunchMediaPlayer = Shortcut("LaunchMediaPlayer")
+    val LaunchMusicPlayer = Shortcut("LaunchMusicPlayer")
+    val LaunchPhone = Shortcut("LaunchPhone")
+    val LaunchScreenSaver = Shortcut("LaunchScreenSaver")
+    val LaunchSpreadsheet = Shortcut("LaunchSpreadsheet")
+    val LaunchWebBrowser = Shortcut("LaunchWebBrowser")
+    val LaunchWebCam = Shortcut("LaunchWebCam")
+    val LaunchWordProcessor = Shortcut("LaunchWordProcessor")
+    val Link = Shortcut("Link")
+    val ListProgram = Shortcut("ListProgram")
+    val LiveContent = Shortcut("LiveContent")
+    val Lock = Shortcut("Lock")
+    val LogOff = Shortcut("LogOff")
+    val MailForward = Shortcut("MailForward")
+    val MailReply = Shortcut("MailReply")
+    val MailSend = Shortcut("MailSend")
+    val MannerMode = Shortcut("MannerMode")
+    val MediaApps = Shortcut("MediaApps")
+    val MediaAudioTrack = Shortcut("MediaAudioTrack")
+    val MediaClose = Shortcut("MediaClose")
+    val MediaFastForward = Shortcut("MediaFastForward")
+    val MediaLast = Shortcut("MediaLast")
+    val MediaNextTrack = Shortcut("MediaNextTrack")
+    val MediaPause = Shortcut("MediaPause")
+    val MediaPlay = Shortcut("MediaPlay")
+    val MediaPlayPause = Shortcut("MediaPlayPause")
+    val MediaPreviousTrack = Shortcut("MediaPreviousTrack")
+    val MediaRecord = Shortcut("MediaRecord")
+    val MediaRewind = Shortcut("MediaRewind")
+    val MediaSkipBackward = Shortcut("MediaSkipBackward")
+    val MediaSkipForward = Shortcut("MediaSkipForward")
+    val MediaStepBackward = Shortcut("MediaStepBackward")
+    val MediaStepForward = Shortcut("MediaStepForward")
+    val MediaStop = Shortcut("MediaStop")
+    val MediaTopMenu = Shortcut("MediaTopMenu")
+    val MediaTrackNext = Shortcut("MediaTrackNext")
+    val MediaTrackPrevious = Shortcut("MediaTrackPrevious")
+    val MicrophoneToggle = Shortcut("MicrophoneToggle")
+    val MicrophoneVolumeDown = Shortcut("MicrophoneVolumeDown")
+    val MicrophoneVolumeMute = Shortcut("MicrophoneVolumeMute")
+    val MicrophoneVolumeUp = Shortcut("MicrophoneVolumeUp")
+    val ModeChange = Shortcut("ModeChange")
+    val NavigateIn = Shortcut("NavigateIn")
+    val NavigateNext = Shortcut("NavigateNext")
+    val NavigateOut = Shortcut("NavigateOut")
+    val NavigatePrevious = Shortcut("NavigatePrevious")
+    val New = Shortcut("New")
+    val NextCandidate = Shortcut("NextCandidate")
+    val NextFavoriteChannel = Shortcut("NextFavoriteChannel")
+    val NextUserProfile = Shortcut("NextUserProfile")
+    val NonConvert = Shortcut("NonConvert")
+    val Notification = Shortcut("Notification")
+    val NumLock = Shortcut("NumLock")
+    val OnDemand = Shortcut("OnDemand")
+    val Open = Shortcut("Open")
+    val PageDown = Shortcut("PageDown")
+    val PageUp = Shortcut("PageUp")
+    val Pairing = Shortcut("Pairing")
+    val Paste = Shortcut("Paste")
+    val Pause = Shortcut("Pause")
+    val PinPDown = Shortcut("PinPDown")
+    val PinPMove = Shortcut("PinPMove")
+    val PinPToggle = Shortcut("PinPToggle")
+    val PinPUp = Shortcut("PinPUp")
+    val PlaySpeedDown = Shortcut("PlaySpeedDown")
+    val PlaySpeedReset = Shortcut("PlaySpeedReset")
+    val PlaySpeedUp = Shortcut("PlaySpeedUp")
+    val Power = Shortcut("Power")
+    val PowerOff = Shortcut("PowerOff")
+    val PreviousCandidate = Shortcut("PreviousCandidate")
+    val Print = Shortcut("Print")
+    val PrintScreen = Shortcut("PrintScreen")
+    val Process = Shortcut("Process")
+    val Props = Shortcut("Props")
+    val RandomToggle = Shortcut("RandomToggle")
+    val RcLowBattery = Shortcut("RcLowBattery")
+    val RecordSpeedNext = Shortcut("RecordSpeedNext")
+    val Redo = Shortcut("Redo")
+    val RfBypass = Shortcut("RfBypass")
+    val Romaji = Shortcut("Romaji")
+    val STBInput = Shortcut("STBInput")
+    val STBPower = Shortcut("STBPower")
+    val Save = Shortcut("Save")
+    val ScanChannelsToggle = Shortcut("ScanChannelsToggle")
+    val ScreenModeNext = Shortcut("ScreenModeNext")
+    val ScrollLock = Shortcut("ScrollLock")
+    val Select = Shortcut("Select")
+    val Settings = Shortcut("Settings")
+    val SingleCandidate = Shortcut("SingleCandidate")
+    val Soft1 = Shortcut("Soft1")
+    val Soft2 = Shortcut("Soft2")
+    val Soft3 = Shortcut("Soft3")
+    val Soft4 = Shortcut("Soft4")
+    val Space = Shortcut(" ")
+    val SpeechCorrectionList = Shortcut("SpeechCorrectionList")
+    val SpeechInputToggle = Shortcut("SpeechInputToggle")
+    val SpellCheck = Shortcut("SpellCheck")
+    val SplitScreenToggle = Shortcut("SplitScreenToggle")
+    val Standby = Shortcut("Standby")
+    val Subtitle = Shortcut("Subtitle")
+    val Super = Shortcut("Super")
+    val Symbol = Shortcut("Symbol")
+    val SymbolLock = Shortcut("SymbolLock")
+    val TV = Shortcut("TV")
+    val TV3DMode = Shortcut("TV3DMode")
+    val TVAntennaCable = Shortcut("TVAntennaCable")
+    val TVAudioDescription = Shortcut("TVAudioDescription")
+    val TVAudioDescriptionMixDown = Shortcut("TVAudioDescriptionMixDown")
+    val TVAudioDescriptionMixUp = Shortcut("TVAudioDescriptionMixUp")
+    val TVContentsMenu = Shortcut("TVContentsMenu")
+    val TVDataService = Shortcut("TVDataService")
+    val TVInput = Shortcut("TVInput")
+    val TVInputComponent1 = Shortcut("TVInputComponent1")
+    val TVInputComponent2 = Shortcut("TVInputComponent2")
+    val TVInputComposite1 = Shortcut("TVInputComposite1")
+    val TVInputComposite2 = Shortcut("TVInputComposite2")
+    val TVInputHDMI1 = Shortcut("TVInputHDMI1")
+    val TVInputHDMI2 = Shortcut("TVInputHDMI2")
+    val TVInputHDMI3 = Shortcut("TVInputHDMI3")
+    val TVInputHDMI4 = Shortcut("TVInputHDMI4")
+    val TVInputVGA1 = Shortcut("TVInputVGA1")
+    val TVMediaContext = Shortcut("TVMediaContext")
+    val TVNetwork = Shortcut("TVNetwork")
+    val TVNumberEntry = Shortcut("TVNumberEntry")
+    val TVPower = Shortcut("TVPower")
+    val TVRadioService = Shortcut("TVRadioService")
+    val TVSatellite = Shortcut("TVSatellite")
+    val TVSatelliteBS = Shortcut("TVSatelliteBS")
+    val TVSatelliteCS = Shortcut("TVSatelliteCS")
+    val TVSatelliteToggle = Shortcut("TVSatelliteToggle")
+    val TVTerrestrialAnalog = Shortcut("TVTerrestrialAnalog")
+    val TVTerrestrialDigital = Shortcut("TVTerrestrialDigital")
+    val TVTimer = Shortcut("TVTimer")
+    val Tab = Shortcut("Tab")
+    val Teletext = Shortcut("Teletext")
+    val Undo = Shortcut("Undo")
+    val Unidentified = Shortcut("Unidentified")
+    val VideoModeNext = Shortcut("VideoModeNext")
+    val VoiceDial = Shortcut("VoiceDial")
+    val WakeUp = Shortcut("WakeUp")
+    val Wink = Shortcut("Wink")
+    val Zenkaku = Shortcut("Zenkaku")
+    val ZenkakuHankaku = Shortcut("ZenkakuHankaku")
+    val ZoomIn = Shortcut("ZoomIn")
+    val ZoomOut = Shortcut("ZoomOut")
+    val ZoomToggle = Shortcut("ZoomToggle")
+
+    val NamedKeys = setOf(
+        // modifiers
+        "Alt",
+        "Control",
+        "Meta",
+        "Shift",
+        // rest
+        "AVRInput",
+        "AVRPower",
+        "Accept",
+        "Again",
+        "AllCandidates",
+        "Alphanumeric",
+        "AltGraph",
+        "AppSwitch",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "Attn",
+        "AudioBalanceLeft",
+        "AudioBalanceRight",
+        "AudioBassBoostDown",
+        "AudioBassBoostToggle",
+        "AudioBassBoostUp",
+        "AudioFaderFront",
+        "AudioFaderRear",
+        "AudioSurroundModeNext",
+        "AudioTrebleDown",
+        "AudioTrebleUp",
+        "AudioVolumeDown",
+        "AudioVolumeMute",
+        "AudioVolumeUp",
+        "Backspace",
+        "BrightnessDown",
+        "BrightnessUp",
+        "BrowserBack",
+        "BrowserFavorites",
+        "BrowserForward",
+        "BrowserHome",
+        "BrowserRefresh",
+        "BrowserSearch",
+        "BrowserStop",
+        "Call",
+        "Camera",
+        "CameraFocus",
+        "Cancel",
+        "CapsLock",
+        "ChannelDown",
+        "ChannelUp",
+        "Clear",
+        "Close",
+        "ClosedCaptionToggle",
+        "CodeInput",
+        "ColorF0Red",
+        "ColorF1Green",
+        "ColorF2Yellow",
+        "ColorF3Blue",
+        "ColorF4Grey",
+        "ColorF5Brown",
+        "Compose",
+        "ContextMenu",
+        "Convert",
+        "Copy",
+        "CrSel",
+        "Cut",
+        "DVR",
+        "Dead",
+        "Delete",
+        "Dimmer",
+        "DisplaySwap",
+        "Eisu",
+        "Eject",
+        "End",
+        "EndCall",
+        "Enter",
+        "EraseEof",
+        "Escape",
+        "ExSel",
+        "Execute",
+        "Exit",
+        "F1",
+        "F10",
+        "F11",
+        "F12",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "F8",
+        "F9",
+        "FavoriteClear0",
+        "FavoriteClear1",
+        "FavoriteClear2",
+        "FavoriteClear3",
+        "FavoriteRecall0",
+        "FavoriteRecall1",
+        "FavoriteRecall2",
+        "FavoriteRecall3",
+        "FavoriteStore0",
+        "FavoriteStore1",
+        "FavoriteStore2",
+        "FavoriteStore3",
+        "FinalMode",
+        "Find",
+        "Fn",
+        "FnLock",
+        "GoBack",
+        "GoHome",
+        "GroupFirst",
+        "GroupLast",
+        "GroupNext",
+        "GroupPrevious",
+        "Guide",
+        "GuideNextDay",
+        "GuidePreviousDay",
+        "HangulMode",
+        "HanjaMode",
+        "Hankaku",
+        "HeadsetHook",
+        "Help",
+        "Hibernate",
+        "Hiragana",
+        "HiraganaKatakana",
+        "Home",
+        "Hyper",
+        "Info",
+        "Insert",
+        "InstantReplay",
+        "JunjaMode",
+        "KanaMode",
+        "KanjiMode",
+        "Katakana",
+        "Key11",
+        "Key12",
+        "LastNumberRedial",
+        "LaunchApplication1",
+        "LaunchApplication2",
+        "LaunchCalendar",
+        "LaunchContacts",
+        "LaunchMail",
+        "LaunchMediaPlayer",
+        "LaunchMusicPlayer",
+        "LaunchPhone",
+        "LaunchScreenSaver",
+        "LaunchSpreadsheet",
+        "LaunchWebBrowser",
+        "LaunchWebCam",
+        "LaunchWordProcessor",
+        "Link",
+        "ListProgram",
+        "LiveContent",
+        "Lock",
+        "LogOff",
+        "MailForward",
+        "MailReply",
+        "MailSend",
+        "MannerMode",
+        "MediaApps",
+        "MediaAudioTrack",
+        "MediaClose",
+        "MediaFastForward",
+        "MediaLast",
+        "MediaNextTrack",
+        "MediaPause",
+        "MediaPlay",
+        "MediaPlayPause",
+        "MediaPreviousTrack",
+        "MediaRecord",
+        "MediaRewind",
+        "MediaSkipBackward",
+        "MediaSkipForward",
+        "MediaStepBackward",
+        "MediaStepForward",
+        "MediaStop",
+        "MediaTopMenu",
+        "MediaTrackNext",
+        "MediaTrackPrevious",
+        "MicrophoneToggle",
+        "MicrophoneVolumeDown",
+        "MicrophoneVolumeMute",
+        "MicrophoneVolumeUp",
+        "ModeChange",
+        "NavigateIn",
+        "NavigateNext",
+        "NavigateOut",
+        "NavigatePrevious",
+        "New",
+        "NextCandidate",
+        "NextFavoriteChannel",
+        "NextUserProfile",
+        "NonConvert",
+        "Notification",
+        "NumLock",
+        "OnDemand",
+        "Open",
+        "PageDown",
+        "PageUp",
+        "Pairing",
+        "Paste",
+        "Pause",
+        "PinPDown",
+        "PinPMove",
+        "PinPToggle",
+        "PinPUp",
+        "PlaySpeedDown",
+        "PlaySpeedReset",
+        "PlaySpeedUp",
+        "Power",
+        "PowerOff",
+        "PreviousCandidate",
+        "Print",
+        "PrintScreen",
+        "Process",
+        "Props",
+        "RandomToggle",
+        "RcLowBattery",
+        "RecordSpeedNext",
+        "Redo",
+        "RfBypass",
+        "Romaji",
+        "STBInput",
+        "STBPower",
+        "Save",
+        "ScanChannelsToggle",
+        "ScreenModeNext",
+        "ScrollLock",
+        "Select",
+        "Settings",
+        "SingleCandidate",
+        "Soft1",
+        "Soft2",
+        "Soft3",
+        "Soft4",
+        " ",
+        "SpeechCorrectionList",
+        "SpeechInputToggle",
+        "SpellCheck",
+        "SplitScreenToggle",
+        "Standby",
+        "Subtitle",
+        "Super",
+        "Symbol",
+        "SymbolLock",
+        "TV",
+        "TV3DMode",
+        "TVAntennaCable",
+        "TVAudioDescription",
+        "TVAudioDescriptionMixDown",
+        "TVAudioDescriptionMixUp",
+        "TVContentsMenu",
+        "TVDataService",
+        "TVInput",
+        "TVInputComponent1",
+        "TVInputComponent2",
+        "TVInputComposite1",
+        "TVInputComposite2",
+        "TVInputHDMI1",
+        "TVInputHDMI2",
+        "TVInputHDMI3",
+        "TVInputHDMI4",
+        "TVInputVGA1",
+        "TVMediaContext",
+        "TVNetwork",
+        "TVNumberEntry",
+        "TVPower",
+        "TVRadioService",
+        "TVSatellite",
+        "TVSatelliteBS",
+        "TVSatelliteCS",
+        "TVSatelliteToggle",
+        "TVTerrestrialAnalog",
+        "TVTerrestrialDigital",
+        "TVTimer",
+        "Tab",
+        "Teletext",
+        "Undo",
+        "Unidentified",
+        "VideoModeNext",
+        "VoiceDial",
+        "WakeUp",
+        "Wink",
+        "Zenkaku",
+        "ZenkakuHankaku",
+        "ZoomIn",
+        "ZoomOut",
+        "ZoomToggle"
+    )
 }

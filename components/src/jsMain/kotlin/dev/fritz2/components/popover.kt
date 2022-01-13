@@ -6,10 +6,9 @@ import dev.fritz2.components.foundations.CloseButtonProperty
 import dev.fritz2.components.foundations.Component
 import dev.fritz2.components.foundations.ComponentProperty
 import dev.fritz2.dom.Window
-import dev.fritz2.dom.html.Key
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.keys
+import dev.fritz2.dom.html.shortcutOf
 import dev.fritz2.styling.*
 import dev.fritz2.styling.params.BasicParams
 import dev.fritz2.styling.params.BoxParams
@@ -18,10 +17,7 @@ import dev.fritz2.styling.theme.PopoverArrowPlacements
 import dev.fritz2.styling.theme.PopoverPlacements
 import dev.fritz2.styling.theme.PopoverSizes
 import dev.fritz2.styling.theme.Theme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
 
 /**
@@ -167,7 +163,8 @@ open class PopoverComponent : Component<Unit>,
         context.apply {
 
             if (this@PopoverComponent.closeOnEscape.value) {
-                Window.keyups.keys(Keys.Escape).map { } handledBy this@PopoverComponent.visible.closeOnKey
+                Window.keyups.events.filter { shortcutOf(it) == Keys.Escape }
+                    .map { } handledBy this@PopoverComponent.visible.closeOnKey
             }
 
             div(staticCss.name, id) {

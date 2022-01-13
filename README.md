@@ -24,7 +24,7 @@ render {
         }
         p {
             +"model value = "
-            model.data.asText()
+            model.data.renderText()
         }
     }
 }
