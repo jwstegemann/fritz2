@@ -10,7 +10,13 @@ import kotlin.test.assertTrue
 class ShortcutTests {
 
     @Test
-    fun textCanCreateShortcutFromKeyboardEvent() {
+    fun testCanCreateShortcutFromString() {
+        assertEquals(shortcutOf("k"), Shortcut("k"))
+        assertEquals(shortcutOf("K"), Shortcut("K"))
+    }
+
+    @Test
+    fun testCanCreateShortcutFromKeyboardEvent() {
         val event = KeyboardEvent(
             "keydown",
             KeyboardEventInit("K", shiftKey = true, altKey = true, metaKey = true, ctrlKey = true)

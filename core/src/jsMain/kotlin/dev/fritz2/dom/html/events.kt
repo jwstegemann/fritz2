@@ -419,6 +419,13 @@ data class Shortcut(
 }
 
 /**
+ * The function generates a [Shortcut] object out of a [String].
+ *
+ * @param key the [String] that should be taken as [Shortcut.key] property
+ */
+fun shortcutOf(key: String) = Shortcut(key)
+
+/**
  * The function generates a [Shortcut] object out of a [KeyboardEvent].
  *
  * @param event the event to convert into a [Shortcut]
