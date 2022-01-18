@@ -42,8 +42,8 @@ Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data c
 - easy reactive one- and two-way-databinding (even for lists and deep nested structures)
 - hassle-free redux-like state-handling
 - model-validation and message handling 
-- integrated [styling-dsl](https://docs.fritz2.dev/StylingDSL.html)
-- [component-library](https://components.fritz2.dev)
+- ~~integrated [styling-dsl](https://docs.fritz2.dev/StylingDSL.html)~~ (outdated)
+- ~~[component-library](https://components.fritz2.dev)~~ (outdated, will be replaced by a headless approach)
 - routing (for SPAs, hash-based)
 - backend-repositories (Rest APIs, WebSockets, LocalStorage, etc.)
 - history / undo
