@@ -12,7 +12,7 @@
 
 fritz2 is an ***extremely lightweight***, well-performing, independent library to build reactive web apps in ***Kotlin*** heavily depending on coroutines and flows.
 
-fritz2 includes an intuitive way to build and render html-elements and styles using a type-safe dsl. You can easily create lightweight **reactive** html-components that are bound to an underlying model and **automatically** change whenever the model data changes:
+fritz2 includes an intuitive way to build and render html-elements and styles using a type-safe dsl. You can easily create lightweight **reactive** html-dev.fritz2.headless.components that are bound to an underlying model and **automatically** change whenever the model data changes:
 
 ```kotlin
 val model = storeOf("init value")
@@ -43,7 +43,7 @@ Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data c
 - hassle-free redux-like state-handling
 - model-validation and message handling 
 - ~~integrated [styling-dsl](https://docs.fritz2.dev/StylingDSL.html)~~ (outdated)
-- ~~[component-library](https://components.fritz2.dev)~~ (outdated, will be replaced by a headless approach)
+- ~~[component-library](https://dev.fritz2.headless.components.fritz2.dev)~~ (outdated, will be replaced by a headless approach)
 - routing (for SPAs, hash-based)
 - backend-repositories (Rest APIs, WebSockets, LocalStorage, etc.)
 - history / undo

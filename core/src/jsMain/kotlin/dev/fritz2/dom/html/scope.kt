@@ -8,7 +8,7 @@ import dev.fritz2.dom.html.Scope.Key
  *
  * The concept of the [Scope] is to provide a consistent mechanism to pass arbitrary data down the DOM tree from
  * a hierarchical higher node to "unknown" consumer nodes down the tree. This is very important for all kind of
- * components (not necessarily fritz2's components!), that should adapt to its context. Some higher node places some
+ * dev.fritz2.headless.components (not necessarily fritz2's dev.fritz2.headless.components!), that should adapt to its context. Some higher node places some
  * information tagged by a unique key into the scope and passes this further down to its children, which themselves
  * just passes this scope further down, optionally adding or manipulating the scope for their children on their own.
  * Somewhere down the tree a node can evaluate the scope passed to him and look out for some key it want to react to.
@@ -19,7 +19,7 @@ import dev.fritz2.dom.html.Scope.Key
  * Imagine some button component, which normally uses the "primary" color as background. This works fine for most of
  * the time. But now imagine a buttons-bar on the bottom edge of a modal for example to provide the typical buttons
  * like "ok", "cancel", "yes", "no" or alike. This bar uses the primary color as background too, to have a high contrast
- * against the content above. The two components do not work well together this way!
+ * against the content above. The two dev.fritz2.headless.components do not work well together this way!
  * The user would have to manually apply some other color to the buttons when using them inside the bar, in order to
  * preserve a good contrast to it. To achieve this behaviour automatically, the scope comes to the rescue:
  * The buttons-bar component can define a global scope-key `buttonsBar` by using the [keyOf] function.
@@ -64,7 +64,7 @@ import dev.fritz2.dom.html.Scope.Key
  * A client should strive for a key management, that is driven by the "producing" node, not the "consuming" one!
  * That means one should prefer to encode that some specific context now exist or that some value is now available,
  * instead of setting a client node tailored rule. This enables more freedom for future usages and adaptions by other
- * consuming components.
+ * consuming dev.fritz2.headless.components.
  *
  * To continue the first example: A buttons-bar component should better not inject some "buttonsColor" into the scope,
  * but better just some "buttonsBar" key without any value (Unit). As a creator you just cannot anticipate all situations

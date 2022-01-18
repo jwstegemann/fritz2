@@ -9,5 +9,7 @@ rootProject.name = "fritz2"
 include(
     "core",
     "lenses-annotation-processor",
-    "test-server"
+    "test-server",
+    "headless",
+    "headless-demo"
 )
