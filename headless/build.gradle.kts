@@ -34,6 +34,7 @@ kotlin {
         all {
             languageSettings.apply {
                 optIn("kotlin.ExperimentalStdlibApi")
+                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
             }
         }
         val commonMain by getting {
