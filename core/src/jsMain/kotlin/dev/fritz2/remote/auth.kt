@@ -78,16 +78,14 @@ abstract class Authentication<P> : Middleware {
     }
 
     /**
-     * completes the authentication process by setting the principal
+     * completes the authentication process by setting the principal.
+     * When no authentication process is running it only sets the principal.
      *
      * @param principal principal to set
      */
     fun complete(principal: P) {
-        if (state == null) throw IllegalStateException("there is no running authentication that can be completed!")
-        else {
-            state!!.complete(principal)
-            principalStore.update(principal)
-        }
+        if (state != null) state!!.complete(principal)
+        principalStore.update(principal)
     }
 
     /**
