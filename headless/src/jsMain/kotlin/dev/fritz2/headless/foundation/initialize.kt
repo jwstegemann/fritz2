@@ -1,4 +1,4 @@
-package dev.fritz2.headless.utils
+package dev.fritz2.headless.foundation
 /**
  * Alias to improve the readability of the signature of the initialization parameter of a component factory function.
  *

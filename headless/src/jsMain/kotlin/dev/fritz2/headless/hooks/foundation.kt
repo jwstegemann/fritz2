@@ -2,7 +2,7 @@ package dev.fritz2.headless.hooks
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.headless.utils.export
+import dev.fritz2.headless.foundation.export
 import kotlinx.coroutines.flow.Flow
 
 /**

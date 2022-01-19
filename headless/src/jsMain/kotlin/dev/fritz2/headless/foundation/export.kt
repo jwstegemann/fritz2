@@ -1,4 +1,4 @@
-package dev.fritz2.headless.utils
+package dev.fritz2.headless.foundation
 
 class Exporter<T : Any>(initialize: Initialize<Exporter<T>>) {
     lateinit var payload: T
