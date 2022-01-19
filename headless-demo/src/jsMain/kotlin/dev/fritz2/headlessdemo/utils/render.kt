@@ -1,4 +1,4 @@
-package utils
+package dev.fritz2.headlessdemo.utils
 
 import dev.fritz2.dom.html.MountTargetNotFoundException
 import dev.fritz2.dom.html.RenderContext

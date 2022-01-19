@@ -44,6 +44,8 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
+                api(npm("@popperjs/core", "2.10.1"))
+                api(npm("scroll-into-view-if-needed", "2.2.28"))
             }
         }
         val jsTest by getting {
