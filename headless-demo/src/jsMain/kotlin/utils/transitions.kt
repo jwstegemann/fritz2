@@ -1,4 +1,4 @@
-package dev.fritz2.headless.foundation.utils
+package utils
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
