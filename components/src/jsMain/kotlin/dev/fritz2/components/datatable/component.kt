@@ -403,14 +403,18 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
         rowIdProvider: (T) -> I,
         renderContext: RenderContext
     ) {
-        val indexedRowIdProvider: (IndexedValue<T>) -> I = { (_, value) -> rowIdProvider(value) }
         renderContext.apply {
             tbody({
                 styling()
             }) {
                 this@DataTableComponent.stateStore
                     .renderingRowsData(this@DataTableComponent, rowIdProvider).let { renderingData ->
-                        renderingData.map { it.first }.renderEach(indexedRowIdProvider, into = this) { (_, rowData) ->
+                        renderingData.map { data ->
+                            data.first.associateWith { data.second[rowIdProvider(it.value)] }.toList()
+                        }.renderEach(into = this) {
+                            val (tmp, fields) = it
+                            val (_, rowData) = tmp
+
                             val rowStore = this@DataTableComponent.dataStore.sub(rowData, rowIdProvider)
                             tr {
                                 this@DataTableComponent.selection.value.strategy.value
@@ -419,36 +423,35 @@ open class DataTableComponent<T, I>(val dataStore: RootStore<List<T>>, protected
                                     rowStore.current
                                 } handledBy this@DataTableComponent.selectionStore.dbClickedRow
 
-                                renderingData.mapNotNull { it.second[rowIdProvider(rowData)] }
-                                    .renderEach({ columnIdProvider(it) }) { (column, statefulIndex) ->
-                                        val (index, stateful) = statefulIndex
-                                        td({
-                                            Theme().dataTableStyles.cellStyle(
-                                                this,
-                                                IndexedValue(
-                                                    index,
-                                                    stateful.item as Any, // cast necessary, as theme can't depend on ``T``!
-                                                ),
-                                                stateful.selected,
-                                                Sorting.sorted(statefulIndex.value.sorting)
-                                            )
-                                            this@DataTableComponent.columns.value.styling.value(this, statefulIndex)
-                                            column.styling(this, statefulIndex)
-                                        }) {
-                                            this@DataTableComponent.applySelectionStyle(
-                                                this@tr,
-                                                stateful.selected,
+                                fields?.forEach { (column, statefulIndex) ->
+                                    val (index, stateful) = statefulIndex
+                                    td({
+                                        Theme().dataTableStyles.cellStyle(
+                                            this,
+                                            IndexedValue(
                                                 index,
-                                                stateful.item
-                                            )
-                                            column.content(
-                                                this,
-                                                statefulIndex,
-                                                if (column.lens != null) rowStore.sub(column.lens) else null,
-                                                rowStore,
-                                            )
-                                        }
+                                                stateful.item as Any, // cast necessary, as theme can't depend on ``T``!
+                                            ),
+                                            stateful.selected,
+                                            Sorting.sorted(statefulIndex.value.sorting)
+                                        )
+                                        this@DataTableComponent.columns.value.styling.value(this, statefulIndex)
+                                        column.styling(this, statefulIndex)
+                                    }) {
+                                        this@DataTableComponent.applySelectionStyle(
+                                            this@tr,
+                                            stateful.selected,
+                                            index,
+                                            stateful.item
+                                        )
+                                        column.content(
+                                            this,
+                                            statefulIndex,
+                                            if (column.lens != null) rowStore.sub(column.lens) else null,
+                                            rowStore,
+                                        )
                                     }
+                                }
                             }
                         }
                     }
