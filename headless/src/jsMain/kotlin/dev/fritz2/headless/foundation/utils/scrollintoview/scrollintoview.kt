@@ -1,7 +1,7 @@
 @file:JsModule("scroll-into-view-if-needed")
 @file:JsNonModule
 
-package dev.fritz2.tailwind.ui.utils.scrollintoview
+package dev.fritz2.headless.foundation.utils.scrollintoview
 
 import org.w3c.dom.Node
 

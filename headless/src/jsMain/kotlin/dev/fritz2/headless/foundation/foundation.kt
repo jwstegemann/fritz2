@@ -1,12 +1,9 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.WithDomNode
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
 import org.w3c.dom.Element
-import kotlin.reflect.KProperty
 
 typealias TagFactory<C> = (RenderContext, String?, String?, ScopeContext.() -> Unit, C.() -> Unit) -> C
 

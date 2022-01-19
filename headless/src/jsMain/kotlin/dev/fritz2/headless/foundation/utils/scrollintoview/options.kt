@@ -1,4 +1,4 @@
-package dev.fritz2.tailwind.ui.utils.scrollintoview
+package dev.fritz2.headless.foundation.utils.scrollintoview
 
 enum class ScrollBehavior {
     auto,
