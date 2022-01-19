@@ -34,8 +34,6 @@ kotlin {
         all {
             languageSettings.apply {
                 optIn("kotlin.ExperimentalStdlibApi")
-                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
-                optIn("kotlinx.coroutines.FlowPreview")
             }
         }
         val jsMain by getting {
