@@ -45,17 +45,17 @@ import dev.fritz2.identification.inspectorOf
 //    fun validate(data: D, metadata: T): List<M>
 //}
 
-typealias Validation<D, T, M> = (D, T) -> List<M>
+typealias Validation<D, T, M> = (D, T?) -> List<M>
 
-fun <D, T, M> validation(validate: List<M>.(Inspector<D>, T) -> Unit): Validation<D, T, M> = { data, metadata ->
+fun <D, T, M> validation(validate: MutableList<M>.(Inspector<D>, T?) -> Unit): Validation<D, T, M> = { data, metadata ->
     buildList<M> { validate(inspectorOf(data), metadata) }
 }
 
-fun <D, M> validation(validate: List<M>.(Inspector<D>) -> Unit): Validation<D, Unit, M> = { data, _ ->
+fun <D, M> validation(validate: MutableList<M>.(Inspector<D>) -> Unit): Validation<D, Unit, M> = { data, _ ->
     buildList<M> { validate(inspectorOf(data)) }
 }
 
-operator fun <D, M> Validation<D, Unit, M>.invoke(data: D): List<M> = this(data, Unit)
+operator fun <D, M> Validation<D, Unit, M>.invoke(data: D): List<M> = this(data, null)
 
 /**
  * Minimal interface that has to be implemented and contains the message from
