@@ -7,6 +7,9 @@ import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.resource.Resource
+import dev.fritz2.validation.Validation
+import dev.fritz2.validation.ValidationMessage
+import dev.fritz2.validation.isValid
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -259,6 +262,25 @@ open class RootStore<T>(
      */
     override val update = this.handle<T> { _, newValue -> newValue }
 }
+
+open class ValidatingStore<D, T, M>(
+    initialData: D,
+    private val validation: Validation<D, T, M>,
+    override val id: String = Id.next(),
+    validateOnUpdate: Boolean = false
+) : RootStore<D>(initialData, id) {
+    private val validationMessages: MutableStateFlow<List<M>> = MutableStateFlow<List<M>>(emptyList())
+
+    val messages: Flow<List<M>> = validationMessages.asStateFlow()
+
+    fun validate(data: D, metadata: T): List<M> =
+        validation(data, metadata).also { validationMessages.value = it }
+}
+
+fun <D, M> ValidatingStore<D, Unit, M>.validate(data: D) = this.validate(data, Unit)
+
+val <D, T, M: ValidationMessage> ValidatingStore<D, T, M>.valid: Flow<Boolean>
+    get() = this.messages.map { it.isValid() }
 
 /**
  * convenience method to create a simple [RootStore] without any handlers, etc.
