@@ -8,7 +8,7 @@ import dev.fritz2.lenses.positionLens
 /**
  *  gives you a new [RootInspector] as starting point.
  */
-fun <T> inspect(data: T) = RootInspector(data)
+fun <T> inspectorOf(data: T) = RootInspector(data)
 
 /**
  * represents the data and corresponding id of certain value
@@ -33,7 +33,7 @@ interface Inspector<T> {
 
 /**
  * [RootInspector] is the starting point for getting your [data] and corresponding [path]s from your
- * deep nested model structure. Get this by calling the factory method [inspect].
+ * deep nested model structure. Get this by calling the factory method [inspectorOf].
  *
  * [Inspector] is useful in validation process to know which model attribute is not valid.
  */
