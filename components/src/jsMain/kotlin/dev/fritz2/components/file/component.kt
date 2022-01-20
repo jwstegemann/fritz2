@@ -185,7 +185,6 @@ open class SingleFileSelectionComponent : FileSelectionBaseComponent(),
  *
  * For the common configuration options @see [FileSelectionBaseComponent].
  */
-/*
 open class MultiFileSelectionComponent : FileSelectionBaseComponent(),
     Component<Flow<List<dev.fritz2.components.data.File>>> {
     override fun render(
@@ -202,12 +201,11 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(),
                     type("file")
                     multiple(true)
                     this@MultiFileSelectionComponent.accept?.invoke(this)
-                    files = changes.events.mapNotNull {
-                        val list = domNode.files
-                        if (list != null) {
+                    files = changes.events.mapNotNull<Event, List<Flow<dev.fritz2.components.data.File>>> {
+                        domNode.files?.let { inputFiles ->
                             buildList {
-                                for (i in 0..list.length) {
-                                    val file = list.item(i)
+                                for (i in 0..inputFiles.length) {
+                                    val file = inputFiles.item(i)
                                     if (file != null) add(
                                         this@MultiFileSelectionComponent.fileReadingStrategy.value(this@MultiFileSelectionComponent)(
                                             file
@@ -215,7 +213,7 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(),
                                     )
                                 }
                             }
-                        } else null
+                        }
                     }.flatMapLatest { files ->
                         domNode.value = "" // otherwise same files can't get loaded twice
                         combine(files) { it.toList() }
@@ -227,5 +225,3 @@ open class MultiFileSelectionComponent : FileSelectionBaseComponent(),
         return files!!
     }
 }
-
- */

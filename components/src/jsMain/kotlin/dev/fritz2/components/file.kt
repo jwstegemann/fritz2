@@ -2,6 +2,7 @@ package dev.fritz2.components
 
 import dev.fritz2.components.data.File
 import dev.fritz2.components.file.FileSelectionBaseComponent
+import dev.fritz2.components.file.MultiFileSelectionComponent
 //import dev.fritz2.components.file.MultiFileSelectionComponent
 import dev.fritz2.components.file.SingleFileSelectionComponent
 import dev.fritz2.dom.html.RenderContext
@@ -82,7 +83,6 @@ fun RenderContext.file(
  * @param build a lambda expression for setting up the component itself. Details in [FileSelectionBaseComponent]
  * @return a [Flow] that offers the selected [File]
  */
-/*
 fun RenderContext.files(
     styling: BasicParams.() -> Unit = {},
     baseClass: StyleClass = StyleClass.None,
@@ -90,5 +90,3 @@ fun RenderContext.files(
     prefix: String = "file",
     build: FileSelectionBaseComponent.() -> Unit = {}
 ): Flow<List<File>> = MultiFileSelectionComponent().apply(build).render(this, styling, baseClass, id, prefix)
-
- */
