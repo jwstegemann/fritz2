@@ -20,12 +20,12 @@ import kotlinx.coroutines.sync.withLock
 /**
  * Defines a type for transforming one value into the next
  */
-typealias Update<T> = suspend (T) -> T
+typealias Update<D> = suspend (D) -> D
 
 /**
  * Defines a type for handling errors in updates
  */
-typealias ErrorHandler<T> = (Throwable, T) -> T
+typealias ErrorHandler<D> = (Throwable, D) -> D
 
 /**
  * Type of elements in the update-queue of a [Store]
@@ -33,16 +33,16 @@ typealias ErrorHandler<T> = (Throwable, T) -> T
  * @property update function describing the step from the old value to the new
  * @property errorHandler describes the handling of errors during an update and the new value in case of error
  */
-class QueuedUpdate<T>(
-    inline val update: Update<T>,
-    inline val errorHandler: (Throwable, T) -> T
+class QueuedUpdate<D>(
+    inline val update: Update<D>,
+    inline val errorHandler: (Throwable, D) -> D
 )
 
 
 /**
  * The [Store] is the main type for all data binding activities. It the base class of all concrete Stores like [RootStore], [SubStore], etc.
  */
-interface Store<T> : WithJob {
+interface Store<D> : WithJob {
 
     /**
      * Default error handler printing the error to console and keeping the previous value.
@@ -50,7 +50,7 @@ interface Store<T> : WithJob {
      * @param exception Exception to handle
      * @param oldValue previous value of the [Store]
      */
-    fun errorHandler(exception: Throwable, oldValue: T): T {
+    fun errorHandler(exception: Throwable, oldValue: D): D {
         console.error("ERROR[$id]: ${exception.message}", exception)
         return oldValue
     }
@@ -61,8 +61,8 @@ interface Store<T> : WithJob {
      * @param execute lambda that is executed whenever a new action-value appears on the connected event-[Flow].
      */
     fun <A> handle(
-        errorHandler: ErrorHandler<T> = ::errorHandler,
-        execute: suspend (T, A) -> T
+        errorHandler: ErrorHandler<D> = ::errorHandler,
+        execute: suspend (D, A) -> D
     ) = SimpleHandler<A> { flow, job ->
         flow.onEach { enqueue(QueuedUpdate({ t -> execute(t, it) }, errorHandler)) }
             .launchIn(MainScope() + job)
@@ -75,8 +75,8 @@ interface Store<T> : WithJob {
      * @param execute lambda that is execute for each event on the connected [Flow]
      */
     fun handle(
-        errorHandler: ErrorHandler<T> = ::errorHandler,
-        execute: suspend (T) -> T
+        errorHandler: ErrorHandler<D> = ::errorHandler,
+        execute: suspend (D) -> D
     ) = SimpleHandler<Unit> { flow, job ->
         flow.onEach { enqueue(QueuedUpdate({ t -> execute(t) }, errorHandler)) }
             .launchIn(MainScope() + job)
@@ -90,8 +90,8 @@ interface Store<T> : WithJob {
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
     fun <A, E> handleAndEmit(
-        errorHandler: ErrorHandler<T> = ::errorHandler,
-        execute: suspend FlowCollector<E>.(T, A) -> T
+        errorHandler: ErrorHandler<D> = ::errorHandler,
+        execute: suspend FlowCollector<E>.(D, A) -> D
     ) =
         EmittingHandler<A, E>({ inFlow, outFlow, job ->
             inFlow.onEach { enqueue(QueuedUpdate({ t -> outFlow.execute(t, it) }, errorHandler)) }
@@ -105,8 +105,8 @@ interface Store<T> : WithJob {
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
     fun <E> handleAndEmit(
-        errorHandler: ErrorHandler<T> = ::errorHandler,
-        execute: suspend FlowCollector<E>.(T) -> T
+        errorHandler: ErrorHandler<D> = ::errorHandler,
+        execute: suspend FlowCollector<E>.(D) -> D
     ) =
         EmittingHandler<Unit, E>({ inFlow, outFlow, job ->
             inFlow.onEach { enqueue(QueuedUpdate({ t -> outFlow.execute(t) }, errorHandler)) }
@@ -118,7 +118,7 @@ interface Store<T> : WithJob {
      *
      * @param update the [Update] to handle
      */
-    suspend fun enqueue(update: QueuedUpdate<T>)
+    suspend fun enqueue(update: QueuedUpdate<D>)
 
     /**
      * [id] of this [Store].
@@ -135,17 +135,17 @@ interface Store<T> : WithJob {
     /**
      * the [Flow] representing the current value of the [Store]. Use this to bind it to ui-elements or derive calculated values by using [map] for example.
      */
-    val data: Flow<T>
+    val data: Flow<D>
 
     /**
      * represents the current value of the [Store]
      */
-    val current: T
+    val current: D
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
      */
-    val update: Handler<T>
+    val update: Handler<D>
 
     /**
      * calls a handler on each new value of the [Store]
@@ -157,13 +157,13 @@ interface Store<T> : WithJob {
     /**
      * calls a handler on each new value of the [Store]
      */
-    fun syncBy(handler: Handler<T>) {
+    fun syncBy(handler: Handler<D>) {
         data.drop(1) handledBy handler
     }
 
-    fun <I> syncWith(socket: Socket, resource: Resource<T, I>) {
+    fun <I> syncWith(socket: Socket, resource: Resource<D, I>) {
         val session = socket.connect()
-        var last: T? = null
+        var last: D? = null
         session.messages.body.map {
             val received = resource.deserialize(it)
             last = received
@@ -182,7 +182,7 @@ interface Store<T> : WithJob {
      * Use @[Lenses] annotation to let your compiler
      * create the lenses for you or use the buildLens-factory-method.
      */
-    fun <X> sub(lens: Lens<T, X>): SubStore<T, X> =
+    fun <X> sub(lens: Lens<D, X>): SubStore<D, X> =
         SubStore(this, lens)
 }
 
@@ -214,12 +214,12 @@ fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
  * @param initialData: the first current value of this [Store]
  * @param id: the id of this store. ids of [SubStore]s will be concatenated.
  */
-open class RootStore<T>(
-    initialData: T,
+open class RootStore<D>(
+    initialData: D,
     override val id: String = Id.next()
-) : Store<T> {
+) : Store<D> {
 
-    private val state: MutableStateFlow<T> = MutableStateFlow(initialData)
+    private val state: MutableStateFlow<D> = MutableStateFlow(initialData)
     private val mutex = Mutex()
 
     override val path: String = ""
@@ -236,18 +236,18 @@ open class RootStore<T>(
      *
      * Actual data therefore is derived by applying the updates on the internal channel one by one to get the next value.
      */
-    override val data: Flow<T> = state.asStateFlow()
+    override val data: Flow<D> = state.asStateFlow()
 
     /**
      * Represents the current data of this [RootStore].
      */
-    override val current: T
+    override val current: D
         get() = state.value
 
     /**
      * in a [RootStore] an [Update] is handled by applying it to the internal [StateFlow].
      */
-    override suspend fun enqueue(update: QueuedUpdate<T>) {
+    override suspend fun enqueue(update: QueuedUpdate<D>) {
         try {
             mutex.withLock {
                 state.value = update.update(state.value)
@@ -260,26 +260,60 @@ open class RootStore<T>(
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
      */
-    override val update = this.handle<T> { _, newValue -> newValue }
+    override val update = this.handle<D> { _, newValue -> newValue }
 }
 
-open class ValidatingStore<D, T, M>(
+open class ValidatingStore<D, T, M : ValidationMessage>(
     initialData: D,
     private val validation: Validation<D, T, M>,
-    override val id: String = Id.next(),
-    validateOnUpdate: Boolean = false
+    val validateOnUpdate: Boolean = false,
+    override val id: String = Id.next()
 ) : RootStore<D>(initialData, id) {
-    private val validationMessages: MutableStateFlow<List<M>> = MutableStateFlow<List<M>>(emptyList())
+
+    private val validationMessages: MutableStateFlow<List<M>> = MutableStateFlow(emptyList())
 
     val messages: Flow<List<M>> = validationMessages.asStateFlow()
 
-    fun validate(data: D, metadata: T): List<M> =
+    /**
+     * Resets the validation result.
+     *
+     * @param messages list of messages to reset to. Default is an empty list.
+     */
+    fun resetMessages(messages: List<M> = emptyList()) {
+        validationMessages.value = messages
+    }
+
+    fun validate(data: D, metadata: T?): List<M> =
         validation(data, metadata).also { validationMessages.value = it }
+
+    /**
+     * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
+     * When [validateOnUpdate] is set to true, then the store data gets updated with the new
+     * value only when it is valid.
+     * hint: no metadata can be provided here, it is always null.
+     */
+    override val update = this.handle<D> { oldValue, newValue ->
+        if (validateOnUpdate)
+            if(validate(newValue, null).isValid()) newValue else oldValue
+        else oldValue
+    }
 }
 
-fun <D, M> ValidatingStore<D, Unit, M>.validate(data: D) = this.validate(data, Unit)
+///**
+// * Finds the first [ValidationMessage] matching the given [predicate].
+// * If no such element was found, nothing gets called afterwards.
+// */
+//fun <M> Flow<List<M>>.find(predicate: (M) -> Boolean): Flow<M?> = this.map { it.find(predicate) }
+//
+///**
+// * Returns a [Flow] of list containing only
+// * [ValidationMessage]s matching the given [predicate].
+// */
+//fun <M> Flow<List<M>>.filter(predicate: (M) -> Boolean): Flow<List<M>> = this.map { it.filter(predicate) }
 
-val <D, T, M: ValidationMessage> ValidatingStore<D, T, M>.valid: Flow<Boolean>
+fun <D, T, M : ValidationMessage> ValidatingStore<D, T, M>.validate(data: D) = this.validate(data, null)
+
+val <D, T, M : ValidationMessage> ValidatingStore<D, T, M>.valid: Flow<Boolean>
     get() = this.messages.map { it.isValid() }
 
 /**
@@ -288,4 +322,11 @@ val <D, T, M: ValidationMessage> ValidatingStore<D, T, M>.valid: Flow<Boolean>
  * @param initialData the first current value of this [Store]
  * @param id the id of this store. ids of [SubStore]s will be concatenated.
  */
-fun <T> storeOf(initialData: T, id: String = Id.next()) = RootStore(initialData, id)
+fun <D> storeOf(initialData: D, id: String = Id.next()) = RootStore(initialData, id)
+
+fun <D, T, M : ValidationMessage> storeOf(
+    initialData: D,
+    validation: Validation<D, T, M>,
+    validateOnUpdate: Boolean = false,
+    id: String = Id.next()
+) = ValidatingStore(initialData, validation, validateOnUpdate, id)

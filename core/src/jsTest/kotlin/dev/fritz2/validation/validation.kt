@@ -1,6 +1,6 @@
 package dev.fritz2.validation
 
-import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
@@ -25,14 +25,7 @@ class ValidationJSTests {
         val c3 = Car("car2", Color(256, 256, 256))
         val c4 = Car(" ", Color(256, -1, 120))
 
-        val store =
-            object : RootStore<Car>(
-                Car(carName, Color(120, 120, 120))
-            ) {
-                override val update = handle<Car> { old, new ->
-                    if (carValidator.isValid(new, Unit)) new else old
-                }
-            }
+        val store = storeOf(Car(carName, Color(120, 120, 120)), Car.validator, validateOnUpdate = true)
 
         val idData = "data-${Id.next()}"
         val idMessages = "messages-${Id.next()}"
@@ -45,21 +38,21 @@ class ValidationJSTests {
                     store.data.map { it.name }.renderText()
                 }
                 div(id = idMessages) {
-                    carValidator.data.renderEach(Message::text, into = this) {
+                    store.messages.renderEach(Message::text, into = this) {
                         p {
                             +it.text
                         }
                     }
                 }
                 div(id = idFind) {
-                    carValidator.find { it == colorValuesAreToLow }.mapNotNull { it }.render {
+                    store.messages.mapNotNull { m -> m.find { it == colorValuesAreToLow } }.render {
                         p {
                             +it.text
                         }
                     }
                 }
                 div(id = idFilter) {
-                    carValidator.filter { it == colorValuesAreToLow }.render {
+                    store.messages.map { m -> m.filter { it == colorValuesAreToLow } }.render {
                         p {
                             +(it.firstOrNull()?.text ?: "")
                         }
