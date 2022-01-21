@@ -1,8 +1,9 @@
 package dev.fritz2.remote
 
-import dev.fritz2.binding.storeOf
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 
 /**
@@ -21,7 +22,7 @@ import kotlinx.coroutines.flow.map
  */
 abstract class Authentication<P> : Middleware {
 
-    private val principalStore = storeOf<P?>(null)
+    private val principalStore = MutableStateFlow<P?>(null)
 
     private var state: CompletableDeferred<P>? = null
 
@@ -59,7 +60,7 @@ abstract class Authentication<P> : Middleware {
      *
      * @return P principal information
      */
-    suspend fun getPrincipal(): P? = state?.await()
+    suspend fun getPrincipal(): P? = if(state != null) state?.await() else principalStore.value
 
     /**
      * implements the authentication process.
@@ -85,7 +86,7 @@ abstract class Authentication<P> : Middleware {
      */
     fun complete(principal: P) {
         if (state != null) state!!.complete(principal)
-        principalStore.update(principal)
+        principalStore.value = principal
     }
 
     /**
@@ -94,16 +95,16 @@ abstract class Authentication<P> : Middleware {
      */
     fun clear() {
         state = null
-        principalStore.update(null)
+        principalStore.value = null
     }
-
-    /**
-     * flow of the information whether the user is authenticated or not
-     */
-    val authenticated: Flow<Boolean> = principalStore.data.map { it != null }
 
     /**
      * flow of the current principal
      */
-    val principal: Flow<P?> = principalStore.data
+    val principal: Flow<P?> = principalStore.asStateFlow()
+
+    /**
+     * flow of the information whether the user is authenticated or not
+     */
+    val authenticated: Flow<Boolean> = principal.map { it != null }
 }

@@ -6,6 +6,7 @@ import dev.fritz2.test.test
 import dev.fritz2.test.testHttpServer
 import kotlinx.browser.window
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 data class Principal(
@@ -33,6 +34,9 @@ class AuthenticatedRemoteTests {
                 complete(valid)
             }
         }
+
+        assertEquals(null, simple.getPrincipal())
+
         simple.clear()
         testHttpServer(authenticated).use(simple).get("get")
 
@@ -54,6 +58,28 @@ class AuthenticatedRemoteTests {
                 }, 500)
             }
         }
+        val remote = testHttpServer(authenticated).use(simple)
+
+        remote.get("get")
+        remote.get("get")
+        remote.get("get")
+        remote.get("get")
+    }
+
+    @Test
+    fun testPreAuthentication() = runTest {
+        val simple = object : TestAuthenticationMiddleware() {
+            override fun authenticate() {
+                throw Exception("should not be called!")
+            }
+
+            init {
+                complete(valid)
+            }
+        }
+
+        assertEquals(simple.valid, simple.getPrincipal())
+
         val remote = testHttpServer(authenticated).use(simple)
 
         remote.get("get")
