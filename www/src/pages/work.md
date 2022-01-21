@@ -1,12 +1,6 @@
 ---
-title: Work
-layout: layouts/base.njk
-permalink: /work/
-eleventyNavigation:
-  key: Work
-  order: 0
-hugo: ich_bin_hugo
-teaser: "Ich bin der Teaser2"
+title: Work layout: layouts/base.njk permalink: /work/ eleventyNavigation:
+key: Work order: 0 hugo: headless-demo-listbox teaser: "Ich bin der Teaser2"
 ---
 
 # Listbox
