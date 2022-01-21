@@ -283,7 +283,7 @@ open class ValidatingStore<D, T, M : ValidationMessage>(
         validationMessages.value = messages
     }
 
-    fun validate(data: D, metadata: T?): List<M> =
+    protected fun validate(data: D, metadata: T?): List<M> =
         validation(data, metadata).also { validationMessages.value = it }
 
     /**
@@ -311,10 +311,10 @@ open class ValidatingStore<D, T, M : ValidationMessage>(
 // */
 //fun <M> Flow<List<M>>.filter(predicate: (M) -> Boolean): Flow<List<M>> = this.map { it.filter(predicate) }
 
-fun <D, T, M : ValidationMessage> ValidatingStore<D, T, M>.validate(data: D) = this.validate(data, null)
+//fun <D, T, M : ValidationMessage> ValidatingStore<D, T, M>.validate(data: D) = this.validate(data, null)
 
-val <D, T, M : ValidationMessage> ValidatingStore<D, T, M>.valid: Flow<Boolean>
-    get() = this.messages.map { it.isValid() }
+val <M : ValidationMessage> Flow<List<M>>.valid: Flow<Boolean>
+    get() = this.map { it.isValid() }
 
 /**
  * convenience method to create a simple [RootStore] without any handlers, etc.
