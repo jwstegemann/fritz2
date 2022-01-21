@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>{{ title }}</title>
+     <link rel="stylesheet" type="text/css" href="/assets/main.css" />
+  </head>
+  <body>
+    {% include "../components/navigation.njk" %}
+    <main class="p-12">
+      <h1 class="text-3xl mb-8">{{title}}</h1>
+
+      <p>{{teaser}}</p>
+
+      <iframe src="https://fritz2.dev/demo/build/{{ hugo }}/index.html"></iframe>
+
+      {{ content | safe }}
+
+    </main>
+    <script src="/assets/main.js"></script>
+  </body>
+</html>

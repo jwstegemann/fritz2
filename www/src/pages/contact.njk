@@ -1,0 +1,16 @@
+---
+title: Contact
+layout: layouts/base.njk
+permalink: /contact/
+eleventyNavigation:
+  key: Contact
+  order: 3
+---
+
+<ul>
+     {% for item in contact.items %}
+     <li><a href="{{ item.link }}">{{ item.name }}</a></li>
+     {% endfor %}
+</ul>
+
+<p class="mt-4">☝️ This page gets its content from <code>src/_data/contact.json</code></p>
