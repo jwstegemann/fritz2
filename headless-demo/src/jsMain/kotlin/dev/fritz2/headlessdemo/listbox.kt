@@ -1,4 +1,4 @@
-package dev.fritz2.headlessdemo.demos
+package dev.fritz2.headlessdemo
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
@@ -12,12 +12,10 @@ import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.headless.validation.ComponentValidator
 import dev.fritz2.headless.validation.Severity
 import dev.fritz2.headless.validation.WithValidator
-import dev.fritz2.headlessdemo.renderTailwind
 import dev.fritz2.identification.Inspector
 import dev.fritz2.utils.classes
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import dev.fritz2.headlessdemo.require
 
 class MyListbox<T>(initialize: MyListbox<T>.() -> Unit) {
 
@@ -115,50 +113,46 @@ fun <T> RenderContext.myListbox(
 ): Div = MyListbox<T>(initialize).run { render(classes, id) }
 
 
-fun main() {
-    require("./styles.css")
-    renderTailwind {
+fun RenderContext.listboxDemo() {
+    val bestCharacter = object : RootStore<String>("Luke", "listbox"),
+        WithValidator<String, Unit> {
+        override val validator = object : ComponentValidator<String, Unit>() {
+            @OptIn(ExperimentalStdlibApi::class)
+            override fun validate(inspector: Inspector<String>, metadata: Unit): List<ComponentValidationMessage> =
+                buildList {
+                    inspector.apply {
+                        if (this.data == "Vader") add(
+                            ComponentValidationMessage(this.path, Severity.Warning, "Do not favour the dark side!")
+                        ) else if (this.data == "Thrawn") add(
+                            ComponentValidationMessage(this.path, Severity.Success, "This is so true!")
+                        )
 
-        val bestCharacter = object : RootStore<String>("Luke", "listbox"),
-            WithValidator<String, Unit> {
-            override val validator = object : ComponentValidator<String, Unit>() {
-                @OptIn(ExperimentalStdlibApi::class)
-                override fun validate(inspector: Inspector<String>, metadata: Unit): List<ComponentValidationMessage> =
-                    buildList {
-                        inspector.apply {
-                            if (this.data == "Vader") add(
-                                ComponentValidationMessage(this.path, Severity.Warning, "Do not favour the dark side!")
-                            ) else if (this.data == "Thrawn") add(
-                                ComponentValidationMessage(this.path, Severity.Success, "This is so true!")
-                            )
-
-                        }
                     }
-            }
-
-            init {
-                validate(Unit)
-            }
+                }
         }
 
-        div("w-full h-72 bg-gradient-to-r from-amber-300 to-orange-500 rounded-lg p-5") {
-            myListbox<String> {
-                value(bestCharacter)
-                entries = listOf(
-                    "Luke" to true,
-                    "Leia" to false,
-                    "Chewbakka" to false,
-                    "Han" to false,
-                    "C3-PO" to false,
-                    "R2-D2" to true,
-                    "Vader" to false,
-                    "Thrawn" to false
-                )
-            }
+        init {
+            validate(Unit)
         }
+    }
 
-        div("bg-gray-300") {
-            span { bestCharacter.data.renderText() }
+    div("w-full h-72 bg-gradient-to-r from-amber-300 to-orange-500 rounded-lg p-5") {
+        myListbox<String> {
+            value(bestCharacter)
+            entries = listOf(
+                "Luke" to true,
+                "Leia" to false,
+                "Chewbakka" to false,
+                "Han" to false,
+                "C3-PO" to false,
+                "R2-D2" to true,
+                "Vader" to false,
+                "Thrawn" to false
+            )
         }
+    }
+
+    div("bg-gray-300") {
+        span { bestCharacter.data.renderText() }
     }
 }
