@@ -22,7 +22,7 @@ fun RenderContext.overview() {
             span("block xl:inline") { +"""fritz2""" }
             span("block text-indigo-600 xl:inline") { +""" Headless Demos""" }
         }
-        div("w-72 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden") {
+        div("w-96 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden") {
 
             div("relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8") {
                 pages.forEach {
