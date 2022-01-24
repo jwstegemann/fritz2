@@ -263,7 +263,7 @@ open class RootStore<D>(
     override val update = this.handle<D> { _, newValue -> newValue }
 }
 
-open class ValidatingStore<D, T, M : ValidationMessage>(
+open class ValidatingStore<D, T, M>(
     initialData: D,
     private val validation: Validation<D, T, M>,
     val validateOnUpdate: Boolean = false,
@@ -283,19 +283,14 @@ open class ValidatingStore<D, T, M : ValidationMessage>(
         validationMessages.value = messages
     }
 
-    protected fun validate(data: D, metadata: T?): List<M> =
+    fun validate(data: D, metadata: T? = null): List<M> =
         validation(data, metadata).also { validationMessages.value = it }
 
-    /**
-     * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
-     * When [validateOnUpdate] is set to true, then the store data gets updated with the new
-     * value only when it is valid.
-     * hint: no metadata can be provided here, it is always null.
-     */
-    override val update = this.handle<D> { oldValue, newValue ->
-        if (validateOnUpdate)
-            if(validate(newValue, null).isValid()) newValue else oldValue
-        else oldValue
+    init {
+        if(validateOnUpdate) this.syncBy(this.handle<D> { _, newValue ->
+            validate(newValue)
+            newValue
+        })
     }
 }
 
@@ -324,7 +319,7 @@ val <M : ValidationMessage> Flow<List<M>>.valid: Flow<Boolean>
  */
 fun <D> storeOf(initialData: D, id: String = Id.next()) = RootStore(initialData, id)
 
-fun <D, T, M : ValidationMessage> storeOf(
+fun <D, T, M> storeOf(
     initialData: D,
     validation: Validation<D, T, M>,
     validateOnUpdate: Boolean = false,
