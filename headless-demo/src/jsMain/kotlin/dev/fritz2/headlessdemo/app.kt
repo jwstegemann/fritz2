@@ -1,6 +1,7 @@
 package dev.fritz2.headlessdemo.demos
 
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.headlessdemo.checkboxDemo
 import dev.fritz2.headlessdemo.listboxDemo
 import dev.fritz2.headlessdemo.renderTailwind
 import dev.fritz2.headlessdemo.require
@@ -11,8 +12,15 @@ data class DemoPage(val title: String, val description: String, val content: Ren
 val pages = mapOf<String, DemoPage>(
     "listbox" to DemoPage(
         "Headless Listbox",
-        """Listboxes are a great foundation for building custom, accessible select menus for your app, complete with robust support for keyboard navigation.""",
+        """Listboxes are a great foundation for building custom, accessible select menus for your app, 
+            |complete with robust support for keyboard navigation.""".trimMargin(),
         RenderContext::listboxDemo
+    ),
+    "checkboxGroup" to DemoPage(
+        "Headless Checkboxgroup",
+        """Radio Groups give you the same functionality as native HTML radio inputs, without any of the styling. 
+            |They're perfect for building out custom UIs for multi selection.""".trimMargin(),
+        RenderContext::checkboxDemo
     )
 )
 

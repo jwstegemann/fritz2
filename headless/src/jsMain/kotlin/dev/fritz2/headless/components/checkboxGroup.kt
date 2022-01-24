@@ -108,7 +108,7 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
 
         private var toggle: Tag<HTMLElement>? = null
         private var label: Tag<HTMLElement>? = null
-        private var description: Tag<HTMLElement>? = null
+        private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
 
         val optionId = "$componentId-${id ?: Id.next()}"
 
@@ -118,7 +118,8 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
                 attr(
                     Aria.describedby,
                     value.validationMessages.map { messages ->
-                        if (messages.isNotEmpty()) validationMessages?.id else description?.id
+                        if (messages.isNotEmpty()) validationMessages?.id else descriptions.map { it.id }
+                            .joinToString(" ")
                     }
                 )
             }
@@ -168,7 +169,13 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<CL>,
             content: CL.() -> Unit
-        ) = tag(this, classes, "$optionId-description", scope, content).also { description = it }
+        ) = tag(
+            this,
+            classes,
+            "$optionId-description-${descriptions.size}",
+            scope,
+            content
+        ).also { descriptions.add(it) }
 
         fun RenderContext.checkboxGroupOptionDescription(
             classes: String? = null,
