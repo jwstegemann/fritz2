@@ -5,7 +5,7 @@ permalink: /headless/
 eleventyNavigation:
     key: headless 
     title: Headless Components 
-order: 0
+order: 20
 ---
 
 Hier steht dann der Willkommentext für die Headless-Komponenten
