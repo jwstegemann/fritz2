@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    h1 {
+        @apply text-gray-700 text-3xl font-extrabold tracking-tight mb-8
+    }
+
+    h2 {
+        @apply text-gray-700 mt-8 mb-4 text-2xl font-bold leading-6
+    }
+
+    p {
+        @apply mb-1 text-sm text-gray-500 leading-7
+    }
+
+    nav.toc a {
+        @apply mt-2 px-3 py-2 rounded-md text-sm font-medium text-indigo-400
+    }
+}

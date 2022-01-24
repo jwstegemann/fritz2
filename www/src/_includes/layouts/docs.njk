@@ -1,20 +1,18 @@
 ---
-    layout
-:
-layouts / pageWithNav.njk
+layout: layouts/pageWithNav.njk
 ---
 
-    <div class="bg-white lg:min-w-0 lg:flex-1">
-      <div class="h-full py-6 px-4 sm:px-6 lg:px-8">
-        <!-- Start main area-->
-        <div class="relative h-full" style="min-height: 36rem;">
+<div class="bg-white lg:min-w-0 lg:flex-1">
+  <div class="h-full py-6 px-4 sm:px-6 lg:px-8">
+    <!-- Start main area-->
+    <div class="relative h-full" style="min-height: 36rem;">
 
-          <h1 class="text-3xl mb-8">{{title}}</h1>
+      <h1>{{title}}</h1>
 
-          {{content | safe}}
+      {{content | safe}}
 
-        </div>
-        <!-- End main area -->
-      </div>
     </div>
+    <!-- End main area -->
+  </div>
+</div>
 </div>
