@@ -1,14 +1,14 @@
 ---
-title: Listbox 
+title: CheckboxGroup 
 layout: layouts/docsWithContentNav.njk 
-permalink: /headless/listbox/ 
+permalink: /headless/checkboxgroup/ 
 eleventyNavigation:
-    key: listbox
-    title: Listbox (Select)
+    key: checkbox
+    title: CheckboxGroup
     parent: headless 
-    order: 10 
-demoHash: listbox 
-teaser: "Ich bin der Teaser für die Listbox"
+    order: 20 
+demoHash: checkboxGroup 
+teaser: "Ich bin der Teaser für die checkboxen"
 ---
 
 ## Usage
