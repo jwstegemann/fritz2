@@ -9,7 +9,7 @@ import dev.fritz2.remote.body
 import dev.fritz2.resource.Resource
 import dev.fritz2.validation.Validation
 import dev.fritz2.validation.ValidationMessage
-import dev.fritz2.validation.isValid
+import dev.fritz2.validation.valid
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -211,8 +211,8 @@ fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
  * A [Store] can be initialized with a given value.
  * Use a [RootStore] to "store" your model and create [SubStore]s from here.
  *
- * @param initialData: the first current value of this [Store]
- * @param id: the id of this store. ids of [SubStore]s will be concatenated.
+ * @param initialData first current value of this [Store]
+ * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
  */
 open class RootStore<D>(
     initialData: D,
@@ -263,15 +263,27 @@ open class RootStore<D>(
     override val update = this.handle<D> { _, newValue -> newValue }
 }
 
+/**
+ * A [ValidatingStore] is a [RootStore] which also contains a [Validation] for its model.
+ *
+ * @param initialData first current value of this [Store]
+ * @param validation [Validation] function to use at the data on this [Store].
+ * @param validateAfterUpdate flag to decide if a new value gets automatically validated after setting it to the [Store].
+ * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
+ */
 open class ValidatingStore<D, T, M>(
     initialData: D,
     private val validation: Validation<D, T, M>,
-    val validateOnUpdate: Boolean = false,
+    val validateAfterUpdate: Boolean = true,
     override val id: String = Id.next()
 ) : RootStore<D>(initialData, id) {
 
     private val validationMessages: MutableStateFlow<List<M>> = MutableStateFlow(emptyList())
 
+    /**
+     * [Flow] of the [List] of validation-messages.
+     * Use this [Flow] to render out the validation-messages.
+     */
     val messages: Flow<List<M>> = validationMessages.asStateFlow()
 
     /**
@@ -279,49 +291,55 @@ open class ValidatingStore<D, T, M>(
      *
      * @param messages list of messages to reset to. Default is an empty list.
      */
-    fun resetMessages(messages: List<M> = emptyList()) {
+    protected fun resetMessages(messages: List<M> = emptyList()) {
         validationMessages.value = messages
     }
 
-    fun validate(data: D, metadata: T? = null): List<M> =
+    /**
+     * Validates the given [data] by using the optional [metadata] to update the
+     * [messages] list and returning them.
+     * Use this method from inside your [Handler]s to publish
+     * the new state of the validation result via the [messages] flow.
+     *
+     * @param data data to validate
+     * @param metadata optional metadata for validation
+     * @return [List] of messages
+     */
+    protected fun validate(data: D, metadata: T? = null): List<M> =
         validation(data, metadata).also { validationMessages.value = it }
 
     init {
-        if(validateOnUpdate) this.syncBy(this.handle<D> { _, newValue ->
+        if(validateAfterUpdate) this.syncBy(this.handle<D> { _, newValue ->
             validate(newValue)
             newValue
         })
     }
 }
 
-///**
-// * Finds the first [ValidationMessage] matching the given [predicate].
-// * If no such element was found, nothing gets called afterwards.
-// */
-//fun <M> Flow<List<M>>.find(predicate: (M) -> Boolean): Flow<M?> = this.map { it.find(predicate) }
-//
-///**
-// * Returns a [Flow] of list containing only
-// * [ValidationMessage]s matching the given [predicate].
-// */
-//fun <M> Flow<List<M>>.filter(predicate: (M) -> Boolean): Flow<List<M>> = this.map { it.filter(predicate) }
-
-//fun <D, T, M : ValidationMessage> ValidatingStore<D, T, M>.validate(data: D) = this.validate(data, null)
-
+/**
+ * Checks if a [Flow] of a [List] of [ValidationMessage]s is valid.
+ */
 val <M : ValidationMessage> Flow<List<M>>.valid: Flow<Boolean>
-    get() = this.map { it.isValid() }
+    get() = this.map { it.valid }
 
 /**
- * convenience method to create a simple [RootStore] without any handlers, etc.
+ * Convenience function to create a simple [RootStore] without any handlers, etc.
  *
- * @param initialData the first current value of this [Store]
- * @param id the id of this store. ids of [SubStore]s will be concatenated.
+ * @param initialData first current value of this [Store]
+ * @param id id of this store. Ids of [SubStore]s will be concatenated.
  */
 fun <D> storeOf(initialData: D, id: String = Id.next()) = RootStore(initialData, id)
 
+/**
+ * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
+ * The created [Store] validates its model after every update automatically.
+ *
+ * @param initialData first current value of this [Store]
+ * @param validation [Validation] function to use at the data on this [Store].
+ * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
+ */
 fun <D, T, M> storeOf(
     initialData: D,
     validation: Validation<D, T, M>,
-    validateOnUpdate: Boolean = false,
     id: String = Id.next()
-) = ValidatingStore(initialData, validation, validateOnUpdate, id)
+) = ValidatingStore(initialData, validation, true, id)

@@ -1,5 +1,6 @@
 package dev.fritz2.validation
 
+import dev.fritz2.binding.ValidatingStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
@@ -24,7 +25,7 @@ class ValidationJSTests {
         val c2 = Car("car2", Color(256, 256, 256))
         val c3 = Car("car3", Color(256, -1, 120))
 
-        val store = storeOf(Car(carName, Color(120, 120, 120)), Car.validator, validateOnUpdate = true)
+        val store: ValidatingStore<Car, Unit, Message> = storeOf(Car(carName, Color(120, 120, 120)), Car.validator)
 
         val idData = "data-${Id.next()}"
         val idMessages = "messages-${Id.next()}"
