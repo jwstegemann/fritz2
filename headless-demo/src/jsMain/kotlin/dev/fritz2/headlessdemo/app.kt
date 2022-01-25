@@ -1,10 +1,7 @@
 package dev.fritz2.headlessdemo.demos
 
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.headlessdemo.checkboxDemo
-import dev.fritz2.headlessdemo.listboxDemo
-import dev.fritz2.headlessdemo.renderTailwind
-import dev.fritz2.headlessdemo.require
+import dev.fritz2.headlessdemo.*
 import dev.fritz2.routing.routerOf
 
 data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)
@@ -18,9 +15,21 @@ val pages = mapOf<String, DemoPage>(
     ),
     "checkboxGroup" to DemoPage(
         "Headless Checkboxgroup",
-        """Radio Groups give you the same functionality as native HTML radio inputs, without any of the styling. 
+        """Checkbox groups give you the same functionality as native HTML checkbox inputs, without any of the styling. 
             |They're perfect for building out custom UIs for multi selection.""".trimMargin(),
         RenderContext::checkboxDemo
+    ),
+    "radioGroup" to DemoPage(
+        "Headless Radiogroup",
+        """Radio Groups give you the same functionality as native HTML radio inputs, without any of the styling. 
+            |They're perfect for building out custom UIs for single selection.""".trimMargin(),
+        RenderContext::radiogroupDemo
+    ),
+    "menu" to DemoPage(
+        "Headless Menu",
+        """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard
+            | navigation.""".trimMargin(),
+        RenderContext::menuDemo
     )
 )
 
@@ -72,7 +81,9 @@ fun main() {
     renderTailwind {
         router.data.render { route ->
             console.log(route)
-            (pages[route]?.content ?: RenderContext::overview)()
+            div("w-full h-full bg-gradient-to-r from-amber-300 to-orange-500 rounded-lg p-4") {
+                (pages[route]?.content ?: RenderContext::overview)()
+            }
         }
     }
 }

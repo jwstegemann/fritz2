@@ -17,7 +17,7 @@ fun RenderContext.checkboxDemo() {
 
     val subscriptions = storeOf(emptyList<Newsletter>())
 
-    div("w-96 m-4") {
+    div("w-96") {
         headlessCheckboxGroup<FieldSet, Newsletter>(tag = RenderContext::fieldset) {
             value(subscriptions)
             withKeyboardNavigation()
@@ -29,7 +29,7 @@ fun RenderContext.checkboxDemo() {
                     checkboxGroupOption(option) {
                         checkboxGroupOptionToggle(
                             """relative bg-white border rounded-lg shadow-sm p-2 flex cursor-pointer 
-                            |focus:outline-none focus:border-2""".trimMargin(),
+                            | focus:outline-none focus:border-2""".trimMargin(),
                             tag = RenderContext::label
                         ) {
                             className(selected.map {
@@ -52,19 +52,8 @@ fun RenderContext.checkboxDemo() {
                             selected.render {
                                 if (it) {
                                     svg("h-5 w-5 text-indigo-600") {
-                                        xmlns("http://www.w3.org/2000/svg")
-                                        viewBox("0 0 20 20")
+                                        content(HeroIcons.check_circle)
                                         fill("currentColor")
-                                        attr("aria-hidden", "true")
-                                        path {
-                                            attr("fill-rule", "evenodd")
-                                            d(
-                                                """M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 
-                                            |10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"""
-                                                    .trimMargin()
-                                            )
-                                            attr("clip-rule", "evenodd")
-                                        }
                                     }
                                 }
                             }
@@ -74,7 +63,7 @@ fun RenderContext.checkboxDemo() {
             }
         }
 
-        div("bg-gray-300 mt-4 px-2 rounded-lg") {
+        div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50") {
             em { +"Selected: " }
             ul("") {
                 subscriptions.data.renderEach {
