@@ -1,15 +1,16 @@
 {% set navPages = collections.all | eleventyNavigation %}
 <div class="flex-grow flex flex-col">
 
-    <nav class="flex-1 bg-white space-y-1" aria-label="Sidebar">
+    <nav class="flex-1 bg-white space-y-2" aria-label="Sidebar">
         {% for entry in navPages %}
-            <div class="mb-3">
             {% include "components/navigationLink.njk" %}
-            {% for entry in entry.children %}
-                {% set indent = "pl-12" %}
-                {% include "components/navigationLink.njk" %}
-            {% endfor %}
-            </div>
+                {% set isOpen = true if ([eleventyNavigation.parent, eleventyNavigation.key].includes(entry.key)) else false %}
+                {% if  isOpen %}
+                    {% for entry in entry.children %}
+                        {% set indent = "pl-12" %}
+                        {% include "components/navigationLink.njk" %}
+                    {% endfor %}
+                {% endif %}
         {% endfor %}
 </nav>
 </div>

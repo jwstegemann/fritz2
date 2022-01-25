@@ -6,7 +6,7 @@ eleventyNavigation:
     key: checkbox
     title: CheckboxGroup
     parent: headless 
-    order: 20 
+    order: 40 
 demoHash: checkboxGroup 
 teaser: "Ich bin der Teaser für die checkboxen"
 ---
