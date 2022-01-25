@@ -1,12 +1,17 @@
 const eleventyNavigationPlugin = require("@11ty/eleventy-navigation");
 
 const markdownIt = require('markdown-it')
+const markdownItKbd = require('markdown-it-kbd');
 const markdownItAnchor = require('markdown-it-anchor')
 const pluginTOC = require('eleventy-plugin-toc')
+const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
+const heroicons = require('eleventy-plugin-heroicons')
 
 module.exports = function(eleventyConfig) {
 
   eleventyConfig.addPlugin(eleventyNavigationPlugin);
+  eleventyConfig.addPlugin(heroicons);
+  eleventyConfig.addPlugin(syntaxHighlight);
 
   eleventyConfig.addPassthroughCopy('src/img')
   eleventyConfig.addPassthroughCopy('admin')
@@ -24,19 +29,24 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addFilter('htmlDateString', (dateObj) => {
     return DateTime.fromJSDate(dateObj, {
       zone: 'utc'
-    }).toFormat('yy-MM-dd');
+    }).toFormat('yyyy-MM-dd');
     });
 
     eleventyConfig.addFilter("readableDate", dateObj => {
     return DateTime.fromJSDate(dateObj, {
       zone: 'utc'
-    }).toFormat("dd-MM-yy");
+    }).toFormat("dd-MM-yyyy");
   });
 
   // Markdown
   eleventyConfig.setLibrary(
       'md',
       markdownIt().use(markdownItAnchor)
+  )
+
+  eleventyConfig.setLibrary(
+      'md',
+      markdownIt().use(markdownItKbd)
   )
 
   eleventyConfig.addPlugin(pluginTOC, {

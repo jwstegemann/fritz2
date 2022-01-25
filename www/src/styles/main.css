@@ -3,19 +3,59 @@
 @tailwind utilities;
 
 @layer components {
-    h1 {
+    .content h1 {
         @apply text-gray-700 text-3xl font-extrabold tracking-tight mb-8
     }
 
-    h2 {
+    .content h2 {
         @apply text-gray-700 mt-8 mb-4 text-2xl font-bold leading-6
     }
 
-    p {
-        @apply mb-1 text-sm text-gray-500 leading-7
+    .content p {
+        @apply mb-3 text-sm text-gray-500 leading-7
+    }
+
+    .content ul {
+        @apply list-disc mb-3 text-sm text-gray-500 leading-7
+    }
+
+    .content li {
+        @apply ml-6 text-sm text-gray-500 leading-7
+    }
+
+    .content a {
+        @apply text-indigo-600 text-sm underline
+    }
+
+    .content code:not([class]) {
+        @apply text-gray-600 font-semibold
+    }
+
+    .content th {
+        @apply font-semibold text-sm text-gray-500 text-left leading-7 py-2
+    }
+
+    .content tr {
+        @apply border-b border-gray-700 leading-7
+    }
+
+    .content td {
+        @apply text-sm text-gray-500 leading-7 py-2
+    }
+
+    .content kbd {
+        @apply py-1 px-2 bg-gray-200 text-sm text-gray-500 rounded
     }
 
     nav.toc a {
         @apply mt-2 px-3 py-2 rounded-md text-sm font-medium text-indigo-400
     }
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+pre {
+    font-size: 0.85em !important;
 }

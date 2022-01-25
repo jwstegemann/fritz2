@@ -5,7 +5,9 @@ permalink: /docs/
 eleventyNavigation:
     key: documentation 
     title: Documentation 
-order: 10
+    order: 10
+    icon: academic-cap
+    classes: "font-semibold capitalize"
 ---
 
 Since we want you to build the best, most efficient, successful, and whatever-else-you-want web-apps with fritz2, we happily provide you with all the documentation you need in order to use it.

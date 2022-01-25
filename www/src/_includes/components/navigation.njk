@@ -3,11 +3,13 @@
 
     <nav class="flex-1 bg-white space-y-1" aria-label="Sidebar">
         {% for entry in navPages %}
+            <div class="mb-3">
             {% include "components/navigationLink.njk" %}
             {% for entry in entry.children %}
                 {% set indent = "pl-12" %}
                 {% include "components/navigationLink.njk" %}
             {% endfor %}
+            </div>
         {% endfor %}
 </nav>
 </div>

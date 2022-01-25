@@ -1,6 +1,6 @@
 ---
 title: Listbox 
-layout: layouts/docsWithContentNav.njk 
+layout: layouts/headlessWithContentNav.njk 
 permalink: /headless/listbox/ 
 eleventyNavigation:
     key: listbox
@@ -27,3 +27,10 @@ Dies ist ein Test
 Dies ist ein Test
 
 Noch ein Absatz
+
+## Keyboard Interaction
+
+| Command                                          | Description                                         |
+|--------------------------------------------------|-----------------------------------------------------|
+| [[Enter]] [[Space]] when `MenuButton` is focused | Opens menu and focuses first non-disabled item      |
+| [[⬆︎]] [[⬇]] ︎                             | Opens menu and focuses first/last non-disabled item |
