@@ -24,6 +24,12 @@ val pages = mapOf<String, DemoPage>(
         """Radio Groups give you the same functionality as native HTML radio inputs, without any of the styling. 
             |They're perfect for building out custom UIs for single selection.""".trimMargin(),
         RenderContext::radiogroupDemo
+    ),
+    "menu" to DemoPage(
+        "Headless Menu",
+        """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard
+            | navigation.""".trimMargin(),
+        RenderContext::menuDemo
     )
 )
 
