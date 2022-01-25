@@ -75,7 +75,9 @@ fun main() {
     renderTailwind {
         router.data.render { route ->
             console.log(route)
-            (pages[route]?.content ?: RenderContext::overview)()
+            div("w-full h-full bg-gradient-to-r from-amber-300 to-orange-500 rounded-lg p-4") {
+                (pages[route]?.content ?: RenderContext::overview)()
+            }
         }
     }
 }

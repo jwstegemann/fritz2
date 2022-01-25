@@ -20,7 +20,7 @@ fun RenderContext.radiogroupDemo() {
 
     val choice = storeOf<Plan?>(null)
 
-    div("w-96 m-4") {
+    div("w-96") {
         headlessRadioGroup<FieldSet, Plan?>(tag = RenderContext::fieldset) {
             value(choice)
             options = plans
@@ -66,7 +66,7 @@ fun RenderContext.radiogroupDemo() {
             }
         }
 
-        div("bg-gray-300 mt-4 px-2 rounded-lg") {
+        div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50") {
             em { +"Selected: " }
             choice.data.filterNotNull().map { "${it.name} ${it.cpus}·${it.ram}·${it.price}" }.renderText()
         }
