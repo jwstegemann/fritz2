@@ -30,7 +30,7 @@ Noch ein Absatz
 
 ## Keyboard Interaction
 
-| Command                                          | Description                                         |
-|--------------------------------------------------|-----------------------------------------------------|
-| [[Enter]] [[Space]] when `MenuButton` is focused | Opens menu and focuses first non-disabled item      |
-| [[⬆︎]] [[⬇]] ︎                             | Opens menu and focuses first/last non-disabled item |
+| Command                                           | Description                                       |
+|---------------------------------------------------|---------------------------------------------------|
+| [[Enter]] [[Space]] when `MenuButton` is focused  | Opens menu and focuses first non-disabled item    |
+| [[⬆︎]] [[⬇]] ︎                                    | Opens menu and focuses first/last non-disabled item |

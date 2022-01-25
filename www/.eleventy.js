@@ -41,12 +41,7 @@ module.exports = function(eleventyConfig) {
   // Markdown
   eleventyConfig.setLibrary(
       'md',
-      markdownIt().use(markdownItAnchor)
-  )
-
-  eleventyConfig.setLibrary(
-      'md',
-      markdownIt().use(markdownItKbd)
+      markdownIt().use(markdownItAnchor).use(markdownItKbd)
   )
 
   eleventyConfig.addPlugin(pluginTOC, {
