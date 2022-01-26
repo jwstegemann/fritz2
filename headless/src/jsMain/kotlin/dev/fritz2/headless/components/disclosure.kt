@@ -1,5 +1,6 @@
 package dev.fritz2.headless.components
 
+import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.Div
@@ -32,6 +33,7 @@ class HeadlessDisclosure<C : Tag<HTMLElement>>(val renderContext: C, id: String?
         tag: TagFactory<CB>,
         content: CB.() -> Unit
     ) = tag(this, classes, "$componentId-button", scope) {
+        if (!openClose.isSet) openClose(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
         attr("tabindex", "0")

@@ -36,6 +36,18 @@ val pages = mapOf<String, DemoPage>(
         """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard
             | navigation.""".trimMargin(),
         RenderContext::modalDemo
+    ),
+    "disclosure" to DemoPage(
+        "Headless Disclosure",
+        """A simple, accessible foundation for building custom UIs that show and hide content, like togglable
+            | accordion panels.""".trimMargin(),
+        RenderContext::disclosureDemo
+    ),
+    "popover" to DemoPage(
+        "Headless Popover",
+        """Popovers are perfect for floating panels with arbitrary content like navigation menus, mobile menus and
+            | flyout menus.""".trimMargin(),
+        RenderContext::popoverDemo
     )
 )
 
