@@ -12,19 +12,19 @@
     }
 
     .content p {
-        @apply mb-3 text-sm text-relaxed leading-7
+        @apply mb-3 text-base text-relaxed leading-7
     }
 
     .content ul {
-        @apply list-disc mb-3 text-sm text-relaxed leading-7
+        @apply list-disc mb-3 text-base text-relaxed leading-7
     }
 
     .content li {
-        @apply ml-6 text-sm text-relaxed leading-7
+        @apply ml-6 text-base text-relaxed leading-7
     }
 
     .content a {
-        @apply text-fg-highlight text-sm underline
+        @apply text-fg-highlight text-base underline
     }
 
     .content code:not([class]) {
