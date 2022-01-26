@@ -1,16 +1,17 @@
 {% set isCurrent = true if eleventyNavigation.key === entry.key else false %}
 <!-- Current: "bg-indigo-50 border-indigo-600 text-indigo-600", Default: "border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900" -->
-{% set anchorColors = "bg-indigo-50 border-indigo-600 text-indigo-600" if isCurrent else "border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900" %}
+{% set anchorColors = "bg-bg-highlight border-fg" if isCurrent else "border-transparent hover:bg-bg-highlight" %}
+{% set textColor = "text-relaxed hover:text-relaxed-highlight" if entry.parent else "text-fg-highlight" %}
 <a href="{{entry.url}}"
-   class="{{entry.classes}} {{indent}} {{anchorColors}} group flex items-center px-3 py-2 text-sm border-l-4">
+   class="{{entry.classes}} {{indent}} {{anchorColors}} {{textColor}} group flex items-center px-3 py-1 text-sm border-l-4">
     <!--
       Heroicon name: outline/home
 
       Current: "text-indigo-500", Default: "text-gray-400 group-hover:text-gray-500"
     -->
         {% if entry.icon %}
-            {% set iconColors = "text-indigo-500" if isCurrent else "text-gray-400 group-hover:text-gray-500" %}
-            <span class="mr-3 flex-shrink-0 h-6 w-6 {{iconColors}}">
+            {% set iconColors = "text-fg-highlight" if isCurrent else "text-fg-highlight group-hover:text-fg-highlight" %}
+            <span class="mr-3 flex-shrink-0 h-6 w-6">
                 {% heroicon_solid entry.icon %}
             </span>
         {% endif %}
