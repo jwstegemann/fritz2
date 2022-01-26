@@ -30,6 +30,12 @@ val pages = mapOf<String, DemoPage>(
         """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard
             | navigation.""".trimMargin(),
         RenderContext::menuDemo
+    ),
+    "modal" to DemoPage(
+        "Headless Modal",
+        """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard
+            | navigation.""".trimMargin(),
+        RenderContext::modalDemo
     )
 )
 
@@ -81,7 +87,7 @@ fun main() {
     renderTailwind {
         router.data.render { route ->
             console.log(route)
-            div("w-full h-full bg-gradient-to-r from-amber-300 to-orange-500 rounded-lg p-4") {
+            div("w-full h-screen bg-gradient-to-r from-amber-300 to-orange-500 rounded-lg p-4") {
                 (pages[route]?.content ?: RenderContext::overview)()
             }
         }
