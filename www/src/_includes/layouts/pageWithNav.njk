@@ -13,9 +13,9 @@
 <!-- Navbar -->
 <nav class="flex-shrink-0 bg-bg">
   <div class="mx-auto px-2 sm:px-4 lg:px-4">
-    <div class="relative flex items-center h-16">
+    <div class="relative flex items-center justify-between h-16">
       <!-- Logo section -->
-      <div class="flex items-center justify-start px-2 lg:px-0 xl:w-64">
+      <div class="flex items-center justify-start px-0">
           <svg class="ml-1 h-7 w-7 text-fg-highlight" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
              fill="currentColor" stroke="none" >
             <path d="M 9.987 0.229 C 4.469 0.236 0 4.61 0 10.003 C 0 15.401 4.477 19.777 10 19.777 C 15.523 19.777 20 15.401 20 10.003 C 20 4.605 15.523 0.229 10 0.229 C 9.996 0.229 9.992 0.229 9.987 0.229 Z M 14.678 2.662 C 15.144 2.665 15.52 3.043 15.517 3.506 L 15.5 6.862 C 15.497 7.325 15.118 7.699 14.652 7.696 C 14.187 7.694 13.811 7.316 13.813 6.853 L 12.126 6.844 C 11.661 6.842 11.281 7.216 11.278 7.679 L 11.274 8.501 L 12.052 8.501 C 12.072 8.499 12.092 8.499 12.112 8.499 C 12.575 8.499 12.952 8.882 12.952 9.356 C 12.952 9.829 12.575 10.213 12.112 10.213 C 12.089 10.213 12.066 10.212 12.043 10.21 L 7.111 10.21 L 7.111 10.207 C 7.097 10.208 7.084 10.208 7.071 10.208 C 6.607 10.208 6.231 9.825 6.231 9.353 C 6.231 8.881 6.607 8.498 7.071 8.498 C 7.091 8.498 7.111 8.499 7.131 8.501 L 7.9 8.501 L 7.909 6.823 C 7.918 4.969 9.437 3.474 11.3 3.484 L 13.83 3.497 C 13.833 3.034 14.212 2.66 14.678 2.662 Z M 7.887 10.644 L 11.261 10.662 L 11.248 13.179 C 11.238 15.032 9.72 16.527 7.857 16.517 L 6.17 16.509 C 6.167 16.972 5.787 17.346 5.322 17.343 C 4.856 17.341 4.48 16.963 4.483 16.5 L 4.5 13.144 C 4.502 12.681 4.882 12.307 5.348 12.309 C 5.813 12.312 6.189 12.69 6.187 13.153 L 7.031 13.157 C 7.496 13.159 7.876 12.786 7.878 12.322 Z"/>
@@ -24,8 +24,8 @@
       </div>
 
       <!-- Search section -->
-      <div class="flex-1 flex justify-center lg:justify-end">
-        <div class="w-full px-2 lg:px-6">
+      <div class="flex-1 flex justify-center max-w-4xl">
+        <div class="w-full px-4 md:px-8 lg:px-16 xl:px-24">
           <label for="search" class="sr-only">Search projects</label>
           <div class="relative text-fg focus-within:text-fg-highlight">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -38,17 +38,17 @@
               </svg>
             </div>
             <input id="search" name="search"
-                   class="block w-full pl-10 pr-3 py-2 border border-fg rounded-md leading-5 bg-bg-highlight bg-opacity-25 text-fg-highlight placeholder-fg focus:outline-none focus:bg-focus focus:ring-0 focus:placeholder-fg-highlight focus:text-fg-highlight sm:text-sm"
+                   class="block w-full pl-10 pr-3 py-2 border border-fg rounded-md leading-5 bg-bg-highlight bg-opacity-25 text-fg-highlight placeholder-fg focus:outline-none focus:bg-focus focus:ring-0 focus:placeholder-fg-highlight focus:text-fg-highlight text-sm"
                    placeholder="Search projects" type="search">
           </div>
         </div>
       </div>
-      <div class="flex lg:hidden">
+      <div class="flex md:hidden">
         <!-- Mobile menu button -->
-        <button type="button"
-                class="bg-indigo-600 inline-flex items-center justify-center p-2 rounded-md text-indigo-400 hover:text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-indigo-600 focus:ring-white"
+        <button type="button" id="mobile-menu-button" onclick="toggleMenu()"
+                class="inline-flex items-center justify-center p-1.5 rounded-md text-fg border border-fg hover:text-fg-highlight hover:border-fg-highlight focus:outline-none focus:ring-0"
                 aria-controls="mobile-menu" aria-expanded="false">
-          <span class="sr-only">Open main menu</span>
+          <span class="sr-only">Open menu</span>
           <!--
             Icon when menu is closed.
 
@@ -74,14 +74,9 @@
         </button>
       </div>
       <!-- Links section -->
-      <div class="hidden lg:block lg:w-80">
+      <div class="hidden md:block">
         <div class="flex items-center justify-end">
-          <div class="flex">
-<!--            <a href="#"-->
-<!--               class="px-3 py-2 rounded-md text-sm font-medium text-indigo-200 hover:text-white">Documentation</a>-->
-<!--            <a href="#" class="px-3 py-2 rounded-md text-sm font-medium text-indigo-200 hover:text-white">Support</a>-->
-          </div>
-          <!-- Profile dropdown -->
+          <!-- Github -->
           <div class="ml-4 relative flex-shrink-0">
             <div>
               <a href="https://github.com/jwstegemann/fritz2">
@@ -98,23 +93,11 @@
   </div>
 
   <!-- Mobile menu, show/hide based on menu state. -->
-  <div class="lg:hidden" id="mobile-menu">
+  <div class="hidden md:hidden pb-2 border-b border-b-fg" id="mobile-menu">
     <div class="px-2 pt-2 pb-3">
-      <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-indigo-800">Dashboard</a>
-      <a href="#"
-         class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-indigo-200 hover:text-indigo-100 hover:bg-indigo-600">Support</a>
-    </div>
-    <div class="pt-4 pb-3 border-t border-indigo-800">
-      <div class="px-2">
-        <a href="#"
-           class="block px-3 py-2 rounded-md text-base font-medium text-indigo-200 hover:text-indigo-100 hover:bg-indigo-600">Your
-          Profile</a>
-        <a href="#"
-           class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-indigo-200 hover:text-indigo-100 hover:bg-indigo-600">Settings</a>
-        <a href="#"
-           class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-indigo-200 hover:text-indigo-100 hover:bg-indigo-600">Sign
-          out</a>
-      </div>
+      {% set uncollapsed = true %}
+      {% include "components/navigation.njk" %}
+      {% set uncollapsed = false %}
     </div>
   </div>
 </nav>
@@ -123,7 +106,7 @@
 <div class="flex-grow w-full mx-auto md:flex">
   <!-- Left sidebar & main wrapper -->
   <div class="flex-1 min-w-0 bg-bg md:flex">
-    <div class="border-b border-relaxed w-64 xl:border-b-0 lg:border-r border-bg-highlight bg-bg">
+    <div class="border-b border-relaxed w-64 xl:border-b-0 md:border-r border-bg-highlight bg-bg hidden md:block">
       <div class="h-full mt-6">
         <!-- Start left column area -->
         <div class="h-full relative" style="min-height: 12rem;">
@@ -141,5 +124,6 @@
 </div>
 
 <script src="/assets/main.js"></script>
+<script src="/assets/mobile-menu.js"></script>
 </body>
 </html>
