@@ -29,8 +29,8 @@ fun RenderContext.menuDemo() {
                 openClose(storeOf(false))
                 div {
                     menuButton(
-                        """inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-black
-                        | bg-white rounded-md focus:outline-none focus-visible:ring-2
+                        """inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-black 
+                        | bg-white rounded-md focus:outline-none focus-visible:ring-2 
                         | focus-visible:ring-white focus-visible:ring-opacity-75""".trimMargin()
                     ) {
                         +"Options"
@@ -41,9 +41,9 @@ fun RenderContext.menuDemo() {
                 }
 
                 menuItems(
-                    """w-56 max-h-56 overflow-y-auto border-white border-2 bg-white divide-y
-                    | divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5
-                    |  focus:outline-none origin-top-left""".trimMargin()
+                    """w-56 max-h-56 overflow-y-auto border-white border-2 bg-white divide-y 
+                    | divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 
+                    | focus:outline-none origin-top-left""".trimMargin()
                 ) {
                     placement = Placement.bottomStart
 
@@ -51,7 +51,7 @@ fun RenderContext.menuDemo() {
 
                     entries.forEach { entry ->
                         menuItem(
-                            """group flex rounded-md items-center w-full px-2 py-2 text-sm
+                            """group flex rounded-md items-center w-full px-2 py-2 text-sm 
                             | disabled:opacity-50""".trimMargin()
                         ) {
                             tag.apply {

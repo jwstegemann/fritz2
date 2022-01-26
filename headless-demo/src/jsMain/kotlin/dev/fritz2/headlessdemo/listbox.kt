@@ -28,9 +28,9 @@ fun RenderContext.listboxDemo() {
             value(bestCharacter)
             listboxLabel("sr-only", tag = RenderContext::span) { +"Choose the best Star Wars character" }
             listboxButton(
-                """flex items-center justify-end w-full py-2 pl-3 pr-3 text-left bg-white rounded-lg
+                """flex items-center justify-end w-full py-2 pl-3 pr-3 text-left bg-white rounded-lg 
                 | shadow-md cursor-default focus:outline-none focus:ring-2 focus:ring-opacity-75 
-                | focus:ring-white focus:ring-offset-orange-300 focus:ring-offset-2
+                | focus:ring-white focus:ring-offset-orange-300 focus:ring-offset-2 
                 | focus:border-indigo-500 sm:text-sm""".trimMargin()
             ) {
                 span("block truncate w-full") {
@@ -40,7 +40,7 @@ fun RenderContext.listboxDemo() {
             }
 
             listboxItems(
-                """w-full py-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black
+                """w-full py-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black 
                     | ring-opacity-5 focus:outline-none sm:text-sm""".trimMargin(),
                 tag = RenderContext::ul
             ) {
