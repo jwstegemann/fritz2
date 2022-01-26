@@ -13,7 +13,7 @@ eleventyNavigation:
 
 We `recommend` organizing your source code like this:
 
-```
+```txt
 <project-root>/
 ├── src/
 │   ├── commonMain/
