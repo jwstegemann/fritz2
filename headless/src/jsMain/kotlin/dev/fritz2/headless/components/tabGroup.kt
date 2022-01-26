@@ -2,6 +2,7 @@ package dev.fritz2.headless.components
 
 
 import dev.fritz2.binding.RootStore
+import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.Aria
@@ -48,6 +49,9 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
      * location for correcting the stream.
      */
     val selected by lazy {
+        // set a databinding if user has not provided one
+        if(!value.isSet) value(storeOf(0))
+
         value.data.combine(disabledTabs.data) { index, disabledStates ->
             selectDefaultTab(0, index, disabledStates)
         }
