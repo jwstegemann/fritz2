@@ -36,6 +36,12 @@ val pages = mapOf<String, DemoPage>(
         """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard
             | navigation.""".trimMargin(),
         RenderContext::modalDemo
+    ),
+    "disclosure" to DemoPage(
+        "Headless Disclosure",
+        """A simple, accessible foundation for building custom UIs that show and hide content, like togglable
+            | accordion panels.""".trimMargin(),
+        RenderContext::disclosureDemo
     )
 )
 
