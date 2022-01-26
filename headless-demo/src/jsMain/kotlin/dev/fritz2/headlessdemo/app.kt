@@ -59,6 +59,12 @@ val pages = mapOf<String, DemoPage>(
         "Headless Input and Textarea",
         "Easily create accessible, fully customizable text inputs.",
         RenderContext::textfieldDemo
+    ),
+    "switch" to DemoPage(
+        "Headless Switch",
+        """Switches are a pleasant interface for toggling a value between two states, and offer the same 
+            |semantics and keyboard navigation as native checkbox elements.""".trimMargin(),
+        RenderContext::switchDemo
     )
 )
 
