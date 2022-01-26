@@ -32,7 +32,6 @@ fun RenderContext.disclosureDemo() {
             dl("mt-6 space-y-6 divide-y divide-gray-200") {
                 faqs.forEach { (question, answer) ->
                     headlessDisclosure("pt-6") {
-                        openClose(storeOf(false))
                         dt("text-lg") {
                             /* <!-- Expand/collapse question button --> */
                             disclosureButton(
