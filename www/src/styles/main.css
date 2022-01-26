@@ -4,31 +4,31 @@
 
 @layer components {
     .content h1 {
-        @apply text-gray-700 text-3xl font-extrabold tracking-tight mb-8
+        @apply text-fg-highlight text-3xl font-extrabold tracking-tight mb-8
     }
 
     .content h2 {
-        @apply text-gray-700 mt-8 mb-4 text-2xl font-bold leading-6
+        @apply text-fg-highlight mt-8 mb-4 text-2xl font-bold leading-6
     }
 
     .content p {
-        @apply mb-3 text-sm text-gray-500 leading-7
+        @apply mb-3 text-base text-relaxed leading-7
     }
 
     .content ul {
-        @apply list-disc mb-3 text-sm text-gray-500 leading-7
+        @apply list-disc mb-3 text-base text-relaxed leading-7
     }
 
     .content li {
-        @apply ml-6 text-sm text-gray-500 leading-7
+        @apply ml-6 text-base text-relaxed leading-7
     }
 
     .content a {
-        @apply text-indigo-600 text-sm underline
+        @apply text-fg-highlight text-base underline
     }
 
     .content code:not([class]) {
-        @apply text-gray-600 bg-gray-100 rounded px-1.5 py-1 text-sm
+        @apply text-relaxed-highlight bg-bg-highlight rounded px-1.5 py-1 text-sm
     }
 
     .content table {
@@ -36,15 +36,15 @@
     }
 
     .content th {
-        @apply font-semibold text-sm text-gray-500 text-left leading-7 py-2
+        @apply font-semibold text-sm text-fg-highlight text-left leading-7 py-2
     }
 
     .content tr {
-        @apply border-b border-gray-300 leading-7
+        @apply border-b border-fg leading-7
     }
 
     .content td {
-        @apply text-sm text-gray-500 leading-7 py-2 pr-2
+        @apply text-sm text-relaxed leading-7 py-2 pr-2
     }
 
     .content kbd {
@@ -52,7 +52,7 @@
     }
 
     nav.toc a {
-        @apply mt-2 py-2 rounded-md text-sm font-medium text-indigo-400
+        @apply block py-2 rounded-md text-sm text-relaxed hover:text-relaxed-highlight
     }
 }
 

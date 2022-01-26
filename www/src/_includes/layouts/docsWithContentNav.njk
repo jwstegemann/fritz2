@@ -2,7 +2,7 @@
 layout: layouts/pageWithNav.njk
 ---
 
-<div class="bg-white lg:min-w-0 lg:flex-1">
+<div class="bg-bg lg:min-w-0 lg:flex-1">
   <div class="h-full py-6 px-5 sm:px-6 lg:px-8">
     <!-- Start main area-->
     <div class="relative h-full content" style="min-height: 36rem;">
@@ -15,18 +15,5 @@ layout: layouts/pageWithNav.njk
     <!-- End main area -->
   </div>
 </div>
-</div>
 
-<div class="hidden lg:block max-w-3xl bg-gray-50 pr-4 sm:pr-6 lg:pr-8 lg:flex-shrink-0 lg:border-l lg:border-gray-200 xl:pr-0">
-  <div class="h-full pl-6 py-6 lg:w-80">
-    <!-- Start right column area -->
-    <div class="h-full relative" style="min-height: 16rem;">
-
-      <h2 class="text-sm font-bold capitalize text-gray-600 mt-0 mb-2">On this Page</h2>
-
-      {{ content | toc | safe }}
-
-    </div>
-    <!-- End right column area -->
-  </div>
-</div>
+{% include "components/toc.njk" %}

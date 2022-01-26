@@ -1,7 +1,7 @@
 {% set navPages = collections.all | eleventyNavigation %}
 <div class="flex-grow flex flex-col">
 
-    <nav class="flex-1 bg-white space-y-2" aria-label="Sidebar">
+    <nav class="flex-1 bg-bg space-y-2" aria-label="Sidebar">
         {% for entry in navPages %}
             {% include "components/navigationLink.njk" %}
                 {% set isOpen = true if ([eleventyNavigation.parent, eleventyNavigation.key].includes(entry.key)) else false %}

@@ -14,7 +14,7 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPlugin(syntaxHighlight);
 
   eleventyConfig.addPassthroughCopy('src/img')
-  eleventyConfig.addPassthroughCopy('admin')
+  eleventyConfig.addPassthroughCopy('src/assets')
 
   eleventyConfig.setBrowserSyncConfig({
     port: 9090,
