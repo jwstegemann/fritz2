@@ -48,6 +48,12 @@ val pages = mapOf<String, DemoPage>(
         """Popovers are perfect for floating panels with arbitrary content like navigation menus, mobile menus and
             | flyout menus.""".trimMargin(),
         RenderContext::popoverDemo
+    ),
+    "tabs" to DemoPage(
+        "Headless Tabs",
+        """Easily create accessible, fully customizable tab interfaces, with robust focus management and keyboard
+            | navigation support.""".trimMargin(),
+        RenderContext::tabsDemo
     )
 )
 
@@ -103,8 +109,7 @@ fun main() {
 
     renderTailwind {
         router.data.render { route ->
-            console.log(route)
-            div("w-full h-screen bg-gradient-to-r from-amber-300 to-orange-500 rounded-lg p-4") {
+            div("w-full h-screen bg-gradient-to-r from-amber-300 to-orange-500 p-4") {
                 (pages[route]?.content ?: RenderContext::overview)()
             }
         }

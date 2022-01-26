@@ -1,9 +1,7 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.headless.components.headlessDisclosure
-import kotlinx.coroutines.flow.map
 
 fun RenderContext.disclosureDemo() {
     val faqs = listOf(
