@@ -54,6 +54,11 @@ val pages = mapOf<String, DemoPage>(
         """Easily create accessible, fully customizable tab interfaces, with robust focus management and keyboard
             | navigation support.""".trimMargin(),
         RenderContext::tabsDemo
+    ),
+    "textfield" to DemoPage(
+        "Headless Input and Textarea",
+        "Easily create accessible, fully customizable text inputs.",
+        RenderContext::textfieldDemo
     )
 )
 
