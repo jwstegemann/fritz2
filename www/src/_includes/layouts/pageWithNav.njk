@@ -12,7 +12,7 @@
 <div class="fixed top-0 right-0 w-1/2 h-full bg-bg" aria-hidden="true"></div>
 <div class="relative flex flex-col bg-bg">
 <!-- Navbar -->
-<nav class="z-10 fixed w-full bg-bg">
+<nav class="z-20 fixed w-full bg-bg">
   <div class="mx-auto px-2 sm:px-4 lg:px-4">
     <div class="relative flex items-center justify-between h-16">
       <!-- Logo section -->
@@ -93,15 +93,16 @@
     </div>
   </div>
 
-  <!-- Mobile menu, show/hide based on menu state. -->
-  <div class="z-5 w-full bg-bg top-16 fixed hidden md:hidden pb-2 border-b border-b-fg px-2 pt-2 pb-3 h-[calc(100vh-4rem)] overflow-y-auto" id="mobile-menu">
-      {% set uncollapsed = true %}
-      {% include "components/navigation.njk" %}
-      {% set uncollapsed = false %}
-  </div>
 </nav>
 
-<!-- 3 column wrapper -->
+  <!-- Mobile menu, show/hide based on menu state. -->
+  <div class="z-10 w-full pt-16 bg-bg top-0 fixed -translate-y-[100vh] transition-transform duration-250 ease-in md:hidden pb-2 border-b border-b-fg px-2 pt-2 pb-3 h-screen overflow-y-auto" id="mobile-menu">
+    {% set uncollapsed = true %}
+    {% include "components/navigation.njk" %}
+    {% set uncollapsed = false %}
+  </div>
+
+  <!-- 3 column wrapper -->
 <div class="mt-16 h-[calc(100vh-4rem)] flex-grow w-full mx-auto md:flex">
   <!-- Left sidebar & main wrapper -->
   <div class="flex-1 min-w-0 bg-bg md:flex h-full">

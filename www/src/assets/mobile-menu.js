@@ -5,7 +5,7 @@ function toggleMenu() {
     const menu = document.getElementById("mobile-menu");
     if (menu) {
         console.log("toggling")
-        menu.classList.toggle("hidden")
+        menu.classList.toggle("-translate-y-[100vh]")
     }
 }
 
