@@ -4,6 +4,7 @@
 api/*/**
 api/-modules.html
 api/navigation.html
+api/index.html
 **/build/
 **/src/generated/
 
