@@ -96,7 +96,7 @@
 </nav>
 
   <!-- Mobile menu, show/hide based on menu state. -->
-  <div class="z-10 w-full pt-16 bg-bg top-0 fixed -translate-y-[100vh] transition-transform duration-250 ease-in md:hidden pb-2 border-b border-b-fg px-2 pt-2 pb-3 h-screen overflow-y-auto" id="mobile-menu">
+  <div class="z-10 w-full bg-bg top-16 fixed -translate-y-[100vh] transition-transform duration-250 ease-in md:hidden pb-2 border-b border-b-fg px-2 pt-2 pb-3 h-[calc(100vh-4rem)] overflow-y-auto" id="mobile-menu">
     {% set uncollapsed = true %}
     {% include "components/navigation.njk" %}
     {% set uncollapsed = false %}
