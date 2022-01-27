@@ -1,7 +1,6 @@
 package dev.fritz2.headless.foundation
 
 import dev.fritz2.dom.Tag
-import dev.fritz2.headless.hooks.BasicHook
 import dev.fritz2.identification.Id
 
 /**

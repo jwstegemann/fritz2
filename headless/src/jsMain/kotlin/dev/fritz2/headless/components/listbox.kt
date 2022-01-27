@@ -7,8 +7,8 @@ import dev.fritz2.dom.html.*
 
 import dev.fritz2.identification.Id
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.hooks.DatabindingHook
-import dev.fritz2.headless.hooks.hook
+import dev.fritz2.headless.foundation.DatabindingHook
+import dev.fritz2.headless.foundation.hook
 import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.utils.classes

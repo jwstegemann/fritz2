@@ -6,7 +6,7 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.scrollintoview.*
-import dev.fritz2.headless.hooks.hook
+import dev.fritz2.headless.foundation.hook
 import dev.fritz2.identification.Id
 import dev.fritz2.utils.classes
 import kotlinx.coroutines.ExperimentalCoroutinesApi

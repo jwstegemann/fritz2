@@ -8,7 +8,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.identification.Id
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.hooks.hook
+import dev.fritz2.headless.foundation.hook
 import org.w3c.dom.HTMLElement
 
 class HeadlessDisclosure<C : Tag<HTMLElement>>(val renderContext: C, id: String?) :

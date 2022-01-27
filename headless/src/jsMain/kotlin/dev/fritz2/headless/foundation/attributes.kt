@@ -1,7 +1,8 @@
-package dev.fritz2.headless.hooks
+package dev.fritz2.headless.foundation
 
 import dev.fritz2.dom.Tag
 import kotlinx.coroutines.flow.Flow
+import org.w3c.dom.Element
 
 
 class AttributeHook<C : Tag<*>, T>(
@@ -75,4 +76,18 @@ class RawAttributeHook<C : Tag<*>, T>(private val name: String) : BasicHook<C, U
     operator fun invoke(values: Flow<Map<String, Boolean>>, separator: String = " ") {
         apply = { attr(name, values, separator) }
     }
+}
+
+/**
+ * Sets an attribute only if it is not present yet.
+ *
+ * This is intended only for attributes, that have a *static* character, like an ARIA "role" for example.
+ * It enables a client to overrule a default attribute set by a lower layer of a component library, if the latter
+ * uses this defensive function to set its default attribute.
+ *
+ * @param name to use
+ * @param value to use
+ */
+fun <N : Element> Tag<N>.attrIfNotSet(name: String, value: String) {
+    if (!domNode.hasAttribute(name)) attr(name, value)
 }

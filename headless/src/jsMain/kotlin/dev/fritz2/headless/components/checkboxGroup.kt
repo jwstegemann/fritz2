@@ -6,9 +6,9 @@ import dev.fritz2.identification.Id
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.whenever
-import dev.fritz2.headless.hooks.BasicHook
-import dev.fritz2.headless.hooks.ItemDatabindingHook
-import dev.fritz2.headless.hooks.hook
+import dev.fritz2.headless.foundation.BasicHook
+import dev.fritz2.headless.foundation.ItemDatabindingHook
+import dev.fritz2.headless.foundation.hook
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter

@@ -6,10 +6,10 @@ import dev.fritz2.dom.values
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.whenever
-import dev.fritz2.headless.hooks.AttributeHook
-import dev.fritz2.headless.hooks.BooleanAttributeHook
-import dev.fritz2.headless.hooks.DatabindingHook
-import dev.fritz2.headless.hooks.hook
+import dev.fritz2.headless.foundation.AttributeHook
+import dev.fritz2.headless.foundation.BooleanAttributeHook
+import dev.fritz2.headless.foundation.DatabindingHook
+import dev.fritz2.headless.foundation.hook
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.map

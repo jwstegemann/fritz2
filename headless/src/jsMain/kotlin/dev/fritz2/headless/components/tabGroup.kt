@@ -9,8 +9,8 @@ import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.Direction
 import dev.fritz2.headless.foundation.Orientation
 import dev.fritz2.headless.foundation.TagFactory
-import dev.fritz2.headless.hooks.DatabindingHook
-import dev.fritz2.headless.hooks.hook
+import dev.fritz2.headless.foundation.DatabindingHook
+import dev.fritz2.headless.foundation.hook
 import dev.fritz2.identification.Id
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.*
