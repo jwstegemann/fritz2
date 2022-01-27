@@ -105,8 +105,7 @@
   <!-- 3 column wrapper -->
 <div class="mt-16 h-[calc(100vh-4rem)] flex-grow w-full mx-auto md:flex">
   <!-- Left sidebar & main wrapper -->
-  <div class="flex-1 min-w-0 bg-bg md:flex h-full">
-    <div class="h-full overscroll-none overflow-y-auto border-b w-64 xl:border-b-0 md:border-r border-bg-highlight bg-bg hidden md:block">
+    <div class="min-w-fit h-full overscroll-none overflow-y-auto border-b w-64 xl:border-b-0 md:border-r border-bg-highlight bg-bg hidden md:block">
         <!-- Start left column area -->
         <div class="mt-6 relative" style="min-height: 12rem;">
           {% include "components/navigation.njk" %}
@@ -117,7 +116,6 @@
 
     {{ content | safe }}
 
-  </div>
   </div>
 </div>
 
