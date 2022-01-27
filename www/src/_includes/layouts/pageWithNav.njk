@@ -94,12 +94,10 @@
   </div>
 
   <!-- Mobile menu, show/hide based on menu state. -->
-  <div class="hidden md:hidden pb-2 border-b border-b-fg" id="mobile-menu">
-    <div class="px-2 pt-2 pb-3">
+  <div class="z-5 w-full bg-bg top-16 fixed hidden md:hidden pb-2 border-b border-b-fg px-2 pt-2 pb-3 h-[calc(100vh-4rem)] overflow-y-auto" id="mobile-menu">
       {% set uncollapsed = true %}
       {% include "components/navigation.njk" %}
       {% set uncollapsed = false %}
-    </div>
   </div>
 </nav>
 
