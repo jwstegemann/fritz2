@@ -10,7 +10,7 @@
 <!-- Background color split screen for large screens -->
 <div class="fixed top-0 left-0 w-1/2 h-full bg-bg" aria-hidden="true"></div>
 <div class="fixed top-0 right-0 w-1/2 h-full bg-bg" aria-hidden="true"></div>
-<div class="relative min-h-screen flex flex-col bg-bg">
+<div class="relative flex flex-col bg-bg">
 <!-- Navbar -->
 <nav class="z-10 fixed w-full bg-bg">
   <div class="mx-auto px-2 sm:px-4 lg:px-4">
@@ -102,17 +102,15 @@
 </nav>
 
 <!-- 3 column wrapper -->
-<div class="mt-16 flex-grow w-full mx-auto md:flex">
+<div class="mt-16 h-[calc(100vh-4rem)] flex-grow w-full mx-auto md:flex">
   <!-- Left sidebar & main wrapper -->
-  <div class="flex-1 min-w-0 bg-bg md:flex">
-    <div class="border-b border-relaxed w-64 xl:border-b-0 md:border-r border-bg-highlight bg-bg hidden md:block">
-      <div class="h-full mt-6">
+  <div class="flex-1 min-w-0 bg-bg md:flex h-full">
+    <div class="h-full overscroll-none overflow-y-auto border-b w-64 xl:border-b-0 md:border-r border-bg-highlight bg-bg hidden md:block">
         <!-- Start left column area -->
-        <div class="h-full relative" style="min-height: 12rem;">
+        <div class="mt-6 relative" style="min-height: 12rem;">
           {% include "components/navigation.njk" %}
         </div>
         <!-- End left column area -->
-      </div>
     </div>
 
 
