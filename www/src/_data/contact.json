@@ -1,0 +1,20 @@
+{
+    "items": [
+        {
+            "name": "test@example.com",
+            "link": "mailto:test@example.com"
+        },
+        {
+            "name": "Twitter",
+            "link": "https://twitter.com/…"
+        },
+        {
+            "name": "GitHub",
+            "link": "https://github.com/…"
+        },
+        {
+            "name": "CodePen",
+            "link": "https://codepen.io/…"
+        }
+    ]
+}
