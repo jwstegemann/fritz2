@@ -20,13 +20,15 @@ import kotlinx.coroutines.flow.map
  * authentication information provided by the [addAuthentication] method.
  * When the user logs out you have to call the [clear] function to clear all authentication information.
  */
-abstract class Authentication<P> : Middleware {
+abstract class
+Authentication<P> : Middleware {
 
     private val principalStore = MutableStateFlow<P?>(null)
 
     private var state: CompletableDeferred<P>? = null
 
-    final override suspend fun enrichRequest(request: Request): Request = addAuthentication(request, getPrincipal())
+    final override suspend fun enrichRequest(request: Request): Request =
+        addAuthentication(request, state?.await() ?: principalStore.value)
 
     final override suspend fun handleResponse(response: Response): Response =
         if (statusCodesEnforcingAuthentication.contains(response.status)) {
@@ -60,7 +62,7 @@ abstract class Authentication<P> : Middleware {
      *
      * @return P principal information
      */
-    suspend fun getPrincipal(): P? = if(state != null) state?.await() else principalStore.value
+    fun getPrincipal(): P? = principalStore.value
 
     /**
      * implements the authentication process.
