@@ -21,37 +21,9 @@ import kotlinx.coroutines.sync.withLock
 typealias Update<T> = suspend (T) -> T
 
 /**
- * Defines a type for handling errors in updates
- */
-typealias ErrorHandler<T> = (Throwable, T) -> T
-
-/**
- * Type of elements in the update-queue of a [Store]
- *
- * @property update function describing the step from the old value to the new
- * @property errorHandler describes the handling of errors during an update and the new value in case of error
- */
-class QueuedUpdate<T>(
-    inline val update: Update<T>,
-    inline val errorHandler: (Throwable, T) -> T
-)
-
-
-/**
  * The [Store] is the main type for all data binding activities. It the base class of all concrete Stores like [RootStore], [SubStore], etc.
  */
 interface Store<T> : WithJob {
-
-    /**
-     * Default error handler printing the error to console and keeping the previous value.
-     *
-     * @param exception Exception to handle
-     * @param oldValue previous value of the [Store]
-     */
-    fun errorHandler(exception: Throwable, oldValue: T): T {
-        console.error("ERROR[$id]: ${exception.message}", exception)
-        return oldValue
-    }
 
     /**
      * Factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
@@ -59,24 +31,23 @@ interface Store<T> : WithJob {
      * @param execute lambda that is executed whenever a new action-value appears on the connected event-[Flow].
      */
     fun <A> handle(
-        errorHandler: ErrorHandler<T> = ::errorHandler,
         execute: suspend (T, A) -> T
     ) = SimpleHandler<A> { flow, job ->
-        flow.onEach { enqueue(QueuedUpdate({ t -> execute(t, it) }, errorHandler)) }
+        flow.onEach { enqueue { t -> execute(t, it) } }
+            .catch { t -> errorHandler(t) }
             .launchIn(MainScope() + job)
     }
 
     /**
      * Factory method to create a [SimpleHandler] that does not take an Action
      *
-     * @param errorHandler handles error during update
      * @param execute lambda that is execute for each event on the connected [Flow]
      */
     fun handle(
-        errorHandler: ErrorHandler<T> = ::errorHandler,
         execute: suspend (T) -> T
     ) = SimpleHandler<Unit> { flow, job ->
-        flow.onEach { enqueue(QueuedUpdate({ t -> execute(t) }, errorHandler)) }
+        flow.onEach { enqueue { t -> execute(t) } }
+            .catch { t -> errorHandler(t) }
             .launchIn(MainScope() + job)
     }
 
@@ -84,30 +55,28 @@ interface Store<T> : WithJob {
      * Factory method to create a [EmittingHandler] taking an action-value and the current store value to derive the new value.
      * An [EmittingHandler] is a [Flow] by itself and can therefore be connected to other [SimpleHandler]s even in other [Store]s.
      *
-     * @param errorHandler handles error during update
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
     fun <A, E> handleAndEmit(
-        errorHandler: ErrorHandler<T> = ::errorHandler,
         execute: suspend FlowCollector<E>.(T, A) -> T
     ) =
         EmittingHandler<A, E>({ inFlow, outFlow, job ->
-            inFlow.onEach { enqueue(QueuedUpdate({ t -> outFlow.execute(t, it) }, errorHandler)) }
+            inFlow.onEach { enqueue { t -> outFlow.execute(t, it) } }
+                .catch { t -> errorHandler(t) }
                 .launchIn(MainScope() + job)
         })
 
     /**
      * factory method to create an [EmittingHandler] that does not take an action in it's [execute]-lambda.
      *
-     * @param errorHandler handles error during update
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
     fun <E> handleAndEmit(
-        errorHandler: ErrorHandler<T> = ::errorHandler,
         execute: suspend FlowCollector<E>.(T) -> T
     ) =
         EmittingHandler<Unit, E>({ inFlow, outFlow, job ->
-            inFlow.onEach { enqueue(QueuedUpdate({ t -> outFlow.execute(t) }, errorHandler)) }
+            inFlow.onEach { enqueue { t -> outFlow.execute(t) } }
+                .catch { t -> errorHandler(t) }
                 .launchIn(MainScope() + job)
         })
 
@@ -116,7 +85,7 @@ interface Store<T> : WithJob {
      *
      * @param update the [Update] to handle
      */
-    suspend fun enqueue(update: QueuedUpdate<T>)
+    suspend fun enqueue(update: Update<T>)
 
     /**
      * [id] of this [Store].
@@ -245,13 +214,9 @@ open class RootStore<T>(
     /**
      * in a [RootStore] an [Update] is handled by applying it to the internal [StateFlow].
      */
-    override suspend fun enqueue(update: QueuedUpdate<T>) {
-        try {
-            mutex.withLock {
-                state.value = update.update(state.value)
-            }
-        } catch (e: Throwable) {
-            update.errorHandler(e, state.value)
+    override suspend fun enqueue(update: Update<T>) {
+        mutex.withLock {
+            state.value = update(state.value)
         }
     }
 
