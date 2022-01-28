@@ -264,7 +264,26 @@ open class RootStore<D>(
 }
 
 /**
- * A [ValidatingStore] is a [RootStore] which also contains a [Validation] for its model.
+ * A [ValidatingStore] is a [RootStore] which also contains a [Validation] for its model and by default applies it
+ * to every update.
+ *
+ * This store is intentionally configured to validate the data on each update, that is why the [validateAfterUpdate]
+ * parameter is set to ``true`` by default.
+ *
+ * There might be special situations where it is reasonable to disable this behaviour and to prefer applying the
+ * validation individually within custom handlers, for example if a model should only be validated after the user
+ * has completed his input or if meta-data is needed for the validation process. Then be aware of the fact,
+ * that the call of the [validate] function actually updates the [messages] [Flow] already.
+ *
+ * If the new data is not passed to the store's [data] flow afterwards, the messages are out of sync with the
+ * actual data state!
+ * This could lead to false assumptions and might produce hard to detect bugs in your application context.
+ *
+ * So for scenarios where the model in a store should always be valid, do not use this store implementation!
+ * Instead, strive for a custom store implementation where you can handle the validation completely by yourself.
+ * As the validation is simply a call on the thin [Validation] wrapper, it is really easy to manage manually.
+ *
+ * Using this store you should always insert exactly the data, that leads to the current validation messages!
  *
  * @param initialData first current value of this [Store]
  * @param validation [Validation] function to use at the data on this [Store].
@@ -282,12 +301,15 @@ open class ValidatingStore<D, T, M>(
 
     /**
      * [Flow] of the [List] of validation-messages.
-     * Use this [Flow] to render out the validation-messages.
+     * Use this [Flow] to render out the validation-messages and to detect the valid state of the current [data] [Flow].
      */
     val messages: Flow<List<M>> = validationMessages.asStateFlow()
 
     /**
      * Resets the validation result.
+     *
+     * Beware that cleaning the messages should not be done, if the [data] [Flow] remains in an invalid state.
+     * Please refer to the class's description for details about the need for a sound data and messages state.
      *
      * @param messages list of messages to reset to. Default is an empty list.
      */
@@ -335,7 +357,7 @@ fun <D> storeOf(initialData: D, id: String = Id.next()) = RootStore(initialData,
  * The created [Store] validates its model after every update automatically.
  *
  * @param initialData first current value of this [Store]
- * @param validation [Validation] function to use at the data on this [Store].
+ * @param validation [Validation] instance to use at the data on this [Store].
  * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
  */
 fun <D, T, M> storeOf(

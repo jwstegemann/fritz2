@@ -14,10 +14,10 @@ data class Car(val name: String, val color: Color) {
                 add(carNameIsBlank)
 
             if (inspector.data.color.r < 0 || inspector.data.color.g < 0 || inspector.data.color.b < 0)
-                add(colorValuesAreToLow)
+                add(colorValuesAreTooLow)
 
             if (inspector.data.color.r > 255 || inspector.data.color.g > 255 || inspector.data.color.b > 255)
-                add(colorValuesAreToHigh)
+                add(colorValuesAreTooHigh)
         }
     }
 }
@@ -30,8 +30,8 @@ class Message(val text: String) : ValidationMessage {
 }
 
 val carNameIsBlank = Message("car name can not be blank")
-val colorValuesAreToLow = Message("color members are lower then 0")
-val colorValuesAreToHigh = Message("color members are greater then 255")
+val colorValuesAreTooLow = Message("color members are lower then 0")
+val colorValuesAreTooHigh = Message("color members are greater then 255")
 
 class ValidationTests {
 
@@ -43,8 +43,8 @@ class ValidationTests {
         val c4 = Car(" ", Color(256, -1, 120))
 
         assertEquals(carNameIsBlank, Car.validator(c1).first())
-        assertEquals(colorValuesAreToLow, Car.validator.invoke(c2).first())
-        assertEquals(colorValuesAreToHigh, Car.validator(c3).first())
+        assertEquals(colorValuesAreTooLow, Car.validator.invoke(c2).first())
+        assertEquals(colorValuesAreTooHigh, Car.validator(c3).first())
         assertEquals(3, Car.validator(c4).size, "number of messages not right")
     }
 }

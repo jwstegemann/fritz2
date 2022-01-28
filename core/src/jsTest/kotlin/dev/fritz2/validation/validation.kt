@@ -58,7 +58,7 @@ class ValidationJSTests {
         assertEquals(c1.name, divData.innerText, "c1: car name has not changed")
         assertEquals(1, divMessages.childElementCount, "c1: there is not 1 message")
         assertEquals(
-            colorValuesAreToLow.text,
+            colorValuesAreTooLow.text,
             divMessages.firstElementChild?.textContent,
             "c1: there is not a expected message"
         )
@@ -69,7 +69,7 @@ class ValidationJSTests {
         assertEquals(c2.name, divData.innerText, "c2: car name has changed")
         assertEquals(1, divMessages.childElementCount, "c2: there is not 1 message")
         assertEquals(
-            colorValuesAreToHigh.text,
+            colorValuesAreTooHigh.text,
             divMessages.firstElementChild?.textContent,
             "c2: there is not expected message"
         )
