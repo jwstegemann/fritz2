@@ -163,6 +163,21 @@ fun Tag<HTMLElement>.transition(on: Flow<Boolean>, transition: Transition) {
     })
 }
 
+/**
+ * Applies a transition (enter and/or leave) to a [Tag] whenever a new value appears on a [Flow]
+ * The enter-transition will be executed when `true` appears on the [Flow]
+ * The leave-transition will be executed when `false` appears on the [Flow]
+ * Processing of further operations will not wait for the animation to finish.
+ *
+ * @param on [Flow] to trigger the transition
+ * @param enter mandatory classes to control the enter-transition.
+ * @param enterStart optional classes to define the starting point of the enter-transition
+ * @param enterEnd optional classes to define the end point of the enter-transition
+ * @param leave mandatory classes to control the leave-transition.
+ * @param leaveStart optional classes to define the starting point of the leave-transition
+ * @param leaveEnd optional classes to define the end point of the leave-transition
+ * @receiver the [Tag] the transition will be applied to
+ */
 fun Tag<HTMLElement>.transition(on: Flow<Boolean>, enter: String? = null,
                                 enterStart: String? = null,
                                 enterEnd: String? = null,
@@ -171,6 +186,9 @@ fun Tag<HTMLElement>.transition(on: Flow<Boolean>, enter: String? = null,
                                 leaveEnd: String? = null
 ) = transition(on, Transition(enter, enterStart, enterEnd, leave, leaveStart, leaveEnd))
 
+/**
+ * wait for a running animation on the DOM-Node to finish.
+ */
 suspend fun WithDomNode<*>.waitForAnimation() {
     kotlinx.browser.window.awaitAnimationFrame()
     kotlinx.browser.window.awaitAnimationFrame()
