@@ -280,7 +280,7 @@ open class Tag<out E : Element>(
      * @param values [Flow] with [List] of [String]s
      */
     fun classList(values: Flow<List<String>>) {
-        addToClasses(values.map { it.joinToString(" ") })
+        attr("class", if (baseClass.isNullOrBlank()) values else values.map { it + baseClass })
     }
 
     /**
@@ -290,7 +290,7 @@ open class Tag<out E : Element>(
      * @param values as [Map] with key to set and corresponding values to decide
      */
     fun classMap(values: Map<String, Boolean>) {
-        addToClasses(values.filter { it.value }.keys.joinToString(" "))
+        attr("class", if (baseClass.isNullOrBlank()) values else values + (baseClass to true))
     }
 
     /**
@@ -300,7 +300,7 @@ open class Tag<out E : Element>(
      * @param values [Flow] of [Map] with key to set and corresponding values to decide
      */
     fun classMap(values: Flow<Map<String, Boolean>>) {
-        addToClasses(values.map { it.filter { it.value }.keys.joinToString(" ") })
+        attr("class", if (baseClass.isNullOrBlank()) values else values.map { it + (baseClass to true) })
     }
 
     /**

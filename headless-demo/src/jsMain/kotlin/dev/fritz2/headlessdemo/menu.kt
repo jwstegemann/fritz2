@@ -2,6 +2,7 @@ package dev.fritz2.headlessdemo
 
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.transition
 import dev.fritz2.headless.components.headlessMenu
 import dev.fritz2.headless.foundation.utils.popper.Placement
 import kotlinx.coroutines.flow.combine
@@ -47,7 +48,14 @@ fun RenderContext.menuDemo() {
                 ) {
                     placement = Placement.bottomStart
 
-                    //tag.className(Visibility.dropOn(opened))
+                    tag.transition(opened,
+                        "transition-all duration-1000 ease-ease-out",
+                        "opacity-0 scale-95 invisible",
+                        "opacity-100 scale-100 visible",
+                        "transition-all duration-1000 ease-ease-out",
+                        "opacity-100 scale-100 visible",
+                        "opacity-0 scale-95 invisible"
+                    )
 
                     entries.forEach { entry ->
                         menuItem(

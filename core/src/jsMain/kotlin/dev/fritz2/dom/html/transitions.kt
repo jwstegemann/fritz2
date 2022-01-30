@@ -4,8 +4,13 @@ import dev.fritz2.dom.DomLifecycleHandler
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.afterMount
 import dev.fritz2.dom.beforeUnmount
+import dev.fritz2.utils.classes
 import dev.fritz2.utils.nativeFunction
 import kotlinx.coroutines.await
+import kotlinx.coroutines.awaitAnimationFrame
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
+import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import kotlin.js.Promise
@@ -44,11 +49,17 @@ class Transition(
     val leaveEnd: String? = null
 ) {
     companion object {
+        internal suspend fun animate(target: Element, base: String?, start: String?, end: String?) {
+
+        }
+
         internal val leaveTransition: DomLifecycleHandler = { target, payload ->
             val transition = payload.unsafeCast<Transition?>()
             if (transition?.leave != null) {
                 val classes = target.domNode.getAttribute("class").orEmpty()
                 target.domNode.setAttribute("class", "$classes ${transition.leaveStart.orEmpty()}")
+                kotlinx.browser.window.awaitAnimationFrame()
+                kotlinx.browser.window.awaitAnimationFrame()
                 target.domNode.setAttribute("class", "$classes ${transition.leave} ${transition.leaveEnd.orEmpty()}")
                 animationDone(target.domNode).await()
             }
@@ -58,25 +69,24 @@ class Transition(
             val transition = payload.unsafeCast<Transition?>()
             if (transition?.enter != null) {
                 val classes = target.domNode.getAttribute("class").orEmpty()
-                target.domNode.setAttribute("class", "$classes ${transition.enterStart.orEmpty()}")
-                //this has to be called two times to ensure, that the enterStart classes are really rendered by the browser
-                kotlinx.browser.window.requestAnimationFrame {
-                    kotlinx.browser.window.requestAnimationFrame {
-                        target.domNode.setAttribute(
-                            "class",
-                            "$classes ${transition.enter} ${transition.enterEnd.orEmpty()}"
-                        )
-                        animationDone(target.domNode).then {
-                            target.domNode.setAttribute("class", classes)
-                        }
-                    }
-                }
+                target.domNode.setAttribute("class", classes(classes, transition.enterStart))
+                kotlinx.browser.window.awaitAnimationFrame()
+                kotlinx.browser.window.awaitAnimationFrame()
+                target.domNode.setAttribute(
+                    "class",
+                    classes(classes, transition.enter, transition.enterEnd)
+                )
+                animationDone(target.domNode).await()
+                target.domNode.setAttribute("class", classes)
             }
         }
     }
 }
 
-internal val animationDone = nativeFunction<(Node) -> Promise<Unit>>(
+/**
+ * a native function returning a [Promise] that is completed, when the currently running animations (if any) on a fiven [Node] have finished.
+ */
+val animationDone = nativeFunction<(Node) -> Promise<Unit>>(
     "_node", block = """
          return Promise.all(
            _node.getAnimations().map(
@@ -124,6 +134,48 @@ fun Tag<HTMLElement>.transition(
     leaveStart: String? = null,
     leaveEnd: String? = null
 ) = transition(Transition(enter, enterStart, enterEnd, leave, leaveStart, leaveEnd))
+
+
+/**
+ * Applies a transition (enter and/or leave) to a [Tag] whenever a new value appears on a [Flow]
+ * The enter-transition will be executed when `true` appears on the [Flow]
+ * The leave-transition will be executed when `false` appears on the [Flow]
+ * Processing of further operations will not wait for the animation to finish.
+ *
+ * @param on [Flow] to trigger the transition
+ * @param transition definition of the enter- and leave-transition
+ * @receiver the [Tag] the transition will be applied to
+ */
+fun Tag<HTMLElement>.transition(on: Flow<Boolean>, transition: Transition) {
+    className(on.transform {
+        if (it) {
+            emit(transition.enterStart.orEmpty())
+            kotlinx.browser.window.awaitAnimationFrame()
+            kotlinx.browser.window.awaitAnimationFrame()
+            emit(classes(transition.enter, transition.enterEnd))
+            animationDone(this@transition.domNode).await()
+            console.log("z")
+            emit("")
+        } else {
+            emit(classes(transition.leaveStart))
+            kotlinx.browser.window.awaitAnimationFrame()
+            kotlinx.browser.window.awaitAnimationFrame()
+            emit(classes(transition.leave, transition.leaveEnd))
+            animationDone(this@transition.domNode).await()
+            emit("")
+        }
+    })
+}
+
+fun Tag<HTMLElement>.transition(on: Flow<Boolean>, enter: String? = null,
+                                enterStart: String? = null,
+                                enterEnd: String? = null,
+                                leave: String? = null,
+                                leaveStart: String? = null,
+                                leaveEnd: String? = null
+) = transition(on, Transition(enter, enterStart, enterEnd, leave, leaveStart, leaveEnd))
+
+
 
 
 
