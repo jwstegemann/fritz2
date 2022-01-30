@@ -1,9 +1,6 @@
 package dev.fritz2.dom.html
 
-import dev.fritz2.dom.DomLifecycleHandler
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.afterMount
-import dev.fritz2.dom.beforeUnmount
+import dev.fritz2.dom.*
 import dev.fritz2.utils.classes
 import dev.fritz2.utils.nativeFunction
 import kotlinx.coroutines.await
@@ -61,7 +58,7 @@ class Transition(
                 kotlinx.browser.window.awaitAnimationFrame()
                 kotlinx.browser.window.awaitAnimationFrame()
                 target.domNode.setAttribute("class", "$classes ${transition.leave} ${transition.leaveEnd.orEmpty()}")
-                animationDone(target.domNode).await()
+                target.waitForAnimation()
             }
         }
 
@@ -76,7 +73,7 @@ class Transition(
                     "class",
                     classes(classes, transition.enter, transition.enterEnd)
                 )
-                animationDone(target.domNode).await()
+                target.waitForAnimation()
                 target.domNode.setAttribute("class", classes)
             }
         }
@@ -153,15 +150,14 @@ fun Tag<HTMLElement>.transition(on: Flow<Boolean>, transition: Transition) {
             kotlinx.browser.window.awaitAnimationFrame()
             kotlinx.browser.window.awaitAnimationFrame()
             emit(classes(transition.enter, transition.enterEnd))
-            animationDone(this@transition.domNode).await()
-            console.log("z")
+            waitForAnimation()
             emit("")
         } else {
             emit(classes(transition.leaveStart))
             kotlinx.browser.window.awaitAnimationFrame()
             kotlinx.browser.window.awaitAnimationFrame()
             emit(classes(transition.leave, transition.leaveEnd))
-            animationDone(this@transition.domNode).await()
+            waitForAnimation()
             emit("")
         }
     })
@@ -175,7 +171,11 @@ fun Tag<HTMLElement>.transition(on: Flow<Boolean>, enter: String? = null,
                                 leaveEnd: String? = null
 ) = transition(on, Transition(enter, enterStart, enterEnd, leave, leaveStart, leaveEnd))
 
-
+suspend fun WithDomNode<*>.waitForAnimation() {
+    kotlinx.browser.window.awaitAnimationFrame()
+    kotlinx.browser.window.awaitAnimationFrame()
+    animationDone(domNode).await()
+}
 
 
 
