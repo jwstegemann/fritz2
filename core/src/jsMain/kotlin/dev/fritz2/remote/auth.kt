@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * Special [Middleware] to use in at [http] API to provide an authentication
@@ -24,17 +26,20 @@ abstract class Authentication<P> : Middleware {
 
     private val principalStore = MutableStateFlow<P?>(null)
 
+    private val mutex = Mutex()
+
     private var state: CompletableDeferred<P>? = null
 
     final override suspend fun enrichRequest(request: Request): Request =
-        addAuthentication(request, state?.await() ?: principalStore.value)
+            addAuthentication(request, state?.await() ?: principalStore.value)
 
     final override suspend fun handleResponse(response: Response): Response =
         if (statusCodesEnforcingAuthentication.contains(response.status)) {
-            if (state.let { it?.isActive } != true) {
-                start()
+            mutex.withLock {
+                if(state == null || !state!!.isActive) {
+                    start()
+                }
             }
-            state?.await()
             response.request.execute()
         } else response
 
@@ -70,7 +75,7 @@ abstract class Authentication<P> : Middleware {
 
     /**
      * implements the authentication process.
-     * E.g. opens up a login-modal or brwosing to the login-page.
+     * E.g. opens up a login-modal or browsing to the login-page.
      */
     abstract fun authenticate()
 
