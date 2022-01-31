@@ -96,3 +96,27 @@ fun <D, T, M> storeOf(
     validation: Validation<D, T, M>,
     id: String = Id.next()
 ) = ValidatingStore(initialData, validation, true, id)
+
+/**
+ * Finds all corresponding [ValidationMessage]s to this [Store].
+ */
+inline fun <D, reified M: ValidationMessage> Store<D>.messagesByPath(): Flow<List<M>>? =
+    when(this) {
+        is ValidatingStore<*, *, *> -> {
+            try {
+                this.messages.map { it.unsafeCast<List<M>>().filter { m -> m.path == this.path } }
+            } catch (e: Exception) { null }
+        }
+        is SubStore<*, *> -> {
+            var store: Store<*> = this
+            while (store is SubStore<*, *>) {
+                store = store.parent
+            }
+            if(store is ValidatingStore<*, *, *>) {
+                try {
+                    store.messages.map { it.unsafeCast<List<M>>().filter { m -> m.path == this.path } }
+                } catch (e: Exception) { null }
+            } else null
+        }
+        else -> null
+    }

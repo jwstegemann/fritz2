@@ -1,9 +1,8 @@
 package dev.fritz2.validation
 
-import dev.fritz2.binding.ValidatingStore
-import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
+import dev.fritz2.lenses.buildLens
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import dev.fritz2.validation.test.*
@@ -58,7 +57,7 @@ class ValidationJSTests {
         assertEquals(c1.name, divData.innerText, "c1: car name has not changed")
         assertEquals(1, divMessages.childElementCount, "c1: there is not 1 message")
         assertEquals(
-            colorValuesAreTooLow.text,
+            colorValuesAreTooLow,
             divMessages.firstElementChild?.textContent,
             "c1: there is not a expected message"
         )
@@ -69,7 +68,7 @@ class ValidationJSTests {
         assertEquals(c2.name, divData.innerText, "c2: car name has changed")
         assertEquals(1, divMessages.childElementCount, "c2: there is not 1 message")
         assertEquals(
-            colorValuesAreTooHigh.text,
+            colorValuesAreTooHigh,
             divMessages.firstElementChild?.textContent,
             "c2: there is not expected message"
         )
@@ -81,4 +80,48 @@ class ValidationJSTests {
         assertEquals(2, divMessages.childElementCount, "c3: there is not 3 message")
     }
 
+    @Test
+    fun testSubStoreValidation() = runTest {
+        initDocument()
+
+        val store: ValidatingStore<Car, Unit, Message> = storeOf(Car("car", Color(120, 120, 120)), Car.validator)
+        val colorLens = buildLens("color", Car::color) { car, color -> car.copy(color = color) }
+        val colorStore = store.sub(colorLens)
+
+        val idData = "data-${Id.next()}"
+        val idMessages = "messages-${Id.next()}"
+
+        render {
+            div {
+                div(id = idData) {
+                    colorStore.data.map { "${it.r}, ${it.g}, ${it.b}" }.renderText()
+                }
+                div(id = idMessages) {
+                    colorStore.messagesByPath<Color, Message>()?.renderEach(Message::text, into = this) {
+                        p {
+                            +it.text
+                        }
+                    }
+                }
+            }
+        }
+
+        delay(100)
+        val divData = document.getElementById(idData) as HTMLDivElement
+        val divMessages = document.getElementById(idMessages) as HTMLDivElement
+
+        assertEquals("120, 120, 120", divData.textContent, "initial car color is wrong")
+        assertEquals(0, divMessages.childElementCount, "there are messages")
+
+        store.update(Car("car1", Color(-1, -1, -1)))
+        delay(100)
+
+        assertEquals("-1, -1, -1", divData.innerText, "c1: car color has not changed")
+        assertEquals(1, divMessages.childElementCount, "c1: there is not 1 message")
+        assertEquals(
+            colorValuesAreTooLow,
+            divMessages.firstElementChild?.textContent,
+            "c1: there is not a expected message"
+        )
+    }
 }

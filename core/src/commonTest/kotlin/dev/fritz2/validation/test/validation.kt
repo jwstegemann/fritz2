@@ -11,27 +11,26 @@ data class Car(val name: String, val color: Color) {
     companion object {
         val validator = validation<Car, Message> { inspector ->
             if (inspector.data.name.isBlank())
-                add(carNameIsBlank)
+                add(Message(".name", carNameIsBlank))
 
             if (inspector.data.color.r < 0 || inspector.data.color.g < 0 || inspector.data.color.b < 0)
-                add(colorValuesAreTooLow)
+                add(Message(".color", colorValuesAreTooLow))
 
             if (inspector.data.color.r > 255 || inspector.data.color.g > 255 || inspector.data.color.b > 255)
-                add(colorValuesAreTooHigh)
+                add(Message(".color", colorValuesAreTooHigh))
         }
     }
 }
 
 data class Color(val r: Int, val g: Int, val b: Int)
 
-class Message(val text: String) : ValidationMessage {
-    override val path: String = ""
+class Message(override val path: String, val text: String) : ValidationMessage {
     override val isError: Boolean = true
 }
 
-val carNameIsBlank = Message("car name can not be blank")
-val colorValuesAreTooLow = Message("color members are lower then 0")
-val colorValuesAreTooHigh = Message("color members are greater then 255")
+val carNameIsBlank = "car name can not be blank"
+val colorValuesAreTooLow = "color members are lower then 0"
+val colorValuesAreTooHigh = "color members are greater then 255"
 
 class ValidationTests {
 
@@ -42,9 +41,9 @@ class ValidationTests {
         val c3 = Car("car2", Color(256, 256, 256))
         val c4 = Car(" ", Color(256, -1, 120))
 
-        assertEquals(carNameIsBlank, Car.validator(c1).first())
-        assertEquals(colorValuesAreTooLow, Car.validator.invoke(c2).first())
-        assertEquals(colorValuesAreTooHigh, Car.validator(c3).first())
+        assertEquals(carNameIsBlank, Car.validator(c1).first().text)
+        assertEquals(colorValuesAreTooLow, Car.validator.invoke(c2).first().text)
+        assertEquals(colorValuesAreTooHigh, Car.validator(c3).first().text)
         assertEquals(3, Car.validator(c4).size, "number of messages not right")
     }
 }
