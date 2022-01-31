@@ -97,7 +97,7 @@ class ValidationJSTests {
                     colorStore.data.map { "${it.r}, ${it.g}, ${it.b}" }.renderText()
                 }
                 div(id = idMessages) {
-                    colorStore.messagesByPath<Color, Message>()?.renderEach(Message::text, into = this) {
+                    colorStore.messages<Message>()?.renderEach(Message::text, into = this) {
                         p {
                             +it.text
                         }

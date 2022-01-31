@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package dev.fritz2.validation
 
 import dev.fritz2.binding.Handler
@@ -5,7 +7,10 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.SubStore
 import dev.fritz2.identification.Id
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 
 
 /**
@@ -100,7 +105,7 @@ fun <D, T, M> storeOf(
 /**
  * Finds all corresponding [ValidationMessage]s to this [Store].
  */
-inline fun <D, reified M: ValidationMessage> Store<D>.messagesByPath(): Flow<List<M>>? =
+inline fun <reified M: ValidationMessage> Store<*>.messages(): Flow<List<M>>? =
     when(this) {
         is ValidatingStore<*, *, *> -> {
             try {

@@ -18,7 +18,7 @@ import dev.fritz2.validation.ValidationMessage
  * @param message contains the message
  * @param details optional details for extending the message
  */
-data class ComponentValidationMessage(
+open class ComponentValidationMessage(
     override val path: String,
     val severity: Severity,
     val message: String,
