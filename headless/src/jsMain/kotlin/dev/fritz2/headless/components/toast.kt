@@ -43,15 +43,44 @@ object ToastStore : RootStore<List<ToastFragment>>(emptyList()) {
 
 class HeadlessToasts(renderContext: RenderContext) : RenderContext by renderContext {
 
-    /*
-    private val toastContainerContext =
-        ManagedComponent.managedRenderContext("headless-toasts-${Id.next()}", Job(), Scope())
-     */
+    inner class ToastRenderingContext {
 
-    var toastRendering: (RenderContext.(ToastFragment) -> Tag<HTMLElement>)? = null
+        inner class HeadlessToast<T : Tag<HTMLElement>>(tag: T, private val toastId: String) : RenderContext by tag {
+
+            fun <TC : Tag<HTMLElement>> headlessToastCloseButton(
+                classes: String? = null,
+                id: String? = null,
+                scope: (ScopeContext.() -> Unit) = {},
+                tag: TagFactory<TC>,
+                content: TC.() -> Unit
+            ) = tag(this, classes, id, scope) {
+                content()
+                clicks.map { toastId } handledBy ToastStore.remove
+            }
+        }
+
+        fun <T : Tag<HTMLElement>> headlessToast(
+            toastId: String,
+            classes: String? = null,
+            id: String? = null,
+            scope: (ScopeContext.() -> Unit) = {},
+            tag: TagFactory<T>,
+            initialize: HeadlessToast<T>.() -> Unit
+        ) = tag(this@HeadlessToasts, classes, id, scope) {
+            HeadlessToast(this, toastId).run {
+                initialize()
+            }
+        }
+    }
+
+    private var toastRendering: (ToastRenderingContext.(ToastFragment) -> Tag<HTMLElement>)? = null
+
+    fun rendering(value: ToastRenderingContext.(ToastFragment) -> Tag<HTMLElement>) {
+        toastRendering = value
+    }
 
 
-    fun <T : Tag<HTMLElement>> headlessToastContainer(
+    fun <T : Tag<HTMLElement>> container(
         position: ToastPosition,
         classes: String? = null,
         id: String? = null,
@@ -61,49 +90,17 @@ class HeadlessToasts(renderContext: RenderContext) : RenderContext by renderCont
         toastRendering?.let { rendering ->
             ToastStore
                 .onlyWithPosition(position)
-                .renderEach { toast -> rendering(toast) }
-        }
-    }
-
-
-    inner class HeadlessToast<T : Tag<HTMLElement>>(tag: T, private val toastId: String) : RenderContext by tag {
-
-        fun <TC : Tag<HTMLElement>> headlessToastCloseButton(
-            classes: String? = null,
-            id: String? = null,
-            scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<TC>,
-            content: TC.() -> Unit
-        ) = tag(this, classes, id, scope) {
-            content()
-            clicks.map { toastId } handledBy ToastStore.remove
-        }
-    }
-
-    fun <T : Tag<HTMLElement>> headlessToast(
-        toastId: String,
-        classes: String? = null,
-        id: String? = null,
-        scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<T>,
-        initialize: HeadlessToast<T>.() -> Unit
-    ) = tag(this, classes, id, scope) {
-        HeadlessToast(this, toastId).run {
-            initialize()
+                .renderEach(into = this) { toastFragment ->
+                    ToastRenderingContext().run { rendering(toastFragment) }
+                }
         }
     }
 }
 
-fun <C : RenderContext> RenderContext.headlessToasts(
-    classes: String? = null,
-    id: String? = null,
-    scope: (ScopeContext.() -> Unit) = {},
-    tag: TagFactory<C>,
+fun RenderContext.headlessToasts(
     initialize: HeadlessToasts.() -> Unit
-) = tag(this, classes, id, scope) {
-    HeadlessToasts(this).run {
-        initialize()
-    }
+) = HeadlessToasts(this).run {
+    initialize()
 }
 
 
