@@ -22,13 +22,13 @@ import org.w3c.dom.Node
 interface RenderContext : WithJob, WithScope {
 
     /**
-     * Renders the data of a [Flow] as [HtmlTag]s to the DOM.
+     * Renders the data of a [Flow] as [Tag]s to the DOM.
      *
      * @receiver [Flow] containing the data
-     * @param into target to mount content to. If not set a child div is added to the [HtmlTag] this method is called on
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    fun <V> Flow<V>.render(into: HtmlTag<HTMLElement>? = null, content: RenderContext.(V) -> Unit) {
+    fun <V> Flow<V>.render(into: Tag<HTMLElement>? = null, content: RenderContext.(V) -> Unit) {
         val target = into?.apply(SET_MOUNT_POINT_DATA_ATTRIBUTE)
             ?: div(MOUNT_POINT_STYLE_CLASS, content = SET_MOUNT_POINT_DATA_ATTRIBUTE)
 
@@ -50,13 +50,13 @@ interface RenderContext : WithJob, WithScope {
      * when an element stays the same, but changes its internal values.
      *
      * @param idProvider function to identify a unique entity in the list
-     * @param into target to mount content to. If not set a child div is added to the [HtmlTag] this method is called on
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
     fun <V> Flow<List<V>>.renderEach(
         idProvider: IdProvider<V, *>? = null,
-        into: HtmlTag<HTMLElement>? = null,
-        content: RenderContext.(V) -> HtmlTag<HTMLElement>
+        into: Tag<HTMLElement>? = null,
+        content: RenderContext.(V) -> Tag<HTMLElement>
     ) {
         mountPatches(into, this) { upstreamValues, mountPoints ->
             upstreamValues.scan(Pair(emptyList(), emptyList())) { acc: Pair<List<V>, List<V>>, new ->
@@ -82,12 +82,12 @@ interface RenderContext : WithJob, WithScope {
      * when an element stays the same, but changes its internal values.
      *
      * @param idProvider function to identify a unique entity in the list
-     * @param into target to mount content to. If not set a child div is added to the [HtmlTag] this method is called on
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
     fun <V> Store<List<V>>.renderEach(
         idProvider: IdProvider<V, *>,
-        into: HtmlTag<HTMLElement>? = null,
+        into: Tag<HTMLElement>? = null,
         content: RenderContext.(Store<V>) -> HtmlTag<HTMLElement>
     ) {
         data.renderEach(idProvider, into) { value ->

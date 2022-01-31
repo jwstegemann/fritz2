@@ -21,6 +21,17 @@ import org.w3c.dom.Node
 annotation class HtmlTagMarker
 
 interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> {
+
+    /**
+     * id of this [Tag]
+     */
+    val id: String?
+
+    /**
+     * constant css-classes of this [Tag[
+     */
+    val baseClass: String?
+
     /**
      * Sets an attribute.
      *
@@ -376,13 +387,13 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
  * @property baseClass a static base value for the class-attribute.
  * All dynamic values for this attribute will be concatenated to this base-value.
  * @property job used for launching coroutines in
- * @property scope set some arbitrary scope entries into the [HtmlTag]'s scope
+ * @property scope set some arbitrary scope entries into the [Tag]'s scope
  */
 @HtmlTagMarker
 open class HtmlTag<out E : Element>(
     private val tagName: String,
-    val id: String? = null,
-    val baseClass: String? = null,
+    override val id: String? = null,
+    override val baseClass: String? = null,
     override val job: Job,
     override val scope: Scope,
 ) : Tag<E> {
@@ -391,8 +402,8 @@ open class HtmlTag<out E : Element>(
      * factory function that defines how the DOM-node represented by this Tag is created
      */
     protected open fun createDomNode(): E = window.document.createElement(tagName).also { element ->
-        if (id != null) element.id = id
-        if (!baseClass.isNullOrBlank()) element.className = baseClass
+        if (id != null) element.id = id!!
+        if (!baseClass.isNullOrBlank()) element.className = baseClass!!
     }.unsafeCast<E>()
 
     override val domNode: E = this.createDomNode()

@@ -2,7 +2,7 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.HtmlTag
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.scrollintoview.*
@@ -22,12 +22,12 @@ internal val HeadlessScrollOptions = ScrollIntoViewOptionsInit(
 )
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessMenu<C : HtmlTag<HTMLElement>>(val tag: C, id: String?) : RenderContext by tag,
+class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContext by tag,
     OpenClose by OpenCloseDelegate() {
 
     val componentId: String by lazy { id ?: Id.next() }
 
-    private var button: HtmlTag<HTMLElement>? = null
+    private var button: Tag<HTMLElement>? = null
 
     private val activeIndex = storeOf(-1)
     private var numberOfItems = 0
@@ -58,7 +58,7 @@ class HeadlessMenu<C : HtmlTag<HTMLElement>>(val tag: C, id: String?) : RenderCo
         }
     }
 
-    fun <CB : HtmlTag<HTMLElement>> RenderContext.menuButton(
+    fun <CB : Tag<HTMLElement>> RenderContext.menuButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CB>,
@@ -78,7 +78,7 @@ class HeadlessMenu<C : HtmlTag<HTMLElement>>(val tag: C, id: String?) : RenderCo
         attr("type", "button")
     }
 
-    inner class MenuItems<CI : HtmlTag<HTMLElement>>(
+    inner class MenuItems<CI : Tag<HTMLElement>>(
         val renderContext: RenderContext,
         tagFactory: TagFactory<CI>,
         classes: String?,
@@ -157,7 +157,7 @@ class HeadlessMenu<C : HtmlTag<HTMLElement>>(val tag: C, id: String?) : RenderCo
             } handledBy activeIndex.update
         }
 
-        inner class MenuItem<CM : HtmlTag<HTMLElement>>(val tag: CM, val index: Int) {
+        inner class MenuItem<CM : Tag<HTMLElement>>(val tag: CM, val index: Int) {
             val active = activeIndex.data.map { it == index }
             val selected = selections.data.filter { it == index }.map {}
 
@@ -187,7 +187,7 @@ class HeadlessMenu<C : HtmlTag<HTMLElement>>(val tag: C, id: String?) : RenderCo
             }
         }
 
-        fun <CM : HtmlTag<HTMLElement>> RenderContext.menuItem(
+        fun <CM : Tag<HTMLElement>> RenderContext.menuItem(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<CM>,
@@ -212,7 +212,7 @@ class HeadlessMenu<C : HtmlTag<HTMLElement>>(val tag: C, id: String?) : RenderCo
         ) = menuItem(classes, scope, RenderContext::button, initialize)
     }
 
-    fun <CI : HtmlTag<HTMLElement>> RenderContext.menuItems(
+    fun <CI : Tag<HTMLElement>> RenderContext.menuItems(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CI>,
@@ -233,7 +233,7 @@ class HeadlessMenu<C : HtmlTag<HTMLElement>>(val tag: C, id: String?) : RenderCo
 }
 
 
-fun <C : HtmlTag<HTMLElement>> RenderContext.headlessMenu(
+fun <C : Tag<HTMLElement>> RenderContext.headlessMenu(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},

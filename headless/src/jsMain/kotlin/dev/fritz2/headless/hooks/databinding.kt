@@ -1,7 +1,7 @@
 package dev.fritz2.headless.hooks
 
 import dev.fritz2.binding.Store
-import dev.fritz2.dom.HtmlTag
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.handledBy
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.headless.validation.Severity
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 
-abstract class DatabindingHook<C : HtmlTag<*>, P, T> : BasicHook<C, Unit, P>(), Usable<DatabindingHook<C, P, T>> {
+abstract class DatabindingHook<C : Tag<*>, P, T> : BasicHook<C, Unit, P>(), Usable<DatabindingHook<C, P, T>> {
     lateinit var data: Flow<T>
     var id: String? = null
     var handler: ((Flow<T>) -> Unit)? = null
@@ -62,6 +62,6 @@ abstract class DatabindingHook<C : HtmlTag<*>, P, T> : BasicHook<C, Unit, P>(), 
     }
 }
 
-abstract class ItemDatabindingHook<C : HtmlTag<*>, P, T> : DatabindingHook<C, P, T>() {
+abstract class ItemDatabindingHook<C : Tag<*>, P, T> : DatabindingHook<C, P, T>() {
     abstract fun isSelected(item: P): Flow<Boolean>
 }

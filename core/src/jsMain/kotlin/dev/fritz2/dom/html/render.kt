@@ -19,7 +19,7 @@ import org.w3c.dom.css.CSSStyleSheet
 class MountTargetNotFoundException(message: String) : Exception(message)
 
 /**
- * Creates a [RenderContext] for [HtmlTag]s and
+ * Creates a [RenderContext] for [Tag]s and
  * mounts it to a constant element in the static html file
  * which id matches the [selector].
  *
@@ -42,7 +42,7 @@ fun render(
 }
 
 /**
- * Creates a [RenderContext] for [HtmlTag]s and mounts it to a [targetElement].
+ * Creates a [RenderContext] for [Tag]s and mounts it to a [targetElement].
  *
  * @param targetElement [HTMLElement] to mount to, default is *document.body*
  * @param override if true all child elements are removed before rendering

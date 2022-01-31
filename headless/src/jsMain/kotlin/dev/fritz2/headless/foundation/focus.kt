@@ -1,6 +1,6 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.HtmlTag
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.afterMount
 import dev.fritz2.dom.beforeUnmount
 import dev.fritz2.dom.html.Keys
@@ -137,11 +137,11 @@ fun setInitialFocus(tag: HTMLElement) {
     tag.setAttribute(INITIAL_FOCUS_DATA_ATTR, "")
 }
 
-fun HtmlTag<HTMLElement>.setInitialFocus() {
+fun Tag<HTMLElement>.setInitialFocus() {
     attr(INITIAL_FOCUS_DATA_ATTR, "")
 }
 
-fun HtmlTag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: Boolean = true) {
+fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: Boolean = true) {
     // restore focus
     if (restoreFocus) {
         beforeUnmount(document.activeElement) { _, element ->
@@ -184,12 +184,12 @@ fun HtmlTag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus
 }
 
 /**
- * Sets focus on the [HtmlTag] it is called on.
+ * Sets focus on the [Tag] it is called on.
  * Continues to try setting the focus until it was successful or the maximum number of retries is reached.
  * Use this function for example to set the focus on an element that just becomes visible.
  * @param maxRetries maximum retries
  */
-suspend fun HtmlTag<HTMLElement>.setFocus(maxRetries: Int = 10) {
+suspend fun Tag<HTMLElement>.setFocus(maxRetries: Int = 10) {
     for (i in 0 until maxRetries) {
         window.awaitAnimationFrame()
         domNode.focus()

@@ -2,6 +2,7 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.HtmlTag
+import dev.fritz2.dom.Tag
 import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.*
 import dev.fritz2.dom.merge
@@ -17,8 +18,8 @@ import org.w3c.dom.HTMLElement
 
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessTooltip<C : HtmlTag<HTMLElement>>(
-    val target: HtmlTag<HTMLElement>,
+class HeadlessTooltip<C : Tag<HTMLElement>>(
+    val target: Tag<HTMLElement>,
     val tag: C,
 ) : OpenClose by OpenCloseDelegate() {
 
@@ -70,7 +71,7 @@ class HeadlessTooltip<C : HtmlTag<HTMLElement>>(
     }
 }
 
-fun <C : HtmlTag<HTMLElement>> HtmlTag<HTMLElement>.headlessTooltip(
+fun <C : Tag<HTMLElement>> HtmlTag<HTMLElement>.headlessTooltip(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
@@ -86,7 +87,7 @@ fun <C : HtmlTag<HTMLElement>> HtmlTag<HTMLElement>.headlessTooltip(
 }
 
 
-fun HtmlTag<HTMLElement>.headlessTooltip(
+fun Tag<HTMLElement>.headlessTooltip(
     classes: String? = null,
     id: String? = null,
     internalScope: (ScopeContext.() -> Unit) = {},
