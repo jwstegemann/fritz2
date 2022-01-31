@@ -1,6 +1,6 @@
 package dev.fritz2.headless.hooks
 
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.headless.foundation.export
 import kotlinx.coroutines.flow.Flow
@@ -59,7 +59,7 @@ interface Enhanceable<R> {
      * }
      * ```
      *
-     * @param expr [Tag] specific configuration expression with optional applied classes injected for possible extension
+     * @param expr [HtmlTag] specific configuration expression with optional applied classes injected for possible extension
      */
     fun also(expr: R.() -> Unit)
 }
@@ -93,7 +93,7 @@ class EnhanceableMixin<R> : Enhanceable<R> {
 
     /**
      * This method should be used by a client, to modify the result of the application of the hook.
-     * Think of applying some specific styling or get access to specific events of some [Tag] or alike.
+     * Think of applying some specific styling or get access to specific events of some [HtmlTag] or alike.
      *
      * @see [Enhanceable.also]
      */
@@ -269,7 +269,7 @@ fun <C, R, P> C.hook(h: PreciseRenderingHook<C, R, P>, classes: String?, id: Str
  *
  * @see PreciseRenderingHook
  */
-abstract class RenderOneValueTagHook<R : Tag<*>, P, I> : PreciseRenderingHook<RenderContext, R, P>() {
+abstract class RenderOneValueTagHook<R : HtmlTag<*>, P, I> : PreciseRenderingHook<RenderContext, R, P>() {
     protected abstract fun RenderContext.renderTag(classes: String?, id: String?, data: I, payload: P): R
 
     operator fun invoke(value: I) = this.apply {

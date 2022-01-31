@@ -2,25 +2,24 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.html.*
-
-import dev.fritz2.identification.Id
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.hooks.BasicHook
 import dev.fritz2.headless.hooks.ItemDatabindingHook
 import dev.fritz2.headless.hooks.hook
 import dev.fritz2.headless.validation.ComponentValidationMessage
+import dev.fritz2.identification.Id
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
 
-class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private val id: String?) :
+class HeadlessRadioGroup<C : HtmlTag<HTMLElement>, T>(val renderContext: C, private val id: String?) :
     RenderContext by renderContext {
 
-    class DatabindingHook<T> : ItemDatabindingHook<Tag<HTMLElement>, T, T>() {
+    class DatabindingHook<T> : ItemDatabindingHook<HtmlTag<HTMLElement>, T, T>() {
 
-        override fun Tag<HTMLElement>.render(payload: T) {
+        override fun HtmlTag<HTMLElement>.render(payload: T) {
             val event = if (this is Input) changes else clicks
             handler?.invoke(event.map { payload })
         }
@@ -31,7 +30,7 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
     class KeyboardNavigationHook<T>(
         private val value: DatabindingHook<T>,
         private val isActive: Store<T?>
-    ) : BasicHook<Tag<HTMLElement>, Unit, List<T>>() {
+    ) : BasicHook<HtmlTag<HTMLElement>, Unit, List<T>>() {
         operator fun invoke() = this.also { hook ->
             apply = { options ->
                 hook.value.handler?.invoke(
@@ -54,8 +53,8 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
         }
     }
 
-    private var label: Tag<HTMLElement>? = null
-    private var validationMessages: Tag<HTMLElement>? = null
+    private var label: HtmlTag<HTMLElement>? = null
+    private var validationMessages: HtmlTag<HTMLElement>? = null
 
     val componentId: String by lazy { id ?: value.id ?: Id.next() }
     private val isActive: Store<T?> = storeOf(null)
@@ -73,7 +72,7 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
         hook(withKeyboardNavigation, options)
     }
 
-    fun <CL : Tag<HTMLElement>> RenderContext.radioGroupLabel(
+    fun <CL : HtmlTag<HTMLElement>> RenderContext.radioGroupLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CL>,
@@ -86,7 +85,7 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
         content: Label.() -> Unit
     ) = radioGroupLabel(classes, scope, RenderContext::label, content)
 
-    fun <CV : Tag<HTMLElement>> RenderContext.radioGroupValidationMessages(
+    fun <CV : HtmlTag<HTMLElement>> RenderContext.radioGroupValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CV>,
@@ -107,7 +106,7 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
     ) = radioGroupValidationMessages(classes, scope, RenderContext::div, content)
 
     // TODO: Make it rather a Fragment than a Tag
-    inner class RadioGroupOption<CO : Tag<HTMLElement>>(
+    inner class RadioGroupOption<CO : HtmlTag<HTMLElement>>(
         val tag: CO,
         private val option: T,
         id: String?
@@ -116,9 +115,9 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
         val selected = value.isSelected(option)
         val active = isActive.data.map { it == option }.distinctUntilChanged()
 
-        private var toggle: Tag<HTMLElement>? = null
-        private var label: Tag<HTMLElement>? = null
-        private var description: Tag<HTMLElement>? = null
+        private var toggle: HtmlTag<HTMLElement>? = null
+        private var label: HtmlTag<HTMLElement>? = null
+        private var description: HtmlTag<HTMLElement>? = null
 
         val optionId = "$componentId-${id ?: Id.next()}"
 
@@ -134,7 +133,7 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
             }
         }
 
-        fun <CT : Tag<HTMLElement>> RenderContext.radioGroupOptionToggle(
+        fun <CT : HtmlTag<HTMLElement>> RenderContext.radioGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<CT>,
@@ -164,7 +163,7 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
             content: Div.() -> Unit
         ) = radioGroupOptionToggle(classes, scope, RenderContext::div, content)
 
-        fun <CL : Tag<HTMLElement>> RenderContext.radioGroupOptionLabel(
+        fun <CL : HtmlTag<HTMLElement>> RenderContext.radioGroupOptionLabel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<CL>,
@@ -180,7 +179,7 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
             `for`(optionId)
         }
 
-        fun <CL : Tag<HTMLElement>> RenderContext.radioGroupOptionDescription(
+        fun <CL : HtmlTag<HTMLElement>> RenderContext.radioGroupOptionDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<CL>,
@@ -194,7 +193,7 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
         ) = radioGroupOptionDescription(classes, scope, RenderContext::span, content)
     }
 
-    fun <CO : Tag<HTMLElement>> RenderContext.radioGroupOption(
+    fun <CO : HtmlTag<HTMLElement>> RenderContext.radioGroupOption(
         option: T,
         classes: String? = null,
         id: String? = null,
@@ -217,7 +216,7 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
     ): Div = radioGroupOption(option, classes, id, scope, RenderContext::div, initialize)
 }
 
-fun <C : Tag<HTMLElement>, T> RenderContext.headlessRadioGroup(
+fun <C : HtmlTag<HTMLElement>, T> RenderContext.headlessRadioGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},

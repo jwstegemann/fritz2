@@ -1,23 +1,23 @@
 package dev.fritz2.headless.components
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
-import dev.fritz2.identification.Id
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.hooks.hook
+import dev.fritz2.identification.Id
 import org.w3c.dom.HTMLElement
 
-class HeadlessDisclosure<C : Tag<HTMLElement>>(val renderContext: C, id: String?) :
+class HeadlessDisclosure<C : HtmlTag<HTMLElement>>(val renderContext: C, id: String?) :
     RenderContext by renderContext,
     OpenClose by OpenCloseDelegate() {
 
     val componentId: String by lazy { id ?: Id.next() }
 
-    private var button: Tag<HTMLElement>? = null
+    private var button: HtmlTag<HTMLElement>? = null
     private var panel: (RenderContext.() -> Unit)? = null
 
     fun C.render() {
@@ -27,7 +27,7 @@ class HeadlessDisclosure<C : Tag<HTMLElement>>(val renderContext: C, id: String?
         }
     }
 
-    fun <CB : Tag<HTMLElement>> RenderContext.disclosureButton(
+    fun <CB : HtmlTag<HTMLElement>> RenderContext.disclosureButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CB>,
@@ -48,12 +48,12 @@ class HeadlessDisclosure<C : Tag<HTMLElement>>(val renderContext: C, id: String?
         attr("type", "button")
     }
 
-    inner class DisclosurePanel<CP : Tag<HTMLElement>>(val tag: CP) : RenderContext by tag {
+    inner class DisclosurePanel<CP : HtmlTag<HTMLElement>>(val tag: CP) : RenderContext by tag {
         fun CP.render() {
             button?.let { button -> button.attr(Aria.controls, id.whenever(opened)) }
         }
 
-        fun <CC : Tag<HTMLElement>> RenderContext.disclosureCloseButton(
+        fun <CC : HtmlTag<HTMLElement>> RenderContext.disclosureCloseButton(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<CC>,
@@ -72,7 +72,7 @@ class HeadlessDisclosure<C : Tag<HTMLElement>>(val renderContext: C, id: String?
         }
     }
 
-    fun <CP : Tag<HTMLElement>> RenderContext.disclosurePanel(
+    fun <CP : HtmlTag<HTMLElement>> RenderContext.disclosurePanel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CP>,
@@ -95,7 +95,7 @@ class HeadlessDisclosure<C : Tag<HTMLElement>>(val renderContext: C, id: String?
     ) = disclosurePanel(classes, scope, RenderContext::div, initialize)
 }
 
-fun <C : Tag<HTMLElement>> RenderContext.headlessDisclosure(
+fun <C : HtmlTag<HTMLElement>> RenderContext.headlessDisclosure(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},

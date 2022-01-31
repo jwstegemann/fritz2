@@ -2,39 +2,38 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.html.*
-
-import dev.fritz2.identification.Id
 import dev.fritz2.headless.foundation.*
+import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
 import dev.fritz2.headless.hooks.DatabindingHook
 import dev.fritz2.headless.hooks.hook
-import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
 import dev.fritz2.headless.validation.ComponentValidationMessage
+import dev.fritz2.identification.Id
 import dev.fritz2.utils.classes
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
 import kotlin.math.max
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContext by tag,
+class HeadlessListbox<T, C : HtmlTag<HTMLElement>>(val tag: C, id: String?) : RenderContext by tag,
     OpenClose by OpenCloseDelegate() {
 
-    class ListboxDatabindingHook<T> : DatabindingHook<Tag<HTMLElement>, T, T>() {
+    class ListboxDatabindingHook<T> : DatabindingHook<HtmlTag<HTMLElement>, T, T>() {
 
-        override fun Tag<HTMLElement>.render(payload: T) {
+        override fun HtmlTag<HTMLElement>.render(payload: T) {
         }
     }
 
     val value = ListboxDatabindingHook<T>()
     val componentId: String by lazy { id ?: value.id ?: Id.next() }
 
-    private var button: Tag<HTMLElement>? = null
+    private var button: HtmlTag<HTMLElement>? = null
 
     private val activeIndex = storeOf(-1)
     private var numberOfItems = 0
-    private var label: Tag<HTMLElement>? = null
-    private var validationMessages: Tag<HTMLElement>? = null
+    private var label: HtmlTag<HTMLElement>? = null
+    private var validationMessages: HtmlTag<HTMLElement>? = null
 
     internal data class ListboxEntry<T>(val value: T, val disabled: Boolean, var character: Char?)
 
@@ -58,7 +57,7 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
         }
     }
 
-    fun <CB : Tag<HTMLElement>> RenderContext.listboxButton(
+    fun <CB : HtmlTag<HTMLElement>> RenderContext.listboxButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CB>,
@@ -78,7 +77,7 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
         attr("type", "button")
     }
 
-    fun <CL : Tag<HTMLElement>> RenderContext.listboxLabel(
+    fun <CL : HtmlTag<HTMLElement>> RenderContext.listboxLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CL>,
@@ -91,7 +90,7 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
         content: Label.() -> Unit
     ) = listboxLabel(classes, scope, RenderContext::label, content)
 
-    fun <CV : Tag<HTMLElement>> RenderContext.listboxValidationMessages(
+    fun <CV : HtmlTag<HTMLElement>> RenderContext.listboxValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CV>,
@@ -111,7 +110,7 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
         content: Div.(List<ComponentValidationMessage>) -> Unit
     ) = listboxValidationMessages(classes, scope, RenderContext::div, content)
 
-    inner class ListboxItems<CI : Tag<HTMLElement>>(
+    inner class ListboxItems<CI : HtmlTag<HTMLElement>>(
         val renderContext: RenderContext,
         tagFactory: TagFactory<CI>,
         classes: String?,
@@ -205,7 +204,7 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
             } handledBy activeIndex.update
         }
 
-        inner class ListboxItem<CM : Tag<HTMLElement>>(val entry: T, val tag: CM, val index: Int) {
+        inner class ListboxItem<CM : HtmlTag<HTMLElement>>(val entry: T, val tag: CM, val index: Int) {
             val active = activeIndex.data.map { it == index }
             val selected = value.data.map { it == entry }
 
@@ -236,7 +235,7 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
             }
         }
 
-        fun <CM : Tag<HTMLElement>> RenderContext.listboxItem(
+        fun <CM : HtmlTag<HTMLElement>> RenderContext.listboxItem(
             entry: T,
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -264,7 +263,7 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
         ) = listboxItem(entry, classes, scope, RenderContext::button, initialize)
     }
 
-    fun <CI : Tag<HTMLElement>> RenderContext.listboxItems(
+    fun <CI : HtmlTag<HTMLElement>> RenderContext.listboxItems(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CI>,
@@ -285,7 +284,7 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
 }
 
 
-fun <T, C : Tag<HTMLElement>> RenderContext.headlessListbox(
+fun <T, C : HtmlTag<HTMLElement>> RenderContext.headlessListbox(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},

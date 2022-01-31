@@ -1,6 +1,6 @@
 package dev.fritz2.webcomponents
 
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.WithDomNode
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
@@ -57,12 +57,12 @@ abstract class WebComponent<E : Element>(observeAttributes: Boolean = true) {
      * this method builds the content of the WebComponent that will be added to it's shadow-DOM.
      * @param element the newly created element, when the component is used
      * @param shadowRoot the shadowRoot the content will be added to
-     * @return a [Tag] representing the content of the component
+     * @return a [HtmlTag] representing the content of the component
      */
-    abstract fun RenderContext.init(element: HTMLElement, shadowRoot: ShadowRoot): Tag<E>
+    abstract fun RenderContext.init(element: HTMLElement, shadowRoot: ShadowRoot): HtmlTag<E>
 
     @JsName("initializeInternal")
-    fun initializeInternal(element: HTMLElement, shadowRoot: ShadowRoot): Tag<E> {
+    fun initializeInternal(element: HTMLElement, shadowRoot: ShadowRoot): HtmlTag<E> {
         return object : RenderContext {
             override val job = Job()
             override val scope: Scope = Scope()
@@ -159,7 +159,7 @@ abstract class WebComponent<E : Element>(observeAttributes: Boolean = true) {
 }
 
 /**
- * registers a [WebComponent] at the browser's registry, so you can use it in fritz2 by custom-[Tag] or in HTML.
+ * registers a [WebComponent] at the browser's registry, so you can use it in fritz2 by custom-[HtmlTag] or in HTML.
  * So to make a component that can be added by just importing your javascript, call this in main.
  *
  *  @param localName name of the new custom tag (must contain a '-')
@@ -175,7 +175,7 @@ fun <X : Element, T : WebComponent<X>> registerWebComponent(
 }
 
 /**
- * registers a [WebComponent] at the browser's registry, so you can use it in fritz2 by custom-[Tag] or in HTML.
+ * registers a [WebComponent] at the browser's registry, so you can use it in fritz2 by custom-[HtmlTag] or in HTML.
  * So to make a component that can be added by just importing your javascript, call this in main.
  *
  *  @param localName name of the new custom tag (must contain a '-')

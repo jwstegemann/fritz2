@@ -73,7 +73,7 @@ import dev.fritz2.dom.html.Scope.Key
  * make sense anymore.
  *
  * @see Scope
- * @see [dev.fritz2.dom.Tag]
+ * @see [dev.fritz2.dom.HtmlTag]
  */
 interface WithScope {
     val scope: Scope

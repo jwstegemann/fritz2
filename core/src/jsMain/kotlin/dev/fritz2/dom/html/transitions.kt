@@ -1,7 +1,7 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.dom.DomLifecycleHandler
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.afterMount
 import dev.fritz2.dom.beforeUnmount
 import dev.fritz2.utils.nativeFunction
@@ -12,7 +12,7 @@ import kotlin.js.Promise
 
 
 /**
- * Definition of a css-transition (enter and/or leave) to be executed when a [Tag] is
+ * Definition of a css-transition (enter and/or leave) to be executed when a [HtmlTag] is
  * mounted to or removed from the DOM.
  */
 class Transition(
@@ -89,24 +89,24 @@ internal val animationDone = nativeFunction<(Node) -> Promise<Unit>>(
 )
 
 /**
- * Applies a transition (enter and/or leave) to a [Tag].
- * The enter-transition will be executed right after the [Tag] is mounted to the DOM.
- * The leave-transition will be executed right before the [Tag] is removed from the DOM.
- * Further operation of the MountPoint rendering the [Tag] is suspended until the leave-animation is done.
+ * Applies a transition (enter and/or leave) to a [HtmlTag].
+ * The enter-transition will be executed right after the [HtmlTag] is mounted to the DOM.
+ * The leave-transition will be executed right before the [HtmlTag] is removed from the DOM.
+ * Further operation of the MountPoint rendering the [HtmlTag] is suspended until the leave-animation is done.
  *
  * @param transition definition of the enter- and leave-transition
- * @receiver the [Tag] the transition will be applied to
+ * @receiver the [HtmlTag] the transition will be applied to
  */
-fun Tag<HTMLElement>.transition(transition: Transition) {
+fun HtmlTag<HTMLElement>.transition(transition: Transition) {
     if (transition.leave != null) beforeUnmount(transition, Transition.leaveTransition)
     if (transition.enter != null) afterMount(transition, Transition.enterTransition)
 }
 
 /**
- * Applies a transition (enter and/or leave) to a [Tag].
- * The enter-transition will be executed right after the [Tag] is mounted to the DOM.
- * The leave-transition will be executed right before the [Tag] is removed from the DOM.
- * Further operation of the MountPoint rendering the [Tag] is suspended until the leave-animation is done.
+ * Applies a transition (enter and/or leave) to a [HtmlTag].
+ * The enter-transition will be executed right after the [HtmlTag] is mounted to the DOM.
+ * The leave-transition will be executed right before the [HtmlTag] is removed from the DOM.
+ * Further operation of the MountPoint rendering the [HtmlTag] is suspended until the leave-animation is done.
  *
  * @param enter mandatory classes to control the enter-transition.
  * @param enterStart optional classes to define the starting point of the enter-transition
@@ -114,9 +114,9 @@ fun Tag<HTMLElement>.transition(transition: Transition) {
  * @param leave mandatory classes to control the leave-transition.
  * @param leaveStart optional classes to define the starting point of the leave-transition
  * @param leaveEnd optional classes to define the end point of the leave-transition
- * @receiver the [Tag] the transition will be applied to
+ * @receiver the [HtmlTag] the transition will be applied to
  */
-fun Tag<HTMLElement>.transition(
+fun HtmlTag<HTMLElement>.transition(
     enter: String? = null,
     enterStart: String? = null,
     enterEnd: String? = null,

@@ -1,13 +1,13 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.headless.hooks.BasicHook
 import dev.fritz2.identification.Id
 
 /**
  * Predefined constants for all [ARIA attributes](https://www.w3.org/TR/wai-aria-1.1/#state_prop_def)
  *
- * Use them for definition of an ARIA attribute within a [Tag]:
+ * Use them for definition of an ARIA attribute within a [HtmlTag]:
  * ```
  * input {
  *     attr(Aria.invalid, "true".whenever(someBooleanFlow)) // should only appear on `true`
@@ -151,7 +151,7 @@ object Aria {
     }
 }
 
-class AriaReferenceHook<C : Tag<*>>(private val name: String) : BasicHook<C, Unit, Unit>() {
+class AriaReferenceHook<C : HtmlTag<*>>(private val name: String) : BasicHook<C, Unit, Unit>() {
     operator fun invoke(id: String): String {
         apply = id.let { v -> { attr(name, v) } }
         return id

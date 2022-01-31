@@ -4,11 +4,13 @@ import dev.fritz2.binding.mountSimple
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import dev.fritz2.utils.classes
+import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.dom.clear
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 
@@ -18,48 +20,7 @@ import org.w3c.dom.Node
 @DslMarker
 annotation class HtmlTagMarker
 
-/**
- * Represents a tag in the resulting HTML.
- * Sorry for the name, but we needed to delimit it from the [Element] it is wrapping.
- *
- * @param tagName name of the tag. Used to create the corresponding [Element]
- * @property id the DOM-id of the element to be created
- * @property baseClass a static base value for the class-attribute.
- * All dynamic values for this attribute will be concatenated to this base-value.
- * @property job used for launching coroutines in
- * @property scope set some arbitrary scope entries into the [Tag]'s scope
- */
-@HtmlTagMarker
-open class Tag<out E : Element>(
-    private val tagName: String,
-    val id: String? = null,
-    val baseClass: String? = null,
-    override val job: Job,
-    override val scope: Scope,
-) : WithDomNode<E>, WithComment<E>, EventContext<E>, RenderContext {
-
-    /**
-     * factory function that defines how the DOM-node represented by this Tag is created
-     */
-    protected open fun createDomNode(): E = window.document.createElement(tagName).also { element ->
-        if (id != null) element.id = id
-        if (!baseClass.isNullOrBlank()) element.className = baseClass
-    }.unsafeCast<E>()
-
-    override val domNode: E = this.createDomNode()
-
-    /**
-     * Creates the content of the [Tag] and appends it as a child to the wrapped [Element].
-     *
-     * @param element the parent element of the new content
-     * @param content lambda building the content (following the type-safe-builder pattern)
-     */
-    override fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W {
-        content(element)
-        domNode.appendChild(element.domNode)
-        return element
-    }
-
+interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> {
     /**
      * Sets an attribute.
      *
@@ -224,28 +185,15 @@ open class Tag<out E : Element>(
         mountSimple(job, values) { v -> attr(name, v, separator) }
     }
 
-    private var className: String? = baseClass
-    private var classFlow: Flow<String>? = null
+    /**
+     * adds a [String] of class names to the classes attribute of this [Tag]
+     */
+    fun addToClasses(classesToAdd: String)
 
-    private fun updateClasses() {
-        if (classFlow == null) {
-            attr("class", className)
-        } else if (className == null) {
-            attr("class", classFlow!!)
-        } else {
-            attr("class", classFlow!!.map { classes(className, it) })
-        }
-    }
-
-    private fun addToClasses(classesToAdd: String) {
-        className = classes(className, classesToAdd)
-        updateClasses()
-    }
-
-    private fun addToClasses(classesToAdd: Flow<String>) {
-        classFlow = if (classFlow == null) classesToAdd else classFlow!!.combine(classesToAdd) { a, b -> classes(a, b) }
-        updateClasses()
-    }
+    /**
+     * adds a [Flow] of class names to the classes attribute of this [Tag]
+     */
+    fun addToClasses(classesToAdd: Flow<String>)
 
     /**
      * Sets the *class* attribute.
@@ -369,6 +317,44 @@ open class Tag<out E : Element>(
     }
 
     /**
+     * Adds text-content of a [Flow] at this position
+     *
+     * @param into target to render text-content to
+     * @receiver text-content
+     */
+    fun Flow<String>.renderText(into: Tag<*>? = null) {
+        val target = into ?: span {}
+
+        mountSimple(job, this) { content ->
+            target.domNode.clear()
+            target.domNode.appendChild(window.document.createTextNode(content))
+        }
+    }
+
+    /**
+     * Adds text-content of a [Flow] at this position
+     *
+     * @param into target to render text-content to
+     * @receiver text-content
+     */
+    fun <T> Flow<T>.renderText(into: Tag<*>? = null) =
+        this.map { it.toString() }.renderText(into)
+
+    /**
+     * Adds static text-content at this position
+     *
+     * @receiver text-content
+     */
+    operator fun String.unaryPlus(): Node = domNode.appendChild(document.createTextNode(this))
+
+    /**
+     * Adds a comment in your HTML by using !"Comment Text".
+     *
+     * @receiver comment-content
+     */
+    operator fun String.not(): Node = domNode.appendChild(document.createComment(this))
+
+    /**
      * Sets scope-entry for the given [key] as data-attribute to the element
      * when available.
      *
@@ -378,6 +364,72 @@ open class Tag<out E : Element>(
         this[key]?.let {
             attr("data-${key.name}", it.toString())
         }
+    }
+}
+
+/**
+ * Represents a tag in the resulting HTML.
+ * Sorry for the name, but we needed to delimit it from the [Element] it is wrapping.
+ *
+ * @param tagName name of the tag. Used to create the corresponding [Element]
+ * @property id the DOM-id of the element to be created
+ * @property baseClass a static base value for the class-attribute.
+ * All dynamic values for this attribute will be concatenated to this base-value.
+ * @property job used for launching coroutines in
+ * @property scope set some arbitrary scope entries into the [HtmlTag]'s scope
+ */
+@HtmlTagMarker
+open class HtmlTag<out E : Element>(
+    private val tagName: String,
+    val id: String? = null,
+    val baseClass: String? = null,
+    override val job: Job,
+    override val scope: Scope,
+) : Tag<E> {
+
+    /**
+     * factory function that defines how the DOM-node represented by this Tag is created
+     */
+    protected open fun createDomNode(): E = window.document.createElement(tagName).also { element ->
+        if (id != null) element.id = id
+        if (!baseClass.isNullOrBlank()) element.className = baseClass
+    }.unsafeCast<E>()
+
+    override val domNode: E = this.createDomNode()
+
+    /**
+     * Creates the content of the [HtmlTag] and appends it as a child to the wrapped [Element].
+     *
+     * @param element the parent element of the new content
+     * @param content lambda building the content (following the type-safe-builder pattern)
+     */
+    override fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W {
+        content(element)
+        domNode.appendChild(element.domNode)
+        return element
+    }
+
+    private var className: String? = baseClass
+    private var classFlow: Flow<String>? = null
+
+    private fun updateClasses() {
+        if (classFlow == null) {
+            attr("class", className)
+        } else if (className == null) {
+            attr("class", classFlow!!)
+        } else {
+            attr("class", classFlow!!.map { classes(className, it) })
+        }
+    }
+
+    override fun addToClasses(classesToAdd: String) {
+        className = classes(className, classesToAdd)
+        updateClasses()
+    }
+
+    override fun addToClasses(classesToAdd: Flow<String>) {
+        classFlow = if (classFlow == null) classesToAdd else classFlow!!.combine(classesToAdd) { a, b -> classes(a, b) }
+        updateClasses()
     }
 
     internal inner class AnnexContext : RenderContext {
@@ -389,13 +441,13 @@ open class Tag<out E : Element>(
             return element
         }
 
-        override val job: Job = this@Tag.job
+        override val job: Job = this@HtmlTag.job
 
-        override val scope: Scope = this@Tag.scope
+        override val scope: Scope = this@HtmlTag.scope
     }
 
     /**
-     * provides [RenderContext] next to this [Tag] on the same DOM-level.
+     * provides [RenderContext] next to this [HtmlTag] on the same DOM-level.
      *
      */
     val annex: RenderContext by lazy { AnnexContext() }

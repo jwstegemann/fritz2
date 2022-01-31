@@ -1,6 +1,6 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
 import org.w3c.dom.Element
@@ -41,6 +41,6 @@ enum class Orientation {
  * @param name to use
  * @param value to use
  */
-fun <N : Element> Tag<N>.attrIfNotSet(name: String, value: String) {
+fun <N : Element> HtmlTag<N>.attrIfNotSet(name: String, value: String) {
     if (!domNode.hasAttribute(name)) attr(name, value)
 }

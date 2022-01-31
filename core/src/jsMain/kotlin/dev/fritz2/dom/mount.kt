@@ -25,7 +25,7 @@ internal class DomLifecycleListener(
 )
 
 /**
- * External interface to access the MountPoint where the lifecycle of [Tag]s and subtrees is handled.
+ * External interface to access the MountPoint where the lifecycle of [HtmlTag]s and subtrees is handled.
  */
 interface MountPoint {
 
@@ -89,35 +89,35 @@ internal abstract class MountPointImpl : MountPoint, WithJob {
 internal val MOUNT_POINT_KEY = Scope.Key<MountPoint>("MOUNT_POINT")
 
 /**
- * Allows to access the nearest [MountPoint] from any [Tag]
+ * Allows to access the nearest [MountPoint] from any [HtmlTag]
  */
-fun Tag<*>.mountPoint(): MountPoint? = this.scope[MOUNT_POINT_KEY]
+fun HtmlTag<*>.mountPoint(): MountPoint? = this.scope[MOUNT_POINT_KEY]
 
 /**
- * Convenience method to register lifecycle handler for after a [Tag] is mounted
+ * Convenience method to register lifecycle handler for after a [HtmlTag] is mounted
  *
- * @param handler [DomLifecycleHandler] to be called on this [Tag] after it is mounted to the DOM
+ * @param handler [DomLifecycleHandler] to be called on this [HtmlTag] after it is mounted to the DOM
  * @param payload optional payload the handler requires
- * @receiver the [Tag] to register the lifecycle handler for
+ * @receiver the [HtmlTag] to register the lifecycle handler for
  */
-fun <T : Element> Tag<T>.afterMount(payload: Any? = null, handler: DomLifecycleHandler) {
+fun <T : Element> HtmlTag<T>.afterMount(payload: Any? = null, handler: DomLifecycleHandler) {
     this.scope[MOUNT_POINT_KEY]?.afterMount(this, payload, handler)
 }
 
 /**
- * Convenience method to register lifecycle handler for before a [Tag] is unmounted
+ * Convenience method to register lifecycle handler for before a [HtmlTag] is unmounted
  *
- * @param handler [DomLifecycleHandler] to be called on this [Tag] before it is removed from the DOM
+ * @param handler [DomLifecycleHandler] to be called on this [HtmlTag] before it is removed from the DOM
  * @param payload optional payload the handler requires
- * @receiver the [Tag] to register the lifecycle handler for
+ * @receiver the [HtmlTag] to register the lifecycle handler for
  */
-fun <T : Element> Tag<T>.beforeUnmount(payload: Any? = null, handler: DomLifecycleHandler) {
+fun <T : Element> HtmlTag<T>.beforeUnmount(payload: Any? = null, handler: DomLifecycleHandler) {
     this.scope[MOUNT_POINT_KEY]?.beforeUnmount(this, payload, handler)
 }
 
 internal class MountContext<T : HTMLElement>(
     override val job: Job,
-    val target: Tag<T>,
+    val target: HtmlTag<T>,
     mountScope: Scope = target.scope,
 ) : RenderContext, MountPointImpl() {
 
@@ -143,7 +143,7 @@ internal class BuildContext(
 
 
 internal const val MOUNT_POINT_STYLE_CLASS = "mount-point"
-internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: Tag<HTMLElement>.() -> Unit = {
+internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: HtmlTag<HTMLElement>.() -> Unit = {
     attr("data-mount-point", true)
 }
 
@@ -151,16 +151,16 @@ internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: Tag<HTMLElement>.() -> Unit = {
 /**
  * Mounts a [Flow] of [Patch]es to the DOM either
  *  - creating a new context-[Div] as a child of the receiver
- *  - or, if [into] is set, replacing all children of this [Tag].
+ *  - or, if [into] is set, replacing all children of this [HtmlTag].
  *
  * @param into if set defines the target to mount the content to (replacing its static content)
  * @param upstream the [Flow] that should be mounted
  * @param createPatches lambda defining, how to compare two versions of a [List]
  */
 internal fun <V> RenderContext.mountPatches(
-    into: Tag<HTMLElement>?,
+    into: HtmlTag<HTMLElement>?,
     upstream: Flow<List<V>>,
-    createPatches: (Flow<List<V>>, MutableMap<Node, MountPointImpl>) -> Flow<List<Patch<Tag<HTMLElement>>>>,
+    createPatches: (Flow<List<V>>, MutableMap<Node, MountPointImpl>) -> Flow<List<Patch<HtmlTag<HTMLElement>>>>,
 ) {
     val target = into?.apply {
         this.domNode.clear()

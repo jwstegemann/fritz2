@@ -3,7 +3,7 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.Direction
@@ -17,10 +17,10 @@ import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
 
 
-class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) :
+class HeadlessTabGroup<C : HtmlTag<HTMLElement>>(val renderContext: C, id: String?) :
     RenderContext by renderContext {
 
-    class TabDatabindingHook<C : Tag<HTMLElement>> : DatabindingHook<C, Unit, Int>() {
+    class TabDatabindingHook<C : HtmlTag<HTMLElement>> : DatabindingHook<C, Unit, Int>() {
         override fun C.render(payload: Unit) {
         }
     }
@@ -109,7 +109,7 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
         selected handledBy ::selectDefaultTab
     }
 
-    inner class TabList<CL : Tag<HTMLElement>>(
+    inner class TabList<CL : HtmlTag<HTMLElement>>(
         val tag: CL
     ) : RenderContext by tag {
 
@@ -150,7 +150,7 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
             } handledBy ::lastByKey
         }
 
-        inner class Tab<CT : Tag<HTMLElement>>(
+        inner class Tab<CT : HtmlTag<HTMLElement>>(
             val tag: CT,
             val index: Int
         ) : RenderContext by tag {
@@ -172,7 +172,7 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
             }
         }
 
-        fun <CT : Tag<HTMLElement>> RenderContext.tab(
+        fun <CT : HtmlTag<HTMLElement>> RenderContext.tab(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<CT>,
@@ -192,7 +192,7 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
         ) = tab(classes, scope, RenderContext::button, initialize)
     }
 
-    fun <CL : Tag<HTMLElement>> RenderContext.tabList(
+    fun <CL : HtmlTag<HTMLElement>> RenderContext.tabList(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CL>,
@@ -211,11 +211,11 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
     ): Div = tabList(classes, scope, RenderContext::div, initialize)
 
 
-    inner class TabPanels<CP : Tag<HTMLElement>>(
+    inner class TabPanels<CP : HtmlTag<HTMLElement>>(
         val tag: CP
     ) : RenderContext by tag {
 
-        private var panels = mutableListOf<RenderContext.() -> Tag<HTMLElement>>()
+        private var panels = mutableListOf<RenderContext.() -> HtmlTag<HTMLElement>>()
 
         private var nextIndex = 0
 
@@ -228,7 +228,7 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
             }
         }
 
-        fun <CT : Tag<HTMLElement>> RenderContext.panel(
+        fun <CT : HtmlTag<HTMLElement>> RenderContext.panel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<CT>,
@@ -253,7 +253,7 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
         ) = panel(classes, scope, RenderContext::div, content)
     }
 
-    fun <CP : Tag<HTMLElement>> RenderContext.tabPanels(
+    fun <CP : HtmlTag<HTMLElement>> RenderContext.tabPanels(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CP>,
@@ -272,7 +272,7 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
     ): Div = tabPanels(classes, scope, RenderContext::div, initialize)
 }
 
-fun <C : Tag<HTMLElement>> RenderContext.headlessTabGroup(
+fun <C : HtmlTag<HTMLElement>> RenderContext.headlessTabGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},

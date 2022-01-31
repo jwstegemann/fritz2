@@ -1,6 +1,6 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.html.*
 import dev.fritz2.dom.values
 import dev.fritz2.headless.foundation.Aria
@@ -16,10 +16,10 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLElement
 
 
-abstract class HeadlessTextfield<C : Tag<HTMLElement>, CT : Tag<HTMLElement>>(val renderContext: C, id: String?) :
+abstract class HeadlessTextfield<C : HtmlTag<HTMLElement>, CT : HtmlTag<HTMLElement>>(val renderContext: C, id: String?) :
     RenderContext by renderContext {
 
-    abstract class TextDatabindingHook<CT : Tag<HTMLElement>> : DatabindingHook<CT, Unit, String>()
+    abstract class TextDatabindingHook<CT : HtmlTag<HTMLElement>> : DatabindingHook<CT, Unit, String>()
 
     abstract val value: TextDatabindingHook<CT>
     abstract val placeholder: AttributeHook<CT, String>
@@ -28,10 +28,10 @@ abstract class HeadlessTextfield<C : Tag<HTMLElement>, CT : Tag<HTMLElement>>(va
     val componentId: String by lazy { id ?: value.id ?: Id.next() }
     protected val fieldId by lazy { "$componentId-field" }
 
-    protected var label: Tag<HTMLElement>? = null
-    protected var description: Tag<HTMLElement>? = null
-    protected var validationMessages: Tag<HTMLElement>? = null
-    protected var field: Tag<HTMLElement>? = null
+    protected var label: HtmlTag<HTMLElement>? = null
+    protected var description: HtmlTag<HTMLElement>? = null
+    protected var validationMessages: HtmlTag<HTMLElement>? = null
+    protected var field: HtmlTag<HTMLElement>? = null
 
     fun C.render() {
         attr("id", componentId)
@@ -44,7 +44,7 @@ abstract class HeadlessTextfield<C : Tag<HTMLElement>, CT : Tag<HTMLElement>>(va
         }
     }
 
-    protected fun <CL : Tag<HTMLElement>> RenderContext.textfieldLabel(
+    protected fun <CL : HtmlTag<HTMLElement>> RenderContext.textfieldLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CL>,
@@ -59,7 +59,7 @@ abstract class HeadlessTextfield<C : Tag<HTMLElement>, CT : Tag<HTMLElement>>(va
         `for`(fieldId)
     }
 
-    protected fun <CD : Tag<HTMLElement>> RenderContext.textfieldDescription(
+    protected fun <CD : HtmlTag<HTMLElement>> RenderContext.textfieldDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CD>,
@@ -72,7 +72,7 @@ abstract class HeadlessTextfield<C : Tag<HTMLElement>, CT : Tag<HTMLElement>>(va
         content: P.() -> Unit
     ) = textfieldDescription(classes, scope, RenderContext::p, content)
 
-    protected fun <CV : Tag<HTMLElement>> RenderContext.textfieldValidationMessages(
+    protected fun <CV : HtmlTag<HTMLElement>> RenderContext.textfieldValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CV>,
@@ -93,7 +93,7 @@ abstract class HeadlessTextfield<C : Tag<HTMLElement>, CT : Tag<HTMLElement>>(va
     ) = textfieldValidationMessages(classes, scope, RenderContext::div, content)
 }
 
-class HeadlessInput<C : Tag<HTMLElement>>(renderContext: C, id: String?) :
+class HeadlessInput<C : HtmlTag<HTMLElement>>(renderContext: C, id: String?) :
     HeadlessTextfield<C, Input>(renderContext, id) {
 
     class InputDatabindingHook : TextDatabindingHook<Input>() {
@@ -117,7 +117,7 @@ class HeadlessInput<C : Tag<HTMLElement>>(renderContext: C, id: String?) :
         hook(value, placeholder, type, disabled, payload = Unit)
     }.also { field = it }
 
-    fun <CL : Tag<HTMLElement>> RenderContext.inputLabel(
+    fun <CL : HtmlTag<HTMLElement>> RenderContext.inputLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CL>,
@@ -130,7 +130,7 @@ class HeadlessInput<C : Tag<HTMLElement>>(renderContext: C, id: String?) :
         content: Label.() -> Unit
     ) = textfieldLabel(classes, scope, content)
 
-    fun <CD : Tag<HTMLElement>> RenderContext.inputDescription(
+    fun <CD : HtmlTag<HTMLElement>> RenderContext.inputDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CD>,
@@ -143,7 +143,7 @@ class HeadlessInput<C : Tag<HTMLElement>>(renderContext: C, id: String?) :
         content: P.() -> Unit
     ) = textfieldDescription(classes, scope, content)
 
-    fun <CV : Tag<HTMLElement>> RenderContext.inputValidationMessages(
+    fun <CV : HtmlTag<HTMLElement>> RenderContext.inputValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CV>,
@@ -157,7 +157,7 @@ class HeadlessInput<C : Tag<HTMLElement>>(renderContext: C, id: String?) :
     ) = textfieldValidationMessages(classes, scope, content)
 }
 
-fun <C : Tag<HTMLElement>> RenderContext.headlessInput(
+fun <C : HtmlTag<HTMLElement>> RenderContext.headlessInput(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
@@ -178,7 +178,7 @@ fun RenderContext.headlessInput(
 ): Div = headlessInput(classes, id, scope, RenderContext::div, initialize)
 
 
-class HeadlessTextarea<C : Tag<HTMLElement>>(renderContext: C, id: String?) :
+class HeadlessTextarea<C : HtmlTag<HTMLElement>>(renderContext: C, id: String?) :
     HeadlessTextfield<C, TextArea>(renderContext, id) {
 
     class TextAreaDatabindingHook : HeadlessTextfield.TextDatabindingHook<TextArea>() {
@@ -201,7 +201,7 @@ class HeadlessTextarea<C : Tag<HTMLElement>>(renderContext: C, id: String?) :
         hook(value, placeholder, disabled, payload = Unit)
     }.also { field = it }
 
-    fun <CL : Tag<HTMLElement>> RenderContext.textareaLabel(
+    fun <CL : HtmlTag<HTMLElement>> RenderContext.textareaLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CL>,
@@ -214,7 +214,7 @@ class HeadlessTextarea<C : Tag<HTMLElement>>(renderContext: C, id: String?) :
         content: Label.() -> Unit
     ) = textfieldLabel(classes, scope, content)
 
-    fun <CD : Tag<HTMLElement>> RenderContext.textareaDescription(
+    fun <CD : HtmlTag<HTMLElement>> RenderContext.textareaDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CD>,
@@ -227,7 +227,7 @@ class HeadlessTextarea<C : Tag<HTMLElement>>(renderContext: C, id: String?) :
         content: P.() -> Unit
     ) = textfieldDescription(classes, scope, content)
 
-    fun <CV : Tag<HTMLElement>> RenderContext.textareaValidationMessages(
+    fun <CV : HtmlTag<HTMLElement>> RenderContext.textareaValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CV>,
@@ -241,7 +241,7 @@ class HeadlessTextarea<C : Tag<HTMLElement>>(renderContext: C, id: String?) :
     ) = textfieldValidationMessages(classes, scope, content)
 }
 
-fun <C : Tag<HTMLElement>> RenderContext.headlessTextarea(
+fun <C : HtmlTag<HTMLElement>> RenderContext.headlessTextarea(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},

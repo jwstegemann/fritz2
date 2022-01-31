@@ -1,8 +1,7 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.html.*
-import dev.fritz2.identification.Id
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.whenever
@@ -10,18 +9,19 @@ import dev.fritz2.headless.hooks.BasicHook
 import dev.fritz2.headless.hooks.ItemDatabindingHook
 import dev.fritz2.headless.hooks.hook
 import dev.fritz2.headless.validation.ComponentValidationMessage
+import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLElement
 
-class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private val id: String?) :
+class HeadlessCheckboxGroup<C : HtmlTag<HTMLElement>, T>(val renderContext: C, private val id: String?) :
     RenderContext by renderContext {
 
-    class DatabindingHook<T> : ItemDatabindingHook<Tag<HTMLElement>, T, List<T>>() {
+    class DatabindingHook<T> : ItemDatabindingHook<HtmlTag<HTMLElement>, T, List<T>>() {
 
-        override fun Tag<HTMLElement>.render(payload: T) {
+        override fun HtmlTag<HTMLElement>.render(payload: T) {
             val event = if (this is Input) changes else clicks
             handler?.invoke(data.flatMapLatest { value ->
                 event.map { if (value.contains(payload)) value - payload else value + payload }
@@ -33,7 +33,7 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
 
     class KeyboardNavigationHook<T>(
         private val value: DatabindingHook<T>
-    ) : BasicHook<Tag<HTMLElement>, Unit, T>() {
+    ) : BasicHook<HtmlTag<HTMLElement>, Unit, T>() {
         operator fun invoke() = this.also { hook ->
             apply = { options ->
                 hook.value.handler?.invoke(
@@ -48,8 +48,8 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
         }
     }
 
-    private var label: Tag<HTMLElement>? = null
-    private var validationMessages: Tag<HTMLElement>? = null
+    private var label: HtmlTag<HTMLElement>? = null
+    private var validationMessages: HtmlTag<HTMLElement>? = null
 
     val value = DatabindingHook<T>()
     val withKeyboardNavigation = KeyboardNavigationHook(value)
@@ -64,7 +64,7 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
         label?.let { attr(Aria.labelledby, it.id) }
     }
 
-    fun <CL : Tag<HTMLElement>> RenderContext.checkboxGroupLabel(
+    fun <CL : HtmlTag<HTMLElement>> RenderContext.checkboxGroupLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CL>,
@@ -77,7 +77,7 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
         content: Label.() -> Unit
     ) = checkboxGroupLabel(classes, scope, RenderContext::label, content)
 
-    fun <CV : Tag<HTMLElement>> RenderContext.checkboxGroupValidationMessages(
+    fun <CV : HtmlTag<HTMLElement>> RenderContext.checkboxGroupValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CV>,
@@ -98,7 +98,7 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
     ) = checkboxGroupValidationMessages(classes, scope, RenderContext::div, content)
 
     // TODO: Make it rather a Fragment than a Tag
-    inner class CheckboxGroupOption<CO : Tag<HTMLElement>>(
+    inner class CheckboxGroupOption<CO : HtmlTag<HTMLElement>>(
         val tag: CO,
         private val option: T,
         id: String?
@@ -106,9 +106,9 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
 
         val selected = value.isSelected(option)
 
-        private var toggle: Tag<HTMLElement>? = null
-        private var label: Tag<HTMLElement>? = null
-        private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
+        private var toggle: HtmlTag<HTMLElement>? = null
+        private var label: HtmlTag<HTMLElement>? = null
+        private var descriptions: MutableList<HtmlTag<HTMLElement>> = mutableListOf()
 
         val optionId = "$componentId-${id ?: Id.next()}"
 
@@ -125,7 +125,7 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
             }
         }
 
-        fun <CT : Tag<HTMLElement>> RenderContext.checkboxGroupOptionToggle(
+        fun <CT : HtmlTag<HTMLElement>> RenderContext.checkboxGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<CT>,
@@ -148,7 +148,7 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
             content: Div.() -> Unit
         ) = checkboxGroupOptionToggle(classes, scope, RenderContext::div, content)
 
-        fun <CL : Tag<HTMLElement>> RenderContext.checkboxGroupOptionLabel(
+        fun <CL : HtmlTag<HTMLElement>> RenderContext.checkboxGroupOptionLabel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<CL>,
@@ -164,7 +164,7 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
             `for`(optionId)
         }
 
-        fun <CL : Tag<HTMLElement>> RenderContext.checkboxGroupOptionDescription(
+        fun <CL : HtmlTag<HTMLElement>> RenderContext.checkboxGroupOptionDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<CL>,
@@ -184,7 +184,7 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
         ) = checkboxGroupOptionDescription(classes, scope, RenderContext::span, content)
     }
 
-    fun <CO : Tag<HTMLElement>> RenderContext.checkboxGroupOption(
+    fun <CO : HtmlTag<HTMLElement>> RenderContext.checkboxGroupOption(
         option: T,
         classes: String? = null,
         id: String? = null,
@@ -207,7 +207,7 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
     ): Div = checkboxGroupOption(option, classes, id, scope, RenderContext::div, initialize)
 }
 
-fun <C : Tag<HTMLElement>, T> RenderContext.headlessCheckboxGroup(
+fun <C : HtmlTag<HTMLElement>, T> RenderContext.headlessCheckboxGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},

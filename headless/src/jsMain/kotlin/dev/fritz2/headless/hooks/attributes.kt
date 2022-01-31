@@ -1,10 +1,10 @@
 package dev.fritz2.headless.hooks
 
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import kotlinx.coroutines.flow.Flow
 
 
-class AttributeHook<C : Tag<*>, T>(
+class AttributeHook<C : HtmlTag<*>, T>(
     private val valueSetter: C.(T) -> Unit,
     private val flowOfValueSetter: C.(Flow<T>) -> Unit
 ) : BasicHook<C, Unit, Unit>(), Usable<AttributeHook<C, T>> {
@@ -22,7 +22,7 @@ class AttributeHook<C : Tag<*>, T>(
     }
 }
 
-class BooleanAttributeHook<C : Tag<*>>(
+class BooleanAttributeHook<C : HtmlTag<*>>(
     private val valueSetter: C.(Boolean, String) -> Unit,
     private val flowOfValueSetter: C.(Flow<Boolean>, String) -> Unit,
     private val trueValue: String = ""
@@ -43,7 +43,7 @@ class BooleanAttributeHook<C : Tag<*>>(
     }
 }
 
-class RawAttributeHook<C : Tag<*>, T>(private val name: String) : BasicHook<C, Unit, Unit>() {
+class RawAttributeHook<C : HtmlTag<*>, T>(private val name: String) : BasicHook<C, Unit, Unit>() {
     operator fun invoke(value: T?) {
         apply = value?.let { { attr(name, it) } }
     }

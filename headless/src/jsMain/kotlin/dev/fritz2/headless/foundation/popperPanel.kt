@@ -1,6 +1,6 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.utils.popper.*
@@ -10,14 +10,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.HTMLElement
 
-abstract class PopUpPanel<C : Tag<HTMLElement>>(
+abstract class PopUpPanel<C : HtmlTag<HTMLElement>>(
     renderContext: RenderContext,
     tagFactory: TagFactory<C>,
     classes: String?,
     id: String?,
     scope: ScopeContext.() -> Unit,
     private val openCloseDelegate: OpenClose,
-    private val reference: Tag<HTMLElement>?,
+    private val reference: HtmlTag<HTMLElement>?,
     private val popperDiv: Div = renderContext.div() {}, //never add classes to popperDiv
     val tag: C = tagFactory(popperDiv, classes, id, scope) {}
 ) : RenderContext by tag {

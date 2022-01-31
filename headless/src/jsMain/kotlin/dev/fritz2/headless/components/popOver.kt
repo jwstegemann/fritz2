@@ -1,7 +1,7 @@
 package dev.fritz2.headless.components
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Tag
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.html.Button
 import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
@@ -14,17 +14,17 @@ import org.w3c.dom.HTMLElement
 
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessPopOver<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContext by tag,
+class HeadlessPopOver<C : HtmlTag<HTMLElement>>(val tag: C, id: String?) : RenderContext by tag,
     OpenClose by OpenCloseDelegate() {
 
     val componentId: String by lazy { id ?: Id.next() }
 
-    private var button: Tag<HTMLElement>? = null
+    private var button: HtmlTag<HTMLElement>? = null
 
     fun C.render() {
     }
 
-    fun <CB : Tag<HTMLElement>> RenderContext.popOverButton(
+    fun <CB : HtmlTag<HTMLElement>> RenderContext.popOverButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CB>,
@@ -44,14 +44,14 @@ class HeadlessPopOver<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderCon
         attr("type", "button")
     }
 
-    inner class PopOverPanel<C : Tag<HTMLElement>>(
+    inner class PopOverPanel<C : HtmlTag<HTMLElement>>(
         val renderContext: RenderContext,
         tagFactory: TagFactory<C>,
         classes: String?,
         scope: ScopeContext.() -> Unit
     ) : PopUpPanel<C>(renderContext, tagFactory, classes, "$componentId-items", scope, this@HeadlessPopOver, button)
 
-    fun <CP : Tag<HTMLElement>> RenderContext.popOverPanel(
+    fun <CP : HtmlTag<HTMLElement>> RenderContext.popOverPanel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<CP>,
@@ -70,7 +70,7 @@ class HeadlessPopOver<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderCon
     ) = popOverPanel(classes, internalScope, RenderContext::div, initialize)
 }
 
-fun <C : Tag<HTMLElement>> RenderContext.headlessPopOver(
+fun <C : HtmlTag<HTMLElement>> RenderContext.headlessPopOver(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
