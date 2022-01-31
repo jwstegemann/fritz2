@@ -1,17 +1,12 @@
 package dev.fritz2.headless.hooks
 
-import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.Shortcut
 import dev.fritz2.dom.html.handledBy
-import dev.fritz2.dom.html.shortcutOf
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.headless.validation.Severity
-import dev.fritz2.headless.validation.validationMessages
+import dev.fritz2.validation.messagesByPath
 import kotlinx.coroutines.flow.*
-import org.w3c.dom.HTMLElement
 
 
 abstract class DatabindingHook<C : Tag<*>, P, T> : BasicHook<C, Unit, P>(), Usable<DatabindingHook<C, P, T>> {
@@ -61,7 +56,7 @@ abstract class DatabindingHook<C : Tag<*>, P, T> : BasicHook<C, Unit, P>(), Usab
     }
 
     open operator fun invoke(store: Store<T>) {
-        this.invoke(store.id, store.data, store.validationMessages()) { it handledBy store.update }
+        this.invoke(store.id, store.data, store.messagesByPath()) { it handledBy store.update }
     }
 }
 
