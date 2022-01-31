@@ -1,0 +1,13 @@
+{% set navPages = collections.all | eleventyNavigation %}
+    <nav class="flex-1 bg-bg space-y-2 h-full" aria-label="Sidebar">
+        {% for entry in navPages %}
+            {% include "components/navigationLink.njk" %}
+                {% set isOpen = true if ([eleventyNavigation.parent, eleventyNavigation.key].includes(entry.key)) else false %}
+                {% if isOpen or uncollapsed %}
+                    {% for entry in entry.children %}
+                        {% set indent = "pl-12" %}
+                        {% include "components/navigationLink.njk" %}
+                    {% endfor %}
+                {% endif %}
+        {% endfor %}
+</nav>
