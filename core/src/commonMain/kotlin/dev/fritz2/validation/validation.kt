@@ -5,17 +5,18 @@ import dev.fritz2.identification.inspectorOf
 import kotlin.jvm.JvmInline
 
 /**
- * Encapsulates the logic for validating a given data-model and some optional meta-data.
+ * Encapsulates the logic for validating a given data-model and some optional metadata.
  *
- * The validation logic itself is expressed by some function that must be passed as validate parameter.
- * This function must accept the actual model-data and some optional meta-data in order to create a [List] of messages.
- * This value class simply wraps the provided validation function in order to make it invocable without any ceremony.
+ * The validation logic itself is expressed by some function that must be passed as [validate] parameter.
+ * This function gets the actual model-data [D] and some optional metadata [T] in order to create a [List] of
+ * validation messages [M]. This value class simply wraps the provided [validate] function in order to make it
+ * invocable without any ceremony.
  *
- * It appears to be a good practise, to put the implementation of the passed validate function right next to your data
+ * It appears to be a good practise, to put the implementation of the passed [validate] function right next to your data
  * classes in the `commonMain` section of your Kotlin multiplatform project.
- * So you can write the validation logic once and use them on the JS and JVM side.
+ * So you can write the validation logic once and use them on the *JS* and *JVM* side.
  *
- * @param D data to validate
+ * @param D data-model to validate
  * @param T metadata which perhaps is needed in validation process
  */
 @JvmInline
@@ -24,7 +25,7 @@ value class Validation<D, T, M>(private inline val validate: (D, T?) -> List<M>)
 }
 
 /**
- * Convenience function for creating a [Validation] instance accepting model- and meta-data by working on a
+ * Convenience function for creating a [Validation] instance accepting model- and metadata by working on a
  * [MutableList] receiver and using an [Inspector] for getting the right [Inspector.path] from sub-models
  * next to the [Inspector.data].
  */

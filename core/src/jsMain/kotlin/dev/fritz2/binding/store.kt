@@ -268,22 +268,16 @@ open class RootStore<D>(
  * to every update.
  *
  * This store is intentionally configured to validate the data on each update, that is why the [validateAfterUpdate]
- * parameter is set to ``true`` by default.
+ * parameter is set to `true` by default.
  *
- * There might be special situations where it is reasonable to disable this behaviour and to prefer applying the
- * validation individually within custom handlers, for example if a model should only be validated after the user
- * has completed his input or if meta-data is needed for the validation process. Then be aware of the fact,
- * that the call of the [validate] function actually updates the [messages] [Flow] already.
+ * There might be special situations where it is reasonable to disable this behaviour by setting [validateAfterUpdate]
+ * to `false` and to prefer applying the validation individually within custom handlers, for example if a model should
+ * only be validated after the user has completed his input or if metadata is needed for the validation process.
+ * Then be aware of the fact, that the call of the [validate] function actually updates the [messages] [Flow] already.
  *
- * If the new data is not passed to the store's [data] flow afterwards, the messages are out of sync with the
- * actual data state!
- * This could lead to false assumptions and might produce hard to detect bugs in your application context.
- *
- * So for scenarios where the model in a store should always be valid, do not use this store implementation!
- * Instead, strive for a custom store implementation where you can handle the validation completely by yourself.
- * As the validation is simply a call on the thin [Validation] wrapper, it is really easy to manage manually.
- *
- * Using this store you should always insert exactly the data, that leads to the current validation messages!
+ * If the new data is not passed to the store's state after validating it, the messages are probably out of sync with
+ * the actual store's state!
+ * This could lead to false assumptions and might produce hard to detect bugs in your application.
  *
  * @param initialData first current value of this [Store]
  * @param validation [Validation] function to use at the data on this [Store].
