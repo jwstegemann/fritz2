@@ -5,9 +5,11 @@ import dev.fritz2.test.runTest
 import dev.fritz2.test.test
 import dev.fritz2.test.testHttpServer
 import kotlinx.browser.window
+import kotlinx.coroutines.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 data class Principal(
     val username: String = "",
@@ -17,8 +19,10 @@ data class Principal(
 abstract class TestAuthenticationMiddleware : Authentication<Principal>() {
 
     val valid = Principal("NameOfUser", "123456789")
+    var countAddAuthentication = 0
 
     final override fun addAuthentication(request: Request, principal: Principal?): Request {
+        countAddAuthentication++
         println("add principal: ${principal?.username}\n")
         return principal?.token?.let { request.header("authtoken", it) } ?: request
     }
@@ -51,20 +55,29 @@ class AuthenticatedRemoteTests {
     @Test
     fun testMultipleAuthentication() = runTest {
         val simple = object : TestAuthenticationMiddleware() {
+
+            var countAuthenticate = 0
+            
             override fun authenticate() {
+                countAuthenticate++
+                println("authenticate")
                 window.setTimeout({
                     complete(valid)
                     println("completed\n")
-                }, 500)
+                }, 1000)
             }
         }
         val remote = testHttpServer(authenticated).use(simple)
 
-        assertEquals("GET", remote.get("get").body())
-        assertEquals("GET", remote.get("get").body())
-        assertEquals("GET", remote.get("get").body())
-        assertEquals("GET", remote.get("get").body())
-        assertEquals("GET", remote.get("get").body())
+        buildList {
+            repeat(4) {
+                add(MainScope().launch {
+                    assertEquals("GET", remote.get("get").body())
+                })
+            }
+        }.joinAll()
+        assertTrue(simple.countAuthenticate == 1)
+        assertTrue(simple.countAddAuthentication <= 8)
     }
 
     @Test
