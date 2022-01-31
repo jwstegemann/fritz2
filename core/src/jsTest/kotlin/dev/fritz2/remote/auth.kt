@@ -35,13 +35,13 @@ class AuthenticatedRemoteTests {
             }
         }
 
-        assertEquals(null, simple.getPrincipal())
+        assertEquals(null, simple.current)
 
         simple.clear()
-        testHttpServer(authenticated).use(simple).get("get")
+        assertEquals("GET", testHttpServer(authenticated).use(simple).get("get").body())
 
         simple.clear()
-        testHttpServer(test).use(simple).get("get")
+        assertEquals("GET", testHttpServer(test).use(simple).get("get").body())
 
         assertFailsWith(FetchException::class) {
             testHttpServer(authenticated).get("get")
@@ -60,10 +60,11 @@ class AuthenticatedRemoteTests {
         }
         val remote = testHttpServer(authenticated).use(simple)
 
-        remote.get("get")
-        remote.get("get")
-        remote.get("get")
-        remote.get("get")
+        assertEquals("GET", remote.get("get").body())
+        assertEquals("GET", remote.get("get").body())
+        assertEquals("GET", remote.get("get").body())
+        assertEquals("GET", remote.get("get").body())
+        assertEquals("GET", remote.get("get").body())
     }
 
     @Test
@@ -78,13 +79,14 @@ class AuthenticatedRemoteTests {
             }
         }
 
-        assertEquals(simple.valid, simple.getPrincipal())
+        assertEquals(simple.valid, simple.current)
 
         val remote = testHttpServer(authenticated).use(simple)
 
-        remote.get("get")
-        remote.get("get")
-        remote.get("get")
-        remote.get("get")
+        assertEquals("GET", remote.get("get").body())
+        assertEquals("GET", remote.get("get").body())
+        assertEquals("GET", remote.get("get").body())
+        assertEquals("GET", remote.get("get").body())
+        assertEquals("GET", remote.get("get").body())
     }
 }

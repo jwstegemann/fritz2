@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
  * Special [Middleware] to use in at [http] API to provide an authentication
  * for every request. The type-parameter [P] represents the principal information,
  * which contains all login-information needed to authenticate against the external HTTP API.
- * The principal information is held inside and available as flow by calling [principal].
+ * The principal information is held inside and available as flow by calling [data].
  * To use this [Middleware] you need to implement the [addAuthentication] method, where you
  * get the principal information, when available, to add it to your requests.
  * To implement the client side of authentication process you also need to implement the [authenticate] method in which
@@ -20,8 +20,7 @@ import kotlinx.coroutines.flow.map
  * authentication information provided by the [addAuthentication] method.
  * When the user logs out you have to call the [clear] function to clear all authentication information.
  */
-abstract class
-Authentication<P> : Middleware {
+abstract class Authentication<P> : Middleware {
 
     private val principalStore = MutableStateFlow<P?>(null)
 
@@ -35,7 +34,7 @@ Authentication<P> : Middleware {
             if (state.let { it?.isActive } != true) {
                 start()
             }
-            getPrincipal()
+            state?.await()
             response.request.execute()
         } else response
 
@@ -60,9 +59,14 @@ Authentication<P> : Middleware {
      * When an authentication-process is running the function is waiting for the process to be finished.
      * Otherwise, it returns null if no authentication-process is running or no principal information is available.
      *
-     * @return P principal information
+     * @return [P] principal information
      */
-    fun getPrincipal(): P? = principalStore.value
+    val current: P? get() = principalStore.value
+
+    /**
+     * flow of the current principal [P]
+     */
+    val data: Flow<P?> = principalStore.asStateFlow()
 
     /**
      * implements the authentication process.
@@ -101,12 +105,7 @@ Authentication<P> : Middleware {
     }
 
     /**
-     * flow of the current principal
-     */
-    val principal: Flow<P?> = principalStore.asStateFlow()
-
-    /**
      * flow of the information whether the user is authenticated or not
      */
-    val authenticated: Flow<Boolean> = principal.map { it != null }
+    val authenticated: Flow<Boolean> = data.map { it != null }
 }
