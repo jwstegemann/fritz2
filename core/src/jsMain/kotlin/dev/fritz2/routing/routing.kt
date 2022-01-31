@@ -1,7 +1,7 @@
 package dev.fritz2.routing
 
-import dev.fritz2.binding.QueuedUpdate
 import dev.fritz2.binding.Store
+import dev.fritz2.binding.Update
 import dev.fritz2.dom.html.Events
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
@@ -71,15 +71,11 @@ open class Router<T>(
      */
     open val navTo = this.handle<T> { _, newValue -> newValue }
 
-    override suspend fun enqueue(update: QueuedUpdate<T>) {
-        try {
-            mutex.withLock {
-                val newRoute = update.update(state.value)
-                state.value = newRoute
-                window.location.hash = prefix + defaultRoute.serialize(newRoute)
-            }
-        } catch (e: Throwable) {
-            update.errorHandler(e, state.value)
+    override suspend fun enqueue(update: Update<T>) {
+        mutex.withLock {
+            val newRoute = update(state.value)
+            state.value = newRoute
+            window.location.hash = prefix + defaultRoute.serialize(newRoute)
         }
     }
 

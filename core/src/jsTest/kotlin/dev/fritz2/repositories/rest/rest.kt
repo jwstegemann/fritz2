@@ -53,7 +53,7 @@ class RestTests {
         val remote = testHttpServer(rest)
 
         val entityStore = object : RootStore<RestPerson>(defaultPerson) {
-            override fun errorHandler(exception: Throwable, oldValue: RestPerson): RestPerson {
+            override fun errorHandler(exception: Throwable) {
                 fail(exception.message)
             }
 
@@ -130,7 +130,7 @@ class RestTests {
         val remote = testHttpServer(rest)
 
         val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
-            override fun errorHandler(exception: Throwable, oldValue: List<RestPerson>): List<RestPerson> {
+            override fun errorHandler(exception: Throwable) {
                 fail(exception.message)
             }
 
@@ -205,7 +205,7 @@ class RestTests {
         val remote = testHttpServer(rest)
 
         val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
-            override fun errorHandler(exception: Throwable, oldValue: List<RestPerson>): List<RestPerson> {
+            override fun errorHandler(exception: Throwable) {
                 fail(exception.message)
             }
 

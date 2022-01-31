@@ -1,11 +1,15 @@
 package dev.fritz2.binding
 
+import dev.fritz2.dom.html.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
@@ -140,52 +144,130 @@ class StoreTests {
     fun testErrorHandling() = runTest {
         initDocument()
 
-        val errorMsg = Id.next()
         val valueId = Id.next()
         fun getValue() = document.getElementById(valueId)?.textContent
-        val buttonId = Id.next()
 
         var errorHandlerResult = ""
+
         val startValue = "start"
-        val errorHandler: ErrorHandler<String> = { e, o ->
-            errorHandlerResult = e.message.orEmpty()
-            o
-        }
 
         val store = object : RootStore<String>(startValue) {
-            val testHandler = handle(errorHandler) { model ->
-                if (errorHandlerResult.isEmpty()) throw Exception(errorMsg)
-                model.reversed()
+            override fun errorHandler(exception: Throwable) {
+                errorHandlerResult = exception.message.orEmpty()
             }
+
+            val exceptionSimpleHandler = "exception from simple handler"
+            val simpleTestHandlerThrowingException = handle {
+                throw Exception(exceptionSimpleHandler)
+            }
+
+            val exceptionSimpleHandlerValue = "exception from simple handler"
+            val simpleTestHandlerWithActionThrowingException = handle<Int> { _, action ->
+                throw Exception(exceptionSimpleHandlerValue)
+            }
+
+            val exceptionEmittingHandler = "exception from simple handler"
+            val emittingTestHandlerThrowingException = handleAndEmit<Unit> {
+                throw Exception(exceptionEmittingHandler)
+            }
+
+            val exceptionEmittingHandlerValue = "exception from simple handler"
+            val emittingTestHandlerWithActionThrowingException = handleAndEmit<Int, Unit> { _, action ->
+                throw Exception(exceptionEmittingHandlerValue)
+            }
+
         }
 
         render {
             div {
                 span(id = valueId) { store.data.renderText() }
-                button(id = buttonId) {
-                    clicks handledBy store.testHandler
-                }
             }
         }
 
-        delay(100)
+        val updates = MutableStateFlow(startValue)
+        updates handledBy store.update
 
-        assertEquals(getValue(), startValue, "wrong start value")
+        suspend fun checkUpdate(msg: String) {
+            val valueAfterSuccessfullUpdate = Id.next()
+            updates.value = valueAfterSuccessfullUpdate
+            delay(150)
+            assertEquals(valueAfterSuccessfullUpdate, getValue(), msg)
+        }
 
-        (document.getElementById(buttonId) as HTMLButtonElement).click()
+        checkUpdate("store not updating after start")
 
+        flowOf(Unit) handledBy store.simpleTestHandlerThrowingException
         delay(150)
+        assertEquals(store.exceptionSimpleHandler, errorHandlerResult, "exception not caught on simple handler")
+        assertEquals(updates.value, getValue(), "wrong value rendered after simple handler")
+        checkUpdate("store not updating after simple handler")
 
-        assertEquals(errorMsg, errorHandlerResult, "wrong message")
-        assertEquals(getValue(), startValue, "wrong value after error")
-
-        (document.getElementById(buttonId) as HTMLButtonElement).click()
-
+        flowOf(1) handledBy store.simpleTestHandlerWithActionThrowingException
         delay(150)
+        assertEquals(store.exceptionSimpleHandlerValue, errorHandlerResult, "exception not caught on simple handler with action")
+        assertEquals(updates.value, getValue(), "wrong value rendered after simple handler with action")
+        checkUpdate("store not updating after simple handler with action")
 
-        assertEquals(getValue(), startValue.reversed(), "wrong value second action")
+        flowOf(Unit) handledBy store.emittingTestHandlerThrowingException
+        delay(150)
+        assertEquals(store.exceptionEmittingHandler, errorHandlerResult, "exception not caught on emitting handler")
+        assertEquals(updates.value, getValue(), "wrong value rendered after emitting handler")
+        checkUpdate("store not updating after emitting handler")
 
+        flowOf(2) handledBy store.emittingTestHandlerWithActionThrowingException
+        delay(150)
+        assertEquals(store.exceptionEmittingHandlerValue, errorHandlerResult, "exception not caught on emitting handler with action")
+        assertEquals(updates.value, getValue(), "wrong value rendered after emitting handler with action")
+        checkUpdate("store not updating after emitting handler with action")
+
+        val intermediateException = "intermediate exception"
+        flowOf(Unit).map { throw Exception(intermediateException) } handledBy store.update
+        delay(150)
+        assertEquals(intermediateException, errorHandlerResult, "exception in map not caught")
+        checkUpdate("store not updating after intermediate exception")
     }
 
+    @Test
+    fun testAdHocErrorHandling() = runTest {
+        initDocument()
 
+        val valueId = Id.next()
+        fun getValue() = document.getElementById(valueId)?.textContent
+
+        val startValue = "start"
+
+        val store = object : RootStore<String>(startValue) {
+        }
+
+        render {
+            div {
+                span(id = valueId) { store.data.renderText() }
+            }
+        }
+
+        val updates = MutableStateFlow(startValue)
+        updates handledBy store.update
+
+        suspend fun checkUpdate(msg: String) {
+            val valueAfterSuccessfullUpdate = Id.next()
+            updates.value = valueAfterSuccessfullUpdate
+            delay(150)
+            assertEquals(valueAfterSuccessfullUpdate, getValue(), msg)
+        }
+
+        checkUpdate("store not updating after start")
+
+        val adHocException = "adHoc exception"
+        flowOf(Unit) handledBy {
+            throw Exception(adHocException)
+        }
+        delay(150)
+        checkUpdate("store not updating after adhoc handler ")
+
+        val adHocIntermediateException = "adHoc intermediate exception"
+        flowOf(2).map {throw Exception(adHocIntermediateException)} handledBy {
+        }
+        delay(150)
+        checkUpdate("store not updating after intermediate exception before adhoc handler ")
+    }
 }
