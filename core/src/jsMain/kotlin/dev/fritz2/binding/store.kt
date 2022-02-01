@@ -2,12 +2,14 @@ package dev.fritz2.binding
 
 import dev.fritz2.dom.html.WithJob
 import dev.fritz2.identification.Id
-import dev.fritz2.identification.RootInspector
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.resource.Resource
+import dev.fritz2.validation.Validation
+import dev.fritz2.validation.ValidationMessage
+import dev.fritz2.validation.valid
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -18,12 +20,12 @@ import kotlinx.coroutines.sync.withLock
 /**
  * Defines a type for transforming one value into the next
  */
-typealias Update<T> = suspend (T) -> T
+typealias Update<D> = suspend (D) -> D
 
 /**
  * The [Store] is the main type for all data binding activities. It the base class of all concrete Stores like [RootStore], [SubStore], etc.
  */
-interface Store<T> : WithJob {
+interface Store<D> : WithJob {
 
     /**
      * Factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
@@ -31,10 +33,10 @@ interface Store<T> : WithJob {
      * @param execute lambda that is executed whenever a new action-value appears on the connected event-[Flow].
      */
     fun <A> handle(
-        execute: suspend (T, A) -> T
+        execute: suspend (D, A) -> D
     ) = SimpleHandler<A> { flow, job ->
-        flow.onEach { enqueue { t -> execute(t, it) } }
-            .catch { t -> errorHandler(t) }
+        flow.onEach { enqueue { d -> execute(d, it) } }
+            .catch { d -> errorHandler(d) }
             .launchIn(MainScope() + job)
     }
 
@@ -44,10 +46,10 @@ interface Store<T> : WithJob {
      * @param execute lambda that is execute for each event on the connected [Flow]
      */
     fun handle(
-        execute: suspend (T) -> T
+        execute: suspend (D) -> D
     ) = SimpleHandler<Unit> { flow, job ->
-        flow.onEach { enqueue { t -> execute(t) } }
-            .catch { t -> errorHandler(t) }
+        flow.onEach { enqueue { d -> execute(d) } }
+            .catch { d -> errorHandler(d) }
             .launchIn(MainScope() + job)
     }
 
@@ -58,11 +60,10 @@ interface Store<T> : WithJob {
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
     fun <A, E> handleAndEmit(
-        execute: suspend FlowCollector<E>.(T, A) -> T
-    ) =
-        EmittingHandler<A, E>({ inFlow, outFlow, job ->
-            inFlow.onEach { enqueue { t -> outFlow.execute(t, it) } }
-                .catch { t -> errorHandler(t) }
+        execute: suspend FlowCollector<E>.(D, A) -> D
+    ) = EmittingHandler<A, E>({ inFlow, outFlow, job ->
+            inFlow.onEach { enqueue { d -> outFlow.execute(d, it) } }
+                .catch { d -> errorHandler(d) }
                 .launchIn(MainScope() + job)
         })
 
@@ -72,11 +73,11 @@ interface Store<T> : WithJob {
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
     fun <E> handleAndEmit(
-        execute: suspend FlowCollector<E>.(T) -> T
+        execute: suspend FlowCollector<E>.(D) -> D
     ) =
         EmittingHandler<Unit, E>({ inFlow, outFlow, job ->
-            inFlow.onEach { enqueue { t -> outFlow.execute(t) } }
-                .catch { t -> errorHandler(t) }
+            inFlow.onEach { enqueue { d -> outFlow.execute(d) } }
+                .catch { d -> errorHandler(d) }
                 .launchIn(MainScope() + job)
         })
 
@@ -85,7 +86,7 @@ interface Store<T> : WithJob {
      *
      * @param update the [Update] to handle
      */
-    suspend fun enqueue(update: Update<T>)
+    suspend fun enqueue(update: Update<D>)
 
     /**
      * [id] of this [Store].
@@ -102,17 +103,17 @@ interface Store<T> : WithJob {
     /**
      * the [Flow] representing the current value of the [Store]. Use this to bind it to ui-elements or derive calculated values by using [map] for example.
      */
-    val data: Flow<T>
+    val data: Flow<D>
 
     /**
      * represents the current value of the [Store]
      */
-    val current: T
+    val current: D
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
      */
-    val update: Handler<T>
+    val update: Handler<D>
 
     /**
      * calls a handler on each new value of the [Store]
@@ -124,13 +125,13 @@ interface Store<T> : WithJob {
     /**
      * calls a handler on each new value of the [Store]
      */
-    fun syncBy(handler: Handler<T>) {
+    fun syncBy(handler: Handler<D>) {
         data.drop(1) handledBy handler
     }
 
-    fun <I> syncWith(socket: Socket, resource: Resource<T, I>) {
+    fun <I> syncWith(socket: Socket, resource: Resource<D, I>) {
         val session = socket.connect()
-        var last: T? = null
+        var last: D? = null
         session.messages.body.map {
             val received = resource.deserialize(it)
             last = received
@@ -149,7 +150,7 @@ interface Store<T> : WithJob {
      * Use @[Lenses] annotation to let your compiler
      * create the lenses for you or use the buildLens-factory-method.
      */
-    fun <X> sub(lens: Lens<T, X>): SubStore<T, X> =
+    fun <X> sub(lens: Lens<D, X>): SubStore<D, X> =
         SubStore(this, lens)
 }
 
@@ -178,15 +179,15 @@ fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
  * A [Store] can be initialized with a given value.
  * Use a [RootStore] to "store" your model and create [SubStore]s from here.
  *
- * @param initialData: the first current value of this [Store]
- * @param id: the id of this store. ids of [SubStore]s will be concatenated.
+ * @param initialData first current value of this [Store]
+ * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
  */
-open class RootStore<T>(
-    initialData: T,
+open class RootStore<D>(
+    initialData: D,
     override val id: String = Id.next()
-) : Store<T> {
+) : Store<D> {
 
-    private val state: MutableStateFlow<T> = MutableStateFlow(initialData)
+    private val state: MutableStateFlow<D> = MutableStateFlow(initialData)
     private val mutex = Mutex()
 
     override val path: String = ""
@@ -203,18 +204,18 @@ open class RootStore<T>(
      *
      * Actual data therefore is derived by applying the updates on the internal channel one by one to get the next value.
      */
-    override val data: Flow<T> = state.asStateFlow()
+    override val data: Flow<D> = state.asStateFlow()
 
     /**
      * Represents the current data of this [RootStore].
      */
-    override val current: T
+    override val current: D
         get() = state.value
 
     /**
      * in a [RootStore] an [Update] is handled by applying it to the internal [StateFlow].
      */
-    override suspend fun enqueue(update: Update<T>) {
+    override suspend fun enqueue(update: Update<D>) {
         mutex.withLock {
             state.value = update(state.value)
         }
@@ -223,16 +224,13 @@ open class RootStore<T>(
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
      */
-    override val update = this.handle<T> { _, newValue -> newValue }
+    override val update = this.handle<D> { _, newValue -> newValue }
 }
 
 /**
- * convenience method to create a simple [RootStore] without any handlers, etc.
+ * Convenience function to create a simple [RootStore] without any handlers, etc.
  *
- * @param initialData the first current value of this [Store]
- * @param id the id of this store. ids of [SubStore]s will be concatenated.
+ * @param initialData first current value of this [Store]
+ * @param id id of this store. Ids of [SubStore]s will be concatenated.
  */
-fun <T> storeOf(initialData: T, id: String = Id.next()) = RootStore(initialData, id)
-
-@Deprecated("Not needed anymore. Use given inspector in validate method.", ReplaceWith(""))
-fun <T> Store<T>.inspect(data: T) = RootInspector(data)
+fun <D> storeOf(initialData: D, id: String = Id.next()) = RootStore(initialData, id)
