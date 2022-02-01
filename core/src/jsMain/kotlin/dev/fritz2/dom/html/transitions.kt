@@ -46,10 +46,6 @@ class Transition(
     val leaveEnd: String? = null
 ) {
     companion object {
-        internal suspend fun animate(target: Element, base: String?, start: String?, end: String?) {
-
-        }
-
         internal val leaveTransition: DomLifecycleHandler = { target, payload ->
             val transition = payload.unsafeCast<Transition?>()
             if (transition?.leave != null) {
@@ -178,12 +174,14 @@ fun Tag<HTMLElement>.transition(on: Flow<Boolean>, transition: Transition) {
  * @param leaveEnd optional classes to define the end point of the leave-transition
  * @receiver the [Tag] the transition will be applied to
  */
-fun Tag<HTMLElement>.transition(on: Flow<Boolean>, enter: String? = null,
-                                enterStart: String? = null,
-                                enterEnd: String? = null,
-                                leave: String? = null,
-                                leaveStart: String? = null,
-                                leaveEnd: String? = null
+fun Tag<HTMLElement>.transition(
+    on: Flow<Boolean>,
+    enter: String? = null,
+    enterStart: String? = null,
+    enterEnd: String? = null,
+    leave: String? = null,
+    leaveStart: String? = null,
+    leaveEnd: String? = null
 ) = transition(on, Transition(enter, enterStart, enterEnd, leave, leaveStart, leaveEnd))
 
 /**
