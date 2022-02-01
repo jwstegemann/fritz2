@@ -60,10 +60,8 @@ class AuthenticatedRemoteTests {
             
             override fun authenticate() {
                 countAuthenticate++
-                println("authenticate")
                 window.setTimeout({
                     complete(valid)
-                    println("completed\n")
                 }, 1000)
             }
         }
@@ -76,7 +74,7 @@ class AuthenticatedRemoteTests {
                 })
             }
         }.joinAll()
-        assertTrue(simple.countAuthenticate == 1)
+        assertEquals(1, simple.countAuthenticate)
         assertTrue(simple.countAddAuthentication <= 8)
     }
 
@@ -96,10 +94,15 @@ class AuthenticatedRemoteTests {
 
         val remote = testHttpServer(authenticated).use(simple)
 
-        assertEquals("GET", remote.get("get").body())
-        assertEquals("GET", remote.get("get").body())
-        assertEquals("GET", remote.get("get").body())
-        assertEquals("GET", remote.get("get").body())
+        buildList {
+            repeat(4) {
+                add(MainScope().launch {
+                    assertEquals("GET", remote.get("get").body())
+                })
+            }
+        }.joinAll()
+        assertEquals(4, simple.countAddAuthentication)
+        // test pure sequential request too
         assertEquals("GET", remote.get("get").body())
     }
 }
