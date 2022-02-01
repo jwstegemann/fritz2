@@ -139,7 +139,7 @@ open class Request(
 
         var response = Response(browserWindow.fetch(url, init).await(), request)
         for (interceptor in middlewares.reversed()) {
-            if (!response.propagate) break;
+            if (!response.propagate) break
             response = interceptor.handleResponse(response)
         }
 
