@@ -5,8 +5,11 @@ import dev.fritz2.test.runTest
 import dev.fritz2.test.test
 import dev.fritz2.test.testHttpServer
 import kotlinx.browser.window
+import kotlinx.coroutines.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 data class Principal(
     val username: String = "",
@@ -16,8 +19,10 @@ data class Principal(
 abstract class TestAuthenticationMiddleware : Authentication<Principal>() {
 
     val valid = Principal("NameOfUser", "123456789")
+    var countAddAuthentication = 0
 
     final override fun addAuthentication(request: Request, principal: Principal?): Request {
+        countAddAuthentication++
         println("add principal: ${principal?.username}\n")
         return principal?.token?.let { request.header("authtoken", it) } ?: request
     }
@@ -33,11 +38,14 @@ class AuthenticatedRemoteTests {
                 complete(valid)
             }
         }
-        simple.clear()
-        testHttpServer(authenticated).use(simple).get("get")
+
+        assertEquals(null, simple.current)
 
         simple.clear()
-        testHttpServer(test).use(simple).get("get")
+        assertEquals("GET", testHttpServer(authenticated).use(simple).get("get").body())
+
+        simple.clear()
+        assertEquals("GET", testHttpServer(test).use(simple).get("get").body())
 
         assertFailsWith(FetchException::class) {
             testHttpServer(authenticated).get("get")
@@ -47,18 +55,54 @@ class AuthenticatedRemoteTests {
     @Test
     fun testMultipleAuthentication() = runTest {
         val simple = object : TestAuthenticationMiddleware() {
+
+            var countAuthenticate = 0
+            
             override fun authenticate() {
+                countAuthenticate++
                 window.setTimeout({
                     complete(valid)
-                    println("completed\n")
-                }, 500)
+                }, 1000)
             }
         }
         val remote = testHttpServer(authenticated).use(simple)
 
-        remote.get("get")
-        remote.get("get")
-        remote.get("get")
-        remote.get("get")
+        buildList {
+            repeat(4) {
+                add(MainScope().launch {
+                    assertEquals("GET", remote.get("get").body())
+                })
+            }
+        }.joinAll()
+        assertEquals(1, simple.countAuthenticate)
+        assertTrue(simple.countAddAuthentication <= 8)
+    }
+
+    @Test
+    fun testPreAuthentication() = runTest {
+        val simple = object : TestAuthenticationMiddleware() {
+            override fun authenticate() {
+                throw Exception("should not be called!")
+            }
+
+            init {
+                complete(valid)
+            }
+        }
+
+        assertEquals(simple.valid, simple.current)
+
+        val remote = testHttpServer(authenticated).use(simple)
+
+        buildList {
+            repeat(4) {
+                add(MainScope().launch {
+                    assertEquals("GET", remote.get("get").body())
+                })
+            }
+        }.joinAll()
+        assertEquals(4, simple.countAddAuthentication)
+        // test pure sequential request too
+        assertEquals("GET", remote.get("get").body())
     }
 }
