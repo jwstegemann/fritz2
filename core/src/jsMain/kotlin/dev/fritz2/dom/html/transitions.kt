@@ -7,7 +7,6 @@ import kotlinx.coroutines.await
 import kotlinx.coroutines.awaitAnimationFrame
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
-import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import kotlin.js.Promise
