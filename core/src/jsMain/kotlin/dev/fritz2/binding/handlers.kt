@@ -20,7 +20,6 @@ interface Handler<A> {
 
     /**
      * Calls this handler exactly once.
-     *
      */
     operator fun invoke() = this.collect(flowOf(Unit.unsafeCast<A>()), Job())
 }
@@ -31,7 +30,7 @@ interface Handler<A> {
  *
  * @param collect defines how to handle the values of the connected [Flow]
  */
-class SimpleHandler<A>(override inline val collect: (Flow<A>, Job) -> Unit) : Handler<A>
+value class SimpleHandler<A>(override inline val collect: (Flow<A>, Job) -> Unit) : Handler<A>
 
 /**
  * An [EmittingHandler] is a special [Handler] that constitutes a new [Flow] by itself. You can emit values to this [Flow] from your code

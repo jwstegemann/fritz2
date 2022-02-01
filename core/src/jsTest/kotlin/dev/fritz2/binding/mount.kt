@@ -45,7 +45,7 @@ class MountTests {
 
         return GlobalScope.promise {
             values.forEach { value ->
-                store.enqueue(QueuedUpdate({ value }, store::errorHandler))
+                store.enqueue { value }
             }
             done.await()
         }

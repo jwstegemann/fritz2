@@ -25,7 +25,7 @@ interface WithJob {
      *
      * @param exception Exception to handle
      */
-    private fun errorHandler(exception: Throwable) {
+    fun errorHandler(exception: Throwable) {
         console.error("ERROR: ${exception.message}", exception)
     }
 
@@ -44,7 +44,7 @@ interface WithJob {
      * @receiver [Flow] of action/events to bind to
      */
     infix fun <A> Flow<A>.handledBy(execute: suspend (A) -> Unit) =
-        this.catch { errorHandler(it) }.onEach { execute(it) }.launchIn(MainScope() + job)
+        this.onEach { execute(it) }.catch { errorHandler(it) }.launchIn(MainScope() + job)
 
 
     /**
@@ -63,7 +63,7 @@ interface WithJob {
      * @param execute function that will handle the fired [Event]
      */
     infix fun <E : Event, X : Element> DomListener<E, X>.handledBy(execute: suspend (E) -> Unit) =
-        this.events.catch { errorHandler(it) }.onEach { execute(it) }.launchIn(MainScope() + job)
+        this.events.onEach { execute(it) }.catch { errorHandler(it) }.launchIn(MainScope() + job)
 
 
     /**
@@ -82,7 +82,7 @@ interface WithJob {
      * @param execute function that will handle the fired [Event]
      */
     infix fun <E : Event> WindowListener<E>.handledBy(execute: suspend (E) -> Unit) =
-        this.events.catch { errorHandler(it) }.onEach { execute(it) }.launchIn(MainScope() + job)
+        this.events.onEach { execute(it) }.catch { errorHandler(it) }.launchIn(MainScope() + job)
 
 }
 
@@ -101,5 +101,4 @@ infix fun <A> Flow<A>.handledBy(handler: Handler<A>) = handler.collect(this, Job
  * @receiver [Flow] of action/events to bind to an [Handler]
  */
 infix fun <A> Flow<A>.handledBy(execute: suspend (A) -> Unit) =
-    this.catch { console.error("ERROR: ${it.message}", it) }
-        .onEach { execute(it) }.launchIn(MainScope() + Job())
+    this.onEach { execute(it) }.catch { console.error("ERROR: ${it.message}", it) }.launchIn(MainScope() + Job())
