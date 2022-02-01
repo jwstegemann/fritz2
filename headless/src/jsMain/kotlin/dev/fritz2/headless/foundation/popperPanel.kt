@@ -4,7 +4,6 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.utils.popper.*
-
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
@@ -18,7 +17,7 @@ abstract class PopUpPanel<C : Tag<HTMLElement>>(
     scope: ScopeContext.() -> Unit,
     private val openCloseDelegate: OpenClose,
     private val reference: Tag<HTMLElement>?,
-    private val popperDiv: Div = renderContext.div() {}, //never add classes to popperDiv
+    private val popperDiv: Div = renderContext.div("invisible") {}, //never add other classes to popperDiv, they will be overridden
     val tag: C = tagFactory(popperDiv, classes, id, scope) {}
 ) : RenderContext by tag {
 
@@ -79,6 +78,7 @@ abstract class PopUpPanel<C : Tag<HTMLElement>>(
                         popperDiv.domNode.className = "popper visible w-full"
                         tag.setFocus()
                     } else {
+                        tag.waitForAnimation()
                         popperDiv.domNode.className = "popper invisible w-full"
                     }
                 }
