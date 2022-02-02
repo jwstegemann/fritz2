@@ -1,25 +1,29 @@
 package dev.fritz2.headless.foundation
 
+import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.Window
-import dev.fritz2.dom.html.*
+import dev.fritz2.dom.html.Keys
+import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.ScopeContext
+import dev.fritz2.dom.html.shortcutOf
 import dev.fritz2.headless.foundation.utils.popper.*
-
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
-abstract class PopUpPanel<C : Tag<HTMLElement>>(
+abstract class PopUpPanel<C : HTMLElement>(
     renderContext: RenderContext,
-    tagFactory: TagFactory<C>,
+    tagFactory: TagFactory<Tag<C>>,
     classes: String?,
     id: String?,
     scope: ScopeContext.() -> Unit,
     private val openCloseDelegate: OpenClose,
     private val reference: Tag<HTMLElement>?,
-    private val popperDiv: Div = renderContext.div() {}, //never add classes to popperDiv
-    val tag: C = tagFactory(popperDiv, classes, id, scope) {}
+    private val popperDiv: HtmlTag<HTMLDivElement> = renderContext.div() {}, //never add classes to popperDiv
+    val tag: Tag<C> = tagFactory(popperDiv, classes, id, scope) {}
 ) : RenderContext by tag {
 
     var placement: Placement = Placement.auto

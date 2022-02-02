@@ -1,6 +1,5 @@
 package dev.fritz2.dom.html
 
-import org.w3c.dom.events.EventModifierInit
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.KeyboardEventInit
 import kotlin.test.Test

@@ -2,17 +2,17 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.Button
-import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.hooks.hook
 import dev.fritz2.identification.Id
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
-class HeadlessDisclosure<C : Tag<HTMLElement>>(val renderContext: C, id: String?) :
-    RenderContext by renderContext,
+class HeadlessDisclosure<C : HTMLElement>(tag: Tag<C>, id: String?) :
+    Tag<C> by tag,
     OpenClose by OpenCloseDelegate() {
 
     val componentId: String by lazy { id ?: Id.next() }
@@ -20,18 +20,18 @@ class HeadlessDisclosure<C : Tag<HTMLElement>>(val renderContext: C, id: String?
     private var button: Tag<HTMLElement>? = null
     private var panel: (RenderContext.() -> Unit)? = null
 
-    fun C.render() {
+    fun render() {
         attr("id", componentId)
         opened.render {
             if (it) panel?.invoke(this)
         }
     }
 
-    fun <CB : Tag<HTMLElement>> RenderContext.disclosureButton(
+    fun <CB : HTMLElement> RenderContext.disclosureButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CB>,
-        content: CB.() -> Unit
+        tag: TagFactory<Tag<CB>>,
+        content: Tag<CB>.() -> Unit
     ) = tag(this, classes, "$componentId-button", scope) {
         if (!openClose.isSet) openClose(storeOf(false))
         content()
@@ -43,21 +43,21 @@ class HeadlessDisclosure<C : Tag<HTMLElement>>(val renderContext: C, id: String?
     fun RenderContext.disclosureButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Button.() -> Unit
+        content: Tag<HTMLButtonElement>.() -> Unit
     ) = disclosureButton(classes, scope, RenderContext::button, content).apply {
         attr("type", "button")
     }
 
-    inner class DisclosurePanel<CP : Tag<HTMLElement>>(val tag: CP) : RenderContext by tag {
-        fun CP.render() {
+    inner class DisclosurePanel<CP : HTMLElement>(val tag: Tag<CP>) : Tag<CP> by tag {
+        fun render() {
             button?.let { button -> button.attr(Aria.controls, id.whenever(opened)) }
         }
 
-        fun <CC : Tag<HTMLElement>> RenderContext.disclosureCloseButton(
+        fun <CC : HTMLElement> RenderContext.disclosureCloseButton(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CC>,
-            content: CC.() -> Unit
+            tag: TagFactory<Tag<CC>>,
+            content: Tag<CC>.() -> Unit
         ) = tag(this, classes, "$componentId-close-button", scope) {
             content()
             clicks handledBy close
@@ -66,16 +66,16 @@ class HeadlessDisclosure<C : Tag<HTMLElement>>(val renderContext: C, id: String?
         fun RenderContext.disclosureCloseButton(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Button.() -> Unit
+            content: Tag<HTMLButtonElement>.() -> Unit
         ) = disclosureCloseButton(classes, scope, RenderContext::button, content).apply {
             attr("type", "button")
         }
     }
 
-    fun <CP : Tag<HTMLElement>> RenderContext.disclosurePanel(
+    fun <CP : HTMLElement> RenderContext.disclosurePanel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CP>,
+        tag: TagFactory<Tag<CP>>,
         initialize: DisclosurePanel<CP>.() -> Unit
     ) {
         panel = {
@@ -91,17 +91,17 @@ class HeadlessDisclosure<C : Tag<HTMLElement>>(val renderContext: C, id: String?
     fun RenderContext.disclosurePanel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: DisclosurePanel<Div>.() -> Unit
+        initialize: DisclosurePanel<HTMLDivElement>.() -> Unit
     ) = disclosurePanel(classes, scope, RenderContext::div, initialize)
 }
 
-fun <C : Tag<HTMLElement>> RenderContext.headlessDisclosure(
+fun <C : HTMLElement> RenderContext.headlessDisclosure(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    tag: TagFactory<C>,
+    tag: TagFactory<Tag<C>>,
     initialize: HeadlessDisclosure<C>.() -> Unit
-): C = tag(this, classes, id, scope) {
+): Tag<C> = tag(this, classes, id, scope) {
     HeadlessDisclosure(this, id).run {
         initialize()
         render()
@@ -112,5 +112,5 @@ fun RenderContext.headlessDisclosure(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessDisclosure<Div>.() -> Unit
-): Div = headlessDisclosure(classes, id, scope, RenderContext::div, initialize)
+    initialize: HeadlessDisclosure<HTMLDivElement>.() -> Unit
+): Tag<HTMLDivElement> = headlessDisclosure(classes, id, scope, RenderContext::div, initialize)

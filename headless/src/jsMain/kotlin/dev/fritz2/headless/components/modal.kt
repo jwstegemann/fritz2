@@ -1,10 +1,14 @@
 package dev.fritz2.headless.components
 
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.*
+import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.identification.Id
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLHeadingElement
+import org.w3c.dom.HTMLParagraphElement
 
 class HeadlessModal(val renderContext: RenderContext) : RenderContext by renderContext,
     OpenClose by OpenCloseDelegate() {
@@ -24,16 +28,16 @@ class HeadlessModal(val renderContext: RenderContext) : RenderContext by renderC
         }
     }
 
-    inner class ModalPanel<C : Tag<HTMLElement>>(
-        val tag: C,
-        private val id: String? = null
-    ) : RenderContext by tag {
-        val componentId: String by lazy { id ?: Id.next() }
+    inner class ModalPanel<C : HTMLElement>(
+        val tag: Tag<C>,
+        private val explicitId: String? = null
+    ) : Tag<C> by tag {
+        val componentId: String by lazy { explicitId ?: Id.next() }
 
         private var title: Tag<HTMLElement>? = null
         private var description: Tag<HTMLElement>? = null
 
-        fun C.render() {
+        fun render() {
             attr("id", componentId)
             attr("role", Aria.Role.dialog)
             attr(Aria.modal, "true")
@@ -41,11 +45,11 @@ class HeadlessModal(val renderContext: RenderContext) : RenderContext by renderC
             description?.let { attr(Aria.describedby, it.id) }
         }
 
-        fun <CO : Tag<HTMLElement>> RenderContext.modalOverlay(
+        fun <CO : HTMLElement> RenderContext.modalOverlay(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CO>,
-            content: CO.() -> Unit
+            tag: TagFactory<Tag<CO>>,
+            content: Tag<CO>.() -> Unit
         ) = tag(this, classes, "$componentId-overlay", scope) {
             attr(Aria.hidden, "true")
             content()
@@ -54,41 +58,41 @@ class HeadlessModal(val renderContext: RenderContext) : RenderContext by renderC
         fun RenderContext.modalOverlay(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Div.() -> Unit
+            content: Tag<HTMLDivElement>.() -> Unit
         ) = modalOverlay(classes, scope, RenderContext::div, content)
 
-        fun <CT : Tag<HTMLElement>> RenderContext.modalTitle(
+        fun <CT : HTMLElement> RenderContext.modalTitle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CT>,
-            content: CT.() -> Unit
+            tag: TagFactory<Tag<CT>>,
+            content: Tag<CT>.() -> Unit
         ) = tag(this, classes, "$componentId-title", scope, content).also { title = it }
 
         fun RenderContext.modalTitle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: H.() -> Unit
+            content: Tag<HTMLHeadingElement>.() -> Unit
         ) = modalTitle(classes, scope, RenderContext::h2, content)
 
-        fun <CD : Tag<HTMLElement>> RenderContext.modalDescription(
+        fun <CD : HTMLElement> RenderContext.modalDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CD>,
-            content: CD.() -> Unit
+            tag: TagFactory<Tag<CD>>,
+            content: Tag<CD>.() -> Unit
         ) = tag(this, classes, "$componentId-description", scope, content).also { description = it }
 
         fun RenderContext.modalDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: P.() -> Unit
+            content: Tag<HTMLParagraphElement>.() -> Unit
         ) = modalDescription(classes, scope, RenderContext::p, content)
     }
 
-    fun <C : Tag<HTMLElement>> RenderContext.modalPanel(
+    fun <C : HTMLElement> RenderContext.modalPanel(
         classes: String? = null,
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<C>,
+        tag: TagFactory<Tag<C>>,
         initialize: ModalPanel<C>.() -> Unit
     ) {
         panel = {
@@ -105,7 +109,7 @@ class HeadlessModal(val renderContext: RenderContext) : RenderContext by renderC
         classes: String? = null,
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        initialize: ModalPanel<Div>.() -> Unit
+        initialize: ModalPanel<HTMLDivElement>.() -> Unit
     ) = modalPanel(classes, id, internalScope, RenderContext::div, initialize)
 }
 

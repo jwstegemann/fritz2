@@ -1,5 +1,6 @@
 package dev.fritz2.dom.html
 
+import dev.fritz2.dom.html.Keys.NamedKeys
 import org.w3c.dom.*
 import org.w3c.dom.clipboard.ClipboardEvent
 import org.w3c.dom.events.*

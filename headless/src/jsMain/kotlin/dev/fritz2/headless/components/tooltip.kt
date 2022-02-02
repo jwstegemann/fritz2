@@ -4,7 +4,10 @@ import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.Window
-import dev.fritz2.dom.html.*
+import dev.fritz2.dom.html.Keys
+import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.ScopeContext
+import dev.fritz2.dom.html.shortcutOf
 import dev.fritz2.dom.merge
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.OpenClose
@@ -14,14 +17,15 @@ import dev.fritz2.headless.foundation.utils.popper.*
 import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessTooltip<C : Tag<HTMLElement>>(
+class HeadlessTooltip<C : HTMLElement>(
     val target: Tag<HTMLElement>,
-    val tag: C,
-) : OpenClose by OpenCloseDelegate() {
+    val tag: Tag<C>,
+) : Tag<C> by tag, OpenClose by OpenCloseDelegate() {
 
     var placement: Placement = Placement.auto
     var showArrow: Boolean = true
@@ -30,7 +34,7 @@ class HeadlessTooltip<C : Tag<HTMLElement>>(
     var skidding = 0
     var distance = 10
 
-    fun C.render() {
+    fun render() {
         tag.attr("role", "tooltip")
         target.attr(Aria.describedby, tag.id)
 
@@ -71,11 +75,12 @@ class HeadlessTooltip<C : Tag<HTMLElement>>(
     }
 }
 
-fun <C : Tag<HTMLElement>> HtmlTag<HTMLElement>.headlessTooltip(
+//FIXME: is HtmlTag here ok?
+fun <C : HTMLElement> Tag<HTMLElement>.headlessTooltip(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    tag: TagFactory<C>,
+    tag: TagFactory<Tag<C>>,
     initialize: HeadlessTooltip<C>.() -> Unit
 ) {
     tag(annex, classes, id ?: Id.next(), scope) {
@@ -87,9 +92,9 @@ fun <C : Tag<HTMLElement>> HtmlTag<HTMLElement>.headlessTooltip(
 }
 
 
-fun Tag<HTMLElement>.headlessTooltip(
+fun HtmlTag<HTMLElement>.headlessTooltip(
     classes: String? = null,
     id: String? = null,
     internalScope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessTooltip<Div>.() -> Unit
+    initialize: HeadlessTooltip<HTMLDivElement>.() -> Unit
 ) = headlessTooltip(classes, id, internalScope, RenderContext::div, initialize)

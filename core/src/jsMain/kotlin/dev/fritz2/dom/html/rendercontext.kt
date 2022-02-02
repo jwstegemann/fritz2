@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.Patch
@@ -13,8 +15,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.scan
 import kotlinx.dom.clear
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.Node
+import org.w3c.dom.*
+import org.w3c.dom.svg.SVGElement
+import org.w3c.dom.svg.SVGPathElement
 
 /**
  * Context for rendering static and dynamical content
@@ -127,831 +130,827 @@ interface RenderContext : WithJob, WithScope {
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: HtmlTag<*>.() -> Unit
-    ): HtmlTag<*> =
+        content: HtmlTag<Element>.() -> Unit
+    ): HtmlTag<Element> =
         register(HtmlTag(tagName, id, baseClass, job, evalScope(scope)), content)
 
     fun a(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: A.() -> Unit
-    ): A =
-        register(A(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLAnchorElement>.() -> Unit
+    ): HtmlTag<HTMLAnchorElement> =
+        register(HtmlTag("a", id, baseClass, job, evalScope(scope)), content)
 
     fun area(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Area.() -> Unit
-    ): Area =
-        register(Area(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLAreaElement>.() -> Unit
+    ): HtmlTag<HTMLAreaElement> =
+        register(HtmlTag("area", id, baseClass, job, evalScope(scope)), content)
 
     fun br(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Br.() -> Unit
-    ): Br =
-        register(Br(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLBRElement>.() -> Unit
+    ): HtmlTag<HTMLBRElement> =
+        register(HtmlTag("br", id, baseClass, job, evalScope(scope)), content)
 
     fun button(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Button.() -> Unit
-    ): Button =
-        register(Button(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLButtonElement>.() -> Unit
+    ): HtmlTag<HTMLButtonElement> =
+        register(HtmlTag("button", id, baseClass, job, evalScope(scope)), content)
 
     fun canvas(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Canvas.() -> Unit
-    ): Canvas =
-        register(Canvas(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLCanvasElement>.() -> Unit
+    ): HtmlTag<HTMLCanvasElement> =
+        register(HtmlTag("canvas", id, baseClass, job, evalScope(scope)), content)
 
     fun dl(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Dl.() -> Unit
-    ): Dl =
-        register(Dl(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLDListElement>.() -> Unit
+    ): HtmlTag<HTMLDListElement> =
+        register(HtmlTag("dl", id, baseClass, job, evalScope(scope)), content)
 
     fun dt(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("dt", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLSpanElement>.() -> Unit
+    ): HtmlTag<HTMLSpanElement> =
+        register(HtmlTag("dt", id, baseClass, job, evalScope(scope)), content)
 
     fun dd(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("dd", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLSpanElement>.() -> Unit
+    ): HtmlTag<HTMLSpanElement> =
+        register(HtmlTag("dd", id, baseClass, job, evalScope(scope)), content)
 
     fun data(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Data.() -> Unit
-    ): Data =
-        register(Data(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLDataElement>.() -> Unit
+    ): HtmlTag<HTMLDataElement> =
+        register(HtmlTag("data", id, baseClass, job, evalScope(scope)), content)
 
     fun datalist(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: DataList.() -> Unit
-    ): DataList =
-        register(DataList(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLDataListElement>.() -> Unit
+    ): HtmlTag<HTMLDataListElement> =
+        register(HtmlTag("datalist", id, baseClass, job, evalScope(scope)), content)
 
     fun details(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Details.() -> Unit
-    ): Details =
-        register(Details(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLDetailsElement>.() -> Unit
+    ): HtmlTag<HTMLDetailsElement> =
+        register(HtmlTag("details", id, baseClass, job, evalScope(scope)), content)
 
     fun dialog(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Dialog.() -> Unit
-    ): Dialog =
-        register(Dialog(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLDialogElement>.() -> Unit
+    ): HtmlTag<HTMLDialogElement> =
+        register(HtmlTag("dialog", id, baseClass, job, evalScope(scope)), content)
 
     fun div(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Div.() -> Unit
-    ): Div =
-        register(Div(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLDivElement>.() -> Unit
+    ): HtmlTag<HTMLDivElement> =
+        register(HtmlTag("div", id, baseClass, job, evalScope(scope)), content)
 
     fun embed(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Embed.() -> Unit
-    ): Embed =
-        register(Embed(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLEmbedElement>.() -> Unit
+    ): HtmlTag<HTMLEmbedElement> =
+        register(HtmlTag("embed", id, baseClass, job, evalScope(scope)), content)
 
     fun fieldset(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: FieldSet.() -> Unit
-    ): FieldSet =
-        register(FieldSet(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLFieldSetElement>.() -> Unit
+    ): HtmlTag<HTMLFieldSetElement> =
+        register(HtmlTag("fieldset", id, baseClass, job, evalScope(scope)), content)
 
     fun form(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Form.() -> Unit
-    ): Form =
-        register(Form(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLFormElement>.() -> Unit
+    ): HtmlTag<HTMLFormElement> =
+        register(HtmlTag("form", id, baseClass, job, evalScope(scope)), content)
 
     fun hr(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Hr.() -> Unit
-    ): Hr =
-        register(Hr(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLHRElement>.() -> Unit
+    ): HtmlTag<HTMLHRElement> =
+        register(HtmlTag("hr", id, baseClass, job, evalScope(scope)), content)
 
     fun h1(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: H.() -> Unit
-    ): H =
-        register(H(1, id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLHeadingElement>.() -> Unit
+    ): HtmlTag<HTMLHeadingElement> =
+        register(HtmlTag("h1", id, baseClass, job, evalScope(scope)), content)
 
     fun h2(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: H.() -> Unit
-    ): H =
-        register(H(2, id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLHeadingElement>.() -> Unit
+    ): HtmlTag<HTMLHeadingElement> =
+        register(HtmlTag("h2", id, baseClass, job, evalScope(scope)), content)
 
     fun h3(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: H.() -> Unit
-    ): H =
-        register(H(3, id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLHeadingElement>.() -> Unit
+    ): HtmlTag<HTMLHeadingElement> =
+        register(HtmlTag("h3", id, baseClass, job, evalScope(scope)), content)
 
     fun h4(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: H.() -> Unit
-    ): H =
-        register(H(4, id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLHeadingElement>.() -> Unit
+    ): HtmlTag<HTMLHeadingElement> =
+        register(HtmlTag("h4", id, baseClass, job, evalScope(scope)), content)
 
     fun h5(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: H.() -> Unit
-    ): H =
-        register(H(5, id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLHeadingElement>.() -> Unit
+    ): HtmlTag<HTMLHeadingElement> =
+        register(HtmlTag("h5", id, baseClass, job, evalScope(scope)), content)
 
     fun h6(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: H.() -> Unit
-    ): H =
-        register(H(6, id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLHeadingElement>.() -> Unit
+    ): HtmlTag<HTMLHeadingElement> =
+        register(HtmlTag("h6", id, baseClass, job, evalScope(scope)), content)
 
     fun iframe(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: IFrame.() -> Unit
-    ): IFrame =
-        register(IFrame(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLIFrameElement>.() -> Unit
+    ): HtmlTag<HTMLIFrameElement> =
+        register(HtmlTag("iframe", id, baseClass, job, evalScope(scope)), content)
 
     fun img(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Img.() -> Unit
-    ): Img =
-        register(Img(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLImageElement>.() -> Unit
+    ): HtmlTag<HTMLImageElement> =
+        register(HtmlTag("img", id, baseClass, job, evalScope(scope)), content)
 
     fun input(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Input.() -> Unit
-    ): Input =
-        register(Input(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLInputElement>.() -> Unit
+    ): HtmlTag<HTMLInputElement> =
+        register(HtmlTag("input", id, baseClass, job, evalScope(scope)), content)
 
     fun li(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Li.() -> Unit
-    ): Li =
-        register(Li(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLLIElement>.() -> Unit
+    ): HtmlTag<HTMLLIElement> =
+        register(HtmlTag("li", id, baseClass, job, evalScope(scope)), content)
 
     fun label(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Label.() -> Unit
-    ): Label =
-        register(Label(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLLabelElement>.() -> Unit
+    ): HtmlTag<HTMLLabelElement> =
+        register(HtmlTag("label", id, baseClass, job, evalScope(scope)), content)
 
     fun legend(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Legend.() -> Unit
-    ): Legend =
-        register(Legend(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLLegendElement>.() -> Unit
+    ): HtmlTag<HTMLLegendElement> =
+        register(HtmlTag("legend", id, baseClass, job, evalScope(scope)), content)
 
     fun map(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Map.() -> Unit
-    ): Map =
-        register(Map(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLMapElement>.() -> Unit
+    ): HtmlTag<HTMLMapElement> =
+        register(HtmlTag("map", id, baseClass, job, evalScope(scope)), content)
 
     fun audio(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Audio.() -> Unit
-    ): Audio =
-        register(Audio(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLAudioElement>.() -> Unit
+    ): HtmlTag<HTMLAudioElement> =
+        register(HtmlTag("audio", id, baseClass, job, evalScope(scope)), content)
 
     fun video(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Video.() -> Unit
-    ): Video =
-        register(Video(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLVideoElement>.() -> Unit
+    ): HtmlTag<HTMLVideoElement> =
+        register(HtmlTag("video", id, baseClass, job, evalScope(scope)), content)
 
     fun meter(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Meter.() -> Unit
-    ): Meter =
-        register(Meter(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLMeterElement>.() -> Unit
+    ): HtmlTag<HTMLMeterElement> =
+        register(HtmlTag("meter", id, baseClass, job, evalScope(scope)), content)
 
     fun ins(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Ins.() -> Unit
-    ): Ins =
-        register(Ins(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLModElement>.() -> Unit
+    ): HtmlTag<HTMLModElement> =
+        register(HtmlTag("ins", id, baseClass, job, evalScope(scope)), content)
 
     fun del(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Del.() -> Unit
-    ): Del =
-        register(Del(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLModElement>.() -> Unit
+    ): HtmlTag<HTMLModElement> =
+        register(HtmlTag("del", id, baseClass, job, evalScope(scope)), content)
 
     fun ol(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Ol.() -> Unit
-    ): Ol =
-        register(Ol(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLOListElement>.() -> Unit
+    ): HtmlTag<HTMLOListElement> =
+        register(HtmlTag("ol", id, baseClass, job, evalScope(scope)), content)
 
     fun `object`(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Object.() -> Unit
-    ): Object =
-        register(Object(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLObjectElement>.() -> Unit
+    ): HtmlTag<HTMLObjectElement> =
+        register(HtmlTag("object", id, baseClass, job, evalScope(scope)), content)
 
     fun optgroup(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Optgroup.() -> Unit
-    ): Optgroup =
-        register(Optgroup(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLOptGroupElement>.() -> Unit
+    ): HtmlTag<HTMLOptGroupElement> =
+        register(HtmlTag("optgroup", id, baseClass, job, evalScope(scope)), content)
 
     fun option(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Option.() -> Unit
-    ): Option =
-        register(Option(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLOptionElement>.() -> Unit
+    ): HtmlTag<HTMLOptionElement> =
+        register(HtmlTag("option", id, baseClass, job, evalScope(scope)), content)
 
     fun output(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Output.() -> Unit
-    ): Output =
-        register(Output(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLOutputElement>.() -> Unit
+    ): HtmlTag<HTMLOutputElement> =
+        register(HtmlTag("output", id, baseClass, job, evalScope(scope)), content)
 
     fun p(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: P.() -> Unit
-    ): P =
-        register(P(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLParagraphElement>.() -> Unit
+    ): HtmlTag<HTMLParagraphElement> =
+        register(HtmlTag("p", id, baseClass, job, evalScope(scope)), content)
 
     fun param(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Param.() -> Unit
-    ): Param =
-        register(Param(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLParamElement>.() -> Unit
+    ): HtmlTag<HTMLParamElement> =
+        register(HtmlTag("param", id, baseClass, job, evalScope(scope)), content)
 
     fun picture(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Picture.() -> Unit
-    ): Picture =
-        register(Picture(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLPictureElement>.() -> Unit
+    ): HtmlTag<HTMLPictureElement> =
+        register(HtmlTag("picture", id, baseClass, job, evalScope(scope)), content)
 
     fun pre(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Pre.() -> Unit
-    ): Pre =
-        register(Pre(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLPreElement>.() -> Unit
+    ): HtmlTag<HTMLPreElement> =
+        register(HtmlTag("pre", id, baseClass, job, evalScope(scope)), content)
 
     fun progress(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Progress.() -> Unit
-    ): Progress =
-        register(Progress(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLProgressElement>.() -> Unit
+    ): HtmlTag<HTMLProgressElement> =
+        register(HtmlTag("progress", id, baseClass, job, evalScope(scope)), content)
 
     fun quote(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Quote.() -> Unit
-    ): Quote =
-        register(Quote(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLQuoteElement>.() -> Unit
+    ): HtmlTag<HTMLQuoteElement> =
+        register(HtmlTag("quote", id, baseClass, job, evalScope(scope)), content)
 
     fun script(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Script.() -> Unit
-    ): Script =
-        register(Script(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLScriptElement>.() -> Unit
+    ): HtmlTag<HTMLScriptElement> =
+        register(HtmlTag("script", id, baseClass, job, evalScope(scope)), content)
 
     fun select(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Select.() -> Unit
-    ): Select =
-        register(Select(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLSelectElement>.() -> Unit
+    ): HtmlTag<HTMLSelectElement> =
+        register(HtmlTag("select", id, baseClass, job, evalScope(scope)), content)
 
     fun span(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Span.() -> Unit
-    ): Span =
-        register(Span(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLSpanElement>.() -> Unit
+    ): HtmlTag<HTMLSpanElement> =
+        register(HtmlTag("span", id, baseClass, job, evalScope(scope)), content)
 
     fun caption(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Caption.() -> Unit
-    ): Caption =
-        register(Caption(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTableCaptionElement>.() -> Unit
+    ): HtmlTag<HTMLTableCaptionElement> =
+        register(HtmlTag("caption", id, baseClass, job, evalScope(scope)), content)
 
     fun th(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Th.() -> Unit
-    ): Th =
-        register(Th(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTableCellElement>.() -> Unit
+    ): HtmlTag<HTMLTableCellElement> =
+        register(HtmlTag("th", id, baseClass, job, evalScope(scope)), content)
 
     fun td(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Td.() -> Unit
-    ): Td =
-        register(Td(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTableCellElement>.() -> Unit
+    ): HtmlTag<HTMLTableCellElement> =
+        register(HtmlTag("td", id, baseClass, job, evalScope(scope)), content)
 
     fun col(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Col.() -> Unit
-    ): Col =
-        register(Col(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTableColElement>.() -> Unit
+    ): HtmlTag<HTMLTableColElement> =
+        register(HtmlTag("col", id, baseClass, job, evalScope(scope)), content)
 
     fun colgroup(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Colgroup.() -> Unit
-    ): Colgroup =
-        register(Colgroup(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTableColElement>.() -> Unit
+    ): HtmlTag<HTMLTableColElement> =
+        register(HtmlTag("colgroup", id, baseClass, job, evalScope(scope)), content)
 
     fun table(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Table.() -> Unit
-    ): Table =
-        register(Table(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTableElement>.() -> Unit
+    ): HtmlTag<HTMLTableElement> =
+        register(HtmlTag("table", id, baseClass, job, evalScope(scope)), content)
 
     fun tr(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tr.() -> Unit
-    ): Tr =
-        register(Tr(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTableRowElement>.() -> Unit
+    ): HtmlTag<HTMLTableRowElement> =
+        register(HtmlTag("tr", id, baseClass, job, evalScope(scope)), content)
 
     fun tfoot(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TFoot.() -> Unit
-    ): TFoot =
-        register(TFoot(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTableSectionElement>.() -> Unit
+    ): HtmlTag<HTMLTableSectionElement> =
+        register(HtmlTag("tfoot", id, baseClass, job, evalScope(scope)), content)
 
     fun thead(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: THead.() -> Unit
-    ): THead =
-        register(THead(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTableSectionElement>.() -> Unit
+    ): HtmlTag<HTMLTableSectionElement> =
+        register(HtmlTag("thead", id, baseClass, job, evalScope(scope)), content)
 
     fun tbody(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TBody.() -> Unit
-    ): TBody =
-        register(TBody(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTableSectionElement>.() -> Unit
+    ): HtmlTag<HTMLTableSectionElement> =
+        register(HtmlTag("tbody", id, baseClass, job, evalScope(scope)), content)
 
     fun textarea(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextArea.() -> Unit
-    ): TextArea =
-        register(TextArea(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTextAreaElement>.() -> Unit
+    ): HtmlTag<HTMLTextAreaElement> =
+        register(HtmlTag("textarea", id, baseClass, job, evalScope(scope)), content)
 
     fun time(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Time.() -> Unit
-    ): Time =
-        register(Time(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTimeElement>.() -> Unit
+    ): HtmlTag<HTMLTimeElement> =
+        register(HtmlTag("time", id, baseClass, job, evalScope(scope)), content)
 
     fun track(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Track.() -> Unit
-    ): Track =
-        register(Track(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLTrackElement>.() -> Unit
+    ): HtmlTag<HTMLTrackElement> =
+        register(HtmlTag("track", id, baseClass, job, evalScope(scope)), content)
 
     fun ul(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Ul.() -> Unit
-    ): Ul =
-        register(Ul(id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLUListElement>.() -> Unit
+    ): HtmlTag<HTMLUListElement> =
+        register(HtmlTag("ul", id, baseClass, job, evalScope(scope)), content)
 
     fun address(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("address", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("address", id, baseClass, job, evalScope(scope)), content)
 
     fun article(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("article", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("article", id, baseClass, job, evalScope(scope)), content)
 
     fun aside(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("aside", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("aside", id, baseClass, job, evalScope(scope)), content)
 
     fun bdi(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("bdi", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("bdi", id, baseClass, job, evalScope(scope)), content)
 
     fun figcaption(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("figcaption", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("figcaption", id, baseClass, job, evalScope(scope)), content)
 
     fun figure(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("figure", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("figure", id, baseClass, job, evalScope(scope)), content)
 
     fun footer(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("footer", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("footer", id, baseClass, job, evalScope(scope)), content)
 
     fun header(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("header", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("header", id, baseClass, job, evalScope(scope)), content)
 
     fun main(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("main", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("main", id, baseClass, job, evalScope(scope)), content)
 
     fun mark(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("mark", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("mark", id, baseClass, job, evalScope(scope)), content)
 
     fun nav(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("nav", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("nav", id, baseClass, job, evalScope(scope)), content)
 
     fun noscript(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("noscript", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("noscript", id, baseClass, job, evalScope(scope)), content)
 
     fun rp(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("rp", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("rp", id, baseClass, job, evalScope(scope)), content)
 
     fun rt(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("rt", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("rt", id, baseClass, job, evalScope(scope)), content)
 
     fun ruby(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("ruby", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("ruby", id, baseClass, job, evalScope(scope)), content)
 
     fun section(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("section", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("section", id, baseClass, job, evalScope(scope)), content)
 
     fun summary(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("summary", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("summary", id, baseClass, job, evalScope(scope)), content)
 
     fun wbr(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("wbr", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("wbr", id, baseClass, job, evalScope(scope)), content)
 
     fun blockquote(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("blockquote", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLQuoteElement>.() -> Unit
+    ): HtmlTag<HTMLQuoteElement> =
+        register(HtmlTag("blockquote", id, baseClass, job, evalScope(scope)), content)
 
     fun em(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("em", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("em", id, baseClass, job, evalScope(scope)), content)
 
     fun strong(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("strong", id, baseClass, job, evalScope(scope)), content)
-
-    fun small(
-        baseClass: String? = null,
-        id: String? = null,
-        scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("small", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("strong", id, baseClass, job, evalScope(scope)), content)
 
     fun s(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("s", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("s", id, baseClass, job, evalScope(scope)), content)
 
     fun cite(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("cite", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("cite", id, baseClass, job, evalScope(scope)), content)
 
     fun q(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("q", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLQuoteElement>.() -> Unit
+    ): HtmlTag<HTMLQuoteElement> =
+        register(HtmlTag("q", id, baseClass, job, evalScope(scope)), content)
 
-    fun dfn(
-        baseClass: String? = null,
-        id: String? = null,
-        scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("dfn", id, baseClass, job, evalScope(scope)), content)
+    //FIXME: gibt es das noch?
+//    fun dfn(
+//        baseClass: String? = null,
+//        id: String? = null,
+//        scope: (ScopeContext.() -> Unit) = {},
+//        content: HtmlTag<HtmlTextElement>.() -> Unit
+//    ): HtmlTag<HtmlTextElement> =
+//        register(HtmlTag("dfn", id, baseClass, job, evalScope(scope)), content)
 
     fun abbr(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("abbr", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("abbr", id, baseClass, job, evalScope(scope)), content)
 
     fun code(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("code", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("code", id, baseClass, job, evalScope(scope)), content)
 
     fun `var`(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("var", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("var", id, baseClass, job, evalScope(scope)), content)
 
-    fun samp(
-        baseClass: String? = null,
-        id: String? = null,
-        scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("samp", id, baseClass, job, evalScope(scope)), content)
+    //FIXME: gibt es das noch?
+//    fun samp(
+//        baseClass: String? = null,
+//        id: String? = null,
+//        scope: (ScopeContext.() -> Unit) = {},
+//        content: HtmlTag<HtmlTextElement>.() -> Unit
+//    ): HtmlTag<HtmlTextElement> =
+//        register(HtmlTag("samp", id, baseClass, job, evalScope(scope)), content)
 
+    //FIXME: richtig?
     fun kbd(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("kbd", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("kbd", id, baseClass, job, evalScope(scope)), content)
+
 
     fun sub(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("sub", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("sub", id, baseClass, job, evalScope(scope)), content)
 
     fun sup(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("sup", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("sup", id, baseClass, job, evalScope(scope)), content)
 
     fun i(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("i", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("i", id, baseClass, job, evalScope(scope)), content)
 
     fun b(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("b", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("b", id, baseClass, job, evalScope(scope)), content)
 
     fun u(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("u", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("u", id, baseClass, job, evalScope(scope)), content)
 
     fun bdo(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("bdo", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("bdo", id, baseClass, job, evalScope(scope)), content)
 
     fun command(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextElement.() -> Unit
-    ): TextElement =
-        register(TextElement("command", id, baseClass, job, evalScope(scope)), content)
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("command", id, baseClass, job, evalScope(scope)), content)
 
     fun svg(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Svg.() -> Unit
-    ): Svg =
-        register(Svg(id, baseClass, job = job, evalScope(scope)), content)
+        content: SvgTag<SVGElement>.() -> Unit
+    ): SvgTag<SVGElement> =
+        register(SvgTag("svg", id, baseClass, job = job, evalScope(scope)), content)
 
     fun path(
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Path.() -> Unit
-    ): Path =
-        register(Path(id, baseClass, job = job, evalScope(scope)), content)
+        content: SvgTag<SVGPathElement>.() -> Unit
+    ): SvgTag<SVGPathElement> =
+        register(SvgTag("path", id, baseClass, job = job, evalScope(scope)), content)
 }

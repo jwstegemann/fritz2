@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.dom.clear
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLFieldSetElement
 import org.w3c.dom.Node
 
 /**
@@ -376,6 +377,23 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
             attr("data-${key.name}", it.toString())
         }
     }
+
+    /**
+     * provides [RenderContext] next to this [HtmlTag] on the same DOM-level.
+     */
+    val annex: RenderContext
+
+
+    fun Tag<HTMLFieldSetElement>.name(value: String) = attr("name", value)
+    fun Tag<HTMLFieldSetElement>.name(value: Flow<String>) = attr("name", value)
+
+    //FIXME: Shouldn't this be a constructor-parameter?
+    /**
+     * sets XML-namespace of a [Tag]
+     *
+     * @param value namespace to set
+     */
+    fun xmlns(value: String) = attr("xmlns", value)
 }
 
 /**
@@ -459,7 +477,6 @@ open class HtmlTag<out E : Element>(
 
     /**
      * provides [RenderContext] next to this [HtmlTag] on the same DOM-level.
-     *
      */
-    val annex: RenderContext by lazy { AnnexContext() }
+    override val annex: RenderContext by lazy { AnnexContext() }
 }
