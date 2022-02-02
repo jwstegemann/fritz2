@@ -10,7 +10,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'nunito': ['Nunito', 'Arial', 'sans-serif']
+        'nunito': ['Nunito', 'Arial', 'sans-serif'],
+        'sans': ['Inter var', 'ui-sans-serif', 'system-ui', '-apple-system', "Segoe UI", 'Roboto', 'Arial', 'Noto Sans']
       },
       colors: {
         bg: {
