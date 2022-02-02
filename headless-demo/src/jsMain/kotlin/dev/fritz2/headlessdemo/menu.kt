@@ -54,19 +54,17 @@ fun RenderContext.menuDemo() {
                             """group flex rounded-md items-center w-full px-2 py-2 text-sm 
                             | disabled:opacity-50""".trimMargin()
                         ) {
-                            tag.apply {
-                                className(active.combine(disabled) { a, d ->
-                                    if (a && !d) {
-                                        "bg-violet-500 text-white"
-                                    } else {
-                                        if (d) "text-gray-300" else "text-gray-900"
-                                    }
-                                })
-                                svg("w-5 h-5 mr-2") { content(entry.icon) }
-                                +entry.label
-                                if (entry.disabled) disable(true)
-                                selected.map { entry.label } handledBy action.update
-                            }
+                            className(active.combine(disabled) { a, d ->
+                                if (a && !d) {
+                                    "bg-violet-500 text-white"
+                                } else {
+                                    if (d) "text-gray-300" else "text-gray-900"
+                                }
+                            })
+                            svg("w-5 h-5 mr-2") { content(entry.icon) }
+                            +entry.label
+                            if (entry.disabled) disable(true)
+                            selected.map { entry.label } handledBy action.update
                         }
                     }
                 }

@@ -111,58 +111,56 @@ class HeadlessMenu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag,
             closeOnEscape()
             closeOnBlur()
 
-            tag.apply {
-                attr("tabindex", "0")
-                attr("role", Aria.Role.menu)
+            attr("tabindex", "0")
+            attr("role", Aria.Role.menu)
 
-                state.flatMapLatest { (currentIndex, items) ->
-                    keydowns.events.mapNotNull { event ->
-                        when (shortcutOf(event)) {
-                            Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, items)
-                            Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, items)
-                            Keys.Home -> firstItem(items)
-                            Keys.End -> lastItem(items)
-                            else -> null
-                        }.also {
-                            if (it != null) {
-                                event.stopImmediatePropagation()
-                                event.preventDefault()
-                            }
+            state.flatMapLatest { (currentIndex, items) ->
+                keydowns.events.mapNotNull { event ->
+                    when (shortcutOf(event)) {
+                        Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, items)
+                        Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, items)
+                        Keys.Home -> firstItem(items)
+                        Keys.End -> lastItem(items)
+                        else -> null
+                    }.also {
+                        if (it != null) {
+                            event.stopImmediatePropagation()
+                            event.preventDefault()
                         }
                     }
-                } handledBy activeIndex.update
+                }
+            } handledBy activeIndex.update
 
-                items.data.flatMapLatest { items ->
-                    keydowns.events
-                        .mapNotNull { e -> if (e.key.length == 1) e.key.first().lowercaseChar() else null }
-                        .mapNotNull { c ->
-                            if (c.isLetterOrDigit()) itemByCharacter(items, c)
-                            else null
-                        }
-                } handledBy activeIndex.update
-
-                state.flatMapLatest { (currentIndex, disabled) ->
-                    keydowns.events.filter { setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it)) }.mapNotNull {
-                        if (currentIndex == -1 || disabled[currentIndex].disabled) {
-                            null
-                        } else {
-                            it.preventDefault()
-                            it.stopImmediatePropagation()
-                            currentIndex
-                        }
+            items.data.flatMapLatest { items ->
+                keydowns.events
+                    .mapNotNull { e -> if (e.key.length == 1) e.key.first().lowercaseChar() else null }
+                    .mapNotNull { c ->
+                        if (c.isLetterOrDigit()) itemByCharacter(items, c)
+                        else null
                     }
-                } handledBy selections.update
-            }
+            } handledBy activeIndex.update
+
+            state.flatMapLatest { (currentIndex, disabled) ->
+                keydowns.events.filter { setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it)) }.mapNotNull {
+                    if (currentIndex == -1 || disabled[currentIndex].disabled) {
+                        null
+                    } else {
+                        it.preventDefault()
+                        it.stopImmediatePropagation()
+                        currentIndex
+                    }
+                }
+            } handledBy selections.update
 
             opened.filter { it }.flatMapLatest {
-                tag.domNode.scrollTo(0.0, 0.0)
+                domNode.scrollTo(0.0, 0.0)
                 items.data.map {
                     firstItem(it)
                 }
             } handledBy activeIndex.update
         }
 
-        inner class MenuItem<CM : HTMLElement>(tag: Tag<CM>, val index: Int) {
+        inner class MenuItem<CM : HTMLElement>(tag: Tag<CM>, val index: Int) : Tag<CM> by tag {
             val active = activeIndex.data.map { it == index }
             val selected = selections.data.filter { it == index }.map {}
 

@@ -824,5 +824,5 @@ fun SvgTag<SVGElement>.viewBox(value: Flow<String>) = attr("viewBox", value)
 fun SvgTag<SVGElement>.fill(value: String) = attr("fill", value)
 fun SvgTag<SVGElement>.fill(value: Flow<String>) = attr("fill", value)
 
-fun SvgTag<SVGPathElement>.d(value: String) = attr("fill", value)
-fun SvgTag<SVGPathElement>.d(value: Flow<String>) = attr("fill", value)
+fun SvgTag<SVGPathElement>.d(value: String) = attr("d", value)
+fun SvgTag<SVGPathElement>.d(value: Flow<String>) = attr("d", value)

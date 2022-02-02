@@ -54,27 +54,25 @@ fun RenderContext.listboxDemo() {
                         "w-full cursor-default select-none relative py-2 pl-10 pr-4",
                         tag = RenderContext::li
                     ) {
-                        tag.apply {
-                            className(active.combine(disabled) { a, d ->
-                                if (a && !d) {
-                                    "text-amber-900 bg-amber-100"
-                                } else {
-                                    if (d) "text-gray-300" else "text-gray-900"
-                                }
-                            })
-
-                            disable(disabledState)
-
-                            span {
-                                className(selected.map { if (it) "font-medium" else "font-normal" })
-                                +entry
+                        className(active.combine(disabled) { a, d ->
+                            if (a && !d) {
+                                "text-amber-900 bg-amber-100"
+                            } else {
+                                if (d) "text-gray-300" else "text-gray-900"
                             }
+                        })
 
-                            selected.render {
-                                if (it) {
-                                    span("text-amber-600 absolute inset-y-0 left-0 flex items-center pl-3") {
-                                        svg("w-5 h-5") { content(HeroIcons.check) }
-                                    }
+                        disable(disabledState)
+
+                        span {
+                            className(selected.map { if (it) "font-medium" else "font-normal" })
+                            +entry
+                        }
+
+                        selected.render {
+                            if (it) {
+                                span("text-amber-600 absolute inset-y-0 left-0 flex items-center pl-3") {
+                                    svg("w-5 h-5") { content(HeroIcons.check) }
                                 }
                             }
                         }

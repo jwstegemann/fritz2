@@ -416,15 +416,10 @@ open class HtmlTag<out E : Element>(
     override val scope: Scope,
 ) : Tag<E> {
 
-    /**
-     * factory function that defines how the DOM-node represented by this Tag is created
-     */
-    protected open fun createDomNode(): E = window.document.createElement(tagName).also { element ->
+    override val domNode: E = window.document.createElement(tagName).also { element ->
         if (id != null) element.id = id!!
         if (!baseClass.isNullOrBlank()) element.className = baseClass!!
     }.unsafeCast<E>()
-
-    override val domNode: E = this.createDomNode()
 
     /**
      * Creates the content of the [HtmlTag] and appends it as a child to the wrapped [Element].

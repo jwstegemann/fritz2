@@ -1,8 +1,6 @@
 package dev.fritz2.headlessdemo.demos
 
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.d
-import dev.fritz2.dom.html.href
+import dev.fritz2.dom.html.*
 import dev.fritz2.headlessdemo.*
 import dev.fritz2.routing.routerOf
 

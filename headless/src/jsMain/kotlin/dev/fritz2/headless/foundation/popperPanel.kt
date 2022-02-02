@@ -23,8 +23,8 @@ abstract class PopUpPanel<C : HTMLElement>(
     private val openCloseDelegate: OpenClose,
     private val reference: Tag<HTMLElement>?,
     private val popperDiv: HtmlTag<HTMLDivElement> = renderContext.div() {}, //never add classes to popperDiv
-    val tag: Tag<C> = tagFactory(popperDiv, classes, id, scope) {}
-) : RenderContext by tag {
+    tag: Tag<C> = tagFactory(popperDiv, classes, id, scope) {}
+) : Tag<C> by tag {
 
     var placement: Placement = Placement.auto
     var strategy: Strategy = Strategy.absolute
@@ -40,7 +40,7 @@ abstract class PopUpPanel<C : HTMLElement>(
     }
 
     fun closeOnBlur() {
-        tag.blurs.events.mapNotNull {
+        blurs.events.mapNotNull {
             if (it.relatedTarget == reference?.domNode) null else Unit
         } handledBy openCloseDelegate.close
     }
@@ -75,13 +75,13 @@ abstract class PopUpPanel<C : HTMLElement>(
             if (openCloseDelegate.openClose.isSet) {
                 reference.apply {
                     attr(Aria.labelledby, reference.id)
-                    attr(Aria.controls, tag.id.whenever(openCloseDelegate.opened))
+                    attr(Aria.controls, id.whenever(openCloseDelegate.opened))
                     attr(Aria.haspopup, "true")
                 }
                 openCloseDelegate.opened handledBy {
                     if (it) {
                         popperDiv.domNode.className = "popper visible w-full"
-                        tag.setFocus()
+                        setFocus()
                     } else {
                         popperDiv.domNode.className = "popper invisible w-full"
                     }

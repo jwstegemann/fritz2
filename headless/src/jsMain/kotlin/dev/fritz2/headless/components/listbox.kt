@@ -144,61 +144,59 @@ class HeadlessListbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by 
             closeOnEscape()
             closeOnBlur()
 
-            tag.apply {
-                attr("tabindex", "0")
-                attr("role", Aria.Role.listbox)
-                attr(Aria.invalid, "true".whenever(value.hasError))
-                label?.let { attr(Aria.labelledby, it.id) }
-                attr(Aria.activedescendant, activeIndex.data.map { if (it == -1) null else "$componentId-item-$it" })
+            attr("tabindex", "0")
+            attr("role", Aria.Role.listbox)
+            attr(Aria.invalid, "true".whenever(value.hasError))
+            label?.let { attr(Aria.labelledby, it.id) }
+            attr(Aria.activedescendant, activeIndex.data.map { if (it == -1) null else "$componentId-item-$it" })
 
+            state.flatMapLatest { (currentIndex, entries) ->
+                keydowns.events.mapNotNull { event ->
+                    when (shortcutOf(event)) {
+                        Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, entries)
+                        Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, entries)
+                        Keys.Home -> firstItem(entries)
+                        Keys.End -> lastItem(entries)
+                        else -> null
+                    }.also {
+                        if (it != null) {
+                            event.preventDefault()
+                            event.stopImmediatePropagation()
+                        }
+                    }
+                }
+            } handledBy activeIndex.update
+
+            entries.data.flatMapLatest { entries ->
+                keydowns.events
+                    .mapNotNull { event ->
+                        if (!Keys.NamedKeys.contains(event.key)) {
+                            event.preventDefault()
+                            event.stopImmediatePropagation()
+                            event.key.first().lowercaseChar()
+                        } else null
+                    }
+                    .mapNotNull { c ->
+                        if (c.isLetterOrDigit()) itemByCharacter(entries, c)
+                        else null
+                    }
+            } handledBy activeIndex.update
+
+            value.handler?.invoke(
                 state.flatMapLatest { (currentIndex, entries) ->
-                    keydowns.events.mapNotNull { event ->
-                        when (shortcutOf(event)) {
-                            Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, entries)
-                            Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, entries)
-                            Keys.Home -> firstItem(entries)
-                            Keys.End -> lastItem(entries)
-                            else -> null
-                        }.also {
-                            if (it != null) {
-                                event.preventDefault()
-                                event.stopImmediatePropagation()
-                            }
+                    keydowns.events.filter {
+                        setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
+                    }.mapNotNull {
+                        if (currentIndex == -1 || entries[currentIndex].disabled) {
+                            null
+                        } else {
+                            it.preventDefault()
+                            it.stopImmediatePropagation()
+                            entries[currentIndex].value
                         }
                     }
-                } handledBy activeIndex.update
-
-                entries.data.flatMapLatest { entries ->
-                    keydowns.events
-                        .mapNotNull { event ->
-                            if (!Keys.NamedKeys.contains(event.key)) {
-                                event.preventDefault()
-                                event.stopImmediatePropagation()
-                                event.key.first().lowercaseChar()
-                            } else null
-                        }
-                        .mapNotNull { c ->
-                            if (c.isLetterOrDigit()) itemByCharacter(entries, c)
-                            else null
-                        }
-                } handledBy activeIndex.update
-
-                value.handler?.invoke(
-                    state.flatMapLatest { (currentIndex, entries) ->
-                        keydowns.events.filter {
-                            setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
-                        }.mapNotNull {
-                            if (currentIndex == -1 || entries[currentIndex].disabled) {
-                                null
-                            } else {
-                                it.preventDefault()
-                                it.stopImmediatePropagation()
-                                entries[currentIndex].value
-                            }
-                        }
-                    }
-                )
-            }
+                }
+            )
 
             opened.filter { it }.flatMapLatest {
                 value.data.flatMapLatest { current ->
