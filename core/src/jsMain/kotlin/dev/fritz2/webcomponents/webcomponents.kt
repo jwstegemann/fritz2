@@ -1,7 +1,7 @@
 package dev.fritz2.webcomponents
 
-import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.WithDomNode
+import dev.fritz2.dom.html.HtmlTag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import dev.fritz2.utils.nativeFunction

@@ -167,7 +167,6 @@ class HeadlessCheckboxGroup<C: HTMLElement, T>(tag: Tag<C>, private val explicit
             content: Tag<HTMLLabelElement>.() -> Unit
         ) = checkboxGroupOptionLabel(classes, scope, RenderContext::label) {
             content()
-            //FIXME: reset
             //`for`(optionId)
         }
 

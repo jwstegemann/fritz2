@@ -1,6 +1,5 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.*
 import dev.fritz2.dom.values

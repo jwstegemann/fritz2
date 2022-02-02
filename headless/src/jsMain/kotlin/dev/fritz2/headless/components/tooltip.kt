@@ -1,13 +1,9 @@
 package dev.fritz2.headless.components
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.Window
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.ScopeContext
-import dev.fritz2.dom.html.shortcutOf
+import dev.fritz2.dom.html.*
 import dev.fritz2.dom.merge
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.OpenClose
@@ -75,7 +71,6 @@ class HeadlessTooltip<C : HTMLElement>(
     }
 }
 
-//FIXME: is HtmlTag here ok?
 fun <C : HTMLElement> Tag<HTMLElement>.headlessTooltip(
     classes: String? = null,
     id: String? = null,

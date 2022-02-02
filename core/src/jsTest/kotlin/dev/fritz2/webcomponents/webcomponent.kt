@@ -1,7 +1,8 @@
 package dev.fritz2.webcomponents
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.HtmlTag
+import dev.fritz2.dom.html.HtmlTag
+
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest

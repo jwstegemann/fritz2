@@ -1,6 +1,5 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.Window
 import dev.fritz2.dom.html.*
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
+//FIXME: rename file to match class name
 abstract class PopUpPanel<C : HTMLElement>(
     renderContext: RenderContext,
     tagFactory: TagFactory<Tag<C>>,
