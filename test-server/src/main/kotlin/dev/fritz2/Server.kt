@@ -62,7 +62,6 @@ object CRUDRepo {
     }
 }
 
-@KtorExperimentalAPI
 fun Application.main() {
 
     install(CallLogging) {

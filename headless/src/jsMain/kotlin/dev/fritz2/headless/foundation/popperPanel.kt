@@ -22,7 +22,7 @@ abstract class PopUpPanel<C : HTMLElement>(
     scope: ScopeContext.() -> Unit,
     private val openCloseDelegate: OpenClose,
     private val reference: Tag<HTMLElement>?,
-    private val popperDiv: HtmlTag<HTMLDivElement> = renderContext.div() {}, //never add classes to popperDiv
+    private val popperDiv: HtmlTag<HTMLDivElement> = renderContext.div("invisible") {}, //never add other classes to popperDiv, they will be overridden
     tag: Tag<C> = tagFactory(popperDiv, classes, id, scope) {}
 ) : Tag<C> by tag {
 
@@ -83,6 +83,7 @@ abstract class PopUpPanel<C : HTMLElement>(
                         popperDiv.domNode.className = "popper visible w-full"
                         setFocus()
                     } else {
+                        tag.waitForAnimation()
                         popperDiv.domNode.className = "popper invisible w-full"
                     }
                 }

@@ -5,7 +5,7 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.handledBy
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.headless.validation.Severity
-import dev.fritz2.headless.validation.validationMessages
+import dev.fritz2.validation.messages
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -58,7 +58,7 @@ abstract class DatabindingHook<C : Tag<*>, P, T> : BasicHook<C, Unit, P>(), Usab
     }
 
     open operator fun invoke(store: Store<T>) {
-        this.invoke(store.id, store.data, store.validationMessages()) { it handledBy store.update }
+        this.invoke(store.id, store.data, store.messages()) { it handledBy store.update }
     }
 }
 

@@ -2,6 +2,7 @@ package dev.fritz2.headlessdemo
 
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.transition
 import dev.fritz2.headless.components.headlessListbox
 import dev.fritz2.headless.foundation.utils.popper.Placement
 import kotlinx.coroutines.flow.combine
@@ -46,7 +47,14 @@ fun RenderContext.listboxDemo() {
             ) {
                 placement = Placement.bottomStart
 
-                //tag.className(Visibility.dropOn(opened))
+                tag.transition(opened,
+                    "transition duration-100 ease-ease-out",
+                    "opacity-0 scale-95",
+                    "opacity-100 scale-100",
+                    "transition duration-100 ease-ease-out",
+                    "opacity-100 scale-100",
+                    "opacity-0 scale-95"
+                )
 
                 characters.forEach { (entry, disabledState) ->
                     listboxItem(

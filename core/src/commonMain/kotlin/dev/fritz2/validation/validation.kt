@@ -1,59 +1,74 @@
 package dev.fritz2.validation
 
 import dev.fritz2.identification.Inspector
-
+import dev.fritz2.identification.inspectorOf
+import kotlin.jvm.JvmInline
 
 /**
- * convenience method for creating a new [Validator]
+ * Encapsulates the logic for validating a given data-model and some optional metadata.
+ *
+ * The validation logic itself is expressed by some function that must be passed as [validate] parameter.
+ * This function gets the actual model-data [D] and some optional metadata [T] in order to create a [List] of
+ * validation messages [M]. This value class simply wraps the provided [validate] function in order to make it
+ * invocable without any ceremony.
+ *
+ * It appears to be a good practise, to put the implementation of the passed [validate] function right next to your data
+ * classes in the `commonMain` section of your Kotlin multiplatform project.
+ * So you can write the validation logic once and use them on the *JS* and *JVM* side.
+ *
+ * @param D data-model to validate
+ * @param T metadata which perhaps is needed in validation process
  */
-fun <D, M : ValidationMessage, T> validator(doValidation: (Inspector<D>, T) -> List<M>) =
-    object : Validator<D, M, T>() {
-        override fun validate(inspector: Inspector<D>, metadata: T): List<M> = doValidation(inspector, metadata)
+@JvmInline
+value class Validation<D, T, M>(private inline val validate: (D, T?) -> List<M>) {
+    operator fun invoke(data: D, metadata: T? = null): List<M> = this.validate(data, metadata)
+}
+
+/**
+ * Convenience function for creating a [Validation] instance accepting model- and metadata by working on a
+ * [MutableList] receiver and using an [Inspector] for getting the right [Inspector.path] from sub-models
+ * next to the [Inspector.data].
+ */
+fun <D, T, M> validation(validate: MutableList<M>.(Inspector<D>, T?) -> Unit): Validation<D, T, M> =
+    Validation { data, metadata ->
+        buildList<M> { validate(inspectorOf(data), metadata) }
     }
 
 /**
- * Describes the logic for validating a given data-model.
- * By implementing this you must describe, how a certain data-model should be validated.
- * This is done by returning a [List] of [ValidationMessage]s in the [validate] functions.
- *
- * It is recommended to put the concrete implementation of this [Validator] right next to your data classes
- * in the `commonMain` section of your Kotlin multiplatform project.
- * Then you can write the validation logic once and use them in the JS and JVM world.
+ * Convenience function for creating a [Validation] instance only accepting model-data by working on a
+ * [MutableList] receiver and using an [Inspector] for getting the right [Inspector.path] from sub-models
+ * next to the [Inspector.data].
  */
-expect abstract class Validator<D, M : ValidationMessage, T>() {
+fun <D, M> validation(validate: MutableList<M>.(Inspector<D>) -> Unit): Validation<D, Unit, M> =
+    Validation { data, _ ->
+        buildList<M> { validate(inspectorOf(data)) }
+    }
+
+/**
+ * Minimal interface for a validation message that exposes the model path for matching relevant sub-model-data and
+ * probably relevant UI element representation for showing the message and getting information about the valid state
+ * after validation process.
+ */
+interface ValidationMessage {
 
     /**
-     * validates the given [inspector] and it's containing data
-     * by using the given [metadata] and returns
-     * a [List] of [ValidationMessage]s.
-     *
-     * @param inspector inspector containing the data to validate
-     * @param metadata extra information for the validation process
-     * @return [List] of [ValidationMessage]s
+     * Path inside your model derived from [Inspector.path]
      */
-    abstract fun validate(inspector: Inspector<D>, metadata: T): List<M>
+    val path: String
 
     /**
-     * validates the given [data] by using the given [metadata] and returns
-     * a [List] of [ValidationMessage]s.
+     * Decides if the [ValidationMessage] is an error which is needed to determine if validation state is
+     * successful or not.
      *
-     * @param data data to validate
-     * @param metadata extra information for the validation process
-     * @return [List] of [ValidationMessage]s
+     * It is intentional to explicitly define a message as an error to realize scenarios, where also pure information
+     * or warning messages could arise, that should *not* stop the process.
+     *
+     * If an application considers every message as error, just set this to `true`.
      */
-    fun validate(data: D, metadata: T): List<M>
+    val isError: Boolean
 }
 
 /**
- * Minimal interface that has to be implemented and contains the message from
- * validation process.
+ * Returns *true* when the list contains no [ValidationMessage] which is marked with [ValidationMessage.isError].
  */
-interface ValidationMessage {
-    /**
-     * decides if the [ValidationMessage] is an error which is needed
-     * to determine if validation is successful or not
-     *
-     * @return if it is an error or not
-     */
-    fun isError(): Boolean
-}
+val <M : ValidationMessage> List<M>.valid: Boolean get() = none { it.isError }
