@@ -2,8 +2,8 @@ package dev.fritz2.headlessdemo
 
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.fill
-import dev.fritz2.dom.html.viewBox
 import dev.fritz2.dom.html.transition
+import dev.fritz2.dom.html.viewBox
 import dev.fritz2.headless.components.headlessPopOver
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.utils.popper.Placement
@@ -36,7 +36,7 @@ fun RenderContext.popoverDemo() {
             placement = Placement.bottomStart
 
             div("overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 origin-top-left") {
-                tag.transition(opened,
+                transition(opened,
                     "transition ease-out duration-200",
                     "opacity-0 translate-y-1",
                     "opacity-100 translate-y-0",

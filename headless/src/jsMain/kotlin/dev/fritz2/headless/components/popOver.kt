@@ -14,7 +14,7 @@ import org.w3c.dom.HTMLElement
 
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessPopOver<C : HTMLElement>(val tag: Tag<C>, id: String?) : Tag<C> by tag,
+class HeadlessPopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag,
     OpenClose by OpenCloseDelegate() {
 
     val componentId: String by lazy { id ?: Id.next() }
