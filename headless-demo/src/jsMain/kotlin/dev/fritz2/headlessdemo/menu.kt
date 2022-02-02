@@ -48,7 +48,7 @@ fun RenderContext.menuDemo() {
                 ) {
                     placement = Placement.bottomStart
 
-                    tag.transition(opened,
+                    transition(opened,
                         "transition-all duration-100 ease-ease-out",
                         "opacity-0 scale-95",
                         "opacity-100 scale-100",

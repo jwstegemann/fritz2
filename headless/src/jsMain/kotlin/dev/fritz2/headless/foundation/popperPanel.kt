@@ -3,10 +3,7 @@ package dev.fritz2.headless.foundation
 import dev.fritz2.dom.HtmlTag
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.Window
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.ScopeContext
-import dev.fritz2.dom.html.shortcutOf
+import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.utils.popper.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -83,7 +80,7 @@ abstract class PopUpPanel<C : HTMLElement>(
                         popperDiv.domNode.className = "popper visible w-full"
                         setFocus()
                     } else {
-                        tag.waitForAnimation()
+                        waitForAnimation()
                         popperDiv.domNode.className = "popper invisible w-full"
                     }
                 }
