@@ -35,15 +35,16 @@ fun RenderContext.popoverDemo() {
         popOverPanel("z-10 w-screen max-w-sm px-4 sm:px-0 lg:max-w-3xl") {
             placement = Placement.bottomStart
 
+            transition(opened,
+                "transition ease-out duration-200",
+                "opacity-0 translate-y-1",
+                "opacity-100 translate-y-0",
+                "transition ease-in duration-150",
+                "opacity-100 translate-y-0",
+                "opacity-0 translate-y-1"
+            )
+
             div("overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 origin-top-left") {
-                transition(opened,
-                    "transition ease-out duration-200",
-                    "opacity-0 translate-y-1",
-                    "opacity-100 translate-y-0",
-                    "transition ease-in duration-150",
-                    "opacity-100 translate-y-0",
-                    "opacity-0 translate-y-1"
-                )
 
                 div("relative grid gap-8 bg-white p-7 lg:grid-cols-2") {
                     solutions.forEach { item ->

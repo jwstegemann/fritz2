@@ -80,7 +80,7 @@ abstract class PopUpPanel<C : HTMLElement>(
                         popperDiv.domNode.className = "popper visible w-full"
                         setFocus()
                     } else {
-                        waitForAnimation()
+                        this@PopUpPanel.waitForAnimation()
                         popperDiv.domNode.className = "popper invisible w-full"
                     }
                 }

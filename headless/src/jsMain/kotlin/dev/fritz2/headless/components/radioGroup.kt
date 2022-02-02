@@ -20,7 +20,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLLabelElement
 import org.w3c.dom.HTMLSpanElement
 
-class HeadlessRadioGroup<C : HTMLElement, T>(val tag: Tag<C>, private val explicitId: String?) :
+class HeadlessRadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
 
     class DatabindingHook<T> : ItemDatabindingHook<Tag<HTMLElement>, T, T>() {

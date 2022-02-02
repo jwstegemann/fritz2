@@ -104,7 +104,7 @@ class HeadlessCheckboxGroup<C: HTMLElement, T>(tag: Tag<C>, private val explicit
 
     // TODO: Make it rather a Fragment than a Tag
     inner class CheckboxGroupOption<CO : HTMLElement>(
-        val tag: Tag<CO>,
+        tag: Tag<CO>,
         private val option: T,
         id: String?
     ) : RenderContext by tag {

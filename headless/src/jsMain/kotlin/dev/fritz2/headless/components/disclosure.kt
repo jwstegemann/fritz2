@@ -48,7 +48,7 @@ class HeadlessDisclosure<C : HTMLElement>(tag: Tag<C>, id: String?) :
         attr("type", "button")
     }
 
-    inner class DisclosurePanel<CP : HTMLElement>(val tag: Tag<CP>) : Tag<CP> by tag {
+    inner class DisclosurePanel<CP : HTMLElement>(tag: Tag<CP>) : Tag<CP> by tag {
         fun render() {
             button?.let { button -> button.attr(Aria.controls, id.whenever(opened)) }
         }

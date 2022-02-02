@@ -24,7 +24,7 @@ import org.w3c.dom.HTMLElement
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class HeadlessTooltip<C : HTMLElement>(
     val target: Tag<HTMLElement>,
-    val tag: Tag<C>,
+    tag: Tag<C>,
 ) : Tag<C> by tag, OpenClose by OpenCloseDelegate() {
 
     var placement: Placement = Placement.auto
@@ -35,8 +35,8 @@ class HeadlessTooltip<C : HTMLElement>(
     var distance = 10
 
     fun render() {
-        tag.attr("role", "tooltip")
-        target.attr(Aria.describedby, tag.id)
+        attr("role", "tooltip")
+        target.attr(Aria.describedby, id)
 
         if (showArrow) {
             div("popper-arrow") {
@@ -56,7 +56,7 @@ class HeadlessTooltip<C : HTMLElement>(
         }
 
         val popper = createPopper(
-            target.domNode, tag.domNode, PopperOptionsInit(
+            target.domNode, domNode, PopperOptionsInit(
                 placement,
                 strategy,
                 * modifiers.toTypedArray()
@@ -65,7 +65,7 @@ class HeadlessTooltip<C : HTMLElement>(
 
         job.invokeOnCompletion { popper.destroy() }
 
-        tag.className(opened.map {
+        className(opened.map {
             if (it) "popper visible" else "popper invisible"
         })
     }

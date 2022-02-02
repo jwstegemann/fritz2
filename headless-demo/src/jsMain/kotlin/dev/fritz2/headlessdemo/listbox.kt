@@ -48,10 +48,10 @@ fun RenderContext.listboxDemo() {
                 placement = Placement.bottomStart
 
                 transition(opened,
-                    "transition duration-100 ease-ease-out",
+                    "transition duration-100 ease-out",
                     "opacity-0 scale-95",
                     "opacity-100 scale-100",
-                    "transition duration-100 ease-ease-out",
+                    "transition duration-100 ease-in",
                     "opacity-100 scale-100",
                     "opacity-0 scale-95"
                 )

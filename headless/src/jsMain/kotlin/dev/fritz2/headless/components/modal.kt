@@ -29,7 +29,7 @@ class HeadlessModal(val renderContext: RenderContext) : RenderContext by renderC
     }
 
     inner class ModalPanel<C : HTMLElement>(
-        val tag: Tag<C>,
+        tag: Tag<C>,
         private val explicitId: String? = null
     ) : Tag<C> by tag {
         val componentId: String by lazy { explicitId ?: Id.next() }
