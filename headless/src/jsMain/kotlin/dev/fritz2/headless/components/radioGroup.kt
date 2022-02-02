@@ -7,7 +7,7 @@ import dev.fritz2.dom.html.*
 
 import dev.fritz2.identification.Id
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.foundation.BasicHook
+import dev.fritz2.headless.foundation.Hook
 import dev.fritz2.headless.foundation.ItemDatabindingHook
 import dev.fritz2.headless.foundation.hook
 import dev.fritz2.headless.validation.ComponentValidationMessage
@@ -31,7 +31,7 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
     class KeyboardNavigationHook<T>(
         private val value: DatabindingHook<T>,
         private val isActive: Store<T?>
-    ) : BasicHook<Tag<HTMLElement>, Unit, List<T>>() {
+    ) : Hook<Tag<HTMLElement>, Unit, List<T>>() {
         operator fun invoke() = this.also { hook ->
             apply = { options ->
                 hook.value.handler?.invoke(

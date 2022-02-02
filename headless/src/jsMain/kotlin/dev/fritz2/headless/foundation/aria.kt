@@ -150,7 +150,7 @@ object Aria {
     }
 }
 
-class AriaReferenceHook<C : Tag<*>>(private val name: String) : BasicHook<C, Unit, Unit>() {
+class AriaReferenceHook<C : Tag<*>>(private val name: String) : Hook<C, Unit, Unit>() {
     operator fun invoke(id: String): String {
         apply = id.let { v -> { attr(name, v) } }
         return id

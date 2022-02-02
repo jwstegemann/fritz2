@@ -5,7 +5,7 @@ import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.whenever
-import dev.fritz2.headless.foundation.BasicHook
+import dev.fritz2.headless.foundation.Hook
 import dev.fritz2.headless.foundation.DatabindingHook
 import dev.fritz2.headless.foundation.hook
 import dev.fritz2.headless.validation.ComponentValidationMessage
@@ -24,7 +24,7 @@ abstract class AbstractHeadlessSwitch<C : Tag<HTMLElement>>(val renderContext: C
 
     class KeyboardNavigationHook(
         private val value: ToggleDatabindingHook
-    ) : BasicHook<Tag<HTMLElement>, Unit, Unit>() {
+    ) : Hook<Tag<HTMLElement>, Unit, Unit>() {
         operator fun invoke() = this.also { hook ->
             apply = {
                 hook.value.handler?.invoke(

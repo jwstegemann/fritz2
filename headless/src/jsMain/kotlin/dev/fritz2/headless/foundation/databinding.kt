@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 
-abstract class DatabindingHook<C : Tag<*>, P, T> : BasicHook<C, Unit, P>(), Usable<DatabindingHook<C, P, T>> {
+abstract class DatabindingHook<C : Tag<*>, P, T> : Hook<C, Unit, P>(), Usable<DatabindingHook<C, P, T>> {
     lateinit var data: Flow<T>
     var id: String? = null
     var handler: ((Flow<T>) -> Unit)? = null

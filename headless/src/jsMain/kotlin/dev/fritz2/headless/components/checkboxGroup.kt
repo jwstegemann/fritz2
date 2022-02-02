@@ -6,7 +6,7 @@ import dev.fritz2.identification.Id
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.whenever
-import dev.fritz2.headless.foundation.BasicHook
+import dev.fritz2.headless.foundation.Hook
 import dev.fritz2.headless.foundation.ItemDatabindingHook
 import dev.fritz2.headless.foundation.hook
 import dev.fritz2.headless.validation.ComponentValidationMessage
@@ -33,7 +33,7 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
 
     class KeyboardNavigationHook<T>(
         private val value: DatabindingHook<T>
-    ) : BasicHook<Tag<HTMLElement>, Unit, T>() {
+    ) : Hook<Tag<HTMLElement>, Unit, T>() {
         operator fun invoke() = this.also { hook ->
             apply = { options ->
                 hook.value.handler?.invoke(

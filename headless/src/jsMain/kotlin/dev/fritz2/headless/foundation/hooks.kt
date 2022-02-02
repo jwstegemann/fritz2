@@ -5,13 +5,24 @@ import dev.fritz2.dom.html.RenderContext
 import kotlinx.coroutines.flow.Flow
 
 /**
- * This abstraction defines the base hook for all use cases, where the applicator of the hook (a component for most
- * cases) does not need or does not have any knowledge about how the hook solves its task. Sometimes the applicator
- * might inject some payload into the hook, in order to enable the hook to adapt to ist execution context or to
- * enable the hook to offer something to its client.
+ * A hook enables a client to define some custom behaviour that the applicator of the hook (a component for most
+ * cases) should apply.
+ * The behaviour is often closely tied to some properties also provided by the client. In fact, in most cases those
+ * properties will lead to the final setup of the effect.
+ *
+ * That is why a hook is always a [Property] with an additional [apply] field, which encapsulates the effect.
+ *
+ * So, the client has to configure the values defined by the property portion and the applicator applies the effect
+ * within its own UI context [C]. The applicator can pass additional data into the effect as payload [P].
+ *
+ * This abstraction defines the base hook for all use cases, where the applicator does not need or does not have any
+ * knowledge about the effect itself. Sometimes the applicator might inject some payload into the hook,
+ * in order to enable the hook to adapt to its execution context or to enable the hook to offer something to its client
+ * (think of some ``close`` handler passed into the apply-expression to enable the client to create some custom
+ * close-button for example)
  *
  * The [apply] field stores the executable behaviour of the hook, which needs to be implemented. Its shape is a
- * functional expression with some receiver type `C`, the payload parameter `P` and some result type `R`.
+ * functional expression with some receiver type [C], the payload parameter [P] and some result type [R].
  *
  * If an implementation needs some complex payload, use some dataclass or other containers to comply to its signature.
  *
@@ -24,7 +35,7 @@ import kotlinx.coroutines.flow.Flow
  * @see PreciseRenderingHook
  * @see Enhanceable
  */
-abstract class BasicHook<C, R, P> : Property, Enhanceable<R> by EnhanceableMixin() {
+abstract class Hook<C, R, P> : Property, Enhanceable<R> by EnhanceableMixin() {
 
     /**
      * Holds the encapsulated effect. The caller (component) has no clue about the content, at maximum about a
@@ -42,33 +53,33 @@ abstract class BasicHook<C, R, P> : Property, Enhanceable<R> by EnhanceableMixin
 }
 
 /**
- * This hook method applies a [BasicHook]'s encapsulated behaviour to the calling context and passes a given payload.
+ * This hook method applies a [Hook]'s encapsulated behaviour to the calling context and passes a given payload.
  * It also applies a given also-expression.
  *
- * @see BasicHook
+ * @see Hook
  *
  * @param h The hook implementation
  * @param payload some additional data
  */
-fun <C, R, P> C.hook(h: BasicHook<C, R, P>, payload: P) =
+fun <C, R, P> C.hook(h: Hook<C, R, P>, payload: P) =
     h.apply?.invoke(this, payload)?.also { h.alsoExpr?.invoke(it) }
 
 /**
- * This hook method applies a [BasicHook]'s encapsulated behaviour to the calling context.
+ * This hook method applies a [Hook]'s encapsulated behaviour to the calling context.
  * It also applies a given also-expression.
  *
- * @see BasicHook
+ * @see Hook
  *
  * @param h The hook implementation
  */
-fun <C, R> C.hook(h: BasicHook<C, R, Unit>) =
+fun <C, R> C.hook(h: Hook<C, R, Unit>) =
     h.apply?.invoke(this, Unit)?.also { h.alsoExpr?.invoke(it) }
 
 // TODO: Might be useful to offer some safe variation of this hook with a fallback parameter?
 //  (see hook variant for ``PreciseRenderingHook`` below)
 
 /**
- * This hook method applies multiple [BasicHook]'s encapsulated behaviour to the calling context and passes the _same_
+ * This hook method applies multiple [Hook]'s encapsulated behaviour to the calling context and passes the _same_
  * given payload to each hook. It also applies a given also-expression of each hook.
  *
  * This is a shortcut for situation where lots of hooks needs to be applied at the same location:
@@ -82,12 +93,12 @@ fun <C, R> C.hook(h: BasicHook<C, R, Unit>) =
  * hook(a, b, c, payload = Unit)
  * ```
  *
- * @see BasicHook
+ * @see Hook
  *
  * @param h some hook implementations
  * @param payload some additional data
  */
-fun <C, R, P> C.hook(vararg h: BasicHook<C, R, P>, payload: P) = h.forEach { hook ->
+fun <C, R, P> C.hook(vararg h: Hook<C, R, P>, payload: P) = h.forEach { hook ->
     hook.apply?.invoke(this, payload)?.also { hook.alsoExpr?.invoke(it) }
 }
 
@@ -100,10 +111,10 @@ fun <C, R, P> C.hook(vararg h: BasicHook<C, R, P>, payload: P) = h.forEach { hoo
  * to a precise place within the DOM. The client should be by intention very limited in providing content.
  *
  * If an applicator does not need any knowledge about the internal result structure of a hook, prefer to use
- * [BasicHook].
+ * [Hook].
  *
  * @see Property
- * @see BasicHook
+ * @see Hook
  * @see Enhanceable
  */
 abstract class PreciseRenderingHook<C, R, P> : Property, Enhanceable<R> by EnhanceableMixin() {
@@ -148,6 +159,28 @@ fun <C, R, P> C.hook(h: PreciseRenderingHook<C, R, P>, classes: String?, id: Str
  * deal with constructing the [apply] field, so that an abstract [renderTag] method is called. This covers the typical
  * use case where a client only wants to configure exactly one value (flow or static) and the hook should use this to
  * render some artifact.
+ *
+ * A good example would be a hook for rendering some icon; it would accept a special ``IconDefinition`` and render
+ * some ``<svg>``-tag including sub-tags:
+ * ```kotlin
+ * class IconHook : RenderOneValueTagHook<Svg, Null, IconDefinition>() {
+ *      override fun RenderContext.renderTag(classes: String?, id: String?, data: IconDefinition, payload: Unit): Svg {
+ *          svg(classes, id) {
+ *              // set some attributes based upon the fields of ``IconDefinition``
+ *          }
+ *      }
+ * }
+ * ```
+ * So the client can easily call this:
+ * ```kotlin
+ * // a component exposes this hook:
+ * class SomeComponent {
+ *      val closeIcon = IconHook()
+ * }
+ *
+ * // Client configures this easily:
+ * closeIcon(Icons.close)
+ * ```
  *
  * Its main motivation is to reduce the repeating boilerplate code of exactly the same [invoke] method implementations.
  *
