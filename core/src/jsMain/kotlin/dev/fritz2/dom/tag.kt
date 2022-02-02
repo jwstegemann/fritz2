@@ -29,7 +29,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
     val id: String?
 
     /**
-     * constant css-classes of this [Tag[
+     * constant css-classes of this [Tag]
      */
     val baseClass: String?
 
