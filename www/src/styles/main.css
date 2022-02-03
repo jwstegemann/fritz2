@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+a {
+    outline: 0;
+}
+
 @layer components {
     .content h1 {
         @apply text-fg-highlight text-3xl font-extrabold tracking-tight mb-8

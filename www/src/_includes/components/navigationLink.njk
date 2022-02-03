@@ -3,7 +3,7 @@
 {% set anchorColors = "bg-bg-highlight border-fg" if isCurrent else "border-transparent hover:bg-bg-highlight" %}
 {% set textColor = "text-relaxed hover:text-relaxed-highlight" if entry.parent else "text-fg-highlight" %}
 <a href="{{entry.url}}"
-   class="{{entry.classes}} {{indent}} {{anchorColors}} {{textColor}} group flex items-center px-3 py-1 text-sm border-l-4">
+   class="{{entry.classes}} {{indent}} {{anchorColors}} {{textColor}} group flex items-center px-3 py-1 text-sm border-l-4 focus:">
     <!--
       Heroicon name: outline/home
 
