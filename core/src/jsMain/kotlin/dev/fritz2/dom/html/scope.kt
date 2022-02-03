@@ -22,7 +22,7 @@ import dev.fritz2.dom.html.Scope.Key
  * against the content above. The two dev.fritz2.headless.components do not work well together this way!
  * The user would have to manually apply some other color to the buttons when using them inside the bar, in order to
  * preserve a good contrast to it. To achieve this behaviour automatically, the scope comes to the rescue:
- * The buttons-bar component can define a global scope-key `buttonsBar` by using the [keyOf] function.
+ * The buttons-bar component can define a global scope-key `buttonsBar` by using the [Scope.keyOf] function.
  * Then it can add some key-value pair to the scope like `set(buttonsBar, true)` in order
  * to signal all child nodes that they appear within the context of a buttons bar. The button component could be
  * aware of the key and implement some different behaviour concerning the color, if it detects that it is used within
@@ -83,6 +83,14 @@ interface WithScope {
  * Contains any type of data which consists of a [Key] and a corresponding value object.
  */
 value class Scope(private val entries: HashMap<Key<*>, Any> = hashMapOf()) {
+
+    companion object {
+        /**
+         * Creates a [Scope.Key] for using it in [Scope].
+         */
+        inline fun <reified T: Any> keyOf(name: String? = null): Key<T> =
+            Key(name ?: T::class.simpleName ?: "unknown")
+    }
 
     /**
      * Creates a new [Scope] instance from a given one.
@@ -186,9 +194,3 @@ class ScopeContext(private var current: Scope) {
         current[key] = value
     }
 }
-
-/**
- * Creates a [Scope.Key] for using it in [Scope].
- */
-inline fun <reified T: Any> keyOf(name: String? = null): Key<T> =
-    Key(name ?: T::class.simpleName ?: "unknown")
