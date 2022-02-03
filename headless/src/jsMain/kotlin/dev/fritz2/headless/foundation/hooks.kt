@@ -31,6 +31,16 @@ import kotlinx.coroutines.flow.Flow
  * For the special cases where an applicator knows about the specific internal rendering structure of a hook
  * implementation, prefer to use [PreciseRenderingHook]
  *
+ * Components should strive to use hooks for all their parts that need to be configurable and varying in their
+ * behaviours. Think of some input-field that should render a label next to it. This label clearly needs to be
+ * configured by the calling client, so it must be configurable. The label could be reused for different kind of
+ * form control elements too, so it clearly makes sense to encapsulate the configuration and its representation
+ * (the rendering function) into one object that should be some kind of hook.
+ *
+ * As one main aspect of a hook is the configuration, it is possible, that the hook never gets configured by the client.
+ * That is why it is extremely important for the application of a hook to check, whether it is set or not. So this
+ * interface offers the [isSet] method as minimal contract.
+ *
  * @see Property
  * @see PreciseRenderingHook
  * @see Enhanceable
