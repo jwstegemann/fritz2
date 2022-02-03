@@ -2,8 +2,7 @@ package dev.fritz2.binding
 
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.Lens
-import dev.fritz2.lenses.elementLens
-import dev.fritz2.lenses.positionLens
+import dev.fritz2.lenses.lensOf
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -68,7 +67,7 @@ class SubStore<P, D>(
  * @param id to identify the same entity (i.e. when it's content changed)
  */
 fun <D, I> Store<List<D>>.sub(element: D, id: IdProvider<D, I>): SubStore<List<D>, D> {
-    val lens = elementLens(element, id)
+    val lens = lensOf(element, id)
     return SubStore(this, lens)
 }
 
@@ -79,6 +78,6 @@ fun <D, I> Store<List<D>>.sub(element: D, id: IdProvider<D, I>): SubStore<List<D
  * @param index position in the list to point to
  */
 fun <D> Store<List<D>>.sub(index: Int): SubStore<List<D>, D> {
-    val lens = positionLens<D>(index)
+    val lens = lensOf<D>(index)
     return SubStore(this, lens)
 }
