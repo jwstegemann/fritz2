@@ -49,7 +49,7 @@ class LocalStorageTests {
                 fail(exception.message)
             }
 
-            val localStorage = localStorageEntity(PersonResource, "")
+            val localStorage = localStorageEntityOf(PersonResource, "")
 
             val load = handle { _, id: String -> localStorage.load(id) }
 
@@ -127,7 +127,7 @@ class LocalStorageTests {
             }
 
             private val localStorage =
-                localStorageQuery(PersonResource, "") { entities, _: Unit ->
+                localStorageQueryOf(PersonResource, "") { entities, _: Unit ->
                     entities.sortedBy(LocalPerson::name)
                 }
             val addOrUpdate = handle<LocalPerson> { entities, person -> localStorage.addOrUpdate(entities, person) }
@@ -204,7 +204,7 @@ class LocalStorageTests {
                 fail(exception.message)
             }
 
-            private val localStorage: LocalStorageQuery<LocalPerson, String, Unit> = localStorageQuery(PersonResource, "")
+            private val localStorage: LocalStorageQuery<LocalPerson, String, Unit> = localStorageQueryOf(PersonResource, "")
 
             val addOrUpdate = handle<LocalPerson> { entities, entity -> localStorage.addOrUpdate(entities, entity) }
             val updateMany = handle<List<LocalPerson>> { entities, updatedEntities -> localStorage.updateMany(entities, updatedEntities) }

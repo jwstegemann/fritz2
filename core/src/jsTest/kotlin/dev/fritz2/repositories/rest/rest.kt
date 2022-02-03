@@ -57,7 +57,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            val rest = restEntity(PersonResource, remote, "")
+            val rest = restEntityOf(PersonResource, remote, "")
 
             val load = handle { _, id: String -> rest.load(id) }
             val saveOrUpdate = handle { entity -> rest.addOrUpdate(entity) }
@@ -134,7 +134,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            private val rest = restQuery<RestPerson, String, Unit>(PersonResource, remote, "")
+            private val rest = restQueryOf<RestPerson, String, Unit>(PersonResource, remote, "")
 
             val addOrUpdate = handle<RestPerson> { entities, person -> rest.addOrUpdate(entities, person) }
             val query = handle<Unit> { _, query -> rest.query(query) }
@@ -209,7 +209,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            private val rest = restQuery<RestPerson, String, Unit>(PersonResource, remote, "")
+            private val rest = restQueryOf<RestPerson, String, Unit>(PersonResource, remote, "")
 
             val addOrUpdate = handle<RestPerson> { entities, entity ->
                 rest.addOrUpdate(entities, entity)
