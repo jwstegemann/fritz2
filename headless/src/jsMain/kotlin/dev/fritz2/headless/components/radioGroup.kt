@@ -3,10 +3,7 @@ package dev.fritz2.headless.components
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.ScopeContext
-import dev.fritz2.dom.html.shortcutOf
+import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.hooks.BasicHook
 import dev.fritz2.headless.hooks.ItemDatabindingHook
@@ -15,10 +12,7 @@ import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.identification.Id
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.*
-import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLLabelElement
-import org.w3c.dom.HTMLSpanElement
+import org.w3c.dom.*
 
 class HeadlessRadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
@@ -140,7 +134,7 @@ class HeadlessRadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId
             }
         }
 
-        fun <CT : HTMLElement> RenderContext.radioGroupOptionToggle(
+        private fun <CT : HTMLElement> RenderContext.buildRadioGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
@@ -150,10 +144,6 @@ class HeadlessRadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId
             attr("role", Aria.Role.radio)
             attr(Aria.checked, selected.asString())
             attr("tabindex", selected.map { if (it) "0" else "-1" })
-            //FIXME: anderen Weg finden
-//            if (this is Input && domNode.getAttribute("name") == null) {
-//                attr("name", componentId)
-//            }
             active handledBy {
                 if (it && domNode != document.activeElement) {
                     domNode.focus()
@@ -165,11 +155,29 @@ class HeadlessRadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId
             hook(value, option)
         }.also { toggle = it }
 
+        fun <CT : HTMLElement>RenderContext.radioGroupOptionToggle(
+            classes: String? = null,
+            scope: (ScopeContext.() -> Unit) = {},
+            tag: TagFactory<Tag<CT>>,
+            content: Tag<CT>.() -> Unit
+        ) = buildRadioGroupOptionToggle(classes, scope, tag, content)
+
+        fun <CT : HTMLInputElement>RenderContext.radioGroupOptionToggle(
+            classes: String? = null,
+            scope: (ScopeContext.() -> Unit) = {},
+            tag: TagFactory<Tag<CT>>,
+            content: Tag<CT>.() -> Unit
+        ) = buildRadioGroupOptionToggle(classes, scope, tag, content).apply {
+            if (domNode.getAttribute("name") == null) {
+                attr("name", componentId)
+            }
+        }
+
         fun RenderContext.radioGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             content: Tag<HTMLDivElement>.() -> Unit
-        ) = radioGroupOptionToggle(classes, scope, RenderContext::div, content)
+        ) = buildRadioGroupOptionToggle(classes, scope, RenderContext::div, content)
 
         fun <CL : HTMLElement> RenderContext.radioGroupOptionLabel(
             classes: String? = null,
@@ -184,8 +192,7 @@ class HeadlessRadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId
             content: Tag<HTMLLabelElement>.() -> Unit
         ) = radioGroupOptionLabel(classes, scope, RenderContext::label) {
             content()
-            //FIXME: reset
-            //`for`(optionId)
+            `for`(optionId)
         }
 
         fun <CL : HTMLElement> RenderContext.radioGroupOptionDescription(

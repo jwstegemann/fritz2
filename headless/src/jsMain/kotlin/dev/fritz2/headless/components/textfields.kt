@@ -56,8 +56,7 @@ abstract class HeadlessTextfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Ta
         scope: (ScopeContext.() -> Unit) = {},
         content: Tag<HTMLLabelElement>.() -> Unit
     ) = textfieldLabel(classes, scope, RenderContext::label, content).apply {
-        //FIXME: reset
-        //`for`(fieldId)
+        `for`(fieldId)
     }
 
     protected fun <CD : HTMLElement> RenderContext.textfieldDescription(

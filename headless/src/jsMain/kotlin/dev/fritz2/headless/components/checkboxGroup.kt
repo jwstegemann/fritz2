@@ -17,10 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLLabelElement
-import org.w3c.dom.HTMLSpanElement
+import org.w3c.dom.*
 
 class HeadlessCheckboxGroup<C: HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
@@ -130,7 +127,9 @@ class HeadlessCheckboxGroup<C: HTMLElement, T>(tag: Tag<C>, private val explicit
             }
         }
 
-        fun <CT : HTMLElement> RenderContext.checkboxGroupOptionToggle(
+
+
+        private fun <CT : HTMLElement> RenderContext.buildCheckboxGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
@@ -140,19 +139,33 @@ class HeadlessCheckboxGroup<C: HTMLElement, T>(tag: Tag<C>, private val explicit
             attr("role", Aria.Role.checkbox)
             attr(Aria.checked, selected.asString())
             attr("tabindex", "0")
-            //FIXME: anderen Weg finden
-//            if (this is Input && domNode.getAttribute("name") == null) {
-//                attr("name", componentId)
-//            }
             hook(value, option)
             hook(withKeyboardNavigation, option)
         }.also { toggle = it }
+
+        fun <CT : HTMLElement> RenderContext.checkboxGroupOptionToggle(
+            classes: String? = null,
+            scope: (ScopeContext.() -> Unit) = {},
+            tag: TagFactory<Tag<CT>>,
+            content: Tag<CT>.() -> Unit
+        ) = buildCheckboxGroupOptionToggle(classes, scope, tag, content)
+
+        fun <CT : HTMLInputElement> RenderContext.checkboxGroupOptionToggle(
+            classes: String? = null,
+            scope: (ScopeContext.() -> Unit) = {},
+            tag: TagFactory<Tag<CT>>,
+            content: Tag<CT>.() -> Unit
+        ) = buildCheckboxGroupOptionToggle(classes, scope, tag, content).apply {
+            if (domNode.getAttribute("name") == null) {
+                attr("name", componentId)
+            }
+        }
 
         fun RenderContext.checkboxGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             content: Tag<HTMLDivElement>.() -> Unit
-        ) = checkboxGroupOptionToggle(classes, scope, RenderContext::div, content)
+        ) = buildCheckboxGroupOptionToggle(classes, scope, RenderContext::div, content)
 
         fun <CL : HTMLElement> RenderContext.checkboxGroupOptionLabel(
             classes: String? = null,

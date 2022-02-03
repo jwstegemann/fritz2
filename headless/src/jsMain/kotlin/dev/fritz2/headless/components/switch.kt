@@ -1,10 +1,7 @@
 package dev.fritz2.headless.components
 
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.ScopeContext
-import dev.fritz2.dom.html.shortcutOf
+import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.whenever
@@ -136,8 +133,7 @@ class HeadlessSwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         content: Tag<HTMLLabelElement>.() -> Unit
     ) = switchLabel(classes, scope, RenderContext::label) {
         content()
-        //FIXME: reset
-        //`for`(componentId)
+        `for`(componentId)
     }
 
     fun <CL : HTMLElement> RenderContext.switchDescription(
