@@ -1,15 +1,14 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.Shortcut
-import dev.fritz2.dom.html.render
-import dev.fritz2.dom.html.value
+import dev.fritz2.dom.html.*
 import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLInputElement
@@ -35,7 +34,7 @@ class ListenerTest {
             section {
                 input(id = inputId) {
                     value(store.data)
-                    changes.preventDefault().values() handledBy store.update
+                    changes.values() handledBy store.update
                     inputs.values() handledBy store.update
                 }
             }
@@ -198,7 +197,7 @@ class ListenerTest {
                     store.data.renderText()
                 }
                 input(id = inputId) {
-                    keydowns.key() handledBy store.keyPressed
+                    keydowns.map { shortcutOf(it) } handledBy store.keyPressed
                 }
             }
         }
@@ -259,7 +258,10 @@ class ListenerTest {
             section {
                 input(id = inputId) {
                     value(store.data)
-                    keyups.enter() handledBy store.update
+                    keyups.mapNotNull {
+                        if (shortcutOf(it) == Keys.Enter) this.domNode.value
+                        else null
+                    } handledBy store.update
                 }
                 p(id = resultId) {
                     store.data.renderText()

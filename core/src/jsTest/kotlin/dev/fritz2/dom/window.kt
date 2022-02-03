@@ -70,9 +70,7 @@ class WindowTest {
         }
 
         render {
-            Window.clicks.composedPath().map {
-                it[0].asDynamic().id
-            } handledBy store.updateData
+            Window.clicks.composedPath().map { } handledBy store.updateData
 
 
             section {

@@ -1,15 +1,10 @@
 package dev.fritz2.dom
 
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.Shortcut
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
-import org.w3c.dom.events.InputEvent
-import org.w3c.dom.events.KeyboardEvent
 import org.w3c.files.FileList
 
 /**
@@ -17,135 +12,75 @@ import org.w3c.files.FileList
  */
 interface Listener<E : Event> {
     val events: Flow<E>
-    fun preventDefault(): Listener<E>
-    fun stopImmediatePropagation(): Listener<E>
-    fun stopPropagation(): Listener<E>
-    fun composedPath(): Flow<Array<EventTarget>> = events.map { it.composedPath() }
-    fun <R> map(transform: suspend (E) -> R) = events.map(transform)
 }
+
+fun <E: Event> Flow<E>.preventDefault(): Flow<E> = this.map { it.preventDefault(); it }
+fun <E: Event> Flow<E>.stopImmediatePropagation(): Flow<E> = this.map { it.stopImmediatePropagation(); it }
+fun <E: Event> Flow<E>.stopPropagation(): Flow<E> = this.map { it.stopPropagation(); it }
+fun <E: Event> Flow<E>.composedPath(): Flow<Array<EventTarget>> = this.map { it.composedPath() }
 
 /**
  * Handles a Flow of Window [Event]s
  */
-class WindowListener<E : Event>(override val events: Flow<E>) : Listener<E> {
-    override fun preventDefault(): WindowListener<E> =
-        WindowListener(events.map { it.preventDefault(); it })
-
-    override fun stopImmediatePropagation(): WindowListener<E> =
-        WindowListener(events.map { it.stopImmediatePropagation(); it })
-
-    override fun stopPropagation(): WindowListener<E> =
-        WindowListener(events.map { it.stopPropagation(); it })
-}
+class WindowListener<E : Event>(override val events: Flow<E>) : Listener<E>, Flow<E> by events
 
 /**
  * Handles a Flow of Dom [Event]s.
  */
-class DomListener<E : Event, out X : Element>(override val events: Flow<E>) : Listener<E> {
-    override fun preventDefault(): DomListener<E, X> =
-        DomListener(events.map { it.preventDefault(); it })
-
-    override fun stopImmediatePropagation(): DomListener<E, X> =
-        DomListener(events.map { it.stopImmediatePropagation(); it })
-
-    override fun stopPropagation(): DomListener<E, X> =
-        DomListener(events.map { it.stopPropagation(); it })
-}
+class DomListener<E : Event, out X : Element>(override val events: Flow<E>) : Listener<E>, Flow<E> by events
 
 /**
  * Gives you the new value as [String] from the targeting [Element].
  */
-fun DomListener<Event, HTMLFieldSetElement>.values(): Flow<String> =
+fun DomListener<*, HTMLFieldSetElement>.values(): Flow<String> =
     events.map { it.target.unsafeCast<HTMLInputElement>().value }
 
 /**
  * Gives you the new value as [String] from the targeting [Element].
  */
-fun DomListener<Event, HTMLInputElement>.values(): Flow<String> =
-    events.map { it.target.unsafeCast<HTMLInputElement>().value }
-
-/**
- * Gives you the new value as [String] from the targeting [Element].
- */
-fun DomListener<InputEvent, HTMLInputElement>.values(): Flow<String> =
+fun DomListener<*, HTMLInputElement>.values(): Flow<String> =
     events.map { it.target.unsafeCast<HTMLInputElement>().value }
 
 /**
  * Gives you the new value as [Double] from the targeting [Element].
  */
-fun DomListener<Event, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
+fun DomListener<*, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
     events.map { it.target.unsafeCast<HTMLInputElement>().valueAsNumber }
-
-/**
- * Gives you the new value as [Double] from the targeting [Element].
- */
-fun DomListener<InputEvent, HTMLInputElement>.valuesAsNumber(): Flow<Double> =
-    events.map { it.target.unsafeCast<HTMLInputElement>().valueAsNumber }
-
-/**
- * Gives you the new value as [String] from the targeting [Element] when enter is pressed.
- */
-@Deprecated("use keys functions instead in order to filter and handle specific keys")
-fun DomListener<KeyboardEvent, HTMLInputElement>.enter(): Flow<String> =
-    events.mapNotNull {
-        if (Shortcut(it) == Keys.Enter) it.target.unsafeCast<HTMLInputElement>().value
-        else null
-    }
-
-/**
- * Gives you the new value as [Double] from the targeting [Element] when enter is pressed.
- */
-@Deprecated("use keys functions instead in order to filter and handle specific keys")
-fun DomListener<KeyboardEvent, HTMLInputElement>.enterAsNumber(): Flow<Double> =
-    events.mapNotNull {
-        if (Shortcut(it) == Keys.Enter) it.target.unsafeCast<HTMLInputElement>().valueAsNumber
-        else null
-    }
 
 /**
  * Gives you the new value as [String] from the targeting [Element].
  */
-fun DomListener<Event, HTMLSelectElement>.values(): Flow<String> =
+fun DomListener<*, HTMLSelectElement>.values(): Flow<String> =
     events.map { it.target.unsafeCast<HTMLSelectElement>().value }
 
 /**
  * Gives you the new value as [String] from the targeting [Element].
  */
-fun DomListener<Event, HTMLTextAreaElement>.values(): Flow<String> =
+fun DomListener<*, HTMLTextAreaElement>.values(): Flow<String> =
     events.map { it.target.unsafeCast<HTMLTextAreaElement>().value }
-
-/**
- * Gives you the new value as [String] from the targeting [Element].
- */
-@Deprecated("use keys functions instead in order to filter and handle specific keys")
-fun DomListener<KeyboardEvent, HTMLTextAreaElement>.enter(): Flow<String> =
-    events.mapNotNull {
-        if (Shortcut(it) == Keys.Enter) it.target.unsafeCast<HTMLTextAreaElement>().value
-        else null
-    }
 
 /**
  * Gives you the [FileList] from the targeting [Element].
  */
-fun DomListener<Event, HTMLInputElement>.files(): Flow<FileList?> =
+fun DomListener<*, HTMLInputElement>.files(): Flow<FileList?> =
     events.map { it.target.unsafeCast<HTMLInputElement>().files }
 
 /**
  * Gives you the checked value as [Boolean] from the targeting [Element].
  */
-fun DomListener<Event, HTMLInputElement>.states(): Flow<Boolean> =
+fun DomListener<*, HTMLInputElement>.states(): Flow<Boolean> =
     events.map { it.target.unsafeCast<HTMLInputElement>().checked }
 
 /**
  * Gives you the selected index as [Int] from the targeting [Element].
  */
-fun DomListener<Event, HTMLSelectElement>.selectedIndex(): Flow<Int> =
+fun DomListener<*, HTMLSelectElement>.selectedIndex(): Flow<Int> =
     events.map { it.target.unsafeCast<HTMLSelectElement>().selectedIndex }
 
 /**
  * Gives you the selected value as [String] from the targeting [Element].
  */
-fun DomListener<Event, HTMLSelectElement>.selectedValue(): Flow<String> =
+fun DomListener<*, HTMLSelectElement>.selectedValue(): Flow<String> =
     events.map {
         val select = it.target.unsafeCast<HTMLSelectElement>()
         select.options[select.selectedIndex].unsafeCast<HTMLOptionElement>().value
@@ -154,23 +89,11 @@ fun DomListener<Event, HTMLSelectElement>.selectedValue(): Flow<String> =
 /**
  * Gives you the selected text as [String] from the targeting [Element].
  */
-fun DomListener<Event, HTMLSelectElement>.selectedText(): Flow<String> =
+fun DomListener<*, HTMLSelectElement>.selectedText(): Flow<String> =
     events.map {
         val select = it.target.unsafeCast<HTMLSelectElement>()
         select.options[select.selectedIndex].unsafeCast<HTMLOptionElement>().text
     }
-
-/**
- * Gives you the pressed key as [Shortcut] from a [KeyboardEvent].
- */
-@Deprecated("construct a Shortcut object with shortcutOf(event) from within standard flow functions like filter and map in order to process specific shortcuts")
-fun <X : Element> DomListener<KeyboardEvent, X>.key(): Flow<Shortcut> = events.map { Shortcut(it) }
-
-/**
- * Gives you the pressed key as [Shortcut] from a [KeyboardEvent].
- */
-@Deprecated("construct a Shortcut object with shortcutOf(event) from within standard flow functions like filter and map in order to process specific shortcuts")
-fun WindowListener<KeyboardEvent>.key(): Flow<Shortcut> = events.map { Shortcut(it) }
 
 /**
  * Merges multiple [DomListener] like the analog method on [Flow]s
