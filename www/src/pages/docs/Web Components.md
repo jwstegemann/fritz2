@@ -1,15 +1,13 @@
 ---
 layout: layouts/docsWithContentNav.njk
 title: Web Components
-permalink: /docs/webComponents/
+permalink: /docs/web-components/
 eleventyNavigation:
-    key: webComponents
+    key: web-components
     parent: documentation
     title: Web Components
     order: 150
 ---
-
-# WebComponents
 
 With fritz2, you can easily use [WebComponents](https://webcomponents.org) in any html-context. Some of the following code-snippets are not runnable on their own. Please find the complete example [here](https://examples.fritz2.dev/webcomponent/build/distributions/index.html) 
 

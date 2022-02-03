@@ -8,7 +8,6 @@ eleventyNavigation:
     title: Project Setup
     order: 20
 ---
-
 ## Create a Project
 
 To use fritz2, you have to set up a Kotlin multiplatform-project. To do so you can either

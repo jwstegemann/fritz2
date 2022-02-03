@@ -1,14 +1,13 @@
 ---
 layout: layouts/docsWithContentNav.njk
 title: Nested Structures
-permalink: /docs/nested/
+permalink: /docs/nested-structures/
 eleventyNavigation:
-    key: nested
+    key: nested-structures
     parent: documentation
     title: Nested Structures
     order: 80
 ---
-## Nested Structures
 
 Most of the time, your model for a view will not be of just a simple data-type but a complex entity, like a 
 person having a name, multiple addresses, an email, a date of birth, etc.

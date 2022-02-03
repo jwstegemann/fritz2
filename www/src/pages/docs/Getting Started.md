@@ -9,8 +9,6 @@ eleventyNavigation:
     order: 30
 ---
 
-# Getting Started
-
 We `recommend` organizing your source code like this:
 
 ```txt
@@ -64,7 +62,7 @@ fun main() {
     }
 }
 ```
-![components example basics](images/gettingstarted_inital.png)
+![components example basics](/img/gettingstarted_inital.png)
 
 When calling `render` like that, your content will be mounted to an `HTMLElement` with `id="target"`. 
 If you want to mount your content to the `body` of your `index.html`, you can omit this parameter. 

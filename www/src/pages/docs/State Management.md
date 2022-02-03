@@ -3,7 +3,7 @@ layout: layouts/docsWithContentNav.njk
 title: State Management
 permalink: /docs/statemgt/
 eleventyNavigation:
-    key: statemgt
+    key: state-management
     parent: documentation
     title: State Management
     order: 70

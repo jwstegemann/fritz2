@@ -9,8 +9,6 @@ eleventyNavigation:
     order: 50
 ---
 
-# Components
-
 It's very easy to create a lightweight reusable component with fritz2. Basically all you have to do is write a function with `RenderContext` as its receiver type:
 
 ```kotlin
@@ -25,7 +23,7 @@ render {
 }
 ```
 
-Of course, you can also use a subtype of `RenderContext` like a certain `Tag` as receiver if you want to limit the usage of your component to this type as its parent. 
+Of course, you can also use a subtype of `RenderContext` like a certain `Tag` as receiver if you want to limit the usage of your component to this type as its parent.
 
 By using plain functions, it's also straight forward to parametrize your component:
 
@@ -67,5 +65,5 @@ render {
 Using `Div` as receiver type in the example above allows you to access the specific attributes and events of your
 container-element from your content-lambda. Use `RenderContext` if this is not necessary or intended.
 
-Since stateless components alone are not that exciting, go on and read about the fritz2 
+Since stateless components alone are not that exciting, go on and read about the fritz2
 mechanism to handle state: the [Store](Store.html).

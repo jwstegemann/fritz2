@@ -9,8 +9,6 @@ eleventyNavigation:
     order: 40
 ---
 
-# Attributes
-
 To create rich html-interfaces you will want to use a variety of attributes. In fritz2 there are several easy ways to 
 achieve this depending on your use case.
 
