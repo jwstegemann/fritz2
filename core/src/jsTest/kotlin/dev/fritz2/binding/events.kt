@@ -1,6 +1,7 @@
 package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
+import dev.fritz2.dom.html.value
 import dev.fritz2.dom.values
 import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument

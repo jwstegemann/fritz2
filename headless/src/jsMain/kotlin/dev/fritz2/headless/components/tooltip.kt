@@ -13,14 +13,15 @@ import dev.fritz2.headless.foundation.utils.popper.*
 import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessTooltip<C : Tag<HTMLElement>>(
+class HeadlessTooltip<C : HTMLElement>(
     val target: Tag<HTMLElement>,
-    val tag: C,
-) : OpenClose by OpenCloseDelegate() {
+    tag: Tag<C>,
+) : Tag<C> by tag, OpenClose by OpenCloseDelegate() {
 
     var placement: Placement = Placement.auto
     var showArrow: Boolean = true
@@ -29,9 +30,9 @@ class HeadlessTooltip<C : Tag<HTMLElement>>(
     var skidding = 0
     var distance = 10
 
-    fun C.render() {
-        tag.attr("role", "tooltip")
-        target.attr(Aria.describedby, tag.id)
+    fun render() {
+        attr("role", "tooltip")
+        target.attr(Aria.describedby, id)
 
         if (showArrow) {
             div("popper-arrow") {
@@ -51,7 +52,7 @@ class HeadlessTooltip<C : Tag<HTMLElement>>(
         }
 
         val popper = createPopper(
-            target.domNode, tag.domNode, PopperOptionsInit(
+            target.domNode, domNode, PopperOptionsInit(
                 placement,
                 strategy,
                 * modifiers.toTypedArray()
@@ -60,7 +61,7 @@ class HeadlessTooltip<C : Tag<HTMLElement>>(
 
         job.invokeOnCompletion { popper.destroy() }
 
-        tag.className(opened.map {
+        className(opened.map {
             if (it) "popper visible" else "popper invisible"
         })
     }
@@ -70,11 +71,11 @@ class HeadlessTooltip<C : Tag<HTMLElement>>(
     }
 }
 
-fun <C : Tag<HTMLElement>> Tag<HTMLElement>.headlessTooltip(
+fun <C : HTMLElement> Tag<HTMLElement>.headlessTooltip(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    tag: TagFactory<C>,
+    tag: TagFactory<Tag<C>>,
     initialize: HeadlessTooltip<C>.() -> Unit
 ) {
     tag(annex, classes, id ?: Id.next(), scope) {
@@ -86,9 +87,9 @@ fun <C : Tag<HTMLElement>> Tag<HTMLElement>.headlessTooltip(
 }
 
 
-fun Tag<HTMLElement>.headlessTooltip(
+fun HtmlTag<HTMLElement>.headlessTooltip(
     classes: String? = null,
     id: String? = null,
     internalScope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessTooltip<Div>.() -> Unit
+    initialize: HeadlessTooltip<HTMLDivElement>.() -> Unit
 ) = headlessTooltip(classes, id, internalScope, RenderContext::div, initialize)

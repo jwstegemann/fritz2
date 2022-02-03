@@ -1,8 +1,7 @@
 package dev.fritz2.headlessdemo
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.transition
+import dev.fritz2.dom.html.*
 import dev.fritz2.headless.components.headlessModal
 
 fun RenderContext.modalDemo() {

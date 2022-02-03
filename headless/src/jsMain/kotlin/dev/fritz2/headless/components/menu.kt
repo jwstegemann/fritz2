@@ -3,7 +3,10 @@ package dev.fritz2.headless.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.*
+import dev.fritz2.dom.html.Keys
+import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.ScopeContext
+import dev.fritz2.dom.html.shortcutOf
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.scrollintoview.*
 import dev.fritz2.headless.foundation.hook
@@ -11,6 +14,8 @@ import dev.fritz2.identification.Id
 import dev.fritz2.utils.classes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import kotlin.math.max
 
@@ -22,7 +27,7 @@ internal val HeadlessScrollOptions = ScrollIntoViewOptionsInit(
 )
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContext by tag,
+class HeadlessMenu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag,
     OpenClose by OpenCloseDelegate() {
 
     val componentId: String by lazy { id ?: Id.next() }
@@ -50,7 +55,7 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
     @OptIn(ExperimentalCoroutinesApi::class)
     private val selections = storeOf(-1)
 
-    fun C.render() {
+    fun render() {
         selections.syncBy(selections.handle { -1 })
 
         opened.filter { !it }.drop(1) handledBy {
@@ -58,11 +63,11 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
         }
     }
 
-    fun <CB : Tag<HTMLElement>> RenderContext.menuButton(
+    fun <CB : HTMLElement> RenderContext.menuButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CB>,
-        content: CB.() -> Unit
+        tag: TagFactory<Tag<CB>>,
+        content: Tag<CB>.() -> Unit
     ) = tag(this, classes, "$componentId-button", scope) {
         if (!openClose.isSet) openClose(storeOf(false))
         content()
@@ -73,14 +78,14 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
     fun RenderContext.menuButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Button.() -> Unit
+        content: Tag<HTMLButtonElement>.() -> Unit
     ) = menuButton(classes, scope, RenderContext::button, content).apply {
         attr("type", "button")
     }
 
-    inner class MenuItems<CI : Tag<HTMLElement>>(
+    inner class MenuItems<CI : HTMLElement>(
         val renderContext: RenderContext,
-        tagFactory: TagFactory<CI>,
+        tagFactory: TagFactory<Tag<CI>>,
         classes: String?,
         scope: ScopeContext.() -> Unit
     ) : PopUpPanel<CI>(renderContext, tagFactory, classes, "$componentId-items", scope, this@HeadlessMenu, button) {
@@ -106,65 +111,63 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
             closeOnEscape()
             closeOnBlur()
 
-            tag.apply {
-                attr("tabindex", "0")
-                attr("role", Aria.Role.menu)
+            attr("tabindex", "0")
+            attr("role", Aria.Role.menu)
 
-                state.flatMapLatest { (currentIndex, items) ->
-                    keydowns.events.mapNotNull { event ->
-                        when (shortcutOf(event)) {
-                            Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, items)
-                            Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, items)
-                            Keys.Home -> firstItem(items)
-                            Keys.End -> lastItem(items)
-                            else -> null
-                        }.also {
-                            if (it != null) {
-                                event.stopImmediatePropagation()
-                                event.preventDefault()
-                            }
+            state.flatMapLatest { (currentIndex, items) ->
+                keydowns.events.mapNotNull { event ->
+                    when (shortcutOf(event)) {
+                        Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, items)
+                        Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, items)
+                        Keys.Home -> firstItem(items)
+                        Keys.End -> lastItem(items)
+                        else -> null
+                    }.also {
+                        if (it != null) {
+                            event.stopImmediatePropagation()
+                            event.preventDefault()
                         }
                     }
-                } handledBy activeIndex.update
+                }
+            } handledBy activeIndex.update
 
-                items.data.flatMapLatest { items ->
-                    keydowns.events
-                        .mapNotNull { e -> if (e.key.length == 1) e.key.first().lowercaseChar() else null }
-                        .mapNotNull { c ->
-                            if (c.isLetterOrDigit()) itemByCharacter(items, c)
-                            else null
-                        }
-                } handledBy activeIndex.update
-
-                state.flatMapLatest { (currentIndex, disabled) ->
-                    keydowns.events.filter { setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it)) }.mapNotNull {
-                        if (currentIndex == -1 || disabled[currentIndex].disabled) {
-                            null
-                        } else {
-                            it.preventDefault()
-                            it.stopImmediatePropagation()
-                            currentIndex
-                        }
+            items.data.flatMapLatest { items ->
+                keydowns.events
+                    .mapNotNull { e -> if (e.key.length == 1) e.key.first().lowercaseChar() else null }
+                    .mapNotNull { c ->
+                        if (c.isLetterOrDigit()) itemByCharacter(items, c)
+                        else null
                     }
-                } handledBy selections.update
-            }
+            } handledBy activeIndex.update
+
+            state.flatMapLatest { (currentIndex, disabled) ->
+                keydowns.events.filter { setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it)) }.mapNotNull {
+                    if (currentIndex == -1 || disabled[currentIndex].disabled) {
+                        null
+                    } else {
+                        it.preventDefault()
+                        it.stopImmediatePropagation()
+                        currentIndex
+                    }
+                }
+            } handledBy selections.update
 
             opened.filter { it }.flatMapLatest {
-                tag.domNode.scrollTo(0.0, 0.0)
+                domNode.scrollTo(0.0, 0.0)
                 items.data.map {
                     firstItem(it)
                 }
             } handledBy activeIndex.update
         }
 
-        inner class MenuItem<CM : Tag<HTMLElement>>(val tag: CM, val index: Int) {
+        inner class MenuItem<CM : HTMLElement>(tag: Tag<CM>, val index: Int) : Tag<CM> by tag {
             val active = activeIndex.data.map { it == index }
             val selected = selections.data.filter { it == index }.map {}
 
             val disabled = items.data.map { it[index].disabled }
             val disable = items.disabledHandler(index)
 
-            fun CM.render() {
+            fun render() {
                 mouseenters.events.mapNotNull { if (items.current[index].disabled) null else index } handledBy activeIndex.update
 
                 attr("tabindex", "-1")
@@ -187,10 +190,10 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
             }
         }
 
-        fun <CM : Tag<HTMLElement>> RenderContext.menuItem(
+        fun <CM : HTMLElement> RenderContext.menuItem(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CM>,
+            tag: TagFactory<Tag<CM>>,
             initialize: MenuItem<CM>.() -> Unit
         ) {
             val index = numberOfItems++
@@ -208,14 +211,14 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
         fun RenderContext.menuItem(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            initialize: MenuItem<Button>.() -> Unit
+            initialize: MenuItem<HTMLButtonElement>.() -> Unit
         ) = menuItem(classes, scope, RenderContext::button, initialize)
     }
 
-    fun <CI : Tag<HTMLElement>> RenderContext.menuItems(
+    fun <CI : HTMLElement> RenderContext.menuItems(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CI>,
+        tag: TagFactory<Tag<CI>>,
         initialize: MenuItems<CI>.() -> Unit
     ) {
         if (!openClose.isSet) openClose(storeOf(false))
@@ -228,18 +231,18 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
     fun RenderContext.menuItems(
         classes: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        initialize: MenuItems<Div>.() -> Unit
+        initialize: MenuItems<HTMLDivElement>.() -> Unit
     ) = menuItems(classes, internalScope, RenderContext::div, initialize)
 }
 
 
-fun <C : Tag<HTMLElement>> RenderContext.headlessMenu(
+fun <C : HTMLElement> RenderContext.headlessMenu(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    tag: TagFactory<C>,
+    tag: TagFactory<Tag<C>>,
     initialize: HeadlessMenu<C>.() -> Unit
-): C = tag(this, classes(classes, "relative"), id, scope) {
+): Tag<C> = tag(this, classes(classes, "relative"), id, scope) {
     HeadlessMenu(this, id).run {
         initialize(this)
         render()
@@ -250,6 +253,6 @@ fun RenderContext.headlessMenu(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessMenu<Div>.() -> Unit
-): Div = headlessMenu(classes, id, scope, RenderContext::div, initialize)
+    initialize: HeadlessMenu<HTMLDivElement>.() -> Unit
+): Tag<HTMLDivElement> = headlessMenu(classes, id, scope, RenderContext::div, initialize)
 
