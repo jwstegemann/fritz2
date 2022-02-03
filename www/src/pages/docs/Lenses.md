@@ -27,10 +27,10 @@ interface Lens<P,T> {
 ```
 
 You can easily use this interface by just implementing `get()` and `set()`. 
-fritz2 also offers the method `buildLens()` for a short-and-sweet-experience:
+fritz2 also offers the method `lens()` for a short-and-sweet-experience:
 
 ```kotlin
-val nameLens = buildLens("name", { it.name }, { person, value -> person.copy(name = value) })
+val nameLens = lens("name", { it.name }, { person, value -> person.copy(name = value) })
 ```
 
 No magic there. The first parameter sets an id for the `Lens`. When using `Lens`es with `SubStore`s, the `id` will be used to generate a valid html-id representing the path through your model.
