@@ -15,14 +15,14 @@ class EventType<T : Event>(val name: String)
  * Contains all javascript event types.
  * Take a look [here](https://www.w3schools.com/jsref/dom_obj_event.asp).
  *
- * Sometimes it is necessary to use a more generic type (like UIEvent or even Event)
+ * Sometimes it is necessary to use a more generic type (like [Event])
  * because the type that is offered to the listener is not always consistent
  * (on different browsers, different actions, etc.)
  */
 object Events {
 
     // The event occurs when the loading of a media is aborted
-    val abort = EventType<UIEvent>("abort")
+    val abort = EventType<Event>("abort")
 
     // The event occurs when a page has started printing, or if the print dialogue box has been closed
     val afterprint = EventType<Event>("afterprint")
@@ -31,7 +31,7 @@ object Events {
     val beforeprint = EventType<Event>("beforeprint")
 
     // The event occurs before the document is about to be unloaded
-    val beforeunload = EventType<UIEvent>("beforeunload")
+    val beforeunload = EventType<Event>("beforeunload")
 
     // The event occurs when an element loses focus
     val blur = EventType<FocusEvent>("blur")
@@ -122,7 +122,7 @@ object Events {
     val keyup = EventType<KeyboardEvent>("keyup")
 
     // The event occurs when an object has loaded
-    val load = EventType<UIEvent>("load")
+    val load = EventType<Event>("load")
 
     // The event occurs when media data is loaded
     val loadeddata = EventType<Event>("loadeddata")
@@ -194,13 +194,13 @@ object Events {
     val ratechange = EventType<Event>("ratechange")
 
     // The event occurs when the document view is resized
-    val resize = EventType<UIEvent>("resize")
+    val resize = EventType<Event>("resize")
 
     // The event occurs when a form is reset
     val reset = EventType<Event>("reset")
 
     // The event occurs when an element's scrollbar is being scrolled
-    val scroll = EventType<UIEvent>("scroll")
+    val scroll = EventType<Event>("scroll")
 
     // The event occurs when the user writes something in a search field (for <input="search">)
     val search = EventType<Event>("search")
@@ -212,7 +212,7 @@ object Events {
     val seeking = EventType<Event>("seeking")
 
     // The event occurs after the user selects some text (for <input> and <textarea>)
-    val select = EventType<UIEvent>("select")
+    val select = EventType<Event>("select")
 
     // The event occurs when a <menu> element is shown as a context menu
     val show = EventType<Event>("show")
@@ -248,7 +248,7 @@ object Events {
     val touchstart = EventType<TouchEvent>("touchstart")
 
     // The event occurs once a page has unloaded (for <body>)
-    val unload = EventType<UIEvent>("unload")
+    val unload = EventType<Event>("unload")
 
     // The event occurs when the volume of the media has changed (includes setting the volume to "mute")
     val volumechange = EventType<Event>("volumechange")
