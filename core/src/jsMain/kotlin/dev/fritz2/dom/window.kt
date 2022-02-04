@@ -7,6 +7,7 @@ import dev.fritz2.dom.html.Events
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.shareIn
@@ -14,7 +15,7 @@ import org.w3c.dom.Window
 import org.w3c.dom.events.Event
 
 /**
- * Represents all [Event]s of the browser [window] object as [WindowListener]s
+ * Represents all [Event]s of the browser [window] object as [Event]-flows
  */
 object Window {
     private val browserWindow: Window = window
@@ -22,11 +23,11 @@ object Window {
     private val scope = MainScope()
 
     /**
-     * Creates a [WindowListener] for the given [EventType]
+     * Creates an [Event]-flow for the given [EventType]
      *
      * @param type [EventType] to listen for
      */
-    private inline fun <reified E : Event> subscribe(type: EventType<E>): WindowListener<E> = WindowListener(
+    private inline fun <reified E : Event> subscribe(type: EventType<E>): Flow<E> =
         callbackFlow {
             val listener: (Event) -> Unit = {
                 if (it is E) {
@@ -39,7 +40,6 @@ object Window {
 
             awaitClose { browserWindow.removeEventListener(type.name, listener) }
         }.shareIn(scope, SharingStarted.Lazily)
-    )
 
     val aborts by lazy { subscribe(Events.abort) }
     val afterprints by lazy { subscribe(Events.afterprint) }

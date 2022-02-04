@@ -4,6 +4,7 @@ import dev.fritz2.dom.html.EventType
 import dev.fritz2.dom.html.Events
 import dev.fritz2.dom.html.WithJob
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
@@ -14,15 +15,15 @@ import org.w3c.dom.events.Event
 interface EventContext<out T : Element> : WithJob, WithEvents<T>
 
 /**
- * Offers [DomListener]s for all DOM-events available.
+ * Offers [Event]-flows for all DOM-events available.
  */
 interface WithEvents<out T : Element> : WithDomNode<T> {
     /**
-     * Creates a [DomListener] on a DOM-element.
+     * Creates an [Event]-flow on a DOM-element.
      *
      * @param type [EventType] to listen for
      */
-    private inline fun <reified E : Event> subscribe(type: EventType<E>): DomListener<E, T> = DomListener(
+    private inline fun <reified E : Event> subscribe(type: EventType<E>): Flow<E> =
         callbackFlow {
             val listener: (Event) -> Unit = {
                 if (it is E) {
@@ -34,7 +35,7 @@ interface WithEvents<out T : Element> : WithDomNode<T> {
             domNode.addEventListener(type.name, listener)
 
             awaitClose { domNode.removeEventListener(type.name, listener) }
-        })
+        }
 
     val aborts
         get() = subscribe(Events.abort)
