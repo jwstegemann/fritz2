@@ -5,11 +5,14 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import kotlinx.browser.document
 import kotlinx.browser.window
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.dom.clear
 import org.w3c.dom.Element
 import org.w3c.dom.Node
+import org.w3c.dom.events.Event
 
 /**
  * A marker to separate the layers of calls in the type-safe-builder pattern.
@@ -320,6 +323,24 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
     }
 
     /**
+     * Creates an [Listener] for the given event [name].
+     *
+     * @param name of the [Event] to listen for
+     */
+    override fun <X : Event> subscribe(name: String): Listener<X, E> = Listener(callbackFlow {
+        val listener: (Event) -> Unit = {
+            try {
+                trySend(it.unsafeCast<X>())
+            } catch (e: Exception) {
+                console.error("Unexpected type while listening for `$name` events in Window object", e)
+            }
+        }
+        domNode.addEventListener(name, listener)
+
+        awaitClose { domNode.removeEventListener(name, listener) }
+    })
+
+    /**
      * Sets all scope-entries as data-attributes to the element.
      */
     fun Scope.asDataAttr() {
@@ -349,8 +370,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param into target to render text-content to
      * @receiver text-content
      */
-    fun <T> Flow<T>.renderText(into: Tag<*>? = null) =
-        this.map { it.toString() }.renderText(into)
+    fun <T> Flow<T>.renderText(into: Tag<*>? = null) = this.map { it.toString() }.renderText(into)
 
     /**
      * Adds static text-content at this position
