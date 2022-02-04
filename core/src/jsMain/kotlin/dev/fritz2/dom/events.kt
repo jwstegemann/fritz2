@@ -2,17 +2,38 @@ package dev.fritz2.dom
 
 import dev.fritz2.dom.html.EventType
 import dev.fritz2.dom.html.Events
-import dev.fritz2.dom.html.WithJob
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
+import org.w3c.dom.events.EventTarget
 
 /**
- * Context for handling events
+ * Calls [Event.preventDefault] on the [Event]-flow.
  */
-interface EventContext<out T : Element> : WithJob, WithEvents<T>
+fun <E: Event> Flow<E>.preventDefault(): Flow<E> = this.map { it.preventDefault(); it }
+/**
+ * Calls [Event.stopImmediatePropagation] on the [Event]-flow.
+ */
+fun <E: Event> Flow<E>.stopImmediatePropagation(): Flow<E> = this.map { it.stopImmediatePropagation(); it }
+/**
+ * Calls [Event.stopPropagation] on the [Event]-flow.
+ */
+fun <E: Event> Flow<E>.stopPropagation(): Flow<E> = this.map { it.stopPropagation(); it }
+/**
+ * Calls [Event.composedPath] on the [Event]-flow.
+ */
+fun <E: Event> Flow<E>.composedPath(): Flow<Array<EventTarget>> = this.map { it.composedPath() }
+
+/**
+ * Merges multiple [Event]-flows
+ *
+ * @param events the [Flow]s to merge
+ */
+fun merge(vararg events: Flow<*>): Flow<Unit> =
+    kotlinx.coroutines.flow.merge(*events.map { it }.toTypedArray()).map {}
 
 /**
  * Offers [Event]-flows for all DOM-events available.

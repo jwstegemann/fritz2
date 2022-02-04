@@ -8,16 +8,14 @@ import org.w3c.dom.events.Event
 import org.w3c.files.FileList
 
 /**
- * Implementation of [Tag] to represent the JavaScript [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement) to Kotlin
+ * Implementation of [HtmlTag] for [HTMLInputElement]
  */
-class InputTag<out E : Element>(
-    tagName: String,
+class InputTag(
     id: String? = null,
     baseClass: String? = null,
     job: Job,
     scope: Scope
-) :
-    HtmlTag<HTMLInputElement>(tagName, id, baseClass, job, scope) {
+) : HtmlTag<HTMLInputElement>("input", id, baseClass, job, scope) {
 
     fun <X : Event> Flow<X>.values(): Flow<String> =
         this.map { it.target.unsafeCast<HTMLInputElement>().value }
@@ -35,14 +33,15 @@ class InputTag<out E : Element>(
         this.map { it.target.unsafeCast<HTMLInputElement>().checked }
 }
 
-class SelectTag<out E : Element>(
-    tagName: String,
+/**
+ * Implementation of [HtmlTag] for [HTMLSelectElement]
+ */
+class SelectTag(
     id: String? = null,
     baseClass: String? = null,
     job: Job,
     scope: Scope
-) :
-    HtmlTag<HTMLSelectElement>(tagName, id, baseClass, job, scope) {
+) : HtmlTag<HTMLSelectElement>("select", id, baseClass, job, scope) {
 
     fun <X : Event> Flow<X>.values(): Flow<String> =
         this.map { it.target.unsafeCast<HTMLSelectElement>().value }
@@ -63,27 +62,29 @@ class SelectTag<out E : Element>(
         }
 }
 
-class FieldSetTag<out E : Element>(
-    tagName: String,
+/**
+ * Implementation of [HtmlTag] for [HTMLFieldSetElement]
+ */
+class FieldSetTag(
     id: String? = null,
     baseClass: String? = null,
     job: Job,
     scope: Scope
-) :
-    HtmlTag<HTMLFieldSetElement>(tagName, id, baseClass, job, scope) {
+) : HtmlTag<HTMLFieldSetElement>("fieldset", id, baseClass, job, scope) {
 
     fun <X : Event> Flow<X>.values(): Flow<String> =
         this.map { it.target.unsafeCast<HTMLInputElement>().value }
 }
 
-class TextAreaTag<out E : Element>(
-    tagName: String,
+/**
+ * Implementation of [HtmlTag] for [HTMLTextAreaElement]
+ */
+class TextAreaTag(
     id: String? = null,
     baseClass: String? = null,
     job: Job,
     scope: Scope
-) :
-    HtmlTag<HTMLTextAreaElement>(tagName, id, baseClass, job, scope) {
+) : HtmlTag<HTMLTextAreaElement>("textarea", id, baseClass, job, scope) {
 
     fun <X : Event> Flow<X>.values(): Flow<String> =
         this.map { it.target.unsafeCast<HTMLTextAreaElement>().value }

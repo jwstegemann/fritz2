@@ -21,7 +21,7 @@ annotation class HtmlTagMarker
  * Represents a tag.
  * Sorry for the name, but we needed to delimit it from the [Element] it is wrapping.
  */
-interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> {
+interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
 
     /**
      * id of this [Tag]

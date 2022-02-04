@@ -250,9 +250,9 @@ interface RenderContext : WithJob, WithScope {
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: FieldSetTag<HTMLFieldSetElement>.() -> Unit
-    ): FieldSetTag<HTMLFieldSetElement> =
-        register(FieldSetTag("fieldset", id, baseClass, job, evalScope(scope)), content)
+        content: FieldSetTag.() -> Unit
+    ): FieldSetTag =
+        register(FieldSetTag(id, baseClass, job, evalScope(scope)), content)
 
     fun form(
         baseClass: String? = null,
@@ -338,9 +338,9 @@ interface RenderContext : WithJob, WithScope {
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: InputTag<HTMLInputElement>.() -> Unit
-    ): InputTag<HTMLInputElement> =
-        register(InputTag("input", id, baseClass, job, evalScope(scope)), content)
+        content: InputTag.() -> Unit
+    ): InputTag =
+        register(InputTag(id, baseClass, job, evalScope(scope)), content)
 
     fun li(
         baseClass: String? = null,
@@ -514,9 +514,9 @@ interface RenderContext : WithJob, WithScope {
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: SelectTag<HTMLSelectElement>.() -> Unit
-    ): SelectTag<HTMLSelectElement> =
-        register(SelectTag("select", id, baseClass, job, evalScope(scope)), content)
+        content: SelectTag.() -> Unit
+    ): SelectTag =
+        register(SelectTag(id, baseClass, job, evalScope(scope)), content)
 
     fun span(
         baseClass: String? = null,
@@ -610,9 +610,9 @@ interface RenderContext : WithJob, WithScope {
         baseClass: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: TextAreaTag<HTMLTextAreaElement>.() -> Unit
-    ): TextAreaTag<HTMLTextAreaElement> =
-        register(TextAreaTag("textarea", id, baseClass, job, evalScope(scope)), content)
+        content: TextAreaTag.() -> Unit
+    ): TextAreaTag =
+        register(TextAreaTag(id, baseClass, job, evalScope(scope)), content)
 
     fun time(
         baseClass: String? = null,

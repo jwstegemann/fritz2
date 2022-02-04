@@ -20,10 +20,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-class ListenerTest {
+class EventsTest {
 
     @Test
-    fun testListenerForChangeAndInputEvent() = runTest {
+    fun testChangeAndInputEvent() = runTest {
         initDocument()
 
         val inputId = Id.next()
@@ -58,7 +58,7 @@ class ListenerTest {
     }
 
     @Test
-    fun testListenerForClickEvent() = runTest {
+    fun testClickEvent() = runTest {
         initDocument()
 
         val resultId = Id.next()
@@ -104,7 +104,7 @@ class ListenerTest {
     }
 
     @Test
-    fun testListenerForMultipleClickEvent() = runTest {
+    fun testMultipleClickEvent() = runTest {
         initDocument()
 
         val resultId = Id.next()
@@ -163,7 +163,7 @@ class ListenerTest {
     }
 
     @Test
-    fun testListenerForKeyboardEvent() = runTest {
+    fun testKeyboardEvent() = runTest {
         initDocument()
 
         val resultId = Id.next()
