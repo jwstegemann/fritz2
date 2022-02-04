@@ -1,6 +1,6 @@
 package dev.fritz2.headless.components
 
-
+/*
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
@@ -294,3 +294,6 @@ fun RenderContext.headlessTabGroup(
     scope: (ScopeContext.() -> Unit) = {},
     initialize: HeadlessTabGroup<HTMLDivElement>.() -> Unit
 ): Tag<HTMLDivElement> = headlessTabGroup(classes, id, scope, RenderContext::div, initialize)
+
+
+ */

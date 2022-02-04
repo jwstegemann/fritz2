@@ -11,6 +11,7 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
+/*
 class HeadlessDisclosure<C : HTMLElement>(tag: Tag<C>, id: String?) :
     Tag<C> by tag,
     OpenClose by OpenCloseDelegate() {
@@ -114,3 +115,6 @@ fun RenderContext.headlessDisclosure(
     scope: (ScopeContext.() -> Unit) = {},
     initialize: HeadlessDisclosure<HTMLDivElement>.() -> Unit
 ): Tag<HTMLDivElement> = headlessDisclosure(classes, id, scope, RenderContext::div, initialize)
+
+
+ */

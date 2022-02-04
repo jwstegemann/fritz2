@@ -7,18 +7,22 @@ import dev.fritz2.routing.routerOf
 data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)
 
 val pages = mapOf<String, DemoPage>(
+    /*
     "listbox" to DemoPage(
         "Headless Listbox",
         """Listboxes are a great foundation for building custom, accessible select menus for your app, 
             |complete with robust support for keyboard navigation.""".trimMargin(),
         RenderContext::listboxDemo
     ),
+
+     */
     "checkboxGroup" to DemoPage(
         "Headless Checkboxgroup",
         """Checkbox groups give you the same functionality as native HTML checkbox inputs, without any of the styling. 
             |They're perfect for building out custom UIs for multi selection.""".trimMargin(),
         RenderContext::checkboxDemo
     ),
+    /*
     "radioGroup" to DemoPage(
         "Headless Radiogroup",
         """Radio Groups give you the same functionality as native HTML radio inputs, without any of the styling. 
@@ -43,12 +47,14 @@ val pages = mapOf<String, DemoPage>(
             | accordion panels.""".trimMargin(),
         RenderContext::disclosureDemo
     ),
+    */
     "popover" to DemoPage(
         "Headless Popover",
         """Popovers are perfect for floating panels with arbitrary content like navigation menus, mobile menus and
             | flyout menus.""".trimMargin(),
         RenderContext::popoverDemo
     ),
+    /*
     "tabs" to DemoPage(
         "Headless Tabs",
         """Easily create accessible, fully customizable tab interfaces, with robust focus management and keyboard
@@ -66,6 +72,8 @@ val pages = mapOf<String, DemoPage>(
             |semantics and keyboard navigation as native checkbox elements.""".trimMargin(),
         RenderContext::switchDemo
     )
+
+     */
 )
 
 fun RenderContext.overview() {

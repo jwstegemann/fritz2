@@ -1,5 +1,6 @@
 package dev.fritz2.headless.components
 
+/*
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.Window
@@ -93,3 +94,6 @@ fun HtmlTag<HTMLElement>.headlessTooltip(
     internalScope: (ScopeContext.() -> Unit) = {},
     initialize: HeadlessTooltip<HTMLDivElement>.() -> Unit
 ) = headlessTooltip(classes, id, internalScope, RenderContext::div, initialize)
+
+
+ */

@@ -1,11 +1,13 @@
 package dev.fritz2.headlessdemo
 
+/*
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.headless.components.headlessSwitch
 import dev.fritz2.headless.components.headlessSwitchWithLabel
 import dev.fritz2.headless.foundation.Aria
 import kotlinx.coroutines.flow.map
+
 
 fun RenderContext.switchDemo() {
 
@@ -57,3 +59,5 @@ fun RenderContext.switchDemo() {
     }
 
 }
+
+ */

@@ -1,5 +1,6 @@
 package dev.fritz2.headless.components
 
+/*
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
@@ -120,3 +121,6 @@ fun RenderContext.headlessModal(
     initialize(this)
     render()
 }
+
+
+ */

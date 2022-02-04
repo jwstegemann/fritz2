@@ -1,5 +1,5 @@
 package dev.fritz2.headlessdemo
-
+/*
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.headless.components.headlessRadioGroup
@@ -7,6 +7,7 @@ import dev.fritz2.headless.foundation.Aria
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLFieldSetElement
+
 
 fun RenderContext.radiogroupDemo() {
     data class Plan(val name: String, val ram: String, val cpus: String, val disk: String, val price: String)
@@ -72,3 +73,5 @@ fun RenderContext.radiogroupDemo() {
         }
     }
 }
+
+ */

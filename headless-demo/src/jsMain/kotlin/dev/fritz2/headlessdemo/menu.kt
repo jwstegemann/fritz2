@@ -1,5 +1,6 @@
 package dev.fritz2.headlessdemo
 
+/*
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.transition
@@ -86,3 +87,6 @@ fun RenderContext.menuDemo() {
         }
     }
 }
+
+
+ */

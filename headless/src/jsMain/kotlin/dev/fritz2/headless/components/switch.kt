@@ -1,5 +1,6 @@
 package dev.fritz2.headless.components
 
+/*
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.Aria
@@ -12,6 +13,7 @@ import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
+
 
 abstract class AbstractHeadlessSwitch<C : HTMLElement>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
@@ -207,3 +209,6 @@ fun RenderContext.headlessSwitch(
     initialize: HeadlessSwitch<HTMLButtonElement>.() -> Unit
 ): Tag<HTMLButtonElement> = headlessSwitch(classes, id, scope, RenderContext::button, initialize)
     .apply { attr("type", "button") }
+
+
+ */

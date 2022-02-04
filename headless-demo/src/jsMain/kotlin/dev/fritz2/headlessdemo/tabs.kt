@@ -1,5 +1,6 @@
 package dev.fritz2.headlessdemo
 
+/*
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.headless.components.headlessTabGroup
 import dev.fritz2.utils.classes
@@ -69,3 +70,5 @@ fun RenderContext.tabsDemo() {
         }
     }
 }
+
+ */

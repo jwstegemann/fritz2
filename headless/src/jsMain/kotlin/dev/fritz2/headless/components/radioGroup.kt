@@ -1,5 +1,7 @@
 package dev.fritz2.headless.components
 
+/*
+
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
@@ -13,6 +15,7 @@ import dev.fritz2.identification.Id
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
+
 
 class HeadlessRadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
@@ -251,3 +254,4 @@ fun <T> RenderContext.headlessRadioGroup(
     scope: (ScopeContext.() -> Unit) = {},
     initialize: HeadlessRadioGroup<HTMLDivElement, T>.() -> Unit
 ): Tag<HTMLDivElement> = headlessRadioGroup(classes, id, scope, RenderContext::div, initialize)
+*/

@@ -1,5 +1,5 @@
 package dev.fritz2.headless.components
-
+/*
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
@@ -8,7 +8,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.dom.html.shortcutOf
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.foundation.DatabindingHook
+//import dev.fritz2.headless.foundation.DatabindingHook
 import dev.fritz2.headless.foundation.hook
 import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
 import dev.fritz2.headless.validation.ComponentValidationMessage
@@ -308,3 +308,6 @@ fun <T> RenderContext.headlessListbox(
     initialize: HeadlessListbox<T, HTMLDivElement>.() -> Unit
 ): Tag<HTMLDivElement> = headlessListbox(classes, id, scope, RenderContext::div, initialize)
 
+
+
+ */

@@ -5,7 +5,6 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.foundation.hook
 import dev.fritz2.identification.Id
 import dev.fritz2.utils.classes
 import org.w3c.dom.HTMLButtonElement
@@ -14,8 +13,7 @@ import org.w3c.dom.HTMLElement
 
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessPopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag,
-    OpenClose by OpenCloseDelegate() {
+class HeadlessPopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
 
     val componentId: String by lazy { id ?: Id.next() }
 
@@ -33,7 +31,7 @@ class HeadlessPopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag
         if (!openClose.isSet) openClose(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
-        hook(openClose)
+        handleOpenCloseEvents()
     }.also { button = it }
 
     fun RenderContext.popOverButton(

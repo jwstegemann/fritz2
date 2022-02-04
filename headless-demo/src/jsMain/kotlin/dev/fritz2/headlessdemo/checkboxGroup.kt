@@ -21,7 +21,7 @@ fun RenderContext.checkboxDemo() {
     div("w-96") {
         headlessCheckboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
             value(subscriptions)
-            withKeyboardNavigation()
+            withKeyboardNavigation = true
             checkboxGroupLabel("text-base font-medium text-gray-900", tag = RenderContext::legend) {
                 +"Select some mailing lists"
             }

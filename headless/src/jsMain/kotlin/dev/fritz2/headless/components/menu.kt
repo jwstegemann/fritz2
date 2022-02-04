@@ -1,5 +1,6 @@
 package dev.fritz2.headless.components
 
+/*
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
@@ -256,3 +257,6 @@ fun RenderContext.headlessMenu(
     initialize: HeadlessMenu<HTMLDivElement>.() -> Unit
 ): Tag<HTMLDivElement> = headlessMenu(classes, id, scope, RenderContext::div, initialize)
 
+
+
+ */
