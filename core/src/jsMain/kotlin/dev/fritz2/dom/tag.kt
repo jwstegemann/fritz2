@@ -148,56 +148,6 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
     }
 
     /**
-     * Sets an attribute from a [List] of [String]s.
-     * Therefore, it concatenates the [String]s to the final value [String].
-     *
-     * @param name to use
-     * @param values for concatenation
-     * @param separator [String] for separation
-     */
-    fun attr(name: String, values: List<String>, separator: String = " ") {
-        domNode.setAttribute(name, values.joinToString(separator))
-    }
-
-    /**
-     * Sets an attribute from a [List] of [String]s.
-     * Therefore, it concatenates the [String]s to the final value [String].
-     *
-     * @param name to use
-     * @param values for concatenation
-     * @param separator [String] for separation
-     */
-    fun attr(name: String, values: Flow<List<String>>, separator: String = " ") {
-        mountSimple(job, values) { v -> attr(name, v, separator) }
-    }
-
-    /**
-     * Sets an attribute from a [Map] of [String]s and [Boolean]s.
-     * The key inside the [Map] getting only set when the corresponding value
-     * is true. Otherwise they get removed from the resulting [String].
-     *
-     * @param name to use
-     * @param values to use
-     * @param separator [String] for separation
-     */
-    fun attr(name: String, values: Map<String, Boolean>, separator: String = " ") {
-        domNode.setAttribute(name, values.filter { it.value }.keys.joinToString(separator))
-    }
-
-    /**
-     * Sets an attribute from a [Map] of [String]s and [Boolean]s.
-     * The key inside the [Map] getting only set when the corresponding value
-     * is true. Otherwise they get removed from the resulting [String].
-     *
-     * @param name to use
-     * @param values to use
-     * @param separator [String] for separation
-     */
-    fun attr(name: String, values: Flow<Map<String, Boolean>>, separator: String = " ") {
-        mountSimple(job, values) { v -> attr(name, v, separator) }
-    }
-
-    /**
      * adds a [String] of class names to the classes attribute of this [Tag]
      */
     fun addToClasses(classesToAdd: String)
@@ -279,44 +229,6 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
      */
     fun inlineStyle(value: Flow<String>) {
         attr("style", value)
-    }
-
-    /**
-     * Sets the *style* attribute from a [List] of [String]s.
-     *
-     * @param values [List] of [String]s
-     */
-    fun inlineStyle(values: List<String>) {
-        attr("style", values, separator = "; ")
-    }
-
-    /**
-     * Sets the *style* attribute from a [List] of [String]s.
-     *
-     * @param values [Flow] with [List] of [String]s
-     */
-    fun inlineStyle(values: Flow<List<String>>) {
-        attr("style", values, separator = "; ")
-    }
-
-    /**
-     * Sets the *style* attribute from a [Map] of [String] to [Boolean].
-     * If the value of the [Map]-entry is true, the key will be used inside the resulting [String].
-     *
-     * @param values [Map] with key to set and corresponding values to decide
-     */
-    fun inlineStyle(values: Map<String, Boolean>) {
-        attr("style", values, separator = "; ")
-    }
-
-    /**
-     * Sets the *style* attribute from a [Map] of [String] to [Boolean].
-     * If the value of the [Map]-entry is true, the key will be used inside the resulting [String].
-     *
-     * @param values [Flow] of [Map] with key to set and corresponding values to decide
-     */
-    fun inlineStyle(values: Flow<Map<String, Boolean>>) {
-        attr("style", values, separator = "; ")
     }
 
     /**
