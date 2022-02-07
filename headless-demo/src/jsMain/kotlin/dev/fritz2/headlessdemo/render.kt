@@ -121,8 +121,6 @@ fun renderTailwind(
     } ?: throw MountTargetNotFoundException("html document contains no element with id=$selector")
 }
 
-external fun require(module: String): dynamic
-
 /**
  * Creates a [RenderContext] suitable for tailwind styling and components for [Tag]s and mounts it to a [targetElement].
  *

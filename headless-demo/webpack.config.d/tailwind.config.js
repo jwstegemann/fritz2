@@ -1,13 +1,8 @@
-// tailwind.config.js
-const defaultTheme = require('../build/js/node_modules/tailwindcss/defaultTheme')
-
-module.exports = {
+let tailwind = {
     mode: 'jit', // undefined
-    purge: {
-        content: [
-            './kotlin/**/*.{js,html,css}',
-        ]
-    },
+    content: [
+        './kotlin/**/*.{js,html,css}',
+    ],
     darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
@@ -95,6 +90,30 @@ module.exports = {
     },
     variants: {},
     plugins: [
-        require('../build/js/node_modules/@tailwindcss/forms')
+        require('@tailwindcss/forms')
     ],
-}
+};
+
+
+// webpack tailwind css settings
+((config) => {
+    ((config) => {
+        config.entry.main.push('./kotlin/styles.css')
+        config.module.rules.push({
+            test: /\.css$/,
+            use: [
+                {
+                    loader: 'postcss-loader',
+                    options: {
+                        postcssOptions: {
+                            plugins: [
+                                require("tailwindcss")({ config: tailwind }),
+                                require("autoprefixer")
+                            ]
+                        }
+                    }
+                }
+            ]
+        })
+    })(config);
+})(config);
