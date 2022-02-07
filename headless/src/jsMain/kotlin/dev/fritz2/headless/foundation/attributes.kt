@@ -52,22 +52,6 @@ class RawAttributeHook<C : Tag<*>, T>(private val name: String) : Hook<C, Unit, 
     operator fun invoke(value: Flow<Boolean>, trueValue: String = "") {
         this.value = { attr(name, value, trueValue) }
     }
-
-    operator fun invoke(values: List<String>?, separator: String = " ") {
-        this.value = values?.let { v -> { attr(name, v, separator) } }
-    }
-
-    operator fun invoke(values: Flow<List<String>>, separator: String = " ") {
-        this.value = { attr(name, values, separator) }
-    }
-
-    operator fun invoke(values: Map<String, Boolean>?, separator: String = " ") {
-        this.value = values?.let { v -> { attr(name, v, separator) } }
-    }
-
-    operator fun invoke(values: Flow<Map<String, Boolean>>, separator: String = " ") {
-        this.value = { attr(name, values, separator) }
-    }
 }
 
 /**
