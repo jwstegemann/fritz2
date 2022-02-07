@@ -5,9 +5,9 @@ enum class ScrollBehavior {
     smooth
 }
 
-enum class ScrollMode(parameter: String) {
+enum class ScrollMode(val parameter: String) {
     ifNeeded("if-needed"),
-    always("if-needed")
+    always("always")
 }
 
 enum class ScrollPosition {
@@ -43,7 +43,7 @@ fun ScrollIntoViewOptionsInit(
 ): ScrollIntoViewOptions {
     val o = js("({})")
     if (behavior != null) o["behavior"] = behavior.name
-    if (mode != null) o["scrollMode"] = mode.name
+    if (mode != null) o["scrollMode"] = mode.parameter
     if (block != null) o["block"] = block.name
     if (inline != null) o["inline"] = inline.name
     return o
