@@ -5,13 +5,13 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.fill
 import dev.fritz2.dom.html.transition
 import dev.fritz2.dom.html.viewBox
-import dev.fritz2.headless.components.headlessPopOver
+import dev.fritz2.headless.components.popOver
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.utils.popper.Placement
 import kotlinx.coroutines.flow.map
 
 
-fun RenderContext.popoverDemo() {
+fun RenderContext.popOverDemo() {
     data class Solution(val name: String, val description: String, val icon: String)
 
     val solutions = listOf(
@@ -20,7 +20,7 @@ fun RenderContext.popoverDemo() {
         Solution("Reports", "Keep track of your growth", HeroIcons.archive)
     )
 
-    headlessPopOver {
+    popOver {
         popOverButton(
             """text-white group bg-indigo-600 px-3 py-2 rounded-md inline-flex items-center text-base 
                 | font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 hover:bg-indigo-700 

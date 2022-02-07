@@ -20,15 +20,15 @@ val pages = mapOf<String, DemoPage>(
         "Headless Checkboxgroup",
         """Checkbox groups give you the same functionality as native HTML checkbox inputs, without any of the styling. 
             |They're perfect for building out custom UIs for multi selection.""".trimMargin(),
-        RenderContext::checkboxDemo
+        RenderContext::checkboxGroupDemo
     ),
-    /*
     "radioGroup" to DemoPage(
         "Headless Radiogroup",
         """Radio Groups give you the same functionality as native HTML radio inputs, without any of the styling. 
             |They're perfect for building out custom UIs for single selection.""".trimMargin(),
-        RenderContext::radiogroupDemo
+        RenderContext::radioGroupDemo
     ),
+    /*
     "menu" to DemoPage(
         "Headless Menu",
         """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard
@@ -52,7 +52,7 @@ val pages = mapOf<String, DemoPage>(
         "Headless Popover",
         """Popovers are perfect for floating panels with arbitrary content like navigation menus, mobile menus and
             | flyout menus.""".trimMargin(),
-        RenderContext::popoverDemo
+        RenderContext::popOverDemo
     ),
     /*
     "tabs" to DemoPage(

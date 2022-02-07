@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 
-class HeadlessCheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
+class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
 
     private var label: Tag<HTMLElement>? = null
@@ -110,6 +110,7 @@ class HeadlessCheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explici
                 if (withKeyboardNavigation == null) withKeyboardNavigation = false
                 toggleEvent = changes
             }
+            if(withKeyboardNavigation == null) withKeyboardNavigation = true
             value.handler?.invoke(value.data.flatMapLatest { value ->
                 toggleEvent.map { if (value.contains(option)) value - option else value + option }
             })
@@ -190,22 +191,22 @@ class HeadlessCheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explici
     ): Tag<HTMLDivElement> = checkboxGroupOption(option, classes, id, scope, RenderContext::div, initialize)
 }
 
-fun <C : HTMLElement, T> RenderContext.headlessCheckboxGroup(
+fun <C : HTMLElement, T> RenderContext.checkboxGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: HeadlessCheckboxGroup<C, T>.() -> Unit
+    initialize: CheckboxGroup<C, T>.() -> Unit
 ): Tag<C> = tag(this, classes, id, scope) {
-    HeadlessCheckboxGroup<C, T>(this, id).run {
+    CheckboxGroup<C, T>(this, id).run {
         initialize()
         render()
     }
 }
 
-fun <T> RenderContext.headlessCheckboxGroup(
+fun <T> RenderContext.checkboxGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessCheckboxGroup<HTMLDivElement, T>.() -> Unit
-): Tag<HTMLDivElement> = headlessCheckboxGroup(classes, id, scope, RenderContext::div, initialize)
+    initialize: CheckboxGroup<HTMLDivElement, T>.() -> Unit
+): Tag<HTMLDivElement> = checkboxGroup(classes, id, scope, RenderContext::div, initialize)
