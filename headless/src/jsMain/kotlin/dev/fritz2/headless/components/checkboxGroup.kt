@@ -6,7 +6,6 @@ import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.DatabindingProperty
 import dev.fritz2.headless.foundation.TagFactory
-import dev.fritz2.headless.foundation.whenever
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.filter
