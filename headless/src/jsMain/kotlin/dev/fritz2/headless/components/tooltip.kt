@@ -1,6 +1,5 @@
 package dev.fritz2.headless.components
 
-/*
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.Window
@@ -8,7 +7,6 @@ import dev.fritz2.dom.html.*
 import dev.fritz2.dom.merge
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.OpenClose
-import dev.fritz2.headless.foundation.OpenCloseDelegate
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.utils.popper.*
 import dev.fritz2.identification.Id
@@ -19,10 +17,10 @@ import org.w3c.dom.HTMLElement
 
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessTooltip<C : HTMLElement>(
+class Tooltip<C : HTMLElement>(
     val target: Tag<HTMLElement>,
     tag: Tag<C>,
-) : Tag<C> by tag, OpenClose by OpenCloseDelegate() {
+) : Tag<C> by tag, OpenClose() {
 
     var placement: Placement = Placement.auto
     var showArrow: Boolean = true
@@ -72,28 +70,24 @@ class HeadlessTooltip<C : HTMLElement>(
     }
 }
 
-fun <C : HTMLElement> Tag<HTMLElement>.headlessTooltip(
+fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: HeadlessTooltip<C>.() -> Unit
+    initialize: Tooltip<C>.() -> Unit
 ) {
     tag(annex, classes, id ?: Id.next(), scope) {
-        HeadlessTooltip(this@headlessTooltip, this).run {
+        Tooltip(this@tooltip, this).run {
             initialize()
             render()
         }
     }
 }
 
-
-fun HtmlTag<HTMLElement>.headlessTooltip(
+fun HtmlTag<HTMLElement>.tooltip(
     classes: String? = null,
     id: String? = null,
     internalScope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessTooltip<HTMLDivElement>.() -> Unit
-) = headlessTooltip(classes, id, internalScope, RenderContext::div, initialize)
-
-
- */
+    initialize: Tooltip<HTMLDivElement>.() -> Unit
+) = tooltip(classes, id, internalScope, RenderContext::div, initialize)

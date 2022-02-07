@@ -4,12 +4,11 @@ import dev.fritz2.binding.SimpleHandler
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.shortcutOf
-
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
 
 
-abstract class OpenClose  {
+abstract class OpenClose {
 
     val openClose = DatabindingProperty<Boolean>()
 

@@ -9,6 +9,28 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
+/**
+ * This property keeps track of the external data-binding of some component.
+ *
+ * There are exactly four parts that defines a fully functional data-binding:
+ * - an [id]
+ * - the [data] [Flow] to react to change from the external data source
+ * - a [handler] to push changes to the external data holder
+ * - a [messages] [Flow] to react to the external validation state
+ *
+ * This property enables components to expose a uniform API to plug the external data source into a component.
+ *
+ * All four parts can be set individually by the basic [invoke] operation, but there is also a convenience [invoke]
+ * function, which accepts a [Store] of [T] and automatically grab the four aspects out of it.
+ *
+ * As only the [data] field is mandatory, this [Property] enables one-way-data-binding as well as two-way-data-binding.
+ *
+ * In order to deal nicely with [ComponentValidationMessage]s, there are two convenience functions to use:
+ * - [hasError] offers a [Boolean] [Flow] that simply signals if there are errors at all or not. This is especially
+ * useful for components, that display such messages. Often the DOM structure can be simplified if there is no message.
+ * - [validationMessages] offers a none `null` [Flow] which can be used to render the messages without nullability
+ * checks.
+ */
 class DatabindingProperty<T> : Property<DatabindingProperty.DataBinding<T>>() {
 
     data class DataBinding<T>(
