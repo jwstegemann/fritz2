@@ -4,7 +4,10 @@ package dev.fritz2.headless.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.*
+import dev.fritz2.dom.html.Keys
+import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.ScopeContext
+import dev.fritz2.dom.html.shortcutOf
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.Direction
 import dev.fritz2.headless.foundation.Orientation
@@ -14,11 +17,13 @@ import dev.fritz2.headless.hooks.hook
 import dev.fritz2.identification.Id
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
 
-class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) :
-    RenderContext by renderContext {
+class HeadlessTabGroup<C : HTMLElement>(tag : Tag<C>, id: String?) :
+    Tag<C> by tag {
 
     class TabDatabindingHook<C : Tag<HTMLElement>> : DatabindingHook<C, Unit, Int>() {
         override fun C.render(payload: Unit) {
@@ -34,7 +39,7 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
     }
 
     private val disabledTabs = DisabledTabStore(emptyList())
-    val value by lazy { TabDatabindingHook<C>() }
+    val value by lazy { TabDatabindingHook<Tag<C>>() }
 
     /**
      * This is a "gate-keeper" of the external data flow for all internal usage!
@@ -101,7 +106,7 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
 
     var orientation = Orientation.Horizontal
 
-    fun C.render() {
+    fun render() {
         attr("id", componentId)
         hook(value, Unit)
         // We need to emit all internal changes to the outside for realising two-way-data-binding!
@@ -109,9 +114,7 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
         selected handledBy ::selectDefaultTab
     }
 
-    inner class TabList<CL : Tag<HTMLElement>>(
-        val tag: CL
-    ) : RenderContext by tag {
+    inner class TabList<CL : HTMLElement>(tag: Tag<CL>) : Tag<CL> by tag {
 
         private var nextIndex = 0
 
@@ -122,7 +125,7 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
             if (orientation == Orientation.Horizontal) Keys.ArrowRight else Keys.ArrowUp
         }
 
-        fun CL.render() {
+        fun render() {
             attr("role", Aria.Role.tablist)
             attr(Aria.orientation, orientation.toString().lowercase())
 
@@ -150,16 +153,16 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
             } handledBy ::lastByKey
         }
 
-        inner class Tab<CT : Tag<HTMLElement>>(
-            val tag: CT,
+        inner class Tab<CT : HTMLElement>(
+            tag: Tag<CT>,
             val index: Int
-        ) : RenderContext by tag {
+        ) : Tag<CT> by tag {
 
             val disabled by lazy { disabledTabs.data.map { it[index] } }
 
             val disable by lazy { disabledTabs.disabledHandler(index) }
 
-            fun CT.render() {
+            fun render() {
                 attr("tabindex", selected.map { if (it == index) "0" else "-1" })
                 attr(Aria.selected, selected.map { it == index }.asString())
                 attr(Aria.controls, selected.map { if (it == index) panelId(index) else null })
@@ -172,10 +175,10 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
             }
         }
 
-        fun <CT : Tag<HTMLElement>> RenderContext.tab(
+        fun <CT : HTMLElement> RenderContext.tab(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CT>,
+            tag: TagFactory<Tag<CT>>,
             initialize: Tab<CT>.() -> Unit
         ) = tag(this, classes, tabId(nextIndex), scope) {
             disabledTabs.addTab()
@@ -188,16 +191,16 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
         fun RenderContext.tab(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            initialize: Tab<Button>.() -> Unit
+            initialize: Tab<HTMLButtonElement>.() -> Unit
         ) = tab(classes, scope, RenderContext::button, initialize)
     }
 
-    fun <CL : Tag<HTMLElement>> RenderContext.tabList(
+    fun <CL : HTMLElement> RenderContext.tabList(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CL>,
+        tag: TagFactory<Tag<CL>>,
         initialize: TabList<CL>.() -> Unit
-    ): CL = tag(this, classes, "$componentId-tab-list", scope) {
+    ): Tag<CL> = tag(this, classes, "$componentId-tab-list", scope) {
         TabList(this).run {
             initialize()
             render()
@@ -207,19 +210,19 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
     fun RenderContext.tabList(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: TabList<Div>.() -> Unit
-    ): Div = tabList(classes, scope, RenderContext::div, initialize)
+        initialize: TabList<HTMLDivElement>.() -> Unit
+    ): Tag<HTMLDivElement> = tabList(classes, scope, RenderContext::div, initialize)
 
 
-    inner class TabPanels<CP : Tag<HTMLElement>>(
-        val tag: CP
-    ) : RenderContext by tag {
+    inner class TabPanels<CP : HTMLElement>(
+        tag: Tag<CP>
+    ) : Tag<CP> by tag {
 
         private var panels = mutableListOf<RenderContext.() -> Tag<HTMLElement>>()
 
         private var nextIndex = 0
 
-        fun CP.render() {
+        fun render() {
             selected.render { index ->
                 if (index != -1) {
                     // the index is always in bounds, so no further check is needed! See `selected` for details.
@@ -228,11 +231,11 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
             }
         }
 
-        fun <CT : Tag<HTMLElement>> RenderContext.panel(
+        fun <CT : HTMLElement> RenderContext.panel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CT>,
-            content: CT.() -> Unit
+            tag: TagFactory<Tag<CT>>,
+            content: Tag<CT>.() -> Unit
         ) {
             val currentIndex = nextIndex
             panels.add {
@@ -249,16 +252,16 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
         fun RenderContext.panel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Div.() -> Unit
+            content: Tag<HTMLDivElement>.() -> Unit
         ) = panel(classes, scope, RenderContext::div, content)
     }
 
-    fun <CP : Tag<HTMLElement>> RenderContext.tabPanels(
+    fun <CP : HTMLElement> RenderContext.tabPanels(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CP>,
+        tag: TagFactory<Tag<CP>>,
         initialize: TabPanels<CP>.() -> Unit
-    ): CP = tag(this, classes, "$componentId-tab-panels", scope) {
+    ): Tag<CP> = tag(this, classes, "$componentId-tab-panels", scope) {
         TabPanels(this).run {
             initialize()
             render()
@@ -268,17 +271,17 @@ class HeadlessTabGroup<C : Tag<HTMLElement>>(val renderContext: C, id: String?) 
     fun RenderContext.tabPanels(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: TabPanels<Div>.() -> Unit
-    ): Div = tabPanels(classes, scope, RenderContext::div, initialize)
+        initialize: TabPanels<HTMLDivElement>.() -> Unit
+    ): Tag<HTMLDivElement> = tabPanels(classes, scope, RenderContext::div, initialize)
 }
 
-fun <C : Tag<HTMLElement>> RenderContext.headlessTabGroup(
+fun <C : HTMLElement> RenderContext.headlessTabGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    tag: TagFactory<C>,
+    tag: TagFactory<Tag<C>>,
     initialize: HeadlessTabGroup<C>.() -> Unit
-): C = tag(this, classes, id, scope) {
+): Tag<C> = tag(this, classes, id, scope) {
     HeadlessTabGroup(this, id).run {
         initialize()
         render()
@@ -289,5 +292,5 @@ fun RenderContext.headlessTabGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessTabGroup<Div>.() -> Unit
-): Div = headlessTabGroup(classes, id, scope, RenderContext::div, initialize)
+    initialize: HeadlessTabGroup<HTMLDivElement>.() -> Unit
+): Tag<HTMLDivElement> = headlessTabGroup(classes, id, scope, RenderContext::div, initialize)

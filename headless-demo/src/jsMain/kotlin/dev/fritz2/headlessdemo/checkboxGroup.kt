@@ -1,10 +1,11 @@
 package dev.fritz2.headlessdemo
 
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.html.FieldSet
 import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.fill
 import dev.fritz2.headless.components.headlessCheckboxGroup
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLFieldSetElement
 
 fun RenderContext.checkboxDemo() {
     data class Newsletter(val id: Int, val title: String, val description: String, val users: Int)
@@ -18,7 +19,7 @@ fun RenderContext.checkboxDemo() {
     val subscriptions = storeOf(emptyList<Newsletter>())
 
     div("w-96") {
-        headlessCheckboxGroup<FieldSet, Newsletter>(tag = RenderContext::fieldset) {
+        headlessCheckboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
             value(subscriptions)
             withKeyboardNavigation()
             checkboxGroupLabel("text-base font-medium text-gray-900", tag = RenderContext::legend) {

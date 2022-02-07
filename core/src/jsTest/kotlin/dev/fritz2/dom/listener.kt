@@ -1,9 +1,10 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.dom.html.Shortcut
 import dev.fritz2.dom.html.Keys
+import dev.fritz2.dom.html.Shortcut
 import dev.fritz2.dom.html.render
+import dev.fritz2.dom.html.value
 import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest

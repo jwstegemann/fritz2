@@ -2,7 +2,6 @@ package dev.fritz2.dom
 
 import dev.fritz2.binding.Patch
 import dev.fritz2.binding.mountSimple
-import dev.fritz2.dom.html.Div
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import dev.fritz2.dom.html.WithJob
