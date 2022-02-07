@@ -25,13 +25,13 @@ val pages = mapOf<String, DemoPage>(
             |They're perfect for building out custom UIs for single selection.""".trimMargin(),
         RenderContext::radioGroupDemo
     ),
-    /*
     "menu" to DemoPage(
         "Headless Menu",
         """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard
             | navigation.""".trimMargin(),
         RenderContext::menuDemo
     ),
+    /*
     "modal" to DemoPage(
         "Headless Modal",
         """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard

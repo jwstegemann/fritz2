@@ -1,5 +1,8 @@
 package dev.fritz2.headless.foundation
 
+import dev.fritz2.dom.Tag
+import org.w3c.dom.Element
+
 /*
 import dev.fritz2.dom.Tag
 import kotlinx.coroutines.flow.Flow
@@ -78,6 +81,7 @@ class RawAttributeHook<C : Tag<*>, T>(private val name: String) : Hook<C, Unit, 
         apply = { attr(name, values, separator) }
     }
 }
+ */
 
 /**
  * Sets an attribute only if it is not present yet.
@@ -93,4 +97,3 @@ fun <N : Element> Tag<N>.attrIfNotSet(name: String, value: String) {
     if (!domNode.hasAttribute(name)) attr(name, value)
 }
 
- */
