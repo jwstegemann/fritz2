@@ -59,20 +59,4 @@ class RawAttributeHook<C : Tag<*>, T>(private val name: String) : BasicHook<C, U
     operator fun invoke(value: Flow<Boolean>, trueValue: String = "") {
         apply = { attr(name, value, trueValue) }
     }
-
-    operator fun invoke(values: List<String>?, separator: String = " ") {
-        apply = values?.let { v-> { attr(name, v, separator) } }
-    }
-
-    operator fun invoke(values: Flow<List<String>>, separator: String = " ") {
-        apply = { attr(name, values, separator) }
-    }
-
-    operator fun invoke(values: Map<String, Boolean>?, separator: String = " ") {
-        apply = values?.let { v -> { attr(name, v, separator) } }
-    }
-
-    operator fun invoke(values: Flow<Map<String, Boolean>>, separator: String = " ") {
-        apply = { attr(name, values, separator) }
-    }
 }

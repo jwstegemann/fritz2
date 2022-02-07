@@ -35,8 +35,8 @@ class AttributeTests {
                 attr(name1, flowOf(value1))
                 attr("data-$name0", value0)
                 attr("data-$name1", flowOf(value1))
-                attr(name2, values2)
-                attr(name3, flowOf(values3))
+                attr(name2, values2.joinToString(" "))
+                attr(name3, flowOf(values3.joinToString(" ")))
 
                 attr("test4", flowOf(true))
                 attr("test5", flowOf(false))
@@ -57,8 +57,8 @@ class AttributeTests {
         assertEquals(value0, element.getAttribute("data-$name0"))
         assertEquals(value1, element.getAttribute("data-$name1"))
 
-        assertEquals(values2.joinToString(separator = " "), element.getAttribute(name2))
-        assertEquals(values3.joinToString(separator = " "), element.getAttribute(name3))
+        assertEquals(values2.joinToString(" "), element.getAttribute(name2))
+        assertEquals(values3.joinToString(" "), element.getAttribute(name3))
 
         assertEquals(value0, element.getAttribute(name0))
         assertEquals(value1, element.getAttribute(name1))
