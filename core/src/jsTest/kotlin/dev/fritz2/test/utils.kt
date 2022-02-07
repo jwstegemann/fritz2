@@ -7,8 +7,7 @@ import kotlinx.browser.document
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 
-@OptIn(DelicateCoroutinesApi::class)
-fun <T> runTest(block: suspend () -> T): dynamic = GlobalScope.promise {
+fun <T> runTest(block: suspend () -> T): dynamic = MainScope().promise {
     delay(50)
     block()
     delay(50)
