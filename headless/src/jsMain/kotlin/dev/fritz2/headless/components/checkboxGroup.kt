@@ -1,60 +1,23 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.dom.html.shortcutOf
-import dev.fritz2.headless.foundation.*
+import dev.fritz2.headless.foundation.Aria
+import dev.fritz2.headless.foundation.DatabindingProperty
+import dev.fritz2.headless.foundation.TagFactory
+import dev.fritz2.headless.foundation.whenever
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
-import org.w3c.dom.events.Event
-import org.w3c.dom.events.MouseEvent
-import kotlin.reflect.KProperty1
 
 class HeadlessCheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
-
-    /*
-    class DatabindingHook<T> : ItemDatabindingHook<Tag<HTMLElement>, T, List<T>>() {
-
-        override fun Tag<HTMLElement>.render(payload: T) {
-            //FIXME: anderen Weg finden
-            val event = clicks
-            handler?.invoke(data.flatMapLatest { value ->
-                event.map { if (value.contains(payload)) value - payload else value + payload }
-            })
-        }
-
-        override fun isSelected(item: T): Flow<Boolean> = data.map { it.contains(item) }
-    }
-
-     */
-
-    /*
-    class KeyboardNavigationHook<T>(
-        private val value: DatabindingHook<T>
-    ) : Hook<Tag<HTMLElement>, Unit, T>() {
-        operator fun invoke() = this.also { hook ->
-            apply = { options ->
-                hook.value.handler?.invoke(
-                    hook.value.data.flatMapLatest { value ->
-                        keydowns.events.filter { shortcutOf(it) == Keys.Space }.map {
-                            it.stopImmediatePropagation()
-                            it.preventDefault()
-                            if (value.contains(options)) value - options else value + options
-                        }
-                    })
-            }
-        }
-    }
-
-     */
 
     private var label: Tag<HTMLElement>? = null
     private var validationMessages: Tag<HTMLElement>? = null
@@ -124,14 +87,14 @@ class HeadlessCheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explici
                 attr(
                     Aria.describedby,
                     value.validationMessages.map { messages ->
-                        if (messages.isNotEmpty()) validationMessages?.id else descriptions.map { it.id }
-                            .joinToString(" ")
+                        if (messages.isNotEmpty()) validationMessages?.id
+                        else descriptions.map { it.id }.joinToString(" ")
                     }
                 )
             }
         }
 
-        private fun <CT : HTMLElement> RenderContext.buildCheckboxGroupOptionToggle(
+        fun <CT : HTMLElement> RenderContext.checkboxGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
@@ -141,12 +104,17 @@ class HeadlessCheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explici
             attr("role", Aria.Role.checkbox)
             attr(Aria.checked, selected.asString())
             attr("tabindex", "0")
-            /*
-            value.handler?.invoke(value.data.flatMapLatest { value ->
-                event(this).map { if (value.contains(option)) value - option else value + option }
-            })
-
-             */
+            if (domNode is HTMLInputElement) {
+                if (domNode.getAttribute("name") == null) {
+                    attr("name", componentId)
+                }
+                if (withKeyboardNavigation == null) withKeyboardNavigation = false
+            }
+            (if (domNode is HTMLInputElement) changes else clicks).let { event ->
+                value.handler?.invoke(value.data.flatMapLatest { value ->
+                    event.map { if (value.contains(option)) value - option else value + option }
+                })
+            }
             if (withKeyboardNavigation != null) {
                 value.handler?.invoke(
                     value.data.flatMapLatest { value ->
@@ -159,31 +127,11 @@ class HeadlessCheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explici
             }
         }.also { toggle = it }
 
-        fun <CT : HTMLElement> RenderContext.checkboxGroupOptionToggle(
-            classes: String? = null,
-            scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<Tag<CT>>,
-            content: Tag<CT>.() -> Unit
-        ) = buildCheckboxGroupOptionToggle(classes, scope, tag, content)
-
-        // TODO: Make this the default factory instead of <div>?
-        fun <CT : HTMLInputElement> RenderContext.checkboxGroupOptionToggle(
-            classes: String? = null,
-            scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<Tag<CT>>,
-            content: Tag<CT>.() -> Unit
-        ) = buildCheckboxGroupOptionToggle(classes, scope, tag, content).apply {
-            if (domNode.getAttribute("name") == null) {
-                attr("name", componentId)
-            }
-            if (withKeyboardNavigation == null) withKeyboardNavigation = false
-        }
-
         fun RenderContext.checkboxGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             content: Tag<HTMLDivElement>.() -> Unit
-        ) = buildCheckboxGroupOptionToggle(classes, scope, RenderContext::div, content)
+        ) = checkboxGroupOptionToggle(classes, scope, RenderContext::div, content)
 
         fun <CL : HTMLElement> RenderContext.checkboxGroupOptionLabel(
             classes: String? = null,
