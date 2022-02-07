@@ -7,15 +7,12 @@ import dev.fritz2.routing.routerOf
 data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)
 
 val pages = mapOf<String, DemoPage>(
-    /*
     "listbox" to DemoPage(
         "Headless Listbox",
         """Listboxes are a great foundation for building custom, accessible select menus for your app, 
             |complete with robust support for keyboard navigation.""".trimMargin(),
         RenderContext::listboxDemo
     ),
-
-     */
     "checkboxGroup" to DemoPage(
         "Headless Checkboxgroup",
         """Checkbox groups give you the same functionality as native HTML checkbox inputs, without any of the styling. 

@@ -99,7 +99,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
 
         private var toggle: Tag<HTMLElement>? = null
         private var label: Tag<HTMLElement>? = null
-        private var description: Tag<HTMLElement>? = null
+        private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
         private var toggleEvent: DomListener<*, *> = clicks
 
         val optionId = "$componentId-${id ?: Id.next()}"
@@ -110,7 +110,8 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
                 attr(
                     Aria.describedby,
                     value.validationMessages.map { messages ->
-                        if (messages.isNotEmpty()) validationMessages?.id else description?.id
+                        if (messages.isNotEmpty()) validationMessages?.id
+                        else descriptions.map { it.id }.joinToString(" ")
                     }
                 )
             }
@@ -133,7 +134,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
                 if (withKeyboardNavigation == null) withKeyboardNavigation = false
                 toggleEvent = changes
             }
-            if(withKeyboardNavigation == null) withKeyboardNavigation = true
+            if (withKeyboardNavigation == null) withKeyboardNavigation = true
             value.handler?.invoke(toggleEvent.map { option })
             active handledBy {
                 if (it && domNode != document.activeElement) {
@@ -171,7 +172,13 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CL>>,
             content: Tag<CL>.() -> Unit
-        ) = tag(this, classes, "$optionId-description", scope, content).also { description = it }
+        ) = tag(
+            this,
+            classes,
+            "$optionId-description-${descriptions.size}",
+            scope,
+            content
+        ).also { descriptions.add(it) }
 
         fun RenderContext.radioGroupOptionDescription(
             classes: String? = null,

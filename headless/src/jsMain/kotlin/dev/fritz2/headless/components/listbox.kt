@@ -1,5 +1,5 @@
 package dev.fritz2.headless.components
-/*
+
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
@@ -8,8 +8,7 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.dom.html.shortcutOf
 import dev.fritz2.headless.foundation.*
-//import dev.fritz2.headless.foundation.DatabindingHook
-import dev.fritz2.headless.foundation.hook
+import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
 import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.identification.Id
@@ -22,16 +21,9 @@ import org.w3c.dom.HTMLLabelElement
 import kotlin.math.max
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessListbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag,
-    OpenClose by OpenCloseDelegate() {
+class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
 
-    class ListboxDatabindingHook<T> : DatabindingHook<Tag<HTMLElement>, T, T>() {
-
-        override fun Tag<HTMLElement>.render(payload: T) {
-        }
-    }
-
-    val value = ListboxDatabindingHook<T>()
+    val value = DatabindingProperty<T>()
     val componentId: String by lazy { id ?: value.id ?: Id.next() }
 
     private var button: Tag<HTMLElement>? = null
@@ -72,7 +64,7 @@ class HeadlessListbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by 
         if (!openClose.isSet) openClose(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
-        hook(openClose)
+        handleOpenCloseEvents()
     }.also { button = it }
 
     fun RenderContext.listboxButton(
@@ -121,7 +113,7 @@ class HeadlessListbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by 
         tagFactory: TagFactory<Tag<CI>>,
         classes: String?,
         scope: ScopeContext.() -> Unit
-    ) : PopUpPanel<CI>(renderContext, tagFactory, classes, "$componentId-items", scope, this@HeadlessListbox, button) {
+    ) : PopUpPanel<CI>(renderContext, tagFactory, classes, "$componentId-items", scope, this@Listbox, button) {
 
         private fun nextItem(currentIndex: Int, direction: Direction, entries: List<ListboxEntry<T>>): Int =
             when (direction) {
@@ -288,26 +280,22 @@ class HeadlessListbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by 
 }
 
 
-fun <T, C : HTMLElement> RenderContext.headlessListbox(
+fun <T, C : HTMLElement> RenderContext.listbox(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: HeadlessListbox<T, C>.() -> Unit
+    initialize: Listbox<T, C>.() -> Unit
 ): Tag<C> = tag(this, classes(classes, "relative"), id, scope) {
-    HeadlessListbox<T, C>(this, id).run {
+    Listbox<T, C>(this, id).run {
         initialize(this)
         render()
     }
 }
 
-fun <T> RenderContext.headlessListbox(
+fun <T> RenderContext.listbox(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessListbox<T, HTMLDivElement>.() -> Unit
-): Tag<HTMLDivElement> = headlessListbox(classes, id, scope, RenderContext::div, initialize)
-
-
-
- */
+    initialize: Listbox<T, HTMLDivElement>.() -> Unit
+): Tag<HTMLDivElement> = listbox(classes, id, scope, RenderContext::div, initialize)
