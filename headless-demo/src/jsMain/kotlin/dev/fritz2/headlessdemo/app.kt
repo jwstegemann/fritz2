@@ -37,14 +37,12 @@ val pages = mapOf<String, DemoPage>(
             | navigation.""".trimMargin(),
         RenderContext::modalDemo
     ),
-    /*
     "disclosure" to DemoPage(
         "Headless Disclosure",
         """A simple, accessible foundation for building custom UIs that show and hide content, like togglable
             | accordion panels.""".trimMargin(),
         RenderContext::disclosureDemo
     ),
-    */
     "popover" to DemoPage(
         "Headless Popover",
         """Popovers are perfect for floating panels with arbitrary content like navigation menus, mobile menus and

@@ -5,16 +5,12 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.foundation.hook
 import dev.fritz2.identification.Id
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
-/*
-class HeadlessDisclosure<C : HTMLElement>(tag: Tag<C>, id: String?) :
-    Tag<C> by tag,
-    OpenClose by OpenCloseDelegate() {
+class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
 
     val componentId: String by lazy { id ?: Id.next() }
 
@@ -38,7 +34,7 @@ class HeadlessDisclosure<C : HTMLElement>(tag: Tag<C>, id: String?) :
         content()
         attr(Aria.expanded, opened.asString())
         attr("tabindex", "0")
-        hook(openClose)
+        handleOpenCloseEvents()
     }.also { button = it }
 
     fun RenderContext.disclosureButton(
@@ -96,25 +92,22 @@ class HeadlessDisclosure<C : HTMLElement>(tag: Tag<C>, id: String?) :
     ) = disclosurePanel(classes, scope, RenderContext::div, initialize)
 }
 
-fun <C : HTMLElement> RenderContext.headlessDisclosure(
+fun <C : HTMLElement> RenderContext.disclosure(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: HeadlessDisclosure<C>.() -> Unit
+    initialize: Disclosure<C>.() -> Unit
 ): Tag<C> = tag(this, classes, id, scope) {
-    HeadlessDisclosure(this, id).run {
+    Disclosure(this, id).run {
         initialize()
         render()
     }
 }
 
-fun RenderContext.headlessDisclosure(
+fun RenderContext.disclosure(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessDisclosure<HTMLDivElement>.() -> Unit
-): Tag<HTMLDivElement> = headlessDisclosure(classes, id, scope, RenderContext::div, initialize)
-
-
- */
+    initialize: Disclosure<HTMLDivElement>.() -> Unit
+): Tag<HTMLDivElement> = disclosure(classes, id, scope, RenderContext::div, initialize)
