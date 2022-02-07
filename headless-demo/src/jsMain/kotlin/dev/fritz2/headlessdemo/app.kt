@@ -114,7 +114,6 @@ fun RenderContext.overview() {
 }
 
 fun main() {
-//    require("./styles.css")
 
     val router = routerOf("")
 
