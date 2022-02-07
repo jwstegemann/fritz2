@@ -1,6 +1,5 @@
 package dev.fritz2.headless.components
 
-/*
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
@@ -11,8 +10,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLHeadingElement
 import org.w3c.dom.HTMLParagraphElement
 
-class HeadlessModal(val renderContext: RenderContext) : RenderContext by renderContext,
-    OpenClose by OpenCloseDelegate() {
+class Modal(val renderContext: RenderContext) : RenderContext by renderContext, OpenClose() {
 
     var restoreFocus: Boolean = true
     var setInitialFocus: Boolean = true
@@ -115,12 +113,9 @@ class HeadlessModal(val renderContext: RenderContext) : RenderContext by renderC
 }
 
 
-fun RenderContext.headlessModal(
-    initialize: HeadlessModal.() -> Unit
-) = HeadlessModal(this).run {
+fun RenderContext.modal(
+    initialize: Modal.() -> Unit
+) = Modal(this).run {
     initialize(this)
     render()
 }
-
-
- */

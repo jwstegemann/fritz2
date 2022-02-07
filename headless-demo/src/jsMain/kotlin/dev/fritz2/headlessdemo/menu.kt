@@ -27,7 +27,6 @@ fun RenderContext.menuDemo() {
     div("w-72 mb-4") {
         div("w-full h-72") {
             menu("inline-block text-left") {
-                openClose(storeOf(false))
                 div {
                     menuButton(
                         """inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-black 

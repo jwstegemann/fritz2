@@ -26,7 +26,6 @@ fun RenderContext.listboxDemo() {
 
     div("w-72 mb-4") {
         listbox<String>("h-72") {
-            openClose(storeOf(false))
             value(bestCharacter)
             listboxLabel("sr-only", tag = RenderContext::span) { +"Choose the best Star Wars character" }
             listboxButton(
