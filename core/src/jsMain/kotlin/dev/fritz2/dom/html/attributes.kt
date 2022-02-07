@@ -86,8 +86,8 @@ fun Tag<HTMLLinkElement>.crossOrigin(value: String?) = attr("crossorigin", value
 fun Tag<HTMLLinkElement>.crossOrigin(value: Flow<String?>) = attr("crossorigin", value)
 fun Tag<HTMLLinkElement>.rel(value: String) = attr("rel", value)
 fun Tag<HTMLLinkElement>.rel(value: Flow<String>) = attr("rel", value)
-fun Tag<HTMLLinkElement>.`as`(value: RequestDestination) = attr("`as`", value)
-fun Tag<HTMLLinkElement>.`as`(value: Flow<RequestDestination>) = attr("`as`", value)
+fun Tag<HTMLLinkElement>.`as`(value: RequestDestination) = attr("as", value)
+fun Tag<HTMLLinkElement>.`as`(value: Flow<RequestDestination>) = attr("as", value)
 fun Tag<HTMLLinkElement>.media(value: String) = attr("media", value)
 fun Tag<HTMLLinkElement>.media(value: Flow<String>) = attr("media", value)
 fun Tag<HTMLLinkElement>.nonce(value: String) = attr("nonce", value)
@@ -616,8 +616,8 @@ fun Tag<HTMLFormElement>.target(value: String) = attr("target", value)
 fun Tag<HTMLFormElement>.target(value: Flow<String>) = attr("target", value)
 
 // HTMLLabelElement attributes
-fun Tag<HTMLLabelElement>.`for`(value: String) = attr("`for`", value)
-fun Tag<HTMLLabelElement>.`for`(value: Flow<String>) = attr("`for`", value)
+fun Tag<HTMLLabelElement>.`for`(value: String) = attr("for", value)
+fun Tag<HTMLLabelElement>.`for`(value: Flow<String>) = attr("for", value)
 
 // HTMLInputElement attributes
 fun Tag<HTMLInputElement>.accept(value: String) = attr("accept", value)
@@ -910,8 +910,8 @@ fun Tag<HTMLScriptElement>.nonce(value: String) = attr("nonce", value)
 fun Tag<HTMLScriptElement>.nonce(value: Flow<String>) = attr("nonce", value)
 fun Tag<HTMLScriptElement>.event(value: String) = attr("event", value)
 fun Tag<HTMLScriptElement>.event(value: Flow<String>) = attr("event", value)
-fun Tag<HTMLScriptElement>.`for`(value: String) = attr("`for`", value)
-fun Tag<HTMLScriptElement>.`for`(value: Flow<String>) = attr("`for`", value)
+fun Tag<HTMLScriptElement>.`for`(value: String) = attr("for", value)
+fun Tag<HTMLScriptElement>.`for`(value: Flow<String>) = attr("for", value)
 
 // HTMLSlotElement attributes
 fun Tag<HTMLSlotElement>.name(value: String) = attr("name", value)
