@@ -1,4 +1,4 @@
-let tailwind = {
+const tailwind = {
     mode: 'jit', // undefined
     content: [
         './kotlin/**/*.{js,html,css}',
@@ -102,6 +102,8 @@ let tailwind = {
         config.module.rules.push({
             test: /\.css$/,
             use: [
+                { loader: 'style-loader' },
+                { loader: 'css-loader' },
                 {
                     loader: 'postcss-loader',
                     options: {
@@ -114,6 +116,6 @@ let tailwind = {
                     }
                 }
             ]
-        })
+        });
     })(config);
 })(config);
