@@ -3,11 +3,9 @@ const defaultTheme = require('../build/js/node_modules/tailwindcss/defaultTheme'
 
 module.exports = {
     mode: 'jit', // undefined
-    purge: {
-        content: [
-            './kotlin/**/*.{js,html,css}',
-        ]
-    },
+    content: [
+        './kotlin/**/*.{js,html,css}',
+    ],
     darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
