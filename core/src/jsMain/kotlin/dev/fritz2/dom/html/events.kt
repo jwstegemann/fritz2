@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package dev.fritz2.dom.html
 
 import dev.fritz2.dom.html.Keys.NamedKeys
