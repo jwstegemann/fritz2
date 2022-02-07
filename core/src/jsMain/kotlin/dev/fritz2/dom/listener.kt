@@ -1,9 +1,8 @@
 package dev.fritz2.dom
 
-import dev.fritz2.dom.html.Shortcut
 import dev.fritz2.dom.html.Keys
+import dev.fritz2.dom.html.Shortcut
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.*

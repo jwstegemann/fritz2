@@ -7,19 +7,21 @@ import dev.fritz2.headless.foundation.utils.popper.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
-abstract class PopUpPanel<C : Tag<HTMLElement>>(
+//FIXME: rename file to match class name
+abstract class PopUpPanel<C : HTMLElement>(
     renderContext: RenderContext,
-    tagFactory: TagFactory<C>,
+    tagFactory: TagFactory<Tag<C>>,
     classes: String?,
     id: String?,
     scope: ScopeContext.() -> Unit,
     private val openCloseDelegate: OpenClose,
     private val reference: Tag<HTMLElement>?,
-    private val popperDiv: Div = renderContext.div("invisible") {}, //never add other classes to popperDiv, they will be overridden
-    val tag: C = tagFactory(popperDiv, classes, id, scope) {}
-) : RenderContext by tag {
+    private val popperDiv: HtmlTag<HTMLDivElement> = renderContext.div("invisible") {}, //never add other classes to popperDiv, they will be overridden
+    tag: Tag<C> = tagFactory(popperDiv, classes, id, scope) {}
+) : Tag<C> by tag {
 
     var placement: Placement = Placement.auto
     var strategy: Strategy = Strategy.absolute
@@ -35,7 +37,7 @@ abstract class PopUpPanel<C : Tag<HTMLElement>>(
     }
 
     fun closeOnBlur() {
-        tag.blurs.events.mapNotNull {
+        blurs.events.mapNotNull {
             if (it.relatedTarget == reference?.domNode) null else Unit
         } handledBy openCloseDelegate.close
     }
@@ -70,15 +72,15 @@ abstract class PopUpPanel<C : Tag<HTMLElement>>(
             if (openCloseDelegate.openClose.isSet) {
                 reference.apply {
                     attr(Aria.labelledby, reference.id)
-                    attr(Aria.controls, tag.id.whenever(openCloseDelegate.opened))
+                    attr(Aria.controls, id.whenever(openCloseDelegate.opened))
                     attr(Aria.haspopup, "true")
                 }
                 openCloseDelegate.opened handledBy {
                     if (it) {
                         popperDiv.domNode.className = "popper visible w-full"
-                        tag.setFocus()
+                        setFocus()
                     } else {
-                        tag.waitForAnimation()
+                        this@PopUpPanel.waitForAnimation()
                         popperDiv.domNode.className = "popper invisible w-full"
                     }
                 }

@@ -1,8 +1,10 @@
 package dev.fritz2.headless.components
 
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.*
-import dev.fritz2.identification.Id
+import dev.fritz2.dom.html.Keys
+import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.ScopeContext
+import dev.fritz2.dom.html.shortcutOf
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.whenever
@@ -10,19 +12,21 @@ import dev.fritz2.headless.hooks.BasicHook
 import dev.fritz2.headless.hooks.ItemDatabindingHook
 import dev.fritz2.headless.hooks.hook
 import dev.fritz2.headless.validation.ComponentValidationMessage
+import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.HTMLElement
+import org.w3c.dom.*
 
-class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private val id: String?) :
-    RenderContext by renderContext {
+class HeadlessCheckboxGroup<C: HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
+    Tag<C> by tag {
 
     class DatabindingHook<T> : ItemDatabindingHook<Tag<HTMLElement>, T, List<T>>() {
 
         override fun Tag<HTMLElement>.render(payload: T) {
-            val event = if (this is Input) changes else clicks
+            //FIXME: anderen Weg finden
+            val event = clicks
             handler?.invoke(data.flatMapLatest { value ->
                 event.map { if (value.contains(payload)) value - payload else value + payload }
             })
@@ -53,35 +57,33 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
 
     val value = DatabindingHook<T>()
     val withKeyboardNavigation = KeyboardNavigationHook(value)
-    val componentId: String by lazy { id ?: value.id ?: Id.next() }
-
-    var options: List<T> = emptyList()
-
-    fun C.render() {
+    val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
+    
+    fun render() {
         attr("id", componentId)
         attr("role", Aria.Role.group)
         attr(Aria.invalid, "true".whenever(value.hasError))
         label?.let { attr(Aria.labelledby, it.id) }
     }
 
-    fun <CL : Tag<HTMLElement>> RenderContext.checkboxGroupLabel(
+    fun <CL :HTMLElement> RenderContext.checkboxGroupLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CL>,
-        content: CL.() -> Unit
+        tag: TagFactory<Tag<CL>>,
+        content: Tag<CL>.() -> Unit
     ) = tag(this, classes, "$componentId-label", scope, content).also { label = it }
 
     fun RenderContext.checkboxGroupLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Label.() -> Unit
+        content: Tag<HTMLLabelElement>.() -> Unit
     ) = checkboxGroupLabel(classes, scope, RenderContext::label, content)
 
-    fun <CV : Tag<HTMLElement>> RenderContext.checkboxGroupValidationMessages(
+    fun <CV : HTMLElement> RenderContext.checkboxGroupValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CV>,
-        content: CV.(List<ComponentValidationMessage>) -> Unit
+        tag: TagFactory<Tag<CV>>,
+        content: Tag<CV>.(List<ComponentValidationMessage>) -> Unit
     ) = value.validationMessages.render { messages ->
         if (messages.isNotEmpty()) {
             tag(this, classes, "$componentId-validation-messages", scope, { })
@@ -94,12 +96,12 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
     fun RenderContext.checkboxGroupValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Div.(List<ComponentValidationMessage>) -> Unit
+        content: Tag<HTMLDivElement>.(List<ComponentValidationMessage>) -> Unit
     ) = checkboxGroupValidationMessages(classes, scope, RenderContext::div, content)
 
     // TODO: Make it rather a Fragment than a Tag
-    inner class CheckboxGroupOption<CO : Tag<HTMLElement>>(
-        val tag: CO,
+    inner class CheckboxGroupOption<CO : HTMLElement>(
+        tag: Tag<CO>,
         private val option: T,
         id: String?
     ) : RenderContext by tag {
@@ -112,7 +114,7 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
 
         val optionId = "$componentId-${id ?: Id.next()}"
 
-        fun CO.render() {
+        fun render() {
             toggle?.apply {
                 label?.let { attr(Aria.labelledby, it.id) }
                 attr(
@@ -125,50 +127,67 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
             }
         }
 
-        fun <CT : Tag<HTMLElement>> RenderContext.checkboxGroupOptionToggle(
+
+
+        private fun <CT : HTMLElement> RenderContext.buildCheckboxGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CT>,
-            content: CT.() -> Unit
+            tag: TagFactory<Tag<CT>>,
+            content: Tag<CT>.() -> Unit
         ) = tag(this, classes, optionId, scope) {
             content()
             attr("role", Aria.Role.checkbox)
             attr(Aria.checked, selected.asString())
             attr("tabindex", "0")
-            if (this is Input && domNode.getAttribute("name") == null) {
-                attr("name", componentId)
-            }
             hook(value, option)
             hook(withKeyboardNavigation, option)
         }.also { toggle = it }
 
+        fun <CT : HTMLElement> RenderContext.checkboxGroupOptionToggle(
+            classes: String? = null,
+            scope: (ScopeContext.() -> Unit) = {},
+            tag: TagFactory<Tag<CT>>,
+            content: Tag<CT>.() -> Unit
+        ) = buildCheckboxGroupOptionToggle(classes, scope, tag, content)
+
+        fun <CT : HTMLInputElement> RenderContext.checkboxGroupOptionToggle(
+            classes: String? = null,
+            scope: (ScopeContext.() -> Unit) = {},
+            tag: TagFactory<Tag<CT>>,
+            content: Tag<CT>.() -> Unit
+        ) = buildCheckboxGroupOptionToggle(classes, scope, tag, content).apply {
+            if (domNode.getAttribute("name") == null) {
+                attr("name", componentId)
+            }
+        }
+
         fun RenderContext.checkboxGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Div.() -> Unit
-        ) = checkboxGroupOptionToggle(classes, scope, RenderContext::div, content)
+            content: Tag<HTMLDivElement>.() -> Unit
+        ) = buildCheckboxGroupOptionToggle(classes, scope, RenderContext::div, content)
 
-        fun <CL : Tag<HTMLElement>> RenderContext.checkboxGroupOptionLabel(
+        fun <CL : HTMLElement> RenderContext.checkboxGroupOptionLabel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CL>,
-            content: CL.() -> Unit
+            tag: TagFactory<Tag<CL>>,
+            content: Tag<CL>.() -> Unit
         ) = tag(this, classes, "$optionId-label", scope, content).also { label = it }
 
         fun RenderContext.checkboxGroupOptionLabel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Label.() -> Unit
+            content: Tag<HTMLLabelElement>.() -> Unit
         ) = checkboxGroupOptionLabel(classes, scope, RenderContext::label) {
             content()
-            `for`(optionId)
+            //`for`(optionId)
         }
 
-        fun <CL : Tag<HTMLElement>> RenderContext.checkboxGroupOptionDescription(
+        fun <CL : HTMLElement> RenderContext.checkboxGroupOptionDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CL>,
-            content: CL.() -> Unit
+            tag: TagFactory<Tag<CL>>,
+            content: Tag<CL>.() -> Unit
         ) = tag(
             this,
             classes,
@@ -180,18 +199,18 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
         fun RenderContext.checkboxGroupOptionDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Span.() -> Unit
+            content: Tag<HTMLSpanElement>.() -> Unit
         ) = checkboxGroupOptionDescription(classes, scope, RenderContext::span, content)
     }
 
-    fun <CO : Tag<HTMLElement>> RenderContext.checkboxGroupOption(
+    fun <CO : HTMLElement> RenderContext.checkboxGroupOption(
         option: T,
         classes: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CO>,
+        tag: TagFactory<Tag<CO>>,
         initialize: CheckboxGroupOption<CO>.() -> Unit
-    ): CO = tag(this, classes, id, scope) {
+    ): Tag<CO> = tag(this, classes, id, scope) {
         CheckboxGroupOption(this, option, id).run {
             initialize()
             render()
@@ -203,17 +222,17 @@ class HeadlessCheckboxGroup<C : Tag<HTMLElement>, T>(val renderContext: C, priva
         classes: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: CheckboxGroupOption<Div>.() -> Unit
-    ): Div = checkboxGroupOption(option, classes, id, scope, RenderContext::div, initialize)
+        initialize: CheckboxGroupOption<HTMLDivElement>.() -> Unit
+    ): Tag<HTMLDivElement> = checkboxGroupOption(option, classes, id, scope, RenderContext::div, initialize)
 }
 
-fun <C : Tag<HTMLElement>, T> RenderContext.headlessCheckboxGroup(
+fun <C: HTMLElement, T> RenderContext.headlessCheckboxGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    tag: TagFactory<C>,
+    tag: TagFactory<Tag<C>>,
     initialize: HeadlessCheckboxGroup<C, T>.() -> Unit
-): C = tag(this, classes, id, scope) {
+): Tag<C> = tag(this, classes, id, scope) {
     HeadlessCheckboxGroup<C, T>(this, id).run {
         initialize()
         render()
@@ -224,5 +243,5 @@ fun <T> RenderContext.headlessCheckboxGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessCheckboxGroup<Div, T>.() -> Unit
-): Div = headlessCheckboxGroup(classes, id, scope, RenderContext::div, initialize)
+    initialize: HeadlessCheckboxGroup<HTMLDivElement, T>.() -> Unit
+): Tag<HTMLDivElement> = headlessCheckboxGroup(classes, id, scope, RenderContext::div, initialize)

@@ -3,21 +3,26 @@ package dev.fritz2.headless.components
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.*
-
-import dev.fritz2.identification.Id
+import dev.fritz2.dom.html.Keys
+import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.dom.html.ScopeContext
+import dev.fritz2.dom.html.shortcutOf
 import dev.fritz2.headless.foundation.*
+import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
 import dev.fritz2.headless.hooks.DatabindingHook
 import dev.fritz2.headless.hooks.hook
-import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
 import dev.fritz2.headless.validation.ComponentValidationMessage
+import dev.fritz2.identification.Id
 import dev.fritz2.utils.classes
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLLabelElement
 import kotlin.math.max
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContext by tag,
+class HeadlessListbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag,
     OpenClose by OpenCloseDelegate() {
 
     class ListboxDatabindingHook<T> : DatabindingHook<Tag<HTMLElement>, T, T>() {
@@ -51,18 +56,18 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
 
     private val state by lazy { activeIndex.data.combine(entries.data, ::Pair) }
 
-    fun C.render() {
+    fun render() {
         attr("id", componentId)
         opened.drop(1).filter { !it } handledBy {
             button?.setFocus()
         }
     }
 
-    fun <CB : Tag<HTMLElement>> RenderContext.listboxButton(
+    fun <CB : HTMLElement> RenderContext.listboxButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CB>,
-        content: CB.() -> Unit
+        tag: TagFactory<Tag<CB>>,
+        content: Tag<CB>.() -> Unit
     ) = tag(this, classes, "$componentId-button", scope) {
         if (!openClose.isSet) openClose(storeOf(false))
         content()
@@ -73,29 +78,29 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
     fun RenderContext.listboxButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Button.() -> Unit
+        content: Tag<HTMLButtonElement>.() -> Unit
     ) = listboxButton(classes, scope, RenderContext::button, content).apply {
         attr("type", "button")
     }
 
-    fun <CL : Tag<HTMLElement>> RenderContext.listboxLabel(
+    fun <CL : HTMLElement> RenderContext.listboxLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CL>,
-        content: CL.() -> Unit
+        tag: TagFactory<Tag<CL>>,
+        content: Tag<CL>.() -> Unit
     ) = tag(this, classes, "$componentId-label", scope, content).also { label = it }
 
     fun RenderContext.listboxLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Label.() -> Unit
+        content: Tag<HTMLLabelElement>.() -> Unit
     ) = listboxLabel(classes, scope, RenderContext::label, content)
 
-    fun <CV : Tag<HTMLElement>> RenderContext.listboxValidationMessages(
+    fun <CV : HTMLElement> RenderContext.listboxValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CV>,
-        content: CV.(List<ComponentValidationMessage>) -> Unit
+        tag: TagFactory<Tag<CV>>,
+        content: Tag<CV>.(List<ComponentValidationMessage>) -> Unit
     ) = value.validationMessages.render { messages ->
         if (messages.isNotEmpty()) {
             tag(this, classes, "$componentId-validation-messages", scope, { })
@@ -108,12 +113,12 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
     fun RenderContext.listboxValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Div.(List<ComponentValidationMessage>) -> Unit
+        content: Tag<HTMLDivElement>.(List<ComponentValidationMessage>) -> Unit
     ) = listboxValidationMessages(classes, scope, RenderContext::div, content)
 
-    inner class ListboxItems<CI : Tag<HTMLElement>>(
+    inner class ListboxItems<CI : HTMLElement>(
         val renderContext: RenderContext,
-        tagFactory: TagFactory<CI>,
+        tagFactory: TagFactory<Tag<CI>>,
         classes: String?,
         scope: ScopeContext.() -> Unit
     ) : PopUpPanel<CI>(renderContext, tagFactory, classes, "$componentId-items", scope, this@HeadlessListbox, button) {
@@ -139,61 +144,59 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
             closeOnEscape()
             closeOnBlur()
 
-            tag.apply {
-                attr("tabindex", "0")
-                attr("role", Aria.Role.listbox)
-                attr(Aria.invalid, "true".whenever(value.hasError))
-                label?.let { attr(Aria.labelledby, it.id) }
-                attr(Aria.activedescendant, activeIndex.data.map { if (it == -1) null else "$componentId-item-$it" })
+            attr("tabindex", "0")
+            attr("role", Aria.Role.listbox)
+            attr(Aria.invalid, "true".whenever(value.hasError))
+            label?.let { attr(Aria.labelledby, it.id) }
+            attr(Aria.activedescendant, activeIndex.data.map { if (it == -1) null else "$componentId-item-$it" })
 
+            state.flatMapLatest { (currentIndex, entries) ->
+                keydowns.events.mapNotNull { event ->
+                    when (shortcutOf(event)) {
+                        Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, entries)
+                        Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, entries)
+                        Keys.Home -> firstItem(entries)
+                        Keys.End -> lastItem(entries)
+                        else -> null
+                    }.also {
+                        if (it != null) {
+                            event.preventDefault()
+                            event.stopImmediatePropagation()
+                        }
+                    }
+                }
+            } handledBy activeIndex.update
+
+            entries.data.flatMapLatest { entries ->
+                keydowns.events
+                    .mapNotNull { event ->
+                        if (!Keys.NamedKeys.contains(event.key)) {
+                            event.preventDefault()
+                            event.stopImmediatePropagation()
+                            event.key.first().lowercaseChar()
+                        } else null
+                    }
+                    .mapNotNull { c ->
+                        if (c.isLetterOrDigit()) itemByCharacter(entries, c)
+                        else null
+                    }
+            } handledBy activeIndex.update
+
+            value.handler?.invoke(
                 state.flatMapLatest { (currentIndex, entries) ->
-                    keydowns.events.mapNotNull { event ->
-                        when (shortcutOf(event)) {
-                            Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, entries)
-                            Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, entries)
-                            Keys.Home -> firstItem(entries)
-                            Keys.End -> lastItem(entries)
-                            else -> null
-                        }.also {
-                            if (it != null) {
-                                event.preventDefault()
-                                event.stopImmediatePropagation()
-                            }
+                    keydowns.events.filter {
+                        setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
+                    }.mapNotNull {
+                        if (currentIndex == -1 || entries[currentIndex].disabled) {
+                            null
+                        } else {
+                            it.preventDefault()
+                            it.stopImmediatePropagation()
+                            entries[currentIndex].value
                         }
                     }
-                } handledBy activeIndex.update
-
-                entries.data.flatMapLatest { entries ->
-                    keydowns.events
-                        .mapNotNull { event ->
-                            if (!Keys.NamedKeys.contains(event.key)) {
-                                event.preventDefault()
-                                event.stopImmediatePropagation()
-                                event.key.first().lowercaseChar()
-                            } else null
-                        }
-                        .mapNotNull { c ->
-                            if (c.isLetterOrDigit()) itemByCharacter(entries, c)
-                            else null
-                        }
-                } handledBy activeIndex.update
-
-                value.handler?.invoke(
-                    state.flatMapLatest { (currentIndex, entries) ->
-                        keydowns.events.filter {
-                            setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
-                        }.mapNotNull {
-                            if (currentIndex == -1 || entries[currentIndex].disabled) {
-                                null
-                            } else {
-                                it.preventDefault()
-                                it.stopImmediatePropagation()
-                                entries[currentIndex].value
-                            }
-                        }
-                    }
-                )
-            }
+                }
+            )
 
             opened.filter { it }.flatMapLatest {
                 value.data.flatMapLatest { current ->
@@ -205,14 +208,14 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
             } handledBy activeIndex.update
         }
 
-        inner class ListboxItem<CM : Tag<HTMLElement>>(val entry: T, val tag: CM, val index: Int) {
+        inner class ListboxItem<CM : HTMLElement>(val entry: T, tag: Tag<CM>, val index: Int) : Tag<CM> by tag {
             val active = activeIndex.data.map { it == index }
             val selected = value.data.map { it == entry }
 
             val disabled = entries.data.map { it[index].disabled }
             val disable = entries.disabledHandler(index)
 
-            fun CM.render() {
+            fun render() {
                 mouseenters.events.mapNotNull { if (entries.current[index].disabled) null else index } handledBy activeIndex.update
 
                 attr("tabindex", "-1")
@@ -236,11 +239,11 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
             }
         }
 
-        fun <CM : Tag<HTMLElement>> RenderContext.listboxItem(
+        fun <CM : HTMLElement> RenderContext.listboxItem(
             entry: T,
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CM>,
+            tag: TagFactory<Tag<CM>>,
             initialize: ListboxItem<CM>.() -> Unit
         ) {
             val index = numberOfItems++
@@ -260,14 +263,14 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
             entry: T,
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            initialize: ListboxItem<Button>.() -> Unit
+            initialize: ListboxItem<HTMLButtonElement>.() -> Unit
         ) = listboxItem(entry, classes, scope, RenderContext::button, initialize)
     }
 
-    fun <CI : Tag<HTMLElement>> RenderContext.listboxItems(
+    fun <CI : HTMLElement> RenderContext.listboxItems(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CI>,
+        tag: TagFactory<Tag<CI>>,
         initialize: ListboxItems<CI>.() -> Unit
     ) {
         if (!openClose.isSet) openClose(storeOf(false))
@@ -280,18 +283,18 @@ class HeadlessListbox<T, C : Tag<HTMLElement>>(val tag: C, id: String?) : Render
     fun RenderContext.listboxItems(
         classes: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        initialize: ListboxItems<Div>.() -> Unit
+        initialize: ListboxItems<HTMLDivElement>.() -> Unit
     ) = listboxItems(classes, internalScope, RenderContext::div, initialize)
 }
 
 
-fun <T, C : Tag<HTMLElement>> RenderContext.headlessListbox(
+fun <T, C : HTMLElement> RenderContext.headlessListbox(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    tag: TagFactory<C>,
+    tag: TagFactory<Tag<C>>,
     initialize: HeadlessListbox<T, C>.() -> Unit
-): C = tag(this, classes(classes, "relative"), id, scope) {
+): Tag<C> = tag(this, classes(classes, "relative"), id, scope) {
     HeadlessListbox<T, C>(this, id).run {
         initialize(this)
         render()
@@ -302,6 +305,6 @@ fun <T> RenderContext.headlessListbox(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessListbox<T, Div>.() -> Unit
-): Div = headlessListbox(classes, id, scope, RenderContext::div, initialize)
+    initialize: HeadlessListbox<T, HTMLDivElement>.() -> Unit
+): Tag<HTMLDivElement> = headlessListbox(classes, id, scope, RenderContext::div, initialize)
 

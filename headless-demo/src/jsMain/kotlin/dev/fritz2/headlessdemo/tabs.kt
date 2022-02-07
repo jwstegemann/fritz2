@@ -1,6 +1,5 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.headless.components.headlessTabGroup
 import dev.fritz2.utils.classes
@@ -34,7 +33,7 @@ fun RenderContext.tabsDemo() {
                         "focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white ring-opacity-60"
                     )
                 ) {
-                    tag.className(selected.map { sel ->
+                    className(selected.map { sel ->
                         if (sel == index) "bg-white shadow"
                         else "text-blue-100 hover:bg-white/[0.12] hover:text-white"
                     })
