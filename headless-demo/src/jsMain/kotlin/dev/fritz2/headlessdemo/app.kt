@@ -6,7 +6,7 @@ import dev.fritz2.routing.routerOf
 
 data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)
 
-val pages = mapOf<String, DemoPage>(
+val pages = mapOf(
     "listbox" to DemoPage(
         "Headless Listbox",
         """Listboxes are a great foundation for building custom, accessible select menus for your app, 
@@ -55,13 +55,11 @@ val pages = mapOf<String, DemoPage>(
             | navigation support.""".trimMargin(),
         RenderContext::tabsDemo
     ),
-    /*
     "textfield" to DemoPage(
         "Headless Input and Textarea",
         "Easily create accessible, fully customizable text inputs.",
         RenderContext::textfieldDemo
     ),
-     */
     "switch" to DemoPage(
         "Headless Switch",
         """Switches are a pleasant interface for toggling a value between two states, and offer the same 
