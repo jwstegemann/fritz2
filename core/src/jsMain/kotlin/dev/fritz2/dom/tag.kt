@@ -210,7 +210,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
      * @param values [Flow] of [Map] with key to set and corresponding values to decide
      */
     fun classMap(values: Flow<Map<String, Boolean>>) {
-        addToClasses(values.map { it.filter { it.value }.keys.joinToString(" ") })
+        addToClasses(values.map { map -> map.filter { it.value }.keys.joinToString(" ") })
     }
 
     /**
@@ -291,7 +291,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
     }
 
     /**
-     * provides [RenderContext] next to this [HtmlTag] on the same DOM-level.
+     * provides [RenderContext] next to this [Tag] on the same DOM-level.
      */
     val annex: RenderContext
 
