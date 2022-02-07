@@ -20,7 +20,6 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
     private var validationMessages: Tag<HTMLElement>? = null
 
     val value = DatabindingProperty<List<T>>()
-    var withKeyboardNavigation: Boolean? = null
 
     val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
 
@@ -75,7 +74,6 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         private var toggle: Tag<HTMLElement>? = null
         private var label: Tag<HTMLElement>? = null
         private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
-        private var toggleEvent: DomListener<*, *> = clicks
 
         val optionId = "$componentId-${id ?: Id.next()}"
 
@@ -102,18 +100,19 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             attr("role", Aria.Role.checkbox)
             attr(Aria.checked, selected.asString())
             attr("tabindex", "0")
+            var withKeyboardNavigation = true
+            var toggleEvent: DomListener<*, *> = clicks
             if (domNode is HTMLInputElement) {
                 if (domNode.getAttribute("name") == null) {
                     attr("name", componentId)
                 }
-                if (withKeyboardNavigation == null) withKeyboardNavigation = false
+                withKeyboardNavigation = false
                 toggleEvent = changes
             }
-            if(withKeyboardNavigation == null) withKeyboardNavigation = true
             value.handler?.invoke(value.data.flatMapLatest { value ->
                 toggleEvent.map { if (value.contains(option)) value - option else value + option }
             })
-            if (withKeyboardNavigation == true) {
+            if (withKeyboardNavigation) {
                 value.handler?.invoke(
                     value.data.flatMapLatest { value ->
                         keydowns.events.filter { shortcutOf(it) == Keys.Space }.map {

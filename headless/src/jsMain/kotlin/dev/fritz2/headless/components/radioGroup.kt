@@ -25,7 +25,8 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
     val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
     private val isActive: Store<T?> = storeOf(null)
     val value = DatabindingProperty<T>()
-    var withKeyboardNavigation: Boolean? = null
+
+    private var withKeyboardNavigation = true
 
     var options: List<T> = emptyList()
 
@@ -100,7 +101,6 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         private var toggle: Tag<HTMLElement>? = null
         private var label: Tag<HTMLElement>? = null
         private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
-        private var toggleEvent: DomListener<*, *> = clicks
 
         val optionId = "$componentId-${id ?: Id.next()}"
 
@@ -127,14 +127,14 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             attr("role", Aria.Role.radio)
             attr(Aria.checked, selected.asString())
             attr("tabindex", selected.map { if (it) "0" else "-1" })
+            var toggleEvent: DomListener<*, *> = clicks
             if (domNode is HTMLInputElement) {
                 if (domNode.getAttribute("name") == null) {
                     attr("name", componentId)
                 }
-                if (withKeyboardNavigation == null) withKeyboardNavigation = false
+                withKeyboardNavigation = false
                 toggleEvent = changes
             }
-            if (withKeyboardNavigation == null) withKeyboardNavigation = true
             value.handler?.invoke(toggleEvent.map { option })
             active handledBy {
                 if (it && domNode != document.activeElement) {
