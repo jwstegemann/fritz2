@@ -3,7 +3,7 @@ package dev.fritz2.headlessdemo
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.transition
-import dev.fritz2.headless.components.headlessMenu
+import dev.fritz2.headless.components.menu
 import dev.fritz2.headless.foundation.utils.popper.Placement
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -26,8 +26,7 @@ fun RenderContext.menuDemo() {
 
     div("w-72 mb-4") {
         div("w-full h-72") {
-            headlessMenu("inline-block text-left") {
-                openClose(storeOf(false))
+            menu("inline-block text-left") {
                 div {
                     menuButton(
                         """inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-black 
@@ -48,7 +47,8 @@ fun RenderContext.menuDemo() {
                 ) {
                     placement = Placement.bottomStart
 
-                    transition(opened,
+                    transition(
+                        opened,
                         "transition-all duration-100 ease-ease-out",
                         "opacity-0 scale-95",
                         "opacity-100 scale-100",

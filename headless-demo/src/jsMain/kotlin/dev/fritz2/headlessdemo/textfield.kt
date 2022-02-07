@@ -2,8 +2,8 @@ package dev.fritz2.headlessdemo
 
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.headless.components.headlessInput
-import dev.fritz2.headless.components.headlessTextarea
+import dev.fritz2.headless.components.inputField
+import dev.fritz2.headless.components.textArea
 import dev.fritz2.utils.classes
 import kotlinx.coroutines.flow.map
 
@@ -14,7 +14,7 @@ fun RenderContext.textfieldDemo() {
 
     div("w-96") {
 
-        headlessInput("mb-4") {
+        inputField("mb-4") {
             value(name)
             placeholder("The name is...")
             inputLabel("block text-sm font-medium text-gray-700") {
@@ -41,7 +41,7 @@ fun RenderContext.textfieldDemo() {
             }
         }
 
-        headlessTextarea {
+        textArea {
             value(description)
             placeholder("fritz2 is super cool")
             textareaLabel("block text-sm font-medium text-gray-700") {

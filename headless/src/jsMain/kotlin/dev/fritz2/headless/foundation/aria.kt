@@ -1,7 +1,6 @@
 package dev.fritz2.headless.foundation
 
 import dev.fritz2.dom.Tag
-import dev.fritz2.headless.hooks.BasicHook
 import dev.fritz2.identification.Id
 
 /**
@@ -151,15 +150,25 @@ object Aria {
     }
 }
 
-class AriaReferenceHook<C : Tag<*>>(private val name: String) : BasicHook<C, Unit, Unit>() {
+/**
+ * This hook encapsulates the generation of some ARIA-attribute, that deals with referencing some other tag due by id.
+ *
+ * This is useful for situations where the client creates the content, that should be referenced by the underlying
+ * (headless-)component. Both sections need to reference and declare the same id.
+ *
+ * This hook encapsulates the specific ARIA attribute setting, by letting the component define the specific ARIA
+ * attribute, but enables the client to set a specific id or to create some random one and to use it. The component
+ * simply needs to apply the hook, as the behaviour is to exactly add the initial ARIA attribute with the created id.
+ */
+class AriaReferenceHook<C : Tag<*>>(private val name: String) : Hook<C, Unit, Unit>() {
     operator fun invoke(id: String): String {
-        apply = id.let { v -> { attr(name, v) } }
+        value = id.let { v -> { attr(name, v) } }
         return id
     }
 
     operator fun invoke(): String {
         val id = Id.next()
-        apply = id.let { v -> { attr(name, v) } }
+        value = id.let { v -> { attr(name, v) } }
         return id
     }
 }
