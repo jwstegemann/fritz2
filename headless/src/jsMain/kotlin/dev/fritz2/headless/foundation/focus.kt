@@ -2,6 +2,7 @@ package dev.fritz2.headless.foundation
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.afterMount
+import dev.fritz2.dom.asElementList
 import dev.fritz2.dom.beforeUnmount
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.shortcutOf
@@ -70,7 +71,7 @@ internal val focusableSelector = """
         """.trimIndent()
 
 fun getFocusableElements(container: HTMLElement? = document.body) =
-    container?.querySelectorAll(focusableSelector)?.asList() ?: emptyList()
+    container?.querySelectorAll(focusableSelector)?.asElementList() ?: emptyList()
 
 fun isElementWithinFocusableElements(element: HTMLElement, container: HTMLElement? = document.body) =
     getFocusableElements(container).toSet().contains(element)

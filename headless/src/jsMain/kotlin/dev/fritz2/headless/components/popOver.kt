@@ -5,7 +5,6 @@ import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.hooks.hook
 import dev.fritz2.identification.Id
 import dev.fritz2.utils.classes
 import org.w3c.dom.HTMLButtonElement
@@ -14,8 +13,7 @@ import org.w3c.dom.HTMLElement
 
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessPopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag,
-    OpenClose by OpenCloseDelegate() {
+class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
 
     val componentId: String by lazy { id ?: Id.next() }
 
@@ -33,7 +31,7 @@ class HeadlessPopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag
         if (!openClose.isSet) openClose(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
-        hook(openClose)
+        handleOpenCloseEvents()
     }.also { button = it }
 
     fun RenderContext.popOverButton(
@@ -49,7 +47,7 @@ class HeadlessPopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag
         tagFactory: TagFactory<Tag<C>>,
         classes: String?,
         scope: ScopeContext.() -> Unit
-    ) : PopUpPanel<C>(renderContext, tagFactory, classes, "$componentId-items", scope, this@HeadlessPopOver, button)
+    ) : PopUpPanel<C>(renderContext, tagFactory, classes, "$componentId-items", scope, this@PopOver, button)
 
     fun <CP : HTMLElement> RenderContext.popOverPanel(
         classes: String? = null,
@@ -70,23 +68,23 @@ class HeadlessPopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag
     ) = popOverPanel(classes, internalScope, RenderContext::div, initialize)
 }
 
-fun <C : HTMLElement> RenderContext.headlessPopOver(
+fun <C : HTMLElement> RenderContext.popOver(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: HeadlessPopOver<C>.() -> Unit
+    initialize: PopOver<C>.() -> Unit
 ): Tag<C> = tag(this, classes(classes, "relative"), id, scope) {
-    HeadlessPopOver(this, id).run {
+    PopOver(this, id).run {
         initialize(this)
         render()
     }
     trapFocus()
 }
 
-fun RenderContext.headlessPopOver(
+fun RenderContext.popOver(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessPopOver<HTMLDivElement>.() -> Unit
-): Tag<HTMLDivElement> = headlessPopOver(classes, id, scope, RenderContext::div, initialize)
+    initialize: PopOver<HTMLDivElement>.() -> Unit
+): Tag<HTMLDivElement> = popOver(classes, id, scope, RenderContext::div, initialize)

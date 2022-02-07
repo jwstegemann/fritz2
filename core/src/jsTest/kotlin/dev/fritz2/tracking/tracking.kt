@@ -113,4 +113,60 @@ class TrackingTests {
         assertEquals("stopped", valueAfterTransaction)
 
     }
+
+    @Test
+    fun testExceptionHandlingInTrackerDuringOperation() = runTest {
+        initDocument()
+
+        val storeElementId = "store-${Id.next()}"
+        val resultElementId = "tracker-${Id.next()}"
+
+        var lastException: String? = null
+
+        val store = object : RootStore<String>("initial") {
+            val running = tracker()
+            override fun errorHandler(exception: Throwable) {
+                lastException = exception.message
+            }
+
+            val handler = handle<String> { _, _ ->
+                running.track {
+                    delay(500)
+                    throw Exception("Something unexpected happened")
+                }
+            }
+        }
+
+        render {
+            div {
+                span(id = storeElementId) { store.data.renderText() }
+                span(id = resultElementId) { store.running.data.map { if (it) "running" else "stopped" }.renderText() }
+            }
+        }
+
+        delay(100)
+
+        store.handler("foo")
+
+        fun textContent(elementId: String) = document.getElementById(elementId)?.textContent
+
+        assertEquals("initial", textContent(storeElementId))
+        assertEquals("", textContent(resultElementId))
+
+        delay(200)
+
+        assertEquals("initial", textContent(storeElementId))
+        assertEquals("running", textContent(resultElementId))
+
+        delay(500)
+
+        assertEquals("initial", textContent(storeElementId))
+        assertEquals("stopped", textContent(resultElementId))
+        assertEquals("Something unexpected happened", lastException)
+
+        store.update("bar")
+        delay(200)
+        assertEquals("bar", textContent(storeElementId))
+
+    }
 }
