@@ -108,7 +108,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             attr("role", Aria.Role.menu)
 
             state.flatMapLatest { (currentIndex, items) ->
-                keydowns.events.mapNotNull { event ->
+                keydowns.mapNotNull { event ->
                     when (shortcutOf(event)) {
                         Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, items)
                         Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, items)
@@ -125,7 +125,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             } handledBy activeIndex.update
 
             items.data.flatMapLatest { items ->
-                keydowns.events
+                keydowns
                     .mapNotNull { e -> if (e.key.length == 1) e.key.first().lowercaseChar() else null }
                     .mapNotNull { c ->
                         if (c.isLetterOrDigit()) itemByCharacter(items, c)
@@ -134,7 +134,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             } handledBy activeIndex.update
 
             state.flatMapLatest { (currentIndex, disabled) ->
-                keydowns.events.filter { setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it)) }.mapNotNull {
+                keydowns.filter { setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it)) }.mapNotNull {
                     if (currentIndex == -1 || disabled[currentIndex].disabled) {
                         null
                     } else {
@@ -161,7 +161,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             val disable = items.disabledHandler(index)
 
             fun render() {
-                mouseenters.events.mapNotNull { if (items.current[index].disabled) null else index } handledBy activeIndex.update
+                mouseenters.mapNotNull { if (items.current[index].disabled) null else index } handledBy activeIndex.update
 
                 attr("tabindex", "-1")
                 attrIfNotSet("role", Aria.Role.menuitem)
@@ -170,7 +170,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
                     scrollIntoView(domNode, HeadlessScrollOptions)
                 }
 
-                mousedowns.events.mapNotNull { e ->
+                mousedowns.mapNotNull { e ->
                     e.preventDefault()
                     e.stopImmediatePropagation()
                     if (items.current[index].disabled) null

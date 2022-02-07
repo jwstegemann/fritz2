@@ -31,7 +31,7 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
         value.handler?.invoke(value.data.flatMapLatest { state -> clicks.map { !state } })
         value.handler?.invoke(
             value.data.flatMapLatest { state ->
-                keydowns.events.filter { shortcutOf(it) == Keys.Space }.map {
+                keydowns.filter { shortcutOf(it) == Keys.Space }.map {
                     it.stopImmediatePropagation()
                     it.preventDefault()
                     !state

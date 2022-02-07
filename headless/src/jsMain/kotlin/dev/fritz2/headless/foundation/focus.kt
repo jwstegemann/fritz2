@@ -170,7 +170,7 @@ fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: Bo
     }
 
     // handle tab key
-    keydowns.events.filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) } handledBy { event ->
+    keydowns.filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) } handledBy { event ->
         event.preventDefault()
         focusIn(
             domNode,

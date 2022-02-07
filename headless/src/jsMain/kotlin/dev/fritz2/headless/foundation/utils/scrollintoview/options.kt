@@ -5,7 +5,7 @@ enum class ScrollBehavior {
     smooth
 }
 
-enum class ScrollMode(parameter: String) {
+enum class ScrollMode(val parameter: String) {
     ifNeeded("if-needed"),
     always("if-needed")
 }
