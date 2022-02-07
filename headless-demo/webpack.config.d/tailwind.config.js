@@ -1,3 +1,6 @@
+// must be in the jsMain/resource folder
+const mainCssFile = 'styles.css'
+
 const tailwind = {
     mode: 'jit', // undefined
     content: [
@@ -98,7 +101,7 @@ const tailwind = {
 // webpack tailwind css settings
 ((config) => {
     ((config) => {
-        config.entry.main.push('./kotlin/styles.css')
+        config.entry.main.push('./kotlin/' + mainCssFile)
         config.module.rules.push({
             test: /\.css$/,
             use: [
