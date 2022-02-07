@@ -244,6 +244,24 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
     }
 
     /**
+     * Creates an [Listener] for the given event [name].
+     *
+     * @param name of the [Event] to listen for
+     */
+    override fun <X : Event> subscribe(name: String): Listener<X, E> = Listener(callbackFlow {
+        val listener: (Event) -> Unit = {
+            try {
+                trySend(it.unsafeCast<X>())
+            } catch (e: Exception) {
+                console.error("Unexpected type while listening for `$name` events in Window object", e)
+            }
+        }
+        domNode.addEventListener(name, listener)
+
+        awaitClose { domNode.removeEventListener(name, listener) }
+    })
+
+    /**
      * Adds text-content of a [Flow] at this position
      *
      * @param into target to render text-content to
