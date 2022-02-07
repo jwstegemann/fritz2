@@ -1,8 +1,7 @@
 package dev.fritz2.headlessdemo
 
-/*
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.headless.components.headlessTabGroup
+import dev.fritz2.headless.components.tabGroup
 import dev.fritz2.utils.classes
 import kotlinx.coroutines.flow.map
 
@@ -25,7 +24,7 @@ fun RenderContext.tabsDemo() {
         )
     )
 
-    headlessTabGroup("w-96") {
+    tabGroup("w-96") {
         tabList("flex p-1 space-x-1 bg-blue-900/20 rounded-xl") {
             categories.keys.forEach { category ->
                 tab(
@@ -70,5 +69,3 @@ fun RenderContext.tabsDemo() {
         }
     }
 }
-
- */
