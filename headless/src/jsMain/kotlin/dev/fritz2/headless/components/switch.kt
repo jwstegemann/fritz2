@@ -1,50 +1,22 @@
 package dev.fritz2.headless.components
 
-/*
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.Aria
+import dev.fritz2.headless.foundation.DatabindingProperty
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.whenever
-import dev.fritz2.headless.foundation.Hook
-import dev.fritz2.headless.foundation.DatabindingHook
-import dev.fritz2.headless.foundation.hook
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 
 
-abstract class AbstractHeadlessSwitch<C : HTMLElement>(tag: Tag<C>, private val explicitId: String?) :
+abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
 
-    class ToggleDatabindingHook : DatabindingHook<Tag<HTMLElement>, Unit, Boolean>() {
-        override fun Tag<HTMLElement>.render(payload: Unit) {
-            handler?.invoke(data.flatMapLatest { state -> clicks.map { !state } })
-        }
-    }
-
-    class KeyboardNavigationHook(
-        private val value: ToggleDatabindingHook
-    ) : Hook<Tag<HTMLElement>, Unit, Unit>() {
-        operator fun invoke() = this.also { hook ->
-            apply = {
-                hook.value.handler?.invoke(
-                    hook.value.data.flatMapLatest { state ->
-                        keydowns.events.filter { shortcutOf(it) == Keys.Space }.map {
-                            it.stopImmediatePropagation()
-                            it.preventDefault()
-                            !state
-                        }
-                    })
-            }
-        }
-    }
-
-    val value = ToggleDatabindingHook()
+    val value = DatabindingProperty<Boolean>()
     val enabled: Flow<Boolean> = flowOf(false).flatMapLatest { value.data }
-
-    val withKeyboardNavigation = KeyboardNavigationHook(value)
 
     val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
 
@@ -57,8 +29,15 @@ abstract class AbstractHeadlessSwitch<C : HTMLElement>(tag: Tag<C>, private val 
         attr(Aria.checked, enabled.asString())
         attr(Aria.invalid, "true".whenever(value.hasError))
         attr("tabindex", "0")
-        hook(value, Unit)
-        hook(withKeyboardNavigation, Unit)
+        value.handler?.invoke(value.data.flatMapLatest { state -> clicks.map { !state } })
+        value.handler?.invoke(
+            value.data.flatMapLatest { state ->
+                keydowns.events.filter { shortcutOf(it) == Keys.Space }.map {
+                    it.stopImmediatePropagation()
+                    it.preventDefault()
+                    !state
+                }
+            })
     }
 
     fun <CV : HTMLElement> RenderContext.switchValidationMessages(
@@ -82,12 +61,12 @@ abstract class AbstractHeadlessSwitch<C : HTMLElement>(tag: Tag<C>, private val 
     ) = switchValidationMessages(classes, scope, RenderContext::div, content)
 }
 
-class HeadlessSwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
-    AbstractHeadlessSwitch<C>(tag, id) {
+class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
+    AbstractSwitch<C>(tag, id) {
 
     private var toggle: Tag<HTMLElement>? = null
     private var label: Tag<HTMLElement>? = null
-    private var description: Tag<HTMLElement>? = null
+    private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
 
     override fun render() {
         attr("id", componentId)
@@ -96,7 +75,8 @@ class HeadlessSwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
             attr(
                 Aria.describedby,
                 value.validationMessages.map { messages ->
-                    if (messages.isNotEmpty()) validationMessages?.id else description?.id
+                    if (messages.isNotEmpty()) validationMessages?.id
+                    else descriptions.map { it.id }.joinToString(" ")
                 }
             )
         }
@@ -126,7 +106,7 @@ class HeadlessSwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
     ) = tag(this, classes, "$componentId-label", scope, content).apply {
-        hook(value, Unit)
+        value.handler?.invoke(value.data.flatMapLatest { state -> clicks.map { !state } })
     }.also { label = it }
 
     fun RenderContext.switchLabel(
@@ -143,7 +123,13 @@ class HeadlessSwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
-    ) = tag(this, classes, "$componentId-description", scope, content).also { description = it }
+    ) = tag(
+        this,
+        classes,
+        "$componentId-description-${descriptions.size}",
+        scope,
+        content
+    ).also { descriptions.add(it) }
 
     fun RenderContext.switchDescription(
         classes: String? = null,
@@ -153,29 +139,29 @@ class HeadlessSwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
 
 }
 
-fun <C : HTMLElement> RenderContext.headlessSwitchWithLabel(
+fun <C : HTMLElement> RenderContext.switchWithLabel(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: HeadlessSwitchWithLabel<C>.() -> Unit
+    initialize: SwitchWithLabel<C>.() -> Unit
 ): Tag<C> = tag(this, classes, id, scope) {
-    HeadlessSwitchWithLabel(this, id).run {
+    SwitchWithLabel(this, id).run {
         initialize()
         render()
     }
 }
 
-fun RenderContext.headlessSwitchWithLabel(
+fun RenderContext.switchWithLabel(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessSwitchWithLabel<HTMLDivElement>.() -> Unit
-): Tag<HTMLDivElement> = headlessSwitchWithLabel(classes, id, scope, RenderContext::div, initialize)
+    initialize: SwitchWithLabel<HTMLDivElement>.() -> Unit
+): Tag<HTMLDivElement> = switchWithLabel(classes, id, scope, RenderContext::div, initialize)
 
 
-class HeadlessSwitch<C : HTMLElement>(tag: Tag<C>, explicitId: String?) :
-    AbstractHeadlessSwitch<C>(tag, explicitId) {
+class Switch<C : HTMLElement>(tag: Tag<C>, explicitId: String?) :
+    AbstractSwitch<C>(tag, explicitId) {
 
     override fun render() {
         attr("id", componentId)
@@ -189,26 +175,23 @@ class HeadlessSwitch<C : HTMLElement>(tag: Tag<C>, explicitId: String?) :
     }
 }
 
-fun <C : HTMLElement> RenderContext.headlessSwitch(
+fun <C : HTMLElement> RenderContext.switch(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: HeadlessSwitch<C>.() -> Unit
+    initialize: Switch<C>.() -> Unit
 ): Tag<C> = tag(this, classes, id, scope) {
-    HeadlessSwitch(this, id).run {
+    Switch(this, id).run {
         initialize()
         render()
     }
 }
 
-fun RenderContext.headlessSwitch(
+fun RenderContext.switch(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessSwitch<HTMLButtonElement>.() -> Unit
-): Tag<HTMLButtonElement> = headlessSwitch(classes, id, scope, RenderContext::button, initialize)
+    initialize: Switch<HTMLButtonElement>.() -> Unit
+): Tag<HTMLButtonElement> = switch(classes, id, scope, RenderContext::button, initialize)
     .apply { attr("type", "button") }
-
-
- */
