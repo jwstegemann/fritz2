@@ -1,10 +1,8 @@
 package dev.fritz2.headless.components
 
+import dev.fritz2.dom.DomListener
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.ScopeContext
-import dev.fritz2.dom.html.shortcutOf
+import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.DatabindingProperty
 import dev.fritz2.headless.foundation.TagFactory
@@ -78,6 +76,7 @@ class HeadlessCheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explici
         private var toggle: Tag<HTMLElement>? = null
         private var label: Tag<HTMLElement>? = null
         private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
+        private var toggleEvent: DomListener<*, *> = clicks
 
         val optionId = "$componentId-${id ?: Id.next()}"
 
@@ -109,13 +108,12 @@ class HeadlessCheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explici
                     attr("name", componentId)
                 }
                 if (withKeyboardNavigation == null) withKeyboardNavigation = false
+                toggleEvent = changes
             }
-            (if (domNode is HTMLInputElement) changes else clicks).let { event ->
-                value.handler?.invoke(value.data.flatMapLatest { value ->
-                    event.map { if (value.contains(option)) value - option else value + option }
-                })
-            }
-            if (withKeyboardNavigation != null) {
+            value.handler?.invoke(value.data.flatMapLatest { value ->
+                toggleEvent.map { if (value.contains(option)) value - option else value + option }
+            })
+            if (withKeyboardNavigation == true) {
                 value.handler?.invoke(
                     value.data.flatMapLatest { value ->
                         keydowns.events.filter { shortcutOf(it) == Keys.Space }.map {
@@ -146,7 +144,7 @@ class HeadlessCheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explici
             content: Tag<HTMLLabelElement>.() -> Unit
         ) = checkboxGroupOptionLabel(classes, scope, RenderContext::label) {
             content()
-            //`for`(optionId)
+            `for`(optionId)
         }
 
         fun <CL : HTMLElement> RenderContext.checkboxGroupOptionDescription(
