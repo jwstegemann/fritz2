@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
-//FIXME: rename file to match class name
 abstract class PopUpPanel<C : HTMLElement>(
     renderContext: RenderContext,
     tagFactory: TagFactory<Tag<C>>,

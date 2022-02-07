@@ -48,3 +48,10 @@ fun ScrollIntoViewOptionsInit(
     if (inline != null) o["inline"] = inline.name
     return o
 }
+
+internal val HeadlessScrollOptions = ScrollIntoViewOptionsInit(
+    ScrollBehavior.smooth,
+    ScrollMode.ifNeeded,
+    ScrollPosition.nearest,
+    ScrollPosition.nearest
+)

@@ -2,13 +2,14 @@ package dev.fritz2.headlessdemo
 
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.headless.components.headlessRadioGroup
+import dev.fritz2.headless.components.radioGroup
 import dev.fritz2.headless.foundation.Aria
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLFieldSetElement
 
-fun RenderContext.radiogroupDemo() {
+
+fun RenderContext.radioGroupDemo() {
     data class Plan(val name: String, val ram: String, val cpus: String, val disk: String, val price: String)
 
     val plans = listOf(
@@ -21,10 +22,9 @@ fun RenderContext.radiogroupDemo() {
     val choice = storeOf<Plan?>(null)
 
     div("w-96") {
-        headlessRadioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
+        radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
             value(choice)
             options = plans
-            withKeyboardNavigation()
             radioGroupLabel("sr-only") { +"Server size" }
             div("space-y-2") {
                 plans.forEach { option ->

@@ -1,6 +1,5 @@
 package dev.fritz2.headless.components
 
-
 import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
@@ -8,12 +7,7 @@ import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.dom.html.shortcutOf
-import dev.fritz2.headless.foundation.Aria
-import dev.fritz2.headless.foundation.Direction
-import dev.fritz2.headless.foundation.Orientation
-import dev.fritz2.headless.foundation.TagFactory
-import dev.fritz2.headless.hooks.DatabindingHook
-import dev.fritz2.headless.hooks.hook
+import dev.fritz2.headless.foundation.*
 import dev.fritz2.identification.Id
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.*
@@ -22,13 +16,7 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
 
-class HeadlessTabGroup<C : HTMLElement>(tag : Tag<C>, id: String?) :
-    Tag<C> by tag {
-
-    class TabDatabindingHook<C : Tag<HTMLElement>> : DatabindingHook<C, Unit, Int>() {
-        override fun C.render(payload: Unit) {
-        }
-    }
+class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
     private class DisabledTabStore(initial: List<Boolean>) : RootStore<List<Boolean>>(initial) {
         val addTab = handle { state -> state + false }
@@ -39,7 +27,7 @@ class HeadlessTabGroup<C : HTMLElement>(tag : Tag<C>, id: String?) :
     }
 
     private val disabledTabs = DisabledTabStore(emptyList())
-    val value by lazy { TabDatabindingHook<Tag<C>>() }
+    val value by lazy { DatabindingProperty<Int>() }
 
     /**
      * This is a "gate-keeper" of the external data flow for all internal usage!
@@ -55,7 +43,7 @@ class HeadlessTabGroup<C : HTMLElement>(tag : Tag<C>, id: String?) :
      */
     val selected by lazy {
         // set a databinding if user has not provided one
-        if(!value.isSet) value(storeOf(0))
+        if (!value.isSet) value(storeOf(0))
 
         value.data.combine(disabledTabs.data) { index, disabledStates ->
             selectDefaultTab(0, index, disabledStates)
@@ -108,7 +96,6 @@ class HeadlessTabGroup<C : HTMLElement>(tag : Tag<C>, id: String?) :
 
     fun render() {
         attr("id", componentId)
-        hook(value, Unit)
         // We need to emit all internal changes to the outside for realising two-way-data-binding!
         // This includes the automatic correction by `selectDefaultTab` of `selected` setup.
         selected handledBy ::selectDefaultTab
@@ -275,22 +262,22 @@ class HeadlessTabGroup<C : HTMLElement>(tag : Tag<C>, id: String?) :
     ): Tag<HTMLDivElement> = tabPanels(classes, scope, RenderContext::div, initialize)
 }
 
-fun <C : HTMLElement> RenderContext.headlessTabGroup(
+fun <C : HTMLElement> RenderContext.tabGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: HeadlessTabGroup<C>.() -> Unit
+    initialize: TabGroup<C>.() -> Unit
 ): Tag<C> = tag(this, classes, id, scope) {
-    HeadlessTabGroup(this, id).run {
+    TabGroup(this, id).run {
         initialize()
         render()
     }
 }
 
-fun RenderContext.headlessTabGroup(
+fun RenderContext.tabGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessTabGroup<HTMLDivElement>.() -> Unit
-): Tag<HTMLDivElement> = headlessTabGroup(classes, id, scope, RenderContext::div, initialize)
+    initialize: TabGroup<HTMLDivElement>.() -> Unit
+): Tag<HTMLDivElement> = tabGroup(classes, id, scope, RenderContext::div, initialize)
