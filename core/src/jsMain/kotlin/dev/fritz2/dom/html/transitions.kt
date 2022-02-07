@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package dev.fritz2.dom.html
 
 import dev.fritz2.dom.*
@@ -76,7 +78,8 @@ class Transition(
 }
 
 /**
- * a native function returning a [Promise] that is completed, when the currently running animations (if any) on a fiven [Node] have finished.
+ * a native function returning a [Promise] that is completed,
+ * when the currently running animations (if any) on a given [Node] have finished.
  */
 val animationDone = nativeFunction<(Node) -> Promise<Unit>>(
     "_node", block = """
@@ -96,7 +99,7 @@ val animationDone = nativeFunction<(Node) -> Promise<Unit>>(
  * The leave-transition will be executed right before the [Tag] is removed from the DOM.
  * Further operation of the MountPoint rendering the [Tag] is suspended until the leave-animation is done.
  *
- * @param transition definition of the enter- and leave-transition
+ * @param transition definition of enter- and leave-transition
  * @receiver the [Tag] the transition will be applied to
  */
 fun Tag<HTMLElement>.transition(transition: Transition) {
@@ -135,7 +138,7 @@ fun Tag<HTMLElement>.transition(
  * Processing of further operations will not wait for the animation to finish.
  *
  * @param on [Flow] to trigger the transition
- * @param transition definition of the enter- and leave-transition
+ * @param transition definition of enter- and leave-transition
  * @receiver the [Tag] the transition will be applied to
  */
 fun Tag<HTMLElement>.transition(on: Flow<Boolean>, transition: Transition) {

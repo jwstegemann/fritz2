@@ -24,15 +24,15 @@ import org.w3c.dom.Node
 @HtmlTagMarker
 open class HtmlTag<out E : Element>(
     private val tagName: String,
-    override val id: String? = null,
-    override val baseClass: String? = null,
+    final override val id: String? = null,
+    final override val baseClass: String? = null,
     override val job: Job,
     override val scope: Scope,
 ) : Tag<E> {
 
     override val domNode: E = window.document.createElement(tagName).also { element ->
-        if (id != null) element.id = id!!
-        if (!baseClass.isNullOrBlank()) element.className = baseClass!!
+        if (id != null) element.id = id
+        if (!baseClass.isNullOrBlank()) element.className = baseClass
     }.unsafeCast<E>()
 
     /**

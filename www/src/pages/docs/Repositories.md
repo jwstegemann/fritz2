@@ -81,7 +81,7 @@ handler:
 // use the defined resource from above
 val entityStore = object : RootStore<Person>(initialPerson) {
 
-    private val rest = restEntity(PersonResource, http("https://your_api_endpoint"), initialId = "")
+    private val rest = restEntityOf(PersonResource, http("https://your_api_endpoint"), initialId = "")
 
     val load = handle<String> { _, id ->
         rest.load(id)
@@ -103,7 +103,7 @@ val entityStore = object : RootStore<Person>(initialPerson) {
 }
 ```
 
-The `restEntity` function needs an `initialId` to distinguish add from update operations when calling `addOrUpdate`: 
+The `restEntityOf` function needs an `initialId` to distinguish add from update operations when calling `addOrUpdate`: 
 A `POST`request is sent, when the id of the given instance equals `initialID`, otherwise a `PUT` request is used to 
 update the resource.).
 
@@ -122,7 +122,7 @@ data class PersonQuery(val namePrefix: String? = null)
 
 val queryStore = object : RootStore<List<Person>>(emptyList()) {
     val localStorage =
-        localStorageQuery<Person, String, PersonQuery>(PersonResource, "your prefix") { entities, query ->
+        localStorageQueryOf<Person, String, PersonQuery>(PersonResource, "your prefix") { entities, query ->
             if (query.namePrefix != null) entities.filter { it.name.startsWith(query.namePrefix) }
             else entities
         }
@@ -145,10 +145,10 @@ have to build and fire the request according to your query-object. If you do not
 defined Resource will be returned.
 
 ```kotlin
-val restQuery = restQuery<Person, String, PersonQuery>(PersonResource, "https://your_api_endpoint", initialId = "")
+val restQuery = restQueryOf<Person, String, PersonQuery>(PersonResource, "https://your_api_endpoint", initialId = "")
 ```
 
-For more information about the `remote` parameter of `restQuery`, please refer to the docs
+For more information about the `remote` parameter of `restQueryOf`, please refer to the docs
 section [HTTP-Calls](HttpCalls.html).
 
 # Examples
