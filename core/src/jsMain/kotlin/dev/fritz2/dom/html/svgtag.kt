@@ -10,7 +10,8 @@ import org.w3c.dom.svg.SVGElement
 const val SVG_XMLNS = "http://www.w3.org/2000/svg"
 
 /**
- * Implementation of [Tag] to represent the JavaScript [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement) to Kotlin
+ * Implementation of [HtmlTag] to represent the JavaScript
+ * [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement) to Kotlin
  */
 class SvgTag<out E : Element>(tagName: String, id: String? = null, baseClass: String? = null, job: Job, scope: Scope) :
     HtmlTag<SVGElement>(tagName, id, baseClass, job, scope) {

@@ -1,7 +1,7 @@
 ---
 layout: layouts/docsWithContentNav.njk
 title: Lists in a Model
-permalink: /docs/lists
+permalink: /docs/lists/
 eleventyNavigation:
     key: lists
     parent: documentation
