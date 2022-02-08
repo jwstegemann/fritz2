@@ -3,10 +3,11 @@ package dev.fritz2.headlessdemo
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.transition
-import dev.fritz2.headless.components.headlessListbox
+import dev.fritz2.headless.components.listbox
 import dev.fritz2.headless.foundation.utils.popper.Placement
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+
 
 fun RenderContext.listboxDemo() {
 
@@ -24,8 +25,7 @@ fun RenderContext.listboxDemo() {
     val bestCharacter = storeOf("Luke")
 
     div("w-72 mb-4") {
-        headlessListbox<String>("h-72") {
-            openClose(storeOf(false))
+        listbox<String>("h-72") {
             value(bestCharacter)
             listboxLabel("sr-only", tag = RenderContext::span) { +"Choose the best Star Wars character" }
             listboxButton(

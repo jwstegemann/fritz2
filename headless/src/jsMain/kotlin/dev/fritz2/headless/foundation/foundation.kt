@@ -1,9 +1,7 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
-import org.w3c.dom.Element
 
 typealias TagFactory<C> = (RenderContext, String?, String?, ScopeContext.() -> Unit, C.() -> Unit) -> C
 
@@ -29,18 +27,4 @@ enum class Direction(val value: Int) {
 
 enum class Orientation {
     Horizontal, Vertical
-}
-
-/**
- * Sets an attribute only if it is not present yet.
- *
- * This is intended only for attributes, that have a *static* character, like an ARIA "role" for example.
- * It enables a client to overrule a default attribute set by a lower layer of a component library, if the latter
- * uses this defensive function to set its default attribute.
- *
- * @param name to use
- * @param value to use
- */
-fun <N : Element> Tag<N>.attrIfNotSet(name: String, value: String) {
-    if (!domNode.hasAttribute(name)) attr(name, value)
 }

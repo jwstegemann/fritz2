@@ -1,5 +1,6 @@
 package dev.fritz2.dom
 
+import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 
 class TagTests {
@@ -143,7 +145,7 @@ class TagTests {
 
         assertEquals(0, outer.firstElementChild?.childElementCount, "outer element has a children")
 
-        for(i in 0..2) {
+        for (i in 0..2) {
             switch.update(true)
             delay(200)
 
@@ -180,6 +182,96 @@ class TagTests {
             document.getElementById(contentId)?.innerHTML,
             "<div>inner div</div><span>outer div</span><span>after inner div</span>"
         )
+    }
+
+    @Test
+    fun testWheneverWithStaticData() = runTest {
+        initDocument()
+
+        val steering = storeOf(false)
+        val getAttribute = { document.getElementById("root")!!.getAttribute("data-foo") }
+
+        render {
+            div(id = "root") {
+                attr("data-foo", "I am there!".whenever(steering.data))
+            }
+        }
+
+        delay(100)
+        assertNull(getAttribute())
+
+        steering.update(true)
+
+        delay(100)
+        assertEquals("I am there!", getAttribute())
+    }
+
+    @Test
+    fun testWheneverWithFlowData() = runTest {
+        initDocument()
+
+        val steering = storeOf(false)
+        val value = object : RootStore<String>("first") {
+            private val items = listOf("first", "second", "skipped", "fourth")
+
+            val next = handle {
+                items[items.indexOf(it) + 1]
+            }
+        }
+
+        val getAttribute = { document.getElementById("root")!!.getAttribute("data-foo") }
+
+        render {
+            div(id = "root") {
+                attr("data-foo", value.data.whenever(steering.data))
+            }
+        }
+
+        delay(100)
+        // steering | off   | on    | on     | off     | on
+        // value    | first | first | second | skipped | fourth
+        // -----------------------------------------------------
+        // sequence |   ^
+        // attr     |  null
+        assertNull(getAttribute())
+
+        steering.update(true)
+        delay(100)
+        // steering | off   | on    | on     | off     | on
+        // value    | first | first | second | skipped | fourth
+        // -----------------------------------------------------
+        // sequence |           ^
+        // attr     |         first
+        assertEquals("first", getAttribute())
+
+        value.next()
+        delay(100)
+        // steering | off   | on    | on     | off     | on
+        // value    | first | first | second | skipped | fourth
+        // -----------------------------------------------------
+        // sequence |                   ^
+        // attr     |                 second
+        assertEquals("second", getAttribute())
+
+        steering.update(false)
+        value.next()
+        delay(100)
+        // steering | off   | on    | on     | off     | on
+        // value    | first | first | second | skipped | fourth
+        // -----------------------------------------------------
+        // sequence |                             ^
+        // attr     |                           null
+        assertNull(getAttribute())
+
+        steering.update(true)
+        value.next()
+        delay(100)
+        // steering | off   | on    | on     | off     | on
+        // value    | first | first | second | skipped | fourth
+        // -----------------------------------------------------
+        // sequence |                                      ^
+        // attr     |                                    fourth
+        assertEquals("fourth", getAttribute())
     }
 
 }

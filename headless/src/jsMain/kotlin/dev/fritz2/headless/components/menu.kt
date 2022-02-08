@@ -8,8 +8,8 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.dom.html.shortcutOf
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.foundation.utils.scrollintoview.*
-import dev.fritz2.headless.hooks.hook
+import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
+import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
 import dev.fritz2.identification.Id
 import dev.fritz2.utils.classes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,16 +19,9 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import kotlin.math.max
 
-internal val HeadlessScrollOptions = ScrollIntoViewOptionsInit(
-    ScrollBehavior.smooth,
-    ScrollMode.ifNeeded,
-    ScrollPosition.nearest,
-    ScrollPosition.nearest
-)
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessMenu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag,
-    OpenClose by OpenCloseDelegate() {
+class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
 
     val componentId: String by lazy { id ?: Id.next() }
 
@@ -72,7 +65,7 @@ class HeadlessMenu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag,
         if (!openClose.isSet) openClose(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
-        hook(openClose)
+        handleOpenCloseEvents()
     }.also { button = it }
 
     fun RenderContext.menuButton(
@@ -88,7 +81,7 @@ class HeadlessMenu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag,
         tagFactory: TagFactory<Tag<CI>>,
         classes: String?,
         scope: ScopeContext.() -> Unit
-    ) : PopUpPanel<CI>(renderContext, tagFactory, classes, "$componentId-items", scope, this@HeadlessMenu, button) {
+    ) : PopUpPanel<CI>(renderContext, tagFactory, classes, "$componentId-items", scope, this@Menu, button) {
 
         private fun nextItem(currentIndex: Int, direction: Direction, items: List<MenuEntry>): Int =
             when (direction) {
@@ -236,23 +229,22 @@ class HeadlessMenu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag,
 }
 
 
-fun <C : HTMLElement> RenderContext.headlessMenu(
+fun <C : HTMLElement> RenderContext.menu(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: HeadlessMenu<C>.() -> Unit
+    initialize: Menu<C>.() -> Unit
 ): Tag<C> = tag(this, classes(classes, "relative"), id, scope) {
-    HeadlessMenu(this, id).run {
+    Menu(this, id).run {
         initialize(this)
         render()
     }
 }
 
-fun RenderContext.headlessMenu(
+fun RenderContext.menu(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessMenu<HTMLDivElement>.() -> Unit
-): Tag<HTMLDivElement> = headlessMenu(classes, id, scope, RenderContext::div, initialize)
-
+    initialize: Menu<HTMLDivElement>.() -> Unit
+): Tag<HTMLDivElement> = menu(classes, id, scope, RenderContext::div, initialize)
