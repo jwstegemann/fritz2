@@ -19,10 +19,10 @@ class ScopeTests {
         initDocument()
 
         val id1 = Id.next()
-        val key1 = keyOf<String>("key1")
+        val key1 = Scope.keyOf<String>("key1")
         val value1 = "value1"
         val id2 = Id.next()
-        val key2 = keyOf<String>("key2")
+        val key2 = Scope.keyOf<String>("key2")
         val value2 = "value2"
         val id3 = Id.next()
 

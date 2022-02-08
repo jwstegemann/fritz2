@@ -2,7 +2,7 @@ package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
-import dev.fritz2.lenses.buildLens
+import dev.fritz2.lenses.lens
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -73,7 +73,7 @@ class SeqTests {
 
     data class Entity(val id: String, val value: String)
 
-    private val valueLens = buildLens("value", Entity::value) { p, v -> p.copy(value = v) }
+    private val valueLens = lens("value", Entity::value) { p, v -> p.copy(value = v) }
 
     class TestEntityListStore : RootStore<List<Entity>>(
         listOf(

@@ -14,7 +14,7 @@ import org.w3c.dom.get
  * @param resource definition of the [Resource] to use
  * @param prefix prefix used for prepending to the keys
  */
-fun <T, I> localStorageEntity(resource: Resource<T, I>, prefix: String): EntityRepository<T, I> =
+fun <T, I> localStorageEntityOf(resource: Resource<T, I>, prefix: String): EntityRepository<T, I> =
     LocalStorageEntity(resource, prefix)
 
 /**
@@ -71,7 +71,7 @@ class LocalStorageEntity<T, I>(private val resource: Resource<T, I>, private val
  * @param prefix prefix used for prepending to the keys
  * @param runQuery function to apply a given query to the collection of entities in [localStorage]
  */
-fun <T, I, Q> localStorageQuery(
+fun <T, I, Q> localStorageQueryOf(
     resource: Resource<T, I>,
     prefix: String,
     runQuery: (List<T>, Q) -> List<T> = { entities, _ -> entities }

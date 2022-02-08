@@ -2,8 +2,8 @@ package dev.fritz2.binding
 
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
-import dev.fritz2.lenses.buildLens
 import dev.fritz2.lenses.format
+import dev.fritz2.lenses.lens
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
@@ -18,11 +18,11 @@ class SubStoreTests {
     data class Address(val street: String = "", val postalCode: PostalCode)
     data class PostalCode(val code: Int)
 
-    private val nameLens = buildLens("name", Person::name) { p, v -> p.copy(name = v) }
-    private val addressLens = buildLens("address", Person::address) { p, v -> p.copy(address = v) }
-    private val streetLens = buildLens("street", Address::street) { p, v -> p.copy(street = v) }
-    private val postalCodeLens = buildLens("postalCode", Address::postalCode) { p, v -> p.copy(postalCode = v) }
-    private val codeLens = buildLens("code", PostalCode::code) { p, v -> p.copy(code = v) }
+    private val nameLens = lens("name", Person::name) { p, v -> p.copy(name = v) }
+    private val addressLens = lens("address", Person::address) { p, v -> p.copy(address = v) }
+    private val streetLens = lens("street", Address::street) { p, v -> p.copy(street = v) }
+    private val postalCodeLens = lens("postalCode", Address::postalCode) { p, v -> p.copy(postalCode = v) }
+    private val codeLens = lens("code", PostalCode::code) { p, v -> p.copy(code = v) }
 
     @Test
     fun testSubStore() = runTest {

@@ -17,7 +17,7 @@ import dev.fritz2.resource.Resource
  * @param initialId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  */
-fun <T, I> restEntity(
+fun <T, I> restEntityOf(
     resource: Resource<T, I>,
     url: String,
     initialId: I,
@@ -33,7 +33,7 @@ fun <T, I> restEntity(
  * @param initialId id to compare a given resource for differentiation of adding or updating
  * @param contentType to be used by the REST-API
  */
-fun <T, I> restEntity(
+fun <T, I> restEntityOf(
     resource: Resource<T, I>,
     remote: Request,
     initialId: I,
@@ -115,7 +115,7 @@ class RestEntity<T, I>(
  * @param contentType to be used by the REST-API
  * @param buildQuery function to build a [Request] for a given object defining the query
  */
-fun <T, I, Q> restQuery(
+fun <T, I, Q> restQueryOf(
     resource: Resource<T, I>,
     url: String,
     initialId: I,
@@ -132,7 +132,7 @@ fun <T, I, Q> restQuery(
  * @param contentType to be used by the REST-API
  * @param buildQuery function to build a [Request] for a given object defining the query
  */
-fun <T, I, Q> restQuery(
+fun <T, I, Q> restQueryOf(
     resource: Resource<T, I>,
     remote: Request,
     initialId: I,

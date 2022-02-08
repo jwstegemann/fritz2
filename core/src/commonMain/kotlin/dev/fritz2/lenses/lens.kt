@@ -52,7 +52,7 @@ interface Lens<P, T> {
  * @param getter of the [Lens]
  * @param setter of the [Lens]
  */
-inline fun <P, T> buildLens(id: String, crossinline getter: (P) -> T, crossinline setter: (P, T) -> P): Lens<P, T> =
+inline fun <P, T> lens(id: String, crossinline getter: (P) -> T, crossinline setter: (P, T) -> P): Lens<P, T> =
     object : Lens<P, T> {
         override val id: String = id
         override fun get(parent: P): T = getter(parent)
@@ -88,7 +88,7 @@ class LensException: Exception()
  * @param element current instance of the element to focus on
  * @param idProvider to identify the element in the list (i.e. when it's content changes over time)
  */
-fun <T, I> elementLens(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, T> = object :
+fun <T, I> lensOf(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, T> = object :
     Lens<List<T>, T> {
     override val id: String = idProvider(element).toString()
 
@@ -106,7 +106,7 @@ fun <T, I> elementLens(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, 
  *
  * @param index position to focus on
  */
-fun <T> positionLens(index: Int): Lens<List<T>, T> = object : Lens<List<T>, T> {
+fun <T> lensOf(index: Int): Lens<List<T>, T> = object : Lens<List<T>, T> {
     override val id: String = index.toString()
 
     override fun get(parent: List<T>): T = parent[index]

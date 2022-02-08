@@ -7,12 +7,12 @@ class LensesTests {
 
     data class Size(val height: Double)
 
-    private val heightLens = buildLens(Size::height.name, Size::height) { p, v -> p.copy(height = v) }
+    private val heightLens = lens(Size::height.name, Size::height) { p, v -> p.copy(height = v) }
 
     data class Tree(val name: String, val age: Int, val size: Size)
 
-    private val ageLens = buildLens(Tree::age.name, Tree::age) { p, v -> p.copy(age = v) }
-    private val sizeLens = buildLens(Tree::size.name, Tree::size) { p, v -> p.copy(size = v) }
+    private val ageLens = lens(Tree::age.name, Tree::age) { p, v -> p.copy(age = v) }
+    private val sizeLens = lens(Tree::size.name, Tree::size) { p, v -> p.copy(size = v) }
 
     @Test
     fun testFormat() {

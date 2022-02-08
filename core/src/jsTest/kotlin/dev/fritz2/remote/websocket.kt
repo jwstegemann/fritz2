@@ -5,7 +5,7 @@ import dev.fritz2.dom.html.handledBy
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
 import dev.fritz2.lenses.IdProvider
-import dev.fritz2.lenses.buildLens
+import dev.fritz2.lenses.lens
 import dev.fritz2.resource.Resource
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
@@ -150,9 +150,9 @@ class WebSocketTests {
     @Serializable
     data class SocketPerson(val name: String, val age: Int, val _id: String = Id.next())
 
-    private val nameLens = buildLens("name", SocketPerson::name) { p, v -> p.copy(name = v) }
-    private val ageLens = buildLens("age", SocketPerson::age) { p, v -> p.copy(age = v) }
-    private val idLens = buildLens("id", SocketPerson::_id) { p, v -> p.copy(_id = v) }
+    private val nameLens = lens("name", SocketPerson::name) { p, v -> p.copy(name = v) }
+    private val ageLens = lens("age", SocketPerson::age) { p, v -> p.copy(age = v) }
+    private val idLens = lens("id", SocketPerson::_id) { p, v -> p.copy(_id = v) }
 
     object PersonResource : Resource<SocketPerson, String> {
         override val idProvider: IdProvider<SocketPerson, String> = SocketPerson::_id
