@@ -116,7 +116,7 @@ fun main() {
 
     val router = routerOf("")
 
-    renderTailwind {
+    render {
         router.data.render { route ->
             div("w-full h-screen bg-gradient-to-r from-amber-300 to-orange-500 p-4") {
                 (pages[route]?.content ?: RenderContext::overview)()
