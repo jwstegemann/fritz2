@@ -2,11 +2,10 @@
 const mainCssFile = 'styles.css'
 
 const tailwind = {
-    mode: 'jit', // undefined
     content: [
         './kotlin/**/*.{js,html,css}',
     ],
-    darkMode: 'media', // or 'media' or 'class'
+    darkMode: 'media',
     theme: {
         extend: {
             colors: {
@@ -113,8 +112,8 @@ const tailwind = {
                         postcssOptions: {
                             plugins: [
                                 require("tailwindcss")({config: tailwind}),
-                                require("autoprefixer"),
-                                require("cssnano")
+                                require("autoprefixer")
+                                // require("cssnano")
                             ]
                         }
                     }
