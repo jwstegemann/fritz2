@@ -3,11 +3,10 @@ package dev.fritz2.headless.foundation
 import dev.fritz2.binding.Store
 import dev.fritz2.dom.html.handledBy
 import dev.fritz2.headless.validation.ComponentValidationMessage
-import dev.fritz2.headless.validation.Severity
 import dev.fritz2.validation.messages
+import dev.fritz2.validation.valid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 
 /**
  * This property keeps track of the external data-binding of some component.
@@ -47,9 +46,7 @@ class DatabindingProperty<T> : Property<DatabindingProperty.DataBinding<T>>() {
 
     val handler: ((Flow<T>) -> Unit)? by lazy { value?.handler }
 
-    val hasError: Flow<Boolean> by lazy {
-        value?.messages?.map { messages -> messages.any { it.severity == Severity.Error } } ?: flowOf(false)
-    }
+    val hasError: Flow<Boolean> by lazy { value?.messages?.valid ?: flowOf(false) }
 
     val validationMessages: Flow<List<ComponentValidationMessage>> by lazy {
         value?.messages ?: flowOf(emptyList())

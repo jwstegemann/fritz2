@@ -5,12 +5,16 @@ import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.Scope
 import kotlinx.browser.document
 import kotlinx.browser.window
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.dom.clear
 import org.w3c.dom.Element
 import org.w3c.dom.Node
+import org.w3c.dom.events.Event
 
 /**
  * A marker to separate the layers of calls in the type-safe-builder pattern.
@@ -22,7 +26,7 @@ annotation class HtmlTagMarker
  * Represents a tag.
  * Sorry for the name, but we needed to delimit it from the [Element] it is wrapping.
  */
-interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> {
+interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
 
     /**
      * id of this [Tag]
@@ -149,56 +153,6 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
     }
 
     /**
-     * Sets an attribute from a [List] of [String]s.
-     * Therefore, it concatenates the [String]s to the final value [String].
-     *
-     * @param name to use
-     * @param values for concatenation
-     * @param separator [String] for separation
-     */
-    fun attr(name: String, values: List<String>, separator: String = " ") {
-        domNode.setAttribute(name, values.joinToString(separator))
-    }
-
-    /**
-     * Sets an attribute from a [List] of [String]s.
-     * Therefore, it concatenates the [String]s to the final value [String].
-     *
-     * @param name to use
-     * @param values for concatenation
-     * @param separator [String] for separation
-     */
-    fun attr(name: String, values: Flow<List<String>>, separator: String = " ") {
-        mountSimple(job, values) { v -> attr(name, v, separator) }
-    }
-
-    /**
-     * Sets an attribute from a [Map] of [String]s and [Boolean]s.
-     * The key inside the [Map] getting only set when the corresponding value
-     * is true. Otherwise, they get removed from the resulting [String].
-     *
-     * @param name to use
-     * @param values to use
-     * @param separator [String] for separation
-     */
-    fun attr(name: String, values: Map<String, Boolean>, separator: String = " ") {
-        domNode.setAttribute(name, values.filter { it.value }.keys.joinToString(separator))
-    }
-
-    /**
-     * Sets an attribute from a [Map] of [String]s and [Boolean]s.
-     * The key inside the [Map] getting only set when the corresponding value
-     * is true. Otherwise, they get removed from the resulting [String].
-     *
-     * @param name to use
-     * @param values to use
-     * @param separator [String] for separation
-     */
-    fun attr(name: String, values: Flow<Map<String, Boolean>>, separator: String = " ") {
-        mountSimple(job, values) { v -> attr(name, v, separator) }
-    }
-
-    /**
      * adds a [String] of class names to the classes attribute of this [Tag]
      */
     fun addToClasses(classesToAdd: String)
@@ -283,44 +237,6 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
     }
 
     /**
-     * Sets the *style* attribute from a [List] of [String]s.
-     *
-     * @param values [List] of [String]s
-     */
-    fun inlineStyle(values: List<String>) {
-        attr("style", values, separator = "; ")
-    }
-
-    /**
-     * Sets the *style* attribute from a [List] of [String]s.
-     *
-     * @param values [Flow] with [List] of [String]s
-     */
-    fun inlineStyle(values: Flow<List<String>>) {
-        attr("style", values, separator = "; ")
-    }
-
-    /**
-     * Sets the *style* attribute from a [Map] of [String] to [Boolean].
-     * If the value of the [Map]-entry is true, the key will be used inside the resulting [String].
-     *
-     * @param values [Map] with key to set and corresponding values to decide
-     */
-    fun inlineStyle(values: Map<String, Boolean>) {
-        attr("style", values, separator = "; ")
-    }
-
-    /**
-     * Sets the *style* attribute from a [Map] of [String] to [Boolean].
-     * If the value of the [Map]-entry is true, the key will be used inside the resulting [String].
-     *
-     * @param values [Flow] of [Map] with key to set and corresponding values to decide
-     */
-    fun inlineStyle(values: Flow<Map<String, Boolean>>) {
-        attr("style", values, separator = "; ")
-    }
-
-    /**
      * Sets all scope-entries as data-attributes to the element.
      */
     fun Scope.asDataAttr() {
@@ -328,6 +244,24 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
             attr("data-${k.name}", v.toString())
         }
     }
+
+    /**
+     * Creates an [Listener] for the given event [name].
+     *
+     * @param name of the [Event] to listen for
+     */
+    override fun <X : Event> subscribe(name: String): Listener<X, E> = Listener(callbackFlow {
+        val listener: (Event) -> Unit = {
+            try {
+                trySend(it.unsafeCast<X>())
+            } catch (e: Exception) {
+                console.error("Unexpected type while listening for `$name` events in Window object", e)
+            }
+        }
+        domNode.addEventListener(name, listener)
+
+        awaitClose { domNode.removeEventListener(name, listener) }
+    })
 
     /**
      * Adds text-content of a [Flow] at this position
@@ -350,8 +284,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
      * @param into target to render text-content to
      * @receiver text-content
      */
-    fun <T> Flow<T>.renderText(into: Tag<*>? = null) =
-        this.map { it.toString() }.renderText(into)
+    fun <T> Flow<T>.renderText(into: Tag<*>? = null) = this.map { it.toString() }.renderText(into)
 
     /**
      * Adds static text-content at this position
@@ -408,7 +341,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
      * @see whenever
      */
     fun <T> Flow<T>.whenever(condition: Flow<Boolean>): Flow<T?> =
-        condition.combine(this) { cond, value -> if (cond) value else null }
+        condition.flatMapLatest { cond -> this.map { value -> if (cond) value else null } }
 
     /**
      * provides [RenderContext] next to this [Tag] on the same DOM-level.

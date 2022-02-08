@@ -35,8 +35,8 @@ abstract class OpenClose {
     protected fun Tag<HTMLElement>.handleOpenCloseEvents() {
         openClose.handler?.invoke(openClose.data.flatMapLatest { state ->
             merge(
-                clicks.events,
-                keydowns.events.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) }.onEach {
+                clicks,
+                keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) }.onEach {
                     it.stopImmediatePropagation()
                     it.preventDefault()
                 }).map { !state }

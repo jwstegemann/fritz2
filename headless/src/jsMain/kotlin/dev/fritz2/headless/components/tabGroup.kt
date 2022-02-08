@@ -116,7 +116,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             attr("role", Aria.Role.tablist)
             attr(Aria.orientation, orientation.toString().lowercase())
 
-            keydowns.events.mapNotNull { event ->
+            keydowns.mapNotNull { event ->
                 when (shortcutOf(event)) {
                     backwardsKey -> Direction.Previous
                     forwardKey -> Direction.Next
@@ -129,12 +129,12 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
                 }
             } handledBy ::nextByKeys
 
-            keydowns.events.filter { setOf(Keys.Home, Keys.PageUp).contains(shortcutOf(it)) }.map {
+            keydowns.filter { setOf(Keys.Home, Keys.PageUp).contains(shortcutOf(it)) }.map {
                 it.stopImmediatePropagation()
                 it.preventDefault()
             } handledBy ::firstByKey
 
-            keydowns.events.filter { setOf(Keys.End, Keys.PageDown).contains(shortcutOf(it)) }.map {
+            keydowns.filter { setOf(Keys.End, Keys.PageDown).contains(shortcutOf(it)) }.map {
                 it.stopImmediatePropagation()
                 it.preventDefault()
             } handledBy ::lastByKey

@@ -41,7 +41,7 @@ class Tooltip<C : HTMLElement>(
 
         merge(target.mouseenters, target.mouseleaves, target.focusins, target.focusouts) handledBy toggle
         //TODO: check for memory leak
-        Window.keydowns.events.filter { shortcutOf(it) == Keys.Escape }.map {} handledBy close
+        Window.keydowns.filter { shortcutOf(it) == Keys.Escape }.map {} handledBy close
 
 
         val modifiers = buildList<Modifier<*>> {

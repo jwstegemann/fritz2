@@ -9,8 +9,6 @@ eleventyNavigation:
     order: 100
 ---
 
-# Validation
-
 When accepting user-input, it is a nice idea to validate the data before processing it any further.
 
 Hint: If you plan to use our [components](ComponentLibrary.html), you might want to check out the

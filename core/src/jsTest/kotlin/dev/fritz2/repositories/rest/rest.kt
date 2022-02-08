@@ -4,7 +4,7 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
 import dev.fritz2.lenses.IdProvider
-import dev.fritz2.lenses.buildLens
+import dev.fritz2.lenses.lens
 import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
 import dev.fritz2.test.initDocument
@@ -27,9 +27,9 @@ class RestTests {
         }
     }
 
-    private val nameLens = buildLens("name", RestPerson::name) { p, v -> p.copy(name = v) }
-    private val ageLens = buildLens("age", RestPerson::age) { p, v -> p.copy(age = v) }
-    private val idLens = buildLens("_id", RestPerson::_id) { p, v -> p.copy(_id = v) }
+    private val nameLens = lens("name", RestPerson::name) { p, v -> p.copy(name = v) }
+    private val ageLens = lens("age", RestPerson::age) { p, v -> p.copy(age = v) }
+    private val idLens = lens("_id", RestPerson::_id) { p, v -> p.copy(_id = v) }
 
     object PersonResource : Resource<RestPerson, String> {
         override val idProvider: IdProvider<RestPerson, String> = RestPerson::_id
@@ -57,7 +57,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            val rest = restEntity(PersonResource, remote, "")
+            val rest = restEntityOf(PersonResource, remote, "")
 
             val load = handle { _, id: String -> rest.load(id) }
             val saveOrUpdate = handle { entity -> rest.addOrUpdate(entity) }
@@ -134,7 +134,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            private val rest = restQuery<RestPerson, String, Unit>(PersonResource, remote, "")
+            private val rest = restQueryOf<RestPerson, String, Unit>(PersonResource, remote, "")
 
             val addOrUpdate = handle<RestPerson> { entities, person -> rest.addOrUpdate(entities, person) }
             val query = handle<Unit> { _, query -> rest.query(query) }
@@ -209,7 +209,7 @@ class RestTests {
                 fail(exception.message)
             }
 
-            private val rest = restQuery<RestPerson, String, Unit>(PersonResource, remote, "")
+            private val rest = restQueryOf<RestPerson, String, Unit>(PersonResource, remote, "")
 
             val addOrUpdate = handle<RestPerson> { entities, entity ->
                 rest.addOrUpdate(entities, entity)

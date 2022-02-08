@@ -4,7 +4,7 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
 import dev.fritz2.lenses.IdProvider
-import dev.fritz2.lenses.buildLens
+import dev.fritz2.lenses.lens
 import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
 import dev.fritz2.test.initDocument
@@ -21,9 +21,9 @@ class LocalStorageTests {
     @Serializable
     data class LocalPerson(val name: String, val age: Int, val _id: String = Id.next())
 
-    private val nameLens = buildLens("name", LocalPerson::name) { p, v -> p.copy(name = v) }
-    private val ageLens = buildLens("age", LocalPerson::age) { p, v -> p.copy(age = v) }
-    private val idLens = buildLens("id", LocalPerson::_id) { p, v -> p.copy(_id = v) }
+    private val nameLens = lens("name", LocalPerson::name) { p, v -> p.copy(name = v) }
+    private val ageLens = lens("age", LocalPerson::age) { p, v -> p.copy(age = v) }
+    private val idLens = lens("id", LocalPerson::_id) { p, v -> p.copy(_id = v) }
 
 
     object PersonResource : Resource<LocalPerson, String> {
@@ -49,7 +49,7 @@ class LocalStorageTests {
                 fail(exception.message)
             }
 
-            val localStorage = localStorageEntity(PersonResource, "")
+            val localStorage = localStorageEntityOf(PersonResource, "")
 
             val load = handle { _, id: String -> localStorage.load(id) }
 
@@ -127,7 +127,7 @@ class LocalStorageTests {
             }
 
             private val localStorage =
-                localStorageQuery(PersonResource, "") { entities, _: Unit ->
+                localStorageQueryOf(PersonResource, "") { entities, _: Unit ->
                     entities.sortedBy(LocalPerson::name)
                 }
             val addOrUpdate = handle<LocalPerson> { entities, person -> localStorage.addOrUpdate(entities, person) }
@@ -204,7 +204,7 @@ class LocalStorageTests {
                 fail(exception.message)
             }
 
-            private val localStorage: LocalStorageQuery<LocalPerson, String, Unit> = localStorageQuery(PersonResource, "")
+            private val localStorage: LocalStorageQuery<LocalPerson, String, Unit> = localStorageQueryOf(PersonResource, "")
 
             val addOrUpdate = handle<LocalPerson> { entities, entity -> localStorage.addOrUpdate(entities, entity) }
             val updateMany = handle<List<LocalPerson>> { entities, updatedEntities -> localStorage.updateMany(entities, updatedEntities) }
