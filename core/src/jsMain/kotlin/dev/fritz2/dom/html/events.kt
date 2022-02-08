@@ -213,7 +213,7 @@ object Events {
     // The event occurs when the user starts moving/skipping to a new position in the media
     val seeking = EventType<Event>("seeking")
 
-    // The event occurs after the user selects some text (for <input> and <textarea>)
+    // The event occurs after the user selects some text (for <input> and <textarea>)
     val select = EventType<Event>("select")
 
     // The event occurs when a <menu> element is shown as a context menu
