@@ -2,10 +2,11 @@
 const mainCssFile = 'styles.css'
 
 const tailwind = {
-    content: [
-        './kotlin/**/*.{js,html,css}',
-    ],
     darkMode: 'media',
+    plugins: [
+        require('@tailwindcss/forms')
+    ],
+    variants: {},
     theme: {
         extend: {
             colors: {
@@ -90,10 +91,9 @@ const tailwind = {
             }
         },
     },
-    variants: {},
-    plugins: [
-        require('@tailwindcss/forms')
-    ],
+    content: [
+        './kotlin/**/*.{js,html,css}',
+    ]
 };
 
 
