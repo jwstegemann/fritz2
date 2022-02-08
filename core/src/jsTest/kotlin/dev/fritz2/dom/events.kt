@@ -1,15 +1,14 @@
 package dev.fritz2.dom
 
 import dev.fritz2.binding.RootStore
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.Shortcut
-import dev.fritz2.dom.html.render
-import dev.fritz2.dom.html.value
+import dev.fritz2.dom.html.*
 import dev.fritz2.identification.Id
 import dev.fritz2.test.initDocument
 import dev.fritz2.test.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLInputElement
@@ -21,10 +20,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-class ListenerTest {
+class EventsTest {
 
     @Test
-    fun testListenerForChangeAndInputEvent() = runTest {
+    fun testChangeAndInputEvent() = runTest {
         initDocument()
 
         val inputId = Id.next()
@@ -59,7 +58,7 @@ class ListenerTest {
     }
 
     @Test
-    fun testListenerForClickEvent() = runTest {
+    fun testClickEvent() = runTest {
         initDocument()
 
         val resultId = Id.next()
@@ -105,7 +104,7 @@ class ListenerTest {
     }
 
     @Test
-    fun testListenerForMultipleClickEvent() = runTest {
+    fun testMultipleClickEvent() = runTest {
         initDocument()
 
         val resultId = Id.next()
@@ -164,7 +163,7 @@ class ListenerTest {
     }
 
     @Test
-    fun testListenerForKeyboardEvent() = runTest {
+    fun testKeyboardEvent() = runTest {
         initDocument()
 
         val resultId = Id.next()
@@ -198,7 +197,7 @@ class ListenerTest {
                     store.data.renderText()
                 }
                 input(id = inputId) {
-                    keydowns.key() handledBy store.keyPressed
+                    keydowns.map { shortcutOf(it) } handledBy store.keyPressed
                 }
             }
         }
@@ -259,7 +258,10 @@ class ListenerTest {
             section {
                 input(id = inputId) {
                     value(store.data)
-                    keyups.enter() handledBy store.update
+                    keyups.mapNotNull {
+                        if (shortcutOf(it) == Keys.Enter) this.domNode.value
+                        else null
+                    } handledBy store.update
                 }
                 p(id = resultId) {
                     store.data.renderText()

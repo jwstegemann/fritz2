@@ -1,13 +1,10 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.Handler
-import dev.fritz2.dom.DomListener
-import dev.fritz2.dom.WindowListener
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
-import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 
 /**
@@ -50,40 +47,20 @@ interface WithJob {
     /**
      * Connects [Event]s to a [Handler].
      *
-     * @receiver [DomListener] which contains the [Event]
+     * @receiver [Flow] which contains the [Event]
      * @param handler that will handle the fired [Event]
      */
-    infix fun <E : Event, X : Element> DomListener<E, X>.handledBy(handler: Handler<Unit>) =
-        handler.collect(this.events.map { }, job)
+    infix fun <E : Event> Flow<E>.handledBy(handler: Handler<Unit>) =
+        handler.collect(this.map {  }, job)
 
     /**
      * Connects a [Flow] to a suspendable [execute] function.
      *
-     * @receiver [DomListener] which contains the [Event]
+     * @receiver [Flow] which contains the [Event]
      * @param execute function that will handle the fired [Event]
      */
-    infix fun <E : Event, X : Element> DomListener<E, X>.handledBy(execute: suspend (E) -> Unit) =
-        this.events.onEach { execute(it) }.catch { errorHandler(it) }.launchIn(MainScope() + job)
-
-
-    /**
-     * Connects [Event]s to a [Handler].
-     *
-     * @receiver [WindowListener] which contains the [Event]
-     * @param handler that will handle the fired [Event]
-     */
-    infix fun <E : Event> WindowListener<E>.handledBy(handler: Handler<Unit>) =
-        handler.collect(this.events.map { }, job)
-
-    /**
-     * Connects a [Flow] to a suspendable [execute] function.
-     *
-     * @receiver [WindowListener] which contains the [Event]
-     * @param execute function that will handle the fired [Event]
-     */
-    infix fun <E : Event> WindowListener<E>.handledBy(execute: suspend (E) -> Unit) =
-        this.events.onEach { execute(it) }.catch { errorHandler(it) }.launchIn(MainScope() + job)
-
+    infix fun <E : Event> Flow<E>.handledBy(execute: suspend (E) -> Unit) =
+        this.onEach { execute(it) }.catch { errorHandler(it) }.launchIn(MainScope() + job)
 }
 
 /**

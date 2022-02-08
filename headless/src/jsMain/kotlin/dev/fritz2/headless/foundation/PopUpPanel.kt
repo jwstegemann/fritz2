@@ -31,12 +31,12 @@ abstract class PopUpPanel<C : HTMLElement>(
     var distance = 10
 
     fun closeOnEscape() {
-        Window.keydowns.events.filter { shortcutOf(it) == Keys.Escape }
+        Window.keydowns.filter { shortcutOf(it) == Keys.Escape }
             .mapNotNull { if (openCloseDelegate.opened.first()) Unit else null } handledBy openCloseDelegate.close
     }
 
     fun closeOnBlur() {
-        blurs.events.mapNotNull {
+        blurs.mapNotNull {
             if (it.relatedTarget == reference?.domNode) null else Unit
         } handledBy openCloseDelegate.close
     }

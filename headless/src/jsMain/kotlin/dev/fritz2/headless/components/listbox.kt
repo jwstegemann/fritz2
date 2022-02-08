@@ -143,7 +143,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             attr(Aria.activedescendant, activeIndex.data.map { if (it == -1) null else "$componentId-item-$it" })
 
             state.flatMapLatest { (currentIndex, entries) ->
-                keydowns.events.mapNotNull { event ->
+                keydowns.mapNotNull { event ->
                     when (shortcutOf(event)) {
                         Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, entries)
                         Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, entries)
@@ -160,8 +160,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             } handledBy activeIndex.update
 
             entries.data.flatMapLatest { entries ->
-                keydowns.events
-                    .mapNotNull { event ->
+                keydowns.mapNotNull { event ->
                         if (!Keys.NamedKeys.contains(event.key)) {
                             event.preventDefault()
                             event.stopImmediatePropagation()
@@ -176,7 +175,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
             value.handler?.invoke(
                 state.flatMapLatest { (currentIndex, entries) ->
-                    keydowns.events.filter {
+                    keydowns.filter {
                         setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
                     }.mapNotNull {
                         if (currentIndex == -1 || entries[currentIndex].disabled) {
@@ -208,7 +207,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             val disable = entries.disabledHandler(index)
 
             fun render() {
-                mouseenters.events.mapNotNull { if (entries.current[index].disabled) null else index } handledBy activeIndex.update
+                mouseenters.mapNotNull { if (entries.current[index].disabled) null else index } handledBy activeIndex.update
 
                 attr("tabindex", "-1")
                 attr("role", Aria.Role.option)
@@ -218,7 +217,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
                 }
 
                 value.handler?.invoke(
-                    mousedowns.events.mapNotNull { e ->
+                    mousedowns.mapNotNull { e ->
                         e.preventDefault()
                         e.stopImmediatePropagation()
                         entries.current[index].let {

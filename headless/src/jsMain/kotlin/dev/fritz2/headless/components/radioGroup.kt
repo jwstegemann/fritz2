@@ -2,7 +2,7 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.DomListener
+import dev.fritz2.dom.Listener
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.*
@@ -39,7 +39,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         if (withKeyboardNavigation == true) {
             value.handler?.invoke(
                 value.data.flatMapLatest { option ->
-                    keydowns.events.mapNotNull { event ->
+                    keydowns.mapNotNull { event ->
                         when (shortcutOf(event)) {
                             Keys.ArrowDown -> options.rotateNext(option)
                             Keys.ArrowUp -> options.rotatePrevious(option)
@@ -127,7 +127,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             attr("role", Aria.Role.radio)
             attr(Aria.checked, selected.asString())
             attr("tabindex", selected.map { if (it) "0" else "-1" })
-            var toggleEvent: DomListener<*, *> = clicks
+            var toggleEvent: Listener<*, *> = clicks
             if (domNode is HTMLInputElement) {
                 if (domNode.getAttribute("name") == null) {
                     attr("name", componentId)

@@ -1,6 +1,6 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.dom.DomListener
+import dev.fritz2.dom.Listener
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.*
 import dev.fritz2.headless.foundation.Aria
@@ -101,7 +101,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             attr(Aria.checked, selected.asString())
             attr("tabindex", "0")
             var withKeyboardNavigation = true
-            var toggleEvent: DomListener<*, *> = clicks
+            var toggleEvent: Listener<*, *> = clicks
             if (domNode is HTMLInputElement) {
                 if (domNode.getAttribute("name") == null) {
                     attr("name", componentId)
@@ -115,7 +115,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             if (withKeyboardNavigation) {
                 value.handler?.invoke(
                     value.data.flatMapLatest { value ->
-                        keydowns.events.filter { shortcutOf(it) == Keys.Space }.map {
+                        keydowns.filter { shortcutOf(it) == Keys.Space }.map {
                             it.stopImmediatePropagation()
                             it.preventDefault()
                             if (value.contains(option)) value - option else value + option

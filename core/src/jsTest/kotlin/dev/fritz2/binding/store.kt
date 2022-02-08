@@ -162,7 +162,7 @@ class StoreTests {
             }
 
             val exceptionSimpleHandlerValue = "exception from simple handler"
-            val simpleTestHandlerWithActionThrowingException = handle<Int> { _, action ->
+            val simpleTestHandlerWithActionThrowingException = handle<Int> { _, _ ->
                 throw Exception(exceptionSimpleHandlerValue)
             }
 
@@ -172,7 +172,7 @@ class StoreTests {
             }
 
             val exceptionEmittingHandlerValue = "exception from simple handler"
-            val emittingTestHandlerWithActionThrowingException = handleAndEmit<Int, Unit> { _, action ->
+            val emittingTestHandlerWithActionThrowingException = handleAndEmit<Int, Unit> { _, _ ->
                 throw Exception(exceptionEmittingHandlerValue)
             }
 

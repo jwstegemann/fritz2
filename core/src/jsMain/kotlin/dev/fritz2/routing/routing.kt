@@ -2,7 +2,6 @@ package dev.fritz2.routing
 
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.Update
-import dev.fritz2.dom.html.Events
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -90,7 +89,7 @@ open class Router<T>(
             it.preventDefault()
             state.value = defaultRoute.deserialize(window.location.hash.removePrefix(prefix))
         }
-        window.addEventListener(Events.hashchange.name, listener)
+        window.addEventListener("hashchange", listener)
     }
 }
 
