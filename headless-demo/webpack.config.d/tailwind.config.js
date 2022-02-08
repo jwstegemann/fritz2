@@ -6,7 +6,7 @@ const tailwind = {
     content: [
         './kotlin/**/*.{js,html,css}',
     ],
-    darkMode: false, // or 'media' or 'class'
+    darkMode: 'media', // or 'media' or 'class'
     theme: {
         extend: {
             colors: {
