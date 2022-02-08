@@ -101,7 +101,7 @@ const tailwind = {
 // webpack tailwind css settings
 ((config) => {
     ((config) => {
-        config.entry.main.push('./kotlin/' + mainCssFile)
+        config.entry.main.push('./kotlin/' + mainCssFile);
         config.module.rules.push({
             test: /\.css$/,
             use: [
