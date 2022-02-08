@@ -7,6 +7,7 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.dom.clear
 import org.w3c.dom.Element
@@ -408,7 +409,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, EventContext<E> 
      * @see whenever
      */
     fun <T> Flow<T>.whenever(condition: Flow<Boolean>): Flow<T?> =
-        condition.combine(this) { cond, value -> if (cond) value else null }
+        condition.flatMapLatest { cond -> this.map { value -> if (cond) value else null } }
 
     /**
      * provides [RenderContext] next to this [Tag] on the same DOM-level.
