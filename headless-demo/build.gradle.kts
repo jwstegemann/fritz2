@@ -18,15 +18,16 @@ kotlin {
             dependencies {
                 implementation(project(":headless"))
                 // tailwind
-                implementation(npm("tailwindcss", "3.0.7"))
+                implementation(npm("tailwindcss", "3.0.19"))
                 implementation(npm("@tailwindcss/forms", "0.4.0"))
 
                 // webpack
-                implementation(devNpm("postcss", "8.3.5"))
-                implementation(devNpm("postcss-loader", "4.2.0")) // 5.0.0 seems not to work
-                implementation(devNpm("autoprefixer", "10.2.6"))
-                implementation(devNpm("css-loader", "6.3.0"))
-                implementation(devNpm("style-loader", "3.3.0"))
+                implementation(devNpm("postcss", "8.4.6"))
+                implementation(devNpm("postcss-loader", "6.2.1"))
+                implementation(devNpm("autoprefixer", "10.4.2"))
+                implementation(devNpm("css-loader", "6.6.0"))
+                implementation(devNpm("style-loader", "3.3.1"))
+                implementation(devNpm("cssnano", "5.0.17"))
             }
         }
     }

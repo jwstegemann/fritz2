@@ -105,15 +105,16 @@ const tailwind = {
         config.module.rules.push({
             test: /\.css$/,
             use: [
-                { loader: 'style-loader' },
-                { loader: 'css-loader' },
+                {loader: 'style-loader'},
+                {loader: 'css-loader'},
                 {
                     loader: 'postcss-loader',
                     options: {
                         postcssOptions: {
                             plugins: [
-                                require("tailwindcss")({ config: tailwind }),
-                                require("autoprefixer")
+                                require("tailwindcss")({config: tailwind}),
+                                require("autoprefixer"),
+                                require("cssnano")
                             ]
                         }
                     }
