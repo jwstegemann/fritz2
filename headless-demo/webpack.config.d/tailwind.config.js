@@ -112,8 +112,8 @@ const tailwind = {
                         postcssOptions: {
                             plugins: [
                                 require("tailwindcss")({config: tailwind}),
-                                require("autoprefixer")
-                                // require("cssnano")
+                                require("autoprefixer"),
+                                require("cssnano")
                             ]
                         }
                     }
