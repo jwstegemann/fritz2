@@ -4,7 +4,6 @@ import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.ScopeContext
-import dev.fritz2.dom.html.addGlobalStyles
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.identification.Id
 import dev.fritz2.utils.classes
@@ -15,81 +14,6 @@ import org.w3c.dom.HTMLElement
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
-
-    companion object {
-        init {
-            addGlobalStyles(listOf(
-            """.popper[data-popper-reference-hidden] {
-                visibility: hidden;
-                pointer-events: none;
-            }""".trimIndent(),
-            """.popper-arrow,
-            .popper-arrow::before {
-                position: absolute;
-                width: 8px;
-                height: 8px;
-                background: inherit;
-            }""".trimIndent(),
-            """.popper-arrow {
-                visibility: hidden;
-            }""".trimIndent(),
-            """.popper-arrow::before {
-                visibility: visible;
-                content: '';
-                transform: rotate(45deg);
-            }""".trimIndent(),
-            """.popper[data-popper-placement^='top'] > .popper-arrow {
-                bottom: -4px;
-            }""".trimIndent(),
-            """.popper[data-popper-placement^='bottom'] > .popper-arrow {
-                top: -4px;
-            }""".trimIndent(),
-            """.popper[data-popper-placement^='left'] > .popper-arrow {
-                right: -4px;
-            }""".trimIndent(),
-            """.popper[data-popper-placement^='right'] > .popper-arrow {
-                left: -4px;
-            }""".trimIndent(),
-            """.popper[data-popper-placement='bottom'] > .transform {
-                transform-origin: top;
-            }""".trimIndent(),
-            """.popper[data-popper-placement='bottom-start'] > .transform {
-                transform-origin: top left;
-            }""".trimIndent(),
-            """.popper[data-popper-placement='bottom-right'] > .transform {
-                transform-origin: top right;
-            }""".trimIndent(),
-            """.popper[data-popper-placement='top'] > .transform {
-                transform-origin: bottom;
-            }""".trimIndent(),
-            """.popper[data-popper-placement='top-start'] > .transform {
-                transform-origin: bottom left;
-            }""".trimIndent(),
-            """.popper[data-popper-placement='top-right'] > .transform {
-                transform-origin: bottom right;
-            }""".trimIndent(),
-            """.popper[data-popper-placement='left'] > .transform {
-                transform-origin: right;
-            }""".trimIndent(),
-            """.popper[data-popper-placement='left-start'] > .transform {
-                transform-origin: top right;
-            }""".trimIndent(),
-            """.popper[data-popper-placement='left-end'] > .transform {
-                transform-origin: bottom right;
-            }""".trimIndent(),
-            """.popper[data-popper-placement='right'] > .transform {
-                transform-origin: left;
-            }""".trimIndent(),
-            """.popper[data-popper-placement='right-start'] > .transform {
-                transform-origin: top left;
-            }""".trimIndent(),
-            """.popper[data-popper-placement='right-end'] > .transform {
-                transform-origin: bottom left;
-            }""".trimIndent()
-                )
-            )
-        }
-    }
 
     val componentId: String by lazy { id ?: Id.next() }
 
