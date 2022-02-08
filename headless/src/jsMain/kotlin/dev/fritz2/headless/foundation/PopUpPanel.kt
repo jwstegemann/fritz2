@@ -24,7 +24,6 @@ abstract class PopUpPanel<C : HTMLElement>(
 
     companion object {
         init {
-            console.log("initial PopUpPanel styles")
             addGlobalStyles(listOf(
             """.popper[data-popper-reference-hidden] {
                 visibility: hidden;
