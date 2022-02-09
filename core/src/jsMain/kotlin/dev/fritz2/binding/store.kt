@@ -7,9 +7,6 @@ import dev.fritz2.lenses.Lenses
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.resource.Resource
-import dev.fritz2.validation.Validation
-import dev.fritz2.validation.ValidationMessage
-import dev.fritz2.validation.valid
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -115,6 +112,7 @@ interface Store<D> : WithJob {
      */
     val update: Handler<D>
 
+    //TODO: recipe
     /**
      * calls a handler on each new value of the [Store]
      */
