@@ -62,8 +62,8 @@ Innerhalb der headless Komponente existieren dann die beiden Bausteine ``switchT
 ## Validierung
 
 Die Datenbindung erlaubt es der Switch Komponente, die Validierungsnachrichten abzugreifen und einen eigenen Baustein
-anzubieten, der nur dann gerendert wird, sofern Nachrichten vorliegen und diese in seinem Scope dem Anwender zur
-Verfügung stellt.
+anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen. Diese Nachrichten werden in seinem Scope 
+dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
 
 
 ```kotlin
