@@ -62,8 +62,8 @@ Innerhalb der headless Komponente existieren dann die beiden Bausteine ``switchT
 ## Validierung
 
 Die Datenbindung erlaubt es der Switch Komponente, die Validierungsnachrichten abzugreifen und einen eigenen Baustein
-anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen. Diese Nachrichten werden in seinem Scope 
-dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
+`switchValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen. 
+Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
 
 
 ```kotlin
@@ -94,27 +94,31 @@ beiden Zuständen hin und her.
 
 ## API
 
-### Hierarchie
+### Summary / Sketch
 ```kotlin
-switch {
-    value(/* boolean data-binding*/)
+switch() {
+    // Felder
+    value: DatabindingProperty<Boolean>
     enabled: Flow<Boolean>
     
     // Bausteine
-    switchValidationMessages {
+    switchValidationMessages() {
+        // Felder
         messages: Flow<List<ComponentValidationMessage>>
     }
 }
 
-switchWithLabel {
-    value(/* boolean data-binding*/)
+switchWithLabel() {
+    // Felder
+    value: DatabindingProperty<Boolean>
     enabled: Flow<Boolean>
     
     // Bausteine
-    switchToggle { }
-    switchLabel { }
-    switchDescription { } // more than once possible
-    switchValidationMessages { 
+    switchToggle() { }
+    switchLabel() { }
+    switchDescription() { } // use multiple times
+    switchValidationMessages() {
+        // Felder    
         messages: Flow<List<ComponentValidationMessage>>
     }
 }
@@ -150,6 +154,8 @@ Default-Tag: `div`
 Verfügbar im Scope von: `switch`, `switchWithLabel`
 
 Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
 
 | Scope Feld | Typ                                      | Description                                                   |
 |------------|------------------------------------------|---------------------------------------------------------------|

@@ -27,3 +27,31 @@ Dies ist ein Test
 Dies ist ein Test
 
 Noch ein Absatz
+
+## API
+
+### Summary / Sketch
+```kotlin
+checkboxGroup() {
+    // Felder
+    value: DatabindingPropert<List<T>>
+
+    // Bausteine
+    checkboxGroupLabel() { }
+    checkboxGroupValidationMessages() {
+        // Felder    
+        messages: Flow<List<ComponentValidationMessage>>
+    }
+    // for each T {
+        checkboxGroupOption(option: T) {
+            // Felder
+            selected: Flow<Boolean>
+    
+            // Bausteine
+            checkboxGroupOptionToggle() { }
+            checkboxGroupOptionLabel() { }
+            checkboxGroupOptionDescription() { } // use multiple times
+        }
+    // }
+}
+```
