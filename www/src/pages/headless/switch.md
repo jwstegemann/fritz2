@@ -75,8 +75,8 @@ switch {
     span {
         className(enabled.map { if (it) "translate-x-5" else "translate-x-0" })
     }
-    switchValidationMessages(tag = RenderContext::ul) { messages ->
-        messages.forEach { li { +it } }
+    switchValidationMessages(tag = RenderContext::ul) { 
+        messages.renderEach { li { +it.message } }
     }
 }
 ```
@@ -118,18 +118,18 @@ Default-Tag: `div`
 | `enabled`  | `Flow<Boolean>`                | Aktueller Zustand. (Default `false`)                                           |
 
 
-### `switchValidationMessages` (Baustein)
+### `switchValidationMessages` (Brick Factory)
 
 Verfügbar im Scope von: `switch`, `switchWithLabel`
 
 Parameter: `classes`, `scope`, `tag`, `initialize`
 
-| Scope Feld | Typ                                 | Description                                                   |
-|------------|-------------------------------------|---------------------------------------------------------------|
-| `messages` | `List<ComponentValidationMessage>`  | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
+| Scope Feld | Typ                                      | Description                                                   |
+|------------|------------------------------------------|---------------------------------------------------------------|
+| `messages` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
 
 
-### `switchToggle` (Baustein)
+### `switchToggle` (Brick Factory)
 
 Verfügbar im Scope von: ``switchWithLabel``
 
@@ -138,7 +138,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `button`
 
 
-### `switchLabel` (Baustein)
+### `switchLabel` (Brick Factory)
 
 Verfügbar im Scope von: ``switchWithLabel``
 
@@ -147,7 +147,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `switchDescription` (Baustein)
+### `switchDescription` (Brick Factory)
 
 Verfügbar im Scope von: ``switchWithLabel``
 
