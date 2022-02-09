@@ -1,5 +1,5 @@
 // must be in the jsMain/resource folder
-const mainCssFile = 'styles.css'
+const mainCssFile = 'styles.css';
 
 const tailwind = {
     darkMode: 'media',
@@ -92,7 +92,8 @@ const tailwind = {
         },
     },
     content: [
-        './kotlin/**/*.{js,html,css}',
+        '*.{js,html,css}',
+        './kotlin/**/*.{js,html,css}'
     ]
 };
 
@@ -100,7 +101,8 @@ const tailwind = {
 // webpack tailwind css settings
 ((config) => {
     ((config) => {
-        config.entry.main.push('./kotlin/' + mainCssFile);
+        let entry = config.output.path + '/../processedResources/js/main/' + mainCssFile;
+        config.entry.main.push(entry);
         config.module.rules.push({
             test: /\.css$/,
             use: [
