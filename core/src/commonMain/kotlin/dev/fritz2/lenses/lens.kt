@@ -80,7 +80,7 @@ typealias IdProvider<T, I> = (T) -> I
 /**
  * Occurs when [Lens] points to non-existing element.
  */
-class LensException(msg: String): Exception(msg)
+class LensException: Exception() // is needed to cancel the coroutine correctly
 
 /**
  * creates a [Lens] pointing to a certain element in a [List]
@@ -93,7 +93,7 @@ fun <T, I> lensOf(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, T> = 
 
     override fun get(parent: List<T>): T = parent.find {
         idProvider(it) == idProvider(element)
-    } ?: throw LensException("could not find element $element in list")
+    } ?: throw LensException()
 
     override fun set(parent: List<T>, value: T): List<T> = parent.map {
         if (idProvider(it) == idProvider(value)) value else it
@@ -109,7 +109,7 @@ fun <T> lensOf(index: Int): Lens<List<T>, T> = object : Lens<List<T>, T> {
     override val id: String = index.toString()
 
     override fun get(parent: List<T>): T =
-        parent.getOrNull(index) ?: throw LensException("could not find element with index $index in list")
+        parent.getOrNull(index) ?: throw LensException()
 
     override fun set(parent: List<T>, value: T): List<T> =
         parent.subList(0, index) + value + parent.subList(index + 1, parent.size)
@@ -124,7 +124,7 @@ fun <K, V> lensOf(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>, V> {
     override val id: String = key.toString()
 
     override fun get(parent: Map<K, V>): V =
-        parent[key] ?: throw LensException("could not find element with key $key in map")
+        parent[key] ?: throw LensException()
 
     override fun set(parent: Map<K, V>, value: V): Map<K, V> = parent.mapValues {
         if(it.key == key) value else it.value
