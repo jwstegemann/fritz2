@@ -94,6 +94,33 @@ beiden Zuständen hin und her.
 
 ## API
 
+### Hierarchie
+```kotlin
+switch {
+    value(/* boolean data-binding*/)
+    enabled: Flow<Boolean>
+    
+    // Bausteine
+    switchValidationMessages {
+        messages: Flow<List<ComponentValidationMessage>>
+    }
+}
+
+switchWithLabel {
+    value(/* boolean data-binding*/)
+    enabled: Flow<Boolean>
+    
+    // Bausteine
+    switchToggle { }
+    switchLabel { }
+    switchDescription { } // more than once possible
+    switchValidationMessages { 
+        messages: Flow<List<ComponentValidationMessage>>
+    }
+}
+
+```
+
 ### `switch` (Component Factory)
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
