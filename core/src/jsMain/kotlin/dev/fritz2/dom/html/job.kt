@@ -1,6 +1,10 @@
 package dev.fritz2.dom.html
 
 import dev.fritz2.binding.Handler
+import dev.fritz2.binding.Store
+import dev.fritz2.remote.Socket
+import dev.fritz2.remote.body
+import dev.fritz2.resource.Resource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -51,7 +55,7 @@ interface WithJob {
      * @param handler that will handle the fired [Event]
      */
     infix fun <E : Event> Flow<E>.handledBy(handler: Handler<Unit>) =
-        handler.collect(this.map {  }, job)
+        handler.collect(this.map { }, job)
 
     /**
      * Connects a [Flow] to a suspendable [execute] function.
@@ -61,6 +65,25 @@ interface WithJob {
      */
     infix fun <E : Event> Flow<E>.handledBy(execute: suspend (E) -> Unit) =
         this.onEach { execute(it) }.catch { errorHandler(it) }.launchIn(MainScope() + job)
+
+    /**
+     * Syncs a [Store] by via a Websockets connection.
+     */
+    fun <D, I> Store<D>.syncWith(socket: Socket, resource: Resource<D, I>) {
+        val session = socket.connect()
+        var last: D? = null
+        this@WithJob.apply {
+            session.messages.body.map {
+                val received = resource.deserialize(it)
+                last = received
+                received
+            } handledBy this@syncWith.update
+
+            this@syncWith.data.drop(1) handledBy {
+                if (last != it) session.send(resource.serialize(it))
+            }
+        }
+    }
 }
 
 /**
