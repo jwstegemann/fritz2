@@ -100,7 +100,9 @@ value class Scope(private val entries: HashMap<Key<*>, Any> = hashMapOf()) {
     /**
      * Key for setting and receiving entries in the [Scope]
      */
-    open class Key<T: Any>(val name: String)
+    open class Key<T: Any>(val name: String) {
+        override fun toString(): String = name
+    }
 
     /**
      * Sets a new key-value-pair to the [Scope].
