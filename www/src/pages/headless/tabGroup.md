@@ -25,7 +25,7 @@ Komponente auch keinerlei Informationen zu den verfügbaren Tabs. Die Tabs an si
 verwaltet, den sie beim Hinzufügen in die `tabList` inne hatten. Struktur und Inhalt von Tabs und Panels können
 vollkommen frei gestaltet werden.
 
-Eine [Datenbindung](#tab-status-von-außen-setzen-und-abfragen) ist rein optional und muss nicht angegeben werden.
+Eine [Datenbindung](#aktiven-tab-von-außen-setzen-und-abfragen) ist rein optional und muss nicht angegeben werden.
 
 ```kotlin
 // Some domain type and a collection of data to be displayed inside a tab-group 
@@ -89,7 +89,7 @@ tabGroup {
 }
 ```
 
-## Tab Status von außen setzen und abfragen
+## Aktiven Tab von außen setzen und abfragen
 
 Wie bereits eingangs beschrieben, werden die Tabs lediglich über ihren Index (`0` basiert!) verwaltet.
 
@@ -210,8 +210,8 @@ tabGroup() {
             }
         // }
     }
-    
-    tabPanel() {
+
+    tabPanels() {
         // Bausteine
         // for each tab {
             panel() { }
@@ -220,3 +220,55 @@ tabGroup() {
 }
 ```
 
+### `tabGroup`
+
+Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+| Scope Feld    | Typ                        | Description                                                                           |
+|---------------|----------------------------|---------------------------------------------------------------------------------------|
+| `value`       | `DatabindingProperty<Int>` | Zwei-Wege-Datenbindung für das Setzen und Abfragen des aktuellen Index. Rein Optional |
+| `selected`    | `Flow<Int>`                | Datenstrom mit dem aktuellen Tab-Index                                                |
+| `orientation` | `Orientation`              | Feld zum Einstellen der Orientierung. Default ist `Horizontal`                        |
+
+
+### `tabList`
+
+Verfügbar im Scope von: `tabGroup`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+
+### `tab`
+
+Verfügbar im Scope von: `tabList`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+| Scope Feld | Typ                      | Description                                                |
+|------------|--------------------------|------------------------------------------------------------|
+| `disabled` | `Flow<Boolean>`          | Datenstrom der angibt, ob ein Tab aktiv oder inaktiv ist.  |
+| `disable`  | `SimpleHandler<Boolean>` | Handler für das Setzen des inaktiven Status.               |
+
+
+### `tabPanels`
+
+Verfügbar im Scope von: `tabGroup`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+
+### `panel`
+
+Verfügbar im Scope von: `tabPanels`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`

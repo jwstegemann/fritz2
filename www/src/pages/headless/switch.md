@@ -125,7 +125,7 @@ switchWithLabel() {
 
 ```
 
-### `switch` (Component Factory)
+### `switch`
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -137,7 +137,7 @@ Default-Tag: `button`
 | `enabled`  | `Flow<Boolean>`                | Aktueller Zustand. (Default `false`)                                           |
 
 
-### `switchWithLabel` (Component Factory)
+### `switchWithLabel`
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -149,7 +149,7 @@ Default-Tag: `div`
 | `enabled`  | `Flow<Boolean>`                | Aktueller Zustand. (Default `false`)                                           |
 
 
-### `switchValidationMessages` (Brick Factory)
+### `switchValidationMessages`
 
 Verfügbar im Scope von: `switch`, `switchWithLabel`
 
@@ -162,7 +162,7 @@ Default-Tag: `div`
 | `messages` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
 
 
-### `switchToggle` (Brick Factory)
+### `switchToggle`
 
 Verfügbar im Scope von: ``switchWithLabel``
 
@@ -171,7 +171,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `button`
 
 
-### `switchLabel` (Brick Factory)
+### `switchLabel`
 
 Verfügbar im Scope von: ``switchWithLabel``
 
@@ -180,7 +180,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `switchDescription` (Brick Factory)
+### `switchDescription`
 
 Verfügbar im Scope von: ``switchWithLabel``
 

@@ -186,7 +186,7 @@ checkboxGroup() {
 }
 ```
 
-### `checkboxGroup` (Component Factory)
+### `checkboxGroup`
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -197,7 +197,7 @@ Default-Tag: `div`
 | `value`    | `DatabindingProperty<List<T>>` | Zwei-Wege-Datenbindung für eine beliebig große Anzahl an selektierten Optionen. Muss gesetzt werden! |
 
 
-### `checkboxGroupLabel` (Brick Factory)
+### `checkboxGroupLabel`
 
 Verfügbar im Scope von: `checkboxGroup`
 
@@ -206,7 +206,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `checkboxGroupValidationMessages` (Brick Factory)
+### `checkboxGroupValidationMessages`
 
 Verfügbar im Scope von: `checkboxGroup`
 
@@ -219,7 +219,7 @@ Default-Tag: `div`
 | `messages` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
 
 
-### `checkboxGroupOption` (Brick Factory)
+### `checkboxGroupOption`
 
 Verfügbar im Scope von: `checkboxGroup`
 
@@ -234,7 +234,7 @@ Default-Tag: `div`
 | `selected` | `Flow<Boolean>` | Dieser Datenstrom liefert den Selektions-Status der verwalteten Option: `true` die Option is Teil der selektierten Optionen, `false` wenn nicht. |
 
 
-### `checkboxGroupOptionToggle` (Brick Factory)
+### `checkboxGroupOptionToggle`
 
 Verfügbar im Scope von: `checkboxGroupOption`
 
@@ -243,7 +243,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `div`
 
 
-### `checkboxGroupOptionLabel` (Brick Factory)
+### `checkboxGroupOptionLabel`
 
 Verfügbar im Scope von: `checkboxGroupOption`
 
@@ -252,7 +252,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `checkboxGroupOptionDescription` (Brick Factory)
+### `checkboxGroupOptionDescription`
 
 Verfügbar im Scope von: `checkboxGroupOption`
 
