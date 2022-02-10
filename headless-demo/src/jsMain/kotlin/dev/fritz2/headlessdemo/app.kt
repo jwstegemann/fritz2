@@ -49,7 +49,7 @@ val pages = mapOf(
             | flyout menus.""".trimMargin(),
         RenderContext::popOverDemo
     ),
-    "tabs" to DemoPage(
+    "tabGroup" to DemoPage(
         "Headless Tabs",
         """Easily create accessible, fully customizable tab interfaces, with robust focus management and keyboard
             | navigation support.""".trimMargin(),
