@@ -16,11 +16,12 @@ class SubStore<P, D>(
     val parent: Store<P>,
     private val lens: Lens<P, D>
 ) : Store<D> {
+
+    //TODO: investigate: can you Job from parent instead?
     /**
      * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
      */
     override val job: Job = Job()
-
 
     /**
      * defines how to infer the id of the sub-part from the parent's id.

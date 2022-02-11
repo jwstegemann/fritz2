@@ -7,10 +7,7 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.SubStore
 import dev.fritz2.identification.Id
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 
 /**
@@ -75,10 +72,9 @@ open class ValidatingStore<D, T, M>(
         validation(data, metadata).also { validationMessages.value = it }
 
     init {
-        if (validateAfterUpdate) this.syncBy(this.handle<D> { _, newValue ->
+        if (validateAfterUpdate) data.drop(1) handledBy { newValue ->
             validate(newValue)
-            newValue
-        })
+        }
     }
 }
 
