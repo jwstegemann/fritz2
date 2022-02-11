@@ -4,12 +4,6 @@ import dev.fritz2.dom.html.WithJob
 import dev.fritz2.identification.Id
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
-import dev.fritz2.remote.Socket
-import dev.fritz2.remote.body
-import dev.fritz2.resource.Resource
-import dev.fritz2.validation.Validation
-import dev.fritz2.validation.ValidationMessage
-import dev.fritz2.validation.valid
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -116,34 +110,6 @@ interface Store<D> : WithJob {
     val update: Handler<D>
 
     /**
-     * calls a handler on each new value of the [Store]
-     */
-    fun syncBy(handler: Handler<Unit>) {
-        data.drop(1).map { } handledBy handler
-    }
-
-    /**
-     * calls a handler on each new value of the [Store]
-     */
-    fun syncBy(handler: Handler<D>) {
-        data.drop(1) handledBy handler
-    }
-
-    fun <I> syncWith(socket: Socket, resource: Resource<D, I>) {
-        val session = socket.connect()
-        var last: D? = null
-        session.messages.body.map {
-            val received = resource.deserialize(it)
-            last = received
-            received
-        } handledBy update
-
-        data.drop(1) handledBy {
-            if (last != it) session.send(resource.serialize(it))
-        }
-    }
-
-    /**
      * create a [SubStore] that represents a certain part of your data model.
      *
      * @param lens: a [Lens] describing, which part of your data model you will create [SubStore] for.
@@ -152,27 +118,6 @@ interface Store<D> : WithJob {
      */
     fun <X> sub(lens: Lens<D, X>): SubStore<D, X> =
         SubStore(this, lens)
-}
-
-/**
- * calls a handler on each new value of the [Store]
- */
-inline fun <T, R> Store<T>.syncBy(handler: Handler<R>, crossinline mapper: suspend (T) -> R) {
-    data.drop(1).map(mapper) handledBy handler
-}
-
-fun <T, I> Store<List<T>>.syncWith(socket: Socket, resource: Resource<T, I>) {
-    val session = socket.connect()
-    var last: List<T>? = null
-    session.messages.body.map {
-        val received = resource.deserializeList(it)
-        last = received
-        received
-    } handledBy update
-
-    data.drop(1) handledBy {
-        if (last != it) session.send(resource.serializeList(it))
-    }
 }
 
 /**
@@ -204,7 +149,7 @@ open class RootStore<D>(
      *
      * Actual data therefore is derived by applying the updates on the internal channel one by one to get the next value.
      */
-    override val data: Flow<D> = state.asStateFlow()
+    final override val data: Flow<D> = state.asStateFlow()
 
     /**
      * Represents the current data of this [RootStore].

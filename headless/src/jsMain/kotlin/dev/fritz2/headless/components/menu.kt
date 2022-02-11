@@ -49,7 +49,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
     private val selections = storeOf(-1)
 
     fun render() {
-        selections.syncBy(selections.handle { -1 })
+        selections.data.drop(1) handledBy selections.handle { _, _ -> -1 }
 
         opened.filter { !it }.drop(1) handledBy {
             button?.setFocus()
