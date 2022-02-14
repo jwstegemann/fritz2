@@ -89,20 +89,6 @@ val <M : ValidationMessage> Flow<List<M>>.valid: Flow<Boolean>
     get() = this.map { it.valid }
 
 /**
- * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
- * The created [Store] validates its model after every update automatically.
- *
- * @param initialData first current value of this [Store]
- * @param validation [Validation] instance to use at the data on this [Store].
- * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
- */
-fun <D, T, M> storeOf(
-    initialData: D,
-    validation: Validation<D, T, M>,
-    id: String = Id.next()
-) = ValidatingStore(initialData, validation, true, id)
-
-/**
  * Finds all corresponding [ValidationMessage]s to this [Store].
  */
 inline fun <reified M: ValidationMessage> Store<*>.messages(): Flow<List<M>>? =
