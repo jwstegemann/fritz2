@@ -1,7 +1,6 @@
-package dev.fritz2.headlessdemo.demos
+package dev.fritz2.headlessdemo
 
 import dev.fritz2.dom.html.*
-import dev.fritz2.headlessdemo.*
 import dev.fritz2.routing.routerOf
 
 data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)
@@ -114,11 +113,10 @@ fun RenderContext.overview() {
 }
 
 fun main() {
-    require("./styles.css")
 
     val router = routerOf("")
 
-    renderTailwind {
+    render {
         router.data.render { route ->
             div("w-full h-screen bg-gradient-to-r from-amber-300 to-orange-500 p-4") {
                 (pages[route]?.content ?: RenderContext::overview)()

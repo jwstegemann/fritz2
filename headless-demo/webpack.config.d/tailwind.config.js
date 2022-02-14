@@ -1,14 +1,12 @@
-// tailwind.config.js
-const defaultTheme = require('../build/js/node_modules/tailwindcss/defaultTheme')
+// must be in the jsMain/resource folder
+const mainCssFile = 'styles.css';
 
-module.exports = {
-    mode: 'jit', // undefined
-    purge: {
-        content: [
-            './kotlin/**/*.{js,html,css}',
-        ]
-    },
-    darkMode: false, // or 'media' or 'class'
+const tailwind = {
+    darkMode: 'media',
+    plugins: [
+        require('@tailwindcss/forms')
+    ],
+    variants: {},
     theme: {
         extend: {
             colors: {
@@ -93,8 +91,36 @@ module.exports = {
             }
         },
     },
-    variants: {},
-    plugins: [
-        require('../build/js/node_modules/@tailwindcss/forms')
-    ],
-}
+    content: [
+        '*.{js,html,css}',
+        './kotlin/**/*.{js,html,css}'
+    ]
+};
+
+
+// webpack tailwind css settings
+((config) => {
+    ((config) => {
+        let entry = config.output.path + '/../processedResources/js/main/' + mainCssFile;
+        config.entry.main.push(entry);
+        config.module.rules.push({
+            test: /\.css$/,
+            use: [
+                {loader: 'style-loader'},
+                {loader: 'css-loader'},
+                {
+                    loader: 'postcss-loader',
+                    options: {
+                        postcssOptions: {
+                            plugins: [
+                                require("tailwindcss")({config: tailwind}),
+                                require("autoprefixer"),
+                                require("cssnano")
+                            ]
+                        }
+                    }
+                }
+            ]
+        });
+    })(config);
+})(config);
