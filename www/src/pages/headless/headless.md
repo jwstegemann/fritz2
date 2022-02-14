@@ -1,6 +1,6 @@
 ---
 title: Headless
-layout: layouts/docs.njk 
+layout: layouts/docsWithContentNav.njk
 permalink: /headless/ 
 eleventyNavigation:
     key: headless 
