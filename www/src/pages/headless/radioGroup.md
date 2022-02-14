@@ -161,7 +161,7 @@ radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
 
 Die Datenbindung erlaubt es der CheckboxGroup Komponente, die Validierungsnachrichten abzugreifen und einen eigenen
 Baustein `radioGroupValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen.
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
+Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
 
 ```kotlin
 radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
@@ -175,7 +175,7 @@ radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
     }
 
     checkboxGroupValidationMessages(tag = RenderContext::ul) {
-        messages.renderEach { li { +it.message } }
+        msgs.renderEach { li { +it.message } }
     }
 }
 ```
@@ -195,23 +195,18 @@ deselektiert die zuvor gewählte Option.
 
 ### Summary / Sketch
 ```kotlin
-radioGroup() {
-    // Felder
-    value: DatabindingPropert<T>
+radioGroup<T>() {
+    val value: DatabindingPropert<T>
 
-    // Bausteine
     radioGroupLabel() { }
     radioGroupValidationMessages() {
-        // Felder    
-        messages: Flow<List<ComponentValidationMessage>>
+        val msgs: Flow<List<ComponentValidationMessage>>
     }
     // for each T {
         radioGroupOption(option: T) {
-            // Felder
-            selected: Flow<Boolean>
-            active: Flow<Boolean>
+            val selected: Flow<Boolean>
+            val active: Flow<Boolean>
     
-            // Bausteine
             radioGroupOptionToggle() { }
             radioGroupOptionLabel() { }
             radioGroupOptionDescription() { } // use multiple times
@@ -220,7 +215,7 @@ radioGroup() {
 }
 ```
 
-### `radioGroup`
+### radioGroup
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -231,7 +226,7 @@ Default-Tag: `div`
 | `value`    | `DatabindingProperty<T>`  | Zwei-Wege-Datenbindung für die Selektion einer Option. Muss gesetzt werden!   |
 
 
-### `radioGroupLabel`
+### radioGroupLabel
 
 Verfügbar im Scope von: `radioGroup`
 
@@ -240,7 +235,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `radioGroupValidationMessages`
+### radioGroupValidationMessages
 
 Verfügbar im Scope von: `radioGroup`
 
@@ -250,10 +245,10 @@ Default-Tag: `div`
 
 | Scope Feld | Typ                                      | Description                                                   |
 |------------|------------------------------------------|---------------------------------------------------------------|
-| `messages` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
+| `msgs` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
 
 
-### `radioGroupOption`
+### radioGroupOption
 
 Verfügbar im Scope von: `radioGroup`
 
@@ -269,7 +264,7 @@ Default-Tag: `div`
 | `active`   | `Flow<Boolean>` | Dieser Datenstrom zeigt an, ob eine Option fokussiert ist: `true` die Option hat den Fokus, `false` wenn nicht. Es kann immer nur eine Option den Fokus haben. |
 
 
-### `radioGroupOptionToggle`
+### radioGroupOptionToggle
 
 Verfügbar im Scope von: `radioGroupOption`
 
@@ -278,7 +273,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `div`
 
 
-### `radioGroupOptionLabel`
+### radioGroupOptionLabel
 
 Verfügbar im Scope von: `radioGroupOption`
 
@@ -287,7 +282,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `radioGroupOptionDescription`
+### radioGroupOptionDescription
 
 Verfügbar im Scope von: `radioGroupOption`
 

@@ -221,5 +221,99 @@ Ein Click auf den `listboxButton` schaltet den Zustand der Auswahlliste um. Ein 
 ### Summary / Sketch
 
 ```kotlin
-
+listbox<T>() {
+    val value: DatabindingProperty<T>
+    // inherited by `OpenClose`
+    val openClose = DatabindingProperty<Boolean>()
+    val opened: Flow<Boolean>
+    val close: SimpleHandler<Unit>
+    val open: SimpleHandler<Unit>
+    val toggle: SimpleHandler<Unit>
+    
+    listboxButton() { }
+    listboxLabel() { }
+    listboxValidationMessages() {
+        val msgs: Flow<List<ComponentValidationMessage>>
+    }
+    listboxItems() {
+        // inherited by `PopUpPanel`
+        var placement: Placement
+        var strategy: Strategy
+        var flip: Boolean
+        var skidding: Int
+        var distance: int
+        
+        // for each T {
+            listboxItem(entry: T) {
+                val selected: Flow<Boolean>
+                val active: Flow<Boolean>
+                val disabled: Flow<Boolean>
+                val disable: SimpleHandler<Boolean>
+            }
+        // }
+    }
+}
 ```
+
+
+### listbox
+
+Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+| Scope Feld | Typ                       | Description                                                             |
+|------------|---------------------------|-------------------------------------------------------------------------|
+| `value`    | `DatabindingProperty<T>`  | Zwei-Wege-Datenbindung für ein selektiertes Entry. Muss gesetzt werden! |
+
+
+### listboxButton
+
+Verfügbar im Scope von: `listbox`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `button`
+
+### listboxLabel
+
+Verfügbar im Scope von: `listbox`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `label`
+
+### listboxValidationMessages
+
+Verfügbar im Scope von: `listbox`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+| Scope Feld | Typ                                      | Description                                                   |
+|------------|------------------------------------------|---------------------------------------------------------------|
+| `msgs`     | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
+
+### listboxItems
+
+Verfügbar im Scope von: `listbox`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+### listboxItem
+
+Verfügbar im Scope von: `listboxItems`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `button`
+
+| Scope Feld | Typ                      | Description                                                                                                                                                    |
+|------------|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `selected` | `Flow<Boolean>`          | Dieser Datenstrom liefert den Selektions-Status der verwalteten Option: `true` die Option ist selektiert, `false` wenn nicht.                                  |
+| `active`   | `Flow<Boolean>`          | Dieser Datenstrom zeigt an, ob ein Eintrag fokussiert ist: `true` die Option hat den Fokus, `false` wenn nicht. Es kann immer nur eine Option den Fokus haben. |
+| `disabled` | `Flow<Boolean>`          | Dieser Datenstrom zeigt an, ob ein Eintrag aktiv (`false`) oder inaktiv (`true`) ist.                                                                          |
+| `disable`  | `SimpleHandler<Boolean>` | Dieser Handler aktiviert oder deaktiviert einen Eintrag                                                                                                        |

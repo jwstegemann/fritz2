@@ -81,7 +81,7 @@ inputField {
 
 Die Datenbindung erlaubt es der InputField Komponente, die Validierungsnachrichten abzugreifen und einen eigenen 
 Baustein `inputValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen.
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
+Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
 
 ```kotlin
 inputField {
@@ -89,7 +89,7 @@ inputField {
     inputTextfield { }
     
     inputValidationMessages(tag = RenderContext::ul) {
-        messages.renderEach { li { +it.message } }
+        msgs.renderEach { li { +it.message } }
     }
 }
 ```
@@ -99,21 +99,20 @@ inputField {
 ### Summary / Sketch
 ```kotlin
 inputField() {
-    // Felder
-    value: DatabindingProperty<String>
-    placeHolder: AttributeHook<String>
-    disabled: BooleanAttributeHook
+    val value: DatabindingProperty<String>
+    val placeHolder: AttributeHook<String>
+    val disabled: BooleanAttributeHook
 
-    // Bausteine
     inputTextfield() { }
     inputLabel() { }
     inputDescription() { } // use multiple times
-    inputValidationMessages() { }
-
+    inputValidationMessages() { 
+        msgs: Flow<List<ComponentValidationMessage>>
+    }
 }
 ```
 
-### `inputField`
+### inputField
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -126,7 +125,7 @@ Default-Tag: `div`
 | `disabled`    | `BooleanAttributeHook`        | Optionaler Hook zum (dynamischen) Aktivieren oder Deaktivieren der Eingabe       |
 
 
-### `inputTextfield`
+### inputTextfield
 
 Verfügbar im Scope von: `inputField`
 
@@ -135,7 +134,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Tag: `input` (nicht änderbar!)
 
 
-### `inputLabel`
+### inputLabel
 
 Verfügbar im Scope von: `inputField`
 
@@ -144,7 +143,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `inputDescription`
+### inputDescription
 
 Verfügbar im Scope von: `inputField`
 
@@ -153,7 +152,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `p`
 
 
-### `inputValidationMessages`
+### inputValidationMessages
 
 Verfügbar im Scope von: `inputField`
 

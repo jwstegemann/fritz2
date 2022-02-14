@@ -81,7 +81,7 @@ textArea {
 
 Die Datenbindung erlaubt es der TextArea Komponente, die Validierungsnachrichten abzugreifen und einen eigenen
 Baustein `textareaValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen.
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
+Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
 
 ```kotlin
 textArea {
@@ -89,7 +89,7 @@ textArea {
     textareaTextfield { }
     
     textareaValidationMessages(tag = RenderContext::ul) {
-        messages.renderEach { li { +it.message } }
+        msgs.renderEach { li { +it.message } }
     }
 }
 ```
@@ -99,21 +99,20 @@ textArea {
 ### Summary / Sketch
 ```kotlin
 textArea() {
-    // Felder
-    value: DatabindingProperty<String>
-    placeHolder: AttributeHook<String>
-    disabled: BooleanAttributeHook
+    val value: DatabindingProperty<String>
+    val placeHolder: AttributeHook<String>
+    val disabled: BooleanAttributeHook
 
-    // Bausteine
     textareaTextfield() { }
     textareaLabel() { }
     textareaDescription() { } // use multiple times
-    textareaValidationMessages() { }
-
+    textareaValidationMessages() {
+        val msgs: Flow<List<ComponentValidationMessage>>
+    }
 }
 ```
 
-### `textArea`
+### textArea
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -126,7 +125,7 @@ Default-Tag: `div`
 | `disabled`    | `BooleanAttributeHook`        | Optionaler Hook zum (dynamischen) Aktivieren oder Deaktivieren der Eingabe       |
 
 
-### `textareaTextfield`
+### textareaTextfield
 
 Verfügbar im Scope von: `textArea`
 
@@ -135,7 +134,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Tag: `textarea` (nicht änderbar!)
 
 
-### `textareaLabel`
+### textareaLabel
 
 Verfügbar im Scope von: `textArea`
 
@@ -144,7 +143,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `textareaDescription`
+### textareaDescription
 
 Verfügbar im Scope von: `textArea`
 
@@ -153,7 +152,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `p`
 
 
-### `textareaValidationMessages`
+### textareaValidationMessages
 
 Verfügbar im Scope von: `textArea`
 
