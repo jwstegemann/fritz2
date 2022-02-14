@@ -220,7 +220,7 @@ radioGroup<T>() {
 }
 ```
 
-### `radioGroup`
+### radioGroup
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -231,7 +231,7 @@ Default-Tag: `div`
 | `value`    | `DatabindingProperty<T>`  | Zwei-Wege-Datenbindung für die Selektion einer Option. Muss gesetzt werden!   |
 
 
-### `radioGroupLabel`
+### radioGroupLabel
 
 Verfügbar im Scope von: `radioGroup`
 
@@ -240,7 +240,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `radioGroupValidationMessages`
+### radioGroupValidationMessages
 
 Verfügbar im Scope von: `radioGroup`
 
@@ -253,7 +253,7 @@ Default-Tag: `div`
 | `messages` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
 
 
-### `radioGroupOption`
+### radioGroupOption
 
 Verfügbar im Scope von: `radioGroup`
 
@@ -269,7 +269,7 @@ Default-Tag: `div`
 | `active`   | `Flow<Boolean>` | Dieser Datenstrom zeigt an, ob eine Option fokussiert ist: `true` die Option hat den Fokus, `false` wenn nicht. Es kann immer nur eine Option den Fokus haben. |
 
 
-### `radioGroupOptionToggle`
+### radioGroupOptionToggle
 
 Verfügbar im Scope von: `radioGroupOption`
 
@@ -278,7 +278,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `div`
 
 
-### `radioGroupOptionLabel`
+### radioGroupOptionLabel
 
 Verfügbar im Scope von: `radioGroupOption`
 
@@ -287,7 +287,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `radioGroupOptionDescription`
+### radioGroupOptionDescription
 
 Verfügbar im Scope von: `radioGroupOption`
 

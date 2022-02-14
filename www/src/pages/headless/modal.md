@@ -143,7 +143,7 @@ modal() {
 }
 ```
 
-### `modal`
+### modal
 
 Parameter: **keine**
 
@@ -155,7 +155,7 @@ Default-Tag: Es wird kein Tag gerendert!
 | `close`     | `SimpleHandler<Unit>`          | Handler zum Schließen des Dialogs von innen heraus                        |
 
 
-### `modalPanel`
+### modalPanel
 
 Verfügbar im Scope von: `modal`
 
@@ -163,7 +163,7 @@ Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-### `modalOverlay`
+### modalOverlay
 
 Verfügbar im Scope von: `modalPanel`
 
@@ -171,7 +171,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-### `modalTitle`
+### modalTitle
 
 Verfügbar im Scope von: `modalPanel`
 
@@ -179,7 +179,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `h2`
 
-### `modalDescription`
+### modalDescription
 
 Verfügbar im Scope von: `modalPanel`
 

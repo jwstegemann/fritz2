@@ -186,7 +186,7 @@ checkboxGroup<T>() {
 }
 ```
 
-### `checkboxGroup`
+### checkboxGroup
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -197,7 +197,7 @@ Default-Tag: `div`
 | `value`    | `DatabindingProperty<List<T>>` | Zwei-Wege-Datenbindung für eine beliebig große Anzahl an selektierten Optionen. Muss gesetzt werden! |
 
 
-### `checkboxGroupLabel`
+### checkboxGroupLabel
 
 Verfügbar im Scope von: `checkboxGroup`
 
@@ -206,7 +206,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `checkboxGroupValidationMessages`
+### checkboxGroupValidationMessages
 
 Verfügbar im Scope von: `checkboxGroup`
 
@@ -219,7 +219,7 @@ Default-Tag: `div`
 | `messages` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
 
 
-### `checkboxGroupOption`
+### checkboxGroupOption
 
 Verfügbar im Scope von: `checkboxGroup`
 
@@ -234,7 +234,7 @@ Default-Tag: `div`
 | `selected` | `Flow<Boolean>` | Dieser Datenstrom liefert den Selektions-Status der verwalteten Option: `true` die Option ist Teil der selektierten Optionen, `false` wenn nicht. |
 
 
-### `checkboxGroupOptionToggle`
+### checkboxGroupOptionToggle
 
 Verfügbar im Scope von: `checkboxGroupOption`
 
@@ -243,7 +243,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `div`
 
 
-### `checkboxGroupOptionLabel`
+### checkboxGroupOptionLabel
 
 Verfügbar im Scope von: `checkboxGroupOption`
 
@@ -252,7 +252,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `checkboxGroupOptionDescription`
+### checkboxGroupOptionDescription
 
 Verfügbar im Scope von: `checkboxGroupOption`
 

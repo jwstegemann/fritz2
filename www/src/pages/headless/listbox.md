@@ -258,7 +258,7 @@ listbox<T>() {
 ```
 
 
-### `listbox`
+### listbox
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -269,7 +269,7 @@ Default-Tag: `div`
 | `value`    | `DatabindingProperty<T>`  | Zwei-Wege-Datenbindung für ein selektiertes Entry. Muss gesetzt werden! |
 
 
-### `listboxButton`
+### listboxButton
 
 Verfügbar im Scope von: `listbox`
 
@@ -277,7 +277,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `button`
 
-### `listboxLabel`
+### listboxLabel
 
 Verfügbar im Scope von: `listbox`
 
@@ -285,7 +285,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `label`
 
-### `listboxValidationMessages`
+### listboxValidationMessages
 
 Verfügbar im Scope von: `listbox`
 
@@ -297,7 +297,7 @@ Default-Tag: `div`
 |------------|------------------------------------------|---------------------------------------------------------------|
 | `msgs`     | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
 
-### `listboxItems`
+### listboxItems
 
 Verfügbar im Scope von: `listbox`
 
@@ -305,7 +305,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-### `listboxItem`
+### listboxItem
 
 Verfügbar im Scope von: `listboxItems`
 

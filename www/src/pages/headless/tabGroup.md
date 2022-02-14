@@ -235,7 +235,7 @@ tabGroup() {
 }
 ```
 
-### `tabGroup`
+### tabGroup
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -248,7 +248,7 @@ Default-Tag: `div`
 | `orientation` | `Orientation`              | Feld zum Einstellen der Orientierung. Default ist `Horizontal`                        |
 
 
-### `tabList`
+### tabList
 
 Verfügbar im Scope von: `tabGroup`
 
@@ -257,7 +257,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `div`
 
 
-### `tab`
+### tab
 
 Verfügbar im Scope von: `tabList`
 
@@ -271,7 +271,7 @@ Default-Tag: `div`
 | `disable`  | `SimpleHandler<Boolean>` | Handler für das Setzen des inaktiven Status.               |
 
 
-### `tabPanels`
+### tabPanels
 
 Verfügbar im Scope von: `tabGroup`
 
@@ -280,7 +280,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `div`
 
 
-### `panel`
+### panel
 
 Verfügbar im Scope von: `tabPanels`
 

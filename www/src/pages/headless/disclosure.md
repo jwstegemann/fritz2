@@ -141,7 +141,7 @@ disclosure() {
 }
 ```
 
-### `disclosure`
+### disclosure
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -154,7 +154,7 @@ Default-Tag: `div`
 | `close`     | `SimpleHandler<Unit>`          | Handler zum Schließen des Disclosures von innen heraus                 |
 
 
-### `disclosureButton`
+### disclosureButton
 
 Verfügbar im Scope von: `disclosure`
 
@@ -162,7 +162,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `button`
 
-### `disclosurePanel`
+### disclosurePanel
 
 Verfügbar im Scope von: `disclosure`
 
@@ -170,7 +170,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-### `disclosureCloseButton`
+### disclosureCloseButton
 
 Verfügbar im Scope von: `disclosurePanel`
 

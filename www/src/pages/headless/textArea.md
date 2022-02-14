@@ -113,7 +113,7 @@ textArea() {
 }
 ```
 
-### `textArea`
+### textArea
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -126,7 +126,7 @@ Default-Tag: `div`
 | `disabled`    | `BooleanAttributeHook`        | Optionaler Hook zum (dynamischen) Aktivieren oder Deaktivieren der Eingabe       |
 
 
-### `textareaTextfield`
+### textareaTextfield
 
 Verfügbar im Scope von: `textArea`
 
@@ -135,7 +135,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Tag: `textarea` (nicht änderbar!)
 
 
-### `textareaLabel`
+### textareaLabel
 
 Verfügbar im Scope von: `textArea`
 
@@ -144,7 +144,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `textareaDescription`
+### textareaDescription
 
 Verfügbar im Scope von: `textArea`
 
@@ -153,7 +153,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `p`
 
 
-### `textareaValidationMessages`
+### textareaValidationMessages
 
 Verfügbar im Scope von: `textArea`
 
