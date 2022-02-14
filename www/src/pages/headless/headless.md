@@ -24,3 +24,17 @@ Hier steht dann der Willkommentext für die Headless-Komponenten
 | `scope`      | `ScopeContext.() -> Unit` | `{}`                               | Ausdruck zum Setzen von Scope Key-Value-Paaren |
 | `tag`        | `TagFactory<Tag<C>>`      | einfach: `button` mit Label: `div` | Tag-Fabrik                                     |
 | `initialize` | `Switch<C>.() -> Unit`    | -                                  | Scope für die Komponente                       |
+
+
+## Properties
+ beschreiben
+
+
+## Hooks
+ beschreiben
+
+
+## Databinding
+
+Einige Headless-Komponenten unterstützen Databinding. Das bedeutet, dass...
+Hier beschreiben, wie die Property-aufgebaut ist, die unterschiedlichen Verwendungsarten, etc, so dass an der Komponenten nur noch der Datentyp, etc. genannt werden muss und ob DB unterstützt wird oder nicht.
