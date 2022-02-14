@@ -31,7 +31,17 @@ open class ComponentValidationMessage(
     val message: String,
     val details: String? = null,
 ) : ValidationMessage {
+
     override val isError: Boolean = severity > Severity.Warning
+
+    override fun toString(): String = buildString {
+        append("{ ")
+        append("\"path\": \"$path\",")
+        append("\"severity\": \"$severity\",")
+        append("\"message\": \"$message\",")
+        append("\"details\": \"${details ?: ""}\"")
+        append(" }")
+    }
 }
 
 /**
