@@ -63,7 +63,7 @@ Innerhalb der headless Komponente existieren dann die beiden Bausteine ``switchT
 
 Die Datenbindung erlaubt es der Switch Komponente, die Validierungsnachrichten abzugreifen und einen eigenen Baustein
 `switchValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen. 
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
+Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
 
 
 ```kotlin
@@ -76,7 +76,7 @@ switch {
         className(enabled.map { if (it) "translate-x-5" else "translate-x-0" })
     }
     switchValidationMessages(tag = RenderContext::ul) { 
-        messages.renderEach { li { +it.message } }
+        msgs.renderEach { li { +it.message } }
     }
 }
 ```
@@ -119,7 +119,7 @@ switchWithLabel() {
     switchDescription() { } // use multiple times
     switchValidationMessages() {
         // Felder    
-        messages: Flow<List<ComponentValidationMessage>>
+        msgs: Flow<List<ComponentValidationMessage>>
     }
 }
 
@@ -159,7 +159,7 @@ Default-Tag: `div`
 
 | Scope Feld | Typ                                      | Description                                                   |
 |------------|------------------------------------------|---------------------------------------------------------------|
-| `messages` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
+| `msgs` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
 
 
 ### switchToggle

@@ -128,7 +128,7 @@ checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
 
 Die Datenbindung erlaubt es der CheckboxGroup Komponente, die Validierungsnachrichten abzugreifen und einen eigenen 
 Baustein `checkboxGroupValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen.
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
+Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
 
 ```kotlin
 checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
@@ -142,7 +142,7 @@ checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
     }
 
     checkboxGroupValidationMessages(tag = RenderContext::ul) {
-        messages.renderEach { li { +it.message } }
+        msgs.renderEach { li { +it.message } }
     }
 }
 ```
@@ -169,8 +169,8 @@ checkboxGroup<T>() {
     // Bausteine
     checkboxGroupLabel() { }
     checkboxGroupValidationMessages() {
-        // Felder    
-        messages: Flow<List<ComponentValidationMessage>>
+        // Felder
+        msgs: Flow<List<ComponentValidationMessage>>
     }
     // for each T {
         checkboxGroupOption(option: T) {
@@ -214,9 +214,9 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ                                      | Description                                                   |
-|------------|------------------------------------------|---------------------------------------------------------------|
-| `messages` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
+| Scope Feld | Typ                                  | Description                                                   |
+|------------|--------------------------------------|---------------------------------------------------------------|
+| `msgs` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
 
 
 ### checkboxGroupOption

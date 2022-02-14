@@ -81,7 +81,7 @@ textArea {
 
 Die Datenbindung erlaubt es der TextArea Komponente, die Validierungsnachrichten abzugreifen und einen eigenen
 Baustein `textareaValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen.
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
+Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
 
 ```kotlin
 textArea {
@@ -89,7 +89,7 @@ textArea {
     textareaTextfield { }
     
     textareaValidationMessages(tag = RenderContext::ul) {
-        messages.renderEach { li { +it.message } }
+        msgs.renderEach { li { +it.message } }
     }
 }
 ```
@@ -108,8 +108,10 @@ textArea() {
     textareaTextfield() { }
     textareaLabel() { }
     textareaDescription() { } // use multiple times
-    textareaValidationMessages() { }
-
+    textareaValidationMessages() {
+        // Felder
+        msgs: Flow<List<ComponentValidationMessage>>
+    }
 }
 ```
 

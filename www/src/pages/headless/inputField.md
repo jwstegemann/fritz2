@@ -81,7 +81,7 @@ inputField {
 
 Die Datenbindung erlaubt es der InputField Komponente, die Validierungsnachrichten abzugreifen und einen eigenen 
 Baustein `inputValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen.
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
+Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
 
 ```kotlin
 inputField {
@@ -89,7 +89,7 @@ inputField {
     inputTextfield { }
     
     inputValidationMessages(tag = RenderContext::ul) {
-        messages.renderEach { li { +it.message } }
+        msgs.renderEach { li { +it.message } }
     }
 }
 ```
@@ -108,8 +108,10 @@ inputField() {
     inputTextfield() { }
     inputLabel() { }
     inputDescription() { } // use multiple times
-    inputValidationMessages() { }
-
+    inputValidationMessages() { 
+        // Felder
+        msgs: Flow<List<ComponentValidationMessage>>
+    }
 }
 ```
 

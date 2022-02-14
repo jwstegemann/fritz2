@@ -161,7 +161,7 @@ radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
 
 Die Datenbindung erlaubt es der CheckboxGroup Komponente, die Validierungsnachrichten abzugreifen und einen eigenen
 Baustein `radioGroupValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen.
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
+Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
 
 ```kotlin
 radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
@@ -175,7 +175,7 @@ radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
     }
 
     checkboxGroupValidationMessages(tag = RenderContext::ul) {
-        messages.renderEach { li { +it.message } }
+        msgs.renderEach { li { +it.message } }
     }
 }
 ```
@@ -203,7 +203,7 @@ radioGroup<T>() {
     radioGroupLabel() { }
     radioGroupValidationMessages() {
         // Felder    
-        messages: Flow<List<ComponentValidationMessage>>
+        msgs: Flow<List<ComponentValidationMessage>>
     }
     // for each T {
         radioGroupOption(option: T) {
@@ -250,7 +250,7 @@ Default-Tag: `div`
 
 | Scope Feld | Typ                                      | Description                                                   |
 |------------|------------------------------------------|---------------------------------------------------------------|
-| `messages` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
+| `msgs` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
 
 
 ### radioGroupOption
