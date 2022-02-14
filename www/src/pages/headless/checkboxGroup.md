@@ -21,7 +21,7 @@ Option selektiert oder deselektiert werden. Es könne beliebig viele Optionen se
 
 Als Datenbindung über die Property `value` ist daher zwingend eine `List<T>` als Datenstrom oder gar als Store anzugeben.
 Die Komponente unterstützt two-way-databinding, d.h. sie übernimmt sowohl von außen auf einem `Flow<List<T>>` 
-vorhandene Elemente als selektiert, sendet aber natürlich auch die aktuelle Selektion an einen zu übergebenen
+vorhandene Elemente als selektiert, sendet aber natürlich auch die aktuelle Selektion an einen zu übergebenden
 Handler.
 
 Die verfügbaren Optionen werden nicht direkt als Parameter in die Komponente, sondern jeweils einzeln 
@@ -51,7 +51,7 @@ checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
 }
 ```
 
-## Das aktive Element stylen
+## Das selektierte Element stylen
 
 Da eine headless Komponente kein Styling mitliefert, unterstützt die Komponente den Anwender damit, auf den aktuellen
 Selektions-Zustand einer Option zu reagieren.
@@ -229,9 +229,9 @@ Parameter:
 
 Default-Tag: `div`
 
-| Scope Feld | Typ             | Description                                                                                                                                      |
-|------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| `selected` | `Flow<Boolean>` | Dieser Datenstrom liefert den Selektions-Status der verwalteten Option: `true` die Option is Teil der selektierten Optionen, `false` wenn nicht. |
+| Scope Feld | Typ             | Description                                                                                                                                       |
+|------------|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `selected` | `Flow<Boolean>` | Dieser Datenstrom liefert den Selektions-Status der verwalteten Option: `true` die Option ist Teil der selektierten Optionen, `false` wenn nicht. |
 
 
 ### `checkboxGroupOptionToggle`
