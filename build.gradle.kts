@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform") version "1.6.10" apply false
     kotlin("plugin.serialization") version "1.6.10" apply false
+    id("com.google.devtools.ksp") version "1.6.10-1.0.2" apply false
     id("org.jetbrains.dokka") version "1.6.10"
     id("maven-publish")
     signing
