@@ -15,10 +15,10 @@ import org.w3c.dom.events.Event
 /**
  * Prints [Exception] to error-[console] by ignoring [LensException].
  */
-internal fun printErrorIgnoreLensException(throwable: Throwable) {
-    when(throwable) {
+internal fun printErrorIgnoreLensException(cause: Throwable) {
+    when(cause) {
         is LensException -> {}
-        else -> console.error("ERROR: ${throwable.message}", throwable)
+        else -> console.error("ERROR: ${cause.message}", cause)
     }
 }
 
@@ -35,9 +35,9 @@ interface WithJob {
     /**
      * Default error handler printing the error to console.
      *
-     * @param exception Exception to handle
+     * @param cause Throwable to handle
      */
-    fun errorHandler(exception: Throwable) = ::printErrorIgnoreLensException
+    fun errorHandler(cause: Throwable): Unit = printErrorIgnoreLensException(cause)
 
     /**
      * Connects a [Flow] to a [Handler].

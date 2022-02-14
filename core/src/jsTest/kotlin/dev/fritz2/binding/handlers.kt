@@ -11,8 +11,8 @@ class HandlersTests {
     @Test
     fun testSimpleHandler() = runTest {
         val store = object : RootStore<Int>(0) {
-            override fun errorHandler(exception: Throwable) {
-                fail(exception.message)
+            override fun errorHandler(cause: Throwable) {
+                fail(cause.message)
             }
         }
 

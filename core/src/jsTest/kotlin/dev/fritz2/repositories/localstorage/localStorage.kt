@@ -45,8 +45,8 @@ class LocalStorageTests {
         val changedAge = 99
 
         val entityStore = object : RootStore<LocalPerson>(defaultPerson) {
-            override fun errorHandler(exception: Throwable) {
-                fail(exception.message)
+            override fun errorHandler(cause: Throwable) {
+                fail(cause.message)
             }
 
             val localStorage = localStorageEntityOf(PersonResource, "")
@@ -122,8 +122,8 @@ class LocalStorageTests {
         )
 
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
-            override fun errorHandler(exception: Throwable) {
-                fail(exception.message)
+            override fun errorHandler(cause: Throwable) {
+                fail(cause.message)
             }
 
             private val localStorage =
@@ -200,8 +200,8 @@ class LocalStorageTests {
         )
 
         val queryStore = object : RootStore<List<LocalPerson>>(emptyList()) {
-            override fun errorHandler(exception: Throwable) {
-                fail(exception.message)
+            override fun errorHandler(cause: Throwable) {
+                fail(cause.message)
             }
 
             private val localStorage: LocalStorageQuery<LocalPerson, String, Unit> = localStorageQueryOf(PersonResource, "")

@@ -174,8 +174,8 @@ class WebSocketTests {
         val socket = websocket.append("json")
 
         val entityStore = object : RootStore<SocketPerson>(defaultPerson) {
-            override fun errorHandler(exception: Throwable) {
-                fail(exception.message)
+            override fun errorHandler(cause: Throwable) {
+                fail(cause.message)
             }
 
             init {
