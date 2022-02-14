@@ -28,7 +28,7 @@ class SwitchTest {
                 span(id = value.id) {
                     attr("data-state", enabled.map { it.toString() })
                     attr("data-hasError", value.hasError.map { it.toString() })
-                    attr("data-message", value.validationMessages.map { it.firstOrNull().toString() })
+                    attr("data-message", value.validationMessages.map { it.firstOrNull()?.message ?: "" })
                 }
             }
         }
@@ -43,13 +43,13 @@ class SwitchTest {
         val switchToggleElement = getElementById<HTMLSpanElement>(switchState.id)
         assertEquals("false", switchToggleElement.getAttribute("data-state"), "wrong state")
         assertEquals("false", switchToggleElement.getAttribute("data-hasError"), "wrong hasError")
-        assertEquals("null", switchToggleElement.getAttribute("data-message"), "wrong message")
+        assertEquals("", switchToggleElement.getAttribute("data-message"), "wrong message")
 
         switchElement.click()
-        delay(100)
+        delay(500)
         assertEquals("true", switchToggleElement.getAttribute("data-state"), "wrong state after action click")
-        assertEquals("false", switchToggleElement.getAttribute("data-hasError"), "wrong state after action click")
-        assertEquals("null", switchToggleElement.getAttribute("data-message"), "wrong state after action click")
+        assertEquals("true", switchToggleElement.getAttribute("data-hasError"), "wrong state after action click")
+        assertEquals("error", switchToggleElement.getAttribute("data-message"), "wrong state after action click")
     }
 
 }
