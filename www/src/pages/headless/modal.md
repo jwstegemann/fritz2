@@ -110,6 +110,47 @@ modal {
 }
 ```
 
+## Transitionen
+
+Das Ein- und Ausblenden des modalen Fensters lässt sich mit Hilfe von `transition` einfach animieren:
+
+```kotlin
+modal {
+    openClose(toggle)
+    modalPanel {
+        modalOverlay {
+            // some nice fade in/out effect for the overlay
+            transition(
+                enter = "ease-out duration-300",
+                enterStart = "opacity-0",
+                enterEnd = "opacity-100",
+                leave = "ease-in duration-200",
+                leaveStart = "opacity-100",
+                leaveEnd = "opacity-0"
+            )            
+        }
+        div {
+            // some nice fade in/out and scale in/out effect for the content
+            transition(
+                enter = "transition duration-100 ease-out",
+                enterStart = "opacity-0 scale-95",
+                enterEnd = "opacity-100 scale-100",
+                leave = "transition duration-100 ease-in",
+                leaveStart = "opacity-100 scale-100",
+                leaveEnd = "opacity-0 scale-95"
+            )
+            
+            p { +"I am some modal dialog! Press Cancel to exit."}
+            button {
+                type("button")
+                +"Cancel"
+                clicks handledBy close 
+            }
+        }
+    }
+}
+```
+
 ## Maus Interaction
 
 Per default wird keinerlei Maus-Interaktion durch den modalen Dialog unterstützt. Typischerweise wird innerhalb eines
