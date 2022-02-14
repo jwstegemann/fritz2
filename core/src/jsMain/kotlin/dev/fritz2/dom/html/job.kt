@@ -2,10 +2,10 @@ package dev.fritz2.dom.html
 
 import dev.fritz2.binding.Handler
 import dev.fritz2.binding.Store
+import dev.fritz2.lenses.LensException
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.resource.Resource
-import dev.fritz2.lenses.LensException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
