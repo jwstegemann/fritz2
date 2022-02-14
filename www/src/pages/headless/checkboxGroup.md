@@ -162,7 +162,7 @@ liegende Option.
 
 ### Summary / Sketch
 ```kotlin
-checkboxGroup() {
+checkboxGroup<T>() {
     // Felder
     value: DatabindingPropert<List<T>>
 

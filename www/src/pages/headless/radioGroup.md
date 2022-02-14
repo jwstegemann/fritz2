@@ -195,7 +195,7 @@ deselektiert die zuvor gewählte Option.
 
 ### Summary / Sketch
 ```kotlin
-radioGroup() {
+radioGroup<T>() {
     // Felder
     value: DatabindingPropert<T>
 
