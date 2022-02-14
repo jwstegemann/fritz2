@@ -225,32 +225,33 @@ Ein Click auf den `listboxButton` schaltet den Zustand der Auswahlliste um. Ein 
 
 ```kotlin
 listbox<T>() {
-    // Felder
-    value: DatabindingProperty<T>
+    val value: DatabindingProperty<T>
+    // inherited by `OpenClose`
+    val openClose = DatabindingProperty<Boolean>()
+    val opened: Flow<Boolean>
+    val close: SimpleHandler<Unit>
+    val open: SimpleHandler<Unit>
+    val toggle: SimpleHandler<Unit>
     
-    // Bausteine
     listboxButton() { }
     listboxLabel() { }
     listboxValidationMessages() {
-        // Felder    
-        msgs: Flow<List<ComponentValidationMessage>>
+        val msgs: Flow<List<ComponentValidationMessage>>
     }
     listboxItems() {
-        // Felder
-        placement: Placement
-        strategy: Strategy
-        flip: Boolean
-        skidding: Int
-        distance: int
+        // inherited by `PopUpPanel`
+        var placement: Placement
+        var strategy: Strategy
+        var flip: Boolean
+        var skidding: Int
+        var distance: int
         
-        // Bausteine
         // for each T {
             listboxItem(entry: T) {
-                // Felder
-                selected: Flow<Boolean>
-                active: Flow<Boolean>
-                disabled: Flow<Boolean>
-                disable: SimpleHandler<Boolean>
+                val selected: Flow<Boolean>
+                val active: Flow<Boolean>
+                val disabled: Flow<Boolean>
+                val disable: SimpleHandler<Boolean>
             }
         // }
     }

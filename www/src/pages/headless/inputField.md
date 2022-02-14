@@ -99,17 +99,14 @@ inputField {
 ### Summary / Sketch
 ```kotlin
 inputField() {
-    // Felder
-    value: DatabindingProperty<String>
-    placeHolder: AttributeHook<String>
-    disabled: BooleanAttributeHook
+    val value: DatabindingProperty<String>
+    val placeHolder: AttributeHook<String>
+    val disabled: BooleanAttributeHook
 
-    // Bausteine
     inputTextfield() { }
     inputLabel() { }
     inputDescription() { } // use multiple times
     inputValidationMessages() { 
-        // Felder
         msgs: Flow<List<ComponentValidationMessage>>
     }
 }

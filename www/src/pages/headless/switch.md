@@ -97,29 +97,23 @@ beiden Zuständen hin und her.
 ### Summary / Sketch
 ```kotlin
 switch() {
-    // Felder
-    value: DatabindingProperty<Boolean>
-    enabled: Flow<Boolean>
+    val value: DatabindingProperty<Boolean>
+    val enabled: Flow<Boolean>
     
-    // Bausteine
     switchValidationMessages() {
-        // Felder
-        messages: Flow<List<ComponentValidationMessage>>
+        val msgs: Flow<List<ComponentValidationMessage>>
     }
 }
 
 switchWithLabel() {
-    // Felder
-    value: DatabindingProperty<Boolean>
-    enabled: Flow<Boolean>
+    val value: DatabindingProperty<Boolean>
+    val enabled: Flow<Boolean>
     
-    // Bausteine
     switchToggle() { }
     switchLabel() { }
     switchDescription() { } // use multiple times
     switchValidationMessages() {
-        // Felder    
-        msgs: Flow<List<ComponentValidationMessage>>
+        val msgs: Flow<List<ComponentValidationMessage>>
     }
 }
 

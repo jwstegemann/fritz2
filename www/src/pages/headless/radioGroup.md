@@ -196,22 +196,17 @@ deselektiert die zuvor gewählte Option.
 ### Summary / Sketch
 ```kotlin
 radioGroup<T>() {
-    // Felder
-    value: DatabindingPropert<T>
+    val value: DatabindingPropert<T>
 
-    // Bausteine
     radioGroupLabel() { }
     radioGroupValidationMessages() {
-        // Felder    
-        msgs: Flow<List<ComponentValidationMessage>>
+        val msgs: Flow<List<ComponentValidationMessage>>
     }
     // for each T {
         radioGroupOption(option: T) {
-            // Felder
-            selected: Flow<Boolean>
-            active: Flow<Boolean>
+            val selected: Flow<Boolean>
+            val active: Flow<Boolean>
     
-            // Bausteine
             radioGroupOptionToggle() { }
             radioGroupOptionLabel() { }
             radioGroupOptionDescription() { } // use multiple times

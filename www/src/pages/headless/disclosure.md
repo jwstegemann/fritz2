@@ -125,19 +125,17 @@ Durch das Klicken auf einen `disclosureButton` wird das Panel geschlossen.
 ### Summary / Sketch
 ```kotlin
 disclosure() {
-    // Felder
-    opened: Flow<Boolean>
-    openClose: DatabindingProperty<Boolean> // optional
-    close: SimpleHandler<Unit>
+    // inherited by `OpenClose`
+    val openClose = DatabindingProperty<Boolean>()
+    val opened: Flow<Boolean>
+    val close: SimpleHandler<Unit>
+    val open: SimpleHandler<Unit>
+    val toggle: SimpleHandler<Unit>
 
-    // Bausteine
     disclosureButton() { }
     disclosurePanel() {
-
-        // Bausteine
         disclosureCloseButton() {}
     }
-
 }
 ```
 

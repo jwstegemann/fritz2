@@ -163,21 +163,16 @@ liegende Option.
 ### Summary / Sketch
 ```kotlin
 checkboxGroup<T>() {
-    // Felder
-    value: DatabindingPropert<List<T>>
+    val value: DatabindingPropert<List<T>>
 
-    // Bausteine
     checkboxGroupLabel() { }
     checkboxGroupValidationMessages() {
-        // Felder
-        msgs: Flow<List<ComponentValidationMessage>>
+        val msgs: Flow<List<ComponentValidationMessage>>
     }
     // for each T {
         checkboxGroupOption(option: T) {
-            // Felder
-            selected: Flow<Boolean>
+            val selected: Flow<Boolean>
     
-            // Bausteine
             checkboxGroupOptionToggle() { }
             checkboxGroupOptionLabel() { }
             checkboxGroupOptionDescription() { } // use multiple times

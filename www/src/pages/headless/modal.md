@@ -169,11 +169,13 @@ schließt.
 ### Summary / Sketch
 ```kotlin
 modal() {
-    // Felder
-    openClose: DatabindingProperty<Boolean>
-    close: SimpleHandler<Unit>
+    // inherited by `OpenClose`
+    val openClose = DatabindingProperty<Boolean>()
+    val opened: Flow<Boolean>
+    val close: SimpleHandler<Unit>
+    val open: SimpleHandler<Unit>
+    val toggle: SimpleHandler<Unit>
     
-    // Bausteine
     modalPanel() {
         modalOverlay() { }
         modalTitle() { }

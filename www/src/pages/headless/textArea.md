@@ -99,18 +99,15 @@ textArea {
 ### Summary / Sketch
 ```kotlin
 textArea() {
-    // Felder
-    value: DatabindingProperty<String>
-    placeHolder: AttributeHook<String>
-    disabled: BooleanAttributeHook
+    val value: DatabindingProperty<String>
+    val placeHolder: AttributeHook<String>
+    val disabled: BooleanAttributeHook
 
-    // Bausteine
     textareaTextfield() { }
     textareaLabel() { }
     textareaDescription() { } // use multiple times
     textareaValidationMessages() {
-        // Felder
-        msgs: Flow<List<ComponentValidationMessage>>
+        val msgs: Flow<List<ComponentValidationMessage>>
     }
 }
 ```

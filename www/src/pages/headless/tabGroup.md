@@ -209,25 +209,20 @@ sofern der Tab nicht deaktiviert ist.
 ### Summary / Sketch
 ```kotlin
 tabGroup() {
-    // Felder
-    value: DatabindingProperty<Int> // optional
-    selected: Flow<Int>
-    orientation: Orientation
+    val value: DatabindingProperty<Int> // optional
+    val selected: Flow<Int>
+    var orientation: Orientation
 
-    // Bausteine
     tabList() {
-        // Bausteine
         // for each tab {
             tab() {
-                // Felder
-                disabled: Flow<Int>
-                disable: SimpleHandler<Int>
+                val disabled: Flow<Int>
+                val disable: SimpleHandler<Int>
             }
         // }
     }
 
     tabPanels() {
-        // Bausteine
         // for each tab {
             panel() { }
         // }        
