@@ -3,6 +3,7 @@ package dev.fritz2.headless.components
 import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.render
+import dev.fritz2.headless.model.TestModel
 import dev.fritz2.headless.test.*
 import dev.fritz2.identification.Id
 import kotlinx.coroutines.delay
@@ -18,7 +19,7 @@ class SwitchTest {
     fun testSwitchStructure() = runTest {
         initDocument()
         val switchId = "switch-${Id.next()}"
-        val switchState = storeOf(false)
+        val switchState = storeOf(TestModel(), TestModel.validation).sub(TestModel.switch)
 
         render {
             switch("classes", switchId, { set(scopeTestKey, scopeTestValue) }, RenderContext::button) {
