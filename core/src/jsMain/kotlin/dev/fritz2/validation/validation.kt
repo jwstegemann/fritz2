@@ -87,7 +87,7 @@ val <M : ValidationMessage> Flow<List<M>>.valid: Flow<Boolean>
 /**
  * Finds all corresponding [ValidationMessage]s to this [Store].
  */
-inline fun <reified M: ValidationMessage> Store<*>.messages(): Flow<List<M>>? =
+fun <M: ValidationMessage> Store<*>.messages(): Flow<List<M>>? =
     when(this) {
         is ValidatingStore<*, *, *> -> {
             try {
