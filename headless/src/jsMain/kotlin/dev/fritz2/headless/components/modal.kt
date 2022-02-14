@@ -34,14 +34,14 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
         val componentId: String by lazy { explicitId ?: Id.next() }
 
         private var title: Tag<HTMLElement>? = null
-        private var description: Tag<HTMLElement>? = null
+        private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
 
         fun render() {
             attr("id", componentId)
             attr("role", Aria.Role.dialog)
             attr(Aria.modal, "true")
             title?.let { attr(Aria.labelledby, it.id) }
-            description?.let { attr(Aria.describedby, it.id) }
+            attr(Aria.describedby, descriptions.map { d -> d.id }.joinToString(" "))
         }
 
         fun <CO : HTMLElement> RenderContext.modalOverlay(
@@ -78,7 +78,13 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CD>>,
             content: Tag<CD>.() -> Unit
-        ) = tag(this, classes, "$componentId-description", scope, content).also { description = it }
+        ) = tag(
+            this,
+            classes,
+            "$componentId-description-${descriptions.size}",
+            scope,
+            content
+        ).also { descriptions.add(it) }
 
         fun RenderContext.modalDescription(
             classes: String? = null,

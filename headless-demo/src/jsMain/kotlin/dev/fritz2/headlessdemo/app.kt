@@ -55,10 +55,15 @@ val pages = mapOf(
             | navigation support.""".trimMargin(),
         RenderContext::tabsDemo
     ),
-    "textfield" to DemoPage(
-        "Headless Input and Textarea",
-        "Easily create accessible, fully customizable text inputs.",
-        RenderContext::textfieldDemo
+    "inputfield" to DemoPage(
+        "Headless Input",
+        "Easily create accessible, fully customizable single line text inputs.",
+        RenderContext::inputFieldDemo
+    ),
+    "textarea" to DemoPage(
+        "Headless Textarea",
+        "Easily create accessible, fully customizable multi-line text inputs.",
+        RenderContext::textAreaDemo
     ),
     "switch" to DemoPage(
         "Headless Switch",
