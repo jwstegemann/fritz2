@@ -189,6 +189,21 @@ tabGroup {
 }
 ```
 
+## Maus Interaction
+
+Das Klicken auf ein mit ``tab`` erzeugtes Element aktiviert den Tab und rendert das zugehörige Panel als Inhalt,
+sofern der Tab nicht deaktiviert ist.
+
+## Keyboard Interaction
+
+| Command                                       | Description                                           |
+|-----------------------------------------------|-------------------------------------------------------|
+| [[←]] [[→]]                                   | Wählt zyklisch den vorherigen / nächsten aktiven Tab. |
+| [[↑]] [[↓]] when `orientation` is `Vertical`  | Wählt zyklisch den vorherigen / nächsten aktiven Tab. |
+| [[Home]] [[PageUp]]                           | Wählt den ersten aktiven Tab.                         |
+| [[End]] [[PageDown]]                          | Wählt den letzten aktiven Tab.                        |
+
+
 ## API
 
 ### Summary / Sketch
