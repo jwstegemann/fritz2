@@ -128,33 +128,10 @@ listbox<String> {
 
 ## Zustand der Auswahlliste
 
-Im Scope von `listboxItems` stehen verschiedene `Flow`s und `Handler` bereit, um auf den Zustand der Auswahlliste zu regieren oder diesen zu beeinflussen:
+Der Baustein `listboxItems` ist ein [`OpenClose`-Baustein](../#closable-content---openclose). In seinem Scope stehen verschiedene `Flow`s und `Handler` zur Verfügung, um basieren auf Öffnungszustand der Auswahlliste zu steuern oder diesen zu verändern.
 
-- `opened: Flow<Boolean>` beschreibt, ob die Auswahlliste sichtbar ist, oder nicht
-- `open : Handler<Unit>` öffnet die Auswahlliste
-- `close : Handler<Unit>` schließt die Auswahlliste
-- `toggle : Handler<Unit>` schließt die Auswahlliste, wenn sie geöffnet ist und andersherum
+Der Öffnungszustand der Listbox kann per Databinding an einen externen `Store` gebunden werden, z.B. um die Auswahlliste immer anzuzeigen.
 
-Die Listbox verwaltet den Zustand der Auswahlliste standardmäßig intern. Alternativ
-kann dieser Zustand über die Property `openClose` der `listboxItems` per Databinding z.B. an einen externen `Store` oder `Flow` gebunden werden. Über diesen kann die Sichtbarkeit der Auswahlliste dann unabhängig vom Standardverhalten gesteuert werden, also z.B. immer offen gehalten werden:
-
-```kotlin
-val alwaysOpen = storeOf(true)    
-    
-listbox<String> {
-    //...
-
-    listboxItems {
-        openClose(alwaysOpen)
-
-        characters.forEach { entry ->
-            listboxItem(entry) {
-                //...
-            }
-        }
-    }
-}
-```
 
 ## Transitionen
 
@@ -163,15 +140,14 @@ Das Ein- und Ausblenden der Auswahlliste lässt sich mit Hilfe von `transition` 
 ```kotlin
 listboxItems {
     transition(opened,
-        "transition duration-100 ease-out",
-        "opacity-0 scale-95",
-        "opacity-100 scale-100",
-        "transition duration-100 ease-in",
-        "opacity-100 scale-100",
-        "opacity-0 scale-95"
+        enter = "transition duration-100 ease-out",
+        enterStart = "opacity-0 scale-95",
+        enterEnd = "opacity-100 scale-100",
+        leave = "transition duration-100 ease-in",
+        leaveStart = "opacity-100 scale-100",
+        leaveEnde = "opacity-0 scale-95"
     )
-
-
+    
     characters.forEach { (entry, disabledState) ->
         listboxItem(entry) {
             //...
@@ -180,24 +156,45 @@ listboxItems {
 }
 ```
 
-## Auswahlliste positionieren
+## Position der Auswahlliste
 
-Im Scope von `listboxItems` stehen folgende Konfigurationen zur Verfügung, um die Positionierung der Liste zu beeinflussen:
+`listboxItems` ist ein [`PopUpPanel`](../#floating-content---popuppanel) und stellt in seinem Scope daher Konfigurationsmöglichkeiten zur Verfügung, um z.B. die Position oder den Abstand der Auswahlliste zum `listboxButton` als Referenzelement zu steuern:
 
-- `placement` definiert die Position der Auswahlliste, z.B. Placement.top, Placement.bottomRight, etc. Standardwert ist `Placement.auto`. Hierbei wird die vermutlich besste Position der Liste automatisch bestimmt, je nachdem, wie viel Platz auf dem Bildschirm zur Verfügung steht. 
-- `strategy` legt fest, ob die Auswahlliste `absolute` positioniert werden soll (default) oder `fixed` 
-- `flip` kommt die Listbox zu nah an den Rand des sichtbaren Bereichs, wechselt die Auswahlliste automatisch auf die jeweils andere Seite, wenn dort mehr Platz zur Verfügung steht.
-- `distance` definiert den Abstand der Auswahlliste vom `listboxButton` in Pixeln. Der Standardwert ist 10.
-- `skidding` definiert die Verschiebung der Auswahlliste entlang des `listboxButton` in Pixeln. Der Standardwert ist 0.
+```kotlin
+listboxItem {
+    placement = Placement.Top
+    distance = 20
+    
+    characters.forEach { (entry, disabledState) ->
+        listboxItem(entry) {
+            //...
+        }
+    }
+}
+```
 
-Die Auswahlliste ist mit Hilfe der Bibliothek [Popper.js]("https://popper.js.org/") realisiert.
 
 ## Validierung
 
 Die Datenbindung erlaubt es der Listbox Komponente, die Validierungsnachrichten abzugreifen und einen eigenen Baustein listboxValidationMessages anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen. Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom messages zur Verfügung gestellt.
 
 ```kotlin
+listbox<String> {
+    value(bestCharacter)
+    listboxButton { /* ... */ }
 
+    listboxItems {
+        characters.forEach { entry ->
+            listboxItem(entry) {
+                span { +entry }
+            }
+        }
+    }
+
+    listboxValidationMessages(tag = RenderContext::ul) {
+        msgs.renderEach { li { +it.message } }
+    }
+}
 ```
 
 ## Focus Management
