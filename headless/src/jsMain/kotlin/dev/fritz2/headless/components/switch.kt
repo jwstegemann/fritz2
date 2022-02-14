@@ -7,7 +7,10 @@ import dev.fritz2.headless.foundation.DatabindingProperty
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.identification.Id
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 
 
@@ -15,7 +18,7 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
     Tag<C> by tag {
 
     val value = DatabindingProperty<Boolean>()
-    val enabled: Flow<Boolean> = flowOf(false).flatMapLatest { value.data }
+    val enabled: Flow<Boolean> by lazy { value.data }
 
     val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
 
