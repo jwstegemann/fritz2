@@ -41,15 +41,15 @@ class SwitchTest {
         assertEquals(scopeTestValue, switchElement.getAttribute("data-${scopeTestKey.name}"))
 
         val switchToggleElement = getElementById<HTMLSpanElement>(switchState.id)
-        assertEquals("false", switchToggleElement.getAttribute("data-state"))
-        assertEquals("false", switchToggleElement.getAttribute("data-hasError"))
-        assertEquals("null", switchToggleElement.getAttribute("data-message"))
+        assertEquals("false", switchToggleElement.getAttribute("data-state"), "wrong state")
+        assertEquals("false", switchToggleElement.getAttribute("data-hasError"), "wrong hasError")
+        assertEquals("null", switchToggleElement.getAttribute("data-message"), "wrong message")
 
         switchElement.click()
         delay(100)
-        assertEquals("true", switchToggleElement.getAttribute("data-state"))
-        assertEquals("false", switchToggleElement.getAttribute("data-hasError"))
-        assertEquals("null", switchToggleElement.getAttribute("data-message"))
+        assertEquals("true", switchToggleElement.getAttribute("data-state"), "wrong state after action click")
+        assertEquals("false", switchToggleElement.getAttribute("data-hasError"), "wrong state after action click")
+        assertEquals("null", switchToggleElement.getAttribute("data-message"), "wrong state after action click")
     }
 
 }
