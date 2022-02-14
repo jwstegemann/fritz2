@@ -2,6 +2,7 @@ package dev.fritz2.dom.html
 
 import dev.fritz2.binding.Handler
 import dev.fritz2.binding.Store
+import dev.fritz2.lenses.LensException
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
 import dev.fritz2.resource.Resource
@@ -10,6 +11,16 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
 import org.w3c.dom.events.Event
+
+/**
+ * Prints [Exception] to error-[console] by ignoring [LensException].
+ */
+internal fun printErrorIgnoreLensException(cause: Throwable) {
+    when(cause) {
+        is LensException -> {}
+        else -> console.error("ERROR: ${cause.message}", cause)
+    }
+}
 
 /**
  * Marks a class that it has a [Job] to start coroutines with.
@@ -24,11 +35,9 @@ interface WithJob {
     /**
      * Default error handler printing the error to console.
      *
-     * @param exception Exception to handle
+     * @param cause Throwable to handle
      */
-    fun errorHandler(exception: Throwable) {
-        console.error("ERROR: ${exception.message}", exception)
-    }
+    fun errorHandler(cause: Throwable): Unit = printErrorIgnoreLensException(cause)
 
     /**
      * Connects a [Flow] to a [Handler].
@@ -101,4 +110,4 @@ infix fun <A> Flow<A>.handledBy(handler: Handler<A>) = handler.collect(this, Job
  * @receiver [Flow] of action/events to bind to an [Handler]
  */
 infix fun <A> Flow<A>.handledBy(execute: suspend (A) -> Unit) =
-    this.onEach { execute(it) }.catch { console.error("ERROR: ${it.message}", it) }.launchIn(MainScope() + Job())
+    this.onEach { execute(it) }.catch { printErrorIgnoreLensException(it) }.launchIn(MainScope() + Job())
