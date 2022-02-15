@@ -46,7 +46,7 @@ class SwitchTest {
         assertEquals("", switchToggleElement.getAttribute("data-message"), "wrong message")
 
         switchElement.click()
-        delay(500)
+        delay(100)
         assertEquals("true", switchToggleElement.getAttribute("data-state"), "wrong state after action click")
         assertEquals("true", switchToggleElement.getAttribute("data-hasError"), "wrong state after action click")
         assertEquals("error", switchToggleElement.getAttribute("data-message"), "wrong state after action click")
