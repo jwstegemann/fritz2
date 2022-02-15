@@ -59,6 +59,14 @@ a {
         @apply py-1 px-2 bg-gray-500 text-sm text-gray-50 rounded
     }
 
+    .content .info {
+        @apply border-green-500 border-l-8 rounded-sm pl-2
+    }
+
+    .content .warning {
+        @apply border-yellow-500 border-l-8 rounded-sm pl-2
+    }
+
     nav.toc a {
         @apply block py-2 rounded-md text-sm text-relaxed hover:text-relaxed-highlight
     }
