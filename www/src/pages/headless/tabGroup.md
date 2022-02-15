@@ -189,30 +189,40 @@ tabGroup {
 }
 ```
 
+## Maus Interaction
+
+Das Klicken auf ein mit ``tab`` erzeugtes Element aktiviert den Tab und rendert das zugehörige Panel als Inhalt,
+sofern der Tab nicht deaktiviert ist.
+
+## Keyboard Interaction
+
+| Command                                       | Description                                           |
+|-----------------------------------------------|-------------------------------------------------------|
+| [[←]] [[→]]                                   | Wählt zyklisch den vorherigen / nächsten aktiven Tab. |
+| [[↑]] [[↓]] when `orientation` is `Vertical`  | Wählt zyklisch den vorherigen / nächsten aktiven Tab. |
+| [[Home]] [[PageUp]]                           | Wählt den ersten aktiven Tab.                         |
+| [[End]] [[PageDown]]                          | Wählt den letzten aktiven Tab.                        |
+
+
 ## API
 
 ### Summary / Sketch
 ```kotlin
 tabGroup() {
-    // Felder
-    value: DatabindingProperty<Int> // optional
-    selected: Flow<Int>
-    orientation: Orientation
+    val value: DatabindingProperty<Int> // optional
+    val selected: Flow<Int>
+    var orientation: Orientation
 
-    // Bausteine
     tabList() {
-        // Bausteine
         // for each tab {
             tab() {
-                // Felder
-                disabled: Flow<Int>
-                disable: SimpleHandler<Int>
+                val disabled: Flow<Int>
+                val disable: SimpleHandler<Int>
             }
         // }
     }
 
     tabPanels() {
-        // Bausteine
         // for each tab {
             panel() { }
         // }        
@@ -220,7 +230,7 @@ tabGroup() {
 }
 ```
 
-### `tabGroup`
+### tabGroup
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -233,7 +243,7 @@ Default-Tag: `div`
 | `orientation` | `Orientation`              | Feld zum Einstellen der Orientierung. Default ist `Horizontal`                        |
 
 
-### `tabList`
+### tabList
 
 Verfügbar im Scope von: `tabGroup`
 
@@ -242,7 +252,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `div`
 
 
-### `tab`
+### tab
 
 Verfügbar im Scope von: `tabList`
 
@@ -256,7 +266,7 @@ Default-Tag: `div`
 | `disable`  | `SimpleHandler<Boolean>` | Handler für das Setzen des inaktiven Status.               |
 
 
-### `tabPanels`
+### tabPanels
 
 Verfügbar im Scope von: `tabGroup`
 
@@ -265,7 +275,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `div`
 
 
-### `panel`
+### panel
 
 Verfügbar im Scope von: `tabPanels`
 

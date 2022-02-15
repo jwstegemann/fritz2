@@ -63,7 +63,7 @@ Innerhalb der headless Komponente existieren dann die beiden Bausteine ``switchT
 
 Die Datenbindung erlaubt es der Switch Komponente, die Validierungsnachrichten abzugreifen und einen eigenen Baustein
 `switchValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen. 
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
+Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
 
 
 ```kotlin
@@ -76,7 +76,7 @@ switch {
         className(enabled.map { if (it) "translate-x-5" else "translate-x-0" })
     }
     switchValidationMessages(tag = RenderContext::ul) { 
-        messages.renderEach { li { +it.message } }
+        msgs.renderEach { li { +it.message } }
     }
 }
 ```
@@ -97,35 +97,29 @@ beiden Zuständen hin und her.
 ### Summary / Sketch
 ```kotlin
 switch() {
-    // Felder
-    value: DatabindingProperty<Boolean>
-    enabled: Flow<Boolean>
+    val value: DatabindingProperty<Boolean>
+    val enabled: Flow<Boolean>
     
-    // Bausteine
     switchValidationMessages() {
-        // Felder
-        messages: Flow<List<ComponentValidationMessage>>
+        val msgs: Flow<List<ComponentValidationMessage>>
     }
 }
 
 switchWithLabel() {
-    // Felder
-    value: DatabindingProperty<Boolean>
-    enabled: Flow<Boolean>
+    val value: DatabindingProperty<Boolean>
+    val enabled: Flow<Boolean>
     
-    // Bausteine
     switchToggle() { }
     switchLabel() { }
     switchDescription() { } // use multiple times
     switchValidationMessages() {
-        // Felder    
-        messages: Flow<List<ComponentValidationMessage>>
+        val msgs: Flow<List<ComponentValidationMessage>>
     }
 }
 
 ```
 
-### `switch`
+### switch
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -137,7 +131,7 @@ Default-Tag: `button`
 | `enabled`  | `Flow<Boolean>`                | Aktueller Zustand. (Default `false`)                                           |
 
 
-### `switchWithLabel`
+### switchWithLabel
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -149,7 +143,7 @@ Default-Tag: `div`
 | `enabled`  | `Flow<Boolean>`                | Aktueller Zustand. (Default `false`)                                           |
 
 
-### `switchValidationMessages`
+### switchValidationMessages
 
 Verfügbar im Scope von: `switch`, `switchWithLabel`
 
@@ -159,10 +153,10 @@ Default-Tag: `div`
 
 | Scope Feld | Typ                                      | Description                                                   |
 |------------|------------------------------------------|---------------------------------------------------------------|
-| `messages` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
+| `msgs` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
 
 
-### `switchToggle`
+### switchToggle
 
 Verfügbar im Scope von: ``switchWithLabel``
 
@@ -171,7 +165,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `button`
 
 
-### `switchLabel`
+### switchLabel
 
 Verfügbar im Scope von: ``switchWithLabel``
 
@@ -180,7 +174,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `switchDescription`
+### switchDescription
 
 Verfügbar im Scope von: ``switchWithLabel``
 

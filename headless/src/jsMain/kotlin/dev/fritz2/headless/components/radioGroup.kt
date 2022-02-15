@@ -21,15 +21,12 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
 
     private var label: Tag<HTMLElement>? = null
     private var validationMessages: Tag<HTMLElement>? = null
+    private val isActive: Store<T?> = storeOf(null)
+    private var withKeyboardNavigation = true
+    private var options: MutableList<T> = mutableListOf()
 
     val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
-    private val isActive: Store<T?> = storeOf(null)
     val value = DatabindingProperty<T>()
-
-    private var withKeyboardNavigation = true
-
-    var options: List<T> = emptyList()
-
 
     fun render() {
         attr("id", componentId)
@@ -185,6 +182,10 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             scope: (ScopeContext.() -> Unit) = {},
             content: Tag<HTMLSpanElement>.() -> Unit
         ) = radioGroupOptionDescription(classes, scope, RenderContext::span, content)
+
+        init {
+            options.add(option)
+        }
     }
 
     fun <CO : HTMLElement> RenderContext.radioGroupOption(

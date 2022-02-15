@@ -21,7 +21,7 @@ Option selektiert oder deselektiert werden. Es könne beliebig viele Optionen se
 
 Als Datenbindung über die Property `value` ist daher zwingend eine `List<T>` als Datenstrom oder gar als Store anzugeben.
 Die Komponente unterstützt two-way-databinding, d.h. sie übernimmt sowohl von außen auf einem `Flow<List<T>>` 
-vorhandene Elemente als selektiert, sendet aber natürlich auch die aktuelle Selektion an einen zu übergebenen
+vorhandene Elemente als selektiert, sendet aber natürlich auch die aktuelle Selektion an einen zu übergebenden
 Handler.
 
 Die verfügbaren Optionen werden nicht direkt als Parameter in die Komponente, sondern jeweils einzeln 
@@ -51,7 +51,7 @@ checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
 }
 ```
 
-## Das aktive Element stylen
+## Das selektierte Element stylen
 
 Da eine headless Komponente kein Styling mitliefert, unterstützt die Komponente den Anwender damit, auf den aktuellen
 Selektions-Zustand einer Option zu reagieren.
@@ -128,7 +128,7 @@ checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
 
 Die Datenbindung erlaubt es der CheckboxGroup Komponente, die Validierungsnachrichten abzugreifen und einen eigenen 
 Baustein `checkboxGroupValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen.
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `messages` zur Verfügung gestellt.
+Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
 
 ```kotlin
 checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
@@ -142,7 +142,7 @@ checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
     }
 
     checkboxGroupValidationMessages(tag = RenderContext::ul) {
-        messages.renderEach { li { +it.message } }
+        msgs.renderEach { li { +it.message } }
     }
 }
 ```
@@ -162,22 +162,17 @@ liegende Option.
 
 ### Summary / Sketch
 ```kotlin
-checkboxGroup() {
-    // Felder
-    value: DatabindingPropert<List<T>>
+checkboxGroup<T>() {
+    val value: DatabindingPropert<List<T>>
 
-    // Bausteine
     checkboxGroupLabel() { }
     checkboxGroupValidationMessages() {
-        // Felder    
-        messages: Flow<List<ComponentValidationMessage>>
+        val msgs: Flow<List<ComponentValidationMessage>>
     }
     // for each T {
         checkboxGroupOption(option: T) {
-            // Felder
-            selected: Flow<Boolean>
+            val selected: Flow<Boolean>
     
-            // Bausteine
             checkboxGroupOptionToggle() { }
             checkboxGroupOptionLabel() { }
             checkboxGroupOptionDescription() { } // use multiple times
@@ -186,7 +181,7 @@ checkboxGroup() {
 }
 ```
 
-### `checkboxGroup`
+### checkboxGroup
 
 Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
@@ -197,7 +192,7 @@ Default-Tag: `div`
 | `value`    | `DatabindingProperty<List<T>>` | Zwei-Wege-Datenbindung für eine beliebig große Anzahl an selektierten Optionen. Muss gesetzt werden! |
 
 
-### `checkboxGroupLabel`
+### checkboxGroupLabel
 
 Verfügbar im Scope von: `checkboxGroup`
 
@@ -206,7 +201,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `checkboxGroupValidationMessages`
+### checkboxGroupValidationMessages
 
 Verfügbar im Scope von: `checkboxGroup`
 
@@ -214,12 +209,12 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ                                      | Description                                                   |
-|------------|------------------------------------------|---------------------------------------------------------------|
-| `messages` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
+| Scope Feld | Typ                                  | Description                                                   |
+|------------|--------------------------------------|---------------------------------------------------------------|
+| `msgs` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
 
 
-### `checkboxGroupOption`
+### checkboxGroupOption
 
 Verfügbar im Scope von: `checkboxGroup`
 
@@ -229,12 +224,12 @@ Parameter:
 
 Default-Tag: `div`
 
-| Scope Feld | Typ             | Description                                                                                                                                      |
-|------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| `selected` | `Flow<Boolean>` | Dieser Datenstrom liefert den Selektions-Status der verwalteten Option: `true` die Option is Teil der selektierten Optionen, `false` wenn nicht. |
+| Scope Feld | Typ             | Description                                                                                                                                       |
+|------------|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `selected` | `Flow<Boolean>` | Dieser Datenstrom liefert den Selektions-Status der verwalteten Option: `true` die Option ist Teil der selektierten Optionen, `false` wenn nicht. |
 
 
-### `checkboxGroupOptionToggle`
+### checkboxGroupOptionToggle
 
 Verfügbar im Scope von: `checkboxGroupOption`
 
@@ -243,7 +238,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `div`
 
 
-### `checkboxGroupOptionLabel`
+### checkboxGroupOptionLabel
 
 Verfügbar im Scope von: `checkboxGroupOption`
 
@@ -252,7 +247,7 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 Default-Tag: `label`
 
 
-### `checkboxGroupOptionDescription`
+### checkboxGroupOptionDescription
 
 Verfügbar im Scope von: `checkboxGroupOption`
 
