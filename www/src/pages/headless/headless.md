@@ -173,7 +173,7 @@ inputField() {
 ### Zugriff auf die Felder im Scope der Komponenten oder des Bausteins
 
 Als letzter und dafür auch extrem mächtiger Aspekt stellen die Komponenten und Bausteine wichtige Zusatzfelder zum
-Scope des erzeugten Tags bereit. Diese Felder sind oftmals `Property`s und `Hook`s. (vg. Beschreibung weiter unten).
+Scope des erzeugten Tags bereit. Diese Felder sind oftmals [`Property`s](#properties) und [`Hook`s](#hooks).
 
 In diesen Feldern wird dem Komponentenbauer oftmals Zugriff auf einen aktuellen Status gegeben, oder dieser kann
 bestimmen, wie der Status ggf. geändert werden soll. Die (Zwei-Wege-)Datenbindung findet z.B. *immer* über eine
@@ -215,20 +215,132 @@ checkboxGroup {
 }
 ```
 
-## Properties
+## Basiskonzepte für Daten- und Verhaltensmanagement
+
+Headless Komponenten und Bausteine benötigen unabhängig von der konkreten Ausprägung oftmals ähnliche Mechanismen,
+wie sie bestimmte Daten von einem Benutzer einfordern und verwalten. Über das reine Datenmanagement hinaus, muss es
+dem Benutzer auch möglich sein, direkt in das Rendering einzugreifen und individuelles Verhalten in die Komponente
+oder den Baustein hineinzureichen.
+
+Dafür existieren zwei Grundkonzepte, die im folgenden genauer vorgestellt werden sollen:
+- Properties
+- Hooks
+
+Da die Datenanbindung besonders wichtig ist, wird diese spezielle Implementierung einer `Property` separat in einem
+Abschnitt erläutert.
+
+### Properties
+
+Eine `Property` dient als Container für idR. zusammengesetzte Daten, die von einer Komponente oder einem Baustein 
+für die Erfüllung seiner Aufgabe relevant sind und vom Anwender von außen konfiguriert werden müssen. 
+Die Property wird entsprechend immer von der jeweiligen Headless-Instanz angelegt und in ihrem Scope dem Benutzer 
+exponiert. 
+
+Um dieses öffentliche API so passend wie möglich zu schneiden, sieht das Konzept vor, die benötigten Daten mittels
+`invoke`-Methode anzubieten, die dann intern den Datensatz ablegen. Daraus ergibt sich automatisch, dass das 
+öffentliche API zum Setzen von Daten immer eindeutig und einheitlich definiert ist. Zusätzlich wird es einfach möglich,
+Überladungen für gängige Fälle anzubieten, wenn solche Daten heterogen vorliegen können: 
+
+```kotlin
+class UserProperty : Property<User>() {
+     // Only visible "modifying" API for the client, "hide" the complex type by offering the parameters directly!
+    operator fun invoke(name: String, alias: String, mail: String) {
+         value = User(name, alias, mail)
+    }
+    
+    // perhaps some other `invoke`s with convenience parameters!
+    operator fun invoke(ldapData: LdapPrincipal) {
+        value = User(/* extract the relevant parameters from `LdapPrincipal` instance */)
+    }
+}
+
+// set the data within some headless-component:
+someComponentOrBrick {
+    user("Christian", "Chris", "chris@fritz2.org")
+}
+```
+
+Die Komponente selber kann gängige Probleme dann dank der `Property`-Schnittstelle lösen:
+- Prüfen mittels `isSet` ob ein Wert gesetzt wurde. Dies ist wichtig, um ggf. auf einen default-Wert zurückgreifen
+ zu können.
+- Weiterreichen des Datensatzes an eine andere Property-Instanz per ``use(item: T)``. Dies ist entscheidend für den
+ Komponentenbauer, da solche Daten sehr oft auch unmittelbar durch die fertige Komponente öffentlich zur Konfiguration 
+ exponiert und dann an die Headless-Komponente oder den -Baustein weiter durchgereicht werden müssen.
+
+```kotlin
+class SomeSpecificComponent {
+    
+    // create Property instance, so external user can provide user data
+    val user = UserProperty()
+    
+    fun render() {
+        someHeadlessComponent() {
+            
+            // transfer data into the headless component, which requires it!
+            user.use(this@SomeSpecificComponent.user.value)
+            
+            someBrick() {
+                // `someBrick` might check if `user.isSet` and use some default fallback data by itself!
+                // often the component can check and act in the same way too:
+                if(user.isSet) {
+                    // apply user data
+                } else {
+                    // act without user data provided
+                }
+            }
+        }
+    }
+}
+```
+
+**Hinweis:** Wenn es sich um einen atomaren Wert handelt, etwa ein String für ein Styling oder ein spezieller `enum class`-Wert,
+so sollte man durchaus auf eine extra Property-Implementierung verzichten, und das ganze über ein `public var` lösen!
+(vgl. [Ausirchtung von TabGroups](tabgroup/#vertikale-tabgroup))
+
+### Databinding
+
+Einige Headless-Komponenten unterstützen Databinding. Das bedeutet, dass die Komponente auf dynamische Daten von außen
+reagiert, diese Daten ggf. intern weiterverarbeitet und nutzt, sowie in der Lage ist, Änderungen auch wieder nach
+außen weiterzureichen. Dies entspricht der klassischen Zwei-Wege-Datenbindung, die den Kern von fritz2 ausmacht.
+
+Aufgrund der Wichtigkeit dieses Mechanismus existiert eine spezialisierte `Property` namens `DatabindingProperty<T>`.
+
+Diese Property fordert daher folgende Parameter per `invoke` für die Verwendung:
+- `id: String? = null`: Eine optionale ID, welche idR. die Basis für die weiteren Sub-Strukturen einer 
+ Headless-Komponente bildet.
+- `data: Flow<T>`: Muss zwingend angegeben werden. Dieser Datenstrom liefert die dynamischen Daten von außen, auf die
+ die Komponente reagieren muss.
+- `messages: Flow<List<ComponentValidationMessage>>? = null`: Dieser Datenstrom ermöglicht die optionale Weitergabe
+ von Validierungsnachrichten. Viele Headless-Komponenten unterstützen diesen Aspekt bereits nativ!
+- `handler: ((Flow<T>) -> Unit)? = null`: Ein optionaler Handler, der definiert, wie die Komponente intern gemachte
+ Änderungen wieder nach draußen reichen soll.
+
+Da sich diese Informationen allesamt aus einem `Store` ableiten lassen, bietet die Property eine entsprechend
+überladene `invoke`-Methode an, die genau das anbietet.
+
+Damit ermöglicht es diese spezielle Property dem Komponentenbauer, sehr einfach und mit stark reduziertem 
+Boilerplate-Code, die Daten für die Datenbindung zu exponieren und zu verwalten.
+
+```kotlin
+val name = storeOf("fritz2")
+
+inputField {
+    
+    // pass the store into the data-binding-property `value`, so that the input-field can be preset with external data
+    // and also react to user input to update the external store.
+    value(name)
+    
+    // ...
+}
+```
+
+### Hooks
  beschreiben
 
 
-## Hooks
- beschreiben
+## Mehrfach genutzte Basisklassen 
 
-
-## Databinding
-
-Einige Headless-Komponenten unterstützen Databinding. Das bedeutet, dass...
-Hier beschreiben, wie die Property-aufgebaut ist, die unterschiedlichen Verwendungsarten, etc, so dass an der Komponenten nur noch der Datentyp, etc. genannt werden muss und ob DB unterstützt wird oder nicht.
-
-## Closable Content - OpenClose
+### Closable Content - OpenClose
 
 Einige der Headless Komponenten können geöffnet und geschlossen werden, beispielsweise indem im geöffneten Zustand content ausklappt (`disclosure`) oder ein PopUp erscheint (`popOver`). Diese Komponenten implementieren die abstrakte Klasse `OpenClose`.
 
@@ -257,7 +369,7 @@ listbox<String> {
 }
 ```
 
-## Floating Content - PopUpPanel
+### Floating Content - PopUpPanel
 
 Einige Bausteine der Headless Komponenten (z.B. das `popOverPanel` oder die `listboxItem`) werden dynamisch positioniert und schweben über dem übrigen Inhalt. Oft werden diese auch dynamisch ein- und ausgeblendet.
 
