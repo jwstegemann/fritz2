@@ -6,7 +6,7 @@ eleventyNavigation:
     key: switch
     title: Switch (Toggle)
     parent: headless
-    order: 50
+    order: 90
 demoHash: switch
 teaser: "Die Switch Komponente kann für das Umschalten zwischen zwei Zuständen verwendet werden, 
 also an oder aus, ja oder nein usw. Die Semantik und Bedienung entspricht der einer einzelnen Checkbox."

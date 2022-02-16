@@ -6,7 +6,7 @@ eleventyNavigation:
     key: tabgroup
     title: TabGroup
     parent: headless
-    order: 60
+    order: 100
 demoHash: tabGroup
 teaser: "Eine TabGroup ermöglicht das Umschalten von Inhalten über eine horizontale oder vertikale Liste von 
 Tabulatoren."

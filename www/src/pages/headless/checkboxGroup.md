@@ -6,7 +6,7 @@ eleventyNavigation:
     key: checkbox
     title: CheckboxGroup
     parent: headless 
-    order: 40 
+    order: 10 
 demoHash: checkboxGroup 
 teaser: "Eine CheckboxGroup dient als Basis für die Mehrfachauswahl von beliebigen Elementen."
 ---

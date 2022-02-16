@@ -6,7 +6,7 @@ eleventyNavigation:
     key: inputfield
     title: InputField
     parent: headless
-    order: 80
+    order: 30
 demoHash: inputfield
 teaser: "Ein InputField bietet eine einzeilige Texteingabe an."
 ---

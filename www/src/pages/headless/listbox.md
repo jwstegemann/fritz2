@@ -6,7 +6,7 @@ eleventyNavigation:
     key: listbox
     title: Listbox (Select)
     parent: headless 
-    order: 10 
+    order: 40 
 demoHash: listbox 
 teaser: "Eine Listbox bietet dem Anwender die Möglichkeit, eine Option aus einer vorgegebenen Menge auszuwählen. Die Auswahloptionen sind im Normalfall nur sichtbar, wenn die Listbox aktiv ist."
 ---

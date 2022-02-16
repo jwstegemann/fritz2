@@ -6,7 +6,7 @@ eleventyNavigation:
     key: popover
     title: PopOver
     parent: headless 
-    order: 100 
+    order: 70 
 demoHash: popover 
 teaser: "Ein schwebener Container für beliebigen Content, wie z.B. Navigations-Menüs, Hilfetexte, etc."
 ---

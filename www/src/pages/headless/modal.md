@@ -6,7 +6,7 @@ eleventyNavigation:
     key: modal
     title: Modal
     parent: headless
-    order: 70
+    order: 60
 demoHash: modal
 teaser: "Ein modaler Dialog stellt beliebigen Content auf einer Ebene über der restlichen Applikation dar. 
 Intelligentes Maus- und Tastaturmanagement beschränken die Interaktion dabei auf das modale Fenster, solange dieses

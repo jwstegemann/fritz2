@@ -6,7 +6,7 @@ eleventyNavigation:
     key: menu
     title: Menu
     parent: headless 
-    order: 20 
+    order: 50 
 demoHash: menu 
 teaser: "Ein ausklappbares Menü zur Auswahl auszuführender Aktionen inkl. Keyboard-Navigation"
 ---

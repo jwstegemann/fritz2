@@ -6,7 +6,7 @@ eleventyNavigation:
     key: disclosure
     title: Disclosure
     parent: headless
-    order: 70
+    order: 20
 demoHash: disclosure
 teaser: "Ein Disclosure ermöglicht das Ein- und Ausblenden von Inhalten wie z.B. umschaltbare Akkordeon Menüs."
 ---
