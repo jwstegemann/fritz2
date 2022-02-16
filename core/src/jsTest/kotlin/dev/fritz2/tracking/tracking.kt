@@ -125,8 +125,8 @@ class TrackingTests {
 
         val store = object : RootStore<String>("initial") {
             val running = tracker()
-            override fun errorHandler(exception: Throwable) {
-                lastException = exception.message
+            override fun errorHandler(cause: Throwable) {
+                lastException = cause.message
             }
 
             val handler = handle<String> { _, _ ->

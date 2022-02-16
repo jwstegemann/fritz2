@@ -152,8 +152,8 @@ class StoreTests {
         val startValue = "start"
 
         val store = object : RootStore<String>(startValue) {
-            override fun errorHandler(exception: Throwable) {
-                errorHandlerResult = exception.message.orEmpty()
+            override fun errorHandler(cause: Throwable) {
+                errorHandlerResult = cause.message.orEmpty()
             }
 
             val exceptionSimpleHandler = "exception from simple handler"
