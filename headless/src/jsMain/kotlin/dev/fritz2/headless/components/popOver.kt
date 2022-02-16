@@ -7,6 +7,8 @@ import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.identification.Id
 import dev.fritz2.utils.classes
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filter
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -20,6 +22,10 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
     private var button: Tag<HTMLElement>? = null
 
     fun render() {
+        attr("id", componentId)
+        opened.drop(1).filter { !it } handledBy {
+            button?.setFocus()
+        }
     }
 
     fun <CB : HTMLElement> RenderContext.popOverButton(

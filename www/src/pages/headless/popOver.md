@@ -1,5 +1,5 @@
 ---
-title: Menu 
+title: PopOver 
 layout: layouts/headlessWithContentNav.njk 
 permalink: /headless/popover/ 
 eleventyNavigation:

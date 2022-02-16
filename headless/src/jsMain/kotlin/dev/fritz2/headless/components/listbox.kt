@@ -136,7 +136,6 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             closeOnEscape()
             closeOnBlur()
 
-            attr("tabindex", "0")
             attr("role", Aria.Role.listbox)
             attr(Aria.invalid, "true".whenever(value.hasError))
             label?.let { attr(Aria.labelledby, it.id) }

@@ -104,7 +104,6 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             closeOnEscape()
             closeOnBlur()
 
-            attr("tabindex", "0")
             attr("role", Aria.Role.menu)
 
             state.flatMapLatest { (currentIndex, items) ->
