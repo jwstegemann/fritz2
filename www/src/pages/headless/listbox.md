@@ -128,7 +128,7 @@ listbox<String> {
 
 ## Zustand der Auswahlliste
 
-Der Baustein `listboxItems` ist ein [`OpenClose`-Baustein](../#closable-content---openclose). In seinem Scope stehen verschiedene `Flow`s und `Handler` wie `opened` zur Verfügung, um basierend auf Öffnungszustand der Auswahlliste zu steuern oder diesen zu verändern.
+Listbox ist eine [`OpenClose`-Komponente](../#closable-content---openclose). In ihrem Scope stehen verschiedene `Flow`s und `Handler` wie `opened` zur Verfügung, um basierend auf Öffnungszustand der Auswahlliste zu steuern oder diesen zu verändern.
 
 Der Öffnungszustand der Listbox kann per Databinding an einen externen `Store` gebunden werden, z.B. um die Auswahlliste immer anzuzeigen.
 

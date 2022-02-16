@@ -1,0 +1,121 @@
+---
+title: Menu 
+layout: layouts/headlessWithContentNav.njk 
+permalink: /headless/popover/ 
+eleventyNavigation:
+    key: popover
+    title: popOver
+    parent: headless 
+    order: 100 
+demoHash: popover 
+teaser: "Ein schwebener Container für beliebigen Content, wie z.B. Navigations-Menüs, Hilfetexte, etc."
+---
+
+## Einfaches Beispiel
+
+Ein PopOver wird durch die Factory Funktion `fun popOver()` erzeugt.
+
+Durch einen Click auf den durch `popOverButton` erzeugten Baustein oder [[Space]] bei fokussiertem `popOverButton`, wird der durch `popOverPanel` erzeugte schwebende Container mit eingeblendet.
+
+Durch [[Esc]] oder Click außerhalb des sichtbaren Containers wird das `popOverPanel` geschlossen.
+
+```kotlin
+data class Solution(val name: String, val description: String, val icon: String)
+
+val solutions = listOf(
+    Solution("Insights", "Measure actions your users take", HeroIcons.academic_cap),
+    Solution("Automations", "Create your own targeted content", HeroIcons.adjustments),
+    Solution("Reports", "Keep track of your growth", HeroIcons.archive)
+)
+
+popOver {
+    popOverButton {
+        span { +"Solutions" }
+    }
+
+    popOverPanel {
+        solutions.forEach { item ->
+            a {
+                div {
+                    svg { content(item.icon) }
+                }
+                div {
+                    p { +item.name }
+                    p { +item.description }
+                }
+            }
+        }
+    }
+}
+```
+
+## Zustand des Containers
+
+PopOver ist eine [`OpenClose`-Komponente](../#closable-content---openclose). In ihrem Scope stehen verschiedene `Flow`s und `Handler` wie `opened` zur Verfügung, um basierend auf Öffnungszustand der Auswahlliste zu steuern oder diesen zu verändern:
+
+```kotlin
+popOverButton {
+    className(opened.map { if (it) "" else "text-opacity-90" })
+    span { +"Solutions" }
+}
+```
+
+Der Öffnungszustand des PopOvers kann per Databinding an einen externen `Store` gebunden werden um beispielsweise auf andere Trigger als einen Click auf den popOver-Button zu reagieren.
+
+
+## Transitionen
+
+Das Ein- und Ausblenden der Auswahlliste lässt sich mit Hilfe von `transition` einfach animieren:
+
+```kotlin
+popOverPanel {
+    transition(
+        opened,
+        "transition ease-out duration-200",
+        "opacity-0 translate-y-1",
+        "opacity-100 translate-y-0",
+        "transition ease-in duration-150",
+        "opacity-100 translate-y-0",
+        "opacity-0 translate-y-1"
+    )
+
+    //...    
+}
+```
+
+## Position des Containers
+
+`popOverPanel` ist ein [`PopUpPanel`](../#floating-content---popuppanel) und stellt in seinem Scope daher Konfigurationsmöglichkeiten zur Verfügung, um z.B. die Position oder den Abstand des Containers zum `popOverButton` als Referenzelement zu steuern:
+
+```kotlin
+popOverPabel {
+    placement = Placement.Bottom
+    distance = 20
+    
+    //...
+}
+```
+
+## Focus Management
+
+Um die Interaktion mit der restlichen Applikation auch per Tastensteuerung zu unterbinden, ist in das `popOverPanel`
+von Haus aus eine sogenannte Fokus-Falle integriert. Daher zirkuliert der Fokus mittels [[Tab]] durch alle
+fokussierbaren Elemente, ohne den Container zu verlassen.
+
+Per default wird immer das erste fokussierbare Element mit dem Fokus versehen. Um ein bestimmtes Tag mit dem initialen Fokus zu versehen, kann die Funktion `setInitialFocus` in einem `Tag` aufgerufen werden.
+
+
+## Maus Interaction
+
+Ein Click auf den `popOverButton` schaltet den Zustand des Containers um. Ein Click außerhalb des geöffneten Containers schließt diesen.
+
+## Keyboard Interaction
+
+| Command                                             | Description      |
+|-----------------------------------------------------|------------------|
+| [[Enter]] [[Space]] when `popOverButton` is focused | Opens container  |
+| [[Esc]] when container is open                      | Closes container |
+
+## API
+
+### Summary / Sketch
