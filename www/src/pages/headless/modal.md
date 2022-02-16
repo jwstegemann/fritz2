@@ -192,10 +192,13 @@ Parameter: **keine**
 
 Default-Tag: Es wird kein Tag gerendert!
 
-| Scope Feld  | Typ                            | Description                                                               |
-|-------------|--------------------------------|---------------------------------------------------------------------------|
-| `openClose` | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung für das Öffnen und Schließen. Muss gesetzt werden! |
-| `close`     | `SimpleHandler<Unit>`          | Handler zum Schließen des Dialogs von innen heraus                        |
+| Scope Feld  | Typ                            | Description                                                                                                  |
+|-------------|--------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `openClose` | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung für das Öffnen und Schließen. Muss gesetzt werden!                                    |
+| `opened`    | `Flow<Boolean>`                | Datenstrom der bezogen auf den "geöffnet"-Status boolesche Werte liefert; im Dialog nutzlos, da immer `true` |
+| `close`     | `SimpleHandler<Unit>`          | Handler zum Schließen des Dialogs von innen heraus                                                           |
+| `open`      | `SimpleHandler<Unit>`          | Handler zum Öffnen; nicht sinnvoll im Dialog anzuwenden!                                                     |
+| `toggle`    | `SimpleHandler<Unit>`          | Handler zum Wechseln zwischen Offen und Geschlossen; nicht sinnvoll im Dialog anzuwenden                     |
 
 
 ### modalPanel

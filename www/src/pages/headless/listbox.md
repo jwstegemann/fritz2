@@ -262,9 +262,14 @@ Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ                       | Description                                                             |
-|------------|---------------------------|-------------------------------------------------------------------------|
-| `value`    | `DatabindingProperty<T>`  | Zwei-Wege-Datenbindung für ein selektiertes Entry. Muss gesetzt werden! |
+| Scope Feld           | Typ                            | Description                                                                                                       |
+|----------------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| `value`              | `DatabindingProperty<T>`       | Zwei-Wege-Datenbindung für ein selektiertes Entry. Muss gesetzt werden!                                           |
+| `openClose`          | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung für das Öffnen und Schließen. Muss gesetzt werden!                                         |
+| `opened`             | `Flow<Boolean>`                | Datenstrom der bezogen auf den "geöffnet"-Status boolesche Werte liefert; in der Listbox nutzlos, da immer `true` |
+| `close`              | `SimpleHandler<Unit>`          | Handler zum Schließen der Listbox von innen heraus, sollte nicht verwendet werden, da dies automatisch passiert!  |
+| `open`               | `SimpleHandler<Unit>`          | Handler zum Öffnen; nicht sinnvoll in der Listbox anzuwenden!                                                     |
+| `toggle`             | `SimpleHandler<Unit>`          | Handler zum Wechseln zwischen Offen und Geschlossen; nicht sinnvoll in der Listbox anzuwenden                     |
 
 
 ### listboxButton
@@ -302,6 +307,15 @@ Verfügbar im Scope von: `listbox`
 Parameter: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
+
+| Scope Feld  | Typ         | Description                                                                                                                                                                                                                                         |
+|-------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `placement` | `Placement` | definiert die Position des Bausteins, z.B. `Placement.top`, `Placement.bottomRight`, etc. Standardwert ist `Placement.auto`. Hierbei wird die vermutlich beste Position automatisch anhand des zur Verfügung stehenden sichtbaren Platzes bestimmt. |
+| `strategy`  | `Strategy`  | legt fest, ob der Baustein `absolute` positioniert werden soll (default) oder `fixed`.                                                                                                                                                              |
+| `flip`      | `Boolean`   | kommt der Baustein zu nah an den Rand des sichtbaren Bereichs, wechselt die Position automatisch auf die jeweils andere Seite, wenn dort mehr Platz zur Verfügung steht.                                                                            |
+| `skidding`  | `Int`       | definiert den Abstand der Auswahlliste vom Referenzelement in Pixeln. Der Standardwert ist 10.                                                                                                                                                      |
+| `distance`  | `Int`       | definiert die Verschiebung der Auswahlliste entlang des Referenzelements in Pixeln. Der Standardwert ist 0.                                                                                                                                         |
+
 
 ### listboxItem
 
