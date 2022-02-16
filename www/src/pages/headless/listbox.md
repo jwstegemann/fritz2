@@ -128,7 +128,7 @@ listbox<String> {
 
 ## Zustand der Auswahlliste
 
-Der Baustein `listboxItems` ist ein [`OpenClose`-Baustein](../#closable-content---openclose). In seinem Scope stehen verschiedene `Flow`s und `Handler` zur Verfügung, um basieren auf Öffnungszustand der Auswahlliste zu steuern oder diesen zu verändern.
+Der Baustein `listboxItems` ist ein [`OpenClose`-Baustein](../#closable-content---openclose). In seinem Scope stehen verschiedene `Flow`s und `Handler` wie `opened` zur Verfügung, um basierend auf Öffnungszustand der Auswahlliste zu steuern oder diesen zu verändern.
 
 Der Öffnungszustand der Listbox kann per Databinding an einen externen `Store` gebunden werden, z.B. um die Auswahlliste immer anzuzeigen.
 
@@ -161,7 +161,7 @@ listboxItems {
 `listboxItems` ist ein [`PopUpPanel`](../#floating-content---popuppanel) und stellt in seinem Scope daher Konfigurationsmöglichkeiten zur Verfügung, um z.B. die Position oder den Abstand der Auswahlliste zum `listboxButton` als Referenzelement zu steuern:
 
 ```kotlin
-listboxItem {
+listboxItems {
     placement = Placement.Top
     distance = 20
     
@@ -199,7 +199,7 @@ listbox<String> {
 
 ## Focus Management
 
-Ist die Auswahlliste der Listbox geöffnet, erhält der Baustein `listboxItems` den Fokus. Verliert dieser den Fokus, wird die Auswahlliste geschlossen.
+Ist die Auswahlliste der Listbox geöffnet, erhält der Baustein `listboxItems` den Fokus. Verliert dieser den Fokus, wird die Auswahlliste geschlossen und der Fokus kehrt zum `listboxButton` zurück.
 
 ## Maus Interaction
 
@@ -209,12 +209,12 @@ Ein Click auf den `listboxButton` schaltet den Zustand der Auswahlliste um. Ein 
 
 | Command                                             | Description                                          |
 |-----------------------------------------------------|------------------------------------------------------|
-| [[Enter]] [[Space]] when `listBoxButton` is focused | Opens listbox and focuses current selected item      |
+| [[Enter]] [[Space]] when `listBoxButton` is focused | Opens listbox and activates current selected item    |
 | [[⬆︎]] [[⬇]] ︎when listbox is open                  | Activates previous / next item                       |
 | [[Home︎]] [[End]] ︎when listbox is open             | Activates first / last item                          |
 | [[A-Z]] [[a-z]] when listbox is open                | Activates first item beginning with according letter |
 | [[Esc]] when listbox is open                | Closes listbox                                       |
-| [[Enter]] [[Space]] when listbox is open            | Selectes active item                                 |
+| [[Enter]] [[Space]] when listbox is open            | Selects active item                                  |
 
 ## API
 
