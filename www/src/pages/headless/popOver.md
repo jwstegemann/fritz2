@@ -4,7 +4,7 @@ layout: layouts/headlessWithContentNav.njk
 permalink: /headless/popover/ 
 eleventyNavigation:
     key: popover
-    title: popOver
+    title: PopOver
     parent: headless 
     order: 100 
 demoHash: popover 
@@ -119,3 +119,63 @@ Ein Click auf den `popOverButton` schaltet den Zustand des Containers um. Ein Cl
 ## API
 
 ### Summary / Sketch
+
+```kotlin
+popOver {
+    // inherited by `OpenClose`
+    val openClose = DatabindingProperty<Boolean>()
+    val opened: Flow<Boolean>
+    val close: SimpleHandler<Unit>
+    val open: SimpleHandler<Unit>
+    val toggle: SimpleHandler<Unit>
+
+    popOverButton() { }
+    popOverPanel() {
+        // inherited by `PopUpPanel`
+        var placement: Placement
+        var strategy: Strategy
+        var flip: Boolean
+        var skidding: Int
+        var distance: int
+    }
+}
+```
+
+### popOver
+
+Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+| Scope Feld           | Typ                            | Description                                                                                                   |
+|----------------------|--------------------------------|---------------------------------------------------------------------------------------------------------------|
+| `openClose`          | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung für das Öffnen und Schließen. Muss gesetzt werden!                                     |
+| `opened`             | `Flow<Boolean>`                | Datenstrom der bezogen auf den "geöffnet"-Status boolesche Werte liefert; im PopOver nutzlos, da immer `true` |
+| `close`              | `SimpleHandler<Unit>`          | Handler zum Schließen des PopOver von innen heraus.                                                           |
+| `open`               | `SimpleHandler<Unit>`          | Handler zum Öffnen; nicht sinnvoll im PopOver anzuwenden!                                                     |
+| `toggle`             | `SimpleHandler<Unit>`          | Handler zum Wechseln zwischen Offen und Geschlossen; nicht sinnvoll im PopOver anzuwenden.                    |
+
+### popOverButton
+
+Verfügbar im Scope von: `popOver`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `button`
+
+### popOverPanel
+
+Verfügbar im Scope von: `popOver`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+| Scope Feld  | Typ         | Description                                                                                                                                                                                                                                         |
+|-------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `placement` | `Placement` | definiert die Position des Bausteins, z.B. `Placement.top`, `Placement.bottomRight`, etc. Standardwert ist `Placement.auto`. Hierbei wird die vermutlich beste Position automatisch anhand des zur Verfügung stehenden sichtbaren Platzes bestimmt. |
+| `strategy`  | `Strategy`  | legt fest, ob der Baustein `absolute` positioniert werden soll (default) oder `fixed`.                                                                                                                                                              |
+| `flip`      | `Boolean`   | kommt der Baustein zu nah an den Rand des sichtbaren Bereichs, wechselt die Position automatisch auf die jeweils andere Seite, wenn dort mehr Platz zur Verfügung steht.                                                                            |
+| `skidding`  | `Int`       | definiert den Abstand der Auswahlliste vom Referenzelement in Pixeln. Der Standardwert ist 10.                                                                                                                                                      |
+| `distance`  | `Int`       | definiert die Verschiebung der Auswahlliste entlang des Referenzelements in Pixeln. Der Standardwert ist 0.                                                                                                                                         |
+
