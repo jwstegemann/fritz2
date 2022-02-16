@@ -202,6 +202,7 @@ menu {
         
         // for each T {
             MenuItem {
+                val index: Int
                 val selected: Flow<Boolean>
                 val active: Flow<Boolean>
                 val disabled: Flow<Boolean>
@@ -262,6 +263,7 @@ Default-Tag: `div`
 
 | Scope Feld | Typ                      | Description                                                                                                                                                        |
 |------------|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `index`    | `Int`                    | Der Index innerhalb der Items.                                                                                                                                     |
 | `selected` | `Flow<Boolean>`          | Dieser Datenstrom liefert den Selektions-Status der verwalteten Option: `true` die Option ist selektiert, `false` wenn nicht. Nicht sinnvoll im Menu zu verwenden! |
 | `active`   | `Flow<Boolean>`          | Dieser Datenstrom zeigt an, ob ein Eintrag fokussiert ist: `true` die Option hat den Fokus, `false` wenn nicht. Es kann immer nur eine Option den Fokus haben.     |
 | `disabled` | `Flow<Boolean>`          | Dieser Datenstrom zeigt an, ob ein Eintrag aktiv (`false`) oder inaktiv (`true`) ist.                                                                              |

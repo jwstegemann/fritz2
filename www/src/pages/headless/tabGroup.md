@@ -216,6 +216,7 @@ tabGroup() {
     tabList() {
         // for each tab {
             tab() {
+                val index: Int
                 val disabled: Flow<Int>
                 val disable: SimpleHandler<Int>
             }
@@ -260,10 +261,11 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ                      | Description                                                |
-|------------|--------------------------|------------------------------------------------------------|
-| `disabled` | `Flow<Boolean>`          | Datenstrom der angibt, ob ein Tab aktiv oder inaktiv ist.  |
-| `disable`  | `SimpleHandler<Boolean>` | Handler für das Setzen des inaktiven Status.               |
+| Scope Feld | Typ                      | Description                                               |
+|------------|--------------------------|-----------------------------------------------------------|
+| `index`    | `Int`                    | Der Index des Tabs in der Gruppe.                         |
+| `disabled` | `Flow<Boolean>`          | Datenstrom der angibt, ob ein Tab aktiv oder inaktiv ist. |
+| `disable`  | `SimpleHandler<Boolean>` | Handler für das Setzen des inaktiven Status.              |
 
 
 ### tabPanels
