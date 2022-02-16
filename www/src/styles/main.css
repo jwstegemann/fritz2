@@ -60,16 +60,27 @@ a {
     }
 
     .content .info {
-        @apply border-green-500 border-l-8 rounded-sm pl-2
+        @apply border-green-500 border-l-8 rounded-sm my-4 py-2 px-4 bg-gray-800
     }
 
     .content .warning {
-        @apply border-yellow-500 border-l-8 rounded-sm pl-2
+        @apply border-yellow-500 border-l-8 rounded-sm my-4 py-2 px-4 bg-gray-800
     }
 
     nav.toc a {
         @apply block py-2 rounded-md text-sm text-relaxed hover:text-relaxed-highlight
     }
+
+    /* indent second level */
+    nav.toc li ul {
+        @apply ml-4
+    }
+
+    /* indent third level */
+    nav.toc li ul li ul {
+        @apply ml-4
+    }
+
 }
 
 body {
