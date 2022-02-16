@@ -58,6 +58,8 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         PopOverPanel(this, tag, classes, scope).run {
             initialize()
             render()
+            closeOnEscape()
+            closeOnBlur()
         }
     }
 
