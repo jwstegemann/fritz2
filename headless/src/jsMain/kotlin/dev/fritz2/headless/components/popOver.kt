@@ -24,20 +24,11 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
 
     fun render() {
         attr("id", componentId)
-//        opened.drop(1).filter { !it } handledBy {
-//            button?.setFocus()
-//        }
-        opened.flatMapLatest {  o ->
+        opened.flatMapLatest {  isOpen ->
             focusouts.filter {
-                it.composedPath().contains(domNode) && o
+                isOpen && it.composedPath().contains(domNode)
             }
-        }.onEach {
-            console.log(it)
         } handledBy close
-//        Window.clicks.mapNotNull {
-//            console.log(it.composedPath(), it)
-//            if(it.composedPath().asList().contains(domNode)) null else Unit
-//        } handledBy close
     }
 
     fun <CB : HTMLElement> RenderContext.popOverButton(
@@ -77,7 +68,6 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
             initialize()
             render()
             closeOnEscape()
-//            closeOnBlur()
         }
     }
 
