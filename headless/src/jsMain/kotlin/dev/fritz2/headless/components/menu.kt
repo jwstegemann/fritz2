@@ -103,6 +103,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
 
             closeOnEscape()
             closeOnBlur()
+            trapFocus()
 
             attr("role", Aria.Role.menu)
 

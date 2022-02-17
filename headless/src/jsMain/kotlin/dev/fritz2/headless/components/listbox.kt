@@ -135,6 +135,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
             closeOnEscape()
             closeOnBlur()
+            trapFocus()
 
             attr("role", Aria.Role.listbox)
             attr(Aria.invalid, "true".whenever(value.hasError))
