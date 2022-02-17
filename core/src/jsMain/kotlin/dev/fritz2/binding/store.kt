@@ -4,8 +4,6 @@ import dev.fritz2.dom.html.WithJob
 import dev.fritz2.identification.Id
 import dev.fritz2.lenses.Lens
 import dev.fritz2.lenses.Lenses
-import dev.fritz2.validation.ValidatingStore
-import dev.fritz2.validation.Validation
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -181,17 +179,3 @@ open class RootStore<D>(
  * @param id id of this store. Ids of [SubStore]s will be concatenated.
  */
 fun <D> storeOf(initialData: D, id: String = Id.next()) = RootStore(initialData, id)
-
-/**
- * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
- * The created [Store] validates its model after every update automatically.
- *
- * @param initialData first current value of this [Store]
- * @param validation [Validation] instance to use at the data on this [Store].
- * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
- */
-fun <D, T, M> storeOf(
-    initialData: D,
-    validation: Validation<D, T, M>,
-    id: String = Id.next()
-) = ValidatingStore(initialData, validation, true, id)
