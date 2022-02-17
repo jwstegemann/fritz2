@@ -38,7 +38,7 @@ fritz2 implements **precise data binding**. This means that when parts of your d
 **exactly those** and only those DOM-nodes depending on the changed parts will automatically change as well. 
 No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additional methods to decide 
 which parts of your component have to be re-rendered. 
-fritz2 also supports **two-way data binding** out-of-the-box to freely update your model by listening on events:
+fritz2 also supports **two-way data binding** out-of-the-box to update your model by listening on events:
 
 ![State management in fritz2](https://docs.fritz2.dev/images/fritz2_state_management.png)
 
@@ -50,9 +50,9 @@ This is also true for your model-validation-code, which can quickly become far m
 ## Key Features
 
 - easy reactive one- and two-way data binding (even for lists and deep nested structures)
-- hassle-free redux-like state-handling
+- hassle-free state-handling
 - model-validation and message handling
-- http & websockets
+- http and websockets
 - hash-based routing
 - history / undo
 - processing state ("spinning wheel")
@@ -72,9 +72,9 @@ This is also true for your model-validation-code, which can quickly become far m
 
 ## Overall Goals
 
-- staying lightweight (a few hundred lines of code for the core)
-- keeping dependencies as low as possible (only [kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines)!)
-- generating elements, attributes, events for html from specification (w3c, mozilla, ...)
+- staying lightweight
+- keeping dependencies as low as possible
+- providing tags, attributes, events for html from specification (w3c, mozilla, ...)
 - make it as easy as possible to write reactive web-apps in pure kotlin
 
 ## Inspiration
