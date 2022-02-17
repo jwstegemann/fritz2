@@ -1,10 +1,7 @@
 package dev.fritz2.headlessdemo
 
 
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.fill
-import dev.fritz2.dom.html.transition
-import dev.fritz2.dom.html.viewBox
+import dev.fritz2.dom.html.*
 import dev.fritz2.headless.components.popOver
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.utils.popper.Placement
@@ -56,6 +53,7 @@ fun RenderContext.popOverDemo() {
                                 |focus-visible:ring-opacity-50""".trimMargin()
                         ) {
                             attr("key", "{$item.name}")
+                            href("#")
                             div(
                                 """flex items-center justify-center flex-shrink-0 w-10 h-10 p-1 rounded-lg 
                                     |bg-orange-100 text-orange-600 sm:h-12 sm:w-12""".trimMargin()

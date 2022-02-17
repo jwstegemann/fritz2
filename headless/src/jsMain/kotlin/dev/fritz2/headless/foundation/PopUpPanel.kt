@@ -120,7 +120,7 @@ abstract class PopUpPanel<C : HTMLElement>(
     }
 
     fun closeOnBlur() {
-        attrIfNotSet("tabindex", "0")
+//        attrIfNotSet("tabindex", "0")
         blurs.mapNotNull {
             if (it.relatedTarget == reference?.domNode) null else Unit
         } handledBy openCloseDelegate.close
@@ -162,7 +162,7 @@ abstract class PopUpPanel<C : HTMLElement>(
                 openCloseDelegate.opened handledBy {
                     if (it) {
                         popperDiv.domNode.className = "popper f2-popup-visible"
-                        setFocus()
+//                        setFocus()
                     } else {
                         this@PopUpPanel.waitForAnimation()
                         popperDiv.domNode.className = "popper f2-popup-hidden"

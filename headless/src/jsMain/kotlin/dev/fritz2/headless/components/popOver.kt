@@ -7,8 +7,9 @@ import dev.fritz2.dom.html.ScopeContext
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.identification.Id
 import dev.fritz2.utils.classes
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onEach
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -23,9 +24,20 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
 
     fun render() {
         attr("id", componentId)
-        opened.drop(1).filter { !it } handledBy {
-            button?.setFocus()
-        }
+//        opened.drop(1).filter { !it } handledBy {
+//            button?.setFocus()
+//        }
+        opened.flatMapLatest {  o ->
+            focusouts.filter {
+                it.composedPath().contains(domNode) && o
+            }
+        }.onEach {
+            console.log(it)
+        } handledBy close
+//        Window.clicks.mapNotNull {
+//            console.log(it.composedPath(), it)
+//            if(it.composedPath().asList().contains(domNode)) null else Unit
+//        } handledBy close
     }
 
     fun <CB : HTMLElement> RenderContext.popOverButton(
@@ -65,7 +77,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
             initialize()
             render()
             closeOnEscape()
-            closeOnBlur()
+//            closeOnBlur()
         }
     }
 
