@@ -25,7 +25,7 @@ package dev.fritz2.headless.foundation
  * }
  * ```
  */
-class Exporter<T : Any>(initialize: Initialize<Exporter<T>>) {
+class Exporter<T : Any>(initialize: Exporter<T>.() -> Unit) {
     lateinit var payload: T
 
     fun export(payload: T): T {
