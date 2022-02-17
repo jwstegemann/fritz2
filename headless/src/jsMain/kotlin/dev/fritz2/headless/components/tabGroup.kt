@@ -71,12 +71,15 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             ).take(disabledTabs.size + 1)
             .firstOrNull { !it.value }?.index ?: -1
 
+    @Suppress("UNUSED_PARAMETER")
     private fun firstByKey(currentIndex: Int, payload: Unit, disabledTabs: List<Boolean>) =
         disabledTabs.indexOf(false)
 
+    @Suppress("UNUSED_PARAMETER")
     private fun lastByKey(currentIndex: Int, payload: Unit, disabledTabs: List<Boolean>) =
         disabledTabs.lastIndexOf(false)
 
+    @Suppress("UNUSED_PARAMETER")
     private fun selectDefaultTab(currentIndex: Int, desiredIndex: Int, disabledTabs: List<Boolean>) =
         disabledTabs.take(minOf(desiredIndex, disabledTabs.size - 1) + 1).lastIndexOf(false)
 
