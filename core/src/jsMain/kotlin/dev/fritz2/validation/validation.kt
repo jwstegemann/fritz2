@@ -7,6 +7,7 @@ import dev.fritz2.binding.RootStore
 import dev.fritz2.binding.Store
 import dev.fritz2.binding.SubStore
 import dev.fritz2.identification.Id
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
 
@@ -73,6 +74,8 @@ open class ValidatingStore<D, T, M>(
 
     init {
         if (validateAfterUpdate) data.drop(1) handledBy { newValue ->
+            //FIXME: delay is needed for unit tests
+            delay(1)
             validate(newValue)
         }
     }
