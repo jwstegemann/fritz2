@@ -151,7 +151,7 @@ object Aria {
 }
 
 /**
- * This hook encapsulates the generation of some ARIA-attribute, that deals with referencing some other tag due by id.
+ * This hook encapsulates the generation of some ARIA-attribute, that deals with referencing some other tag by id.
  *
  * This is useful for situations where the client creates the content, that should be referenced by the underlying
  * (headless-)component. Both sections need to reference and declare the same id.
@@ -159,6 +159,50 @@ object Aria {
  * This hook encapsulates the specific ARIA attribute setting, by letting the component define the specific ARIA
  * attribute, but enables the client to set a specific id or to create some random one and to use it. The component
  * simply needs to apply the hook, as the behaviour is to exactly add the initial ARIA attribute with the created id.
+ *
+ * The following strongly simplified example shows the use case:
+ * ```kotlin
+ * class SomeComponent {
+ *      val ariaTitleId = AriaReferenceHook<Div>(Aria.labelledby)
+ *      val ariaDescriptionId = AriaReferenceHook<Div>(Aria.describedby)
+ *
+ *      private var userContent: Div.() -> Unit = {}
+ *
+ *      fun content(expr: Div.() -> Unit) { userContent = expr }
+ *
+ *      fun render() {
+ *          // surrounding structure by component itself
+ *          div {
+ *              // integrate user's content; reference hooks get invoked!
+ *              userContent(this)
+ *
+ *              // apply effect of setting correct ARIA references
+ *              hook(ariaTitleId, ariaDescriptionId)
+ *          }
+ *          // results in the following DOM-Subtree:
+ *          // <div aria-labelledby="mySpecialTitleId" aria-describedby="AB12FD">
+ *          //   <h1>My Title</h1>
+ *          //   <p>lorem ipsum...</P>
+ *          // </div>
+ *      }
+ * }
+ *
+ * // client usage
+ * someCoponent {
+ *      content {
+ *          h1(id = ariaTitleId("mySpecialTitleId")) { +"My Title" }
+ *          //      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ *          //      user set explicit ID
+ *
+ *          p(id = ariaDescriptionId()) {
+ *          //     ^^^^^^^^^^^^^^^^^^^
+ *          //     user relies on automatic created ID
+ *
+ *              +"lorem ipsum..."
+ *          }
+ *      }
+ * }
+ * ```
  */
 class AriaReferenceHook<C : Tag<*>>(private val name: String) : Hook<C, Unit, Unit>() {
     operator fun invoke(id: String): String {
