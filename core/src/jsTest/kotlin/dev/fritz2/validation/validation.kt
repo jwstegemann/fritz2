@@ -1,6 +1,5 @@
 package dev.fritz2.validation
 
-import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.render
 import dev.fritz2.identification.Id
 import dev.fritz2.lenses.lens

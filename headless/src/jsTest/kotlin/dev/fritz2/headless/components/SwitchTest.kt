@@ -1,6 +1,5 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.binding.storeOf
 import dev.fritz2.dom.html.Keys
 import dev.fritz2.dom.html.RenderContext
 import dev.fritz2.dom.html.render
@@ -10,6 +9,7 @@ import dev.fritz2.headless.test.runTest
 import dev.fritz2.headless.test.scopeTestKey
 import dev.fritz2.headless.test.scopeTestValue
 import dev.fritz2.identification.Id
+import dev.fritz2.validation.storeOf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
