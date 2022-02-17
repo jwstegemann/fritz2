@@ -10,9 +10,12 @@
 [![Docs](https://img.shields.io/badge/docs-online-violet)](https://docs.fritz2.dev)
 [![Slack chat](https://img.shields.io/badge/kotlinlang-%23fritz2-B37700?logo=slack)](https://kotlinlang.slack.com/messages/fritz2)
 
-fritz2 is an ***extremely lightweight***, well-performing, independent library to build reactive web apps in ***Kotlin*** heavily depending on coroutines and flows.
+fritz2 is an ***extremely lightweight***, well-performing, independent library to build 
+reactive web apps in ***Kotlin*** heavily depending on coroutines and flows.
 
-fritz2 includes an intuitive way to build and render html-elements and styles using a type-safe dsl. You can easily create lightweight **reactive** html-dev.fritz2.headless.components that are bound to an underlying model and **automatically** change whenever the model data changes:
+fritz2 includes an intuitive way to build and render html-elements using a type-safe dsl. 
+You can easily create lightweight **reactive** html-components that are bound to an underlying model 
+and **automatically** change whenever the model data changes:
 
 ```kotlin
 val model = storeOf("init value")
@@ -31,26 +34,35 @@ render {
 }
 ```
 
-fritz2 implements **precise data binding**. This means that when parts of your data model change, **exactly those** and only those DOM-nodes depending on the changed parts will automatically change as well. No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additional methods to decide which parts of your component have to be re-rendered:
+fritz2 implements **precise data binding**. This means that when parts of your data model change, 
+**exactly those** and only those DOM-nodes depending on the changed parts will automatically change as well. 
+No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additional methods to decide 
+which parts of your component have to be re-rendered. 
+fritz2 also supports **two-way data binding** out-of-the-box to freely update your model by listening on events:
 
-![State management in fritz2](https://www.fritz2.dev/static/fritz2_state.001.png)
+![State management in fritz2](https://docs.fritz2.dev/images/fritz2_state_management.png)
 
-Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data classes only once and use it on your client and server (i.e. in a [SpringBoot](https://github.com/jamowei/fritz2-spring-todomvc)- or [Ktor](https://github.com/jamowei/fritz2-ktor-todomvc)-Backend). This is also true for your model-validation-code, which can quickly become far more complex than your data model.
+Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data classes only once and use 
+it on your client and server (i.e. in a [SpringBoot](https://github.com/jamowei/fritz2-spring-todomvc)- or 
+[Ktor](https://github.com/jamowei/fritz2-ktor-todomvc)-Backend). 
+This is also true for your model-validation-code, which can quickly become far more complex than your data model.
 
 ## Key Features
 
-- easy reactive one- and two-way-databinding (even for lists and deep nested structures)
+- easy reactive one- and two-way data binding (even for lists and deep nested structures)
 - hassle-free redux-like state-handling
-- model-validation and message handling 
-- ~~integrated [styling-dsl](https://docs.fritz2.dev/StylingDSL.html)~~ (outdated)
-- ~~[component-library](https://dev.fritz2.headless.components.fritz2.dev)~~ (outdated, will be replaced by a headless approach)
-- routing (for SPAs, hash-based)
-- backend-repositories (Rest APIs, WebSockets, LocalStorage, etc.)
+- model-validation and message handling
+- http & websockets
+- hash-based routing
 - history / undo
 - processing state ("spinning wheel")
-- easy to learn  
+- backend-repositories (Rest APIs, WebSockets, LocalStorage, etc.)
+- webcomponents
+- easy to learn
 - [documentation](https://docs.fritz2.dev)
 - [examples](https://www.fritz2.dev/examples.html) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
+- ~~integrated [styling-dsl](https://docs.fritz2.dev/StylingDSL.html)~~ (outdated)
+- ~~[component-library](https://dev.fritz2.headless.components.fritz2.dev)~~ (outdated, will be replaced by a headless approach)
 
 
 ## How to try it?
@@ -61,14 +73,17 @@ Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data c
 ## Overall Goals
 
 - staying lightweight (a few hundred lines of code for the core)
-- keeping dependencies as low as possible (zero up to now!)
+- keeping dependencies as low as possible (only [kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines)!)
 - generating elements, attributes, events for html from specification (w3c, mozilla, ...)
-- make it as easy as possible to write reactive pwas in pure kotlin
+- make it as easy as possible to write reactive web-apps in pure kotlin
 
 ## Inspiration
 
-fritz2 is hugely inspired by the great [Binding.scala](https://github.com/ThoughtWorksInc/Binding.scala). Later we discovered that a lot of those concepts are described independently in [Meiosis](https://meiosis.js.org/).
+fritz2 is hugely inspired by the great [Binding.scala](https://github.com/ThoughtWorksInc/Binding.scala) framework. 
+Later we discovered that a lot of those concepts are described independently in [Meiosis](https://meiosis.js.org/).
+Also, fritz2 relies heavily on the great Kotlin [coroutines](https://github.com/Kotlin/kotlinx.coroutines) library.
 
 ## Leave us a star...
 
-If you like the idea of a lightweight pure Kotlin implementation for building reactive web apps, please give us a star on github. Thank you.
+If you like the idea of a lightweight pure Kotlin implementation for building reactive web-apps, 
+please give us a star. Thank you!
