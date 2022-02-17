@@ -1,6 +1,6 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.dom.html.*
+import dev.fritz2.core.*
 import dev.fritz2.routing.routerOf
 
 data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)

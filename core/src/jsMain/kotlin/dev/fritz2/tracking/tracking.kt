@@ -1,6 +1,6 @@
 package dev.fritz2.tracking
 
-import dev.fritz2.binding.Store
+import dev.fritz2.core.Store
 import kotlinx.coroutines.flow.*
 
 /**

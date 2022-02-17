@@ -1,7 +1,7 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.ScopeContext
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.ScopeContext
 
 typealias TagFactory<C> = (RenderContext, String?, String?, ScopeContext.() -> Unit, C.() -> Unit) -> C
 

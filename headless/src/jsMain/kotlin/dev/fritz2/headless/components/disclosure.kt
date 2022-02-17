@@ -1,11 +1,9 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.ScopeContext
-import dev.fritz2.headless.foundation.*
-import dev.fritz2.identification.Id
+import dev.fritz2.core.*
+import dev.fritz2.headless.foundation.Aria
+import dev.fritz2.headless.foundation.OpenClose
+import dev.fritz2.headless.foundation.TagFactory
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
