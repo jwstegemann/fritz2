@@ -6,7 +6,7 @@ eleventyNavigation:
     key: radioGroup
     title: RadioGroup
     parent: headless 
-    order: 30 
+    order: 80 
 demoHash: radioGroup 
 teaser: "Eine RadioGroup dient als Basis für die Einfachauswahl von beliebigen Elementen."
 ---

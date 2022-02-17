@@ -6,7 +6,7 @@ eleventyNavigation:
     key: listbox
     title: Listbox (Select)
     parent: headless 
-    order: 10 
+    order: 40 
 demoHash: listbox 
 teaser: "Eine Listbox bietet dem Anwender die Möglichkeit, eine Option aus einer vorgegebenen Menge auszuwählen. Die Auswahloptionen sind im Normalfall nur sichtbar, wenn die Listbox aktiv ist."
 ---
@@ -128,7 +128,7 @@ listbox<String> {
 
 ## Zustand der Auswahlliste
 
-Der Baustein `listboxItems` ist ein [`OpenClose`-Baustein](../#closable-content---openclose). In seinem Scope stehen verschiedene `Flow`s und `Handler` wie `opened` zur Verfügung, um basierend auf Öffnungszustand der Auswahlliste zu steuern oder diesen zu verändern.
+Listbox ist eine [`OpenClose`-Komponente](../#closable-content---openclose). In ihrem Scope stehen verschiedene `Flow`s und `Handler` wie `opened` zur Verfügung, um basierend auf Öffnungszustand der Auswahlliste zu steuern oder diesen zu verändern.
 
 Der Öffnungszustand der Listbox kann per Databinding an einen externen `Store` gebunden werden, z.B. um die Auswahlliste immer anzuzeigen.
 
@@ -245,6 +245,7 @@ listbox<T>() {
         
         // for each T {
             listboxItem(entry: T) {
+                val index: Int
                 val selected: Flow<Boolean>
                 val active: Flow<Boolean>
                 val disabled: Flow<Boolean>
@@ -262,9 +263,14 @@ Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ                       | Description                                                             |
-|------------|---------------------------|-------------------------------------------------------------------------|
-| `value`    | `DatabindingProperty<T>`  | Zwei-Wege-Datenbindung für ein selektiertes Entry. Muss gesetzt werden! |
+| Scope Feld           | Typ                            | Description                                                                                                       |
+|----------------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| `value`              | `DatabindingProperty<T>`       | Zwei-Wege-Datenbindung für ein selektiertes Entry. Muss gesetzt werden!                                           |
+| `openClose`          | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung für das Öffnen und Schließen. Muss gesetzt werden!                                         |
+| `opened`             | `Flow<Boolean>`                | Datenstrom der bezogen auf den "geöffnet"-Status boolesche Werte liefert; in der Listbox nutzlos, da immer `true` |
+| `close`              | `SimpleHandler<Unit>`          | Handler zum Schließen der Listbox von innen heraus, sollte nicht verwendet werden, da dies automatisch passiert!  |
+| `open`               | `SimpleHandler<Unit>`          | Handler zum Öffnen; nicht sinnvoll in der Listbox anzuwenden!                                                     |
+| `toggle`             | `SimpleHandler<Unit>`          | Handler zum Wechseln zwischen Offen und Geschlossen; nicht sinnvoll in der Listbox anzuwenden                     |
 
 
 ### listboxButton
@@ -303,6 +309,15 @@ Parameter: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
+| Scope Feld  | Typ         | Description                                                                                                                                                                                                                                         |
+|-------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `placement` | `Placement` | definiert die Position des Bausteins, z.B. `Placement.top`, `Placement.bottomRight`, etc. Standardwert ist `Placement.auto`. Hierbei wird die vermutlich beste Position automatisch anhand des zur Verfügung stehenden sichtbaren Platzes bestimmt. |
+| `strategy`  | `Strategy`  | legt fest, ob der Baustein `absolute` positioniert werden soll (default) oder `fixed`.                                                                                                                                                              |
+| `flip`      | `Boolean`   | kommt der Baustein zu nah an den Rand des sichtbaren Bereichs, wechselt die Position automatisch auf die jeweils andere Seite, wenn dort mehr Platz zur Verfügung steht.                                                                            |
+| `skidding`  | `Int`       | definiert den Abstand der Auswahlliste vom Referenzelement in Pixeln. Der Standardwert ist 10.                                                                                                                                                      |
+| `distance`  | `Int`       | definiert die Verschiebung der Auswahlliste entlang des Referenzelements in Pixeln. Der Standardwert ist 0.                                                                                                                                         |
+
+
 ### listboxItem
 
 Verfügbar im Scope von: `listboxItems`
@@ -313,6 +328,7 @@ Default-Tag: `button`
 
 | Scope Feld | Typ                      | Description                                                                                                                                                    |
 |------------|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `index`    | `Int`                    | Der Index innerhalb der Items.                                                                                                                                     |
 | `selected` | `Flow<Boolean>`          | Dieser Datenstrom liefert den Selektions-Status der verwalteten Option: `true` die Option ist selektiert, `false` wenn nicht.                                  |
 | `active`   | `Flow<Boolean>`          | Dieser Datenstrom zeigt an, ob ein Eintrag fokussiert ist: `true` die Option hat den Fokus, `false` wenn nicht. Es kann immer nur eine Option den Fokus haben. |
 | `disabled` | `Flow<Boolean>`          | Dieser Datenstrom zeigt an, ob ein Eintrag aktiv (`false`) oder inaktiv (`true`) ist.                                                                          |

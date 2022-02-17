@@ -24,82 +24,84 @@ abstract class PopUpPanel<C : HTMLElement>(
 
     companion object {
         init {
-            addGlobalStyles(listOf(
-            """.popper[data-popper-reference-hidden] {
+            addGlobalStyles(
+                listOf(
+                    """.popper[data-popper-reference-hidden] {
                 visibility: hidden;
                 pointer-events: none;
             }""".trimIndent(),
-            """.popper-arrow, .popper-arrow::before {
+                    """.popper-arrow, .popper-arrow::before {
                 position: absolute;
                 width: 8px;
                 height: 8px;
                 background: inherit;
             }""".trimIndent(),
-                """.popper-arrow {
+                    """.popper-arrow {
                 visibility: hidden;
             }""".trimIndent(),
-            """.popper-arrow::before {
+                    """.popper-arrow::before {
                 visibility: visible;
                 content: '';
                 transform: rotate(45deg);
             }""".trimIndent(),
-            """.popper[data-popper-placement^='top'] > .popper-arrow {
+                    """.popper[data-popper-placement^='top'] > .popper-arrow {
                 bottom: -4px;
             }""".trimIndent(),
-            """.popper[data-popper-placement^='bottom'] > .popper-arrow {
+                    """.popper[data-popper-placement^='bottom'] > .popper-arrow {
                 top: -4px;
             }""".trimIndent(),
-            """.popper[data-popper-placement^='left'] > .popper-arrow {
+                    """.popper[data-popper-placement^='left'] > .popper-arrow {
                 right: -4px;
             }""".trimIndent(),
-            """.popper[data-popper-placement^='right'] > .popper-arrow {
+                    """.popper[data-popper-placement^='right'] > .popper-arrow {
                 left: -4px;
             }""".trimIndent(),
-            """.popper[data-popper-placement='bottom'] > .transform {
+                    """.popper[data-popper-placement='bottom'] > .transform {
                 transform-origin: top;
             }""".trimIndent(),
-            """.popper[data-popper-placement='bottom-start'] > .transform {
+                    """.popper[data-popper-placement='bottom-start'] > .transform {
                 transform-origin: top left;
             }""".trimIndent(),
-            """.popper[data-popper-placement='bottom-right'] > .transform {
+                    """.popper[data-popper-placement='bottom-right'] > .transform {
                 transform-origin: top right;
             }""".trimIndent(),
-            """.popper[data-popper-placement='top'] > .transform {
+                    """.popper[data-popper-placement='top'] > .transform {
                 transform-origin: bottom;
             }""".trimIndent(),
-            """.popper[data-popper-placement='top-start'] > .transform {
+                    """.popper[data-popper-placement='top-start'] > .transform {
                 transform-origin: bottom left;
             }""".trimIndent(),
-            """.popper[data-popper-placement='top-right'] > .transform {
+                    """.popper[data-popper-placement='top-right'] > .transform {
                 transform-origin: bottom right;
             }""".trimIndent(),
-            """.popper[data-popper-placement='left'] > .transform {
+                    """.popper[data-popper-placement='left'] > .transform {
                 transform-origin: right;
             }""".trimIndent(),
-            """.popper[data-popper-placement='left-start'] > .transform {
+                    """.popper[data-popper-placement='left-start'] > .transform {
                 transform-origin: top right;
             }""".trimIndent(),
-            """.popper[data-popper-placement='left-end'] > .transform {
+                    """.popper[data-popper-placement='left-end'] > .transform {
                 transform-origin: bottom right;
             }""".trimIndent(),
-            """.popper[data-popper-placement='right'] > .transform {
+                    """.popper[data-popper-placement='right'] > .transform {
                 transform-origin: left;
             }""".trimIndent(),
-            """.popper[data-popper-placement='right-start'] > .transform {
+                    """.popper[data-popper-placement='right-start'] > .transform {
                 transform-origin: top left;
             }""".trimIndent(),
-            """.popper[data-popper-placement='right-end'] > .transform {
+                    """.popper[data-popper-placement='right-end'] > .transform {
                 transform-origin: bottom left;
             }""".trimIndent(),
-            """.f2-popup-visible {
+                    """.f2-popup-visible {
                 width: 100%;
                 visibility: visible;
             }""".trimIndent(),
-            """.f2-popup-hidden {
+                    """.f2-popup-hidden {
                 width: 100%;
                 visibility: hidden;
             }""".trimIndent()
-            ))
+                )
+            )
         }
     }
 
@@ -118,6 +120,7 @@ abstract class PopUpPanel<C : HTMLElement>(
     }
 
     fun closeOnBlur() {
+        attrIfNotSet("tabindex", "0")
         blurs.mapNotNull {
             if (it.relatedTarget == reference?.domNode) null else Unit
         } handledBy openCloseDelegate.close

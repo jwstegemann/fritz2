@@ -6,7 +6,7 @@ eleventyNavigation:
     key: disclosure
     title: Disclosure
     parent: headless
-    order: 70
+    order: 20
 demoHash: disclosure
 teaser: "Ein Disclosure ermöglicht das Ein- und Ausblenden von Inhalten wie z.B. umschaltbare Akkordeon Menüs."
 ---
@@ -145,12 +145,13 @@ Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld  | Typ                            | Description                                                            |
-|-------------|--------------------------------|------------------------------------------------------------------------|
-| `opened`    | `Flow<Boolean>`                | Datenstrom vom Zustand des Disclose: `true` offen, `false` geschlossen |
-| `openClose` | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung für das Öffnen und Schließen. Rein optional.    |
-| `close`     | `SimpleHandler<Unit>`          | Handler zum Schließen des Disclosures von innen heraus                 |
-
+| Scope Feld   | Typ                            | Description                                                                                    |
+|--------------|--------------------------------|------------------------------------------------------------------------------------------------|
+| `openClose`  | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung für das Öffnen und Schließen. Rein optional!                            |
+| `opened`     | `Flow<Boolean>`                | Datenstrom der bezogen auf den "geöffnet"-Status boolesche Werte liefert.                      |
+| `close`      | `SimpleHandler<Unit>`          | Handler zum Schließen des Menus von innen heraus.                                              |
+| `open`       | `SimpleHandler<Unit>`          | Handler zum Öffnen; nicht sinnvoll im Disclosure anzuwenden!                                   |
+| `toggle`     | `SimpleHandler<Unit>`          | Handler zum Wechseln zwischen Offen und Geschlossen; nicht sinnvoll im Disclosure anzuwenden   |
 
 ### disclosureButton
 

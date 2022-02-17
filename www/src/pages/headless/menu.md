@@ -6,7 +6,7 @@ eleventyNavigation:
     key: menu
     title: Menu
     parent: headless 
-    order: 20 
+    order: 50 
 demoHash: menu 
 teaser: "Ein ausklappbares Menü zur Auswahl auszuführender Aktionen inkl. Keyboard-Navigation"
 ---
@@ -114,7 +114,7 @@ menu {
 
 ## Zustand der Auswahlliste
 
-Der Baustein `menuItems` ist ein [`OpenClose`-Baustein](../#closable-content---openclose). In seinem Scope stehen verschiedene `Flow`s und `Handler` wie `opened` zur Verfügung, um basierend auf Öffnungszustand der Auswahlliste zu steuern oder diesen zu verändern.
+Das Menü ist eine [`OpenClose`-Komponente](../#closable-content---openclose). In ihrem Scope stehen verschiedene `Flow`s und `Handler` wie `opened` zur Verfügung, um basierend auf Öffnungszustand der Auswahlliste zu steuern oder diesen zu verändern.
 
 Der Öffnungszustand des Menüs kann per Databinding an einen externen `Store` gebunden werden, z.B. um die Auswahlliste immer anzuzeigen.
 
@@ -181,3 +181,90 @@ Ein Click auf den `menuButton` schaltet den Zustand der Auswahlliste um. Ein Cli
 ## API
 
 ### Summary / Sketch
+
+```kotlin
+menu {
+    // inherited by `OpenClose`
+    val openClose = DatabindingProperty<Boolean>()
+    val opened: Flow<Boolean>
+    val close: SimpleHandler<Unit>
+    val open: SimpleHandler<Unit>
+    val toggle: SimpleHandler<Unit>
+
+    menuButton() { }
+    menuItems() {
+        // inherited by `PopUpPanel`
+        var placement: Placement
+        var strategy: Strategy
+        var flip: Boolean
+        var skidding: Int
+        var distance: int
+        
+        // for each T {
+            MenuItem {
+                val index: Int
+                val selected: Flow<Boolean>
+                val active: Flow<Boolean>
+                val disabled: Flow<Boolean>
+                val disable: SimpleHandler<Boolean>
+            }
+        // }
+    }
+}
+```
+
+### menu
+
+Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+| Scope Feld           | Typ                            | Description                                                                                                    |
+|----------------------|--------------------------------|----------------------------------------------------------------------------------------------------------------|
+| `openClose`          | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung für das Öffnen und Schließen. Muss gesetzt werden!                                      |
+| `opened`             | `Flow<Boolean>`                | Datenstrom der bezogen auf den "geöffnet"-Status boolesche Werte liefert; im Menu nutzlos, da immer `true`     |
+| `close`              | `SimpleHandler<Unit>`          | Handler zum Schließen des Menus von innen heraus, sollte nicht verwendet werden, da dies automatisch passiert! |
+| `open`               | `SimpleHandler<Unit>`          | Handler zum Öffnen; nicht sinnvoll im Menu anzuwenden!                                                         |
+| `toggle`             | `SimpleHandler<Unit>`          | Handler zum Wechseln zwischen Offen und Geschlossen; nicht sinnvoll im Menu anzuwenden                         |
+
+
+### menuButton
+
+Verfügbar im Scope von: `menu`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `button`
+
+### menuItems
+
+Verfügbar im Scope von: `menu`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+| Scope Feld  | Typ         | Description                                                                                                                                                                                                                                         |
+|-------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `placement` | `Placement` | definiert die Position des Bausteins, z.B. `Placement.top`, `Placement.bottomRight`, etc. Standardwert ist `Placement.auto`. Hierbei wird die vermutlich beste Position automatisch anhand des zur Verfügung stehenden sichtbaren Platzes bestimmt. |
+| `strategy`  | `Strategy`  | legt fest, ob der Baustein `absolute` positioniert werden soll (default) oder `fixed`.                                                                                                                                                              |
+| `flip`      | `Boolean`   | kommt der Baustein zu nah an den Rand des sichtbaren Bereichs, wechselt die Position automatisch auf die jeweils andere Seite, wenn dort mehr Platz zur Verfügung steht.                                                                            |
+| `skidding`  | `Int`       | definiert den Abstand der Auswahlliste vom Referenzelement in Pixeln. Der Standardwert ist 10.                                                                                                                                                      |
+| `distance`  | `Int`       | definiert die Verschiebung der Auswahlliste entlang des Referenzelements in Pixeln. Der Standardwert ist 0.                                                                                                                                         |
+
+
+### menuItem
+
+Verfügbar im Scope von: `menuItems`
+
+Parameter: `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+| Scope Feld | Typ                      | Description                                                                                                                                                        |
+|------------|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `index`    | `Int`                    | Der Index innerhalb der Items.                                                                                                                                     |
+| `selected` | `Flow<Boolean>`          | Dieser Datenstrom liefert den Selektions-Status der verwalteten Option: `true` die Option ist selektiert, `false` wenn nicht. Nicht sinnvoll im Menu zu verwenden! |
+| `active`   | `Flow<Boolean>`          | Dieser Datenstrom zeigt an, ob ein Eintrag fokussiert ist: `true` die Option hat den Fokus, `false` wenn nicht. Es kann immer nur eine Option den Fokus haben.     |
+| `disabled` | `Flow<Boolean>`          | Dieser Datenstrom zeigt an, ob ein Eintrag aktiv (`false`) oder inaktiv (`true`) ist.                                                                              |
+| `disable`  | `SimpleHandler<Boolean>` | Dieser Handler aktiviert oder deaktiviert einen Eintrag                                                                                                            |

@@ -6,7 +6,7 @@ eleventyNavigation:
     key: textarea
     title: TextArea
     parent: headless
-    order: 90
+    order: 110
 demoHash: textarea
 teaser: "Ein TextArea bietet eine mehrzeilige Texteingabe an."
 ---

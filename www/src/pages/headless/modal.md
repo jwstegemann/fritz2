@@ -6,7 +6,7 @@ eleventyNavigation:
     key: modal
     title: Modal
     parent: headless
-    order: 70
+    order: 60
 demoHash: modal
 teaser: "Ein modaler Dialog stellt beliebigen Content auf einer Ebene über der restlichen Applikation dar. 
 Intelligentes Maus- und Tastaturmanagement beschränken die Interaktion dabei auf das modale Fenster, solange dieses
@@ -169,6 +169,8 @@ schließt.
 ### Summary / Sketch
 ```kotlin
 modal() {
+    var restoreFocus: Boolean
+    var setInitialFocus: Boolean    
     // inherited by `OpenClose`
     val openClose = DatabindingProperty<Boolean>()
     val opened: Flow<Boolean>
@@ -192,10 +194,15 @@ Parameter: **keine**
 
 Default-Tag: Es wird kein Tag gerendert!
 
-| Scope Feld  | Typ                            | Description                                                               |
-|-------------|--------------------------------|---------------------------------------------------------------------------|
-| `openClose` | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung für das Öffnen und Schließen. Muss gesetzt werden! |
-| `close`     | `SimpleHandler<Unit>`          | Handler zum Schließen des Dialogs von innen heraus                        |
+| Scope Feld        | Typ                            | Description                                                                                                                                                     |
+|-------------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `restoreFocus`    | `DatabindingProperty<Boolean>` | Bei `true` (default) wird der Fokus auf das zuletzt fokussierte Element zurück gesetzt nach dem Schließen des Modals.                                           |
+| `setInitialFocus` | `DatabindingProperty<Boolean>` | Bei `true` (default) wird der Fokus auf das erste fokussierbare DOM-Element oder das mit [`setInitialFocus()`](#fokus-management) markierte Element fokussiert. |
+| `openClose`       | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung für das Öffnen und Schließen. Muss gesetzt werden!                                                                                       |
+| `opened`          | `Flow<Boolean>`                | Datenstrom der bezogen auf den "geöffnet"-Status boolesche Werte liefert; im Dialog nutzlos, da immer `true`                                                    |
+| `close`           | `SimpleHandler<Unit>`          | Handler zum Schließen des Dialogs von innen heraus                                                                                                              |
+| `open`            | `SimpleHandler<Unit>`          | Handler zum Öffnen; nicht sinnvoll im Dialog anzuwenden!                                                                                                        |
+| `toggle`          | `SimpleHandler<Unit>`          | Handler zum Wechseln zwischen Offen und Geschlossen; nicht sinnvoll im Dialog anzuwenden                                                                        |
 
 
 ### modalPanel
