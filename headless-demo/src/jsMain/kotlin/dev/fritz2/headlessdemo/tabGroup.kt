@@ -1,8 +1,8 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.core.classes
+import dev.fritz2.dom.RenderContext
 import dev.fritz2.headless.components.tabGroup
-import dev.fritz2.utils.classes
 import kotlinx.coroutines.flow.map
 
 fun RenderContext.tabsDemo() {

@@ -1,8 +1,8 @@
 package dev.fritz2.routing
 
-import dev.fritz2.binding.Store
-import dev.fritz2.binding.SubStore
-import dev.fritz2.binding.Update
+import dev.fritz2.core.Store
+import dev.fritz2.core.SubStore
+import dev.fritz2.core.Update
 import dev.fritz2.lenses.lensOf
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
@@ -197,4 +197,5 @@ open class MapRoute(override val default: Map<String, String> = emptyMap()) :
 }
 
 external fun decodeURIComponent(encodedURI: String): String
+
 external fun encodeURIComponent(decodedURI: String): String

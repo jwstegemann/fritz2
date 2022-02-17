@@ -1,9 +1,9 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.binding.SimpleHandler
+import dev.fritz2.core.SimpleHandler
+import dev.fritz2.dom.Keys
 import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.shortcutOf
+import dev.fritz2.dom.shortcutOf
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
 

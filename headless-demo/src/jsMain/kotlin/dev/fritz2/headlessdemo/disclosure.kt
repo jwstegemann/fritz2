@@ -1,7 +1,7 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.type
+import dev.fritz2.dom.RenderContext
+import dev.fritz2.dom.type
 import dev.fritz2.headless.components.disclosure
 
 fun RenderContext.disclosureDemo() {

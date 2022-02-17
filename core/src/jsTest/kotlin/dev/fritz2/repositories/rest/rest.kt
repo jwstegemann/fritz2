@@ -1,16 +1,16 @@
 package dev.fritz2.repositories.rest
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.dom.html.render
+import dev.fritz2.core.RootStore
+import dev.fritz2.dom.render
 import dev.fritz2.identification.Id
+import dev.fritz2.initDocument
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.lens
 import dev.fritz2.repositories.ResourceNotFoundException
 import dev.fritz2.resource.Resource
-import dev.fritz2.test.initDocument
-import dev.fritz2.test.rest
-import dev.fritz2.test.runTest
-import dev.fritz2.test.testHttpServer
+import dev.fritz2.restEndpoint
+import dev.fritz2.runTest
+import dev.fritz2.testHttpServer
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -50,7 +50,7 @@ class RestTests {
         val startPerson = RestPerson("Heinz", 18)
         val changedAge = 99
 
-        val remote = testHttpServer(rest)
+        val remote = testHttpServer(restEndpoint)
 
         val entityStore = object : RootStore<RestPerson>(defaultPerson) {
             override fun errorHandler(cause: Throwable) {
@@ -127,7 +127,7 @@ class RestTests {
             RestPerson("C", 0)
         )
 
-        val remote = testHttpServer(rest)
+        val remote = testHttpServer(restEndpoint)
 
         val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
             override fun errorHandler(cause: Throwable) {
@@ -202,7 +202,7 @@ class RestTests {
             RestPerson("D", 0)
         )
 
-        val remote = testHttpServer(rest)
+        val remote = testHttpServer(restEndpoint)
 
         val queryStore = object : RootStore<List<RestPerson>>(emptyList()) {
             override fun errorHandler(cause: Throwable) {

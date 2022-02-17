@@ -1,8 +1,8 @@
 package dev.fritz2.remote
 
-import dev.fritz2.test.runTest
-import dev.fritz2.test.test
-import dev.fritz2.test.testHttpServer
+import dev.fritz2.runTest
+import dev.fritz2.testEndpoint
+import dev.fritz2.testHttpServer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -32,7 +32,7 @@ class MiddlewareTests {
             }
         }
 
-        val remote = testHttpServer(test).use(shouldNotRunMiddleware, headerMiddleware)
+        val remote = testHttpServer(testEndpoint).use(shouldNotRunMiddleware, headerMiddleware)
 
         val body: String = remote
             .acceptJson()

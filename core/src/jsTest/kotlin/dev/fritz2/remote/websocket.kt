@@ -1,14 +1,14 @@
 package dev.fritz2.remote
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.dom.html.handledBy
-import dev.fritz2.dom.html.render
+import dev.fritz2.core.RootStore
+import dev.fritz2.core.handledBy
+import dev.fritz2.dom.render
 import dev.fritz2.identification.Id
+import dev.fritz2.initDocument
 import dev.fritz2.lenses.IdProvider
 import dev.fritz2.lenses.lens
 import dev.fritz2.resource.Resource
-import dev.fritz2.test.initDocument
-import dev.fritz2.test.runTest
+import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onEach

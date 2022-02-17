@@ -1,8 +1,7 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.dom.Listener
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.*
+import dev.fritz2.core.ScopeContext
+import dev.fritz2.dom.*
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.DatabindingProperty
 import dev.fritz2.headless.foundation.TagFactory

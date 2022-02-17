@@ -1,12 +1,6 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.afterMount
-import dev.fritz2.dom.asElementList
-import dev.fritz2.dom.beforeUnmount
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.shortcutOf
-
+import dev.fritz2.dom.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.awaitAnimationFrame

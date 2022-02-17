@@ -1,10 +1,9 @@
 package dev.fritz2.dom
 
-import dev.fritz2.binding.Patch
-import dev.fritz2.binding.mountSimple
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.Scope
-import dev.fritz2.dom.html.WithJob
+import dev.fritz2.core.Patch
+import dev.fritz2.core.Scope
+import dev.fritz2.core.WithJob
+import dev.fritz2.core.mountSimple
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.dom.clear

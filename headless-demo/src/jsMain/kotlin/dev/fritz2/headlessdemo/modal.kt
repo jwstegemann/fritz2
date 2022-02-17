@@ -1,7 +1,7 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.html.*
+import dev.fritz2.core.storeOf
+import dev.fritz2.dom.*
 import dev.fritz2.headless.components.modal
 import kotlinx.coroutines.flow.map
 

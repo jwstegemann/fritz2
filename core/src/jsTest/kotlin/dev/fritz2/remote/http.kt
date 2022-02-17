@@ -1,9 +1,9 @@
 package dev.fritz2.remote
 
-import dev.fritz2.test.rest
-import dev.fritz2.test.runTest
-import dev.fritz2.test.test
-import dev.fritz2.test.testHttpServer
+import dev.fritz2.restEndpoint
+import dev.fritz2.runTest
+import dev.fritz2.testEndpoint
+import dev.fritz2.testHttpServer
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
 import kotlin.random.Random
@@ -15,7 +15,7 @@ class RemoteTests {
 
     @Test
     fun testHTTPMethods() = runTest {
-        val remote = testHttpServer(test)
+        val remote = testHttpServer(testEndpoint)
         remote.get("get")
         remote.delete("delete")
         remote.head("head")
@@ -27,7 +27,7 @@ class RemoteTests {
 
     @Test
     fun testBasicAuth() = runTest {
-        val remote = testHttpServer(test)
+        val remote = testHttpServer(testEndpoint)
         val user = "test"
         val password = "password"
         remote.basicAuth(user, password).get("basicAuth")
@@ -40,7 +40,7 @@ class RemoteTests {
 
     @Test
     fun testErrorStatusCodes() = runTest {
-        val remote = testHttpServer(test)
+        val remote = testHttpServer(testEndpoint)
         for(code in codes) {
             assertFailsWith(FetchException::class) {
                 remote.get("status/$code")
@@ -50,7 +50,7 @@ class RemoteTests {
 
     @Test
     fun testHeaders() = runTest {
-        val remote = testHttpServer(test)
+        val remote = testHttpServer(testEndpoint)
         val body: String = remote
             .acceptJson()
             .cacheControl("no-cache")
@@ -63,7 +63,7 @@ class RemoteTests {
 
     @Test
     fun testCRUDMethods() = runTest {
-        val remote = testHttpServer(rest)
+        val remote = testHttpServer(restEndpoint)
         val texts = mutableListOf<String>()
         val ids = mutableListOf<String>()
         for (i in 0..5) {

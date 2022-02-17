@@ -1,10 +1,8 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.Window
-import dev.fritz2.dom.html.*
-import dev.fritz2.dom.merge
+import dev.fritz2.core.ScopeContext
+import dev.fritz2.core.storeOf
+import dev.fritz2.dom.*
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.OpenClose
 import dev.fritz2.headless.foundation.TagFactory

@@ -1,10 +1,9 @@
 package dev.fritz2.dom
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.dom.html.*
+import dev.fritz2.core.RootStore
 import dev.fritz2.identification.Id
-import dev.fritz2.test.initDocument
-import dev.fritz2.test.runTest
+import dev.fritz2.initDocument
+import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
