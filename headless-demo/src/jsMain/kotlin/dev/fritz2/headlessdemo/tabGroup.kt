@@ -1,7 +1,7 @@
 package dev.fritz2.headlessdemo
 
+import dev.fritz2.core.RenderContext
 import dev.fritz2.core.classes
-import dev.fritz2.dom.RenderContext
 import dev.fritz2.headless.components.tabGroup
 import kotlinx.coroutines.flow.map
 

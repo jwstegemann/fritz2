@@ -1,8 +1,8 @@
 package dev.fritz2.headlessdemo
 
+import dev.fritz2.core.RenderContext
 import dev.fritz2.core.storeOf
-import dev.fritz2.dom.RenderContext
-import dev.fritz2.dom.transition
+import dev.fritz2.core.transition
 import dev.fritz2.headless.components.listbox
 import dev.fritz2.headless.foundation.utils.popper.Placement
 import kotlinx.coroutines.flow.combine

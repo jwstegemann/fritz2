@@ -1,10 +1,6 @@
 package dev.fritz2.webcomponents
 
-import dev.fritz2.core.Scope
-import dev.fritz2.core.nativeFunction
-import dev.fritz2.dom.HtmlTag
-import dev.fritz2.dom.RenderContext
-import dev.fritz2.dom.WithDomNode
+import dev.fritz2.core.*
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow

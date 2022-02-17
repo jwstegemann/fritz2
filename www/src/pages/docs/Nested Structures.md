@@ -142,7 +142,7 @@ fun <P> format(parse: (String) -> P, format: (P) -> String): Lens<P, String>
 
 The following [validation example](https://examples.fritz2.dev/validation/build/distributions/index.html) demonstrates its usage:
 ```kotlin
-import dev.fritz2.lenses.format
+import dev.fritz2.lens.format
 
 object Formats {
     private val dateFormat: DateFormat = DateFormat("yyyy-MM-dd")

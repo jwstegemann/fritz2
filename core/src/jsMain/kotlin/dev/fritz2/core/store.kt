@@ -1,8 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.identification.Id
-import dev.fritz2.lenses.Lens
-import dev.fritz2.lenses.Lenses
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*

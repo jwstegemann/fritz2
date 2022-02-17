@@ -1,8 +1,8 @@
 package dev.fritz2.headlessdemo
 
+import dev.fritz2.core.RenderContext
 import dev.fritz2.core.classes
 import dev.fritz2.core.storeOf
-import dev.fritz2.dom.RenderContext
 import dev.fritz2.headless.components.inputField
 import dev.fritz2.headless.components.textArea
 import kotlinx.coroutines.flow.map

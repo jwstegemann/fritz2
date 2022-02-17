@@ -2,9 +2,9 @@ package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.Store
 import dev.fritz2.core.handledBy
-import dev.fritz2.core.messages
-import dev.fritz2.core.valid
 import dev.fritz2.headless.validation.ComponentValidationMessage
+import dev.fritz2.validation.messages
+import dev.fritz2.validation.valid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

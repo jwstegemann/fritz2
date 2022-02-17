@@ -1,6 +1,6 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.*
+import dev.fritz2.core.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.awaitAnimationFrame

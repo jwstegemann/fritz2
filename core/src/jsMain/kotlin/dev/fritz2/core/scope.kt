@@ -1,7 +1,6 @@
 package dev.fritz2.core
 
 import dev.fritz2.core.Scope.Key
-import dev.fritz2.dom.HtmlTagMarker
 
 /**
  * Marks a class that it has [Scope] which can be transferred for adding/receiving additional information.
@@ -73,7 +72,7 @@ import dev.fritz2.dom.HtmlTagMarker
  * make sense anymore.
  *
  * @see Scope
- * @see [dev.fritz2.dom.Tag]
+ * @see [dev.fritz2.browser.Tag]
  */
 interface WithScope {
     val scope: Scope

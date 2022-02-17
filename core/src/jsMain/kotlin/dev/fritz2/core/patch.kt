@@ -1,6 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.lenses.IdProvider
 import kotlinx.coroutines.Job
 
 /**

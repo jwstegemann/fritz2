@@ -1,10 +1,6 @@
 package dev.fritz2.core
 
-import dev.fritz2.dom.render
-import dev.fritz2.identification.Id
 import dev.fritz2.initDocument
-import dev.fritz2.lenses.format
-import dev.fritz2.lenses.lens
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay

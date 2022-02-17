@@ -1,12 +1,8 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.core.ScopeContext
-import dev.fritz2.core.Store
-import dev.fritz2.core.storeOf
-import dev.fritz2.dom.*
+import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.validation.ComponentValidationMessage
-import dev.fritz2.identification.Id
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest

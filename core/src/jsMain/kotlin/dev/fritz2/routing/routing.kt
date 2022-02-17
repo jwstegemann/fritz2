@@ -3,7 +3,7 @@ package dev.fritz2.routing
 import dev.fritz2.core.Store
 import dev.fritz2.core.SubStore
 import dev.fritz2.core.Update
-import dev.fritz2.lenses.lensOf
+import dev.fritz2.core.lensOf
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow

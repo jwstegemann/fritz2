@@ -1,9 +1,8 @@
 package dev.fritz2.core
 
-import dev.fritz2.lenses.LensException
 import dev.fritz2.remote.Socket
 import dev.fritz2.remote.body
-import dev.fritz2.resource.Resource
+import dev.fritz2.repository.Resource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*

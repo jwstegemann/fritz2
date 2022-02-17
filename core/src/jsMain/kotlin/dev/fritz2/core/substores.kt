@@ -1,8 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.lenses.IdProvider
-import dev.fritz2.lenses.Lens
-import dev.fritz2.lenses.lensOf
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged

@@ -1,9 +1,8 @@
 package dev.fritz2.webcomponents
 
+import dev.fritz2.core.HtmlTag
+import dev.fritz2.core.RenderContext
 import dev.fritz2.core.storeOf
-import dev.fritz2.dom.HtmlTag
-
-import dev.fritz2.dom.RenderContext
 import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document

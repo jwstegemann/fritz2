@@ -1,12 +1,10 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.core.ScopeContext
-import dev.fritz2.dom.*
+import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.DatabindingProperty
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.validation.ComponentValidationMessage
-import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
