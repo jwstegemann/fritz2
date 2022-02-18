@@ -1,7 +1,7 @@
 package dev.fritz2.validation
 
-import dev.fritz2.identification.Inspector
-import dev.fritz2.identification.inspectorOf
+import dev.fritz2.core.Inspector
+import dev.fritz2.core.inspectorOf
 import kotlin.jvm.JvmInline
 
 /**

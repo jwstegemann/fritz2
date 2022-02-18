@@ -1,14 +1,7 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.ScopeContext
-import dev.fritz2.dom.html.shortcutOf
+import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.identification.Id
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLButtonElement
@@ -78,12 +71,15 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             ).take(disabledTabs.size + 1)
             .firstOrNull { !it.value }?.index ?: -1
 
+    @Suppress("UNUSED_PARAMETER")
     private fun firstByKey(currentIndex: Int, payload: Unit, disabledTabs: List<Boolean>) =
         disabledTabs.indexOf(false)
 
+    @Suppress("UNUSED_PARAMETER")
     private fun lastByKey(currentIndex: Int, payload: Unit, disabledTabs: List<Boolean>) =
         disabledTabs.lastIndexOf(false)
 
+    @Suppress("UNUSED_PARAMETER")
     private fun selectDefaultTab(currentIndex: Int, desiredIndex: Int, disabledTabs: List<Boolean>) =
         disabledTabs.take(minOf(desiredIndex, disabledTabs.size - 1) + 1).lastIndexOf(false)
 

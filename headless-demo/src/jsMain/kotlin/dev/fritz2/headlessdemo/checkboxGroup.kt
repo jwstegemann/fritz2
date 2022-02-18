@@ -1,9 +1,9 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.fill
+import dev.fritz2.core.storeOf
 import dev.fritz2.headless.components.checkboxGroup
-import dev.fritz2.dom.html.fill
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLFieldSetElement
 

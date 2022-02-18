@@ -1,11 +1,13 @@
 package dev.fritz2.remote
 
-import dev.fritz2.test.authenticated
-import dev.fritz2.test.runTest
-import dev.fritz2.test.test
-import dev.fritz2.test.testHttpServer
+import dev.fritz2.authenticatedEndpoint
+import dev.fritz2.runTest
+import dev.fritz2.testEndpoint
+import dev.fritz2.testHttpServer
 import kotlinx.browser.window
-import kotlinx.coroutines.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -42,13 +44,13 @@ class AuthenticatedRemoteTests {
         assertEquals(null, simple.current)
 
         simple.clear()
-        assertEquals("GET", testHttpServer(authenticated).use(simple).get("get").body())
+        assertEquals("GET", testHttpServer(authenticatedEndpoint).use(simple).get("get").body())
 
         simple.clear()
-        assertEquals("GET", testHttpServer(test).use(simple).get("get").body())
+        assertEquals("GET", testHttpServer(testEndpoint).use(simple).get("get").body())
 
         assertFailsWith(FetchException::class) {
-            testHttpServer(authenticated).get("get")
+            testHttpServer(authenticatedEndpoint).get("get")
         }
     }
 
@@ -65,7 +67,7 @@ class AuthenticatedRemoteTests {
                 }, 1000)
             }
         }
-        val remote = testHttpServer(authenticated).use(simple)
+        val remote = testHttpServer(authenticatedEndpoint).use(simple)
 
         buildList {
             repeat(4) {
@@ -92,7 +94,7 @@ class AuthenticatedRemoteTests {
 
         assertEquals(simple.valid, simple.current)
 
-        val remote = testHttpServer(authenticated).use(simple)
+        val remote = testHttpServer(authenticatedEndpoint).use(simple)
 
         buildList {
             repeat(4) {

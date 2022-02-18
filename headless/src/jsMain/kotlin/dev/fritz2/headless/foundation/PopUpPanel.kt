@@ -1,8 +1,6 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.Window
-import dev.fritz2.dom.html.*
+import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.utils.popper.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first

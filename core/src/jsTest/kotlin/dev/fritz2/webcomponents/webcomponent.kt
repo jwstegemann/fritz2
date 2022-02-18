@@ -1,11 +1,10 @@
 package dev.fritz2.webcomponents
 
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.html.HtmlTag
-
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.test.initDocument
-import dev.fritz2.test.runTest
+import dev.fritz2.core.HtmlTag
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.storeOf
+import dev.fritz2.initDocument
+import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.*

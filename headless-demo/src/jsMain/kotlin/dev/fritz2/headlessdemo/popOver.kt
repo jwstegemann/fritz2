@@ -1,10 +1,10 @@
 package dev.fritz2.headlessdemo
 
 
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.fill
-import dev.fritz2.dom.html.transition
-import dev.fritz2.dom.html.viewBox
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.fill
+import dev.fritz2.core.transition
+import dev.fritz2.core.viewBox
 import dev.fritz2.headless.components.popOver
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.utils.popper.Placement
