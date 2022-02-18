@@ -14,7 +14,7 @@ import org.w3c.dom.HTMLLabelElement
 /**
  * This class provides the building blocks to implement a disclosure.
  *
- * Use [disclosure] functions to create an instance, setup the needed [Hook]s or [Property]s and refine the
+ * Use [disclosure] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
  * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/disclosure)
