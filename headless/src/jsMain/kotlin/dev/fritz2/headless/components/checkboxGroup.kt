@@ -13,6 +13,14 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 
+/**
+ * This class provides the building blocks to implement a checkbox-group.
+ *
+ * Use [checkboxGroup] functions to create an instance, setup the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/)
+ */
 class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
 
@@ -189,6 +197,11 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
     ): Tag<HTMLDivElement> = checkboxGroupOption(option, classes, id, scope, RenderContext::div, initialize)
 }
 
+/**
+ * Factory function to create a [CheckboxGroup].
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/)
+ */
 fun <C : HTMLElement, T> RenderContext.checkboxGroup(
     classes: String? = null,
     id: String? = null,
@@ -202,6 +215,11 @@ fun <C : HTMLElement, T> RenderContext.checkboxGroup(
     }
 }
 
+/**
+ * Factory function to create a [CheckboxGroup] with a [HTMLDivElement] as default root [Tag].
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/)
+ */
 fun <T> RenderContext.checkboxGroup(
     classes: String? = null,
     id: String? = null,
