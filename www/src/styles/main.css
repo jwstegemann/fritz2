@@ -8,11 +8,15 @@ a {
 
 @layer components {
     .content h1 {
-        @apply text-fg-highlight text-3xl font-extrabold tracking-tight mb-8
+        @apply text-fg-highlight mb-8 text-3xl font-extrabold tracking-tight
     }
 
     .content h2 {
         @apply text-fg-highlight mt-8 mb-4 text-2xl font-bold leading-6
+    }
+
+    .content h3 {
+        @apply text-fg-highlight mt-8 mb-4 text-xl font-bold leading-6
     }
 
     .content p {
@@ -55,9 +59,28 @@ a {
         @apply py-1 px-2 bg-gray-500 text-sm text-gray-50 rounded
     }
 
+    .content .info {
+        @apply border-green-500 border-l-8 rounded-sm my-4 py-2 px-4 bg-gray-800
+    }
+
+    .content .warning {
+        @apply border-yellow-500 border-l-8 rounded-sm my-4 py-2 px-4 bg-gray-800
+    }
+
     nav.toc a {
         @apply block py-2 rounded-md text-sm text-relaxed hover:text-relaxed-highlight
     }
+
+    /* indent second level */
+    nav.toc li ul {
+        @apply ml-4
+    }
+
+    /* indent third level */
+    nav.toc li ul li ul {
+        @apply ml-4
+    }
+
 }
 
 body {

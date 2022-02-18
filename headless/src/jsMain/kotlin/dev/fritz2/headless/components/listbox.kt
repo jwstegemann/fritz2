@@ -12,6 +12,14 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLLabelElement
 import kotlin.math.max
 
+/**
+ * This class provides the building blocks to implement a listbox.
+ *
+ * Use [listbox] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/listbox/)
+ */
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
 
@@ -47,6 +55,12 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         }
     }
 
+    /**
+     * Factory function to create a [listboxButton].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxbutton)
+     */
     fun <CB : HTMLElement> RenderContext.listboxButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -59,6 +73,12 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         handleOpenCloseEvents()
     }.also { button = it }
 
+    /**
+     * Factory function to create a [listboxButton] with a [HTMLButtonElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxbutton)
+     */
     fun RenderContext.listboxButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -67,6 +87,12 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         attr("type", "button")
     }
 
+    /**
+     * Factory function to create a [listboxLabel].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxlabel)
+     */
     fun <CL : HTMLElement> RenderContext.listboxLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -74,12 +100,24 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         content: Tag<CL>.() -> Unit
     ) = tag(this, classes, "$componentId-label", scope, content).also { label = it }
 
+    /**
+     * Factory function to create a [listboxLabel] with a [HTMLLabelElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxlabel)
+     */
     fun RenderContext.listboxLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         content: Tag<HTMLLabelElement>.() -> Unit
     ) = listboxLabel(classes, scope, RenderContext::label, content)
 
+    /**
+     * Factory function to create a [listboxValidationMessages].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxvalidationmessages)
+     */
     fun <CV : HTMLElement> RenderContext.listboxValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -94,6 +132,12 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         }
     }
 
+    /**
+     * Factory function to create a [listboxValidationMessages] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxvalidationmessages)
+     */
     fun RenderContext.listboxValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -127,8 +171,8 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
             closeOnEscape()
             closeOnBlur()
+            trapFocus()
 
-            attr("tabindex", "0")
             attr("role", Aria.Role.listbox)
             attr(Aria.invalid, "true".whenever(value.hasError))
             label?.let { attr(Aria.labelledby, it.id) }
@@ -222,6 +266,12 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             }
         }
 
+        /**
+         * Factory function to create a [listboxItem].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxitem)
+         */
         fun <CM : HTMLElement> RenderContext.listboxItem(
             entry: T,
             classes: String? = null,
@@ -242,6 +292,12 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             }
         }
 
+        /**
+         * Factory function to create a [listboxItem] with a [HTMLButtonElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxitem)
+         */
         fun RenderContext.listboxItem(
             entry: T,
             classes: String? = null,
@@ -250,6 +306,12 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         ) = listboxItem(entry, classes, scope, RenderContext::button, initialize)
     }
 
+    /**
+     * Factory function to create a [listboxItems].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxitems)
+     */
     fun <CI : HTMLElement> RenderContext.listboxItems(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -263,6 +325,12 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         }
     }
 
+    /**
+     * Factory function to create a [listboxItems] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxitems)
+     */
     fun RenderContext.listboxItems(
         classes: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
@@ -270,7 +338,48 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     ) = listboxItems(classes, internalScope, RenderContext::div, initialize)
 }
 
-
+/**
+ * Factory function to create a [Listbox].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * listbox<T>() {
+ *     val value: DatabindingProperty<T>
+ *     // inherited by `OpenClose`
+ *     val openClose = DatabindingProperty<Boolean>()
+ *     val opened: Flow<Boolean>
+ *     val close: SimpleHandler<Unit>
+ *     val open: SimpleHandler<Unit>
+ *     val toggle: SimpleHandler<Unit>
+ *
+ *     listboxButton() { }
+ *     listboxLabel() { }
+ *     listboxValidationMessages() {
+ *         val msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ *     listboxItems() {
+ *         // inherited by `PopUpPanel`
+ *         var placement: Placement
+ *         var strategy: Strategy
+ *         var flip: Boolean
+ *         var skidding: Int
+ *         var distance: int
+ *
+ *         // for each T {
+ *             listboxItem(entry: T) {
+ *                 val index: Int
+ *                 val selected: Flow<Boolean>
+ *                 val active: Flow<Boolean>
+ *                 val disabled: Flow<Boolean>
+ *                 val disable: SimpleHandler<Boolean>
+ *             }
+ *         // }
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/listbox/#listbox)
+ */
 fun <T, C : HTMLElement> RenderContext.listbox(
     classes: String? = null,
     id: String? = null,
@@ -284,6 +393,48 @@ fun <T, C : HTMLElement> RenderContext.listbox(
     }
 }
 
+/**
+ * Factory function to create a [Listbox] with a [HTMLDivElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * listbox<T>() {
+ *     val value: DatabindingProperty<T>
+ *     // inherited by `OpenClose`
+ *     val openClose = DatabindingProperty<Boolean>()
+ *     val opened: Flow<Boolean>
+ *     val close: SimpleHandler<Unit>
+ *     val open: SimpleHandler<Unit>
+ *     val toggle: SimpleHandler<Unit>
+ *
+ *     listboxButton() { }
+ *     listboxLabel() { }
+ *     listboxValidationMessages() {
+ *         val msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ *     listboxItems() {
+ *         // inherited by `PopUpPanel`
+ *         var placement: Placement
+ *         var strategy: Strategy
+ *         var flip: Boolean
+ *         var skidding: Int
+ *         var distance: int
+ *
+ *         // for each T {
+ *             listboxItem(entry: T) {
+ *                 val index: Int
+ *                 val selected: Flow<Boolean>
+ *                 val active: Flow<Boolean>
+ *                 val disabled: Flow<Boolean>
+ *                 val disable: SimpleHandler<Boolean>
+ *             }
+ *         // }
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/listbox/#listbox)
+ */
 fun <T> RenderContext.listbox(
     classes: String? = null,
     id: String? = null,

@@ -37,7 +37,8 @@ fun RenderContext.tabsDemo() {
                         if (sel == index) "bg-white shadow"
                         else "text-blue-100 hover:bg-white/[0.12] hover:text-white"
                     })
-                }.apply { +category }
+                    +category
+                }
             }
         }
         tabPanels("mt-2") {

@@ -6,7 +6,14 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
-
+/**
+ * This class provides the building blocks to implement a popover.
+ *
+ * Use [popOver] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/popover/)
+ */
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
 
@@ -15,8 +22,20 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
     private var button: Tag<HTMLElement>? = null
 
     fun render() {
+        attr("id", componentId)
+        opened.flatMapLatest {  isOpen ->
+            focusouts.filter {
+                isOpen && it.composedPath().contains(domNode)
+            }
+        } handledBy close
     }
 
+    /**
+     * Factory function to create a [popOverButton].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/popover/#popoverbutton)
+     */
     fun <CB : HTMLElement> RenderContext.popOverButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -29,6 +48,12 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         handleOpenCloseEvents()
     }.also { button = it }
 
+    /**
+     * Factory function to create a [popOverButton] with a [HTMLButtonElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/popover/#popoverbutton)
+     */
     fun RenderContext.popOverButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -44,6 +69,12 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         scope: ScopeContext.() -> Unit
     ) : PopUpPanel<C>(renderContext, tagFactory, classes, "$componentId-items", scope, this@PopOver, button)
 
+    /**
+     * Factory function to create a [popOverPanel].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/popover/#popoverpanel)
+     */
     fun <CP : HTMLElement> RenderContext.popOverPanel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -53,9 +84,16 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         PopOverPanel(this, tag, classes, scope).run {
             initialize()
             render()
+            closeOnEscape()
         }
     }
 
+    /**
+     * Factory function to create a [popOverPanel] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/popover/#popoverpanel)
+     */
     fun RenderContext.popOverPanel(
         classes: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
@@ -63,6 +101,33 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
     ) = popOverPanel(classes, internalScope, RenderContext::div, initialize)
 }
 
+/**
+ * Factory function to create a [PopOver].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * popOver {
+ *     // inherited by `OpenClose`
+ *     val openClose = DatabindingProperty<Boolean>()
+ *     val opened: Flow<Boolean>
+ *     val close: SimpleHandler<Unit>
+ *     val open: SimpleHandler<Unit>
+ *     val toggle: SimpleHandler<Unit>
+ *
+ *     popOverButton() { }
+ *     popOverPanel() {
+ *         // inherited by `PopUpPanel`
+ *         var placement: Placement
+ *         var strategy: Strategy
+ *         var flip: Boolean
+ *         var skidding: Int
+ *         var distance: int
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/popover/#popover)
+ */
 fun <C : HTMLElement> RenderContext.popOver(
     classes: String? = null,
     id: String? = null,
@@ -77,6 +142,33 @@ fun <C : HTMLElement> RenderContext.popOver(
     trapFocus()
 }
 
+/**
+ * Factory function to create a [PopOver] with a [HTMLDivElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * popOver {
+ *     // inherited by `OpenClose`
+ *     val openClose = DatabindingProperty<Boolean>()
+ *     val opened: Flow<Boolean>
+ *     val close: SimpleHandler<Unit>
+ *     val open: SimpleHandler<Unit>
+ *     val toggle: SimpleHandler<Unit>
+ *
+ *     popOverButton() { }
+ *     popOverPanel() {
+ *         // inherited by `PopUpPanel`
+ *         var placement: Placement
+ *         var strategy: Strategy
+ *         var flip: Boolean
+ *         var skidding: Int
+ *         var distance: int
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/popover/#popover)
+ */
 fun RenderContext.popOver(
     classes: String? = null,
     id: String? = null,

@@ -1,10 +1,7 @@
 package dev.fritz2.headlessdemo
 
 
-import dev.fritz2.core.RenderContext
-import dev.fritz2.core.fill
-import dev.fritz2.core.transition
-import dev.fritz2.core.viewBox
+import dev.fritz2.core.*
 import dev.fritz2.headless.components.popOver
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.utils.popper.Placement
@@ -34,7 +31,7 @@ fun RenderContext.popOverDemo() {
             }
         }
 
-        popOverPanel("z-10 w-screen max-w-sm px-4 sm:px-0 lg:max-w-3xl") {
+        popOverPanel("z-10 w-screen max-w-sm px-4 sm:px-0 lg:max-w-3xl focus:outline-none") {
             placement = Placement.bottomStart
 
             transition(opened,
@@ -56,6 +53,7 @@ fun RenderContext.popOverDemo() {
                                 |focus-visible:ring-opacity-50""".trimMargin()
                         ) {
                             attr("key", "{$item.name}")
+                            href("#")
                             div(
                                 """flex items-center justify-center flex-shrink-0 w-10 h-10 p-1 rounded-lg 
                                     |bg-orange-100 text-orange-600 sm:h-12 sm:w-12""".trimMargin()

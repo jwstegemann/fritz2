@@ -8,7 +8,14 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
-
+/**
+ * This class provides the building blocks to implement a tab-group.
+ *
+ * Use [tabGroup] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/tabgroup/)
+ */
 class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
     private class DisabledTabStore(initial: List<Boolean>) : RootStore<List<Boolean>>(initial) {
@@ -158,6 +165,12 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             }
         }
 
+        /**
+         * Factory function to create a [tab].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tab)
+         */
         fun <CT : HTMLElement> RenderContext.tab(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -171,6 +184,12 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             }
         }
 
+        /**
+         * Factory function to create a [tab] with a [HTMLButtonElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tab)
+         */
         fun RenderContext.tab(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -178,6 +197,12 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         ) = tab(classes, scope, RenderContext::button, initialize)
     }
 
+    /**
+     * Factory function to create a [tabList].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tablist)
+     */
     fun <CL : HTMLElement> RenderContext.tabList(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -190,6 +215,12 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         }
     }
 
+    /**
+     * Factory function to create a [tabList] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tablist)
+     */
     fun RenderContext.tabList(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -214,6 +245,12 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             }
         }
 
+        /**
+         * Factory function to create a [panel].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#panel)
+         */
         fun <CT : HTMLElement> RenderContext.panel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -232,6 +269,12 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             nextIndex += 1
         }
 
+        /**
+         * Factory function to create a [panel] with a [HTMLDivElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#panel)
+         */
         fun RenderContext.panel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -239,6 +282,12 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         ) = panel(classes, scope, RenderContext::div, content)
     }
 
+    /**
+     * Factory function to create a [tabPanels].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tabpanels)
+     */
     fun <CP : HTMLElement> RenderContext.tabPanels(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -251,6 +300,12 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         }
     }
 
+    /**
+     * Factory function to create a [tabPanels] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tabpanels)
+     */
     fun RenderContext.tabPanels(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -258,6 +313,36 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
     ): Tag<HTMLDivElement> = tabPanels(classes, scope, RenderContext::div, initialize)
 }
 
+/**
+ * Factory function to create a [TabGroup].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * tabGroup() {
+ *     val value: DatabindingProperty<Int> // optional
+ *     val selected: Flow<Int>
+ *     var orientation: Orientation
+ *
+ *     tabList() {
+ *         // for each tab {
+ *             tab() {
+ *                 val index: Int
+ *                 val disabled: Flow<Int>
+ *                 val disable: SimpleHandler<Int>
+ *             }
+ *         // }
+ *     }
+ *
+ *     tabPanels() {
+ *         // for each tab {
+ *             panel() { }
+ *         // }
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tabgroup)
+ */
 fun <C : HTMLElement> RenderContext.tabGroup(
     classes: String? = null,
     id: String? = null,
@@ -271,6 +356,36 @@ fun <C : HTMLElement> RenderContext.tabGroup(
     }
 }
 
+/**
+ * Factory function to create a [TabGroup] with a [HTMLDivElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * tabGroup() {
+ *     val value: DatabindingProperty<Int> // optional
+ *     val selected: Flow<Int>
+ *     var orientation: Orientation
+ *
+ *     tabList() {
+ *         // for each tab {
+ *             tab() {
+ *                 val index: Int
+ *                 val disabled: Flow<Int>
+ *                 val disable: SimpleHandler<Int>
+ *             }
+ *         // }
+ *     }
+ *
+ *     tabPanels() {
+ *         // for each tab {
+ *             panel() { }
+ *         // }
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tabgroup)
+ */
 fun RenderContext.tabGroup(
     classes: String? = null,
     id: String? = null,
