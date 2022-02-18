@@ -15,7 +15,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.*
 
-
+/**
+ * This class provides the building blocks to implement a radio-group.
+ *
+ * Use [radioGroup] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/radiogroup/)
+ */
 class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
 
@@ -53,6 +60,12 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         }
     }
 
+    /**
+     * Factory function to create a [radioGroupLabel].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogrouplabel)
+     */
     fun <CL : HTMLElement> RenderContext.radioGroupLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -60,12 +73,24 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         content: Tag<CL>.() -> Unit
     ) = tag(this, classes, "$componentId-label", scope, content).also { label = it }
 
+    /**
+     * Factory function to create a [radioGroupLabel] with a [HTMLLabelElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogrouplabel)
+     */
     fun RenderContext.radioGroupLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         content: Tag<HTMLLabelElement>.() -> Unit
     ) = radioGroupLabel(classes, scope, RenderContext::label, content)
 
+    /**
+     * Factory function to create a [radioGroupValidationMessages].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupvalidationmessages)
+     */
     fun <CV : HTMLElement> RenderContext.radioGroupValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -80,6 +105,12 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         }
     }
 
+    /**
+     * Factory function to create a [radioGroupValidationMessages] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupvalidationmessages)
+     */
     fun RenderContext.radioGroupValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -114,6 +145,12 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             }
         }
 
+        /**
+         * Factory function to create a [radioGroupOptionToggle].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoptiontoggle)
+         */
         fun <CT : HTMLElement> RenderContext.radioGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -142,12 +179,24 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             blurs.map { null } handledBy isActive.update
         }.also { toggle = it }
 
+        /**
+         * Factory function to create a [radioGroupOptionToggle] with a [HTMLDivElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoptiontoggle)
+         */
         fun RenderContext.radioGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             content: Tag<HTMLDivElement>.() -> Unit
         ) = radioGroupOptionToggle(classes, scope, RenderContext::div, content)
 
+        /**
+         * Factory function to create a [radioGroupOptionLabel].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoptionlabel)
+         */
         fun <CL : HTMLElement> RenderContext.radioGroupOptionLabel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -155,6 +204,12 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             content: Tag<CL>.() -> Unit
         ) = tag(this, classes, "$optionId-label", scope, content).also { label = it }
 
+        /**
+         * Factory function to create a [radioGroupOptionLabel] with a [HTMLLabelElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoptionlabel)
+         */
         fun RenderContext.radioGroupOptionLabel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -164,6 +219,12 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             `for`(optionId)
         }
 
+        /**
+         * Factory function to create a [radioGroupOptionDescription].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoptiondescription)
+         */
         fun <CL : HTMLElement> RenderContext.radioGroupOptionDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -177,6 +238,12 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             content
         ).also { descriptions.add(it) }
 
+        /**
+         * Factory function to create a [radioGroupOptionDescription] with a [HTMLSpanElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoptiondescription)
+         */
         fun RenderContext.radioGroupOptionDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -188,6 +255,12 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         }
     }
 
+    /**
+     * Factory function to create a [radioGroupOption].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoption)
+     */
     fun <CO : HTMLElement> RenderContext.radioGroupOption(
         option: T,
         classes: String? = null,
@@ -202,6 +275,12 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         }
     }
 
+    /**
+     * Factory function to create a [radioGroupOption] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoption)
+     */
     fun RenderContext.radioGroupOption(
         option: T,
         classes: String? = null,
@@ -211,6 +290,33 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
     ): Tag<HTMLDivElement> = radioGroupOption(option, classes, id, scope, RenderContext::div, initialize)
 }
 
+/**
+ * Factory function to create a [RadioGroup].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * radioGroup<T>() {
+ *     val value: DatabindingPropert<T>
+ *
+ *     radioGroupLabel() { }
+ *     radioGroupValidationMessages() {
+ *         val msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ *     // for each T {
+ *         radioGroupOption(option: T) {
+ *             val selected: Flow<Boolean>
+ *             val active: Flow<Boolean>
+ *
+ *             radioGroupOptionToggle() { }
+ *             radioGroupOptionLabel() { }
+ *             radioGroupOptionDescription() { } // use multiple times
+ *         }
+ *     // }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroup)
+ */
 fun <C : HTMLElement, T> RenderContext.radioGroup(
     classes: String? = null,
     id: String? = null,
@@ -224,6 +330,33 @@ fun <C : HTMLElement, T> RenderContext.radioGroup(
     }
 }
 
+/**
+ * Factory function to create a [RadioGroup] with a [HTMLDivElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * radioGroup<T>() {
+ *     val value: DatabindingPropert<T>
+ *
+ *     radioGroupLabel() { }
+ *     radioGroupValidationMessages() {
+ *         val msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ *     // for each T {
+ *         radioGroupOption(option: T) {
+ *             val selected: Flow<Boolean>
+ *             val active: Flow<Boolean>
+ *
+ *             radioGroupOptionToggle() { }
+ *             radioGroupOptionLabel() { }
+ *             radioGroupOptionDescription() { } // use multiple times
+ *         }
+ *     // }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroup)
+ */
 fun <T> RenderContext.radioGroup(
     classes: String? = null,
     id: String? = null,
