@@ -2,15 +2,21 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.dom.Tag
 import dev.fritz2.dom.html.*
-import dev.fritz2.headless.foundation.Aria
-import dev.fritz2.headless.foundation.DatabindingProperty
-import dev.fritz2.headless.foundation.TagFactory
+import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 
-
+/**
+ * This base class provides the building blocks to implement a switch.
+ *
+ * There exist two different implementations:
+ * - [Switch] for a simple switch with optional validation handling
+ * - [SwitchWithLabel] for a switch wit additional label and description facilities and optional validation handling
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/)
+ */
 abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
 
@@ -39,6 +45,12 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
             })
     }
 
+    /**
+     * Factory function to create a [switchValidationMessages].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchvalidationmessages)
+     */
     fun <CV : HTMLElement> RenderContext.switchValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -53,6 +65,12 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
         }
     }
 
+    /**
+     * Factory function to create a [switchValidationMessages] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchvalidationmessages)
+     */
     fun RenderContext.switchValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -60,6 +78,14 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
     ) = switchValidationMessages(classes, scope, RenderContext::div, content)
 }
 
+/**
+ * This class provides the building blocks to implement a switch with label and description facilities.
+ *
+ * Use [switchWithLabel] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/)
+ */
 class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
     AbstractSwitch<C>(tag, id) {
 
@@ -81,6 +107,12 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         }
     }
 
+    /**
+     * Factory function to create a [switchToggle].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchtoggle)
+     */
     fun <CT : HTMLElement> RenderContext.switchToggle(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -91,6 +123,12 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         renderSwitchCore(this)
     }.also { toggle = it }
 
+    /**
+     * Factory function to create a [switchToggle] with a [HTMLButtonElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchtoggle)
+     */
     fun RenderContext.switchToggle(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -99,6 +137,12 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         attr("type", "button")
     }
 
+    /**
+     * Factory function to create a [switchLabel].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchlabel)
+     */
     fun <CL : HTMLElement> RenderContext.switchLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -108,6 +152,12 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         value.handler?.invoke(value.data.flatMapLatest { state -> clicks.map { !state } })
     }.also { label = it }
 
+    /**
+     * Factory function to create a [switchLabel] with a [HTMLLabelElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchlabel)
+     */
     fun RenderContext.switchLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -117,6 +167,12 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         `for`(componentId)
     }
 
+    /**
+     * Factory function to create a [switchDescription].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchdescription)
+     */
     fun <CL : HTMLElement> RenderContext.switchDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -130,6 +186,12 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         content
     ).also { descriptions.add(it) }
 
+    /**
+     * Factory function to create a [switchDescription] with a [HTMLSpanElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchdescription)
+     */
     fun RenderContext.switchDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -138,6 +200,26 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
 
 }
 
+/**
+ * Factory function to create a [SwitchWithLabel].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * switchWithLabel() {
+ *     val value: DatabindingProperty<Boolean>
+ *     val enabled: Flow<Boolean>
+ *
+ *     switchToggle() { }
+ *     switchLabel() { }
+ *     switchDescription() { } // use multiple times
+ *     switchValidationMessages() {
+ *         val msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/#switch)
+ */
 fun <C : HTMLElement> RenderContext.switchWithLabel(
     classes: String? = null,
     id: String? = null,
@@ -151,6 +233,26 @@ fun <C : HTMLElement> RenderContext.switchWithLabel(
     }
 }
 
+/**
+ * Factory function to create a [SwitchWithLabel] with a [HTMLDivElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * switchWithLabel() {
+ *     val value: DatabindingProperty<Boolean>
+ *     val enabled: Flow<Boolean>
+ *
+ *     switchToggle() { }
+ *     switchLabel() { }
+ *     switchDescription() { } // use multiple times
+ *     switchValidationMessages() {
+ *         val msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/#switch)
+ */
 fun RenderContext.switchWithLabel(
     classes: String? = null,
     id: String? = null,
@@ -158,7 +260,14 @@ fun RenderContext.switchWithLabel(
     initialize: SwitchWithLabel<HTMLDivElement>.() -> Unit
 ): Tag<HTMLDivElement> = switchWithLabel(classes, id, scope, RenderContext::div, initialize)
 
-
+/**
+ * This class provides the building blocks to implement a simple switch.
+ *
+ * Use [switch] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/)
+ */
 class Switch<C : HTMLElement>(tag: Tag<C>, explicitId: String?) :
     AbstractSwitch<C>(tag, explicitId) {
 
@@ -174,6 +283,23 @@ class Switch<C : HTMLElement>(tag: Tag<C>, explicitId: String?) :
     }
 }
 
+/**
+ * Factory function to create a [Switch].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * switch() {
+ *     val value: DatabindingProperty<Boolean>
+ *     val enabled: Flow<Boolean>
+ *
+ *     switchValidationMessages() {
+ *         val msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/#switch)
+ */
 fun <C : HTMLElement> RenderContext.switch(
     classes: String? = null,
     id: String? = null,
@@ -187,6 +313,23 @@ fun <C : HTMLElement> RenderContext.switch(
     }
 }
 
+/**
+ * Factory function to create a [Switch] with a [HTMLButtonElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * switch() {
+ *     val value: DatabindingProperty<Boolean>
+ *     val enabled: Flow<Boolean>
+ *
+ *     switchValidationMessages() {
+ *         val msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/#switch)
+ */
 fun RenderContext.switch(
     classes: String? = null,
     id: String? = null,
