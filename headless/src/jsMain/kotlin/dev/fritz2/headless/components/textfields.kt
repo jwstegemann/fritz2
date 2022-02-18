@@ -9,7 +9,16 @@ import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 
-
+/**
+ * This base class provides the building blocks to implement textfields.
+ *
+ * There exist two different implementations:
+ * - [InputField] for a single line input. For more information refer to the
+ *      [official documentation](https://docs.fritz2.dev/headless/inputfield/)
+ * - [TextArea] for a multi line input. for a single line input. For more information refer to the
+ *      [official documentation](https://docs.fritz2.dev/headless/textarea/)
+ *
+ */
 abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
     val value = DatabindingProperty<String>()
@@ -93,6 +102,14 @@ abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id
     ) = textfieldValidationMessages(classes, scope, RenderContext::div, content)
 }
 
+/**
+ * This class provides the building blocks to implement an input-field.
+ *
+ * Use [inputField] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/inputfield/)
+ */
 class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
     Textfield<C, HtmlTag<HTMLInputElement>>(tag, id) {
 
@@ -115,6 +132,12 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
         hook(placeholder, type, disabled)
     }.also { field = it }
 
+    /**
+     * Factory function to create a [inputLabel].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputlabel)
+     */
     fun <CL : HTMLElement> RenderContext.inputLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -122,12 +145,24 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
         content: Tag<CL>.() -> Unit
     ) = textfieldLabel(classes, scope, tag, content)
 
+    /**
+     * Factory function to create a [inputLabel] with a [HTMLLabelElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputlabel)
+     */
     fun RenderContext.inputLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         content: Tag<HTMLLabelElement>.() -> Unit
     ) = textfieldLabel(classes, scope, content)
 
+    /**
+     * Factory function to create a [inputDescription].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputdescription)
+     */
     fun <CD : HTMLElement> RenderContext.inputDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -135,12 +170,24 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
         content: Tag<CD>.() -> Unit
     ) = textfieldDescription(classes, scope, tag, content)
 
+    /**
+     * Factory function to create a [inputDescription] with a [HTMLParagraphElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputdescription)
+     */
     fun RenderContext.inputDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         content: Tag<HTMLParagraphElement>.() -> Unit
     ) = textfieldDescription(classes, scope, content)
 
+    /**
+     * Factory function to create a [inputValidationMessages].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputvalidationmessages)
+     */
     fun <CV : HTMLElement> RenderContext.inputValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -148,6 +195,12 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
         content: Tag<CV>.(List<ComponentValidationMessage>) -> Unit
     ) = textfieldValidationMessages(classes, scope, tag, content)
 
+    /**
+     * Factory function to create a [inputValidationMessages] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputvalidationmessages)
+     */
     fun RenderContext.inputValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -155,6 +208,27 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
     ) = textfieldValidationMessages(classes, scope, content)
 }
 
+/**
+ * Factory function to create a [InputField].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * inputField() {
+ *     val value: DatabindingProperty<String>
+ *     val placeHolder: AttributeHook<String>
+ *     val disabled: BooleanAttributeHook
+ *
+ *     inputTextfield() { }
+ *     inputLabel() { }
+ *     inputDescription() { } // use multiple times
+ *     inputValidationMessages() {
+ *         msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputfield)
+ */
 fun <C : HTMLElement> RenderContext.inputField(
     classes: String? = null,
     id: String? = null,
@@ -168,6 +242,27 @@ fun <C : HTMLElement> RenderContext.inputField(
     }
 }
 
+/**
+ * Factory function to create a [InputField] with a [HTMLDivElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * inputField() {
+ *     val value: DatabindingProperty<String>
+ *     val placeHolder: AttributeHook<String>
+ *     val disabled: BooleanAttributeHook
+ *
+ *     inputTextfield() { }
+ *     inputLabel() { }
+ *     inputDescription() { } // use multiple times
+ *     inputValidationMessages() {
+ *         msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputfield)
+ */
 fun RenderContext.inputField(
     classes: String? = null,
     id: String? = null,
@@ -175,7 +270,14 @@ fun RenderContext.inputField(
     initialize: InputField<HTMLDivElement>.() -> Unit
 ): Tag<HTMLDivElement> = inputField(classes, id, scope, RenderContext::div, initialize)
 
-
+/**
+ * This class provides the building blocks to implement a textarea.
+ *
+ * Use [textArea] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/textarea/)
+ */
 class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
     Textfield<C, HtmlTag<HTMLTextAreaElement>>(tag, id) {
 
@@ -195,6 +297,12 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
         hook(placeholder, disabled)
     }.also { field = it }
 
+    /**
+     * Factory function to create a [textareaLabel].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/textarea/#textarealabel)
+     */
     fun <CL : HTMLElement> RenderContext.textareaLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -202,12 +310,24 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
         content: Tag<CL>.() -> Unit
     ) = textfieldLabel(classes, scope, tag, content)
 
+    /**
+     * Factory function to create a [textareaLabel] with a [HTMLLabelElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/textarea/#textarealabel)
+     */
     fun RenderContext.textareaLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         content: Tag<HTMLLabelElement>.() -> Unit
     ) = textfieldLabel(classes, scope, content)
 
+    /**
+     * Factory function to create a [textareaDescription].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/textarea/#textareadescription)
+     */
     fun <CD : HTMLElement> RenderContext.textareaDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -215,12 +335,24 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
         content: Tag<CD>.() -> Unit
     ) = textfieldDescription(classes, scope, tag, content)
 
+    /**
+     * Factory function to create a [textareaDescription] with a [HTMLParagraphElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/textarea/#textareadescription)
+     */
     fun RenderContext.textareaDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         content: Tag<HTMLParagraphElement>.() -> Unit
     ) = textfieldDescription(classes, scope, content)
 
+    /**
+     * Factory function to create a [textareaValidationMessages].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/textarea/#textareavalidationmessages)
+     */
     fun <CV : HTMLElement> RenderContext.textareaValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -228,6 +360,12 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
         content: Tag<CV>.(List<ComponentValidationMessage>) -> Unit
     ) = textfieldValidationMessages(classes, scope, tag, content)
 
+    /**
+     * Factory function to create a [textareaValidationMessages] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/textarea/#textareavalidationmessages)
+     */
     fun RenderContext.textareaValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -235,6 +373,27 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
     ) = textfieldValidationMessages(classes, scope, content)
 }
 
+/**
+ * Factory function to create a [TextArea].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * textArea() {
+ *     val value: DatabindingProperty<String>
+ *     val placeHolder: AttributeHook<String>
+ *     val disabled: BooleanAttributeHook
+ *
+ *     textareaTextfield() { }
+ *     textareaLabel() { }
+ *     textareaDescription() { } // use multiple times
+ *     textareaValidationMessages() {
+ *         val msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/textarea/#textarea)
+ */
 fun <C : HTMLElement> RenderContext.textArea(
     classes: String? = null,
     id: String? = null,
@@ -248,6 +407,27 @@ fun <C : HTMLElement> RenderContext.textArea(
     }
 }
 
+/**
+ * Factory function to create a [TextArea] with a [HTMLDivElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * textArea() {
+ *     val value: DatabindingProperty<String>
+ *     val placeHolder: AttributeHook<String>
+ *     val disabled: BooleanAttributeHook
+ *
+ *     textareaTextfield() { }
+ *     textareaLabel() { }
+ *     textareaDescription() { } // use multiple times
+ *     textareaValidationMessages() {
+ *         val msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/textarea/#textarea)
+ */
 fun RenderContext.textArea(
     classes: String? = null,
     id: String? = null,
