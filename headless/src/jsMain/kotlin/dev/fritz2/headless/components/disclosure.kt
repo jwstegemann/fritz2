@@ -9,7 +9,16 @@ import dev.fritz2.identification.Id
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLLabelElement
 
+/**
+ * This class provides the building blocks to implement a disclosure.
+ *
+ * Use [disclosure] functions to create an instance, setup the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/disclosure)
+ */
 class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
 
     val componentId: String by lazy { id ?: Id.next() }
@@ -24,6 +33,12 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         }
     }
 
+    /**
+     * Factory function to create a [disclosureButton].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosurebutton)
+     */
     fun <CB : HTMLElement> RenderContext.disclosureButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -37,6 +52,12 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         handleOpenCloseEvents()
     }.also { button = it }
 
+    /**
+     * Factory function to create a [disclosureButton] with a [HTMLButtonElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosurebutton)
+     */
     fun RenderContext.disclosureButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -50,6 +71,12 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             button?.let { button -> button.attr(Aria.controls, id.whenever(opened)) }
         }
 
+        /**
+         * Factory function to create a [disclosureCloseButton].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosureclosebutton)
+         */
         fun <CC : HTMLElement> RenderContext.disclosureCloseButton(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -60,6 +87,12 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             clicks handledBy close
         }
 
+        /**
+         * Factory function to create a [disclosureCloseButton] with a [HTMLButtonElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosureclosebutton)
+         */
         fun RenderContext.disclosureCloseButton(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -69,6 +102,12 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         }
     }
 
+    /**
+     * Factory function to create a [disclosurePanel].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosurepanel)
+     */
     fun <CP : HTMLElement> RenderContext.disclosurePanel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -85,6 +124,12 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         }
     }
 
+    /**
+     * Factory function to create a [disclosurePanel] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosurepanel)
+     */
     fun RenderContext.disclosurePanel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -92,6 +137,28 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     ) = disclosurePanel(classes, scope, RenderContext::div, initialize)
 }
 
+/**
+ * Factory function to create a [Disclosure].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * disclosure() {
+ *     // inherited by `OpenClose`
+ *     val openClose = DatabindingProperty<Boolean>()
+ *     val opened: Flow<Boolean>
+ *     val close: SimpleHandler<Unit>
+ *     val open: SimpleHandler<Unit>
+ *     val toggle: SimpleHandler<Unit>
+ *
+ *     disclosureButton() { }
+ *     disclosurePanel() {
+ *         disclosureCloseButton() {}
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosure)
+ */
 fun <C : HTMLElement> RenderContext.disclosure(
     classes: String? = null,
     id: String? = null,
@@ -105,6 +172,28 @@ fun <C : HTMLElement> RenderContext.disclosure(
     }
 }
 
+/**
+ * Factory function to create a [Disclosure] with a [HTMLDivElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * disclosure() {
+ *     // inherited by `OpenClose`
+ *     val openClose = DatabindingProperty<Boolean>()
+ *     val opened: Flow<Boolean>
+ *     val close: SimpleHandler<Unit>
+ *     val open: SimpleHandler<Unit>
+ *     val toggle: SimpleHandler<Unit>
+ *
+ *     disclosureButton() { }
+ *     disclosurePanel() {
+ *         disclosureCloseButton() {}
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosure)
+ */
 fun RenderContext.disclosure(
     classes: String? = null,
     id: String? = null,
