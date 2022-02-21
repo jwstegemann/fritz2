@@ -158,7 +158,6 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             } handledBy selections.update
 
             opened.filter { it }.flatMapLatest {
-                console.log("Bin da")
                 setFocus()
                 domNode.scrollTo(0.0, 0.0)
                 items.data.map {
