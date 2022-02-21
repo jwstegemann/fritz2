@@ -44,7 +44,7 @@ tasks.dokkaHtmlMultiModule.configure {
     outputDirectory.set(rootDir.resolve("api"))
 }
 
-tasks.register("versionToJs") {
+tasks.register("metadataToWww") {
     doLast {
         File(rootDir.resolve("www/src/_data"), "fritz2.json").writeText(
             """
