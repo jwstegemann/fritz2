@@ -1,11 +1,7 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.ScopeContext
+import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.TagFactory
-import dev.fritz2.identification.Id
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLElement
