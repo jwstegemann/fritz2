@@ -171,6 +171,7 @@ abstract class PopUpPanel<C : HTMLElement>(
                 openCloseDelegate.opened handledBy {
                     if (it) {
                         popperDiv.domNode.className = "popper f2-popup-visible"
+                        this@PopUpPanel.waitForAnimation()
                         popper.update()
                         setFocus()
                     } else {
