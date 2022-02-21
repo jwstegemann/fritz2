@@ -1,5 +1,3 @@
-import java.io.FileWriter
-
 plugins {
     kotlin("multiplatform") version "1.6.10" apply false
     kotlin("plugin.serialization") version "1.6.10" apply false
@@ -48,10 +46,12 @@ tasks.dokkaHtmlMultiModule.configure {
 
 tasks.register("versionToJs") {
     doLast {
-        FileWriter(File(rootDir.resolve("www/src/_data"), "fritz2.json")).run {
-            write("{\n  \"version\": \"${subprojects.find { it.name == "core" }?.version ?: ""}\"\n}")
-            flush()
-            close()
-        }
+        File(rootDir.resolve("www/src/_data"), "fritz2.json").writeText(
+            """
+                {
+                    "version": "${subprojects.find { it.name == "core" }?.version ?: ""}"
+                }
+            """.trimIndent()
+        )
     }
 }
