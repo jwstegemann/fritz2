@@ -1,7 +1,7 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.ScopeContext
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.ScopeContext
 
 /**
  * Alias in order to reduce boilerplate code for the awkward signature of a [Tag]-factory of [RenderContext].

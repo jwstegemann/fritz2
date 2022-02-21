@@ -1,7 +1,7 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.Tag
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -208,10 +208,10 @@ fun <C, R, P> C.hook(h: Hook<C, R, TagPayload<P>>, classes: String?, id: String?
  * A good example would be a hook for rendering some icon; it would accept a special ``IconDefinition`` and render
  * some ``<svg>``-tag including sub-tags:
  * ```kotlin
- * class IconHook : RenderOneValueTagHook<Svg, Null, IconDefinition>() {
+ * class IconHook : TagHook<Svg, Null, IconDefinition>() {
  *      override fun RenderContext.renderTag(classes: String?, id: String?, data: IconDefinition, payload: Unit): Svg {
  *          svg(classes, id) {
- *              // set some attributes based upon the fields of ``IconDefinition``
+ *              // set some attributes based upon the fields of imaginary ``IconDefinition``
  *          }
  *      }
  * }

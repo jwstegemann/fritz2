@@ -1,6 +1,6 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.Tag
+import dev.fritz2.core.Tag
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 

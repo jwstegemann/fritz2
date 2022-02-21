@@ -1,6 +1,6 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.dom.html.*
+import dev.fritz2.core.*
 import dev.fritz2.routing.routerOf
 
 data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)
@@ -48,16 +48,21 @@ val pages = mapOf(
             | flyout menus.""".trimMargin(),
         RenderContext::popOverDemo
     ),
-    "tabs" to DemoPage(
+    "tabGroup" to DemoPage(
         "Headless Tabs",
         """Easily create accessible, fully customizable tab interfaces, with robust focus management and keyboard
             | navigation support.""".trimMargin(),
         RenderContext::tabsDemo
     ),
-    "textfield" to DemoPage(
-        "Headless Input and Textarea",
-        "Easily create accessible, fully customizable text inputs.",
-        RenderContext::textfieldDemo
+    "inputfield" to DemoPage(
+        "Headless Input",
+        "Easily create accessible, fully customizable single line text inputs.",
+        RenderContext::inputFieldDemo
+    ),
+    "textarea" to DemoPage(
+        "Headless Textarea",
+        "Easily create accessible, fully customizable multi-line text inputs.",
+        RenderContext::textAreaDemo
     ),
     "switch" to DemoPage(
         "Headless Switch",

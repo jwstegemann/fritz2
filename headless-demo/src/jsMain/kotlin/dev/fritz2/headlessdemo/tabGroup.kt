@@ -1,8 +1,8 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.classes
 import dev.fritz2.headless.components.tabGroup
-import dev.fritz2.utils.classes
 import kotlinx.coroutines.flow.map
 
 fun RenderContext.tabsDemo() {
@@ -37,7 +37,8 @@ fun RenderContext.tabsDemo() {
                         if (sel == index) "bg-white shadow"
                         else "text-blue-100 hover:bg-white/[0.12] hover:text-white"
                     })
-                }.apply { +category }
+                    +category
+                }
             }
         }
         tabPanels("mt-2") {

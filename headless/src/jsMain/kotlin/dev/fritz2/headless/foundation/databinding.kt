@@ -1,7 +1,7 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.binding.Store
-import dev.fritz2.dom.html.handledBy
+import dev.fritz2.core.Store
+import dev.fritz2.core.handledBy
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.validation.messages
 import dev.fritz2.validation.valid

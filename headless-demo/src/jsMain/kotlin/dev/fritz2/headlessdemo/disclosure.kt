@@ -1,7 +1,7 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.type
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.type
 import dev.fritz2.headless.components.disclosure
 
 fun RenderContext.disclosureDemo() {
@@ -37,7 +37,6 @@ fun RenderContext.disclosureDemo() {
                                 """text-left w-full flex justify-between items-start 
                                     | text-gray-400""".trimMargin()
                             ) {
-                                type("button")
                                 span("font-medium text-gray-900") { +question }
                                 span("ml-6 h-7 flex items-center") {
                                     opened.render(into = this) {

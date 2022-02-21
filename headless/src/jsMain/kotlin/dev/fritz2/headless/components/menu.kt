@@ -1,17 +1,9 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.ScopeContext
-import dev.fritz2.dom.html.shortcutOf
+import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
 import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
-import dev.fritz2.identification.Id
-import dev.fritz2.utils.classes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLButtonElement
@@ -19,7 +11,14 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import kotlin.math.max
 
-
+/**
+ * This class provides the building blocks to implement a menu.
+ *
+ * Use [menu] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/menu/)
+ */
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
 
@@ -56,6 +55,12 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         }
     }
 
+    /**
+     * Factory function to create a [menuButton].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/menu/#menubutton)
+     */
     fun <CB : HTMLElement> RenderContext.menuButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -68,6 +73,12 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         handleOpenCloseEvents()
     }.also { button = it }
 
+    /**
+     * Factory function to create a [menuButton] with a [HTMLButtonElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/menu/#menubutton)
+     */
     fun RenderContext.menuButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -103,8 +114,8 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
 
             closeOnEscape()
             closeOnBlur()
+            trapFocus()
 
-            attr("tabindex", "0")
             attr("role", Aria.Role.menu)
 
             state.flatMapLatest { (currentIndex, items) ->
@@ -183,6 +194,12 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             }
         }
 
+        /**
+         * Factory function to create a [menuItem].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/menu/#menuitem)
+         */
         fun <CM : HTMLElement> RenderContext.menuItem(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -201,6 +218,12 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             }
         }
 
+        /**
+         * Factory function to create a [menuItem] with a [HTMLButtonElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/menu/#menuitem)
+         */
         fun RenderContext.menuItem(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
@@ -208,6 +231,12 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         ) = menuItem(classes, scope, RenderContext::button, initialize)
     }
 
+    /**
+     * Factory function to create a [menuItems].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/menu/#menuitems)
+     */
     fun <CI : HTMLElement> RenderContext.menuItems(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -221,6 +250,12 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         }
     }
 
+    /**
+     * Factory function to create a [menuItems] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/menu/#menuitems)
+     */
     fun RenderContext.menuItems(
         classes: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
@@ -228,7 +263,43 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
     ) = menuItems(classes, internalScope, RenderContext::div, initialize)
 }
 
-
+/**
+ * Factory function to create a [Menu].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * menu {
+ *     // inherited by `OpenClose`
+ *     val openClose = DatabindingProperty<Boolean>()
+ *     val opened: Flow<Boolean>
+ *     val close: SimpleHandler<Unit>
+ *     val open: SimpleHandler<Unit>
+ *     val toggle: SimpleHandler<Unit>
+ *
+ *     menuButton() { }
+ *     menuItems() {
+ *         // inherited by `PopUpPanel`
+ *         var placement: Placement
+ *         var strategy: Strategy
+ *         var flip: Boolean
+ *         var skidding: Int
+ *         var distance: int
+ *
+ *         // for each T {
+ *             MenuItem {
+ *                 val index: Int
+ *                 val selected: Flow<Boolean>
+ *                 val active: Flow<Boolean>
+ *                 val disabled: Flow<Boolean>
+ *                 val disable: SimpleHandler<Boolean>
+ *             }
+ *         // }
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/menu/#menu)
+ */
 fun <C : HTMLElement> RenderContext.menu(
     classes: String? = null,
     id: String? = null,
@@ -242,6 +313,43 @@ fun <C : HTMLElement> RenderContext.menu(
     }
 }
 
+/**
+ * Factory function to create a [Menu] with a [HTMLDivElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * menu {
+ *     // inherited by `OpenClose`
+ *     val openClose = DatabindingProperty<Boolean>()
+ *     val opened: Flow<Boolean>
+ *     val close: SimpleHandler<Unit>
+ *     val open: SimpleHandler<Unit>
+ *     val toggle: SimpleHandler<Unit>
+ *
+ *     menuButton() { }
+ *     menuItems() {
+ *         // inherited by `PopUpPanel`
+ *         var placement: Placement
+ *         var strategy: Strategy
+ *         var flip: Boolean
+ *         var skidding: Int
+ *         var distance: int
+ *
+ *         // for each T {
+ *             MenuItem {
+ *                 val index: Int
+ *                 val selected: Flow<Boolean>
+ *                 val active: Flow<Boolean>
+ *                 val disabled: Flow<Boolean>
+ *                 val disable: SimpleHandler<Boolean>
+ *             }
+ *         // }
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/menu/#menu)
+ */
 fun RenderContext.menu(
     classes: String? = null,
     id: String? = null,

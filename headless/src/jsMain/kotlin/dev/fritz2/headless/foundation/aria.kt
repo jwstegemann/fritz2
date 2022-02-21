@@ -1,7 +1,7 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.Tag
-import dev.fritz2.identification.Id
+import dev.fritz2.core.Id
+import dev.fritz2.core.Tag
 
 /**
  * Predefined constants for all [ARIA attributes](https://www.w3.org/TR/wai-aria-1.1/#state_prop_def)
