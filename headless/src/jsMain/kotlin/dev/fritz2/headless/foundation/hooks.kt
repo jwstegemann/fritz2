@@ -232,6 +232,15 @@ fun <C, R, P> C.hook(h: Hook<C, R, TagPayload<P>>, classes: String?, id: String?
  * @see TagPayload
  */
 abstract class TagHook<R : Tag<*>, P, I> : Hook<RenderContext, R, TagPayload<P>>() {
+
+    /**
+     * Implement this method in order to define the desired effect of this hook.
+     *
+     * @param classes optional CSS style class
+     * @param id optional unique identifier compliant to HTML-tag IDs
+     * @param data some arbitrary data from the user of the hook
+     * @param payload some arbitrary data from the owner (and therefor applier) of the hook
+     */
     protected abstract fun RenderContext.renderTag(classes: String?, id: String?, data: I, payload: P): R
 
     operator fun invoke(value: I) = this.apply {
