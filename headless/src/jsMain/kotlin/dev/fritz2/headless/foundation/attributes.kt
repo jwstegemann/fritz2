@@ -4,7 +4,14 @@ import dev.fritz2.core.Tag
 import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.Element
 
-
+/**
+ * This Hook encapsulates the effect of setting an attribute to a `Tag`.
+ *
+ * The attribute itself has to be defined by the owner of the hook as constructor parameter, the specific value
+ * however can be provided by the user.
+ *
+ * If the user does not provide any value, no attribute will be attached to the `Tag`!
+ */
 class AttributeHook<C : Tag<*>, T>(
     private val valueSetter: C.(T) -> Unit,
     private val flowOfValueSetter: C.(Flow<T>) -> Unit
@@ -19,6 +26,14 @@ class AttributeHook<C : Tag<*>, T>(
     }
 }
 
+/**
+ * This Hook encapsulates the effect of setting a boolean attribute to a `Tag`.
+ *
+ * The boolean attribute itself has to be defined by the owner of the hook as constructor parameter, the specific value
+ * however can be provided by the user.
+ *
+ * If the user does not provide any value, no attribute will be attached to the `Tag`!
+ */
 class BooleanAttributeHook<C : Tag<*>>(
     private val valueSetter: C.(Boolean, String) -> Unit,
     private val flowOfValueSetter: C.(Flow<Boolean>, String) -> Unit,
@@ -36,30 +51,12 @@ class BooleanAttributeHook<C : Tag<*>>(
     }
 }
 
-class RawAttributeHook<C : Tag<*>, T>(private val name: String) : Hook<C, Unit, Unit>() {
-    operator fun invoke(value: T?) {
-        this.value = value?.let { { attr(name, it) } }
-    }
-
-    operator fun invoke(value: Flow<T>) {
-        this.value = { attr(name, value) }
-    }
-
-    operator fun invoke(value: Boolean?, trueValue: String = "") {
-        this.value = value?.let { v -> { attr(name, v, trueValue) } }
-    }
-
-    operator fun invoke(value: Flow<Boolean>, trueValue: String = "") {
-        this.value = { attr(name, value, trueValue) }
-    }
-}
-
 /**
  * Sets an attribute only if it is not present yet.
  *
  * This is intended only for attributes, that have a *static* character, like an ARIA "role" for example.
- * It enables a client to overrule a default attribute set by a lower layer of a component library, if the latter
- * uses this defensive function to set its default attribute.
+ * It enables a client to overrule a default attribute set by some component, if the latter uses this defensive
+ * function to set its default attribute.
  *
  * @param name to use
  * @param value to use

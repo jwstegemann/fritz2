@@ -8,6 +8,11 @@ import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
+/**
+ * Base class that provides the functionality to create popup components.
+ *
+ * Internally the heavy lifting is done by the excellent [Popper](https://popper.js.org/) library.
+ */
 abstract class PopUpPanel<C : HTMLElement>(
     renderContext: RenderContext,
     tagFactory: TagFactory<Tag<C>>,

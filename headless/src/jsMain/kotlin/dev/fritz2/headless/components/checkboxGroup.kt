@@ -13,7 +13,7 @@ import org.w3c.dom.*
 /**
  * This class provides the building blocks to implement a checkbox-group.
  *
- * Use [checkboxGroup] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * Use [checkboxGroup] functions to create an instance, setup the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
  * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/)

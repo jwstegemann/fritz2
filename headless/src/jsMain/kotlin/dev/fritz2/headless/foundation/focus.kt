@@ -128,14 +128,36 @@ fun focusIn(container: HTMLElement, focusOptions: FocusOptions): FocusResult {
 
 const val INITIAL_FOCUS_DATA_ATTR = "data-fritz2-initialFocus"
 
+/**
+ * Mark some [Tag] with a data-attribute [INITIAL_FOCUS_DATA_ATTR] so that the [trapFocus] function can find
+ * this [Tag] and set the initial focus to it.
+ *
+ * @param tag The target [Tag] that should get the initial focus within a focus-trap
+ */
 fun setInitialFocus(tag: HTMLElement) {
     tag.setAttribute(INITIAL_FOCUS_DATA_ATTR, "")
 }
 
+/**
+ * Mark some [Tag] with a data-attribute [INITIAL_FOCUS_DATA_ATTR] so that the [trapFocus] function can find
+ * this [Tag] and set the initial focus to it.
+ */
 fun Tag<HTMLElement>.setInitialFocus() {
     attr(INITIAL_FOCUS_DATA_ATTR, "")
 }
 
+/**
+ * This function enables a so called focus-trap. This enforces the specific behaviour within the receiver [Tag],
+ * that switching the focus is only possible on elements that are inside the receiver. No other focusable elements
+ * outside the enclosing container will get the focus.
+ *
+ * This is often useful for components that acts as overlays like modal dialogs or menus.
+ *
+ * @param restoreFocus sets the focus back to the element that had the focus before the container with the trap was
+ *                      entered.
+ * @param setInitialFocus will automatically focus the first element of the container or that one, which has been
+ *                        tagged by [setInitialFocus] function
+ */
 fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: Boolean = true) {
     // restore focus
     if (restoreFocus) {
