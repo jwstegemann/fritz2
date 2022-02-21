@@ -489,3 +489,12 @@ zur Verfügung, um die Positionierung des Inhaltes zu beeinflussen:
 - `distance` definiert den Abstand der Auswahlliste vom Referenzelement in Pixeln. Der Standardwert ist 10.
 - `skidding` definiert die Verschiebung der Auswahlliste entlang des Referenzelements in Pixeln. Der Standardwert ist 0.
 
+Darüber hinaus kann ein Pfeil hinzugefügt werden, der auf das Referenzelement zeigt. Per default ist der Pfeil 8 Pixel breit und erbt die Hintergrund-Farbe des Panels. Er kann wie gewohnt gestyled werden:
+
+```kotlin
+popOverPanel {
+    //...
+    
+    arrow("h-3 w-3 bg-white")
+}
+```
