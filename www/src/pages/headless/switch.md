@@ -8,16 +8,16 @@ eleventyNavigation:
     parent: headless
     order: 90
 demoHash: switch
-teaser: "Die Switch Komponente kann für das Umschalten zwischen zwei Zuständen verwendet werden, 
-also an oder aus, ja oder nein usw. Die Semantik und Bedienung entspricht der einer einzelnen Checkbox."
+teaser: "The switch component can be used for switching between two states, i.e. on or off, yes or no, etc. 
+The semantics and operation correspond to those of a single checkbox."
 ---
 
-## Einfaches Beispiel
+## Basic Example
 
-Switches werden mittels der ``switch`` Fabrik Funktion gebaut. Es ist zwingend erforderlich, einen booleschen 
-Datenstrom über die ``value`` Property in die Komponente zu injizieren.
+Switches are built using the ``switch`` factory function. It is mandatory to pass a boolean data stream into the
+component via the ``value`` property.
 
-Der aktuelle Zustand kann über den ``enabled`` Datenstrom abgefragt werden.
+The current status can be queried via the ``enabled`` data stream.
 
 ```kotlin
 val switchState = storeOf(false)
@@ -31,13 +31,14 @@ switch {
 }
 ```
 
-## Verwendung mit Label und Beschreibung
+## Add Label and Description
 
-Will man ein Switch mit einem Label oder einer zusätzlichen Beschreibung ausstatten, so muss man die Fabrik Funktion
-``switchWithLabel`` anstellen von ``switch`` verwenden.
+If you want to enrich a switch with a label or an additional description, you have to use the factory
+function ``switchWithLabel`` instead of ``switch``. Beware that the toggle element must be explicitly created inside the
+scope using the `switchToggle` factory in this case.
 
-Innerhalb der headless Komponente existieren dann die beiden Bausteine ``switchToggle``, ``switchLabel`` und
-``switchDescription``, um die einzelnen Teile zu erzeugen. Es können beliebig viele Beschreibungen angegeben werden.
+Inside the scope of `switchWithLabel` there are the bricks `switchLabel` and `switchDescription` to add the 
+appropriate information. It is possible to provide more than one description.
 
 ```kotlin
     switchWithLabel {
@@ -59,12 +60,11 @@ Innerhalb der headless Komponente existieren dann die beiden Bausteine ``switchT
     }
 ```
 
-## Validierung
+## Validation
 
-Die Datenbindung erlaubt es der Switch Komponente, die Validierungsnachrichten abzugreifen und einen eigenen Baustein
-`switchValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen. 
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
-
+Data binding allows the Switch component to grab the validation messages and provide its own building
+block `switchValidationMessages` that is only rendered when there are some messages. These messages are exposed
+within its scope as a data stream `msgs`.
 
 ```kotlin
 val switchState = storeOf(false)
@@ -81,16 +81,16 @@ switch {
 }
 ```
 
-## Maus Interaction
+## Mouse Interaction
 
-Das Klicken auf ein mit ``switch``, ``switchWithLabel`` oder ``switchLabel`` erzeugtes Element, schaltet zwischen den
-beiden Zuständen hin und her.
+Clicking on an element created with ``switch``, ``switchWithLabel`` or ``switchLabel`` toggles between the
+both states back and forth.
 
 ## Keyboard Interaction
 
-| Command                              | Description                                        |
-|--------------------------------------|----------------------------------------------------|
-| [[Space]] when a `Switch` is focused | Schaltet zwischen den beiden Zuständen hin und her |
+| Command                              | Description                                     |
+|--------------------------------------|-------------------------------------------------|
+| [[Space]] when a `Switch` is focused | Switches back and forth between the two states  |
 
 ## API
 
@@ -121,63 +121,63 @@ switchWithLabel() {
 
 ### switch
 
-Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `button`
 
-| Scope Feld | Typ                            | Description                                                                    |
-|------------|--------------------------------|--------------------------------------------------------------------------------|
-| `value`    | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung auf Basis eines booleschen Wertes. Muss gesetzt werden! |
-| `enabled`  | `Flow<Boolean>`                | Aktueller Zustand. (Default `false`)                                           |
+| Scope property | Typ                            | Description                                                      |
+|----------------|--------------------------------|------------------------------------------------------------------|
+| `value`        | `DatabindingProperty<Boolean>` | Mandatory (two-way) data-binding representing the boolean state. |
+| `enabled`      | `Flow<Boolean>`                | Current state. (Default `false`)                                 |
 
 
 ### switchWithLabel
 
-Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ                            | Description                                                                    |
-|------------|--------------------------------|--------------------------------------------------------------------------------|
-| `value`    | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung auf Basis eines booleschen Wertes. Muss gesetzt werden! |
-| `enabled`  | `Flow<Boolean>`                | Aktueller Zustand. (Default `false`)                                           |
+| Scope property | Typ                            | Description                                                      |
+|----------------|--------------------------------|------------------------------------------------------------------|
+| `value`        | `DatabindingProperty<Boolean>` | Mandatory (two-way) data-binding representing the boolean state. |
+| `enabled`      | `Flow<Boolean>`                | Current state. (Default `false`)                                 |
 
 
 ### switchValidationMessages
 
-Verfügbar im Scope von: `switch`, `switchWithLabel`
+Available in the scope of: `switch`, `switchWithLabel`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ                                      | Description                                                   |
-|------------|------------------------------------------|---------------------------------------------------------------|
-| `msgs` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
+| Scope property | Typ                                      | Description                                                           |
+|----------------|------------------------------------------|-----------------------------------------------------------------------|
+| `msgs`         | `Flow<List<ComponentValidationMessage>>` | provides a data stream with a list of ``ComponentValidationMessage``s |
 
 
 ### switchToggle
 
-Verfügbar im Scope von: ``switchWithLabel``
+Available in the scope of: ``switchWithLabel``
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `button`
 
 
 ### switchLabel
 
-Verfügbar im Scope von: ``switchWithLabel``
+Available in the scope of: ``switchWithLabel``
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `label`
 
 
 ### switchDescription
 
-Verfügbar im Scope von: ``switchWithLabel``
+Available in the scope of: ``switchWithLabel``
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `span`

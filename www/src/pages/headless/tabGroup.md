@@ -8,24 +8,30 @@ eleventyNavigation:
     parent: headless
     order: 100
 demoHash: tabGroup
-teaser: "Eine TabGroup ermöglicht das Umschalten von Inhalten über eine horizontale oder vertikale Liste von 
-Tabulatoren."
+teaser: "A TabGroup allows content to be switched across a horizontal or vertical list of tabs."
 ---
 
-## Einfaches Beispiel
+## Basic Example
 
-TabGroups werden mit Hilfe der `tabGroup` Fabrik Funktion erzeugt. Es ist in zwei Bereiche unterteilt: In der
-`tabList` werden die verfügbaren `tab`s dargestellt, im `tabPanel` der Inhalt des gerade aktiven Tabs.
+TabGroups are created using the `tabGroup` factory function. It is divided into two areas: In the
+`tabList` shows the available `tab`s, `tabPanel` the content of the currently active tab.
 
-Durch einen Mausklick auf einen Tab oder durch die Auswahl via Tastatur kann der aktuelle Tab gewählt und damit
-auch der Inhalt des Panels umgeschaltet werden.
+By clicking on a tab or by selecting via the keyboard, the current tab can be selected and the content of the panel will
+be switched accordingly.
 
-Die TabGroup ist vollständig agnostisch bezüglich des Typen eines Tabs als auch seines Inhalts. Darum benötigt die
-Komponente auch keinerlei Informationen zu den verfügbaren Tabs. Die Tabs an sich werden intern über den *Index*
-verwaltet, den sie beim Hinzufügen in die `tabList` inne hatten. Struktur und Inhalt von Tabs und Panels können
-vollkommen frei gestaltet werden.
+The TabGroup is completely agnostic about a tab's type as well as its content. That's why no information about the
+available tabs are needed. The tabs themselves are internally managed via the index when they get added to the `tabList`
+. Structure and content of tabs and panels can be designed completely freely.
 
-Eine [Datenbindung](#aktiven-tab-von-außen-setzen-und-abfragen) ist rein optional und muss nicht angegeben werden.
+::: warning
+**Beware:** Tabs cannot be removed from the TabGroup. Once a tab is added to the group by `tab`, it will remain inside
+forever. So never use some reactive pattern for populating the TabGroup as some `Flow<List<T>>` combined with some 
+call to `renderEach` or alike!
+
+If the tabs change, you must re-render the whole component.
+:::
+
+A [data binding](#set-and-query-the-active-tab-from-outside) is purely optional and does not have to be specified.
 
 ```kotlin
 // Some domain type and a collection of data to be displayed inside a tab-group 
@@ -60,13 +66,14 @@ tabGroup {
 }
 ```
 
-## Aktiven Tab stylen
+## Styling the active Tab
 
-Um den aktiven Tab bezüglich des Styles von den restlichen abzuheben, ist im Scope von `tab` der boolesche Datenstrom
-`selected` verfügbar.
+In order to distinguish the active tab from the rest in terms of style, within the scope of `tab` the boolean data
+stream
+`selected` is available.
 
-Dieser kann benutzt werden, um in Kombination mit `className` verschiedene Stile auf einen Tab anzuwenden oder sogar
-ganze Elemente (z.B. ein Icon für den selektierten Tab) ein- und auszublenden.
+This can be used in combination with `className` to apply different styles to a tab or even show and hide entire
+elements (e.g. an icon for the selected tab).
 
 ```kotlin
 tabGroup {
@@ -89,15 +96,15 @@ tabGroup {
 }
 ```
 
-## Aktiven Tab von außen setzen und abfragen
+## Set and Query the active Tab from outside
 
-Wie bereits eingangs beschrieben, werden die Tabs lediglich über ihren Index (`0` basiert!) verwaltet.
+As already described at the beginning, the tabs are only managed via their index (`0` based!).
 
-Aus diesem Grund kann optional im Scope der `tabGroup` Fabrik-Funktion eine `Int` basierte Datenbindung `value` 
-angegeben werden. Damit kann sowohl der initial aktive Tab bestimmt werden, als auch über einen anzugebenden Handler 
-der aktuell gewählte Tab abgefragt werden.
+For this reason, an `Int` based data binding `value` in the scope of the `tabGroup` factory function can optionally be
+specified. This can be used to determine the initially active tab as well as to query the currently selected tab by some
+provided handler.
 
-Wird die Datenbindung nicht angegeben, so wird initial immer der erste, aktive Tab gewählt.
+If the data binding is not specified, the first active tab is always selected initially.
 
 ```kotlin
 val currentIndex = storeOf(1) // preselect *second* tab (0-based as all collections in Kotlin)
@@ -122,17 +129,17 @@ tabGroup {
 }
 ```
 
-## Deaktivieren von Tabs
+## Deactivate Tabs
 
-Tabs können dynamisch aktiviert und auch deaktiviert werden. Deaktivierte Tabs können weder per Maus noch per Tastatur
-aktiviert werden, noch werden sie als initialer Tab gewählt.
+Tabs can be activated and deactivated dynamically. Disabled tabs can neither be activated by using mouse or keyboard,
+nor are they selected as the initial tab.
 
-Per default ist jeder Tab zunächst immer aktiv.
+By default, each tab is always active at first.
 
-Um einen Tab zu aktivieren oder zu deaktivieren, steht im Scope von `tab` der boolesche Handler `disable` zur Verfügung.
+To activate or deactivate a tab, the Boolean handler `disable` is available in the scope of `tab`.
 
-Der aktuelle Status kann über den booleschen Datenstrom `disabled` abgefragt werden. Letzteres ist primär für das
-Styling relevant, denn ein deaktivierter Tab sollte sich optisch von aktiven abheben.
+The current status can be queried via the boolean data stream `disabled`. The latter is primary relevant for styling
+reasons, because a deactivated tab should visually stand out from active ones.
 
 ```kotlin
 tabGroup {
@@ -163,16 +170,15 @@ tabGroup {
 }
 ```
 
-## Vertikale TabGroup
+## Vertical TabGroup
 
-Eine TabGroup kann sowohl horizontal (default) als auch vertikal dargestellt werden. Diese Unterscheidung ist an sich
-nur abhängig von der optischen Gestaltung, aber ändert aber die Bedienung per Tastatur und muss dementsprechend der
-Komponente explizit bekannt gemacht werden.
+A TabGroup can be displayed both horizontally (default) and vertically. This distinction in itself is only dependent on
+the optical design, but changes the operation via keyboard and must therefore be made known explicitly to the component.
 
-Bei einer horizontalen TabGroup kann man mittels den Pfeil-Tasten [[←]] und [[→]] zwischen den Tabs wechseln, bei einer
-vertikalen TabGroup mit [[↑]] und [[↓]].
+With a horizontal TabGroup you can use the arrow keys [[←]] and [[→]] to switch between the tabs, use [[↑]] and [[↓]]
+for vertical TabGroups.
 
-Dazu existiert die Property `orientation`, die die beiden Enum-Werte `Horizontal` oder `Vertical` annehmen kann.
+For this purpose there is the property `orientation`, which can accept the two enum values `Horizontal` or `Vertical`.
 
 ```kotlin
 tabGroup {
@@ -189,19 +195,19 @@ tabGroup {
 }
 ```
 
-## Maus Interaction
+## Mouse Interaction
 
-Das Klicken auf ein mit ``tab`` erzeugtes Element aktiviert den Tab und rendert das zugehörige Panel als Inhalt,
-sofern der Tab nicht deaktiviert ist.
+Clicking on an element created with ``tab`` activates the tab and renders the associated panel as content,
+unless the tab is disabled.
 
 ## Keyboard Interaction
 
-| Command                                       | Description                                           |
-|-----------------------------------------------|-------------------------------------------------------|
-| [[←]] [[→]]                                   | Wählt zyklisch den vorherigen / nächsten aktiven Tab. |
-| [[↑]] [[↓]] when `orientation` is `Vertical`  | Wählt zyklisch den vorherigen / nächsten aktiven Tab. |
-| [[Home]] [[PageUp]]                           | Wählt den ersten aktiven Tab.                         |
-| [[End]] [[PageDown]]                          | Wählt den letzten aktiven Tab.                        |
+| Command                                       | Description                                        |
+|-----------------------------------------------|----------------------------------------------------|
+| [[←]] [[→]]                                   | Cyclically selects the previous / next active tab. |
+| [[↑]] [[↓]] when `orientation` is `Vertical`  | Cyclically selects the previous / next active tab. |
+| [[Home]] [[PageUp]]                           | Selects the first active Tab.                      |
+| [[End]] [[PageDown]]                          | Selects the last active Tab.                       |
 
 
 ## API
@@ -233,54 +239,54 @@ tabGroup() {
 
 ### tabGroup
 
-Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld    | Typ                        | Description                                                                           |
-|---------------|----------------------------|---------------------------------------------------------------------------------------|
-| `value`       | `DatabindingProperty<Int>` | Zwei-Wege-Datenbindung für das Setzen und Abfragen des aktuellen Index. Rein Optional |
-| `selected`    | `Flow<Int>`                | Datenstrom mit dem aktuellen Tab-Index                                                |
-| `orientation` | `Orientation`              | Feld zum Einstellen der Orientierung. Default ist `Horizontal`                        |
+| Scope property    | Typ                        | Description                                                                              |
+|---------------|----------------------------|------------------------------------------------------------------------------------------|
+| `value`       | `DatabindingProperty<Int>` | Optionally (two-way) data-binding for setting or querying the current active tab's index |
+| `selected`    | `Flow<Int>`                | Data stream of the current tab index.                                                    |
+| `orientation` | `Orientation`              | Field for setting the orientation. Default is `Horizontal`                               |
 
 
 ### tabList
 
-Verfügbar im Scope von: `tabGroup`
+Available in the scope of: `tabGroup`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
 
 ### tab
 
-Verfügbar im Scope von: `tabList`
+Available in the scope of: `tabList`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ                      | Description                                               |
-|------------|--------------------------|-----------------------------------------------------------|
-| `index`    | `Int`                    | Der Index des Tabs in der Gruppe.                         |
-| `disabled` | `Flow<Boolean>`          | Datenstrom der angibt, ob ein Tab aktiv oder inaktiv ist. |
-| `disable`  | `SimpleHandler<Boolean>` | Handler für das Setzen des inaktiven Status.              |
+| Scope property | Typ                      | Description                                                    |
+|----------------|--------------------------|----------------------------------------------------------------|
+| `index`        | `Int`                    | The index of the tab in the group.                             |
+| `disabled`     | `Flow<Boolean>`          | Stream of data indicating whether a tab is active or inactive. |
+| `disable`      | `SimpleHandler<Boolean>` | Handler for setting the inactive state.                        |
 
 
 ### tabPanels
 
-Verfügbar im Scope von: `tabGroup`
+Available in the scope of: `tabGroup`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
 
 ### panel
 
-Verfügbar im Scope von: `tabPanels`
+Available in the scope of: `tabPanels`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`

@@ -8,16 +8,16 @@ eleventyNavigation:
     parent: headless
     order: 20
 demoHash: disclosure
-teaser: "Ein Disclosure ermöglicht das Ein- und Ausblenden von Inhalten wie z.B. umschaltbare Akkordeon Menüs."
+teaser: "A disclosure allows showing and hiding content such as switchable accordion menus."
 ---
 
-## Einfaches Beispiel
+## Basic Example
 
-Ein Disclosure wird über die `disclosure` Komponenten Fabrik Funktion erzeugt. Innerhalb dieses Scopes müssen dann ein
-Button durch `disclosureButton` und ein Panel via `disclosurePanel` erzeugt werden.
+A disclosure is generated via the `disclosure` component factory function. Within this scope a button must be generated
+by `disclosureButton` and a panel via `disclosurePanel`.
 
-Der Button dient als Steuerelement zum Öffnen und wieder Schließen des Panel-Bereichs. Dies geschieht durch einen
-Maus-Klick oder durch die [[Space]]-Taste, sofern der Button-Tag fokussiert ist.
+The button serves as a control element for opening and closing the panel area. This is done by one
+Mouse click or the [[Space]] key if the button tag has focus.
 
 ```kotlin
 disclosure {
@@ -30,13 +30,13 @@ disclosure {
 }
 ```
 
-## Styling abhängig vom Zustand
+## State depending Styling
 
-Um das Styling oder auch ganze Strukturen abhängig vom Zustand des Disclosures zu gestalten, kann auf den booleschen
-Datenstrom `opened` zugegriffen werden.
+In order to design the styling or entire structures depending on the state of the disclosure, you can refer to the
+Boolean data stream `opened`.
 
-Typische Muster sind die Verwendung innerhalb von `className`, um verschiedene CSS-Klassen je nach Zustand zu setzen,
-oder schlicht ein bedingtes Rendering.
+Typical patterns are use within `className` to set different CSS classes depending on state,
+or simply some conditional rendering.
 
 ```kotlin
 disclosure {
@@ -60,13 +60,13 @@ disclosure {
 }
 ```
 
-## Öffnen und Schließen
+## Open and Close
 
-Um das Öffnen auch programmatisch und unabhängig vom `disclosureButton` Element zu ermöglichen, kann optional eine
-boolesche Datenbindung `openClose` in der Komponente gesetzt werden.
+To enable opening programmatically and independently of the `disclosureButton` element, an optional
+boolean data binding `openState` to be set in the component.
 
-Zudem bietet ein Disclosure selber einen Handler `close` zum Schließen an, der man z.B. innerhalb des Panels an ein
-Event koppeln kann, wie z.B. ein expliziter Schließen-Button.
+In addition, a disclosure itself offers a `close` handler for closing, which can be attached e.g. within the panel to 
+some closing event. Imagine some custom close-button element for that purpose.
 
 ```kotlin
 val toggle = storeOf(true) // show Panel at start
@@ -90,11 +90,10 @@ disclosure {
 }
 ```
 
-## Schließen über das Panel
+## Closing by the Panel
 
-Sollte es gewünscht sein, dass eine Aktion auf dem Panel selber das Panel schließt, also ein Maus-Klick oder 
-die [[Spabe]]-Taste, sofern das Panel fokussiert ist, so existiert ein dedizierter Baustein `disclosureCloseButton`
-im Scope vom Panel.
+If it is necessary that an action on the panel itself closes the panel, i.e. a mouse click or the [[Spabe]] button, if
+the panel is focused, there is a dedicated `disclosureCloseButton` building block in the scope of the panel.
 
 ```kotlin
 disclosure {
@@ -110,15 +109,15 @@ disclosure {
 }
 ```
 
-## Maus Interaction
+## Mouse Interaction
 
-Durch das Klicken auf einen `disclosureButton` wird das Panel geschlossen.
+Clicking on a `disclosureButton` will close the panel.
 
 ## Keyboard Interaction
 
-| Command                                     | Description         |
-|---------------------------------------------|---------------------|
-| [[Space]] wenn Fokus auf `disclosureButton` | Schließt das Panel. |
+| Command                                     | Description       |
+|---------------------------------------------|-------------------|
+| [[Space]] when `disclosureButton` has focus | Closes the panel. |
 
 ## API
 
@@ -126,7 +125,7 @@ Durch das Klicken auf einen `disclosureButton` wird das Panel geschlossen.
 ```kotlin
 disclosure() {
     // inherited by `OpenClose`
-    val openClose = DatabindingProperty<Boolean>()
+    val openState: DatabindingProperty<Boolean>
     val opened: Flow<Boolean>
     val close: SimpleHandler<Unit>
     val open: SimpleHandler<Unit>
@@ -141,38 +140,38 @@ disclosure() {
 
 ### disclosure
 
-Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld   | Typ                            | Description                                                                                    |
-|--------------|--------------------------------|------------------------------------------------------------------------------------------------|
-| `openClose`  | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung für das Öffnen und Schließen. Rein optional!                            |
-| `opened`     | `Flow<Boolean>`                | Datenstrom der bezogen auf den "geöffnet"-Status boolesche Werte liefert.                      |
-| `close`      | `SimpleHandler<Unit>`          | Handler zum Schließen des Menus von innen heraus.                                              |
-| `open`       | `SimpleHandler<Unit>`          | Handler zum Öffnen; nicht sinnvoll im Disclosure anzuwenden!                                   |
-| `toggle`     | `SimpleHandler<Unit>`          | Handler zum Wechseln zwischen Offen und Geschlossen; nicht sinnvoll im Disclosure anzuwenden   |
+| Scope property | Typ                              | Description                                                                                    |
+|----------------|----------------------------------|------------------------------------------------------------------------------------------------|
+| `openState`    | `DatabindingProperty<Boolean>`   | Optional (two-way) data-binding for opening and closing.                                       |
+| `opened`       | `Flow<Boolean>`                  | Data stream that provides Boolean values related to the "open" state.                          |
+| `close`        | `SimpleHandler<Unit>`            | Handler to close the disclosure from inside.                                                   |
+| `open`         | `SimpleHandler<Unit>`            | handler to open; does not make sense to use within a disclosure!                               |
+| `toggle`       | `SimpleHandler<Unit>`            | handler for switching between open and closed; does not make sense to use within a disclosure. |
 
 ### disclosureButton
 
-Verfügbar im Scope von: `disclosure`
+Available in the scope of: `disclosure`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `button`
 
 ### disclosurePanel
 
-Verfügbar im Scope von: `disclosure`
+Available in the scope of: `disclosure`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
 ### disclosureCloseButton
 
-Verfügbar im Scope von: `disclosurePanel`
+Available in the scope of: `disclosurePanel`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `button`

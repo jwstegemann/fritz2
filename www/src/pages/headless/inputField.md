@@ -8,17 +8,17 @@ eleventyNavigation:
     parent: headless
     order: 30
 demoHash: inputfield
-teaser: "Ein InputField bietet eine einzeilige Texteingabe an."
+teaser: "An InputField offers a single line of text input."
 ---
 
-## Einfaches Beispiel
+## Basic Example
 
-Ein InputField wird mit der `inputField` Komponenten Fabrik Funktion erzeugt. Innerhalb des Scopes muss zwingend 
-eine `String` basierte Datenbindung `value` initialisiert werden.
+An InputField is created with the `inputField` component factory function. Within its scope a `string` based data
+binding named `value` has to be initialized.
 
-Optional kann ein Platzhaltertext mittels `placeholder` Attribut-Hook gesetzt werden.
+Optionally, a placeholder text can be set using the `placeholder` attribute hook.
 
-Des Weiteren muss das eigentliche Eingabeelement mittels `inputTextfield` erzeugt werden.
+Furthermore, the actual input element must be created using `inputTextfield`.
 
 ```kotlin
 val name = storeOf("")
@@ -30,13 +30,13 @@ inputField {
 }
 ```
 
-## Verwendung mit Label und Beschreibung
+## Add Label and Description
 
-Innerhalb des Scopes existieren die beiden Baustein-Funktionen `inputLabel` und `inputDescription`, mit denen man
-das Eingabefeld mit weiteren Beschriftungen versehen kann.
+Within the scope there are the two block functions `inputLabel` and `inputDescription`, that can be used to enhance the
+input field with additional label or descriptions.
 
-Wird beim Label das HTML `label` Tag verwendet (per default), so bewirkt ein Maus-Klick auf das Label, dass das
-Eingabefeld fokussiert wird.
+If the HTML `label` tag is used for the label (by default), a mouse click on the label causes the input field to be
+focused.
 
 ```kotlin
 val name = storeOf("")
@@ -54,10 +54,10 @@ inputField {
 }
 ```
 
-## Deaktivieren
+## Deactivate
 
-Das InputField unterstützt das (dynamische) Deaktivieren und Aktivieren des Eingabefeldes. Dazu muss der boolesche 
-Attribut-Hook `disabled` entsprechend gesetzt werden.
+The InputField component supports the (dynamic) deactivation and activation of the input field. To do this, the boolean
+Attribute hook `disabled` must be set accordingly.
 
 ```kotlin
 val toggle = storeOf(false) 
@@ -77,11 +77,11 @@ inputField {
 }
 ```
 
-## Validierung
+## Validation
 
-Die Datenbindung erlaubt es der InputField Komponente, die Validierungsnachrichten abzugreifen und einen eigenen 
-Baustein `inputValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen.
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
+Data binding allows the InputField component to grab the validation messages and provide its own building
+block `inputValidationMessages` that is only rendered when there are some messages. These messages are exposed within
+its scope as a data stream `msgs`.
 
 ```kotlin
 inputField {
@@ -114,48 +114,52 @@ inputField() {
 
 ### inputField
 
-Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld    | Typ                           | Description                                                                      |
-|---------------|-------------------------------|----------------------------------------------------------------------------------|
-| `value`       | `DatabindingProperty<String>` | Zwei-Wege-Datenbindung für den Inhalt der Eingabe. Muss zwingend gesetzt werden! |
-| `placeHolder` | `AttributeHook<String>`       | Optionaler Hook zum (dynamischen) Setzen eines Platzhalters                      |
-| `disabled`    | `BooleanAttributeHook`        | Optionaler Hook zum (dynamischen) Aktivieren oder Deaktivieren der Eingabe       |
+| Scope property | Typ                           | Description                                             |
+|----------------|-------------------------------|---------------------------------------------------------|
+| `value`        | `DatabindingProperty<String>` | Mandatory (two-way) data-binding for the input value.   |
+| `placeHolder`  | `AttributeHook<String>`       | Optional hook to (dynamically) set a placeholder.       |
+| `disabled`     | `BooleanAttributeHook`        | Optional hook to (dynamically) enable or disable input. |
 
 
 ### inputTextfield
 
-Verfügbar im Scope von: `inputField`
+Available in the scope of: `inputField`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
-Tag: `input` (nicht änderbar!)
+Tag: `input` (not customizable!)
 
 
 ### inputLabel
 
-Verfügbar im Scope von: `inputField`
+Available in the scope of: `inputField`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `label`
 
 
 ### inputDescription
 
-Verfügbar im Scope von: `inputField`
+Available in the scope of: `inputField`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `p`
 
 
 ### inputValidationMessages
 
-Verfügbar im Scope von: `inputField`
+Available in the scope of: `inputField`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
+
+| Scope property | Typ                                      | Description                                                           |
+|----------------|------------------------------------------|-----------------------------------------------------------------------|
+| `msgs`         | `Flow<List<ComponentValidationMessage>>` | provides a data stream with a list of ``ComponentValidationMessage``s |
