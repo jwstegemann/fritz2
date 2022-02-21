@@ -30,7 +30,7 @@ jobs:
         run: ./gradlew dokkaHtmlMultiModule
 
       - name: Build headless-demo
-        run: ./gradlew headless-demo:build
+        run: ./gradlew headless-demo:build versionToJs
 
       - name: Build Webpage
         working-directory: ./www
