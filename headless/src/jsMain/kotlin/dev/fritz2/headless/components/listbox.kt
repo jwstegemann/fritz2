@@ -50,6 +50,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
     fun render() {
         attr("id", componentId)
+
         opened.drop(1).filter { !it } handledBy {
             button?.setFocus()
         }
@@ -70,7 +71,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         if (!openClose.isSet) openClose(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
-        handleOpenCloseEvents()
+        toggleOnClicksEnterAndSpace()
     }.also { button = it }
 
     /**
@@ -168,11 +169,12 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
         override fun render() {
             super.render()
+            trapFocus(restoreFocus = false)
 
             closeOnEscape()
-            closeOnBlur()
-            trapFocus()
+            closeOnBlur(this.domNode, button?.domNode )
 
+            attrIfNotSet("tabindex", "0")
             attr("role", Aria.Role.listbox)
             attr(Aria.invalid, "true".whenever(value.hasError))
             label?.let { attr(Aria.labelledby, it.id) }
@@ -226,6 +228,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             )
 
             opened.filter { it }.flatMapLatest {
+                setFocus()
                 value.data.flatMapLatest { current ->
                     entries.data.map { entries ->
                         val selectedIndex = entries.indexOfFirst { it.value == current }

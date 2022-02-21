@@ -31,7 +31,7 @@ fun RenderContext.popOverDemo() {
             }
         }
 
-        popOverPanel("z-10 w-screen max-w-sm px-4 sm:px-0 lg:max-w-3xl focus:outline-none") {
+        popOverPanel("z-10 max-w-sm px-4 sm:px-0 lg:max-w-3xl focus:outline-none") {
             placement = Placement.bottomStart
 
             transition(opened,

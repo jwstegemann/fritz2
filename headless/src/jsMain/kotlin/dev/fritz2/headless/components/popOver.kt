@@ -2,8 +2,6 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapLatest
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -25,11 +23,6 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
 
     fun render() {
         attr("id", componentId)
-        opened.flatMapLatest {  isOpen ->
-            focusouts.filter {
-                isOpen && it.composedPath().contains(domNode)
-            }
-        } handledBy close
     }
 
     /**
@@ -47,7 +40,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         if (!openClose.isSet) openClose(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
-        handleOpenCloseEvents()
+        toggleOnClicksEnterAndSpace()
     }.also { button = it }
 
     /**
@@ -87,6 +80,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
             initialize()
             render()
             closeOnEscape()
+            closeOnBlur(this.domNode, button?.domNode )
         }
     }
 

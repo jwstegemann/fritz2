@@ -1,11 +1,9 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.core.Keys
-import dev.fritz2.core.SimpleHandler
-import dev.fritz2.core.Tag
-import dev.fritz2.core.shortcutOf
+import dev.fritz2.core.*
 import kotlinx.coroutines.flow.*
-import org.w3c.dom.HTMLElement
+import kotlinx.coroutines.flow.merge
+import org.w3c.dom.Node
 
 
 abstract class OpenClose {
@@ -32,14 +30,33 @@ abstract class OpenClose {
         }
     }
 
-    protected fun Tag<HTMLElement>.handleOpenCloseEvents() {
+    protected fun Tag<*>.toggleOnClicksEnterAndSpace() {
         openClose.handler?.invoke(openClose.data.flatMapLatest { state ->
             merge(
                 clicks,
-                keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) }.onEach {
-                    it.stopImmediatePropagation()
-                    it.preventDefault()
-                }).map { !state }
+                keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) }
+            ).map {
+                it.stopImmediatePropagation()
+                it.preventDefault()
+                !state
+            }
+        }.onEach {
+            console.log("toggling")
         })
     }
+
+    protected fun Tag<*>.closeOnEscape() {
+        opened.flatMapLatest { isOpen ->
+            Window.keydowns.filter { isOpen && shortcutOf(it) == Keys.Escape }
+        } handledBy close
+    }
+
+    protected fun Tag<*>.closeOnBlur(vararg nodes: Node?) {
+        opened.flatMapLatest { isOpen ->
+            Window.clicks.filter {
+                isOpen && it.composedPath().none { nodes.filterNotNull().contains(it) }
+            }
+        } handledBy close
+    }
+
 }

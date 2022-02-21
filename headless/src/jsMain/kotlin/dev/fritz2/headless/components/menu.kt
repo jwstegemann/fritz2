@@ -70,7 +70,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         if (!openClose.isSet) openClose(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
-        handleOpenCloseEvents()
+        toggleOnClicksEnterAndSpace()
     }.also { button = it }
 
     /**
@@ -111,11 +111,12 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
 
         override fun render() {
             super.render()
-
-            closeOnEscape()
-            closeOnBlur()
             trapFocus()
 
+            closeOnEscape()
+            closeOnBlur(this.domNode, button?.domNode )
+
+            attrIfNotSet("tabindex", "0")
             attr("role", Aria.Role.menu)
 
             state.flatMapLatest { (currentIndex, items) ->
@@ -157,6 +158,8 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             } handledBy selections.update
 
             opened.filter { it }.flatMapLatest {
+                console.log("Bin da")
+                setFocus()
                 domNode.scrollTo(0.0, 0.0)
                 items.data.map {
                     firstItem(it)
