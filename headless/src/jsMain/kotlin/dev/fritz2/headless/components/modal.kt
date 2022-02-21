@@ -1,13 +1,24 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.*
-import dev.fritz2.identification.Id
-import dev.fritz2.headless.foundation.*
-import org.w3c.dom.HTMLElement
+import dev.fritz2.core.Id
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.ScopeContext
+import dev.fritz2.core.Tag
+import dev.fritz2.headless.foundation.Aria
+import dev.fritz2.headless.foundation.OpenClose
+import dev.fritz2.headless.foundation.TagFactory
+import dev.fritz2.headless.foundation.trapFocus
+import org.w3c.dom.*
 
-class HeadlessModal(val renderContext: RenderContext) : RenderContext by renderContext,
-    OpenClose by OpenCloseDelegate() {
+/**
+ * This class provides the building blocks to implement a modal.
+ *
+ * Use [modal] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/modal/)
+ */
+class Modal(val renderContext: RenderContext) : RenderContext by renderContext, OpenClose() {
 
     var restoreFocus: Boolean = true
     var setInitialFocus: Boolean = true
@@ -24,71 +35,119 @@ class HeadlessModal(val renderContext: RenderContext) : RenderContext by renderC
         }
     }
 
-    inner class ModalPanel<C : Tag<HTMLElement>>(
-        val tag: C,
-        private val id: String? = null
-    ) : RenderContext by tag {
-        val componentId: String by lazy { id ?: Id.next() }
+    inner class ModalPanel<C : HTMLElement>(
+        tag: Tag<C>,
+        private val explicitId: String? = null
+    ) : Tag<C> by tag {
+        val componentId: String by lazy { explicitId ?: Id.next() }
 
         private var title: Tag<HTMLElement>? = null
-        private var description: Tag<HTMLElement>? = null
+        private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
 
-        fun C.render() {
+        fun render() {
             attr("id", componentId)
             attr("role", Aria.Role.dialog)
             attr(Aria.modal, "true")
             title?.let { attr(Aria.labelledby, it.id) }
-            description?.let { attr(Aria.describedby, it.id) }
+            attr(Aria.describedby, descriptions.map { d -> d.id }.joinToString(" "))
         }
 
-        fun <CO : Tag<HTMLElement>> RenderContext.modalOverlay(
+        /**
+         * Factory function to create a [modalOverlay].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/modal/#modaloverlay)
+         */
+        fun <CO : HTMLElement> RenderContext.modalOverlay(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CO>,
-            content: CO.() -> Unit
+            tag: TagFactory<Tag<CO>>,
+            content: Tag<CO>.() -> Unit
         ) = tag(this, classes, "$componentId-overlay", scope) {
             attr(Aria.hidden, "true")
             content()
         }
 
+        /**
+         * Factory function to create a [modalOverlay] with a [HTMLDivElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/modal/#modaloverlay)
+         */
         fun RenderContext.modalOverlay(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Div.() -> Unit
+            content: Tag<HTMLDivElement>.() -> Unit
         ) = modalOverlay(classes, scope, RenderContext::div, content)
 
-        fun <CT : Tag<HTMLElement>> RenderContext.modalTitle(
+        /**
+         * Factory function to create a [modalTitle].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/modal/#modaltitle)
+         */
+        fun <CT : HTMLElement> RenderContext.modalTitle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CT>,
-            content: CT.() -> Unit
+            tag: TagFactory<Tag<CT>>,
+            content: Tag<CT>.() -> Unit
         ) = tag(this, classes, "$componentId-title", scope, content).also { title = it }
 
+        /**
+         * Factory function to create a [modalTitle] with a [HTMLHeadingElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/modal/#modaltitle)
+         */
         fun RenderContext.modalTitle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: H.() -> Unit
+            content: Tag<HTMLHeadingElement>.() -> Unit
         ) = modalTitle(classes, scope, RenderContext::h2, content)
 
-        fun <CD : Tag<HTMLElement>> RenderContext.modalDescription(
+        /**
+         * Factory function to create a [modalDescription].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/modal/#modaldescription)
+         */
+        fun <CD : HTMLElement> RenderContext.modalDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CD>,
-            content: CD.() -> Unit
-        ) = tag(this, classes, "$componentId-description", scope, content).also { description = it }
+            tag: TagFactory<Tag<CD>>,
+            content: Tag<CD>.() -> Unit
+        ) = tag(
+            this,
+            classes,
+            "$componentId-description-${descriptions.size}",
+            scope,
+            content
+        ).also { descriptions.add(it) }
 
+        /**
+         * Factory function to create a [modalDescription] with a [HTMLParagraphElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/modal/#modaldescription)
+         */
         fun RenderContext.modalDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: P.() -> Unit
+            content: Tag<HTMLParagraphElement>.() -> Unit
         ) = modalDescription(classes, scope, RenderContext::p, content)
     }
 
-    fun <C : Tag<HTMLElement>> RenderContext.modalPanel(
+    /**
+     * Factory function to create a [modalPanel].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/modal/#modalpanel)
+     */
+    fun <C : HTMLElement> RenderContext.modalPanel(
         classes: String? = null,
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<C>,
+        tag: TagFactory<Tag<C>>,
         initialize: ModalPanel<C>.() -> Unit
     ) {
         panel = {
@@ -101,18 +160,50 @@ class HeadlessModal(val renderContext: RenderContext) : RenderContext by renderC
         }
     }
 
+    /**
+     * Factory function to create a [modalPanel] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/modal/#modalpanel)
+     */
     fun RenderContext.modalPanel(
         classes: String? = null,
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        initialize: ModalPanel<Div>.() -> Unit
+        initialize: ModalPanel<HTMLDivElement>.() -> Unit
     ) = modalPanel(classes, id, internalScope, RenderContext::div, initialize)
 }
 
-
-fun RenderContext.headlessModal(
-    initialize: HeadlessModal.() -> Unit
-) = HeadlessModal(this).run {
+/**
+ * Factory function to create a [Modal].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * modal() {
+ *     var restoreFocus: Boolean
+ *     var setInitialFocus: Boolean
+ *     // inherited by `OpenClose`
+ *     val openClose = DatabindingProperty<Boolean>()
+ *     val opened: Flow<Boolean>
+ *     val close: SimpleHandler<Unit>
+ *     val open: SimpleHandler<Unit>
+ *     val toggle: SimpleHandler<Unit>
+ *
+ *     modalPanel() {
+ *         modalOverlay() { }
+ *         modalTitle() { }
+ *         modalDescription() { } // use multiple times
+ *
+ *         // setInitialFocus() within one tag is possible
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/modal/#modal)
+ */
+fun RenderContext.modal(
+    initialize: Modal.() -> Unit
+) = Modal(this).run {
     initialize(this)
     render()
 }

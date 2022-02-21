@@ -9,8 +9,6 @@ eleventyNavigation:
     order: 120
 ---
 
-# Websockets
-
 fritz2 offers support for websockets you can use with different protocols. To use it, you first have to create a socket:
  
 ```kotlin

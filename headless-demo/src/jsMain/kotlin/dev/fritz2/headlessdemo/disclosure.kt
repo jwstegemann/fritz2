@@ -1,7 +1,8 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.headless.components.headlessDisclosure
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.type
+import dev.fritz2.headless.components.disclosure
 
 fun RenderContext.disclosureDemo() {
     val faqs = listOf(
@@ -29,19 +30,18 @@ fun RenderContext.disclosureDemo() {
             }
             dl("mt-6 space-y-6 divide-y divide-gray-200") {
                 faqs.forEach { (question, answer) ->
-                    headlessDisclosure("pt-6") {
+                    disclosure("pt-6") {
                         dt("text-lg") {
                             /* <!-- Expand/collapse question button --> */
                             disclosureButton(
                                 """text-left w-full flex justify-between items-start 
                                     | text-gray-400""".trimMargin()
                             ) {
-                                type("button")
                                 span("font-medium text-gray-900") { +question }
                                 span("ml-6 h-7 flex items-center") {
                                     opened.render(into = this) {
                                         svg("h-6 w-6 transform") {
-                                            if(it) content(HeroIcons.chevron_up)
+                                            if (it) content(HeroIcons.chevron_up)
                                             else content(HeroIcons.chevron_down)
                                         }
                                     }

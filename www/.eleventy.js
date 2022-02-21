@@ -1,11 +1,12 @@
 const eleventyNavigationPlugin = require("@11ty/eleventy-navigation");
 
-const markdownIt = require('markdown-it')
+const markdownIt = require('markdown-it');
 const markdownItKbd = require('markdown-it-kbd');
-const markdownItAnchor = require('markdown-it-anchor')
-const pluginTOC = require('eleventy-plugin-toc')
+const markdownItAnchor = require('markdown-it-anchor');
+const markdownItContainer = require('markdown-it-container');
+const pluginTOC = require('eleventy-plugin-toc');
 const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
-const heroicons = require('eleventy-plugin-heroicons')
+const heroicons = require('eleventy-plugin-heroicons');
 
 module.exports = function(eleventyConfig) {
 
@@ -13,12 +14,21 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPlugin(heroicons);
   eleventyConfig.addPlugin(syntaxHighlight);
 
-  eleventyConfig.addPassthroughCopy('src/img')
   eleventyConfig.addPassthroughCopy('src/assets')
+  eleventyConfig.addPassthroughCopy('src/img')
+  eleventyConfig.addPassthroughCopy({'src/icon': '.'})
 
   eleventyConfig.setBrowserSyncConfig({
     port: 9090,
-    serveStatic: ['../headless-demo/']
+    serveStatic: [
+      {
+        route: '/headless-demo',
+        dir: '../headless-demo/build/distributions'
+      },
+      {
+        route: '/api',
+        dir: '../api'
+      }]
   });
 
   const {
@@ -41,7 +51,11 @@ module.exports = function(eleventyConfig) {
   // Markdown
   eleventyConfig.setLibrary(
       'md',
-      markdownIt().use(markdownItAnchor).use(markdownItKbd)
+      markdownIt()
+          .use(markdownItAnchor)
+          .use(markdownItKbd)
+          .use(markdownItContainer, "info")
+          .use(markdownItContainer, "warning")
   )
 
   eleventyConfig.addPlugin(pluginTOC, {

@@ -1,8 +1,9 @@
 package dev.fritz2.routing
 
-import dev.fritz2.binding.QueuedUpdate
-import dev.fritz2.binding.Store
-import dev.fritz2.dom.html.Events
+import dev.fritz2.core.Store
+import dev.fritz2.core.SubStore
+import dev.fritz2.core.Update
+import dev.fritz2.core.lensOf
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -71,15 +72,11 @@ open class Router<T>(
      */
     open val navTo = this.handle<T> { _, newValue -> newValue }
 
-    override suspend fun enqueue(update: QueuedUpdate<T>) {
-        try {
-            mutex.withLock {
-                val newRoute = update.update(state.value)
-                state.value = newRoute
-                window.location.hash = prefix + defaultRoute.serialize(newRoute)
-            }
-        } catch (e: Throwable) {
-            update.errorHandler(e, state.value)
+    override suspend fun enqueue(update: Update<T>) {
+        mutex.withLock {
+            val newRoute = update(state.value)
+            state.value = newRoute
+            window.location.hash = prefix + defaultRoute.serialize(newRoute)
         }
     }
 
@@ -94,7 +91,7 @@ open class Router<T>(
             it.preventDefault()
             state.value = defaultRoute.deserialize(window.location.hash.removePrefix(prefix))
         }
-        window.addEventListener(Events.hashchange.name, listener)
+        window.addEventListener("hashchange", listener)
     }
 }
 
@@ -123,6 +120,14 @@ open class MapRouter(defaultRoute: Map<String, String> = emptyMap()) :
      * @return [Flow] of [String] with the value
      */
     open fun select(key: String, orElse: String): Flow<String> = this.data.map { m -> m[key] ?: orElse }
+
+    /**
+     * Selects with the given [key] a [SubStore] of the value.
+     *
+     * @param key for getting the value from the parameter [Map]
+     * @return [SubStore] of the resulting value
+     */
+    open fun sub(key: String): SubStore<Map<String, String>, String> = this.sub(lensOf(key))
 }
 
 /**
@@ -192,4 +197,5 @@ open class MapRoute(override val default: Map<String, String> = emptyMap()) :
 }
 
 external fun decodeURIComponent(encodedURI: String): String
+
 external fun encodeURIComponent(decodedURI: String): String

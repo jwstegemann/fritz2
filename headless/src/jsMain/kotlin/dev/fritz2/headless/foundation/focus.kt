@@ -1,11 +1,6 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.afterMount
-import dev.fritz2.dom.beforeUnmount
-import dev.fritz2.dom.html.Keys
-import dev.fritz2.dom.html.shortcutOf
-
+import dev.fritz2.core.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.awaitAnimationFrame
@@ -70,7 +65,7 @@ internal val focusableSelector = """
         """.trimIndent()
 
 fun getFocusableElements(container: HTMLElement? = document.body) =
-    container?.querySelectorAll(focusableSelector)?.asList() ?: emptyList()
+    container?.querySelectorAll(focusableSelector)?.asElementList() ?: emptyList()
 
 fun isElementWithinFocusableElements(element: HTMLElement, container: HTMLElement? = document.body) =
     getFocusableElements(container).toSet().contains(element)
@@ -133,14 +128,36 @@ fun focusIn(container: HTMLElement, focusOptions: FocusOptions): FocusResult {
 
 const val INITIAL_FOCUS_DATA_ATTR = "data-fritz2-initialFocus"
 
+/**
+ * Mark some [Tag] with a data-attribute [INITIAL_FOCUS_DATA_ATTR] so that the [trapFocus] function can find
+ * this [Tag] and set the initial focus to it.
+ *
+ * @param tag The target [Tag] that should get the initial focus within a focus-trap
+ */
 fun setInitialFocus(tag: HTMLElement) {
     tag.setAttribute(INITIAL_FOCUS_DATA_ATTR, "")
 }
 
+/**
+ * Mark some [Tag] with a data-attribute [INITIAL_FOCUS_DATA_ATTR] so that the [trapFocus] function can find
+ * this [Tag] and set the initial focus to it.
+ */
 fun Tag<HTMLElement>.setInitialFocus() {
     attr(INITIAL_FOCUS_DATA_ATTR, "")
 }
 
+/**
+ * This function enables a so called focus-trap. This enforces the specific behaviour within the receiver [Tag],
+ * that switching the focus is only possible on elements that are inside the receiver. No other focusable elements
+ * outside the enclosing container will get the focus.
+ *
+ * This is often useful for components that acts as overlays like modal dialogs or menus.
+ *
+ * @param restoreFocus sets the focus back to the element that had the focus before the container with the trap was
+ *                      entered.
+ * @param setInitialFocus will automatically focus the first element of the container or that one, which has been
+ *                        tagged by [setInitialFocus] function
+ */
 fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: Boolean = true) {
     // restore focus
     if (restoreFocus) {
@@ -169,7 +186,7 @@ fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: Bo
     }
 
     // handle tab key
-    keydowns.events.filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) } handledBy { event ->
+    keydowns.filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) } handledBy { event ->
         event.preventDefault()
         focusIn(
             domNode,

@@ -1,12 +1,11 @@
-package dev.fritz2.headlessdemo.demos
+package dev.fritz2.headlessdemo
 
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.headlessdemo.*
+import dev.fritz2.core.*
 import dev.fritz2.routing.routerOf
 
 data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)
 
-val pages = mapOf<String, DemoPage>(
+val pages = mapOf(
     "listbox" to DemoPage(
         "Headless Listbox",
         """Listboxes are a great foundation for building custom, accessible select menus for your app, 
@@ -17,13 +16,13 @@ val pages = mapOf<String, DemoPage>(
         "Headless Checkboxgroup",
         """Checkbox groups give you the same functionality as native HTML checkbox inputs, without any of the styling. 
             |They're perfect for building out custom UIs for multi selection.""".trimMargin(),
-        RenderContext::checkboxDemo
+        RenderContext::checkboxGroupDemo
     ),
     "radioGroup" to DemoPage(
         "Headless Radiogroup",
         """Radio Groups give you the same functionality as native HTML radio inputs, without any of the styling. 
             |They're perfect for building out custom UIs for single selection.""".trimMargin(),
-        RenderContext::radiogroupDemo
+        RenderContext::radioGroupDemo
     ),
     "menu" to DemoPage(
         "Headless Menu",
@@ -47,18 +46,23 @@ val pages = mapOf<String, DemoPage>(
         "Headless Popover",
         """Popovers are perfect for floating panels with arbitrary content like navigation menus, mobile menus and
             | flyout menus.""".trimMargin(),
-        RenderContext::popoverDemo
+        RenderContext::popOverDemo
     ),
-    "tabs" to DemoPage(
+    "tabGroup" to DemoPage(
         "Headless Tabs",
         """Easily create accessible, fully customizable tab interfaces, with robust focus management and keyboard
             | navigation support.""".trimMargin(),
         RenderContext::tabsDemo
     ),
-    "textfield" to DemoPage(
-        "Headless Input and Textarea",
-        "Easily create accessible, fully customizable text inputs.",
-        RenderContext::textfieldDemo
+    "inputfield" to DemoPage(
+        "Headless Input",
+        "Easily create accessible, fully customizable single line text inputs.",
+        RenderContext::inputFieldDemo
+    ),
+    "textarea" to DemoPage(
+        "Headless Textarea",
+        "Easily create accessible, fully customizable multi-line text inputs.",
+        RenderContext::textAreaDemo
     ),
     "switch" to DemoPage(
         "Headless Switch",
@@ -114,11 +118,10 @@ fun RenderContext.overview() {
 }
 
 fun main() {
-    require("./styles.css")
 
     val router = routerOf("")
 
-    renderTailwind {
+    render {
         router.data.render { route ->
             div("w-full h-screen bg-gradient-to-r from-amber-300 to-orange-500 p-4") {
                 (pages[route]?.content ?: RenderContext::overview)()

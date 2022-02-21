@@ -1,96 +1,96 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.binding.Store
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.*
-
-import dev.fritz2.identification.Id
+import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.hooks.BasicHook
-import dev.fritz2.headless.hooks.ItemDatabindingHook
-import dev.fritz2.headless.hooks.hook
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import kotlinx.browser.document
-import kotlinx.coroutines.flow.*
-import org.w3c.dom.HTMLElement
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import org.w3c.dom.*
 
-class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private val id: String?) :
-    RenderContext by renderContext {
-
-    class DatabindingHook<T> : ItemDatabindingHook<Tag<HTMLElement>, T, T>() {
-
-        override fun Tag<HTMLElement>.render(payload: T) {
-            val event = if (this is Input) changes else clicks
-            handler?.invoke(event.map { payload })
-        }
-
-        override fun isSelected(item: T): Flow<Boolean> = data.map { it == item }
-    }
-
-    class KeyboardNavigationHook<T>(
-        private val value: DatabindingHook<T>,
-        private val isActive: Store<T?>
-    ) : BasicHook<Tag<HTMLElement>, Unit, List<T>>() {
-        operator fun invoke() = this.also { hook ->
-            apply = { options ->
-                hook.value.handler?.invoke(
-                    hook.value.data.flatMapLatest { option ->
-                        keydowns.events.mapNotNull { event ->
-                            when (shortcutOf(event)) {
-                                Keys.ArrowDown -> options.rotateNext(option)
-                                Keys.ArrowUp -> options.rotatePrevious(option)
-                                else -> null
-                            }.also {
-                                if (it != null) {
-                                    event.stopImmediatePropagation()
-                                    event.preventDefault()
-                                    hook.isActive.update(it)
-                                }
-                            }
-                        }
-                    })
-            }
-        }
-    }
+/**
+ * This class provides the building blocks to implement a radio-group.
+ *
+ * Use [radioGroup] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/radiogroup/)
+ */
+class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
+    Tag<C> by tag {
 
     private var label: Tag<HTMLElement>? = null
     private var validationMessages: Tag<HTMLElement>? = null
-
-    val componentId: String by lazy { id ?: value.id ?: Id.next() }
     private val isActive: Store<T?> = storeOf(null)
-    val value = DatabindingHook<T>()
-    val withKeyboardNavigation = KeyboardNavigationHook(value, isActive)
+    private var withKeyboardNavigation = true
+    private var options: MutableList<T> = mutableListOf()
 
-    var options: List<T> = emptyList()
+    val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
+    val value = DatabindingProperty<T>()
 
-
-    fun C.render() {
+    fun render() {
         attr("id", componentId)
         attr("role", Aria.Role.radiogroup)
         attr(Aria.invalid, "true".whenever(value.hasError))
         label?.let { attr(Aria.labelledby, it.id) }
-        hook(withKeyboardNavigation, options)
+        if (withKeyboardNavigation == true) {
+            value.handler?.invoke(
+                value.data.flatMapLatest { option ->
+                    keydowns.mapNotNull { event ->
+                        when (shortcutOf(event)) {
+                            Keys.ArrowDown -> options.rotateNext(option)
+                            Keys.ArrowUp -> options.rotatePrevious(option)
+                            else -> null
+                        }.also {
+                            if (it != null) {
+                                event.stopImmediatePropagation()
+                                event.preventDefault()
+                                isActive.update(it)
+                            }
+                        }
+                    }
+                })
+        }
     }
 
-    fun <CL : Tag<HTMLElement>> RenderContext.radioGroupLabel(
+    /**
+     * Factory function to create a [radioGroupLabel].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogrouplabel)
+     */
+    fun <CL : HTMLElement> RenderContext.radioGroupLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CL>,
-        content: CL.() -> Unit
+        tag: TagFactory<Tag<CL>>,
+        content: Tag<CL>.() -> Unit
     ) = tag(this, classes, "$componentId-label", scope, content).also { label = it }
 
+    /**
+     * Factory function to create a [radioGroupLabel] with a [HTMLLabelElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogrouplabel)
+     */
     fun RenderContext.radioGroupLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Label.() -> Unit
+        content: Tag<HTMLLabelElement>.() -> Unit
     ) = radioGroupLabel(classes, scope, RenderContext::label, content)
 
-    fun <CV : Tag<HTMLElement>> RenderContext.radioGroupValidationMessages(
+    /**
+     * Factory function to create a [radioGroupValidationMessages].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupvalidationmessages)
+     */
+    fun <CV : HTMLElement> RenderContext.radioGroupValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CV>,
-        content: CV.(List<ComponentValidationMessage>) -> Unit
+        tag: TagFactory<Tag<CV>>,
+        content: Tag<CV>.(List<ComponentValidationMessage>) -> Unit
     ) = value.validationMessages.render { messages ->
         if (messages.isNotEmpty()) {
             tag(this, classes, "$componentId-validation-messages", scope, { })
@@ -100,53 +100,71 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
         }
     }
 
+    /**
+     * Factory function to create a [radioGroupValidationMessages] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupvalidationmessages)
+     */
     fun RenderContext.radioGroupValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Div.(List<ComponentValidationMessage>) -> Unit
+        content: Tag<HTMLDivElement>.(List<ComponentValidationMessage>) -> Unit
     ) = radioGroupValidationMessages(classes, scope, RenderContext::div, content)
 
-    // TODO: Make it rather a Fragment than a Tag
-    inner class RadioGroupOption<CO : Tag<HTMLElement>>(
-        val tag: CO,
+    inner class RadioGroupOption<CO : HTMLElement>(
+        tag: Tag<CO>,
         private val option: T,
         id: String?
-    ) : RenderContext by tag {
+    ) : Tag<CO> by tag {
 
-        val selected = value.isSelected(option)
+        val selected = value.data.map { it == option }
         val active = isActive.data.map { it == option }.distinctUntilChanged()
 
         private var toggle: Tag<HTMLElement>? = null
         private var label: Tag<HTMLElement>? = null
-        private var description: Tag<HTMLElement>? = null
+        private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
 
         val optionId = "$componentId-${id ?: Id.next()}"
 
-        fun CO.render() {
+        fun render() {
             toggle?.apply {
                 label?.let { attr(Aria.labelledby, it.id) }
                 attr(
                     Aria.describedby,
                     value.validationMessages.map { messages ->
-                        if (messages.isNotEmpty()) validationMessages?.id else description?.id
+                        if (messages.isNotEmpty()) validationMessages?.id
+                        else descriptions.map { it.id }.joinToString(" ")
                     }
                 )
             }
         }
 
-        fun <CT : Tag<HTMLElement>> RenderContext.radioGroupOptionToggle(
+        /**
+         * Factory function to create a [radioGroupOptionToggle].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoptiontoggle)
+         */
+        fun <CT : HTMLElement> RenderContext.radioGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CT>,
-            content: CT.() -> Unit
+            tag: TagFactory<Tag<CT>>,
+            content: Tag<CT>.() -> Unit
         ) = tag(this, classes, optionId, scope) {
             content()
             attr("role", Aria.Role.radio)
             attr(Aria.checked, selected.asString())
             attr("tabindex", selected.map { if (it) "0" else "-1" })
-            if (this is Input && domNode.getAttribute("name") == null) {
-                attr("name", componentId)
+            var toggleEvent: Listener<*, *> = clicks
+            if (domNode is HTMLInputElement) {
+                if (domNode.getAttribute("name") == null) {
+                    attr("name", componentId)
+                }
+                withKeyboardNavigation = false
+                toggleEvent = changes
             }
+            value.handler?.invoke(toggleEvent.map { option })
             active handledBy {
                 if (it && domNode != document.activeElement) {
                     domNode.focus()
@@ -154,85 +172,189 @@ class HeadlessRadioGroup<C : Tag<HTMLElement>, T>(val renderContext: C, private 
             }
             focuss.map { option } handledBy isActive.update
             blurs.map { null } handledBy isActive.update
-
-            hook(value, option)
         }.also { toggle = it }
 
+        /**
+         * Factory function to create a [radioGroupOptionToggle] with a [HTMLDivElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoptiontoggle)
+         */
         fun RenderContext.radioGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Div.() -> Unit
+            content: Tag<HTMLDivElement>.() -> Unit
         ) = radioGroupOptionToggle(classes, scope, RenderContext::div, content)
 
-        fun <CL : Tag<HTMLElement>> RenderContext.radioGroupOptionLabel(
+        /**
+         * Factory function to create a [radioGroupOptionLabel].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoptionlabel)
+         */
+        fun <CL : HTMLElement> RenderContext.radioGroupOptionLabel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CL>,
-            content: CL.() -> Unit
+            tag: TagFactory<Tag<CL>>,
+            content: Tag<CL>.() -> Unit
         ) = tag(this, classes, "$optionId-label", scope, content).also { label = it }
 
+        /**
+         * Factory function to create a [radioGroupOptionLabel] with a [HTMLLabelElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoptionlabel)
+         */
         fun RenderContext.radioGroupOptionLabel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Label.() -> Unit
+            content: Tag<HTMLLabelElement>.() -> Unit
         ) = radioGroupOptionLabel(classes, scope, RenderContext::label) {
             content()
             `for`(optionId)
         }
 
-        fun <CL : Tag<HTMLElement>> RenderContext.radioGroupOptionDescription(
+        /**
+         * Factory function to create a [radioGroupOptionDescription].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoptiondescription)
+         */
+        fun <CL : HTMLElement> RenderContext.radioGroupOptionDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CL>,
-            content: CL.() -> Unit
-        ) = tag(this, classes, "$optionId-description", scope, content).also { description = it }
+            tag: TagFactory<Tag<CL>>,
+            content: Tag<CL>.() -> Unit
+        ) = tag(
+            this,
+            classes,
+            "$optionId-description-${descriptions.size}",
+            scope,
+            content
+        ).also { descriptions.add(it) }
 
+        /**
+         * Factory function to create a [radioGroupOptionDescription] with a [HTMLSpanElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoptiondescription)
+         */
         fun RenderContext.radioGroupOptionDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Span.() -> Unit
+            content: Tag<HTMLSpanElement>.() -> Unit
         ) = radioGroupOptionDescription(classes, scope, RenderContext::span, content)
+
+        init {
+            options.add(option)
+        }
     }
 
-    fun <CO : Tag<HTMLElement>> RenderContext.radioGroupOption(
+    /**
+     * Factory function to create a [radioGroupOption].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoption)
+     */
+    fun <CO : HTMLElement> RenderContext.radioGroupOption(
         option: T,
         classes: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CO>,
+        tag: TagFactory<Tag<CO>>,
         initialize: RadioGroupOption<CO>.() -> Unit
-    ): CO = tag(this, classes, id, scope) {
+    ): Tag<CO> = tag(this, classes, id, scope) {
         RadioGroupOption(this, option, id).run {
             initialize()
             render()
         }
     }
 
+    /**
+     * Factory function to create a [radioGroupOption] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroupoption)
+     */
     fun RenderContext.radioGroupOption(
         option: T,
         classes: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: RadioGroupOption<Div>.() -> Unit
-    ): Div = radioGroupOption(option, classes, id, scope, RenderContext::div, initialize)
+        initialize: RadioGroupOption<HTMLDivElement>.() -> Unit
+    ): Tag<HTMLDivElement> = radioGroupOption(option, classes, id, scope, RenderContext::div, initialize)
 }
 
-fun <C : Tag<HTMLElement>, T> RenderContext.headlessRadioGroup(
+/**
+ * Factory function to create a [RadioGroup].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * radioGroup<T>() {
+ *     val value: DatabindingPropert<T>
+ *
+ *     radioGroupLabel() { }
+ *     radioGroupValidationMessages() {
+ *         val msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ *     // for each T {
+ *         radioGroupOption(option: T) {
+ *             val selected: Flow<Boolean>
+ *             val active: Flow<Boolean>
+ *
+ *             radioGroupOptionToggle() { }
+ *             radioGroupOptionLabel() { }
+ *             radioGroupOptionDescription() { } // use multiple times
+ *         }
+ *     // }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroup)
+ */
+fun <C : HTMLElement, T> RenderContext.radioGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    tag: TagFactory<C>,
-    initialize: HeadlessRadioGroup<C, T>.() -> Unit
-): C = tag(this, classes, id, scope) {
-    HeadlessRadioGroup<C, T>(this, id).run {
+    tag: TagFactory<Tag<C>>,
+    initialize: RadioGroup<C, T>.() -> Unit
+): Tag<C> = tag(this, classes, id, scope) {
+    RadioGroup<C, T>(this, id).run {
         initialize()
         render()
     }
 }
 
-fun <T> RenderContext.headlessRadioGroup(
+/**
+ * Factory function to create a [RadioGroup] with a [HTMLDivElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * radioGroup<T>() {
+ *     val value: DatabindingPropert<T>
+ *
+ *     radioGroupLabel() { }
+ *     radioGroupValidationMessages() {
+ *         val msgs: Flow<List<ComponentValidationMessage>>
+ *     }
+ *     // for each T {
+ *         radioGroupOption(option: T) {
+ *             val selected: Flow<Boolean>
+ *             val active: Flow<Boolean>
+ *
+ *             radioGroupOptionToggle() { }
+ *             radioGroupOptionLabel() { }
+ *             radioGroupOptionDescription() { } // use multiple times
+ *         }
+ *     // }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/radiogroup/#radiogroup)
+ */
+fun <T> RenderContext.radioGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessRadioGroup<Div, T>.() -> Unit
-): Div = headlessRadioGroup(classes, id, scope, RenderContext::div, initialize)
+    initialize: RadioGroup<HTMLDivElement, T>.() -> Unit
+): Tag<HTMLDivElement> = radioGroup(classes, id, scope, RenderContext::div, initialize)

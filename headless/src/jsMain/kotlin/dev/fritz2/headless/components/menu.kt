@@ -1,29 +1,26 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.binding.RootStore
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.html.*
+import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.foundation.utils.scrollintoview.*
-import dev.fritz2.headless.hooks.hook
-import dev.fritz2.identification.Id
-import dev.fritz2.utils.classes
+import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
+import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import kotlin.math.max
 
-internal val HeadlessScrollOptions = ScrollIntoViewOptionsInit(
-    ScrollBehavior.smooth,
-    ScrollMode.ifNeeded,
-    ScrollPosition.nearest,
-    ScrollPosition.nearest
-)
-
+/**
+ * This class provides the building blocks to implement a menu.
+ *
+ * Use [menu] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/menu/)
+ */
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContext by tag,
-    OpenClose by OpenCloseDelegate() {
+class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
 
     val componentId: String by lazy { id ?: Id.next() }
 
@@ -50,40 +47,52 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
     @OptIn(ExperimentalCoroutinesApi::class)
     private val selections = storeOf(-1)
 
-    fun C.render() {
-        selections.syncBy(selections.handle { -1 })
+    fun render() {
+        selections.data.drop(1) handledBy selections.handle { _, _ -> -1 }
 
         opened.filter { !it }.drop(1) handledBy {
             button?.setFocus()
         }
     }
 
-    fun <CB : Tag<HTMLElement>> RenderContext.menuButton(
+    /**
+     * Factory function to create a [menuButton].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/menu/#menubutton)
+     */
+    fun <CB : HTMLElement> RenderContext.menuButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CB>,
-        content: CB.() -> Unit
+        tag: TagFactory<Tag<CB>>,
+        content: Tag<CB>.() -> Unit
     ) = tag(this, classes, "$componentId-button", scope) {
         if (!openClose.isSet) openClose(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
-        hook(openClose)
+        handleOpenCloseEvents()
     }.also { button = it }
 
+    /**
+     * Factory function to create a [menuButton] with a [HTMLButtonElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/menu/#menubutton)
+     */
     fun RenderContext.menuButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Button.() -> Unit
+        content: Tag<HTMLButtonElement>.() -> Unit
     ) = menuButton(classes, scope, RenderContext::button, content).apply {
         attr("type", "button")
     }
 
-    inner class MenuItems<CI : Tag<HTMLElement>>(
+    inner class MenuItems<CI : HTMLElement>(
         val renderContext: RenderContext,
-        tagFactory: TagFactory<CI>,
+        tagFactory: TagFactory<Tag<CI>>,
         classes: String?,
         scope: ScopeContext.() -> Unit
-    ) : PopUpPanel<CI>(renderContext, tagFactory, classes, "$componentId-items", scope, this@HeadlessMenu, button) {
+    ) : PopUpPanel<CI>(renderContext, tagFactory, classes, "$componentId-items", scope, this@Menu, button) {
 
         private fun nextItem(currentIndex: Int, direction: Direction, items: List<MenuEntry>): Int =
             when (direction) {
@@ -105,67 +114,65 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
 
             closeOnEscape()
             closeOnBlur()
+            trapFocus()
 
-            tag.apply {
-                attr("tabindex", "0")
-                attr("role", Aria.Role.menu)
+            attr("role", Aria.Role.menu)
 
-                state.flatMapLatest { (currentIndex, items) ->
-                    keydowns.events.mapNotNull { event ->
-                        when (shortcutOf(event)) {
-                            Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, items)
-                            Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, items)
-                            Keys.Home -> firstItem(items)
-                            Keys.End -> lastItem(items)
-                            else -> null
-                        }.also {
-                            if (it != null) {
-                                event.stopImmediatePropagation()
-                                event.preventDefault()
-                            }
+            state.flatMapLatest { (currentIndex, items) ->
+                keydowns.mapNotNull { event ->
+                    when (shortcutOf(event)) {
+                        Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, items)
+                        Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, items)
+                        Keys.Home -> firstItem(items)
+                        Keys.End -> lastItem(items)
+                        else -> null
+                    }.also {
+                        if (it != null) {
+                            event.stopImmediatePropagation()
+                            event.preventDefault()
                         }
                     }
-                } handledBy activeIndex.update
+                }
+            } handledBy activeIndex.update
 
-                items.data.flatMapLatest { items ->
-                    keydowns.events
-                        .mapNotNull { e -> if (e.key.length == 1) e.key.first().lowercaseChar() else null }
-                        .mapNotNull { c ->
-                            if (c.isLetterOrDigit()) itemByCharacter(items, c)
-                            else null
-                        }
-                } handledBy activeIndex.update
-
-                state.flatMapLatest { (currentIndex, disabled) ->
-                    keydowns.events.filter { setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it)) }.mapNotNull {
-                        if (currentIndex == -1 || disabled[currentIndex].disabled) {
-                            null
-                        } else {
-                            it.preventDefault()
-                            it.stopImmediatePropagation()
-                            currentIndex
-                        }
+            items.data.flatMapLatest { items ->
+                keydowns
+                    .mapNotNull { e -> if (e.key.length == 1) e.key.first().lowercaseChar() else null }
+                    .mapNotNull { c ->
+                        if (c.isLetterOrDigit()) itemByCharacter(items, c)
+                        else null
                     }
-                } handledBy selections.update
-            }
+            } handledBy activeIndex.update
+
+            state.flatMapLatest { (currentIndex, disabled) ->
+                keydowns.filter { setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it)) }.mapNotNull {
+                    if (currentIndex == -1 || disabled[currentIndex].disabled) {
+                        null
+                    } else {
+                        it.preventDefault()
+                        it.stopImmediatePropagation()
+                        currentIndex
+                    }
+                }
+            } handledBy selections.update
 
             opened.filter { it }.flatMapLatest {
-                tag.domNode.scrollTo(0.0, 0.0)
+                domNode.scrollTo(0.0, 0.0)
                 items.data.map {
                     firstItem(it)
                 }
             } handledBy activeIndex.update
         }
 
-        inner class MenuItem<CM : Tag<HTMLElement>>(val tag: CM, val index: Int) {
+        inner class MenuItem<CM : HTMLElement>(tag: Tag<CM>, val index: Int) : Tag<CM> by tag {
             val active = activeIndex.data.map { it == index }
             val selected = selections.data.filter { it == index }.map {}
 
             val disabled = items.data.map { it[index].disabled }
             val disable = items.disabledHandler(index)
 
-            fun CM.render() {
-                mouseenters.events.mapNotNull { if (items.current[index].disabled) null else index } handledBy activeIndex.update
+            fun render() {
+                mouseenters.mapNotNull { if (items.current[index].disabled) null else index } handledBy activeIndex.update
 
                 attr("tabindex", "-1")
                 attrIfNotSet("role", Aria.Role.menuitem)
@@ -174,7 +181,7 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
                     scrollIntoView(domNode, HeadlessScrollOptions)
                 }
 
-                mousedowns.events.mapNotNull { e ->
+                mousedowns.mapNotNull { e ->
                     e.preventDefault()
                     e.stopImmediatePropagation()
                     if (items.current[index].disabled) null
@@ -187,10 +194,16 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
             }
         }
 
-        fun <CM : Tag<HTMLElement>> RenderContext.menuItem(
+        /**
+         * Factory function to create a [menuItem].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/menu/#menuitem)
+         */
+        fun <CM : HTMLElement> RenderContext.menuItem(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            tag: TagFactory<CM>,
+            tag: TagFactory<Tag<CM>>,
             initialize: MenuItem<CM>.() -> Unit
         ) {
             val index = numberOfItems++
@@ -205,17 +218,29 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
             }
         }
 
+        /**
+         * Factory function to create a [menuItem] with a [HTMLButtonElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://docs.fritz2.dev/headless/menu/#menuitem)
+         */
         fun RenderContext.menuItem(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            initialize: MenuItem<Button>.() -> Unit
+            initialize: MenuItem<HTMLButtonElement>.() -> Unit
         ) = menuItem(classes, scope, RenderContext::button, initialize)
     }
 
-    fun <CI : Tag<HTMLElement>> RenderContext.menuItems(
+    /**
+     * Factory function to create a [menuItems].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/menu/#menuitems)
+     */
+    fun <CI : HTMLElement> RenderContext.menuItems(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<CI>,
+        tag: TagFactory<Tag<CI>>,
         initialize: MenuItems<CI>.() -> Unit
     ) {
         if (!openClose.isSet) openClose(storeOf(false))
@@ -225,31 +250,109 @@ class HeadlessMenu<C : Tag<HTMLElement>>(val tag: C, id: String?) : RenderContex
         }
     }
 
+    /**
+     * Factory function to create a [menuItems] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://docs.fritz2.dev/headless/menu/#menuitems)
+     */
     fun RenderContext.menuItems(
         classes: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        initialize: MenuItems<Div>.() -> Unit
+        initialize: MenuItems<HTMLDivElement>.() -> Unit
     ) = menuItems(classes, internalScope, RenderContext::div, initialize)
 }
 
-
-fun <C : Tag<HTMLElement>> RenderContext.headlessMenu(
+/**
+ * Factory function to create a [Menu].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * menu {
+ *     // inherited by `OpenClose`
+ *     val openClose = DatabindingProperty<Boolean>()
+ *     val opened: Flow<Boolean>
+ *     val close: SimpleHandler<Unit>
+ *     val open: SimpleHandler<Unit>
+ *     val toggle: SimpleHandler<Unit>
+ *
+ *     menuButton() { }
+ *     menuItems() {
+ *         // inherited by `PopUpPanel`
+ *         var placement: Placement
+ *         var strategy: Strategy
+ *         var flip: Boolean
+ *         var skidding: Int
+ *         var distance: int
+ *
+ *         // for each T {
+ *             MenuItem {
+ *                 val index: Int
+ *                 val selected: Flow<Boolean>
+ *                 val active: Flow<Boolean>
+ *                 val disabled: Flow<Boolean>
+ *                 val disable: SimpleHandler<Boolean>
+ *             }
+ *         // }
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/menu/#menu)
+ */
+fun <C : HTMLElement> RenderContext.menu(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    tag: TagFactory<C>,
-    initialize: HeadlessMenu<C>.() -> Unit
-): C = tag(this, classes(classes, "relative"), id, scope) {
-    HeadlessMenu(this, id).run {
+    tag: TagFactory<Tag<C>>,
+    initialize: Menu<C>.() -> Unit
+): Tag<C> = tag(this, classes(classes, "relative"), id, scope) {
+    Menu(this, id).run {
         initialize(this)
         render()
     }
 }
 
-fun RenderContext.headlessMenu(
+/**
+ * Factory function to create a [Menu] with a [HTMLDivElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * menu {
+ *     // inherited by `OpenClose`
+ *     val openClose = DatabindingProperty<Boolean>()
+ *     val opened: Flow<Boolean>
+ *     val close: SimpleHandler<Unit>
+ *     val open: SimpleHandler<Unit>
+ *     val toggle: SimpleHandler<Unit>
+ *
+ *     menuButton() { }
+ *     menuItems() {
+ *         // inherited by `PopUpPanel`
+ *         var placement: Placement
+ *         var strategy: Strategy
+ *         var flip: Boolean
+ *         var skidding: Int
+ *         var distance: int
+ *
+ *         // for each T {
+ *             MenuItem {
+ *                 val index: Int
+ *                 val selected: Flow<Boolean>
+ *                 val active: Flow<Boolean>
+ *                 val disabled: Flow<Boolean>
+ *                 val disable: SimpleHandler<Boolean>
+ *             }
+ *         // }
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/menu/#menu)
+ */
+fun RenderContext.menu(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: HeadlessMenu<Div>.() -> Unit
-): Div = headlessMenu(classes, id, scope, RenderContext::div, initialize)
-
+    initialize: Menu<HTMLDivElement>.() -> Unit
+): Tag<HTMLDivElement> = menu(classes, id, scope, RenderContext::div, initialize)

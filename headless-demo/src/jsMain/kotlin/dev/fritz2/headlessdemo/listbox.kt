@@ -1,11 +1,13 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.headless.components.headlessListbox
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.storeOf
+import dev.fritz2.core.transition
+import dev.fritz2.headless.components.listbox
 import dev.fritz2.headless.foundation.utils.popper.Placement
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+
 
 fun RenderContext.listboxDemo() {
 
@@ -23,8 +25,7 @@ fun RenderContext.listboxDemo() {
     val bestCharacter = storeOf("Luke")
 
     div("w-72 mb-4") {
-        headlessListbox<String>("h-72") {
-            openClose(storeOf(false))
+        listbox<String>("h-72") {
             value(bestCharacter)
             listboxLabel("sr-only", tag = RenderContext::span) { +"Choose the best Star Wars character" }
             listboxButton(
@@ -46,7 +47,14 @@ fun RenderContext.listboxDemo() {
             ) {
                 placement = Placement.bottomStart
 
-                //tag.className(Visibility.dropOn(opened))
+                transition(opened,
+                    "transition duration-100 ease-out",
+                    "opacity-0 scale-95",
+                    "opacity-100 scale-100",
+                    "transition duration-100 ease-in",
+                    "opacity-100 scale-100",
+                    "opacity-0 scale-95"
+                )
 
                 characters.forEach { (entry, disabledState) ->
                     listboxItem(
@@ -54,27 +62,25 @@ fun RenderContext.listboxDemo() {
                         "w-full cursor-default select-none relative py-2 pl-10 pr-4",
                         tag = RenderContext::li
                     ) {
-                        tag.apply {
-                            className(active.combine(disabled) { a, d ->
-                                if (a && !d) {
-                                    "text-amber-900 bg-amber-100"
-                                } else {
-                                    if (d) "text-gray-300" else "text-gray-900"
-                                }
-                            })
-
-                            disable(disabledState)
-
-                            span {
-                                className(selected.map { if (it) "font-medium" else "font-normal" })
-                                +entry
+                        className(active.combine(disabled) { a, d ->
+                            if (a && !d) {
+                                "text-amber-900 bg-amber-100"
+                            } else {
+                                if (d) "text-gray-300" else "text-gray-900"
                             }
+                        })
 
-                            selected.render {
-                                if (it) {
-                                    span("text-amber-600 absolute inset-y-0 left-0 flex items-center pl-3") {
-                                        svg("w-5 h-5") { content(HeroIcons.check) }
-                                    }
+                        disable(disabledState)
+
+                        span {
+                            className(selected.map { if (it) "font-medium" else "font-normal" })
+                            +entry
+                        }
+
+                        selected.render {
+                            if (it) {
+                                span("text-amber-600 absolute inset-y-0 left-0 flex items-center pl-3") {
+                                    svg("w-5 h-5") { content(HeroIcons.check) }
                                 }
                             }
                         }

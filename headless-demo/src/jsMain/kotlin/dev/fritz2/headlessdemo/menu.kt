@@ -1,8 +1,9 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.headless.components.headlessMenu
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.storeOf
+import dev.fritz2.core.transition
+import dev.fritz2.headless.components.menu
 import dev.fritz2.headless.foundation.utils.popper.Placement
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -25,8 +26,7 @@ fun RenderContext.menuDemo() {
 
     div("w-72 mb-4") {
         div("w-full h-72") {
-            headlessMenu("inline-block text-left") {
-                openClose(storeOf(false))
+            menu("inline-block text-left") {
                 div {
                     menuButton(
                         """inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-black 
@@ -47,26 +47,32 @@ fun RenderContext.menuDemo() {
                 ) {
                     placement = Placement.bottomStart
 
-                    //tag.className(Visibility.dropOn(opened))
+                    transition(
+                        opened,
+                        "transition-all duration-100 ease-ease-out",
+                        "opacity-0 scale-95",
+                        "opacity-100 scale-100",
+                        "transition-all duration-100 ease-ease-out",
+                        "opacity-100 scale-100",
+                        "opacity-0 scale-95"
+                    )
 
                     entries.forEach { entry ->
                         menuItem(
                             """group flex rounded-md items-center w-full px-2 py-2 text-sm 
                             | disabled:opacity-50""".trimMargin()
                         ) {
-                            tag.apply {
-                                className(active.combine(disabled) { a, d ->
-                                    if (a && !d) {
-                                        "bg-violet-500 text-white"
-                                    } else {
-                                        if (d) "text-gray-300" else "text-gray-900"
-                                    }
-                                })
-                                svg("w-5 h-5 mr-2") { content(entry.icon) }
-                                +entry.label
-                                if (entry.disabled) disable(true)
-                                selected.map { entry.label } handledBy action.update
-                            }
+                            className(active.combine(disabled) { a, d ->
+                                if (a && !d) {
+                                    "bg-violet-500 text-white"
+                                } else {
+                                    if (d) "text-gray-300" else "text-gray-900"
+                                }
+                            })
+                            svg("w-5 h-5 mr-2") { content(entry.icon) }
+                            +entry.label
+                            if (entry.disabled) disable(true)
+                            selected.map { entry.label } handledBy action.update
                         }
                     }
                 }

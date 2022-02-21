@@ -1,14 +1,17 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.html.FieldSet
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.headless.components.headlessRadioGroup
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.classes
+import dev.fritz2.core.storeOf
+import dev.fritz2.headless.components.radioGroup
 import dev.fritz2.headless.foundation.Aria
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLFieldSetElement
 
-fun RenderContext.radiogroupDemo() {
+
+fun RenderContext.radioGroupDemo() {
     data class Plan(val name: String, val ram: String, val cpus: String, val disk: String, val price: String)
 
     val plans = listOf(
@@ -21,22 +24,22 @@ fun RenderContext.radiogroupDemo() {
     val choice = storeOf<Plan?>(null)
 
     div("w-96") {
-        headlessRadioGroup<FieldSet, Plan?>(tag = RenderContext::fieldset) {
+        radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
             value(choice)
-            options = plans
-            withKeyboardNavigation()
             radioGroupLabel("sr-only") { +"Server size" }
             div("space-y-2") {
                 plans.forEach { option ->
                     radioGroupOption(option) {
                         radioGroupOptionToggle(
-                            """relative block bg-white border rounded-lg shadow-sm px-6 py-2 cursor-pointer 
+                            """relative block border rounded-lg shadow-sm px-6 py-2 cursor-pointer 
                             | sm:flex sm:justify-between focus:outline-none""".trimMargin(),
                             tag = RenderContext::label
                         ) {
-                            className(selected.map {
-                                if (it) "ring-2 ring-indigo-500 border-transparent"
-                                else "border-gray-300"
+                            className(selected.combine(active) { sel, act ->
+                                classes(
+                                    if (sel) "bg-indigo-200" else "bg-white",
+                                    if (act) "ring-2 ring-indigo-500 border-transparent" else "border-gray-300"
+                                )
                             })
                             div("flex items-center") {
                                 div("text-sm") {
