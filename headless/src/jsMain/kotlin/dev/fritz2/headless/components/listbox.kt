@@ -172,7 +172,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             trapFocus(restoreFocus = false)
 
             closeOnEscape()
-            closeOnBlur(this.domNode, button?.domNode )
+            closeOnBlur()
 
             attrIfNotSet("tabindex", "0")
             attr("role", Aria.Role.listbox)

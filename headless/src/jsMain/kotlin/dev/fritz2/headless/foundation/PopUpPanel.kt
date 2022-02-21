@@ -2,9 +2,6 @@ package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.utils.popper.*
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
@@ -111,18 +108,6 @@ abstract class PopUpPanel<C : HTMLElement>(
     var flip: Boolean = true
     var skidding = 0
     var distance = 10
-
-    fun closeOnEscape() {
-        Window.keydowns.filter { shortcutOf(it) == Keys.Escape }
-            .mapNotNull { if (openCloseDelegate.opened.first()) Unit else null } handledBy openCloseDelegate.close
-    }
-
-    fun closeOnBlur() {
-        attrIfNotSet("tabindex", "0")
-        blurs.mapNotNull {
-            if (it.relatedTarget == reference?.domNode) null else Unit
-        } handledBy openCloseDelegate.close
-    }
 
     open fun render() {
         //TODO: showing and styling arrow here

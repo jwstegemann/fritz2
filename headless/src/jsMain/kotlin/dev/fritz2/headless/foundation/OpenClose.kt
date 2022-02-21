@@ -3,7 +3,6 @@ package dev.fritz2.headless.foundation
 import dev.fritz2.core.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.flow.merge
-import org.w3c.dom.Node
 
 
 abstract class OpenClose {
@@ -51,10 +50,10 @@ abstract class OpenClose {
         } handledBy close
     }
 
-    protected fun Tag<*>.closeOnBlur(vararg nodes: Node?) {
+    protected fun Tag<*>.closeOnBlur() {
         opened.flatMapLatest { isOpen ->
             Window.clicks.filter {
-                isOpen && it.composedPath().none { nodes.filterNotNull().contains(it) }
+                isOpen && it.composedPath().none { it == this}
             }
         } handledBy close
     }

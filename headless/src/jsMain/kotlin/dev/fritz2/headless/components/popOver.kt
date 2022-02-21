@@ -80,7 +80,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
             initialize()
             render()
             closeOnEscape()
-            closeOnBlur(this.domNode, button?.domNode )
+            closeOnBlur()
         }
     }
 
