@@ -123,14 +123,6 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
         initialize: ValidationMessages<CV>.() -> Unit
-//    ) = value.validationMessages.render { messages ->
-//        if (messages.isNotEmpty()) {
-//            tag(this, classes, "$componentId-validation-messages", scope, { })
-//                .apply {
-//                    content(messages)
-//                }.also { validationMessages = it }
-//        }
-//    }
     ) = value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
         if(isNotEmpty) {
             ValidationMessages(value.validationMessages,
