@@ -1,10 +1,10 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.html.RenderContext
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.classes
+import dev.fritz2.core.storeOf
 import dev.fritz2.headless.components.radioGroup
 import dev.fritz2.headless.foundation.Aria
-import dev.fritz2.utils.classes
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map

@@ -1,15 +1,10 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.binding.storeOf
-import dev.fritz2.dom.Tag
-import dev.fritz2.dom.Window
-import dev.fritz2.dom.html.*
-import dev.fritz2.dom.merge
+import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.OpenClose
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.utils.popper.*
-import dev.fritz2.identification.Id
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLDivElement
@@ -66,7 +61,7 @@ class Tooltip<C : HTMLElement>(
     }
 
     init {
-        openClose(storeOf(false))
+        openState(storeOf(false))
     }
 }
 

@@ -1,9 +1,9 @@
 package dev.fritz2.routing
 
-import dev.fritz2.dom.html.render
-import dev.fritz2.identification.Id
-import dev.fritz2.test.initDocument
-import dev.fritz2.test.runTest
+import dev.fritz2.core.Id
+import dev.fritz2.core.render
+import dev.fritz2.initDocument
+import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.delay

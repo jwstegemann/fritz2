@@ -88,10 +88,22 @@ popOverPanel {
 `popOverPanel` ist ein [`PopUpPanel`](../#floating-content---popuppanel) und stellt in seinem Scope daher Konfigurationsmöglichkeiten zur Verfügung, um z.B. die Position oder den Abstand des Containers zum `popOverButton` als Referenzelement zu steuern:
 
 ```kotlin
-popOverPabel {
+popOverPanel {
     placement = Placement.Bottom
     distance = 20
     
+    //...
+}
+```
+
+## Pfeil
+
+Ein Pfeil, der auf den `popOverButton` kann einfach hinzugefügt und bei Bedarf gestyled werden:
+
+```kotlin
+popOverPanel {
+    arrow("h-3 w-3 bg-white")
+
     //...
 }
 ```

@@ -1,7 +1,7 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.type
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.transition
 import dev.fritz2.headless.components.disclosure
 
 fun RenderContext.disclosureDemo() {
@@ -49,6 +49,10 @@ fun RenderContext.disclosureDemo() {
                             }
                         }
                         disclosurePanel("mt-2 pr-12", tag = RenderContext::dd) {
+                            transition(
+
+                            )
+
                             p("text-base text-gray-700") { +answer }
                         }
                     }

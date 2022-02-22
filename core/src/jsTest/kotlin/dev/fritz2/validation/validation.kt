@@ -1,10 +1,10 @@
 package dev.fritz2.validation
 
-import dev.fritz2.dom.html.render
-import dev.fritz2.identification.Id
-import dev.fritz2.lenses.lens
-import dev.fritz2.test.initDocument
-import dev.fritz2.test.runTest
+import dev.fritz2.core.Id
+import dev.fritz2.core.lens
+import dev.fritz2.core.render
+import dev.fritz2.initDocument
+import dev.fritz2.runTest
 import dev.fritz2.validation.test.*
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -24,7 +24,8 @@ class ValidationJSTests {
         val c2 = Car("car2", Color(256, 256, 256))
         val c3 = Car("car3", Color(256, -1, 120))
 
-        val store: ValidatingStore<Car, Unit, Message> = storeOf(Car(carName, Color(120, 120, 120)), Car.validator)
+        val store: ValidatingStore<Car, Unit, Message> =
+            storeOf(Car(carName, Color(120, 120, 120)), Car.validator)
 
         val idData = "data-${Id.next()}"
         val idMessages = "messages-${Id.next()}"
@@ -84,7 +85,8 @@ class ValidationJSTests {
     fun testSubStoreValidation() = runTest {
         initDocument()
 
-        val store: ValidatingStore<Car, Unit, Message> = storeOf(Car("car", Color(120, 120, 120)), Car.validator)
+        val store: ValidatingStore<Car, Unit, Message> =
+            storeOf(Car("car", Color(120, 120, 120)), Car.validator)
         val colorLens = lens("color", Car::color) { car, color -> car.copy(color = color) }
         val colorStore = store.sub(colorLens)
 

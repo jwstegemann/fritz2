@@ -44,3 +44,15 @@ subprojects {
 tasks.dokkaHtmlMultiModule.configure {
     outputDirectory.set(rootDir.resolve("api"))
 }
+
+tasks.register("metadataToWww") {
+    doLast {
+        File(rootDir.resolve("www/src/_data"), "fritz2.json").writeText(
+            """
+                {
+                    "version": "${subprojects.find { it.name == "core" }?.version ?: ""}"
+                }
+            """.trimIndent()
+        )
+    }
+}

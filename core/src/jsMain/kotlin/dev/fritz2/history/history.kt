@@ -1,6 +1,6 @@
 package dev.fritz2.history
 
-import dev.fritz2.binding.Store
+import dev.fritz2.core.Store
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
 import kotlin.math.min

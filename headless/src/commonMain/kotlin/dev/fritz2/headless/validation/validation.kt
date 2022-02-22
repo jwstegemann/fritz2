@@ -1,6 +1,6 @@
 package dev.fritz2.headless.validation
 
-import dev.fritz2.identification.Inspector
+import dev.fritz2.core.Inspector
 import dev.fritz2.validation.Validation
 import dev.fritz2.validation.ValidationMessage
 
