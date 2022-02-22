@@ -1,6 +1,6 @@
 package dev.fritz2.headless.test
 
-import dev.fritz2.dom.html.Scope
+import dev.fritz2.core.Scope
 import kotlinx.browser.document
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay

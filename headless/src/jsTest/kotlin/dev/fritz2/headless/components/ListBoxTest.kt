@@ -1,14 +1,14 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.dom.html.RenderContext
-import dev.fritz2.dom.html.render
+import dev.fritz2.core.Id
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.render
 import dev.fritz2.headless.model.TestModel
 import dev.fritz2.headless.model.listBoxEntries
 import dev.fritz2.headless.test.getElementById
 import dev.fritz2.headless.test.runTest
 import dev.fritz2.headless.test.scopeTestKey
 import dev.fritz2.headless.test.scopeTestValue
-import dev.fritz2.identification.Id
 import dev.fritz2.validation.storeOf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map

@@ -1,10 +1,10 @@
 package dev.fritz2.headless.model
 
+import dev.fritz2.core.Lens
+import dev.fritz2.core.Lenses
+import dev.fritz2.core.lens
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.headless.validation.errorMessage
-import dev.fritz2.lenses.Lens
-import dev.fritz2.lenses.Lenses
-import dev.fritz2.lenses.lens
 import dev.fritz2.validation.validation
 
 val listBoxEntries = listOf("a", "b", "c", "d", "e", "f", "g")
