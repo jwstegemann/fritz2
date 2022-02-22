@@ -9,7 +9,7 @@ eleventyNavigation:
     order: 30
 ---
 
-We `recommend` organizing your source code like this:
+We recommend organizing your source code like this:
 
 ```txt
 <project-root>/
