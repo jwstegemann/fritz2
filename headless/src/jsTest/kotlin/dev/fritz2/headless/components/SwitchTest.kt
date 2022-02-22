@@ -5,10 +5,7 @@ import dev.fritz2.core.Keys
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.render
 import dev.fritz2.headless.model.TestModel
-import dev.fritz2.headless.test.getElementById
-import dev.fritz2.headless.test.runTest
-import dev.fritz2.headless.test.scopeTestKey
-import dev.fritz2.headless.test.scopeTestValue
+import dev.fritz2.headless.test.*
 import dev.fritz2.validation.storeOf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -16,8 +13,6 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLLabelElement
 import org.w3c.dom.HTMLSpanElement
-import org.w3c.dom.events.KeyboardEvent
-import org.w3c.dom.events.KeyboardEventInit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -79,8 +74,7 @@ class SwitchTest {
 
         assertEquals(1, switchValidationMessages.childElementCount, "wrong number of messages")
 
-        val spacePress = KeyboardEvent("keydown", KeyboardEventInit(Keys.Space.key, Keys.Space.key))
-        switchToggleElement.dispatchEvent(spacePress)
+        switchToggleElement.keyDown(Keys.Space)
         delay(100)
         assertEquals("false", switchToggleElement.getAttribute("data-state"), "wrong state")
         assertEquals("false", switchToggleElement.getAttribute("data-hasError"), "wrong hasError")

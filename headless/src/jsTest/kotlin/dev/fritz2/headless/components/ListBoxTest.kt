@@ -38,7 +38,7 @@ class ListBoxTest {
                     +"Label"
                 }
                 listboxButton {
-                    +"Button"
+                    value.data.renderText()
                 }
                 listboxItems(tag = RenderContext::ul) {
                     listBoxEntries.forEach { entry ->
@@ -69,7 +69,7 @@ class ListBoxTest {
         assertEquals("Label", listBoxLabelElement.textContent, "wrong text-content")
 
         val listBoxButtonElement = getElementById<HTMLButtonElement>("$componentId-button")
-        assertEquals("Button", listBoxButtonElement.textContent, "wrong text-content")
+        assertEquals(listBoxEntries.first(), listBoxButtonElement.textContent, "wrong text-content")
 
         val listBoxItemsElement = getElementById<HTMLUListElement>("$componentId-items")
         assertEquals("UL", listBoxItemsElement.tagName)
@@ -83,7 +83,6 @@ class ListBoxTest {
         }
 
         assertFails { getElementById<HTMLDivElement>("$componentId-validation-messages") }
-
     }
 
 }
