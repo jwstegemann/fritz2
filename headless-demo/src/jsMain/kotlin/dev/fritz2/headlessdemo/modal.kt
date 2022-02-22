@@ -1,9 +1,7 @@
 package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.*
-
 import dev.fritz2.headless.components.modal
-import dev.fritz2.headless.foundation.setInitialFocus
 import kotlinx.coroutines.flow.map
 
 fun RenderContext.modalDemo() {
@@ -20,7 +18,7 @@ fun RenderContext.modalDemo() {
         clicks.map { !toggle.current } handledBy toggle.update
     }
     modal {
-        openClose(toggle)
+        openState(toggle)
         modalPanel("w-1/3 fixed z-10 inset-0 overflow-y-auto") {
             div("flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0") {
                 modalOverlay("fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity") {

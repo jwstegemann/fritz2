@@ -67,7 +67,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         tag: TagFactory<Tag<CB>>,
         content: Tag<CB>.() -> Unit
     ) = tag(this, classes, "$componentId-button", scope) {
-        if (!openClose.isSet) openClose(storeOf(false))
+        if (!openState.isSet) openState(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
         toggleOnClicksEnterAndSpace()
@@ -245,7 +245,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         tag: TagFactory<Tag<CI>>,
         initialize: MenuItems<CI>.() -> Unit
     ) {
-        if (!openClose.isSet) openClose(storeOf(false))
+        if (!openState.isSet) openState(storeOf(false))
         MenuItems(this, tag, classes, scope).run {
             initialize()
             render()

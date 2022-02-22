@@ -162,7 +162,7 @@ abstract class PopUpPanel<C : HTMLElement>(
 
             job.invokeOnCompletion { popper.destroy() }
 
-            if (openCloseDelegate.openClose.isSet) {
+            if (openCloseDelegate.openState.isSet) {
                 reference.apply {
                     attr(Aria.labelledby, reference.id)
                     attr(Aria.controls, id.whenever(openCloseDelegate.opened))
