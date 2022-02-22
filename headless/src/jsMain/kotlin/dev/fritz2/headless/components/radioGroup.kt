@@ -90,12 +90,14 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
         initialize: ValidationMessages<CV>.() -> Unit
-    ) = value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
-        if(isNotEmpty) {
-            ValidationMessages(value.validationMessages,
-                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {}
-                    .also { validationMessages = it }
-            ).run { initialize() }
+    ) {
+        value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
+            if(isNotEmpty) {
+                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
+                    validationMessages = this
+                    initialize(ValidationMessages(value.validationMessages, this))
+                }
+            }
         }
     }
 

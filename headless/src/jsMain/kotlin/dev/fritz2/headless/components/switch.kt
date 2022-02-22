@@ -1,10 +1,7 @@
 package dev.fritz2.headless.components
 
 import dev.fritz2.core.*
-import dev.fritz2.headless.foundation.Aria
-import dev.fritz2.headless.foundation.DatabindingProperty
-import dev.fritz2.headless.foundation.TagFactory
-import dev.fritz2.headless.foundation.ValidationMessages
+import dev.fritz2.headless.foundation.*
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 
@@ -56,12 +53,14 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
         initialize: ValidationMessages<CV>.() -> Unit
-    ) = value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
-        if(isNotEmpty) {
-            ValidationMessages(value.validationMessages,
-                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {}
-                    .also { validationMessages = it }
-            ).run { initialize() }
+    ) {
+        value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
+            if(isNotEmpty) {
+                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
+                    validationMessages = this
+                    initialize(ValidationMessages(value.validationMessages, this))
+                }
+            }
         }
     }
 
