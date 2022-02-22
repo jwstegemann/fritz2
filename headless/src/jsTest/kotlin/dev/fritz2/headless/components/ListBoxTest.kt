@@ -2,6 +2,7 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.core.Id
 import dev.fritz2.core.RenderContext
+import dev.fritz2.core.asElementList
 import dev.fritz2.core.render
 import dev.fritz2.headless.model.TestModel
 import dev.fritz2.headless.model.listBoxEntries
@@ -15,8 +16,11 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLLabelElement
+import org.w3c.dom.HTMLUListElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
+import kotlin.test.assertTrue
 
 class ListBoxTest {
 
@@ -36,13 +40,14 @@ class ListBoxTest {
                 listboxButton {
                     +"Button"
                 }
-                listboxItems {
+                listboxItems(tag = RenderContext::ul) {
                     listBoxEntries.forEach { entry ->
-                        listboxItem(entry) {
+                        listboxItem(entry, tag = RenderContext::li) {
                             attr("data-index", index)
                             attr("data-active", active.map { it.toString() })
-                            attr("data-disabled", disabled.map { it.toString() })
                             attr("data-selected", selected.map { it.toString() })
+                            attr("data-disabled", disabled.map { it.toString() })
+                            if(index % 2 == 0) disable(true)
                         }
                     }
                 }
@@ -57,7 +62,7 @@ class ListBoxTest {
         val listBoxElement = getElementById<HTMLDivElement>(componentId)
         assertEquals(componentId, listBoxElement.id)
         assertEquals("DIV", listBoxElement.tagName)
-        assertEquals("classes", listBoxElement.className)
+        assertTrue(listBoxElement.className.contains("classes"))
         assertEquals(scopeTestValue, listBoxElement.getAttribute("data-${scopeTestKey.name}"))
 
         val listBoxLabelElement = getElementById<HTMLLabelElement>("$componentId-label")
@@ -66,8 +71,19 @@ class ListBoxTest {
         val listBoxButtonElement = getElementById<HTMLButtonElement>("$componentId-button")
         assertEquals("Button", listBoxButtonElement.textContent, "wrong text-content")
 
-        val listBoxItemsElement = getElementById<HTMLDivElement>("$componentId-items")
-        assertEquals(listBoxEntries.size, listBoxItemsElement.childElementCount, "wrong text-content")
+        val listBoxItemsElement = getElementById<HTMLUListElement>("$componentId-items")
+        assertEquals("UL", listBoxItemsElement.tagName)
+        assertEquals(listBoxEntries.size, listBoxItemsElement.childElementCount)
+        val items = listBoxItemsElement.childNodes.asElementList()
+        for((index, item) in items.withIndex()) {
+            assertEquals("$index", item.getAttribute("data-index"), "wrong index $index")
+            assertEquals("false", item.getAttribute("data-active"), "wrong active $index")
+            assertEquals(if(index == 0) "true" else "false", item.getAttribute("data-selected"), "wrong selected $index")
+            assertEquals(if(index % 2 == 0) "true" else "false", item.getAttribute("data-disabled"), "wrong disabled $index")
+        }
+
+        assertFails { getElementById<HTMLDivElement>("$componentId-validation-messages") }
+
     }
 
 }

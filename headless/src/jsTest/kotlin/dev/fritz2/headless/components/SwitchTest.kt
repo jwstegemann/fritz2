@@ -13,9 +13,9 @@ import dev.fritz2.validation.storeOf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLLabelElement
 import org.w3c.dom.HTMLSpanElement
-import org.w3c.dom.HTMLUListElement
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.KeyboardEventInit
 import kotlin.test.Test
@@ -44,9 +44,9 @@ class SwitchTest {
                     attr("data-state", enabled.map { it.toString() })
                     attr("data-hasError", value.hasError.map { it.toString() })
                 }
-                switchValidationMessages(tag = RenderContext::ul) {
+                switchValidationMessages {
                     msgs.renderEach {
-                        li { +it.message }
+                        div { +it.message }
                     }
                 }
             }
@@ -69,13 +69,14 @@ class SwitchTest {
         assertEquals("false", switchToggleElement.getAttribute("data-state"), "wrong state")
         assertEquals("false", switchToggleElement.getAttribute("data-hasError"), "wrong hasError")
 
-        assertFails { getElementById<HTMLUListElement>("$componentId-validation-messages") }
+        assertFails { getElementById<HTMLDivElement>("$componentId-validation-messages") }
 
         switchToggleElement.click()
         delay(100)
         assertEquals("true", switchToggleElement.getAttribute("data-state"), "wrong state after action click")
         assertEquals("true", switchToggleElement.getAttribute("data-hasError"), "wrong state after action click")
-        val switchValidationMessages = getElementById<HTMLUListElement>("$componentId-validation-messages")
+        val switchValidationMessages = getElementById<HTMLDivElement>("$componentId-validation-messages")
+
         assertEquals(1, switchValidationMessages.childElementCount, "wrong number of messages")
 
         val spacePress = KeyboardEvent("keydown", KeyboardEventInit(Keys.Space.key, Keys.Space.key))
@@ -83,7 +84,8 @@ class SwitchTest {
         delay(100)
         assertEquals("false", switchToggleElement.getAttribute("data-state"), "wrong state")
         assertEquals("false", switchToggleElement.getAttribute("data-hasError"), "wrong hasError")
-        assertFails { getElementById<HTMLUListElement>("$componentId-validation-messages") }
+
+        assertFails { getElementById<HTMLDivElement>("$componentId-validation-messages") }
     }
 
 }
