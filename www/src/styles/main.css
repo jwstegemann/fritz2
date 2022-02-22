@@ -7,36 +7,13 @@ a {
 }
 
 @layer components {
-    .content h1 {
-        @apply text-fg-highlight mb-8 text-3xl font-extrabold tracking-tight
-    }
-
-    .content h2 {
-        @apply text-fg-highlight mt-8 mb-4 text-2xl font-bold leading-6
-    }
-
-    .content h3 {
-        @apply text-fg-highlight mt-8 mb-4 text-xl font-bold leading-6
-    }
-
-    .content p {
-        @apply mb-3 text-base text-relaxed leading-7
-    }
-
-    .content ul {
-        @apply list-disc mb-3 text-base text-relaxed leading-7
-    }
-
-    .content li {
-        @apply ml-6 text-base text-relaxed leading-7
-    }
-
-    .content a {
-        @apply text-fg-highlight text-base underline
-    }
 
     .content code:not([class]) {
-        @apply text-relaxed-highlight bg-bg-highlight rounded px-1.5 py-1 text-sm
+        @apply bg-bg-highlight rounded px-1.5 py-1
+    }
+
+    .content code:not([class])::before, .content code:not([class])::after {
+        content: "" !important;
     }
 
     .content table {
