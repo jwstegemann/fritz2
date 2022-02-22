@@ -67,10 +67,10 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         tag: TagFactory<Tag<CB>>,
         content: Tag<CB>.() -> Unit
     ) = tag(this, classes, "$componentId-button", scope) {
-        if (!openClose.isSet) openClose(storeOf(false))
+        if (!openState.isSet) openState(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
-        handleOpenCloseEvents()
+        toggleOnClicksEnterAndSpace()
     }.also { button = it }
 
     /**
@@ -111,11 +111,12 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
 
         override fun render() {
             super.render()
+            trapFocus()
 
             closeOnEscape()
             closeOnBlur()
-            trapFocus()
 
+            attrIfNotSet("tabindex", "0")
             attr("role", Aria.Role.menu)
 
             state.flatMapLatest { (currentIndex, items) ->
@@ -157,6 +158,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             } handledBy selections.update
 
             opened.filter { it }.flatMapLatest {
+                setFocus()
                 domNode.scrollTo(0.0, 0.0)
                 items.data.map {
                     firstItem(it)
@@ -243,7 +245,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         tag: TagFactory<Tag<CI>>,
         initialize: MenuItems<CI>.() -> Unit
     ) {
-        if (!openClose.isSet) openClose(storeOf(false))
+        if (!openState.isSet) openState(storeOf(false))
         MenuItems(this, tag, classes, scope).run {
             initialize()
             render()

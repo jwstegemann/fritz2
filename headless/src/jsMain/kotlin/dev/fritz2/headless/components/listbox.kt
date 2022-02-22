@@ -50,6 +50,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
     fun render() {
         attr("id", componentId)
+
         opened.drop(1).filter { !it } handledBy {
             button?.setFocus()
         }
@@ -67,10 +68,10 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         tag: TagFactory<Tag<CB>>,
         content: Tag<CB>.() -> Unit
     ) = tag(this, classes, "$componentId-button", scope) {
-        if (!openClose.isSet) openClose(storeOf(false))
+        if (!openState.isSet) openState(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
-        handleOpenCloseEvents()
+        toggleOnClicksEnterAndSpace()
     }.also { button = it }
 
     /**
@@ -168,11 +169,12 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
         override fun render() {
             super.render()
+            trapFocus(restoreFocus = false)
 
             closeOnEscape()
             closeOnBlur()
-            trapFocus()
 
+            attrIfNotSet("tabindex", "0")
             attr("role", Aria.Role.listbox)
             attr(Aria.invalid, "true".whenever(value.hasError))
             label?.let { attr(Aria.labelledby, it.id) }
@@ -226,6 +228,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             )
 
             opened.filter { it }.flatMapLatest {
+                setFocus()
                 value.data.flatMapLatest { current ->
                     entries.data.map { entries ->
                         val selectedIndex = entries.indexOfFirst { it.value == current }
@@ -318,7 +321,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         tag: TagFactory<Tag<CI>>,
         initialize: ListboxItems<CI>.() -> Unit
     ) {
-        if (!openClose.isSet) openClose(storeOf(false))
+        if (!openState.isSet) openState(storeOf(false))
         ListboxItems(this, tag, classes, scope).run {
             initialize()
             render()

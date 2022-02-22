@@ -61,7 +61,7 @@ class Tooltip<C : HTMLElement>(
     }
 
     init {
-        openClose(storeOf(false))
+        openState(storeOf(false))
     }
 }
 

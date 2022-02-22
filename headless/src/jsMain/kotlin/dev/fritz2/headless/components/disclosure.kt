@@ -7,7 +7,6 @@ import dev.fritz2.headless.foundation.TagFactory
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLLabelElement
 
 /**
  * This class provides the building blocks to implement a disclosure.
@@ -43,11 +42,11 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         tag: TagFactory<Tag<CB>>,
         content: Tag<CB>.() -> Unit
     ) = tag(this, classes, "$componentId-button", scope) {
-        if (!openClose.isSet) openClose(storeOf(false))
+        if (!openState.isSet) openState(storeOf(false))
         content()
         attr(Aria.expanded, opened.asString())
         attr("tabindex", "0")
-        handleOpenCloseEvents()
+        toggleOnClicksEnterAndSpace()
     }.also { button = it }
 
     /**

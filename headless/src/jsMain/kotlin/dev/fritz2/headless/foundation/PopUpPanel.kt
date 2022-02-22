@@ -2,9 +2,6 @@ package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.utils.popper.*
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
@@ -33,31 +30,55 @@ abstract class PopUpPanel<C : HTMLElement>(
                 visibility: hidden;
                 pointer-events: none;
             }""".trimIndent(),
-                    """.popper-arrow, .popper-arrow::before {
-                position: absolute;
+                    """.popper-arrow-default {
                 width: 8px;
                 height: 8px;
                 background: inherit;
             }""".trimIndent(),
+                    """.popper-arrow::before {
+                        width: 100%;
+                        height: 100%;
+            }""".trimIndent(),
+                    """.popper-arrow, .popper-arrow::before {
+                position: absolute;
+            }""".trimIndent(),
                     """.popper-arrow {
                 visibility: hidden;
             }""".trimIndent(),
-                    """.popper-arrow::before {
-                visibility: visible;
+            """.popper-arrow::before {
                 content: '';
                 transform: rotate(45deg);
+                background: inherit;
             }""".trimIndent(),
-                    """.popper[data-popper-placement^='top'] > .popper-arrow {
-                bottom: -4px;
+            """.popper.f2-popup-visible .popper-arrow::before {
+                visibility: visible;
             }""".trimIndent(),
-                    """.popper[data-popper-placement^='bottom'] > .popper-arrow {
-                top: -4px;
+            """.popper.f2-popup-hidden .popper-arrow::before {
+                visibility: hidden;
             }""".trimIndent(),
-                    """.popper[data-popper-placement^='left'] > .popper-arrow {
-                right: -4px;
+                    """.popper[data-popper-placement^='bottom'] .popper-arrow::before {
+                top: -50%;
             }""".trimIndent(),
-                    """.popper[data-popper-placement^='right'] > .popper-arrow {
-                left: -4px;
+                    """.popper[data-popper-placement^='top'] .popper-arrow::before {
+                bottom: -50%;
+            }""".trimIndent(),
+                    """.popper[data-popper-placement^='left'] .popper-arrow::before {
+                right: -50%;
+            }""".trimIndent(),
+                    """.popper[data-popper-placement^='right'] .popper-arrow::before {
+                left: -50%;
+            }""".trimIndent(),
+                    """.popper[data-popper-placement^='bottom'] .popper-arrow {
+                top: 0;
+            }""".trimIndent(),
+                    """.popper[data-popper-placement^='top'] .popper-arrow {
+                bottom: 0;
+            }""".trimIndent(),
+                    """.popper[data-popper-placement^='left'] .popper-arrow {
+                right: 0;
+            }""".trimIndent(),
+                    """.popper[data-popper-placement^='right'] .popper-arrow {
+                left: 0;
             }""".trimIndent(),
                     """.popper[data-popper-placement='bottom'] > .transform {
                 transform-origin: top;
@@ -108,41 +129,26 @@ abstract class PopUpPanel<C : HTMLElement>(
         }
     }
 
-
     var placement: Placement = Placement.auto
     var strategy: Strategy = Strategy.absolute
 
-    //    var showArrow: Boolean = false
     var flip: Boolean = true
     var skidding = 0
     var distance = 10
 
-    fun closeOnEscape() {
-        Window.keydowns.filter { shortcutOf(it) == Keys.Escape }
-            .mapNotNull { if (openCloseDelegate.opened.first()) Unit else null } handledBy openCloseDelegate.close
-    }
-
-    fun closeOnBlur() {
-        attrIfNotSet("tabindex", "0")
-        blurs.mapNotNull {
-            if (it.relatedTarget == reference?.domNode) null else Unit
-        } handledBy openCloseDelegate.close
+    private var showArrow = false
+    fun arrow(c: String = "popper-arrow-default") {
+        showArrow = true
+        div(classes(c, "popper-arrow")) {
+            attr("data-popper-arrow", true)
+        }
     }
 
     open fun render() {
-        //TODO: showing and styling arrow here
-//        if (showArrow) {
-//            popperDiv.apply {
-//                div("popper-arrow") {
-//                    attr("data-popper-arrow", true)
-//                }
-//            }
-//        }
-
         if (reference != null) {
             val modifiers = buildList<Modifier<*>> {
                 if (!flip) add(Flip(false))
-//                if (showArrow) add(Arrow())
+                if (showArrow) add(Arrow())
                 if (skidding != 0 || distance != 0) add(Offset(skidding, distance))
             }
 
@@ -156,7 +162,7 @@ abstract class PopUpPanel<C : HTMLElement>(
 
             job.invokeOnCompletion { popper.destroy() }
 
-            if (openCloseDelegate.openClose.isSet) {
+            if (openCloseDelegate.openState.isSet) {
                 reference.apply {
                     attr(Aria.labelledby, reference.id)
                     attr(Aria.controls, id.whenever(openCloseDelegate.opened))
@@ -165,6 +171,8 @@ abstract class PopUpPanel<C : HTMLElement>(
                 openCloseDelegate.opened handledBy {
                     if (it) {
                         popperDiv.domNode.className = "popper f2-popup-visible"
+                        this@PopUpPanel.waitForAnimation()
+                        popper.update()
                         setFocus()
                     } else {
                         this@PopUpPanel.waitForAnimation()
