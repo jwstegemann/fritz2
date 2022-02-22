@@ -170,8 +170,9 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             val active = activeIndex.data.map { it == index }
             val selected = selections.data.filter { it == index }.map {}
 
-            val disabled = items.data.map { it[index].disabled }
-            val disable = items.disabledHandler(index)
+            // no value should appear when list is still empty
+            val disabled = items.data.mapNotNull { it.getOrNull(index)?.disabled }
+            val disable by lazy { items.disabledHandler(index) }
 
             fun render() {
                 mouseenters.mapNotNull { if (items.current[index].disabled) null else index } handledBy activeIndex.update

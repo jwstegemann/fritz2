@@ -242,8 +242,9 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             val active = activeIndex.data.map { it == index }
             val selected = value.data.map { it == entry }
 
-            val disabled = entries.data.map { it[index].disabled }
-            val disable = entries.disabledHandler(index)
+            // no value should appear when list is still empty
+            val disabled = entries.data.mapNotNull { it.getOrNull(index)?.disabled }
+            val disable by lazy { entries.disabledHandler(index) }
 
             fun render() {
                 mouseenters.mapNotNull { if (entries.current[index].disabled) null else index } handledBy activeIndex.update
