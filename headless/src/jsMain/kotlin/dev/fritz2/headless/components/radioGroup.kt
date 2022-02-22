@@ -2,7 +2,6 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.validation.ComponentValidationMessage
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -90,13 +89,13 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        content: Tag<CV>.(List<ComponentValidationMessage>) -> Unit
-    ) = value.validationMessages.render { messages ->
-        if (messages.isNotEmpty()) {
-            tag(this, classes, "$componentId-validation-messages", scope, { })
-                .apply {
-                    content(messages)
-                }.also { validationMessages = it }
+        initialize: ValidationMessages<CV>.() -> Unit
+    ) = value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
+        if(isNotEmpty) {
+            ValidationMessages(value.validationMessages,
+                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {}
+                    .also { validationMessages = it }
+            ).run { initialize() }
         }
     }
 
@@ -109,8 +108,8 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
     fun RenderContext.radioGroupValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLDivElement>.(List<ComponentValidationMessage>) -> Unit
-    ) = radioGroupValidationMessages(classes, scope, RenderContext::div, content)
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+    ) = radioGroupValidationMessages(classes, scope, RenderContext::div, initialize)
 
     inner class RadioGroupOption<CO : HTMLElement>(
         tag: Tag<CO>,

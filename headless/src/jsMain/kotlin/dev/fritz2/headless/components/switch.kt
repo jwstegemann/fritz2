@@ -4,7 +4,7 @@ import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.DatabindingProperty
 import dev.fritz2.headless.foundation.TagFactory
-import dev.fritz2.headless.validation.ComponentValidationMessage
+import dev.fritz2.headless.foundation.ValidationMessages
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 
@@ -55,13 +55,13 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        content: Tag<CV>.(List<ComponentValidationMessage>) -> Unit
-    ) = value.validationMessages.render { messages ->
-        if (messages.isNotEmpty()) {
-            tag(this, classes, "$componentId-validation-messages", scope, { })
-                .apply {
-                    content(messages)
-                }.also { validationMessages = it }
+        initialize: ValidationMessages<CV>.() -> Unit
+    ) = value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
+        if(isNotEmpty) {
+            ValidationMessages(value.validationMessages,
+                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {}
+                    .also { validationMessages = it }
+            ).run { initialize() }
         }
     }
 
@@ -74,8 +74,8 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
     fun RenderContext.switchValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLDivElement>.(List<ComponentValidationMessage>) -> Unit
-    ) = switchValidationMessages(classes, scope, RenderContext::div, content)
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+    ) = switchValidationMessages(classes, scope, RenderContext::div, initialize)
 }
 
 /**

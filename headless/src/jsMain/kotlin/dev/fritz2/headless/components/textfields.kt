@@ -2,9 +2,8 @@ package dev.fritz2.headless.components
 
 
 import dev.fritz2.core.*
-
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.validation.ComponentValidationMessage
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 
@@ -84,21 +83,21 @@ abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        content: Tag<CV>.(List<ComponentValidationMessage>) -> Unit
-    ) = value.validationMessages.render { messages ->
-        if (messages.isNotEmpty()) {
-            tag(this, classes, "$componentId-validation-messages", scope, { })
-                .apply {
-                    content(messages)
-                }.also { validationMessages = it }
+        initialize: ValidationMessages<CV>.() -> Unit
+    ) = value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
+        if(isNotEmpty) {
+            ValidationMessages(value.validationMessages,
+                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {}
+                    .also { validationMessages = it }
+            ).run { initialize() }
         }
     }
 
     protected fun RenderContext.textfieldValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLDivElement>.(List<ComponentValidationMessage>) -> Unit
-    ) = textfieldValidationMessages(classes, scope, RenderContext::div, content)
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+    ) = textfieldValidationMessages(classes, scope, RenderContext::div, initialize)
 }
 
 /**
@@ -191,8 +190,8 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        content: Tag<CV>.(List<ComponentValidationMessage>) -> Unit
-    ) = textfieldValidationMessages(classes, scope, tag, content)
+        initialize: ValidationMessages<CV>.() -> Unit
+    ) = textfieldValidationMessages(classes, scope, tag, initialize)
 
     /**
      * Factory function to create a [inputValidationMessages] with a [HTMLDivElement] as default [Tag].
@@ -203,8 +202,8 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.inputValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLDivElement>.(List<ComponentValidationMessage>) -> Unit
-    ) = textfieldValidationMessages(classes, scope, content)
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+    ) = textfieldValidationMessages(classes, scope, initialize)
 }
 
 /**
@@ -356,8 +355,8 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        content: Tag<CV>.(List<ComponentValidationMessage>) -> Unit
-    ) = textfieldValidationMessages(classes, scope, tag, content)
+        initialize: ValidationMessages<CV>.() -> Unit
+    ) = textfieldValidationMessages(classes, scope, tag, initialize)
 
     /**
      * Factory function to create a [textareaValidationMessages] with a [HTMLDivElement] as default [Tag].
@@ -368,8 +367,8 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.textareaValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLDivElement>.(List<ComponentValidationMessage>) -> Unit
-    ) = textfieldValidationMessages(classes, scope, content)
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+    ) = textfieldValidationMessages(classes, scope, initialize)
 }
 
 /**

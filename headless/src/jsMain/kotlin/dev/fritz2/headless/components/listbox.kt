@@ -4,7 +4,6 @@ import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
 import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
-import dev.fritz2.headless.validation.ComponentValidationMessage
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
@@ -123,13 +122,21 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        content: Tag<CV>.(List<ComponentValidationMessage>) -> Unit
-    ) = value.validationMessages.render { messages ->
-        if (messages.isNotEmpty()) {
-            tag(this, classes, "$componentId-validation-messages", scope, { })
-                .apply {
-                    content(messages)
-                }.also { validationMessages = it }
+        initialize: ValidationMessages<CV>.() -> Unit
+//    ) = value.validationMessages.render { messages ->
+//        if (messages.isNotEmpty()) {
+//            tag(this, classes, "$componentId-validation-messages", scope, { })
+//                .apply {
+//                    content(messages)
+//                }.also { validationMessages = it }
+//        }
+//    }
+    ) = value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
+        if(isNotEmpty) {
+            ValidationMessages(value.validationMessages,
+                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {}
+                    .also { validationMessages = it }
+            ).run { initialize() }
         }
     }
 
@@ -142,8 +149,8 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     fun RenderContext.listboxValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLDivElement>.(List<ComponentValidationMessage>) -> Unit
-    ) = listboxValidationMessages(classes, scope, RenderContext::div, content)
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+    ) = listboxValidationMessages(classes, scope, RenderContext::div, initialize)
 
     inner class ListboxItems<CI : HTMLElement>(
         val renderContext: RenderContext,
