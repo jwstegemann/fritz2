@@ -100,9 +100,9 @@ popOverPanel {
 }
 ```
 
-## Pfeil
+## Arrow
 
-Ein Pfeil, der auf den `popOverButton` kann einfach hinzugefügt und bei Bedarf gestyled werden:
+An arrow pointing to the `popOverButton` can easily be added and styled if needed:
 
 ```kotlin
 popOverPanel {

@@ -57,7 +57,15 @@ In order to prevent interaction with the rest of the application via keyboard in
 so-called focus trap by default. Therefore, the focus will cycle through all the focusable elements using [[Tab]]
 without leaving the modal panel.
 
-For this reason there should always be at least one focusable element in the modal window.
+For this reason there should always be at least one focusable element in the modal window. If there is no focusable
+element found, a warning should appear in the log:
+```text
+There are no focusable elements inside the focus-trap!
+```
+
+This behaviour can be customized by providing other values for the `setInitialFocus` field of the [`modal`](#modal)
+scope. For example `TryToSet` to suppress the warning. But it is recommended to design modals always with some focusable
+element, so the warning will help you to detect design flaws!
 
 By default, the first focusable element is always given the focus. In order to focus a specific tag initially,
 the `setInitialFocus` function can be called inside a `Tag`.
@@ -191,15 +199,15 @@ Parameters: **no**
 
 Default-Tag: No tag is rendered!
 
-| Scope property     | Typ                            | Description                                                                                                                                  |
-|--------------------|--------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| `restoreFocus`     | `DatabindingProperty<Boolean>` | If `true` (default) the focus will be reset to the last focused element after closing the modal.                                             |
-| `setInitialFocus`  | `DatabindingProperty<Boolean>` | If `true` (default), the focus is set to the first focusable DOM element or the element marked with [`setInitialFocus()`](focus-management). |
-| `openState`        | `DatabindingProperty<Boolean>` | Mandatory (two-way) data-binding for opening and closing.                                                                                    |
-| `opened`           | `Flow<Boolean>`                | Data stream that provides Boolean values related to the "open" state. Quite useless within a modal, as it is always `true`                   |
-| `close`            | `SimpleHandler<Unit>`          | Handler to close the list box from inside.                                                                                                   |
-| `open`             | `SimpleHandler<Unit>`          | handler to open; does not make sense to use within a modal!                                                                                  |
-| `toggle`           | `SimpleHandler<Unit>`          | handler for switching between open and closed; does not make sense to use within a modal.                                                    |
+| Scope property     | Typ                            | Description                                                                                                                                         |
+|--------------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `restoreFocus`     | `Boolean`                      | If `true` (default) the focus will be reset to the last focused element after closing the modal.                                                    |
+| `setInitialFocus`  | `InitialFocus`                 | If `InsistToSet` (default), the focus is set to the first focusable DOM element or the element marked with [`setInitialFocus()`](focus-management). |
+| `openState`        | `DatabindingProperty<Boolean>` | Mandatory (two-way) data-binding for opening and closing.                                                                                           |
+| `opened`           | `Flow<Boolean>`                | Data stream that provides Boolean values related to the "open" state. Quite useless within a modal, as it is always `true`                          |
+| `close`            | `SimpleHandler<Unit>`          | Handler to close the list box from inside.                                                                                                          |
+| `open`             | `SimpleHandler<Unit>`          | handler to open; does not make sense to use within a modal!                                                                                         |
+| `toggle`           | `SimpleHandler<Unit>`          | handler for switching between open and closed; does not make sense to use within a modal.                                                           |
 
 
 ### modalPanel
