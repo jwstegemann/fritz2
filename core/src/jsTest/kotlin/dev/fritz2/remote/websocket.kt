@@ -26,7 +26,6 @@ class WebSocketTests {
         var counter = 0
 
         session.state handledBy {
-            println("Connection state is: $it\n")
             when (counter) {
                 0 -> assertTrue(it is SessionState.Connecting, "state not matching")
                 1 -> assertTrue(it is SessionState.Open, "state not matching")
@@ -35,7 +34,6 @@ class WebSocketTests {
         }
 
         session.messages.body handledBy {
-            println("Server said: ${it}\n")
             when (counter) {
                 0 -> assertEquals("Server said: Client said: A", it, "message not matching")
                 1 -> assertEquals("Server said: Client said: B", it, "message not matching")
