@@ -8,23 +8,21 @@ eleventyNavigation:
     parent: headless
     order: 60
 demoHash: modal
-teaser: "Ein modaler Dialog stellt beliebigen Content auf einer Ebene über der restlichen Applikation dar. 
-Intelligentes Maus- und Tastaturmanagement beschränken die Interaktion dabei auf das modale Fenster, solange dieses
-geöffnet ist."
+teaser: "A modal dialog displays any content on a layer in front of the rest of the application.
+Intelligent mouse and keyboard management limit the interaction to the modal window as long as it is open."
 ---
 
-## Einfaches Beispiel
+## Basic Example
 
-Um einen modalen Dialog anzulegen, muss die `modal` Fabrik Funktion aufgerufen. Da diese per se noch nichts rendert,
-bekommt diese als große Ausnahme keinerlei Standard-Parameter übergeben. Die oberste sichtbare Struktur wird durch
-`modalPanel` erzeugt. Innerhalb dieses Scopes wird dann der komplette Inhalt des modalen Fensters inkl. des sogenannten
-Overlay-Bereichs (`modalOverlay`) erzeugt.
+To create a modal dialog, the `modal` factory function must be called. Since this does not render anything per se, it
+does not get any of the standard parameters as a big exception. The topmost visible structure is created by
+`modalPanel` factory function. Within its scope, the complete content of the modal window including the so-called
+overlay area (`modalOverlay`) is created.
 
-Die boolesche Datenbindung muss immer angegeben werden, da ein modaler Dialog logischerweise nur durch ein von außen
-kommendes Event geöffnet werden kann, wie z.B. durch den Klick auf einen Button.
+Boolean data binding must always be specified, since the opening of a modal dialog can only be triggered by an external
+upcoming event, e.g. by clicking on a button.
 
-Das Schließen wird idR. innerhalb des modalen Dialogs angetriggert. Dazu stellt der Scope von `modal` einen Handler
-`close` bereit.
+Closing is usually triggered within the modal dialog. The scope of `modal` provides the `close` handler for this task.
 
 ```kotlin
 val toggle = storeOf(false)
@@ -38,7 +36,7 @@ modal {
     openClose(toggle)
     modalPanel {
         modalOverlay {
-            // add styling and mybe some pleasent transition
+            // add styling and maybe some pleasant transition
         }
         div {
             p { +"I am some modal dialog! Press Cancel to exit."}
@@ -53,16 +51,16 @@ modal {
 }
 ```
 
-## Fokus Management
+## Focus Management
 
-Um die Interaktion mit der restlichen Applikation auch per Tastensteuerung zu unterbinden, ist in den modalen Dialog
-von Haus aus eine sogenannte Fokus-Falle integriert. Daher zirkuliert der Fokus mittels [[Tab]] durch alle
-fokussierbaren Elemente, ohne das modale Panel zu verlassen.
+In order to prevent interaction with the rest of the application via keyboard interaction, the modal dialog uses a
+so-called focus trap by default. Therefore, the focus will cycle through all the focusable elements using [[Tab]]
+without leaving the modal panel.
 
-Aus diesem Grund sollte auch immer mindestens ein fokussierbares Element in dem modalen Fenster vorhanden sein.
+For this reason there should always be at least one focusable element in the modal window.
 
-Per default wird immer das erste fokussierbare Element mit dem Fokus versehen. Um ein bestimmtes Tag mit dem initialen
-Fokus zu versehen, kann die Funktion `setInitialFocus` in einem `Tag` aufgerufen werden. 
+By default, the first focusable element is always given the focus. In order to focus a specific tag initially,
+the `setInitialFocus` function can be called inside a `Tag`.
 
 ```kotlin
 modal {
@@ -86,10 +84,10 @@ modal {
 }
 ```
 
-## Verwendung mit Titel und Beschreibung
+## Add Label and Description
 
-Aus Zugänglichkeitsgründen sollte ein modaler Dialog mit einem Titel und mindestens einem beschreibenden Element
-ausgestattet werden. Dies geschieht über die Fabrik Funktionen `modalTitle` und `modalDescription`.
+For accessibility reasons, a modal dialog should provide a title and at least one descriptive element. This is done via
+the factory functions `modalTitle` and `modalDescription`.
 
 ```kotlin
 modal {
@@ -110,9 +108,9 @@ modal {
 }
 ```
 
-## Transitionen
+## Transitions
 
-Das Ein- und Ausblenden des modalen Fensters lässt sich mit Hilfe von `transition` einfach animieren:
+Showing and hiding the modal dialog can be easily animated with the help of `transition`:
 
 ```kotlin
 modal {
@@ -151,18 +149,17 @@ modal {
 }
 ```
 
-## Maus Interaction
+## Mouse Interaction
 
-Per default wird keinerlei Maus-Interaktion durch den modalen Dialog unterstützt. Typischerweise wird innerhalb eines
-solchen Dialogs ein klickbares Element eingebaut werden, welches den `close` Handler triggert und damit den Dialog
-schließt.
+By default, no mouse interaction is supported through the modal dialog. Typically, within the modal dialog there should
+be some clickable element, which triggers the `close` handler and thus the dialog closes.
 
 ## Keyboard Interaction
 
-| Command               | Description                                                                                                                         |
-|-----------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| [[Tab]]               | Zirkuliert durch alle fokussierbaren Element eines geöffneten modalen Fensters. Es sollte immer ein solches Element vorhanden sein! |
-| [[Shift]] + [[Tab]]   | Zirkuliert rückwärts durch alle fokussierbaren Element eines geöffneten modalen Fensters.                                           |
+| Command               | Description                                                                                                           |
+|-----------------------|-----------------------------------------------------------------------------------------------------------------------|
+| [[Tab]]               | Cycles through all focusable elements of an open modal window. There should always be at least one focusable element! |
+| [[Shift]] + [[Tab]]   | Cycles backwards through all focusable elements of an open modal window.                                              |
 
 ## API
 
@@ -172,7 +169,7 @@ modal() {
     var restoreFocus: Boolean
     var setInitialFocus: Boolean    
     // inherited by `OpenClose`
-    val openClose = DatabindingProperty<Boolean>()
+    val openState: DatabindingProperty<Boolean>
     val opened: Flow<Boolean>
     val close: SimpleHandler<Unit>
     val open: SimpleHandler<Unit>
@@ -190,49 +187,49 @@ modal() {
 
 ### modal
 
-Parameter: **keine**
+Parameters: **no**
 
-Default-Tag: Es wird kein Tag gerendert!
+Default-Tag: No tag is rendered!
 
-| Scope Feld        | Typ                            | Description                                                                                                                                                     |
-|-------------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `restoreFocus`    | `DatabindingProperty<Boolean>` | Bei `true` (default) wird der Fokus auf das zuletzt fokussierte Element zurück gesetzt nach dem Schließen des Modals.                                           |
-| `setInitialFocus` | `DatabindingProperty<Boolean>` | Bei `true` (default) wird der Fokus auf das erste fokussierbare DOM-Element oder das mit [`setInitialFocus()`](#fokus-management) markierte Element fokussiert. |
-| `openClose`       | `DatabindingProperty<Boolean>` | Zwei-Wege-Datenbindung für das Öffnen und Schließen. Muss gesetzt werden!                                                                                       |
-| `opened`          | `Flow<Boolean>`                | Datenstrom der bezogen auf den "geöffnet"-Status boolesche Werte liefert; im Dialog nutzlos, da immer `true`                                                    |
-| `close`           | `SimpleHandler<Unit>`          | Handler zum Schließen des Dialogs von innen heraus                                                                                                              |
-| `open`            | `SimpleHandler<Unit>`          | Handler zum Öffnen; nicht sinnvoll im Dialog anzuwenden!                                                                                                        |
-| `toggle`          | `SimpleHandler<Unit>`          | Handler zum Wechseln zwischen Offen und Geschlossen; nicht sinnvoll im Dialog anzuwenden                                                                        |
+| Scope property     | Typ                            | Description                                                                                                                                  |
+|--------------------|--------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| `restoreFocus`     | `DatabindingProperty<Boolean>` | If `true` (default) the focus will be reset to the last focused element after closing the modal.                                             |
+| `setInitialFocus`  | `DatabindingProperty<Boolean>` | If `true` (default), the focus is set to the first focusable DOM element or the element marked with [`setInitialFocus()`](focus-management). |
+| `openState`        | `DatabindingProperty<Boolean>` | Mandatory (two-way) data-binding for opening and closing.                                                                                    |
+| `opened`           | `Flow<Boolean>`                | Data stream that provides Boolean values related to the "open" state. Quite useless within a modal, as it is always `true`                   |
+| `close`            | `SimpleHandler<Unit>`          | Handler to close the list box from inside.                                                                                                   |
+| `open`             | `SimpleHandler<Unit>`          | handler to open; does not make sense to use within a modal!                                                                                  |
+| `toggle`           | `SimpleHandler<Unit>`          | handler for switching between open and closed; does not make sense to use within a modal.                                                    |
 
 
 ### modalPanel
 
-Verfügbar im Scope von: `modal`
+Available in the scope of: `modal`
 
-Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
 ### modalOverlay
 
-Verfügbar im Scope von: `modalPanel`
+Available in the scope of: `modalPanel`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
 ### modalTitle
 
-Verfügbar im Scope von: `modalPanel`
+Available in the scope of: `modalPanel`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `h2`
 
 ### modalDescription
 
-Verfügbar im Scope von: `modalPanel`
+Available in the scope of: `modalPanel`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `p`

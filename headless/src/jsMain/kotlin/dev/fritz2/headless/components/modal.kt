@@ -183,7 +183,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
  *     var restoreFocus: Boolean
  *     var setInitialFocus: Boolean
  *     // inherited by `OpenClose`
- *     val openClose = DatabindingProperty<Boolean>()
+ *     val openState: DatabindingProperty<Boolean>
  *     val opened: Flow<Boolean>
  *     val close: SimpleHandler<Unit>
  *     val open: SimpleHandler<Unit>

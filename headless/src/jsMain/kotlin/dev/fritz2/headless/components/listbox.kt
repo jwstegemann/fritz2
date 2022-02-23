@@ -349,7 +349,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
  * listbox<T>() {
  *     val value: DatabindingProperty<T>
  *     // inherited by `OpenClose`
- *     val openClose = DatabindingProperty<Boolean>()
+ *     val openState: DatabindingProperty<Boolean>
  *     val opened: Flow<Boolean>
  *     val close: SimpleHandler<Unit>
  *     val open: SimpleHandler<Unit>
@@ -404,7 +404,7 @@ fun <T, C : HTMLElement> RenderContext.listbox(
  * listbox<T>() {
  *     val value: DatabindingProperty<T>
  *     // inherited by `OpenClose`
- *     val openClose = DatabindingProperty<Boolean>()
+ *     val openState: DatabindingProperty<Boolean>
  *     val opened: Flow<Boolean>
  *     val close: SimpleHandler<Unit>
  *     val open: SimpleHandler<Unit>

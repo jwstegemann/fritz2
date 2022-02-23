@@ -10,46 +10,45 @@ eleventyNavigation:
     classes: "font-bold capitalize"
 ---
 
-Anstelle des klassischen Ansatzes, fertige und dabei vollständig funktionale und durchgestylte Komponenten anzubieten,
-setzt fritz2 auf einen anderen Weg: Sogenannte *Headless*-Komponenten.
+Instead of the classic approach of offering taylor-made and fully functional and stylish components,
+fritz2 takes a different approach: So-called headless components.
 
-Diese stellen im Grunde ein Baukastensystem dar, mit dessen Hilfe sich ein Benutzer selber auf einfache Art und Weise
-Oberflächen mit typischen Funktionalitäten bauen kann. Dazu gehören z.B. Funktionen wie die Mehrfach- oder auch
-Einfachauswahl von Elementen aus einer gegebenen Liste dar, modale Dialoge, Popup-Fenster, Eingabefelder uvm.
+These basically represent a modular system, that empowers the user to easily build user interfaces supporting typical
+functionalities. These include, for example, functions such as multiple or also single selection of elements from a
+given list, modal dialogs, pop-up windows, input fields and much more.
 
-Die reine Funktionalität solcher Elemente, insbesondere die Benutzerinteraktion und das entsprechende Datenhandling,
-wie etwa das Navigieren innerhalb einer Auswahlliste oder ein Mausklick auf einen Schalter, wird durch die 
-Headless-Komponenten gekapselt. Der Benutzer muss sich nur noch um die reine Darstellung kümmern, also die Struktur
-der benötigten Tags und das Styling.
+The pure functionality of such elements, in particular the user interaction and the corresponding data handling, such as
+navigating within a selection list or clicking a button with the mouse, is controlled and provided encapsulated by the
+headless components. The user only has to worry about the pure display aspects, i.e. the structure of the required tags
+and the styling.
 
-Für Hintergrundinformationen, wieso wir Headless-Komponenten für den optimalen Weg halten, dem Benutzer von fritz2 
-solche funktionalen Bausteine zur Verfügung zu stellen, verweisen wir auf einen detaillierten
-[Blog-Eintrag](missing-headless-why).
+For background information on why we think headless components are the optimal way to go for fritz2 users, we refer to a
+detailed one [blog post](missing-headless-why).
 
 ::: info
-**Hinweis:** für die Styling-Angaben verwenden wir in den Beispielen das [tailwindcss](https://tailwindcss.com/)
-Framework. Da fritz2 agnostisch bezüglich der Styling-Angaben ist, kannst Du natürlich auch andere Frameworks wie
-[Bootstrap](https://getbootstrap.com/) oder natürlich auch plain CSS verwenden.
+Note: for the styling information we use in the examples the [tailwindcss](https:tailwindcss.com) framework. Since
+fritz2 is agnostic about the styling information, you can of course use other frameworks such as
+[Bootstrap](https:getbootstrap.com) or simply some plain CSS.
 :::
 
-## Struktur einer Komponente
+## Structure of a Component
 
-Jede Komponente wird über eine Fabrik-Funktion erzeugt. In seltenen Fällen gibt es auch Varianten von Fabrik-Funktionen
-(z.B. bei [switch](switch/#switchwithlabel)). Das Wort "Komponente" bezeichnet daher im folgenden auch immer
-gleichzeitig die zugehörige Fabrik-Funktion und umgekehrt.
+Each component is created using a factory function. In rare cases there are also variants of factory functions
+(e.g. with [switch](switch/#switchwithlabel)). The word "component" therefore always designates in the following
+sections the associated factory function at the same time and vice versa.
 
-Komponenten wiederum bestehen aus weiteren, sich oftmals tiefer verschachtelnden Bausteinen. Diese werden analog durch
-Fabrik-Funktionen erzeugt.
+Components, in turn, consist of other building blocks, called "bricks", that are often more deeply nested. These are
+carried out analogously by factory functions too.
 
-Alle Komponenten und viele Bausteine besitzen einen eigenen *Scope*, in dem der Benutzer eine bestimmte *Konfiguration*
-vornehmen muss, um die Funktionalität einer Komponente zu nutzen. Für eine solche Konfiguration gibt es im Wesentlichen
-drei verschiedene Konzepte: einfache `var`-Felder (im folgenden auch "einfache Konfiguration" genannt),
-[`Property`s](#properties) und [`Hook`s](#hooks). Alle drei ermöglichen es dem Benutzer, die Struktur, das Verhalten
-und allgemein die Funktion einer Komponente sinnvoll an den Kontext anzupassen. Auf die genaue Funktionsweise der
-drei Konfigurationen wird in den verlinkten Abschnitten genauer eingegangen.
+All components and many building blocks have their own scope in which the user haa to make some specific configuration
+in order to use the functionality of a component. For such a configuration there are essentially three different
+concepts: simple `var` fields (hereinafter also called "simple configuration"),
+[`Property`s](#properties) and [`Hook`s](#hooks). All three allow the user to adapt the structure, the behavior and
+generally the function of a component to the context in a meaningful way. The different concepts of configuration are
+discussed in detail in a [dedicated section](#basic-concepts-for-configuration).
 
-Fast ausnahmslos erzeugen alle Fabriken (von Komponenten und Bausteinen) immer auch einen `Tag`. Dem Benutzer
-stehen folglich alle Attribute des erzeugten Tags zur Verfügung, wie z.B. `className` oder auch `attr`!
+Almost without exception, all factories (of components and bricks) always generate a `tag`. The user has therefore
+access to all attributes of the generated tag, such as `className` or `attr`!
 
 ```kotlin
 someComponent(/* params */) {
@@ -61,11 +60,11 @@ someComponent(/* params */) {
 }
 ```
 
-Bausteine haben als Präfix immer den markanten Teil oder auch den vollständigen Namen der Komponente zu der sie gehören,
-z.B. `radioGroupLabel` für eine Beschriftung innerhalb der `radioGroup` Komponente.
+Blocks always have the distinctive part or the full name of the component to which they belong as a prefix,
+e.g. `radioGroupLabel` for a label within the `radioGroup` component.
 
-Fast alle Fabrik-Funktionen von Komponenten und Bausteinen haben dieselbe Signatur, die bewusst der eines `Tags`
-ähnlich ist:
+Almost all factory functions of components and building blocks have the same signature, that resembles the one of
+a `tag` by intention:
 
 ```kotlin
 fun <C : HTMLElement> RenderContext.someComponent(
@@ -77,42 +76,42 @@ fun <C : HTMLElement> RenderContext.someComponent(
 ): Tag<C>
 ```
 
-In den API-Sektionen der Komponenten werden diese Standard-Parameter nur als knappe, typ-lose Aufzählung gelistet.
-Oftmals fehlt bei Bausteinen die Möglichkeit, eine ID explizit zu setzen.
+In the API sections of the components, these standard parameters are only listed as a short, untyped list.
+Blocks often lack the option of explicitly setting an ID.
 
-Wichtiger sind hingegen *zusätzliche* Parameter, die der ein oder andere Baustein benötigt. Diese sind daher bewusst
-beschrieben und damit leicht zu erkennen. Zumeist sind das entsprechend auch Pflichtparameter.
+More important, however, are additional parameters that one or the other brick requires. So they are described with
+emphasize and thus easy to recognize. In most cases, these are also mandatory parameters.
 
-## API-Beschreibung
+## API-Description
 
-Da jede Komponente aus vielen verschiedenen Bausteinen besteht und diese wiederum selber einige Felder mit `Hook`s,
-`Property`s oder auch einfachen `var`-Typen anbieten, wird eine stark abstrahierende Übersicht geboten. Diese fokussiert
-sich auf die speziellen Headless-Aspekte und deutet per Kommentar auch hilfreiche Muster an. Standard-Parameter oder
-Felder der Default-Tags werden hingegen ausgespart.
+Since each component consists of different bricks and these in turn have some fields with `Hook`s, `Property`s or
+simple `var` types, a strongly abstract overview is offered to show the big picture. This focuses on the special
+headless aspects and also indicates helpful patterns in comments. Standard parameters or fields of the default tags, on
+the other hand, are omitted.
 
-Folgendes Beispiel soll die Darstellung zeigen. Zur Verdeutlichung sind die Strukturen hier zusätzlich kommentiert; in
-den Komponenten-Dokumentationen fehlen diese Meta-Informationen.
+The following example should introduce the schema. For clarification, the structures are additionally commented here;
+the real component documentation lacks this meta information.
 
 ```kotlin
-// Komponenten Fabrik
+// component factory
 someComponent() {
-    // Felder
+    // fields
     val value: DatabindingProperty<Int>
     var visibleItems: Int
 
-    // Bausteine
+    // bricks
     someBrick() { }
     someOtherBrick() {
-        // eigener Scope mit eigenen Feldern und Sub-Bausteinen
+        // own scope with further fields and bricks
         val msgs: Flow<List<Messages>>
     }
-    // Andeutung eines relevanten Musters:
+    // Suggestion of a relevant pattern:
     // for each item {
     someRepeatingBrick(item: T) {
-        //                 ^^^^^^^
-        //                 mandatory additional parameter!
+    //                 ^^^^^^^
+    //                 mandatory additional parameter!
 
-        // eigenes Feld
+        // own field
         val selected: Flow<Boolean>
     }
     // }
@@ -122,45 +121,43 @@ someComponent() {
 
 ## UI = Headless + Tags + Styling
 
-Um aus den Headless Komponenten und deren Bausteinen eine funktionierendes UI zu erzeugen, müssen die gegebenen
-Fabrik-Funktionen derartig ineinander geschachtelt und mit weiteren `Tags` kombiniert werden, dass die gewünschte
-Gesamtstruktur entsteht. Zusätzlich muss das Aussehen über das Hinzufügen von Styling definiert werden.
+In order to create a functioning UI from the headless components and their building blocks, the given
+Factory functions can be nested and combined with other `tags` in such a way that the desired
+overall structure is created. In addition, the appearance must be defined by adding styling.
 
-Die Headless-Komponenten und -Bausteine bieten dabei folgende Ansatzpunkte, um Funktion und Darstellung der Komponente 
-zu definieren:
+The headless components and modules offer the following starting points in order to specify the function and
+representation of a component:
 
-- Verwendung eines bestimmten Bausteins
-- Bestimmen des zu erzeugenden `Tag`s in den Fabrik-Funktionen
-- Setzen von Styling-Angaben in den Fabrik-Funktionen
-- Konfiguration im Scope der Komponente oder des Bausteins
+- Use of a specific brick
+- Determine the `tag` to be generated in factory functions
+- Setting styling specifications in factory functions
+- Configuration in the scope of the component or block
 
-### Verwendung eines bestimmten Bausteins
+### Use of a specific Brick
 
-Bausteine besitzen oftmals in sich eine Funktionalität, die alleine durch deren Verwendung innerhalb einer Komponente
-aktiviert wird. Beispiele dafür sind die diversen `*Label`, die idR. bestimmte
-[ARIA](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA) Attribute setzen oder auch etablierte Funktionen
-auslösen.
+Bricks often have a functionality in themselves, which is achieved solely through their use within a component. Examples
+of this are the various `labels`, which usually set certain
+[ARIA](https:developer.mozilla.orgen-USdocsWebAccessibilityARIA) attributes or trigger established functions.
 
-Ein gutes Beispiel dafür sind die Labels bei den Text-Komponenten [InputField](#inputField) und [TextArea](#textArea).
-Werden diese verwendet, so fokussiert ein Maus-Klick auf diese Elemente automatisch das zugehörige Eingabefeld.
+A good example of this are the labels on the text components [InputField](#inputField) and [TextArea](#textArea).
+If these are used, a mouse click on these elements automatically focuses the associated input field.
 
-Diese Funktion ist ohne weiteres Zutun des Benutzers verfügbar, sobald der entsprechende `*Label`-Baustein im
-Scope der Komponente aufgerufen wird.
+This function is available without any further efforts as soon as the corresponding `Label` brick is called inside in
+the Scope of the component.
 
-Weitere Beispiele finden sich in den diversen `*Toggle`-Bausteinen (wie z.B.
-[checkboxGroupOptionToggle](checkboxgroup/#checkboxgroupoptiontoggle)), die automatisch das Selektieren / Deselektieren
-von Items aufgrund von definierten Benutzer-Eingaben vornehmen. Der Designer muss nichts weiter tun, als diese Bausteine
-entsprechend in seiner Komponente zu "platzieren".
+Other examples can be found in the various `*Toggle` blocks (e.g.
+[checkboxGroupOptionToggle](#checkboxgroupcheckboxgroupoptiontoggle)), which automatically select or deselect items
+based on defined user inputs. The user need do nothing more than applying these bricks accordingly in his component.
 
-### Bestimmen des zu erzeugenden `Tag`s in den Fabrik-Funktionen
+### Determine the `tag` to be generated in Factory Functions
 
-Die Headless-Komponenten und deren Bausteine bieten immer einen guten Default-Typen für das zu erzeugende `Tag` an. Um
-aber die größt mögliche Flexibilität zu erreichen, kann der Benutzer den Typen des Tags frei wählen.
+The headless components and their bricks always offer a good default type for the `tag` to be generated. In order to
+achieve the greatest possible flexibility, the user is free to choose the type of tag himself.
 
-So kann er das für den Kontext semantisch passende Tag erzeugen.
+In this way, he can create the tag that is semantically appropriate for the context.
 
-Auch hier können wieder die `*Label`-Attribute als Beispiel dienen. Diese erzeugen zumeist tatsächlich HTML
-`label`-Tags. Eine einfache Angabe des `tag`-Parameter genügt jedoch, um dieses Verhalten zu überschreiben:
+Again, the `Label` attributes can serve as an example. These mostly actually generate HTML
+`label`-tags. However, simply specifying the `tag` parameter is enough to override this behavior:
 
 ```kotlin
 inputField() {
@@ -170,11 +167,11 @@ inputField() {
 }
 ```
 
-### Setzen von Styling-Angaben in den Fabrik-Funktionen
+### Setting Styling Specifications in Factory Functions
 
-Fast jede Fabrik-Funktion akzeptiert einen `classes`-Parameter, mit welchem beliebige CSS-Klassen an den zu erzeugenden
-`Tag` gesetzt werden können. Damit kann der Benutzer einfach die Darstellung bestimmen. Dies ist umso wichtiger,
-als dass das Styling fast immer im Gesamtkontext der Komponente zu sehen ist.
+Almost every factory function accepts a `classes` parameter, in order to set arbitrary CSS classes to the created `Tag`.
+This fine-grained control over the styling for nearly every brick, allows the user to easily shape the desired visual
+result. 
 
 ```kotlin
 inputField() {
@@ -186,32 +183,31 @@ inputField() {
 }
 ```
 
-### Konfiguration im Scope der Komponente oder des Bausteins
+### Configuration in the Scope of the Component or Block
 
-Als letzter und dafür auch extrem mächtiger Aspekt stellen die Komponenten und Bausteine öffentlich zugängliche Felder
-für den Anwender bereit, durch die dieser die Konfiguration vornehmen kann oder sogar muss.
+As the last and also extremely powerful aspect, the components and bricks provide accessible fields ready for the user,
+through which he can or even has to carry out the configuration.
 
-Zur Erinnerung: Die drei gängigen Konzepte zur Konfiguration ist die einfache Konfiguration über `public var`-Felder,
-[`Property`s](#properties) und [`Hook`s](#hooks).
+As a reminder, the three common configuration concepts are simple configuration via `public var` fields,
+[`Property`s](#properties) and [`Hook`s](#hooks).
 
-In diesen Feldern wird dem Benutzer oftmals Zugriff auf einen aktuellen Status gegeben, oder dieser kann
-bestimmen, wie der Status ggf. geändert werden soll. Die (Zwei-Wege-)Datenbindung findet z.B. *immer* über eine
-entsprechende `Property` statt, die vom Designer gefüllt werden muss. Dies umfasst z.B. die Informationen über die
-Selektion bei den Auswahlkomponenten ([RadioGroup](radioGroup), [CheckboxGroup](checkboxGroup) oder
-[ListBox](listBox)), aber auch die Eingabewerte bei Textfeld-Komponenten ([InputField](inputField)
-und [TextArea](textArea)).
+These configuration properties have often direct impact on the inner state of the component. This is especially true for
+the (two-way) data-binding aspects lots of components offer. This includes, for example, information about the selection
+of the selection components ([RadioGroup](#radioGroup), [CheckboxGroup](#checkboxGroup) or
+[ListBox](#listBox)), but also the input values for text field components ([InputField](#inputField)
+and [TextArea](#textArea)).
 
-Dazu kommen auch oftmals bestimmte `Flow`s und `Handler`, über welche man spezielle Zustände (selektiert, disabled,
-fokussiert oder geöffnet) abfragen oder entsprechend auch das Verhalten bei Änderungen (Anwender klickt auf einen
-*close*-Button) definieren kann.
+In addition, there are often certain 'flows' and 'handlers', via which special states (selected, disabled, focused or
+open) or the behavior in the event of changes (user clicks on a close button) can define. Those are most of the time
+derived from the data-binding, so the former is some very important and powerful aspect.
 
-Typische Muster sind das dynamische Setzen von CSS-Klassen in Abhängigkeit eines bestimmten Zustands über `className`
-oder auch das komplette Erzeugen oder Löschen von DOM-Strukturen:
+Typical patterns are the dynamic setting of CSS classes depending on a specific state via `className`
+or the complete creation or deletion of DOM structures:
 
 ```kotlin
 checkboxGroup {
-    // Special Databinding-Property for the selection management.
-    // Component will automatically use the current selections and also set or remove those by user interaction. 
+    // special data-binding property for the selection management.
+    // component will automatically use the current selections and also set or remove those by user interaction. 
     value(someStore)
 
     checkboxGroupOption(option) {
@@ -221,7 +217,7 @@ checkboxGroup {
             else "border-gray-300"
         })
 
-        // Conditionally modify a whole sub-structure: Show an Icon only if option is selected
+        // conditionally modify a whole sub-structure: show an Icon only if option is selected
         selected.render {
             if (it) {
                 svg("h-5 w-5 text-indigo-600") {
@@ -234,34 +230,33 @@ checkboxGroup {
 }
 ```
 
-## Basiskonzepte für die Konfiguration
+## Basic concepts for configuration
 
-Headless Komponenten und Bausteine benötigen unabhängig von der konkreten Ausprägung oftmals ähnliche Mechanismen, wie
-sie bestimmte Daten von einem Benutzer einfordern und verwalten. Über das reine Datenmanagement hinaus, muss es dem
-Benutzer auch möglich sein, direkt in das Rendering einzugreifen und individuelles Verhalten in die Komponente oder den
-Baustein hineinzureichen.
+Headless components and modules often require similar mechanisms, regardless of the specific form,
+how they require and maintain certain data input from a user. Beyond pure data management, the user has to be able to
+directly modify the rendering or pass customized behaviour into the component or the brick.
 
-Dafür existieren zwei Grundkonzepte, die im folgenden genauer vorgestellt werden sollen:
+There are two basic concepts for this, which will be presented in more detail below:
 - Properties
 - Hooks
 
-Da die Datenanbindung besonders wichtig ist, wird diese spezielle Implementierung einer `Property` separat in einem
-Abschnitt erläutert.
+Since the data binding is particularly important, this special implementation of a `property` is explained in a
+dedicated section too.
 
 ### Properties
 
-Eine `Property` dient als Container für Daten, die von einer Komponente oder einem Baustein für die Erfüllung seiner 
-Aufgabe relevant sind und vom Anwender von außen konfiguriert werden können oder müssen. Die Property wird entsprechend
-immer von der jeweiligen Headless-Instanz angelegt und in ihrem Scope dem Benutzer exponiert.
+A `Property` serves as a container for data used by a component or brick for the fulfillment of its relevant task and
+can or must be configured externally by the user. The property is always created by the respective headless instance and
+exposed to the user within its scope.
 
-Um dieses öffentliche API so passend wie möglich zu schneiden, sieht das Konzept vor, die benötigten Daten mittels
-`invoke`-Methode einzufordern, die dann intern den Datensatz ablegen. Daraus ergibt sich automatisch, dass das öffentliche
-API zum Setzen von Daten immer eindeutig und einheitlich definiert ist. Zusätzlich wird es einfach möglich, Überladungen
-für gängige Fälle anzubieten, wenn solche Daten heterogen vorliegen können:
+In order to tailor this public API as appropriately as possible, the concept proposes to create tailored `invoke`
+methods. Their parameter lists should reflect the need of the component or brick's functionality, but also be tailored
+to the typical kind of data types of the user's context. This is easily possible by providing different `invoke` methods
+for different data types.
 
 ```kotlin
 class UserProperty : Property<User>() {
-    // Only visible "modifying" API for the client, "hide" the complex type by offering the parameters directly!
+    // only visible "modifying" API for the client, "hide" the complex type by offering the parameters directly!
     operator fun invoke(name: String, alias: String, mail: String) {
         value = User(name, alias, mail)
     }
@@ -278,22 +273,21 @@ someComponentOrBrick {
 }
 ```
 
-Eine Property sollte immer dann verwendet werden, wenn aus dem Kontext ersichtlich ist, dass die benötigten Daten
-aus unterschiedlichen Typen stammen können. Für jeden Typen sollte dann eine passende `invoke`-Funktion angeboten
-werden, so dass ein komfortables API für den Benutzer entsteht.
+A property should be used whenever it is clear from the context that the required data emerge from different types. A
+suitable `invoke` function should then be provided for each type, so that a comfortable API for the user arises.
 
-Die Komponente selber kann folgende Aufgaben dann dank der `Property`-Schnittstelle einfach und elegant lösen:
+The component itself can then solve the following tasks elegantly thanks to the `Property` interface:
 
-- Prüfen mittels `isSet` ob ein Wert gesetzt wurde. Dies ist wichtig, um ggf. auf einen default-Wert zurückgreifen zu
-  können.
-- Weiterreichen des Datensatzes an eine andere Property-Instanz per ``use(item: T)``. Dies ist entscheidend für den
-  Benutzer, da solche Daten sehr oft auch unmittelbar durch die fertige Komponente öffentlich zur Konfiguration
-  exponiert und dann an die Headless-Komponente oder den -Baustein weiter durchgereicht werden müssen.
+- Check with `isSet` if a value was set. This is important in order to be able to fall back on a default value if
+  necessary.
+- Pass the managed data to another property instance via ``use(item: T)``. This is crucial for use cases, where the
+  headless component is encapsulated in some component alike container, which itself exposes this data as public API.
+  This data has to be forwarded to the underlying headless component or brick.
 
 ```kotlin
 class SomeSpecificComponent {
 
-    // create Property instance, so external user can provide user data
+    // create property instance, so external user can provide user data
     val user = UserProperty()
 
     fun render() {
@@ -316,36 +310,37 @@ class SomeSpecificComponent {
 }
 ```
 
-::: info 
-**Tipp:** Wenn es nur einen einzigen Datentypen als Quelle gibt, so sollte man auf eine extra Property-Implementierung
-verzichten, und das ganze über eine einfache Konfiguration lösen! 
-(vgl. [Ausrichtung von TabGroups](tabgroup/#vertikale-tabgroup))
+::: info
+**Tip:** If there is only one data type as a source, you should not use a property implementation, but instead prefer a
+simple configuration! (cf. [Vertical TabGroups](tabgroup/#vertical-tabgroup) where there is only one `Enum` value to
+pass)
 :::
 
 ### Databinding
 
-Einige Headless-Komponenten unterstützen Databinding. Das bedeutet, dass die Komponente auf dynamische Daten von außen
-reagiert, diese Daten ggf. intern weiterverarbeitet und nutzt, sowie in der Lage ist, Änderungen auch wieder nach außen
-weiterzureichen. Dies entspricht der klassischen Zwei-Wege-Datenbindung, die den Kern von fritz2 ausmacht.
+Some headless components support data-binding. This means that the component reacts to dynamic data from the outside,
+processes and uses this data internally if necessary, and is also able to communicate changes to the outside world.
+This corresponds to the classic two-way data binding that makes up the core of fritz2.
 
-Aufgrund der Wichtigkeit dieses Mechanismus existiert eine spezialisierte `Property` namens `DatabindingProperty<T>`.
+Due to the importance of this mechanism, there is a specialized `Property` called `DatabindingProperty<T>`, which is
+suitable for most data-binding scenarios.
 
-Diese Property fordert daher folgende Parameter per `invoke` für die Verwendung:
+This property therefore requires the following parameters via `invoke` for use:
 
-- `id: String? = null`: Eine optionale ID, welche idR. die Basis für die weiteren Sub-Strukturen einer
-  Headless-Komponente bildet.
-- `data: Flow<T>`: Muss zwingend angegeben werden. Dieser Datenstrom liefert die dynamischen Daten von außen, auf die
-  die Komponente reagieren muss.
-- `messages: Flow<List<ComponentValidationMessage>>? = null`: Dieser Datenstrom ermöglicht die optionale Weitergabe von
-  Validierungsnachrichten. Viele Headless-Komponenten unterstützen diesen Aspekt bereits nativ!
-- `handler: ((Flow<T>) -> Unit)? = null`: Ein optionaler Handler, der definiert, wie die Komponente intern gemachte
-  Änderungen wieder nach draußen reichen soll.
+- `id: String? = null`: An optional ID, which forms the basis for the further sub-structures' IDs of a headless
+  component.
+- `data: Flow<T>`: This mandatory data stream delivers the dynamic data from the outside to which the component must
+  react.
+- `messages: Flow<List<ComponentValidationMessage>>? = null`: This data stream allows for the optional propagation of
+  validation messages. Many headless components already support this aspect natively!
+- `handler: ((Flow<T>) -> Unit)? = null`: An optional handler that defines how the component propagates internally made
+  changes to the outside world.
 
-Da sich diese Informationen allesamt aus einem `Store` ableiten lassen, bietet die Property eine entsprechend
-überladene `invoke`-Methode an.
+Since this information can all be derived from a `Store`, the property offers a corresponding overloaded `invoke`
+method.
 
-Damit ermöglicht es diese spezielle Property dem Benutzer, sehr einfach und mit stark reduziertem
-Boilerplate-Code, die Daten für die Datenbindung zu exponieren und zu verwalten.
+Thus, this special property allows the user, very easily and with greatly reduced boilerplate code to expose and manage
+the data for data-binding.
 
 ```kotlin
 val name = storeOf("fritz2")
@@ -362,27 +357,27 @@ inputField {
 
 ### Hooks
 
-Das Hook-Konzept ist im Kern eigentlich nur eine spezialisierte [Property](#properties), die anstelle von beliebigen
-Daten einen sogenannten *Effekt* kapselt. Ein Effekt ist dabei ein Verhalten, das direkte Auswirkungen auf die
-Oberfläche hat; sei es durch Strukturen im DOM, oder durch das Reagieren auf Events oder gar dem Erzeugen von Events.
+The hook concept is really just a specialized [property](#properties) at its core, which instead of arbitrary data
+encapsulates a so-called *effect*. An effect is simply behavior that directly affects the user interface in some way; be
+it through structures in the DOM, or through reacting to events or even generating events.
 
-Der Effekt ist im Falle eines Hooks genau die Konfiguration, die vom Benutzer einer Komponente angegeben werden muss,
-aber durch die (Headless-)Komponente an einer bestimmten Stelle oder Situation *angewendet* wird.
+The effect, in the case of a hook, is precisely the configuration that must be specified by the user of a component,
+but is applied by the headless component or brick in a specific place or situation.
 
-Daher bietet es sich an, eine `Property` als Basis-Schnittstelle zu wählen: Das öffentliche API zum Setzen des Effekts
-funktioniert durch das Property-Konzept analog zu allen anderen Konfigurationen. Der Effekt selber ist hingegen so
-gestaltet, dass er als Extension Expression auf einem `Tag` mit einem beliebigen *Payload* Parameter universell
-innerhalb des `RenderContexts` aufgerufen werden kann. Obendrein besitzt der Effekt auch einen generischen
-Rückgabe-Typ: `typealias Effect<C, R, P> = C.(P) -> R`
+Therefore, it makes sense to choose a `Property` as the base interface: The public API for setting the effect works in
+the same way as all other configurations thanks to the property concept. The effect itself, on the other hand, is
+designed to be applicable as extension function on a `tag` with some payload parameter. So it can be called anywhere
+within the `RenderContext`. On top of that, the effect also has a generic return type, so that the latter can be
+processed further if needed. The signature looks like that: `typealias Effect<C, R, P> = C.(P) -> R`
 
-Damit kann der Effekt alle Facetten eines UI innerhalb des DOMs abbilden.
+This allows the effect to handle all facets of a UI within the DOM.
 
-Die Konfiguration findet dabei wie gehabt über individuell anzupassende `invoke`-Methoden statt.
+The configuration takes place as usual by custom tailored `invoke` methods.
 
-Ein immer wieder vorkommendes Muster bei Hooks lässt sich auf die Dualität von statischen und dynamischen Daten
-zurückführen: Manchmal ist ein zu rendernder Wert statisch, in anderen Fällen stammt er aus einem `Flow`. Beides kann
-man über dedizierte `invoke`-Funktionen abbilden, die entsprechend den Effekt im `value`-Feld der
-`Property` ablegen:
+A recurring pattern in hooks can be traced back to the duality of static and dynamic data:
+Sometimes a value to be rendered is static, other times it comes from a `flow`. Both can be processed by
+dedicated `invoke` functions that create the specific effect accordingly and put into the `value` field of
+the `Property`:
 
 ```kotlin
 class LabelHook : Hook<HTMLElement, Unit, Unit>() {
@@ -402,8 +397,8 @@ class LabelHook : Hook<HTMLElement, Unit, Unit>() {
 }
 ```
 
-Eine Komponente bietet den zuvor entwickelten `Hook` über sein öffentliches API zur Konfiguration durch den Benutzer an
-und kann den Effekt dann über eine globale `hook`-Funktion einfach anwenden:
+A component exposes the previously developed `Hook` via its public API for user configuration and can then easily apply
+the effect via a global `hook` function:
 
 ```kotlin
 class SomeComponent {
@@ -433,25 +428,34 @@ someComponent {
 }
 ```
 
-## Mehrfach genutzte Basisklassen
+::: info
+**Tip:** There is an abstract base class for rendering something based upon one value as static `T` or `Flow<T>`
+called `TagHook`. So implementing such a `LabelHook` as in the example above should be built upon this foundation
+class for real projects.
+:::
+
+## Shared base classes
 
 ### Closable Content - OpenClose
 
-Einige der Headless Komponenten können geöffnet und geschlossen werden, beispielsweise indem im geöffneten Zustand
-content ausklappt (`disclosure`) oder ein PopUp erscheint (`popOver`). Diese Komponenten implementieren die abstrakte
-Klasse `OpenClose`.
+Some headless components can be opened and closed, for example by being in the open state content
+expands ([Disclosure](disclosure)) or a popup appears ([PopOver](popover)). These components implement the abstract 
+class `OpenClose`.
 
-Im Scope von dieser Komponenten stehen verschiedene `Flow`s und `Handler` bereit, um auf den Öffnungszustand der
-Komponente zu reagieren oder diesen zu beeinflussen:
+In the scope of these components, there are various `flow`s and `handlers` available, in order to react or manipulate
+the open-state of the component:
 
-- `opened: Flow<Boolean>` beschreibt, ob die Komponente geöffnet oder geschlossen ist
-- `open : Handler<Unit>` öffnet die Komponente
-- `close : Handler<Unit>` schließt die Komponente
-- `toggle : Handler<Unit>` schließt die Komponente, wenn sie geöffnet ist und andersherum
+| Scope property | Typ                              | Description                                                           |
+|----------------|----------------------------------|-----------------------------------------------------------------------|
+| `openState`    | `DatabindingProperty<Boolean>`   | Optional (two-way) data-binding for opening and closing.              |
+| `opened`       | `Flow<Boolean>`                  | Data stream that provides Boolean values related to the "open" state. |
+| `close`        | `SimpleHandler<Unit>`            | Handler to close the disclosure from inside.                          |
+| `open`         | `SimpleHandler<Unit>`            | handler to open.                                                      |
+| `toggle`       | `SimpleHandler<Unit>`            | handler for switching between open and closed.                        |
 
-Der Öffnungszustand einer solchen Komponente kann über die Property `openClose` per Databinding z.B. an einen
-externen `Store` oder `Flow` gebunden werden. Über diesen kann z.B. die Sichtbarkeit der Auswahlliste einer `listbox`
-dann unabhängig vom Standardverhalten gesteuert werden, also z.B. immer offen gehalten werden:
+The open state of such a component can be sent via the data-binding property `openState`, e.g. to a external `Store`
+or `Flow`. This can be used, for example, to control the visibility of the selection list of a `listbox` independently
+of the standard behavior, e.g. always kept open:
 
 ```kotlin
 listbox<String> {
@@ -471,25 +475,25 @@ listbox<String> {
 
 ### Floating Content - PopUpPanel
 
-Einige Bausteine der Headless Komponenten (z.B. das `popOverPanel` oder die `listboxItem`) werden dynamisch positioniert
-und schweben über dem übrigen Inhalt. Oft werden diese auch dynamisch ein- und ausgeblendet.
+Some bricks of the headless components (e.g. the `popOverPanel` or the `listboxItem`) are positioned dynamically
+and hover over the rest of the content. These are often faded in and out dynamically.
 
-Diese Bausteine sind mit Hilfe der Bibliothek [Popper.js]("https://popper.js.org/") realisiert. Dementsprechend bieten
-sie eine einheitliche Konfigurationsschnittstelle, um die wichtigsten Attribute
+These blocks are implemented using the library [Popper.js]("https:popper.js.org"). Bid accordingly
+they offer a unified configuration interface to the most important attributes.
 
-Im Scope eines solchen Bausteins, der die abstrakte Klasse `PopUpPanel` implementiert, stehen folgende Konfigurationen
-zur Verfügung, um die Positionierung des Inhaltes zu beeinflussen:
+The following configurations are available in the scope of such a brick that implements the abstract class `PopUpPanel`
+in order to influence the positioning of the content:
 
-- `placement` definiert die Position des Bausteins, z.B. `Placement.top`, `Placement.bottomRight`, etc. Standardwert
-  ist `Placement.auto`. Hierbei wird die vermutlich beste Position automatisch anhand des zur Verfügung stehenden
-  sichtbaren Platzes bestimmt.
-- `strategy` legt fest, ob der Baustein `absolute` positioniert werden soll (default) oder `fixed`.
-- `flip` kommt der Baustein zu nah an den Rand des sichtbaren Bereichs, wechselt die Position automatisch auf die
-  jeweils andere Seite, wenn dort mehr Platz zur Verfügung steht.
-- `distance` definiert den Abstand der Auswahlliste vom Referenzelement in Pixeln. Der Standardwert ist 10.
-- `skidding` definiert die Verschiebung der Auswahlliste entlang des Referenzelements in Pixeln. Der Standardwert ist 0.
+| Scope property | Typ         | Description                                                                                                                                                                                                                  |
+|----------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `placement`    | `Placement` | Defines the position of the building block, e.g. `Placement.top`, `Placement.bottomRight`, etc. Default is `Placement.auto`. The presumably best position is determined automatically based on the available visible space.  |
+| `strategy`     | `Strategy`  | Determines whether the block should be positioned `absolute` (default) or `fixed`.                                                                                                                                           |
+| `flip`         | `Boolean`   | If the block comes too close to the edge of the visible area, the position automatically changes to the other side if more space is available there.                                                                         |
+| `skidding`     | `Int`       | Defines the distance of the selection list from the reference element in pixels. The default value is 10.                                                                                                                    |
+| `distance`     | `Int`       | Defines the movement of the selection list along the reference element in pixels. The default value is 0.                                                                                                                    |
 
-Darüber hinaus kann ein Pfeil hinzugefügt werden, der auf das Referenzelement zeigt. Per default ist der Pfeil 8 Pixel breit und erbt die Hintergrund-Farbe des Panels. Er kann wie gewohnt gestyled werden:
+In addition, an arrow can be added pointing to the reference element. By default, the arrow is 8 pixels wide and
+inherits the background color of the panel. It can be styled as usual:
 
 ```kotlin
 popOverPanel {
