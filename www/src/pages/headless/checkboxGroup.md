@@ -8,27 +8,34 @@ eleventyNavigation:
     parent: headless 
     order: 10 
 demoHash: checkboxGroup 
-teaser: "Eine CheckboxGroup dient als Basis für die Mehrfachauswahl von beliebigen Elementen."
+teaser: "A CheckboxGroup serves as the basis for multiple selection of any element."
 ---
 
-## Einfaches Beispiel
+## Basic Example
 
-CheckboxGroups werden mittels der *generischen* Komponenten Factory Funktion `fun <T> checkboxGroup()` erzeugt. 
-Der Typ-Parameter `T` kann dabei durch einen beliegen Typen z.B. einer Domänen-Klasse ersetzt werden.
+CheckboxGroups are created using the generic component factory function `fun <T> checkboxGroup()`.
+The type parameter `T` can be replaced by any type, e.g. a domain class.
 
-Durch einen Mausklick auf eine Option oder durch die [[Space]]-Taste, sofern die Option fokussiert ist, kann diese
-Option selektiert oder deselektiert werden. Es könne beliebig viele Optionen selektiert werden.
+An option can be selected or deselected by clicking on that option or by pressing the [[Space]] key if the option is 
+focused. Any number of options can be selected.
 
-Als Datenbindung über die Property `value` ist daher zwingend eine `List<T>` als Datenstrom oder gar als Store anzugeben.
-Die Komponente unterstützt two-way-databinding, d.h. sie übernimmt sowohl von außen auf einem `Flow<List<T>>` 
-vorhandene Elemente als selektiert, sendet aber natürlich auch die aktuelle Selektion an einen zu übergebenden
-Handler.
+It is therefore mandatory to specify a data stream or a store  of a `List<T>` as data binding via the `value` property.
+The component supports two-way-data-binding, i.e. it reflects selected elements from the outside by a `Flow<List<T>>`
+but also emits the updated selection to the outside by some `Handler`.
 
-Die verfügbaren Optionen werden nicht direkt als Parameter in die Komponente, sondern jeweils einzeln 
-in die Bausteinfabrik `checkboxGroupOption` als erster Parameter hinein gereicht. Ein typisches Muster ist daher
-die Verwendung einer Schleife, in welcher diese Fabrik Funktion entsprechend aufgerufen wird.
+The available options are not injected directly into the component as parameter, but one at a time by calling the
+factory `checkboxGroupOption` and providing the option as first parameter. A typical pattern is therefore the use of a
+loop in which this factory function is called accordingly.
 
-Für das Selektieren oder Deselektieren muss zwingend ein `Tag` mittels `checkboxGroupOptionToggle` angelegt werden.
+::: warning
+**Beware:** Options cannot be removed from the CheckboxGroup. Once an option is added to the group
+by `checkboxGroupOption`, it will remain inside forever. So never use some reactive pattern for populating the
+CheckboxGroup as some `Flow<List<T>>` combined with some call to `renderEach` or alike!
+
+If the options change, you must re-render the whole component.
+:::
+
+For selecting or deselecting, a `Tag` must be created using `checkboxGroupOptionToggle`.
 
 ```kotlin
 // some domain type for this example, a collection to choose from, and an external store
@@ -51,16 +58,16 @@ checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
 }
 ```
 
-## Das selektierte Element stylen
+## Styling the selected Option
 
-Da eine headless Komponente kein Styling mitliefert, unterstützt die Komponente den Anwender damit, auf den aktuellen
-Selektions-Zustand einer Option zu reagieren.
+Since a headless component does not provide any styling, the component supports the user to react to the current
+selection.
 
-Innerhalb des Scopes der `checkboxGroupOption` Fabrik bietet die Komponente den booleschen Datenstrom `selected` an. 
-Über diesen kann entsprechend abgefragt werden, ob diese Option aktuell selektiert ist oder nicht.
+Within the scope of the `checkboxGroupOption` factory, the component provides the boolean stream `selected`. This can be
+used to query whether this option is currently selected or not.
 
-Ein verbreitetes Muster ist es, dynamisch CSS-Klassen zu setzen oder zu entfernen. Natürlich können auch ganze Elemente
-hinzugefügt oder entfernt werden, je nach Status auf dem Datenstrom.
+A common pattern is to dynamically add or remove CSS classes. Of course also whole elements can be added or removed from
+the DOM depending on the state `selected`.
 
 ```kotlin
 checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
@@ -88,11 +95,10 @@ checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
 }
 ```
 
-## Beschriftung hinzufügen
+## Add Label and Description
 
-Die CheckboxGroup kann mittels `checkboxGroupLabel` mit einem Label, die einzelnen Optionen per
-`checkboxGroupOptionLabel` und `checkboxGroupOptionDescription` mit einem Label und einer Beschreibung angereichert
-werden.
+The CheckboxGroup can be labeled using `checkboxGroupLabel`, the individual options can be enriched per
+`checkboxGroupOptionLabel` and `checkboxGroupOptionDescription` with a label and some descriptions.
 
 ```kotlin
 checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
@@ -124,11 +130,11 @@ checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
 }
 ```
 
-## Validierung
+## Validation
 
-Die Datenbindung erlaubt es der CheckboxGroup Komponente, die Validierungsnachrichten abzugreifen und einen eigenen 
-Baustein `checkboxGroupValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen.
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
+Data binding allows the CheckboxGroup component to grab the validation messages and provide its own building
+block `checkboxGroupValidationMessages` that is only rendered when there are some messages. These messages are exposed
+within its scope as a data stream `msgs`.
 
 ```kotlin
 checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
@@ -147,16 +153,15 @@ checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
 }
 ```
 
-## Maus Interaction
+## Mouse Interaction
 
-Das Klicken auf ein mit ``checkboxGroupOptionToggle`` erzeugtes Element selektiert oder deselektiert die dahinter
-liegende Option.
+Clicking on an element created with ``checkboxGroupOptionToggle`` selects or deselects the corresponding option.
 
 ## Keyboard Interaction
 
-| Command                                    | Description                                                |
-|--------------------------------------------|------------------------------------------------------------|
-| [[Space]] when an option-toggle is focused | Selektiert oder deselektiert die dahinter liegende Option. |
+| Command                                    | Description                                    |
+|--------------------------------------------|------------------------------------------------|
+| [[Space]] when an option-toggle is focused | Selects or deselects the corresponding option. |
 
 ## API
 
@@ -183,74 +188,74 @@ checkboxGroup<T>() {
 
 ### checkboxGroup
 
-Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ                            | Description                                                                                          |
-|------------|--------------------------------|------------------------------------------------------------------------------------------------------|
-| `value`    | `DatabindingProperty<List<T>>` | Zwei-Wege-Datenbindung für eine beliebig große Anzahl an selektierten Optionen. Muss gesetzt werden! |
+| Scope property | Typ                            | Description                                                          |
+|----------------|--------------------------------|----------------------------------------------------------------------|
+| `value`        | `DatabindingProperty<List<T>>` | Mandatory (two-way) data-binding for any number of selected options. |
 
 
 ### checkboxGroupLabel
 
-Verfügbar im Scope von: `checkboxGroup`
+Available in the scope of: `checkboxGroup`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `label`
 
 
 ### checkboxGroupValidationMessages
 
-Verfügbar im Scope von: `checkboxGroup`
+Available in the scope of: `checkboxGroup`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ                                  | Description                                                   |
-|------------|--------------------------------------|---------------------------------------------------------------|
-| `msgs` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
+| Scope property | Typ                                      | Description                                                           |
+|----------------|------------------------------------------|-----------------------------------------------------------------------|
+| `msgs`         | `Flow<List<ComponentValidationMessage>>` | provides a data stream with a list of ``ComponentValidationMessage``s |
 
 
 ### checkboxGroupOption
 
-Verfügbar im Scope von: `checkboxGroup`
+Available in the scope of: `checkboxGroup`
 
-Parameter:
-- `option: T`: Das Optionsobjekt, welches dieser Option-Block verwalten soll, muss hier zwingend übergeben werden.
+Parameters:
+- `option: T`: Mandatory instance of an option that this block should handle.
 - `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ             | Description                                                                                                                                       |
-|------------|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| `selected` | `Flow<Boolean>` | Dieser Datenstrom liefert den Selektions-Status der verwalteten Option: `true` die Option ist Teil der selektierten Optionen, `false` wenn nicht. |
+| Scope property | Typ             | Description                                                                                                                         |
+|----------------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `selected`     | `Flow<Boolean>` | This data stream provides the selection state of its managed option: `true` the option is part of the selection, `false` elsewhere. |
 
 
 ### checkboxGroupOptionToggle
 
-Verfügbar im Scope von: `checkboxGroupOption`
+Available in the scope of: `checkboxGroupOption`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
 
 ### checkboxGroupOptionLabel
 
-Verfügbar im Scope von: `checkboxGroupOption`
+Available in the scope of: `checkboxGroupOption`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `label`
 
 
 ### checkboxGroupOptionDescription
 
-Verfügbar im Scope von: `checkboxGroupOption`
+Available in the scope of: `checkboxGroupOption`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `span`

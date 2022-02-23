@@ -141,7 +141,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
  * ```kotlin
  * disclosure() {
  *     // inherited by `OpenClose`
- *     val openClose = DatabindingProperty<Boolean>()
+ *     val openState: DatabindingProperty<Boolean>
  *     val opened: Flow<Boolean>
  *     val close: SimpleHandler<Unit>
  *     val open: SimpleHandler<Unit>
@@ -176,7 +176,7 @@ fun <C : HTMLElement> RenderContext.disclosure(
  * ```kotlin
  * disclosure() {
  *     // inherited by `OpenClose`
- *     val openClose = DatabindingProperty<Boolean>()
+ *     val openState: DatabindingProperty<Boolean>
  *     val opened: Flow<Boolean>
  *     val close: SimpleHandler<Unit>
  *     val open: SimpleHandler<Unit>

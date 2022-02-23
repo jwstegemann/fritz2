@@ -9,6 +9,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      maxWidth: {
+        'prose': '100ch',
+      },
       fontFamily: {
         'nunito': ['Nunito', 'Arial', 'sans-serif'],
         'sans': ['Inter var', 'ui-sans-serif', 'system-ui', '-apple-system', "Segoe UI", 'Roboto', 'Arial', 'Noto Sans']
