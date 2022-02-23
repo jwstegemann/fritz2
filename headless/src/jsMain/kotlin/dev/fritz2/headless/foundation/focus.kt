@@ -147,6 +147,40 @@ fun Tag<HTMLElement>.setInitialFocus() {
 }
 
 /**
+ * This type is used to decide which strategy for setting an initial focus is appropriate for [trapFocus] function.
+ *
+ * There are three values available:
+ * - [DoNotSet]
+ * - [TryToSet]
+ * - [InsistToSet]
+ *
+ * @param focus This boolean value splits the enum values into two disjoint sets: values which should set a focus
+ *              after all (`true`) and those who does not at all (`false`)
+ */
+enum class InitialFocus(public val focus: Boolean) {
+
+    /**
+     * Do not set any focus at all
+     */
+    DoNotSet(false),
+
+    /**
+     * Try to set a focus, but do not print out any warning, if no focusable element could be found and therefor
+     * no focus has been set.
+     */
+    TryToSet(true),
+
+    /**
+     * Try to set a focus and print out a warning if no focusable element could be found.
+     *
+     * This should be chosen for situations, where the availability of a focusable element is expected and strongly
+     * related to the functionality, like for modal dialogs. The warning will help to detect missing functionality
+     * on the user interface side.
+     */
+    InsistToSet(true)
+}
+
+/**
  * This function enables a so called focus-trap. This enforces the specific behaviour within the receiver [Tag],
  * that switching the focus is only possible on elements that are inside the receiver. No other focusable elements
  * outside the enclosing container will get the focus.
@@ -156,9 +190,9 @@ fun Tag<HTMLElement>.setInitialFocus() {
  * @param restoreFocus sets the focus back to the element that had the focus before the container with the trap was
  *                      entered.
  * @param setInitialFocus will automatically focus the first element of the container or that one, which has been
- *                        tagged by [setInitialFocus] function
+ *                        tagged by [setInitialFocus] function if the [InitialFocus] value has `focus=true`.
  */
-fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: Boolean = true) {
+fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: InitialFocus = InitialFocus.TryToSet) {
     // restore focus
     if (restoreFocus) {
         beforeUnmount(document.activeElement) { _, element ->
@@ -167,7 +201,7 @@ fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: Bo
     }
 
     // handle initial focus
-    if (setInitialFocus) {
+    if (setInitialFocus.focus) {
         afterMount { _, _ ->
             val active = document.activeElement as HTMLElement
             if (!isElementWithinFocusableElements(active, domNode)) {
@@ -178,7 +212,9 @@ fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: Bo
                     }
                 } else {
                     if (focusIn(domNode, FocusOptions(first = true)) == FocusResult.Error) {
-                        console.warn("There are no focusable elements inside the focus-trap!")
+                        if (setInitialFocus == InitialFocus.InsistToSet) {
+                            console.warn("There are no focusable elements inside the focus-trap!")
+                        }
                     }
                 }
             }
@@ -193,7 +229,7 @@ fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: Bo
             if (shortcutOf(event).shift) FocusOptions(previous = true, wrapAround = true)
             else FocusOptions(next = true, wrapAround = true)
         ).also {
-            if (it != FocusResult.Success) {
+            if (it != FocusResult.Success && setInitialFocus == InitialFocus.InsistToSet) {
                 console.warn("Focus-trap was not successful!", it)
             }
         }
