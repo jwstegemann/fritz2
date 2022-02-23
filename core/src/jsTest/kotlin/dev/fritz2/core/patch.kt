@@ -1,6 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -30,8 +29,7 @@ class PatchTests {
         val insertBtnId = "btn-insert" + Id.next()
         val deleteBtnId = "btn-delete" + Id.next()
 
-        initDocument()
-
+        
         val store = TestListStore()
 
         render {
@@ -94,8 +92,7 @@ class PatchTests {
         val insertBtnId = "btn-insert" + Id.next()
         val deleteBtnId = "btn-delete" + Id.next()
 
-        initDocument()
-
+        
         val store = TestEntityListStore()
 
         render {
@@ -141,8 +138,7 @@ class PatchTests {
         val insertBtnId = "btn-insert" + Id.next()
         val deleteBtnId = "btn-delete" + Id.next()
 
-        initDocument()
-
+        
         val store = TestEntityListStore()
 
         render {

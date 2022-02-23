@@ -3,7 +3,6 @@ package dev.fritz2.webcomponents
 import dev.fritz2.core.HtmlTag
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.storeOf
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -22,8 +21,7 @@ class WebComponentTests {
 
     @Test
     fun testWebComponent() = runTest {
-        initDocument()
-
+        
         registerWebComponent("my-component", MyComponent)
 
         delay(250)
@@ -54,8 +52,7 @@ class WebComponentTests {
 
     @Test
     fun testAttributeChanges() = runTest {
-        initDocument()
-
+        
         delay(250)
 
         val body = document.body.unsafeCast<HTMLBodyElement>()

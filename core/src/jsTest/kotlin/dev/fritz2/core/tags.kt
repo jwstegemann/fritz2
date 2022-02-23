@@ -1,6 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -17,8 +16,7 @@ class TagTests {
     @Test
     fun testTextNodes() = runTest {
 
-        initDocument()
-
+        
         val id1 = Id.next()
         val id2 = Id.next()
 
@@ -44,8 +42,7 @@ class TagTests {
 
     @Test
     fun testTextOnString() = runTest {
-        initDocument()
-
+        
         val id1 = Id.next()
         val id2 = Id.next()
         val text = "testText"
@@ -76,8 +73,7 @@ class TagTests {
 
     @Test
     fun testTextOnFlowOfString() = runTest {
-        initDocument()
-
+        
         val testId = Id.next()
         val text = "testText"
 
@@ -97,8 +93,7 @@ class TagTests {
 
     @Test
     fun testCommentOnString() = runTest {
-        initDocument()
-
+        
         val id1 = Id.next()
         val comment = "testComment"
 
@@ -121,8 +116,7 @@ class TagTests {
 
     @Test
     fun testSingleTag() = runTest {
-        initDocument()
-
+        
         val testId = Id.next()
         val testClass = "testClass"
 
@@ -143,8 +137,7 @@ class TagTests {
 
     @Test
     fun testSingleTagWithBaseClass() = runTest {
-        initDocument()
-
+        
         val testId = Id.next()
         val baseClass = "baseClass"
         val testClass = "testClass"
@@ -166,8 +159,7 @@ class TagTests {
 
     @Test
     fun testSingleTagWithBaseClassOnly() = runTest {
-        initDocument()
-
+        
         val testId = Id.next()
         val baseClass = "baseClass"
 
@@ -188,8 +180,7 @@ class TagTests {
 
     @Test
     fun testMultipleTags() = runTest {
-        initDocument()
-
+        
         val testRange = (0..4)
         val testIds = testRange.map { "testId$it" }
         val testClasses = testRange.map { "testClass$it" }
@@ -220,8 +211,7 @@ class TagTests {
 
     @Test
     fun testRenderWithCondition() = runTest {
-        initDocument()
-
+        
         val outerId = Id.next()
         val innerId = Id.next()
 
@@ -263,8 +253,7 @@ class TagTests {
 
     @Test
     fun testAnnex() = runTest {
-        initDocument()
-
+        
         val contentId = Id.next()
 
         render {
@@ -288,8 +277,7 @@ class TagTests {
 
     @Test
     fun testWheneverWithStaticData() = runTest {
-        initDocument()
-
+        
         val steering = storeOf(false)
         val getAttribute = { document.getElementById("root")!!.getAttribute("data-foo") }
 
@@ -310,8 +298,7 @@ class TagTests {
 
     @Test
     fun testWheneverWithFlowData() = runTest {
-        initDocument()
-
+        
         val steering = storeOf(false)
         val value = object : RootStore<String>("first") {
             private val items = listOf("first", "second", "skipped", "fourth")

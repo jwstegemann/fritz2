@@ -1,6 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -17,8 +16,7 @@ class StoreTests {
 
     @Test
     fun testStoreHandleAndOfferHandler() = runTest {
-        initDocument()
-
+        
         val id1 = Id.next()
         val id2 = Id.next()
         val buttonId = Id.next()
@@ -69,8 +67,7 @@ class StoreTests {
 
     @Test
     fun testStoreHandleAndOfferHandleAndOfferHandler() = runTest {
-        initDocument()
-
+        
         val id1 = Id.next()
         val id2 = Id.next()
         val id3 = Id.next()
@@ -139,8 +136,7 @@ class StoreTests {
 
     @Test
     fun testErrorHandling() = runTest {
-        initDocument()
-
+        
         val valueId = Id.next()
         fun getValue() = document.getElementById(valueId)?.textContent
 
@@ -226,8 +222,7 @@ class StoreTests {
 
     @Test
     fun testAdHocErrorHandling() = runTest {
-        initDocument()
-
+        
         val valueId = Id.next()
         fun getValue() = document.getElementById(valueId)?.textContent
 

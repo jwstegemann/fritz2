@@ -1,7 +1,6 @@
 package dev.fritz2.core
 
 import dev.fritz2.checkSingleFlow
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.CompletableDeferred
@@ -55,8 +54,7 @@ class MountTests {
 
     @Test
     fun testOrderOfSingleMountPointCreation() = runTest {
-        initDocument()
-
+        
         val outer = Id.next()
         val inner1 = Id.next()
         val inner2 = Id.next()
@@ -85,8 +83,7 @@ class MountTests {
 
     @Test
     fun testOrderOfMultiMountPointCreation() = runTest {
-        initDocument()
-
+        
         val outer = Id.next()
         val inner1 = Id.next()
         val inner2 = Id.next()
@@ -117,8 +114,7 @@ class MountTests {
 
     @Test
     fun testOrderOfTextNodeCreation() = runTest {
-        initDocument()
-
+        
         val id = Id.next()
 
         val text = flowOf("test")
@@ -139,8 +135,7 @@ class MountTests {
 
     @Test
     fun testLifecycleHandler() = runTest {
-        initDocument()
-
+        
         val testId = Id.next()
 
         val countingStore = storeOf(0)
@@ -188,8 +183,7 @@ class MountTests {
 
     @Test
     fun testLifecycleOnGlobalRender() = runTest {
-        initDocument()
-
+        
         var mounts = 0
 
         render {
@@ -206,8 +200,7 @@ class MountTests {
 
     @Test
     fun testValueAttributeMountPoint() = runTest {
-        initDocument()
-
+        
         val id = Id.next()
 
         val store = object : RootStore<String>("test") {
@@ -241,8 +234,7 @@ class MountTests {
 
     @Test
     fun testCheckedAttributeMountPoint() = runTest {
-        initDocument()
-
+        
         val id = Id.next()
 
         val store = object : RootStore<Boolean>(true) {
@@ -276,8 +268,7 @@ class MountTests {
 
     @Test
     fun testSelectedAttributeMountPoint() = runTest {
-        initDocument()
-
+        
         val id = Id.next()
         val option1Id = "option1-${Id.next()}"
         val option2Id = "option2-${Id.next()}"
@@ -335,8 +326,7 @@ class MountTests {
 
     @Test
     fun testMountTargetNotFoundException() = runTest {
-        initDocument()
-
+        
         assertFailsWith(MountTargetNotFoundException::class) {
             render("error") {
                 div {

@@ -3,7 +3,6 @@ package dev.fritz2.tracking
 import dev.fritz2.core.Id
 import dev.fritz2.core.RootStore
 import dev.fritz2.core.render
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -16,8 +15,7 @@ class TrackingTests {
 
     @Test
     fun testTracking() = runTest {
-        initDocument()
-
+        
         val transactionText = "long running"
         val transactionId = "transaction-${Id.next()}"
 
@@ -69,8 +67,7 @@ class TrackingTests {
 
     @Test
     fun testStopTrackingIfExceptionOccursDuringOperation() = runTest {
-        initDocument()
-
+        
         val resultElementId = "tracker-${Id.next()}"
 
         val store = object : RootStore<Int>(0) {
@@ -116,8 +113,7 @@ class TrackingTests {
 
     @Test
     fun testExceptionHandlingInTrackerDuringOperation() = runTest {
-        initDocument()
-
+        
         val storeElementId = "store-${Id.next()}"
         val resultElementId = "tracker-${Id.next()}"
 

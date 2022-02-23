@@ -1,7 +1,6 @@
 package dev.fritz2.remote
 
 import dev.fritz2.core.*
-import dev.fritz2.initDocument
 import dev.fritz2.repository.Resource
 import dev.fritz2.runTest
 import kotlinx.browser.document
@@ -158,8 +157,7 @@ class WebSocketTests {
 
     @Test
     fun testSyncWith() = runTest {
-        initDocument()
-
+        
         val defaultPerson = SocketPerson("", 0)
         val startPerson = SocketPerson("Heinz", 18)
         val changedAge = 99
