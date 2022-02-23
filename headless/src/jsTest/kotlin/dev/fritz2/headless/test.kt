@@ -1,4 +1,4 @@
-package dev.fritz2.headless.test
+package dev.fritz2.headless
 
 import dev.fritz2.core.Scope
 import dev.fritz2.core.Shortcut
@@ -15,11 +15,6 @@ fun <T> runTest(block: suspend () -> T): dynamic = MainScope().promise {
     delay(50)
     block()
     delay(50)
-}
-
-fun initDocument() {
-    document.clear()
-    document.write("""<body>Loading...</body>""")
 }
 
 inline fun <reified E: Element> getElementById(id: String) = document.getElementById(id) as E

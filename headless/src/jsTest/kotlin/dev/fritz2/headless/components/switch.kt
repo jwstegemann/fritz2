@@ -4,8 +4,8 @@ import dev.fritz2.core.Id
 import dev.fritz2.core.Keys
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.render
+import dev.fritz2.headless.*
 import dev.fritz2.headless.model.TestModel
-import dev.fritz2.headless.test.*
 import dev.fritz2.validation.storeOf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
