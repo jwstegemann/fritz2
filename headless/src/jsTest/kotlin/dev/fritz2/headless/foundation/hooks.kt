@@ -1,18 +1,13 @@
 package dev.fritz2.headless.foundation
 
-import dev.fritz2.core.Id
-import dev.fritz2.core.RenderContext
-import dev.fritz2.core.Tag
-import dev.fritz2.core.render
+import dev.fritz2.core.*
+import dev.fritz2.headless.getElementById
 import dev.fritz2.headless.runTest
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLSpanElement
 import org.w3c.dom.asList
-import kotlin.test.Test
-import kotlin.test.assertContentEquals
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
+import kotlin.test.*
 
 class HookTests {
 
@@ -42,8 +37,8 @@ class HookTests {
         delay(100)
 
         assertNotNull(result)
-        assertEquals(result!!.domNode.getAttribute("data-value-payload"), "hook-payload")
-        assertEquals(result!!.domNode.getAttribute("data-also"), "ok")
+        assertEquals("hook-payload", result!!.domNode.getAttribute("data-value-payload"))
+        assertEquals("ok", result!!.domNode.getAttribute("data-also"))
     }
 
     class ValueAsAttribute : Hook<Tag<HTMLDivElement>, Tag<HTMLSpanElement>, Unit>() {
@@ -72,8 +67,8 @@ class HookTests {
         delay(100)
 
         assertNotNull(result)
-        assertEquals(result!!.domNode.getAttribute("data-value"), "hook")
-        assertEquals(result!!.domNode.getAttribute("data-also"), "ok")
+        assertEquals("hook", result!!.domNode.getAttribute("data-value"))
+        assertEquals("ok", result!!.domNode.getAttribute("data-also"))
     }
 
     @Test
@@ -97,21 +92,59 @@ class HookTests {
 
         assertNotNull(parent)
         val results = parent!!.domNode.childNodes.asList()
-        assertEquals(results.count(), 3)
+        assertEquals(3, results.count())
         assertContentEquals(
+            expected,
             results.map {
                 val span = it as HTMLSpanElement
                 span.getAttribute("data-value")
-            },
-            expected
+            }
         )
         assertContentEquals(
+            expected,
             results.map {
                 val span = it as HTMLSpanElement
                 span.getAttribute("data-also")
-            },
-            expected
+            }
         )
+    }
+
+    class TagPaloadSpyingHook : Hook<RenderContext, Unit, TagPayload<String>>() {
+        var data: String? = null
+        var id: String? = null
+        var classes: String? = null
+        var payload: String? = null
+
+        operator fun invoke(data: String) = apply {
+            value = { (classes, id, payload) ->
+                this@TagPaloadSpyingHook.data = data
+                this@TagPaloadSpyingHook.id = id
+                this@TagPaloadSpyingHook.classes = classes
+                this@TagPaloadSpyingHook.payload = payload
+            }
+        }
+    }
+
+    @Test
+    fun callHookWithSpecialTagPayloadWillExecuteEffectAndAlsoExpression() = runTest {
+        val id = Id.next()
+        val classes = "fritz2-style"
+        var alsoWasCalled = false
+        val sut = TagPaloadSpyingHook()
+        sut("TagHook").also {
+            alsoWasCalled = true
+        }
+
+        render {
+            hook(sut, classes, id, "payload")
+        }
+        delay(100)
+
+        assertEquals("TagHook", sut.data)
+        assertEquals(id, sut.id)
+        assertEquals(classes, sut.classes)
+        assertEquals("payload", sut.payload)
+        assertTrue(alsoWasCalled)
     }
 
     class DivHook : TagHook<Tag<HTMLDivElement>, String, String>() {
@@ -126,26 +159,52 @@ class HookTests {
     }
 
     @Test
-    fun callHookWithSpecialTagPayloadWillExecuteEffectAndAlsoExpression() = runTest {
+    fun callInvokeOfTagHookWithStaticValuesWillLeadToRenderTagInvocationWithProvidedValues() = runTest {
+        val id = Id.next()
+        val classes = "fritz2-style"
         val sut = DivHook()
         sut("TagHook").also {
             attr("data-also", "ok")
         }
 
-        val id = Id.next()
-        val classes = "fritz2-style"
-
-        var result: Tag<HTMLDivElement>? = null
         render {
-            result = hook(sut, classes, id, "payload")
+            hook(sut, classes, id, "payload")
         }
         delay(100)
 
+        var result = getElementById<HTMLDivElement>(id)
         assertNotNull(result)
-        assertEquals(result!!.baseClass, classes)
-        assertEquals(result!!.id, id)
-        assertEquals(result!!.domNode.getAttribute("data-value-payload"), "TagHook-payload")
-        assertEquals(result!!.domNode.getAttribute("data-also"), "ok")
+        assertEquals(classes, result.className)
+        assertEquals(id, result.id)
+        assertEquals("TagHook-payload", result.getAttribute("data-value-payload"))
+        assertEquals("ok", result.getAttribute("data-also"))
     }
 
+    @Test
+    fun callInvokeOfTagHookWithDynamicValuesWillLeadToRenderTagInvocationWithProvidedValues() = runTest {
+        val values = storeOf("first")
+        val id = Id.next()
+        val classes = "fritz2-style"
+        val sut = DivHook()
+        sut(values.data).also {
+            attr("data-also", "ok")
+        }
+
+        render {
+            hook(sut, classes, id, "payload")
+        }
+        delay(100)
+
+        var result = getElementById<HTMLDivElement>(id)
+        assertNotNull(result)
+        assertEquals(classes, result.className)
+        assertEquals(id, result.id)
+        assertEquals("first-payload", result.getAttribute("data-value-payload"))
+        assertEquals("ok", result.getAttribute("data-also"))
+
+        values.update("second")
+        delay(100)
+        result = getElementById(id)
+        assertEquals("second-payload", result.getAttribute("data-value-payload"))
+    }
 }
