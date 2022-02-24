@@ -3,7 +3,6 @@ package dev.fritz2.validation
 import dev.fritz2.core.Id
 import dev.fritz2.core.lens
 import dev.fritz2.core.render
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import dev.fritz2.validation.test.*
 import kotlinx.browser.document
@@ -17,8 +16,7 @@ class ValidationJSTests {
 
     @Test
     fun testValidation() = runTest {
-        initDocument()
-
+        
         val carName = "ok"
         val c1 = Car("car1", Color(-1, -1, -1))
         val c2 = Car("car2", Color(256, 256, 256))
@@ -83,8 +81,7 @@ class ValidationJSTests {
 
     @Test
     fun testSubStoreValidation() = runTest {
-        initDocument()
-
+        
         val store: ValidatingStore<Car, Unit, Message> =
             storeOf(Car("car", Color(120, 120, 120)), Car.validator)
         val colorLens = lens("color", Car::color) { car, color -> car.copy(color = color) }

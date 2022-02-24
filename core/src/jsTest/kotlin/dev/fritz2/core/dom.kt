@@ -1,6 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -12,8 +11,7 @@ class DomNodeListTests {
 
     @Test
     fun testAsElementListDropsNoneHtmlTags() = runTest {
-        initDocument()
-
+        
         render {
             div(id = "root") {
                 +"Some Textnode" // should be dropped
@@ -35,8 +33,7 @@ class DomNodeListTests {
 
     @Test
     fun testAccessingInvalidIndexThrowsIndexOutOfBoundsException() = runTest {
-        initDocument()
-
+        
         render {
             div(id = "root") {
                 p(id = "child") { }

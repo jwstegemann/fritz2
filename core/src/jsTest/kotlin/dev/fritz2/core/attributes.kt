@@ -1,6 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -16,8 +15,7 @@ class AttributeTests {
 
     @Test
     fun testAttributes() = runTest {
-        initDocument()
-
+        
         val testRange = (0..4)
         val testId = Id.next()
 
@@ -71,8 +69,7 @@ class AttributeTests {
 
     @Test
     fun testNullableAttributes() = runTest {
-        initDocument()
-        val testId = Id.next()
+                val testId = Id.next()
 
         render {
             div(id = testId) {
@@ -98,8 +95,7 @@ class AttributeTests {
 
     @Test
     fun testAlternatingNullableStringFlows() = runTest {
-        initDocument()
-        val testId = Id.next()
+                val testId = Id.next()
 
         val nullableFlow = storeOf<String?>("a")
 
@@ -130,8 +126,7 @@ class AttributeTests {
 
     @Test
     fun testAlternatingNullableTFlows() = runTest {
-        initDocument()
-        val testId = Id.next()
+                val testId = Id.next()
 
         val nullableFlow = storeOf<Int?>(42)
 

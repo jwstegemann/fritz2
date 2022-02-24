@@ -25,7 +25,6 @@ abstract class TestAuthenticationMiddleware : Authentication<Principal>() {
 
     final override fun addAuthentication(request: Request, principal: Principal?): Request {
         countAddAuthentication++
-        println("add principal: ${principal?.username}\n")
         return principal?.token?.let { request.header("authtoken", it) } ?: request
     }
 

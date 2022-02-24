@@ -3,7 +3,6 @@ package dev.fritz2.history
 import dev.fritz2.core.Id
 import dev.fritz2.core.RootStore
 import dev.fritz2.core.render
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -15,8 +14,7 @@ class HistoryTests {
 
     @Test
     fun testSyncedHistory() = runTest {
-        initDocument()
-
+        
         val valueId = "value-${Id.next()}"
         val historyId = "history-${Id.next()}"
         val availableId = "available-${Id.next()}"
@@ -80,8 +78,7 @@ class HistoryTests {
 
     @Test
     fun testHistoryLongerMax() = runTest {
-        initDocument()
-
+        
         val valueId = "value-${Id.next()}"
         val historyId = "history-${Id.next()}"
         val values = listOf("A", "B", "C", "D", "E", "F", "G")
@@ -120,8 +117,7 @@ class HistoryTests {
 
     @Test
     fun testManualHistory() = runTest {
-        initDocument()
-
+        
         val valueId = "value-${Id.next()}"
         val historyId = "history-${Id.next()}"
         val values = listOf("A", "B", "C")

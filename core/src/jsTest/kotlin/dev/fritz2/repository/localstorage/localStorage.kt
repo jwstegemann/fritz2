@@ -1,7 +1,6 @@
 package dev.fritz2.repository.localstorage
 
 import dev.fritz2.core.*
-import dev.fritz2.initDocument
 import dev.fritz2.repository.Resource
 import dev.fritz2.repository.ResourceNotFoundException
 import dev.fritz2.runTest
@@ -34,8 +33,7 @@ class LocalStorageTests {
 
     @Test
     fun testEntityService() = runTest {
-        initDocument()
-
+        
         val defaultPerson = LocalPerson("", 0)
         val startPerson = LocalPerson("Heinz", 18)
         val changedAge = 99
@@ -107,8 +105,7 @@ class LocalStorageTests {
 
     @Test
     fun testQueryService() = runTest {
-        initDocument()
-
+        
         val testList = listOf(
             LocalPerson("A", 0),
             LocalPerson("B", 1),
@@ -185,8 +182,7 @@ class LocalStorageTests {
 
     @Test
     fun testQueryServiceUpdates() = runTest {
-        initDocument()
-
+        
         val testList = listOf(
             LocalPerson("A", 0),
             LocalPerson("B", 1),

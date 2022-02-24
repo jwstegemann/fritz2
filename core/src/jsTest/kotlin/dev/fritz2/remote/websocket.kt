@@ -1,7 +1,6 @@
 package dev.fritz2.remote
 
 import dev.fritz2.core.*
-import dev.fritz2.initDocument
 import dev.fritz2.repository.Resource
 import dev.fritz2.runTest
 import kotlinx.browser.document
@@ -27,7 +26,6 @@ class WebSocketTests {
         var counter = 0
 
         session.state handledBy {
-            println("Connection state is: $it\n")
             when (counter) {
                 0 -> assertTrue(it is SessionState.Connecting, "state not matching")
                 1 -> assertTrue(it is SessionState.Open, "state not matching")
@@ -36,7 +34,6 @@ class WebSocketTests {
         }
 
         session.messages.body handledBy {
-            println("Server said: ${it}\n")
             when (counter) {
                 0 -> assertEquals("Server said: Client said: A", it, "message not matching")
                 1 -> assertEquals("Server said: Client said: B", it, "message not matching")
@@ -158,8 +155,7 @@ class WebSocketTests {
 
     @Test
     fun testSyncWith() = runTest {
-        initDocument()
-
+        
         val defaultPerson = SocketPerson("", 0)
         val startPerson = SocketPerson("Heinz", 18)
         val changedAge = 99

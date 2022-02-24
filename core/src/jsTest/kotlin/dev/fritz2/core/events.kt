@@ -1,6 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -19,8 +18,7 @@ class EventsTest {
 
     @Test
     fun testChangeAndInputEvent() = runTest {
-        initDocument()
-
+        
         val inputId = Id.next()
 
         val store = object : RootStore<String>("start") {}
@@ -54,8 +52,7 @@ class EventsTest {
 
     @Test
     fun testClickEvent() = runTest {
-        initDocument()
-
+        
         val resultId = Id.next()
         val buttonId = Id.next()
 
@@ -100,8 +97,7 @@ class EventsTest {
 
     @Test
     fun testMultipleClickEvent() = runTest {
-        initDocument()
-
+        
         val resultId = Id.next()
         val buttonId = Id.next()
 
@@ -159,8 +155,7 @@ class EventsTest {
 
     @Test
     fun testKeyboardEvent() = runTest {
-        initDocument()
-
+        
         val resultId = Id.next()
         val inputId = Id.next()
 
@@ -242,8 +237,7 @@ class EventsTest {
     @Test
     fun testEnterForInput() = runTest {
         // TODO: Evaluate pre test execution by framework
-        initDocument()
-
+        
         val inputId = Id.next()
         val resultId = Id.next()
 
@@ -281,8 +275,7 @@ class EventsTest {
 
     @Test
     fun testWindowListenerForClickEvent() = runTest {
-        initDocument()
-
+        
         val labelId = "labelId"
         val divId = "divId"
 
@@ -319,8 +312,7 @@ class EventsTest {
     @Ignore
     @Test
     fun testWindowListenerForClickEventAndComposedPath() = runTest {
-        initDocument()
-
+        
         val labelId = "labelId"
         val divId = "divId"
 
@@ -366,8 +358,7 @@ class EventsTest {
     @Ignore
     @Test
     fun testWindowListenerForStopImmediatePropagation() = runTest {
-        initDocument()
-
+        
         val divId = "divId"
         val buttonId = "buttonId"
 
