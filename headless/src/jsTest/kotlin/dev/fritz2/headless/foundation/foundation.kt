@@ -3,7 +3,7 @@ package dev.fritz2.headless.foundation
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class TestRotateNextFunctions {
+class RotateNextFunctionsTests {
 
     @Test
     fun rotateNextOnFirstElementGivesSecondElement() {
@@ -30,7 +30,7 @@ class TestRotateNextFunctions {
     }
 }
 
-class TestRotatePreviousFunctions {
+class RotatePreviousFunctionsTests {
 
     @Test
     fun rotatePreviousOnSecondElementGivesFirstElement() {
