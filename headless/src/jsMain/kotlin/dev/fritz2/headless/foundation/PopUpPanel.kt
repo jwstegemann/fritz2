@@ -23,8 +23,8 @@ abstract class PopUpPanel<C : HTMLElement>(
 ) : Tag<C> by tag {
 
     companion object {
-        private const val POPUP_HIDDEN = "f2-popup-hidden"
-        private const val POPUP_VISIBLE = "f2-popup-visible"
+        private const val POPUP_HIDDEN = "fritz2-popup-hidden"
+        private const val POPUP_VISIBLE = "fritz2-popup-visible"
         init {
             addGlobalStyles(
                 listOf(
