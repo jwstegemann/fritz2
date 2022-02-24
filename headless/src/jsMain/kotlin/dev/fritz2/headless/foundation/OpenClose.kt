@@ -41,11 +41,16 @@ abstract class OpenClose {
         }
     }
 
-    val toggle by lazy {
-        SimpleHandler<Unit> { data, _ ->
-            openState.handler?.invoke(openState.data.flatMapLatest { state -> data.map { !state } })
-        }
-    }
+    //FIXME: endless loop!?
+//    val toggle by lazy {
+//        SimpleHandler<Unit> { data, _ ->
+//            openState.handler?.invoke(openState.data.flatMapLatest { state ->
+//                data.map {
+//                    !state
+//                }
+//            })
+//        }
+//    }
 
     /**
      * Use this function on [Tag]s, that should trigger the component to open or to close in order to enable
@@ -70,7 +75,7 @@ abstract class OpenClose {
      * should be closed by pressing the *Escape* key.
      */
     protected fun Tag<*>.closeOnEscape() {
-        opened.flatMapLatest { isOpen ->
+        openState.data.flatMapLatest { isOpen ->
             Window.keydowns.filter { isOpen && shortcutOf(it) == Keys.Escape }
         } handledBy close
     }
@@ -80,9 +85,9 @@ abstract class OpenClose {
      * should be closed on clicking to somewhere outside the panel.
      */
     protected fun Tag<*>.closeOnBlur() {
-        opened.flatMapLatest { isOpen ->
-            Window.clicks.filter {
-                isOpen && it.composedPath().none { it == this }
+        openState.data.flatMapLatest { isOpen ->
+            Window.clicks.filter { event ->
+                isOpen && event.composedPath().none { it == this }
             }
         } handledBy close
     }
