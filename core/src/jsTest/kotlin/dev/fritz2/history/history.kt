@@ -33,7 +33,7 @@ class HistoryTests {
             div {
                 span(id = valueId) { store.data.renderText() }
                 span(id = historyId) { store.hist.data.map { hist -> hist.joinToString() }.renderText() }
-                span(id = availableId) { store.hist.available.map { it.toString() }.renderText() }
+                span(id = availableId) { store.hist.available.asString().renderText() }
             }
         }
 

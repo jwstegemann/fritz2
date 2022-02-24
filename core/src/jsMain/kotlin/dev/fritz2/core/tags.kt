@@ -279,7 +279,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param into target to render text-content to
      * @receiver text-content
      */
-    fun <T> Flow<T>.renderText(into: Tag<*>? = null) = this.map { it.toString() }.renderText(into)
+    fun <T> Flow<T>.renderText(into: Tag<*>? = null) = this.asString().renderText(into)
 
     /**
      * Adds static text-content at this position
