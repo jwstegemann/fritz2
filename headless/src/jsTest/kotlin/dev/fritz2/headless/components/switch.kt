@@ -8,7 +8,6 @@ import dev.fritz2.headless.*
 import dev.fritz2.headless.model.TestModel
 import dev.fritz2.validation.storeOf
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLLabelElement
@@ -36,8 +35,8 @@ class SwitchTest {
                     +"Description"
                 }
                 switchToggle {
-                    attr("data-state", enabled.map { it.toString() })
-                    attr("data-hasError", value.hasError.map { it.toString() })
+                    attr("data-state", enabled.asString())
+                    attr("data-hasError", value.hasError.asString())
                 }
                 switchValidationMessages {
                     msgs.renderEach {

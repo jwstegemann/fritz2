@@ -17,12 +17,14 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLLabelElement
 import org.w3c.dom.HTMLUListElement
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFails
+import kotlin.test.assertTrue
 
 class ListBoxTest {
 
     @Test
-    @Ignore
     fun testListBox() = runTest {
         val name = "listBox"
         val componentId = "$name-${Id.next()}"
@@ -42,15 +44,15 @@ class ListBoxTest {
                     listBoxEntries.forEach { entry ->
                         listboxItem(entry, tag = RenderContext::li) {
                             attr("data-index", index)
-                            attr("data-active", active.map { it.toString() })
-                            attr("data-selected", selected.map { it.toString() })
-                            attr("data-disabled", disabled.map { it.toString() })
+                            attr("data-active", active.asString())
+                            attr("data-selected", selected.asString())
+                            attr("data-disabled", disabled.asString())
                             if(index % 2 == 0) disable(true)
                         }
                     }
                 }
                 listboxValidationMessages {
-                    attr("data-hasError", value.hasError.map { it.toString() })
+                    attr("data-hasError", value.hasError.asString())
                     attr("data-message", value.validationMessages.map { it.firstOrNull()?.message ?: "" })
                 }
             }

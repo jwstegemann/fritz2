@@ -9,7 +9,7 @@ package dev.fritz2.headless.foundation
  *
  * ```kotlin
  * // function wants to return an inner Tag `input`
- * fun RenderContext.renderSomeStructure() : Input {
+ * fun RenderContext.renderSomeStructure() : HtmlTag<HTMLInputElement> {
  *      return export {
  * //   ^^^^^^^^^^^^^
  * //   return captured value

@@ -6,11 +6,9 @@ import dev.fritz2.headless.runTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLInputElement
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@Ignore
 class AttributeHookTest {
 
     @Test
