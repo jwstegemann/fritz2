@@ -41,9 +41,10 @@ class HeadlessToasts(renderContext: RenderContext) : RenderContext by renderCont
 
     inner class ToastRenderingContext {
 
-        inner class HeadlessToast<T : Tag<HTMLElement>>(tag: T, private val toastId: String) : RenderContext by tag {
+        inner class HeadlessToast<T : Tag<HTMLElement>>(tag: T) : RenderContext by tag {
 
-            fun <TC : Tag<HTMLElement>> headlessToastCloseButton(
+            fun <TC : Tag<HTMLElement>> toastCloseButton(
+                toastId: String,
                 classes: String? = null,
                 id: String? = null,
                 scope: (ScopeContext.() -> Unit) = {},
@@ -55,15 +56,14 @@ class HeadlessToasts(renderContext: RenderContext) : RenderContext by renderCont
             }
         }
 
-        fun <T : Tag<HTMLElement>> headlessToast(
-            toastId: String,
+        fun <T : Tag<HTMLElement>> toast(
             classes: String? = null,
             id: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<T>,
             initialize: HeadlessToast<T>.() -> Unit
         ) = tag(this@HeadlessToasts, classes, id, scope) {
-            HeadlessToast(this, toastId).run {
+            HeadlessToast(this).run {
                 initialize()
             }
         }
@@ -93,10 +93,11 @@ class HeadlessToasts(renderContext: RenderContext) : RenderContext by renderCont
     }
 }
 
-fun RenderContext.headlessToasts(
+fun <T : Tag<HTMLElement>>RenderContext.toasts(
+    tag: TagFactory<T>,
     initialize: HeadlessToasts.() -> Unit
-) = HeadlessToasts(this).run {
-    initialize()
+) = tag(this, "", "toasts-${Id.next()}", {}) {
+    HeadlessToasts(this).run(initialize)
 }
 
 
