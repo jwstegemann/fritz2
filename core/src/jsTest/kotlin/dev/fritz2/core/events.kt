@@ -231,12 +231,9 @@ class EventsTest {
             assertEquals(expected, result.textContent, "wrong dom content of result-node")
         }
     }
-
-    // TODO: Evaluate parameterized tests in order to test also keydowns and keypresss
-    //  This should also be transferred to other tests as well to eliminate boilerplate and control structures!
+    
     @Test
     fun testEnterForInput() = runTest {
-        // TODO: Evaluate pre test execution by framework
         
         val inputId = Id.next()
         val resultId = Id.next()
