@@ -8,17 +8,17 @@ eleventyNavigation:
     parent: headless
     order: 110
 demoHash: textarea
-teaser: "Ein TextArea bietet eine mehrzeilige Texteingabe an."
+teaser: "A TextArea offers a multi-line text input."
 ---
 
-## Einfaches Beispiel
+## Basic Example
 
-Eine TextArea wird mit der `textArea` Komponenten Fabrik Funktion erzeugt. Innerhalb des Scopes muss zwingend
-eine `String` basierte Datenbindung `value` initialisiert werden.
+A TextArea is created with the `textArea` component factory function. Within its scope a `string` based data
+binding named `value` has to be initialized.
 
-Optional kann ein Platzhaltertext mittels `placeholder` Attribut-Hook gesetzt werden.
+Optionally, a placeholder text can be set using the `placeholder` attribute hook.
 
-Des Weiteren muss das eigentliche Eingabeelement mittels `textareaTextfield` erzeugt werden.
+Furthermore, the actual input element must be created using `textareaTextfield`.
 
 ```kotlin
 val name = storeOf("")
@@ -30,13 +30,13 @@ textArea {
 }
 ```
 
-## Verwendung mit Label und Beschreibung
+## Add Label and Description
 
-Innerhalb des Scopes existieren die beiden Baustein-Funktionen `textareaLabel` und `textareaDescription`, mit denen man
-das Eingabefeld mit weiteren Beschriftungen versehen kann.
+Within the scope there are the two block functions `textareaLabel` and `textareaDescription`, that can be used to
+enhance the input field with additional label or descriptions.
 
-Wird beim Label das HTML `label` Tag verwendet (per default), so bewirkt ein Maus-Klick auf das Label, dass das
-Eingabefeld fokussiert wird.
+If the HTML `label` tag is used for the label (by default), a mouse click on the label causes the input field to be
+focused.
 
 ```kotlin
 val name = storeOf("")
@@ -54,10 +54,10 @@ textArea {
 }
 ```
 
-## Deaktivieren
+## Deactivate
 
-Das TextArea unterstützt das (dynamische) Deaktivieren und Aktivieren des Eingabefeldes. Dazu muss der boolesche
-Attribut-Hook `disabled` entsprechend gesetzt werden.
+The TextArea component supports the (dynamic) deactivation and activation of the input field. To do this, the boolean
+Attribute hook `disabled` must be set accordingly.
 
 ```kotlin
 val toggle = storeOf(false) 
@@ -77,11 +77,11 @@ textArea {
 }
 ```
 
-## Validierung
+## Validation
 
-Die Datenbindung erlaubt es der TextArea Komponente, die Validierungsnachrichten abzugreifen und einen eigenen
-Baustein `textareaValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen.
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
+Data binding allows the TextArea component to grab the validation messages and provide its own building
+block `textareaValidationMessages` that is only rendered when there are some messages. These messages are exposed within
+its scope as a data stream `msgs`.
 
 ```kotlin
 textArea {
@@ -114,48 +114,51 @@ textArea() {
 
 ### textArea
 
-Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld    | Typ                           | Description                                                                      |
-|---------------|-------------------------------|----------------------------------------------------------------------------------|
-| `value`       | `DatabindingProperty<String>` | Zwei-Wege-Datenbindung für den Inhalt der Eingabe. Muss zwingend gesetzt werden! |
-| `placeHolder` | `AttributeHook<String>`       | Optionaler Hook zum (dynamischen) Setzen eines Platzhalters                      |
-| `disabled`    | `BooleanAttributeHook`        | Optionaler Hook zum (dynamischen) Aktivieren oder Deaktivieren der Eingabe       |
-
+| Scope property | Typ                           | Description                                             |
+|----------------|-------------------------------|---------------------------------------------------------|
+| `value`        | `DatabindingProperty<String>` | Mandatory (two-way) data-binding for the input value.   |
+| `placeHolder`  | `AttributeHook<String>`       | Optional hook to (dynamically) set a placeholder.       |
+| `disabled`     | `BooleanAttributeHook`        | Optional hook to (dynamically) enable or disable input. |
 
 ### textareaTextfield
 
-Verfügbar im Scope von: `textArea`
+Available in the scope of: `textArea`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
-Tag: `textarea` (nicht änderbar!)
+Tag: `textarea` ((not customizable!)
 
 
 ### textareaLabel
 
-Verfügbar im Scope von: `textArea`
+Available in the scope of: `textArea`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `label`
 
 
 ### textareaDescription
 
-Verfügbar im Scope von: `textArea`
+Available in the scope of: `textArea`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `p`
 
 
 ### textareaValidationMessages
 
-Verfügbar im Scope von: `textArea`
+Available in the scope of: `textArea`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
+
+| Scope property | Typ                                      | Description                                                           |
+|----------------|------------------------------------------|-----------------------------------------------------------------------|
+| `msgs`         | `Flow<List<ComponentValidationMessage>>` | provides a data stream with a list of ``ComponentValidationMessage``s |

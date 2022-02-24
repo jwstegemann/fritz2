@@ -1,6 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -29,8 +28,7 @@ class HandlersTests {
 
     @Test
     fun eventHandlerDomChange() = runTest {
-        initDocument()
-
+        
         val resultId = Id.next()
         val buttonId = Id.next()
 

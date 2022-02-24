@@ -4,10 +4,7 @@ import dev.fritz2.core.Id
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.ScopeContext
 import dev.fritz2.core.Tag
-import dev.fritz2.headless.foundation.Aria
-import dev.fritz2.headless.foundation.OpenClose
-import dev.fritz2.headless.foundation.TagFactory
-import dev.fritz2.headless.foundation.trapFocus
+import dev.fritz2.headless.foundation.*
 import org.w3c.dom.*
 
 /**
@@ -21,7 +18,7 @@ import org.w3c.dom.*
 class Modal(val renderContext: RenderContext) : RenderContext by renderContext, OpenClose() {
 
     var restoreFocus: Boolean = true
-    var setInitialFocus: Boolean = true
+    var setInitialFocus: InitialFocus = InitialFocus.InsistToSet
 
     private var panel: (RenderContext.() -> Tag<HTMLElement>)? = null
 
@@ -183,7 +180,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
  *     var restoreFocus: Boolean
  *     var setInitialFocus: Boolean
  *     // inherited by `OpenClose`
- *     val openClose = DatabindingProperty<Boolean>()
+ *     val openState: DatabindingProperty<Boolean>
  *     val opened: Flow<Boolean>
  *     val close: SimpleHandler<Unit>
  *     val open: SimpleHandler<Unit>

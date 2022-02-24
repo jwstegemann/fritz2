@@ -1,7 +1,6 @@
 package dev.fritz2.repository.rest
 
 import dev.fritz2.core.*
-import dev.fritz2.initDocument
 import dev.fritz2.repository.Resource
 import dev.fritz2.repository.ResourceNotFoundException
 import dev.fritz2.restEndpoint
@@ -40,8 +39,7 @@ class RestTests {
 
     @Test
     fun testEntityService() = runTest {
-        initDocument()
-
+        
         val defaultPerson = RestPerson("", 0)
         val startPerson = RestPerson("Heinz", 18)
         val changedAge = 99
@@ -115,8 +113,7 @@ class RestTests {
 
     @Test
     fun testQueryService() = runTest {
-        initDocument()
-
+        
         val testList = listOf(
             RestPerson("A", 0),
             RestPerson("B", 1),
@@ -189,8 +186,7 @@ class RestTests {
 
     @Test
     fun testQueryServiceUpdate() = runTest {
-        initDocument()
-
+        
         val testList = listOf(
             RestPerson("A", 0),
             RestPerson("B", 1),

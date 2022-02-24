@@ -8,28 +8,35 @@ eleventyNavigation:
     parent: headless 
     order: 80 
 demoHash: radioGroup 
-teaser: "Eine RadioGroup dient als Basis für die Einfachauswahl von beliebigen Elementen."
+teaser: "A RadioGroup serves as a basis for the single selection of any element."
 ---
 
-## Einfaches Beispiel
+## Basic Example
 
-RadioGroups werden mittels der *generischen* Komponenten Factory Funktion `fun <T> radioGroup()` erzeugt.
-Der Typ-Parameter `T` kann dabei durch einen beliegen Typen z.B. einer Domänen-Klasse ersetzt werden.
+RadioGroups are created using the generic component factory function `fun <T> radioGroup()`.
+The type parameter `T` can be replaced by any type, e.g. a domain class.
 
-Durch einen Mausklick auf eine Option oder durch die [[↑]] und [[↓]] Tasten, sofern die RadioGroup fokussiert ist, 
-kann eine Option selektiert werden. Es kann immer nur eine Option selektiert werden; die zuvor selektierte Option
-wird entsprechend automatisch deselektiert.
+By clicking on an option or by using the [[↑]] and [[↓]] keys if the RadioGroup is focused,
+an option can be selected. Only one option can be selected at a time; the previously selected option
+is automatically deselected accordingly.
 
-Als Datenbindung über die Property `value` ist daher zwingend ein `T` als Datenstrom oder gar als Store anzugeben.
-Die Komponente unterstützt two-way-databinding, d.h. sie übernimmt sowohl von außen auf einem `Flow<T>`
-vorhandenes Element als selektiert, sendet aber natürlich auch die aktuell selektierte Option an einen zu übergebenden
-Handler.
+It is therefore mandatory to specify a data stream or a store  of a `List<T>` as data binding via the `value` property.
+The component supports two-way-data-binding, i.e. it reflects selected element from the outside by a `Flow<T>`
+but also emits the updated selection to the outside by some `Handler`.
 
-Die verfügbaren Optionen werden nicht direkt als Parameter in die Komponente, sondern jeweils einzeln
-in die Bausteinfabrik `radioGroupOption` als ersten Parameter hinein gereicht. Ein typisches Muster ist daher die
-Verwendung einer Schleife, in welcher diese Fabrik Funktion entsprechend aufgerufen wird.
+The available options are not injected directly into the component as parameter, but one at a time by calling the
+factory `radioGroupOption` and providing the option as first parameter. A typical pattern is therefore the use of a
+loop in which this factory function is called accordingly.
 
-Für das Selektieren muss zwingend ein `Tag` mittels `radioGroupOptionToggle` angelegt werden.
+::: warning
+**Beware:** Options cannot be removed from the RadioGroup. Once an option is added to the group by `radioGroupOption`,
+it will remain inside forever. So never use some reactive pattern for populating the RadioGroup as some `Flow<List<T>>`
+combined with some call to `renderEach` or alike!
+
+If the options change, you must re-render the whole component.
+:::
+
+For selecting, a `Tag` must be created using `radioGroupOptionToggle`.
 
 ```kotlin
 // some domain type for this example, a collection to choose from, and an external store
@@ -52,16 +59,16 @@ radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
 }
 ```
 
-## Das selektierte Element stylen
+## Styling the selected Element
 
-Da eine headless Komponente kein Styling mitliefert, unterstützt die Komponente den Anwender damit, auf die aktuell
-selektierte Option zu reagieren.
+Since a headless component does not provide any styling, the component supports the user to react to the current
+selection.
 
-Innerhalb des Scopes der `radioGroupOption` Fabrik bietet die Komponente den booleschen Datenstrom `selected` an.
-Über diesen kann entsprechend abgefragt werden, ob diese Option aktuell selektiert ist oder nicht.
+Within the scope of the `radioGroupOption` factory, the component provides the boolean stream `selected`. This can be
+used to query whether this option is currently selected or not.
 
-Ein verbreitetes Muster ist es, dynamisch CSS-Klassen zu setzen oder zu entfernen. Natürlich können auch ganze Elemente
-hinzugefügt oder entfernt werden, je nach Status auf dem Datenstrom.
+A common pattern is to dynamically add or remove CSS classes. Of course also whole elements can be added or removed from
+the DOM depending on the state `selected`.
 
 ```kotlin
 radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
@@ -80,16 +87,15 @@ radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
 }
 ```
 
-## Das aktive Element stylen
+## Styling the active Element
 
-Eine RadioGroup bietet zusätzlich die Information, welche Option gerade *aktiv* ist, also den Fokus hat.
+A RadioGroup also provides information about which option is currently active, i.e. has the focus.
 
-Dazu bietet der Scope von `radioGroupOption` den booleschen Datenstrom `active` an. Auch dieser kann (und sollte)
-verwendet werden, um einen spezifischen Stil für den Zustand `true` vorzusehen.
+For this purpose, the scope of `radioGroupOption` offers the Boolean data stream `active`. This one can (and should)
+be used to provide a specific style for the `true` state.
 
-Da oftmals sowohl der Status der Selektion, als auch der Fokus stilistisch dieselben Elemente betreffen, ist es ein
-typisches Muster, beide Datenströme zu kombinieren. Dafür bietet sich die Verwendung der gleichnamigen `combine`
-Methode auf `Flow`s an:
+Since often both the status of the selection and the focus stylistically affect the same elements, it is a
+typical pattern to combine both data streams. Use the `combine` method on `Flow`s for this purpose:
 
 ```kotlin
 radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
@@ -112,11 +118,10 @@ radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
 }
 ```
 
-## Beschriftung hinzufügen
+## Add Label and Description
 
-Die RadioGroup kann mittels `radioGroupLabel` mit einem Label, die einzelnen Optionen per
-`radioGroupOptionLabel` und `radioGroupOptionDescription` mit einem Label und einer Beschreibung angereichert
-werden.
+The RadioGroup can be labeled using `radioGroupLabel`, the individual options can be enriched per
+`radioGroupOptionLabel` and `radioGroupOptionDescription` with a label and some descriptions.
 
 ```kotlin
 radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
@@ -157,11 +162,12 @@ radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
 }
 ```
 
-## Validierung
+## Validation
 
-Die Datenbindung erlaubt es der CheckboxGroup Komponente, die Validierungsnachrichten abzugreifen und einen eigenen
-Baustein `radioGroupValidationMessages` anzubieten, der nur dann gerendert wird, wenn Nachrichten vorliegen.
-Diese Nachrichten werden in seinem Scope dem Anwender als Datenstrom `msgs` zur Verfügung gestellt.
+Data binding allows the RadioGroup component to grab the validation messages and provide its own building
+block `radioGroupValidationMessages` that is only rendered when there are some messages. These messages are exposed
+within its scope as a data stream `msgs`.
+
 
 ```kotlin
 radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
@@ -180,16 +186,16 @@ radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
 }
 ```
 
-## Maus Interaction
+## Mouse Interaction
 
-Das Klicken auf ein mit ``radioGroupOptionToggle`` erzeugtes Element selektiert die dahinter liegende Option und
-deselektiert die zuvor gewählte Option.
+Clicking on an element created with ``radioGroupOptionToggle`` selects the underlying option and deselects the
+previously selected option.
 
 ## Keyboard Interaction
 
-| Command                                          | Description                              |
-|--------------------------------------------------|------------------------------------------|
-| [[↑]] [[↓]] when an option-toggle is focused | Zyklische Selektion durch alle Optionen. |
+| Command                                        | Description                                     |
+|------------------------------------------------|-------------------------------------------------|
+| [[↑]] [[↓]] when an option-toggle is focused   | (Reverse) Cyclic selection through all options. |
 
 ## API
 
@@ -217,75 +223,75 @@ radioGroup<T>() {
 
 ### radioGroup
 
-Parameter: `classes`, `id`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ                       | Description                                                                   |
-|------------|---------------------------|-------------------------------------------------------------------------------|
-| `value`    | `DatabindingProperty<T>`  | Zwei-Wege-Datenbindung für die Selektion einer Option. Muss gesetzt werden!   |
+| Scope property | Typ                       | Description                                        |
+|----------------|---------------------------|----------------------------------------------------|
+| `value`        | `DatabindingProperty<T>`  | Mandatory (two-way) data-binding for the selection |
 
 
 ### radioGroupLabel
 
-Verfügbar im Scope von: `radioGroup`
+Available in the scope of: `radioGroup`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `label`
 
 
 ### radioGroupValidationMessages
 
-Verfügbar im Scope von: `radioGroup`
+Available in the scope of: `radioGroup`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ                                      | Description                                                   |
-|------------|------------------------------------------|---------------------------------------------------------------|
-| `msgs` | `Flow<List<ComponentValidationMessage>>` | stellt eine Liste von ``ComponentValidationMessage`` bereit   |
+| Scope property | Typ                                      | Description                                                           |
+|----------------|------------------------------------------|-----------------------------------------------------------------------|
+| `msgs`         | `Flow<List<ComponentValidationMessage>>` | provides a data stream with a list of ``ComponentValidationMessage``s |
 
 
 ### radioGroupOption
 
-Verfügbar im Scope von: `radioGroup`
+Available in the scope of: `radioGroup`
 
-Parameter:
-- `option: T`: Das Optionsobjekt, welches dieser Option-Block verwalten soll, muss hier zwingend übergeben werden.
+Parameters:
+- `option: T`: Mandatory option object that is to be managed by this option block.
 - `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope Feld | Typ             | Description                                                                                                                                                    |
-|------------|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `selected` | `Flow<Boolean>` | Dieser Datenstrom liefert den Selektions-Status der verwalteten Option: `true` die Option ist selektiert, `false` wenn nicht.                                  |
-| `active`   | `Flow<Boolean>` | Dieser Datenstrom zeigt an, ob eine Option fokussiert ist: `true` die Option hat den Fokus, `false` wenn nicht. Es kann immer nur eine Option den Fokus haben. |
+| Scope property | Typ             | Description                                                                                                                                     |
+|----------------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| `selected`     | `Flow<Boolean>` | This data stream provides the selection status of the managed option: `true` the option is selected, `false` if not.                            |
+| `active`       | `Flow<Boolean>` | This data stream indicates whether an option has focus: `true` the option has focus, `false` if not. Only one option can have focus at a time.  |
 
 
 ### radioGroupOptionToggle
 
-Verfügbar im Scope von: `radioGroupOption`
+Available in the scope of: `radioGroupOption`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
 
 ### radioGroupOptionLabel
 
-Verfügbar im Scope von: `radioGroupOption`
+Available in the scope of: `radioGroupOption`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `label`
 
 
 ### radioGroupOptionDescription
 
-Verfügbar im Scope von: `radioGroupOption`
+Available in the scope of: `radioGroupOption`
 
-Parameter: `classes`, `scope`, `tag`, `initialize`
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `span`

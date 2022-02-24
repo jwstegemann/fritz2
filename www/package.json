@@ -19,6 +19,7 @@
     "@11ty/eleventy": "^0.12.1",
     "@11ty/eleventy-navigation": "^0.1.6",
     "@11ty/eleventy-plugin-syntaxhighlight": "^3.2.2",
+    "@tailwindcss/typography": "^0.5.2",
     "autoprefixer": "^10.4.0",
     "css-loader": "^4.3.0",
     "eleventy-plugin-heroicons": "^0.2.0",

@@ -1,6 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -22,8 +21,7 @@ class SubStoreTests {
 
     @Test
     fun testSubStore() = runTest {
-        initDocument()
-
+        
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person) {}
 
@@ -78,8 +76,7 @@ class SubStoreTests {
 
     @Test
     fun testSubStoreWithFormat() = runTest {
-        initDocument()
-
+        
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person, id = "person") {}
 

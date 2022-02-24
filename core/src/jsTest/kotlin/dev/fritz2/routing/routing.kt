@@ -2,7 +2,6 @@ package dev.fritz2.routing
 
 import dev.fritz2.core.Id
 import dev.fritz2.core.render
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -18,8 +17,7 @@ class RoutingTests {
 
     @Test
     fun  testStringRouter() = runTest {
-        initDocument()
-
+        
         window.location.hash = ""
 
         val defaultRoute = ""
@@ -60,8 +58,7 @@ class RoutingTests {
 
     @Test
     fun testMapRouter() = runTest {
-        initDocument()
-
+        
         window.location.hash = ""
 
         val pageKey = "page"
@@ -114,8 +111,7 @@ class RoutingTests {
 
     @Test
     fun testMapRouterFailing() = runTest {
-        initDocument()
-
+        
         window.location.hash = ""
 
         val router = routerOf(mapOf("test" to "123"))
@@ -137,8 +133,7 @@ class RoutingTests {
 
     @Test
     fun testMapRouterHandler() = runTest {
-        initDocument()
-
+        
         window.location.hash = ""
 
         val router = routerOf(mapOf("page" to "123", "extra" to "abc"))
