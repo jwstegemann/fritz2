@@ -12,7 +12,7 @@ typealias Effect<C, R, P> = C.(P) -> R
 
 /**
  * This specialized payload alias should express the common needed parameters when the [Effect] render some [Tag],
- * so it ueses a [Triple] to group a [String] for the classes, a [String] for the [Tag]'s id and the unspecific
+ * so it uses a [Triple] to group a [String] for the classes, a [String] for the [Tag]'s id and the unspecific
  * payload [P] itself.
  *
  * Always use this special payload type, if the [Hook] creates some [Tag]!
@@ -59,7 +59,6 @@ typealias TagPayload<P> = Triple<String?, String?, P>
  *
  * @see Property
  * @see TagHook
- * @see Enhanceable
  */
 abstract class Hook<C, R, P> : Property<Effect<C, R, P>>() {
 
