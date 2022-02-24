@@ -123,31 +123,6 @@ fun <C, R> C.hook(h: Hook<C, R, Unit>) =
     h.value?.invoke(this, Unit)?.also { h.alsoExpr?.invoke(it) }
 
 /**
- * This hook method applies multiple [Hook]'s encapsulated behaviour to the calling context and passes the _same_
- * given payload to each hook. It also applies a given also-expression of each hook.
- *
- * This is a shortcut for situation where lots of hooks needs to be applied at the same location:
- * ```
- * // instead of this...
- * hook(a, String)
- * hook(b, String)
- * hook(c, String)
- *
- * // ... the application of this variant shortens the code:
- * hook(a, b, c, payload = "some Value")
- * ```
- *
- * @see Hook
- *
- * @param h some hook implementations
- * @param payload some additional data
- */
-// TODO: Drop! Does not really make sense! -> which return type? same value?
-fun <C, R, P> C.hook(vararg h: Hook<C, R, P>, payload: P) = h.forEach { hook ->
-    hook.value?.invoke(this, payload)?.also { hook.alsoExpr?.invoke(it) }
-}
-
-/**
  * This hook method applies multiple [Hook]'s encapsulated behaviour to the calling context with the payload of type
  * `Unit`. It also applies a given also-expression of each hook.
  *
