@@ -1,7 +1,6 @@
 package dev.fritz2.headless.model
 
 import dev.fritz2.core.Lens
-import dev.fritz2.core.Lenses
 import dev.fritz2.core.lens
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.headless.validation.errorMessage
@@ -9,7 +8,6 @@ import dev.fritz2.validation.validation
 
 val listBoxEntries = listOf("a", "b", "c", "d", "e", "f", "g")
 
-@Lenses
 data class TestModel(
     val switch: Boolean = false,
     val listBox: String = listBoxEntries.first()
