@@ -820,15 +820,14 @@ interface RenderContext : WithJob, WithScope {
         content: HtmlTag<HTMLQuoteElement>.() -> Unit
     ): HtmlTag<HTMLQuoteElement> =
         register(HtmlTag("q", id, baseClass, job, evalScope(scope)), content)
-
-    //FIXME: gibt es das noch?
-//    fun dfn(
-//        baseClass: String? = null,
-//        id: String? = null,
-//        scope: (ScopeContext.() -> Unit) = {},
-//        content: HtmlTag<HtmlTextElement>.() -> Unit
-//    ): HtmlTag<HtmlTextElement> =
-//        register(HtmlTag("dfn", id, baseClass, job, evalScope(scope)), content)
+    
+    fun dfn(
+        baseClass: String? = null,
+        id: String? = null,
+        scope: (ScopeContext.() -> Unit) = {},
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("dfn", id, baseClass, job, evalScope(scope)), content)
 
     fun abbr(
         baseClass: String? = null,
@@ -853,17 +852,15 @@ interface RenderContext : WithJob, WithScope {
         content: HtmlTag<HTMLElement>.() -> Unit
     ): HtmlTag<HTMLElement> =
         register(HtmlTag("var", id, baseClass, job, evalScope(scope)), content)
+    
+    fun samp(
+        baseClass: String? = null,
+        id: String? = null,
+        scope: (ScopeContext.() -> Unit) = {},
+        content: HtmlTag<HTMLElement>.() -> Unit
+    ): HtmlTag<HTMLElement> =
+        register(HtmlTag("samp", id, baseClass, job, evalScope(scope)), content)
 
-    //FIXME: gibt es das noch?
-//    fun samp(
-//        baseClass: String? = null,
-//        id: String? = null,
-//        scope: (ScopeContext.() -> Unit) = {},
-//        content: HtmlTag<HtmlTextElement>.() -> Unit
-//    ): HtmlTag<HtmlTextElement> =
-//        register(HtmlTag("samp", id, baseClass, job, evalScope(scope)), content)
-
-    //FIXME: richtig?
     fun kbd(
         baseClass: String? = null,
         id: String? = null,
@@ -871,7 +868,6 @@ interface RenderContext : WithJob, WithScope {
         content: HtmlTag<HTMLElement>.() -> Unit
     ): HtmlTag<HTMLElement> =
         register(HtmlTag("kbd", id, baseClass, job, evalScope(scope)), content)
-
 
     fun sub(
         baseClass: String? = null,

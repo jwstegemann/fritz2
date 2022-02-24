@@ -273,7 +273,6 @@ suspend fun <N : Node> N.delete(start: Int, count: Int, parentJob: Job, cancelJo
     var itemToDelete = childNodes.item(start)
     repeat(count) {
         itemToDelete?.let {
-            //FIXME: get parentJob here?
             (MainScope() + parentJob).launch {
                 cancelJob(it)
                 removeChild(it)
