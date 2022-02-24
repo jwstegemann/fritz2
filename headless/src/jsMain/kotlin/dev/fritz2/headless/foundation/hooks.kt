@@ -142,6 +142,7 @@ fun <C, R> C.hook(h: Hook<C, R, Unit>) =
  * @param h some hook implementations
  * @param payload some additional data
  */
+// TODO: Drop! Does not really make sense! -> which return type? same value?
 fun <C, R, P> C.hook(vararg h: Hook<C, R, P>, payload: P) = h.forEach { hook ->
     hook.value?.invoke(this, payload)?.also { hook.alsoExpr?.invoke(it) }
 }
