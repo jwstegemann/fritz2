@@ -6,7 +6,7 @@ eleventyNavigation:
     key: http
     parent: documentation
     title: Http
-    order: 110
+    order: 70
 ---
 
 Using the browser's default fetch-api can get quite tiresome, which is why fritz2 offers a small fluent api wrapper for it:
@@ -270,10 +270,10 @@ object MyAuthentication : Authentication<Principal>() {
 }
 ```
 
-You can also access the current principal to control your user interface:
+You can also access the principal to control your user interface:
 
 ```kotlin
-val vip = MyAuthentication.principal.map { it?.roles?.contains("SomeVipRole") ?: false }
+val vip = MyAuthentication.data.map { it?.roles?.contains("SomeVipRole") ?: false }
 
 MyAuthentication.authenticated.render {
     if (!it) {
@@ -288,7 +288,7 @@ MyAuthentication.authenticated.render {
     else {
         button {
             +"logout "
-            MyAuthentication.principal.map { it?.name ?: "" }.renderText()
+            MyAuthentication.data.map { it?.name ?: "" }.renderText()
 
             clicks handledBy {
                 MyAuthentication.clear() // logout, but in real life you would want to inform the backend
@@ -306,8 +306,8 @@ MyAuthentication.authenticated.render {
 }
 ```
 
+If you have to get the current principal at a given point in time, you can do so using the `current`-property of your Authentication.
+
 If the first request requires authentication, subsequent requests that use the same authentication middleware
 will wait for the started authentication process to finish. So make sure you always complete or cancel it and use
 a fresh endpoint within for remote requests required (login, get roles, etc.).
-
-

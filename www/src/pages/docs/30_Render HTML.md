@@ -1,13 +1,75 @@
 ---
 layout: layouts/docsWithContentNav.njk
-title: Attributes and CSS
-permalink: /docs/attributes/
+title: Render HTML
+permalink: /docs/render/
 eleventyNavigation:
-    key: attributes
+    key: render
     parent: documentation
-    title: Attributes and CSS
-    order: 40
+    title: Render HTML
+    order: 30
 ---
+
+TODO
+
+## Reuse Your HTML
+
+It's very easy to create a lightweight reusable component with fritz2. Basically all you have to do is write a function with `RenderContext` as its receiver type:
+
+```kotlin
+fun RenderContext.myComponent() {
+    p {
+        +"This is the smallest valid stateless component"
+    }
+}
+
+render {
+    myComponent()
+}
+```
+
+Of course, you can also use a subtype of `RenderContext` like a certain `Tag` as receiver if you want to limit the usage of your component to this type as its parent.
+
+By using plain functions, it's also straight forward to parametrize your component:
+
+```kotlin
+fun RenderContext.myOtherComponent(person: Person): P {
+    return p {
+        +"Hello, my name is ${person.name}!"
+    }
+}
+
+val somePerson = Person(...)
+render {
+    div {
+        myOtherComponent(somePerson)
+    }
+}
+```
+
+To allow nested components, use a lambda with `RenderContext` as its receiver, or the type of the element you are calling this lambda in:
+```kotlin
+// return a html element if you need it
+fun RenderContext.container(content: Div.() -> Unit): Div {
+    return div("container") {
+        content()
+    }
+}
+
+render {
+    container {
+        p {
+            text("Hello World!")
+        }
+
+        clicks handledBy someHandler // you will see what this does in the next chapter
+    }
+}
+```
+
+Using `Div` as receiver type in the example above allows you to access the specific attributes and events of your
+container-element from your content-lambda. Use `RenderContext` if this is not necessary or intended.
+
+## Set Your Attributes
 
 To create rich html-interfaces you will want to use a variety of attributes. In fritz2 there are several easy ways to 
 achieve this depending on your use case.
@@ -134,8 +196,6 @@ render {
     }
 }
 ```
-However, we do not recommend using inline styling -  fritz2 offers integrated styling-functions for dealing with 
-CSS directly in your Kotlin code, as well as a DSL for working with a themed responsive style system. 
-Have a look at [Styling](Styling.html) for more information.
 
-Now that you can build what you want in your templates, let's create some [Components](Components.html) with it.
+## Scope
+TODO

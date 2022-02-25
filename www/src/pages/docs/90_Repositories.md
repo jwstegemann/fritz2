@@ -6,10 +6,8 @@ eleventyNavigation:
     key: repositories
     parent: documentation
     title: Repositories
-    order: 130
+    order: 90
 ---
-
-# Repositories
 
 To connect certain types of backend to your `Store`s, you can make use of fritz2's repositories. fritz2 offers
 implementations of the repository-interfaces for two types of backends:
@@ -72,7 +70,7 @@ It offers the following methods to query or manipulate the content of the reposi
 * `delete(entities: List<T>, ids: List<I>): List<T>`
   
   
-### EntityRepository
+## EntityRepository
 
 To connect a `Store` with a REST-backend for example, just add the repository-service and use its methods in your
 handler:
@@ -111,7 +109,7 @@ By calling `syncBy` from your init-block the given `Handler` (here `addOrUpdate`
 update
 of your `Store`s data, to keep your REST-backend in sync with your local resource.
 
-### QueryRepository
+## QueryRepository
 
 When creating a `QueryRepository`, you can define a type describing the queries which are done by this repository. 
 You

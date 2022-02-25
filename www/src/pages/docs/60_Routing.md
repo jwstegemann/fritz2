@@ -6,9 +6,8 @@ eleventyNavigation:
     key: routing
     parent: documentation
     title: Routing
-    order: 140
+    order: 60
 ---
-# Routing
 
 Writing a Single Page Application (SPA), you might need a way to render a certain view depending on url-parameters. This is called routing. 
 fritz2 uses the hash-part of the url which starts with a `#`: `https://my.doma.in/path#hash`. url-parameters (`?`) are usually handled by the server, 
