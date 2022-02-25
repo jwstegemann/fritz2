@@ -110,7 +110,7 @@ interface Store<D> : WithJob {
      *
      * @param lens: a [Lens] describing, which part of your data model you will create [SubStore] for.
      * Use @[Lenses] annotation to let your compiler
-     * create the lenses for you or use the buildLens-factory-method.
+     * create the lenses for you or use the lens-factory-method.
      */
     fun <X> sub(lens: Lens<D, X>): SubStore<D, X> =
         SubStore(this, lens)

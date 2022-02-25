@@ -69,6 +69,11 @@ val pages = mapOf(
         """Switches are a pleasant interface for toggling a value between two states, and offer the same 
             |semantics and keyboard navigation as native checkbox elements.""".trimMargin(),
         RenderContext::switchDemo
+    ),
+    "collection" to DemoPage(
+        "Headless Collection",
+        """A collection handles sorting, filtering of and selecting item form a collection.""".trimMargin(),
+        RenderContext::collectionDemo
     )
 )
 
