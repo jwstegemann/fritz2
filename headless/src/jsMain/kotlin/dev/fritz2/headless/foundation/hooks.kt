@@ -6,14 +6,14 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * This alias should express the main concept of a [Hook]: The encapsulated effect; that is applying some function
- * with a payload [P] onto a receiver [C] (often some [Tag]) and return some result [R] (often also a [Tag]).
+ * with a payload `P` onto a receiver `C` (often some [Tag]) and return some result `R` (often also a [Tag]).
  */
 typealias Effect<C, R, P> = C.(P) -> R
 
 /**
  * This specialized payload alias should express the common needed parameters when the [Effect] render some [Tag],
  * so it uses a [Triple] to group a [String] for the classes, a [String] for the [Tag]'s id and the unspecific
- * payload [P] itself.
+ * payload `P` itself.
  *
  * Always use this special payload type, if the [Hook] creates some [Tag]!
  *
@@ -160,19 +160,6 @@ fun <C, R> C.hook(vararg h: Hook<C, R, Unit>) = h.forEach { hook ->
  */
 fun <C, R, P> C.hook(h: Hook<C, R, TagPayload<P>>, classes: String?, id: String?, payload: P) =
     h.value?.invoke(this, Triple(classes, id, payload))?.also { h.alsoExpr?.invoke(it) }
-
-/**
- * This hook variant is a _safe_ application of a hook, which offers a [fallback] parameter that is executed, if
- * hook's apply field is not set.
- *
- * This is especially tied to the [TagPayload] application, thus all hooks, that creates [Tag]s. Exactly within this
- * context there is the need to define the fallback at the calling side.
- *
- * TODO: Show example (Somewhere in the tailwind-project there was an application... buttons, spinner?)
- */
-fun <C, R, P> C.hook(h: Hook<C, R, TagPayload<P>>, classes: String?, id: String?, payload: P, fallback: C.() -> R) =
-    if (h.isSet) hook(h, classes, id, payload)
-    else fallback.invoke(this)
 
 /**
  * This hook abstraction simplifies a [Tag] creating [Hook] by offering static [invoke] methods, which already

@@ -163,12 +163,12 @@ object Aria {
  * The following strongly simplified example shows the use case:
  * ```kotlin
  * class SomeComponent {
- *      val ariaTitleId = AriaReferenceHook<Div>(Aria.labelledby)
- *      val ariaDescriptionId = AriaReferenceHook<Div>(Aria.describedby)
+ *      val ariaTitleId = AriaReferenceHook<Tag<HTMLDivElement>>(Aria.labelledby)
+ *      val ariaDescriptionId = AriaReferenceHook<Tag<HTMLDivElement>>(Aria.describedby)
  *
- *      private var userContent: Div.() -> Unit = {}
+ *      private var userContent: Tag<HTMLDivElement>.() -> Unit = {}
  *
- *      fun content(expr: Div.() -> Unit) { userContent = expr }
+ *      fun content(expr: Tag<HTMLDivElement>.() -> Unit) { userContent = expr }
  *
  *      fun render() {
  *          // surrounding structure by component itself
