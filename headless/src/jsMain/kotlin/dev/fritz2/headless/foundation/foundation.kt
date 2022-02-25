@@ -14,7 +14,7 @@ import dev.fritz2.core.ScopeContext
 typealias TagFactory<C> = (RenderContext, String?, String?, ScopeContext.() -> Unit, C.() -> Unit) -> C
 
 /**
- * Implements a forward cycling though a [List] instance.
+ * Implements a forward cycling through a [List] instance.
  *
  * @param element some element of the list, for that the next one should be found.
  * @return the next element or the first, if called on last. `null` if [element] is not present in the list.
@@ -28,7 +28,7 @@ fun <T> List<T>.rotateNext(element: T): T? = indexOf(element).let {
 }
 
 /**
- * Implements a backwards cycling though a [List] instance.
+ * Implements a backwards cycling through a [List] instance.
  *
  * @param element some element of the list, for that the previous one should be found.
  * @return the previous element or the last, if called on first. `null` if [element] is not present in the list.
