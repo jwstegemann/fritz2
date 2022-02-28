@@ -587,7 +587,7 @@ You can of course reuse your custom formatting `Lens` for every `SubStore` of th
 ## Improve Rendering
 
 ```kotlin
-val seq = object : RootStore<List<String>>(listOf("one", "two", "three")) {
+object SeqStore : RootStore<List<String>>(listOf("one", "two", "three")) {
     var count = 0
 
     val addItem = handle { list ->
@@ -599,21 +599,23 @@ val seq = object : RootStore<List<String>>(listOf("one", "two", "three")) {
     }
 }
 
-render {
-    section {
-        ul {
-            seq.data.renderEach { s ->
-                li {
-                    button("btn", id = "delete-btn") {
-                        +s
-                        clicks.map { console.log("Deleting $s"); s } handledBy seq.deleteItem
+fun main() {
+    render {
+        section {
+            ul {
+                SeqStore.data.renderEach { s ->
+                    li {
+                        button("btn", id = "delete-btn") {
+                            +s
+                            clicks.map { console.log("Deleting $s"); s } handledBy SeqStore.deleteItem
+                        }
                     }
                 }
             }
-        }
-        button("button") {
-            +"Add an item"
-            clicks handledBy seq.addItem
+            button("button") {
+                +"Add an item"
+                clicks handledBy SeqStore.addItem
+            }
         }
     }
 }
