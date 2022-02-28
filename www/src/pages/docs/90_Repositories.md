@@ -96,7 +96,7 @@ val entityStore = object : RootStore<Person>(initialPerson) {
     }
 
     init {
-        syncBy(addOrUpdate)
+        data.drop(1) handledBy addOrUpdate
     }
 }
 ```
@@ -105,9 +105,8 @@ The `restEntityOf` function needs an `initialId` to distinguish add from update 
 A `POST`request is sent, when the id of the given instance equals `initialID`, otherwise a `PUT` request is used to 
 update the resource.).
 
-By calling `syncBy` from your init-block the given `Handler` (here `addOrUpdate`) is automatically called on each 
-update
-of your `Store`s data, to keep your REST-backend in sync with your local resource.
+By calling the `handledBy` function on the `data.drop(1)` flow in your init-block the given `Handler` (here `addOrUpdate`)
+gets automatically called on each update of your `Store`s data, to keep your REST-backend in sync with your local resource.
 
 ## QueryRepository
 

@@ -255,20 +255,18 @@ someStore.someHandler()
 ```
 
 If you need its handler's code to be executed whenever the model is changed, 
-you have to use the `syncBy` function:
+you have to use the `drop(1)` function on a `Flow` to skip the `initialData`:
 
 ```kotlin
 val store = object : RootStore<String>("initial") {
-    val logChange = handle { model ->
-        console.log("model changed to: $model")
-        model
-    }
-
     init {
-        syncBy(logChange)
+        data.drop(1) handledBy {
+            console.log("model changed to: $it")
+        }
     }
 }
 ```
+By using the ad-hoc `handledBy` function here your store gets not updated after new data arrives.
 
 ## Connecting stores to each other
 
