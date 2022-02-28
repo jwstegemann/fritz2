@@ -91,12 +91,42 @@ This will result in the following DOM structure:
 </dl>
 ```
 
+## Render Lists
+
+In fritz2 you can render out every type of data in a `Flow` including lists:
+
+```kotlin
+val listFlow = flowOf(listOf("a", "b", "c"))
+
+listFlow.render { list ->
+    list.forEach {
+        span { +it }
+    }
+}
+```
+
+But keep in mind that this means re-rendering *all* `span`s in this example when the list changes, regardless of how
+many items you actually changed. This might be what you want for small `List`s,
+for `List`s that rarely change, or for `List`s with a small representation in HTML (like just text per item), etc.
+However, for `List`s that change more often and/or result in complex HTML-trees per item, this does not perform well.
+
+For those cases, fritz2 offers the method `renderEach {}` which creates a `RenderContext` and mounts its result to the DOM.
+`renderEach {}` works like `render {}`, but it creates a specialized mount-point in order to
+identify elements for re-rendering. This mount-point compares the last version of your list with the
+new one on every change and applies the minimum necessary patches to the DOM.
+
+```kotlin
+val listFlow = flowOf(listOf("a", "b", "c"))
+
+listFlow.renderEach {
+    span { +it }
+}
+```
+
 ## Store
 In fritz2, `Store`s are used to handle your app's state.
-They heavily depend on Kotlin's `Flow` - if you are not familiar with this concept,
-please take a look at [Flows](Flows.html) first.
-
-Let's assume the state of your app is a simple `String`. Creating a `Store` to manage that state is quite easy:
+Let's assume the state of your app is a simple `String`.
+Creating a `Store` to manage that state is quite easy:
 
 ```kotlin
 val s = storeOf("initial value")
@@ -112,7 +142,7 @@ render {
 }
 ```
 
-By calling `s.data.renderText()` a [MountPoint](MountPoint.html) is created and collects your model values.
+By calling `s.data.renderText()` a mount-point is created and collects your model values.
 This means a DOM-element is created (in this example it's a `span` with the text as text-node) and
 bound to your `data` so that it will change whenever your `Store`'s state updates. This is called _precise data binding_.
 
@@ -140,7 +170,6 @@ render {
 }
 ```
 Of course, you can also use a `RootStore<T>` with a complex model which contains all data that you need in one place.
-Therefore, take a look at [Nested Structures](NestedStructures.html).
 
 You can also bind a `Flow` to an attribute:
 ```kotlin
@@ -149,10 +178,8 @@ input {
 }
 ```
 In this case, only the attribute value will change when the model in your store changes.
-fritz2 offers [pre-defined properties (at each Tag)](https://api.fritz2.dev/core/core/dev.fritz2.dom.html/index.html)
-for every HTML5-attribute.
 
-## State Management
+## Using Handlers
 
 Building your `Store`, you can add `Handler`s to respond to actions and adjust your model accordingly:
 
@@ -210,9 +237,9 @@ render {
 Calling `values()` on it extracts the current value from the input.
 Whenever such an event is raised, a new value appears on the `Flow` and is processed by the `update`-Handler of the 
 `Store` to update the model. Event-flows are available for 
-[all HTML5-events](https://api.fritz2.dev/core/core/dev.fritz2.dom/-with-events/index.html).
-There are some more [convenience functions](https://api.fritz2.dev/core/core/dev.fritz2.dom/index.html) to help you to extract data 
-from an event or control event-processing.
+[all HTML5-events](https://www.fritz2.dev/api/core/dev.fritz2.core/-with-events/index.html).
+There are some more [convenience functions](https://www.fritz2.dev/api/core/dev.fritz2.core/-listener/index.html) to 
+help you to extract data from an event or control event-processing.
 
 You can map the elements of the `Flow` to a specific action-type before connecting it to the `Handler`. 
 This way you can also add information from the rendering-context to the action. 
@@ -301,11 +328,10 @@ To see a complete example visit our
 [validation example](https://examples.fritz2.dev/validation/build/distributions/index.html) which uses connected
 stores and validate a `Person` before adding it to a list of `Person`s.
 
-Most of the time you will work on much more complex structures in your data model, so you will need to get `Store`s for elements "hidden" deeper in your [Nested Structures](NestedStructures.html). Let's see how fritz2 can help you here.
-
 ## History in Stores
 
-Sometimes you may want to keep the history of values in your `Store`, so you can navigate back in time to build an undo-function or maybe just for debugging...
+Sometimes you may want to keep the history of values in your `Store`, so you can navigate back in time to build an 
+undo-function or maybe just for debugging...
 
 fritz2 offers a history service to do so.
 
@@ -450,7 +476,8 @@ You can see it in action at our [nestedmodel-example](https://examples.fritz2.de
 Keep in mind that your annotated classes have to be in your `commonMain` source-set
 otherwise the automatic generation of the lenses will not work!
 
-Have a look at the [validation-example](https://examples.fritz2.dev/validation/build/distributions/index.html) to see how to set it up.
+Have a look at the [validation-example](https://examples.fritz2.dev/validation/build/distributions/index.html)
+to see how to set it up.
 
 This will also help you define a multiplatform project for sharing your model and validation code between
 the browser and backend.
@@ -478,7 +505,7 @@ val nameStore = personStore.sub(Person.name())
 
 Now you can use your `nameStore` exactly like any other `Store` to set up _two-way-databinding_, call `sub(...)`
 again to access the properties of `Name`. If a `SubStore` contains a `List`,
-you can of course iterate over it by using `renderEach {}` like described in [Lists as a Model](ListsinaModel.html).
+you can of course iterate over it by using `renderEach {}`.
 It's fully recursive from here on down to the deepest nested parts of your model.
 
 You can also add `Handler`s to your `SubStore`s by simply calling the `handle`-method:
@@ -500,10 +527,7 @@ render {
 To keep your code well-structured, it is recommended to implement complex logic at your `RootStore` or inherit it by using interfaces.
 However, the code above is a decent solution for small (convenience-)handlers.
 
-Your real world data model will most certainly contain lists of elements.
-Learn how to handle them effectively by reading about [Lists as a Model](ListsinaModel.html)
-
-# Formatting Values
+## Formatting Values
 
 In html you can only use `Strings` in your attributes like in the `value` attribute of `input {}`. To use other data
 types in your model you have to specify how to represent a specific value as `String` (e.g. Number, Currency, Date).
@@ -562,33 +586,7 @@ The resulting `SubStore` is a `Store<String>`.
 
 You can of course reuse your custom formatting `Lens` for every `SubStore` of the same type (in this case `com.soywiz.klock.Date`).
 
-## Lists in a Model
-
-`Store`s can be created for any type, including lists:
-
-```kotlin
-val listStore = storeOf(listOf("a", "b", "c"))
-```
-
-It's perfectly valid to render this `data` by iterating over the `List`:
-
-```kotlin
-listStore.data.render { list ->
-    list.forEach {
-        span { + it }
-    }
-}
-```
-
-But keep in mind that this means re-rendering *all* `span`s in this example when the list changes, regardless of how
-many items you actually changed. This might be what you want for small `List`s,
-for `List`s that rarely change, or for `List`s with a small representation in HTML (like just text per item), etc.
-However, for `List`s that change more often and/or result in complex HTML-trees per item, this does not perform well.
-
-For those cases, fritz2 offers the method `renderEach {}` which creates a `RenderContext` and mounts its result to the DOM.
-`renderEach {}` works like `render {}`, but it creates a specialized mount-point in order to
-identify elements for re-rendering. This mount-point compares the last version of your list with the
-new one on every change and applies the minimum necessary patches to the DOM.
+## Improve Rendering
 
 ```kotlin
 val seq = object : RootStore<List<String>>(listOf("one", "two", "three")) {
@@ -713,4 +711,4 @@ If you need two-way-databinding directly on a `Store`'s `data` without any inter
 the render-lambda's parameter for each element.
 
 Now you know how to handle all kinds of data and structures in your `Store`s.
-Next, you might want to check whether your model is valid. In fritz2 this is done with [Validation](Validation.html).
+Next, you might want to check whether your model is valid. In fritz2 this is done with [Validation](/docs/validation).

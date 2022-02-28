@@ -17,8 +17,9 @@ val usersApi = http("https://reqresss.in/api/users")
             .acceptJson()
             .contentType("application/json")
 ```
-The remote service offers some [convenience-methods](https://api.fritz2.dev/core/core/dev.fritz2.remote/-request/index.html) to configure 
-your API-calls, like the `acceptJson()` above, which simply adds the correct header to each request sent using the template.
+The remote service offers some [convenience-methods](https://next.fritz2.dev/api/core/dev.fritz2.remote/-request/index.html)
+to configure your API-calls, like the `acceptJson()` above, 
+which simply adds the correct header to each request sent using the template.
 
 Sending a request is pretty straightforward:
 ```kotlin
@@ -80,7 +81,7 @@ To see a complete example of this, visit our
 In the real world, instead of creating the JSON manually, better use 
 [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
 Get inspired by our [repositories example](https://examples.fritz2.dev/repositories/build/distributions/index.html)
-and use our [repositories API](Repositories.html).
+and use our [repositories API](/docs/repositories).
 
 
 You can easily set up your local webpack-server to proxy services (avoid CORS, etc.) when developing locally in 
@@ -107,8 +108,7 @@ kotlin {
 ```
 You can find a working example in the [Ktor Chat](https://github.com/jamowei/fritz2-ktor-chat) project.
 
-Want to do bidirectional communications? Keep on reading about [Websockets](Websockets.html).
-
+Want to do bidirectional communications? See [Websockets](/docs/websockets).
 
 ## Middleware
 
@@ -156,8 +156,6 @@ You can add multiple Middlewares in one row with .use(mw1, mw2, mw3). The `enric
 left to right (mw1,mw2,mw3), the `handleResponse` functions from right to left (mw3, mw2, mw1). 
 
 You can stop the processing of a Response by Middlewares further down the chain by returning `response.stopPropagation()`.
-
-fritz2 also offers some base classes to implement the [authentication](Authentication.html)-process of your SPA.
 
 ## Authentication
 

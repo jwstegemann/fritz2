@@ -147,7 +147,7 @@ val restQuery = restQueryOf<Person, String, PersonQuery>(PersonResource, "https:
 ```
 
 For more information about the `remote` parameter of `restQueryOf`, please refer to the docs
-section [HTTP-Calls](HttpCalls.html).
+section [HTTP-Calls](/docs/http).
 
 # Examples
 

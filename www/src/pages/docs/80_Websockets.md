@@ -75,7 +75,3 @@ val entityStore = object : RootStore<Person>(personResource.emptyEntity) {
 When the model in the `Store` changes, it will be sent to the server via Websockets, and vice versa of course.
 To get a full working example you can have a look at our [Ktor Chat](https://github.com/jamowei/fritz2-ktor-chat) 
 project.
-
-
-That way fritz2 provides an easy way to synchronize your stores with a server. Want more? Keep on reading about 
-[Routing](Routing.html).
