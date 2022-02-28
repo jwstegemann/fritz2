@@ -21,11 +21,11 @@ Your socket is now ready to establish a `Session` with the server, using the met
 exchanged between socket and server, which looks like this:
 
 ```kotlin
-val session: Session = websocket.connect()
+val session: Session = websocket("ws://...").connect()
 
 // receiving messages from server
 session.messages.body handledBy {
-  window.alert("Server said: $it")
+    window.alert("Server said: $it")
 }
 
 // sending messages to server
@@ -59,14 +59,22 @@ You can synchronize the content of a `Store` with a server via websockets. Use t
 `syncWith(socket: Socket, resource: Resource<T, I>)` like in the following example:
 
 ```kotlin
-data class Person(val name: String, val age: Int, val _id: String = Id.next())
+@Lenses
+@Serializable
+data class Person(val name: String = "", val age: Int = -1, val _id: String = Id.next())
 
-val personResource = Resource(Person::_id, PersonSerializer, Person("", 0))
-val socket = websocket("ws://myserver:3333")
+object PersonResource : Resource<Person, String> {
+    override val idProvider: IdProvider<Person, String> = Person::_id
+    override fun serialize(item: Person): String = Json.encodeToString(Person.serializer(), item)
+    override fun deserialize(source: String): Person =
+        Json.decodeFromString(Person.serializer(), source)
+}
 
-val entityStore = object : RootStore<Person>(personResource.emptyEntity) {
+val socket = websocket("ws://...")
+
+val entityStore = object : RootStore<Person>(Person()) {
     init {
-        syncWith(socket, personResource)
+        syncWith(socket, PersonResource)
     }
     // your handlers...
 }
