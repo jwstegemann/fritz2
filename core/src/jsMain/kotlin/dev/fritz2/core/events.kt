@@ -68,7 +68,7 @@ interface WithEvents<out T: EventTarget> {
 
     /**
      * occurs when the content of a form element, the selection, or the checked state have changed
-     * (for <input>, <select>, and <textarea>)
+     * (for `<input>`, `<select>`, and `<textarea>`)
      */
     val changes get() = subscribe<Event>("change")
 
