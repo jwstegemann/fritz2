@@ -8,7 +8,6 @@ import dev.fritz2.headless.components.SortDirection
 import dev.fritz2.headless.components.dataCollection
 import dev.fritz2.headless.components.inputField
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLTableRowElement
 
@@ -77,7 +76,7 @@ fun RenderContext.collectionDemo() {
             val padding = "px-4 py-2 whitespace-nowrap"
 
             dataCollectionItems("text-sm font-medium text-gray-500", tag = RenderContext::tbody) {
-                items.onEach { console.log("rendering...") }.renderEach { item ->
+                items.renderEach { item ->
                     dataCollectionItem(item, tag = RenderContext::tr) {
                         //TODO: add className for String to use whenever?
                         className(selected.map {if (it) "bg-indigo-200" else ""})

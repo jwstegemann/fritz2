@@ -157,14 +157,10 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
 
             fun render() {
                 if (selection.isSet) {
-                    console.log("sel")
                     if (selection.single.isSet) {
-                        console.log("single")
                         selection.single.handler?.let {
-                            console.log("handler")
                             it(selection.single.data.flatMapLatest { current ->
                                 clicks.map {
-                                    console.log("clicked ${current.toString().take(10)}")
                                     if (current == item) null else item
                                 }
                             })
