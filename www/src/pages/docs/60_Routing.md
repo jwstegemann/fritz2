@@ -92,14 +92,16 @@ class SetRoute(override val default: Set<String>) : Route<Set<String>> {
 
 val router = routerOf(SetRoute(setOf("welcome")))
 
-render {
-    section {
-        router.data.render { route ->
-            when {
-                route.contains("welcome") -> div { +"Welcome" }
-                route.contains("pageA") -> div { +"Page A" }
-                route.contains("pageB") -> div { +"Page B" }
-                else -> div { +"not found" }
+fun main() {
+    render {
+        section {
+            router.data.render { route ->
+                when {
+                    route.contains("welcome") -> div { +"Welcome" }
+                    route.contains("pageA") -> div { +"Page A" }
+                    route.contains("pageB") -> div { +"Page B" }
+                    else -> div { +"not found" }
+                }
             }
         }
     }
@@ -144,18 +146,20 @@ object MyRouter : MapRouter(mapOf("page" to "overview")) {
     val details = handle<String> { route, id -> route + mapOf("page" to "details", "detailsId" to id) }
 }
 
-render {
-    button {
-        +"Show overview"
-        clicks handledBy MyRouter.overview
+fun main() {
+    render {
+        button {
+            +"Show overview"
+            clicks handledBy MyRouter.overview
+        }
+        button {
+            +"Show details"
+            clicks.map { "12" } handledBy MyRouter.details
+        }
     }
-    button {
-        +"Show details"
-        clicks.map { "12" } handledBy MyRouter.details
-    }
+    // or call handler directly
+    MyRouter.details("12")
 }
-// or call handler directly
-MyRouter.details("12")
 ```
 
 Have a look at our [routing example](https://examples.fritz2.dev/routing/build/distributions/index.html)
