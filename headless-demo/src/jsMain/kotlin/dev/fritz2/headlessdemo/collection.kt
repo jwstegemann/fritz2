@@ -1,9 +1,14 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.core.*
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.RootStore
+import dev.fritz2.core.Tag
+import dev.fritz2.core.storeOf
 import dev.fritz2.headless.components.SortDirection
 import dev.fritz2.headless.components.dataCollection
+import dev.fritz2.headless.components.inputField
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLTableRowElement
 
@@ -25,10 +30,21 @@ fun RenderContext.collectionDemo() {
 //    val selectionStore = object : RootStore<Person?>(null) {}
     val selectionStore = object : RootStore<List<Person>>(fakeData[false]!!.take(2)) {}
 
+
+    val filterStore = storeOf("")
+    inputField("mt-2 mb-4") {
+        value(filterStore)
+        //FIXME: Warum braucht man den?
+        placeholder("filter...")
+        inputTextfield("shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-1/2 sm:text-sm border-gray-300 px-4 rounded-full") {  }
+    }
+
     dataCollection<Person>("shadow h-80 border border-gray-200 sm:rounded-lg overflow-y-auto overflow-x-auto relative") {
         data(TableStore.data)
 //        selection.single(selectionStore)
         selection.multi(selectionStore)
+
+        filterStore.data handledBy filterByText
 
         table("min-w-full divide-y divide-gray-200 bg-white") {
             thead {
@@ -36,22 +52,17 @@ fun RenderContext.collectionDemo() {
                     column("Name") {
                         dataCollectionSortButton(compareBy(Person::fullName), compareByDescending(Person::fullName)) {
                             direction.render {
-                                //TODO: auslagern für demos in icon-function
-                                svg("text-gray-500 h-3 w-3") {
-                                    content(
-                                        when (it) {
-                                            SortDirection.NONE -> HeroIcons.selector
-                                            SortDirection.ASC -> HeroIcons.sort_ascending
-                                            SortDirection.DESC -> HeroIcons.sort_descending
-                                        }
-                                    )
-                                    viewBox("0 0 20 20")
-                                    fill("currentColor")
-                                    attr("aria-hidden", "true")
-                                }
+                                icon("text-gray-500 h-3 w-3", content =
+                                    when (it) {
+                                        SortDirection.NONE -> HeroIcons.selector
+                                        SortDirection.ASC -> HeroIcons.sort_ascending
+                                        SortDirection.DESC -> HeroIcons.sort_descending
+                                    }
+                                )
                             }
                         }
                     }
+
                     column("eMail") {
 
                     }
@@ -61,14 +72,16 @@ fun RenderContext.collectionDemo() {
                 }
             }
 
+            val padding = "px-6 py-4 whitespace-nowrap"
+
             dataCollectionItems("text-sm font-medium text-gray-500", tag = RenderContext::tbody) {
-                items.renderEach { item ->
+                items.onEach { console.log("rendering...") }.renderEach { item ->
                     dataCollectionItem(item, tag = RenderContext::tr) {
-                        //TODO: add className for String?
+                        //TODO: add className for String to use whenever?
                         className(selected.map {if (it) "bg-indigo-200" else ""})
-                        td { +item.fullName }
-                        td { +item.email }
-                        td { +item.birthday }
+                        td(padding) { +item.fullName }
+                        td(padding) { +item.email }
+                        td(padding) { +item.birthday }
                     }
                 }
             }

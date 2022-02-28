@@ -53,7 +53,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
     val data = TableDataProperty<T>()
 
     private val sorting = object : RootStore<SortingOrder<T>?>(null) {}
-    val sort = sorting.handle<Sorting<T>> { old, newSorting ->
+    val sortBy = sorting.handle<Sorting<T>> { old, newSorting ->
         if (old?.sorting == newSorting) {
             val newDirection = when (old.direction) {
                 SortDirection.NONE -> SortDirection.ASC
@@ -64,6 +64,12 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
         } else {
             SortingOrder(newSorting, SortDirection.ASC)
         }
+    }
+
+    private val filtering = object : RootStore<((List<T>) -> List<T>)?>(null) {}
+    val filterBy = filtering.update
+    val filterByText = filtering.handle<String> { _, text ->
+        { it.filter { it.toString().lowercase().contains(text.lowercase()) } }
     }
 
     fun sortingDirection(s: Sorting<T>) = sorting.data.map {
@@ -83,7 +89,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
 
         //FIXME: ist hier bei allen Komponenten ein Receiver, wenn handledBy gecalled wird?
         fun Tag<CS>.render() {
-            clicks.map { sorting } handledBy sort
+            clicks.map { sorting } handledBy sortBy
         }
     }
 
@@ -121,14 +127,18 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
     inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>) : Tag<CI> by tag {
         val items: Flow<List<T>> = if (data.isSet) {
             data.value!!.flatMapLatest { list ->
-                sorting.data.map {
-                    it?.let {
-                        when (it.direction) {
-                            SortDirection.NONE -> list
-                            SortDirection.ASC -> list.sortedWith(it.sorting.comparatorAscending)
-                            SortDirection.DESC -> list.sortedWith(it.sorting.comparatorDescending)
+                sorting.data.flatMapLatest { sortOrder ->
+                    filtering.data.map { filterFunction ->
+                        (filterFunction?.invoke(list) ?: list).let { list ->
+                            sortOrder?.let {
+                                when (it.direction) {
+                                    SortDirection.NONE -> list
+                                    SortDirection.ASC -> list.sortedWith(it.sorting.comparatorAscending)
+                                    SortDirection.DESC -> list.sortedWith(it.sorting.comparatorDescending)
+                                }
+                            } ?: list
                         }
-                    } ?: list
+                    }
                 }
             }
         } else flowOf(emptyList())
