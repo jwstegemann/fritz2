@@ -250,7 +250,6 @@ object MyAuthentication : Authentication<Principal>() {
         }
     }
 }
-
 ```
 
 Now you can use your principal's data to enrich each subsequent request by adding a token as a header, for example:
@@ -263,8 +262,7 @@ object MyAuthentication : Authentication<Principal>() {
     override fun addAuthentication(request: Request, principal: Principal?): Request =
         if (principal != null) {
             request.header("Authorization", "Bearer ${principal.token}")
-        }
-        else request
+        } else request
 }
 ```
 
