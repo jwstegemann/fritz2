@@ -1,12 +1,16 @@
 package dev.fritz2.headless.components
 
 import dev.fritz2.core.RenderContext
+import dev.fritz2.core.RootStore
 import dev.fritz2.core.ScopeContext
 import dev.fritz2.core.Tag
 import dev.fritz2.headless.foundation.Property
 import dev.fritz2.headless.foundation.TagFactory
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
@@ -20,20 +24,97 @@ class TableDataProperty<T> : Property<Flow<List<T>>>() {
     }
 }
 
+enum class SortDirection {
+    NONE, ASC, DESC
+}
+
+//TODO: make this nullable to allow sorting only in one direction?
+data class Sorting<T>(val comparatorAscending: Comparator<T>, val comparatorDescending: Comparator<T>)
+
+data class SortingOrder<T>(val sorting: Sorting<T>, val direction: SortDirection)
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
     val data = TableDataProperty<T>()
 
-    fun render() {
+    private val sorting = object : RootStore<SortingOrder<T>?>(null) {}
 
+    val sort = sorting.handle<Sorting<T>> { old, newSorting ->
+        if (old?.sorting == newSorting) {
+            val newDirection = when(old.direction) {
+                SortDirection.NONE -> SortDirection.ASC
+                SortDirection.ASC -> SortDirection.DESC
+                SortDirection.DESC -> SortDirection.NONE
+            }
+            old.copy(direction = newDirection)
+        }
+        else {
+            SortingOrder(newSorting, SortDirection.ASC)
+        }
     }
 
+    fun sortingDirection(s: Sorting<T>) = sorting.data.map {
+        it?.let {
+            if (it.sorting == s) it.direction else SortDirection.NONE
+        } ?: SortDirection.NONE
+    }
 
+    fun render() {
+    }
+
+    inner class DataCollectionSortButton<CS : HTMLElement>(private val sorting: Sorting<T>, tag: Tag<CS>) : Tag<CS> by tag {
+        val direction = sortingDirection(sorting)
+
+        //FIXME: ist hier bei allen Komponenten ein Receiver, wenn handledBy gecalled wird?
+        fun Tag<CS>.render() {
+            clicks.map { sorting } handledBy sort
+        }
+    }
+
+    fun <CS : HTMLElement> RenderContext.dataCollectionSortButton(
+        sort: Sorting<T>,
+        classes: String? = null,
+        scope: (ScopeContext.() -> Unit) = {},
+        tag: TagFactory<Tag<CS>>,
+        initialize: DataCollectionSortButton<CS>.() -> Unit
+    ) {
+        //TODO: id
+        tag(this, classes, "someID", scope) {
+            DataCollectionSortButton(sort, this).run {
+                initialize()
+                render()
+            }
+        }
+    }
+
+    fun RenderContext.dataCollectionSortButton(
+        sort: Sorting<T>,
+        classes: String? = null,
+        internalScope: (ScopeContext.() -> Unit) = {},
+        initialize: DataCollectionSortButton<HTMLButtonElement>.() -> Unit
+    ) = dataCollectionSortButton(sort, classes, internalScope, RenderContext::button, initialize)
+
+    fun RenderContext.dataCollectionSortButton(
+        comparatorAscending: Comparator<T>,
+        comparatorDescending: Comparator<T>,
+        classes: String? = null,
+        internalScope: (ScopeContext.() -> Unit) = {},
+        initialize: DataCollectionSortButton<HTMLButtonElement>.() -> Unit
+    ) = dataCollectionSortButton(Sorting(comparatorAscending, comparatorDescending), classes, internalScope, initialize)
 
     inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>) : Tag<CI> by tag {
-        val items: Flow<List<T>> = if (data.isSet) data.value!! else flowOf(emptyList())
+        val items: Flow<List<T>> = if (data.isSet) {
+            data.value!!.flatMapLatest { list -> sorting.data.map {
+                it?.let {
+                    when(it.direction) {
+                        SortDirection.NONE -> list
+                        SortDirection.ASC -> list.sortedWith(it.sorting.comparatorAscending)
+                        SortDirection.DESC -> list.sortedWith(it.sorting.comparatorDescending)
+                    }
+                } ?: list
+            } }
+        } else flowOf(emptyList())
 
         fun render() {
 
