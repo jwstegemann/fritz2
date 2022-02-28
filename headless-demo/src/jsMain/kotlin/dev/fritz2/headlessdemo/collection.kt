@@ -1,11 +1,9 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.core.RenderContext
-import dev.fritz2.core.Tag
-import dev.fritz2.core.fill
-import dev.fritz2.core.viewBox
+import dev.fritz2.core.*
 import dev.fritz2.headless.components.SortDirection
 import dev.fritz2.headless.components.dataCollection
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLTableRowElement
 
@@ -23,8 +21,14 @@ fun Tag<HTMLTableRowElement>.column(title: String, button: Tag<HTMLDivElement>.(
 }
 
 fun RenderContext.collectionDemo() {
+
+//    val selectionStore = object : RootStore<Person?>(null) {}
+    val selectionStore = object : RootStore<List<Person>>(fakeData[false]!!.take(2)) {}
+
     dataCollection<Person>("shadow h-80 border border-gray-200 sm:rounded-lg overflow-y-auto overflow-x-auto relative") {
         data(TableStore.data)
+//        selection.single(selectionStore)
+        selection.multi(selectionStore)
 
         table("min-w-full divide-y divide-gray-200 bg-white") {
             thead {
@@ -59,7 +63,9 @@ fun RenderContext.collectionDemo() {
 
             dataCollectionItems("text-sm font-medium text-gray-500", tag = RenderContext::tbody) {
                 items.renderEach { item ->
-                    tr {
+                    dataCollectionItem(item, tag = RenderContext::tr) {
+                        //TODO: add className for String?
+                        className(selected.map {if (it) "bg-indigo-200" else ""})
                         td { +item.fullName }
                         td { +item.email }
                         td { +item.birthday }
@@ -68,5 +74,9 @@ fun RenderContext.collectionDemo() {
             }
         }
 
+    }
+
+    div("mt-10") {
+        selectionStore.data.renderText()
     }
 }

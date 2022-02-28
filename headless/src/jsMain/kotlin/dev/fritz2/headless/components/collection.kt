@@ -4,6 +4,7 @@ import dev.fritz2.core.RenderContext
 import dev.fritz2.core.RootStore
 import dev.fritz2.core.ScopeContext
 import dev.fritz2.core.Tag
+import dev.fritz2.headless.foundation.DatabindingProperty
 import dev.fritz2.headless.foundation.Property
 import dev.fritz2.headless.foundation.TagFactory
 import kotlinx.coroutines.flow.Flow
@@ -24,13 +25,26 @@ class TableDataProperty<T> : Property<Flow<List<T>>>() {
     }
 }
 
+class SelectionMode<T> {
+    val single = DatabindingProperty<T?>()
+    val multi = DatabindingProperty<List<T>>()
+
+    val isSet: Boolean
+        get() = single.isSet || multi.isSet
+
+    fun use(other: SelectionMode<T>) {
+        other.single.value?.let { single.use(it) }
+        other.multi.value?.let { multi.use(it) }
+    }
+}
+
+
 enum class SortDirection {
     NONE, ASC, DESC
 }
 
 //TODO: make this nullable to allow sorting only in one direction?
 data class Sorting<T>(val comparatorAscending: Comparator<T>, val comparatorDescending: Comparator<T>)
-
 data class SortingOrder<T>(val sorting: Sorting<T>, val direction: SortDirection)
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
@@ -39,17 +53,15 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
     val data = TableDataProperty<T>()
 
     private val sorting = object : RootStore<SortingOrder<T>?>(null) {}
-
     val sort = sorting.handle<Sorting<T>> { old, newSorting ->
         if (old?.sorting == newSorting) {
-            val newDirection = when(old.direction) {
+            val newDirection = when (old.direction) {
                 SortDirection.NONE -> SortDirection.ASC
                 SortDirection.ASC -> SortDirection.DESC
                 SortDirection.DESC -> SortDirection.NONE
             }
             old.copy(direction = newDirection)
-        }
-        else {
+        } else {
             SortingOrder(newSorting, SortDirection.ASC)
         }
     }
@@ -60,10 +72,13 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
         } ?: SortDirection.NONE
     }
 
+    val selection = SelectionMode<T>()
+
     fun render() {
     }
 
-    inner class DataCollectionSortButton<CS : HTMLElement>(private val sorting: Sorting<T>, tag: Tag<CS>) : Tag<CS> by tag {
+    inner class DataCollectionSortButton<CS : HTMLElement>(private val sorting: Sorting<T>, tag: Tag<CS>) :
+        Tag<CS> by tag {
         val direction = sortingDirection(sorting)
 
         //FIXME: ist hier bei allen Komponenten ein Receiver, wenn handledBy gecalled wird?
@@ -105,47 +120,78 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
 
     inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>) : Tag<CI> by tag {
         val items: Flow<List<T>> = if (data.isSet) {
-            data.value!!.flatMapLatest { list -> sorting.data.map {
-                it?.let {
-                    when(it.direction) {
-                        SortDirection.NONE -> list
-                        SortDirection.ASC -> list.sortedWith(it.sorting.comparatorAscending)
-                        SortDirection.DESC -> list.sortedWith(it.sorting.comparatorDescending)
-                    }
-                } ?: list
-            } }
+            data.value!!.flatMapLatest { list ->
+                sorting.data.map {
+                    it?.let {
+                        when (it.direction) {
+                            SortDirection.NONE -> list
+                            SortDirection.ASC -> list.sortedWith(it.sorting.comparatorAscending)
+                            SortDirection.DESC -> list.sortedWith(it.sorting.comparatorDescending)
+                        }
+                    } ?: list
+                }
+            }
         } else flowOf(emptyList())
 
         fun render() {
 
         }
 
-        inner class DataCollectionItem<CI : HTMLElement>(tag: Tag<CI>) : Tag<CI> by tag {
+        inner class DataCollectionItem<CI : HTMLElement>(private val item: T, tag: Tag<CI>) : Tag<CI> by tag {
+            val selected by lazy {
+                if (selection.isSet) {
+                    if (selection.single.isSet) selection.single.data.map { it == item }
+                    else  selection.multi.data.map { it.contains(item)}
+                } else flowOf(false)
+            }
+
             fun render() {
+                if (selection.isSet) {
+                    console.log("sel")
+                    if (selection.single.isSet) {
+                        console.log("single")
+                        selection.single.handler?.let {
+                            console.log("handler")
+                            it(selection.single.data.flatMapLatest { current ->
+                                clicks.map {
+                                    console.log("clicked ${current.toString().take(10)}")
+                                    if (current == item) null else item
+                                }
+                            })
+                        }
+                    } else {
+                        selection.multi.handler?.let {
+                            it(selection.multi.data.flatMapLatest { current ->
+                                clicks.map {
+                                    if (current.contains(item)) current - item else current + item
+                                }
+                            })
+                        }
+                    }
+                }
 
             }
         }
 
         fun <CI : HTMLElement> RenderContext.dataCollectionItem(
+            item: T,
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CI>>,
             initialize: DataCollectionItem<CI>.() -> Unit
-        ) {
-            //TODO: id
-            tag(this, classes, "someID", scope) {
-                DataCollectionItem(this).run {
-                    initialize()
-                    render()
-                }
+        ) = tag(this, classes, "someID", scope) { //TODO: id
+            DataCollectionItem(item, this).run {
+                initialize()
+                render()
             }
         }
 
         fun RenderContext.dataCollectionItem(
+            item: T,
             classes: String? = null,
             internalScope: (ScopeContext.() -> Unit) = {},
             initialize: DataCollectionItem<HTMLDivElement>.() -> Unit
-        ) = dataCollectionItem(classes, internalScope, RenderContext::div, initialize)
+        ) = dataCollectionItem(item, classes, internalScope, RenderContext::div, initialize)
 
     }
 
