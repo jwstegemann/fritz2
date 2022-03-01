@@ -1,198 +1,197 @@
 ---
 layout: layouts/post.njk
-title: Was wir über Komponenten und Wiederverwendung in der Web-Frontend-Entwicklung gelernt haben.
-description: Wir schreiben darüber, wie wir bisher mit fritz2 Komponenten gebaut und ausgeliefert haben, welche Probleme wir dabei immer stärker bemerkt haben und wieso ein neuer Ansatz für uns die Lösung darstellt. Zugleich verabschieden wir uns damit auch von den bisher mit fritz2 ausgelieferten Komponenten und stellen den neuen Ersatz dafür vor.
+title: What we have learned about components and reuse in web front-end development.
+description: "We write about how we built and delivered components with fritz2 so far, which problems we noticed more 
+and more and why a new approach is the solution for us. At the same time we say goodbye to the components delivered 
+with fritz2 so far and introduce the new and imho better replacement for them."
 date: 2022-03-01
 ---
 
-## Historie
+## History
 
-Seit Anfang 2020 entwickeln wir bei und für die [Öffentliche Versicherung](https://www.oeffentliche.de) ein Frontend für
-die Web-UI-Entwicklung in Kotlin: **fritz2**.
+Since early 2020, we have been developing a frontend at and for [Öffentliche Versicherung](https://www.oeffentliche.de)
+for Web UI development in Kotlin: **fritz2**.
 
-fritz2 ist ein reaktives UI-Framework. Im Kern stehen daher Funktionen zur Verfügung, um ein Datenmodell reaktiv mit
-einem dazugehörigen User Interface zu verbinden. Dass bedeutet, dass Änderungen am Datenmodell unmittelbar zu
-Änderungen an der Oberfläche führen und Events vom Browser wiederum das Datenmodell ändern. fritz2 stellt dazu
-die notwendigen Werkzeuge bereit, um die Verwaltung des Datenmodells, das UI und entsprechend die zyklische, reaktive
-Verbindung zwischen beiden Aspekten mit einer deklarativ ausgeprägten Syntax zu implementieren.
+fritz2 is a reactive UI framework. At its core, it provides functions for reactively linking a data model with a
+corresponding user interface. This means that changes to the data model immediately lead to changes to the user
+interface and events from the browser in turn change the data model. fritz2 provides the necessary tools to manage the
+data model, the UI and the cyclic, reactive connection between both aspects with a declarative syntax.
 
-fritz2 versteht sich als leichtgewichtiges Framework, weswegen der Kern sich auf wenige, für reaktive Programmierung
-elementare Kotlin-Basis-Features wie [Coroutines](https://kotlinlang.org/docs/coroutines-basics.html) und
-insbesondere [Flows](https://kotlinlang.org/docs/flow.html) stützt. Die zentralen fritz2 Konzepte, wie Stores, Handler,
-Events und Tags stützen sich auf und integrieren diese Kotlin Bausteine, aber verstecken sie nicht, sondern exponieren
-diese ganz im Gegenteil auch als Teil des Framework APIs. Ein Benutzer muss also nicht primär fritz2 lernen, sondern
-viel mehr die universellen Kotlin Kern-Konzepte der Coroutines und Flows.
+fritz2 sees itself as a lightweight framework, which is why the core relies on a few, for reactive programming basic
+Kotlin features like [Coroutines](https://kotlinlang.org/docs/coroutines-basics.html)
+and especially [Flows](https://kotlinlang.org/docs/flow.html). The central fritz2 concepts, like stores, handler, events
+and tags rely on and integrate these Kotlin building blocks, but do not hide them, but rather expose them on the
+contrary as part of the framework API. So a user does not primarily have to learn fritz2, but rather much more the
+universal Kotlin core concepts of coroutines and flows.
 
-Durch den Fokus auf die reaktive Verbindung von Modell und UI, den wenigen dafür notwendigen Konzepten und dem daraus
-resultierenden leichtgewichtigem API, ermöglicht es fritz2, einfach und elegant moderne Browser basierte UIs zu
-entwickeln.
+By focusing on the reactive connection of model and UI, the few concepts necessary for this and the resulting
+lightweight API, fritz2 allows to easily and elegantly develop modern browser-based UIs.
 
-## Motivation für Wiederverwendung
+## Motivation for reuse
 
-Eine Web-Applikation basiert im Kern natürlich auf HTML und CSS. Allerdings benötigt man für viele Applikationen immer
-wieder die gleichen oder sehr ähnliche UI-Muster und Strukturen, die man allgemein auch *Komponenten* nennt. Solche
-Komponenten bilden in sich abgeschlossene Einheiten, die Funktion, Darstellung und teilweise Datenhandling kapseln.
+A web application is of course based on HTML and CSS at its core. However, for many applications you need the same or
+very similar UI patterns and structures, commonly called *components*. Such components form self-contained units that
+encapsulate function, presentation and, in some cases, data handling.
 
-Die Verwendung - und damit motiviert auch die Entwicklung von solchen Komponenten - lohnt sich daher aufgrund der
-folgenden Aspekte:
+The use - and thus also the development of such components - is worthwhile itself therefore due to the following
+aspects:
 
-- Knappe Ressourcen: Der Fokus einer Anwendung liegt in der Regel auf der Fachlichkeit und damit auf einem höheren Level
-  als die kleinteilige Erzeugung einer guten und funktionalen DOM-Struktur. Wenn man mehrere Applikationen innerhalb
-  einer Organisation entwickelt, lohnt es sich umso mehr, grundlegende Bausteine wiederzuverwenden.
-- Minimierung der Wartung: Bei Fehlern oder neuen Funktionen müssen nicht alle Stellen in einer Applikation oder allen
-  Applikationen angepasst werden, die so ein betroffenes UI-Feature implementieren, sondern es genügt, die Komponenten
-  an einer zentralen Stelle zu verbessern.
-- Einheitliche UX: Viele Organisationen wünschen sich oder fordern gar ein einheitliches Aussehen, Strukturen und
-  Bedienung innerhalb ihrer eigenen Anwendungen. Zentral gebaute und gepflegte Komponenten sind daher ein einfacher und
-  effizienter Weg, solche Ansprüche umzusetzen.
+- Scarce resources: The focus of an application lies usually on the domain and thus on a higher level than the
+  small-scale generation of a good and functional DOM structure. When developing multiple applications within an
+  organization, it is even more worthwhile to reuse basic building blocks.
+- Minimization of maintenance: In case of errors or new functions, not all places in an application or in all
+  applications that implement an affected UI feature need to be touched; it is sufficient to improve the components in a
+  central location.
+- Uniform UX: Many organizations wish for or even demand a uniform appearance, structures and operation within their own
+  applications. Centrally built and maintained components are therefore a simple and efficient way to implement such
+  requirements.
 
-## Naiver Lösungsansatz
+## Naive approach
 
-Es war für uns folglich naheliegend, eine solche Komponentenbibliothek auch direkt in fritz2 einzubauen, um sie als
-Basis für die Applikationen der Öffentlichen Versicherung zu nutzen.
+It was therefore obvious to us to integrate such a component library directly into fritz2, in order to use it as the
+basis for the applications of the "Öffentliche Versicherung".
 
-Mit der Version [0.8](https://github.com/jwstegemann/fritz2/releases/tag/v0.8) haben wir begonnen,
-eine [Komponentenbibliothek](https://components.fritz2.dev/#Welcome) in fritz2 zu integrieren, die dann - inkl. einer
-eigenen deklarativen Sprache für das Styling - in den folgenden Versionen ausgebaut worden ist.
+We started with version [0.8](https://github.com/jwstegemann/fritz2/releases/tag/v0.8), to integrate
+a [component library](https://components.fritz2.dev/#Welcome) into fritz2, which then - including a custom declarative
+language for styling - has been extended in the following versions.
 
-Diese umfasst um die 20 verschiedene Komponenten, die wichtige Bereiche vom einfachen Layout, über typische, einfache
-Formular-Elemente, bis hin zu komplexen generischen Daten-Tabellen und ganzen Seiten-Rahmen umfasst.
+This covers around 20 different components, which cover important ranges from the simple layout, over typical, simple
+form elements, up to complex generic data tables and whole page frames.
 
-Ein Grundgedanke dabei war, dass jede Komponente für sich immer noch individuell stylebar sein muss, um sie an den
-speziellen Kontext der Verwendung innerhalb der Applikation anpassen zu können.
+A basic idea was that each component must still be individually styleable in order to adapt it to the specific context
+of use within the application.
 
-Darüber hinaus haben wir versucht, eine Theme-Struktur als Basis für das grundlegende Aussehen zu integrieren. Damit war
-es möglich, die Komponenten für alle Applikationen einer Organisation aufgrund eines zentralen Styling-Dokuments an ein
-einheitliches CI-Design anzupassen. Darüber hinaus konnten wir sogar noch eine Stufe darunter ansetzen, und ableitend
-vom zentralen Organisations-Theme, für verschiedene Unternehmensbereiche angepasste Themes zu erstellen und zu
-verwenden. Damit konnten tatsächlich zwei verschiedene Designkonzepte mit denselben Komponenten umgesetzt werden.
+In addition, we tried to incorporate a theme structure as the basis for the basic look and feel. This made it possible
+to adapt the components for all applications of an organization to a uniform corporate identity design on the basis of a
+central styling document. In addition, we were even able to go one level below that, and derive from the central
+organization theme, to create and use customized themes for different areas of the company. This actually made it
+possible to implement two different design concepts with the same components.
 
-## Probleme des naiven Ansatzes
+## Problems of the naive approach
 
-Leider sehen wir diesen Ansatz mittlerweile als gescheitert an!
+Unfortunately, we now see this approach as a failure!
 
-Folgende Probleme haben wir dabei identifiziert:
+We have identified the following problems with it:
 
-- Unsere Komponenten ermöglichen es über das Theme, ihre Darstellung anzupassen. Dies umfasst zum großen Teil Styling
-  Informationen, die sich aber entsprechend auf *bestimmte* HTML-Tags oder eine ganze DOM-Unterstruktur beziehen. Durch
-  diesen starken Bezug zwischen Struktur und Darstellung, ist es schwierig Komponenten wirklich flexibel zu gestalten:
-  - Soll die Struktur in verschiedenen Varianten vorliegen, so muss es auch Styling-Definitionen für jede Variante
-    geben. Dies erhöht die Komplexität der Komponenten und des Themes - auch wenn innerhalb einer Applikation nur
-    jeweils eine Variante zum Einsatz kommt. Als Beispiel sei die Position des Labels bei einem FormControl genannt:
-    Entweder immer oberhalb des Eingabe-Elements oder immer links davon.
-  - Oftmals muss man Styling für einen speziellen Status an mehreren Tags anwenden, um den gewünschten Effekt zu
-    erzielen. Ein Beispiel dafür ist die Deaktivierung von Form Elementen, wo man Label und Eingabe-Element auf
-    verschiedene Art und Weise für einen solchen Effekt stylen muss. Die Gefahr ist groß, dass der Benutzer beim
-    Customizing des Themes solche speziellen Stylings durch seine Angaben zunichtemacht.
-  - Kompliziert wird es auch, wenn das Styling von einem Status abhängig ist. Dieser muss entsprechend in den
-    Abschnitten im Theme zugänglich gemacht werden. Ein Komponenten spezifischer Typ kann dabei nicht direkt weiter
-    gereicht werden, da dieser auf der Paket-Ebene des Themes nicht verfügbar ist.
-  - Der Benutzer wird immer vor dem Problem stehen, dass er ohne fundierte Kenntnisse der finalen DOM-Struktur einer
-    Komponenten nicht wirklich sinnvoll Anpassungen im Theme vornehmen kann, da er verstehen muss, auf welchen Tag
-    ein Styling aus dem Theme dann auch wirklich angewendet wird. Dies ist alleine durch gute Namensgebung nicht
-    zu erreichen und alles andere als trivial.
-  - Wenn es zur Behebung von Fehlern oder zum Hinzufügen von neuen Funktionen kommt, bei dem das Styling im Theme 
-    angepasst werden muss, so kann es schlimmsten Falls dazu führen, dass ein vom Benutzer angepasstes Theme nicht 
-    mehr richtig funktioniert. Schließlich muss der Benutzer die Änderungen im Default-Theme genau analysieren, um 
-    die neuen, relevanten Styling-Definitionen an sein eigenes Theme anzupassen.
-- Die Komponenten bestehen aus einem relativ schwer verständlichem Code. Vieles ist, wie bereits angedeutet, abhängig
-  vom Theme realisiert und somit erst durch das Nachlesen des dort ausgelagerten Codes nachvollziehbar.
-- Trotz der von Grund auf flexibel und anpassbar geplanten und umgesetzten Komponenten, kam schnell die Notwendigkeit
-  auf, „ganz andere“ Komponenten bauen zu müssen. Die Anpassbarkeit ist in der Praxis bei weitem nicht so hoch, wie wir
-  vermutet hatten. (Trotz der Komplexität des Codes. Siehe vorheriges Item)
-- Die Konzentration bei der Erstellung lag primär auf dem Design, was idR. keine Kernkompetenz der Entwickler ist,
-  anstelle sich auf Usability zu konzentrieren (ARIA, Keyboard-Support, Standard-Funktionen, etc.).
-- Es bedeutet einen immensen Aufwand, alleine die 20 Komponenten in dieser Flexibilität mit guten Defaults
-  bereitzustellen und zu warten. Dabei gäbe es immer noch Bedarf an weiteren, elementaren Komponenten, die noch nicht
-  einmal umgesetzt sind! Außerdem fehlen an vielen Komponenten noch dringend benötigte Funktionen oder Features
-  (Keyboard-Support, ARIA-Attribute, uvm.)
+- Our components allow their appearance to be customized via the theme. This includes to a large extent styling
+  information, but corresponding to *certain* HTML tags or an entire DOM substructure. Through this strong relation
+  between structure and presentation, it is difficult to make components really flexible:
+  - If the structure is to exist in different variants, there must also be styling definitions for each variant. This
+    increases the complexity of the components and the theme - even if only one variant is used within an application.
+    An example is the position of the label in a FormControl: Either always above the input element or always to the
+    left of it.
+  - Often you have to apply styling for a special state to several tags to achieve the desired effect. An example of
+    this is the deactivation of form elements, where you can style the label and input element in different ways for
+    such an effect. There is a great risk that when the user is customizing the theme, he will undo such special
+    styling by his specifications.
+  - It also gets complicated if the styling is dependent on a status. This must be made available accordingly in the
+    sections in the theme. A component specific type can not be passed on directly, because it is not available at the
+    package level of the theme. So you must fall back to some base types as workaround, with the cost of loosing
+    expressive semantic types and thus a loss of intention revealing.
+  - The user will always face the problem of not being able to make really meaningful adjustments in the theme without
+    in-depth knowledge of the final DOM structure of a components, because he has to understand to which tag a styling
+    from the theme should be applied. This cannot be achieved by good naming alone and is anything but trivial.
+  - If it comes to fixing bugs or adding new features where the styling in the theme has to be changed, the worst case
+    scenario is that a theme that has been customized by the user no longer works properly. Finally, the user must
+    carefully analyze the changes made to the default theme in order to adapt the new, relevant styling definitions to
+    his own theme.
+- The components consist of code that is relatively difficult to understand. Much is, as already indicated, dependent on
+  the theme and thus only comprehensible by reading the code there.
+- Despite the components have been planned and implemented from the ground up to be flexible and customizable, the need
+  to build "completely different" components has arisen soon. The adaptability is in practice by far not as high as we
+  had had assumed. (Despite the complexity of the code. See previous item).
+- The concentration during the creation was primarily on the design, which is in general no core competence of the
+  developers, instead of focusing on usability (ARIA, keyboard support, standard functions, etc.).
+- It means an immense effort to provide and maintain alone the 20 components in this flexibility with good defaults.
+  There would be still need for further, elementary components, which are not yet even implemented! In addition,
+  urgently needed functions or features are still missing at many components (keyboard support, ARIA attributes, and
+  much more).
 
-Die wichtigste Erkenntnis lässt sich daraus wie folgt ableiten: Darstellung und Funktionalität von Komponenten sind
-stark voneinander abhängig!
+The most important realization can be derived from it as follows: Presentation and functionality of components are
+strongly dependent from each other!
 
-Der Versuch beide Aspekte so voneinander zu trennen, dass die Komponente die Funktionalität und die Struktur kapselt,
-aber das Styling über ein öffentliches API im Theme vollkommen anpassbar exponiert, ist letztlich nur ein Trugschluss.
-In Wahrheit sind beide Teile weiterhin stark gekoppelt und nicht unabhängig voneinander. 
+Trying to separate both aspects in a way that the component encapsulates the functionality and the structure,
+but exposes the styling in a fully customizable way via a public API in the theme, is ultimately just a fallacy.
+In truth, both parts are still strongly coupled and not independent of each other.
 
-Damit ist es aus unserer Sicht ausgeschlossen, Komponenten zu erzeugen, die auf der einen Seite perfekte Funktionalität
-garantieren, auf der anderen Seite wirklich flexibel anpassbar sind.
+In our view, this makes it impossible to create components that guarantee perfect functionality on the one hand, and on
+the other hand are really flexible and adaptable.
 
-Was aber ist die Lösung aus diesem Dilemma? Unzählige, starre Spezial-Komponenten bauen, was neben dem immensen 
-initialen Aufwand auch eine hohe Code-Dopplung und damit noch höheren Aufwand bei der Wartung nach sich ziehen würde?
-Ganz auf zentrale Komponenten verzichten, aber dafür für jede Applikation immer alles von Neuem bauen?
+But what is the solution to this dilemma? To build innumerable, rigid special components, which, in addition to the
+immense initial effort, would also result in a high level of code duplication and thus even greater maintenance effort?
+Do without central components altogether, but build everything from scratch for every application?
 
-Ein von uns neu entdecktes Konzept scheint die Lösung für das Dilemma zu sein, beide extremen Alternativen auf
-elegante Art und Weise zu vereinen: **Headless** Components!
+A newly discovered concept seems to be the solution to the dilemma of combining both extreme alternatives in an elegant
+way: **Headless** Components!
 
 ## Headless
 
-Auf der Suche nach einem Ersatz für die bisherige Komponentenbibliothek von fritz2, sind wir
-auf das brillante [headlessui](https://headlessui.dev/)
-gestoßen, was wir als Lösung für uns aufgegriffen haben und das uns zugleich als Inspiration und Vorlage dient.
+In search of a replacement for the previous component library of fritz2, we have come across the
+brilliant [headlessui](https://headlessui.dev/) which we picked up as a solution for us and which serves as inspiration
+and template at the same time.
 
-Die Idee dahinter ist so simpel, wie der Nutzen schwer zu begreifen ist: 
-::: info
-Eine Komponente wird allein durch die Funktionalität bestimmt und **nicht** durch DOM-Struktur und Darstellung!
+The idea behind it is as simple as the benefit is hard to grasp:
+
+::: info 
+A component is solely defined by its functionality and **not** by DOM structure and presentation!
 :::
 
-Das bedarf einer Erklärung!
+This needs an explanation!
 
-Wenn man im Kern nur die grundlegende Funktion betrachtet, aber die Darstellung, also die DOM-Struktur und das Styling,
-dabei bewusst ignoriert, lassen sich die myriaden an UI-Komponenten da draußen auf einige wenige reduzieren wie z.B.:
+If one considers only the basic function in the core, but the representation, thus the DOM structure and the styling,
+the myriads of UI components out there can be reduced to a few like:
 
-- eine einfache Selektion aus einer Liste von Optionen
-- eine mehrfache Auswahl aus einer Liste von Optionen
-- das Ein- und Ausblenden von Panelen, wie Dialoge, PopOver oder Action-Menüs
-- das Einblenden von zugehörigen Inhalten zu einer ausgewählten Option
-- das Eingeben von Text
+- a single selection from a list of options
+- a multiple selection from a list of options
+- showing and hiding panels like dialogs, popovers or action menus
+- the fading in of associated content to a selected option
+- the typing of text
 
-Das Headless-Konzept macht sich genau diesen Umstand zu Nutzen und definiert Komponenten alleine durch deren
-Funktionalität. Damit reduziert sich die Anzahl von solchen disjunkten Komponenten auf relativ wenige: 
-Aktuell haben wir 14 Stück identifiziert, die wir bereits implementiert haben oder noch implementieren wollen.
+The headless concept takes advantage of this fact and defines components solely by their functionality. Thus, the number
+of such disjunctive components is reduced to relatively few: Currently, we have identified 14 pieces that we have
+already implemented or are about to implement.
 
-Diese Komponenten werden dabei aus kleineren, wohldefinierten Bausteinen zusammengesetzt. So lässt sich die minimale
-funktionale Struktur einer einfachen Auswahl wie folgt zerteilen:
+These components are composed of smaller, well-defined building blocks (we call them *bricks*). Thus, the minimal
+functional structure of a simple selection can be decomposed as follows:
 
 ```text
-- Einfachauswahl
-    - two-way data-binding (→ Was ist selektiert? → Vorauswahl)
-    // für alle Optionen
-        - Option (→ Ist diese Option selektiert?)
-            - Toggle-Schalter (→ ändert Selektion)
-            - Label    
+- single selection
+    - two-way data-binding (→ What is selected? → Preselection)
+    // for each option
+        - option (→ Is this option selected?)
+            - toggle (→ changes selextion)
+            - label
 ```
 
-In der Praxis ergänzen wir die Funktionalität noch um ein paar oftmals sinnvolle, aber dennoch optionale
-Zusatzfunktionen:
+In practice, we supplement the functionality with a few often useful, but still optional additional functions:
 
 ```text
-- Einfachauswahl
+- single selection
     - two-way data-binding
-    - Label (optional)
-    - Beschreibung (optional)
-    - Validierung (optional) (→ Ist diese Auswahl i.O.? → Meldungen)
-    // für alle Optionen
-        - Option
-            - Toggle-Schalter
-            - Label
-            - Beschreibung (optional)
+    - label (optional)
+    - description (optional)
+    - validation (optional) (→ Is this selection valid? → Messages)
+    // for each option
+        - option
+            - toggle
+            - label
+            - description (optional)
 ```
 
-Mittels dieser Funktionen kann man eine klassische, auf nativen `<input type="radio">`-Tags basierte RadioGroup bauen,
-aber auch beliebige [andere Varianten](https://tailwindui.com/components/application-ui/forms/radio-groups#component-45612766894822db447a2837d79355f5)
-sind damit realisierbar.
+Using these functions you can build a classic RadioGroup based on native `<input type="radio">` tags,
+but also any [other variants](https://tailwindui.com/components/application-ui/forms/radio-groups#component-45612766894822db447a2837d79355f5)
+can be realized with it.
 
-Der Unterschied besteht einzig und allein in der Auswahl und Struktur der HTML-Tags und des Stylings!
+The difference is only in the selection and structure of the HTML tags and styling!
 
-fritz2's Headless Komponenten bestehen aus solchen Kontext sensitiven Komponenten- und Bausteinfunktionen. Diese müssen
-lediglich auf die für den Anwendungsfall passende Art und Weise kombiniert und ggf. mit Standard HTML-Elementen ergänzt
-werden, damit die gewünschte funktionierende Struktur entsteht. Über spezielle Felder werden Status und Funktionen im
-Kontext des Bausteins manipulierbar oder nutzbar.
+fritz2's headless components consist of such context-sensitive component and module functions. These must be combined in
+a way that suits the application and, if necessary, supplemented with standard HTML elements to create the desired
+working structure. Special fields are used to manipulate statuses and functions in the context of the module.
 
-Folgende (teilweise reduzierte) Beispiele zeigen zwei mögliche Umsetzungen einer RadioGroup.
+The following (partly reduced) examples show two possible implementations of a RadioGroup.
 
-Das erste Beispiel nutzt alle per default erzeugten Tags, basiert auf dem nativen `<input type="radio">` Tag und gibt
-sich allgemein minimal:
+The first example uses all tags created by default, is based upon the native `<input type="radio">` tag and is
+generally minimal:
 
 ```kotlin
 val frameworks = listOf("fritz2", "Spring", "flask")
@@ -212,9 +211,9 @@ radioGroup<String>() { // <div>
 }
 ```
 
-Als zweites Beispiel wird eine Auswahl gezeigt, die einige per default erzeugte Tags durch andere Typen ersetzt - u.a.
-verzichtet sie auf `<input>`-Elemente als Basis für den Toggle - und zusätzlich einen speziellen Datentypen für die
-Auswahl unterstützt:
+As a second example, a selection is shown that replaces some tags created by default with other types - e.g. it
+dispenses with `<input>` elements as a basis for the toggle - and in addition supports a special data type for the
+selection:
 
 ```kotlin
 data class Framework(val name: String, val info: String)
@@ -250,75 +249,78 @@ radioGroup<Framework?>() { // <div>
 }
 ```
 
-Die wesentliche Erkenntnis dabei ist folgende: Wir können mithilfe derselben Bausteine, zwei in Struktur und
-Darstellung verschiedene Varianten einer Einfachauswahl aka RadioGroup bauen. Der Aufwand ist im Verhältnis zur
-Funktionlität relativ gering: Zwischen grob zehn und 25 Zeilen Code sind lediglich notwendig. Dafür unterstützen beide
-Komponenten die Bedienung mit der Tastatur, ARIA-Attribute und natürlich die garantierte Funktionalität der
-Einfach-Auswahl mittels Übergabe eines `Stores`. Die einzelnen Bausteine helfen dem Benutzer dabei mit ihrer
-expressiven Namensgestaltung und erleichtern damit auch das spätere Verständnis des Codes.
+The key insight here is the following: We can build two variants of a single selection aka RadioGroup with the same
+building blocks. The effort is relatively low in relation to the functionality: Between ten and 25 lines of code are
+necessary. But both components support keyboard operation, set appropriate ARIA attributes and, of course, deliver the
+guaranteed functionality of the single selection by passing a 'store'. All the heavy work of the state handling is done
+by the headless component itself, like reacting to user actions for selecting, setting a preselected option, indicating
+the selected or active (mouse hovered) option and so on. This is a huge benefit compared to crafting this by yourself!
 
-Zusätzlich müsste man im Code noch jeden Baustein entsprechend stylen, um eine fertige und voll funktionale
-Oberflächeneinheit erzeugt zu haben, was hier aus Platzgründen weggelassen worden ist! Prinzipiell reicht man das
-Styling analog zu den bekannten Tag-Fabrik-Funktionen als ersten Parameter in die Baustein-Funktionen hinein. Der
-Quellcode
-des [Beispiels zu einer RadioGroup](https://github.com/jwstegemann/fritz2/blob/master/headless-demo/src/jsMain/kotlin/dev/fritz2/headlessdemo/radioGroup.kt)
-aus dem `headless-demo`-Projekt zeigt anschaulich, dass die Styling-Angaben das ganze nur unwesentlich komplexer machen.
+The individual components help the user with their expressive name design and thus also foster the better understanding
+of the code too.
 
-Um es noch einmal zu betonen: Übergibt man den Baustein-Funktionen keinerlei Styling, so werden die daraus erzeugten
-HTML-Tags auch ohne jegliches Styling gerendert! 
+In addition, one still would have to style within the code each building block accordingly, in order to have a finished
+and fully functional surface unit, which was omitted here for reasons of space! In principle one injects the styling
+into the function block as the first parameter, analogous to the known tag factory functions. The source code of
+the [example for a RadioGroup](https://github.com/jwstegemann/fritz2/blob/master/headless-demo/src/jsMain/kotlin/dev/fritz2/headlessdemo/radioGroup.kt)
+from the `headless-demo` project clearly shows that the styling specifications make the whole thing only slightly more
+complex.
 
-Der bewusste Verzicht eines internen Stylings bei den Headless Komponenten hat noch einen weiteren, im Ökosystem des
-Webs immensen Vorteil: Solche Komponenten sind offen für jede Art von Styling und CSS-Framework! Sei
-es [tailwindcss](https://tailwindcss.com/), [Bootstrap](https://getbootstrap.com/)
-oder natives CSS-Styling, jeder Benutzer kann die für ihn gewohnte und passende Technologie dafür wählen.
+To emphasize it again: If you do not pass any styling to the brick functions, the resulting HTML tags will be rendered
+without any styling!
 
-## Und wo sind jetzt die Komponenten?
+The deliberate omission of internal styling for headless components has yet another advantage, which is immense in the
+ecosystem of the web: Such components are open for any kind of styling and CSS framework! Be
+it [tailwindcss](https://tailwindcss.com/), [Bootstrap](https://getbootstrap.com/)
+or native CSS styling, each user can choose the technology he is used to and that suits him.
 
-Wie aus den [einführend geschilderten Problemen](#probleme-des-naiven-ansatzes) leicht zu erahnen ist, liefert fritz2 ab
-sofort keine gestylten, für die Verwendung fertig zusammengestellten Komponenten mehr mit aus!
+## And where are the components now?
 
-Stattdessen stellt fritz2, wie zuvor beschrieben, im neuen Modul `headless` die [Headless Components](/headless) bereit,
-die als Basis für die Erstellung eigener Komponenten verwendet werden können.
+As you can easily guess from the [problems described in the introduction](#problems-of-the-naive-approach), from now on
+fritz2 will no longer ship styled components ready for use!
 
-Um aus den Headless Komponenten und ihrer Bausteine eine fertig gestylte und wiederverwendbare Komponente zu entwickeln,
-bietet fritz2 zusätzliche Hilfsmittel im package `dev.fritz2.headless.foundation` an, welches ebenso die Basis für die
-Headless Komponenten selber bildet. Besonders hervor zu heben sind dabei die Konzepte von [*Properties* und 
-*Hooks*](/headless/#basic-concepts-for-configuration). Für den Komponentenbau unterstützen diese Hilfsmittel den Benutzer
-dabei, ein nach außen verständliches und zugleich komfortables API zu schaffen, dabei aber so viel Flexibilität und
-Kontrolle bei der Komponente selber zu behalten.
+Instead, as described before, fritz2 provides the [headless components](/headless) in the new module `headless`, which
+can be used as a basis for creating your own components.
 
-Für die Konzeption einer eigenen, gestylten und gebrauchsfertigen Komponente, sollte man daher genau auf diese
-Hilfsmittel setzen. Diese lassen sich zudem optimal mit den Headless Komponenten verbinden: Properties haben einen
-dedizierten Mechanismus, Daten an eine zugrunde liegende Property einer Headless Komponenten weiterzureichen.
+To develop from the headless components and their bricks a ready styled and reusable component, fritz2 provides
+additional tools in the package `dev.fritz2.headless.foundation`, which also forms the basis for the headless components
+themselves. Particularly noteworthy are the concepts of
+[*properties* and *hooks*](/headless/#basic-concepts-for-configuration). For the component construction these aids
+support the user to create an outwardly understandable and at the same time comfortable API, thereby preserve so much
+flexibility and control in the component itself.
 
-## Ausblick
+For the conception of an own, styled and ready for use component, one should rely therefore exactly on these tools. They
+can also be optimally combined with the headless components: Properties have a dedicated mechanism to pass on data to an
+underlying property of a headless component.
 
-Neben den bisher implementierten Headless Komponenten haben wir bereits zwei weitere in der Pipeline, die unser
-Portfolio weiter ergänzen und fehlende Funktionalitäten abbilden:
+## Outlook
 
-- *Toasts*: Dienen der Anzeige von flüchtigen Nachrichten, deren Anzeige und (automatisches) Ausblenden von der
-  Komponente selber gehandhabt wird.
-- *DataLists*: Dienen als Basis für die explizite Darstellung von Daten. Dabei liegt der Fokus auf der dynamischen
-  Manipulation wie *filtern* oder *sortieren*. Dies kann als Grundlage für das Erstellen
-  von [Data-Tabellen](https://tailwindui.com/components/application-ui/lists/tables) oder
-  [Stacked-Lists](https://tailwindui.com/components/application-ui/lists/stacked-lists) verwendet werden.
+In addition to the headless components implemented so far, we already have two more in the pipeline that will further
+complement our portfolio and cover missing functionalities:
 
-Wir hoffen, dass wir Dich neugierig gemacht haben und Du dem Konzept eine Chance gibst! Natürlich würden uns auch sehr
-über Dein Feedback freuen.
+- *Toasts:* Serve to display volatile messages, whose display and (automatic) hiding is handled by the component itself.
+- *DataCollections*: Serve as a basis for the explicit display of data. The focus is on dynamic manipulation like
+  *filter* or *sort*. This can be used as a basis for creating
+  of [data-tables](https://tailwindui.com/components/application-ui/lists/tables) or
+  [stacked-Lists](https://tailwindui.com/components/application-ui/lists/stacked-lists).
 
-Für den Einstieg verweisen wir zunächst auf die [Dokumentation](/headless) der Headless-Komponenten, die zudem einige
-der relevanten Basiskonzepte erklärt. Darüber hinaus schau Dir
-das [`headless-demo` Modul](https://github.com/jwstegemann/fritz2/tree/master/headless-demo/src/jsMain/kotlin/dev/fritz2/headlessdemo)
-an, in dem sich die Demos aus der Doku befinden.
+We hope that we have made you curious and that you give the concept a chance! Of course, we would also be very happy
+about your feedback.
 
-Wir planen für den leichteren Einstieg in die Kombination fritz2 und tailwindcss ein dediziertes Template-Projekt in
-Ergänzung zum [alt bekannten](https://github.com/jwstegemann/fritz2-template) zu erstellen. Außerdem wird es zukünftig
-auch weitere Blog-Artikel rund um das Thema "Komponentenbau mit Headless als Basis" geben oder ggf. auch neue Artikel
-im [Rezepte-Bereich](/recipes).
+To get started, please refer to the [documentation](/headless) of the headless components, which also explains some of
+the most relevant basic concepts. Furthermore, have a look at
+the [`headless-demo` module](https://github.com/jwstegemann/fritz2/tree/master/headless-demo/src/jsMain/kotlin/dev/fritz2/headlessdemo)
+which contains all the demos from the doc.
 
-## Warme Worte zu den ausgedienten Komponenten
+For an easier introduction to the combination of fritz2 and tailwindcss we plan to create a dedicated template project
+in addition to the [well known](https://github.com/jwstegemann/fritz2-template) existing one. In the future there will
+be more blog articles around the topic "component building with headless as a base" or possibly new articles in
+the new [recipes section](/recipes).
 
-Wie bereits deutlich erwähnt, sind die alten Komponenten (und das Styling API) kein Bestandteil mehr von fritz2. Der
-Code ist aber nicht verloren! Solltest Du Interesse haben, so kannst Du gerne die beiden relevanten Module aus dem
-Zweig `release/0.14` in ein neues Projekt extrahieren und an die API-Änderungen anpassen. Bei Fragen dazu wende Dich
-jederzeit an uns! Wir sind gerne bereit, Dich bei so einem Unterfangen im Rahmen unserer Möglichkeiten zu unterstützen.
+## Warm words about the retired components
+
+As already clearly mentioned, the old components (and the styling API) are no longer part of fritz2.
+
+But the code is not lost though! If you are interested, you are welcome to extract the two relevant modules from the
+branch `release/0.14` and put them into a new project and adapt it to the API changes. If you have any questions contact
+us at any time! We are happy to support you in such an endeavor within the scope of our possibilities.
