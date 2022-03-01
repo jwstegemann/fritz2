@@ -13,13 +13,13 @@ import kotlin.math.min
 
 
 //FIXME: use IdProvider here
-class TableDataProperty<T> : Property<Flow<List<T>>>() {
-    operator fun invoke(data: List<T>) {
-        value = flowOf(data)
+class TableDataProperty<T> : Property<Pair<Flow<List<T>>, IdProvider<T,*>?>>() {
+    operator fun invoke(data: List<T>, idProvider: IdProvider<T,*>? = null) {
+        value = flowOf(data) to idProvider
     }
 
-    operator fun invoke(data: Flow<List<T>>) {
-        value = data
+    operator fun invoke(data: Flow<List<T>>, idProvider: IdProvider<T,*>? = null) {
+        value = data to idProvider
     }
 }
 
@@ -82,8 +82,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
         Tag<CS> by tag {
         val direction = sortingDirection(sorting)
 
-        //FIXME: ist hier bei allen Komponenten ein Receiver, wenn handledBy gecalled wird?
-        fun Tag<CS>.render() {
+        fun render() {
             clicks.map { sorting } handledBy sortBy
         }
     }
@@ -121,7 +120,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
 
     inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>) : Tag<CI> by tag {
         val items = if (data.isSet) {
-            data.value!!.flatMapLatest { list ->
+            data.value!!.first.flatMapLatest { list ->
                 sorting.data.flatMapLatest { sortOrder ->
                     filtering.data.map { filterFunction ->
                         (filterFunction?.invoke(list) ?: list).let { list ->
@@ -145,16 +144,20 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                 if (selection.single.isSet) {
                     selection.single.handler?.let {
                         it(selection.single.data.flatMapLatest { current ->
-                            itemsToSelect.map {
-                                if (current == it) null else it
+                            itemsToSelect.map { item ->
+                                data.value?.second?.let { id ->
+                                    if (current != null && id(current) == id(item)) null else item
+                                } ?: if (current == item) null else item
                             }
                         })
                     }
                 } else {
                     selection.multi.handler?.let {
                         it(selection.multi.data.flatMapLatest { current ->
-                            itemsToSelect.map {
-                                if (current.contains(it)) current - it else current + it
+                            itemsToSelect.map { item ->
+                                data.value?.second?.let { id ->
+                                    if (current.any { id(it) == id(item) }) current.filter { id(it) != id(item) } else current + item
+                                } ?: if (current.contains(item)) current - item else current + item
                             }
                         })
                     }
@@ -205,16 +208,24 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
         }
 
         inner class DataCollectionItem<CI : HTMLElement>(private val item: T, tag: Tag<CI>) : Tag<CI> by tag {
+            fun indexOfItem(list: List<T>, item: T) = data.value?.second?.let { id ->
+                    list.indexOfFirst { id(it) == id(item) }
+                } ?: list.indexOf(item)
+
+            fun isSame(a: T?, b: T) = data.value?.second?.let { id ->
+                a != null && id(a) == id(b)
+            } ?: (a == b)
+
             val selected by lazy {
                 if (selection.isSet) {
-                    if (selection.single.isSet) selection.single.data.map { it == item }
-                    else  selection.multi.data.map { it.contains(item)}
+                    if (selection.single.isSet) selection.single.data.map { isSame(it, item) }
+                    else  selection.multi.data.map { list -> list.any {isSame(it, item) } }
                 } else flowOf(false)
             }
 
             val active = items.flatMapLatest { list ->
                     activeIndex.data.map {
-                        list.indexOf(item) == it
+                         indexOfItem(list,item)== it
                     }
                 }
 
@@ -227,9 +238,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                 }
 
                 items.flatMapLatest { list ->
-                    //TODO: debounce for listbox, too?
                     mouseenters.debounce(100).map {
-                        list.indexOf(item)
+                        indexOfItem(list, item)
                     }
                 } handledBy activeIndex.update
 

@@ -15,7 +15,6 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLTableRowElement
 
 //TODO: optiimize renderEach: hang out mountpoint, apply changes, hang in. Or try to prohibit layouting
-
 fun Tag<HTMLTableRowElement>.column(title: String, button: Tag<HTMLDivElement>.() -> Unit) {
     th("drop-shadow-sm pl-4 py-3 z-10 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky top-0 bg-gray-50") {
         div("w-full flex flex-row items-center") {

@@ -246,7 +246,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             val disable = entries.disabledHandler(index)
 
             fun render() {
-                mouseenters.mapNotNull { if (entries.current[index].disabled) null else index } handledBy activeIndex.update
+                mouseenters.debounce(100).mapNotNull { if (entries.current[index].disabled) null else index } handledBy activeIndex.update
 
                 attr("tabindex", "-1")
                 attr("role", Aria.Role.option)
