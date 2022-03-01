@@ -135,7 +135,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                         }
                     }
                 }
-            }
+            }.distinctUntilChanged()
         } else flowOf(emptyList())
 
         val activeIndex = storeOf(-1)
@@ -188,7 +188,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
 
             if (selection.isSet) {
                 selectItem(activeIndex.data.flatMapLatest { index ->
-                    items.distinctUntilChanged().flatMapLatest { list ->
+                    items.flatMapLatest { list ->
                         keydowns.filter {
                             setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
                         }.mapNotNull { event ->
@@ -207,8 +207,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
         inner class DataCollectionItem<CI : HTMLElement>(private val item: T, tag: Tag<CI>) : Tag<CI> by tag {
             val selected by lazy {
                 if (selection.isSet) {
-                    if (selection.single.isSet) selection.single.data.map { it == item }
-                    else  selection.multi.data.map { it.contains(item)}
+                    (if (selection.single.isSet) selection.single.data.map { it == item }
+                    else  selection.multi.data.map { it.contains(item)}).distinctUntilChanged()
                 } else flowOf(false)
             }
 
@@ -216,7 +216,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                     activeIndex.data.map {
                         list.indexOf(item) == it
                     }
-                }
+                }.distinctUntilChanged()
 
             fun render() {
                 attrIfNotSet("role", Aria.Role.listitem)
