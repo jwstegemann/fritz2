@@ -6,10 +6,8 @@ eleventyNavigation:
     key: repositories
     parent: documentation
     title: Repositories
-    order: 130
+    order: 90
 ---
-
-# Repositories
 
 To connect certain types of backend to your `Store`s, you can make use of fritz2's repositories. fritz2 offers
 implementations of the repository-interfaces for two types of backends:
@@ -72,14 +70,14 @@ It offers the following methods to query or manipulate the content of the reposi
 * `delete(entities: List<T>, ids: List<I>): List<T>`
   
   
-### EntityRepository
+## EntityRepository
 
 To connect a `Store` with a REST-backend for example, just add the repository-service and use its methods in your
 handler:
 
 ```kotlin
 // use the defined resource from above
-val entityStore = object : RootStore<Person>(initialPerson) {
+object EntityStore : RootStore<Person>(initialPerson) {
 
     private val rest = restEntityOf(PersonResource, http("https://your_api_endpoint"), initialId = "")
 
@@ -87,18 +85,17 @@ val entityStore = object : RootStore<Person>(initialPerson) {
         rest.load(id)
     }
 
-    val addOrUpdate = handle {
-        if (it != initialPerson) rest.addOrUpdate(it)
-        else it
-    }
-
     val delete = handle {
         rest.delete(it)
         initialPerson
     }
 
+    fun addOrUpdate(person: Person) {
+        if (person != initialPerson) rest.addOrUpdate(person)
+    }
+
     init {
-        syncBy(addOrUpdate)
+        data.drop(1) handledBy(::addOrUpdate)
     }
 }
 ```
@@ -107,11 +104,10 @@ The `restEntityOf` function needs an `initialId` to distinguish add from update 
 A `POST`request is sent, when the id of the given instance equals `initialID`, otherwise a `PUT` request is used to 
 update the resource.).
 
-By calling `syncBy` from your init-block the given `Handler` (here `addOrUpdate`) is automatically called on each 
-update
-of your `Store`s data, to keep your REST-backend in sync with your local resource.
+By calling the `handledBy` function on the `data.drop(1)` flow in your init-block the given function (here `addOrUpdate`)
+gets automatically called on each update of your `Store`s data, to keep your REST-backend in sync with your local resource.
 
-### QueryRepository
+## QueryRepository
 
 When creating a `QueryRepository`, you can define a type describing the queries which are done by this repository. 
 You
@@ -120,7 +116,7 @@ also have to implement a lambda, that defines, how to deal with a concrete insta
 ```kotlin
 data class PersonQuery(val namePrefix: String? = null)
 
-val queryStore = object : RootStore<List<Person>>(emptyList()) {
+object QueryStore : RootStore<List<Person>>(emptyList()) {
     val localStorage =
         localStorageQueryOf<Person, String, PersonQuery>(PersonResource, "your prefix") { entities, query ->
             if (query.namePrefix != null) entities.filter { it.name.startsWith(query.namePrefix) }
@@ -149,7 +145,7 @@ val restQuery = restQueryOf<Person, String, PersonQuery>(PersonResource, "https:
 ```
 
 For more information about the `remote` parameter of `restQueryOf`, please refer to the docs
-section [HTTP-Calls](HttpCalls.html).
+section [HTTP-Calls](/docs/http).
 
 # Examples
 

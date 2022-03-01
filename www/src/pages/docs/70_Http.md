@@ -6,7 +6,7 @@ eleventyNavigation:
     key: http
     parent: documentation
     title: Http
-    order: 110
+    order: 70
 ---
 
 Using the browser's default fetch-api can get quite tiresome, which is why fritz2 offers a small fluent api wrapper for it:
@@ -17,8 +17,9 @@ val usersApi = http("https://reqresss.in/api/users")
             .acceptJson()
             .contentType("application/json")
 ```
-The remote service offers some [convenience-methods](https://api.fritz2.dev/core/core/dev.fritz2.remote/-request/index.html) to configure 
-your API-calls, like the `acceptJson()` above, which simply adds the correct header to each request sent using the template.
+The remote service offers some [convenience-methods](https://next.fritz2.dev/api/core/dev.fritz2.remote/-request/index.html)
+to configure your API-calls, like the `acceptJson()` above, 
+which simply adds the correct header to each request sent using the template.
 
 Sending a request is pretty straightforward:
 ```kotlin
@@ -80,7 +81,7 @@ To see a complete example of this, visit our
 In the real world, instead of creating the JSON manually, better use 
 [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
 Get inspired by our [repositories example](https://examples.fritz2.dev/repositories/build/distributions/index.html)
-and use our [repositories API](Repositories.html).
+and use our [repositories API](/docs/repositories).
 
 
 You can easily set up your local webpack-server to proxy services (avoid CORS, etc.) when developing locally in 
@@ -107,8 +108,7 @@ kotlin {
 ```
 You can find a working example in the [Ktor Chat](https://github.com/jamowei/fritz2-ktor-chat) project.
 
-Want to do bidirectional communications? Keep on reading about [Websockets](Websockets.html).
-
+Want to do bidirectional communications? See [Websockets](/docs/websockets).
 
 ## Middleware
 
@@ -156,8 +156,6 @@ You can add multiple Middlewares in one row with .use(mw1, mw2, mw3). The `enric
 left to right (mw1,mw2,mw3), the `handleResponse` functions from right to left (mw3, mw2, mw1). 
 
 You can stop the processing of a Response by Middlewares further down the chain by returning `response.stopPropagation()`.
-
-fritz2 also offers some base classes to implement the [authentication](Authentication.html)-process of your SPA.
 
 ## Authentication
 
@@ -252,7 +250,6 @@ object MyAuthentication : Authentication<Principal>() {
         }
     }
 }
-
 ```
 
 Now you can use your principal's data to enrich each subsequent request by adding a token as a header, for example:
@@ -265,15 +262,14 @@ object MyAuthentication : Authentication<Principal>() {
     override fun addAuthentication(request: Request, principal: Principal?): Request =
         if (principal != null) {
             request.header("Authorization", "Bearer ${principal.token}")
-        }
-        else request
+        } else request
 }
 ```
 
-You can also access the current principal to control your user interface:
+You can also access the principal to control your user interface:
 
 ```kotlin
-val vip = MyAuthentication.principal.map { it?.roles?.contains("SomeVipRole") ?: false }
+val vip = MyAuthentication.data.map { it?.roles?.contains("SomeVipRole") ?: false }
 
 MyAuthentication.authenticated.render {
     if (!it) {
@@ -288,7 +284,7 @@ MyAuthentication.authenticated.render {
     else {
         button {
             +"logout "
-            MyAuthentication.principal.map { it?.name ?: "" }.renderText()
+            MyAuthentication.data.map { it?.name ?: "" }.renderText()
 
             clicks handledBy {
                 MyAuthentication.clear() // logout, but in real life you would want to inform the backend
@@ -306,8 +302,8 @@ MyAuthentication.authenticated.render {
 }
 ```
 
+If you have to get the current principal at a given point in time, you can do so using the `current`-property of your Authentication.
+
 If the first request requires authentication, subsequent requests that use the same authentication middleware
 will wait for the started authentication process to finish. So make sure you always complete or cancel it and use
 a fresh endpoint within for remote requests required (login, get roles, etc.).
-
-
