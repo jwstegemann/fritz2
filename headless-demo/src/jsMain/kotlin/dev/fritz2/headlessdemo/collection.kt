@@ -8,6 +8,7 @@ import dev.fritz2.headless.components.DataCollection
 import dev.fritz2.headless.components.SortDirection
 import dev.fritz2.headless.components.dataCollection
 import dev.fritz2.headless.components.inputField
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
@@ -56,6 +57,7 @@ fun RenderContext.collectionDemo() {
 
     dataCollection<Person>("shadow h-80 border border-gray-200 sm:rounded-lg overflow-y-auto overflow-x-auto relative") {
         data(TableStore.data)
+
 //        selection.single(selectionStore)
         selection.multi(selectionStore)
 
@@ -74,11 +76,14 @@ fun RenderContext.collectionDemo() {
 
             val padding = "px-4 py-2 whitespace-nowrap"
 
-            dataCollectionItems("text-sm font-medium text-gray-500", tag = RenderContext::tbody) {
+            dataCollectionItems("text-sm font-medium text-gray-500 hover:bg-indigo-400", tag = RenderContext::tbody) {
                 items.renderEach { item ->
                     dataCollectionItem(item, tag = RenderContext::tr) {
-                        //TODO: add className for String to use whenever?
-                        className(selected.map {if (it) "bg-indigo-200" else "odd:bg-white even:bg-gray-50"})
+                        className(selected.combine(active) { sel, act -> if (sel) {
+                            if (act) "bg-indigo-200" else "bg-indigo-100"
+                        } else {
+                            if (act) "bg-indigo-50" else "odd:bg-white even:bg-gray-50"
+                        }} )
                         td(padding) { +item.fullName }
                         td(padding) { +item.email }
                         td(padding) { +item.birthday }
@@ -90,6 +95,6 @@ fun RenderContext.collectionDemo() {
     }
 
     div("mt-10") {
-        selectionStore.data.renderText()
+        selectionStore.data.map { it.map { it.fullName } }.renderText()
     }
 }

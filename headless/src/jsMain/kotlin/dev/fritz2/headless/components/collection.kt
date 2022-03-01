@@ -1,9 +1,9 @@
 package dev.fritz2.headless.components
 
 import dev.fritz2.core.*
-import dev.fritz2.headless.foundation.DatabindingProperty
-import dev.fritz2.headless.foundation.Property
-import dev.fritz2.headless.foundation.TagFactory
+import dev.fritz2.headless.foundation.*
+import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
+import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
@@ -11,6 +11,8 @@ import org.w3c.dom.HTMLElement
 import kotlin.math.max
 import kotlin.math.min
 
+
+//FIXME: use IdProvider here
 class TableDataProperty<T> : Property<Flow<List<T>>>() {
     operator fun invoke(data: List<T>) {
         value = flowOf(data)
@@ -76,9 +78,6 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
 
     val selection = SelectionMode<T>()
 
-    fun render() {
-    }
-
     inner class DataCollectionSortButton<CS : HTMLElement>(private val sorting: Sorting<T>, tag: Tag<CS>) :
         Tag<CS> by tag {
         val direction = sortingDirection(sorting)
@@ -141,13 +140,39 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
 
         val activeIndex = storeOf(-1)
 
+        fun selectItem(itemsToSelect: Flow<T>) {
+            if (selection.isSet) {
+                if (selection.single.isSet) {
+                    selection.single.handler?.let {
+                        it(selection.single.data.flatMapLatest { current ->
+                            itemsToSelect.map {
+                                if (current == it) null else it
+                            }
+                        })
+                    }
+                } else {
+                    selection.multi.handler?.let {
+                        it(selection.multi.data.flatMapLatest { current ->
+                            itemsToSelect.map {
+                                if (current.contains(it)) current - it else current + it
+                            }
+                        })
+                    }
+                }
+            }
+        }
+
         fun render() {
+            attr("tabindex", "0")
+            attrIfNotSet("role", Aria.Role.list)
+
             activeIndex.data.flatMapLatest { index ->
                 items.map { it.size }.distinctUntilChanged().flatMapLatest { size ->
                     keydowns.mapNotNull { event ->
+                        console.log("key")
                         when (shortcutOf(event)) {
-                            Keys.ArrowUp -> max(index - 1,0)
-                            Keys.ArrowDown -> min(index +1, size - 1)
+                            Keys.ArrowUp -> max(index - 1, 0)
+                            Keys.ArrowDown -> min(index + 1, size - 1)
                             Keys.Home -> 0
                             Keys.End -> size - 1
                             else -> null
@@ -159,7 +184,24 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                         }
                     }
                 }
-            } handledBy activeIndex.update
+            }.onEach { console.log(it) } handledBy activeIndex.update
+
+            if (selection.isSet) {
+                selectItem(activeIndex.data.flatMapLatest { index ->
+                    items.distinctUntilChanged().flatMapLatest { list ->
+                        keydowns.filter {
+                            setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
+                        }.mapNotNull { event ->
+                            list.getOrNull(index).also {
+                                if (it != null) {
+                                    event.preventDefault()
+                                    event.stopImmediatePropagation()
+                                }
+                            }
+                        }
+                    }
+                })
+            }
         }
 
         inner class DataCollectionItem<CI : HTMLElement>(private val item: T, tag: Tag<CI>) : Tag<CI> by tag {
@@ -170,35 +212,32 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                 } else flowOf(false)
             }
 
-            val active by lazy {
-                items.flatMapLatest { list ->
+            val active = items.flatMapLatest { list ->
                     activeIndex.data.map {
                         list.indexOf(item) == it
                     }
                 }
-            }
 
             fun render() {
+                attrIfNotSet("role", Aria.Role.listitem)
+
+                // selection events
                 if (selection.isSet) {
-                    if (selection.single.isSet) {
-                        selection.single.handler?.let {
-                            it(selection.single.data.flatMapLatest { current ->
-                                clicks.map {
-                                    if (current == item) null else item
-                                }
-                            })
-                        }
-                    } else {
-                        selection.multi.handler?.let {
-                            it(selection.multi.data.flatMapLatest { current ->
-                                clicks.map {
-                                    if (current.contains(item)) current - item else current + item
-                                }
-                            })
-                        }
-                    }
+                    selectItem(clicks.map { item })
                 }
 
+                items.flatMapLatest { list ->
+                    //TODO: debounce for listbox, too?
+                    mouseenters.debounce(100).map {
+                        list.indexOf(item)
+                    }
+                } handledBy activeIndex.update
+
+                // scroll if active
+                //FIXME: scroll to top-element?
+                active.filter { it } handledBy {
+                    scrollIntoView(domNode, HeadlessScrollOptions)
+                }
             }
         }
 
@@ -257,7 +296,6 @@ fun <T, C : HTMLElement> RenderContext.dataCollection(
 ): Tag<C> = tag(this, classes, id, scope) {
     DataCollection<T, C>(this, id).run {
         initialize(this)
-        render()
     }
 }
 
@@ -267,52 +305,3 @@ fun <T> RenderContext.dataCollection(
     scope: (ScopeContext.() -> Unit) = {},
     initialize: DataCollection<T, HTMLDivElement>.() -> Unit
 ): Tag<HTMLDivElement> = dataCollection(classes, id, scope, RenderContext::div, initialize)
-
-
-/*
-
-collection<T> {
-
-    data: Property<low<List<T>>>
-
-    //active:
-
-    selection.single(Datatbinding List/Item) // Strategie für single oder multi
-
-    filter(Databinding Flow<(List)->List)?> // sonst wird das intern verwaltet
-
-    sort(Databinding Flow<(List)->List)?> // sonst wird das intern verwaltet
-
-    //wir brauchen den IdProvider (oder eben keinen)
-
-
-    collectionSorter {
-        val sorted: Flow<SortOrder> (no, asc, desc)
-        collectionSorterToggle {
-
-        }
-    }
-
-
-    collectionItems {
-        val items: <Flow<List<t>>
-
-        items.withIndex().renderEach { (i, item) ->
-            collectionItem(item, tag = RenderContext::tr) {
-                val active: Flow<Boolean>
-                val selected: : Flow<Boolean>
-
-
-            }
-        }
-    }
-
-}
-
-
-
-
-
-
-
- */
