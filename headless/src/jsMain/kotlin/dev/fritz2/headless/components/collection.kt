@@ -4,13 +4,12 @@ import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.DatabindingProperty
 import dev.fritz2.headless.foundation.Property
 import dev.fritz2.headless.foundation.TagFactory
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import kotlin.math.max
+import kotlin.math.min
 
 class TableDataProperty<T> : Property<Flow<List<T>>>() {
     operator fun invoke(data: List<T>) {
@@ -122,7 +121,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
     ) = dataCollectionSortButton(Sorting(comparatorAscending, comparatorDescending), classes, internalScope, initialize)
 
     inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>) : Tag<CI> by tag {
-        val items: Flow<List<T>> = if (data.isSet) {
+        val items = if (data.isSet) {
             data.value!!.flatMapLatest { list ->
                 sorting.data.flatMapLatest { sortOrder ->
                     filtering.data.map { filterFunction ->
@@ -140,8 +139,27 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
             }
         } else flowOf(emptyList())
 
-        fun render() {
+        val activeIndex = storeOf(-1)
 
+        fun render() {
+            activeIndex.data.flatMapLatest { index ->
+                items.map { it.size }.distinctUntilChanged().flatMapLatest { size ->
+                    keydowns.mapNotNull { event ->
+                        when (shortcutOf(event)) {
+                            Keys.ArrowUp -> max(index - 1,0)
+                            Keys.ArrowDown -> min(index +1, size - 1)
+                            Keys.Home -> 0
+                            Keys.End -> size - 1
+                            else -> null
+                        }.also {
+                            if (it != null) {
+                                event.preventDefault()
+                                event.stopImmediatePropagation()
+                            }
+                        }
+                    }
+                }
+            } handledBy activeIndex.update
         }
 
         inner class DataCollectionItem<CI : HTMLElement>(private val item: T, tag: Tag<CI>) : Tag<CI> by tag {
@@ -150,6 +168,14 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                     if (selection.single.isSet) selection.single.data.map { it == item }
                     else  selection.multi.data.map { it.contains(item)}
                 } else flowOf(false)
+            }
+
+            val active by lazy {
+                items.flatMapLatest { list ->
+                    activeIndex.data.map {
+                        list.indexOf(item) == it
+                    }
+                }
             }
 
             fun render() {
