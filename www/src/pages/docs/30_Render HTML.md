@@ -251,9 +251,11 @@ render {
 
 ## Scope
 
-fritz2 offers the possibility to use a `Scope` to add some information to a tag which can deeper nested tags receive and
-which will not be rendered out by default. The values in the `Scope` are only available for tags inside the context of 
-the tag which sets them. To append something to the `Scope` you have to create a `Scope.Key` by using the 
+fritz2 offers the possibility to use a `Scope` to add some information to a tag which can then be received by any
+child-tag of the corresponding DOM-subtree and which will not be rendered out by default. The values in the `Scope` are
+only available for tags inside the context of the tag which sets them.
+
+To append something to the `Scope` you have to create a `Scope.Key` by using the 
 `Scope.keyOf()` function.
 ```kotlin
 val myKey = Scope.keyOf<String>("myKeyName")
@@ -267,10 +269,12 @@ render {
         set(fooKey, "bar")
     }) {
         div {
+            // div is child of scope owner, so key is accessible
             +(scope[fooKey] ?: "")
         }
     }
     div {
+        // this div is not a child, so key is not in its (empty) scope
         +(scope[fooKey] ?: "")
     }
 }

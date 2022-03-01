@@ -207,7 +207,7 @@ Since everything in fritz2 is reactive, most of the time you want to connect a `
 by calling the `handledBy` function, which can be called with
 [infix](https://kotlinlang.org/docs/functions.html#infix-notation) so the code reads much nicer.
 
-But it is also possible to call a handler directly but much less needed than the first option.
+But it is also possible to call a handler directly, but this variant is less needed than the first one.
 
 ```kotlin
 // use this pattern in most situations 
@@ -227,7 +227,10 @@ val store = storeOf("") // store: RootStore<String>
 
 render {
     input {
+        // react to data changes and update the UI
         value(store.data)
+        
+        // react to UI events and update the data state
         changes.values() handledBy store.update
     }
 }
