@@ -9,8 +9,9 @@ eleventyNavigation:
     order: 30
 ---
 
-fritz2 offers a rich DSL to create the HTML your application. You just have to call the global `render` function inside
-to create an initial `RenderContext` in which you can then call the HTML-Tag functions provided by fritz2 like `div`.
+fritz2 offers a rich DSL to create the HTML for your application. You just have to call the global `render` function
+inside to create an initial `RenderContext` in which you can then call the HTML-Tag functions provided by fritz2
+like `div`.
 
 ```kotlin
 fun main() {
