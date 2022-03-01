@@ -11,5 +11,6 @@ include(
     "lenses-annotation-processor",
     "test-server",
     "headless",
-    "headless-demo"
+    "headless-demo",
+    "examples-demo"
 )
