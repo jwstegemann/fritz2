@@ -17,13 +17,13 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
     implementation(kotlin("stdlib-jdk8"))
-    implementation("io.ktor:ktor-server-netty:${rootProject.ext["ktorVersion"]}")
-    implementation("ch.qos.logback:logback-classic:${rootProject.ext["logbackVersion"]}")
-    implementation("io.ktor:ktor-server-core:${rootProject.ext["ktorVersion"]}")
-    implementation("io.ktor:ktor-auth:${rootProject.ext["ktorVersion"]}")
-    implementation("io.ktor:ktor-jackson:${rootProject.ext["ktorVersion"]}")
-    implementation("io.ktor:ktor-websockets:${rootProject.ext["ktorVersion"]}")
-    testImplementation("io.ktor:ktor-server-tests:${rootProject.ext["ktorVersion"]}")
+    implementation("io.ktor:ktor-server-netty:${rootProject.extra["ktorVersion"]}")
+    implementation("ch.qos.logback:logback-classic:${rootProject.extra["logbackVersion"]}")
+    implementation("io.ktor:ktor-server-core:${rootProject.extra["ktorVersion"]}")
+    implementation("io.ktor:ktor-auth:${rootProject.extra["ktorVersion"]}")
+    implementation("io.ktor:ktor-jackson:${rootProject.extra["ktorVersion"]}")
+    implementation("io.ktor:ktor-websockets:${rootProject.extra["ktorVersion"]}")
+    testImplementation("io.ktor:ktor-server-tests:${rootProject.extra["ktorVersion"]}")
 }
 
 tasks.register<com.github.psxpaul.task.JavaExecFork>("start") {
