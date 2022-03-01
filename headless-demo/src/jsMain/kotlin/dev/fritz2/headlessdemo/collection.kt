@@ -4,10 +4,12 @@ import dev.fritz2.core.RenderContext
 import dev.fritz2.core.RootStore
 import dev.fritz2.core.Tag
 import dev.fritz2.core.storeOf
+import dev.fritz2.headless.components.DataCollection
 import dev.fritz2.headless.components.SortDirection
 import dev.fritz2.headless.components.dataCollection
 import dev.fritz2.headless.components.inputField
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLTableRowElement
 
@@ -23,6 +25,18 @@ fun Tag<HTMLTableRowElement>.column(title: String, button: Tag<HTMLDivElement>.(
                 button()
             }
         }
+    }
+}
+
+val sortIcons: DataCollection<Person, HTMLDivElement>.DataCollectionSortButton<HTMLButtonElement>.() -> Unit = {
+    direction.render {
+        icon("text-gray-500 h-3 w-3", content =
+        when (it) {
+            SortDirection.NONE -> HeroIcons.selector
+            SortDirection.ASC -> HeroIcons.sort_ascending
+            SortDirection.DESC -> HeroIcons.sort_descending
+        }
+        )
     }
 }
 
@@ -51,25 +65,10 @@ fun RenderContext.collectionDemo() {
             thead {
                 tr {
                     column("Name") {
-                        dataCollectionSortButton(compareBy(Person::fullName), compareByDescending(Person::fullName)) {
-                            direction.render {
-                                icon("text-gray-500 h-3 w-3", content =
-                                    when (it) {
-                                        SortDirection.NONE -> HeroIcons.selector
-                                        SortDirection.ASC -> HeroIcons.sort_ascending
-                                        SortDirection.DESC -> HeroIcons.sort_descending
-                                    }
-                                )
-                            }
-                        }
+                        dataCollectionSortButton(compareBy(Person::fullName), compareByDescending(Person::fullName), initialize = sortIcons)
                     }
-
-                    column("eMail") {
-
-                    }
-                    column("Birthday") {
-
-                    }
+                    column("eMail") {}
+                    column("Birthday") {}
                 }
             }
 
@@ -79,7 +78,7 @@ fun RenderContext.collectionDemo() {
                 items.renderEach { item ->
                     dataCollectionItem(item, tag = RenderContext::tr) {
                         //TODO: add className for String to use whenever?
-                        className(selected.map {if (it) "bg-indigo-200" else ""})
+                        className(selected.map {if (it) "bg-indigo-200" else "odd:bg-white even:bg-gray-50"})
                         td(padding) { +item.fullName }
                         td(padding) { +item.email }
                         td(padding) { +item.birthday }

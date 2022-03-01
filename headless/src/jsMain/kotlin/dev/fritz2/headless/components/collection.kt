@@ -1,9 +1,6 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.core.RenderContext
-import dev.fritz2.core.RootStore
-import dev.fritz2.core.ScopeContext
-import dev.fritz2.core.Tag
+import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.DatabindingProperty
 import dev.fritz2.headless.foundation.Property
 import dev.fritz2.headless.foundation.TagFactory
@@ -185,7 +182,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CI>>,
             initialize: DataCollectionItem<CI>.() -> Unit
-        ) = tag(this, classes, "someID", scope) { //TODO: id
+        ) = tag(this, if (selection.isSet) classes(classes, "cursor-pointer") else classes, "someID", scope) { //TODO: id
             DataCollectionItem(item, this).run {
                 initialize()
                 render()
