@@ -30,7 +30,7 @@ fun Tag<HTMLTableRowElement>.column(title: String, button: Tag<HTMLDivElement>.(
 
 val sortIcons: DataCollection<Person, HTMLDivElement>.DataCollectionSortButton<HTMLButtonElement>.() -> Unit = {
     direction.render {
-        icon("text-gray-500 h-3 w-3", content =
+        icon("text-gray-500 h-3 w-3 mt-1 mr-2", content =
         when (it) {
             SortDirection.NONE -> HeroIcons.selector
             SortDirection.ASC -> HeroIcons.sort_ascending
@@ -63,7 +63,7 @@ fun RenderContext.collectionDemo() {
 
         table("min-w-full divide-y divide-gray-200 bg-white") {
             thead {
-                tr {
+                tr("divide-x divide-gray-100") {
                     column("Name") {
                         dataCollectionSortButton(compareBy(Person::fullName), compareByDescending(Person::fullName), initialize = sortIcons)
                     }
