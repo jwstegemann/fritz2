@@ -148,8 +148,8 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             val index: Int
         ) : Tag<CT> by tag {
 
-            val disabled by lazy { disabledTabs.data.map { it[index] } }
-
+            // no value should appear when list is still empty
+            val disabled = disabledTabs.data.mapNotNull { it.getOrNull(index) }
             val disable by lazy { disabledTabs.disabledHandler(index) }
 
             fun render() {

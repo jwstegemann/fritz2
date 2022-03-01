@@ -7,4 +7,3 @@ import org.w3c.dom.Node
 
 @JsName("default")
 external fun scrollIntoView(node: Node, options: ScrollIntoViewOptions)
-
