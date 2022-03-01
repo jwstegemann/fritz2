@@ -55,7 +55,7 @@ fun RenderContext.collectionDemo() {
     }
 
     dataCollection<Person>("shadow h-80 border border-gray-200 sm:rounded-lg overflow-y-auto overflow-x-auto relative") {
-        data(TableStore.data)
+        data(TableStore.data, Person::_id)
 
 //        selection.single(selectionStore)
         selection.multi(selectionStore)

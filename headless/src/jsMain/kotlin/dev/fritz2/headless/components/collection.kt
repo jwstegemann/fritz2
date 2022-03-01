@@ -218,8 +218,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
 
             val selected by lazy {
                 if (selection.isSet) {
-                    if (selection.single.isSet) selection.single.data.map { isSame(it, item) }
-                    else  selection.multi.data.map { list -> list.any {isSame(it, item) } }
+                    (if (selection.single.isSet) selection.single.data.map { isSame(it, item) }
+                    else  selection.multi.data.map { list -> list.any {isSame(it, item) } }).distinctUntilChanged()
                 } else flowOf(false)
             }
 
