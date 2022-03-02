@@ -15,7 +15,7 @@ we happily provide you with all the documentation you need in order to use it.
 We aim to present the different topics and concepts in a helpful order. If you want to stick with it,
 we suggest to start reading with [Project Setup](/docs/start), otherwise just pick your topic of interest from the menu.
 
-![State management in fritz2](/img/fritz2_state_management.png)
+![state management in fritz2](/img/fritz2_cycle_of_life.svg)
 
 We always try our best with fritz2 and would love your feedback! Please feel free to open an
 [issue](https://github.com/jwstegemann/fritz2/issues).
