@@ -12,7 +12,6 @@ import kotlin.math.max
 import kotlin.math.min
 
 
-//FIXME: use IdProvider here
 class TableDataProperty<T> : Property<Pair<Flow<List<T>>, IdProvider<T, *>?>>() {
     operator fun invoke(data: List<T>, idProvider: IdProvider<T, *>? = null) {
         value = flowOf(data) to idProvider
