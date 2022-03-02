@@ -4,7 +4,7 @@ layout: layouts/docs.njk
 permalink: /headless/ 
 eleventyNavigation:
     key: headless 
-    title: Headless Components 
+    title: Headless
     order: 20
     icon: puzzle
     classes: "font-bold capitalize"

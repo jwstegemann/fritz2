@@ -24,8 +24,8 @@ module.exports = {
         },
         fg: {
           DEFAULT: colors.cyan["700"],
-          highlight: colors.cyan["200"],
-          focus: colors.cyan["300"],
+          highlight: colors.teal["200"],
+          focus: colors.cyan["400"],
         },
         relaxed: {
           DEFAULT: colors.gray["400"],
