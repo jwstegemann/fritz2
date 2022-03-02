@@ -76,7 +76,7 @@ fun RenderContext.collectionDemo() {
             val padding = "px-4 py-2 whitespace-nowrap"
 
             dataCollectionItems("text-sm font-medium text-gray-500 hover:bg-indigo-400", tag = RenderContext::tbody) {
-                items.renderEach { item ->
+                items.renderEach(Person::_id) { item ->
                     dataCollectionItem(item, tag = RenderContext::tr) {
                         className(selected.combine(active) { sel, act -> if (sel) {
                             if (act) "bg-indigo-200" else "bg-indigo-100"
