@@ -23,7 +23,7 @@ headless components. The user only has to worry about the pure display aspects, 
 and the styling.
 
 For background information on why we think headless components are the optimal way to go for fritz2 users, we refer to a
-detailed one [blog post](missing-headless-why).
+detailed one [blog post](/blog/posts/paradigm-shift-for-components/).
 
 ::: info
 Note: for the styling information we use in the examples the [tailwindcss](https:tailwindcss.com) framework. Since
