@@ -16,7 +16,7 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                implementation(project(":headless"))
+                implementation(project(":core"))
                 // tailwind
                 implementation(npm("tailwindcss", rootProject.extra["tailwindcss"] as String))
                 implementation(npm("@tailwindcss/forms", rootProject.extra["tailwindcss/forms"] as String))

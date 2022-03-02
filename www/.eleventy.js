@@ -26,6 +26,10 @@ module.exports = function(eleventyConfig) {
         dir: '../headless-demo/build/distributions'
       },
       {
+        route: '/examples-demo',
+        dir: '../examples-demo/build/distributions'
+      },
+      {
         route: '/api',
         dir: '../api'
       }]

@@ -55,14 +55,14 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${rootProject.ext["coroutinesVersion"]}")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${rootProject.extra["coroutinesVersion"]}")
             }
         }
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${rootProject.ext["coroutinesVersion"]}")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${rootProject.ext["serializationVersion"]}")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${rootProject.extra["coroutinesVersion"]}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${rootProject.extra["serializationVersion"]}")
             }
         }
     }

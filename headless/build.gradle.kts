@@ -44,14 +44,13 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                api(npm("@popperjs/core", "2.10.1"))
-                api(npm("scroll-into-view-if-needed", "2.2.28"))
+                api(npm("@popperjs/core", rootProject.extra["popperjs"] as String))
+                api(npm("scroll-into-view-if-needed", rootProject.extra["scroll-into-view-if-needed"] as String))
             }
         }
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-//                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
             }
         }
     }
