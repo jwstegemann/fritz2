@@ -13,7 +13,7 @@ Since we want you to build the best, most efficient, successful, and whatever-el
 we happily provide you with all the documentation you need in order to use it.
 
 We aim to present the different topics and concepts in a helpful order. If you want to stick with it,
-we suggest to start reading with [Project Setup](ProjectSetup.html), otherwise just pick your topic of interest from the menu.
+we suggest to start reading with [Project Setup](/docs/start), otherwise just pick your topic of interest from the menu.
 
 ![State management in fritz2](/img/fritz2_state_management.png)
 
