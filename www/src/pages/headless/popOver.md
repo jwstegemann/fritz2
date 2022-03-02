@@ -1,6 +1,6 @@
 ---
 title: PopOver 
-layout: layouts/headlessWithContentNav.njk 
+layout: layouts/docs.njk 
 permalink: /headless/popover/ 
 eleventyNavigation:
     key: popover

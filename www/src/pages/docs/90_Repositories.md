@@ -1,5 +1,5 @@
 ---
-layout: layouts/docsWithContentNav.njk 
+layout: layouts/docs.njk 
 title: Repositories
 permalink: /docs/repositories/
 eleventyNavigation:

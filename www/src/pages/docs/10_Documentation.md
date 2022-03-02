@@ -1,6 +1,6 @@
 ---
 title: "Welcome to fritz2 docs"
-layout: layouts/docs.njk 
+layout: layouts/docs.njk
 permalink: /docs/ 
 eleventyNavigation:
     key: documentation 
@@ -25,8 +25,9 @@ Whenever you find something missing, misleading or even plain wrong in our docum
 We also encourage everybody to share their own examples and showcases with us,
 as this is often the best way to learn something new.
 
-# By the way, what does the name fritz2 mean?
-Fritz2 actually has two meanings. For our project name, we were looking for something to connect it to St. Petersburg
+## Where does the name come from?
+
+fritz2 actually has two meanings. For our project name, we were looking for something to connect it to St. Petersburg
 (Kotlin is an island in its proximity), and we came across Friedrich II. It was shortened to Fritz2 - so technically,
 there was a Fritz1, but he wasn't an API. The second meaning is personal and connects to the pipes in our logo:
 Fritz is Jens‘ father’s nickname who had a huge impact on his life. He was a plumber.

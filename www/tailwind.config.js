@@ -13,8 +13,8 @@ module.exports = {
         'prose': '100ch',
       },
       fontFamily: {
-        'nunito': ['Nunito', 'Arial', 'sans-serif'],
-        'sans': ['Inter var', 'ui-sans-serif', 'system-ui', '-apple-system', "Segoe UI", 'Roboto', 'Arial', 'Noto Sans']
+        'nunito': ['Nunito', 'sans-serif'],
+        'sans': ['Inter', 'sans-serif']
       },
       colors: {
         bg: {

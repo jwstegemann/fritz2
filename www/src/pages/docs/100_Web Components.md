@@ -1,5 +1,5 @@
 ---
-layout: layouts/docsWithContentNav.njk
+layout: layouts/docs.njk
 title: Web Components
 permalink: /docs/web-components/
 eleventyNavigation:

@@ -1,5 +1,5 @@
 ---
-layout: layouts/docsWithContentNav.njk
+layout: layouts/docs.njk
 title: Validation
 permalink: /docs/validation/
 eleventyNavigation:

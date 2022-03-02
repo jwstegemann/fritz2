@@ -1,6 +1,6 @@
 ---
 title: Modal
-layout: layouts/headlessWithContentNav.njk
+layout: layouts/docs.njk
 permalink: /headless/modal/
 eleventyNavigation:
     key: modal

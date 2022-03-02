@@ -1,6 +1,6 @@
 ---
 title: Recipes
-layout: layouts/docsWithContentNav.njk
+layout: layouts/docs.njk
 permalink: /recipes/
 eleventyNavigation:
     key: recipes

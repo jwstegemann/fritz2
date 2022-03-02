@@ -1,5 +1,5 @@
 ---
-layout: layouts/docsWithContentNav.njk
+layout: layouts/docs.njk
 title: Getting Started
 teaser: "learn how to get started with fritz2"
 permalink: /docs/start/

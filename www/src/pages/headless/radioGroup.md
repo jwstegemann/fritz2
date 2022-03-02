@@ -1,6 +1,6 @@
 ---
 title: RadioGroup 
-layout: layouts/headlessWithContentNav.njk 
+layout: layouts/docs.njk 
 permalink: /headless/radioGroup/ 
 eleventyNavigation:
     key: radioGroup

@@ -1,5 +1,5 @@
 ---
-layout: layouts/docsWithContentNav.njk
+layout: layouts/docs.njk
 title: State Management
 permalink: /docs/state/
 eleventyNavigation:

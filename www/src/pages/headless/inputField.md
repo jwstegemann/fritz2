@@ -1,6 +1,6 @@
 ---
 title: InputField
-layout: layouts/headlessWithContentNav.njk
+layout: layouts/docs.njk
 permalink: /headless/inputfield/
 eleventyNavigation:
     key: inputfield
