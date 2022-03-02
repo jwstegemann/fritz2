@@ -6,7 +6,7 @@ eleventyNavigation:
     key: state
     parent: documentation
     title: State Management
-    order: 40
+    order: 30
 ---
 ## Flows
 

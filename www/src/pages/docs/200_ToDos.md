@@ -13,4 +13,3 @@ eleventyNavigation:
 - describe use of KSP [#559](https://github.com/jwstegemann/fritz2/pull/559)
 - ad-hoc handler [#532](https://github.com/jwstegemann/fritz2/pull/532)
 - transitions [#545](https://github.com/jwstegemann/fritz2/pull/545)
-- ~~describe `Scope` [#481](https://github.com/jwstegemann/fritz2/pull/481)~~

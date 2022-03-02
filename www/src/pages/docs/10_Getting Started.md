@@ -7,7 +7,7 @@ eleventyNavigation:
     key: start
     parent: documentation
     title: Getting Started
-    order: 20
+    order: 10
 ---
 ## Create a Project
 
