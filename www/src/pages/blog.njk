@@ -1,6 +1,6 @@
 ---
 title: Blog
-layout: layouts/docs.njk
+layout: layouts/pageWithNav.njk
 permalink: /blog/
 eleventyNavigation:
   key: blog
@@ -9,5 +9,7 @@ eleventyNavigation:
   icon: newspaper
   classes: "font-bold capitalize"
 ---
+<div class="relative content my-8 mx-12">
 {% set postslist = collections.posts %}
 {% include "components/postslist.njk" %}
+</div>
