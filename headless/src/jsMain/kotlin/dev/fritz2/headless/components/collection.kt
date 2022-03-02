@@ -180,7 +180,6 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                 items.distinctUntilChanged().flatMapLatest { list ->
                     val index = indexOfItem(list, current)
                     keydowns.mapNotNull { event ->
-                        console.log("key")
                         when (shortcutOf(event)) {
                             Keys.ArrowUp -> list[max(index - 1, 0)]
                             Keys.ArrowDown -> list[min(index + 1, list.size - 1)]
@@ -195,7 +194,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                         }
                     }
                 }
-            }.onEach { console.log(it) } handledBy activeItem.update
+            } handledBy activeItem.update
 
             if (selection.isSet) {
                 selectItem(activeItem.data.flatMapLatest { item ->
@@ -215,6 +214,9 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
             }
         }
 
+        private var lastX = 0
+        private var lastY = 0
+
         inner class DataCollectionItem<CI : HTMLElement>(private val item: T, tag: Tag<CI>) : Tag<CI> by tag {
             val selected by lazy {
                 if (selection.isSet) {
@@ -223,8 +225,9 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                 } else flowOf(false)
             }
 
-            val active  by lazy {
-                activeItem.data.map { isSame(it, item) }.distinctUntilChanged()
+            val active by lazy {
+                activeItem.data.debounce(150).map {
+                    isSame(it, item) }.distinctUntilChanged()
             }
 
             fun render() {
@@ -236,8 +239,12 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                 }
 
                 items.flatMapLatest { list ->
-                    mouseenters.debounce(100).map {
-                        item
+                    mouseenters.mapNotNull { event ->
+                        if (lastX != event.screenX || lastY != event.screenY) item.also {
+                            lastX = event.screenX
+                            lastY = event.screenY
+                        }
+                        else null
                     }
                 } handledBy activeItem.update
 
