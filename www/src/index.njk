@@ -3,7 +3,7 @@ title: fritz2
 layout: layouts/page.njk
 ---
 
-<div class="bg-white">
+<div class="landing bg-white">
     <div class="relative overflow-hidden">
         <header class="relative">
             <div class="bg-gray-900 py-6">
@@ -75,16 +75,8 @@ layout: layouts/page.njk
                 <div class="rounded-lg shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">
                     <div class="px-5 pt-4 flex items-center justify-between">
                         <div>
-                            {% highlight "kotlin" %}
-                                fun RenderContext.greet(name: String) {
-                                    div {
-                                        h2 {
-                                            +"Hello $name!"
-                                        }
-                                    }
-                                }
-                                greet("Peter")
-                            {% endhighlight %}
+                            <img class="h-8 w-auto"
+                                 src="https://tailwindui.com/img/logos/workflow-mark-teal-500-cyan-600.svg" alt="">
                         </div>
                         <div class="-mr-2">
                             <button type="button"
@@ -151,8 +143,8 @@ layout: layouts/page.njk
                 </div>
             </div>
 
-            <!-- Feature section with screenshot -->
-            <div class="relative bg-gray-50 pt-16 sm:pt-24 lg:pt-32">
+            <!-- Code Examples -->
+            <div class="relative block bg-gray-50 pt-16 sm:pt-24 lg:pt-32">
                 <div class="mx-auto max-w-md px-4 text-center sm:px-6 sm:max-w-3xl lg:px-8 lg:max-w-7xl">
                     <div>
                         <h2 class="text-base font-semibold tracking-wider text-cyan-600 uppercase">HTML5</h2>
@@ -164,8 +156,16 @@ layout: layouts/page.njk
                         </p>
                     </div>
                     <div class="mt-12 -mb-10 sm:-mb-24 lg:-mb-80">
-                        <img class="rounded-lg shadow-xl ring-1 ring-black ring-opacity-5"
-                             src="https://tailwindui.com/img/component-images/green-project-app-screenshot.jpg" alt="">
+                        {% highlight "kotlin" %}
+                            fun RenderContext.greet(name: String) {
+                                div {
+                                    h2 {
+                                        +"Hello $name!"
+                                    }
+                                }
+                            }
+                            greet("Peter")
+                        {% endhighlight %}
                     </div>
                 </div>
             </div>

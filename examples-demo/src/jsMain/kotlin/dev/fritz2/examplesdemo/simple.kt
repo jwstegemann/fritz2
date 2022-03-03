@@ -2,15 +2,15 @@ package dev.fritz2.examplesdemo
 
 import dev.fritz2.core.RenderContext
 
-fun RenderContext.greeter() {
+fun RenderContext.simple() {
 
     fun RenderContext.greet(name: String) {
-        div {
-            h2 {
-                +"Hello $name!"
-            }
+        h2 {
+            +"Hello $name!"
         }
     }
 
-    greet("Peter")
+    div("p-4") {
+        greet("Peter")
+    }
 }

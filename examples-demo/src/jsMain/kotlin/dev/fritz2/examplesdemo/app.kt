@@ -6,10 +6,20 @@ import dev.fritz2.routing.routerOf
 data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)
 
 val pages = mapOf(
-    "greeter" to DemoPage(
-        "Greeter",
-        """Simple component example showing fritz2 HTML DSL""".trimMargin(),
-        RenderContext::greeter
+    "simple" to DemoPage(
+        "Simple",
+        """Simple example showing fritz2 HTML DSL""".trimMargin(),
+        RenderContext::simple
+    ),
+    "reactive" to DemoPage(
+        "Reactive",
+        """Reactive example showing fritz2 two-way data-binding""".trimMargin(),
+        RenderContext::reactive
+    ),
+    "complex" to DemoPage(
+        "Complex",
+        """Complex example showing fritz2 validation""".trimMargin(),
+        RenderContext::complex
     )
 )
 

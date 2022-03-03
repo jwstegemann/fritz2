@@ -8,11 +8,19 @@ a {
 
 @layer components {
 
+    .landing pre[class*="language-"] {
+        @apply !rounded-l-lg !rounded-r-none !my-3
+    }
+
+    .landing code:not([class]) {
+        @apply bg-gray-200 rounded px-1.5 py-1
+    }
+
     .content code:not([class]) {
         @apply bg-bg-highlight rounded px-1.5 py-1
     }
 
-    .content code:not([class])::before, .content code:not([class])::after {
+    code:not([class])::before, code:not([class])::after {
         content: "" !important;
     }
 
