@@ -5,7 +5,7 @@ permalink: /recipes/
 eleventyNavigation:
     key: recipes
     title: Recipes
-    order: 30
+    order: 40
     icon: book-open
     classes: "font-bold capitalize"
 ---
