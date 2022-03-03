@@ -3,8 +3,9 @@ layout: layouts/post.njk
 image: paradigm-shift-for-components.jpg
 type: Article
 title: What we have learned about reuse and components in web front-end development.
-description: "This article is about how we built and delivered components with fritz2 so far, which problems we noticed more
-and more (STE: Formulierung?) and why a new approach is the solution for us. At the same time we say goodbye to the components delivered with fritz2 up to verson 0.14 and introduce the new and imho better replacement for them."
+description: "This article is about how we built and delivered components with fritz2 so far, which problems we noticed
+more and more and why a new approach is the solution for us. At the same time we say goodbye to the components delivered 
+with fritz2 up to verson 0.14 and introduce the new and imho better replacement for them."
 date: 2022-03-01
 author: chausknecht
 readtime: 15
@@ -20,11 +21,12 @@ corresponding user interface. This means that changes to the data model immediat
 interface and events from the browser in turn change the data model. fritz2 provides the necessary tools to manage the
 data model, the UI and the cyclic, reactive connection between both aspects using a declarative syntax.
 
-fritz2 sees itself as a lightweight framework, which is why the core relies on a few  Kotlin features basic for reactive programming like [Coroutines](https://kotlinlang.org/docs/coroutines-basics.html)
+fritz2 sees itself as a lightweight framework, which is why the core relies on a few Kotlin features basic for reactive
+programming like [Coroutines](https://kotlinlang.org/docs/coroutines-basics.html)
 and especially [Flows](https://kotlinlang.org/docs/flow.html). The central fritz2 concepts, like stores, handler, events
-and tags rely on and integrate these Kotlin building blocks and do not hide them, but rather expose them on the
-contrary as part of the framework API. So a user does not primarily have to learn fritz2, but much more the
-universal Kotlin core concepts of coroutines and flows.
+and tags rely on and integrate these Kotlin building blocks and do not hide them, but rather expose them on the contrary
+as part of the framework API. So a user does not primarily have to learn fritz2, but much more the universal Kotlin core
+concepts of coroutines and flows.
 
 By focusing on the reactive connection of model and UI, the few concepts necessary for this and the resulting
 lightweight API, fritz2 allows to easily and elegantly develop modern browser-based UIs.
@@ -57,17 +59,17 @@ We started with version [0.8](https://github.com/jwstegemann/fritz2/releases/tag
 a [component library](https://components.fritz2.dev/#Welcome) into fritz2, which then - including a custom declarative
 language for styling - has been extended in the following versions.
 
-This library consisted of 20 different components, which cover important ranges from the simple layout, over typical, simple
-form elements, up to complex generic data tables and whole page frames.
+This library consisted of 20 different components, which cover important ranges from the simple layout, over typical,
+simple form elements, up to complex generic data tables and whole page frames.
 
 A basic idea was that each component must still be individually styleable in order to adapt it to the specific context
 of use within the application.
 
-In addition, we tried to incorporate a theme structure as the basis for the look and feel. This made it possible
-to adapt the components for all applications of an organization to a uniform corporate identity design on the basis of a
-central styling document (style system). In addition, we were even able to go one level below that, and derive from the central
-organization theme, to create and use customized themes for different areas of the company. This actually made it
-possible to implement two different design concepts with the same components.
+In addition, we tried to incorporate a theme structure as the basis for the look and feel. This made it possible to
+adapt the components for all applications of an organization to a uniform corporate identity design on the basis of a
+central styling document (style system). In addition, we were even able to go one level below that, and derive from the
+central organization theme, to create and use customized themes for different areas of the company. This actually made
+it possible to implement two different design concepts with the same components.
 
 ## Problems of the naive approach
 
@@ -99,10 +101,11 @@ We have identified the following problems with it:
     his own theme.
 - The components consist of code that is relatively difficult to understand. Much is, as already indicated, dependent on
   the theme and thus only comprehensible by reading the code there.
-- Despite the components having been planned and implemented from ground up to be flexible and customizable, the need
-  to build "completely different" components for a similar use case has arisen soon. The adaptability is in practice by far not as high as we had had assumed. (Despite the complexity of the code. See previous item).
-- The focus during creation was primarily on the design, which is in general no core competence of the
-  developers, instead of focusing on usability (ARIA, keyboard support, standard functions, etc.).
+- Despite the components having been planned and implemented from ground up to be flexible and customizable, the need to
+  build "completely different" components for a similar use case has arisen soon. The adaptability is in practice by far
+  not as high as we had had assumed. (Despite the complexity of the code. See previous item).
+- The focus during creation was primarily on the design, which is in general no core competence of the developers,
+  instead of focusing on usability (ARIA, keyboard support, standard functions, etc.).
 - It means an immense effort to provide and maintain alone the 20 components in this flexibility with good defaults.
   There would still be a need for further, elementary components, which are not yet even implemented! In addition,
   urgently needed functions or features of existing components are still missing (keyboard support, ARIA attributes, and
@@ -122,8 +125,8 @@ But what is the solution to this dilemma? To build innumerable, rigid special co
 immense initial effort, would also result in a high level of code duplication and thus even greater maintenance effort?
 Go without central components at all, but build everything from scratch for every application?
 
-We finally came across a concept that seems to be the solution to the dilemma of combining both extreme alternatives in an elegant
-way: **Headless** Components!
+We finally came across a concept that seems to be the solution to the dilemma of combining both extreme alternatives in
+an elegant way: **Headless** Components!
 
 ## Headless
 
@@ -137,7 +140,8 @@ The idea behind it is as simple as the benefit is hard to grasp:
 A component is solely defined by its functionality and **not** by DOM structure and presentation!
 :::
 
-This requires explanation: If one considers only the basic function in the core, but the representation, thus the DOM structure and the styling, the myriads of UI components out there can be reduced to a few like:
+This requires explanation: If one considers only the basic function in the core, but the representation, thus the DOM
+structure and the styling, the myriads of UI components out there can be reduced to a few like:
 
 - a single selection from a list of options
 - a multiple selection from a list of options
@@ -258,8 +262,9 @@ The individual components help the user with their expressive naming and thus al
 of the code too.
 
 In addition, one still would have to style each building block accordingly within the code, in order to have a finished
-and fully functional surface unit, which was omitted here for reasons of space and simplicity! In principle one injects the styling
-into the function block as the first parameter, analogous to the known tag factory functions. The source code of
+and fully functional surface unit, which was omitted here for reasons of space and simplicity! In principle one injects
+the styling into the function block as the first parameter, analogous to the known tag factory functions. The source
+code of
 the [example for a RadioGroup](https://github.com/jwstegemann/fritz2/blob/master/headless-demo/src/jsMain/kotlin/dev/fritz2/headlessdemo/radioGroup.kt)
 from the `headless-demo` project clearly shows that the styling specifications make the whole thing only slightly more
 complex.
@@ -281,8 +286,8 @@ Instead, as described before, fritz2 provides the [headless components](/headles
 can be used as a basis for creating your own components.
 
 To develop a ready styled and reusable component from the headless components and their bricks, fritz2 provides
-additional tools in the package `dev.fritz2.headless.foundation`, which also form the foundation for the headless components
-themselves. Particularly noteworthy are the concepts of
+additional tools in the package `dev.fritz2.headless.foundation`, which also form the foundation for the headless
+components themselves. Particularly noteworthy are the concepts of
 [*properties* and *hooks*](/headless/#basic-concepts-for-configuration). For the component construction these aids
 support the user to create an outwardly understandable and at the same time comfortable API, thereby preserve so much
 flexibility and control in the component itself.
@@ -317,9 +322,14 @@ the new [recipes section](/recipes).
 
 ## Warm words about the retired components
 
-As already clearly mentioned, the old components (and the styling API) are no longer part of fritz2. 
+As already clearly mentioned, the old components (and the styling API) are no longer part of fritz2.
 
-(Ist der Vorschlag klug? Wäre es nicht vielleicht besser, darauf zu verweisen, dass wir dringende Fehlerkorrekturen über die nächsten 9 Monate auch noch auf dem 0.14-er Zweig anbieten werden, so dass jeder, der will, genug Zeit hat zu migrieren?)
-But the code is not lost though! If you are interested, you are welcome to extract the two relevant modules from the
-branch `release/0.14` and put them into a new project and adapt it to the API changes. If you have any questions contact
-us at any time! We are happy to support you in such an endeavor within the scope of our possibilities.
+But we will continue to offer patches for serious issues on the `0.14` branch for the next nine month from now, so
+everybody should have time until the end of the year 2022 to migrate to the new headless approach.
+
+We would love to hear some feedback about the migration path you take!
+
+If you have specific questions about the headless approach, its documentation so far, or probably you create your own
+headless based components with fritz2, please let us know!
+
+For now, we wave goodbye to the old components and welcome the exciting new headless components!
