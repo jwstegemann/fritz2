@@ -12,6 +12,7 @@ layout: layouts/page.njk
                     <div class="flex items-center flex-1">
                         <div class="flex items-center justify-between w-full md:w-auto">
                             <a href="#">
+                                <!-- fritz2 logo -->
                                 <svg class="h-10 w-10 text-indigo-100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none">
                                     <path d="M 9.987 0.229 C 4.469 0.236 0 4.61 0 10.003 C 0 15.401 4.477 19.777 10 19.777 C 15.523 19.777 20 15.401 20 10.003 C 20 4.605 15.523 0.229 10 0.229 C 9.996 0.229 9.992 0.229 9.987 0.229 Z M 14.678 2.662 C 15.144 2.665 15.52 3.043 15.517 3.506 L 15.5 6.862 C 15.497 7.325 15.118 7.699 14.652 7.696 C 14.187 7.694 13.811 7.316 13.813 6.853 L 12.126 6.844 C 11.661 6.842 11.281 7.216 11.278 7.679 L 11.274 8.501 L 12.052 8.501 C 12.072 8.499 12.092 8.499 12.112 8.499 C 12.575 8.499 12.952 8.882 12.952 9.356 C 12.952 9.829 12.575 10.213 12.112 10.213 C 12.089 10.213 12.066 10.212 12.043 10.21 L 7.111 10.21 L 7.111 10.207 C 7.097 10.208 7.084 10.208 7.071 10.208 C 6.607 10.208 6.231 9.825 6.231 9.353 C 6.231 8.881 6.607 8.498 7.071 8.498 C 7.091 8.498 7.111 8.499 7.131 8.501 L 7.9 8.501 L 7.909 6.823 C 7.918 4.969 9.437 3.474 11.3 3.484 L 13.83 3.497 C 13.833 3.034 14.212 2.66 14.678 2.662 Z M 7.887 10.644 L 11.261 10.662 L 11.248 13.179 C 11.238 15.032 9.72 16.527 7.857 16.517 L 6.17 16.509 C 6.167 16.972 5.787 17.346 5.322 17.343 C 4.856 17.341 4.48 16.963 4.483 16.5 L 4.5 13.144 C 4.502 12.681 4.882 12.307 5.348 12.309 C 5.813 12.312 6.189 12.69 6.187 13.153 L 7.031 13.157 C 7.496 13.159 7.876 12.786 7.878 12.322 Z"/>
                                 </svg>
@@ -21,25 +22,20 @@ layout: layouts/page.njk
                                         class="bg-gray-900 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-800 focus:outline-none focus:ring-2 focus-ring-inset focus:ring-white"
                                         aria-expanded="false">
                                     <span class="sr-only">Open main menu</span>
-                                    <!-- Heroicon name: outline/menu -->
-                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                         viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M4 6h16M4 12h16M4 18h16"/>
+                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        {% heroicon "outline", "menu", "open main menu" %}
                                     </svg>
                                 </button>
                             </div>
                         </div>
                         <div class="hidden space-x-8 md:flex md:ml-10">
-                            <a href="/docs"
-                               class="text-base font-medium text-white hover:text-gray-300">Documentation</a>
+                            <a href="/docs" class="text-base font-medium text-white hover:text-gray-300">Documentation</a>
 
-                            <a href="/headless"
-                               class="text-base font-medium text-white hover:text-gray-300">Headless</a>
-
-{#                            <a href="/recipes" class="text-base font-medium text-white hover:text-gray-300">Recipes</a>#}
+                            <a href="/headless" class="text-base font-medium text-white hover:text-gray-300">Headless</a>
 
                             <a href="/blog" class="text-base font-medium text-white hover:text-gray-300">Blog</a>
+
+                            <a href="/recipes" class="text-base font-medium text-white hover:text-gray-300">Recipes</a>
 
                             <a href="/api" target="_blank" class="text-base font-medium text-white hover:text-gray-300">API</a>
 
@@ -48,6 +44,7 @@ layout: layouts/page.njk
                     <div class="hidden md:flex md:items-center md:space-x-6">
                         <span class="relative z-0 inline-flex shadow-sm rounded-md">
                           <a href="https://github.com/jwstegemann/fritz2" target="_blank" class="relative inline-flex items-center px-8 py-2 rounded-l-md border border border-transparent text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+                              <!-- Github Icon -->
                               <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                   <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.463 2 11.97c0 4.404 2.865 8.14 6.839 9.458.5.092.682-.216.682-.48 0-.236-.008-.864-.013-1.695-2.782.602-3.369-1.337-3.369-1.337-.454-1.151-1.11-1.458-1.11-1.458-.908-.618.069-.606.069-.606 1.003.07 1.531 1.027 1.531 1.027.892 1.524 2.341 1.084 2.91.828.092-.643.35-1.083.636-1.332-2.22-.251-4.555-1.107-4.555-4.927 0-1.088.39-1.979 1.029-2.675-.103-.252-.446-1.266.098-2.638 0 0 .84-.268 2.75 1.022A9.606 9.606 0 0112 6.82c.85.004 1.705.114 2.504.336 1.909-1.29 2.747-1.022 2.747-1.022.546 1.372.202 2.386.1 2.638.64.696 1.028 1.587 1.028 2.675 0 3.83-2.339 4.673-4.566 4.92.359.307.678.915.678 1.846 0 1.332-.012 2.407-.012 2.734 0 .267.18.577.688.48C19.137 20.107 22 16.373 22 11.969 22 6.463 17.522 2 12 2z"></path>
                               </svg>
@@ -55,7 +52,7 @@ layout: layouts/page.njk
                           </a>
                           <a href="https://github.com/jwstegemann/fritz2/stargazers" target="_blank" class="-ml-px relative inline-flex items-center px-3 py-2 rounded-r-md border border-transparent text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
                               <svg class="-ml-1 mr-2 h-4 w-4 text-amber-300" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                {% heroicon "solid", "star", "star icon" %}
                               </svg>
                               +400
                           </a>
@@ -78,19 +75,25 @@ layout: layouts/page.njk
                 <div class="rounded-lg shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">
                     <div class="px-5 pt-4 flex items-center justify-between">
                         <div>
-                            <img class="h-8 w-auto"
-                                 src="https://tailwindui.com/img/logos/workflow-mark-teal-500-cyan-600.svg" alt="">
+                            {% highlight "kotlin" %}
+                                fun RenderContext.greet(name: String) {
+                                    div {
+                                        h2 {
+                                            +"Hello $name!"
+                                        }
+                                    }
+                                }
+                                greet("Peter")
+                            {% endhighlight %}
                         </div>
                         <div class="-mr-2">
                             <button type="button"
                                     class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-600">
                                 <span class="sr-only">Close menu</span>
                                 <!-- Heroicon name: outline/x -->
-                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                     stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
+                                <span class="h-6 w-6">
+                                    {% heroicon "outline", "x" %}
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -184,10 +187,9 @@ layout: layouts/page.njk
                                     <div class="-mt-6">
                                         <div>
                                           <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-md shadow-lg">
-                                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
-                                            </svg>
+                                            <span class="h-6 w-6 text-white">
+                                                {% heroicon "outline", "code" %}
+                                            </span>
                                           </span>
                                         </div>
                                         <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Kotlin</h3>
@@ -203,10 +205,9 @@ layout: layouts/page.njk
                                     <div class="-mt-6">
                                         <div>
                                           <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-md shadow-lg">
-                                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                 viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                                            </svg>
+                                            <span class="h-6 w-6 text-white">
+                                                {% heroicon "outline", "switch-horizontal" %}
+                                            </span>
                                           </span>
                                         </div>
                                         <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Data-Binding</h3>
@@ -223,14 +224,15 @@ layout: layouts/page.njk
                                     <div class="-mt-6">
                                         <div>
                                           <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-md shadow-lg">
-                                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg"
-                                                 fill="none"
-                                                 viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                                <path d="M12 14l9-5-9-5-9 5 9 5z"/>
-                                                <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                      d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/>
-                                            </svg>
+                                            <span class="h-6 w-6 text-white">
+                                                {# wrong fill attribute in svg from npm #}
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" data-heroicon-name="academic-cap" data-heroicon-style="outline">
+                                                    <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                                                    <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path>
+                                                </svg>
+{#                                                {% heroicon "outline", "academic-cap" %}#}
+                                            </span>
                                           </span>
                                         </div>
                                         <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Learn</h3>
@@ -247,10 +249,9 @@ layout: layouts/page.njk
                                     <div class="-mt-6">
                                         <div>
                                           <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-md shadow-lg">
-                                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                 viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                                            </svg>
+                                            <span class="h-6 w-6 text-white">
+                                                {% heroicon "outline", "trending-up" %}
+                                            </span>
                                           </span>
                                         </div>
                                         <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Scale</h3>
@@ -268,10 +269,9 @@ layout: layouts/page.njk
                                     <div class="-mt-6">
                                         <div>
                                           <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-md shadow-lg">
-                                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                 viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                                            </svg>
+                                            <span class="h-6 w-6 text-white">
+                                                {% heroicon "outline", "library" %}
+                                            </span>
                                           </span>
                                         </div>
                                         <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Complete</h3>
@@ -289,10 +289,9 @@ layout: layouts/page.njk
                                     <div class="-mt-6">
                                         <div>
                                           <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-md shadow-lg">
-                                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                 viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                            </svg>
+                                            <span class="h-6 w-6 text-white">
+                                                {% heroicon "outline", "puzzle" %}
+                                            </span>
                                           </span>
                                         </div>
                                         <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Reuse</h3>
@@ -551,11 +550,9 @@ layout: layouts/page.njk
                                 <a href="/blog/posts/paradigm-shift-for-components/"
                                    class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-gray-900 bg-white hover:bg-gray-50">
                                     Read the full article
-                                    <svg class="-mr-1 ml-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg"
-                                         viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/>
-                                        <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/>
-                                    </svg>
+                                    <span class="-mr-1 ml-3 h-5 w-5 text-gray-400">
+                                        {% heroicon "outline", "external-link" %}
+                                    </span>
                                 </a>
                             </div>
                         </div>
@@ -569,11 +566,20 @@ layout: layouts/page.njk
                 <div class="xl:grid xl:grid-cols-3 xl:gap-8">
                     <a class="space-y-6 xl:col-span-1" href="https://surveys.jetbrains.com/s3/kotlin-slack-sign-up" target="_blank" class="text-gray-400 hover:text-gray-500">
                         <span class="sr-only">Slack</span>
-                        <svg class="h-10 w-10" viewBox="0 0 126.637 126.777" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M27.2 80C27.2 87.3 21.3 93.2 14 93.2C6.7 93.2 0.8 87.3 0.8 80C0.8 72.7 6.7 66.8 14 66.8L27.2 66.8C27.2 66.8 27.2 80 27.2 80ZM33.8 80C33.8 72.7 39.7 66.8 47 66.8C54.3 66.8 60.2 72.7 60.2 80L60.2 113C60.2 120.3 54.3 126.2 47 126.2C39.7 126.2 33.8 120.3 33.8 113L33.8 80Z" fill="#e01e5a" fill-rule="evenodd" opacity="1" stroke="none"/>
-                            <path d="M47 27C39.7 27 33.8 21.1 33.8 13.8C33.8 6.5 39.7 0.6 47 0.6C54.3 0.6 60.2 6.5 60.2 13.8L60.2 27L47 27ZM47 33.7C54.3 33.7 60.2 39.6 60.2 46.9C60.2 54.2 54.3 60.1 47 60.1L13.9 60.1C6.6 60.1 0.7 54.2 0.7 46.9C0.7 39.6 6.6 33.7 13.9 33.7C13.9 33.7 47 33.7 47 33.7Z" fill="#36c5f0" fill-rule="evenodd" opacity="1" stroke="none"/>
-                            <path d="M99.9 46.9C99.9 39.6 105.8 33.7 113.1 33.7C120.4 33.7 126.3 39.6 126.3 46.9C126.3 54.2 120.4 60.1 113.1 60.1L99.9 60.1L99.9 46.9ZM93.3 46.9C93.3 54.2 87.4 60.1 80.1 60.1C72.8 60.1 66.9 54.2 66.9 46.9L66.9 13.8C66.9 6.5 72.8 0.6 80.1 0.6C87.4 0.6 93.3 6.5 93.3 13.8C93.3 13.8 93.3 46.9 93.3 46.9Z" fill="#2eb67d" fill-rule="evenodd" opacity="1" stroke="none"/>
-                            <path d="M80.1 99.8C87.4 99.8 93.3 105.7 93.3 113C93.3 120.3 87.4 126.2 80.1 126.2C72.8 126.2 66.9 120.3 66.9 113L66.9 99.8L80.1 99.8ZM80.1 93.2C72.8 93.2 66.9 87.3 66.9 80C66.9 72.7 72.8 66.8 80.1 66.8L113.2 66.8C120.5 66.8 126.4 72.7 126.4 80C126.4 87.3 120.5 93.2 113.2 93.2L80.1 93.2Z" fill="#ecb22e" fill-rule="evenodd" opacity="1" stroke="none"/>
+                        <!-- Slack Icon -->
+                        <svg class="h-10 w-full" viewBox="340 0 498 127" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <g fill="none">
+                                <path d="M159.5 99.5l6.2-14.4c6.7 5 15.6 7.6 24.4 7.6 6.5 0 10.6-2.5 10.6-6.3-.1-10.6-38.9-2.3-39.2-28.9-.1-13.5 11.9-23.9 28.9-23.9 10.1 0 20.2 2.5 27.4 8.2L212 56.5c-6.6-4.2-14.8-7.2-22.6-7.2-5.3 0-8.8 2.5-8.8 5.7.1 10.4 39.2 4.7 39.6 30.1 0 13.8-11.7 23.5-28.5 23.5-12.3 0-23.6-2.9-32.2-9.1m237.9-19.6c-3.1 5.4-8.9 9.1-15.6 9.1-9.9 0-17.9-8-17.9-17.9 0-9.9 8-17.9 17.9-17.9 6.7 0 12.5 3.7 15.6 9.1l17.1-9.5c-6.4-11.4-18.7-19.2-32.7-19.2-20.7 0-37.5 16.8-37.5 37.5s16.8 37.5 37.5 37.5c14.1 0 26.3-7.7 32.7-19.2l-17.1-9.5zM228.8 2.5h21.4v104.7h-21.4zm194.1 0v104.7h21.4V75.8l25.4 31.4h27.4l-32.3-37.3 29.9-34.8h-26.2L444.3 64V2.5zM313.8 80.1c-3.1 5.1-9.5 8.9-16.7 8.9-9.9 0-17.9-8-17.9-17.9 0-9.9 8-17.9 17.9-17.9 7.2 0 13.6 4 16.7 9.2v17.7zm0-45v8.5c-3.5-5.9-12.2-10-21.3-10-18.8 0-33.6 16.6-33.6 37.4 0 20.8 14.8 37.6 33.6 37.6 9.1 0 17.8-4.1 21.3-10v8.5h21.4v-72h-21.4z"
+                                      fill="#000"/>
+                                <path d="M27.2 80c0 7.3-5.9 13.2-13.2 13.2C6.7 93.2.8 87.3.8 80c0-7.3 5.9-13.2 13.2-13.2h13.2V80zm6.6 0c0-7.3 5.9-13.2 13.2-13.2 7.3 0 13.2 5.9 13.2 13.2v33c0 7.3-5.9 13.2-13.2 13.2-7.3 0-13.2-5.9-13.2-13.2V80z"
+                                      fill="#E01E5A"/>
+                                <path d="M47 27c-7.3 0-13.2-5.9-13.2-13.2C33.8 6.5 39.7.6 47 .6c7.3 0 13.2 5.9 13.2 13.2V27H47zm0 6.7c7.3 0 13.2 5.9 13.2 13.2 0 7.3-5.9 13.2-13.2 13.2H13.9C6.6 60.1.7 54.2.7 46.9c0-7.3 5.9-13.2 13.2-13.2H47z"
+                                      fill="#36C5F0"/>
+                                <path d="M99.9 46.9c0-7.3 5.9-13.2 13.2-13.2 7.3 0 13.2 5.9 13.2 13.2 0 7.3-5.9 13.2-13.2 13.2H99.9V46.9zm-6.6 0c0 7.3-5.9 13.2-13.2 13.2-7.3 0-13.2-5.9-13.2-13.2V13.8C66.9 6.5 72.8.6 80.1.6c7.3 0 13.2 5.9 13.2 13.2v33.1z"
+                                      fill="#2EB67D"/>
+                                <path d="M80.1 99.8c7.3 0 13.2 5.9 13.2 13.2 0 7.3-5.9 13.2-13.2 13.2-7.3 0-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3 0-13.2-5.9-13.2-13.2 0-7.3 5.9-13.2 13.2-13.2h33.1c7.3 0 13.2 5.9 13.2 13.2 0 7.3-5.9 13.2-13.2 13.2H80.1z"
+                                      fill="#ECB22E"/>
+                            </g>
                         </svg>
                         <p class="text-gray-500 text-base">
                             Request an invitation and talk to us on official Kotlinlang Slack channel
@@ -605,16 +611,16 @@ layout: layouts/page.njk
                         <div class="mt-12 md:mt-0">
                             <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">
                                 MADE WITH
-                                <svg class="h-5 w-5 inline text-red-700" style="margin-top: -5px;" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                                </svg>
+                                <span class="h-4 w-4 text-red-700 inline-flex">
+                                    {% heroicon "solid", "heart" %}
+                                </span>
                                 BY
                             </h3>
                             <ul role="list" class="mt-4 space-y-4">
                                 <li>
                                     <a href="https://github.com/jwstegemann" target="_blank" class="text-base text-gray-500 hover:text-gray-900">
                                         <svg class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                            {% heroicon "outline", "user", "user icon" %}
                                         </svg>
                                         jwstegemann
                                     </a>
@@ -622,7 +628,7 @@ layout: layouts/page.njk
                                 <li>
                                     <a href="https://github.com/jwstegemann" target="_blank" class="text-base text-gray-500 hover:text-gray-900">
                                         <svg class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                            {% heroicon "outline", "user", "user icon" %}
                                         </svg>
                                         jamowei
                                     </a>
@@ -630,7 +636,7 @@ layout: layouts/page.njk
                                 <li>
                                     <a href="https://github.com/chausknecht" target="_blank" class="text-base text-gray-500 hover:text-gray-900">
                                         <svg class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                            {% heroicon "outline", "user", "user icon" %}
                                         </svg>
                                         chausknecht
                                     </a>
@@ -638,8 +644,7 @@ layout: layouts/page.njk
                                 <li>
                                     <a class="text-base text-gray-500 hover:text-gray-900" href="mailto:info@fritz2.dev">
                                         <svg class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                        </svg>
+                                            {% heroicon "outline", "mail", "mail icon" %}</svg>
                                         info@fritz2.dev
                                     </a>
                                 </li>

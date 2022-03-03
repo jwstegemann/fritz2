@@ -11,7 +11,9 @@ const heroicons = require('eleventy-plugin-heroicons');
 module.exports = function(eleventyConfig) {
 
   eleventyConfig.addPlugin(eleventyNavigationPlugin);
-  eleventyConfig.addPlugin(heroicons);
+  eleventyConfig.addPlugin(heroicons, {
+    errorOnMissing: true
+  });
   eleventyConfig.addPlugin(syntaxHighlight);
 
   eleventyConfig.addPassthroughCopy('src/assets')
