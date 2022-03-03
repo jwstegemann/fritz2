@@ -12,6 +12,7 @@ data class Person(
     val email: String = "",
     val mobile: String = "",
     val phone: String = "",
+    val portraitUrl: String = "",
     val address: Address = Address()
 ) {
     companion object
@@ -39,7 +40,8 @@ object FakePersons {
                     email = this[2],
                     mobile = this[3],
                     phone = this[4],
-                    Address(
+                    portraitUrl = PORTRAITS.random(),
+                    address = Address(
                         street = this[5],
                         houseNumber = this[6],
                         postalCode = this[7],
@@ -49,6 +51,17 @@ object FakePersons {
             }
         }
         .take(size)
+
+    private val PORTRAITS = listOf(
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+        "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+        "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+        "https://images.unsplash.com/photo-1498551172505-8ee7ad69f235?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+        "https://images.unsplash.com/photo-1532417344469-368f9ae6d187?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+        "https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+        "https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+        "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    )
 
     private val ONETHOUSAND_FAKE_PERSONS = """
         Hansgeorg Kranz;1979-07-02;linkejoachim@kroker.com;+49(0)3624 20922;+49(0) 455644905;Rohlederring;59;40135;Einbeck
