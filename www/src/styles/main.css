@@ -9,7 +9,7 @@ a {
 @layer components {
 
     .landing pre[class*="language-"] {
-        @apply !rounded-l-lg !rounded-r-none !my-3
+        @apply !m-0
     }
 
     .landing code:not([class]) {

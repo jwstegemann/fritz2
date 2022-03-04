@@ -1,0 +1,143 @@
+
+<!-- Simple Example -->
+<div class="mt-12 sm:mt-24 mx-auto max-w-4xl overflow-hidden bg-gray-50 border border-gray-200 rounded-md divide-y divide-gray-200">
+    <div class="py-6 px-6 bg-gradient-to-r from-teal-500 to-cyan-600 text-white text-2xl font-nunito font-bold">
+        Simple Example
+    </div>
+    <div class="p-4">
+        <p class="pb-4 prose max-w-prose">
+            In fritz2 we create elements or as we called them <em>tags</em> by using a DSL.
+            To extend the DSL like we do with the <code>greet</code> component, it needs a receiver called <code>RenderContext</code>.
+            Then you can call your component function inside every render-context
+            and passing the appropriate parameter <code>name</code> to it.
+        </p>
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div>
+                {% highlight "kotlin" %}
+fun RenderContext.greet(name: String) {
+    h2 {
+        +"Hello $name!"
+    }
+}
+
+render {
+    div("...") {
+        greet("Peter")
+    }
+}
+                {% endhighlight %}
+            </div>
+            <div class="border border-gray-200 bg-gray-300 h-full overflow-hidden rounded-md">
+                <div class="p-3 uppercase text-gray-700">
+                    Result
+                </div>
+                <div class="h-full">
+                    <iframe class="w-full h-full" src="/examples-demo/index.html#simple"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reactive Example -->
+<div class="mt-12 sm:mt-24 mx-auto max-w-4xl overflow-hidden bg-gray-50 border border-gray-200 rounded-md divide-y divide-gray-200">
+    <div class="py-6 px-6 bg-gradient-to-r from-teal-500 to-cyan-600 text-white text-2xl font-nunito font-bold">
+        Reactive Example
+    </div>
+    <div class="p-4">
+        <p class="pb-4 prose max-w-prose">
+            Lets getting more reactive by using a <code>Store</code> to save our data in.
+            Stores will be needed to get the two-way data-binding done in fritz2.
+            We get the data out as <code>Flow</code> by calling <code>store.data</code>
+            and render it into the <code>value</code> attribute of the <code>&lt;input&gt;</code> tag (one-way).
+            To update the data inside the store we have to call the <code>update</code> handler by using the
+            <code>handledBy</code> function (two-way).
+        </p>
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div>
+                {% highlight "kotlin" %}
+val store = storeOf("Hello Peter")
+
+render {
+    div("...") {
+        input("...") {
+            type("text")
+            value(store.data)
+            changes.values() handledBy store.update
+        }
+        p("...") {
+            store.data.renderText(into = this)
+        }
+    }
+}
+                {% endhighlight %}
+            </div>
+            <div class="border border-gray-200 bg-gray-300 h-full overflow-hidden rounded-md">
+                <div class="p-3 uppercase text-gray-700">
+                    Result
+                </div>
+                <div class="h-full">
+                    <iframe class="w-full h-full" src="/examples-demo/index.html#reactive"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Complex Example -->
+<div class="mt-12 sm:mt-24 mx-auto max-w-6xl overflow-hidden bg-gray-50 border border-gray-200 rounded-md divide-y divide-gray-200">
+    <div class="py-6 px-6 bg-gradient-to-r from-teal-500 to-cyan-600 text-white text-2xl font-nunito font-bold">
+        Real World Example
+    </div>
+    <div class="p-4">
+        <p class="pb-4 prose max-w-prose">
+            Lets getting more reactive by using a <code>Store</code> to save our data in.
+            Stores will be needed to get the two-way data-binding done in fritz2.
+            We get the data out as <code>Flow</code> by calling <code>store.data</code>
+            and render it into the <code>value</code> attribute of the <code>&lt;input&gt;</code> tag (one-way).
+            To update the data inside the store we have to call the <code>update</code> handler by using the
+            <code>handledBy</code> function (two-way).
+        </p>
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div>
+                {% highlight "kotlin" %}
+class Message(override val path: String, val text: String): ValidationMessage {
+    override val isError: Boolean = true
+}
+
+val mailRegex = Regex("""\S+@\S+\.\S+""")
+val validation = validation<String, Message> {
+    if(!mailRegex.matches(it.data))
+        add(Message(it.path,"Not a valid mail address"))
+}
+
+val store = storeOf("", validation)
+
+render {
+    div("...") {
+        input("...") {
+            type("text")
+            placeholder("Enter e-mail address")
+            value(store.data)
+            changes.values() handledBy store.update
+        }
+        store.messages.renderEach {
+            p("...") {
+                +it.text
+            }
+        }
+    }
+}
+                {% endhighlight %}
+            </div>
+            <div class="border border-gray-200 bg-gray-300 h-full overflow-hidden rounded-md">
+                <div class="p-3 uppercase text-gray-700">
+                    Result
+                </div>
+                <div class="h-full">
+                    <iframe class="w-full h-full" src="/examples-demo/index.html#complex"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

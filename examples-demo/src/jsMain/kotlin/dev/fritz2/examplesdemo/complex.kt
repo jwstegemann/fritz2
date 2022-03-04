@@ -4,7 +4,6 @@ import dev.fritz2.core.*
 import dev.fritz2.validation.ValidationMessage
 import dev.fritz2.validation.storeOf
 import dev.fritz2.validation.validation
-import kotlinx.coroutines.flow.onEach
 
 fun RenderContext.complex() {
 
@@ -12,8 +11,9 @@ fun RenderContext.complex() {
         override val isError: Boolean = true
     }
 
+    val mailRegex = Regex("""\S+@\S+\.\S+""")
     val validation = validation<String, Message> {
-        if(!Regex.fromLiteral("""/\S+@\S+\.\S+/""").matches(it.data))
+        if(!mailRegex.matches(it.data))
             add(Message(it.path,"Not a valid mail address"))
     }
 
@@ -26,7 +26,7 @@ fun RenderContext.complex() {
             value(store.data)
             changes.values() handledBy store.update
         }
-        store.messages.onEach { console.log(it.joinToString()) }.renderEach {
+        store.messages.renderEach {
             p("mt-2 text-red-500") {
                 +it.text
             }
