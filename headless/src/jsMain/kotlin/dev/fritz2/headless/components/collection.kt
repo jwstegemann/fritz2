@@ -88,8 +88,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
     private val filtering = object : RootStore<((List<T>) -> List<T>)?>(null) {}
     val filterBy = filtering.update
-    val filterByText = filtering.handle<String> { _, text ->
-        { it.filter { it.toString().lowercase().contains(text.lowercase()) } }
+    fun filterByText(toString: (T) -> String = { it.toString() }) = filtering.handle<String> { _, text ->
+        { it.filter { toString(it).lowercase().contains(text.lowercase()) } }
     }
 
     fun sortingDirection(s: Sorting<T>) = sorting.data.map {
@@ -145,8 +145,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
     inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>, val collectionId: String?) : Tag<CI> by tag {
         val items = if (data.isSet) {
             data.value!!.data.flatMapLatest { rawItems ->
-                 filtering.data.flatMapLatest { filterFunction ->
-                     sorting.data.map { sortOrder ->
+                filtering.data.flatMapLatest { filterFunction ->
+                    sorting.data.map { sortOrder ->
                         (filterFunction?.invoke(rawItems) ?: rawItems).let { filteredItems ->
                             sortOrder?.let {
                                 when (it.direction) {
@@ -192,10 +192,13 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             attrIfNotSet("role", Aria.Role.list)
 
             //reset active Item when leaving dataCollectionItems
-            merge(mouseleaves.filter { domNode != document.activeElement }, focusouts).map { null } handledBy activeItem.update
+            merge(
+                mouseleaves.filter { domNode != document.activeElement },
+                focusouts
+            ).map { null } handledBy activeItem.update
 
             items.flatMapLatest { list ->
-                 activeItem.data.flatMapLatest { current ->
+                activeItem.data.flatMapLatest { current ->
                     val index = indexOfItem(list, current)
                     keydowns.mapNotNull { event ->
                         when (shortcutOf(event)) {
@@ -215,7 +218,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             }.distinctUntilChanged() handledBy activeItem.update
 
             if (selection.isSet) {
-                selectItem( items.flatMapLatest { list ->
+                selectItem(items.flatMapLatest { list ->
                     activeItem.data.flatMapLatest { current ->
                         keydowns.filter {
                             setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
@@ -234,7 +237,11 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
         private var lastMouseOver: EventTarget? = null
 
-        inner class DataCollectionItem<CI : HTMLElement>(private val item: T, val collectionItemId: String?, tag: Tag<CI>) : Tag<CI> by tag {
+        inner class DataCollectionItem<CI : HTMLElement>(
+            private val item: T,
+            val collectionItemId: String?,
+            tag: Tag<CI>
+        ) : Tag<CI> by tag {
             val selected =
                 if (selection.isSet) {
                     (if (selection.single.isSet) selection.single.data.map { isSame(it, item) }
@@ -259,9 +266,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                     if (lastMouseOver == null || it.relatedTarget == lastMouseOver) {
                         lastMouseOver = it.target
                         item
-                    }
-                    else null
-                }  handledBy activeItem.update
+                    } else null
+                } handledBy activeItem.update
 
                 // scroll if active
                 //FIXME: scroll to top-element?
