@@ -1,3 +1,4 @@
+
 ---
 title: Headless Components
 layout: layouts/docs.njk
@@ -33,8 +34,8 @@ fritz2 is agnostic about the styling information, you can of course use other fr
 
 ## Setup
 
-In order to use headless components within your project, just replace the dependency to the fritz2 `core` by one to
-`headless` in the `commonMain` `SourceSets` section of your `build.gradle.kts` file:
+In order to use headless components within your project, just replace the dependency of the fritz2 `core` with
+`headless` in the `commonMain` source-set of your `build.gradle.kts` file:
 
 ```kotlin
 kotlin {
