@@ -4,6 +4,7 @@ const markdownIt = require('markdown-it');
 const markdownItKbd = require('markdown-it-kbd');
 const markdownItAnchor = require('markdown-it-anchor');
 const markdownItContainer = require('markdown-it-container');
+const markdownItImsize = require('markdown-it-imsize');
 const pluginTOC = require('eleventy-plugin-toc');
 const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
 const heroicons = require('eleventy-plugin-heroicons');
@@ -62,6 +63,7 @@ module.exports = function(eleventyConfig) {
           .use(markdownItKbd)
           .use(markdownItContainer, "info")
           .use(markdownItContainer, "warning")
+          .use(markdownItImsize)
   )
 
   eleventyConfig.addPlugin(pluginTOC, {
