@@ -175,11 +175,13 @@ inline fun <T> mountSimple(parentJob: Job, upstream: Flow<T>, crossinline collec
  *
  * @param into if set defines the target to mount the content to (replacing its static content)
  * @param upstream the [Flow] that should be mounted
+ * @param batch hide [into] while rendering patches. Useful to avoid flickering when you make many changes (like sorting)
  * @param createPatches lambda defining, how to compare two versions of a [List]
  */
 internal fun <V> RenderContext.mountPatches(
     into: Tag<HTMLElement>?,
     upstream: Flow<List<V>>,
+    batch: Boolean,
     createPatches: (Flow<List<V>>, MutableMap<Node, MountPointImpl>) -> Flow<List<Patch<Tag<HTMLElement>>>>,
 ) {
     val target = into?.apply {
@@ -190,57 +192,20 @@ internal fun <V> RenderContext.mountPatches(
 
     val mountPoints = mutableMapOf<Node, MountPointImpl>()
 
-    fun count(p: List<Patch<Tag<HTMLElement>>>): String {
-        var deletes = 0
-        var inserts = 0
-
-        p.forEach {
-            when (it) {
-                is Patch.Insert -> inserts++
-                is Patch.InsertMany -> inserts += it.elements.size
-                is Patch.Delete -> deletes += it.count
-                else -> {}
-            }
-        }
-
-        return "inserts: $inserts / deletes: $deletes"
-    }
-
-    mountSimple(target.job, createPatches(upstream, mountPoints)) { patches ->
-        console.log(mountPoints.size)
-        console.log(count(patches))
-        console.log("-------")
-        target.inlineStyle("visibility: hidden;")
+    mountSimple(target.job, createPatches(upstream.onEach { if (batch) target.inlineStyle("visibility: hidden;") }, mountPoints)) { patches ->
         patches.forEach { patch ->
             when (patch) {
-                is Patch.Insert -> {
-                    target.domNode.insert(patch.element, patch.index)
-                    val mountPointImpl = mountPoints[patch.element.domNode]
-                    if (mountPointImpl != null) mountPointImpl.runAfterMounts()
-                    else console.error("No MountPoint found for node ${patch.element}. This should not have happened!")
-                }
-                is Patch.InsertMany -> {
-                    target.domNode.insertMany(patch.elements, patch.index)
-                    patch.elements.forEach { element ->
-                        val mountPointImpl = mountPoints[element.domNode]
-                        if (mountPointImpl != null) mountPointImpl.runAfterMounts()
-                        else console.error("No MountPoint found for node $element. This should not have happened!")
-                    }
-                }
-                is Patch.Delete -> target.domNode.delete(patch.start, patch.count, target.job) { node ->
-                    val mountPointImpl = mountPoints.remove(node)
-                    console.log("removing")
-                    if (mountPointImpl != null) {
-                        mountPointImpl.job.cancelChildren()
-                        mountPointImpl.runBeforeUnmounts()
-                    } else console.error("No MountPoint found for node $node. This should not have happened!")
-                }
-                is Patch.Move -> target.domNode.move(patch.from, patch.to)
+                is Patch.Insert -> insert(target.domNode, mountPoints, patch.element, patch.index)
+                is Patch.InsertMany -> insertMany(target.domNode, mountPoints, patch.elements, patch.index)
+                is Patch.Delete -> delete(target.domNode, mountPoints, patch.start, patch.count, target.job)
+                is Patch.Move -> move(target.domNode, patch.from, patch.to)
             }
         }
 
-        kotlinx.browser.window.awaitAnimationFrame()
-        target.inlineStyle("")
+        if (batch) {
+            kotlinx.browser.window.awaitAnimationFrame()
+            target.inlineStyle("")
+        }
     }
 }
 
@@ -252,10 +217,10 @@ internal fun <V> RenderContext.mountPatches(
  * @param child Node to insert or append
  * @param index place to insert or append
  */
-private fun <N : Node> N.insertOrAppend(child: Node, index: Int) {
-    if (index == childNodes.length) appendChild(child)
-    else childNodes.item(index)?.let {
-        insertBefore(child, it)
+private inline fun insertOrAppend(target: Node, child: Node, index: Int) {
+    if (index == target.childNodes.length) target.appendChild(child)
+    else target.childNodes.item(index)?.let {
+        target.insertBefore(child, it)
     }
 }
 
@@ -266,7 +231,10 @@ private fun <N : Node> N.insertOrAppend(child: Node, index: Int) {
  * @param element from type [WithDomNode]
  * @param index place to insert or append
  */
-fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrAppend(element.domNode, index)
+private suspend inline fun insert(target: Node, mountPoints: MutableMap<Node, MountPointImpl>, element: WithDomNode<*>, index: Int) {
+    insertOrAppend(target, element.domNode, index)
+    mountPoints[element.domNode]?.runAfterMounts()
+}
 
 /**
  * Inserts a [List] of elements to the DOM.
@@ -275,11 +243,13 @@ fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrApp
  * @param elements [List] of [WithDomNode]s elements to insert
  * @param index place to insert or append
  */
-fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
+private suspend inline fun insertMany(target: Node, mountPoints: MutableMap<Node, MountPointImpl>, elements: List<WithDomNode<*>>, index: Int) {
     val f = document.createDocumentFragment()
-    for (child in elements) f.append(child.domNode)
-    if (index == childNodes.length) appendChild(f)
-    else childNodes.item(index)?.let { insertBefore(f, it) }
+    for (child in elements) {
+        f.append(child.domNode)
+        mountPoints[child.domNode]?.runAfterMounts()
+    }
+    insertOrAppend(target, f, index)
 }
 
 /**
@@ -289,14 +259,16 @@ fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
  * @param start position for deleting
  * @param count of elements to delete
  */
- inline fun <N : Node> N.delete(start: Int, count: Int, parentJob: Job, crossinline cancelJob: suspend (Node) -> Unit) {
-    var itemToDelete = childNodes.item(start)
+ private suspend inline fun delete(target: Node, mountPoints: MutableMap<Node, MountPointImpl>, start: Int, count: Int, parentJob: Job) {
+    var itemToDelete = target.childNodes.item(start)
     repeat(count) {
         itemToDelete?.let {
-            //FIXME: get parentJob here?
-            (MainScope() + parentJob).launch() {
-                cancelJob(it)
-                removeChild(it)
+            mountPoints.remove(it)?.let { mountPoint ->
+                (MainScope() + parentJob).launch() {
+                    mountPoint.job.cancelChildren()
+                    mountPoint.runBeforeUnmounts()
+                    target.removeChild(it)
+                }
             }
             itemToDelete = it.nextSibling
         }
@@ -310,8 +282,8 @@ fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
  * @param from position index
  * @param to position index
  */
-fun <N : Node> N.move(from: Int, to: Int) {
-    val itemToMove = childNodes.item(from)
-    if (itemToMove != null) insertOrAppend(itemToMove, to)
+private inline fun move(target: Node, from: Int, to: Int) {
+    val itemToMove = target.childNodes.item(from)
+    if (itemToMove != null) insertOrAppend(target, itemToMove, to)
 }
 

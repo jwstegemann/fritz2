@@ -11,19 +11,27 @@ import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.events.EventTarget
 import kotlin.math.max
 import kotlin.math.min
 
 
-class TableDataProperty<T> : Property<Pair<Flow<List<T>>, IdProvider<T, *>?>>() {
-    operator fun invoke(data: List<T>, idProvider: IdProvider<T, *>? = null) {
-        value = flowOf(data) to idProvider
+data class TableData<T>(val data: Flow<List<T>>, val idProvider: IdProvider<T, *>?, val id: String?)
+
+class TableDataProperty<T> : Property<TableData<T>>() {
+    operator fun invoke(data: List<T>, idProvider: IdProvider<T, *>? = null, id: String? = null) {
+        value = TableData(flowOf(data), idProvider, id)
     }
 
-    operator fun invoke(data: Flow<List<T>>, idProvider: IdProvider<T, *>? = null) {
-        value = data to idProvider
+    operator fun invoke(data: Flow<List<T>>, idProvider: IdProvider<T, *>? = null, id: String? = null) {
+        value = TableData(data, idProvider, id)
+    }
+
+    operator fun invoke(store: Store<List<T>>, idProvider: IdProvider<T, *>? = null) {
+        value = TableData(store.data, idProvider, store.id)
     }
 }
+
 
 class SelectionMode<T> {
     val single = DatabindingProperty<T?>()
@@ -48,23 +56,22 @@ data class Sorting<T>(val comparatorAscending: Comparator<T>, val comparatorDesc
 data class SortingOrder<T>(val sorting: Sorting<T>, val direction: SortDirection)
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
+class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
     val data = TableDataProperty<T>()
 
-    inline fun isSame(a: T?, b: T) = data.value?.second?.let { id ->
+    inline fun isSame(a: T?, b: T) = data.value?.idProvider?.let { id ->
         a != null && id(a) == id(b)
     } ?: (a == b)
 
     inline fun indexOfItem(list: List<T>, item: T?) =
         if (item == null) -1
-        else data.value?.second?.let { id ->
+        else data.value?.idProvider?.let { id ->
             list.indexOfFirst { id(it) == id(item) }
         } ?: list.indexOf(item)
 
     private val sorting = object : RootStore<SortingOrder<T>?>(null) {}
     val sortBy = sorting.handle<Sorting<T>> { old, newSorting ->
-        console.log("s")
         if (old?.sorting == newSorting) {
             val newDirection = when (old.direction) {
                 SortDirection.NONE -> SortDirection.ASC
@@ -107,7 +114,6 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
         tag: TagFactory<Tag<CS>>,
         initialize: DataCollectionSortButton<CS>.() -> Unit
     ) {
-        console.log("???????")
         //TODO: id
         tag(this, classes, "someID", scope) {
             DataCollectionSortButton(sort, this).run {
@@ -132,9 +138,9 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
         initialize: DataCollectionSortButton<HTMLButtonElement>.() -> Unit
     ) = dataCollectionSortButton(Sorting(comparatorAscending, comparatorDescending), classes, internalScope, initialize)
 
-    inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>) : Tag<CI> by tag {
+    inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>, val collectionId: String?) : Tag<CI> by tag {
         val items = if (data.isSet) {
-            data.value!!.first.flatMapLatest { rawItems ->
+            data.value!!.data.flatMapLatest { rawItems ->
                  filtering.data.flatMapLatest { filterFunction ->
                      sorting.data.map { sortOrder ->
                         (filterFunction?.invoke(rawItems) ?: rawItems).let { filteredItems ->
@@ -167,7 +173,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                     selection.multi.handler?.let {
                         it(selection.multi.data.flatMapLatest { current ->
                             itemsToSelect.map { item ->
-                                data.value?.second?.let { id ->
+                                data.value?.idProvider?.let { id ->
                                     if (current.any { id(it) == id(item) }) current.filter { id(it) != id(item) } else current + item
                                 } ?: if (current.contains(item)) current - item else current + item
                             }
@@ -222,10 +228,9 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
             }
         }
 
-        private var lastX = 0
-        private var lastY = 0
+        private var lastMouseOver: EventTarget? = null
 
-        inner class DataCollectionItem<CI : HTMLElement>(private val item: T, tag: Tag<CI>) : Tag<CI> by tag {
+        inner class DataCollectionItem<CI : HTMLElement>(private val item: T, val collectionItemId: String?, tag: Tag<CI>) : Tag<CI> by tag {
             val selected =
                 if (selection.isSet) {
                     (if (selection.single.isSet) selection.single.data.map { isSame(it, item) }
@@ -242,13 +247,17 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                     selectItem(clicks.map { item })
                 }
 
-                mouseenters.mapNotNull { event ->
-                    if (lastX != event.screenX || lastY != event.screenY) item.also {
-                        lastX = event.screenX
-                        lastY = event.screenY
+                mouseenters.mapNotNull {
+                    it.composedPath()
+                    console.log("last          : ${it.target}")
+                    console.log("target        : ${it.target}")
+                    console.log("related target: ${it.relatedTarget}")
+                    if (lastMouseOver == null || it.relatedTarget == lastMouseOver) {
+                        lastMouseOver = it.target
+                        item
                     }
                     else null
-                } handledBy activeItem.update
+                }  handledBy activeItem.update
 
                 // scroll if active
                 //FIXME: scroll to top-element?
@@ -261,39 +270,52 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
         fun <CI : HTMLElement> RenderContext.dataCollectionItem(
             item: T,
             classes: String? = null,
+            id: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CI>>,
             initialize: DataCollectionItem<CI>.() -> Unit
-        ) = tag(
-            this,
-            if (selection.isSet) classes(classes, "cursor-pointer") else classes,
-            "someID",
-            scope
-        ) { //TODO: id
-            DataCollectionItem(item, this).run {
-                initialize()
-                render()
+        ): Tag<CI> {
+            val itemId = if (collectionId != null) {
+                if (id != null) "$collectionId-$id"
+                else if (data.value?.idProvider != null) "$collectionId-${data.value!!.idProvider!!(item).toString()}"
+                else null
+            } else {
+                id ?: data.value?.idProvider?.invoke(item).toString()
+            }
+
+            return tag(
+                this,
+                if (selection.isSet) classes(classes, "cursor-pointer") else classes,
+                itemId,
+                scope
+            ) {
+                DataCollectionItem(item, itemId, this).run {
+                    initialize()
+                    render()
+                }
             }
         }
 
         fun RenderContext.dataCollectionItem(
             item: T,
             classes: String? = null,
+            id: String? = null,
             internalScope: (ScopeContext.() -> Unit) = {},
             initialize: DataCollectionItem<HTMLDivElement>.() -> Unit
-        ) = dataCollectionItem(item, classes, internalScope, RenderContext::div, initialize)
+        ) = dataCollectionItem(item, classes, id, internalScope, RenderContext::div, initialize)
 
     }
 
     fun <CI : HTMLElement> RenderContext.dataCollectionItems(
         classes: String? = null,
+        id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CI>>,
         initialize: DataCollectionItems<CI>.() -> Unit
     ) {
-        //TODO: id
-        tag(this, classes, "someID", scope) {
-            DataCollectionItems(this).run {
+        val collectionId = id ?: data.value?.id
+        tag(this, classes, collectionId, scope) {
+            DataCollectionItems(this, collectionId).run {
                 initialize()
                 render()
             }
@@ -302,9 +324,10 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
 
     fun RenderContext.dataCollectionItems(
         classes: String? = null,
+        id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
         initialize: DataCollectionItems<HTMLDivElement>.() -> Unit
-    ) = dataCollectionItems(classes, internalScope, RenderContext::div, initialize)
+    ) = dataCollectionItems(classes, id, internalScope, RenderContext::div, initialize)
 
 
 }
@@ -316,7 +339,7 @@ fun <T, C : HTMLElement> RenderContext.dataCollection(
     tag: TagFactory<Tag<C>>,
     initialize: DataCollection<T, C>.() -> Unit
 ): Tag<C> = tag(this, classes, id, scope) {
-    DataCollection<T, C>(this, id).run {
+    DataCollection<T, C>(this).run {
         initialize(this)
     }
 }

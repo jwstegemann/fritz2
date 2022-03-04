@@ -14,7 +14,6 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLTableRowElement
 
-//TODO: optiimize renderEach: hang out mountpoint, apply changes, hang in. Or try to prohibit layouting
 fun Tag<HTMLTableRowElement>.column(title: String, button: Tag<HTMLDivElement>.() -> Unit) {
     th("drop-shadow-sm pl-4 py-3 z-10 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky top-0 bg-gray-50") {
         div("w-full flex flex-row items-center") {
@@ -41,21 +40,19 @@ val sortIcons: DataCollection<Person, HTMLDivElement>.DataCollectionSortButton<H
 }
 
 fun RenderContext.collectionDemo() {
-
 //    val selectionStore = object : RootStore<Person?>(null) {}
     val selectionStore = object : RootStore<List<Person>>(fakeData[false]!!.take(2)) {}
-
 
     val filterStore = storeOf("")
     inputField("mt-2 mb-4") {
         value(filterStore)
-        //FIXME: Warum braucht man den?
-        placeholder("filter...")
-        inputTextfield("shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-1/2 sm:text-sm border-gray-300 px-4 rounded-full") {  }
+        inputTextfield("shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-1/2 sm:text-sm border-gray-300 px-4 rounded-full") {
+            placeholder("filter...")
+        }
     }
 
     dataCollection<Person>("shadow h-80 border border-gray-200 sm:rounded-lg overflow-y-auto overflow-x-auto relative") {
-        data(TableStore.data, Person::_id)
+        data(TableStore, Person::_id)
 
 //        selection.single(selectionStore)
         selection.multi(selectionStore)
@@ -76,7 +73,7 @@ fun RenderContext.collectionDemo() {
             val padding = "px-4 py-2 whitespace-nowrap"
 
             dataCollectionItems("text-sm font-medium text-gray-500 hover:bg-indigo-400", tag = RenderContext::tbody) {
-                items.renderEach(Person::_id) { item ->
+                items.renderEach(Person::_id, into = this, batch = true) { item ->
                     dataCollectionItem(item, tag = RenderContext::tr) {
                         className(selected.combine(active) { sel, act -> if (sel) {
                             if (act) "bg-indigo-200" else "bg-indigo-100"
