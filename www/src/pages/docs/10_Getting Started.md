@@ -12,10 +12,13 @@ eleventyNavigation:
 ## Create a Project
 
 To use fritz2, you have to set up a Kotlin multiplatform-project. To do so you can either
-* [clone our template from github](https://github.com/jwstegemann/fritz2-template)
+* [clone our template from GitHub](https://github.com/jwstegemann/fritz2-template)
+* If you want to use fritz2 together with [tailwindcss](https://tailwindcss.com/) for the styling, clone
+  our [tailwind specific template](https://github.com/jwstegemann/fritz2-tailwind-template) from GitHub instead.
 * clone the [fritz2-examples](https://github.com/jamowei/fritz2-examples) and copy from one of the sub-projects
-* have a look at the [official documentation](https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#setting-up-a-multiplatform-project) 
-and use the following `build.gradle.kts` file:
+* have a look at
+  the [official documentation](https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#setting-up-a-multiplatform-project)
+  and use the following `build.gradle.kts` file:
 
 ## Setup Gradle Build
 
@@ -46,6 +49,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("dev.fritz2:core:$fritz2Version")
+                // implementation("dev.fritz2:headless:$fritz2Version") // optional
             }
         }
         val jvmMain by getting {

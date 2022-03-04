@@ -31,6 +31,31 @@ fritz2 is agnostic about the styling information, you can of course use other fr
 [Bootstrap](https:getbootstrap.com) or simply some plain CSS.
 :::
 
+## Setup
+
+In order to use headless components within your project, just replace the dependency to the fritz2 `core` by one to
+`headless` in the `commonMain` `SourceSets` section of your `build.gradle.kts` file:
+
+```kotlin
+kotlin {
+    // ...
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                // add dependency to headless always in commonMain section!
+                implementation("dev.fritz2:headless:$fritz2Version")
+            }
+        }
+        // ...
+    }
+}
+```
+
+::: info
+If you want to use fritz2 together with [tailwindcss](https://tailwindcss.com/) for the styling, clone
+our [tailwind specific template](https://github.com/jwstegemann/fritz2-tailwind-template) from GitHub. 
+:::
+
 ## Structure of a Component
 
 Each component is created using a factory function. In rare cases there are also variants of factory functions
