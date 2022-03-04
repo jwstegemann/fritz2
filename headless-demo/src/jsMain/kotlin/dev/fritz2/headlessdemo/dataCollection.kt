@@ -147,18 +147,13 @@ fun RenderContext.dataTableDemo() {
 }
 
 fun RenderContext.gridListDemo() {
-    val persons = FakePersons(500)
+    val persons = FakePersons(100)
     val storedPersons = storeOf(persons)
     val selectionStore = object : RootStore<List<Person>>(persons.take(2)) {}
 
 
     val filterStore = storeOf("")
-    inputField("mt-2 mb-4") {
-        value(filterStore)
-        //FIXME: Warum braucht man den?
-        placeholder("filter...")
-        inputTextfield("shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-1/2 sm:text-sm border-gray-300 px-4 rounded-full") { }
-    }
+
 
     val sorting = Sorting(compareBy(Person::fullName), compareByDescending(Person::fullName))
     /*
@@ -170,7 +165,7 @@ fun RenderContext.gridListDemo() {
 
      */
 
-    dataCollection<Person>("shadow h-96 overflow-y-auto overflow-x-auto relative") {
+    dataCollection<Person>("p-2 h-96 overflow-x-auto relative") {
         data(storedPersons.data, Person::id)
 
 //        selection.single(selectionStore)
@@ -181,13 +176,28 @@ fun RenderContext.gridListDemo() {
         // FIXME: Klassischer Observer
         // outerStore.updates handledBy sortBy
 
-        button {
-            +"Sort"
-            // FIXME: Problem: Wenn in Map eine neue Instanz erzeugt wird, klappt das Sortieren nur einmal!
-            clicks.map { sorting } handledBy sortBy
+        div("flex m-2") {
+            button(
+                """w-48 m-2 text-center bg-white rounded-lg 
+                | shadow-md cursor-default focus:outline-none focus:ring-2 focus:ring-opacity-75 
+                | focus:ring-white focus:ring-offset-orange-300 focus:ring-offset-2 
+                | focus:border-indigo-500 sm:text-sm""".trimMargin()
+            ) {
+                span { +"Sort: " }
+                span { sortingDirection(sorting).renderText(into = this) }
+                // FIXME: Problem: Wenn in Map eine neue Instanz erzeugt wird, klappt das Sortieren nur einmal!
+                clicks.map { sorting } handledBy sortBy
+            }
+
+            inputField("m-2 grow") {
+                value(filterStore)
+                //FIXME: Warum braucht man den?
+                placeholder("filter...")
+                inputTextfield("shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-1/2 sm:text-sm border-gray-300 px-4 rounded-full") { }
+            }
         }
 
-        dataCollectionItems("grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-2", tag = RenderContext::ul) {
+        dataCollectionItems("grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-2 overflow-y-auto ", tag = RenderContext::ul) {
             attr("role", "list")
             items.renderEach(Person::id) { item ->
                 dataCollectionItem(
