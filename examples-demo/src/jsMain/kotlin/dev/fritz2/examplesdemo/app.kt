@@ -8,22 +8,22 @@ data class DemoPage(val title: String, val description: String, val content: Ren
 val pages = mapOf(
     "start" to DemoPage(
         "Start",
-        """Starting example showing fritz2 HTML DSL""".trimMargin(),
+        "Starting example showing fritz2 HTML DSL",
         RenderContext::start
     ),
     "simple" to DemoPage(
         "Simple",
-        """Simple example showing how to structure your fritz2 code""".trimMargin(),
+        "Simple example showing how to structure your fritz2 code",
         RenderContext::simple
     ),
     "reactive" to DemoPage(
         "Reactive",
-        """Reactive example showing fritz2 two-way data-binding""".trimMargin(),
+        "Reactive example showing fritz2 two-way data-binding",
         RenderContext::reactive
     ),
     "complex" to DemoPage(
         "Complex",
-        """Complex example showing fritz2 validation""".trimMargin(),
+        "Complex example showing fritz2 validation",
         RenderContext::complex
     )
 )
