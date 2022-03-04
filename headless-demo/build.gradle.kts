@@ -14,9 +14,13 @@ kotlin {
                 optIn("kotlin.ExperimentalStdlibApi")
             }
         }
-        val jsMain by getting {
+        val commonMain by getting {
             dependencies {
                 implementation(project(":headless"))
+            }
+        }
+        val jsMain by getting {
+            dependencies {
                 // tailwind
                 implementation(npm("tailwindcss", "3.0.19"))
                 implementation(npm("@tailwindcss/forms", "0.4.0"))
