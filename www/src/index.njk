@@ -11,11 +11,15 @@ layout: layouts/page.njk
                      aria-label="Global">
                     <div class="flex items-center flex-1">
                         <div class="flex items-center justify-between w-full md:w-auto">
-                            <a href="#">
-                                <!-- fritz2 logo -->
-                                <svg class="h-10 w-10 text-indigo-100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                            <!-- Logo section -->
+                            <a class="text-white font-nunito flex items-center justify-start" href="/">
+                                <svg class="ml-1 h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                     fill="currentColor" stroke="none" >
                                     <path d="M 9.987 0.229 C 4.469 0.236 0 4.61 0 10.003 C 0 15.401 4.477 19.777 10 19.777 C 15.523 19.777 20 15.401 20 10.003 C 20 4.605 15.523 0.229 10 0.229 C 9.996 0.229 9.992 0.229 9.987 0.229 Z M 14.678 2.662 C 15.144 2.665 15.52 3.043 15.517 3.506 L 15.5 6.862 C 15.497 7.325 15.118 7.699 14.652 7.696 C 14.187 7.694 13.811 7.316 13.813 6.853 L 12.126 6.844 C 11.661 6.842 11.281 7.216 11.278 7.679 L 11.274 8.501 L 12.052 8.501 C 12.072 8.499 12.092 8.499 12.112 8.499 C 12.575 8.499 12.952 8.882 12.952 9.356 C 12.952 9.829 12.575 10.213 12.112 10.213 C 12.089 10.213 12.066 10.212 12.043 10.21 L 7.111 10.21 L 7.111 10.207 C 7.097 10.208 7.084 10.208 7.071 10.208 C 6.607 10.208 6.231 9.825 6.231 9.353 C 6.231 8.881 6.607 8.498 7.071 8.498 C 7.091 8.498 7.111 8.499 7.131 8.501 L 7.9 8.501 L 7.909 6.823 C 7.918 4.969 9.437 3.474 11.3 3.484 L 13.83 3.497 C 13.833 3.034 14.212 2.66 14.678 2.662 Z M 7.887 10.644 L 11.261 10.662 L 11.248 13.179 C 11.238 15.032 9.72 16.527 7.857 16.517 L 6.17 16.509 C 6.167 16.972 5.787 17.346 5.322 17.343 C 4.856 17.341 4.48 16.963 4.483 16.5 L 4.5 13.144 C 4.502 12.681 4.882 12.307 5.348 12.309 C 5.813 12.312 6.189 12.69 6.187 13.153 L 7.031 13.157 C 7.496 13.159 7.876 12.786 7.878 12.322 Z"/>
                                 </svg>
+                                <div class="ml-3">
+                                    <span class="text-2xl">fritz2</span>
+                                </div>
                             </a>
                             <div class="-mr-2 flex items-center md:hidden">
                                 <button type="button"
@@ -28,30 +32,30 @@ layout: layouts/page.njk
                                 </button>
                             </div>
                         </div>
-                        <div class="hidden space-x-8 md:flex md:ml-10">
-                            <a href="/docs" class="text-base font-medium text-white hover:text-gray-300">Documentation</a>
+                        <div class="hidden space-x-8 md:flex md:items-center md:ml-10 text-base font-medium text-white hover:text-gray-300">
+                            <a href="/docs">Documentation</a>
 
-                            <a href="/headless" class="text-base font-medium text-white hover:text-gray-300">Headless Components</a>
+                            <a href="/headless">Headless Components</a>
 
-                            <a href="/blog" class="text-base font-medium text-white hover:text-gray-300">Blog</a>
+                            <a href="/blog">Blog</a>
 
 {#                            <a href="/recipes" class="text-base font-medium text-white hover:text-gray-300">Recipes</a>#}
 
-                            <a href="/api" target="_blank" class="text-base font-medium text-white hover:text-gray-300">API</a>
+                            <a href="/api" target="_blank">API</a>
 
                         </div>
                     </div>
                     <div class="hidden md:flex md:items-center md:space-x-6">
                         <span class="relative z-0 inline-flex shadow-sm rounded-md">
-                          <a href="https://github.com/jwstegemann/fritz2" target="_blank" class="relative inline-flex items-center px-8 py-2 rounded-l-md border border border-transparent text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+                          <a href="https://github.com/jwstegemann/fritz2" target="_blank" class="relative inline-flex items-center px-4 py-2 rounded-l-md border border border-transparent text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
                               <!-- Github Icon -->
                               <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                   <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.463 2 11.97c0 4.404 2.865 8.14 6.839 9.458.5.092.682-.216.682-.48 0-.236-.008-.864-.013-1.695-2.782.602-3.369-1.337-3.369-1.337-.454-1.151-1.11-1.458-1.11-1.458-.908-.618.069-.606.069-.606 1.003.07 1.531 1.027 1.531 1.027.892 1.524 2.341 1.084 2.91.828.092-.643.35-1.083.636-1.332-2.22-.251-4.555-1.107-4.555-4.927 0-1.088.39-1.979 1.029-2.675-.103-.252-.446-1.266.098-2.638 0 0 .84-.268 2.75 1.022A9.606 9.606 0 0112 6.82c.85.004 1.705.114 2.504.336 1.909-1.29 2.747-1.022 2.747-1.022.546 1.372.202 2.386.1 2.638.64.696 1.028 1.587 1.028 2.675 0 3.83-2.339 4.673-4.566 4.92.359.307.678.915.678 1.846 0 1.332-.012 2.407-.012 2.734 0 .267.18.577.688.48C19.137 20.107 22 16.373 22 11.969 22 6.463 17.522 2 12 2z"></path>
                               </svg>
                             Github
                           </a>
-                          <a href="https://github.com/jwstegemann/fritz2/stargazers" target="_blank" class="-ml-px relative inline-flex items-center px-3 py-2 rounded-r-md border border-transparent text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
-                              <svg class="-ml-1 mr-2 h-4 w-4 text-amber-300" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <a href="https://github.com/jwstegemann/fritz2/stargazers" target="_blank" class="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-transparent text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+                              <svg class="-ml-1 mr-1 h-4 w-4 text-amber-300" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 {% heroicon "solid", "star", "star icon" %}
                               </svg>
                               +400
@@ -71,62 +75,63 @@ layout: layouts/page.njk
                 From: "opacity-100 scale-100"
                 To: "opacity-0 scale-95"
             -->
-            <div class="absolute top-0 inset-x-0 p-2 transition transform origin-top md:hidden">
-                <div class="rounded-lg shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">
-                    <div class="px-5 pt-4 flex items-center justify-between">
-                        <div>
-                            <img class="h-8 w-auto"
-                                 src="https://tailwindui.com/img/logos/workflow-mark-teal-500-cyan-600.svg" alt="">
-                        </div>
-                        <div class="-mr-2">
-                            <button type="button"
-                                    class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-600">
-                                <span class="sr-only">Close menu</span>
-                                <!-- Heroicon name: outline/x -->
-                                <span class="h-6 w-6">
-                                    {% heroicon "outline", "x" %}
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="pt-5 pb-6">
-                        <div class="px-2 space-y-1">
-                            <a href="#"
-                               class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-50">Product</a>
+{#            <div class="absolute top-0 inset-x-0 p-2 transition transform origin-top md:hidden">#}
+{#                <div class="rounded-lg shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">#}
+{#                    <div class="px-5 pt-4 flex items-center justify-between">#}
+{#                        <div>#}
+{#                            <img class="h-8 w-auto"#}
+{#                                 src="https://tailwindui.com/img/logos/workflow-mark-teal-500-cyan-600.svg" alt="">#}
+{#                        </div>#}
+{#                        <div class="-mr-2">#}
+{#                            <button type="button"#}
+{#                                    class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-600">#}
+{#                                <span class="sr-only">Close menu</span>#}
+{#                                <!-- Heroicon name: outline/x -->#}
+{#                                <span class="h-6 w-6">#}
+{#                                    {% heroicon "outline", "x" %}#}
+{#                                </span>#}
+{#                            </button>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="pt-5 pb-6">#}
+{#                        <div class="px-2 space-y-1">#}
+{#                            <a href="#"#}
+{#                               class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-50">Product</a>#}
 
-                            <a href="#"
-                               class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-50">Features</a>
+{#                            <a href="#"#}
+{#                               class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-50">Features</a>#}
 
-                            <a href="#"
-                               class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-50">Marketplace</a>
+{#                            <a href="#"#}
+{#                               class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-50">Marketplace</a>#}
 
-                            <a href="#"
-                               class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-50">Company</a>
-                        </div>
-                        <div class="mt-6 px-5">
-                            <a href="#"
-                               class="block text-center w-full py-3 px-4 rounded-md shadow bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-medium hover:from-teal-600 hover:to-cyan-700">Start
-                                free trial</a>
-                        </div>
-                        <div class="mt-6 px-5">
-                            <p class="text-center text-base font-medium text-gray-500">Existing customer? <a href="#"
-                                                                                                             class="text-gray-900 hover:underline">Login</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+{#                            <a href="#"#}
+{#                               class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-50">Company</a>#}
+{#                        </div>#}
+{#                        <div class="mt-6 px-5">#}
+{#                            <a href="#"#}
+{#                               class="block text-center w-full py-3 px-4 rounded-md shadow bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-medium hover:from-teal-600 hover:to-cyan-700">Start#}
+{#                                free trial</a>#}
+{#                        </div>#}
+{#                        <div class="mt-6 px-5">#}
+{#                            <p class="text-center text-base font-medium text-gray-500">Existing customer? <a href="#"#}
+{#                                                                                                             class="text-gray-900 hover:underline">Login</a>#}
+{#                            </p>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
         </header>
+
         <main>
-            <div class="pt-10 bg-gray-900 sm:pt-16 lg:pt-8 lg:pb-14 lg:overflow-hidden">
-                <div class="mx-auto max-w-7xl lg:px-8">
-                    <div class="lg:grid lg:grid-cols-2 lg:gap-8">
-                        <div class="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 sm:text-center lg:px-0 lg:text-left lg:flex lg:items-center">
+            <div class="py-8 md:py-12 lg:py-24 bg-gray-900 ">
+                <div class="mx-auto max-w-7xl lg:px-24">
+                    <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+                        <div class="flex items-center mx-auto max-w-md sm:max-w-2xl px-6 lg:px-0">
                             <div class="font-nunito lg:py-24">
                                 <h1 class="mt-4 text-4xl tracking-tight font-extrabold text-white sm:mt-5 sm:text-6xl lg:mt-6 xl:text-6xl">
-                                    <span class="block">fritz2</span>
+                                    <span class="hidden lg:block">fritz2</span>
                                     <span class="pb-3 block bg-clip-text text-3xl text-transparent bg-gradient-to-r from-teal-200 to-cyan-400 sm:pb-5">
-                                        build reactive web-apps in pure Kotlin
+                                        Build reactive web-apps in pure Kotlin
                                     </span>
                                 </h1>
                                 <p class="text-base text-gray-300 sm:text-xl lg:text-lg xl:text-xl">
@@ -134,11 +139,7 @@ layout: layouts/page.njk
                                 </p>
                             </div>
                         </div>
-                        <div class="mt-12 -mb-16 sm:-mb-48 lg:m-0 lg:relative">
-                            <div class="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 lg:max-w-none lg:px-0">
-                                <img class="w-full lg:absolute lg:inset-y-0 lg:left-0 lg:h-full lg:w-auto lg:max-w-none" src="/img/fritz2_logo.svg" alt="fritz2 logo">
-                            </div>
-                        </div>
+                        <img class="w-64 mx-auto lg:w-96" src="/img/fritz2_logo.svg" alt="fritz2 logo">
                     </div>
                 </div>
             </div>
