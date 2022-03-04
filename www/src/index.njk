@@ -6,120 +6,95 @@ layout: layouts/page.njk
 <div class="landing bg-white">
     <div class="relative overflow-hidden">
         <header class="relative">
-            <div class="bg-gray-800 py-6">
-                <nav class="relative max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6"
-                     aria-label="Global">
-                    <div class="flex items-center flex-1">
-                        <div class="flex items-center justify-between w-full md:w-auto">
-                            <!-- Logo section -->
-                            <a class="text-white font-nunito flex items-center justify-start" href="/">
-                                <svg class="ml-1 h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                     fill="currentColor" stroke="none" >
-                                    <path d="M 9.987 0.229 C 4.469 0.236 0 4.61 0 10.003 C 0 15.401 4.477 19.777 10 19.777 C 15.523 19.777 20 15.401 20 10.003 C 20 4.605 15.523 0.229 10 0.229 C 9.996 0.229 9.992 0.229 9.987 0.229 Z M 14.678 2.662 C 15.144 2.665 15.52 3.043 15.517 3.506 L 15.5 6.862 C 15.497 7.325 15.118 7.699 14.652 7.696 C 14.187 7.694 13.811 7.316 13.813 6.853 L 12.126 6.844 C 11.661 6.842 11.281 7.216 11.278 7.679 L 11.274 8.501 L 12.052 8.501 C 12.072 8.499 12.092 8.499 12.112 8.499 C 12.575 8.499 12.952 8.882 12.952 9.356 C 12.952 9.829 12.575 10.213 12.112 10.213 C 12.089 10.213 12.066 10.212 12.043 10.21 L 7.111 10.21 L 7.111 10.207 C 7.097 10.208 7.084 10.208 7.071 10.208 C 6.607 10.208 6.231 9.825 6.231 9.353 C 6.231 8.881 6.607 8.498 7.071 8.498 C 7.091 8.498 7.111 8.499 7.131 8.501 L 7.9 8.501 L 7.909 6.823 C 7.918 4.969 9.437 3.474 11.3 3.484 L 13.83 3.497 C 13.833 3.034 14.212 2.66 14.678 2.662 Z M 7.887 10.644 L 11.261 10.662 L 11.248 13.179 C 11.238 15.032 9.72 16.527 7.857 16.517 L 6.17 16.509 C 6.167 16.972 5.787 17.346 5.322 17.343 C 4.856 17.341 4.48 16.963 4.483 16.5 L 4.5 13.144 C 4.502 12.681 4.882 12.307 5.348 12.309 C 5.813 12.312 6.189 12.69 6.187 13.153 L 7.031 13.157 C 7.496 13.159 7.876 12.786 7.878 12.322 Z"/>
-                                </svg>
-                                <div class="ml-3">
-                                    <span class="text-2xl">fritz2</span>
-                                </div>
-                            </a>
-                            <div class="-mr-2 flex items-center md:hidden">
-                                <button type="button"
-                                        class="bg-gray-900 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-800 focus:outline-none focus:ring-2 focus-ring-inset focus:ring-white"
-                                        aria-expanded="false">
-                                    <span class="sr-only">Open main menu</span>
-                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                        {% heroicon "outline", "menu", "open main menu" %}
-                                    </svg>
-                                </button>
+            <nav class="relative h-16 px-4 max-w-7xl mx-auto flex items-center justify-between bg-gray-800"
+                 aria-label="Global">
+                <div class="flex items-center flex-1">
+                    <div class="flex items-center justify-between w-full md:w-auto">
+                        <a class="text-white font-nunito flex items-center justify-start" href="/">
+                            <!-- fritz2 logo -->
+                            <svg class="ml-1 h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                 fill="currentColor" stroke="none" >
+                                <path d="M 9.987 0.229 C 4.469 0.236 0 4.61 0 10.003 C 0 15.401 4.477 19.777 10 19.777 C 15.523 19.777 20 15.401 20 10.003 C 20 4.605 15.523 0.229 10 0.229 C 9.996 0.229 9.992 0.229 9.987 0.229 Z M 14.678 2.662 C 15.144 2.665 15.52 3.043 15.517 3.506 L 15.5 6.862 C 15.497 7.325 15.118 7.699 14.652 7.696 C 14.187 7.694 13.811 7.316 13.813 6.853 L 12.126 6.844 C 11.661 6.842 11.281 7.216 11.278 7.679 L 11.274 8.501 L 12.052 8.501 C 12.072 8.499 12.092 8.499 12.112 8.499 C 12.575 8.499 12.952 8.882 12.952 9.356 C 12.952 9.829 12.575 10.213 12.112 10.213 C 12.089 10.213 12.066 10.212 12.043 10.21 L 7.111 10.21 L 7.111 10.207 C 7.097 10.208 7.084 10.208 7.071 10.208 C 6.607 10.208 6.231 9.825 6.231 9.353 C 6.231 8.881 6.607 8.498 7.071 8.498 C 7.091 8.498 7.111 8.499 7.131 8.501 L 7.9 8.501 L 7.909 6.823 C 7.918 4.969 9.437 3.474 11.3 3.484 L 13.83 3.497 C 13.833 3.034 14.212 2.66 14.678 2.662 Z M 7.887 10.644 L 11.261 10.662 L 11.248 13.179 C 11.238 15.032 9.72 16.527 7.857 16.517 L 6.17 16.509 C 6.167 16.972 5.787 17.346 5.322 17.343 C 4.856 17.341 4.48 16.963 4.483 16.5 L 4.5 13.144 C 4.502 12.681 4.882 12.307 5.348 12.309 C 5.813 12.312 6.189 12.69 6.187 13.153 L 7.031 13.157 C 7.496 13.159 7.876 12.786 7.878 12.322 Z"/>
+                            </svg>
+                            <div class="ml-3">
+                                <span class="text-2xl">fritz2</span>
                             </div>
-                        </div>
-                        <div class="hidden space-x-8 md:flex md:items-center md:ml-10 text-base font-medium text-white hover:text-gray-300">
-                            <a href="/docs">Documentation</a>
-
-                            <a href="/headless">Headless Components</a>
-
-                            <a href="/blog">Blog</a>
-
-{#                            <a href="/recipes" class="text-base font-medium text-white hover:text-gray-300">Recipes</a>#}
-
-                            <a href="/api" target="_blank">API</a>
-
+                        </a>
+                        <div class="-mr-2 flex items-center md:hidden">
+                            <button type="button" id="mobile-menu-button" onclick="toggleMenu()"
+                                    class="p-2 inline-flex items-center justify-center rounded-md bg-gray-800 text-gray-400 hover:bg-gray-900 focus:outline-none focus:ring-1 focus-ring-inset focus:ring-gray-400"
+                                    aria-controls="mobile-menu" aria-expanded="false">
+                                <span class="sr-only">Open menu</span>
+                                <span class="mobile-icon block h-6 w-6">
+                                    {% heroicon "outline", "menu", "open main menu" %}
+                                </span>
+                                <span class="mobile-icon hidden h-6 w-6">
+                                    {% heroicon "outline", "x", "close main menu" %}
+                                </span>
+                            </button>
                         </div>
                     </div>
-                    <div class="hidden md:flex md:items-center md:space-x-6">
-                        <span class="relative z-0 inline-flex shadow-sm rounded-md">
-                          <a href="https://github.com/jwstegemann/fritz2" target="_blank" class="relative inline-flex items-center px-4 py-2 rounded-l-md border border border-transparent text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
-                              <!-- Github Icon -->
-                              <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.463 2 11.97c0 4.404 2.865 8.14 6.839 9.458.5.092.682-.216.682-.48 0-.236-.008-.864-.013-1.695-2.782.602-3.369-1.337-3.369-1.337-.454-1.151-1.11-1.458-1.11-1.458-.908-.618.069-.606.069-.606 1.003.07 1.531 1.027 1.531 1.027.892 1.524 2.341 1.084 2.91.828.092-.643.35-1.083.636-1.332-2.22-.251-4.555-1.107-4.555-4.927 0-1.088.39-1.979 1.029-2.675-.103-.252-.446-1.266.098-2.638 0 0 .84-.268 2.75 1.022A9.606 9.606 0 0112 6.82c.85.004 1.705.114 2.504.336 1.909-1.29 2.747-1.022 2.747-1.022.546 1.372.202 2.386.1 2.638.64.696 1.028 1.587 1.028 2.675 0 3.83-2.339 4.673-4.566 4.92.359.307.678.915.678 1.846 0 1.332-.012 2.407-.012 2.734 0 .267.18.577.688.48C19.137 20.107 22 16.373 22 11.969 22 6.463 17.522 2 12 2z"></path>
-                              </svg>
-                            Github
-                          </a>
-                          <a href="https://github.com/jwstegemann/fritz2/stargazers" target="_blank" class="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-transparent text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
-                              <svg class="-ml-1 mr-1 h-4 w-4 text-amber-300" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                {% heroicon "solid", "star", "star icon" %}
-                              </svg>
-                              +400
-                          </a>
-                        </span>
+                    <!-- Links -->
+                    <div class="hidden space-x-8 md:flex md:items-center md:ml-10 text-base font-medium">
+                        <a href="/docs" class="p-1 text-white hover:text-gray-300 rounded-md focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-gray-200">Documentation</a>
+
+                        <a href="/headless" class="p-1 text-white hover:text-gray-300 rounded-md focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-gray-200">Headless Components</a>
+
+                        <a href="/blog" class="p-1 text-white hover:text-gray-300 rounded-md focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-gray-200">Blog</a>
+
+{#                            <a href="/recipes" class="p-1 text-white hover:text-gray-300 rounded-md focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-gray-200">Recipes</a>#}
+
+                        <a href="/api" target="_blank" class="p-1 text-white hover:text-gray-300 rounded-md focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-gray-200">API</a>
+
                     </div>
-                </nav>
+                </div>
+                <div class="hidden md:flex md:items-center md:space-x-6">
+                    <span class="relative z-0 inline-flex shadow-sm rounded-md">
+                      <a href="https://github.com/jwstegemann/fritz2" target="_blank" class="relative inline-flex items-center px-4 py-2 rounded-l-md border border border-transparent text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-gray-200">
+                          <!-- Github Icon -->
+                          <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.463 2 11.97c0 4.404 2.865 8.14 6.839 9.458.5.092.682-.216.682-.48 0-.236-.008-.864-.013-1.695-2.782.602-3.369-1.337-3.369-1.337-.454-1.151-1.11-1.458-1.11-1.458-.908-.618.069-.606.069-.606 1.003.07 1.531 1.027 1.531 1.027.892 1.524 2.341 1.084 2.91.828.092-.643.35-1.083.636-1.332-2.22-.251-4.555-1.107-4.555-4.927 0-1.088.39-1.979 1.029-2.675-.103-.252-.446-1.266.098-2.638 0 0 .84-.268 2.75 1.022A9.606 9.606 0 0112 6.82c.85.004 1.705.114 2.504.336 1.909-1.29 2.747-1.022 2.747-1.022.546 1.372.202 2.386.1 2.638.64.696 1.028 1.587 1.028 2.675 0 3.83-2.339 4.673-4.566 4.92.359.307.678.915.678 1.846 0 1.332-.012 2.407-.012 2.734 0 .267.18.577.688.48C19.137 20.107 22 16.373 22 11.969 22 6.463 17.522 2 12 2z"></path>
+                          </svg>
+                        Github
+                      </a>
+                      <a href="https://github.com/jwstegemann/fritz2/stargazers" target="_blank" class="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-transparent text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-gray-200">
+                          <svg class="-ml-1 mr-1 h-4 w-4 text-amber-300" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            {% heroicon "solid", "star", "star icon" %}
+                          </svg>
+                          +400
+                      </a>
+                    </span>
+                </div>
+            </nav>
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="absolute z-10 top-16 inset-x-0 p-2 -translate-y-[100vh] transition transform duration-250 ease-in md:hidden">
+                <div class="rounded-lg shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">
+                    <div class="pt-5 pb-6">
+                        <!-- Links -->
+                        <div class="px-2 space-y-1 text-base font-medium">
+                            <a href="/docs" class="block px-3 py-2 rounded-md text-gray-900 hover:bg-gray-300 focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400">Documentation</a>
+
+                            <a href="/headless" class="block px-3 py-2 rounded-md text-gray-900 hover:bg-gray-300 focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400">Headless Components</a>
+
+                            <a href="/blog" class="block px-3 py-2 rounded-md text-gray-900 hover:bg-gray-300 focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400">Blog</a>
+
+{#                            <a href="/recipes" class="block px-3 py-2 rounded-md text-gray-900 hover:bg-gray-300 focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400">Recipes</a>#}
+
+                            <a href="/api" class="block px-3 py-2 rounded-md text-gray-900 hover:bg-gray-300 focus:z-10 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400">API</a>
+                        </div>
+                        <div class="mt-6 px-5">
+                            <a href="https://github.com/jwstegemann/fritz2" target="_blank"
+                               class="block w-full py-3 px-4 rounded-md shadow text-white text-center bg-gray-600 hover:bg-gray-700 focus:z-10 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">
+                                <!-- Github Icon -->
+                                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.463 2 11.97c0 4.404 2.865 8.14 6.839 9.458.5.092.682-.216.682-.48 0-.236-.008-.864-.013-1.695-2.782.602-3.369-1.337-3.369-1.337-.454-1.151-1.11-1.458-1.11-1.458-.908-.618.069-.606.069-.606 1.003.07 1.531 1.027 1.531 1.027.892 1.524 2.341 1.084 2.91.828.092-.643.35-1.083.636-1.332-2.22-.251-4.555-1.107-4.555-4.927 0-1.088.39-1.979 1.029-2.675-.103-.252-.446-1.266.098-2.638 0 0 .84-.268 2.75 1.022A9.606 9.606 0 0112 6.82c.85.004 1.705.114 2.504.336 1.909-1.29 2.747-1.022 2.747-1.022.546 1.372.202 2.386.1 2.638.64.696 1.028 1.587 1.028 2.675 0 3.83-2.339 4.673-4.566 4.92.359.307.678.915.678 1.846 0 1.332-.012 2.407-.012 2.734 0 .267.18.577.688.48C19.137 20.107 22 16.373 22 11.969 22 6.463 17.522 2 12 2z"></path>
+                                </svg>
+                                Github
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <!--
-              Mobile menu, show/hide based on menu open state.
-
-              Entering: "duration-150 ease-out"
-                From: "opacity-0 scale-95"
-                To: "opacity-100 scale-100"
-              Leaving: "duration-100 ease-in"
-                From: "opacity-100 scale-100"
-                To: "opacity-0 scale-95"
-            -->
-{#            <div class="absolute top-0 inset-x-0 p-2 transition transform origin-top md:hidden">#}
-{#                <div class="rounded-lg shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">#}
-{#                    <div class="px-5 pt-4 flex items-center justify-between">#}
-{#                        <div>#}
-{#                            <img class="h-8 w-auto"#}
-{#                                 src="https://tailwindui.com/img/logos/workflow-mark-teal-500-cyan-600.svg" alt="">#}
-{#                        </div>#}
-{#                        <div class="-mr-2">#}
-{#                            <button type="button"#}
-{#                                    class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-600">#}
-{#                                <span class="sr-only">Close menu</span>#}
-{#                                <!-- Heroicon name: outline/x -->#}
-{#                                <span class="h-6 w-6">#}
-{#                                    {% heroicon "outline", "x" %}#}
-{#                                </span>#}
-{#                            </button>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                    <div class="pt-5 pb-6">#}
-{#                        <div class="px-2 space-y-1">#}
-{#                            <a href="#"#}
-{#                               class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-50">Product</a>#}
-
-{#                            <a href="#"#}
-{#                               class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-50">Features</a>#}
-
-{#                            <a href="#"#}
-{#                               class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-50">Marketplace</a>#}
-
-{#                            <a href="#"#}
-{#                               class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 hover:bg-gray-50">Company</a>#}
-{#                        </div>#}
-{#                        <div class="mt-6 px-5">#}
-{#                            <a href="#"#}
-{#                               class="block text-center w-full py-3 px-4 rounded-md shadow bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-medium hover:from-teal-600 hover:to-cyan-700">Start#}
-{#                                free trial</a>#}
-{#                        </div>#}
-{#                        <div class="mt-6 px-5">#}
-{#                            <p class="text-center text-base font-medium text-gray-500">Existing customer? <a href="#"#}
-{#                                                                                                             class="text-gray-900 hover:underline">Login</a>#}
-{#                            </p>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
         </header>
 
         <main>
@@ -512,7 +487,7 @@ layout: layouts/page.njk
 
             <!-- Newest Blog Article -->
             <div class="relative bg-gray-900 mt-16 sm:mt-24 lg:mt-32">
-                <div class="relative h-56 bg-indigo-600 sm:h-72 md:absolute md:left-0 md:h-full md:w-1/2">
+                <div class="relative h-56 sm:h-72 md:absolute md:left-0 md:h-full md:w-1/2">
                     <img class="w-full h-full object-cover"
                          src="/img/paradigm-shift-for-components.jpg"
                          alt="paradigm shift for components">
