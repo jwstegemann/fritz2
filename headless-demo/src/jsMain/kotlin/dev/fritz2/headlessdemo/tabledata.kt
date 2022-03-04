@@ -1172,7 +1172,7 @@ val jobSet = listOf(
 
 val fakeData = mapOf(
     false to parseCsvPersons(veryLargeFakePersonSet).take(40),
-    true to parseCsvPersons(extremlyLargeFakePersonSet).take(250)
+    true to parseCsvPersons(extremlyLargeFakePersonSet).take(200)
 )
 
 
@@ -1191,156 +1191,10 @@ val houseNumberLens = lens("houseNumber", Address::houseNumber) { p, v -> p.copy
 val postalCodeLens = lens("postalCode", Address::postalCode) { p, v -> p.copy(postalCode = v) }
 val cityLens = lens("city", Address::city) { p, v -> p.copy(city = v) }
 
+//FIXME: move upper to common and lower to Demo
 
-object TableStore : RootStore<List<Person>>(fakeData[false]!!, "personData") {
+object TableStore : RootStore<List<Person>>(fakeData[true]!!, "personData") {
     val remove = handle<Person> { list, toDelete ->
         list.filter { it != toDelete }
     }
 }
-
-/*
- * old
- */
-
-/*
-fun Tr.columnHeader(title: String, sorter: (Div.() -> Unit)? = null) {
-    val paddingRight = if (sorter != null) "pr-1" else "pr-6"
-    th("drop-shadow-sm pl-6 $paddingRight py-3 z-10 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky top-0 bg-gray-50") {
-        scope("col")
-        div("w-full flex flex-row items-center") {
-            p("flex-auto") {
-                +title
-            }
-            // sorting
-            if (sorter != null) div("flex-initial") {
-                sorter()
-            }
-        }
-    }
-}
-
-fun Tr.cell(classes: String? = null, content: Td.() -> Unit) {
-    td(classes) {
-        content()
-    }
-}
-
-object Selection : RootStore<Person?>(null)
-
-object MultiSelection : RootStore<List<Person>>(emptyList())
-
-fun RenderContext.demotable(classes: String?) {
-    val sortedData = dev.fritz2.tailwind.ui.lists.Sorter(dev.fritz2.tailwind.demos.TableStore.data)
-
-    /*
-     *
-     * dev.fritz2.tailwind.ui.lists.datatable {
-     *  row {
-     *      selection
-     *
-     *      columns {
-     *          column {
-     *              header {
-     *              }
-     *              content {
-     *
-     *              }
-     *          }
-     *      }
-     *  }
-     * }
-     *
-     *
-     *
-     *
-     *
-     * dev.fritz2.tailwind.ui.lists.datatable {
-     *  data()
-     *
- *      singleSelection {
- *          changes handledBy...
- *      }
- *
- *      columns {
- *             column(id) {
- *                  sortable()
- *                  header(classes )
- *                  content(classes) { person ->
- *                  }
- *             }
- *      }
-     * }
-     *
-     */
-
-    /* <!-- This example requires Tailwind CSS v2.0+ --> */
-    div(classes("flex flex-col", classes)) {
-        div("-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8") {
-            div("py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8") {
-                div("shadow border-b border-gray-200 sm:rounded-lg overflow-y-auto overflow-x-auto relative h-80") { // overflow-hidden
-                    table("min-w-full divide-y divide-gray-200") { //table-auto
-                        thead {
-                            tr() {
-                                columnHeader("Name") {
-//                                    val comparator = Person::fullName
-//                                    val iconFlow = sortedData.data.map {
-//                                        if (it == null || it.comparator != comparator) Solid.selector
-//                                        else if (it.desc) Solid.sort_descending
-//                                        else Solid.sort_ascending
-//                                    }
-//                                    icon("text-gray-500 h-3 w-3") {
-//                                        content(iconFlow)
-////                                        clicks.map { comparator } handledBy sortedData.sort
-//                                    }
-                                }
-                                columnHeader("Geburtstag")
-                                columnHeader("eMail")
-                                columnHeader("Telefon")
-                            }
-                        }
-                        tbody {
-//                            dev.fritz2.tailwind.demos.TableStore.data.renderEach(Person::id) { person ->
-                            sortedData.downstream.onEach { kotlin.js.console.log("new List") }.renderEach(model.Person::_id) { person ->
-                                tr() {
-                                    dev.fritz2.tailwind.demos.TableStore.sub(person, model.Person::_id).sub(model.Person.fullName)
-
-                                    cell("px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900") { +person.fullName }
-                                    cell("px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500") { +person.birthday }
-                                    cell("px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500") { +person.email }
-                                    cell("px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500") { +person.mobile }
-
-                                    //single selection
-//                                    clicks.map { person } handledBy Selection.handle { old, selected ->
-//                                        if (old == selected) null
-//                                        else selected
-//                                    }
-//
-//                                    className(Selection.data.map { if (person == it) "bg-primary-50" else "odd:bg-white even:bg-gray-50" })
-
-                                    //multi selection
-                                    clicks.map { person } handledBy MultiSelection.handle { old, selected ->
-                                        if (old.contains(selected)) old - selected
-                                        else old + selected
-                                    }
-
-                                    className(MultiSelection.data.map { if (it.contains(person)) "bg-primary-50" else "odd:bg-white even:bg-gray-50" })
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    p {
-        +"singleSelection: "
-        Selection.data.asText()
-    }
-    p {
-        +"multiSelection: "
-        MultiSelection.data.asText()
-    }
-
-}
-*/

@@ -17,23 +17,8 @@ object Myer {
      * @param newList new version of the [List]
      * @return a [List] of [Patch]es needed to transform the old list into the new one
      */
-    fun <T, I> diff(oldList: List<T>, newList: List<T>, idProvider: IdProvider<T, I>): List<Patch<T>> {
-        val isSame = { a: T, b: T -> idProvider(a) == idProvider(b) }
-        val trace = shortestEdit(oldList, newList, isSame)
-        return buildList {
-            backtrack<T>(trace, oldList, newList, isSame)
-        }
-    }
-
-    /**
-     * diffs to versions of a [List] with an [IdProvider].
-     *
-     * @param oldList old version of the [List]
-     * @param newList new version of the [List]
-     * @return a [List] of [Patch]es needed to transform the old list into the new one
-     */
-    fun <T> diff(oldList: List<T>, newList: List<T>): List<Patch<T>> {
-        val isSame = { a: T, b: T -> a == b }
+    fun <T, I> diff(oldList: List<T>, newList: List<T>, idProvider: IdProvider<T, I>?): List<Patch<T>> {
+        val isSame = if (idProvider != null) { a: T, b: T -> idProvider(a) == idProvider(b) } else { a: T, b: T -> a == b }
         val trace = shortestEdit(oldList, newList, isSame)
         return buildList {
             backtrack<T>(trace, oldList, newList, isSame)

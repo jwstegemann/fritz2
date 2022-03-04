@@ -1,6 +1,7 @@
 package dev.fritz2.core
 
 import dev.fritz2.core.*
+import kotlinx.browser.document
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -189,7 +190,27 @@ internal fun <V> RenderContext.mountPatches(
 
     val mountPoints = mutableMapOf<Node, MountPointImpl>()
 
+    fun count(p: List<Patch<Tag<HTMLElement>>>): String {
+        var deletes = 0
+        var inserts = 0
+
+        p.forEach {
+            when (it) {
+                is Patch.Insert -> inserts++
+                is Patch.InsertMany -> inserts += it.elements.size
+                is Patch.Delete -> deletes += it.count
+                else -> {}
+            }
+        }
+
+        return "inserts: $inserts / deletes: $deletes"
+    }
+
     mountSimple(target.job, createPatches(upstream, mountPoints)) { patches ->
+        console.log(mountPoints.size)
+        console.log(count(patches))
+        console.log("-------")
+        target.inlineStyle("visibility: hidden;")
         patches.forEach { patch ->
             when (patch) {
                 is Patch.Insert -> {
@@ -208,6 +229,7 @@ internal fun <V> RenderContext.mountPatches(
                 }
                 is Patch.Delete -> target.domNode.delete(patch.start, patch.count, target.job) { node ->
                     val mountPointImpl = mountPoints.remove(node)
+                    console.log("removing")
                     if (mountPointImpl != null) {
                         mountPointImpl.job.cancelChildren()
                         mountPointImpl.runBeforeUnmounts()
@@ -216,6 +238,9 @@ internal fun <V> RenderContext.mountPatches(
                 is Patch.Move -> target.domNode.move(patch.from, patch.to)
             }
         }
+
+        kotlinx.browser.window.awaitAnimationFrame()
+        target.inlineStyle("")
     }
 }
 
@@ -251,15 +276,10 @@ fun <N : Node> N.insert(element: WithDomNode<N>, index: Int): Unit = insertOrApp
  * @param index place to insert or append
  */
 fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
-    if (index == childNodes.length) {
-        for (child in elements) appendChild(child.domNode)
-    } else {
-        childNodes.item(index)?.let {
-            for (child in elements) {
-                insertBefore(child.domNode, it)
-            }
-        }
-    }
+    val f = document.createDocumentFragment()
+    for (child in elements) f.append(child.domNode)
+    if (index == childNodes.length) appendChild(f)
+    else childNodes.item(index)?.let { insertBefore(f, it) }
 }
 
 /**
@@ -269,12 +289,12 @@ fun <N : Node> N.insertMany(elements: List<WithDomNode<N>>, index: Int) {
  * @param start position for deleting
  * @param count of elements to delete
  */
-suspend fun <N : Node> N.delete(start: Int, count: Int, parentJob: Job, cancelJob: suspend (Node) -> Unit) {
+ inline fun <N : Node> N.delete(start: Int, count: Int, parentJob: Job, crossinline cancelJob: suspend (Node) -> Unit) {
     var itemToDelete = childNodes.item(start)
     repeat(count) {
         itemToDelete?.let {
             //FIXME: get parentJob here?
-            (MainScope() + parentJob).launch {
+            (MainScope() + parentJob).launch() {
                 cancelJob(it)
                 removeChild(it)
             }

@@ -4,7 +4,10 @@ import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
 import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
+import kotlinx.browser.document
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -61,6 +64,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
 
     private val sorting = object : RootStore<SortingOrder<T>?>(null) {}
     val sortBy = sorting.handle<Sorting<T>> { old, newSorting ->
+        console.log("s")
         if (old?.sorting == newSorting) {
             val newDirection = when (old.direction) {
                 SortDirection.NONE -> SortDirection.ASC
@@ -103,6 +107,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
         tag: TagFactory<Tag<CS>>,
         initialize: DataCollectionSortButton<CS>.() -> Unit
     ) {
+        console.log("???????")
         //TODO: id
         tag(this, classes, "someID", scope) {
             DataCollectionSortButton(sort, this).run {
@@ -129,21 +134,21 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
 
     inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>) : Tag<CI> by tag {
         val items = if (data.isSet) {
-            data.value!!.first.flatMapLatest { list ->
-                sorting.data.flatMapLatest { sortOrder ->
-                    filtering.data.map { filterFunction ->
-                        (filterFunction?.invoke(list) ?: list).let { list ->
+            data.value!!.first.flatMapLatest { rawItems ->
+                 filtering.data.flatMapLatest { filterFunction ->
+                     sorting.data.map { sortOrder ->
+                        (filterFunction?.invoke(rawItems) ?: rawItems).let { filteredItems ->
                             sortOrder?.let {
                                 when (it.direction) {
-                                    SortDirection.NONE -> list
-                                    SortDirection.ASC -> list.sortedWith(it.sorting.comparatorAscending)
-                                    SortDirection.DESC -> list.sortedWith(it.sorting.comparatorDescending)
+                                    SortDirection.NONE -> filteredItems
+                                    SortDirection.ASC -> filteredItems.sortedWith(it.sorting.comparatorAscending)
+                                    SortDirection.DESC -> filteredItems.sortedWith(it.sorting.comparatorDescending)
                                 }
-                            } ?: list
+                            } ?: filteredItems
                         }
                     }
                 }
-            }.distinctUntilChanged()
+            }.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
         } else flowOf(emptyList())
 
         val activeItem = object : RootStore<T?>(null) {}
@@ -176,8 +181,11 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
             attr("tabindex", "0")
             attrIfNotSet("role", Aria.Role.list)
 
-            activeItem.data.flatMapLatest { current ->
-                items.distinctUntilChanged().flatMapLatest { list ->
+            //reset active Item when leaving dataCollectionItems
+            merge(mouseleaves.filter { domNode != document.activeElement }, focusouts).map { null } handledBy activeItem.update
+
+            items.flatMapLatest { list ->
+                 activeItem.data.flatMapLatest { current ->
                     val index = indexOfItem(list, current)
                     keydowns.mapNotNull { event ->
                         when (shortcutOf(event)) {
@@ -194,15 +202,15 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                         }
                     }
                 }
-            } handledBy activeItem.update
+            }.distinctUntilChanged() handledBy activeItem.update
 
             if (selection.isSet) {
-                selectItem(activeItem.data.flatMapLatest { item ->
-                    items.flatMapLatest { list ->
+                selectItem( items.flatMapLatest { list ->
+                    activeItem.data.flatMapLatest { current ->
                         keydowns.filter {
                             setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
                         }.mapNotNull { event ->
-                            item.also {
+                            current.also {
                                 if (it != null) {
                                     event.preventDefault()
                                     event.stopImmediatePropagation()
@@ -210,7 +218,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                             }
                         }
                     }
-                })
+                }.distinctUntilChanged())
             }
         }
 
@@ -218,17 +226,13 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
         private var lastY = 0
 
         inner class DataCollectionItem<CI : HTMLElement>(private val item: T, tag: Tag<CI>) : Tag<CI> by tag {
-            val selected by lazy {
+            val selected =
                 if (selection.isSet) {
                     (if (selection.single.isSet) selection.single.data.map { isSame(it, item) }
                     else selection.multi.data.map { list -> list.any { isSame(it, item) } }).distinctUntilChanged()
                 } else flowOf(false)
-            }
 
-            val active by lazy {
-                activeItem.data.debounce(150).map {
-                    isSame(it, item) }.distinctUntilChanged()
-            }
+            val active = activeItem.data.map { isSame(it, item) }.distinctUntilChanged()
 
             fun render() {
                 attrIfNotSet("role", Aria.Role.listitem)
@@ -238,19 +242,17 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by t
                     selectItem(clicks.map { item })
                 }
 
-                items.flatMapLatest { list ->
-                    mouseenters.mapNotNull { event ->
-                        if (lastX != event.screenX || lastY != event.screenY) item.also {
-                            lastX = event.screenX
-                            lastY = event.screenY
-                        }
-                        else null
+                mouseenters.mapNotNull { event ->
+                    if (lastX != event.screenX || lastY != event.screenY) item.also {
+                        lastX = event.screenX
+                        lastY = event.screenY
                     }
+                    else null
                 } handledBy activeItem.update
 
                 // scroll if active
                 //FIXME: scroll to top-element?
-                active.filter { it } handledBy {
+                active.drop(1).filter { it } handledBy {
                     scrollIntoView(domNode, HeadlessScrollOptions)
                 }
             }

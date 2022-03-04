@@ -56,8 +56,7 @@ interface RenderContext : WithJob, WithScope {
             upstreamValues.scan(Pair(emptyList(), emptyList())) { acc: Pair<List<V>, List<V>>, new ->
                 Pair(acc.second, new)
             }.map { (old, new) ->
-                val diff = if (idProvider != null) Myer.diff(old, new, idProvider) else Myer.diff(old, new)
-                diff.map { patch ->
+                Myer.diff(old, new, idProvider).map { patch ->
                     patch.map(job) { value, newJob ->
                         val mountPoint = BuildContext(newJob, scope)
                         content(mountPoint, value).also {
