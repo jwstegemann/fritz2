@@ -31,11 +31,11 @@ layout: layouts/page.njk
                         <div class="hidden space-x-8 md:flex md:ml-10">
                             <a href="/docs" class="text-base font-medium text-white hover:text-gray-300">Documentation</a>
 
-                            <a href="/headless" class="text-base font-medium text-white hover:text-gray-300">Headless</a>
+                            <a href="/headless" class="text-base font-medium text-white hover:text-gray-300">Headless Components</a>
 
                             <a href="/blog" class="text-base font-medium text-white hover:text-gray-300">Blog</a>
 
-                            <a href="/recipes" class="text-base font-medium text-white hover:text-gray-300">Recipes</a>
+{#                            <a href="/recipes" class="text-base font-medium text-white hover:text-gray-300">Recipes</a>#}
 
                             <a href="/api" target="_blank" class="text-base font-medium text-white hover:text-gray-300">API</a>
 
@@ -156,16 +156,6 @@ layout: layouts/page.njk
                         </p>
                     </div>
                     <div class="mt-12 -mb-10 sm:-mb-24 lg:-mb-80">
-                        {% highlight "kotlin" %}
-                            fun RenderContext.greet(name: String) {
-                                div {
-                                    h2 {
-                                        +"Hello $name!"
-                                    }
-                                }
-                            }
-                            greet("Peter")
-                        {% endhighlight %}
                     </div>
                 </div>
             </div>
@@ -194,7 +184,7 @@ layout: layouts/page.njk
                                         </div>
                                         <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Kotlin</h3>
                                         <p class="mt-5 text-base text-gray-500">
-                                            heavily uses Kotlin standard features (especially flows) and has no external dependencies.
+                                            fritz2 heavily uses Kotlin standard features (especially flows) and has no external dependencies.
                                         </p>
                                     </div>
                                 </div>
@@ -212,7 +202,7 @@ layout: layouts/page.njk
                                         </div>
                                         <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Data-Binding</h3>
                                         <p class="mt-5 text-base text-gray-500">
-                                            offers precise data-binding for your ui-elements. When your data changes, those - and only those - DOM-elements are updated,
+                                            fritz2 offers precise data-binding for your ui-elements. When your data changes, those - and only those - DOM-elements are updated,
                                             that are bound to parts of the model, that really have changed - no virtual dom needed.
                                         </p>
                                     </div>
@@ -237,7 +227,7 @@ layout: layouts/page.njk
                                         </div>
                                         <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Learn</h3>
                                         <p class="mt-5 text-base text-gray-500">
-                                            built around just a few basic concepts (Stores, Handlers, Tags, etc.).
+                                            fritz2 built around just a few basic concepts (Stores, Handlers, Tags, etc.).
                                             You can easily learn how to use them from our documentation or the examples we provide. Enjoy!
                                         </p>
                                     </div>
@@ -256,7 +246,7 @@ layout: layouts/page.njk
                                         </div>
                                         <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Scale</h3>
                                         <p class="mt-5 text-base text-gray-500">
-                                            allows you to build small apps very fast with a few lines of code as well as enterprise
+                                            fritz2 allows you to build small apps very fast with a few lines of code as well as enterprise
                                             scale applications with a focus on reusable components, clean code and structure.
                                             The functional reactive concept makes the resulting code easy to read and to maintain.
                                         </p>
@@ -276,7 +266,7 @@ layout: layouts/page.njk
                                         </div>
                                         <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Complete</h3>
                                         <p class="mt-5 text-base text-gray-500">
-                                            includes everything you need to start your project:
+                                            fritz2 includes everything you need to start your project:
                                             state management (even for complex nested models), validation, routing, REST, WebSockets, WebComponents
                                             as well as a set of tailor-made headless components.
                                         </p>
