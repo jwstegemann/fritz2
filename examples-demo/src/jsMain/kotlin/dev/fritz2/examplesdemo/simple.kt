@@ -12,5 +12,7 @@ fun RenderContext.simple() {
 
     div("p-4") {
         greet("Peter")
+        greet("Paul")
+        greet("Marry")
     }
 }

@@ -1,18 +1,52 @@
 
-<!-- Simple Example -->
-<div class="mt-12 sm:mt-24 mx-auto max-w-4xl overflow-hidden bg-gray-50 border border-gray-200 rounded-md divide-y divide-gray-200">
+<!-- Start Example -->
+<div class="mt-12 sm:mt-24 mx-4 sm:mx-auto max-w-4xl overflow-hidden bg-gray-50 border border-gray-200 rounded-md divide-y divide-gray-200">
     <div class="py-6 px-6 bg-gradient-to-r from-teal-500 to-cyan-600 text-white text-2xl font-nunito font-bold">
-        Simple Example
+        Getting Started
     </div>
     <div class="p-4">
         <p class="pb-4 prose max-w-prose">
-            In fritz2 we create elements or as we called them <em>tags</em> by using a DSL.
-            To extend the DSL like we do with the <code>greet</code> component, it needs a receiver called <code>RenderContext</code>.
-            Then you can call your component function inside every render-context
-            and passing the appropriate parameter <code>name</code> to it.
+            Lets start to create our first elements, or as we called them <em>tags</em>, by using the DSL.
+            We need to call the <code>render</code> function at first in order to create a <code>RenderContext</code>
+            where we can put our tags in. Every tag is just a function representing an HTML-element like <code>div</code> here.
+            You can nest them like in HTML. For styling purposes you can add your CSS-class-names directly as first parameter.
         </p>
         <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <div>
+            {% highlight "kotlin" %}
+fun main() {
+    render {
+        div("my-style-class") {
+            h2 {
+                +"Hello Peter!"
+            }
+        }
+    }
+}
+            {% endhighlight %}
+            <div class="border border-gray-200 bg-gray-300 h-full overflow-hidden rounded-md">
+                <div class="p-3 uppercase text-gray-700">
+                    Result
+                </div>
+                <div class="h-full">
+                    <iframe class="w-full h-full" src="/examples-demo/index.html#start"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Simple Example -->
+<div class="mt-12 sm:mt-24 mx-4 sm:mx-auto max-w-4xl overflow-hidden bg-gray-50 border border-gray-200 rounded-md divide-y divide-gray-200">
+    <div class="py-6 px-6 bg-gradient-to-r from-teal-500 to-cyan-600 text-white text-2xl font-nunito font-bold">
+        Structuring your UI
+    </div>
+    <div class="p-4">
+        <p class="pb-4 prose max-w-prose">
+            To structure your UI in reusable fragments just use functions with <code>RenderContext</code> receiver.
+            Inside every render-context you can call your function.
+            Here we created a <code>greet</code> function and call it multiple times with different <code>name</code>s.
+        </p>
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {% highlight "kotlin" %}
 fun RenderContext.greet(name: String) {
     h2 {
@@ -21,12 +55,13 @@ fun RenderContext.greet(name: String) {
 }
 
 render {
-    div("...") {
+    div("my-style-class") {
         greet("Peter")
+        greet("Paul")
+        greet("Marry")
     }
 }
                 {% endhighlight %}
-            </div>
             <div class="border border-gray-200 bg-gray-300 h-full overflow-hidden rounded-md">
                 <div class="p-3 uppercase text-gray-700">
                     Result
@@ -40,9 +75,9 @@ render {
 </div>
 
 <!-- Reactive Example -->
-<div class="mt-12 sm:mt-24 mx-auto max-w-4xl overflow-hidden bg-gray-50 border border-gray-200 rounded-md divide-y divide-gray-200">
+<div class="mt-12 sm:mt-24 mx-4 sm:mx-auto max-w-4xl overflow-hidden bg-gray-50 border border-gray-200 rounded-md divide-y divide-gray-200">
     <div class="py-6 px-6 bg-gradient-to-r from-teal-500 to-cyan-600 text-white text-2xl font-nunito font-bold">
-        Reactive Example
+        Getting Reactive
     </div>
     <div class="p-4">
         <p class="pb-4 prose max-w-prose">
@@ -54,7 +89,6 @@ render {
             <code>handledBy</code> function (two-way).
         </p>
         <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <div>
                 {% highlight "kotlin" %}
 val store = storeOf("Hello Peter")
 
@@ -71,7 +105,6 @@ render {
     }
 }
                 {% endhighlight %}
-            </div>
             <div class="border border-gray-200 bg-gray-300 h-full overflow-hidden rounded-md">
                 <div class="p-3 uppercase text-gray-700">
                     Result
@@ -85,23 +118,27 @@ render {
 </div>
 
 <!-- Complex Example -->
-<div class="mt-12 sm:mt-24 mx-auto max-w-6xl overflow-hidden bg-gray-50 border border-gray-200 rounded-md divide-y divide-gray-200">
+<div class="mt-12 sm:mt-24 mx-4 sm:mx-auto max-w-4xl overflow-hidden bg-gray-50 border border-gray-200 rounded-md divide-y divide-gray-200">
     <div class="py-6 px-6 bg-gradient-to-r from-teal-500 to-cyan-600 text-white text-2xl font-nunito font-bold">
-        Real World Example
+        Real World
     </div>
     <div class="p-4">
         <p class="pb-4 prose max-w-prose">
-            Lets getting more reactive by using a <code>Store</code> to save our data in.
-            Stores will be needed to get the two-way data-binding done in fritz2.
-            We get the data out as <code>Flow</code> by calling <code>store.data</code>
-            and render it into the <code>value</code> attribute of the <code>&lt;input&gt;</code> tag (one-way).
-            To update the data inside the store we have to call the <code>update</code> handler by using the
-            <code>handledBy</code> function (two-way).
+            Unser Focus bei fritz2 liegt auf dem data-handling. D.h. die UI ist eigentlich nur eine Ableitung auf Basis von Regeln der
+            zugrunde liegenden Daten. In echten Anwendungen ist daher die Richtigkeit der Daten wichtig. Daher bietet
+            fritz2 Möglichkeiten diese mit Hilfe einer Validierung zu gewährleisten und dem Anwender entsprechende Hinweise zu geben.
+            Dazu erstellen wir eine <code>Message</code> class für unsere Meldungen und eine <code>validation</code> function
+            mit den Regeln zur Prüfung der Validität. Dann benutzen wir wieder unseren store zur Datenverwaltung und geben ihm
+            die Validierung mit. Zum Schluss sorgen wir noch für das Anwender-Feedback indem wir den <code>store.messages</code> flow
+            rausrendern.
         </p>
         <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div>
                 {% highlight "kotlin" %}
-class Message(override val path: String, val text: String): ValidationMessage {
+class Message(
+    override val path: String,
+    val text: String
+): ValidationMessage {
     override val isError: Boolean = true
 }
 
