@@ -1,12 +1,12 @@
 ---
-layout: layouts/docsWithContentNav.njk
+layout: layouts/docs.njk
 title: Routing
 permalink: /docs/routing/
 eleventyNavigation:
     key: routing
     parent: documentation
     title: Routing
-    order: 60
+    order: 50
 ---
 
 Writing a Single Page Application (SPA), you might need a way to render a certain view depending on url-parameters. This is called routing. 
@@ -53,34 +53,44 @@ render {
         }
     }
 }
-
-val currentRoute = router.current
 ```
 
-Using a `Map`:
+## MapRouter
+In bigger web-apps often additional routing information is needed when navigating to another site.
+Therefore, you can use the `MapRouter` instead:
 ```kotlin
-val router = routerOf(mapOf("page" to "welcome"))
+val router = routerOf(mapOf("page" to "welcome", "foo" to "bar"))
 
 render {
     section {
-        router.select(key = "page", orElse = "").render { value ->
-            when(value) {
+        // use a SubStore for two-way data-binding
+        val foo = router.sub("foo")
+        foo.update("bars")
+
+        // or use special select() function where other contains the rest of the map entries
+        // for one-way data-binding
+        router.select(key = "page").render { (page, other) ->
+            when(page) {
                 "welcome" -> div { +"Welcome" }
-                "pageA" -> div { +"Page A" }
-                "pageB" -> div { +"Page B" }
+                "pageA" -> div {
+                    +"Page A: "
+                    foo.data.renderText()
+                }
+                "pageB" -> div { +"Page B: ${other["foo"] ?: ""}" }
                 else -> div { +"not found" }
             }
         }
     }
 }
-
-val currentRoute = router.current
 ```
 A router using a `MapRoute` offers two extra `select` methods:
 * `fun select(key: String): Flow<Pair<String?, Map<String, String>>>` extracts the values as `Pair` for the given `key` 
 and the rest of the route
 * `fun select(key: String, orElse: String): Flow<String>` extracts the value for a given `key` when available otherwise 
 it returns `orElse`
+
+Or as you can see, you can also use the well-known `sub()` function by providing a `key` to get a `SubStore` 
+to render its data and to handle updates.
 
 If you want to use your own special `Route` instead, try this:
 ```kotlin

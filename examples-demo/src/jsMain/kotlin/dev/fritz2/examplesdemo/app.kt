@@ -6,10 +6,25 @@ import dev.fritz2.routing.routerOf
 data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)
 
 val pages = mapOf(
-    "greeter" to DemoPage(
-        "Greeter",
-        """Simple component example showing fritz2 HTML DSL""".trimMargin(),
-        RenderContext::greeter
+    "start" to DemoPage(
+        "Start",
+        "Starting example showing fritz2 HTML DSL",
+        RenderContext::start
+    ),
+    "simple" to DemoPage(
+        "Simple",
+        "Simple example showing how to structure your fritz2 code",
+        RenderContext::simple
+    ),
+    "reactive" to DemoPage(
+        "Reactive",
+        "Reactive example showing fritz2 two-way data-binding",
+        RenderContext::reactive
+    ),
+    "complex" to DemoPage(
+        "Complex",
+        "Complex example showing fritz2 validation",
+        RenderContext::complex
     )
 )
 
@@ -17,7 +32,7 @@ fun RenderContext.overview() {
     div("flex flex-col justify-start items-center h-screen") {
         h1("mb-8 tracking-tight font-bold text-gray-900 text-4xl") {
             span("block sm:inline") { +"fritz2" }
-            span("block text-indigo-600 sm:inline") { +" Examples Demos" }
+            span("block text-blue-800 sm:inline") { +" Examples Demos" }
         }
         div("w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12") {
             pages.forEach {
@@ -28,7 +43,7 @@ fun RenderContext.overview() {
                 ) {
                     href("#")
                     /* <!-- Heroicon name: outline/support --> */
-                    svg("flex-shrink-0 h-6 w-6 text-indigo-600") {
+                    svg("flex-shrink-0 h-6 w-6 text-blue-800") {
                         xmlns("http://www.w3.org/2000/svg")
                         fill("none")
                         viewBox("0 0 24 24")
@@ -64,7 +79,7 @@ fun main() {
 
     render {
         router.data.render { route ->
-            div("w-full h-screen bg-gradient-to-r from-amber-300 to-orange-500 p-4") {
+            div("w-full h-screen bg-white p-4") {
                 (pages[route]?.content ?: RenderContext::overview)()
             }
         }

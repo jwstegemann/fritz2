@@ -1,12 +1,12 @@
 ---
-layout: layouts/docsWithContentNav.njk
+layout: layouts/docs.njk
 title: State Management
 permalink: /docs/state/
 eleventyNavigation:
     key: state
     parent: documentation
     title: State Management
-    order: 40
+    order: 30
 ---
 ## Flows
 

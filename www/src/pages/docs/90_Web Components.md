@@ -1,12 +1,12 @@
 ---
-layout: layouts/docsWithContentNav.njk
+layout: layouts/docs.njk
 title: Web Components
 permalink: /docs/web-components/
 eleventyNavigation:
     key: web-components
     parent: documentation
     title: Web Components
-    order: 100
+    order: 90
 ---
 
 With fritz2, you can easily use [WebComponents](https://webcomponents.org) in any html-context. 

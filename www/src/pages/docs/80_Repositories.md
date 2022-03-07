@@ -1,12 +1,12 @@
 ---
-layout: layouts/docsWithContentNav.njk 
+layout: layouts/docs.njk 
 title: Repositories
 permalink: /docs/repositories/
 eleventyNavigation:
     key: repositories
     parent: documentation
     title: Repositories
-    order: 90
+    order: 80
 ---
 
 To connect certain types of backend to your `Store`s, you can make use of fritz2's repositories. fritz2 offers

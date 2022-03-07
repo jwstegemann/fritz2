@@ -1,6 +1,6 @@
 ---
 title: Disclosure
-layout: layouts/headlessWithContentNav.njk
+layout: layouts/docs.njk
 permalink: /headless/disclosure/
 eleventyNavigation:
     key: disclosure

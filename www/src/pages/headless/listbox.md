@@ -1,6 +1,6 @@
 ---
 title: Listbox 
-layout: layouts/headlessWithContentNav.njk 
+layout: layouts/docs.njk 
 permalink: /headless/listbox/ 
 eleventyNavigation:
     key: listbox

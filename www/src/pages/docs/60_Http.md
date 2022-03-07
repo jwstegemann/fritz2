@@ -1,12 +1,12 @@
 ---
-layout: layouts/docsWithContentNav.njk
+layout: layouts/docs.njk
 title: Http
 permalink: /docs/http/
 eleventyNavigation:
     key: http
     parent: documentation
     title: Http
-    order: 70
+    order: 60
 ---
 
 Using the browser's default fetch-api can get quite tiresome, which is why fritz2 offers a small fluent api wrapper for it:

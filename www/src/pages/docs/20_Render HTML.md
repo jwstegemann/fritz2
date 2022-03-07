@@ -1,12 +1,12 @@
 ---
-layout: layouts/docsWithContentNav.njk
+layout: layouts/docs.njk
 title: Render HTML
 permalink: /docs/render/
 eleventyNavigation:
     key: render
     parent: documentation
     title: Render HTML
-    order: 30
+    order: 20
 ---
 
 fritz2 offers a rich DSL to create the HTML for your application. You just have to call the global `render` function

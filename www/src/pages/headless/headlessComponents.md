@@ -1,10 +1,10 @@
 ---
-title: Headless
-layout: layouts/docsWithContentNav.njk
+title: Headless Components
+layout: layouts/docs.njk
 permalink: /headless/ 
 eleventyNavigation:
     key: headless 
-    title: Headless Components 
+    title: Headless Components
     order: 20
     icon: puzzle
     classes: "font-bold capitalize"
@@ -29,6 +29,31 @@ detailed one [blog post](/blog/posts/paradigm-shift-for-components/).
 Note: for the styling information we use in the examples the [tailwindcss](https:tailwindcss.com) framework. Since
 fritz2 is agnostic about the styling information, you can of course use other frameworks such as
 [Bootstrap](https:getbootstrap.com) or simply some plain CSS.
+:::
+
+## Setup
+
+In order to use headless components within your project, just replace the dependency of the fritz2 `core` with
+`headless` in the `commonMain` source-set of your `build.gradle.kts` file:
+
+```kotlin
+kotlin {
+    // ...
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                // add dependency to headless always in commonMain section!
+                implementation("dev.fritz2:headless:$fritz2Version")
+            }
+        }
+        // ...
+    }
+}
+```
+
+::: info
+If you want to use fritz2 together with [tailwindcss](https://tailwindcss.com/) for the styling, clone
+our [tailwind specific template](https://github.com/jwstegemann/fritz2-tailwind-template) from GitHub. 
 :::
 
 ## Structure of a Component

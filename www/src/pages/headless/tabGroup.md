@@ -1,6 +1,6 @@
 ---
 title: TabGroup
-layout: layouts/headlessWithContentNav.njk
+layout: layouts/docs.njk
 permalink: /headless/tabgroup/
 eleventyNavigation:
     key: tabgroup

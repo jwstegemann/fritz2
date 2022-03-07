@@ -1,6 +1,6 @@
 ---
 title: TextArea
-layout: layouts/headlessWithContentNav.njk
+layout: layouts/docs.njk
 permalink: /headless/textarea/
 eleventyNavigation:
     key: textarea

@@ -1,12 +1,12 @@
 ---
-layout: layouts/docsWithContentNav.njk
+layout: layouts/docs.njk
 title: Validation
 permalink: /docs/validation/
 eleventyNavigation:
     key: validation
     parent: documentation
     title: Validation
-    order: 50
+    order: 40
 ---
 
 When accepting user-input, it is a nice idea to validate the data before processing it any further.

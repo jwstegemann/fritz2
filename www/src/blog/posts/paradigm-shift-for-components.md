@@ -315,10 +315,12 @@ the most relevant basic concepts. Furthermore, have a look at
 the [`headless-demo` module](https://github.com/jwstegemann/fritz2/tree/master/headless-demo/src/jsMain/kotlin/dev/fritz2/headlessdemo)
 which contains all the demos from the docs.
 
-For an easier introduction to the combination of fritz2 and tailwindcss we plan to create a dedicated template project
-in addition to the [well known](https://github.com/jwstegemann/fritz2-template) one. In the future there will
-be more blog articles around the topic "component building with headless" or possibly new articles in
-the new [recipes section](/recipes).
+For an easier introduction to the combination of fritz2 and tailwindcss we have 
+created a dedicated [template project](https://github.com/jwstegemann/fritz2-tailwind-template)
+in addition to the [well known](https://github.com/jwstegemann/fritz2-template) one. We encourage you to use those
+templates as basis for your own fritz2 based applications!
+
+In the future there will be more blog articles around the topic "component building with headless".
 
 ## Warm words about the retired components
 

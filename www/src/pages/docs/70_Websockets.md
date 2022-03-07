@@ -1,12 +1,12 @@
 ---
-layout: layouts/docsWithContentNav.njk
+layout: layouts/docs.njk
 title: Websockets
 permalink: /docs/websockets/
 eleventyNavigation:
     key: websockets
     parent: documentation
     title: Websockets
-    order: 80
+    order: 70
 ---
 
 fritz2 offers support for websockets you can use with different protocols. To use it, you first have to create a socket:
