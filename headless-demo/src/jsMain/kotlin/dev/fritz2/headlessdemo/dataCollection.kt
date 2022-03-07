@@ -9,7 +9,10 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLTableRowElement
 
 fun Tag<HTMLTableRowElement>.column(title: String, button: Tag<HTMLDivElement>.() -> Unit) {
-    th("drop-shadow-sm pl-4 py-3 z-10 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky top-0 bg-gray-50") {
+    th(
+        """drop-shadow-sm pl-4 py-3 z-10 text-left text-xs font-medium text-gray-500 uppercase  
+        | tracking-wider sticky top-0 bg-gray-50""".trimMargin()
+    ) {
         div("w-full flex flex-row items-center") {
             p("flex-auto") {
                 +title
@@ -81,12 +84,18 @@ fun RenderContext.dataTableDemo(amount: Int) {
     inputField("mt-2 mb-4") {
         value(filterStore)
 
-        inputTextfield("shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-1/2 sm:text-sm border-gray-300 px-4 rounded-full") {
+        inputTextfield(
+            """shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-1/2 sm:text-sm  
+            | border-gray-300 px-4 rounded-full""".trimMargin()
+        ) {
             placeholder("filter...")
         }
     }
 
-    dataCollection<Person>("shadow h-80 border border-gray-200 sm:rounded-lg overflow-y-auto overflow-x-auto relative") {
+    dataCollection<Person>(
+        """shadow h-80 border border-gray-200 sm:rounded-lg overflow-y-auto  
+        | overflow-x-auto relative""".trimMargin()
+    ) {
         data(storedPersons.data, Person::id)
 
 //        selection.single(selectionStore)
@@ -119,7 +128,10 @@ fun RenderContext.dataTableDemo(amount: Int) {
 
             val padding = "px-4 py-2 whitespace-nowrap"
 
-            dataCollectionItems("text-sm font-medium text-gray-500 hover:bg-indigo-400", tag = RenderContext::tbody) {
+            dataCollectionItems(
+                "text-sm font-medium text-gray-500 hover:bg-indigo-400",
+                tag = RenderContext::tbody
+            ) {
                 items.renderEach(Person::id, into = this, batch = true) { item ->
                     dataCollectionItem(item, tag = RenderContext::tr) {
                         className(selected.combine(active) { sel, act ->
@@ -162,18 +174,18 @@ fun RenderContext.gridListDemo(amount: Int) {
 //        selection.single(selectionStore)
         selection.multi(selectionStore)
 
-        div("flex m-2") {
+        div("h-10 flex items-center m-2") {
             dataCollectionSortButton(
                 compareBy(Person::fullName),
                 compareByDescending(Person::fullName),
-                """w-12 flex justify-center m-2 bg-white rounded-lg 
+                """w-8 flex justify-center m-2 bg-white rounded-lg 
                 | shadow-md cursor-default focus:outline-none focus:ring-2 focus:ring-opacity-75 
                 | focus:ring-white focus:ring-offset-orange-300 focus:ring-offset-2 
                 | focus:border-indigo-500 sm:text-sm""".trimMargin()
             ) {
                 direction.render(into = this) {
                     icon(
-                        "text-gray-500 h-3 w-3 mt-1 mr-2", content =
+                        "text-gray-500 m-2", content =
                         when (it) {
                             SortDirection.NONE -> HeroIcons.selector
                             SortDirection.ASC -> HeroIcons.sort_ascending
@@ -187,7 +199,11 @@ fun RenderContext.gridListDemo(amount: Int) {
                 value(filterStore)
                 //FIXME: Warum braucht man den?
                 placeholder("filter...")
-                inputTextfield("shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-1/2 sm:text-sm border-gray-300 px-4 rounded-full") { }
+                inputTextfield(
+                    """shadow-sm focus:ring-2 focus:ring-opacity-75 focus:ring-white focus:ring-offset-orange-300 
+                    | focus:ring-offset-2 focus:outline-none block w-1/2 sm:text-sm border-gray-300 px-4  
+                    | rounded-full""".trimMargin()
+                ) { }
             }
         }
 
@@ -204,7 +220,8 @@ fun RenderContext.gridListDemo(amount: Int) {
                 items.renderEach(Person::id) { item ->
                     dataCollectionItem(
                         item,
-                        "col-span-1 bg-white rounded-lg shadow divide-y divide-gray-200 ring-offset-2 ring-offset-amber-400",
+                        """col-span-1 bg-white rounded-lg shadow divide-y divide-gray-200 ring-offset-2  
+                            | ring-offset-amber-400""".trimMargin(),
                         tag = RenderContext::li
                     ) {
                         className(selected.combine(active) { sel, act ->
@@ -217,9 +234,14 @@ fun RenderContext.gridListDemo(amount: Int) {
                             div("flex-1 truncate") {
                                 div("flex items-center space-x-3") {
                                     h3("text-gray-900 text-sm font-medium truncate") { +item.fullName }
-                                    span("flex-shrink-0 inline-block px-2 py-0.5 text-green-800 text-xs font-medium bg-green-100 rounded-full") { +item.birthday }
+                                    span(
+                                        """flex-shrink-0 inline-block px-2 py-0.5 text-green-800 text-xs 
+                                        | font-medium bg-green-100 rounded-full""".trimMargin()
+                                    ) { +item.birthday }
                                 }
-                                p("mt-1 text-gray-500 text-sm truncate") { +"${item.address.postalCode} ${item.address.city}, ${item.address.street} ${item.address.houseNumber}" }
+                                p("mt-1 text-gray-500 text-sm truncate") {
+                                    +"${item.address.postalCode} ${item.address.city}, ${item.address.street} ${item.address.houseNumber}"
+                                }
                             }
                             img("w-10 h-10 bg-gray-300 rounded-full flex-shrink-0") {
                                 src(item.portraitUrl)
@@ -229,7 +251,11 @@ fun RenderContext.gridListDemo(amount: Int) {
                         div {
                             div("-mt-px flex divide-x divide-gray-200") {
                                 div("w-0 flex-1 flex") {
-                                    a("relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-gray-500") {
+                                    a(
+                                        """relative -mr-px w-0 flex-1 inline-flex items-center justify-center  
+                                        | py-4 text-sm text-gray-700 font-medium border border-transparent  
+                                        | rounded-bl-lg hover:text-gray-500""".trimMargin()
+                                    ) {
                                         href("mailto:janecooper@example.com")
                                         /* <!-- Heroicon name: solid/mail --> */
                                         svg("w-5 h-5 text-gray-400") {
@@ -248,7 +274,11 @@ fun RenderContext.gridListDemo(amount: Int) {
                                     }
                                 }
                                 div("-ml-px w-0 flex-1 flex") {
-                                    a("relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-br-lg hover:text-gray-500") {
+                                    a(
+                                        """relative w-0 flex-1 inline-flex items-center justify-center py-4 
+                                        | text-sm text-gray-700 font-medium border border-transparent rounded-br-lg 
+                                        | hover:text-gray-500""".trimMargin()
+                                    ) {
                                         href("tel:+1-202-555-0170")
                                         /* <!-- Heroicon name: solid/phone --> */
                                         svg("w-5 h-5 text-gray-400") {
@@ -257,7 +287,13 @@ fun RenderContext.gridListDemo(amount: Int) {
                                             fill("currentColor")
                                             attr("aria-hidden", "true")
                                             path {
-                                                d("M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z")
+                                                d(
+                                                    """M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0  
+                                                    | 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 
+                                                    | 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 
+                                                    | 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 
+                                                    | 5V3z""".trimMargin()
+                                                )
                                             }
                                         }
                                         span("ml-3") { +item.phone }
