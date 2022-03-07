@@ -1,4 +1,3 @@
-
 ---
 title: Headless Components
 layout: layouts/docs.njk
