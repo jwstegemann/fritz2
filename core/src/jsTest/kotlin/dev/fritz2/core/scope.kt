@@ -1,6 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.initDocument
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -15,8 +14,7 @@ class ScopeTests {
 
     @Test
     fun testScopeInDifferentContexts() = runTest {
-        initDocument()
-
+        
         val id1 = Id.next()
         val key1 = Scope.keyOf<String>("key1")
         val value1 = "value1"

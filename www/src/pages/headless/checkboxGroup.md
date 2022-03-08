@@ -1,6 +1,6 @@
 ---
 title: CheckboxGroup 
-layout: layouts/headlessWithContentNav.njk 
+layout: layouts/docs.njk
 permalink: /headless/checkboxgroup/ 
 eleventyNavigation:
     key: checkbox

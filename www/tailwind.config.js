@@ -5,7 +5,7 @@ module.exports = {
     "./src/_includes/**/*.{html,md,11ty.js,liquid,njk,hbs,mustache,ejs,haml,pug}",
     "./src/blog/**/*.{html,md,11ty.js,liquid,njk,hbs,mustache,ejs,haml,pug}",
     "./src/pages/**/*.{html,md,11ty.js,liquid,njk,hbs,mustache,ejs,haml,pug}",
-    "./src/index.{html,md,11ty.js,liquid,njk,hbs,mustache,ejs,haml,pug}",
+    "./src/*.{html,md,11ty.js,liquid,njk,hbs,mustache,ejs,haml,pug}",
   ],
   theme: {
     extend: {
@@ -13,8 +13,8 @@ module.exports = {
         'prose': '100ch',
       },
       fontFamily: {
-        'nunito': ['Nunito', 'Arial', 'sans-serif'],
-        'sans': ['Inter var', 'ui-sans-serif', 'system-ui', '-apple-system', "Segoe UI", 'Roboto', 'Arial', 'Noto Sans']
+        'nunito': ['Nunito', 'sans-serif'],
+        'sans': ['Inter', 'sans-serif']
       },
       colors: {
         bg: {
@@ -24,8 +24,8 @@ module.exports = {
         },
         fg: {
           DEFAULT: colors.cyan["700"],
-          highlight: colors.cyan["200"],
-          focus: colors.cyan["300"],
+          highlight: colors.teal["200"],
+          focus: colors.cyan["400"],
         },
         relaxed: {
           DEFAULT: colors.gray["400"],

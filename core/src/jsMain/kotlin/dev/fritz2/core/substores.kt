@@ -14,7 +14,7 @@ class SubStore<P, D>(
     private val lens: Lens<P, D>
 ) : Store<D> {
 
-    //TODO: investigate: can you Job from parent instead?
+    //TODO: investigate, if you can use Job from parent instead
     /**
      * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
      */

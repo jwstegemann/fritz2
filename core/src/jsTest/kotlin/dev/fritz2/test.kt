@@ -3,7 +3,6 @@ package dev.fritz2
 import dev.fritz2.core.mountSimple
 import dev.fritz2.remote.Request
 import dev.fritz2.remote.http
-import kotlinx.browser.document
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 
@@ -11,11 +10,6 @@ fun <T> runTest(block: suspend () -> T): dynamic = MainScope().promise {
     delay(50)
     block()
     delay(50)
-}
-
-fun initDocument() {
-    document.clear()
-    document.write("""<body>Loading...</body>""")
 }
 
 fun <T> checkSingleFlow(

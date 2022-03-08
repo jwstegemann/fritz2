@@ -1,10 +1,7 @@
 package dev.fritz2.headless.components
 
 import dev.fritz2.core.*
-import dev.fritz2.headless.foundation.Aria
-import dev.fritz2.headless.foundation.DatabindingProperty
-import dev.fritz2.headless.foundation.TagFactory
-import dev.fritz2.headless.validation.ComponentValidationMessage
+import dev.fritz2.headless.foundation.*
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 
@@ -21,7 +18,7 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
     Tag<C> by tag {
 
     val value = DatabindingProperty<Boolean>()
-    val enabled: Flow<Boolean> = flowOf(false).flatMapLatest { value.data }
+    val enabled: Flow<Boolean> by lazy { value.data }
 
     val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
 
@@ -55,13 +52,15 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        content: Tag<CV>.(List<ComponentValidationMessage>) -> Unit
-    ) = value.validationMessages.render { messages ->
-        if (messages.isNotEmpty()) {
-            tag(this, classes, "$componentId-validation-messages", scope, { })
-                .apply {
-                    content(messages)
-                }.also { validationMessages = it }
+        initialize: ValidationMessages<CV>.() -> Unit
+    ) {
+        value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
+            if(isNotEmpty) {
+                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
+                    validationMessages = this
+                    initialize(ValidationMessages(value.validationMessages, this))
+                }
+            }
         }
     }
 
@@ -74,8 +73,8 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
     fun RenderContext.switchValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLDivElement>.(List<ComponentValidationMessage>) -> Unit
-    ) = switchValidationMessages(classes, scope, RenderContext::div, content)
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+    ) = switchValidationMessages(classes, scope, RenderContext::div, initialize)
 }
 
 /**

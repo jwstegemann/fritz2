@@ -4,6 +4,7 @@ const markdownIt = require('markdown-it');
 const markdownItKbd = require('markdown-it-kbd');
 const markdownItAnchor = require('markdown-it-anchor');
 const markdownItContainer = require('markdown-it-container');
+const markdownItImsize = require('markdown-it-imsize');
 const pluginTOC = require('eleventy-plugin-toc');
 const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
 const heroicons = require('eleventy-plugin-heroicons');
@@ -11,7 +12,9 @@ const heroicons = require('eleventy-plugin-heroicons');
 module.exports = function(eleventyConfig) {
 
   eleventyConfig.addPlugin(eleventyNavigationPlugin);
-  eleventyConfig.addPlugin(heroicons);
+  eleventyConfig.addPlugin(heroicons, {
+    errorOnMissing: true
+  });
   eleventyConfig.addPlugin(syntaxHighlight);
 
   eleventyConfig.addPassthroughCopy('src/assets')
@@ -24,6 +27,10 @@ module.exports = function(eleventyConfig) {
       {
         route: '/headless-demo',
         dir: '../headless-demo/build/distributions'
+      },
+      {
+        route: '/examples-demo',
+        dir: '../examples-demo/build/distributions'
       },
       {
         route: '/api',
@@ -56,6 +63,7 @@ module.exports = function(eleventyConfig) {
           .use(markdownItKbd)
           .use(markdownItContainer, "info")
           .use(markdownItContainer, "warning")
+          .use(markdownItImsize)
   )
 
   eleventyConfig.addPlugin(pluginTOC, {

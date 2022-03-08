@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    id("com.google.devtools.ksp") version "1.6.10-1.0.2"
+    id("com.google.devtools.ksp")
 }
 
 ksp {
@@ -22,22 +22,22 @@ kotlin {
             dependencies {
                 api(kotlin("stdlib"))
                 api(project(":core"))
-                implementation("com.squareup:kotlinpoet:${rootProject.ext["kotlinpoetVersion"]}")
-                implementation("com.squareup:kotlinpoet-ksp:${rootProject.ext["kotlinpoetVersion"]}")
-                implementation("com.google.devtools.ksp:symbol-processing-api:${rootProject.ext["kspVersion"]}")
-                api(kotlin("reflect:${rootProject.ext["kotlinVersion"]}"))
-                api(kotlin("script-runtime:${rootProject.ext["kotlinVersion"]}"))
-                implementation("com.google.auto.service:auto-service-annotations:${rootProject.ext["autoServiceVersion"]}")
+                implementation("com.squareup:kotlinpoet:${rootProject.extra["kotlinpoetVersion"]}")
+                implementation("com.squareup:kotlinpoet-ksp:${rootProject.extra["kotlinpoetVersion"]}")
+                implementation("com.google.devtools.ksp:symbol-processing-api:${rootProject.extra["kspVersion"]}")
+                api(kotlin("reflect:${rootProject.extra["kotlinVersion"]}"))
+                api(kotlin("script-runtime:${rootProject.extra["kotlinVersion"]}"))
+                implementation("com.google.auto.service:auto-service-annotations:${rootProject.extra["autoServiceVersion"]}")
             }
         }
 
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test-junit5"))
-                implementation("org.junit.jupiter:junit-jupiter-params:${rootProject.ext["junitJupiterParamsVersion"]}")
-                implementation("org.assertj:assertj-core:${rootProject.ext["assertJVersion"]}")
-                implementation("com.github.tschuchortdev:kotlin-compile-testing:${rootProject.ext["compileTestingVersion"]}")
-                implementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:${rootProject.ext["compileTestingVersion"]}")
+                implementation("org.junit.jupiter:junit-jupiter-params:${rootProject.extra["junitJupiterParamsVersion"]}")
+                implementation("org.assertj:assertj-core:${rootProject.extra["assertJVersion"]}")
+                implementation("com.github.tschuchortdev:kotlin-compile-testing:${rootProject.extra["compileTestingVersion"]}")
+                implementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:${rootProject.extra["compileTestingVersion"]}")
             }
         }
     }

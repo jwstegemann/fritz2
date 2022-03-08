@@ -18,11 +18,13 @@ abstract class PopUpPanel<C : HTMLElement>(
     scope: ScopeContext.() -> Unit,
     private val openCloseDelegate: OpenClose,
     private val reference: Tag<HTMLElement>?,
-    private val popperDiv: HtmlTag<HTMLDivElement> = renderContext.div("f2-popup-hidden") {}, //never add other classes to popperDiv, they will be overridden
+    private val popperDiv: HtmlTag<HTMLDivElement> = renderContext.div(POPUP_HIDDEN) {}, //never add other classes to popperDiv, they will be overridden
     tag: Tag<C> = tagFactory(popperDiv, classes, id, scope) {}
 ) : Tag<C> by tag {
 
     companion object {
+        private const val POPUP_HIDDEN = "fritz2-popup-hidden"
+        private const val POPUP_VISIBLE = "fritz2-popup-visible"
         init {
             addGlobalStyles(
                 listOf(
@@ -50,10 +52,10 @@ abstract class PopUpPanel<C : HTMLElement>(
                 transform: rotate(45deg);
                 background: inherit;
             }""".trimIndent(),
-            """.popper.f2-popup-visible .popper-arrow::before {
+            """.popper.$POPUP_VISIBLE .popper-arrow::before {
                 visibility: visible;
             }""".trimIndent(),
-            """.popper.f2-popup-hidden .popper-arrow::before {
+            """.popper.$POPUP_HIDDEN .popper-arrow::before {
                 visibility: hidden;
             }""".trimIndent(),
                     """.popper[data-popper-placement^='bottom'] .popper-arrow::before {
@@ -116,11 +118,11 @@ abstract class PopUpPanel<C : HTMLElement>(
                     """.popper[data-popper-placement='right-end'] > .transform {
                 transform-origin: bottom left;
             }""".trimIndent(),
-                    """.f2-popup-visible {
+                    """.$POPUP_VISIBLE {
                 width: 100%;
                 visibility: visible;
             }""".trimIndent(),
-                    """.f2-popup-hidden {
+                    """.$POPUP_HIDDEN {
                 width: 100%;
                 visibility: hidden;
             }""".trimIndent()
@@ -170,13 +172,13 @@ abstract class PopUpPanel<C : HTMLElement>(
                 }
                 openCloseDelegate.opened handledBy {
                     if (it) {
-                        popperDiv.domNode.className = "popper f2-popup-visible"
+                        popperDiv.domNode.className = "popper $POPUP_VISIBLE"
                         this@PopUpPanel.waitForAnimation()
                         popper.update()
                         setFocus()
                     } else {
                         this@PopUpPanel.waitForAnimation()
-                        popperDiv.domNode.className = "popper f2-popup-hidden"
+                        popperDiv.domNode.className = "popper $POPUP_HIDDEN"
                     }
                 }
             }

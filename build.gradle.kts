@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform") version "1.6.10" apply false
     kotlin("plugin.serialization") version "1.6.10" apply false
+    id("com.google.devtools.ksp") version "1.6.10-1.0.2" apply false
     id("org.jetbrains.dokka") version "1.6.10"
     id("maven-publish")
     signing
@@ -13,7 +14,7 @@ rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJ
 
 // consider moving to idiomatic solution of gradle for dependency sharing once it is ready:
 // https://docs.gradle.org/current/userguide/platforms.html
-ext {
+extra.apply {
     // Dependencies
     set("kotlinVersion", "1.6.10")
     set("coroutinesVersion", "1.6.0")
@@ -26,6 +27,21 @@ ext {
     set("autoServiceVersion", "1.0.1")
     set("junitJupiterParamsVersion", "5.8.1")
     set("assertJVersion", "3.19.0")
+    // npm
+    set("popperjs", "2.10.1")
+    set("scroll-into-view-if-needed", "2.2.28")
+
+    // tailwind
+    set("tailwindcss", "3.0.19")
+    set("tailwindcss/forms", "0.4.0")
+
+    // webpack
+    set("postcss", "8.4.6")
+    set("postcss-loader", "6.2.1")
+    set("autoprefixer", "10.4.2")
+    set("css-loader", "6.6.0")
+    set("style-loader", "3.3.1")
+    set("cssnano", "5.0.17")
 }
 
 allprojects {

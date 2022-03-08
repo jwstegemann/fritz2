@@ -29,8 +29,8 @@ jobs:
       - name: Generating API docs
         run: ./gradlew dokkaHtmlMultiModule
 
-      - name: Build headless-demo
-        run: ./gradlew headless-demo:build metadataToWww
+      - name: Build Demos
+        run: ./gradlew headless-demo:build examples-demo:build metadataToWww
 
       - name: Build Webpage
         working-directory: ./www
@@ -41,6 +41,9 @@ jobs:
 
       - name: Copy headless-demo files to webpage
         run: mkdir -p ./www/_site/headless-demo && cp ./headless-demo/build/distributions/* ./www/_site/headless-demo
+
+      - name: Copy examples-demo files to webpage
+        run: mkdir -p ./www/_site/examples-demo && cp ./examples-demo/build/distributions/* ./www/_site/examples-demo
 
       - name: Deploy to GitHub Pages
         if: success()

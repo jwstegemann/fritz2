@@ -1,6 +1,22 @@
 ---
-layout: layouts/docs.njk
+layout: layouts/pageWithNav.njk
 ---
 
-<time>{{ date | readableDate }}</time>
-<article class="prose prose-invert max-w-prose">{{ content | safe }}</article>
+<div class="bg-bg lg:min-w-0 lg:flex-1 h-full">
+    <div class="h-full py-6 px-5 sm:px-6 lg:px-8 h-full overscroll-none overflow-y-auto bg-bg lg:pr-72">
+        <h2 class="text-white font-bold text-4xl my-8">
+            {{ title }}
+        </h2>
+        <div class="text-gray-300">
+            <div class="flex space-x-1 mb-1 text-sm">
+                <time datetime="{{ date | htmlDateString }}">{{ date | readableDate }}</time>
+                <span aria-hidden="true"> · </span>
+                <span>{{ readtime }} min read </span>
+            </div>
+            <div class="mb-12">
+                by <a href="https://github.com/{{ author }}" target="_blank" class="text-fg-highlight hover:underline">{{ author }}</a>
+            </div>
+        </div>
+        <article class="prose prose-invert max-w-prose pb-12">{{ content | safe }}</article>
+    </div>
+</div>
