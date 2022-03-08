@@ -2,6 +2,7 @@ package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.components.*
+import dev.fritz2.headless.foundation.utils.scrollintoview.ScrollPosition
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
@@ -132,6 +133,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
                 "text-sm font-medium text-gray-500 hover:bg-indigo-400",
                 tag = RenderContext::tbody
             ) {
+                scrollIntoView(vertical = ScrollPosition.center)
                 items.renderEach(Person::id, into = this, batch = true) { item ->
                     dataCollectionItem(item, tag = RenderContext::tr) {
                         className(selected.combine(active) { sel, act ->
@@ -215,6 +217,7 @@ fun RenderContext.gridListDemo(amount: Int) {
                 "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-2 overflow-y-auto ",
                 tag = RenderContext::ul
             ) {
+                scrollIntoView()
                 attr("role", "list")
                 items.map { it.count() } handledBy storedFilteredSize.update
                 items.renderEach(Person::id) { item ->
