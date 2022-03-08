@@ -8,6 +8,7 @@ import dev.fritz2.headless.components.DataCollection
 import dev.fritz2.headless.components.SortDirection
 import dev.fritz2.headless.components.dataCollection
 import dev.fritz2.headless.components.inputField
+import dev.fritz2.headless.foundation.utils.scrollintoview.ScrollPosition
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
@@ -72,7 +73,8 @@ fun RenderContext.collectionDemo() {
 
             val padding = "px-4 py-2 whitespace-nowrap"
 
-            dataCollectionItems("text-sm font-medium text-gray-500 hover:bg-indigo-400", tag = RenderContext::tbody) {
+            dataCollectionItems("mt-10 text-sm font-medium text-gray-500 hover:bg-indigo-400", tag = RenderContext::tbody) {
+                scrollIntoView(vertical = ScrollPosition.center)
                 items.renderEach(Person::_id, into = this, batch = true) { item ->
                     dataCollectionItem(item, tag = RenderContext::tr) {
                         className(selected.combine(active) { sel, act -> if (sel) {
@@ -80,9 +82,9 @@ fun RenderContext.collectionDemo() {
                         } else {
                             if (act) "bg-indigo-50" else "odd:bg-white even:bg-gray-50"
                         }} )
-                        td(padding) { +item.fullName }
-                        td(padding) { +item.email }
-                        td(padding) { +item.birthday }
+                        td(padding,"$collectionItemId-1") { +item.fullName }
+                        td(padding,"$collectionItemId-1") { +item.email }
+                        td(padding,"$collectionItemId-1") { +item.birthday }
                     }
                 }
             }
