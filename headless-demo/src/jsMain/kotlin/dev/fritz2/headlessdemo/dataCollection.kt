@@ -1,7 +1,11 @@
 package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.*
-import dev.fritz2.headless.components.*
+import dev.fritz2.headless.components.DataCollection
+import dev.fritz2.headless.components.dataCollection
+import dev.fritz2.headless.components.inputField
+import dev.fritz2.headless.components.tabGroup
+import dev.fritz2.headless.foundation.SortDirection
 import dev.fritz2.headless.foundation.utils.scrollintoview.ScrollPosition
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -115,13 +119,6 @@ fun RenderContext.dataTableDemo(amount: Int) {
                         )
                     }
                     column("eMail") {
-                        // TODO: Geht aktuell nicht, weil Sorting nicht public ist im Button
-                        /*
-                        dataCollectionSortButton(compareBy(Person::email), compareByDescending(Person::email)) {
-                            keydowns.mapNotNull { if(shortcutOf(it) == Keys.Space) SORTING else null } handledBy sortBy
-                        }
-
-                         */
                     }
                     column("Birthday") {}
                 }
@@ -199,7 +196,6 @@ fun RenderContext.gridListDemo(amount: Int) {
 
             inputField("m-2 grow") {
                 value(filterStore)
-                //FIXME: Warum braucht man den?
                 placeholder("filter...")
                 inputTextfield(
                     """shadow-sm focus:ring-2 focus:ring-opacity-75 focus:ring-white focus:ring-offset-orange-300 
@@ -208,7 +204,6 @@ fun RenderContext.gridListDemo(amount: Int) {
                 ) { }
             }
         }
-
 
         filterStore.data handledBy filterByText { "${it.fullName}|${it.email}" }
 

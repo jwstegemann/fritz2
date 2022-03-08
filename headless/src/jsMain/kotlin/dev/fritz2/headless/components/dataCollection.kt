@@ -13,25 +13,23 @@ import org.w3c.dom.HTMLElement
 import kotlin.math.max
 import kotlin.math.min
 
-// TODO: Rename to CollectionDataProperty? (Why Table?)
-data class TableData<T>(val data: Flow<List<T>>, val idProvider: IdProvider<T, *>?, val id: String?)
+data class CollectionData<T>(val data: Flow<List<T>>, val idProvider: IdProvider<T, *>?, val id: String?)
 
-class TableDataProperty<T> : Property<TableData<T>>() {
+class CollectionDataProperty<T> : Property<CollectionData<T>>() {
     operator fun invoke(data: List<T>, idProvider: IdProvider<T, *>? = null, id: String? = null) {
-        value = TableData(flowOf(data), idProvider, id)
+        value = CollectionData(flowOf(data), idProvider, id)
     }
 
     operator fun invoke(data: Flow<List<T>>, idProvider: IdProvider<T, *>? = null, id: String? = null) {
-        value = TableData(data, idProvider, id)
+        value = CollectionData(data, idProvider, id)
     }
 
     operator fun invoke(store: Store<List<T>>, idProvider: IdProvider<T, *>? = null) {
-        value = TableData(store.data, idProvider, store.id)
+        value = CollectionData(store.data, idProvider, store.id)
     }
 }
 
 
-// TODO: Why not a "real" Property? -> Answer: No added value besides relying on same base interface?
 class SelectionMode<T> {
     val single = DatabindingProperty<T?>()
     val multi = DatabindingProperty<List<T>>()
@@ -61,19 +59,10 @@ class ScrollIntoViewProperty() : Property<ScrollIntoViewOptions>() {
 }
 
 
-enum class SortDirection {
-    NONE, ASC, DESC
-}
-
-//TODO: make this nullable to allow sorting only in one direction?
-//  Question: Do we need sub-packages for headless components now? (others do not have multiple helper classes!)
-data class Sorting<T>(val comparatorAscending: Comparator<T>, val comparatorDescending: Comparator<T>)
-data class SortingOrder<T>(val sorting: Sorting<T>, val direction: SortDirection)
-
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
-    val data = TableDataProperty<T>()
+    val data = CollectionDataProperty<T>()
 
     inline fun isSame(a: T?, b: T) = data.value?.idProvider?.let { id ->
         a != null && id(a) == id(b)
@@ -113,13 +102,11 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
     val selection = SelectionMode<T>()
 
-    inner class DataCollectionSortButton<CS : HTMLElement>(private val sorting: Sorting<T>, tag: Tag<CS>) :
+    inner class DataCollectionSortButton<CS : HTMLElement>(val sorting: Sorting<T>, tag: Tag<CS>) :
         Tag<CS> by tag {
         val direction = sortingDirection(sorting)
 
         fun render() {
-            // TODO: reicht das clicks? Wie kann ein Anwender per Tastatur eine Sortierung auslösen?
-            //  ``sortBy`` ist zugänglich, aber `sorting` nicht...
             clicks.map { sorting } handledBy sortBy
         }
     }
@@ -127,12 +114,12 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
     fun <CS : HTMLElement> RenderContext.dataCollectionSortButton(
         sort: Sorting<T>,
         classes: String? = null,
+        id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CS>>,
         initialize: DataCollectionSortButton<CS>.() -> Unit
     ) {
-        //TODO: id
-        tag(this, classes, "someID", scope) {
+        tag(this, classes, id, scope) {
             DataCollectionSortButton(sort, this).run {
                 initialize()
                 render()
@@ -140,20 +127,33 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         }
     }
 
+    fun <CS : HTMLElement> RenderContext.dataCollectionSortButton(
+        comparatorAscending: Comparator<T>,
+        comparatorDescending: Comparator<T>,
+        classes: String? = null,
+        id: String? = null,
+        internalScope: (ScopeContext.() -> Unit) = {},
+        tag: TagFactory<Tag<CS>>,
+        initialize: DataCollectionSortButton<CS>.() -> Unit
+    ) = dataCollectionSortButton(Sorting(comparatorAscending, comparatorDescending), classes, id, internalScope, tag, initialize)
+
     fun RenderContext.dataCollectionSortButton(
         sort: Sorting<T>,
         classes: String? = null,
+        id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
         initialize: DataCollectionSortButton<HTMLButtonElement>.() -> Unit
-    ) = dataCollectionSortButton(sort, classes, internalScope, RenderContext::button, initialize)
+    ) = dataCollectionSortButton(sort, classes, id, internalScope, RenderContext::button, initialize)
 
     fun RenderContext.dataCollectionSortButton(
         comparatorAscending: Comparator<T>,
         comparatorDescending: Comparator<T>,
         classes: String? = null,
+        id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
         initialize: DataCollectionSortButton<HTMLButtonElement>.() -> Unit
-    ) = dataCollectionSortButton(Sorting(comparatorAscending, comparatorDescending), classes, internalScope, initialize)
+    ) = dataCollectionSortButton(Sorting(comparatorAscending, comparatorDescending), classes, id, internalScope, initialize)
+
 
     inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>, val collectionId: String?) : Tag<CI> by tag {
         val scrollIntoView = ScrollIntoViewProperty()
@@ -269,6 +269,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                 }
 
                 active.flatMapLatest { isActive ->
+                    console.log("XXX")
                     mousemoves.mapNotNull {
                         if (!isActive) (item to false)
                         else null
