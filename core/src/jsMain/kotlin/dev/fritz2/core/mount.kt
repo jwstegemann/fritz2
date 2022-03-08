@@ -263,10 +263,12 @@ private suspend inline fun insertMany(target: Node, mountPoints: MutableMap<Node
     var itemToDelete = target.childNodes.item(start)
     repeat(count) {
         itemToDelete?.let {
-            //FIXME: get parentJob here?
-            (MainScope() + parentJob).launch {
-                cancelJob(it)
-                removeChild(it)
+            mountPoints.remove(it)?.let { mountPoint ->
+                (MainScope() + parentJob).launch() {
+                    mountPoint.job.cancelChildren()
+                    mountPoint.runBeforeUnmounts()
+                    target.removeChild(it)
+                }
             }
             itemToDelete = it.nextSibling
         }
