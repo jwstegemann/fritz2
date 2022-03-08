@@ -13,7 +13,7 @@ import org.w3c.dom.HTMLElement
 import kotlin.math.max
 import kotlin.math.min
 
-
+// TODO: Rename to CollectionDataProperty? (Why Table?)
 data class TableData<T>(val data: Flow<List<T>>, val idProvider: IdProvider<T, *>?, val id: String?)
 
 class TableDataProperty<T> : Property<TableData<T>>() {
@@ -31,6 +31,7 @@ class TableDataProperty<T> : Property<TableData<T>>() {
 }
 
 
+// TODO: Why not a "real" Property? -> Answer: No added value besides relying on same base interface?
 class SelectionMode<T> {
     val single = DatabindingProperty<T?>()
     val multi = DatabindingProperty<List<T>>()
@@ -65,6 +66,7 @@ enum class SortDirection {
 }
 
 //TODO: make this nullable to allow sorting only in one direction?
+//  Question: Do we need sub-packages for headless components now? (others do not have multiple helper classes!)
 data class Sorting<T>(val comparatorAscending: Comparator<T>, val comparatorDescending: Comparator<T>)
 data class SortingOrder<T>(val sorting: Sorting<T>, val direction: SortDirection)
 
@@ -99,8 +101,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
     private val filtering = object : RootStore<((List<T>) -> List<T>)?>(null) {}
     val filterBy = filtering.update
-    val filterByText = filtering.handle<String> { _, text ->
-        { it.filter { it.toString().lowercase().contains(text.lowercase()) } }
+    fun filterByText(toString: (T) -> String = { it.toString() }) = filtering.handle<String> { _, text ->
+        { it.filter { toString(it).lowercase().contains(text.lowercase()) } }
     }
 
     fun sortingDirection(s: Sorting<T>) = sorting.data.map {
@@ -116,6 +118,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         val direction = sortingDirection(sorting)
 
         fun render() {
+            // TODO: reicht das clicks? Wie kann ein Anwender per Tastatur eine Sortierung auslösen?
+            //  ``sortBy`` ist zugänglich, aber `sorting` nicht...
             clicks.map { sorting } handledBy sortBy
         }
     }
