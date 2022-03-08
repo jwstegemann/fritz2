@@ -109,7 +109,7 @@ layout: layouts/page.njk
                                     </span>
                                 </h1>
                                 <p class="text-base text-gray-300 sm:text-xl lg:text-lg xl:text-xl">
-                                    fritz2 is a lightweight, typesafe, data-driven library to build reactive web-apps in pure Kotlin heavily depending on coroutines and flows.
+                                    fritz2 is a lightweight, typesafe, data-driven library for building reactive web-apps in pure Kotlin, heavily depending on coroutines and flows.
                                 </p>
                             </div>
                         </div>
@@ -125,12 +125,12 @@ layout: layouts/page.njk
                 <div class="text-center px-4 sm:px-6 lg:px-8 mx-auto max-w-md sm:max-w-3xl lg:max-w-7xl">
                     <h2 class="text-base font-semibold tracking-wider text-cyan-600 uppercase">FEATURES</h2>
                     <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">
-                        Everything you need to create your web-app
+                        Why you should use fritz2
                     </p>
-                    <p class="mt-5 max-w-prose mx-auto text-xl text-gray-500">
-                        fritz2 is lightweight, reactive and easy to learn
-                    </p>
-                    <div class="mt-12">
+{#                    <p class="mt-5 max-w-prose mx-auto text-xl text-gray-500">#}
+{#                        fritz2 is lightweight, reactive, and easy to learn#}
+{#                    </p>#}
+                    <div class="mt-12 sm:mt-24">
                         <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                             <div class="pt-6">
                                 <div class="flow-root bg-gray-50 rounded-lg px-6 pb-8">
@@ -142,9 +142,9 @@ layout: layouts/page.njk
                                             </span>
                                           </span>
                                         </div>
-                                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Kotlin</h3>
+                                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Pure Kotlin</h3>
                                         <p class="mt-5 text-base text-gray-500">
-                                            fritz2 heavily uses Kotlin standard features (especially flows) and has no external dependencies.
+                                            fritz2 makes heavy use of Kotlin standard features (especially flows) and has no external dependencies.
                                             Based upon Kotlin's outstanding capabilities to build DSLs, fritz2 offers a nice declarative
                                             and typesafe syntax to structure your UI code in a comfortable and easy to read way.
                                         </p>
@@ -162,10 +162,11 @@ layout: layouts/page.njk
                                             </span>
                                           </span>
                                         </div>
-                                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Data-Binding</h3>
+                                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Precise Data-Binding</h3>
                                         <p class="mt-5 text-base text-gray-500">
-                                            fritz2 offers precise data-binding for your ui-elements. When your data changes, those - and only those - DOM-elements are updated,
-                                            that are bound to parts of the model, that really have changed - no virtual dom needed.
+                                            fritz2 offers precise data-binding for your ui-elements. This means that when parts of your data model
+                                            change, exactly those and only those DOM-nodes depending on the changed parts
+                                            will automatically change as well - no virtual dom needed.
                                         </p>
                                     </div>
                                 </div>
@@ -181,7 +182,7 @@ layout: layouts/page.njk
                                             </span>
                                           </span>
                                         </div>
-                                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Learn</h3>
+                                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Easy to Learn</h3>
                                         <p class="mt-5 text-base text-gray-500">
                                             fritz2 is built around just a few basic concepts (Stores, Handlers, Tags, etc.).
                                             You can easily learn how to use them from our documentation or the examples we provide. Enjoy!
@@ -200,10 +201,10 @@ layout: layouts/page.njk
                                             </span>
                                           </span>
                                         </div>
-                                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Scale</h3>
+                                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">App-Scaling</h3>
                                         <p class="mt-5 text-base text-gray-500">
-                                            fritz2 allows you to build small apps very fast with a few lines of code as well as enterprise
-                                            scale applications with a focus on reusable components, clean code and structure.
+                                            fritz2 allows you to quickly build small apps very fast with a few lines of code, as well as enterprise
+                                            scale applications with a focus on reusable components, clean code, and structure.
                                             The functional reactive concept makes the resulting code easy to read and to maintain.
                                         </p>
                                     </div>
@@ -220,10 +221,10 @@ layout: layouts/page.njk
                                             </span>
                                           </span>
                                         </div>
-                                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Complete</h3>
+                                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Everything you need</h3>
                                         <p class="mt-5 text-base text-gray-500">
                                             fritz2 includes everything you need to start your project:
-                                            state management (even for complex nested models), validation, routing, REST, WebSockets, WebComponents
+                                            state management even for complex nested models, validation, routing, REST, WebSockets, and WebComponents
                                             as well as a set of headless components.
                                         </p>
                                     </div>
@@ -240,11 +241,11 @@ layout: layouts/page.njk
                                             </span>
                                           </span>
                                         </div>
-                                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Reuse</h3>
+                                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Reusability</h3>
                                         <p class="mt-5 text-base text-gray-500">
-                                            using Koltin's multiplatform-abilities, you have to write your data classes and validation code (!)
-                                            just once and use it in your client and server.
-                                            Use a tool-chain (Gradle, IDEA, etc.) you know well to jump right in and build your apps.
+                                            fritz2 uses Koltin's multiplatform-abilities, you'll write your data classes and validation code
+                                            just once and use it for both client and server.
+                                            Use your favorite tool-chain (Gradle, IDEA, etc.) to jump right in and build your apps.
                                         </p>
                                     </div>
                                 </div>
@@ -259,11 +260,11 @@ layout: layouts/page.njk
                 <div class="text-center px-4 sm:px-6 lg:px-8 mx-auto max-w-md sm:max-w-3xl lg:max-w-7xl">
                     <h2 class="text-base font-semibold tracking-wider text-cyan-600 uppercase">SHOW ME CODE</h2>
                     <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">
-                        How your web-app looks like in fritz2
+                        How your web-app looks in fritz2
                     </p>
-                    <p class="mt-5 max-w-prose mx-auto text-xl text-gray-500">
-                        Take advantage of the typesafe HTML-DSL and the precise two-way data-binding
-                    </p>
+{#                    <p class="mt-5 max-w-prose mx-auto text-xl text-gray-500">#}
+{#                        Take advantage of the typesafe HTML-DSL and the precise two-way data-binding#}
+{#                    </p>#}
                     <div class="text-left">
                         {% include "components/codeExamples.njk" %}
                     </div>

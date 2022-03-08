@@ -6,10 +6,10 @@
     </div>
     <div class="p-4">
         <p class="pb-4 prose max-w-prose">
-            Lets start to create our first elements, or as we called them <em>tags</em>, by using the DSL.
-            We need to call the <code>render</code> function at first in order to create a <code>RenderContext</code>
-            where we can put our tags in. Every tag is just a function representing an HTML-element like <code>div</code> here.
-            You can nest them like in HTML. For styling purposes you can add your CSS-class-names directly as first parameter.
+            Let's start creating our first elements, or <em>tags</em> as we called them, by using the DSL.
+            First we need to call the <code>render</code> function in order to create a <code>RenderContext</code>
+            for our tags. Every tag is just a function representing an HTML-element, <code>&lt;div&gt;</code> in this case.
+            You can nest them just like in HTML. To style your tags, add CSS-class-names directly as first parameter.
         </p>
         <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {% highlight "kotlin" %}
@@ -42,9 +42,9 @@ fun main() {
     </div>
     <div class="p-4">
         <p class="pb-4 prose max-w-prose">
-            To structure your UI in reusable fragments just use functions with <code>RenderContext</code> receiver.
-            Inside every render-context you can call your function.
-            Here we created a <code>greet</code> function and call it multiple times with different <code>name</code>s.
+            To divide your code into reusable fragments, simply write functions with a <code>RenderContext</code> receiver
+            - they can be called from inside any render-context.
+            In this example we create a <code>greet</code> function and call it multiple times with different <code>name</code>s.
         </p>
         <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {% highlight "kotlin" %}
@@ -81,12 +81,12 @@ render {
     </div>
     <div class="p-4">
         <p class="pb-4 prose max-w-prose">
-            Lets getting more reactive by using a <code>Store</code> to save our data in.
-            Stores will be needed to get the two-way data-binding done in fritz2.
-            We get the data out as <code>Flow</code> by calling <code>store.data</code>
-            and render it into the <code>value</code> attribute of the <code>&lt;input&gt;</code> tag (one-way).
-            To update the data inside the store we have to call the <code>update</code> handler by using the
-            <code>handledBy</code> function (two-way).
+            Let's get a little more reactive by using a <code>Store</code> to store our data.
+            Stores are needed for two-way data-binding in fritz2.
+            Access the store's data as a <code>Flow</code> by calling <code>store.data</code>,
+            then render it into the <code>value</code> attribute of the <code>&lt;input&gt;</code> tag (this is one-way data-binding).
+            To update the data inside the store, call the <code>update</code> handler by using the
+            <code>handledBy</code> function (two-way data-binding).
         </p>
         <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {% highlight "kotlin" %}
@@ -124,25 +124,17 @@ render {
     </div>
     <div class="p-4">
         <p class="pb-4 prose max-w-prose">
-{#            Unser Focus bei fritz2 liegt auf dem data-handling. D.h. die UI ist eigentlich nur eine Ableitung auf Basis von Regeln der#}
-{#            zugrunde liegenden Daten. In echten Anwendungen ist daher die Richtigkeit der Daten wichtig. Daher bietet#}
-{#            fritz2 Möglichkeiten diese mit Hilfe einer Validierung zu gewährleisten und dem Anwender entsprechende Hinweise zu geben.#}
-{#            Dazu erstellen wir eine <code>Message</code> class für unsere Meldungen und eine <code>validation</code> function#}
-{#            mit den Regeln zur Prüfung der Validität. Dann benutzen wir wieder unseren store zur Datenverwaltung und geben ihm#}
-{#            die Validierung mit. Zum Schluss sorgen wir noch für das Anwender-Feedback indem wir den <code>store.messages</code> flow#}
-{#            rausrendern.#}
-            As you have seen already, fritz2 considers data-handling as first class citizen of any reactive web-app. 
-            You can think of the UI as a rule driven, derived representation from the application data.
-            That's why our framework natively also supports the validation aspect as part of the data-handling.
+            As you have seen, fritz2 considers data-handling a first class citizen of any reactive web-app.
+            Think of the UI as a rule driven, derived representation of the application data.
+            That's why our framework also natively supports validation as part of the data-handling.
         </p>
         <p class="pb-4 prose max-w-prose">
-            In order to evaluate the data correctness, you should create a container for the messages implementing 
-            <code>ValidationMessage</code> and you have to provide a <code>Validation</code> instance by the factory 
+            In order to evaluate the data correctness, create a container for the messages by implementing
+            <code>ValidationMessage</code>. You also have to provide a <code>Validation</code> instance by using the factory
             function <code>validation</code>. The latter contains all the domain rules to check the validity state. 
-            There is a special <code>storeOf</code> factory function that directly accepts a
-            <code>Validation</code>-object, which will be evaluated on each update automatically. Last but not least 
-            we use the provided <code>store.messages</code> flow, to give the user feedback about possible failures 
-            or warnings.
+            There is a special <code>storeOf</code> factory function which directly accepts a
+            <code>Validation</code>-object. It will be automatically evaluated on each update. Last but not least,
+            use the provided <code>store.messages</code> flow to display errors and warnings for the user.
         </p>
         <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div>
