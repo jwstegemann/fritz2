@@ -115,7 +115,34 @@ A common use-case is filtering your items for a certain text. The data collectio
     }
 ```
 
-# Selection
+## Active Item
+
+You can navigate your data-collection by mouse or keyboard (when it is focused). Whenever you move your pointer over an item or navigate to a certain item by keyboard, this item is activated. The `active` state is available as a `Flow<Boolean>` in the scope of `dataCollectionItem` to be used for styling, etc.:
+
+```kotlin
+dataCollectionItem(item, tag = RenderContext::tr) {
+    className(selected.map {
+        if (it) "bg-indigo-50" else "odd:bg-white even:bg-gray-50"
+    })
+ 
+    // ...
+}
+```
+
+If your data collection is (or is embedded in) a scrollable container, you might want to scroll to the active item when it is not visible when it gets activated. You can enable this by calling `scrollIntoView()`:
+
+```kotlin
+dataCollectionItems {
+    // ...
+    scrollIntoView(vertical = ScrollPosition.center)
+    // ...
+}
+```
+
+You can fine tune scroll behavior (auto or smooth), mode (only-if-needed, always) and the desired horizontal and vertical position of the active item (start, center, end or nearest).
+
+
+## Selection
 
 `DataCollection` supports selecting single or multiple items. To enable selection for your data collection you have to provide a suitable two-way-data-binding:
 
@@ -131,10 +158,23 @@ dataCollection<Person> {
 }
 ```
 
-## Styling the active or selected Item
+## Styling selected Items
 
+The `selected` state of an item is available as a `Flow<Boolean>` in the scope of `dataCollectionItem` to be used for styling, etc.:
 
-
+```kotlin
+dataCollectionItem(item, tag = RenderContext::tr) {
+    className(selected.combine(active) { sel, act ->
+        if (sel) {
+            if (act) "bg-indigo-200" else "bg-indigo-100"
+        } else {
+            if (act) "bg-indigo-50" else "odd:bg-white even:bg-gray-50"
+        }
+    })
+ 
+    // ...
+}
+```
 
 ## API
 
