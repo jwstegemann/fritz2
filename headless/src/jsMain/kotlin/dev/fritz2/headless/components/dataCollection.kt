@@ -179,7 +179,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
         private val activeItem = object : RootStore<Pair<T, Boolean>?>(null) {}
 
-        fun selectItem(itemsToSelect: Flow<T>) {
+        private fun selectItem(itemsToSelect: Flow<T>) {
             if (selection.isSet) {
                 if (selection.single.isSet) {
                     selection.single.handler?.let {
