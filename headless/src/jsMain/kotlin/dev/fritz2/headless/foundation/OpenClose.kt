@@ -41,16 +41,15 @@ abstract class OpenClose {
         }
     }
 
-    //FIXME: endless loop!?
-//    val toggle by lazy {
-//        SimpleHandler<Unit> { data, _ ->
-//            openState.handler?.invoke(openState.data.flatMapLatest { state ->
-//                data.map {
-//                    !state
-//                }
-//            })
-//        }
-//    }
+    val toggle by lazy {
+        SimpleHandler<Unit> { data, _ ->
+            openState.handler?.invoke(openState.data.flatMapLatest { state ->
+                data.map {
+                    !state
+                }
+            })
+        }
+    }
 
     /**
      * Use this function on [Tag]s, that should trigger the component to open or to close in order to enable

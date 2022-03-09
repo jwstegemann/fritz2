@@ -3,6 +3,7 @@ package dev.fritz2.core
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.*
@@ -28,7 +29,7 @@ class HandlersTests {
 
     @Test
     fun eventHandlerDomChange() = runTest {
-        
+
         val resultId = Id.next()
         val buttonId = Id.next()
 
@@ -78,4 +79,30 @@ class HandlersTests {
         assertEquals("value: start..", result.textContent, "wrong dom content of result-node")
     }
 
+    @Test
+    fun flowOnceOfWillEmitOnlyOneValue() = runTest {
+        val films = listOf("Highlander", "Star Wars", "Jurassic Park").asFlow()
+        val sut = flowOnceOf("There can only be one")
+
+        val result = films.flatMapLatest { film ->
+            sut.map {
+                "$it $film"
+            }
+        }.single()
+
+        assertEquals("There can only be one Highlander", result)
+    }
+
+    @Test
+    fun flowOnceOfWillThrowIfCollectedTwice() = runTest {
+        val sut = flowOnceOf("Atom")
+
+        sut.single()
+        assertEquals(
+            "Flow is empty",
+            assertFails {
+                sut.single()
+            }.message
+        )
+    }
 }

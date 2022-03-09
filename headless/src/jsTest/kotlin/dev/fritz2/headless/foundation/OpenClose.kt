@@ -39,20 +39,22 @@ class OpenCloseTest {
         delay(100)
         assertEquals("false", div.getAttribute("open"), "after close")
 
-//        openClose.toggle()
-//        delay(100)
-//        assertEquals("true", div.getAttribute("open"), "after toggle")
-//
-//        openClose.toggle()
-//        delay(100)
-//        assertEquals("false", div.getAttribute("open"), "after second toggle")
+        openClose.toggle()
+        delay(100)
+        assertEquals("true", div.getAttribute("open"), "after toggle")
+
+        openClose.toggle()
+        delay(100)
+        assertEquals("false", div.getAttribute("open"), "after second toggle")
     }
 
     class OpenCloseTest : OpenClose() {
 
         val id = Id.next()
 
-        init { openState(storeOf(false)) }
+        init {
+            openState(storeOf(false))
+        }
 
         fun create(context: RenderContext) = with(context) {
             div(id = id) {
