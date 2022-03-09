@@ -197,8 +197,6 @@ dataColection<T>() {
         val scrollIntoView: ScrollIntoViewProperty
         val items: Flow<List<T>>
 
-        fun selectItem(itemsToSelect: Flow<T>)
-
         // for each T {
             dataCollectionItem(item: T) {
                 val selected: Flow<Boolean>
@@ -247,7 +245,7 @@ Default-Tag: `button`
 
 Available in the scope of: `dataCollection`
 
-### dataCollectionItem
+Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
@@ -256,10 +254,8 @@ Default-Tag: `div`
 | `scrollIntoView` | `ScrollIntoViewProperty`         | Optional property to configure the scrolling behaviour. If omitted there will be no automatic scrolling!                      |
 | `items`          | `Flow<List<T>>`                  | Flow of the currently visible items (think of this as the result of filtering and sorting applied on the original data)       |
 
-Functions:
-- `selectItem(itemsToSelect: Flow<T>)`: ?
 
-Parameters: `classes`, `scope`, `tag`, `initialize`
+### dataCollectionItem
 
 Available in the scope of: `dataCollectionItems`
 
