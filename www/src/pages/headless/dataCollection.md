@@ -79,76 +79,62 @@ thead {
 
 ## Filtering
 
-A data collection supports filtering the items by offering a `Handler<(List<T) -> List<T>>` called `filterBy`. Whenever this `Handler` is provided with a new filter function, it is applied to the collections data. So you can easily provide buttons for predefined filterings for example:
+A data collection supports filtering the items by offering a `Handler<(List<T) -> List<T>>` called `filterBy`. Whenever this `Handler` is provided with a new filter function, it is applied to the collections data. So you can easily provide buttons for predefined filtering for example:
 
 ```kotlin
-val filterForLongNames = button { +"just long names" }.clicks.map { it.filter { it.fullName.length() > 20 } }
-val filterForOldPeople = button { +"just old people" }.clicks.map { it.filter { it.birthdate.startsWith("19") } }
+val filterForLongNames = button { +"just long names" }.clicks.map {
+    { list: List<Person> -> list.filter { it.fullName.length > 20 } }
+}
+
+val filterForOldPeople = button { +"just old people" }.clicks.map {
+    { list: List<Person> -> list.filter { it.birthday.startsWith("19") } }
+}
 
 dataCollection<Person> {
     // ...
-    
+
     dataCollectionItems {
         merge(filterForLongNames, filterForOldPeople) handledBy filterBy
     }
 }
-
 ```
 
-
-
-## Transitions
-
-Showing and hiding the modal dialog can be easily animated with the help of `transition`:
+A common use-case is filtering your items for a certain text. The data collection provides a specialized `Handler<String>` called `filterByText()` for this purpose. By default, the `toString`-method of your items is used to produce a `String` that is checked to contain (case-insensitive) the filter-text provided to the `Handeler`. You can provide a lambda to create a different `String` representation for an item to be searched:
 
 ```kotlin
-modal {
-    openClose(toggle)
-    modalPanel {
-        modalOverlay {
-            // some nice fade in/out effect for the overlay
-            transition(
-                enter = "ease-out duration-300",
-                enterStart = "opacity-0",
-                enterEnd = "opacity-100",
-                leave = "ease-in duration-200",
-                leaveStart = "opacity-100",
-                leaveEnd = "opacity-0"
-            )            
-        }
-        div {
-            // some nice fade in/out and scale in/out effect for the content
-            transition(
-                enter = "transition duration-100 ease-out",
-                enterStart = "opacity-0 scale-95",
-                enterEnd = "opacity-100 scale-100",
-                leave = "transition duration-100 ease-in",
-                leaveStart = "opacity-100 scale-100",
-                leaveEnd = "opacity-0 scale-95"
-            )
-            
-            p { +"I am some modal dialog! Press Cancel to exit."}
-            button {
-                type("button")
-                +"Cancel"
-                clicks handledBy close 
-            }
-        }
+    val filterStore = storeOf("")
+    inputField {
+        value(filterStore)
+        inputTextfield { placeholder("filter...") }
     }
+
+    dataCollection<Person> {
+        // ...
+        filterStore.data handledBy filterByText { "${it.fullName} ${it.email}"}
+        // ...
+    }
+```
+
+# Selection
+
+`DataCollection` supports selecting single or multiple items. To enable selection for your data collection you have to provide a suitable two-way-data-binding:
+
+```kotlin
+dataCollection<Person> {
+    data(storedPersons.data, Person::id)
+
+    // for single-selection
+    selection.single(selectionStore) // or provide id, data-flow, update-handler, etc. separately
+    
+    // for multi-selection
+    selection.multi(selectionStore)
 }
 ```
 
-## Mouse Interaction
+## Styling the active or selected Item
 
-By default, no mouse interaction is supported through the modal dialog. Typically, within the modal dialog there should
-be some clickable element, which triggers the `close` handler and thus the dialog closes.
 
-## Keyboard Interaction
 
-| Command               | Description                                                                                                           |
-|-----------------------|-----------------------------------------------------------------------------------------------------------------------|
-| [[Tab]]               | Cycles through all focusable elements of an open modal window. There should always be at least one focusable element! |
-| [[Shift]] + [[Tab]]   | Cycles backwards through all focusable elements of an open modal window.                                              |
 
 ## API
 
