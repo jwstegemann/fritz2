@@ -75,7 +75,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         } ?: list.indexOf(item)
 
     private val sorting = object : RootStore<SortingOrder<T>?>(null) {}
-    val sortBy = sorting.handle<Sorting<T>> { old, newSorting ->
+    val sortBy = sorting.update
+    val toggleSorting = sorting.handle<Sorting<T>> { old, newSorting ->
         if (old?.sorting == newSorting) {
             val newDirection = when (old.direction) {
                 SortDirection.NONE -> SortDirection.ASC
@@ -107,7 +108,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         val direction = sortingDirection(sorting)
 
         fun render() {
-            clicks.map { sorting } handledBy sortBy
+            clicks.map { sorting } handledBy toggleSorting
         }
     }
 
@@ -176,7 +177,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             }.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
         } else flowOf(emptyList())
 
-        val activeItem = object : RootStore<Pair<T, Boolean>?>(null) {}
+        private val activeItem = object : RootStore<Pair<T, Boolean>?>(null) {}
 
         fun selectItem(itemsToSelect: Flow<T>) {
             if (selection.isSet) {

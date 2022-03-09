@@ -51,13 +51,6 @@ fun <E: Event> Flow<E>.stopPropagation(): Flow<E> = this.map { it.stopPropagatio
  */
 fun <E: Event> Flow<E>.composedPath(): Flow<Array<EventTarget>> = this.map { it.composedPath() }
 
-/**
- * Merges multiple [Event]-flows
- *
- * @param events the [Flow]s to merge
- */
-fun merge(vararg events: Flow<*>): Flow<Unit> = kotlinx.coroutines.flow.merge(*events.map { it }.toTypedArray()).map {}
-
 
 /**
  * Extracts the [HTMLInputElement.value] from the [Event.target].
