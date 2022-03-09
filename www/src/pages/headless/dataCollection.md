@@ -180,71 +180,96 @@ dataCollectionItem(item, tag = RenderContext::tr) {
 
 ### Summary / Sketch
 ```kotlin
-modal() {
-    var restoreFocus: Boolean
-    var setInitialFocus: Boolean    
-    // inherited by `OpenClose`
-    val openState: DatabindingProperty<Boolean>
-    val opened: Flow<Boolean>
-    val close: SimpleHandler<Unit>
-    val open: SimpleHandler<Unit>
-    val toggle: SimpleHandler<Unit>
+dataColection<T>() {
+    val data: CollectionDataProperty<T>
+    val filterBy: SimpleHandler<((List<T>) -> List<T>)?>
+    val selection: SelectionMode<T>
     
-    modalPanel() {
-        modalOverlay() { }
-        modalTitle() { }
-        modalDescription() { } // use multiple times
-        
-        // setInitialFocus() within one tag is possible
+    fun filterByText(toString: (T) -> String) : SimpleHandler<String>
+    fun sortingDirection(s: Sorting<T>): Flow<SortDirection>
+    
+    // use multiple times
+    dataCollectionSortButton(sort: Sorting<T>) {
+        val direction: Flow<SortDirection>
+    }
+
+    dataCollectionItems() {
+        val scrollIntoView: ScrollIntoViewProperty
+        val items: Flow<List<T>>
+
+        fun selectItem(itemsToSelect: Flow<T>)
+
+        // for each T {
+            dataCollectionItem(item: T) {
+                val selected: Flow<Boolean>
+                val active: Flow<Boolean>
+            }
+        // }
     }
 }
 ```
 
-### modal
-
-Parameters: **no**
-
-Default-Tag: No tag is rendered!
-
-| Scope property     | Typ                            | Description                                                                                                                                         |
-|--------------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `restoreFocus`     | `Boolean`                      | If `true` (default) the focus will be reset to the last focused element after closing the modal.                                                    |
-| `setInitialFocus`  | `InitialFocus`                 | If `InsistToSet` (default), the focus is set to the first focusable DOM element or the element marked with [`setInitialFocus()`](focus-management). |
-| `openState`        | `DatabindingProperty<Boolean>` | Mandatory (two-way) data-binding for opening and closing.                                                                                           |
-| `opened`           | `Flow<Boolean>`                | Data stream that provides Boolean values related to the "open" state. Quite useless within a modal, as it is always `true`                          |
-| `close`            | `SimpleHandler<Unit>`          | Handler to close the list box from inside.                                                                                                          |
-| `open`             | `SimpleHandler<Unit>`          | handler to open; does not make sense to use within a modal!                                                                                         |
-| `toggle`           | `SimpleHandler<Unit>`          | handler for switching between open and closed; does not make sense to use within a modal.                                                           |
-
-
-### modalPanel
-
-Available in the scope of: `modal`
+### dataCollection
 
 Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-### modalOverlay
+| Scope property | Typ                                      | Description                                                                                                                   |
+|----------------|------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| `data`         | `CollectionDataProperty<T>`              | Mandatory one-way data-binding for the items the collection should manage.                                                    |
+| `filterBy`     | `SimpleHandler<((List<T>) -> List<T>)?>` | Optional `Handler` that implements any logic to reduce the current `List<T>` items to the filtered `List<T>`.                 |
+| `selection`    | `SelectionMode<T>`                       | Basically an optional intermediate property to offer `DataBinding` properties for either `single` or `mulit` selection modes. |
 
-Available in the scope of: `modalPanel`
+Functions:
 
-Parameters: `classes`, `scope`, `tag`, `initialize`
+- `filterByText(toString: (T) -> String) : SimpleHandler<String>`: Factory to create a `Handler` to do a filtering based
+  upon one item `T`.
+- `sortingDirection(s: Sorting<T>): Flow<SortDirection>`: Factory to derive the `SortDirection` from the `Sorting`.
+
+### dataCollectionSortButton
+
+Available in the scope of: `dataCollection`
+
+Parameters:
+- `sort: Sorting<T>`: Mandatory instance of the sorting configuration.
+- (overloaded variant) `comparatorAscending: Comparator<T>, comparatorDescending: Comparator<T>`: Just provide
+  the `Comparator`s so the sorting instance gets automatically derived from this.
+- `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `button`
+
+| Scope property | Typ                                  | Description                                         |
+|----------------|--------------------------------------|-----------------------------------------------------|
+| `direction`    | `Flow<SortDirection>`                | This property offers the current sorting direction. |
+
+### dataCollectionItems
+
+Available in the scope of: `dataCollection`
+
+### dataCollectionItem
 
 Default-Tag: `div`
 
-### modalTitle
+| Scope property   | Typ                              | Description                                                                                                                   |
+|------------------|----------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| `scrollIntoView` | `ScrollIntoViewProperty`         | Optional property to configure the scrolling behaviour. If omitted there will be no automatic scrolling!                      |
+| `items`          | `Flow<List<T>>`                  | Flow of the currently visible items (think of this as the result of filtering and sorting applied on the original data)       |
 
-Available in the scope of: `modalPanel`
-
-Parameters: `classes`, `scope`, `tag`, `initialize`
-
-Default-Tag: `h2`
-
-### modalDescription
-
-Available in the scope of: `modalPanel`
+Functions:
+- `selectItem(itemsToSelect: Flow<T>)`: ?
 
 Parameters: `classes`, `scope`, `tag`, `initialize`
 
-Default-Tag: `p`
+Available in the scope of: `dataCollectionItems`
+
+Parameters:
+- `item: T`: Mandatory instance of one `T` that represents the actual item
+- `classes`, `scope`, `tag`, `initialize`
+
+Default-Tag: `div`
+
+| Scope property | Typ             | Description                                                                                                                                |
+|----------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| `selected`     | `Flow<Boolean>` | This data stream provides the selection status of the managed item: `true` the item is selected, `false` if not.                           |
+| `active`       | `Flow<Boolean>` | This data stream indicates whether an option has focus: `true` the item has focus, `false` if not. Only one item can have focus at a time. |
