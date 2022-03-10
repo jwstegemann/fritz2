@@ -56,18 +56,18 @@ dataCollection<Person> {
 
 ## Sorting
 
-In order to sort the items of your data collection `dataCollectionItems` offers a `Handler` called `sortBy`. You can use
+In order to sort the items of your data collection `dataCollection` offers a `Handler` called `sortBy`. You can use
 this to provide a `SortOrder<T>` that will be used to sort your collection. A `SortOrder` consists of a `Sorting`
 defining one `Comparator<T>` each for ascending and descending sorting as well as the current `SortDirection` (`NONE`
 , `ASC` oder `DESC`). Since it is a `Handler` you bind it to some `Flow` offering the current `SortOrder` (from a `Menu`
 for example) or call it directly.
 
-Since it is a common use case to switch between the different `SortingDirections`, `dataCollectionItems` offers
+Since it is a common use case to switch between the different `SortingDirections`, `dataCollection` offers
 another `Handler` called `toggleSorting`. For a given `Sorting` this one switches from direction `NONE` to `ASC` and on
 the `DESC` every time a new value appears on the `Flow`.
 
-To make it even more convenient the data collection also offers a specialized brick to build an element to toggle and
-display your current sorting:
+To make it even more convenient the data collection also offers a specialized brick `dataCollectionSortButton` to build
+an element to toggle and display your current sorting:
 
 ```kotlin
 thead {
@@ -133,6 +133,13 @@ You can provide a lambda to create a different `String` representation for an it
     }
 ```
 
+::: info
+**Hint:** Be sure to add some *separator* character between a composed filter string like above. Without the `space`
+between the name and the email address, it would be possible to match overlapping patterns. Take the name `kotlin`
+and a mail address `nux@kernel.org`: The pattern `linux` would match without the space: `kotlinux@kernel.org`, which
+is not what is expected!
+:::
+
 ## Active Item
 
 You can navigate your data-collection by mouse or keyboard (when it is focused). Whenever you move your pointer over an
@@ -141,7 +148,7 @@ a `Flow<Boolean>` in the scope of `dataCollectionItem` to be used for styling, e
 
 ```kotlin
 dataCollectionItem(item, tag = RenderContext::tr) {
-    className(selected.map {
+    className(active.map {
         if (it) "bg-indigo-50" else "odd:bg-white even:bg-gray-50"
     })
  
@@ -198,6 +205,27 @@ dataCollectionItem(item, tag = RenderContext::tr) {
     // ...
 }
 ```
+
+## Mouse Interaction
+
+Hovering with the mouse over an `dataCollectionItem` will make it *active*. The state can be accessed by the corresponding
+`active` property of the `dataCollectionItem` that offer a `Flow<Boolean>` to react to.
+
+A click on a `dataCollectionItem` will toggle the selection state, if any selection is configured by the `selection`
+property of the `dataCollection`.
+
+## Keyboard Interaction
+
+| Command                                                                        | Description                                          |
+|--------------------------------------------------------------------------------|------------------------------------------------------|
+| [[Enter]] [[Space]] when `dataCollectionItem` is active and `selection` is set | Toggles the selection state of an item               |
+| [[⬆]] [[⬇]] when some item is active                                           | Activates previous / next item                       |
+| [[Home]] [[End]] when some item is active                                      | Activates first / last item                          |
+
+::: info
+If `scrollIntoView` on `dataCollectionItems` is configured, the navigating keyboard actions will also scroll the
+content.
+:::
 
 ## API
 
