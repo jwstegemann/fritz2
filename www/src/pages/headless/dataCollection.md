@@ -209,7 +209,7 @@ dataCollectionItem(item, tag = RenderContext::tr) {
 ## Mouse Interaction
 
 Hovering with the mouse over an `dataCollectionItem` will make it *active*. The state can be accessed by the corresponding
-`active` property of the `dataCollectionItem` that offer a `Flow<Boolean>` to react to.
+`active` property of the `dataCollectionItem` that offers a `Flow<Boolean>` to react to.
 
 A click on a `dataCollectionItem` will toggle the selection state, if any selection is configured by the `selection`
 property of the `dataCollection`.
