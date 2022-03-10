@@ -6,7 +6,7 @@ eleventyNavigation:
     key: dataCollection
     title: Data Collection
     parent: headless
-    order: 180
+    order: 15
 demoHash: collection
 teaser: "A headless component to render collections of data, i.e. a data table, complex lists that support sorting, 
 filtering, selection of items and keyboard navigation."
