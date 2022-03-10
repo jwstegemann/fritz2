@@ -90,6 +90,19 @@ interface WithJob {
             }
         }
     }
+
+    /**
+     * Calls this handler exactly once.
+     *
+     * @param data parameter forwarded to the handler
+     */
+    operator fun <A> Handler<A>.invoke(data: A) = this.process(flowOnceOf(data), job)
+
+    /**
+     * Calls this handler exactly once.
+     */
+    operator fun Handler<Unit>.invoke() = this.process(flowOnceOf(Unit), job)
+
 }
 
 /**

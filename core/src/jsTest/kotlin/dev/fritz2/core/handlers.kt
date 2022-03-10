@@ -3,10 +3,17 @@ package dev.fritz2.core
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.single
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
-import kotlin.test.*
+import org.w3c.dom.HTMLParagraphElement
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFails
+import kotlin.test.fail
 
 class HandlersTests {
 
@@ -16,15 +23,55 @@ class HandlersTests {
             override fun errorHandler(cause: Throwable) {
                 fail(cause.message)
             }
+
+            val dec = handle { it -1 }
         }
 
-        store.handle { assertTrue(true); it }()
-        store.handle { assertTrue(true); it }(Unit)
-        store.handle<String> { n, s -> assertFalse(s::class == String::class); n }()
-        store.handle<String> { n, s -> assertTrue(s::class == Unit::class); n }()
-        store.handle<String> { n, s -> assertTrue(s.length == undefined); n }()
-        store.handle<String> { n, s -> assertTrue(s.substring(1) == undefined); n }()
-        store.handle<String> { n, _ -> assertTrue(true); n }("Hello")
+        lateinit var currentParagraph: HTMLParagraphElement
+        lateinit var button: HTMLButtonElement
+        lateinit var buttonDynamic: HTMLButtonElement
+
+        render {
+            currentParagraph = p {
+                store.data.renderText()
+            }.domNode
+
+            button = button {
+                clicks handledBy store.dec
+            }.domNode
+
+            store.data.render {
+                if (it > 40) {
+                    buttonDynamic = button {
+                        clicks handledBy { store.dec() }
+                    }.domNode
+                }
+            }
+        }
+
+        delay(100)
+        assertEquals("0", currentParagraph.textContent)
+
+        store.handle { it + 1 }()
+        delay(100)
+        assertEquals("1", currentParagraph.textContent)
+
+        store.handle<Int> { _, new -> new }(42)
+        delay(100)
+        assertEquals("42", currentParagraph.textContent)
+
+        button.click()
+        delay(100)
+        assertEquals("41", currentParagraph.textContent)
+
+        buttonDynamic.click()
+        delay(100)
+        assertEquals("40", currentParagraph.textContent)
+
+        button.click()
+        delay(100)
+        assertEquals("39", currentParagraph.textContent)
+
     }
 
     @Test

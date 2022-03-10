@@ -2,7 +2,9 @@ package dev.fritz2.headless
 
 import dev.fritz2.core.Scope
 import dev.fritz2.core.Shortcut
+import dev.fritz2.core.WithJob
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.promise
@@ -13,11 +15,14 @@ import org.w3c.dom.events.KeyboardEventInit
 import org.w3c.dom.pointerevents.PointerEvent
 import org.w3c.dom.pointerevents.PointerEventInit
 
-fun <T> runTest(block: suspend () -> T): dynamic = MainScope().promise {
+fun <T> runTest(block: suspend WithJob.() -> T): dynamic = MainScope().promise {
     delay(50)
-    block()
+    block(object : WithJob {
+        override val job: Job = Job()
+    })
     delay(50)
 }
+
 
 inline fun <reified E: Element> getElementById(id: String) = document.getElementById(id) as E
 
