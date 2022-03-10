@@ -19,7 +19,7 @@ It is mandatory to specify a data stream of type `List<T>` as data source using 
 
 Since we want to build a simple data table in our example, we next create the `table` and it's header.
 
-Next we use `dataCollectionItems` to create the `tbody`. `dataCollectionItems` offers `items` in it's context. This is a `Flow<List<T>>` that respects the current sorting and filtering set for your collection. So we use this it iterate over and render the rows of the table. If you told the `DataCollection` to use an `IdProvider` above, it is a good idea to use the same `IdProvider` here in `renderEach`.
+Next we use `dataCollectionItems` to create the `tbody`. `dataCollectionItems` offers `items` in its context. This is a `Flow<List<T>>` that respects the current sorting and filtering set for your collection. So we use this to iterate over and render the rows of the table. If you told the `DataCollection` to use an `IdProvider` above, it is a good idea to use the same `IdProvider` here in `renderEach`.
 
 ```kotlin
 val persons = storeOf(listOf(Person( /*... */ )))
@@ -50,7 +50,7 @@ dataCollection<Person> {
 
 ## Sorting
 
-In order to sort the items of your data collection `dataCollectionItems` offers a `Handler` called `sortBy`. You can use this to provide a `SortOrder<T>` that will be used to sort your collection. A `SortOrder` consists of a `Sorting` definining one `Comparator<T>` each for ascending and descending sorting as well as the current `SortDirection` (`NONE`, `ASC` oder `DESC`). Since it is a `Handler` you bind it to some `Flow` offering the current `SortOrder` (from a `Menu` for example) or call it directly.
+In order to sort the items of your data collection `dataCollectionItems` offers a `Handler` called `sortBy`. You can use this to provide a `SortOrder<T>` that will be used to sort your collection. A `SortOrder` consists of a `Sorting` defining one `Comparator<T>` each for ascending and descending sorting as well as the current `SortDirection` (`NONE`, `ASC` oder `DESC`). Since it is a `Handler` you bind it to some `Flow` offering the current `SortOrder` (from a `Menu` for example) or call it directly.
 
 Since it is a common use case to switch between the different `SortingDirections`, `dataCollectionItems` offers another `Handler` called `toggleSorting`. For a given `Sorting` this one switches from direction `NONE` to `ASC` and on the `DESC` every time a new value appears on the `Flow`.
 
@@ -79,7 +79,7 @@ thead {
 
 ## Filtering
 
-A data collection supports filtering the items by offering a `Handler<(List<T) -> List<T>>` called `filterBy`. Whenever this `Handler` is provided with a new filter function, it is applied to the collections data. So you can easily provide buttons for predefined filtering for example:
+A data collection supports filtering the items by offering a `Handler<(List<T) -> List<T>>` called `filterBy`. Whenever this `Handler` is provided with a new filter function, it is applied to the collections' data. So you can easily provide buttons for predefined filtering for example:
 
 ```kotlin
 val filterForLongNames = button { +"just long names" }.clicks.map {
