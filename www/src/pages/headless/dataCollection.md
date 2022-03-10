@@ -8,18 +8,24 @@ eleventyNavigation:
     parent: headless
     order: 180
 demoHash: collection
-teaser: "A headless component to render collections of data, i.e. a data table, complex lists that support sorting, filtering, selection of items and keyboard navigation."
+teaser: "A headless component to render collections of data, i.e. a data table, complex lists that support sorting, 
+filtering, selection of items and keyboard navigation."
 ---
 
 ## Basic Example
 
-A data collection is created by the factory function `fun <T> dataCollection()`. `T` is the data type of the items of the collection, such as a domain data type like persons.
+A data collection is created by the factory function `fun <T> dataCollection()`. `T` is the data type of the items of
+the collection, such as a domain data type like persons.
 
-It is mandatory to specify a data stream of type `List<T>` as data source using the `data` property. Additionally, you can provide an `IdProvider` to tell `DataCollection` how to get a unique id for each item in the list.
+It is mandatory to specify a data stream of type `List<T>` as data source using the `data` property. Additionally, you
+can provide an `IdProvider` to tell `DataCollection` how to get a unique id for each item in the list.
 
 Since we want to build a simple data table in our example, we next create the `table` and it's header.
 
-Next we use `dataCollectionItems` to create the `tbody`. `dataCollectionItems` offers `items` in its context. This is a `Flow<List<T>>` that respects the current sorting and filtering set for your collection. So we use this to iterate over and render the rows of the table. If you told the `DataCollection` to use an `IdProvider` above, it is a good idea to use the same `IdProvider` here in `renderEach`.
+Next we use `dataCollectionItems` to create the `tbody`. `dataCollectionItems` offers `items` in its context. This is
+a `Flow<List<T>>` that respects the current sorting and filtering set for your collection. So we use this to iterate
+over and render the rows of the table. If you told the `DataCollection` to use an `IdProvider` above, it is a good idea
+to use the same `IdProvider` here in `renderEach`.
 
 ```kotlin
 val persons = storeOf(listOf(Person( /*... */ )))
@@ -50,11 +56,18 @@ dataCollection<Person> {
 
 ## Sorting
 
-In order to sort the items of your data collection `dataCollectionItems` offers a `Handler` called `sortBy`. You can use this to provide a `SortOrder<T>` that will be used to sort your collection. A `SortOrder` consists of a `Sorting` defining one `Comparator<T>` each for ascending and descending sorting as well as the current `SortDirection` (`NONE`, `ASC` oder `DESC`). Since it is a `Handler` you bind it to some `Flow` offering the current `SortOrder` (from a `Menu` for example) or call it directly.
+In order to sort the items of your data collection `dataCollectionItems` offers a `Handler` called `sortBy`. You can use
+this to provide a `SortOrder<T>` that will be used to sort your collection. A `SortOrder` consists of a `Sorting`
+defining one `Comparator<T>` each for ascending and descending sorting as well as the current `SortDirection` (`NONE`
+, `ASC` oder `DESC`). Since it is a `Handler` you bind it to some `Flow` offering the current `SortOrder` (from a `Menu`
+for example) or call it directly.
 
-Since it is a common use case to switch between the different `SortingDirections`, `dataCollectionItems` offers another `Handler` called `toggleSorting`. For a given `Sorting` this one switches from direction `NONE` to `ASC` and on the `DESC` every time a new value appears on the `Flow`.
+Since it is a common use case to switch between the different `SortingDirections`, `dataCollectionItems` offers
+another `Handler` called `toggleSorting`. For a given `Sorting` this one switches from direction `NONE` to `ASC` and on
+the `DESC` every time a new value appears on the `Flow`.
 
-To make it even more convenient the data collection also offers a specialized brick to build an element to toggle and display your current sorting:
+To make it even more convenient the data collection also offers a specialized brick to build an element to toggle and
+display your current sorting:
 
 ```kotlin
 thead {
@@ -79,7 +92,9 @@ thead {
 
 ## Filtering
 
-A data collection supports filtering the items by offering a `Handler<(List<T) -> List<T>>` called `filterBy`. Whenever this `Handler` is provided with a new filter function, it is applied to the collections' data. So you can easily provide buttons for predefined filtering for example:
+A data collection supports filtering the items by offering a `Handler<(List<T) -> List<T>>` called `filterBy`. Whenever
+this `Handler` is provided with a new filter function, it is applied to the collections' data. So you can easily provide
+buttons for predefined filtering for example:
 
 ```kotlin
 val filterForLongNames = button { +"just long names" }.clicks.map {
@@ -99,7 +114,10 @@ dataCollection<Person> {
 }
 ```
 
-A common use-case is filtering your items for a certain text. The data collection provides a specialized `Handler<String>` called `filterByText()` for this purpose. By default, the `toString`-method of your items is used to produce a `String` that is checked to contain (case-insensitive) the filter-text provided to the `Handeler`. You can provide a lambda to create a different `String` representation for an item to be searched:
+A common use-case is filtering your items for a certain text. The data collection provides a
+specialized `Handler<String>` called `filterByText()` for this purpose. By default, the `toString`-method of your items
+is used to produce a `String` that is checked to contain (case-insensitive) the filter-text provided to the `Handeler`.
+You can provide a lambda to create a different `String` representation for an item to be searched:
 
 ```kotlin
     val filterStore = storeOf("")
@@ -117,7 +135,9 @@ A common use-case is filtering your items for a certain text. The data collectio
 
 ## Active Item
 
-You can navigate your data-collection by mouse or keyboard (when it is focused). Whenever you move your pointer over an item or navigate to a certain item by keyboard, this item is activated. The `active` state is available as a `Flow<Boolean>` in the scope of `dataCollectionItem` to be used for styling, etc.:
+You can navigate your data-collection by mouse or keyboard (when it is focused). Whenever you move your pointer over an
+item or navigate to a certain item by keyboard, this item is activated. The `active` state is available as
+a `Flow<Boolean>` in the scope of `dataCollectionItem` to be used for styling, etc.:
 
 ```kotlin
 dataCollectionItem(item, tag = RenderContext::tr) {
@@ -129,7 +149,8 @@ dataCollectionItem(item, tag = RenderContext::tr) {
 }
 ```
 
-If your data collection is (or is embedded in) a scrollable container, you might want to scroll to the active item when it is not visible when it gets activated. You can enable this by calling `scrollIntoView()`:
+If your data collection is (or is embedded in) a scrollable container, you might want to scroll to the active item when
+it is not visible when it gets activated. You can enable this by calling `scrollIntoView()`:
 
 ```kotlin
 dataCollectionItems {
@@ -139,12 +160,13 @@ dataCollectionItems {
 }
 ```
 
-You can fine tune scroll behavior (auto or smooth), mode (only-if-needed, always) and the desired horizontal and vertical position of the active item (start, center, end or nearest).
-
+You can fine tune scroll behavior (auto or smooth), mode (only-if-needed, always) and the desired horizontal and
+vertical position of the active item (start, center, end or nearest).
 
 ## Selection
 
-`DataCollection` supports selecting single or multiple items. To enable selection for your data collection you have to provide a suitable two-way-data-binding:
+`DataCollection` supports selecting single or multiple items. To enable selection for your data collection you have to
+provide a suitable two-way-data-binding:
 
 ```kotlin
 dataCollection<Person> {
@@ -160,7 +182,8 @@ dataCollection<Person> {
 
 ## Styling selected Items
 
-The `selected` state of an item is available as a `Flow<Boolean>` in the scope of `dataCollectionItem` to be used for styling, etc.:
+The `selected` state of an item is available as a `Flow<Boolean>` in the scope of `dataCollectionItem` to be used for
+styling, etc.:
 
 ```kotlin
 dataCollectionItem(item, tag = RenderContext::tr) {
