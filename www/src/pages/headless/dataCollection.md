@@ -182,6 +182,8 @@ dataCollectionItem(item, tag = RenderContext::tr) {
 ```kotlin
 dataColection<T>() {
     val data: CollectionDataProperty<T>
+    val sortBy: SimpleHandler<SortingOrder<T>?>
+    val toggleSorting: SimpleHandler<Sorting<T>>
     val filterBy: SimpleHandler<((List<T>) -> List<T>)?>
     val selection: SelectionMode<T>
     
@@ -213,11 +215,13 @@ Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope property | Typ                                      | Description                                                                                                                   |
-|----------------|------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| `data`         | `CollectionDataProperty<T>`              | Mandatory one-way data-binding for the items the collection should manage.                                                    |
-| `filterBy`     | `SimpleHandler<((List<T>) -> List<T>)?>` | Optional `Handler` that implements any logic to reduce the current `List<T>` items to the filtered `List<T>`.                 |
-| `selection`    | `SelectionMode<T>`                       | Basically an optional intermediate property to offer `DataBinding` properties for either `single` or `mulit` selection modes. |
+| Scope property  | Typ                                      | Description                                                                                                                         |
+|-----------------|------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `data`          | `CollectionDataProperty<T>`              | Mandatory one-way data-binding for the items the collection should manage.                                                          |
+| `sortBy`        | `SimpleHandler<SortingOrder<T>?>`        | Optional `Handler` that can implement any sorting logic based upon a `SortingOrder<T>` instance.                                    |
+| `toggleSorting` | `SimpleHandler<Sorting<T>>`              | Optional `Handler` that implements a toggling sort logic, that is switching between the three directions `NONE`, `ASC` and `DESC`   |
+| `filterBy`      | `SimpleHandler<((List<T>) -> List<T>)?>` | Optional `Handler` that can implement any logic to reduce the current `List<T>` items to the filtered `List<T>`.                    |
+| `selection`     | `SelectionMode<T>`                       | Basically an optional intermediate property to offer `DataBinding` properties for either `single` or `mulit` selection modes.       |
 
 Functions:
 
