@@ -37,8 +37,8 @@ fun RenderContext.radioGroupDemo() {
                         ) {
                             className(selected.combine(active) { sel, act ->
                                 classes(
-                                    if (sel) "bg-indigo-200" else "bg-white",
-                                    if (act) "ring-2 ring-indigo-500 border-transparent" else "border-gray-300"
+                                    if (sel) "bg-blue-200" else "bg-white",
+                                    if (act) "ring-2 ring-blue-600 border-transparent" else "border-gray-300"
                                 )
                             })
                             div("flex items-center") {

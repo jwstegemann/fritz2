@@ -28,7 +28,7 @@ fun RenderContext.textAreaDemo() {
                         )
                         else classes(
                             "block border-gray-300 text-gray-900 placeholder-gray-300",
-                            "focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white"
+                            "focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white"
                         )
                     })
                 }

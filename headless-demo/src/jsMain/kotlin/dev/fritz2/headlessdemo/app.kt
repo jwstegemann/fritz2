@@ -123,7 +123,7 @@ fun main() {
 
     render {
         router.data.render { route ->
-            div("w-full h-screen bg-gradient-to-r from-teal-200 to-cyan-400 p-4") {
+            div("p-4") {
                 (pages[route]?.content ?: RenderContext::overview)()
             }
         }

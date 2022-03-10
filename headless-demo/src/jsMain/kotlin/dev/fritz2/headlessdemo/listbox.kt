@@ -31,8 +31,8 @@ fun RenderContext.listboxDemo() {
             listboxButton(
                 """flex items-center justify-end w-full py-2 pl-3 pr-3 text-left bg-white rounded-lg 
                 | shadow-md cursor-default focus:outline-none focus:ring-2 focus:ring-opacity-75 
-                | focus:ring-white focus:ring-offset-orange-300 focus:ring-offset-2 
-                | focus:border-indigo-500 sm:text-sm""".trimMargin()
+                | focus:ring-white focus:ring-offset-blue-700 focus:ring-offset-2 
+                | focus:border-blue-600 sm:text-sm""".trimMargin()
             ) {
                 span("block truncate w-full") {
                     value.data.renderText()
@@ -64,7 +64,7 @@ fun RenderContext.listboxDemo() {
                     ) {
                         className(active.combine(disabled) { a, d ->
                             if (a && !d) {
-                                "text-amber-900 bg-amber-100"
+                                "text-blue-900 bg-blue-100"
                             } else {
                                 if (d) "text-gray-300" else "text-gray-900"
                             }
@@ -79,7 +79,7 @@ fun RenderContext.listboxDemo() {
 
                         selected.render {
                             if (it) {
-                                span("text-amber-600 absolute inset-y-0 left-0 flex items-center pl-3") {
+                                span("text-blue-600 absolute inset-y-0 left-0 flex items-center pl-3") {
                                     svg("w-5 h-5") { content(HeroIcons.check) }
                                 }
                             }

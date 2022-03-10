@@ -10,8 +10,8 @@ fun RenderContext.modalDemo() {
 
     button(
         """w-48 inline-flex justify-center rounded-md border border-transparent 
-            | shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 
-            | focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 
+            | shadow-sm px-4 py-2 bg-blue-700 text-base font-medium text-white hover:bg-blue-800 
+            | focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:col-start-2 
             | sm:text-sm""".trimMargin()
     ) {
         +"Open"
@@ -84,8 +84,8 @@ fun RenderContext.modalDemo() {
                     div("mt-5 sm:mt-4 sm:flex sm:flex-row-reverse") {
                         button(
                             """w-full inline-flex justify-center rounded-md border border-transparent shadow-sm 
-                                | px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 
-                                | focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 
+                                | px-4 py-2 bg-blue-700 text-base font-medium text-white hover:bg-blue-700
+                                | focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 
                                 | sm:ml-3 sm:w-auto sm:text-sm""".trimMargin()
                         ) {
                             type("button")
@@ -95,7 +95,7 @@ fun RenderContext.modalDemo() {
                         button(
                             """mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm 
                                 | px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 
-                                | focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 
+                                | focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 
                                 | sm:mt-0 sm:w-auto sm:text-sm""".trimMargin()
                         ) {
                             type("button")

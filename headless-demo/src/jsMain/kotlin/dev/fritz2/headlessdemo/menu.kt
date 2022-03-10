@@ -64,7 +64,7 @@ fun RenderContext.menuDemo() {
                         ) {
                             className(active.combine(disabled) { a, d ->
                                 if (a && !d) {
-                                    "bg-violet-500 text-white"
+                                    "bg-blue-400 text-white"
                                 } else {
                                     if (d) "text-gray-300" else "text-gray-900"
                                 }

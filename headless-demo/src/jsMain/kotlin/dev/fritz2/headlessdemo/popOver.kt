@@ -1,7 +1,10 @@
 package dev.fritz2.headlessdemo
 
 
-import dev.fritz2.core.*
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.fill
+import dev.fritz2.core.transition
+import dev.fritz2.core.viewBox
 import dev.fritz2.headless.components.popOver
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.utils.popper.Placement
@@ -19,9 +22,9 @@ fun RenderContext.popOverDemo() {
 
     popOver {
         popOverButton(
-            """text-white group bg-indigo-600 px-3 py-2 rounded-md inline-flex items-center text-base 
-                | font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 hover:bg-indigo-700 
-                | focus-visible:ring-indigo focus-visible:ring-opacity-75""".trimMargin()
+            """text-white group bg-blue-700 px-3 py-2 rounded-md inline-flex items-center text-base 
+                | font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 hover:bg-blue-800 
+                | focus-visible:ring-blue-600 focus-visible:ring-opacity-75""".trimMargin()
         ) {
             className(opened.map { if (it) "" else "text-opacity-90" })
             span { +"Solutions" }
@@ -48,11 +51,10 @@ fun RenderContext.popOverDemo() {
                 solutions.forEach { item ->
                     a(
                         """flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg 
-                                |hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 
+                                |hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-blue-600 
                                 |focus-visible:ring-opacity-50""".trimMargin()
                     ) {
                         attr("key", "{$item.name}")
-                        href("#")
                         div(
                             """flex items-center justify-center flex-shrink-0 w-10 h-10 p-1 rounded-lg 
                                     |bg-orange-100 text-orange-600 sm:h-12 sm:w-12""".trimMargin()
@@ -75,7 +77,7 @@ fun RenderContext.popOverDemo() {
             div("p-4 bg-gray-50") {
                 a(
                     """flow-root px-2 py-2 transition duration-150 ease-in-out rounded-md hover:bg-gray-100 
-                            |focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 
+                            |focus:outline-none focus-visible:ring focus-visible:ring-blue-600 
                             |focus-visible:ring-opacity-50""".trimMargin()
                 ) {
                     span("flex items-center") {
