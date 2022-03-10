@@ -80,7 +80,7 @@ class MyerTests {
 //        console.log("new: $new \n")
 
         with(measureTime {
-                val patches = Myer.diff(old, new)
+                val patches = Myer.diff<String, Nothing>(old, new, null)
 
                 try {
                     patches.forEach { patch ->

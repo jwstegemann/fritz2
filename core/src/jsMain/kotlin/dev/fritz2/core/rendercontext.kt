@@ -45,19 +45,20 @@ interface RenderContext : WithJob, WithScope {
      *
      * @param idProvider function to identify a unique entity in the list
      * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
+     * @param batch hide [into] while rendering patches. Useful to avoid flickering when you make many changes (like sorting)
      * @param content [RenderContext] for rendering the data to the DOM
      */
     fun <V> Flow<List<V>>.renderEach(
         idProvider: IdProvider<V, *>? = null,
         into: Tag<HTMLElement>? = null,
+        batch: Boolean = false,
         content: RenderContext.(V) -> Tag<HTMLElement>
     ) {
-        mountPatches(into, this) { upstreamValues, mountPoints ->
+        mountPatches(into, this, batch) { upstreamValues, mountPoints ->
             upstreamValues.scan(Pair(emptyList(), emptyList())) { acc: Pair<List<V>, List<V>>, new ->
                 Pair(acc.second, new)
             }.map { (old, new) ->
-                val diff = if (idProvider != null) Myer.diff(old, new, idProvider) else Myer.diff(old, new)
-                diff.map { patch ->
+                Myer.diff(old, new, idProvider).map { patch ->
                     patch.map(job) { value, newJob ->
                         val mountPoint = BuildContext(newJob, scope)
                         content(mountPoint, value).also {

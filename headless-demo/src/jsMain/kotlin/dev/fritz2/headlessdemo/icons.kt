@@ -1,5 +1,16 @@
 package dev.fritz2.headlessdemo
 
+import dev.fritz2.core.RenderContext
+import dev.fritz2.core.fill
+import dev.fritz2.core.viewBox
+
+fun RenderContext.icon(classes: String? = null, id: String? = null, content: String) =
+    svg(classes, id) {
+        content(content)
+        viewBox("0 0 20 20")
+        fill("currentColor")
+    }
+
 /**
  * Icon definitions from the fantastic [heroicons](https://heroicons.com)
  * License: https://github.com/tailwindlabs/heroicons/blob/master/LICENSE
