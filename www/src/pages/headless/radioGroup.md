@@ -7,7 +7,8 @@ eleventyNavigation:
     title: RadioGroup
     parent: headless 
     order: 80 
-demoHash: radioGroup 
+demoHash: radioGroup
+demoHeight: 22rem
 teaser: "A RadioGroup serves as a basis for the single selection of any element."
 ---
 

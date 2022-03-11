@@ -7,7 +7,8 @@ eleventyNavigation:
     title: Listbox (Select)
     parent: headless 
     order: 40 
-demoHash: listbox 
+demoHash: listbox
+demoHeight: 25rem
 teaser: "A list box offers the user the opportunity to select an option from a given set. The selection options are
 normally only visible when the list box is active."
 ---

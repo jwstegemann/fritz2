@@ -8,6 +8,7 @@ eleventyNavigation:
     parent: headless
     order: 90
 demoHash: switch
+demoHeight: 11rem
 teaser: "The switch component can be used for switching between two states, i.e. on or off, yes or no, etc. 
 The semantics and operation correspond to those of a single checkbox."
 ---

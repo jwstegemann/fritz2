@@ -8,6 +8,7 @@ eleventyNavigation:
     parent: headless
     order: 15
 demoHash: collection
+demoHeight: 30rem
 teaser: "A headless component to render collections of data, i.e. a data table, complex lists that support sorting, 
 filtering, selection of items and keyboard navigation."
 ---

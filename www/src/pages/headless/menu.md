@@ -7,7 +7,8 @@ eleventyNavigation:
     title: Menu
     parent: headless 
     order: 50 
-demoHash: menu 
+demoHash: menu
+demoHeight: 25rem
 teaser: "A drop-down menu for selecting actions to be performed, including keyboard navigation."
 ---
 

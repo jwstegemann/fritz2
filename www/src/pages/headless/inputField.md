@@ -8,6 +8,7 @@ eleventyNavigation:
     parent: headless
     order: 30
 demoHash: inputfield
+demoHeight: 14rem
 teaser: "An InputField offers a single line of text input."
 ---
 

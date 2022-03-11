@@ -8,6 +8,7 @@ eleventyNavigation:
     parent: headless
     order: 20
 demoHash: disclosure
+demoHeight: 30rem
 teaser: "A disclosure allows showing and hiding content such as switchable accordion menus."
 ---
 
