@@ -463,8 +463,8 @@ class for real projects.
 
 ### Closable Content - OpenClose
 
-Some headless components can be opened and closed, for example by being in the open state content
-expands ([Disclosure](disclosure)) or a popup appears ([PopOver](popover)). These components implement the abstract 
+Some headless components can be opened and closed, for example content
+expands ([Disclosure](disclosure)) in open state or a popup appears ([PopOver](popover)). These components implement the abstract 
 class `OpenClose`.
 
 In the scope of these components, there are various `Flow`s and `Handler`s available, in order to react or manipulate
@@ -478,9 +478,8 @@ the open-state of the component:
 | `open`         | `SimpleHandler<Unit>`            | handler to open.                                                      |
 | `toggle`       | `SimpleHandler<Unit>`            | handler for switching between open and closed.                        |
 
-The open state of such a component can be sent via the data-binding property `openState`, e.g. to a external `Store`
-or `Flow`. This can be used, for example, to control the visibility of the selection list of a `listbox` independently
-of the standard behavior, e.g. always kept open:
+The open state of such a component can be set via the data-binding property `openState`, e.g. to an external `Store`
+or `Flow`. This can be used, for example, to control the visibility of the selection list of a `listbox` divergent from the standard behavior, e.g. always kept open:
 
 ```kotlin
 listbox<String> {
