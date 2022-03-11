@@ -22,9 +22,9 @@ fun RenderContext.disclosureDemo() {
                     | perferendis sed unde rerum deserunt eius. """.trimMargin(),
     )
 
-    div("max-w-7xl mx-auto py-12 px-4 sm:py-16 sm:px-6 lg:px-8") {
-        div("max-w-3xl mx-auto divide-y-2 divide-gray-200 rounded-xl") {
-            h2("text-center text-3xl font-extrabold text-gray-900 sm:text-4xl") {
+    div("max-w-3xl mx-auto") {
+        div("py-8 px-4 divide-y-2 divide-gray-200 rounded-md bg-gray-50") {
+            h2("text-center text-3xl font-extrabold text-gray-900") {
                 +"Frequently asked questions"
             }
             dl("mt-6 space-y-6 divide-y divide-gray-200") {

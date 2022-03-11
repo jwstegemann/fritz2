@@ -33,7 +33,7 @@ fun RenderContext.checkboxGroupDemo() {
                             tag = RenderContext::label
                         ) {
                             className(selected.map {
-                                if (it) "ring-2 ring-indigo-500 border-transparent"
+                                if (it) "ring-2 ring-blue-600 border-transparent"
                                 else "border-gray-300"
                             })
                             div("flex-1 flex") {
@@ -51,7 +51,7 @@ fun RenderContext.checkboxGroupDemo() {
                             }
                             selected.render {
                                 if (it) {
-                                    svg("h-5 w-5 text-indigo-600") {
+                                    svg("h-5 w-5 text-blue-700") {
                                         content(HeroIcons.check_circle)
                                         fill("currentColor")
                                     }
