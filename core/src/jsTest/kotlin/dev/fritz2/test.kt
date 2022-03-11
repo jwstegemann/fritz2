@@ -1,14 +1,17 @@
 package dev.fritz2
 
+import dev.fritz2.core.WithJob
 import dev.fritz2.core.mountSimple
 import dev.fritz2.remote.Request
 import dev.fritz2.remote.http
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 
-fun <T> runTest(block: suspend () -> T): dynamic = MainScope().promise {
+fun <T> runTest(block: suspend WithJob.() -> T): dynamic = MainScope().promise {
     delay(50)
-    block()
+    block(object : WithJob {
+        override val job: Job = Job()
+    })
     delay(50)
 }
 
