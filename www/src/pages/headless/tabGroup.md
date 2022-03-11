@@ -8,7 +8,7 @@ eleventyNavigation:
     parent: headless
     order: 100
 demoHash: tabGroup
-demoHeight: 17rem
+demoHeight: 18rem
 teaser: "A TabGroup allows content to be switched across a horizontal or vertical list of tabs."
 ---
 

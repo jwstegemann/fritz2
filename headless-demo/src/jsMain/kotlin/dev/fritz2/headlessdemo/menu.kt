@@ -24,19 +24,18 @@ fun RenderContext.menuDemo() {
 
     val action = storeOf("")
 
-    div("w-72 mb-4") {
+    div("max-w-sm") {
         div("w-full h-72") {
             menu("inline-block text-left") {
                 div {
                     menuButton(
-                        """inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-black 
-                        | bg-white rounded-md focus:outline-none focus-visible:ring-2 
-                        | focus-visible:ring-white focus-visible:ring-opacity-75""".trimMargin()
+                        """w-32 inline-flex justify-center rounded-md border border-transparent 
+                        | shadow-sm px-4 py-2 bg-blue-700 text-base font-medium text-white hover:bg-blue-800 
+                        | focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:col-start-2 
+                        | sm:text-sm""".trimMargin()
                     ) {
                         +"Options"
-                        svg("w-5 h-5 ml-2 -mr-1") {
-                            content(HeroIcons.chevron_down)
-                        }
+                        icon("w-5 h-5 ml-2 -mr-1", content = HeroIcons.chevron_down)
                     }
                 }
 
