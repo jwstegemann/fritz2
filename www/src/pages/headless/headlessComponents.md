@@ -400,7 +400,7 @@ This allows the effect to handle all facets of a UI within the DOM.
 The configuration takes place as usual by custom tailored `invoke` methods.
 
 A recurring pattern in hooks can be traced back to the duality of static and dynamic data:
-Sometimes a value to be rendered is static, other times it comes from a `flow`. Both can be processed by
+Sometimes a value to be rendered is static, other times it comes from a `Flow`. Both can be processed by
 dedicated `invoke` functions that create the specific effect accordingly and put into the `value` field of
 the `Property`:
 
@@ -467,7 +467,7 @@ Some headless components can be opened and closed, for example by being in the o
 expands ([Disclosure](disclosure)) or a popup appears ([PopOver](popover)). These components implement the abstract 
 class `OpenClose`.
 
-In the scope of these components, there are various `flow`s and `handlers` available, in order to react or manipulate
+In the scope of these components, there are various `Flow`s and `handlers` available, in order to react or manipulate
 the open-state of the component:
 
 | Scope property | Typ                              | Description                                                           |

@@ -149,7 +149,7 @@ listbox<String> {
 
 ## Open State
 
-Listbox is an [`OpenClose` component](#closable-content---openclose). There are different `flow`s and `Handler`
+Listbox is an [`OpenClose` component](#closable-content---openclose). There are different `Flow`s and `Handler`
 like `opened` in its scope available to control the open state of a list box based on state changes.
 
 The opening state of the list box can be bound to an external `store` via data binding, e.g. to always display the list

@@ -53,7 +53,7 @@ popOver {
 
 ## Open State
 
-PopOver is an [`OpenClose` component](#closable-content---openclose). There are different `flow`s and `Handler`
+PopOver is an [`OpenClose` component](#closable-content---openclose). There are different `Flow`s and `Handler`
 like `opened` in its scope available to control the open state of a popover panel on state changes.
 
 The opening state of the PopOver can be bound to an external `store` via data binding, e.g. to always display the

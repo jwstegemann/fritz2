@@ -240,7 +240,6 @@ dataColection<T>() {
     val selection: SelectionMode<T>
     
     fun filterByText(toString: (T) -> String) : SimpleHandler<String>
-    fun sortingDirection(s: Sorting<T>): Flow<SortDirection>
     
     // use multiple times
     dataCollectionSortButton(sort: Sorting<T>) {
@@ -279,7 +278,6 @@ Functions:
 
 - `filterByText(toString: (T) -> String) : SimpleHandler<String>`: Factory to create a `Handler` to do a filtering based
   upon one item `T`.
-- `sortingDirection(s: Sorting<T>): Flow<SortDirection>`: Factory to derive the `SortDirection` from the `Sorting`.
 
 ### dataCollectionSortButton
 
