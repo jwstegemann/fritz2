@@ -4,9 +4,7 @@ package dev.fritz2.headlessdemo
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.fill
 import dev.fritz2.core.transition
-import dev.fritz2.core.viewBox
 import dev.fritz2.headless.components.popOver
-import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.utils.popper.Placement
 import kotlinx.coroutines.flow.map
 
@@ -58,14 +56,9 @@ fun RenderContext.popOverDemo() {
                         attr("key", "{$item.name}")
                         div(
                             """flex items-center justify-center flex-shrink-0 w-10 h-10 p-1 rounded-lg 
-                                    |bg-orange-100 text-orange-600 sm:h-12 sm:w-12""".trimMargin()
+                                    | bg-orange-100 sm:h-12 sm:w-12""".trimMargin()
                         ) {
-                            svg {
-                                content(item.icon)
-                                attr(Aria.hidden, "true")
-                                fill("currentColor")
-                                viewBox("0 0 20 20")
-                            }
+                            icon("w-10 h-10 text-orange-600", content = item.icon)
                         }
                         div("ml-4") {
                             p("text-sm font-medium text-gray-900") { +item.name }
