@@ -72,7 +72,7 @@ concepts: simple `var` fields (hereinafter also called "simple configuration"),
 generally the function of a component to the context in a meaningful way. The different concepts of configuration are
 discussed in detail in a [dedicated section](#basic-concepts-for-configuration).
 
-Almost without exception, all factories (of components and bricks) always generate a `tag`. The user has therefore
+Almost without exception, all factories (of components and bricks) always generate a `Tag`. The user has therefore
 access to all attributes of the generated tag, such as `className` or `attr`!
 
 ```kotlin
@@ -147,7 +147,7 @@ someComponent() {
 ## UI = Headless + Tags + Styling
 
 In order to create a functioning UI from the headless components and their building blocks, the given
-Factory functions can be nested and combined with other `tags` in such a way that the desired
+Factory functions can be nested and combined with other `Tag`s in such a way that the desired
 overall structure is created. In addition, the appearance must be defined by adding styling.
 
 The headless components and modules offer the following starting points in order to specify the function and
@@ -174,9 +174,9 @@ Other examples can be found in the various `*Toggle` blocks (e.g.
 [checkboxGroupOptionToggle](#checkboxgroupcheckboxgroupoptiontoggle)), which automatically select or deselect items
 based on defined user inputs. The user need do nothing more than applying these bricks accordingly in his component.
 
-### Determine the `tag` to be generated in Factory Functions
+### Determine the `Tag` to be generated in Factory Functions
 
-The headless components and their bricks always offer a good default type for the `tag` to be generated. In order to
+The headless components and their bricks always offer a good default type for the `Tag` to be generated. In order to
 achieve the greatest possible flexibility, the user is free to choose the type of tag himself.
 
 In this way, he can create the tag that is semantically appropriate for the context.
@@ -391,7 +391,7 @@ but is applied by the headless component or brick in a specific place or situati
 
 Therefore, it makes sense to choose a `Property` as the base interface: The public API for setting the effect works in
 the same way as all other configurations thanks to the property concept. The effect itself, on the other hand, is
-designed to be applicable as extension function on a `tag` with some payload parameter. So it can be called anywhere
+designed to be applicable as extension function on a `Tag` with some payload parameter. So it can be called anywhere
 within the `RenderContext`. On top of that, the effect also has a generic return type, so that the latter can be
 processed further if needed. The signature looks like that: `typealias Effect<C, R, P> = C.(P) -> R`
 
@@ -467,7 +467,7 @@ Some headless components can be opened and closed, for example by being in the o
 expands ([Disclosure](disclosure)) or a popup appears ([PopOver](popover)). These components implement the abstract 
 class `OpenClose`.
 
-In the scope of these components, there are various `Flow`s and `handlers` available, in order to react or manipulate
+In the scope of these components, there are various `Flow`s and `Handler`s available, in order to react or manipulate
 the open-state of the component:
 
 | Scope property | Typ                              | Description                                                           |
