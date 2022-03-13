@@ -2,6 +2,7 @@ package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.utils.popper.*
+import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
@@ -16,7 +17,8 @@ abstract class PopUpPanel<C : HTMLElement>(
     classes: String?,
     id: String?,
     scope: ScopeContext.() -> Unit,
-    private val openCloseDelegate: OpenClose,
+    private val opened: Flow<Boolean>,
+    private val fullWidth: Boolean = true,
     private val reference: Tag<HTMLElement>?,
     private val popperDiv: HtmlTag<HTMLDivElement> = renderContext.div(POPUP_HIDDEN) {}, //never add other classes to popperDiv, they will be overridden
     tag: Tag<C> = tagFactory(popperDiv, classes, id, scope) {}
@@ -25,6 +27,8 @@ abstract class PopUpPanel<C : HTMLElement>(
     companion object {
         private const val POPUP_HIDDEN = "fritz2-popup-hidden"
         private const val POPUP_VISIBLE = "fritz2-popup-visible"
+        private const val POPUP_HIDDEN_FULL = "fritz2-popup-hidden-full"
+        private const val POPUP_VISIBLE_FULL = "fritz2-popup-visible-full"
         init {
             addGlobalStyles(
                 listOf(
@@ -52,10 +56,10 @@ abstract class PopUpPanel<C : HTMLElement>(
                 transform: rotate(45deg);
                 background: inherit;
             }""".trimIndent(),
-            """.popper.$POPUP_VISIBLE .popper-arrow::before {
+            """.popper.$POPUP_VISIBLE_FULL .popper-arrow::before, .popper.$POPUP_VISIBLE .popper-arrow::before {
                 visibility: visible;
             }""".trimIndent(),
-            """.popper.$POPUP_HIDDEN .popper-arrow::before {
+            """.popper.$POPUP_HIDDEN_FULL .popper-arrow::before, .popper.$POPUP_HIDDEN .popper-arrow::before {
                 visibility: hidden;
             }""".trimIndent(),
                     """.popper[data-popper-placement^='bottom'] .popper-arrow::before {
@@ -119,10 +123,16 @@ abstract class PopUpPanel<C : HTMLElement>(
                 transform-origin: bottom left;
             }""".trimIndent(),
                     """.$POPUP_VISIBLE {
-                width: 100%;
                 visibility: visible;
             }""".trimIndent(),
                     """.$POPUP_HIDDEN {
+                visibility: hidden;
+            }""".trimIndent(),
+                    """.$POPUP_VISIBLE_FULL {
+                width: 100%;
+                visibility: visible;
+            }""".trimIndent(),
+                    """.$POPUP_HIDDEN_FULL {
                 width: 100%;
                 visibility: hidden;
             }""".trimIndent()
@@ -130,6 +140,9 @@ abstract class PopUpPanel<C : HTMLElement>(
             )
         }
     }
+
+    private val visibleClasses = "popper ${if (fullWidth) POPUP_VISIBLE_FULL else POPUP_VISIBLE}"
+    private val hidden = "popper ${if (fullWidth) POPUP_HIDDEN_FULL else POPUP_HIDDEN}"
 
     var placement: Placement = Placement.auto
     var strategy: Strategy = Strategy.absolute
@@ -164,22 +177,20 @@ abstract class PopUpPanel<C : HTMLElement>(
 
             job.invokeOnCompletion { popper.destroy() }
 
-            if (openCloseDelegate.openState.isSet) {
-                reference.apply {
-                    attr(Aria.labelledby, reference.id)
-                    attr(Aria.controls, id.whenever(openCloseDelegate.opened))
-                    attr(Aria.haspopup, "true")
-                }
-                openCloseDelegate.opened handledBy {
-                    if (it) {
-                        popperDiv.domNode.className = "popper $POPUP_VISIBLE"
-                        this@PopUpPanel.waitForAnimation()
-                        popper.update()
-                        setFocus()
-                    } else {
-                        this@PopUpPanel.waitForAnimation()
-                        popperDiv.domNode.className = "popper $POPUP_HIDDEN"
-                    }
+            reference.apply {
+                attr(Aria.labelledby, reference.id)
+                attr(Aria.controls, id.whenever(opened))
+                attr(Aria.haspopup, "true")
+            }
+            opened handledBy {
+                if (it) {
+                    popperDiv.domNode.className = visibleClasses
+                    this@PopUpPanel.waitForAnimation()
+                    popper.update()
+                    setFocus()
+                } else {
+                    this@PopUpPanel.waitForAnimation()
+                    popperDiv.domNode.className = hidden
                 }
             }
         }
