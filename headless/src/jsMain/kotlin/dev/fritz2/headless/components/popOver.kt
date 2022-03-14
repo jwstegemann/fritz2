@@ -62,7 +62,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         tagFactory: TagFactory<Tag<C>>,
         classes: String?,
         scope: ScopeContext.() -> Unit
-    ) : PopUpPanel<C>(renderContext, tagFactory, classes, "$componentId-items", scope, this@PopOver, button)
+    ) : PopUpPanel<C>(renderContext, tagFactory, classes, "$componentId-items", scope, this@PopOver.opened, reference = button)
 
     /**
      * Factory function to create a [popOverPanel].

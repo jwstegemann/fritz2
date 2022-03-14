@@ -74,6 +74,11 @@ val pages = mapOf(
         "Headless Collection",
         """A collection handles sorting, filtering of and selecting item form a collection.""".trimMargin(),
         RenderContext::collectionDemo
+    ),
+    "tooltip" to DemoPage(
+        "Headless Tooltip",
+        """Some information that is displayed, whenever you hover a target element using your pointer device.""".trimMargin(),
+        RenderContext::tooltipDemo
     )
 )
 

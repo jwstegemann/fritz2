@@ -151,7 +151,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         tagFactory: TagFactory<Tag<CI>>,
         classes: String?,
         scope: ScopeContext.() -> Unit
-    ) : PopUpPanel<CI>(renderContext, tagFactory, classes, "$componentId-items", scope, this@Listbox, button) {
+    ) : PopUpPanel<CI>(renderContext, tagFactory, classes, "$componentId-items", scope, this@Listbox.opened, reference = button) {
 
         private fun nextItem(currentIndex: Int, direction: Direction, entries: List<ListboxEntry<T>>): Int =
             when (direction) {
