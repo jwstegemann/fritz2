@@ -24,7 +24,7 @@ fun RenderContext.listboxDemo() {
 
     val bestCharacter = storeOf("Luke")
 
-    div("w-72 mb-4") {
+    div("max-w-sm") {
         listbox<String>("h-72") {
             value(bestCharacter)
             listboxLabel("sr-only", tag = RenderContext::span) { +"Choose the best Star Wars character" }

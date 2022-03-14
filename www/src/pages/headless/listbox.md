@@ -7,7 +7,8 @@ eleventyNavigation:
     title: Listbox (Select)
     parent: headless 
     order: 40 
-demoHash: listbox 
+demoHash: listbox
+demoHeight: 25rem
 teaser: "A list box offers the user the opportunity to select an option from a given set. The selection options are
 normally only visible when the list box is active."
 ---
@@ -148,7 +149,7 @@ listbox<String> {
 
 ## Open State
 
-Listbox is an [`OpenClose` component](#closable-content---openclose). There are different `flow`s and `Handler`
+Listbox is an [`OpenClose` component](#closable-content---openclose). There are different `Flow`s and `Handler`
 like `opened` in its scope available to control the open state of a list box based on state changes.
 
 The opening state of the list box can be bound to an external `store` via data binding, e.g. to always display the list

@@ -23,7 +23,7 @@ fun RenderContext.radioGroupDemo() {
 
     val choice = storeOf<Plan?>(null)
 
-    div("w-96") {
+    div("max-w-sm") {
         radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
             value(choice)
             radioGroupLabel("sr-only") { +"Server size" }
@@ -31,8 +31,7 @@ fun RenderContext.radioGroupDemo() {
                 plans.forEach { option ->
                     radioGroupOption(option) {
                         radioGroupOptionToggle(
-                            """relative block border rounded-lg shadow-sm px-6 py-2 cursor-pointer 
-                            | sm:flex sm:justify-between focus:outline-none""".trimMargin(),
+                            "relative flex justify-between border rounded-lg shadow-sm px-6 py-2 cursor-pointer focus:outline-none",
                             tag = RenderContext::label
                         ) {
                             className(selected.combine(active) { sel, act ->
@@ -47,21 +46,21 @@ fun RenderContext.radioGroupDemo() {
                                         +option.name
                                     }
                                     radioGroupOptionDescription("text-gray-500", tag = RenderContext::div) {
-                                        p("sm:inline") { +option.cpus }
-                                        span("hidden sm:inline sm:mx-1") {
+                                        span { +option.cpus }
+                                        span("mx-1") {
                                             attr(Aria.hidden, "true")
                                             +"·"
                                         }
-                                        p("sm:inline") { +option.ram }
+                                        span { +option.ram }
                                     }
                                 }
                             }
                             radioGroupOptionDescription(
-                                "mt-2 flex text-sm sm:mt-0 sm:block sm:ml-4 sm:text-right",
+                                "block text-sm text-right mt-0 ml-4",
                                 tag = RenderContext::div
                             ) {
                                 div("font-medium text-gray-900") { +option.price }
-                                div("ml-1 text-gray-500 sm:ml-0") { +"""/mo""" }
+                                div("text-gray-500 ml-0") { +"/mo" }
                             }
                         }
                     }
@@ -71,7 +70,7 @@ fun RenderContext.radioGroupDemo() {
 
         div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50") {
             em { +"Selected: " }
-            choice.data.filterNotNull().map { "${it.name} ${it.cpus}·${it.ram}·${it.price}" }.renderText()
+            choice.data.filterNotNull().map { "${it.name} ${it.cpus} ${it.ram} ${it.price}/mo" }.renderText()
         }
     }
 }

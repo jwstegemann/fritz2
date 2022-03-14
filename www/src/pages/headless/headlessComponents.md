@@ -72,7 +72,7 @@ concepts: simple `var` fields (hereinafter also called "simple configuration"),
 generally the function of a component to the context in a meaningful way. The different concepts of configuration are
 discussed in detail in a [dedicated section](#basic-concepts-for-configuration).
 
-Almost without exception, all factories (of components and bricks) always generate a `tag`. The user has therefore
+Almost without exception, all factories (of components and bricks) always generate a `Tag`. The user has therefore
 access to all attributes of the generated tag, such as `className` or `attr`!
 
 ```kotlin
@@ -147,7 +147,7 @@ someComponent() {
 ## UI = Headless + Tags + Styling
 
 In order to create a functioning UI from the headless components and their building blocks, the given
-Factory functions can be nested and combined with other `tags` in such a way that the desired
+Factory functions can be nested and combined with other `Tag`s in such a way that the desired
 overall structure is created. In addition, the appearance must be defined by adding styling.
 
 The headless components and modules offer the following starting points in order to specify the function and
@@ -174,9 +174,9 @@ Other examples can be found in the various `*Toggle` blocks (e.g.
 [checkboxGroupOptionToggle](#checkboxgroupcheckboxgroupoptiontoggle)), which automatically select or deselect items
 based on defined user inputs. The user need do nothing more than applying these bricks accordingly in his component.
 
-### Determine the `tag` to be generated in Factory Functions
+### Determine the `Tag` to be generated in Factory Functions
 
-The headless components and their bricks always offer a good default type for the `tag` to be generated. In order to
+The headless components and their bricks always offer a good default type for the `Tag` to be generated. In order to
 achieve the greatest possible flexibility, the user is free to choose the type of tag himself.
 
 In this way, he can create the tag that is semantically appropriate for the context.
@@ -391,7 +391,7 @@ but is applied by the headless component or brick in a specific place or situati
 
 Therefore, it makes sense to choose a `Property` as the base interface: The public API for setting the effect works in
 the same way as all other configurations thanks to the property concept. The effect itself, on the other hand, is
-designed to be applicable as extension function on a `tag` with some payload parameter. So it can be called anywhere
+designed to be applicable as extension function on a `Tag` with some payload parameter. So it can be called anywhere
 within the `RenderContext`. On top of that, the effect also has a generic return type, so that the latter can be
 processed further if needed. The signature looks like that: `typealias Effect<C, R, P> = C.(P) -> R`
 
@@ -400,7 +400,7 @@ This allows the effect to handle all facets of a UI within the DOM.
 The configuration takes place as usual by custom tailored `invoke` methods.
 
 A recurring pattern in hooks can be traced back to the duality of static and dynamic data:
-Sometimes a value to be rendered is static, other times it comes from a `flow`. Both can be processed by
+Sometimes a value to be rendered is static, other times it comes from a `Flow`. Both can be processed by
 dedicated `invoke` functions that create the specific effect accordingly and put into the `value` field of
 the `Property`:
 
@@ -463,11 +463,11 @@ class for real projects.
 
 ### Closable Content - OpenClose
 
-Some headless components can be opened and closed, for example by being in the open state content
-expands ([Disclosure](disclosure)) or a popup appears ([PopOver](popover)). These components implement the abstract 
+Some headless components can be opened and closed, for example content
+expands ([Disclosure](disclosure)) in open state or a popup appears ([PopOver](popover)). These components implement the abstract 
 class `OpenClose`.
 
-In the scope of these components, there are various `flow`s and `handlers` available, in order to react or manipulate
+In the scope of these components, there are various `Flow`s and `Handler`s available, in order to react or manipulate
 the open-state of the component:
 
 | Scope property | Typ                              | Description                                                           |
@@ -478,9 +478,8 @@ the open-state of the component:
 | `open`         | `SimpleHandler<Unit>`            | handler to open.                                                      |
 | `toggle`       | `SimpleHandler<Unit>`            | handler for switching between open and closed.                        |
 
-The open state of such a component can be sent via the data-binding property `openState`, e.g. to a external `Store`
-or `Flow`. This can be used, for example, to control the visibility of the selection list of a `listbox` independently
-of the standard behavior, e.g. always kept open:
+The open state of such a component can be set via the data-binding property `openState`, e.g. to an external `Store`
+or `Flow`. This can be used, for example, to control the visibility of the selection list of a `listbox` divergent from the standard behavior, e.g. always kept open:
 
 ```kotlin
 listbox<String> {
@@ -509,13 +508,13 @@ they offer a unified configuration interface to the most important attributes.
 The following configurations are available in the scope of such a brick that implements the abstract class `PopUpPanel`
 in order to influence the positioning of the content:
 
-| Scope property | Typ         | Description                                                                                                                                                                                                                  |
-|----------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `placement`    | `Placement` | Defines the position of the building block, e.g. `Placement.top`, `Placement.bottomRight`, etc. Default is `Placement.auto`. The presumably best position is determined automatically based on the available visible space.  |
-| `strategy`     | `Strategy`  | Determines whether the block should be positioned `absolute` (default) or `fixed`.                                                                                                                                           |
-| `flip`         | `Boolean`   | If the block comes too close to the edge of the visible area, the position automatically changes to the other side if more space is available there.                                                                         |
-| `skidding`     | `Int`       | Defines the distance of the selection list from the reference element in pixels. The default value is 10.                                                                                                                    |
-| `distance`     | `Int`       | Defines the movement of the selection list along the reference element in pixels. The default value is 0.                                                                                                                    |
+| Scope property | Typ         | Description                                                                                                                                                                                                                 |
+|----------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `placement`    | `Placement` | Defines the position of the building block, e.g. `Placement.top`, `Placement.bottomRight`, etc. Default is `Placement.auto`. The presumably best position is determined automatically based on the available visible space. |
+| `strategy`     | `Strategy`  | Determines whether the block should be positioned `absolute` (default) or `fixed`.                                                                                                                                          |
+| `flip`         | `Boolean`   | If the block comes too close to the edge of the visible area, the position automatically changes to the other side if more space is available there.                                                                        |
+| `skidding`     | `Int`       | Defines the shifting of the block along the reference element in pixels. The default value is 0.                                                                                                                            |
+| `distance`     | `Int`       | Defines the distance of the block from the reference element in pixels. The default value is 10.                                                                                                                            |
 
 In addition, an arrow can be added pointing to the reference element. By default, the arrow is 8 pixels wide and
 inherits the background color of the panel. It can be styled as usual:

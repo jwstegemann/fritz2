@@ -8,6 +8,7 @@ eleventyNavigation:
     parent: headless
     order: 110
 demoHash: textarea
+demoHeight: 14rem
 teaser: "A TextArea offers a multi-line text input."
 ---
 

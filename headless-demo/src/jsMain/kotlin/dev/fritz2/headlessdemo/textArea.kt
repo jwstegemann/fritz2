@@ -10,7 +10,7 @@ fun RenderContext.textAreaDemo() {
 
     val description = storeOf("")
 
-    div("w-96") {
+    div("max-w-sm") {
         textArea {
             value(description)
             placeholder("fritz2 is super cool")

@@ -10,7 +10,7 @@ fun RenderContext.inputFieldDemo() {
 
     val name = storeOf("")
 
-    div("w-96") {
+    div("max-w-sm") {
 
         inputField("mb-4") {
             value(name)
