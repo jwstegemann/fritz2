@@ -180,7 +180,7 @@ abstract class PopUpPanel<C : HTMLElement>(
 
             reference.apply {
                 attr(Aria.labelledby, reference.id)
-                attr(Aria.controls, id.whenever(opened))
+                attr(Aria.controls, this@PopUpPanel.id.whenever(opened))
                 attr(Aria.haspopup, "true")
             }
             opened handledBy {
