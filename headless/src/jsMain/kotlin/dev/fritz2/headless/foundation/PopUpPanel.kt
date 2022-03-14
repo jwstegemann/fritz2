@@ -29,6 +29,7 @@ abstract class PopUpPanel<C : HTMLElement>(
         private const val POPUP_VISIBLE = "fritz2-popup-visible"
         private const val POPUP_HIDDEN_FULL = "fritz2-popup-hidden-full"
         private const val POPUP_VISIBLE_FULL = "fritz2-popup-visible-full"
+
         init {
             addGlobalStyles(
                 listOf(
@@ -51,15 +52,15 @@ abstract class PopUpPanel<C : HTMLElement>(
                     """.popper-arrow {
                 visibility: hidden;
             }""".trimIndent(),
-            """.popper-arrow::before {
+                    """.popper-arrow::before {
                 content: '';
                 transform: rotate(45deg);
                 background: inherit;
             }""".trimIndent(),
-            """.popper.$POPUP_VISIBLE_FULL .popper-arrow::before, .popper.$POPUP_VISIBLE .popper-arrow::before {
+                    """.popper.$POPUP_VISIBLE_FULL .popper-arrow::before, .popper.$POPUP_VISIBLE .popper-arrow::before {
                 visibility: visible;
             }""".trimIndent(),
-            """.popper.$POPUP_HIDDEN_FULL .popper-arrow::before, .popper.$POPUP_HIDDEN .popper-arrow::before {
+                    """.popper.$POPUP_HIDDEN_FULL .popper-arrow::before, .popper.$POPUP_HIDDEN .popper-arrow::before {
                 visibility: hidden;
             }""".trimIndent(),
                     """.popper[data-popper-placement^='bottom'] .popper-arrow::before {
@@ -142,7 +143,7 @@ abstract class PopUpPanel<C : HTMLElement>(
     }
 
     private val visibleClasses = "popper ${if (fullWidth) POPUP_VISIBLE_FULL else POPUP_VISIBLE}"
-    private val hidden = "popper ${if (fullWidth) POPUP_HIDDEN_FULL else POPUP_HIDDEN}"
+    private val hiddenClasses = "popper ${if (fullWidth) POPUP_HIDDEN_FULL else POPUP_HIDDEN}"
 
     var placement: Placement = Placement.auto
     var strategy: Strategy = Strategy.absolute
@@ -190,7 +191,7 @@ abstract class PopUpPanel<C : HTMLElement>(
                     setFocus()
                 } else {
                     this@PopUpPanel.waitForAnimation()
-                    popperDiv.domNode.className = hidden
+                    popperDiv.domNode.className = hiddenClasses
                 }
             }
         }

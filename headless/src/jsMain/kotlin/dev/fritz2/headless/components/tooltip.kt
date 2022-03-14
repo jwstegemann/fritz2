@@ -25,9 +25,13 @@ class Tooltip<C : HTMLElement>(
     classes: String?,
     id: String?,
     scope: ScopeContext.() -> Unit
-) : PopUpPanel<C>(renderContext.annex, tagFactory, classes, id, scope, renderContext.run {
-    merge(mouseenters.map {true}, mouseleaves.map {false})
-}, fullWidth = false, renderContext)
+) : PopUpPanel<C>(
+    renderContext.annex, tagFactory, classes, id, scope,
+    opened = renderContext.run {
+        merge(mouseenters.map { true }, mouseleaves.map { false })
+    },
+    fullWidth = false, renderContext
+)
 
 /**
  * Factory function to create a [tooltip].
@@ -35,7 +39,7 @@ class Tooltip<C : HTMLElement>(
  * For more information refer to the
  * [official documentation](https://docs.fritz2.dev/headless/tooltip/)
  */
-fun <C: HTMLElement> Tag<HTMLElement>.tooltip(
+fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
