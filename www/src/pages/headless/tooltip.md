@@ -8,6 +8,7 @@ eleventyNavigation:
     parent: headless 
     order: 120 
 demoHash: tooltip
+demoHeight: 18rem
 teaser: "A tooltip is a small floating container that is displayed next to the element it describes whenever it gets hovered using a pointer device."
 ---
 
@@ -28,7 +29,7 @@ Of course you can style your tooltip by adding css-classes, add an id and specif
 
 ::: warning
 **Beware:** The `tooltip`-function should be called, when the `Tag` it is called on has already been added to it's parent in the DOM. Therefore, call it on the result of the factory function used to create the `Tag` you want to describe - either directly or using a scope-method like `apply`.
-
+:::
 
 ## Transitions
 

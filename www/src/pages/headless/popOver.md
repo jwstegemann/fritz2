@@ -7,7 +7,8 @@ eleventyNavigation:
     title: PopOver
     parent: headless 
     order: 70 
-demoHash: popoverdemoHeight: 26rem
+demoHash: popover
+demoHeight: 26rem
 teaser: "A floating container for any content, such as navigation menus, help texts, etc."
 ---
 

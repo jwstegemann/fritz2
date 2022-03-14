@@ -1,10 +1,7 @@
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.ScopeContext
 import dev.fritz2.core.Tag
-import dev.fritz2.headless.foundation.Hook
-import dev.fritz2.headless.foundation.PopUpPanel
-import dev.fritz2.headless.foundation.Property
-import dev.fritz2.headless.foundation.TagFactory
+import dev.fritz2.headless.foundation.*
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import org.w3c.dom.HTMLDivElement
@@ -46,9 +43,10 @@ fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
     tag: TagFactory<Tag<C>>,
     initialize: Tooltip<C>.() -> Unit
 ) {
-    Tooltip(this, tag, classes, id, scope).run {
+    return Tooltip(this, tag, classes, id, scope).run {
         initialize()
         render()
+        attr("role", Aria.Role.tooltip)
     }
 }
 
