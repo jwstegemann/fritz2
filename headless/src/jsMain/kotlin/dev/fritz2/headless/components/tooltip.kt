@@ -14,7 +14,7 @@ class Tooltip<C : HTMLElement>(
     classes: String?,
     id: String?,
     scope: ScopeContext.() -> Unit
-) : PopUpPanel<C>(renderContext, tagFactory, classes, id, scope, renderContext.run {
+) : PopUpPanel<C>(renderContext.annex, tagFactory, classes, id, scope, renderContext.run {
     merge(mouseenters.map {true}, mouseleaves.map {false})
 }, fullWidth = false, renderContext)
 
