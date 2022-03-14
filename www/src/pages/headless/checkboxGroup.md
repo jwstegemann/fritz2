@@ -7,7 +7,8 @@ eleventyNavigation:
     title: CheckboxGroup
     parent: headless 
     order: 10 
-demoHash: checkboxGroup 
+demoHash: checkboxGroup
+demoHeight: 27rem
 teaser: "A CheckboxGroup serves as the basis for multiple selection of any element."
 ---
 

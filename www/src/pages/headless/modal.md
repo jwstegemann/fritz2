@@ -8,6 +8,7 @@ eleventyNavigation:
     parent: headless
     order: 60
 demoHash: modal
+demoHeight: 24rem
 teaser: "A modal dialog displays any content on a layer in front of the rest of the application.
 Intelligent mouse and keyboard management limit the interaction to the modal window as long as it is open."
 ---
