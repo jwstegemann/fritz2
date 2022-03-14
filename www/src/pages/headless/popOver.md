@@ -7,7 +7,7 @@ eleventyNavigation:
     title: PopOver
     parent: headless 
     order: 70 
-demoHash: popover 
+demoHash: popover
 teaser: "A floating container for any content, such as navigation menus, help texts, etc."
 ---
 
@@ -102,15 +102,22 @@ popOverPanel {
 
 ## Arrow
 
-An arrow pointing to the `popOverButton` can easily be added and styled if needed:
+An arrow pointing to the `popOverButton` can easily be added:
 
 ```kotlin
 popOverPanel {
-    arrow("h-3 w-3 bg-white")
+    arrow()
 
     //...
 }
 ```
+
+By default, the arrow is 8 pixels wide and inherits the background-color from the `popOverPanel` but it can easily be styled by adding classes:
+
+```kotlin
+arrow("h-3 w-3 bg-white")
+```
+
 
 ## Focus Management
 
@@ -189,11 +196,11 @@ Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope property | Typ         | Description                                                                                                                                                                                                                  |
-|----------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `placement`    | `Placement` | Defines the position of the building block, e.g. `Placement.top`, `Placement.bottomRight`, etc. Default is `Placement.auto`. The presumably best position is determined automatically based on the available visible space.  |
-| `strategy`     | `Strategy`  | Determines whether the block should be positioned `absolute` (default) or `fixed`.                                                                                                                                           |
-| `flip`         | `Boolean`   | If the block comes too close to the edge of the visible area, the position automatically changes to the other side if more space is available there.                                                                         |
-| `skidding`     | `Int`       | Defines the distance of the selection list from the reference element in pixels. The default value is 10.                                                                                                                    |
-| `distance`     | `Int`       | Defines the movement of the selection list along the reference element in pixels. The default value is 0.                                                                                                                    |
+| Scope property | Typ         | Description                                                                                                                                                                                                                 |
+|----------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `placement`    | `Placement` | Defines the position of the building block, e.g. `Placement.top`, `Placement.bottomRight`, etc. Default is `Placement.auto`. The presumably best position is determined automatically based on the available visible space. |
+| `strategy`     | `Strategy`  | Determines whether the block should be positioned `absolute` (default) or `fixed`.                                                                                                                                          |
+| `flip`         | `Boolean`   | If the block comes too close to the edge of the visible area, the position automatically changes to the other side if more space is available there.                                                                        |
+| `skidding`     | `Int`       | Defines the shifting of the panel along the reference element in pixels. The default value is 0.                                                                                                                            |
+| `distance`     | `Int`       | Defines the distance of the panel from the reference element in pixels. The default value is 10.                                                                                                                            |
 

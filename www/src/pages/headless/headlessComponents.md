@@ -509,13 +509,13 @@ they offer a unified configuration interface to the most important attributes.
 The following configurations are available in the scope of such a brick that implements the abstract class `PopUpPanel`
 in order to influence the positioning of the content:
 
-| Scope property | Typ         | Description                                                                                                                                                                                                                  |
-|----------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `placement`    | `Placement` | Defines the position of the building block, e.g. `Placement.top`, `Placement.bottomRight`, etc. Default is `Placement.auto`. The presumably best position is determined automatically based on the available visible space.  |
-| `strategy`     | `Strategy`  | Determines whether the block should be positioned `absolute` (default) or `fixed`.                                                                                                                                           |
-| `flip`         | `Boolean`   | If the block comes too close to the edge of the visible area, the position automatically changes to the other side if more space is available there.                                                                         |
-| `skidding`     | `Int`       | Defines the distance of the selection list from the reference element in pixels. The default value is 10.                                                                                                                    |
-| `distance`     | `Int`       | Defines the movement of the selection list along the reference element in pixels. The default value is 0.                                                                                                                    |
+| Scope property | Typ         | Description                                                                                                                                                                                                                 |
+|----------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `placement`    | `Placement` | Defines the position of the building block, e.g. `Placement.top`, `Placement.bottomRight`, etc. Default is `Placement.auto`. The presumably best position is determined automatically based on the available visible space. |
+| `strategy`     | `Strategy`  | Determines whether the block should be positioned `absolute` (default) or `fixed`.                                                                                                                                          |
+| `flip`         | `Boolean`   | If the block comes too close to the edge of the visible area, the position automatically changes to the other side if more space is available there.                                                                        |
+| `skidding`     | `Int`       | Defines the shifting of the block along the reference element in pixels. The default value is 0.                                                                                                                            |
+| `distance`     | `Int`       | Defines the distance of the block from the reference element in pixels. The default value is 10.                                                                                                                            |
 
 In addition, an arrow can be added pointing to the reference element. By default, the arrow is 8 pixels wide and
 inherits the background color of the panel. It can be styled as usual:

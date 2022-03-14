@@ -37,11 +37,11 @@ fun RenderContext.tooltipDemo() {
     div("-m-4 w-screen h-screen flex flex-col items-stretch") {
         div("p-4 flex justify-center") { tooltipButton() }
         div("flex flex-row flex-1 items-center") {
-            div("p-4") { tooltipInput() }
+            div("hidden sm:block p-4") { tooltipInput() }
             div("flex-1 p-4 flex justify-center") {
                 tooltipButton()
             }
-            div("p-4") { tooltipButton() }
+            div("hidden sm:block p-4") { tooltipButton() }
         }
         div("p-4 flex justify-center") { tooltipInput() }
     }
