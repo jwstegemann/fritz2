@@ -22,7 +22,7 @@ fun RenderContext.listboxDemo() {
         "Thrawn" to false
     )
 
-    val bestCharacter = storeOf("Luke")
+    val bestCharacter = storeOf("Luke", id = "starwars")
 
     div("max-w-sm") {
         listbox<String>("h-72") {
