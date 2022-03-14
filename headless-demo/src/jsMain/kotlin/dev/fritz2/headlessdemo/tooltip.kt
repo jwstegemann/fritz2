@@ -32,18 +32,12 @@ fun RenderContext.tooltipInput() {
 }
 
 fun RenderContext.tooltipDemo() {
-div("-m-4 w-screen h-[4000px] flex flex-col items-stretch") {
+div("-m-4 w-screen h-screen flex flex-col items-stretch") {
     div("p-4 flex justify-center") { tooltipButton() }
     div("flex flex-row flex-1 items-center") {
         div("p-4") { tooltipInput() }
-        div("border border-gray-800 flex-1 p-4 flex justify-center") {
-            div("h-48 w-full overflow-scroll") {
-                div("h-screen w-full flex flex-col items-center justify-between") {
-                    repeat(5) {
-                        tooltipButton()
-                    }
-                }
-            }
+        div("flex-1 p-4 flex justify-center") {
+            tooltipButton()
         }
         div("p-4") { tooltipButton() }
     }
