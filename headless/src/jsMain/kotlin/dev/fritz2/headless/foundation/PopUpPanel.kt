@@ -167,7 +167,7 @@ abstract class PopUpPanel<C : HTMLElement>(
             if (openCloseDelegate.openState.isSet) {
                 reference.apply {
                     attr(Aria.labelledby, reference.id)
-                    attr(Aria.controls, id.whenever(openCloseDelegate.opened))
+                    attr(Aria.controls, this@PopUpPanel.id.whenever(openCloseDelegate.opened))
                     attr(Aria.haspopup, "true")
                 }
                 openCloseDelegate.opened handledBy {

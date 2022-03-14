@@ -22,7 +22,7 @@ fun RenderContext.listboxDemo() {
         "Thrawn" to false
     )
 
-    val bestCharacter = storeOf("Luke")
+    val bestCharacter = storeOf("Luke", id = "starwars")
 
     div("max-w-sm") {
         listbox<String>("h-72") {
@@ -84,6 +84,11 @@ fun RenderContext.listboxDemo() {
                                 }
                             }
                         }
+
+                        // only needed for automatic testing to explicitly expose the state
+                        attr("data-listbox-selected", selected.asString())
+                        attr("data-listbox-disabled", disabledState.toString())
+                        attr("data-listbox-active", active.asString())
                     }
                 }
             }
