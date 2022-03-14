@@ -1,15 +1,16 @@
 ---
-title: PopOver 
-layout: layouts/docs.njk 
-permalink: /headless/popover/ 
+title: PopOver
+description: "A floating container for any content, such as navigation menus, help texts, etc."
+layout: layouts/docs.njk
+permalink: /headless/popover/
 eleventyNavigation:
     key: popover
     title: PopOver
-    parent: headless 
-    order: 70 
+    parent: headless
+    order: 70
+teaser: true
 demoHash: popover
 demoHeight: 26rem
-teaser: "A floating container for any content, such as navigation menus, help texts, etc."
 ---
 
 ## Basic Example

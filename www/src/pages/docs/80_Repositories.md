@@ -1,6 +1,7 @@
 ---
-layout: layouts/docs.njk 
 title: Repositories
+description: "Learn how to use repository abstraction in fritz2"
+layout: layouts/docs.njk
 permalink: /docs/repositories/
 eleventyNavigation:
     key: repositories

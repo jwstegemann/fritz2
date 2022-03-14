@@ -1,6 +1,7 @@
 ---
-layout: layouts/docs.njk
 title: Routing
+description: "Learn how to do client-side routing in fritz2"
+layout: layouts/docs.njk
 permalink: /docs/routing/
 eleventyNavigation:
     key: routing

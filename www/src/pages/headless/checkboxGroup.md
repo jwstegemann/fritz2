@@ -1,15 +1,16 @@
 ---
-title: CheckboxGroup 
+title: CheckboxGroup
+description: "A CheckboxGroup serves as the basis for multiple selection of any element."
 layout: layouts/docs.njk
-permalink: /headless/checkboxgroup/ 
+permalink: /headless/checkboxgroup/
 eleventyNavigation:
     key: checkbox
     title: CheckboxGroup
-    parent: headless 
-    order: 10 
+    parent: headless
+    order: 10
+teaser: true
 demoHash: checkboxGroup
 demoHeight: 27rem
-teaser: "A CheckboxGroup serves as the basis for multiple selection of any element."
 ---
 
 ## Basic Example

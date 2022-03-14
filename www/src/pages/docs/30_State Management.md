@@ -1,6 +1,7 @@
 ---
-layout: layouts/docs.njk
 title: State Management
+description: "Learn how to manage the state of fritz2 web-app"
+layout: layouts/docs.njk
 permalink: /docs/state/
 eleventyNavigation:
     key: state

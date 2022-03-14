@@ -1,5 +1,6 @@
 ---
 title: TabGroup
+description: "A TabGroup allows content to be switched across a horizontal or vertical list of tabs."
 layout: layouts/docs.njk
 permalink: /headless/tabgroup/
 eleventyNavigation:
@@ -7,9 +8,9 @@ eleventyNavigation:
     title: TabGroup
     parent: headless
     order: 100
+teaser: true
 demoHash: tabGroup
 demoHeight: 18rem
-teaser: "A TabGroup allows content to be switched across a horizontal or vertical list of tabs."
 ---
 
 ## Basic Example

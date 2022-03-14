@@ -1,6 +1,7 @@
 ---
-layout: layouts/docs.njk
 title: Web Components
+description: "Learn how to create and use Web Components in fritz2"
+layout: layouts/docs.njk
 permalink: /docs/web-components/
 eleventyNavigation:
     key: web-components

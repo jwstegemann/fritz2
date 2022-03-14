@@ -1,7 +1,7 @@
 ---
 layout: layouts/post.njk
 image: paradigm-shift-for-components.jpg
-type: Article
+type: article
 title: What we have learned about reuse and components in web front-end development.
 description: "This article is about how we built and delivered components with fritz2 so far, which problems we noticed
 more and more and why a new approach is the solution for us. At the same time we say goodbye to the components delivered 

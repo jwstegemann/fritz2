@@ -1,7 +1,7 @@
 ---
-layout: layouts/docs.njk
 title: Getting Started
-teaser: "learn how to get started with fritz2"
+description: "Learn how to get started with fritz2"
+layout: layouts/docs.njk
 permalink: /docs/start/
 eleventyNavigation:
     key: start

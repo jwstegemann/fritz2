@@ -1,5 +1,7 @@
 ---
 title: Data Collection
+description: "A headless component to render collections of data, i.e. a data table, complex lists that support sorting,
+filtering, selection of items and keyboard navigation."
 layout: layouts/docs.njk
 permalink: /headless/collection/
 eleventyNavigation:
@@ -7,10 +9,9 @@ eleventyNavigation:
     title: Data Collection
     parent: headless
     order: 15
+teaser: true
 demoHash: collection
 demoHeight: 40rem
-teaser: "A headless component to render collections of data, i.e. a data table, complex lists that support sorting, 
-filtering, selection of items and keyboard navigation."
 ---
 
 ## Basic Example

@@ -1,5 +1,6 @@
 ---
 title: TextArea
+description: "A TextArea offers a multi-line text input."
 layout: layouts/docs.njk
 permalink: /headless/textarea/
 eleventyNavigation:
@@ -7,9 +8,9 @@ eleventyNavigation:
     title: TextArea
     parent: headless
     order: 110
+teaser: true
 demoHash: textarea
 demoHeight: 14rem
-teaser: "A TextArea offers a multi-line text input."
 ---
 
 ## Basic Example

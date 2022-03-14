@@ -1,5 +1,7 @@
 ---
 title: Switch
+description: "The switch component can be used for switching between two states, i.e. on or off, yes or no, etc.
+The semantics and operation correspond to those of a single checkbox."
 layout: layouts/docs.njk
 permalink: /headless/switch/
 eleventyNavigation:
@@ -7,10 +9,9 @@ eleventyNavigation:
     title: Switch (Toggle)
     parent: headless
     order: 90
+teaser: true
 demoHash: switch
 demoHeight: 11rem
-teaser: "The switch component can be used for switching between two states, i.e. on or off, yes or no, etc. 
-The semantics and operation correspond to those of a single checkbox."
 ---
 
 ## Basic Example

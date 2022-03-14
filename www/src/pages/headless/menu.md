@@ -1,15 +1,16 @@
 ---
-title: Menu 
-layout: layouts/docs.njk 
-permalink: /headless/menu/ 
+title: Menu
+description: "A drop-down menu for selecting actions to be performed, including keyboard navigation."
+layout: layouts/docs.njk
+permalink: /headless/menu/
 eleventyNavigation:
     key: menu
     title: Menu
-    parent: headless 
-    order: 50 
+    parent: headless
+    order: 50
+teaser: true
 demoHash: menu
 demoHeight: 25rem
-teaser: "A drop-down menu for selecting actions to be performed, including keyboard navigation."
 ---
 
 ## Basic Example

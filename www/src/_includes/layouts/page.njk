@@ -6,6 +6,15 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css?family=Inter:200,300,400" rel="stylesheet"/>
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    {% if description %}
+        <meta name="description" content="{{ description }}">
+    {% endif %}
+    {% if keywords %}
+        <meta name="keywords" content="{{ keywords }}">
+    {% endif %}
+    {% if author %}
+        <meta name="author" content="{{ author }}">
+    {% endif %}
     <link rel="stylesheet" type="text/css" href="/assets/main.css"/>
     <link rel="stylesheet" type="text/css" href="/assets/prism-dracula.css"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">

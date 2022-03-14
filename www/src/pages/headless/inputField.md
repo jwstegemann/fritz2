@@ -1,5 +1,6 @@
 ---
 title: InputField
+description: "An InputField offers a single line of text input."
 layout: layouts/docs.njk
 permalink: /headless/inputfield/
 eleventyNavigation:
@@ -7,9 +8,9 @@ eleventyNavigation:
     title: InputField
     parent: headless
     order: 30
+teaser: true
 demoHash: inputfield
 demoHeight: 14rem
-teaser: "An InputField offers a single line of text input."
 ---
 
 ## Basic Example

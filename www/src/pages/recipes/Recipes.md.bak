@@ -1,5 +1,6 @@
 ---
 title: Recipes
+description: recipes and best-practices when using fritz2
 layout: layouts/docs.njk
 permalink: /recipes/
 eleventyNavigation:

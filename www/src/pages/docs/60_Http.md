@@ -1,6 +1,7 @@
 ---
-layout: layouts/docs.njk
 title: Http
+description: "Learn how to do HTTP calls to backends in fritz2"
+layout: layouts/docs.njk
 permalink: /docs/http/
 eleventyNavigation:
     key: http
