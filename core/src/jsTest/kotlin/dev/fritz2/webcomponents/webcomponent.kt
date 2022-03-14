@@ -6,6 +6,7 @@ import dev.fritz2.core.storeOf
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import kotlinx.dom.clear
 import org.w3c.dom.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,12 +22,11 @@ class WebComponentTests {
 
     @Test
     fun testWebComponent() = runTest {
-        
+        val body = (document.body as HTMLBodyElement).also { it.clear() }
+
         registerWebComponent("my-component", MyComponent)
 
         delay(250)
-
-        val body = document.body.unsafeCast<HTMLBodyElement>()
 
         body.appendChild(document.createElement("my-component", ElementCreationOptions("my-component")))
 
@@ -52,10 +52,9 @@ class WebComponentTests {
 
     @Test
     fun testAttributeChanges() = runTest {
-        
-        delay(250)
+        val body = (document.body as HTMLBodyElement).also { it.clear() }
+        delay(100)
 
-        val body = document.body.unsafeCast<HTMLBodyElement>()
         val attrComponent = document.createElement("attr-component", ElementCreationOptions("attr-component"))
         attrComponent.setAttribute("test", "New")
 
