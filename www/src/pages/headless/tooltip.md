@@ -9,12 +9,14 @@ eleventyNavigation:
     order: 120 
 demoHash: tooltip
 demoHeight: 18rem
-teaser: "A tooltip is a small floating container that is displayed next to the element it describes whenever it gets hovered using a pointer device."
+teaser: "A tooltip is a small floating container that is displayed next to the element it describes whenever it gets 
+hovered using a pointer device."
 ---
 
 ## Basic Example
 
-Adding a tooltip to an existing `Tag` (a standard HTML-tag or one built by a headless component) is straight forward. Just call the `tooltip`-factory function on the `Tag` you want to describe:
+Adding a tooltip to an existing `Tag` (a standard HTML-tag or one built by a headless component) is straight forward.
+Just call the `tooltip`-factory function on the `Tag` you want to describe:
 
 ````kotlin
 button {
@@ -24,11 +26,13 @@ button {
 }
 ````
 
-Of course you can style your tooltip by adding css-classes, add an id and specify the `Tag` that is rendered you don't want a `HTMLDivElement` like you are used to by other headless components.
-
+Of course you can style your tooltip by adding css-classes, add an id and specify the `Tag` that is rendered, like you
+are used to by other headless components, in case you don't want a `HTMLDivElement`.
 
 ::: warning
-**Beware:** The `tooltip`-function should be called, when the `Tag` it is called on has already been added to it's parent in the DOM. Therefore, call it on the result of the factory function used to create the `Tag` you want to describe - either directly or using a scope-method like `apply`.
+**Beware:** The `tooltip`-function should be called, when the `Tag` it is called on has already been added to it's
+parent in the DOM. Therefore, call it on the result of the factory function used to create the `Tag` you want to
+describe - either directly or using a scope-method like `apply`.
 :::
 
 ## Transitions
@@ -82,7 +86,8 @@ button {
 }
 ```
 
-By default, the arrow is 8 pixels wide and inherits the background-color from the `tooltip` but it can easily be styled by added classes:
+By default, the arrow is 8 pixels wide and inherits the background-color from the `tooltip` but it can easily be styled
+by added classes:
 
 ```kotlin
 arrow("h-3 w-3 bg-white")
@@ -91,8 +96,8 @@ arrow("h-3 w-3 bg-white")
 
 ## Mouse Interaction
 
-The `tooltip` is show whenever the mouse enters the `Tag` it is called on and is hidden again, when the mouse leaves the `Tag``
-
+The `tooltip` is show whenever the mouse enters the `Tag` it is called on and is hidden again, when the mouse leaves
+the `Tag`.
 
 ## API
 
