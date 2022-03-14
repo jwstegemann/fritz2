@@ -9,7 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class RenderConextTests {
+class RenderContextTests {
 
     @Test
     fun testMountTargetNotFoundException() = runTest {
@@ -53,11 +53,9 @@ class RenderConextTests {
 
     @Test
     fun testRenderFunction() = runTest {
-        document.clear()
-        document.write("""<body id="target"><h1>Loading...</h1></body>""")
+        document.body?.id = "target"
 
         val store = storeOf(true)
-
         val divId = Id.next()
 
         render("#target") {
