@@ -1,1 +1,10 @@
-import '../styles/main.css';
+window.toggleMenu = () => {
+    const menu = document.getElementById("mobile-menu");
+    const menuIcons = document.getElementsByClassName("mobile-icon")
+    if (menu) {
+        menu.classList.toggle("-translate-y-[100vh]")
+    }
+    for(let i = 0; i < menuIcons.length; i++) {
+        menuIcons[i].classList.toggle("hidden")
+    }
+}
