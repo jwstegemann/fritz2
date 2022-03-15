@@ -1,15 +1,16 @@
 ---
-title: RadioGroup 
-layout: layouts/docs.njk 
-permalink: /headless/radioGroup/ 
+title: RadioGroup
+description: "A RadioGroup serves as a basis for the single selection of any element."
+layout: layouts/docs.njk
+permalink: /headless/radioGroup/
 eleventyNavigation:
     key: radioGroup
     title: RadioGroup
-    parent: headless 
-    order: 80 
+    parent: headless
+    order: 80
+teaser: true
 demoHash: radioGroup
 demoHeight: 22rem
-teaser: "A RadioGroup serves as a basis for the single selection of any element."
 ---
 
 ## Basic Example

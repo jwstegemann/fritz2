@@ -1,16 +1,17 @@
 ---
-title: Listbox 
-layout: layouts/docs.njk 
-permalink: /headless/listbox/ 
+title: Listbox
+description: "A list box offers the user the opportunity to select an option from a given set. The selection options are
+normally only visible when the list box is active."
+layout: layouts/docs.njk
+permalink: /headless/listbox/
 eleventyNavigation:
     key: listbox
     title: Listbox (Select)
-    parent: headless 
-    order: 40 
+    parent: headless
+    order: 40
+teaser: true
 demoHash: listbox
 demoHeight: 25rem
-teaser: "A list box offers the user the opportunity to select an option from a given set. The selection options are
-normally only visible when the list box is active."
 ---
 
 ## Basic Example

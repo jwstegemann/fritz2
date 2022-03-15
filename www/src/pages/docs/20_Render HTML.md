@@ -1,6 +1,7 @@
 ---
-layout: layouts/docs.njk
 title: Render HTML
+description: "Learn how to render HTML with fritz2"
+layout: layouts/docs.njk
 permalink: /docs/render/
 eleventyNavigation:
     key: render

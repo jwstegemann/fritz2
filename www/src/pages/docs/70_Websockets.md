@@ -1,6 +1,7 @@
 ---
-layout: layouts/docs.njk
 title: Websockets
+description: "Learn how to communicate via Websockets in fritz2"
+layout: layouts/docs.njk
 permalink: /docs/websockets/
 eleventyNavigation:
     key: websockets

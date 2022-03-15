@@ -1,6 +1,7 @@
 ---
-layout: layouts/docs.njk
 title: Validation
+description: "Learn how to validate the data-models of fritz2 web-app"
+layout: layouts/docs.njk
 permalink: /docs/validation/
 eleventyNavigation:
     key: validation

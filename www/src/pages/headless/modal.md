@@ -1,5 +1,7 @@
 ---
 title: Modal
+description: "A modal dialog displays any content on a layer in front of the rest of the application.
+Intelligent mouse and keyboard management limit the interaction to the modal window as long as it is open."
 layout: layouts/docs.njk
 permalink: /headless/modal/
 eleventyNavigation:
@@ -7,10 +9,9 @@ eleventyNavigation:
     title: Modal
     parent: headless
     order: 60
+teaser: true
 demoHash: modal
 demoHeight: 24rem
-teaser: "A modal dialog displays any content on a layer in front of the rest of the application.
-Intelligent mouse and keyboard management limit the interaction to the modal window as long as it is open."
 ---
 
 ## Basic Example

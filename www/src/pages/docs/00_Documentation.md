@@ -1,5 +1,6 @@
 ---
 title: "Welcome to fritz2 docs"
+description: "Documentation of fritz2"
 layout: layouts/docs.njk
 permalink: /docs/ 
 eleventyNavigation:

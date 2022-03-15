@@ -1,5 +1,6 @@
 ---
 title: Headless Components
+description: "Documentation of fritz2 headless components"
 layout: layouts/docs.njk
 permalink: /headless/ 
 eleventyNavigation:

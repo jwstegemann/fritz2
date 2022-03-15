@@ -1,5 +1,6 @@
 ---
 title: Disclosure
+description: "A disclosure allows showing and hiding content such as switchable accordion menus."
 layout: layouts/docs.njk
 permalink: /headless/disclosure/
 eleventyNavigation:
@@ -7,9 +8,9 @@ eleventyNavigation:
     title: Disclosure
     parent: headless
     order: 20
+teaser: true
 demoHash: disclosure
 demoHeight: 30rem
-teaser: "A disclosure allows showing and hiding content such as switchable accordion menus."
 ---
 
 ## Basic Example
