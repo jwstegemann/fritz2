@@ -1,16 +1,17 @@
 ---
-title: Tooltip 
-layout: layouts/docs.njk 
-permalink: /headless/tooltip/ 
+title: Tooltip
+description: "A tooltip is a small floating container that is displayed next to the element it describes whenever it gets
+hovered using a pointer device."
+layout: layouts/docs.njk
+permalink: /headless/tooltip/
 eleventyNavigation:
     key: tooltip
     title: Tooltip
-    parent: headless 
-    order: 120 
+    parent: headless
+    order: 120
+teaser: true
 demoHash: tooltip
 demoHeight: 18rem
-teaser: "A tooltip is a small floating container that is displayed next to the element it describes whenever it gets 
-hovered using a pointer device."
 ---
 
 ## Basic Example
