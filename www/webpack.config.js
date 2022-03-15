@@ -1,4 +1,6 @@
 const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 module.exports = {
     entry: ['./src/scripts/main.js', './src/styles/main.css'],
@@ -6,13 +8,19 @@ module.exports = {
         path: path.resolve(__dirname, '_site/assets'),
         filename: 'main.js'
     },
+    plugins: [new MiniCssExtractPlugin()],
+    optimization: {
+        minimizer: [
+            new CssMinimizerPlugin(),
+        ],
+    },
     module: {
         rules: [
             {
                 test: /\.css$/,
                 exclude: /node_modules/,
                 use: [
-                    {loader: 'style-loader'},
+                    {loader: MiniCssExtractPlugin.loader},
                     {loader: 'css-loader'},
                     {
                         loader: 'postcss-loader',
@@ -21,7 +29,6 @@ module.exports = {
                                 plugins: [
                                     require("tailwindcss"),
                                     require("autoprefixer"),
-                                    require("cssnano")
                                 ]
                             }
                         }
