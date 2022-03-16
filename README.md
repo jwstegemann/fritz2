@@ -6,8 +6,8 @@
 [![IR](https://img.shields.io/badge/Kotlin%2FJS-IR%20supported-yellow)](https://kotl.in/jsirsupported)
 [![Kotlin](https://img.shields.io/badge/kotlin-1.6-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://examples.fritz2.dev/)
-[![API](https://img.shields.io/badge/API-dokka-green)](https://www.fritz2.dev/api/)
-[![Docs](https://img.shields.io/badge/docs-online-violet)](https://www.fritz2.dev/docs/)
+[![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev/)
+[![Docs](https://img.shields.io/badge/docs-online-violet)](https://docs.fritz2.dev/)
 [![Slack chat](https://img.shields.io/badge/kotlinlang-%23fritz2-B37700?logo=slack)](https://kotlinlang.slack.com/messages/fritz2)
 
 fritz2 is an ***extremely lightweight***, well-performing, independent library to build 
@@ -40,7 +40,7 @@ No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additio
 which parts of your component have to be re-rendered. 
 fritz2 also supports **two-way data binding** out-of-the-box to update your model by listening on events:
 
-![State management in fritz2](https://www.fritz2.dev/img/fritz2_cycle_of_life.svg)
+![State management in fritz2](https://docs.fritz2.dev/images/fritz2_state_management.png)
 
 Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data classes only once and use 
 it on your client and server (i.e. in a [SpringBoot](https://github.com/jamowei/fritz2-spring-todomvc)- or 
@@ -59,13 +59,13 @@ This is also true for your model-validation-code, which can quickly become far m
 - backend-repositories (Rest APIs, WebSockets, LocalStorage, etc.)
 - webcomponents
 - easy to learn
-- [documentation](https://www.fritz2.dev/docs/)
+- [documentation](https://docs.fritz2.dev/)
 - [examples](https://examples.fritz2.dev/) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
 
 ## How to try it?
 
 * Take a look at our hosted [examples](https://examples.fritz2.dev/)
-* Or set up a new project on your own, following our [documentation](https://www.fritz2.dev/docs/start/)
+* Or set up a new project on your own, following our [documentation](https://docs.fritz2.dev/GettingStarted.html)
 
 ## Overall Goals
 
