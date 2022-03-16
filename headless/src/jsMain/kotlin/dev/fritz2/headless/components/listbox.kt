@@ -17,7 +17,7 @@ import kotlin.math.max
  * Use [listbox] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/listbox/)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/listbox/)
  */
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
@@ -59,7 +59,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
      * Factory function to create a [listboxButton].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxbutton)
+     * [official documentation](https://www.fritz2.dev/headless/listbox/#listboxbutton)
      */
     fun <CB : HTMLElement> RenderContext.listboxButton(
         classes: String? = null,
@@ -77,7 +77,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
      * Factory function to create a [listboxButton] with a [HTMLButtonElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxbutton)
+     * [official documentation](https://www.fritz2.dev/headless/listbox/#listboxbutton)
      */
     fun RenderContext.listboxButton(
         classes: String? = null,
@@ -91,7 +91,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
      * Factory function to create a [listboxLabel].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxlabel)
+     * [official documentation](https://www.fritz2.dev/headless/listbox/#listboxlabel)
      */
     fun <CL : HTMLElement> RenderContext.listboxLabel(
         classes: String? = null,
@@ -104,7 +104,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
      * Factory function to create a [listboxLabel] with a [HTMLLabelElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxlabel)
+     * [official documentation](https://www.fritz2.dev/headless/listbox/#listboxlabel)
      */
     fun RenderContext.listboxLabel(
         classes: String? = null,
@@ -116,7 +116,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
      * Factory function to create a [listboxValidationMessages].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxvalidationmessages)
+     * [official documentation](https://www.fritz2.dev/headless/listbox/#listboxvalidationmessages)
      */
     fun <CV : HTMLElement> RenderContext.listboxValidationMessages(
         classes: String? = null,
@@ -138,7 +138,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
      * Factory function to create a [listboxValidationMessages] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxvalidationmessages)
+     * [official documentation](https://www.fritz2.dev/headless/listbox/#listboxvalidationmessages)
      */
     fun RenderContext.listboxValidationMessages(
         classes: String? = null,
@@ -275,7 +275,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
          * Factory function to create a [listboxItem].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxitem)
+         * [official documentation](https://www.fritz2.dev/headless/listbox/#listboxitem)
          */
         fun <CM : HTMLElement> RenderContext.listboxItem(
             entry: T,
@@ -301,7 +301,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
          * Factory function to create a [listboxItem] with a [HTMLButtonElement] as default [Tag].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxitem)
+         * [official documentation](https://www.fritz2.dev/headless/listbox/#listboxitem)
          */
         fun RenderContext.listboxItem(
             entry: T,
@@ -315,7 +315,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
      * Factory function to create a [listboxItems].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxitems)
+     * [official documentation](https://www.fritz2.dev/headless/listbox/#listboxitems)
      */
     fun <CI : HTMLElement> RenderContext.listboxItems(
         classes: String? = null,
@@ -334,7 +334,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
      * Factory function to create a [listboxItems] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/listbox/#listboxitems)
+     * [official documentation](https://www.fritz2.dev/headless/listbox/#listboxitems)
      */
     fun RenderContext.listboxItems(
         classes: String? = null,
@@ -383,7 +383,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/listbox/#listbox)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/listbox/#listbox)
  */
 fun <T, C : HTMLElement> RenderContext.listbox(
     classes: String? = null,
@@ -438,7 +438,7 @@ fun <T, C : HTMLElement> RenderContext.listbox(
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/listbox/#listbox)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/listbox/#listbox)
  */
 fun <T> RenderContext.listbox(
     classes: String? = null,

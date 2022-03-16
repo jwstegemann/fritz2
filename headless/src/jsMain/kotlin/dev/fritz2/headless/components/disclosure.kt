@@ -14,7 +14,7 @@ import org.w3c.dom.HTMLElement
  * Use [disclosure] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/disclosure)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/disclosure)
  */
 class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
 
@@ -34,7 +34,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
      * Factory function to create a [disclosureButton].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosurebutton)
+     * [official documentation](https://www.fritz2.dev/headless/disclosure/#disclosurebutton)
      */
     fun <CB : HTMLElement> RenderContext.disclosureButton(
         classes: String? = null,
@@ -53,7 +53,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
      * Factory function to create a [disclosureButton] with a [HTMLButtonElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosurebutton)
+     * [official documentation](https://www.fritz2.dev/headless/disclosure/#disclosurebutton)
      */
     fun RenderContext.disclosureButton(
         classes: String? = null,
@@ -72,7 +72,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
          * Factory function to create a [disclosureCloseButton].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosureclosebutton)
+         * [official documentation](https://www.fritz2.dev/headless/disclosure/#disclosureclosebutton)
          */
         fun <CC : HTMLElement> RenderContext.disclosureCloseButton(
             classes: String? = null,
@@ -88,7 +88,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
          * Factory function to create a [disclosureCloseButton] with a [HTMLButtonElement] as default [Tag].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosureclosebutton)
+         * [official documentation](https://www.fritz2.dev/headless/disclosure/#disclosureclosebutton)
          */
         fun RenderContext.disclosureCloseButton(
             classes: String? = null,
@@ -103,7 +103,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
      * Factory function to create a [disclosurePanel].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosurepanel)
+     * [official documentation](https://www.fritz2.dev/headless/disclosure/#disclosurepanel)
      */
     fun <CP : HTMLElement> RenderContext.disclosurePanel(
         classes: String? = null,
@@ -125,7 +125,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
      * Factory function to create a [disclosurePanel] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosurepanel)
+     * [official documentation](https://www.fritz2.dev/headless/disclosure/#disclosurepanel)
      */
     fun RenderContext.disclosurePanel(
         classes: String? = null,
@@ -154,7 +154,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosure)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/disclosure/#disclosure)
  */
 fun <C : HTMLElement> RenderContext.disclosure(
     classes: String? = null,
@@ -189,7 +189,7 @@ fun <C : HTMLElement> RenderContext.disclosure(
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/disclosure/#disclosure)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/disclosure/#disclosure)
  */
 fun RenderContext.disclosure(
     classes: String? = null,

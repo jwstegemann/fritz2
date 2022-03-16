@@ -13,7 +13,7 @@ import org.w3c.dom.HTMLElement
  * Use [tooltip] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/tooltip/)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/tooltip/)
  */
 
 class Tooltip<C : HTMLElement>(
@@ -34,7 +34,7 @@ class Tooltip<C : HTMLElement>(
  * Factory function to create a [tooltip].
  *
  * For more information refer to the
- * [official documentation](https://docs.fritz2.dev/headless/tooltip/)
+ * [official documentation](https://www.fritz2.dev/headless/tooltip/)
  */
 fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
     classes: String? = null,
@@ -54,7 +54,7 @@ fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
  * Factory function to create a [tooltip] with a [HTMLDivElement] as default [Tag].
  *
  * For more information refer to the
- * [official documentation](https://docs.fritz2.dev/headless/tooltip)
+ * [official documentation](https://www.fritz2.dev/headless/tooltip)
  */
 fun Tag<HTMLElement>.tooltip(
     classes: String? = null,

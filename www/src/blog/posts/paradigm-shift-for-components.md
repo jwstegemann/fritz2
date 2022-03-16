@@ -150,7 +150,7 @@ structure and the styling, the myriads of UI components out there can be reduced
 - the typing of text
 
 The headless concept takes advantage of this fact and defines components solely by their functionality. Thus, the number
-of such disjunctive components is reduced to relatively few: Currently, we have identified 14 of them that we have
+of such disjunctive components is reduced to relatively few: Currently, we have identified 15 of them that we have
 already implemented or are about to implement.
 
 These components are composed of smaller, well-defined building blocks (we call them *bricks*). Thus, the minimal
@@ -302,10 +302,8 @@ In addition to the headless components implemented so far, we already have two m
 complement our portfolio and cover missing functionalities:
 
 - *Toasts:* Serve to display volatile messages, whose display and (automatic) hiding is handled by the component itself.
-- *DataCollections*: Serve as a basis for the explicit display of data. The focus is on dynamic manipulation like
-  *filter* or *sort*. This can be used as a basis for creating
-  of [data-tables](https://tailwindui.com/components/application-ui/lists/tables) or
-  [stacked-Lists](https://tailwindui.com/components/application-ui/lists/stacked-lists).
+- *TypeAhead*: (aka ComboBox) Serve as basis for (single) selections with large data set that can be filtered by
+ typing.
 
 We hope that we have made you curious and that you give the concept a chance! Of course, we would also be very happy
 about your feedback.

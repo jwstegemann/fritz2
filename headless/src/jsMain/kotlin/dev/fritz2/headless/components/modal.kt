@@ -13,7 +13,7 @@ import org.w3c.dom.*
  * Use [modal] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/modal/)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/modal/)
  */
 class Modal(val renderContext: RenderContext) : RenderContext by renderContext, OpenClose() {
 
@@ -53,7 +53,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
          * Factory function to create a [modalOverlay].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/modal/#modaloverlay)
+         * [official documentation](https://www.fritz2.dev/headless/modal/#modaloverlay)
          */
         fun <CO : HTMLElement> RenderContext.modalOverlay(
             classes: String? = null,
@@ -69,7 +69,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
          * Factory function to create a [modalOverlay] with a [HTMLDivElement] as default [Tag].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/modal/#modaloverlay)
+         * [official documentation](https://www.fritz2.dev/headless/modal/#modaloverlay)
          */
         fun RenderContext.modalOverlay(
             classes: String? = null,
@@ -81,7 +81,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
          * Factory function to create a [modalTitle].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/modal/#modaltitle)
+         * [official documentation](https://www.fritz2.dev/headless/modal/#modaltitle)
          */
         fun <CT : HTMLElement> RenderContext.modalTitle(
             classes: String? = null,
@@ -94,7 +94,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
          * Factory function to create a [modalTitle] with a [HTMLHeadingElement] as default [Tag].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/modal/#modaltitle)
+         * [official documentation](https://www.fritz2.dev/headless/modal/#modaltitle)
          */
         fun RenderContext.modalTitle(
             classes: String? = null,
@@ -106,7 +106,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
          * Factory function to create a [modalDescription].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/modal/#modaldescription)
+         * [official documentation](https://www.fritz2.dev/headless/modal/#modaldescription)
          */
         fun <CD : HTMLElement> RenderContext.modalDescription(
             classes: String? = null,
@@ -125,7 +125,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
          * Factory function to create a [modalDescription] with a [HTMLParagraphElement] as default [Tag].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/modal/#modaldescription)
+         * [official documentation](https://www.fritz2.dev/headless/modal/#modaldescription)
          */
         fun RenderContext.modalDescription(
             classes: String? = null,
@@ -138,7 +138,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
      * Factory function to create a [modalPanel].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/modal/#modalpanel)
+     * [official documentation](https://www.fritz2.dev/headless/modal/#modalpanel)
      */
     fun <C : HTMLElement> RenderContext.modalPanel(
         classes: String? = null,
@@ -161,7 +161,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
      * Factory function to create a [modalPanel] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/modal/#modalpanel)
+     * [official documentation](https://www.fritz2.dev/headless/modal/#modalpanel)
      */
     fun RenderContext.modalPanel(
         classes: String? = null,
@@ -196,7 +196,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/modal/#modal)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/modal/#modal)
  */
 fun RenderContext.modal(
     initialize: Modal.() -> Unit

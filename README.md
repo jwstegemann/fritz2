@@ -40,7 +40,7 @@ No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additio
 which parts of your component have to be re-rendered. 
 fritz2 also supports **two-way data binding** out-of-the-box to update your model by listening on events:
 
-![State management in fritz2](https://docs.fritz2.dev/images/fritz2_state_management.png)
+![State management in fritz2](https://www.fritz2.dev/img/fritz2_cycle_of_life.svg)
 
 Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data classes only once and use 
 it on your client and server (i.e. in a [SpringBoot](https://github.com/jamowei/fritz2-spring-todomvc)- or 
@@ -59,16 +59,13 @@ This is also true for your model-validation-code, which can quickly become far m
 - backend-repositories (Rest APIs, WebSockets, LocalStorage, etc.)
 - webcomponents
 - easy to learn
-- [documentation](https://docs.fritz2.dev)
+- [documentation](https://www.fritz2.dev/docs/)
 - [examples](https://www.fritz2.dev/examples.html) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
-- ~~integrated [styling-dsl](https://docs.fritz2.dev/StylingDSL.html)~~ (outdated)
-- ~~[component-library](https://dev.fritz2.headless.components.fritz2.dev)~~ (outdated, will be replaced by a headless approach)
-
 
 ## How to try it?
 
 * Take a look at our hosted [examples](https://www.fritz2.dev/examples.html)
-* Or set up a new project on your own, following our [documentation](https://docs.fritz2.dev/ProjectSetup.html)
+* Or set up a new project on your own, following our [documentation](https://www.fritz2.dev/docs/start/)
 
 ## Overall Goals
 

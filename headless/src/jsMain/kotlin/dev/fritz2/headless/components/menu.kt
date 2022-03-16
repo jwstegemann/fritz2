@@ -17,7 +17,7 @@ import kotlin.math.max
  * Use [menu] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/menu/)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/menu/)
  */
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
@@ -59,7 +59,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
      * Factory function to create a [menuButton].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/menu/#menubutton)
+     * [official documentation](https://www.fritz2.dev/headless/menu/#menubutton)
      */
     fun <CB : HTMLElement> RenderContext.menuButton(
         classes: String? = null,
@@ -77,7 +77,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
      * Factory function to create a [menuButton] with a [HTMLButtonElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/menu/#menubutton)
+     * [official documentation](https://www.fritz2.dev/headless/menu/#menubutton)
      */
     fun RenderContext.menuButton(
         classes: String? = null,
@@ -201,7 +201,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
          * Factory function to create a [menuItem].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/menu/#menuitem)
+         * [official documentation](https://www.fritz2.dev/headless/menu/#menuitem)
          */
         fun <CM : HTMLElement> RenderContext.menuItem(
             classes: String? = null,
@@ -225,7 +225,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
          * Factory function to create a [menuItem] with a [HTMLButtonElement] as default [Tag].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/menu/#menuitem)
+         * [official documentation](https://www.fritz2.dev/headless/menu/#menuitem)
          */
         fun RenderContext.menuItem(
             classes: String? = null,
@@ -238,7 +238,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
      * Factory function to create a [menuItems].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/menu/#menuitems)
+     * [official documentation](https://www.fritz2.dev/headless/menu/#menuitems)
      */
     fun <CI : HTMLElement> RenderContext.menuItems(
         classes: String? = null,
@@ -257,7 +257,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
      * Factory function to create a [menuItems] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/menu/#menuitems)
+     * [official documentation](https://www.fritz2.dev/headless/menu/#menuitems)
      */
     fun RenderContext.menuItems(
         classes: String? = null,
@@ -301,7 +301,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/menu/#menu)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/menu/#menu)
  */
 fun <C : HTMLElement> RenderContext.menu(
     classes: String? = null,
@@ -351,7 +351,7 @@ fun <C : HTMLElement> RenderContext.menu(
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/menu/#menu)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/menu/#menu)
  */
 fun RenderContext.menu(
     classes: String? = null,

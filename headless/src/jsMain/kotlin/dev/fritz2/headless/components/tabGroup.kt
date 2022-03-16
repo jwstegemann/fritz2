@@ -14,7 +14,7 @@ import org.w3c.dom.HTMLElement
  * Use [tabGroup] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/tabgroup/)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/tabgroup/)
  */
 class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
@@ -169,7 +169,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
          * Factory function to create a [tab].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tab)
+         * [official documentation](https://www.fritz2.dev/headless/tabgroup/#tab)
          */
         fun <CT : HTMLElement> RenderContext.tab(
             classes: String? = null,
@@ -188,7 +188,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
          * Factory function to create a [tab] with a [HTMLButtonElement] as default [Tag].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tab)
+         * [official documentation](https://www.fritz2.dev/headless/tabgroup/#tab)
          */
         fun RenderContext.tab(
             classes: String? = null,
@@ -201,7 +201,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
      * Factory function to create a [tabList].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tablist)
+     * [official documentation](https://www.fritz2.dev/headless/tabgroup/#tablist)
      */
     fun <CL : HTMLElement> RenderContext.tabList(
         classes: String? = null,
@@ -219,7 +219,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
      * Factory function to create a [tabList] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tablist)
+     * [official documentation](https://www.fritz2.dev/headless/tabgroup/#tablist)
      */
     fun RenderContext.tabList(
         classes: String? = null,
@@ -249,7 +249,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
          * Factory function to create a [panel].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#panel)
+         * [official documentation](https://www.fritz2.dev/headless/tabgroup/#panel)
          */
         fun <CT : HTMLElement> RenderContext.panel(
             classes: String? = null,
@@ -273,7 +273,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
          * Factory function to create a [panel] with a [HTMLDivElement] as default [Tag].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#panel)
+         * [official documentation](https://www.fritz2.dev/headless/tabgroup/#panel)
          */
         fun RenderContext.panel(
             classes: String? = null,
@@ -286,7 +286,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
      * Factory function to create a [tabPanels].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tabpanels)
+     * [official documentation](https://www.fritz2.dev/headless/tabgroup/#tabpanels)
      */
     fun <CP : HTMLElement> RenderContext.tabPanels(
         classes: String? = null,
@@ -304,7 +304,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
      * Factory function to create a [tabPanels] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tabpanels)
+     * [official documentation](https://www.fritz2.dev/headless/tabgroup/#tabpanels)
      */
     fun RenderContext.tabPanels(
         classes: String? = null,
@@ -341,7 +341,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tabgroup)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/tabgroup/#tabgroup)
  */
 fun <C : HTMLElement> RenderContext.tabGroup(
     classes: String? = null,
@@ -384,7 +384,7 @@ fun <C : HTMLElement> RenderContext.tabGroup(
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/tabgroup/#tabgroup)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/tabgroup/#tabgroup)
  */
 fun RenderContext.tabGroup(
     classes: String? = null,

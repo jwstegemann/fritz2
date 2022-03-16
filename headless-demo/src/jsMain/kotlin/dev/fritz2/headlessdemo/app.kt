@@ -70,7 +70,7 @@ val pages = mapOf(
             |semantics and keyboard navigation as native checkbox elements.""".trimMargin(),
         RenderContext::switchDemo
     ),
-    "collection" to DemoPage(
+    "datacollection" to DemoPage(
         "Headless Collection",
         """A collection handles sorting, filtering of and selecting item form a collection.""".trimMargin(),
         RenderContext::collectionDemo
