@@ -14,7 +14,7 @@ layout: layouts/pageWithNav.njk
       {% endif %}
 
       {% if demoHash %}
-        <iframe class="w-full rounded-md" style="height: {{ demoHeight }};" src="/headless-demo/index.html#{{demoHash}}"></iframe>
+        <iframe title="Headless {{ demoHash }} demo" class="w-full rounded-md" style="height: {{ demoHeight }};" src="/headless-demo/index.html#{{ demoHash }}"></iframe>
       {% endif %}
 
       {{ content | safe }}
