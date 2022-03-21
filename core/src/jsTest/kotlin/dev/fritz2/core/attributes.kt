@@ -2,20 +2,21 @@ package dev.fritz2.core
 
 import dev.fritz2.runTest
 import kotlinx.browser.document
+import kotlinx.browser.window
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLDivElement
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.events.KeyboardEvent
+import org.w3c.dom.events.KeyboardEventInit
+import kotlin.test.*
 
 
 class AttributeTests {
 
     @Test
     fun testAttributes() = runTest {
-        
+
         val testRange = (0..4)
         val testId = Id.next()
 
@@ -69,7 +70,7 @@ class AttributeTests {
 
     @Test
     fun testNullableAttributes() = runTest {
-                val testId = Id.next()
+        val testId = Id.next()
 
         render {
             div(id = testId) {
@@ -95,7 +96,7 @@ class AttributeTests {
 
     @Test
     fun testAlternatingNullableStringFlows() = runTest {
-                val testId = Id.next()
+        val testId = Id.next()
 
         val nullableFlow = storeOf<String?>("a")
 
@@ -126,7 +127,7 @@ class AttributeTests {
 
     @Test
     fun testAlternatingNullableTFlows() = runTest {
-                val testId = Id.next()
+        val testId = Id.next()
 
         val nullableFlow = storeOf<Int?>(42)
 
@@ -152,5 +153,80 @@ class AttributeTests {
 
         assertTrue(element.hasAttribute("test"))
         assertEquals("99", element.getAttribute("test"))
+    }
+
+    /**
+     * This test must simulate sequentially the following actions:
+     * 1.) "Type" into an input field by keyboard
+     * 2.) change the store's value directly
+     * 3.) check whether the input's `value` property (not by `getAttribute`! By DOM API `node.value` access!) has
+     * changed
+     *
+     * Step 3 would fail, if the special treatment in `fun Tag<HTMLInputElement>.value(value: Flow<String>)`
+     * is not correct.
+     *
+     * BUT: This does simply not work via DOM API! The dispatched event is not recognized by the browser.
+     *
+     * Approach https://stackoverflow.com/questions/45098634/how-to-simulate-keypress-with-javascript-in-chrome
+     * is based upon a deprecated function `initKeyboardEvent`, which is even not available by Kotlin API.
+     */
+    @Test
+    @Ignore
+    fun testSpeciallyHandledAttributes() = runTest {
+        val id = Id.next()
+
+        val storedText = storeOf("initial")
+        val storedState = storeOf(false)
+
+        lateinit var textInput: Tag<HTMLInputElement>
+        lateinit var checkBox: Tag<HTMLInputElement>
+        render {
+            textInput = input(id = id) {
+                placeholder("Foo")
+                type("text")
+                value(storedText.data)
+                changes.values() handledBy { console.log(it) }
+            }
+            checkBox = input {
+                type("checkbox")
+                checked(storedState.data)
+            }
+        }
+
+        delay(100)
+
+        val input = document.getElementById(id).unsafeCast<HTMLInputElement>()
+
+        assertEquals("initial", textInput.domNode.getAttribute("value"))
+        assertEquals("initial", textInput.domNode.value)
+        assertEquals("initial", textInput.domNode.defaultValue)
+
+        input.focus()
+        delay(100)
+
+        // Per Keyevent String Wert in Input schreiben
+        val keyEvent = KeyboardEvent("keydown", KeyboardEventInit(key = "e", "KeyE", ))
+        window.dispatchEvent(keyEvent)
+
+        // Prüfen: domnode.value == Eingabe?
+        delay(1500)
+        //assertEquals("a", textInput.domNode.value)
+        assertEquals("e", input.value)
+
+        // dann update auf neuer Wert
+        storedText.update("updated")
+        storedState.update(true)
+        delay(100)
+
+        // dann in domnode.value == neuer Wert sein!
+        assertEquals("updated", textInput.domNode.getAttribute("value"))
+        assertEquals("updated", textInput.domNode.value)
+        assertEquals("updated", textInput.domNode.defaultValue)
+
+        //assertEquals("changed", textInput.domNode.getAttribute("defaultValue"))
+        //println(checkBox.domNode.getAttribute("checked").toBoolean())
+        //println(checkBox.domNode.checked)
+        //assertTrue(checkBox.domNode.getAttribute("checked").toBoolean())
+        //assertTrue(checkBox.domNode.getAttribute("defaultChecked").toBoolean())
     }
 }
