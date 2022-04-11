@@ -12,9 +12,9 @@ import org.w3c.dom.*
  *
  * There exist two different implementations:
  * - [InputField] for a single line input. For more information refer to the
- *      [official documentation](https://docs.fritz2.dev/headless/inputfield/)
+ *      [official documentation](https://www.fritz2.dev/headless/inputfield/)
  * - [TextArea] for a multi line input. for a single line input. For more information refer to the
- *      [official documentation](https://docs.fritz2.dev/headless/textarea/)
+ *      [official documentation](https://www.fritz2.dev/headless/textarea/)
  *
  */
 abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id: String?) : Tag<C> by tag {
@@ -108,7 +108,7 @@ abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id
  * Use [inputField] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/inputfield/)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/inputfield/)
  */
 class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
     Textfield<C, HtmlTag<HTMLInputElement>>(tag, id) {
@@ -136,7 +136,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [inputLabel].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputlabel)
+     * [official documentation](https://www.fritz2.dev/headless/inputfield/#inputlabel)
      */
     fun <CL : HTMLElement> RenderContext.inputLabel(
         classes: String? = null,
@@ -149,7 +149,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [inputLabel] with a [HTMLLabelElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputlabel)
+     * [official documentation](https://www.fritz2.dev/headless/inputfield/#inputlabel)
      */
     fun RenderContext.inputLabel(
         classes: String? = null,
@@ -161,7 +161,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [inputDescription].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputdescription)
+     * [official documentation](https://www.fritz2.dev/headless/inputfield/#inputdescription)
      */
     fun <CD : HTMLElement> RenderContext.inputDescription(
         classes: String? = null,
@@ -174,7 +174,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [inputDescription] with a [HTMLParagraphElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputdescription)
+     * [official documentation](https://www.fritz2.dev/headless/inputfield/#inputdescription)
      */
     fun RenderContext.inputDescription(
         classes: String? = null,
@@ -186,7 +186,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [inputValidationMessages].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputvalidationmessages)
+     * [official documentation](https://www.fritz2.dev/headless/inputfield/#inputvalidationmessages)
      */
     fun <CV : HTMLElement> RenderContext.inputValidationMessages(
         classes: String? = null,
@@ -199,7 +199,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [inputValidationMessages] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputvalidationmessages)
+     * [official documentation](https://www.fritz2.dev/headless/inputfield/#inputvalidationmessages)
      */
     fun RenderContext.inputValidationMessages(
         classes: String? = null,
@@ -227,7 +227,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputfield)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/inputfield/#inputfield)
  */
 fun <C : HTMLElement> RenderContext.inputField(
     classes: String? = null,
@@ -261,7 +261,7 @@ fun <C : HTMLElement> RenderContext.inputField(
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/inputfield/#inputfield)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/inputfield/#inputfield)
  */
 fun RenderContext.inputField(
     classes: String? = null,
@@ -276,7 +276,7 @@ fun RenderContext.inputField(
  * Use [textArea] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/textarea/)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/textarea/)
  */
 class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
     Textfield<C, HtmlTag<HTMLTextAreaElement>>(tag, id) {
@@ -301,7 +301,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [textareaLabel].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/textarea/#textarealabel)
+     * [official documentation](https://www.fritz2.dev/headless/textarea/#textarealabel)
      */
     fun <CL : HTMLElement> RenderContext.textareaLabel(
         classes: String? = null,
@@ -314,7 +314,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [textareaLabel] with a [HTMLLabelElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/textarea/#textarealabel)
+     * [official documentation](https://www.fritz2.dev/headless/textarea/#textarealabel)
      */
     fun RenderContext.textareaLabel(
         classes: String? = null,
@@ -326,7 +326,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [textareaDescription].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/textarea/#textareadescription)
+     * [official documentation](https://www.fritz2.dev/headless/textarea/#textareadescription)
      */
     fun <CD : HTMLElement> RenderContext.textareaDescription(
         classes: String? = null,
@@ -339,7 +339,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [textareaDescription] with a [HTMLParagraphElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/textarea/#textareadescription)
+     * [official documentation](https://www.fritz2.dev/headless/textarea/#textareadescription)
      */
     fun RenderContext.textareaDescription(
         classes: String? = null,
@@ -351,7 +351,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [textareaValidationMessages].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/textarea/#textareavalidationmessages)
+     * [official documentation](https://www.fritz2.dev/headless/textarea/#textareavalidationmessages)
      */
     fun <CV : HTMLElement> RenderContext.textareaValidationMessages(
         classes: String? = null,
@@ -364,7 +364,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [textareaValidationMessages] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/textarea/#textareavalidationmessages)
+     * [official documentation](https://www.fritz2.dev/headless/textarea/#textareavalidationmessages)
      */
     fun RenderContext.textareaValidationMessages(
         classes: String? = null,
@@ -392,7 +392,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/textarea/#textarea)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/textarea/#textarea)
  */
 fun <C : HTMLElement> RenderContext.textArea(
     classes: String? = null,
@@ -426,7 +426,7 @@ fun <C : HTMLElement> RenderContext.textArea(
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/textarea/#textarea)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/textarea/#textarea)
  */
 fun RenderContext.textArea(
     classes: String? = null,

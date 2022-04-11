@@ -12,7 +12,7 @@ import org.w3c.dom.HTMLElement
  * Use [popOver] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/popover/)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/popover/)
  */
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
@@ -29,7 +29,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
      * Factory function to create a [popOverButton].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/popover/#popoverbutton)
+     * [official documentation](https://www.fritz2.dev/headless/popover/#popoverbutton)
      */
     fun <CB : HTMLElement> RenderContext.popOverButton(
         classes: String? = null,
@@ -47,7 +47,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
      * Factory function to create a [popOverButton] with a [HTMLButtonElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/popover/#popoverbutton)
+     * [official documentation](https://www.fritz2.dev/headless/popover/#popoverbutton)
      */
     fun RenderContext.popOverButton(
         classes: String? = null,
@@ -68,7 +68,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
      * Factory function to create a [popOverPanel].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/popover/#popoverpanel)
+     * [official documentation](https://www.fritz2.dev/headless/popover/#popoverpanel)
      */
     fun <CP : HTMLElement> RenderContext.popOverPanel(
         classes: String? = null,
@@ -88,7 +88,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
      * Factory function to create a [popOverPanel] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/popover/#popoverpanel)
+     * [official documentation](https://www.fritz2.dev/headless/popover/#popoverpanel)
      */
     fun RenderContext.popOverPanel(
         classes: String? = null,
@@ -122,7 +122,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/popover/#popover)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/popover/#popover)
  */
 fun <C : HTMLElement> RenderContext.popOver(
     classes: String? = null,
@@ -163,7 +163,7 @@ fun <C : HTMLElement> RenderContext.popOver(
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/popover/#popover)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/popover/#popover)
  */
 fun RenderContext.popOver(
     classes: String? = null,

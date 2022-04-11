@@ -13,6 +13,13 @@ import org.w3c.dom.HTMLElement
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * This data class groups all basic elements of a data collection in one object.
+ *
+ * @param data one-way data-binding [Flow] of a [List] of some data type [T] as data source
+ * @param idProvider an optional [IdProvider] to identify items.
+ * @param id an optional id for the root [Tag] of the data collection
+ */
 data class CollectionData<T>(val data: Flow<List<T>>, val idProvider: IdProvider<T, *>?, val id: String?)
 
 class CollectionDataProperty<T> : Property<CollectionData<T>>() {
@@ -29,7 +36,14 @@ class CollectionDataProperty<T> : Property<CollectionData<T>>() {
     }
 }
 
-
+/**
+ * This [Property] alike class exposes the selection configuration of a data collection.
+ * There are two modes available:
+ * - [single] which needs a [DatabindingProperty] of [T]
+ * - [multi] which needs a [DatabindingProperty] of [List] of [T]
+ *
+ * Of course both can be omitted if no selection is needed.
+ */
 class SelectionMode<T> {
     val single = DatabindingProperty<T?>()
     val multi = DatabindingProperty<List<T>>()
@@ -43,7 +57,11 @@ class SelectionMode<T> {
     }
 }
 
-class ScrollIntoViewProperty() : Property<ScrollIntoViewOptions>() {
+/**
+ * This [Property] offers a nice API for configuring the [ScrollIntoViewOptions] which in term configures all
+ * the scrolling behaviour if scrolling is enabled by the styling of a component.
+ */
+class ScrollIntoViewProperty : Property<ScrollIntoViewOptions>() {
     operator fun invoke(options: ScrollIntoViewOptions) {
         value = options
     }
@@ -58,7 +76,15 @@ class ScrollIntoViewProperty() : Property<ScrollIntoViewOptions>() {
     }
 }
 
-
+/**
+ * This class provides the building blocks to implement a all kind of data presentation UIs like data-tables or
+ * grid-lists and so on.
+ *
+ * Use [dataCollection] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * component by using the further factory methods offered by this class.
+ *
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/datacollection/)
+ */
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
@@ -112,6 +138,12 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         }
     }
 
+    /**
+     * Factory function to create a [dataCollectionSortButton].
+     *
+     * For more information refer to the
+     * [official documentation](https://www.fritz2.dev/headless/datacollection/#datacollectionsortbutton)
+     */
     fun <CS : HTMLElement> RenderContext.dataCollectionSortButton(
         sort: Sorting<T>,
         classes: String? = null,
@@ -128,6 +160,12 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         }
     }
 
+    /**
+     * Factory function to create a [dataCollectionSortButton].
+     *
+     * For more information refer to the
+     * [official documentation](https://www.fritz2.dev/headless/datacollection/#datacollectionsortbutton)
+     */
     fun <CS : HTMLElement> RenderContext.dataCollectionSortButton(
         comparatorAscending: Comparator<T>,
         comparatorDescending: Comparator<T>,
@@ -136,8 +174,21 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         internalScope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CS>>,
         initialize: DataCollectionSortButton<CS>.() -> Unit
-    ) = dataCollectionSortButton(Sorting(comparatorAscending, comparatorDescending), classes, id, internalScope, tag, initialize)
+    ) = dataCollectionSortButton(
+        Sorting(comparatorAscending, comparatorDescending),
+        classes,
+        id,
+        internalScope,
+        tag,
+        initialize
+    )
 
+    /**
+     * Factory function to create a [dataCollectionSortButton] with a [HTMLButtonElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://www.fritz2.dev/headless/datacollection/#datacollectionsortbutton)
+     */
     fun RenderContext.dataCollectionSortButton(
         sort: Sorting<T>,
         classes: String? = null,
@@ -146,6 +197,12 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         initialize: DataCollectionSortButton<HTMLButtonElement>.() -> Unit
     ) = dataCollectionSortButton(sort, classes, id, internalScope, RenderContext::button, initialize)
 
+    /**
+     * Factory function to create a [dataCollectionSortButton] with a [HTMLButtonElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://www.fritz2.dev/headless/datacollection/#datacollectionsortbutton)
+     */
     fun RenderContext.dataCollectionSortButton(
         comparatorAscending: Comparator<T>,
         comparatorDescending: Comparator<T>,
@@ -153,7 +210,13 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
         initialize: DataCollectionSortButton<HTMLButtonElement>.() -> Unit
-    ) = dataCollectionSortButton(Sorting(comparatorAscending, comparatorDescending), classes, id, internalScope, initialize)
+    ) = dataCollectionSortButton(
+        Sorting(comparatorAscending, comparatorDescending),
+        classes,
+        id,
+        internalScope,
+        initialize
+    )
 
 
     inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>, val collectionId: String?) : Tag<CI> by tag {
@@ -285,6 +348,12 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             }
         }
 
+        /**
+         * Factory function to create a [dataCollectionItem].
+         *
+         * For more information refer to the
+         * [official documentation](https://www.fritz2.dev/headless/datacollection/#datacollectionitem)
+         */
         fun <CI : HTMLElement> RenderContext.dataCollectionItem(
             item: T,
             classes: String? = null,
@@ -314,6 +383,12 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             }
         }
 
+        /**
+         * Factory function to create a [dataCollectionItem] with a [HTMLDivElement] as default [Tag].
+         *
+         * For more information refer to the
+         * [official documentation](https://www.fritz2.dev/headless/datacollection/#datacollectionitem)
+         */
         fun RenderContext.dataCollectionItem(
             item: T,
             classes: String? = null,
@@ -324,6 +399,12 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
     }
 
+    /**
+     * Factory function to create a [dataCollectionItems].
+     *
+     * For more information refer to the
+     * [official documentation](https://www.fritz2.dev/headless/datacollection/#datacollectionitems)
+     */
     fun <CI : HTMLElement> RenderContext.dataCollectionItems(
         classes: String? = null,
         id: String? = null,
@@ -340,6 +421,12 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         }
     }
 
+    /**
+     * Factory function to create a [dataCollectionItems] with a [HTMLDivElement] as default [Tag].
+     *
+     * For more information refer to the
+     * [official documentation](https://www.fritz2.dev/headless/datacollection/#datacollectionitems)
+     */
     fun RenderContext.dataCollectionItems(
         classes: String? = null,
         id: String? = null,
@@ -350,6 +437,41 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
 }
 
+/**
+ * Factory function to create a [DataCollection].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * dataColection<T>() {
+ *     val data: CollectionDataProperty<T>
+ *     val sortBy: SimpleHandler<SortingOrder<T>?>
+ *     val toggleSorting: SimpleHandler<Sorting<T>>
+ *     val filterBy: SimpleHandler<((List<T>) -> List<T>)?>
+ *     val selection: SelectionMode<T>
+ *
+ *     fun filterByText(toString: (T) -> String) : SimpleHandler<String>
+ *
+ *     // use multiple times
+ *     dataCollectionSortButton(sort: Sorting<T>) {
+ *         val direction: Flow<SortDirection>
+ *     }
+ *
+ *     dataCollectionItems() {
+ *         val scrollIntoView: ScrollIntoViewProperty
+ *         val items: Flow<List<T>>
+ *
+ *         // items.renderEach T {
+ *             dataCollectionItem(item: T) {
+ *                 val selected: Flow<Boolean>
+ *                 val active: Flow<Boolean>
+ *             }
+ *         // }
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/datacollection/#datacollection)
+ */
 fun <T, C : HTMLElement> RenderContext.dataCollection(
     classes: String? = null,
     id: String? = null,
@@ -362,6 +484,41 @@ fun <T, C : HTMLElement> RenderContext.dataCollection(
     }
 }
 
+/**
+ * Factory function to create a [DataCollection] with a [HTMLDivElement] as default root [Tag].
+ *
+ * API-Sketch:
+ * ```kotlin
+ * dataColection<T>() {
+ *     val data: CollectionDataProperty<T>
+ *     val sortBy: SimpleHandler<SortingOrder<T>?>
+ *     val toggleSorting: SimpleHandler<Sorting<T>>
+ *     val filterBy: SimpleHandler<((List<T>) -> List<T>)?>
+ *     val selection: SelectionMode<T>
+ *
+ *     fun filterByText(toString: (T) -> String) : SimpleHandler<String>
+ *
+ *     // use multiple times
+ *     dataCollectionSortButton(sort: Sorting<T>) {
+ *         val direction: Flow<SortDirection>
+ *     }
+ *
+ *     dataCollectionItems() {
+ *         val scrollIntoView: ScrollIntoViewProperty
+ *         val items: Flow<List<T>>
+ *
+ *         // items.renderEach T {
+ *             dataCollectionItem(item: T) {
+ *                 val selected: Flow<Boolean>
+ *                 val active: Flow<Boolean>
+ *             }
+ *         // }
+ *     }
+ * }
+ * ```
+ *
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/datacollection/#datacollection)
+ */
 fun <T> RenderContext.dataCollection(
     classes: String? = null,
     id: String? = null,

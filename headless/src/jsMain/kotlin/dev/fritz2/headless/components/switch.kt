@@ -12,7 +12,7 @@ import org.w3c.dom.*
  * - [Switch] for a simple switch with optional validation handling
  * - [SwitchWithLabel] for a switch wit additional label and description facilities and optional validation handling
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/switch/)
  */
 abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
@@ -46,7 +46,7 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
      * Factory function to create a [switchValidationMessages].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchvalidationmessages)
+     * [official documentation](https://www.fritz2.dev/headless/switch/#switchvalidationmessages)
      */
     fun <CV : HTMLElement> RenderContext.switchValidationMessages(
         classes: String? = null,
@@ -68,7 +68,7 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
      * Factory function to create a [switchValidationMessages] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchvalidationmessages)
+     * [official documentation](https://www.fritz2.dev/headless/switch/#switchvalidationmessages)
      */
     fun RenderContext.switchValidationMessages(
         classes: String? = null,
@@ -83,7 +83,7 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
  * Use [switchWithLabel] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/switch/)
  */
 class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
     AbstractSwitch<C>(tag, id) {
@@ -110,7 +110,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [switchToggle].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchtoggle)
+     * [official documentation](https://www.fritz2.dev/headless/switch/#switchtoggle)
      */
     fun <CT : HTMLElement> RenderContext.switchToggle(
         classes: String? = null,
@@ -126,7 +126,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [switchToggle] with a [HTMLButtonElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchtoggle)
+     * [official documentation](https://www.fritz2.dev/headless/switch/#switchtoggle)
      */
     fun RenderContext.switchToggle(
         classes: String? = null,
@@ -140,7 +140,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [switchLabel].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchlabel)
+     * [official documentation](https://www.fritz2.dev/headless/switch/#switchlabel)
      */
     fun <CL : HTMLElement> RenderContext.switchLabel(
         classes: String? = null,
@@ -155,7 +155,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [switchLabel] with a [HTMLLabelElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchlabel)
+     * [official documentation](https://www.fritz2.dev/headless/switch/#switchlabel)
      */
     fun RenderContext.switchLabel(
         classes: String? = null,
@@ -170,7 +170,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [switchDescription].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchdescription)
+     * [official documentation](https://www.fritz2.dev/headless/switch/#switchdescription)
      */
     fun <CL : HTMLElement> RenderContext.switchDescription(
         classes: String? = null,
@@ -189,7 +189,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
      * Factory function to create a [switchDescription] with a [HTMLSpanElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/switch/#switchdescription)
+     * [official documentation](https://www.fritz2.dev/headless/switch/#switchdescription)
      */
     fun RenderContext.switchDescription(
         classes: String? = null,
@@ -217,7 +217,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/#switch)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/switch/#switch)
  */
 fun <C : HTMLElement> RenderContext.switchWithLabel(
     classes: String? = null,
@@ -250,7 +250,7 @@ fun <C : HTMLElement> RenderContext.switchWithLabel(
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/#switch)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/switch/#switch)
  */
 fun RenderContext.switchWithLabel(
     classes: String? = null,
@@ -265,7 +265,7 @@ fun RenderContext.switchWithLabel(
  * Use [switch] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/switch/)
  */
 class Switch<C : HTMLElement>(tag: Tag<C>, explicitId: String?) :
     AbstractSwitch<C>(tag, explicitId) {
@@ -297,7 +297,7 @@ class Switch<C : HTMLElement>(tag: Tag<C>, explicitId: String?) :
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/#switch)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/switch/#switch)
  */
 fun <C : HTMLElement> RenderContext.switch(
     classes: String? = null,
@@ -327,7 +327,7 @@ fun <C : HTMLElement> RenderContext.switch(
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/switch/#switch)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/switch/#switch)
  */
 fun RenderContext.switch(
     classes: String? = null,

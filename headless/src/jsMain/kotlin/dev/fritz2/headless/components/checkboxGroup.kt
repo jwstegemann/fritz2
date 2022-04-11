@@ -14,7 +14,7 @@ import org.w3c.dom.*
  * Use [checkboxGroup] functions to create an instance, setup the needed [Hook]s or [Property]s and refine the
  * component by using the further factory methods offered by this class.
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/checkboxgroup/)
  */
 class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
@@ -37,7 +37,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
      * Factory function to create a [checkboxGroupLabel].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgrouplabel)
+     * [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgrouplabel)
      */
     fun <CL : HTMLElement> RenderContext.checkboxGroupLabel(
         classes: String? = null,
@@ -50,7 +50,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
      * Factory function to create a [checkboxGroupLabel] with a [HTMLLabelElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgrouplabel)
+     * [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgrouplabel)
      */
     fun RenderContext.checkboxGroupLabel(
         classes: String? = null,
@@ -62,7 +62,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
      * Factory function to create a [checkboxGroupValidationMessages].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgroupvalidationmessages)
+     * [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgroupvalidationmessages)
      */
     fun <CV : HTMLElement> RenderContext.checkboxGroupValidationMessages(
         classes: String? = null,
@@ -84,7 +84,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
      * Factory function to create a [checkboxGroupValidationMessages] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgroupvalidationmessages)
+     * [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgroupvalidationmessages)
      */
     fun RenderContext.checkboxGroupValidationMessages(
         classes: String? = null,
@@ -123,7 +123,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
          * Factory function to create a [checkboxGroupOptionToggle].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgroupoptiontoggle)
+         * [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgroupoptiontoggle)
          */
         fun <CT : HTMLElement> RenderContext.checkboxGroupOptionToggle(
             classes: String? = null,
@@ -163,7 +163,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
          * Factory function to create a [checkboxGroupOptionToggle] with a [HTMLDivElement] as default [Tag].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgroupoptiontoggle)
+         * [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgroupoptiontoggle)
          */
         fun RenderContext.checkboxGroupOptionToggle(
             classes: String? = null,
@@ -175,7 +175,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
          * Factory function to create a [checkboxGroupOptionLabel].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgroupoptionlabel)
+         * [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgroupoptionlabel)
          */
         fun <CL : HTMLElement> RenderContext.checkboxGroupOptionLabel(
             classes: String? = null,
@@ -188,7 +188,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
          * Factory function to create a [checkboxGroupOptionLabel] with a [HTMLLabelElement] as default [Tag].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgroupoptionlabel)
+         * [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgroupoptionlabel)
          */
         fun RenderContext.checkboxGroupOptionLabel(
             classes: String? = null,
@@ -203,7 +203,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
          * Factory function to create a [checkboxGroupOptionDescription].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgroupoptiondescription)
+         * [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgroupoptiondescription)
          */
         fun <CL : HTMLElement> RenderContext.checkboxGroupOptionDescription(
             classes: String? = null,
@@ -222,7 +222,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
          * Factory function to create a [checkboxGroupOptionDescription] with a [HTMLSpanElement] as default [Tag].
          *
          * For more information refer to the
-         * [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgroupoptiondescription)
+         * [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgroupoptiondescription)
          */
         fun RenderContext.checkboxGroupOptionDescription(
             classes: String? = null,
@@ -235,7 +235,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
      * Factory function to create a [CheckboxGroupOption].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgroupoption)
+     * [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgroupoption)
      */
     fun <CO : HTMLElement> RenderContext.checkboxGroupOption(
         option: T,
@@ -255,7 +255,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
      * Factory function to create a [CheckboxGroupOption] with a [HTMLDivElement] as default [Tag].
      *
      * For more information refer to the
-     * [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgroupoption)
+     * [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgroupoption)
      */
     fun RenderContext.checkboxGroupOption(
         option: T,
@@ -290,7 +290,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgroup)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgroup)
  */
 fun <C : HTMLElement, T> RenderContext.checkboxGroup(
     classes: String? = null,
@@ -329,7 +329,7 @@ fun <C : HTMLElement, T> RenderContext.checkboxGroup(
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://docs.fritz2.dev/headless/checkboxgroup/#checkboxgroup)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/checkboxgroup/#checkboxgroup)
  */
 fun <T> RenderContext.checkboxGroup(
     classes: String? = null,

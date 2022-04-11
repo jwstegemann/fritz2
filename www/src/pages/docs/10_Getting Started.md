@@ -122,7 +122,7 @@ You can mark an element of your choice with an id (or use the body by default) t
 
 `app.kt` is the starting point of your fritz2 app, so make sure it has a `main`-function.
 Inside `main`, create some content by opening a
-[render](https://next.fritz2.dev/api/core/dev.fritz2.core/render.html) context and
+[render](https://www.fritz2.dev/api/core/dev.fritz2.core/render.html) context and
 mount it to the DOM of your `index.html`:
 
 ```kotlin

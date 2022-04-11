@@ -3,7 +3,7 @@ title: DataCollection
 description: "A headless component to render collections of data, i.e. a data table, complex lists that support sorting,
 filtering, selection of items and keyboard navigation."
 layout: layouts/docs.njk
-permalink: /headless/collection/
+permalink: /headless/datacollection/
 eleventyNavigation:
     key: dataCollection
     title: DataCollection
@@ -251,7 +251,7 @@ dataColection<T>() {
         val scrollIntoView: ScrollIntoViewProperty
         val items: Flow<List<T>>
 
-        // for each T {
+        // items.renderEach T {
             dataCollectionItem(item: T) {
                 val selected: Flow<Boolean>
                 val active: Flow<Boolean>
