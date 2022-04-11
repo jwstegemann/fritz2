@@ -9,6 +9,9 @@ const tailwind = {
     variants: {},
     theme: {
         extend: {
+            boxShadow: {
+                'github': '0 0 0 3px #0969da4d',
+            },
             colors: {
                 'primary': {
                     DEFAULT: '#002EA7',
