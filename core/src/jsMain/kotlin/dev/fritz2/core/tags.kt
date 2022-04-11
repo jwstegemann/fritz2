@@ -50,7 +50,8 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param value to use
      */
     fun attr(name: String, value: String?) {
-        value?.let { domNode.setAttribute(name, it) }
+        if(value != null) domNode.setAttribute(name, value)
+        else domNode.removeAttribute(name)
     }
 
     /**
@@ -70,10 +71,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param value to use
      */
     fun attr(name: String, value: Flow<String?>) {
-        mountSimple(job, value) { v ->
-            if (v != null) attr(name, v)
-            else domNode.removeAttribute(name)
-        }
+        mountSimple(job, value) { v -> attr(name, v) }
     }
 
     /**
@@ -83,7 +81,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param value to use
      */
     fun <T> attr(name: String, value: T) {
-        value?.let { domNode.setAttribute(name, it.toString()) }
+        attr(name, value?.toString())
     }
 
     /**
@@ -93,10 +91,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param value to use
      */
     fun <T> attr(name: String, value: Flow<T>) {
-        mountSimple(job, value.map { it?.toString() }) { v ->
-            if (v != null) attr(name, v)
-            else domNode.removeAttribute(name)
-        }
+        mountSimple(job, value.map { it?.toString() }) { v -> attr(name, v) }
     }
 
     /**
@@ -119,10 +114,8 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param trueValue value to use if attribute is set (default "")
      */
     fun attr(name: String, value: Boolean?, trueValue: String = "") {
-        value?.let {
-            if (it) domNode.setAttribute(name, trueValue)
-            else domNode.removeAttribute(name)
-        }
+        if (value != null && value) domNode.setAttribute(name, trueValue)
+        else domNode.removeAttribute(name)
     }
 
     /**
