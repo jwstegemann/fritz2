@@ -28,7 +28,7 @@ const config: PlaywrightTestConfig = {
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [['list'],['html']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
@@ -38,6 +38,9 @@ const config: PlaywrightTestConfig = {
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    headless: false,
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure'
   },
 
   /* Configure projects for major browsers */
@@ -64,32 +67,44 @@ const config: PlaywrightTestConfig = {
     },
 
     /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: {
-    //     ...devices['Pixel 5'],
-    //   },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: {
-    //     ...devices['iPhone 12'],
-    //   },
-    // },
+     {
+       name: 'Mobile Chrome',
+       use: {
+         ...devices['Pixel 5'],
+       },
+     },
+     {
+      name: 'Mobile Chrome',
+      use: {
+        ...devices['Pixel 5 landscape'],
+      },
+    },
+     {
+       name: 'Mobile Safari',
+       use: {
+         ...devices['iPhone 12'],
+       },
+     },
+     {
+      name: 'Mobile Safari',
+      use: {
+        ...devices['iPhone 12 landscape'],
+      },
+    },
 
     /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: {
-    //     channel: 'msedge',
-    //   },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: {
-    //     channel: 'chrome',
-    //   },
-    // },
+     {
+       name: 'Microsoft Edge',
+       use: {
+         channel: 'msedge',
+       },
+     },
+     {
+       name: 'Google Chrome',
+       use: {
+         channel: 'chrome',
+       },
+     },
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
