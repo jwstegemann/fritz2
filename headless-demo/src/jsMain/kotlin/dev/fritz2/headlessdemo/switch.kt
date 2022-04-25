@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.map
 
 fun RenderContext.switchDemo() {
 
-    val switchState = storeOf(false)
-    val switchWithLabelState = storeOf(true)
+    val switchState = storeOf(false, id = "switch")
+    val switchWithLabelState = storeOf(true, id = "switchWithLabel")
 
     div("max-w-sm") {
         switch(

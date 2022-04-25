@@ -58,7 +58,7 @@ textArea {
 
 ## Deactivate
 
-The TextArea component supports the (dynamic) deactivation and activation of the input field. To do this, the boolean
+The TextArea component supports the (dynamic) deactivation and activation of the text field. To do this, the boolean
 Attribute hook `disabled` must be set accordingly.
 
 ```kotlin
@@ -95,6 +95,23 @@ textArea {
     }
 }
 ```
+
+
+## Mouse Interaction
+
+Clicking outside the TextArea component (so the focus gets lost) will update the `value` to the content of the area.
+
+If the HTML `label` tag is used for the label (by default), a mouse click on the label causes the text area to be
+focused.
+
+## Keyboard Interaction
+
+| Command                                                              | Description         |
+|----------------------------------------------------------------------|---------------------|
+| Any key that will trigger a `change` event like [[Tab]] or [[Enter]] | updates the `value` |
+
+For more details which key will trigger a change, refer to this
+[documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event)
 
 ## API
 

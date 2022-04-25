@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 
 fun RenderContext.textAreaDemo() {
 
-    val description = storeOf("")
+    val description = storeOf("", id = "textArea")
 
     div("max-w-sm") {
         textArea {

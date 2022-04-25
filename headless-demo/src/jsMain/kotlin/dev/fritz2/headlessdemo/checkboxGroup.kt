@@ -16,7 +16,7 @@ fun RenderContext.checkboxGroupDemo() {
         Newsletter(3, "Trial Users", "Last message sent 4 days ago", 2740)
     )
 
-    val subscriptions = storeOf(emptyList<Newsletter>())
+    val subscriptions = storeOf(emptyList<Newsletter>(), id = "checkboxGroup")
 
     div("max-w-sm") {
         checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
@@ -26,7 +26,7 @@ fun RenderContext.checkboxGroupDemo() {
             }
             div("mt-4 grid grid-cols-1 gap-y-4") {
                 mailingList.forEach { option ->
-                    checkboxGroupOption(option) {
+                    checkboxGroupOption(option, id = option.id.toString()) {
                         checkboxGroupOptionToggle(
                             """relative bg-white border rounded-lg shadow-sm p-2 flex cursor-pointer 
                             | focus:outline-none focus:border-2""".trimMargin(),

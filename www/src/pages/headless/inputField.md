@@ -96,6 +96,22 @@ inputField {
 }
 ```
 
+## Mouse Interaction
+
+Clicking outside the input field (so the focus gets lost) will update the `value` to the content of the field.
+
+If the HTML `label` tag is used for the label (by default), a mouse click on the label causes the input field to be
+focused.
+
+## Keyboard Interaction
+
+| Command                                                              | Description         |
+|----------------------------------------------------------------------|---------------------|
+| Any key that will trigger a `change` event like [[Tab]] or [[Enter]] | updates the `value` |
+
+For more details which key will trigger a change, refer to this 
+[documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event)
+
 ## API
 
 ### Summary / Sketch

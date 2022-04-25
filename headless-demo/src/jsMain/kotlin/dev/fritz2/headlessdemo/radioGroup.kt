@@ -21,7 +21,7 @@ fun RenderContext.radioGroupDemo() {
         Plan("Enterprise", "32GB", "12 CPUs", "1024 GB SSD disk", "240€"),
     )
 
-    val choice = storeOf<Plan?>(null)
+    val choice = storeOf<Plan?>(null, id = "radioGroup")
 
     div("max-w-sm") {
         radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
@@ -29,7 +29,7 @@ fun RenderContext.radioGroupDemo() {
             radioGroupLabel("sr-only") { +"Server size" }
             div("space-y-2") {
                 plans.forEach { option ->
-                    radioGroupOption(option) {
+                    radioGroupOption(option, id = option.name) {
                         radioGroupOptionToggle(
                             "relative flex justify-between border rounded-lg shadow-sm px-6 py-2 cursor-pointer focus:outline-none",
                             tag = RenderContext::label
