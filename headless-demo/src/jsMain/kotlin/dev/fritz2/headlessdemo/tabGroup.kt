@@ -24,7 +24,7 @@ fun RenderContext.tabsDemo() {
         )
     )
 
-    tabGroup("max-w-sm") {
+    tabGroup("max-w-sm", id = "tabGroup") {
         tabList("flex p-1 space-x-1 bg-blue-900/20 rounded-xl") {
             categories.keys.forEach { category ->
                 tab(

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 
 fun RenderContext.inputFieldDemo() {
 
-    val name = storeOf("")
+    val name = storeOf("", id="inputField")
 
     div("max-w-sm") {
 
@@ -39,7 +39,7 @@ fun RenderContext.inputFieldDemo() {
             }
         }
 
-        div("bg-gray-300 mt-8 p-2 rounded-lg ring-2 ring-gray-50") {
+        div("bg-gray-300 mt-8 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
             em { +"Name: " }
             name.data.renderText()
         }

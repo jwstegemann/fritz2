@@ -22,7 +22,7 @@ fun RenderContext.menuDemo() {
         MenuEntry("Encrypt", HeroIcons.key)
     )
 
-    val action = storeOf("")
+    val action = storeOf("", id = "menu")
 
     div("max-w-sm") {
         div("w-full h-72") {
@@ -79,7 +79,7 @@ fun RenderContext.menuDemo() {
         }
 
 
-        div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50") {
+        div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
             em { +"Execute Action: " }
             span { action.data.map { "$it file..." }.renderText() }
         }

@@ -18,7 +18,7 @@ fun RenderContext.popOverDemo() {
         Solution("Reports", "Keep track of your growth", HeroIcons.archive)
     )
 
-    popOver {
+    popOver(id = "popOver") {
         popOverButton(
             """w-32 inline-flex justify-center rounded-md border border-transparent 
             | shadow-sm px-4 py-2 bg-blue-700 text-base font-medium text-white hover:bg-blue-800 
