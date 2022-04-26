@@ -68,7 +68,7 @@ fun RenderContext.radioGroupDemo() {
             }
         }
 
-        div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50") {
+        div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
             em { +"Selected: " }
             choice.data.filterNotNull().map { "${it.name} ${it.cpus} ${it.ram} ${it.price}/mo" }.renderText()
         }

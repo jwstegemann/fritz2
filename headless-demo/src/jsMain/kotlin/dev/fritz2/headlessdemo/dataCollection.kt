@@ -150,7 +150,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
 
     }
 
-    div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50") {
+    div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
         em {
             selectionStore.data.map { it.count() }
                 .combine(storedFilteredSize.data) { sel, count -> "Selected ($sel/$count):" }
@@ -277,7 +277,7 @@ fun RenderContext.gridListDemo(amount: Int) {
         }
     }
 
-    div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50") {
+    div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
         em {
             selectionStore.data.map { it.count() }
                 .combine(storedFilteredSize.data) { sel, count -> "Selected ($sel/$count):" }

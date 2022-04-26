@@ -63,7 +63,7 @@ fun RenderContext.checkboxGroupDemo() {
             }
         }
 
-        div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50") {
+        div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
             em { +"Selected: " }
             ul("") {
                 subscriptions.data.renderEach {
