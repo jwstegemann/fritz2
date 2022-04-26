@@ -71,7 +71,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         initialize: ValidationMessages<CV>.() -> Unit
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
-            if(isNotEmpty) {
+            if (isNotEmpty) {
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))
@@ -95,7 +95,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
     inner class CheckboxGroupOption<CO : HTMLElement>(
         tag: Tag<CO>,
         private val option: T,
-        id: String?
+        val optionId: String
     ) : Tag<CO> by tag {
 
         val selected = value.data.map { it.contains(option) }
@@ -103,8 +103,6 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         private var toggle: Tag<HTMLElement>? = null
         private var label: Tag<HTMLElement>? = null
         private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
-
-        val optionId = "$componentId-${id ?: Id.next()}"
 
         fun render() {
             toggle?.apply {
@@ -130,7 +128,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
             content: Tag<CT>.() -> Unit
-        ) = tag(this, classes, optionId, scope) {
+        ) = tag(this, classes, "${optionId}-toggle", scope) {
             content()
             attr("role", Aria.Role.checkbox)
             attr(Aria.checked, selected.asString())
@@ -244,10 +242,12 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CO>>,
         initialize: CheckboxGroupOption<CO>.() -> Unit
-    ): Tag<CO> = tag(this, classes, id, scope) {
-        CheckboxGroupOption(this, option, id).run {
-            initialize()
-            render()
+    ): Tag<CO> = "$componentId-${id ?: Id.next()}".let { optionId ->
+        tag(this, classes, optionId, scope) {
+            CheckboxGroupOption(this, option, optionId).run {
+                initialize()
+                render()
+            }
         }
     }
 
