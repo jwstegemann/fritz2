@@ -1,7 +1,9 @@
 package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.RenderContext
+import dev.fritz2.core.Scope
 import dev.fritz2.core.ScopeContext
+import dev.fritz2.core.Tag
 
 /**
  * Alias in order to reduce boilerplate code for the awkward signature of a [Tag]-factory of [RenderContext].
@@ -56,3 +58,8 @@ enum class Direction(val value: Int) {
 enum class Orientation {
     Horizontal, Vertical
 }
+
+val HEADLESS_DEBUG = Scope.keyOf<Boolean>("fritz2HeadlessDebug")
+
+fun addComponentDebugInfo(comment: String, scope: Scope, context: RenderContext) =
+    scope[HEADLESS_DEBUG]?.let { if (it) with(context as Tag<*>) { !comment } }

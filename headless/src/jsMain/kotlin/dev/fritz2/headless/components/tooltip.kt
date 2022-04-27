@@ -43,7 +43,9 @@ fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
     tag: TagFactory<Tag<C>>,
     initialize: Tooltip<C>.() -> Unit
 ) {
-    return Tooltip(this, tag, classes, id, scope).run {
+    return Tooltip(this, tag, classes, id, scope).apply {
+        addComponentDebugInfo("parent is tooltip", this@tooltip.scope, this)
+    }.run {
         initialize()
         render()
         attr("role", Aria.Role.tooltip)

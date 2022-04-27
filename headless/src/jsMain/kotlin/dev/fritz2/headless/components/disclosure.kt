@@ -4,6 +4,7 @@ import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.OpenClose
 import dev.fritz2.headless.foundation.TagFactory
+import dev.fritz2.headless.foundation.addComponentDebugInfo
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -41,13 +42,16 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CB>>,
         content: Tag<CB>.() -> Unit
-    ) = tag(this, classes, "$componentId-button", scope) {
-        if (!openState.isSet) openState(storeOf(false))
-        content()
-        attr(Aria.expanded, opened.asString())
-        attr("tabindex", "0")
-        toggleOnClicksEnterAndSpace()
-    }.also { button = it }
+    ): Tag<CB> {
+        addComponentDebugInfo("disclosureButton", this@disclosureButton.scope, this)
+        return tag(this, classes, "$componentId-button", scope) {
+            if (!openState.isSet) openState(storeOf(false))
+            content()
+            attr(Aria.expanded, opened.asString())
+            attr("tabindex", "0")
+            toggleOnClicksEnterAndSpace()
+        }.also { button = it }
+    }
 
     /**
      * Factory function to create a [disclosureButton] with a [HTMLButtonElement] as default [Tag].
@@ -79,9 +83,12 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CC>>,
             content: Tag<CC>.() -> Unit
-        ) = tag(this, classes, "$componentId-close-button", scope) {
-            content()
-            clicks handledBy close
+        ): Tag<CC> {
+            addComponentDebugInfo("disclosureCloseButton", this@disclosureCloseButton.scope, this)
+            return tag(this, classes, "$componentId-close-button", scope) {
+                content()
+                clicks handledBy close
+            }
         }
 
         /**
@@ -111,6 +118,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         tag: TagFactory<Tag<CP>>,
         initialize: DisclosurePanel<CP>.() -> Unit
     ) {
+        addComponentDebugInfo("disclosurePanel", this@disclosurePanel.scope, this)
         panel = {
             tag(this, classes, "$componentId-panel", scope) {
                 DisclosurePanel(this).run {
@@ -162,10 +170,13 @@ fun <C : HTMLElement> RenderContext.disclosure(
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
     initialize: Disclosure<C>.() -> Unit
-): Tag<C> = tag(this, classes, id, scope) {
-    Disclosure(this, id).run {
-        initialize()
-        render()
+): Tag<C> {
+    addComponentDebugInfo("disclosure", this@disclosure.scope, this)
+    return tag(this, classes, id, scope) {
+        Disclosure(this, id).run {
+            initialize()
+            render()
+        }
     }
 }
 
