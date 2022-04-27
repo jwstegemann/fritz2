@@ -95,6 +95,28 @@ class AttributeTests {
     }
 
     @Test
+    fun testOverridingAStaticAttributeWithNullWillRemoveAttribute() = runTest {
+        val testId = Id.next()
+
+        lateinit var sut: HtmlTag<HTMLDivElement>
+        render {
+            sut = div(id = testId) {
+                attr("data-test", "important data")
+            }
+        }
+
+        delay(200)
+        assertTrue(sut.domNode.hasAttribute("data-test"))
+
+        sut.apply {
+            attr<String?>("data-test", null)
+        }
+
+        delay(200)
+        assertFalse(sut.domNode.hasAttribute("data-test"))
+    }
+
+    @Test
     fun testAlternatingNullableStringFlows() = runTest {
         val testId = Id.next()
 
@@ -179,7 +201,7 @@ class AttributeTests {
         val storedState = storeOf(false)
 
         lateinit var textInput: Tag<HTMLInputElement>
-        lateinit var checkBox: Tag<HTMLInputElement>
+        //lateinit var checkBox: Tag<HTMLInputElement>
         render {
             textInput = input(id = id) {
                 placeholder("Foo")
@@ -187,10 +209,12 @@ class AttributeTests {
                 value(storedText.data)
                 changes.values() handledBy { console.log(it) }
             }
+            /*
             checkBox = input {
                 type("checkbox")
                 checked(storedState.data)
             }
+             */
         }
 
         delay(100)
@@ -205,7 +229,7 @@ class AttributeTests {
         delay(100)
 
         // Per Keyevent String Wert in Input schreiben
-        val keyEvent = KeyboardEvent("keydown", KeyboardEventInit(key = "e", "KeyE", ))
+        val keyEvent = KeyboardEvent("keydown", KeyboardEventInit(key = "e", "KeyE"))
         window.dispatchEvent(keyEvent)
 
         // Prüfen: domnode.value == Eingabe?
