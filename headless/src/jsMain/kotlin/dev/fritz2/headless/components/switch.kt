@@ -56,7 +56,7 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
             if(isNotEmpty) {
-                addComponentDebugInfo("switchValidationMessages", this@switchValidationMessages.scope, this)
+                addComponentStructureInfo("switchValidationMessages", this@switchValidationMessages.scope, this)
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))
@@ -119,7 +119,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         tag: TagFactory<Tag<CT>>,
         content: Tag<CT>.() -> Unit
     ) : Tag<CT> {
-        addComponentDebugInfo("switchToggle", this@switchToggle.scope, this)
+        addComponentStructureInfo("switchToggle", this@switchToggle.scope, this)
         return tag(this, classes, "$componentId-toggle", scope) {
             content()
             renderSwitchCore(this)
@@ -152,7 +152,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
     ) : Tag<CL> {
-        addComponentDebugInfo("switchLabel", this@switchLabel.scope, this)
+        addComponentStructureInfo("switchLabel", this@switchLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).apply {
             value.handler?.invoke(value.data.flatMapLatest { state -> clicks.map { !state } })
         }.also { label = it }
@@ -185,7 +185,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
     ) : Tag<CL> {
-        addComponentDebugInfo("switchDescription", this@switchDescription.scope, this)
+        addComponentStructureInfo("switchDescription", this@switchDescription.scope, this)
         return tag(
             this,
             classes,
@@ -236,7 +236,7 @@ fun <C : HTMLElement> RenderContext.switchWithLabel(
     tag: TagFactory<Tag<C>>,
     initialize: SwitchWithLabel<C>.() -> Unit
 ): Tag<C> {
-    addComponentDebugInfo("switchWithLabel", this@switchWithLabel.scope, this)
+    addComponentStructureInfo("switchWithLabel", this@switchWithLabel.scope, this)
     return tag(this, classes, id, scope) {
         SwitchWithLabel(this, id).run {
             initialize()
@@ -319,7 +319,7 @@ fun <C : HTMLElement> RenderContext.switch(
     tag: TagFactory<Tag<C>>,
     initialize: Switch<C>.() -> Unit
 ): Tag<C> {
-    addComponentDebugInfo("switch", this@switch.scope, this)
+    addComponentStructureInfo("switch", this@switch.scope, this)
     return tag(this, classes, id, scope) {
         Switch(this, id).run {
             initialize()

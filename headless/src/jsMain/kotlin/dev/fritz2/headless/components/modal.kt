@@ -61,7 +61,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
             tag: TagFactory<Tag<CO>>,
             content: Tag<CO>.() -> Unit
         ): Tag<CO> {
-            addComponentDebugInfo("modalOverlay", this@modalOverlay.scope, this)
+            addComponentStructureInfo("modalOverlay", this@modalOverlay.scope, this)
             return tag(this, classes, "$componentId-overlay", scope) {
                 attr(Aria.hidden, "true")
                 content()
@@ -92,7 +92,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
             tag: TagFactory<Tag<CT>>,
             content: Tag<CT>.() -> Unit
         ): Tag<CT> {
-            addComponentDebugInfo("modalTitle", this@modalTitle.scope, this)
+            addComponentStructureInfo("modalTitle", this@modalTitle.scope, this)
             return tag(this, classes, "$componentId-title", scope, content).also { title = it }
         }
 
@@ -120,7 +120,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
             tag: TagFactory<Tag<CD>>,
             content: Tag<CD>.() -> Unit
         ): Tag<CD> {
-            addComponentDebugInfo("modalDescription", this@modalDescription.scope, this)
+            addComponentStructureInfo("modalDescription", this@modalDescription.scope, this)
             return tag(
                 this,
                 classes,
@@ -158,7 +158,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
     ) {
         panel = {
             tag(this, classes, id, internalScope) {
-                addComponentDebugInfo("parent is modalPanel", this@modalPanel.scope, this)
+                addComponentStructureInfo("parent is modalPanel", this@modalPanel.scope, this)
                 ModalPanel(this).run {
                     initialize()
                     render()

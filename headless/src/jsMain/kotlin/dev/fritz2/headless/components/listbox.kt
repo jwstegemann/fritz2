@@ -67,7 +67,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         tag: TagFactory<Tag<CB>>,
         content: Tag<CB>.() -> Unit
     ): Tag<CB> {
-        addComponentDebugInfo("listboxButton", this@listboxButton.scope, this)
+        addComponentStructureInfo("listboxButton", this@listboxButton.scope, this)
         return tag(this, classes, "$componentId-button", scope) {
             if (!openState.isSet) openState(storeOf(false))
             content()
@@ -102,7 +102,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
     ): Tag<CL> {
-        addComponentDebugInfo("listboxLabel", this@listboxLabel.scope, this)
+        addComponentStructureInfo("listboxLabel", this@listboxLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).also { label = it }
     }
 
@@ -132,7 +132,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
             if (isNotEmpty) {
-                addComponentDebugInfo("listboxValidationMessages", this@listboxValidationMessages.scope, this)
+                addComponentStructureInfo("listboxValidationMessages", this@listboxValidationMessages.scope, this)
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))
@@ -302,7 +302,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             val index = numberOfItems++
 
             entries.addEntry(ListboxEntry(entry, false, null))
-            addComponentDebugInfo("listboxItem", this@listboxItem.scope, this)
+            addComponentStructureInfo("listboxItem", this@listboxItem.scope, this)
             tag(this, classes, "$componentId-item-$index", scope) {
                 ListboxItem(entry, this, index).run {
                     initialize()
@@ -339,7 +339,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         tag: TagFactory<Tag<CI>>,
         initialize: ListboxItems<CI>.() -> Unit
     ) {
-        addComponentDebugInfo("listboxItems", this@listboxItems.scope, this)
+        addComponentStructureInfo("listboxItems", this@listboxItems.scope, this)
         if (!openState.isSet) openState(storeOf(false))
         ListboxItems(this, tag, classes, scope).run {
             initialize()
@@ -409,7 +409,7 @@ fun <T, C : HTMLElement> RenderContext.listbox(
     tag: TagFactory<Tag<C>>,
     initialize: Listbox<T, C>.() -> Unit
 ): Tag<C> {
-    addComponentDebugInfo("listbox", this@listbox.scope, this)
+    addComponentStructureInfo("listbox", this@listbox.scope, this)
     return tag(this, classes(classes, "relative"), id, scope) {
         Listbox<T, C>(this, id).run {
             initialize(this)

@@ -59,7 +59,43 @@ enum class Orientation {
     Horizontal, Vertical
 }
 
-val HEADLESS_DEBUG = Scope.keyOf<Boolean>("fritz2HeadlessDebug")
+/**
+ * This key is used to enable helpful information about the structure of headless components within the
+ * final HTML representation.
+ *
+ * @see addComponentStructureInfo
+ */
+val SHOW_COMPONENT_STRUCTURE = Scope.keyOf<Boolean>("fritz2HeadlessDebug")
 
-fun addComponentDebugInfo(comment: String, scope: Scope, context: RenderContext) =
-    scope[HEADLESS_DEBUG]?.let { if (it) with(context as Tag<*>) { !comment } }
+/**
+ * This function will add the name of the corresponding component factory or brick into the DOM as comment node.
+ *
+ * This facilitates the mental matching between the Kotlin factory or brick name and its created HTML element in the
+ * DOM. The comment is rendered as direct predecessor of its corresponding DOM element in most cases. If the
+ * brick or factory results in a tag that is rendered based on a [Flow], the comment will appear as first child node
+ * of the created element.
+ *
+ * Example:
+ * ```kotlin
+ * div(scope = { set(SHOW_COMPONENT_STRUCTURE, true) }) {
+ *      switch("...") {
+ *          value(switchState)
+ *      }
+ * }
+ * // out of scope -> structural information will not get rendered
+ * switch("...") {
+ *     value(switchState)
+ * }
+ * ```
+ *
+ * Will result in the following DOM:
+ * ```html
+ * <div>
+ *     <!-- switch -->
+ *     <button aria-checked="false" ...></button>
+ * </div>
+ * <button aria-checked="false" ...></button>
+ * ```
+ */
+fun addComponentStructureInfo(comment: String, scope: Scope, context: RenderContext) =
+    scope[SHOW_COMPONENT_STRUCTURE]?.let { if (it) with(context as Tag<*>) { !comment } }

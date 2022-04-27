@@ -37,7 +37,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         tag: TagFactory<Tag<CB>>,
         content: Tag<CB>.() -> Unit
     ) : Tag<CB> {
-        addComponentDebugInfo("popOverButton", this@popOverButton.scope, this)
+        addComponentStructureInfo("popOverButton", this@popOverButton.scope, this)
         return tag(this, classes, "$componentId-button", scope) {
             if (!openState.isSet) openState(storeOf(false))
             content()
@@ -79,7 +79,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         tag: TagFactory<Tag<CP>>,
         initialize: PopOverPanel<CP>.() -> Unit
     ) {
-        addComponentDebugInfo("popOverPanel", this@popOverPanel.scope, this)
+        addComponentStructureInfo("popOverPanel", this@popOverPanel.scope, this)
         PopOverPanel(this, tag, classes, scope).run {
             initialize()
             render()
@@ -135,7 +135,7 @@ fun <C : HTMLElement> RenderContext.popOver(
     tag: TagFactory<Tag<C>>,
     initialize: PopOver<C>.() -> Unit
 ): Tag<C> {
-    addComponentDebugInfo("popOver", this@popOver.scope, this)
+    addComponentStructureInfo("popOver", this@popOver.scope, this)
     return tag(this, classes(classes, "relative"), id, scope) {
         PopOver(this, id).run {
             initialize(this)

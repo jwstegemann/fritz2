@@ -66,7 +66,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
     ): Tag<CL> {
-        addComponentDebugInfo("radioGroupLabel", this@radioGroupLabel.scope, this)
+        addComponentStructureInfo("radioGroupLabel", this@radioGroupLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).also { label = it }
     }
 
@@ -96,7 +96,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
             if (isNotEmpty) {
-                addComponentDebugInfo("radioGroupValidationMessages", this@radioGroupValidationMessages.scope, this)
+                addComponentStructureInfo("radioGroupValidationMessages", this@radioGroupValidationMessages.scope, this)
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))
@@ -155,7 +155,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             tag: TagFactory<Tag<CT>>,
             content: Tag<CT>.() -> Unit
         ): Tag<CT> {
-            addComponentDebugInfo("radioGroupOptionToggle", this@radioGroupOptionToggle.scope, this)
+            addComponentStructureInfo("radioGroupOptionToggle", this@radioGroupOptionToggle.scope, this)
             return tag(this, classes, "$optionId-toggle", scope) {
                 content()
                 attr("role", Aria.Role.radio)
@@ -204,7 +204,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             tag: TagFactory<Tag<CL>>,
             content: Tag<CL>.() -> Unit
         ): Tag<CL> {
-            addComponentDebugInfo("radioGroupOptionLabel", this@radioGroupOptionLabel.scope, this)
+            addComponentStructureInfo("radioGroupOptionLabel", this@radioGroupOptionLabel.scope, this)
             return tag(this, classes, "$optionId-label", scope, content).also { label = it }
         }
 
@@ -235,7 +235,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             tag: TagFactory<Tag<CL>>,
             content: Tag<CL>.() -> Unit
         ): Tag<CL> {
-            addComponentDebugInfo("radioGroupOptionDescription", this@radioGroupOptionDescription.scope, this)
+            addComponentStructureInfo("radioGroupOptionDescription", this@radioGroupOptionDescription.scope, this)
             return tag(
                 this,
                 classes,
@@ -276,7 +276,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         tag: TagFactory<Tag<CO>>,
         initialize: RadioGroupOption<CO>.() -> Unit
     ): Tag<CO> {
-        addComponentDebugInfo("radioGroupOption", this@radioGroupOption.scope, this)
+        addComponentStructureInfo("radioGroupOption", this@radioGroupOption.scope, this)
         val optionId = "$componentId-${id ?: Id.next()}"
         return tag(this, classes, optionId, scope) {
             RadioGroupOption(this, option, optionId).run {
@@ -335,7 +335,7 @@ fun <C : HTMLElement, T> RenderContext.radioGroup(
     tag: TagFactory<Tag<C>>,
     initialize: RadioGroup<C, T>.() -> Unit
 ): Tag<C> {
-    addComponentDebugInfo("radioGroup", this@radioGroup.scope, this)
+    addComponentStructureInfo("radioGroup", this@radioGroup.scope, this)
     return tag(this, classes, id, scope) {
         RadioGroup<C, T>(this, id).run {
             initialize()

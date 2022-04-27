@@ -44,7 +44,7 @@ fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
     initialize: Tooltip<C>.() -> Unit
 ) {
     return Tooltip(this, tag, classes, id, scope).apply {
-        addComponentDebugInfo("parent is tooltip", this@tooltip.scope, this)
+        addComponentStructureInfo("parent is tooltip", this@tooltip.scope, this)
     }.run {
         initialize()
         render()

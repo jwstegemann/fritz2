@@ -4,7 +4,7 @@ import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.OpenClose
 import dev.fritz2.headless.foundation.TagFactory
-import dev.fritz2.headless.foundation.addComponentDebugInfo
+import dev.fritz2.headless.foundation.addComponentStructureInfo
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -43,7 +43,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         tag: TagFactory<Tag<CB>>,
         content: Tag<CB>.() -> Unit
     ): Tag<CB> {
-        addComponentDebugInfo("disclosureButton", this@disclosureButton.scope, this)
+        addComponentStructureInfo("disclosureButton", this@disclosureButton.scope, this)
         return tag(this, classes, "$componentId-button", scope) {
             if (!openState.isSet) openState(storeOf(false))
             content()
@@ -84,7 +84,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             tag: TagFactory<Tag<CC>>,
             content: Tag<CC>.() -> Unit
         ): Tag<CC> {
-            addComponentDebugInfo("disclosureCloseButton", this@disclosureCloseButton.scope, this)
+            addComponentStructureInfo("disclosureCloseButton", this@disclosureCloseButton.scope, this)
             return tag(this, classes, "$componentId-close-button", scope) {
                 content()
                 clicks handledBy close
@@ -118,7 +118,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         tag: TagFactory<Tag<CP>>,
         initialize: DisclosurePanel<CP>.() -> Unit
     ) {
-        addComponentDebugInfo("disclosurePanel", this@disclosurePanel.scope, this)
+        addComponentStructureInfo("disclosurePanel", this@disclosurePanel.scope, this)
         panel = {
             tag(this, classes, "$componentId-panel", scope) {
                 DisclosurePanel(this).run {
@@ -171,7 +171,7 @@ fun <C : HTMLElement> RenderContext.disclosure(
     tag: TagFactory<Tag<C>>,
     initialize: Disclosure<C>.() -> Unit
 ): Tag<C> {
-    addComponentDebugInfo("disclosure", this@disclosure.scope, this)
+    addComponentStructureInfo("disclosure", this@disclosure.scope, this)
     return tag(this, classes, id, scope) {
         Disclosure(this, id).run {
             initialize()

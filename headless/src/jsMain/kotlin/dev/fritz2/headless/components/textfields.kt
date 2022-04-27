@@ -51,7 +51,7 @@ abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
     ): Tag<CL> {
-        addComponentDebugInfo("textfieldLabel", this@textfieldLabel.scope, this)
+        addComponentStructureInfo("textfieldLabel", this@textfieldLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).also { label = it }
     }
 
@@ -69,7 +69,7 @@ abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id
         tag: TagFactory<Tag<CD>>,
         content: Tag<CD>.() -> Unit
     ): Tag<CD> {
-        addComponentDebugInfo("textfieldDescription", this@textfieldDescription.scope, this)
+        addComponentStructureInfo("textfieldDescription", this@textfieldDescription.scope, this)
         return tag(
             this,
             classes,
@@ -93,7 +93,7 @@ abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
             if (isNotEmpty) {
-                addComponentDebugInfo("textfieldValidationMessages", this@textfieldValidationMessages.scope, this)
+                addComponentStructureInfo("textfieldValidationMessages", this@textfieldValidationMessages.scope, this)
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))
@@ -133,7 +133,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
         scope: (ScopeContext.() -> Unit) = {},
         content: HtmlTag<HTMLInputElement>.() -> Unit
     ): Tag<HTMLInputElement> {
-        addComponentDebugInfo("inputTextfield", this@inputTextfield.scope, this)
+        addComponentStructureInfo("inputTextfield", this@inputTextfield.scope, this)
         return input(classes, id = fieldId, scope = scope, content).apply {
             attr(Aria.invalid, "true".whenever(value.hasError))
             value.handler?.invoke(changes.values())
@@ -246,7 +246,7 @@ fun <C : HTMLElement> RenderContext.inputField(
     tag: TagFactory<Tag<C>>,
     initialize: InputField<C>.() -> Unit
 ): Tag<C> {
-    addComponentDebugInfo("inputField", this@inputField.scope, this)
+    addComponentStructureInfo("inputField", this@inputField.scope, this)
     return tag(this, classes, id, scope) {
         InputField(this, id).run {
             initialize()
@@ -304,7 +304,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
         scope: (ScopeContext.() -> Unit) = {},
         content: HtmlTag<HTMLTextAreaElement>.() -> Unit
     ): Tag<HTMLTextAreaElement> {
-        addComponentDebugInfo("textareaTextfield", this@textareaTextfield.scope, this)
+        addComponentStructureInfo("textareaTextfield", this@textareaTextfield.scope, this)
         return textarea(classes, id = fieldId, scope = scope, content).apply {
             attr(Aria.invalid, "true".whenever(value.hasError))
             value.handler?.invoke(changes.values())
@@ -417,7 +417,7 @@ fun <C : HTMLElement> RenderContext.textArea(
     tag: TagFactory<Tag<C>>,
     initialize: TextArea<C>.() -> Unit
 ): Tag<C> {
-    addComponentDebugInfo("textArea", this@textArea.scope, this)
+    addComponentStructureInfo("textArea", this@textArea.scope, this)
     return tag(this, classes, id, scope) {
         TextArea(this, id).run {
             initialize()

@@ -177,7 +177,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             tag: TagFactory<Tag<CT>>,
             initialize: Tab<CT>.() -> Unit
         ): Tag<CT> {
-            addComponentDebugInfo("tab", this@tab.scope, this)
+            addComponentStructureInfo("tab", this@tab.scope, this)
             return tag(this, classes, tabId(nextIndex), scope) {
                 disabledTabs.addTab()
                 Tab(this, nextIndex++).run {
@@ -212,7 +212,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         tag: TagFactory<Tag<CL>>,
         initialize: TabList<CL>.() -> Unit
     ): Tag<CL> {
-        addComponentDebugInfo("tabList", this@tabList.scope, this)
+        addComponentStructureInfo("tabList", this@tabList.scope, this)
         return tag(this, classes, "$componentId-tab-list", scope) {
             TabList(this).run {
                 initialize()
@@ -266,7 +266,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             val currentIndex = nextIndex
             panels.add {
                 tag(this, classes, panelId(currentIndex), scope) {
-                    addComponentDebugInfo("parent is panel", this@add.scope, this)
+                    addComponentStructureInfo("parent is panel", this@add.scope, this)
                     content()
                     attr("tabindex", "0")
                     attr("role", Aria.Role.tabpanel)
@@ -301,7 +301,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         tag: TagFactory<Tag<CP>>,
         initialize: TabPanels<CP>.() -> Unit
     ): Tag<CP> {
-        addComponentDebugInfo("tabPanels", this@tabPanels.scope, this)
+        addComponentStructureInfo("tabPanels", this@tabPanels.scope, this)
         return tag(this, classes, "$componentId-tab-panels", scope) {
             TabPanels(this).run {
                 initialize()
@@ -360,7 +360,7 @@ fun <C : HTMLElement> RenderContext.tabGroup(
     tag: TagFactory<Tag<C>>,
     initialize: TabGroup<C>.() -> Unit
 ): Tag<C> {
-    addComponentDebugInfo("tabGroup", this@tabGroup.scope, this)
+    addComponentStructureInfo("tabGroup", this@tabGroup.scope, this)
     return tag(this, classes, id, scope) {
         TabGroup(this, id).run {
             initialize()

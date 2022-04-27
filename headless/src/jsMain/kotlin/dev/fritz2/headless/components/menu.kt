@@ -67,7 +67,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         tag: TagFactory<Tag<CB>>,
         content: Tag<CB>.() -> Unit
     ) : Tag<CB> {
-        addComponentDebugInfo("menuButton", this@menuButton.scope, this)
+        addComponentStructureInfo("menuButton", this@menuButton.scope, this)
         return tag(this, classes, "$componentId-button", scope) {
             if (!openState.isSet) openState(storeOf(false))
             content()
@@ -214,7 +214,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         ) {
             val index = numberOfItems++
             items.addItem(MenuEntry(false, null))
-            addComponentDebugInfo("menuItem", this@menuItem.scope, this)
+            addComponentStructureInfo("menuItem", this@menuItem.scope, this)
             tag(this, classes, "$componentId-item-$index", scope) {
                 MenuItem(this, index).run {
                     initialize()
@@ -251,7 +251,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         initialize: MenuItems<CI>.() -> Unit
     ) {
         if (!openState.isSet) openState(storeOf(false))
-        addComponentDebugInfo("menuItems", this@menuItems.scope, this)
+        addComponentStructureInfo("menuItems", this@menuItems.scope, this)
         MenuItems(this, tag, classes, scope).run {
             initialize()
             render()
@@ -315,7 +315,7 @@ fun <C : HTMLElement> RenderContext.menu(
     tag: TagFactory<Tag<C>>,
     initialize: Menu<C>.() -> Unit
 ): Tag<C> {
-    addComponentDebugInfo("menu", this@menu.scope, this)
+    addComponentStructureInfo("menu", this@menu.scope, this)
     return tag(this, classes(classes, "relative"), id, scope) {
         Menu(this, id).run {
             initialize(this)
