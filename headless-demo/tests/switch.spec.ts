@@ -1,102 +1,276 @@
 import {expect, Locator, Page, test} from '@playwright/test';
-
+const uaParser = require('ua-parser-js');
 /*
  * Missing tests due to limited example component:
- * - label
+ * - label and description
  * - validation
- * - positioning
- * - dynamic disabling
- * - external opening or closing
+ * - switchValidationMessages
  */
 
+//let us declare some variables that we will use later
+let browserDevice: { browser: { name: any; }; };
+//declare here all our before hooks
 test.beforeEach(async ({page}) => {
-    //await page.goto("http://localhost:8080/#listbox");
-    await page.goto("https://next.fritz2.dev/headless-demo/#switch");
+    //go to the page of Switch component
+    // await page.goto("https://next.fritz2.dev/headless-demo/#switch");
+    await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#switch");
+    //use of "ua.parser-js" to detect the browser or device type
+    const getUA = await page.evaluate(() => navigator.userAgent);
+    //now we give our previous variable the uaParser element
+    browserDevice = uaParser(getUA);
+//end of before hooks
 });
 
+//description of our first tests
 test.describe('To switch on and off', () => {
-
-    async function createLocators(page: Page): Promise<[Locator, Locator]> {
-        const firstToggle = await page.locator('button[role="switch"]:has-text("Use setting")').first();
-        const secondToggle = await page.locator('text=Available to hireNulla amet tempus sit accumsan.Use setting >> button[role="switch"]');
-        return [firstToggle, secondToggle]
+    //fonction to switch on the switch
+    async function swSwitchOn(sw: Locator) {
+        //get the browser name
+        const browserName = browserDevice.browser.name;
+        //expect the attribute aria-checked to be true if switched on
+        await expect(sw).toHaveAttribute("aria-checked", "true");
+        //condition only for all browsers and devices except Safari and Mobile Safari
+        if (browserName.indexOf("Safari") === -1){
+            //the focus works only on all browsers except Safari and Mobile Safari
+            await expect(sw).toBeFocused();
+        //end of condition
     }
-
-    async function asserFirstToggleIsSwitchedOn(firstToggle: Locator) {
-        await expect(firstToggle).toHaveAttribute("aria-checked", "true");
-        await expect(firstToggle).toBeFocused();
+    //end of function
     }
-
-    async function asserFirstToggleIsSwitchedOff(firstToggle: Locator) {
-        await expect(firstToggle).toHaveAttribute("aria-checked", "false");
-        await expect(firstToggle).toBeFocused();
+    //fonction to switch off the switch
+    async function swSwitchOff(sw: Locator) {
+         //get the browser name
+        const browserName = browserDevice.browser.name;
+        //expect the attribute aria-checked to be false if switched off
+        await expect(sw).toHaveAttribute("aria-checked", "false");
+        //condition only for all browsers and devices except Safari and Mobile Safari
+        if (browserName.indexOf("Safari") === -1){
+            //the focus works only on all browsers except Safari and Mobile Safari
+            await expect(sw).toBeFocused();
+        //end of condition
     }
-
-    async function assertSecondToggleIsSwitchedOn(secondToggle: Locator) {
-        await expect(secondToggle).toHaveAttribute("aria-checked", "true");
-        await expect(secondToggle).toBeFocused();
+    //end of function
     }
-
-    async function assertSecondToggleIsSwitchedOff(secondToggle: Locator) {
-        await expect(secondToggle).toHaveAttribute("aria-checked", "false");
-        await expect(secondToggle).toBeFocused();
+    //fonction to switch on the switch with label
+    async function swToggleSwitchOn(swToggle: Locator) {
+         //get the browser name
+        const browserName = browserDevice.browser.name;
+        //expect the attribute aria-checked to be true if switched on
+        await expect(swToggle).toHaveAttribute("aria-checked", "true");
+        //condition only for all browsers and devices except Safari and Mobile Safari
+        if (browserName.indexOf("Safari") === -1){
+            //the focus works only on all browsers except Safari and Mobile Safari
+            await expect(swToggle).toBeFocused();
+        //end of condition
     }
-
+    //end of function
+    }
+    //fonction to switch off the switch with label
+    async function swToggleSwitchOff(swToggle: Locator) {
+         //get the browser name
+        const browserName = browserDevice.browser.name;
+        //expect the attribute aria-checked to be false if switched off
+        await expect(swToggle).toHaveAttribute("aria-checked", "false");
+        //condition only for all browsers and devices except Safari and Mobile Safari
+        if (browserName.indexOf("Safari") === -1){
+            //the focus works only on all browsers except Safari and Mobile Safari
+            await expect(swToggle).toBeFocused();
+        //end of condition
+        }
+    //end of function
+    }
+    async function swLabelSwitchOn(swToggle: Locator) {
+        //get the browser name
+       const browserName = browserDevice.browser.name;
+       //expect the attribute aria-checked to be false if switched off
+       await expect(swToggle).toHaveAttribute("aria-checked", "true");
+       //condition only for all browsers and devices except Safari and Mobile Safari
+       if (browserName.indexOf("Safari") === -1){
+           //the focus works only on all browsers except Safari and Mobile Safari
+           await expect(swToggle).not.toBeFocused();
+       //end of condition
+       }
+   //end of function
+   }
+   async function swLabelSwitchOff(swToggle: Locator) {
+    //get the browser name
+   const browserName = browserDevice.browser.name;
+   //expect the attribute aria-checked to be false if switched off
+   await expect(swToggle).toHaveAttribute("aria-checked", "false");
+   //condition only for all browsers and devices except Safari and Mobile Safari
+   if (browserName.indexOf("Safari") === -1){
+       //the focus works only on all browsers except Safari and Mobile Safari
+       await expect(swToggle).not.toBeFocused();
+   //end of condition
+   }
+//end of function
+}
+    //description of the first test
     test('Switch on & off principal switch', async ({page}) => {
-        const [firstToggle, secondToggle] = await createLocators(page)
-
-        await firstToggle.focus()
-        await asserFirstToggleIsSwitchedOff(firstToggle)
-
-        await firstToggle.click();
-        await asserFirstToggleIsSwitchedOn(firstToggle)
-
-        await firstToggle.click();
-        await asserFirstToggleIsSwitchedOff(firstToggle)
+        //locator of switch (tag: switch)
+        const sw = page.locator('id=switch');
+        //focus on switch
+        await sw.focus()
+        //verify if the switch is off
+        await swSwitchOff(sw)
+        //click on switch
+        await sw.click();
+        //verify if the switch is on
+        await swSwitchOn(sw)
+        //click again on switch
+        await sw.click();
+        //verify if the switch is off
+        await swSwitchOff(sw)
+    //end of first test
     });
-
+    //description of the second test
     test('Switch on & off secondary switch', async ({page}) => {
-        const [firstToggle, secondToggle] = await createLocators(page)
-
-        await secondToggle.focus()
-        await assertSecondToggleIsSwitchedOn(secondToggle)
-
-        await secondToggle.click();
-        await assertSecondToggleIsSwitchedOff(secondToggle)
-
-        await secondToggle.click();
-        await assertSecondToggleIsSwitchedOn(secondToggle)
-    });
-
+        //locator of switchToggle (tag: switchToggle)
+        const swToggle = page.locator('id=switchWithLabel-toggle');
+        //focus on switchToggle
+        await swToggle.focus()
+        //verify if switchToggle is on
+        await swToggleSwitchOn(swToggle)
+        //click on the switchToggle
+        await swToggle.click();
+        //verify if switchToggle is off
+        await swToggleSwitchOff(swToggle)
+        //click again on switchToggle
+        await swToggle.click();
+        //verify if switchToggle is on
+        await swToggleSwitchOn(swToggle)
+    //end of second test
 });
-
+    //description of the third test
+    test('Switch on & off secondary switch with switchLabel', async ({page}) => {
+        //locator of switchToggle
+        const swToggle = page.locator('id=switchWithLabel-toggle');
+        //locator of switchLabel (tag: switchLabel)
+        const swLabel = page.locator('id=switchWithLabel-label');
+        //focus on switchLabel
+        await swLabel.focus();
+        //click on the switchToggle
+        await swLabel.click();
+        //verify if switchToggle is off
+        await swLabelSwitchOff(swToggle)
+        //click again on switchToggle
+        await swLabel.click();
+        //verify if switchToggle is on
+        await swLabelSwitchOn(swToggle)
+    //end of third test
+    });
+    //description of the fourth test
+    test("focus the switchbutton and press Space", async ({page}) => {
+        //locator of switch
+        const sw = page.locator('id=switch');
+        //locator of switchToggle
+        const swToggle = page.locator('id=switchWithLabel-toggle');
+        //get the browser name
+        // const browserName = browserDevice.browser.name;
+        //focus on switch
+        await sw.focus();
+        //verify if switch is off
+        await swSwitchOff(sw);
+        //conditions for all browsers and devices except Firefox
+        // if (browserName.indexOf("Firefox") === -1){
+        //press "Space" button
+        await sw.press(' ');
+        //condition for Firefox only
+        // } else {
+        // //press "Space" button (Firefox version)
+        // await sw.press("Space");
+        // }
+        //verify if switch is on
+        await swSwitchOn(sw);
+        //focus on switchToggle
+        await swToggle.focus();
+        //verify if switchToggle is on
+        await swToggleSwitchOn(swToggle);
+        //conditions for all browsers and devices except Firefox
+        // if (browserName.indexOf("Firefox") === -1){
+            //press "Space" button
+            await swToggle.press('Space');
+            //condition for Firefox only
+            // } else {
+            // //press "Space" button (Firefox version)
+            // await swToggle.press("Space");
+            // }
+        //verify if switchToggle is off
+        await swToggleSwitchOff(swToggle);
+    //end of fourth test
+    });
+    
+//end of our first tests
+});
+//description of our second tests
 test.describe("To check the focus", () => {
-
-    async function createLocators(page: Page): Promise<[Locator, Locator, Locator]> {
-        const firstToggle = await page.locator('button[role="switch"]:has-text("Use setting")').first();
-        const secondToggle = await page.locator('text=Available to hireNulla amet tempus sit accumsan.Use setting >> button[role="switch"]');
-        const div = await page.locator('text=Use settingAvailable to hireNulla amet tempus sit accumsan.Use setting');
-        return [firstToggle, secondToggle, div]
+    //function to save the elements of switch and switchLabel
+    async function locatorsSw(page: Page): Promise<[Locator, Locator]> {
+        //locator of switch
+        const sw = page.locator('id=switch');
+        //locator of switch with label
+        const swLabel = page.locator('id=switchWithLabel');
+        //return of the two elements
+        return [sw, swLabel]
+    //end of function
     }
-
+    //function to save the elements of switchToggle and the div of switchLabel
+    async function locatorsSwLabel(page: Page): Promise<[Locator, Locator]> {
+        //locator of switchToggle
+        const swToggle = page.locator('id=switchWithLabel-toggle');
+        //locator of switch with label
+        const swLabel = page.locator('id=switchWithLabel');
+        //return of the two elements
+        return [swToggle, swLabel]
+    //end of function
+    }
+    //description of the first test
     test("for first toggle", async ({page}) => {
-        const [firstToggle, secondToggle, div] = await createLocators(page)
-
-        await firstToggle.focus()
-        await firstToggle.click();
-        await div.click();
-        await expect(firstToggle).toBeFocused();
+        //get of both elements
+        const [sw, swLabel] = await locatorsSw(page);
+        //get the browser name
+        const browserName = browserDevice.browser.name;
+        //focus on switch
+        await sw.focus();
+        //verify if switch is focused
+        await expect(sw).toBeFocused();
+        //click on switch
+        await sw.click();
+        //condition only for all browsers and devices except Safari and Mobile Safari
+        if (browserName.indexOf("Safari") === -1){
+        //the focus works only on all browsers except Safari and Mobile Safari
+        await expect(sw).toBeFocused();
+    //end of condition
+    }
+        //click on the div of switch with label
+        await swLabel.click();
+        //verify if switch is not focused
+        await expect(sw).not.toBeFocused();
+    //end of first test
     });
-
+    //description of the second test
     test("for second toggle", async ({page}) => {
-        const [firstToggle, secondToggle, div] = await createLocators(page)
-
-        await secondToggle.focus();
-        await expect(secondToggle).toBeFocused();
-        await secondToggle.click();
-        await expect(secondToggle).toBeFocused();
-        await div.click();
-        await expect(secondToggle).toBeFocused();
+        //get of both elements
+        const [swToggle, swLabel] = await locatorsSwLabel(page);
+        //get the browser name
+        const browserName = browserDevice.browser.name;
+        //focus on switchToggle
+        await swToggle.focus();
+        //verify if switchToggle is focused
+        await expect(swToggle).toBeFocused();
+        //click on switchToggle
+        await swToggle.click();
+         //condition only for all browsers and devices except Safari and Mobile Safari
+        if (browserName.indexOf("Safari") === -1){
+        //the focus works only on all browsers except Safari and Mobile Safari
+        await expect(swToggle).toBeFocused();
+        //end of condition
+        }
+        //click on switch with label
+        await swLabel.click();
+        //verify if switchToggle is not focused
+        await expect(swToggle).not.toBeFocused();
+    //end of second test
     });
-
+//end of our second tests
 });
