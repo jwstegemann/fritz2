@@ -34,11 +34,9 @@ test.describe('To check the', () => {
             //press "Tab" button
             await field.press('Tab');
             //locator for new text in result
-            const fieldfill = await page.evaluate(el => el.textContent, (await page.$('#result')));
-            //remove the not needed <em> from result
-            fieldfill.replace('Selected: ', '');
+            const fieldfill = await page.locator('#result');
             //verify if result contains the text "text"
-            expect(fieldfill).toContain(text);
+            expect(fieldfill).toContainText(text);
         //end of first test
         });
         //description of the second test
@@ -66,11 +64,9 @@ test.describe('To check the', () => {
             //press "Tab" button
             await field.press('Tab');
             //locator for new text in result
-            const fieldfill = (await page.evaluate(el => el.textContent, (await page.$('#result')))).replace(/\n/gm, ' ');
-            //remove the not needed <em> from result
-            fieldfill.replace('Selected: ', '');
+            const fieldfill = page.locator('#result');
             //verify if result contains the text "text" and "tNext"
-            expect(fieldfill).toContain(text + " " + tNext);
+            expect(fieldfill).toContainText([text, tNext]);
         //end of second test
         });
         //description of the third test
@@ -92,11 +88,9 @@ test.describe('To check the', () => {
             //click out of textArea
             await page.mouse.click(0, 0);
             //locator for new text in result
-            const fieldfill = await page.evaluate(el => el.textContent, (await page.$('#result')));
-            //remove the not needed <em> from result
-            fieldfill.replace('Selected: ', '');
+            const fieldfill = page.locator('#result');
             //verify if result contains the text "text"
-            expect(fieldfill).toContain(text);
+            expect(fieldfill).toContainText(text);
         });
 
 });

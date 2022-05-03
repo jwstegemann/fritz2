@@ -36,11 +36,9 @@ test.describe('To check the', () => {
             //press "Enter"/"Tab" button
             await page.press("#inputField-field", key);
             //locator for new text in result
-            const fieldfill = await page.evaluate(el => el.textContent, (await page.$('#result')));
-            //remove the not needed <em> from result
-            fieldfill.replace('Selected: ', '');
+            const fieldfill = page.locator('#result');
             //verify if result contains the text "text"
-            expect(fieldfill).toContain(text);
+            expect(fieldfill).toContainText(text);
         //end of first test
         });
     //end of for loop
@@ -64,11 +62,9 @@ test.describe('To check the', () => {
         //click out of inputField
         await page.mouse.click(0, 0);
         //locator for new text in result
-        const fieldfill = await page.evaluate(el => el.textContent, (await page.$('#result')));
-        //remove the not needed <em> from result
-        fieldfill.replace('Selected: ', '');
+        const fieldfill = page.locator('#result');
         //verify if result contains the text "text"
-        expect(fieldfill).toContain(text);
+        expect(fieldfill).toContainText(text);
     //end of second test
     });
 //end of our tests

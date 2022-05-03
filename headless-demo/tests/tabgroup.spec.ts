@@ -108,98 +108,130 @@ test('unique result and focus on selected radio through click', async ({page}) =
 });
 });
 //description of our second tests
-// test.describe('Checking', () => {
-//     for (const key of ["Home", "PageUp"]) {
-//     test(`tab selection for tab ${key} through click`, async ({page}) =>{
-//         //function to check the tab
-//         async function tabActive(num: String) {
-//             const tab = page.locator(`#tabGroup-tab-list-tab-${num}`);
-//             //expect the attribute aria-checked to be true if tab is selected
-//             await expect(tab).toHaveAttribute("aria-selected", "true");
-//             await expect(tab).toBeFocused();
-//         //end of function
-//         }
-//         //locator for each tab (tag: tab)
-//         const tab = page.locator(`#tabGroup-tab-list-tab-${num}`);
-//         //locator for each tab panel (tag: tabPanel)
-//         const panel = page.locator(`#tabGroup-tab-panels-panel-${num}`)
-//         //click on radio
-//         await tab.click();
-//         //verify is radio is checked
-//         await tabActive(num);
-//         //verify if panel is visible
-//         await expect(panel).toBeVisible();
-//     });
-// }
-// test('unique result and focus on selected radio through click', async ({page}) =>{
-//     //function to check the content of result
-//     async function getTab(num: String) {
-//         //locator for each radio
-//         const tab = page.locator(`#tabGroup-tab-list-tab-${num}`);
-//         //return the locator
-//         return tab;
-//     //end of function
-// }
-//     //function to check the content of result
-//     async function getPanel(num: String) {
-//         //locator for each radio
-//         const panel = page.locator(`#tabGroup-tab-panels-panel-${num}`);
-//         //return the locator
-//         return panel;
-//     //end of function
-// }
-//     //function to check the radio
-//     async function tabActive(num: String) {
-//         await getTab(num);
-//         //expect the attribute aria-checked to be true if switched on
-//         await expect(await getTab(num)).toHaveAttribute("aria-selected", "true");
-//         await expect(await getTab(num)).toBeFocused();
-//     //end of function
-//     }
-//     //function to uncheck the radio
-//     async function tabNotActive(num: String) {
-//         await getTab(num);
-//         //expect the attribute aria-checked to be true if switched on
-//         await expect(await getTab(num)).toHaveAttribute("aria-selected", "false");
-//         await expect(await getTab(num)).not.toBeFocused();
-//     //end of function
-//     }
-//     //first assertions
-//     await expect(await getPanel("0")).toBeHidden();
-//     await expect(await getPanel("1")).toBeHidden();
-//     await expect(await getPanel("2")).toBeHidden();
-//     //click on tab
-//     await (await getTab("0")).click();
-//     //verify if tab 0 is chosen
-//     await tabActive("0");
-//     //verify if other tabs and not chosen
-//     await tabNotActive("1");
-//     await tabNotActive("2");
-//     //verify if panel 0 is visible and panel 1 and panel 2 are hidden
-//     await expect(await getPanel("0")).toBeVisible();
-//     await expect(await getPanel("1")).toBeHidden();
-//     await expect(await getPanel("2")).toBeHidden();
-//     //click on tab
-//     await (await getTab("1")).click();
-//     //verify if tab 1 is chosen
-//     await tabActive("1");
-//     ////verify if other tabs and not chosen
-//     await tabNotActive("0");
-//     await tabNotActive("2");
-//     //verify if panel 1 is visible and panel 0 and panel 2 are hidden
-//     await expect(await getPanel("0")).toBeHidden();
-//     await expect(await getPanel("1")).toBeVisible();
-//     await expect(await getPanel("2")).toBeHidden();
-//     //click on tab
-//     await (await getTab("2")).click();
-//     //verify if tab 2 is chosen
-//     await tabActive("2");
-//     ////verify if other tabs and not chosen
-//     await tabNotActive("0");
-//     await tabNotActive("1");
-//     //verify if panel 2 is visible and panel 1 and panel 2 are hidden
-//     await expect(await getPanel("0")).toBeHidden();
-//     await expect(await getPanel("1")).toBeHidden();
-//     await expect(await getPanel("2")).toBeVisible();
-// });
-// });
+test.describe('Navigating', () => {
+for(const data of [
+    {key:"Home", target: "first", id: "0"},
+    {key:"PageUp", target: "first", id: "0"},
+    {key:"End", target: "last", id: "2"},
+    {key:"PageDown", target: "last", id: "2"}
+]) {
+    test(`by pressing "${data.key}" will jump to ${data.target} tab`, async ({page}) => {
+        const tab = page.locator(`#tabGroup-tab-list-tab-${data.id}`);
+        const panel = page.locator(`#tabGroup-tab-panels-panel-${data.id}`)
+        await page.locator('#tabGroup-tab-list-tab-1').click();
+        await expect(page.locator('#tabGroup-tab-panels-panel-1')).toBeVisible();
+
+        await tab.press(data.key)
+        await expect(tab).toHaveAttribute("aria-selected", "true");
+        await expect(panel).toBeVisible();
+    });
+}
+test('unique result and focus on selected radio through click', async ({page}) =>{
+    //function to check the content of result
+    async function getTab(num: String) {
+        //locator for each radio
+        const tab = page.locator(`#tabGroup-tab-list-tab-${num}`);
+        //return the locator
+        return tab;
+    //end of function
+}
+    //function to check the content of result
+    async function getPanel(num: String) {
+        //locator for each radio
+        const panel = page.locator(`#tabGroup-tab-panels-panel-${num}`);
+        //return the locator
+        return panel;
+    //end of function
+}
+    //function to check the radio
+    async function tabActive(num: String) {
+        await getTab(num);
+        //expect the attribute aria-checked to be true if switched on
+        await expect(await getTab(num)).toHaveAttribute("aria-selected", "true");
+        await expect(await getTab(num)).toBeFocused();
+    //end of function
+    }
+    //function to uncheck the radio
+    async function tabNotActive(num: String) {
+        await getTab(num);
+        //expect the attribute aria-checked to be true if switched on
+        await expect(await getTab(num)).toHaveAttribute("aria-selected", "false");
+        await expect(await getTab(num)).not.toBeFocused();
+    //end of function
+    }
+    //first assertions
+    await expect(await getPanel("0")).toBeVisible();
+    await expect(await getPanel("1")).toBeHidden();
+    await expect(await getPanel("2")).toBeHidden();
+    //click on tab
+    await (await getTab("1")).click();
+    //verify if tab 1 is chosen
+    await tabActive("1");
+    ////verify if other tabs and not chosen
+    await tabNotActive("0");
+    await tabNotActive("2");
+    //verify if panel 1 is visible and panel 0 and panel 2 are hidden
+    await expect(await getPanel("0")).toBeHidden();
+    await expect(await getPanel("1")).toBeVisible();
+    await expect(await getPanel("2")).toBeHidden();
+    //click on tab
+    await (await getTab("2")).click();
+    //verify if tab 2 is chosen
+    await tabActive("2");
+    ////verify if other tabs and not chosen
+    await tabNotActive("0");
+    await tabNotActive("1");
+    //verify if panel 2 is visible and panel 1 and panel 2 are hidden
+    await expect(await getPanel("0")).toBeHidden();
+    await expect(await getPanel("1")).toBeHidden();
+    await expect(await getPanel("2")).toBeVisible();
+});
+test("through the tabs should work by Arrow keys Left and Right", async ({page}) => {
+    //locator for tabGroup
+    const tabGroup = page.locator('#tabGroup-tab-list');
+
+    //function to check if tab is active
+    async function tabActive(num: String) {
+        //locator for each tab
+        const tab = page.locator(`#tabGroup-tab-list-tab-${num}`);
+        //expect the attribute aria-checked to be true if switched on
+        await expect(tab).toHaveAttribute("aria-selected", "true");
+        await expect(tab).toBeFocused();
+    //end of function
+    }
+    //function to check if panel is active
+    async function panelActive(num: String) {
+        //locator for each tab panel
+        const panel = page.locator(`#tabGroup-tab-panels-panel-${num}`);
+        //expect the attribute aria-checked to be true if switched on
+        await expect(panel).toBeVisible();
+    //end of function
+    }
+
+    // right
+    await tabGroup.press("ArrowRight")
+    await tabActive("1")
+    await panelActive("1")
+
+    await tabGroup.press("ArrowRight")
+    await tabActive("2")
+    await panelActive("2")
+
+    await tabGroup.press("ArrowRight")
+    await tabActive("0")
+    await panelActive("0")
+
+    // left
+    await tabGroup.press("ArrowLeft")
+    await tabActive("2")
+    await panelActive("2")
+
+    await tabGroup.press("ArrowLeft")
+    await tabActive("1")
+    await panelActive("1")
+
+    await tabGroup.press("ArrowLeft")
+    await tabActive("0")
+    await panelActive("0")
+});
+});

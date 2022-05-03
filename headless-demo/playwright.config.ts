@@ -51,6 +51,9 @@ const config: PlaywrightTestConfig = {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
+        launchOptions: {
+          slowMo: 50,
+        }
       },
     },
 
@@ -58,6 +61,9 @@ const config: PlaywrightTestConfig = {
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
+        launchOptions: {
+          slowMo: 50,
+        }
       },
     },
 
@@ -65,6 +71,9 @@ const config: PlaywrightTestConfig = {
       name: 'webkit',
       use: {
         ...devices['Desktop Safari'],
+        launchOptions: {
+          slowMo: 50,
+        }
       },
     },
 
@@ -73,24 +82,36 @@ const config: PlaywrightTestConfig = {
        name: 'Mobile Chrome',
        use: {
          ...devices['Pixel 5'],
+         launchOptions: {
+          slowMo: 50,
+        }
        },
      },
      {
       name: 'Mobile Chrome',
       use: {
         ...devices['Pixel 5 landscape'],
+        launchOptions: {
+          slowMo: 50,
+        }
       },
     },
   {
     name: 'Mobile Safari',
     use: {
       ...devices['iPhone 12'],
+      launchOptions: {
+        slowMo: 50,
+      }
     },
   },
      {
       name: 'Mobile Safari',
       use: {
         ...devices['iPhone 12 landscape'],
+        launchOptions: {
+          slowMo: 50,
+        }
       },
     },
 
@@ -99,12 +120,18 @@ const config: PlaywrightTestConfig = {
       name: 'Microsoft Edge',
       use: {
         channel: 'msedge',
+        launchOptions: {
+          slowMo: 50,
+        }
       },
     },
     {
       name: 'Google Chrome',
       use: {
         channel: 'chrome',
+        launchOptions: {
+          slowMo: 50,
+        }
       },
     },
   ],

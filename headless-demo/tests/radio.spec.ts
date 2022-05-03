@@ -30,28 +30,24 @@ test.describe('Checking', () => {
         //locator for each radio label (tag: radioGroup)
         const radToggle = page.locator(`#radioGroup-${item}-toggle`)
         //locator for each radio toggle (tag: radioGroupLabel) We will replace all characters with break lines, · and blank space
-        const label = ((await page.locator(`#radioGroup-${item}-toggle`).innerText()).replace(/(\n|·|\s)/gm, '')).replace(' /', '/');
+        const label = await page.locator(`#radioGroup-${item}-label`).textContent();
         //click on radio
         await radToggle.click();
         //verify is radio is checked
         await radioActive(item);
         //locator for expected result. We also remove the <em> from result as we don't need it
-        const result = (await page.evaluate(el => el.textContent, (await page.$('#result')))).replace('Selected: ', '');
-        //remove all blank spaces
-        const expResult = result.replace(/\s/gm,'');
+        const result = page.locator('#result');
         //verify is label is in result
-        expect(expResult).toContain(label);
+        expect(result).toContainText(label);
     });
 }
     test('unique result and focus on selected radio through click', async ({page}) =>{
         //function to check the content of result
         async function checkResult() {
             //locator for expected result
-            const result = (await page.evaluate(el => el.textContent, (await page.$('#result')))).replace('Selected: ', '');
-            //remove the not needed CHARACTERS from #result
-            const expResult = result.replace(/\s/gm,'');
+            const result = await page.locator('#result');
             //return this new value as result
-            return expResult;
+            return result;
         //end of function
     }
         //function to check the content of result
@@ -81,7 +77,7 @@ test.describe('Checking', () => {
         //function to uncheck the radio
         async function checkLabel(radItem: String) {
             //expect the attribute aria-checked to be true if switched on
-           const label = ((await page.locator("#radioGroup-" + radItem + "-toggle").innerText()).replace(/(\n|·|\s)/gm, '')).replace(' /', '/');
+           const label = await page.locator("#radioGroup-" + radItem + "-label").innerText();
            return label;
         //end of function
         }
@@ -96,7 +92,7 @@ test.describe('Checking', () => {
         //update the value of result
         await checkResult();
         //verify is label is in result
-        expect(await checkResult()).toContain(await checkLabel("Hobby"));
+        expect(await checkResult()).toContainText(await checkLabel("Hobby"));
         //click on radio
         await (await getRadio("Startup")).click();
         //verify if radio is chosen
@@ -108,7 +104,7 @@ test.describe('Checking', () => {
         //update the value of result
         await checkResult();
         //verify is label is in result
-        expect(await checkResult()).toContain(await checkLabel("Startup"));
+        expect(await checkResult()).toContainText(await checkLabel("Startup"));
         //click on radio
         await (await getRadio("Business")).click();
         //verify if radio is chosen
@@ -120,7 +116,7 @@ test.describe('Checking', () => {
         //update the value of result
         await checkResult();
         //verify is label is in result
-        expect(await checkResult()).toContain(await checkLabel("Business"));
+        expect(await checkResult()).toContainText(await checkLabel("Business"));
         //click on radio
         await (await getRadio("Enterprise")).click();
         //verify if radio is chosen
@@ -132,17 +128,15 @@ test.describe('Checking', () => {
         //update the value of result
         await checkResult();
         //verify is label is in result
-        expect(await checkResult()).toContain(await checkLabel("Enterprise"));
+        expect(await checkResult()).toContainText(await checkLabel("Enterprise"));
     });
     test('unique result when pressing Up and Down', async ({page}) =>{
         //function to check the content of result
         async function checkResult() {
             //locator for expected result
-            const result = (await page.evaluate(el => el.textContent, (await page.$('#result')))).replace('Selected: ', '');
-            //remove the not needed CHARACTERS from #result
-            const expResult = result.replace(/\s/gm,'');
+            const result = page.locator('#result');
             //return this new value as result
-            return expResult;
+            return result;
         //end of function
     }
         //function to check the content of result
@@ -172,7 +166,7 @@ test.describe('Checking', () => {
         //function to uncheck the radio
         async function checkLabel(radItem: String) {
             //expect the attribute aria-checked to be true if switched on
-           const label = ((await page.locator("#radioGroup-" + radItem + "-toggle").innerText()).replace(/(\n|·|\s)/gm, '')).replace(' /', '/');
+           const label = await page.locator("#radioGroup-" + radItem + "-label").innerText();
            return label;
         //end of function
         }
@@ -187,7 +181,7 @@ test.describe('Checking', () => {
         //update the value of result
         await checkResult();
         //verify is label is in result
-        expect(await checkResult()).toContain(await checkLabel("Hobby"));
+        expect(await checkResult()).toContainText(await checkLabel("Hobby"));
         //press "Down" on radio 
         await (await getRadio("Hobby")).press('ArrowDown'); 
         //verify if radio is chosen
@@ -199,7 +193,7 @@ test.describe('Checking', () => {
         //update the value of result
         await checkResult();
         //verify is label is in result
-        expect(await checkResult()).toContain(await checkLabel("Startup"));
+        expect(await checkResult()).toContainText(await checkLabel("Startup"));
         //press "Down" on radio 
         await (await getRadio("Startup")).press('ArrowDown'); 
         //verify if radio is chosen
@@ -211,7 +205,7 @@ test.describe('Checking', () => {
         //update the value of result
         await checkResult();
         //verify is label is in result
-        expect(await checkResult()).toContain(await checkLabel("Business"));
+        expect(await checkResult()).toContainText(await checkLabel("Business"));
         //press "Down" on radio 
         await (await getRadio("Business")).press('ArrowDown'); 
         //verify if radio is chosen
@@ -223,7 +217,7 @@ test.describe('Checking', () => {
         //update the value of result
         await checkResult();
         //verify is label is in result
-        expect(await checkResult()).toContain(await checkLabel("Enterprise"));
+        expect(await checkResult()).toContainText(await checkLabel("Enterprise"));
         //press "Up" on radio 
         await (await getRadio("Enterprise")).press('ArrowUp'); 
         //verify if radio is chosen
@@ -235,7 +229,7 @@ test.describe('Checking', () => {
         //update the value of result
         await checkResult();
         //verify is label is in result
-        expect(await checkResult()).toContain(await checkLabel("Business"));
+        expect(await checkResult()).toContainText(await checkLabel("Business"));
         //press "Up" on radio 
         await (await getRadio("Business")).press('ArrowUp'); 
         //verify if radio is chosen
@@ -247,7 +241,7 @@ test.describe('Checking', () => {
         //update the value of result
         await checkResult();
         //verify is label is in result
-        expect(await checkResult()).toContain(await checkLabel("Startup"));
+        expect(await checkResult()).toContainText(await checkLabel("Startup"));
         //press "Up" on radio 
         await (await getRadio("Startup")).press('ArrowUp'); 
         //verify if radio is chosen
@@ -259,6 +253,6 @@ test.describe('Checking', () => {
         //update the value of result
         await checkResult();
         //verify is label is in result
-        expect(await checkResult()).toContain(await checkLabel("Hobby"));
+        expect(await checkResult()).toContainText(await checkLabel("Hobby"));
     });
 });

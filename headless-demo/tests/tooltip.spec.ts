@@ -24,58 +24,32 @@ test.beforeEach(async ({page}) => {
 //description of our tests
 test.describe('To check the display of tooltip', () => {
     test('when mouse over input and it is filled with something', async ({page}) =>{
-        //get the browser OS
-        const browserOS = browserDevice.os.name;
         //locator for first button on top (tag: tooltip)
-        const btnF = page.locator('text=Some Button').first();
+        const btnTop = page.locator('#top-reference');
         //and locator for his tooltip
-        const toolTbtnF = page.locator('[data-popper-placement="bottom"]');
+        const toolTbtnTop = page.locator('#top-tooltip');
         //locator for last button on the right corner
-        const btnL = page.locator('text=Some Button').last();
+        const btnCenter = page.locator('#center-reference');
         //and locator for his tooltip
-        const toolTbtnL = page.locator('[data-popper-placement="left"]').first();
+        const toolTbtnCenter = page.locator('#center-tooltip');
         //locator for button on the center
-        const btnM = page.locator('text=Some Button').nth(1);
+        const btnBottom = page.locator('#bottom-reference');
         //and locator for his tooltip
-        const toolTbtnM = page.locator('[data-popper-placement="right"]').last();
-        //locator for input on the left corner
-        const inputF = page.locator('[placeholder="some input"]').first();
-        //and locator for his tooltip
-        const toolTinpF = page.locator('[data-popper-placement="right"]').first();
-        //locator for input at the bottom
-        const inputL = page.locator('[placeholder="some input"]').last();
-        //and locator for his tooltip
-        const toolTinpL = page.locator('[data-popper-placement="top"]');
+        const toolTbtnBottom = page.locator('#bottom-tooltip');
 
         //start of test
-        //let us exclude the mobile devices from this test as the tooltips are not good on these types of devices
-        if (browserOS === "Android" || browserOS === "iOS"){
-            //No test needed for Android or iOS
-            console.log("No test needed for " + browserOS);
-        //then let us check with all desktop browsers
-        } else {
         //hover the button on top
-        await btnF.hover();
+        await btnTop.hover();
         //verify if its tooltip is visible
-        await expect(toolTbtnF).toBeVisible();
+        await expect(toolTbtnTop).toBeVisible();
         //hover the input on the left corner
-        await inputF.hover();
+        await btnCenter.hover();
         //verify if its tooltip is visible
-        await expect(toolTinpF).toBeVisible();
+        await expect(toolTbtnCenter).toBeVisible();
         //hover the button on the center
-        await btnM.hover();
+        await btnBottom.hover();
         //verify if its tooltip is visible
-        await expect(toolTbtnM).toBeVisible();
-        //hover the button on the right corner
-        await btnL.hover();
-        //verify if its tooltip is visible
-        await expect(toolTbtnL).toBeVisible();
-        //hover the input at the bottom
-        await inputL.hover();
-        //verify if its tooltip is visible
-        await expect(toolTinpL).toBeVisible();
-        //end of condition
-        }
+        await expect(toolTbtnBottom).toBeVisible();
     });
 
 });

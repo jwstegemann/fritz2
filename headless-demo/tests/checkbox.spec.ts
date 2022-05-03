@@ -38,34 +38,30 @@ test.describe('Checking through click', () => {
         //locator for each checkbox label (tag: checkboxGroupLabel)
         const label = await page.locator(`#checkboxGroup-${num}-label`).textContent(); 
         //locator for each checkbox toggle (tag: checkboxGroupOptionToggle)
-        const chToggle = await page.locator(`#checkboxGroup-${num}-toggle`);
+        const chToggle = page.locator(`#checkboxGroup-${num}-toggle`);
         //click on checkbox
         await chToggle.click();
         //verify is checkbox is checked
         await checkBoxActive(chToggle);
         //locator for expected result
-        const result = await page.evaluate(el => el.textContent, await (await page.$('#result')));
-        //remove the not needed <em> from #result
-        const expResult = result.replace('Selected: ','');
+        const result = page.locator('#result');
         //verify is label is in result
-        await expect(expResult).toContain("(" + num + ") " + label);
+        await expect(result).toContainText(label);
         //click on checkbox
         await chToggle.click();
         //verify is checkbox is unchecked
         await checkBoxNotActive(chToggle);
         //verify is label is in result
-        await expect(expResult).toContain("");
+        await expect(result).not.toContainText(label);
     });
 }
     test(`several results`, async ({page}) =>{
         //function to uncheck the box
         async function checkResult() {
             //locator for all texts from #result
-            const result = await page.evaluate(el => el.textContent, await (await page.$('#result')));
-            //remove the not needed <em> from #result
-            const allResult = result.replace('Selected: ','');
+            const result = page.locator('#result');
             //return this new value as result
-            return allResult;
+            return result;
         //end of function
     }
         //variable for each checkbox/label/toggle 
@@ -78,10 +74,6 @@ test.describe('Checking through click', () => {
         const chToggle1 = await page.locator(`#checkboxGroup-${num[0]}-toggle`);
         const chToggle2 = await page.locator(`#checkboxGroup-${num[1]}-toggle`);
         const chToggle3 = await page.locator(`#checkboxGroup-${num[2]}-toggle`);
-        //result of each checkbox in result
-        const result1 = "(" + num[0] + ") " + label1;
-        const result2 = "(" + num[1] + ") " + label2;
-        const result3 = "(" + num[2] + ") " + label3;
         //click on checkbox
         await chToggle1.click();
         //verify if checkbox 1 is checked
@@ -89,7 +81,7 @@ test.describe('Checking through click', () => {
         //update the value of result
         await checkResult();
         //verify if the result is as expected
-        await expect((await checkResult())).toContain(result1);
+        expect((await checkResult())).toContainText(label1);
         //click on checkbox
         await chToggle2.click();
         //verify if checkbox 2 is checked
@@ -97,7 +89,7 @@ test.describe('Checking through click', () => {
         //update the value of result
         await checkResult();
         //verify if the result is as expected
-        await expect(await checkResult()).toContain(result1 + result2);
+        await expect(await checkResult()).toContainText([label1, label2]);
         //click on checkbox
         await chToggle3.click();
         //verify if checkbox 3 is checked
@@ -105,7 +97,7 @@ test.describe('Checking through click', () => {
         //update the value of result
         await checkResult();
         //verify if the result is as expected
-        await expect(await checkResult()).toContain(result1 + result2 + result3);
+        await expect(await checkResult()).toContainText([label1, label2, label3]);
         //click on checkbox
         await chToggle1.click();
         //verify if checkbox 1 is unchecked
@@ -113,7 +105,7 @@ test.describe('Checking through click', () => {
         //update the value of result
         await checkResult();
         //verify if the result is as expected
-        await expect(await checkResult()).toContain(result2 + result3);
+        await expect(await checkResult()).toContainText([label2, label3]);
         //click on checkbox
         await chToggle2.click();
         //verify if checkbox 2 is unchecked
@@ -121,7 +113,7 @@ test.describe('Checking through click', () => {
         //update the value of result
         await checkResult();
         //verify if the result is as expected
-        await expect(await checkResult()).toContain(result3);
+        await expect(await checkResult()).toContainText(label3);
         //click on checkbox
         await chToggle3.click();
         //verify if checkbox 3 is unchecked
@@ -129,7 +121,7 @@ test.describe('Checking through click', () => {
         //update the value of result
         await checkResult();
         //verify if the result is as expected
-        await expect(await checkResult()).toContain("");
+        await expect(await checkResult()).not.toContainText(label3);
     //end of second test
     });
 //end of our first tests
@@ -163,28 +155,24 @@ test.describe('Checking with keys', () => {
         //verify is checkbox is checked
         await checkBoxActive(chToggle);
         //locator for expected result
-        const result = await page.evaluate(el => el.textContent, await (await page.$('#result')));
-        //remove the not needed <em> from #result
-        const expResult = result.replace('Selected: ','');
+        const result = page.locator('#result');
         //verify is label is in result
-        await expect(expResult).toContain("(" + num + ") " + label);
+        await expect(result).toContainText(label);
         //press "Space" on checkbox
         await chToggle.press('Space');
         //verify is checkbox is unchecked
         await checkBoxNotActive(chToggle);
         //verify is label is in result
-        await expect(expResult).toContain("");
+        await expect(result).not.toContainText(label);
     });
 }
     test(`several results with "Tab", "Shift+Tab" and "Space"`, async ({page}) =>{
         //function to uncheck the box
         async function checkResult() {
             //locator for all texts from #result
-            const result = await page.evaluate(el => el.textContent, await (await page.$('#result')));
-            //remove the not needed <em> from #result
-            const allResult = result.replace('Selected: ','');
+            const result = page.locator('#result');
             //return this new value as result
-            return allResult;
+            return result;
         //end of function
     }
         //variable for each checkbox/label/toggle 
@@ -194,13 +182,9 @@ test.describe('Checking with keys', () => {
         const label2 = await page.locator(`#checkboxGroup-${num[1]}-label`).textContent(); 
         const label3 = await page.locator(`#checkboxGroup-${num[2]}-label`).textContent(); 
         //locator for each checkbox toggle
-        const chToggle1 = await page.locator(`#checkboxGroup-${num[0]}-toggle`);
-        const chToggle2 = await page.locator(`#checkboxGroup-${num[1]}-toggle`);
-        const chToggle3 = await page.locator(`#checkboxGroup-${num[2]}-toggle`);
-        //result of each checkbox in result
-        const result1 = "(" + num[0] + ") " + label1;
-        const result2 = "(" + num[1] + ") " + label2;
-        const result3 = "(" + num[2] + ") " + label3;
+        const chToggle1 = page.locator(`#checkboxGroup-${num[0]}-toggle`);
+        const chToggle2 = page.locator(`#checkboxGroup-${num[1]}-toggle`);
+        const chToggle3 = page.locator(`#checkboxGroup-${num[2]}-toggle`);
         //focus on checkbox 1
         await chToggle1.focus();
         //press "Space" on checkbox
@@ -210,7 +194,7 @@ test.describe('Checking with keys', () => {
         //update the value of result
         await checkResult();
         //verify if the result is as expected
-        await expect((await checkResult())).toContain(result1);
+        await expect((await checkResult())).toContainText(label1);
         //press "Tab" on checkbox
         await chToggle1.press('Tab');
         //press "Space" on checkbox
@@ -220,7 +204,7 @@ test.describe('Checking with keys', () => {
         //update the value of result
         await checkResult();
         //verify if the result is as expected
-        await expect(await checkResult()).toContain(result1 + result2);
+        await expect(await checkResult()).toContainText([label1, label2]);
         //press "Tab" on checkbox
         await chToggle2.press('Tab');
         //press "Space" on checkbox
@@ -230,7 +214,7 @@ test.describe('Checking with keys', () => {
         //update the value of result
         await checkResult();
         //verify if the result is as expected
-        await expect(await checkResult()).toContain(result1 + result2 + result3);
+        await expect(await checkResult()).toContainText([label1, label2, label3]);
         //press "Space" on checkbox
         await chToggle3.press('Space');
         //verify if checkbox 1 is unchecked
@@ -238,7 +222,7 @@ test.describe('Checking with keys', () => {
         //update the value of result
         await checkResult();
         //verify if the result is as expected
-        await expect(await checkResult()).toContain(result1 + result2);
+        await expect(await checkResult()).toContainText([label1, label2]);
         //press "Shift+Tab" on checkbox
         await chToggle3.press('Shift+Tab');
         //press "Space" on checkbox
@@ -248,7 +232,7 @@ test.describe('Checking with keys', () => {
         //update the value of result
         await checkResult();
         //verify if the result is as expected
-        await expect(await checkResult()).toContain(result1);
+        await expect(await checkResult()).toContainText(label1);
         //press "Shift+Tab" on checkbox
         await chToggle2.press('Shift+Tab');
         //press "Space" on checkbox
@@ -258,7 +242,7 @@ test.describe('Checking with keys', () => {
         //update the value of result
         await checkResult();
         //verify if the result is as expected
-        await expect(await checkResult()).toContain("");
+        await expect(await checkResult()).not.toContainText(label1);
     //end of second test
 });
 //end of our second tests

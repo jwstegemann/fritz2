@@ -190,6 +190,7 @@ test.describe("To select an item from a listBox open the listBoxItems", () => {
     test("then click on one item", async ({page}) => {
         const btn = await page.locator("#starwars-button")
         const listBoxItems = await page.locator("#starwars-items")
+        const result = page.locator('#result')
         await expect(btn).toHaveText("Luke")
 
         await btn.click()
@@ -197,6 +198,7 @@ test.describe("To select an item from a listBox open the listBoxItems", () => {
         await expect(item).toHaveAttribute("data-listbox-selected", "false")
         await item.click()
         await expect(item).toHaveAttribute("data-listbox-selected", "true")
+        await expect(result).toContainText(await item.textContent())
 
         await expect(item).toHaveAttribute("data-listbox-active", "true")
         await expect(btn).toHaveText("Han")
@@ -207,6 +209,7 @@ test.describe("To select an item from a listBox open the listBoxItems", () => {
         test(`then press ${key}`, async ({page}) => {
             const btn = await page.locator("#starwars-button")
             const listBoxItems = await page.locator("#starwars-items")
+            const result = page.locator('#result')
             await expect(btn).toHaveText("Luke")
 
             await btn.click()
@@ -217,6 +220,7 @@ test.describe("To select an item from a listBox open the listBoxItems", () => {
             await expect(item).toHaveAttribute("data-listbox-selected", "false")
             await page.press("#starwars-item-3", key)
             await expect(item).toHaveAttribute("data-listbox-selected", "true")
+            await expect(result).toContainText(await item.textContent())
 
             await expect(btn).toHaveText("Han")
             await expect(listBoxItems).toHaveAttribute("aria-activedescendant", "starwars-item-3")
