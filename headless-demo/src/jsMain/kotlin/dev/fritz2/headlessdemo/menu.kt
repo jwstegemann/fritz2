@@ -22,11 +22,11 @@ fun RenderContext.menuDemo() {
         MenuEntry("Encrypt", HeroIcons.key)
     )
 
-    val action = storeOf("", id = "menu")
+    val action = storeOf("")
 
     div("max-w-sm") {
         div("w-full h-72") {
-            menu("inline-block text-left") {
+            menu("inline-block text-left", id = "menu") {
                 div {
                     menuButton(
                         """w-32 inline-flex justify-center rounded-md border border-transparent 
