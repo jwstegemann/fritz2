@@ -24,7 +24,7 @@ test.describe('To open and close a menu', () => {
         return [btn, popperDiv, menuItems]
     }
 
-    async function asserMenuIsOpen(btn: Locator, popperDiv: Locator, menuItems: Locator) {
+    async function assertMenuIsOpen(btn: Locator, popperDiv: Locator, menuItems: Locator) {
         await expect(popperDiv).toBeVisible();
         await expect(btn).toHaveAttribute("aria-expanded", "true")
         await expect(menuItems).toBeFocused();
@@ -42,7 +42,7 @@ test.describe('To open and close a menu', () => {
         await assertMenuIsClosed(btn, popperDiv)
 
         await btn.click();
-        await asserMenuIsOpen(btn, popperDiv, menuItems)
+        await assertMenuIsOpen(btn, popperDiv, menuItems)
 
         await btn.click();
         await assertMenuIsClosed(btn, popperDiv)
@@ -55,7 +55,7 @@ test.describe('To open and close a menu', () => {
         await assertMenuIsClosed(btn, popperDiv)
 
         await btn.click();
-        await asserMenuIsOpen(btn, popperDiv, menuItems)
+        await assertMenuIsOpen(btn, popperDiv, menuItems)
 
         await page.mouse.click(0, 0)
         await assertMenuIsClosed(btn, popperDiv)
@@ -69,12 +69,44 @@ test.describe('To open and close a menu', () => {
             await assertMenuIsClosed(btn, popperDiv)
 
             await page.press('#menu-button', key)
-            await asserMenuIsOpen(btn, popperDiv, menuItems)
+            await assertMenuIsOpen(btn, popperDiv, menuItems)
 
             await page.press('#menu-items', "Escape")
             await assertMenuIsClosed(btn, popperDiv)
         });
     }
+
+    test('and check if data-listbox-active of item is true', async ({page}) => {
+        async function assertItemIsActive(itemId: string) {
+            await expect(page.locator("#" + itemId)).toHaveAttribute("data-menu-active", "true")
+        }
+
+        const [btn, popperDiv, listBoxItems] = await createLocators(page)
+
+        await btn.focus()
+        await assertMenuIsClosed(btn, popperDiv)
+
+        await btn.click();
+        await assertMenuIsOpen(btn, popperDiv, listBoxItems)
+
+        const item1 = page.locator("#menu-item-1")
+        const itemM1 = await item1.boundingBox()
+        const item2 = page.locator("#menu-item-2")
+        const itemM2 = await item2.boundingBox()
+        const item3 = page.locator("#menu-item-3")
+        const itemM3 = await item3.boundingBox()
+        const item4 = page.locator("#menu-item-4")
+        const itemM4 = await item4.boundingBox()
+
+        await page.mouse.move(itemM1.x + itemM1.width / 2, itemM1.y + itemM1.height / 2)
+        await assertItemIsActive("menu-item-1")
+        await page.mouse.move(itemM2.x + itemM2.width / 2, itemM2.y + itemM2.height / 2)
+        await assertItemIsActive("menu-item-2")
+        await page.mouse.move(itemM3.x + itemM3.width / 2, itemM3.y + itemM3.height / 2)
+        await assertItemIsActive("menu-item-3")
+        await page.mouse.move(itemM4.x + itemM4.width / 2, itemM4.y + itemM4.height / 2)
+        await assertItemIsActive("menu-item-4")
+    });
 
 });
 

@@ -24,7 +24,7 @@ const config: PlaywrightTestConfig = {
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
- // retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 0,
   /* Retry on local machine */
  // retries: 2,
   /* Opt out of parallel tests on CI. */

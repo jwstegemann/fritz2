@@ -83,7 +83,9 @@ test.describe('To switch on and off', () => {
         //verify if switch is off
         await expect(sw).toHaveAttribute("aria-checked", "false");
         //press "Space" button
-        await sw.press('Space');
+        //await page.press('id=switch', "Space", {delay: 1000})
+        await page.keyboard.down('Space')
+        //await sw.press('Space');
         //verify if switch is on
         await expect(sw).toHaveAttribute("aria-checked", "true");
         //focus on switchToggle
@@ -91,7 +93,9 @@ test.describe('To switch on and off', () => {
         //verify if switchToggle is on
         await expect(swToggle).toHaveAttribute("aria-checked", "true");
         //press "Space" button
-        await swToggle.press('Space');
+        //await page.press('id=switchWithLabel-toggle', "Space", {delay: 1000})
+        await page.keyboard.down('Space')
+        //await swToggle.press('Space');
         //verify if switchToggle is off
         await expect(swToggle).toHaveAttribute("aria-checked", "false");
     //end of fourth test

@@ -76,6 +76,28 @@ test.describe('To open and close a listBox', () => {
         });
     }
 
+    test('and check if data-listbox-active of item is true', async ({page}) => {
+        async function assertItemIsActive(itemId: string) {
+            await expect(listBoxItems).toHaveAttribute("aria-activedescendant", itemId)
+            await expect(page.locator("#" + itemId)).toHaveAttribute("data-listbox-active", "true")
+            await expect(page.locator("#" + itemId)).toHaveAttribute("data-listbox-selected", "false")
+        }
+
+        const [btn, popperDiv, listBoxItems] = await createLocators(page)
+
+        await btn.focus()
+        await assertListBoxIsClosed(btn, popperDiv)
+
+        await btn.click();
+        await assertListBoxIsOpen(btn, popperDiv, listBoxItems)
+
+        const item4 = page.locator("#starwars-item-4")
+        const item = await item4.boundingBox()
+
+        await page.mouse.move(item.x + item.width / 2, item.y + item.height / 2)
+        await assertItemIsActive("starwars-item-4")
+    });
+
 });
 
 test.describe("Navigating", () => {
