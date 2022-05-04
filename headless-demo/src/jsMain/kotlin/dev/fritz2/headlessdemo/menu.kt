@@ -22,11 +22,11 @@ fun RenderContext.menuDemo() {
         MenuEntry("Encrypt", HeroIcons.key)
     )
 
-    val action = storeOf("", id = "menu")
+    val action = storeOf("", id = "selectedAction")
 
     div("max-w-sm") {
         div("w-full h-72") {
-            menu("inline-block text-left") {
+            menu("inline-block text-left", id = "menu") {
                 div {
                     menuButton(
                         """w-32 inline-flex justify-center rounded-md border border-transparent 
@@ -72,6 +72,10 @@ fun RenderContext.menuDemo() {
                             +entry.label
                             if (entry.disabled) disable(true)
                             selected.map { entry.label } handledBy action.update
+
+                            // only needed for automatic testing to explicitly expose the state
+                            attr("data-menu-disabled", disabled.asString())
+                            attr("data-menu-active", active.asString())
                         }
                     }
                 }
