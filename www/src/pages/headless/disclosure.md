@@ -113,13 +113,13 @@ disclosure {
 
 ## Mouse Interaction
 
-Clicking on a `disclosureButton` will close the panel.
+Clicking on a `disclosureButton` will open or close the panel.
 
 ## Keyboard Interaction
 
-| Command                                     | Description       |
-|---------------------------------------------|-------------------|
-| [[Space]] when `disclosureButton` has focus | Closes the panel. |
+| Command                                     | Description                |
+|---------------------------------------------|----------------------------|
+| [[Space]] when `disclosureButton` has focus | Opens or closes the panel. |
 
 ## API
 
