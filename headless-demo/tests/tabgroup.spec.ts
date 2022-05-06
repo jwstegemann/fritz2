@@ -24,7 +24,6 @@ test.describe('Checking', () => {
             const tab = page.locator(`#tabGroup-tab-list-tab-${num}`);
             //expect the attribute aria-checked to be true if tab is selected
             await expect(tab).toHaveAttribute("aria-selected", "true");
-            await expect(tab).toBeFocused();
         //end of function
         }
         //locator for each tab (tag: tab)
@@ -61,7 +60,6 @@ test('unique result and focus on selected radio through click', async ({page}) =
         await getTab(num);
         //expect the attribute aria-checked to be true if switched on
         await expect(await getTab(num)).toHaveAttribute("aria-selected", "true");
-        await expect(await getTab(num)).toBeFocused();
     //end of function
     }
     //function to uncheck the radio
@@ -69,7 +67,6 @@ test('unique result and focus on selected radio through click', async ({page}) =
         await getTab(num);
         //expect the attribute aria-checked to be true if switched on
         await expect(await getTab(num)).toHaveAttribute("aria-selected", "false");
-        await expect(await getTab(num)).not.toBeFocused();
     //end of function
     }
     //click on tab

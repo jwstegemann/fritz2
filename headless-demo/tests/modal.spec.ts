@@ -17,95 +17,124 @@ test.beforeEach(async ({page}) => {
 });
 //description of our first tests
 test.describe('To check if', () => {
-    //for loop for 3 buttons that will be clicked respectively
-    for (const btn of ["stay", "cancel", "close"]) {
         //description of first test
-        test(`by clicking on button-"${btn}" will leave the modal or not`, async ({page}) => {
+        test(`by clicking on button will leave the modal or not`, async ({page}) => {
             //locator for each modal button
-            const button = page.locator(`#button-${btn}`);
+            const buttonStay = page.locator(`#button-stay`);
+            const buttonCancel = page.locator(`#button-cancel`);
+            const buttonClose = page.locator(`#button-close`);
             //focus on button
-            await button.focus();
+            await buttonStay.focus();
             //click on button
-            await button.click();
-            //condition for button-stay
-            if(btn[0]){
-                //verify if the modal overlay (tag: modalOverlay) is still visible
-                await expect(button).toBeVisible();
-            //condition for button-cancel and button-close
-            } else {
-                //verify if modalOverlay is closed
-                await expect(button).toBeHidden();
-            //end of condition
-            }
+            await buttonStay.click();
+            //verify if the modal overlay (tag: modalOverlay) is still visible
+            await expect(buttonStay).toBeVisible();
+            //focus on button
+            await buttonCancel.focus();
+            //click on button
+            await buttonCancel.click();
+            //verify if modalOverlay is closed
+            await expect(buttonCancel).toBeHidden();
+            //reopen modal
+            await page.locator('text=Open').click();
+            //focus on button
+            await buttonClose.focus();
+            //click on button
+            await buttonClose.click();
+            //verify if modalOverlay is closed
+            await expect(buttonClose).toBeHidden();
         //end of first test
         });
-    //end of for loop
-    }
-    //for loop for 3 buttons that will be clicked respectively
-    for (const btn of ["stay","cancel", "close"]) {
         //description of second test
-        test(`by clicking on button-"${btn}" and clicking again on Open will reopen the modal`, async ({page}) => {
+        test(`by clicking on button and clicking again on Open will reopen the modal`, async ({page}) => {
             //locator for each modal button
-            const button = page.locator(`#button-${btn}`);
+            //locator for each modal button
+            const buttonStay = page.locator(`#button-stay`);
+            const buttonCancel = page.locator(`#button-cancel`);
+            const buttonClose = page.locator(`#button-close`);
             //focus on button
-            await button.focus();
+            await buttonStay.focus();
             //click on button
-            await button.click();
-            //condition for button-stay
-            if (btn[0]) {
-            //press "Tab" on button-stay
-            await button.press('Tab');
-            //condition for button-cancel and button-close
-            } else {
-            //click again on open
+            await buttonStay.click();
+            //verify if the modal overlay (tag: modalOverlay) is still visible
+            await expect(buttonCancel).toBeVisible();
+            //press "Tab" on buttonStay
+            await buttonStay.press('Tab');
+            //click on button
+            await buttonCancel.click();
+            //verify if modalOverlay is closed
             await page.locator('text=Open').click();
-            }
+            //verify buttonCancel is visible
+            await expect(buttonCancel).toBeVisible();
+            //focus on button
+            await buttonClose.focus();
+            //click on button
+            await buttonClose.click();
+            //verify if modalOverlay is closed
+            await page.locator('text=Open').click();
+            //verify buttonClose is visible
+            await expect(buttonClose).toBeVisible();
         //end of second test
         });
-    //end of for loop
-    }
-    //for loop for 3 buttons that will be pressed respectively
-    for (const btn of ["stay","cancel", "close"]) {
         //description of third test
-        test(`by pressing Enter on button-"${btn}" will leave the modal or not`, async ({page}) => {
+        test(`by pressing Enter on button will leave the modal or not`, async ({page}) => {
             //locator for each modal button
-            const button = page.locator(`#button-${btn}`);
-            //press "Enter" on button
-            await button.press('Enter');
-            //condition for button-stay
-            if(btn[0]) {
-            //verify if button is visible
-            await expect(button).toBeVisible();
-            //condition for button-cancel and button-close
-            } else {
-            //verify if button is hidden
-            await expect(button).not.toBeVisible();
-            }
+            const buttonStay = page.locator(`#button-stay`);
+            const buttonCancel = page.locator(`#button-cancel`);
+            const buttonClose = page.locator(`#button-close`);
+            //focus on button
+            await buttonStay.focus();
+            //click on button
+            await buttonStay.press('Enter');
+            //verify if the modal overlay (tag: modalOverlay) is still visible
+            await expect(buttonStay).toBeVisible();
+            //focus on button
+            await buttonCancel.focus();
+            //click on button
+            await buttonCancel.press('Enter');
+            //verify if modalOverlay is closed
+            await expect(buttonCancel).toBeHidden();
+            //reopen modal
+            await page.locator('text=Open').click();
+            //focus on button
+            await buttonClose.focus();
+            //click on button
+            await buttonClose.press('Enter');
+            //verify if modalOverlay is closed
+            await expect(buttonClose).toBeHidden();
         //end of third test
         });
-    //end of for loop
-    }
-    //for loop for 3 buttons that will be pressed respectively
-    for (const btn of ["stay","cancel", "close"]) {
         //description of fourth test
-        test(`by pressing Enter on button-"${btn}" and pressing again Enter on Open will reopen the modal`, async ({page}) => {
+        test(`by pressing Enter on button and pressing again Enter on Open will reopen the modal`, async ({page}) => {
             //locator for each modal button
-            const button = page.locator(`#button-${btn}`);
+            //locator for each modal button
+            const buttonStay = page.locator(`#button-stay`);
+            const buttonCancel = page.locator(`#button-cancel`);
+            const buttonClose = page.locator(`#button-close`);
             //focus on button
-            await button.focus();
-            //press "Enter" on button
-            await button.press('Enter');
-            //condition for button-stay
-            if (btn[0]) {
-            await button.press('Enter');
-            //condition for button-cancel and button-close
-            } else {
-            await page.locator('text=Open').press('Enter');
-            }
+            await buttonStay.focus();
+            //click on button
+            await buttonStay.press('Enter')
+            //verify if the modal overlay (tag: modalOverlay) is still visible
+            await expect(buttonCancel).toBeVisible();
+            //press "Tab" on buttonStay
+            await buttonStay.press('Tab');
+            //click on button
+            await buttonCancel.press('Enter')
+            //verify if modalOverlay is closed
+            await page.locator('text=Open').press('Enter')
+            //verify buttonCancel is visible
+            await expect(buttonCancel).toBeVisible();
+            //focus on button
+            await buttonClose.focus();
+            //click on button
+            await buttonClose.press('Enter')
+            //verify if modalOverlay is closed
+            await page.locator('text=Open').press('Enter')
+            //verify buttonClose is visible
+            await expect(buttonClose).toBeVisible();
         //end of fourth test
         });
-    //end of for loop
-    }
 //end of our first tests
 });
 //description of our second tests
