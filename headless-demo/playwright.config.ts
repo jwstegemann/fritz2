@@ -25,8 +25,6 @@ const config: PlaywrightTestConfig = {
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Retry on local machine */
- // retries: 2,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -52,7 +50,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Chrome'],
         launchOptions: {
-          slowMo: 50,
+          slowMo: 1000,
         }
       },
     },
@@ -62,7 +60,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Firefox'],
         launchOptions: {
-          slowMo: 50,
+          slowMo: 1000,
         }
       },
     },
@@ -72,7 +70,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Safari'],
         launchOptions: {
-          slowMo: 50,
+          slowMo: 1000,
         }
       },
     },
@@ -83,16 +81,16 @@ const config: PlaywrightTestConfig = {
        use: {
          ...devices['Pixel 5'],
          launchOptions: {
-          slowMo: 50,
+          slowMo: 800,
         }
        },
      },
      {
-      name: 'Mobile Chrome',
+      name: 'Mobile Chrome Landscape',
       use: {
         ...devices['Pixel 5 landscape'],
         launchOptions: {
-          slowMo: 50,
+          slowMo: 800,
         }
       },
     },
@@ -101,16 +99,16 @@ const config: PlaywrightTestConfig = {
     use: {
       ...devices['iPhone 12'],
       launchOptions: {
-        slowMo: 50,
+        slowMo: 1000,
       }
     },
   },
      {
-      name: 'Mobile Safari',
+      name: 'Mobile Safari Landscape',
       use: {
         ...devices['iPhone 12 landscape'],
         launchOptions: {
-          slowMo: 50,
+          slowMo: 1000,
         }
       },
     },
@@ -121,7 +119,7 @@ const config: PlaywrightTestConfig = {
       use: {
         channel: 'msedge',
         launchOptions: {
-          slowMo: 50,
+          slowMo: 700,
         }
       },
     },
@@ -130,7 +128,7 @@ const config: PlaywrightTestConfig = {
       use: {
         channel: 'chrome',
         launchOptions: {
-          slowMo: 50,
+          slowMo: 600,
         }
       },
     },
