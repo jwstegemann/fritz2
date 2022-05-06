@@ -28,8 +28,9 @@ fun RenderContext.disclosureDemo() {
                 +"Frequently asked questions"
             }
             dl("mt-6 space-y-6 divide-y divide-gray-200") {
-                faqs.forEach { (question, answer) ->
-                    disclosure("pt-6") {
+                faqs.withIndex().forEach { (index, faq) ->
+                    val (question, answer) = faq
+                    disclosure("pt-6", id = "disclosure-$index") {
                         dt("text-lg") {
                             /* <!-- Expand/collapse question button --> */
                             disclosureButton(

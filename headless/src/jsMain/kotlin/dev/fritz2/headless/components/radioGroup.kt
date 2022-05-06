@@ -92,7 +92,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         initialize: ValidationMessages<CV>.() -> Unit
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
-            if(isNotEmpty) {
+            if (isNotEmpty) {
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))
@@ -116,7 +116,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
     inner class RadioGroupOption<CO : HTMLElement>(
         tag: Tag<CO>,
         private val option: T,
-        id: String?
+        val optionId: String
     ) : Tag<CO> by tag {
 
         val selected = value.data.map { it == option }
@@ -125,8 +125,6 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         private var toggle: Tag<HTMLElement>? = null
         private var label: Tag<HTMLElement>? = null
         private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
-
-        val optionId = "$componentId-${id ?: Id.next()}"
 
         fun render() {
             toggle?.apply {
@@ -152,7 +150,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
             content: Tag<CT>.() -> Unit
-        ) = tag(this, classes, optionId, scope) {
+        ) = tag(this, classes, "$optionId-toggle", scope) {
             content()
             attr("role", Aria.Role.radio)
             attr(Aria.checked, selected.asString())
@@ -264,10 +262,12 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CO>>,
         initialize: RadioGroupOption<CO>.() -> Unit
-    ): Tag<CO> = tag(this, classes, id, scope) {
-        RadioGroupOption(this, option, id).run {
-            initialize()
-            render()
+    ): Tag<CO> = "$componentId-${id ?: Id.next()}".let { optionId ->
+        tag(this, classes, optionId, scope) {
+            RadioGroupOption(this, option, optionId).run {
+                initialize()
+                render()
+            }
         }
     }
 

@@ -50,7 +50,7 @@ fun RenderContext.collectionDemo() {
         Triple("GridList", RenderContext::gridListDemo, AMOUNT_OF_PERSONS),
     )
 
-    tabGroup("w-full") {
+    tabGroup("w-full", id = "tabGroup") {
         tabList("max-w-sm flex p-1 space-x-1 bg-blue-900/20 rounded-xl") {
             examples.forEach { (category, _, _) ->
                 tab(
@@ -85,7 +85,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
     val storedFilteredSize = storeOf(0)
 
     val filterStore = storeOf("")
-    inputField("mt-2 mb-4") {
+    inputField("mt-2 mb-4", id = "dataTable-filter") {
         value(filterStore)
 
         inputTextfield(
@@ -98,7 +98,8 @@ fun RenderContext.dataTableDemo(amount: Int) {
 
     dataCollection<Person>(
         """shadow h-96 border border-gray-200 sm:rounded-lg overflow-y-auto  
-        | overflow-x-auto relative""".trimMargin()
+        | overflow-x-auto relative""".trimMargin(),
+        id = "dataTable"
     ) {
         data(storedPersons.data, Person::id)
 
@@ -114,7 +115,8 @@ fun RenderContext.dataTableDemo(amount: Int) {
                         dataCollectionSortButton(
                             compareBy(Person::fullName),
                             compareByDescending(Person::fullName),
-                            initialize = sortIcons
+                            initialize = sortIcons,
+                            id = "datatTable-sort-name"
                         )
                     }
                     column("eMail") {
@@ -132,7 +134,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
                 scrollIntoView(vertical = ScrollPosition.center)
                 items.map { it.count() } handledBy storedFilteredSize.update
                 items.renderEach(Person::id, into = this, batch = true) { item ->
-                    dataCollectionItem(item, tag = RenderContext::tr) {
+                    dataCollectionItem(item, id = item.fullName, tag = RenderContext::tr) {
                         className(selected.combine(active) { sel, act ->
                             if (sel) {
                                 if (act) "bg-indigo-200" else "bg-indigo-100"
@@ -143,6 +145,10 @@ fun RenderContext.dataTableDemo(amount: Int) {
                         td(padding) { +item.fullName }
                         td(padding) { +item.email }
                         td(padding) { +item.birthday }
+
+                        // only needed for testing
+                        attr("data-dataTable-selected", selected.asString())
+                        attr("data-dataTable-active", active.asString())
                     }
                 }
             }
@@ -150,7 +156,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
 
     }
 
-    div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50") {
+    div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
         em {
             selectionStore.data.map { it.count() }
                 .combine(storedFilteredSize.data) { sel, count -> "Selected ($sel/$count):" }
@@ -168,10 +174,10 @@ fun RenderContext.gridListDemo(amount: Int) {
     val persons = FakePersons(amount)
     val storedPersons = storeOf(persons)
     val selectionStore = object : RootStore<List<Person>>(persons.take(2)) {}
-    val filterStore = storeOf("")
+    val filterStore = storeOf("", id = "gridList-filter")
     val storedFilteredSize = storeOf(0)
 
-    dataCollection<Person> {
+    dataCollection<Person>(id = "gridList") {
         data(storedPersons.data, Person::id)
 
 //        selection.single(selectionStore)
@@ -184,7 +190,8 @@ fun RenderContext.gridListDemo(amount: Int) {
                 """w-8 flex justify-center my-2 bg-white rounded-lg 
                 | shadow-md cursor-default focus:outline-none focus:ring-2 focus:ring-opacity-75 
                 | focus:ring-white focus:ring-offset-orange-300 focus:ring-offset-2 
-                | focus:border-indigo-500 sm:text-sm""".trimMargin()
+                | focus:border-indigo-500 sm:text-sm""".trimMargin(),
+                id = "gridList-sort-name"
             ) {
                 direction.render(into = this) {
                     icon(
@@ -223,6 +230,7 @@ fun RenderContext.gridListDemo(amount: Int) {
                     dataCollectionItem(
                         item,
                         "col-span-1 rounded-lg shadow divide-y divide-gray-300",
+                        id = item.fullName,
                         tag = RenderContext::li
                     ) {
                         className(selected.combine(active) { sel, act ->
@@ -252,7 +260,8 @@ fun RenderContext.gridListDemo(amount: Int) {
                         div {
                             div("-mt-px flex divide-x divide-gray-300") {
                                 div("w-0 flex-1 flex") {
-                                    a("""relative -mr-px w-0 flex-1 inline-flex items-center justify-center  
+                                    a(
+                                        """relative -mr-px w-0 flex-1 inline-flex items-center justify-center  
                                         | py-4 text-sm text-gray-700 font-medium border border-transparent  
                                         | rounded-bl-lg hover:text-gray-500""".trimMargin()
                                     ) {
@@ -261,7 +270,8 @@ fun RenderContext.gridListDemo(amount: Int) {
                                     }
                                 }
                                 div("-ml-px w-0 flex-1 flex") {
-                                    a("""relative w-0 flex-1 inline-flex items-center justify-center py-4 
+                                    a(
+                                        """relative w-0 flex-1 inline-flex items-center justify-center py-4 
                                         | text-sm text-gray-700 font-medium border border-transparent rounded-br-lg 
                                         | hover:text-gray-500""".trimMargin()
                                     ) {
@@ -271,13 +281,16 @@ fun RenderContext.gridListDemo(amount: Int) {
                                 }
                             }
                         }
+                        // only needed for testing
+                        attr("data-dataTable-selected", selected.asString())
+                        attr("data-dataTable-active", active.asString())
                     }
                 }
             }
         }
     }
 
-    div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50") {
+    div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
         em {
             selectionStore.data.map { it.count() }
                 .combine(storedFilteredSize.data) { sel, count -> "Selected ($sel/$count):" }
