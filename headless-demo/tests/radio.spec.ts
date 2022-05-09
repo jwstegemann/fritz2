@@ -1,4 +1,4 @@
-import {expect, Locator, test} from '@playwright/test';
+import {expect, test} from '@playwright/test';
 
 /*
  * Missing tests due to limited example component:
@@ -11,8 +11,8 @@ import {expect, Locator, test} from '@playwright/test';
 //declare here all our before hooks
 test.beforeEach(async ({page}) => {
     //go to the page of Radio Group component
-    // await page.goto("https://next.fritz2.dev/headless-demo/#radioGroup");
-    await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#radioGroup");
+    await page.goto("https://next.fritz2.dev/headless-demo/#radioGroup");
+    // await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#radioGroup");
 //end of before hooks
 });
 //description of our first tests

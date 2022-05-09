@@ -11,8 +11,8 @@ import {expect, Locator, test} from '@playwright/test';
 //declare here all our before hooks
 test.beforeEach(async ({page}) => {
     //go to the page of CheckBoxGroup component
-    // await page.goto("https://next.fritz2.dev/headless-demo/#checkboxGroup");
-    await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#checkboxGroup");
+    await page.goto("https://next.fritz2.dev/headless-demo/#checkboxGroup");
+   // await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#checkboxGroup");
 //end of before hooks
 });
 //description of our first tests

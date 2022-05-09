@@ -10,8 +10,8 @@ import {expect, Locator, Page, test} from '@playwright/test';
 //declare here all our before hooks
 test.beforeEach(async ({page}) => {
     //go to the page of Switch component
-    // await page.goto("https://next.fritz2.dev/headless-demo/#switch");
-    await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#switch");
+    await page.goto("https://next.fritz2.dev/headless-demo/#switch");
+    // await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#switch");
 //end of before hooks
 });
 

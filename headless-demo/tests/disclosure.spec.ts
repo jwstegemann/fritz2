@@ -8,8 +8,8 @@ import {expect, Locator, test} from '@playwright/test';
 //declare here all our before hooks
 test.beforeEach(async ({page}) => {
     //go to the page of Disclosure component
-    // await page.goto("https://next.fritz2.dev/headless-demo/#disclosure");
-    await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#disclosure");
+    await page.goto("https://next.fritz2.dev/headless-demo/#disclosure");
+    //await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#disclosure");
 //end of before hooks
 });
 test.describe('Checking through click', () => {

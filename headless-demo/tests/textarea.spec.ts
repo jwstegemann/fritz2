@@ -11,8 +11,8 @@ import {expect, test} from '@playwright/test';
 //declare here all our before hooks
 test.beforeEach(async ({page}) => {
     //go to the page of Text Area component
-    // await page.goto("https://next.fritz2.dev/headless-demo/#textarea");
-    await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#textarea");
+    await page.goto("https://next.fritz2.dev/headless-demo/#textarea");
+    // await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#textarea");
 //end of before hooks
 });
 //description of our tests

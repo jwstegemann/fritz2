@@ -9,8 +9,8 @@ import {expect, test} from '@playwright/test';
 //declare here all our before hooks
 test.beforeEach(async ({page}) => {
     //go to the page of Modal component
-    // await page.goto("https://next.fritz2.dev/headless-demo/#modal");
-    await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#modal");
+    await page.goto("https://next.fritz2.dev/headless-demo/#modal");
+    // await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#modal");
     //click on Open Button
     await page.locator('text=Open').click();
 //end of before hooks

@@ -11,8 +11,8 @@ import {expect, test} from '@playwright/test';
 //declare here all our before hooks
 test.beforeEach(async ({page}) => {
     //go to the page of TabGroup component
-    // await page.goto("https://next.fritz2.dev/headless-demo/#tabGroup");
-    await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#tabGroup");
+    await page.goto("https://next.fritz2.dev/headless-demo/#tabGroup");
+    // await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#tabGroup");
 //end of before hooks
 });
 //description of our first tests

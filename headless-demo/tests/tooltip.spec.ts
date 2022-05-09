@@ -1,5 +1,4 @@
 import {expect, test} from '@playwright/test';
-const uaParser = require('ua-parser-js');
 /*
  * Missing tests due to limited example component:
  * - open state
@@ -8,17 +7,11 @@ const uaParser = require('ua-parser-js');
  * - arrow
  */
 
-//let us declare some variables that we will use later
-let browserDevice;
 //declare here all our before hooks
 test.beforeEach(async ({page}) => {
     //go to the page of Tooltip component
-    // await page.goto("https://next.fritz2.dev/headless-demo/#tooltip");
-    await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#tooltip");
-    //use of "ua.parser-js" to detect the browser or device type
-    const getUA = await page.evaluate(() => navigator.userAgent);
-    //now we give our previous variable the uaParser element
-    browserDevice = uaParser(getUA);
+    await page.goto("https://next.fritz2.dev/headless-demo/#tooltip");
+    // await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#tooltip");
 //end of before hooks
 });
 //description of our tests
