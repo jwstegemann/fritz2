@@ -13,7 +13,7 @@ import { devices } from '@playwright/test';
 const config: PlaywrightTestConfig = {
   testDir: './tests',
   /* Maximum time one test can run for. */
-  timeout: 30 * 1000,
+  timeout: 45 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -39,7 +39,7 @@ const config: PlaywrightTestConfig = {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     /* Headed tests or headless tests. See https://playwright.dev/docs/api/class-testoptions#test-options-headless */
-    headless: false,
+    headless: true,
     /* Take screenshots only on failure. See https://playwright.dev/docs/screenshots */
     screenshot: 'only-on-failure',
     /* Take videos only on failure. See https://playwright.dev/docs/videos */

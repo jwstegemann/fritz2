@@ -23,9 +23,9 @@ test.beforeEach(async ({page}) => {
 test.describe('To check the display of tooltip', () => {
 
     test('when mouse over button on top', async ({page}) =>{
-        /* locator for first button on top (tag: tooltip) */
+        /* locator for first button on top */
         const btnTop = page.locator('#top-reference');
-        /* and locator for its tooltip */
+        /* and locator for its tooltip (tag: tooltip) */
         const toolTbtnTop = page.locator('#top-tooltip');
 
         await btnTop.hover();
@@ -33,7 +33,7 @@ test.describe('To check the display of tooltip', () => {
     });
 
     test('when mouse over button on center', async ({page}) =>{
-        //locator for last button on the right corner
+        /* locator for button on the center */
         const btnCenter = page.locator('#center-reference');
         /* and locator for its tooltip */
         const toolTbtnCenter = page.locator('#center-tooltip');
