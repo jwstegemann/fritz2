@@ -63,6 +63,7 @@ test.describe('To open and close a menu', () => {
         test(`focus the menuButton and press ${key} then press Escape`, async ({page}) => {
             const [btn, popperDiv, menuItems] = await createLocators(page)
 
+            /* Need some delay actions because it was not performed correctly */
             await page.mouse.click(0, 0, {delay:1000});
             await btn.focus()
             await assertMenuIsClosed(btn, popperDiv)
@@ -255,6 +256,7 @@ test.describe("To select an item from a menu open the menuItems", () => {
             const btn = page.locator('#menu-button');
             const result = page.locator('#result');
             
+            /* Delay only on action for this test */
             await btn.click({delay:1000});
             await (menuItem1).press(key, {delay: 1000});
             await expect(result).toContainText(await menuItem1.textContent());
