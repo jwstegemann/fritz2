@@ -94,7 +94,7 @@ disclosure {
 
 ## Closing by the Panel
 
-If it is necessary that an action on the panel itself closes the panel, i.e. a mouse click or the [[Spabe]] button, if
+If it is necessary that an action on the panel itself closes the panel, i.e. a mouse click or the [[Space]] button, if
 the panel is focused, there is a dedicated `disclosureCloseButton` building block in the scope of the panel.
 
 ```kotlin
