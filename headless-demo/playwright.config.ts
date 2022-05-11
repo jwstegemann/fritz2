@@ -34,12 +34,15 @@ const config: PlaywrightTestConfig = {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://localhost:3000',
+    baseURL: 'https://next.fritz2.dev/headless-demo/',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    /* Headed tests or headless tests. See https://playwright.dev/docs/api/class-testoptions#test-options-headless */
     headless: false,
+    /* Take screenshots only on failure. See https://playwright.dev/docs/screenshots */
     screenshot: 'only-on-failure',
+    /* Take videos only on failure. See https://playwright.dev/docs/videos */
     video: 'retain-on-failure'
   },
 

@@ -1,5 +1,4 @@
-import {expect, Locator, test} from '@playwright/test';
-
+import {expect, Page, test} from '@playwright/test';
 /*
  * Missing tests due to limited example component:
  * - styling
@@ -8,242 +7,200 @@ import {expect, Locator, test} from '@playwright/test';
  * - checkboxGroupValidationMessages
  */
 
-//declare here all our before hooks
 test.beforeEach(async ({page}) => {
-    //go to the page of CheckBoxGroup component
-    await page.goto("https://next.fritz2.dev/headless-demo/#checkboxGroup");
-   // await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#checkboxGroup");
-//end of before hooks
+    /* go to the page of CheckBoxGroup component */
+    await page.goto("#checkboxGroup");
+
 });
-//description of our first tests
-test.describe('Checking through click', () => {
-    //function to check the box
-    async function checkBoxActive(chToggle: Locator) {
-        //expect the attribute aria-checked to be true if switched on
-        await expect(chToggle).toHaveAttribute("aria-checked", "true");
-        //expect the checkbox to be focused
-        await expect(chToggle).toBeFocused();
-    //end of function
-    }
-    //function to uncheck the box
-    async function checkBoxNotActive(chToggle: Locator) {
-        //expect the attribute aria-checked to be true if switched on
-        await expect(chToggle).toHaveAttribute("aria-checked", "false");
-        //expect the checkbox to be focused
-        await expect(chToggle).toBeFocused();
-    //end of function
-    }
+
+test.describe('Checking', () => {
+
     for (const num of ["1", "2", "3"]) {
-    test(`unique result for checkbox ${num}`, async ({page}) =>{
-        //locator for each checkbox label (tag: checkboxGroupLabel)
-        const label = await page.locator(`#checkboxGroup-${num}-label`).textContent(); 
-        //locator for each checkbox toggle (tag: checkboxGroupOptionToggle)
-        const chToggle = page.locator(`#checkboxGroup-${num}-toggle`);
-        //click on checkbox
-        await chToggle.click();
-        //verify is checkbox is checked
-        await checkBoxActive(chToggle);
-        //locator for expected result
-        const result = page.locator('#result');
-        //verify is label is in result
-        await expect(result).toContainText(label);
-        //click on checkbox
-        await chToggle.click();
-        //verify is checkbox is unchecked
-        await checkBoxNotActive(chToggle);
-        //verify is label is in result
-        await expect(result).not.toContainText(label);
-    });
-}
-    test(`several results`, async ({page}) =>{
-        //function to uncheck the box
-        async function checkResult() {
-            //locator for all texts from #result
+
+        test(`unique result for checkbox ${num} and verify in result when selected throug click`, async ({page}) =>{
+            /* locator for each checkbox label (tag: checkboxGroupLabel) */
+            const label = await page.locator(`#checkboxGroup-${num}-label`).textContent(); 
+            /* locator for each checkbox toggle (tag: checkboxGroupOptionToggle) */
+            const chToggle = page.locator(`#checkboxGroup-${num}-toggle`);
+             
+            await chToggle.click();
+            await expect(chToggle).toHaveAttribute("aria-checked", "true");
+            await expect(chToggle).toBeFocused();
+
             const result = page.locator('#result');
-            //return this new value as result
-            return result;
-        //end of function
+            await expect(result).toContainText(label);
+
+            await chToggle.click();
+            await expect(chToggle).toHaveAttribute("aria-checked", "false");
+            await expect(chToggle).toBeFocused();
+            await expect(result).not.toContainText(label);
+
+        });
     }
-        //variable for each checkbox/label/toggle 
-        const num = ["1", "2", "3"];
-        //locator for each checkbox label 
-        const label1 = await page.locator(`#checkboxGroup-${num[0]}-label`).textContent(); 
-        const label2 = await page.locator(`#checkboxGroup-${num[1]}-label`).textContent(); 
-        const label3 = await page.locator(`#checkboxGroup-${num[2]}-label`).textContent(); 
-        //locator for each checkbox toggle
-        const chToggle1 = await page.locator(`#checkboxGroup-${num[0]}-toggle`);
-        const chToggle2 = await page.locator(`#checkboxGroup-${num[1]}-toggle`);
-        const chToggle3 = await page.locator(`#checkboxGroup-${num[2]}-toggle`);
-        //click on checkbox
-        await chToggle1.click();
-        //verify if checkbox 1 is checked
-        await checkBoxActive(chToggle1);
-        //update the value of result
-        await checkResult();
-        //verify if the result is as expected
-        expect((await checkResult())).toContainText(label1);
-        //click on checkbox
-        await chToggle2.click();
-        //verify if checkbox 2 is checked
-        await checkBoxActive(chToggle2);
-        //update the value of result
-        await checkResult();
-        //verify if the result is as expected
-        await expect(await checkResult()).toContainText([label1, label2]);
-        //click on checkbox
-        await chToggle3.click();
-        //verify if checkbox 3 is checked
-        await checkBoxActive(chToggle3);
-        //update the value of result
-        await checkResult();
-        //verify if the result is as expected
-        await expect(await checkResult()).toContainText([label1, label2, label3]);
-        //click on checkbox
-        await chToggle1.click();
-        //verify if checkbox 1 is unchecked
-        await checkBoxNotActive(chToggle1);
-        //update the value of result
-        await checkResult();
-        //verify if the result is as expected
-        await expect(await checkResult()).toContainText([label2, label3]);
-        //click on checkbox
-        await chToggle2.click();
-        //verify if checkbox 2 is unchecked
-        await checkBoxNotActive(chToggle2);
-        //update the value of result
-        await checkResult();
-        //verify if the result is as expected
-        await expect(await checkResult()).toContainText(label3);
-        //click on checkbox
-        await chToggle3.click();
-        //verify if checkbox 3 is unchecked
-        await checkBoxNotActive(chToggle3);
-        //update the value of result
-        await checkResult();
-        //verify if the result is as expected
-        await expect(await checkResult()).not.toContainText(label3);
-    //end of second test
-    });
-//end of our first tests
-});
-//description of our second tests
-test.describe('Checking with keys', () => {
-    //function to check the box
-    async function checkBoxActive(chToggle: Locator) {
-        //expect the attribute aria-checked to be true if switched on
-        await expect(chToggle).toHaveAttribute("aria-checked", "true");
-        //expect the checkbox to be focused
-        await expect(chToggle).toBeFocused();
-    //end of function
-    }
-    //function to uncheck the box
-    async function checkBoxNotActive(chToggle: Locator) {
-        //expect the attribute aria-checked to be true if switched on
-        await expect(chToggle).toHaveAttribute("aria-checked", "false");
-        //expect the checkbox to be focused
-        await expect(chToggle).toBeFocused();
-    //end of function
-    }
+
     for (const num of ["1", "2", "3"]) {
-    test(`unique result for checkbox ${num} when pressing "Space"`, async ({page}) =>{
-        //locator for each checkbox label (tag: checkboxGroupLabel)
-        const label = await page.locator(`#checkboxGroup-${num}-label`).textContent(); 
-        //locator for each checkbox toggle (tag: checkboxGroupOptionToggle)
-        const chToggle = await page.locator(`#checkboxGroup-${num}-toggle`);
-        //press "Space" on checkbox
-        await chToggle.press('Space');
-        //verify is checkbox is checked
-        await checkBoxActive(chToggle);
-        //locator for expected result
+
+        test(`unique result for checkbox ${num} when pressing "Space"`, async ({page}) =>{
+            const label = await page.locator(`#checkboxGroup-${num}-label`).textContent(); 
+            const chToggle = page.locator(`#checkboxGroup-${num}-toggle`);
+            
+            await chToggle.press('Space');
+            await expect(chToggle).toHaveAttribute("aria-checked", "true");
+            await expect(chToggle).toBeFocused();
+
+            const result = page.locator('#result');
+            await expect(result).toContainText(label);
+
+            await chToggle.press('Space');
+            await expect(chToggle).toHaveAttribute("aria-checked", "false");
+            await expect(chToggle).toBeFocused();
+            await expect(result).not.toContainText(label);
+
+        });
+
+    }
+    
+});
+
+test.describe('To check', () => {    
+
+    const data1 = [
+        {num: "1", expected: ["2","3"]},
+        {num: "2", expected: ["1","3"]},
+        {num: "3", expected: ["1","2"]}
+    ]
+
+    const data2 = [
+        {num: ["1","2"], expected: "3"},
+        {num: ["1","3"], expected: "2"},
+        {num: ["2","3"], expected: "1"}
+    ]
+
+    async function checkResult(page: Page) {
         const result = page.locator('#result');
-        //verify is label is in result
-        await expect(result).toContainText(label);
-        //press "Space" on checkbox
-        await chToggle.press('Space');
-        //verify is checkbox is unchecked
-        await checkBoxNotActive(chToggle);
-        //verify is label is in result
-        await expect(result).not.toContainText(label);
+        return result;
+    }
+
+    /**
+     * Verify if only 1 checkbox is selected and check if its text is the only one in result
+     * @param chNum
+     * @param page
+     */
+    async function chBoxActiveSingle(chNum: string, page: Page) {
+        await expect(page.locator(`#checkboxGroup-${data1[chNum].num}-toggle`)).toHaveAttribute("aria-checked", "true");
+        await expect(page.locator(`#checkboxGroup-${data1[chNum].expected[0]}-toggle`)).toHaveAttribute("aria-checked", "false");
+        await expect(page.locator(`#checkboxGroup-${data1[chNum].expected[1]}-toggle`)).toHaveAttribute("aria-checked", "false");
+        await checkResult(page);
+        await expect(await checkResult(page)).toContainText(await page.locator(`#checkboxGroup-${data1[chNum].num}-label`).textContent());
+        await expect(await checkResult(page)).not.toContainText(await page.locator(`#checkboxGroup-${data1[chNum].expected[0]}-label`).textContent());
+        await expect(await checkResult(page)).not.toContainText(await page.locator(`#checkboxGroup-${data1[chNum].expected[1]}-label`).textContent());
+    }
+
+    /**
+     * Verify if only 2 checkboxes are selected and check if text of checkboex are displayed in result
+     * @param chNum
+     * @param page
+     */
+    async function chBoxActiveMultiple(chNum: string, page: Page) {
+        await expect(page.locator(`#checkboxGroup-${data2[chNum].num[0]}-toggle`)).toHaveAttribute("aria-checked", "true");
+        await expect(page.locator(`#checkboxGroup-${data2[chNum].num[1]}-toggle`)).toHaveAttribute("aria-checked", "true");
+        await expect(page.locator(`#checkboxGroup-${data2[chNum].expected}-toggle`)).toHaveAttribute("aria-checked", "false");
+        await checkResult(page);
+        await expect(await checkResult(page)).toContainText(await page.locator(`#checkboxGroup-${data2[chNum].num[0]}-label`).textContent());
+        await expect(await checkResult(page)).toContainText(await page.locator(`#checkboxGroup-${data2[chNum].num[1]}-label`).textContent());
+        await expect(await checkResult(page)).not.toContainText(await page.locator(`#checkboxGroup-${data2[chNum].expected}-label`).textContent());
+    }
+
+    /**
+     * Verify if all checkboxes are checked with texts in result
+     * @param page
+     */
+    async function chBoxActiveAll(page: Page) {
+        await expect(page.locator(`#checkboxGroup-1-toggle`)).toHaveAttribute("aria-checked", "true");
+        await expect(page.locator(`#checkboxGroup-2-toggle`)).toHaveAttribute("aria-checked", "true");
+        await expect(page.locator(`#checkboxGroup-3-toggle`)).toHaveAttribute("aria-checked", "true");
+        await checkResult(page);
+        await expect(await checkResult(page)).toContainText(await page.locator(`#checkboxGroup-1-label`).textContent());
+        await expect(await checkResult(page)).toContainText(await page.locator(`#checkboxGroup-2-label`).textContent());
+        await expect(await checkResult(page)).toContainText(await page.locator(`#checkboxGroup-3-label`).textContent());
+    }
+
+    /**
+     * Verify if all checkboxes are unchecked with no texts in result
+     * @param page
+     */
+    async function chBoxNotActiveAll(page: Page) {
+        await expect(page.locator(`#checkboxGroup-1-toggle`)).toHaveAttribute("aria-checked", "false");
+        await expect(page.locator(`#checkboxGroup-2-toggle`)).toHaveAttribute("aria-checked", "false");
+        await expect(page.locator(`#checkboxGroup-3-toggle`)).toHaveAttribute("aria-checked", "false");
+        await checkResult(page);
+        await expect(await checkResult(page)).not.toContainText(await page.locator(`#checkboxGroup-1-label`).textContent());
+        await expect(await checkResult(page)).not.toContainText(await page.locator(`#checkboxGroup-2-label`).textContent());
+        await expect(await checkResult(page)).not.toContainText(await page.locator(`#checkboxGroup-3-label`).textContent());
+    }
+
+    test(`multiple selection of chechboxes and verify in result when selected`, async ({page}) =>{
+
+        const chToggle1 = page.locator(`#checkboxGroup-1-toggle`);
+        const chToggle2 = page.locator(`#checkboxGroup-2-toggle`);
+        const chToggle3 = page.locator(`#checkboxGroup-3-toggle`);
+
+        /*check and uncheck every checkbox step by step and verify attributes */
+        await chBoxNotActiveAll(page);
+
+        await chToggle1.click();
+        await chBoxActiveSingle("0", page);
+        
+        await chToggle2.click();
+        await chBoxActiveMultiple("0", page);
+        
+        await chToggle3.click();
+        await chBoxActiveAll(page);
+
+        await chToggle3.click();
+        await chBoxActiveMultiple("0", page);
+        
+        await chToggle1.click();
+        await chBoxActiveSingle("1", page);
+        
+        await chToggle2.click();
+        await chBoxNotActiveAll(page);
+
     });
-}
+
     test(`several results with "Tab", "Shift+Tab" and "Space"`, async ({page}) =>{
-        //function to uncheck the box
-        async function checkResult() {
-            //locator for all texts from #result
-            const result = page.locator('#result');
-            //return this new value as result
-            return result;
-        //end of function
-    }
-        //variable for each checkbox/label/toggle 
-        const num = ["1", "2", "3"];
-        //locator for each checkbox label 
-        const label1 = await page.locator(`#checkboxGroup-${num[0]}-label`).textContent(); 
-        const label2 = await page.locator(`#checkboxGroup-${num[1]}-label`).textContent(); 
-        const label3 = await page.locator(`#checkboxGroup-${num[2]}-label`).textContent(); 
-        //locator for each checkbox toggle
-        const chToggle1 = page.locator(`#checkboxGroup-${num[0]}-toggle`);
-        const chToggle2 = page.locator(`#checkboxGroup-${num[1]}-toggle`);
-        const chToggle3 = page.locator(`#checkboxGroup-${num[2]}-toggle`);
-        //focus on checkbox 1
+
+        const chToggle1 = page.locator(`#checkboxGroup-1-toggle`);
+        const chToggle2 = page.locator(`#checkboxGroup-2-toggle`);
+        const chToggle3 = page.locator(`#checkboxGroup-3-toggle`);
+
+        
+        /* check and uncheck every checkbox step by step and verify attributes */
+        await chBoxNotActiveAll(page);
+
         await chToggle1.focus();
-        //press "Space" on checkbox
         await chToggle1.press('Space');
-        //verify if checkbox 1 is checked
-        await checkBoxActive(chToggle1);
-        //update the value of result
-        await checkResult();
-        //verify if the result is as expected
-        await expect((await checkResult())).toContainText(label1);
-        //press "Tab" on checkbox
+        await chBoxActiveSingle("0", page);
+
         await chToggle1.press('Tab');
-        //press "Space" on checkbox
         await chToggle2.press('Space');
-        //verify if checkbox 2 is checked
-        await checkBoxActive(chToggle2);
-        //update the value of result
-        await checkResult();
-        //verify if the result is as expected
-        await expect(await checkResult()).toContainText([label1, label2]);
-        //press "Tab" on checkbox
+        await chBoxActiveMultiple("0", page);
+        
         await chToggle2.press('Tab');
-        //press "Space" on checkbox
         await chToggle3.press('Space');
-        //verify if checkbox 3 is checked
-        await checkBoxActive(chToggle3);
-        //update the value of result
-        await checkResult();
-        //verify if the result is as expected
-        await expect(await checkResult()).toContainText([label1, label2, label3]);
-        //press "Space" on checkbox
+        await chBoxActiveAll(page);
+
         await chToggle3.press('Space');
-        //verify if checkbox 1 is unchecked
-        await checkBoxNotActive(chToggle3);
-        //update the value of result
-        await checkResult();
-        //verify if the result is as expected
-        await expect(await checkResult()).toContainText([label1, label2]);
-        //press "Shift+Tab" on checkbox
+        await chBoxActiveMultiple("0", page);
+
         await chToggle3.press('Shift+Tab');
-        //press "Space" on checkbox
         await chToggle2.press('Space');
-        //verify if checkbox 2 is unchecked
-        await checkBoxNotActive(chToggle2);
-        //update the value of result
-        await checkResult();
-        //verify if the result is as expected
-        await expect(await checkResult()).toContainText(label1);
-        //press "Shift+Tab" on checkbox
+        await chBoxActiveSingle("0", page);
+
         await chToggle2.press('Shift+Tab');
-        //press "Space" on checkbox
         await chToggle1.press('Space');
-        //verify if checkbox 3 is unchecked
-        await checkBoxNotActive(chToggle1);
-        //update the value of result
-        await checkResult();
-        //verify if the result is as expected
-        await expect(await checkResult()).not.toContainText(label1);
-    //end of second test
-});
-//end of our second tests
+        await chBoxNotActiveAll(page);
+    
+    });
+
 });

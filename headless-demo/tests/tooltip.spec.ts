@@ -5,44 +5,51 @@ import {expect, test} from '@playwright/test';
  * - transitions
  * - positioning
  * - arrow
+ * 
+ * Also for this headless component we will only check 3 elements here:
+ * - The button at the top
+ * - The button on the center
+ * - The input field at the bottom
+ * 
+ * Because for all our borwsers and mobile devices these 3 elements are always shown.
  */
 
-//declare here all our before hooks
 test.beforeEach(async ({page}) => {
-    //go to the page of Tooltip component
-    await page.goto("https://next.fritz2.dev/headless-demo/#tooltip");
-    // await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#tooltip");
-//end of before hooks
+    /* go to the page of Tooltip component */
+    await page.goto("#tooltip");
+
 });
-//description of our tests
+
 test.describe('To check the display of tooltip', () => {
-    test('when mouse over input and it is filled with something', async ({page}) =>{
-        //locator for first button on top (tag: tooltip)
+
+    test('when mouse over button on top', async ({page}) =>{
+        /* locator for first button on top (tag: tooltip) */
         const btnTop = page.locator('#top-reference');
-        //and locator for his tooltip
+        /* and locator for its tooltip */
         const toolTbtnTop = page.locator('#top-tooltip');
+
+        await btnTop.hover();
+        await expect(toolTbtnTop).toBeVisible();
+    });
+
+    test('when mouse over button on center', async ({page}) =>{
         //locator for last button on the right corner
         const btnCenter = page.locator('#center-reference');
-        //and locator for his tooltip
+        /* and locator for its tooltip */
         const toolTbtnCenter = page.locator('#center-tooltip');
-        //locator for button on the center
-        const btnBottom = page.locator('#bottom-reference');
-        //and locator for his tooltip
-        const toolTbtnBottom = page.locator('#bottom-tooltip');
-
-        //start of test
-        //hover the button on top
-        await btnTop.hover();
-        //verify if its tooltip is visible
-        await expect(toolTbtnTop).toBeVisible();
-        //hover the input on the left corner
+        
         await btnCenter.hover();
-        //verify if its tooltip is visible
         await expect(toolTbtnCenter).toBeVisible();
-        //hover the button on the center
-        await btnBottom.hover();
-        //verify if its tooltip is visible
-        await expect(toolTbtnBottom).toBeVisible();
+    });
+
+    test('when mouse over input field at the bottom', async ({page}) =>{
+        /* locator for button on the center */
+        const inputBottom = page.locator('#bottom-reference');
+        /* and locator for its tooltip */
+        const toolTiptBottom = page.locator('#bottom-tooltip');
+    
+        await inputBottom.hover();
+        await expect(toolTiptBottom).toBeVisible();
     });
 
 });

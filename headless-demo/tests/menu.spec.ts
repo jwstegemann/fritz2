@@ -7,12 +7,10 @@ import {expect, Locator, Page, test} from '@playwright/test';
  * - positioning
  */
 
-//declare here all our before hooks
 test.beforeEach(async ({page}) => {
-    //go to the page of Menu component
-    await page.goto("https://next.fritz2.dev/headless-demo/#menu");
-    // await page.goto("file:///C:/Users/bfong/Downloads/distributions/distributions/index.html#menu");
-//end of before hooks
+    /* go to the page of Menu component */
+    await page.goto("#menu");
+
 });
 
 test.describe('To open and close a menu', () => {
@@ -124,7 +122,7 @@ test.describe("Navigating", () => {
             await expect(page.locator("#" + itemId)).toHaveAttribute("data-menu-active", "true");
         }
 
-        // down
+        /* down */
         await menuItems.press("ArrowDown")
         await assertItemIsActive("menu-item-2")
 
@@ -134,7 +132,7 @@ test.describe("Navigating", () => {
         await menuItems.press("ArrowDown")
         await assertItemIsActive("menu-item-4")
 
-        // up
+        /* up */
         await menuItems.press("ArrowUp")
         await assertItemIsActive("menu-item-3")
 
@@ -157,13 +155,13 @@ test.describe("Navigating", () => {
         await expect(bypassedItem).toHaveAttribute("data-menu-active", "false");
         await expect(targetItem).toHaveAttribute("data-menu-active", "false");
 
-        // down
+        /* down */
         await menuItems.press("ArrowDown")
         await expect(startingItem).toHaveAttribute("data-menu-active", "false");
         await expect(bypassedItem).toHaveAttribute("data-menu-active", "false");
         await expect(targetItem).toHaveAttribute("data-menu-active", "true");
 
-        // up
+        /* up */
         await menuItems.press("ArrowUp")
         await expect(startingItem).toHaveAttribute("data-menu-active", "true");
         await expect(bypassedItem).toHaveAttribute("data-menu-active", "false");
@@ -258,34 +256,34 @@ test.describe("To select an item from a menu open the menuItems", () => {
             const result = page.locator('#result');
             
             await btn.click({delay:1000});
-             await (menuItem1).press(key, {delay: 1000});
-             await expect(result).toContainText(await menuItem1.textContent());
-    
-             await btn.click({delay:1000});
-             await (menuItem1).press("ArrowDown", {delay: 1000});
-             await (menuItem2).press(key, {delay: 1000});
-             await expect(result).toContainText(await menuItem2.textContent());
-    
-             await btn.click({delay:1000});
-             await (menuItem1).press("ArrowDown", {delay: 1000});
-             await (menuItem2).press("ArrowDown", {delay: 1000});
-             await (menuItem3).press(key, {delay: 1000});
-             await expect(result).toContainText(await menuItem3.textContent());
-    
-             await btn.click({delay:1000});
-             await (menuItem1).press("ArrowDown", {delay: 1000});
-             await (menuItem2).press("ArrowDown", {delay: 1000});
-             await (menuItem3).press("ArrowDown", {delay: 1000});
-             await (menuItem4).press(key, {delay: 1000});
-             await expect(result).toContainText(await menuItem4.textContent());
-    
-             await btn.click({delay:1000});
-             await (menuItem1).press("ArrowDown", {delay: 1000});
-             await (menuItem2).press("ArrowDown", {delay: 1000});
-             await (menuItem3).press("ArrowDown", {delay: 1000});
-             await (menuItem4).press("ArrowDown", {delay: 1000});
-             await (menuItem6).press(key, {delay: 1000});
-             await expect(result).toContainText(await menuItem6.textContent());
+            await (menuItem1).press(key, {delay: 1000});
+            await expect(result).toContainText(await menuItem1.textContent());
+
+            await btn.click({delay:1000});
+            await (menuItem1).press("ArrowDown", {delay: 1000});
+            await (menuItem2).press(key, {delay: 1000});
+            await expect(result).toContainText(await menuItem2.textContent());
+
+            await btn.click({delay:1000});
+            await (menuItem1).press("ArrowDown", {delay: 1000});
+            await (menuItem2).press("ArrowDown", {delay: 1000});
+            await (menuItem3).press(key, {delay: 1000});
+            await expect(result).toContainText(await menuItem3.textContent());
+
+            await btn.click({delay:1000});
+            await (menuItem1).press("ArrowDown", {delay: 1000});
+            await (menuItem2).press("ArrowDown", {delay: 1000});
+            await (menuItem3).press("ArrowDown", {delay: 1000});
+            await (menuItem4).press(key, {delay: 1000});
+            await expect(result).toContainText(await menuItem4.textContent());
+
+            await btn.click({delay:1000});
+            await (menuItem1).press("ArrowDown", {delay: 1000});
+            await (menuItem2).press("ArrowDown", {delay: 1000});
+            await (menuItem3).press("ArrowDown", {delay: 1000});
+            await (menuItem4).press("ArrowDown", {delay: 1000});
+            await (menuItem6).press(key, {delay: 1000});
+            await expect(result).toContainText(await menuItem6.textContent());
         });
     }
 });
