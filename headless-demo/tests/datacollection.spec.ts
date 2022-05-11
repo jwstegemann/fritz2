@@ -1,5 +1,4 @@
 import {expect, Page, test} from '@playwright/test';
-
 /*
  * Missing tests due to limited example component:
  * - styling
@@ -37,10 +36,12 @@ test.describe('To select', () => {
         
         const nameDiv = page.locator("id="+ name)
         
-        await page.mouse.click(0,0,{delay:2000})
+        /* At some places we need some delays to perform tests on all browsers and devices */
+        await page.mouse.click(0,0, {delay: 2000})
         await nameDiv.scrollIntoViewIfNeeded()
 
         const namebox = await nameDiv.boundingBox()
+        /* Steps for move are added here to make intermediate moveevent */
         await page.mouse.move(namebox.x + namebox.width / 2, namebox.y + namebox.height / 2, {steps: 5});
         await expect(nameDiv).toHaveAttribute("data-datatable-active", "true")
         await expect(nameDiv).toHaveAttribute("data-datatable-selected", "false")
@@ -51,6 +52,7 @@ test.describe('To select', () => {
         const result = page.locator('#result');
         const nameDiv = page.locator("id="+ name)
         
+        /* Got some issues with webkit for some tests, need another delay */
         await nameDiv.click({delay: 2000})
         await expect(nameDiv).toHaveAttribute("data-datatable-active", "true")
         await expect(nameDiv).toHaveAttribute("data-datatable-selected", "true")
@@ -135,11 +137,13 @@ test.describe('Navigating', () => {
             
             await dataTableState(page)
             
+            /* This test is slow on webkit here a delay to wait for this click*/
             await page.mouse.click(0,0,{delay:2000})
 
             await page.mouse.move(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2, {steps: 5});
             await page.mouse.click(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2,{delay:2000});
             
+            /* We will place delay on all press actions (ArrowUp, ArrowDown, Enter, Space) */
             await selected2.press('ArrowDown', {delay: 2000})
             await nameActive("Prof. Alberto Kraushaar B.A.", page)
             
@@ -181,6 +185,7 @@ test.describe('Navigating', () => {
         
         await dataTableState(page)
         
+        /* Same delays as previous test */
         await page.mouse.click(0,0,{delay:2000})
 
         await page.mouse.move(selectedBox1.x + selectedBox1.width / 2, selectedBox1.y + selectedBox1.height / 2, {steps: 5});
@@ -260,8 +265,8 @@ test.describe('To', () => {
     });
     
     /**
-     * This test is not working properly on (mobile) Safari and Firefox. 
-     * The page is not centered as expected on these browsers. Need some improvements.
+     * This test is not working properly on (mobile) Safari and Firefox.
+     * The table is not centered as expected on these browsers. Need some improvements.
      */
     test('check if scrollIntoView() of Datatable is respected', async ({page}) => {
         
@@ -373,6 +378,7 @@ test.describe('Navigating', () => {
         const selectedText2 = await selected2.locator('xpath=//h3[1]').textContent();
         const result = page.locator('#result');
 
+        /* Delays for GridList are more important because the page needs too much time to load */
         await page.mouse.click(0, 0, {delay: 5000})
 
         await expect(selected1).toHaveAttribute("data-datatable-selected", "true")
@@ -410,6 +416,7 @@ test.describe('Navigating', () => {
         test(`with Arrow keys through the items of Gridlist and selects with ${key}`, async ({page, browserName}) => {
 
             test.slow(browserName === 'webkit', 'This test for DataCollection is slow on Mac');
+            test.slow(browserName === 'firefox', 'This test for DataCollection is slow on Firefox');
             
             await page.locator('#tabGroup-tab-list-tab-1').click();
             
@@ -457,7 +464,7 @@ test.describe('Navigating', () => {
     test('through first and last element of Gridlist with keys', async ({page, browserName}) => {
 
         test.slow(browserName === 'webkit', 'This test for DataCollection is slow on Mac');
-        test.slow(browserName === 'firefox', 'This test for DataCollection is slow on Mac');
+        test.slow(browserName === 'firefox', 'This test for DataCollection is slow on Firefox');
         
         await page.locator('#tabGroup-tab-list-tab-1').click();
 
