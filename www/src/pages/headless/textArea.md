@@ -106,9 +106,9 @@ focused.
 
 ## Keyboard Interaction
 
-| Command                                                              | Description         |
-|----------------------------------------------------------------------|---------------------|
-| Any key that will trigger a `change` event like [[Tab]] or [[Enter]] | updates the `value` |
+| Command                                                  | Description         |
+|----------------------------------------------------------|---------------------|
+| Any key that will trigger a `change` event like [[Tab]]  | updates the `value` |
 
 For more details which key will trigger a change, refer to this
 [documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event)

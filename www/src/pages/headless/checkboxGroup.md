@@ -19,7 +19,8 @@ CheckboxGroups are created using the generic component factory function `fun <T>
 The type parameter `T` can be replaced by any type, e.g. a domain class.
 
 An option can be selected or deselected by clicking on that option or by pressing the [[Space]] key if the option is 
-focused. Any number of options can be selected.
+focused. Any number of options can be selected. The focus can be switched by using the standard browser mechanisms like
+[[Tab]] or [[Shift]] + [[Tab]] keys.
 
 It is therefore mandatory to specify a data stream or a store  of a `List<T>` as data binding via the `value` property.
 The component supports two-way-data-binding, i.e. it reflects selected elements from the outside by a `Flow<List<T>>`
@@ -161,9 +162,10 @@ Clicking on an element created with ``checkboxGroupOptionToggle`` selects or des
 
 ## Keyboard Interaction
 
-| Command                                    | Description                                    |
-|--------------------------------------------|------------------------------------------------|
-| [[Space]] when an option-toggle is focused | Selects or deselects the corresponding option. |
+| Command                                    | Description                                                                                                                                                                     |
+|--------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [[Space]] when an option-toggle is focused | Selects or deselects the corresponding option.                                                                                                                                  |
+| [[Tab]] / [[Shift]] + [[Tab]]              | Moves the focus to the next / previous element (if no other focusable element is added in between or other manual changes to the focus management of the browser is applied!)   |
 
 ## API
 
