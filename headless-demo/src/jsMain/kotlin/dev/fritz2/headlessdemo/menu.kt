@@ -29,22 +29,23 @@ fun RenderContext.menuDemo() {
             menu("inline-block text-left", id = "menu") {
                 div {
                     menuButton(
-                        """w-32 inline-flex justify-center rounded-md border border-transparent 
-                        | shadow-sm px-4 py-2 bg-blue-700 text-base font-medium text-white hover:bg-blue-800 
-                        | focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:col-start-2 
+                        """inline-flex justify-center items-center rounded border border-transparent 
+                        | shadow-sm px-4 py-2.5 bg-primary-800 text-base font-sans font text-white hover:bg-primary-900 
+                        | focus:outline-none focus:ring-3 focus:ring-offset-1 focus:ring-primary-500 sm:col-start-2 
                         | sm:text-sm""".trimMargin()
                     ) {
-                        +"Options"
+                        +"Close Menu"
                         icon("w-5 h-5 ml-2 -mr-1", content = HeroIcons.chevron_down)
                     }
                 }
 
                 menuItems(
                     """w-56 max-h-56 overflow-y-auto border-white border-2 bg-white divide-y 
-                    | divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 
+                    | divide-gray-100 rounded shadow-md 
                     | focus:outline-none origin-top-left""".trimMargin()
                 ) {
                     placement = Placement.bottomStart
+                    distance = 5
 
                     transition(
                         opened,
@@ -58,17 +59,17 @@ fun RenderContext.menuDemo() {
 
                     entries.forEach { entry ->
                         menuItem(
-                            """group flex rounded-md items-center w-full px-2 py-2 text-sm 
+                            """group flex items-center w-full px-2 py-2.5 text-sm 
                             | disabled:opacity-50""".trimMargin()
                         ) {
                             className(active.combine(disabled) { a, d ->
                                 if (a && !d) {
-                                    "bg-blue-400 text-white"
+                                    "bg-primary-600 text-white"
                                 } else {
-                                    if (d) "text-gray-300" else "text-gray-900"
+                                    if (d) "text-slate-300" else "text-primary-800"
                                 }
                             })
-                            svg("w-5 h-5 mr-2") { content(entry.icon) }
+                            icon("w-5 h-5 mr-2", content = entry.icon)
                             +entry.label
                             if (entry.disabled) disable(true)
                             selected.map { entry.label } handledBy action.update
@@ -83,8 +84,8 @@ fun RenderContext.menuDemo() {
         }
 
 
-        div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
-            em { +"Execute Action: " }
+        div("bg-primary-200 mt-4 p-2 rounded ring-2 ring-primary-500 text-sm text-primary-800 shadow-sm", id = "result") {
+            span("font-semibold") { +"Execute Action: " }
             span { action.data.map { "$it file..." }.renderText() }
         }
     }

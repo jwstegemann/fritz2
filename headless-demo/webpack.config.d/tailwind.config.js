@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 // must be in the jsMain/resource folder
 const mainCssFile = 'styles.css';
 
@@ -8,20 +10,27 @@ const tailwind = {
     ],
     variants: {},
     theme: {
+        fontFamily: {
+            sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+        },
         extend: {
+            backgroundImage: {
+                'radial-at-b':
+                    'radial-gradient(ellipse at bottom, var(--tw-gradient-stops))',
+            },
             colors: {
                 'primary': {
-                    DEFAULT: '#002EA7',
-                    '50': '#D2DFFF',
-                    '100': '#B1C7FF',
-                    '200': '#6F97FF',
-                    '300': '#2D67FF',
-                    '400': '#0040E9',
-                    '500': '#002EA7',
-                    '600': '#00237E',
-                    '700': '#001855',
-                    '800': '#000C2D',
-                    '900': '#000104'
+                    DEFAULT: '#6D97AB',
+                    '50': '#FBFDFD',
+                    '100': '#EEF6F5',
+                    '200': '#D5E7E6',
+                    '300': '#BBD6D8',
+                    '400': '#A1C3C9',
+                    '500': '#87AEBA',
+                    '600': '#6D97AB',
+                    '700': '#50738B',
+                    '800': '#3A4F64',
+                    '900': '#232E3D'
                 },
                 'secondary': {
                     DEFAULT: '#DA291C',
