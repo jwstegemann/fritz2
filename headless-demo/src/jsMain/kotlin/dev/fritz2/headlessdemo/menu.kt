@@ -30,8 +30,8 @@ fun RenderContext.menuDemo() {
                 div {
                     menuButton(
                         """inline-flex justify-center items-center rounded border border-transparent 
-                        | shadow-sm px-4 py-2.5 bg-primary-800 text-base font-sans font text-white hover:bg-primary-900 
-                        | focus:outline-none focus:ring-3 focus:ring-offset-1 focus:ring-primary-500 sm:col-start-2 
+                        | shadow-sm px-4 py-2.5 bg-primary-800 text-base font-sans text-white hover:bg-primary-900 
+                        | focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary-800 sm:col-start-2 
                         | sm:text-sm""".trimMargin()
                     ) {
                         +"Close Menu"
