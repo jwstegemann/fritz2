@@ -9,14 +9,14 @@ import tooltip
 
 fun RenderContext.tooltipButton(idPrefix: String) {
     button(
-        """w-32 inline-flex justify-center rounded-md border border-transparent 
-            | shadow-sm px-4 py-2 bg-blue-700 text-base font-medium text-white hover:bg-blue-800 
-            | focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:col-start-2 
+        """w-32 inline-flex justify-center rounded border border-transparent 
+            | shadow-sm px-4 py-2 bg-primary-800 text-base text-white hover:bg-primary-900 
+            | focus:outline-none focus:ring-4 focus:ring-primary-600 sm:col-start-2 
             | sm:text-sm""".trimMargin(),
         id = "$idPrefix-reference"
     ) {
         +"Some Button"
-    }.tooltip("text-sm text-gray-50 bg-gray-700 px-2 py-1 rounded", id = "$idPrefix-tooltip") {
+    }.tooltip("text-sm text-white bg-slate-400 px-2 py-1 rounded", id = "$idPrefix-tooltip") {
         arrow()
         +"Some more Information"
     }
@@ -24,13 +24,13 @@ fun RenderContext.tooltipButton(idPrefix: String) {
 
 fun RenderContext.tooltipInput(idPrefix: String) {
     input(
-        """shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-32 h-10 sm:text-sm 
-            | border-gray-300 rounded-md""".trimMargin(),
+        """focus:ring-4 focus:ring-primary-600 block w-32 h-10 sm:text-sm text-primary-800
+            | border border-primary-600 focus:outline-none hover:border-primary-800 placeholder:text-slate-400 rounded""".trimMargin(),
         id = "$idPrefix-reference"
     ) {
         placeholder("some input")
         type("text")
-    }.tooltip("text-sm text-gray-50 bg-gray-700 px-2 py-1 rounded", id = "$idPrefix-tooltip") {
+    }.tooltip("text-sm text-white bg-slate-400 px-2 py-1 rounded", id = "$idPrefix-tooltip") {
         arrow()
         +"Some more Information"
     }
