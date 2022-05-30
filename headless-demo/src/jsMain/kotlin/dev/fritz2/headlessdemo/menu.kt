@@ -59,7 +59,7 @@ fun RenderContext.menuDemo() {
 
                     entries.forEach { entry ->
                         menuItem(
-                            """group flex items-center w-full px-2 py-2.5 text-sm 
+                            """group flex items-center w-full px-2 py-2 text-sm 
                             | disabled:opacity-50""".trimMargin()
                         ) {
                             className(active.combine(disabled) { a, d ->
