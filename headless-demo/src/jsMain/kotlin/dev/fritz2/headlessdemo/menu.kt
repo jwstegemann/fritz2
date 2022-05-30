@@ -30,10 +30,11 @@ fun RenderContext.menuDemo() {
                 div {
                     menuButton(
                         """inline-flex justify-center items-center rounded border border-transparent 
-                        | shadow-sm px-4 py-2.5 bg-primary-800 text-base font-sans text-white hover:bg-primary-900 
-                        | focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary-800 sm:col-start-2 
+                        | shadow-sm px-4 py-2.5 text-base font-sans text-white hover:bg-primary-900 
+                        | focus:outline-none focus:ring-4 focus:ring-primary-600 sm:col-start-2 
                         | sm:text-sm""".trimMargin()
                     ) {
+                        className(opened.map { if(it) "bg-primary-900" else "bg-primary-800"})
                         +"Close Menu"
                         icon("w-5 h-5 ml-2 -mr-1", content = HeroIcons.chevron_down)
                     }
@@ -59,14 +60,14 @@ fun RenderContext.menuDemo() {
 
                     entries.forEach { entry ->
                         menuItem(
-                            """group flex items-center w-full px-2 py-2.5 text-sm 
+                            """group flex items-center w-full px-2 py-2 text-sm 
                             | disabled:opacity-50""".trimMargin()
                         ) {
                             className(active.combine(disabled) { a, d ->
                                 if (a && !d) {
                                     "bg-primary-600 text-white"
                                 } else {
-                                    if (d) "text-slate-300" else "text-primary-800"
+                                    if (d) "text-slate-400" else "text-primary-800"
                                 }
                             })
                             icon("w-5 h-5 mr-2", content = entry.icon)
@@ -84,7 +85,7 @@ fun RenderContext.menuDemo() {
         }
 
 
-        div("bg-primary-200 mt-4 p-2 rounded ring-2 ring-primary-500 text-sm text-primary-800 shadow-sm", id = "result") {
+        div("bg-primary-100 mt-4 p-2 rounded ring-2 ring-primary-500 text-sm text-primary-800 shadow-sm", id = "result") {
             span("font-semibold") { +"Execute Action: " }
             span { action.data.map { "$it file..." }.renderText() }
         }
