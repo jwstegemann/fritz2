@@ -35,7 +35,7 @@ fun RenderContext.menuDemo() {
                         | sm:text-sm""".trimMargin()
                     ) {
                         className(opened.map { if(it) "bg-primary-900" else "bg-primary-800"})
-                        +"Close Menu"
+                        opened.map { if (it) "Close Menu" else "Open Menu" }.renderText()
                         icon("w-5 h-5 ml-2 -mr-1", content = HeroIcons.chevron_down)
                     }
                 }
