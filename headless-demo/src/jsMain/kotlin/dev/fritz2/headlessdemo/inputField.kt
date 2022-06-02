@@ -12,36 +12,47 @@ fun RenderContext.inputFieldDemo() {
 
     div("max-w-sm") {
 
-        inputField("mb-4") {
+        inputField("mb-8") {
             value(name)
             placeholder("The name is...")
-            inputLabel("block text-sm font-medium text-gray-700") {
+            inputLabel("""block mb-2 ml-1
+                | text-sm font-semibold text-primary-800""".trimMargin()) {
                 +"Enter the framework's name"
             }
-            div("mt-1") {
+            div("mt-2") {
                 inputTextfield(
-                    "block w-full sm:text-sm rounded-md disabled:opacity-50"
+                    """w-full py-2.5 px-2.5
+                        | bg-white rounded
+                        | font-sans text-sm 
+                        | disabled:opacity-50""".trimMargin()
                 ) {
                     className(value.hasError.map {
                         if (it) classes(
-                            "border-error-300 text-error-900 placeholder-error-300",
-                            "focus:ring-error-500 focus:border-error-500"
+                            """border border-error-600 
+                                | text-error-800 placeholder:text-error-400
+                                | hover:border-error-800  
+                                | focus:outline-none focus:ring-4 focus:ring-error-600 focus:border-error-800""".trimMargin()
                         )
                         else classes(
-                            "block border-gray-300 text-gray-900 placeholder-gray-300",
-                            "focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white"
+                            """border border-primary-600 
+                                | text-primary-800 placeholder:text-slate-400
+                                | hover:border-primary-800  
+                                | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
                         )
                     })
                 }
             }
-            inputDescription("mt-2 text-sm text-gray-500") {
+            inputDescription("ml-1 mt-2 text-xs text-primary-700") {
                 +"The name should reflect the concept of the whole framework."
             }
         }
 
-        div("bg-gray-300 mt-8 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
-            em { +"Name: " }
-            name.data.renderText()
+        div("""mt-4 p-2 
+            | bg-primary-100 rounded shadow-sm
+            | ring-2 ring-primary-500 
+            | text-sm text-primary-800""".trimMargin(), id = "result") {
+            span("font-semibold") { +"Name: " }
+            span { name.data.renderText() }
         }
     }
 
