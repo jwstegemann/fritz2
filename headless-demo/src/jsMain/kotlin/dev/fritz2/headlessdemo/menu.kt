@@ -95,7 +95,7 @@ fun RenderContext.menuDemo() {
             | ring-2 ring-primary-500 
             | text-sm text-primary-800""".trimMargin(), id = "result"
         ) {
-            span("font-semibold") { +"Execute Action: " }
+            span("font-medium") { +"Execute Action: " }
             span { action.data.map { "$it file..." }.renderText() }
         }
     }

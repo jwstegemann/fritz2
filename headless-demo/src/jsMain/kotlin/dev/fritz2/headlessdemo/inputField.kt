@@ -15,8 +15,7 @@ fun RenderContext.inputFieldDemo() {
         inputField("mb-8") {
             value(name)
             placeholder("The name is...")
-            inputLabel("""block mb-2 ml-1
-                | text-sm font-semibold text-primary-800""".trimMargin()) {
+            inputLabel("block mb-1.5 ml-1 text-sm font-medium text-primary-800") {
                 +"Enter the framework's name"
             }
             div("mt-2") {
@@ -51,7 +50,7 @@ fun RenderContext.inputFieldDemo() {
             | bg-primary-100 rounded shadow-sm
             | ring-2 ring-primary-500 
             | text-sm text-primary-800""".trimMargin(), id = "result") {
-            span("font-semibold") { +"Name: " }
+            span("font-medium") { +"Name: " }
             span { name.data.renderText() }
         }
     }

@@ -15,42 +15,50 @@ fun RenderContext.switchDemo() {
 
     div("max-w-sm") {
         switch(
-            """relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full 
-        |cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 
-        |focus:ring-offset-2 focus:ring-blue-600""".trimMargin()
+            """relative inline-flex flex-shrink-0 h-6 w-11
+                | cursor-pointer rounded-full
+                | border-2 border-transparent  
+                | transition-colors ease-in-out duration-200 
+                | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
         ) {
             value(switchState)
-            className(enabled.map { if (it) "bg-blue-700" else "bg-gray-200" })
+            className(enabled.map { if (it) "bg-primary-700" else "bg-primary-200" })
             span("sr-only") { +"Use setting" }
             span(
-                """pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 
-            |transition ease-in-out duration-200""".trimMargin()
+                """ inline-block h-5 w-5 
+                    | rounded-full bg-white shadow pointer-events-none 
+                    | ring-0 
+                    | transform transition ease-in-out duration-200""".trimMargin()
             ) {
                 className(enabled.map { if (it) "translate-x-5" else "translate-x-0" })
                 attr(Aria.hidden, "true")
             }
         }
 
-        switchWithLabel("bg-white flex items-center justify-between mt-4 p-4 rounded-xl") {
+        switchWithLabel("flex items-center justify-between mt-4 p-4 bg-white rounded-lg") {
             value(switchWithLabelState)
             span("flex-grow flex flex-col") {
-                switchLabel("text-sm font-medium text-gray-900", tag = RenderContext::span) {
+                switchLabel("block mb-1 text-sm font-medium text-primary-800", tag = RenderContext::span) {
                     +"Available to hire"
                 }
-                switchDescription("text-sm text-gray-500", tag = RenderContext::span) {
+                switchDescription("mt-1 text-xs text-primary-700", tag = RenderContext::span) {
                     +"Nulla amet tempus sit accumsan."
                 }
             }
             switchToggle(
-                """relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full 
-            |cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 
-            |focus:ring-offset-2 focus:ring-blue-600""".trimMargin()
+                """relative inline-flex flex-shrink-0 h-6 w-11
+                | cursor-pointer rounded-full
+                | border-2 border-transparent  
+                | transition-colors ease-in-out duration-200 
+                | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
             ) {
-                className(enabled.map { if (it) "bg-blue-700" else "bg-gray-200" })
+                className(enabled.map { if (it) "bg-primary-700" else "bg-primary-200" })
                 span("sr-only") { +"Use setting" }
                 span(
-                    """pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 
-            |transition ease-in-out duration-200""".trimMargin()
+                    """ inline-block h-5 w-5 
+                    | rounded-full bg-white shadow pointer-events-none 
+                    | ring-0 
+                    | transform transition ease-in-out duration-200""".trimMargin()
                 ) {
                     className(enabled.map { if (it) "translate-x-5" else "translate-x-0" })
                     attr(Aria.hidden, "true")
