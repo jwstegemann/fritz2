@@ -86,7 +86,7 @@ fun RenderContext.listboxDemo() {
 
                         selected.render {
                             if (it) {
-                                span("absolute left-0 inset-y-0 pl-3 flex items-center") {
+                                span("absolute left-0 inset-y-0 flex items-center pl-3") {
                                     icon("w-5 h-5", content = HeroIcons.check)
                                 }
                             }
@@ -101,7 +101,7 @@ fun RenderContext.listboxDemo() {
             }
         }
 
-        div("""mt-4 p-2 
+        div("""mt-4 p-2.5
             | bg-primary-100 rounded shadow-sm
             | ring-2 ring-primary-500 
             | text-sm text-primary-800""".trimMargin(), id = "result") {
