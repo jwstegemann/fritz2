@@ -14,8 +14,8 @@ fun RenderContext.textAreaDemo() {
         textArea {
             value(description)
             placeholder("fritz2 is super cool")
-            textareaLabel("""block mb-2 ml-1
-                | text-sm font-semibold text-primary-800""".trimMargin()) {
+            textareaLabel("""block mb-1.5 ml-1
+                | text-sm font-medium text-primary-800""".trimMargin()) {
                 +"Describe the framework"
             }
             div("mt-1") {
@@ -50,7 +50,7 @@ fun RenderContext.textAreaDemo() {
             | bg-primary-100 rounded shadow-sm
             | ring-2 ring-primary-500 
             | text-sm text-primary-800""".trimMargin(), id = "result") {
-            span("font-semibold") { +"Description: " }
+            span("font-medium") { +"Description: " }
             span { description.data.renderText() }
         }
     }

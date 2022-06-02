@@ -1,11 +1,9 @@
 package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.RenderContext
-import dev.fritz2.core.classes
 import dev.fritz2.core.storeOf
 import dev.fritz2.headless.components.radioGroup
 import dev.fritz2.headless.foundation.Aria
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLFieldSetElement
@@ -26,51 +24,54 @@ fun RenderContext.radioGroupDemo() {
     div("max-w-sm") {
         radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
             value(choice)
-            radioGroupLabel("sr-only") { +"Server size" }
+            radioGroupLabel("block mb-2 ml-1 text-sm font-medium text-primary-800", tag = RenderContext::legend) {
+                +"Select a server size"
+            }
             div("space-y-2") {
                 plans.forEach { option ->
                     radioGroupOption(option, id = option.name) {
                         radioGroupOptionToggle(
-                            "relative flex justify-between border rounded-lg shadow-sm px-6 py-2 cursor-pointer focus:outline-none",
-                            tag = RenderContext::label
+                            """grid grid-rows-2 grid-cols-[auto_1fr_auto] gap-1 py-4 pl-3 pr-5
+                                | text-base font-sans rounded-md cursor-pointer
+                                | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
                         ) {
-                            className(selected.combine(active) { sel, act ->
-                                classes(
-                                    if (sel) "bg-blue-200" else "bg-white",
-                                    if (act) "ring-2 ring-blue-600 border-transparent" else "border-gray-300"
-                                )
+                            className(selected.map {
+                                if (it) "bg-primary-700 hover:none text-white"
+                                else "bg-primary-100 hover:bg-primary-200 text-primary-800"
                             })
-                            div("flex items-center") {
-                                div("text-sm") {
-                                    radioGroupOptionLabel("font-medium text-gray-900", tag = RenderContext::p) {
-                                        +option.name
-                                    }
-                                    radioGroupOptionDescription("text-gray-500", tag = RenderContext::div) {
-                                        span { +option.cpus }
-                                        span("mx-1") {
-                                            attr(Aria.hidden, "true")
-                                            +"·"
-                                        }
-                                        span { +option.ram }
-                                    }
+
+                            div("row-span-2 pr-2") {
+                                div("flex items-center justify-center w-6 h-6 rounded-full") {
+                                    className(selected.map {
+                                        if(it) "bg-primary-800" else "bg-white"
+                                    })
+                                    span("h-3 w-3 bg-white rounded-full") {}
                                 }
                             }
-                            radioGroupOptionDescription(
-                                "block text-sm text-right mt-0 ml-4",
-                                tag = RenderContext::div
-                            ) {
-                                div("font-medium text-gray-900") { +option.price }
-                                div("text-gray-500 ml-0") { +"/mo" }
+
+                            radioGroupOptionLabel("font-medium cursor-pointer") { +option.name }
+                            radioGroupOptionDescription("font-medium") { +option.price }
+                            radioGroupOptionDescription("text-sm text-primary-800") {
+                                span("text-xs") { +option.cpus }
+                                span("mx-1") {
+                                    attr(Aria.hidden, "true")
+                                    +"·"
+                                }
+                                span { +option.ram }
                             }
+                            radioGroupOptionDescription("text-xs text-primary-400") { +"/month" }
                         }
                     }
                 }
             }
         }
 
-        div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
-            em { +"Selected: " }
-            choice.data.filterNotNull().map { "${it.name} ${it.cpus} ${it.ram} ${it.price}/mo" }.renderText()
+        div(
+            "bg-primary-100 mt-4 p-2.5 rounded ring-2 ring-primary-500 text-sm text-primary-800 shadow-sm",
+            id = "result"
+        ) {
+            span("font-medium") { +"Selected: " }
+            span { choice.data.filterNotNull().map { "${it.name} ${it.cpus} ${it.ram} ${it.price}/mo" }.renderText() }
         }
     }
 }
