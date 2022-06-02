@@ -86,7 +86,7 @@ fun RenderContext.listboxDemo() {
 
                         selected.render {
                             if (it) {
-                                span("absolute left-0 inset-y-0 pl-3 flex items-center") {
+                                span("absolute left-0 inset-y-0 flex items-center pl-3") {
                                     icon("w-5 h-5", content = HeroIcons.check)
                                 }
                             }

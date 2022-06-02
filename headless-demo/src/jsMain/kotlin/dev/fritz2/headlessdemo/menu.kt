@@ -29,8 +29,8 @@ fun RenderContext.menuDemo() {
             menu("inline-block text-left", id = "menu") {
                 div {
                     menuButton(
-                        """inline-flex justify-center items-center sm:col-start-2
-                            | rounded shadow-sm px-4 py-2.5   
+                        """inline-flex justify-center items-center sm:col-start-2 px-4 py-2.5   
+                            | rounded shadow-sm
                             | border border-transparent 
                             | text-sm font-sans text-white 
                             | hover:bg-primary-900 
@@ -74,7 +74,7 @@ fun RenderContext.menuDemo() {
                                     if (d) "text-slate-400" else "text-primary-800"
                                 }
                             })
-                            icon("w-5 h-5 mr-2", content = entry.icon)
+                            icon("w-4 h-4 mr-2", content = entry.icon)
                             +entry.label
                             if (entry.disabled) disable(true)
                             selected.map { entry.label } handledBy action.update
