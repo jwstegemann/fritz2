@@ -9,14 +9,16 @@ import tooltip
 
 fun RenderContext.tooltipButton(idPrefix: String) {
     button(
-        """w-32 inline-flex justify-center rounded border border-transparent 
-            | shadow-sm px-4 py-2 bg-primary-800 text-base text-white hover:bg-primary-900 
-            | focus:outline-none focus:ring-4 focus:ring-primary-600 sm:col-start-2 
-            | sm:text-sm""".trimMargin(),
+        """inline-flex justify-center w-32 px-4 py-2 sm:col-start-2
+            | rounded shadow-sm bg-primary-800   
+            | border border-transparent 
+            | text-sm text-white 
+            | hover:bg-primary-900 
+            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
         id = "$idPrefix-reference"
     ) {
         +"Some Button"
-    }.tooltip("text-sm text-white bg-slate-400 px-2 py-1 rounded", id = "$idPrefix-tooltip") {
+    }.tooltip("px-2 py-1 bg-slate-400 rounded text-sm text-white", id = "$idPrefix-tooltip") {
         arrow()
         +"Some more Information"
     }
@@ -24,28 +26,32 @@ fun RenderContext.tooltipButton(idPrefix: String) {
 
 fun RenderContext.tooltipInput(idPrefix: String) {
     input(
-        """focus:ring-4 focus:ring-primary-600 block w-32 h-10 sm:text-sm text-primary-800
-            | border border-primary-600 focus:outline-none hover:border-primary-800 placeholder:text-slate-400 rounded""".trimMargin(),
+        """block w-32 py-2.5 px-4 
+            | bg-white rounded
+            | border border-primary-600
+            | font-sans text-sm text-primary-800 placeholder:text-slate-400 
+            | hover:border-primary-800 
+            | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin(),
         id = "$idPrefix-reference"
     ) {
         placeholder("some input")
         type("text")
-    }.tooltip("text-sm text-white bg-slate-400 px-2 py-1 rounded", id = "$idPrefix-tooltip") {
+    }.tooltip("px-2 py-1 bg-slate-400 rounded text-sm text-white", id = "$idPrefix-tooltip") {
         arrow()
         +"Some more Information"
     }
 }
 
 fun RenderContext.tooltipDemo() {
-    div("-m-4 w-screen h-screen flex flex-col items-stretch") {
-        div("p-4 flex justify-center") { tooltipButton("top") }
+    div("w-screen h-screen flex flex-col items-stretch -m-4 ") {
+        div("flex justify-center p-4") { tooltipButton("top") }
         div("flex flex-row flex-1 items-center") {
             div("hidden sm:block p-4") { tooltipInput("left") }
-            div("flex-1 p-4 flex justify-center") {
+            div("flex flex-1 justify-center p-4") {
                 tooltipButton("center")
             }
             div("hidden sm:block p-4") { tooltipButton("right") }
         }
-        div("p-4 flex justify-center") { tooltipInput("bottom") }
+        div("flex justify-center p-4") { tooltipInput("bottom") }
     }
 }

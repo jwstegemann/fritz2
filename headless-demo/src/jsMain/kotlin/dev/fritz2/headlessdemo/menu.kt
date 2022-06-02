@@ -29,21 +29,24 @@ fun RenderContext.menuDemo() {
             menu("inline-block text-left", id = "menu") {
                 div {
                     menuButton(
-                        """inline-flex justify-center items-center rounded border border-transparent 
-                        | shadow-sm px-4 py-2.5 text-base font-sans text-white hover:bg-primary-900 
-                        | focus:outline-none focus:ring-4 focus:ring-primary-600 sm:col-start-2 
-                        | sm:text-sm""".trimMargin()
+                        """inline-flex justify-center items-center sm:col-start-2
+                            | rounded shadow-sm px-4 py-2.5   
+                            | border border-transparent 
+                            | text-sm font-sans text-white 
+                            | hover:bg-primary-900 
+                            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
                     ) {
-                        className(opened.map { if(it) "bg-primary-900" else "bg-primary-800"})
+                        className(opened.map { if (it) "bg-primary-900" else "bg-primary-800" })
                         opened.map { if (it) "Close Menu" else "Open Menu" }.renderText()
                         icon("w-5 h-5 ml-2 -mr-1", content = HeroIcons.chevron_down)
                     }
                 }
 
                 menuItems(
-                    """w-56 max-h-56 overflow-y-auto border-white border-2 bg-white divide-y 
-                    | divide-gray-100 rounded shadow-md 
-                    | focus:outline-none origin-top-left""".trimMargin()
+                    """w-56 max-h-56 overflow-y-auto origin-top-left
+                        | bg-white rounded shadow-md divide-y divide-gray-100
+                        | border-white border-2  
+                        | focus:outline-none""".trimMargin()
                 ) {
                     placement = Placement.bottomStart
                     distance = 5
@@ -60,8 +63,9 @@ fun RenderContext.menuDemo() {
 
                     entries.forEach { entry ->
                         menuItem(
-                            """group flex items-center w-full px-2 py-2 text-sm 
-                            | disabled:opacity-50""".trimMargin()
+                            """group flex items-center w-full px-2 py-2
+                                | disabled:opacity-50
+                                | text-sm""".trimMargin()
                         ) {
                             className(active.combine(disabled) { a, d ->
                                 if (a && !d) {
@@ -85,7 +89,12 @@ fun RenderContext.menuDemo() {
         }
 
 
-        div("bg-primary-100 mt-4 p-2 rounded ring-2 ring-primary-500 text-sm text-primary-800 shadow-sm", id = "result") {
+        div(
+            """mt-4 p-2 
+            | bg-primary-100 rounded shadow-sm
+            | ring-2 ring-primary-500 
+            | text-sm text-primary-800""".trimMargin(), id = "result"
+        ) {
             span("font-semibold") { +"Execute Action: " }
             span { action.data.map { "$it file..." }.renderText() }
         }

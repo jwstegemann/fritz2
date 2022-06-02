@@ -29,11 +29,12 @@ fun RenderContext.listboxDemo() {
             value(bestCharacter)
             listboxLabel("sr-only", tag = RenderContext::span) { +"Choose the best Star Wars character" }
             listboxButton(
-                """flex items-center justify-end w-full py-2.5 px-4 text-left bg-white rounded
-                | cursor-default focus:outline-none focus:ring-4
-                | focus:ring-primary-600 border border-primary-600 font-sans text base
-                | focus:border-primary-800
-                  | text-primary-800""".trimMargin()
+                """flex items-center justify-end w-full py-2.5 px-4 
+                    | bg-white rounded cursor-default
+                    | border border-primary-600 
+                    | font-sans text-sm text-left text-primary-800
+                    | hover:border-primary-800 
+                    | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
             ) {
                 span("block truncate w-full") {
                     value.data.renderText()
@@ -42,8 +43,10 @@ fun RenderContext.listboxDemo() {
             }
 
             listboxItems(
-                """w-full py-1 overflow-auto text-base bg-white rounded shadow-md max-h-60 ring-1 ring-primary-600 
-                    | ring-opacity-5 focus:outline-none origin-top divide-y divide-gray-100""".trimMargin(),
+                """w-full max-h-60 py-1 overflow-auto origin-top  
+                    | bg-white rounded shadow-md divide-y divide-gray-100
+                    | ring-1 ring-primary-600 ring-opacity-5 
+                    | focus:outline-none""".trimMargin(),
                         tag = RenderContext::ul
             ) {
                 placement = Placement.bottomStart
@@ -61,7 +64,9 @@ fun RenderContext.listboxDemo() {
                 characters.forEach { (entry, disabledState) ->
                     listboxItem(
                         entry,
-                        "w-full cursor-default select-none relative py-2 pl-10 pr-4 text-sm disabled:opacity-50",
+                        """w-full relative py-2 pl-10 pr-4
+                            | cursor-default select-none disabled:opacity-50
+                            | text-sm""".trimMargin(),
                         tag = RenderContext::li
                     ) {
                         className(active.combine(disabled) { a, d ->
@@ -81,7 +86,7 @@ fun RenderContext.listboxDemo() {
 
                         selected.render {
                             if (it) {
-                                span("absolute inset-y-0 left-0 flex items-center pl-3") {
+                                span("absolute left-0 inset-y-0 pl-3 flex items-center") {
                                     icon("w-5 h-5", content = HeroIcons.check)
                                 }
                             }
@@ -96,7 +101,10 @@ fun RenderContext.listboxDemo() {
             }
         }
 
-        div("bg-primary-100 mt-4 p-2 rounded ring-2 ring-primary-500 text-sm text-primary-800 shadow-sm", id = "result") {
+        div("""mt-4 p-2 
+            | bg-primary-100 rounded shadow-sm
+            | ring-2 ring-primary-500 
+            | text-sm text-primary-800""".trimMargin(), id = "result") {
             span("font-semibold") { +"Selected: " }
             span { bestCharacter.data.renderText() }
         }
