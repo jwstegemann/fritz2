@@ -90,7 +90,7 @@ fun RenderContext.menuDemo() {
 
 
         div(
-            """mt-4 p-2 
+            """mt-4 p-2.5
             | bg-primary-100 rounded shadow-sm
             | ring-2 ring-primary-500 
             | text-sm text-primary-800""".trimMargin(), id = "result"
