@@ -24,20 +24,20 @@ fun RenderContext.radioGroupDemo() {
     div("max-w-sm") {
         radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
             value(choice)
-            radioGroupLabel("py-2", tag = RenderContext::legend) {
+            radioGroupLabel("block mb-2 ml-1 text-sm font-medium text-primary-800", tag = RenderContext::legend) {
                 +"Select a server size"
             }
             div("space-y-2") {
                 plans.forEach { option ->
                     radioGroupOption(option, id = option.name) {
                         radioGroupOptionToggle(
-                            """grid grid-rows-2 grid-cols-[auto_1fr_auto] gap-2 p-6
+                            """grid grid-rows-2 grid-cols-[auto_1fr_auto] gap-1 py-4 pl-3 pr-5
                                 | text-base font-sans rounded-md cursor-pointer
-                                | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-800""".trimMargin()
+                                | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
                         ) {
                             className(selected.map {
                                 if (it) "bg-primary-700 hover:none text-white"
-                                else "bg-primary-100 hover:bg-primary-200 text-black"
+                                else "bg-primary-100 hover:bg-primary-200 text-primary-800"
                             })
 
                             div("row-span-2 pr-2") {
@@ -49,17 +49,17 @@ fun RenderContext.radioGroupDemo() {
                                 }
                             }
 
-                            radioGroupOptionLabel("font-semibold cursor-pointer") { +option.name }
-                            radioGroupOptionDescription("font-semibold") { +option.price }
-                            radioGroupOptionDescription("text-sm") {
-                                span { +option.cpus }
+                            radioGroupOptionLabel("font-medium cursor-pointer") { +option.name }
+                            radioGroupOptionDescription("font-medium") { +option.price }
+                            radioGroupOptionDescription("text-sm text-primary-800") {
+                                span("text-xs") { +option.cpus }
                                 span("mx-1") {
                                     attr(Aria.hidden, "true")
                                     +"·"
                                 }
                                 span { +option.ram }
                             }
-                            radioGroupOptionDescription("text-sm text-primary-400") { +"/mo" }
+                            radioGroupOptionDescription("text-xs text-primary-400") { +"/month" }
                         }
                     }
                 }
@@ -67,10 +67,10 @@ fun RenderContext.radioGroupDemo() {
         }
 
         div(
-            "bg-primary-100 mt-4 p-2 rounded ring-2 ring-primary-500 text-sm text-primary-800 shadow-sm",
+            "bg-primary-100 mt-4 p-2.5 rounded ring-2 ring-primary-500 text-sm text-primary-800 shadow-sm",
             id = "result"
         ) {
-            span("font-semibold") { +"Selected: " }
+            span("font-medium") { +"Selected: " }
             span { choice.data.filterNotNull().map { "${it.name} ${it.cpus} ${it.ram} ${it.price}/mo" }.renderText() }
         }
     }

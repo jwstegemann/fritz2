@@ -35,7 +35,7 @@ fun RenderContext.switchDemo() {
             }
         }
 
-        switchWithLabel("flex items-center justify-between mt-4 p-4 bg-white rounded-lg") {
+        switchWithLabel("flex items-center justify-between mt-4 p-4 bg-primary-200 rounded-lg") {
             value(switchWithLabelState)
             span("flex-grow flex flex-col") {
                 switchLabel("block mb-1 text-sm font-medium text-primary-800", tag = RenderContext::span) {
@@ -55,7 +55,7 @@ fun RenderContext.switchDemo() {
                 className(enabled.map { if (it) "bg-primary-700" else "bg-primary-200" })
                 span("sr-only") { +"Use setting" }
                 span(
-                    """ inline-block h-5 w-5 
+                    """inline-block h-5 w-5 
                     | rounded-full bg-white shadow pointer-events-none 
                     | ring-0 
                     | transform transition ease-in-out duration-200""".trimMargin()
