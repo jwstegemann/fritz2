@@ -27,19 +27,19 @@ fun RenderContext.radioGroupDemo() {
             radioGroupLabel("block mb-2 ml-1 text-sm font-medium text-primary-800", tag = RenderContext::legend) {
                 +"Select a server size"
             }
-            div("space-y-2") {
+            div("space-y-1") {
                 plans.forEach { option ->
-                    radioGroupOption(option, id = option.name) {
+                    radioGroupOption(option, "first:rounded-t-md last:rounded-b-md", option.name) {
+                        className(selected.map {
+                            if (it) "bg-primary-700 hover:none text-white"
+                            else "bg-primary-100 hover:bg-primary-200 text-primary-800"
+                        })
+
                         radioGroupOptionToggle(
                             """grid grid-rows-2 grid-cols-[auto_1fr_auto] gap-1 py-4 pl-3 pr-5
                                 | text-base font-sans rounded-md cursor-pointer
                                 | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
                         ) {
-                            className(selected.map {
-                                if (it) "bg-primary-700 hover:none text-white"
-                                else "bg-primary-100 hover:bg-primary-200 text-primary-800"
-                            })
-
                             div("row-span-2 pr-2") {
                                 div("flex items-center justify-center w-6 h-6 rounded-full") {
                                     className(selected.map {
@@ -51,7 +51,7 @@ fun RenderContext.radioGroupDemo() {
 
                             radioGroupOptionLabel("font-medium cursor-pointer") { +option.name }
                             radioGroupOptionDescription("font-medium") { +option.price }
-                            radioGroupOptionDescription("text-sm text-primary-800") {
+                            radioGroupOptionDescription("text-sm") {
                                 span("text-xs") { +option.cpus }
                                 span("mx-1") {
                                     attr(Aria.hidden, "true")
