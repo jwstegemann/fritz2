@@ -86,18 +86,18 @@ fun RenderContext.overview() {
     div("flex flex-col justify-start items-center h-screen") {
         h1("mb-8 tracking-tight font-bold text-gray-900 text-4xl") {
             span("block sm:inline") { +"fritz2" }
-            span("block text-blue-800 sm:inline") { +" Headless Demos" }
+            span("block text-primary-800 sm:inline") { +" Headless Demos" }
         }
         div("w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12") {
             pages.forEach {
                 a(
                     """-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 hover:ring-2 hover:ring-white 
-                    | ring-offset-2 ring-offset-indigo-600 hover:outline-none shadow-lg rounded-lg bg-white 
+                    | ring-offset-2 ring-offset-primary-600 hover:outline-none shadow-lg rounded-lg bg-white 
                     | opacity-80 hover:opacity-100 transition ease-in-out duration-150""".trimMargin()
                 ) {
                     href("#")
                     /* <!-- Heroicon name: outline/support --> */
-                    svg("flex-shrink-0 h-6 w-6 text-blue-800") {
+                    svg("flex-shrink-0 h-6 w-6 text-primary-800") {
                         xmlns("http://www.w3.org/2000/svg")
                         fill("none")
                         viewBox("0 0 24 24")

@@ -41,7 +41,7 @@ fun RenderContext.radioGroupDemo() {
                                 | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
                         ) {
                             div("row-span-2 pr-2") {
-                                div("flex items-center justify-center w-6 h-6 rounded-full") {
+                                div("flex items-center justify-center w-6 h-6 border rounded-full") {
                                     className(selected.map {
                                         if(it) "bg-primary-800" else "bg-white"
                                     })
