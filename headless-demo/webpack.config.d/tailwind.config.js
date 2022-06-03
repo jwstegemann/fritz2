@@ -74,10 +74,17 @@ const tailwind = {
             }
         },
     },
-    content: [
-        '*.{js,html,css}',
-        './kotlin/**/*.{js,html,css}'
-    ]
+    content: {
+        files: [
+            '*.{js,html,css}',
+            './kotlin/**/*.{js,html,css}'
+        ],
+        transform: {
+            js: (content) => {
+                return content.replaceAll(/\\n/g,' ')
+            }
+        }
+    },
 };
 
 

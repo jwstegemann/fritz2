@@ -36,7 +36,7 @@ fun RenderContext.radioGroupDemo() {
                         })
 
                         radioGroupOptionToggle(
-                            """grid grid-rows-2 grid-cols-[auto_1fr_auto] gap-1 py-4 pl-3 pr-5
+                            """grid grid-rows-2 grid-cols-[auto_1fr_auto] gap-1 py-4 pl-3 pr-5 
                                 | text-base font-sans rounded-md cursor-pointer
                                 | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
                         ) {
