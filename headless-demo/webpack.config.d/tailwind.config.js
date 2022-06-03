@@ -81,7 +81,7 @@ const tailwind = {
         ],
         transform: {
             js: (content) => {
-                return content.replaceAll(/\\n/g,' ')
+                return content.replaceAll(/(\\r)|(\\n)|(\\r\\n)/g,' ')
             }
         }
     },

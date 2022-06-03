@@ -40,7 +40,7 @@ fun RenderContext.checkboxGroupDemo() {
                                 div("""flex items-center w-5 h-5 mt-0.5
                                         | bg-white border rounded""".trimMargin()) {
                                     selected.render(into = this) {
-                                        if (it) icon("text-primary-700", content = HeroIcons.check)
+                                        if (it) icon("w-5 h-5 text-primary-700", content = HeroIcons.check)
                                     }
                                 }
                             }
