@@ -2,6 +2,7 @@ package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.href
+disclosuimport dev.fritz2.core.transition
 import dev.fritz2.headless.components.disclosure
 
 fun RenderContext.disclosureDemo() {
@@ -42,7 +43,7 @@ fun RenderContext.disclosureDemo() {
 
     div("max-w-3xl") {
         div("py-8 px-4") {
-            h1("text-left text-gray-800 font-light text-2xl") {
+            h1("text-left text-gray-800 font-medium text-lg") {
                 +"Frequently asked questions"
             }
             dl("mt-6 space-y-6") {
@@ -52,7 +53,7 @@ fun RenderContext.disclosureDemo() {
                         dt("text-base") {
                             /* <!-- Expand/collapse question button --> */
                             disclosureButton(
-                                """relative flex justify-between items-start w-full my-2 p-4 
+                                """relative z-10 flex justify-between items-start w-full my-2 p-4
                                 | bg-primary-800 rounded-lg hover:bg-primary-900 
                                 | text-left text-white 
                                 | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
@@ -69,9 +70,17 @@ fun RenderContext.disclosureDemo() {
                             }
                         }
                         disclosurePanel(
-                            "-mt-6 pt-7 pb-4 pl-4 pr-12 bg-primary-100 rounded-lg",
+                            "-mt-6 pt-7 pb-4 pl-4 pr-12 bg-primary-100 rounded-lg origin-top",
                             tag = RenderContext::dd
                         ) {
+                            transition(
+                                "transition duration-100 ease-out",
+                                "opacity-0 scale-y-95",
+                                "opacity-100 scale-y-100",
+                                "transition duration-100 ease-in",
+                                "opacity-100 scale-y-100",
+                                "opacity-0 scale-y-95"
+                            )
                             div("text-base text-gray-700") { answer(this) }
                         }
                     }
