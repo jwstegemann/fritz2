@@ -51,17 +51,16 @@ fun RenderContext.collectionDemo() {
     )
 
     tabGroup("w-full", id = "tabGroup") {
-        tabList("max-w-sm flex p-1 space-x-1 bg-blue-900/20 rounded-xl") {
+        tabList("max-w-sm flex p-1 space-x-1 bg-primary-900/20 rounded-md") {
             examples.forEach { (category, _, _) ->
                 tab(
-                    classes(
-                        "w-full py-2.5 text-sm leading-5 font-medium text-blue-700 rounded-lg",
-                        "focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white ring-opacity-60"
-                    )
+                    """w-full py-2.5 leading-5
+                    | text-sm font-medium rounded
+                    | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
                 ) {
                     className(selected.map { sel ->
-                        if (sel == index) "bg-white shadow"
-                        else "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                        if (sel == index) "bg-primary-800 text-white shadow-md"
+                        else "text-primary-100 hover:bg-primary-900/[0.12]"
                     })
                     +category
                 }
@@ -85,14 +84,16 @@ fun RenderContext.dataTableDemo(amount: Int) {
     val storedFilteredSize = storeOf(0)
 
     val filterStore = storeOf("")
-    inputField("mt-2 mb-4", id = "dataTable-filter") {
+    inputField("my-2", id = "dataTable-filter") {
         value(filterStore)
-
         inputTextfield(
-            """shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm w-full max-w-sm
-            | border-gray-300 px-4 rounded-full""".trimMargin()
+            """w-full max-w-sm py-2.5 px-2.5
+                | bg-white rounded border border-primary-600 hover:border-primary-800
+                | font-sans text-sm text-primary-800 placeholder:text-slate-400
+                | disabled:opacity-50
+                | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
         ) {
-            placeholder("filter...")
+            placeholder("Filter...")
         }
     }
 
@@ -183,7 +184,7 @@ fun RenderContext.gridListDemo(amount: Int) {
 //        selection.single(selectionStore)
         selection.multi(selectionStore)
 
-        div("h-10 flex items-center") {
+        div("flex items-center h-10 max-w-sm") {
             dataCollectionSortButton(
                 compareBy(Person::fullName),
                 compareByDescending(Person::fullName),
@@ -207,12 +208,14 @@ fun RenderContext.gridListDemo(amount: Int) {
 
             inputField("ml-4 my-2 grow") {
                 value(filterStore)
-                placeholder("filter...")
-                inputTextfield(
-                    """shadow-sm focus:ring-2 focus:ring-opacity-75 focus:ring-white focus:ring-offset-orange-300 
-                    | focus:ring-offset-2 focus:outline-none block sm:text-sm w-full max-w-sm border-gray-300 px-4  
-                    | rounded-full""".trimMargin()
-                ) { }
+                inputTextfield("""w-full py-2.5 px-2.5
+                                | bg-white rounded border border-primary-600 hover:border-primary-800
+                                | font-sans text-sm text-primary-800 placeholder:text-slate-400
+                                | disabled:opacity-50
+                                | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
+                ) {
+                    placeholder("Filter...")
+                }
             }
         }
 

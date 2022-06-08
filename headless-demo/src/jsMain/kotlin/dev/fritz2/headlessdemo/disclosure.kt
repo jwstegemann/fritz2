@@ -1,55 +1,78 @@
 package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.RenderContext
+import dev.fritz2.core.href
 import dev.fritz2.headless.components.disclosure
 
 fun RenderContext.disclosureDemo() {
-    val faqs = listOf(
-        "What's the best thing about Switzerland?" to
-                """I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing
-                    | elit. Quas cupiditate laboriosam fugiat.""".trimMargin(),
-        "How do you make holy water?" to
-                """You boil the hell out of it. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    | Magnam aut tempora vitae odio inventore fuga aliquam nostrum quod porro.
-                    | Delectus quia facere id sequi expedita natus. """.trimMargin(),
-        "How do you call somebody without body and without nose?" to
-                """Nobody knows. Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa,
-                    | voluptas ipsa quia excepturi, quibusdam natus exercitationem sapiente
-                    | tempore labore voluptatem. """.trimMargin(),
-        "Why did the invisible man turn down the job offer?" to
-                """He couldn't see himself doing it. Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    | Eveniet perspiciatis officiis corrupti tenetur. Temporibus ut voluptatibus,
-                    | perferendis sed unde rerum deserunt eius. """.trimMargin(),
+    val faqs = listOf<Pair<String, RenderContext.() -> Unit>>(
+        "What's the best thing about fritz2?" to {
+            p {
+                +"""We are strongly biased - there are so many things you can name. One outstanding aspect for us is
+                    | the fact, that it is an open source project, which makes so much fun to develop!""".trimMargin()
+            }
+            p {
+                +"But we are curious to know, what you like about fritz2? So please give us feedback!"
+            }
+        },
+        "Can you explain the power of the headless approach?" to {
+            p {
+                +"""Difficult. Once you have grasped it, you inherently loose the capability to explain the principle 
+                    | to others... 😁 SCNR! Of course we can try. Have a look at this """.trimMargin()
+                a("text-primary hover:text-primary-700") {
+                    attr("tabindex", "-1")
+                    href("www.fritz2.dev/blog/posts/paradigm-shift-for-components/")
+                    +"article"
+                }
+                +" about it and consult the documentation."
+            }
+        },
+        "Will there ever be a fritz3?" to {
+            p {
+                +"""Nobody knows. But it would rather be a fritz22 😉 """.trimMargin()
+            }
+        },
+        "Why you choose so often four items for your headless examples?" to {
+            p {
+                +"""Four is a nice number! Think of episode IV, the sense of everything (42) starts with a 4...
+                    | and last but not least: We have never thought about it to be honest!""".trimMargin()
+            }
+        }
     )
 
     div("max-w-3xl") {
-        div("py-8 px-4 divide-y-2 divide-gray-200 rounded-md bg-gray-50") {
-            h2("text-center text-3xl font-extrabold text-gray-900") {
+        div("py-8 px-4") {
+            h1("text-left text-gray-800 font-light text-2xl") {
                 +"Frequently asked questions"
             }
-            dl("mt-6 space-y-6 divide-y divide-gray-200") {
+            dl("mt-6 space-y-6") {
                 faqs.withIndex().forEach { (index, faq) ->
                     val (question, answer) = faq
-                    disclosure("pt-6", id = "disclosure-$index") {
-                        dt("text-lg") {
+                    disclosure("", id = "disclosure-$index") {
+                        dt("text-base") {
                             /* <!-- Expand/collapse question button --> */
                             disclosureButton(
-                                """text-left w-full flex justify-between items-start 
-                                    | text-gray-400""".trimMargin()
+                                """relative flex justify-between items-start w-full my-2 p-4 
+                                | bg-primary-800 rounded-lg hover:bg-primary-900 
+                                | text-left text-white 
+                                | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
                             ) {
-                                span("font-medium text-gray-900") { +question }
+                                span("font-medium") { +question }
                                 span("ml-6 h-7 flex items-center") {
-                                    opened.render(into = this) {
-                                        svg("h-6 w-6 transform") {
-                                            if (it) content(HeroIcons.chevron_up)
-                                            else content(HeroIcons.chevron_down)
-                                        }
+                                    opened.render(into = this) { isOpen ->
+                                        icon(
+                                            "w-5 h-5 ml-2 -mr-1",
+                                            content = if (isOpen) HeroIcons.chevron_up else HeroIcons.chevron_down
+                                        )
                                     }
                                 }
                             }
                         }
-                        disclosurePanel("mt-2 pr-12", tag = RenderContext::dd) {
-                            p("text-base text-gray-700") { +answer }
+                        disclosurePanel(
+                            "-mt-6 pt-7 pb-4 pl-4 pr-12 bg-primary-100 rounded-lg",
+                            tag = RenderContext::dd
+                        ) {
+                            div("text-base text-gray-700") { answer(this) }
                         }
                     }
                 }

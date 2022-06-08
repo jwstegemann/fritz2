@@ -21,11 +21,13 @@ module.exports = {
           DEFAULT: colors.gray["900"],
           highlight: colors.gray["800"],
           focus: colors.gray["400"],
+          end:'#87AEBA', // primary[500]
+          start:'#50738B', // primary[700]
         },
         fg: {
-          DEFAULT: colors.cyan["700"],
-          highlight: colors.teal["200"],
-          focus: colors.cyan["400"],
+          DEFAULT: '#50738B', // primary[700]
+          highlight: '#D5E7E6', // primary[200]
+          focus: '#BBD6D8', // primary[300],
         },
         relaxed: {
           DEFAULT: colors.gray["400"],

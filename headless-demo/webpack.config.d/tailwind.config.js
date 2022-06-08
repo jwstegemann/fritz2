@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 // must be in the jsMain/resource folder
 const mainCssFile = 'styles.css';
 
@@ -8,46 +10,27 @@ const tailwind = {
     ],
     variants: {},
     theme: {
+        fontFamily: {
+            sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+        },
         extend: {
+            backgroundImage: {
+                'radial-at-b':
+                    'radial-gradient(ellipse at bottom, var(--tw-gradient-stops))',
+            },
             colors: {
                 'primary': {
-                    DEFAULT: '#002EA7',
-                    '50': '#D2DFFF',
-                    '100': '#B1C7FF',
-                    '200': '#6F97FF',
-                    '300': '#2D67FF',
-                    '400': '#0040E9',
-                    '500': '#002EA7',
-                    '600': '#00237E',
-                    '700': '#001855',
-                    '800': '#000C2D',
-                    '900': '#000104'
-                },
-                'secondary': {
-                    DEFAULT: '#DA291C',
-                    '50': '#FBE2E0',
-                    '100': '#F8CDCA',
-                    '200': '#F2A29D',
-                    '300': '#ED786F',
-                    '400': '#E74D42',
-                    '500': '#DA291C',
-                    '600': '#AD2116',
-                    '700': '#801810',
-                    '800': '#520F0B',
-                    '900': '#250705'
-                },
-                'tertiary': {
-                    DEFAULT: '#A7C452',
-                    '50': '#FEFEFD',
-                    '100': '#F4F8EA',
-                    '200': '#E1EBC4',
-                    '300': '#CEDE9E',
-                    '400': '#BAD178',
-                    '500': '#A7C452',
-                    '600': '#8DA93A',
-                    '700': '#6D832D',
-                    '800': '#4E5D20',
-                    '900': '#2E3713'
+                    DEFAULT: '#6D97AB',
+                    '50': '#FBFDFD',
+                    '100': '#EEF6F5',
+                    '200': '#D5E7E6',
+                    '300': '#BBD6D8',
+                    '400': '#A1C3C9',
+                    '500': '#87AEBA',
+                    '600': '#6D97AB',
+                    '700': '#50738B',
+                    '800': '#3A4F64',
+                    '900': '#232E3D'
                 },
                 'success': {
                     DEFAULT: '#58C322',
@@ -91,10 +74,17 @@ const tailwind = {
             }
         },
     },
-    content: [
-        '*.{js,html,css}',
-        './kotlin/**/*.{js,html,css}'
-    ]
+    content: {
+        files: [
+            '*.{js,html,css}',
+            './kotlin/**/*.{js,html,css}'
+        ],
+        transform: {
+            js: (content) => {
+                return content.replaceAll(/(\\r)|(\\n)|(\\r\\n)/g,' ')
+            }
+        }
+    },
 };
 
 
