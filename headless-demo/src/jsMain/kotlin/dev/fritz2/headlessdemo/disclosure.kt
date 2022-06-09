@@ -2,7 +2,7 @@ package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.href
-disclosuimport dev.fritz2.core.transition
+import dev.fritz2.core.transition
 import dev.fritz2.headless.components.disclosure
 
 fun RenderContext.disclosureDemo() {
