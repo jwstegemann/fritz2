@@ -15,8 +15,9 @@ import org.w3c.dom.HTMLTableRowElement
 
 fun Tag<HTMLTableRowElement>.column(title: String, button: Tag<HTMLDivElement>.() -> Unit) {
     th(
-        """drop-shadow-sm pl-4 py-3 z-10 text-left text-xs font-medium text-gray-500 uppercase  
-        | tracking-wider sticky top-0 bg-gray-50""".trimMargin()
+        """sticky top-0 pl-3 py-2.5 z-10
+            | bg-white tracking-wider
+            | text-left text-sm font-medium text-primary-700""".trimMargin()
     ) {
         div("w-full flex flex-row items-center") {
             p("flex-auto") {
@@ -32,7 +33,7 @@ fun Tag<HTMLTableRowElement>.column(title: String, button: Tag<HTMLDivElement>.(
 val sortIcons: DataCollection<Person, HTMLDivElement>.DataCollectionSortButton<HTMLButtonElement>.() -> Unit = {
     direction.render {
         icon(
-            "text-gray-500 h-3 w-3 mt-1 mr-2", content =
+            "text-primary-800 h-4 w-4 mt-1 mr-2", content =
             when (it) {
                 SortDirection.NONE -> HeroIcons.selector
                 SortDirection.ASC -> HeroIcons.sort_ascending
@@ -51,7 +52,7 @@ fun RenderContext.collectionDemo() {
     )
 
     tabGroup("w-full", id = "tabGroup") {
-        tabList("max-w-sm flex p-1 space-x-1 bg-primary-900/20 rounded-md") {
+        tabList("max-w-sm flex p-1 space-x-1 bg-primary-900 rounded-md") {
             examples.forEach { (category, _, _) ->
                 tab(
                     """w-full py-2.5 leading-5
@@ -80,15 +81,15 @@ fun RenderContext.collectionDemo() {
 fun RenderContext.dataTableDemo(amount: Int) {
     val persons = FakePersons(amount)
     val storedPersons = storeOf(persons)
-    val selectionStore = storeOf(persons.take(2))
+    val selectionStore = storeOf(listOf(persons[3], persons[6]))
     val storedFilteredSize = storeOf(0)
 
     val filterStore = storeOf("")
-    inputField("my-2", id = "dataTable-filter") {
+    inputField("my-3", id = "dataTable-filter") {
         value(filterStore)
         inputTextfield(
             """w-full max-w-sm py-2.5 px-2.5
-                | bg-white rounded border border-primary-600 hover:border-primary-800
+                | bg-white rounded-sm border border-primary-600 hover:border-primary-800
                 | font-sans text-sm text-primary-800 placeholder:text-slate-400
                 | disabled:opacity-50
                 | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
@@ -98,8 +99,8 @@ fun RenderContext.dataTableDemo(amount: Int) {
     }
 
     dataCollection<Person>(
-        """shadow h-96 border border-gray-200 sm:rounded-lg overflow-y-auto  
-        | overflow-x-auto relative""".trimMargin(),
+        """relative h-96 
+            | sm:rounded overflow-auto""".trimMargin(),
         id = "dataTable"
     ) {
         data(storedPersons.data, Person::id)
@@ -109,15 +110,16 @@ fun RenderContext.dataTableDemo(amount: Int) {
 
         filterStore.data handledBy filterByText()
 
-        table("min-w-full divide-y divide-gray-200 bg-white") {
+        table("min-w-full") {
             thead {
-                tr("divide-x divide-gray-100") {
+                tr("divide-x divide-primary-600") {
                     column("Name") {
                         dataCollectionSortButton(
                             compareBy(Person::fullName),
                             compareByDescending(Person::fullName),
                             initialize = sortIcons,
-                            id = "datatTable-sort-name"
+                            classes = "focus:outline-none",
+                            id = "datatable-sort-name"
                         )
                     }
                     column("eMail") {
@@ -126,21 +128,21 @@ fun RenderContext.dataTableDemo(amount: Int) {
                 }
             }
 
-            val padding = "px-4 py-2 whitespace-nowrap"
+            val padding = "px-3 py-2.5 whitespace-nowrap"
 
             dataCollectionItems(
-                "text-sm font-medium text-gray-500 hover:bg-indigo-400",
+                "text-sm font-base divide-y-2 divide-primary-50 focus:outline-none",
                 tag = RenderContext::tbody
             ) {
                 scrollIntoView(vertical = ScrollPosition.center)
                 items.map { it.count() } handledBy storedFilteredSize.update
                 items.renderEach(Person::id, into = this, batch = true) { item ->
-                    dataCollectionItem(item, id = item.fullName, tag = RenderContext::tr) {
+                    dataCollectionItem(item, id = item.fullName, classes = "divide-x divide-primary-600", tag = RenderContext::tr) {
                         className(selected.combine(active) { sel, act ->
                             if (sel) {
-                                if (act) "bg-indigo-200" else "bg-indigo-100"
+                                if (act) "bg-primary-800 text-primary-100" else "bg-primary-700 text-primary-100"
                             } else {
-                                if (act) "bg-indigo-50" else "odd:bg-white even:bg-gray-50"
+                                if (act) "bg-primary-300 text-primary-900" else "bg-primary-200 text-primary-900"
                             }
                         })
                         td(padding) { +item.fullName }
@@ -154,16 +156,18 @@ fun RenderContext.dataTableDemo(amount: Int) {
                 }
             }
         }
-
     }
 
-    div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
-        em {
+    div("""mt-4 p-2.5
+            | bg-primary-100 rounded shadow-sm
+            | ring-2 ring-primary-500""".trimMargin(),
+        id = "result") {
+        p("font-medium text-sm") {
             selectionStore.data.map { it.count() }
                 .combine(storedFilteredSize.data) { sel, count -> "Selected ($sel/$count):" }
                 .renderText(into = this)
         }
-        ul("") {
+        ul("text-sm") {
             selectionStore.data.map { it.map { it.fullName } }.renderEach {
                 li { +it }
             }
