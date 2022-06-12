@@ -202,7 +202,7 @@ fun RenderContext.gridListDemo(amount: Int) {
 //        selection.single(selectionStore)
         selection.multi(selectionStore)
 
-        div("flex items-center justify-end h-10 max-w-sm mt-2") {
+        div("flex items-center justify-end h-10 max-w-sm mt-4") {
             filterInput(filterStore)
 
             dataCollectionSortButton(
