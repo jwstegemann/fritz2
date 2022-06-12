@@ -230,7 +230,7 @@ fun RenderContext.gridListDemo(amount: Int) {
 
         div("h-96 pt-4 overflow-x-auto relative") {
             dataCollectionItems(
-                "grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 overflow-y-auto p-2 focus:outline-none",
+                "grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 overflow-y-auto p-2 focus:outline-none",
                 tag = RenderContext::ul
             ) {
                 scrollIntoView()
