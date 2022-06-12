@@ -13,6 +13,24 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLTableRowElement
 
+fun RenderContext.filterInput(filterStore: RootStore<String>) {
+    inputField("relative my-4    grow") {
+        value(filterStore)
+        div("absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none") {
+            icon("w-5 h-5 text-primary-600", content = HeroIcons.search)
+        }
+        inputTextfield(
+            """w-full max-w-sm py-2.5 pl-10 pr-2.5
+                    | bg-white rounded-sm border border-primary-600 hover:border-primary-800
+                    | font-sans text-sm text-primary-800 placeholder:text-slate-400
+                    | disabled:opacity-50
+                    | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
+        ) {
+            placeholder("Filter...")
+        }
+    }
+}
+
 fun Tag<HTMLTableRowElement>.column(title: String, button: Tag<HTMLDivElement>.() -> Unit) {
     th(
         """sticky top-0 pl-3 py-2.5 z-10
@@ -85,18 +103,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
     val storedFilteredSize = storeOf(0)
 
     val filterStore = storeOf("")
-    inputField("my-3", id = "dataTable-filter") {
-        value(filterStore)
-        inputTextfield(
-            """w-full max-w-sm py-2.5 px-2.5
-                | bg-white rounded-sm border border-primary-600 hover:border-primary-800
-                | font-sans text-sm text-primary-800 placeholder:text-slate-400
-                | disabled:opacity-50
-                | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
-        ) {
-            placeholder("Filter...")
-        }
-    }
+    filterInput(filterStore)
 
     dataCollection<Person>(
         """relative h-96 border border-primary-400
@@ -195,30 +202,20 @@ fun RenderContext.gridListDemo(amount: Int) {
 //        selection.single(selectionStore)
         selection.multi(selectionStore)
 
-        div("flex items-center h-10 max-w-sm") {
-            inputField("my-2 grow") {
-                value(filterStore)
-                inputTextfield("""w-full max-w-sm py-2.5 px-2.5
-                    | bg-white rounded-sm border border-primary-600 hover:border-primary-800
-                    | font-sans text-sm text-primary-800 placeholder:text-slate-400
-                    | disabled:opacity-50
-                    | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
-                ) {
-                    placeholder("Filter...")
-                }
-            }
+        div("flex items-center justify-end h-10 max-w-sm mt-2") {
+            filterInput(filterStore)
 
             dataCollectionSortButton(
                 compareBy(Person::fullName),
                 compareByDescending(Person::fullName),
-                """ml-4 w-8 flex justify-center my-2 rounded
+                """ml-3 flex justify-center items-center rounded border border-primary-700
                     | cursor-default sm:text-sm
                     | focus:outline-none focus:ring-2 focus:ring-primary-600 """.trimMargin(),
                 id = "gridList-sort-name"
             ) {
                 direction.render(into = this) {
                     icon(
-                        "text-gray-500 h-6 w-6 m-2", content =
+                        "text-primary-700 h-5 w-5 m-2", content =
                         when (it) {
                             SortDirection.NONE -> HeroIcons.selector
                             SortDirection.ASC -> HeroIcons.sort_ascending
