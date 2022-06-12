@@ -69,7 +69,7 @@ fun RenderContext.collectionDemo() {
         }
         tabPanels("mt-2") {
             examples.forEach { (_, example, amount) ->
-                panel {
+                panel("focus:outline-none"){
                     example(this, amount)
                 }
             }
@@ -99,8 +99,8 @@ fun RenderContext.dataTableDemo(amount: Int) {
     }
 
     dataCollection<Person>(
-        """relative h-96 
-            | sm:rounded overflow-auto""".trimMargin(),
+        """relative h-96 border border-primary-400
+            | sm:rounded overflow-auto focus:outline-none""".trimMargin(),
         id = "dataTable"
     ) {
         data(storedPersons.data, Person::id)
@@ -112,7 +112,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
 
         table("min-w-full") {
             thead {
-                tr("divide-x divide-primary-600") {
+                tr("divide-x divide-primary-400") {
                     column("Name") {
                         dataCollectionSortButton(
                             compareBy(Person::fullName),
@@ -131,13 +131,18 @@ fun RenderContext.dataTableDemo(amount: Int) {
             val padding = "px-3 py-2.5 whitespace-nowrap"
 
             dataCollectionItems(
-                "text-sm font-base divide-y-2 divide-primary-50 focus:outline-none",
+                "text-sm font-base divide-y-2 divide-primary-100 focus:outline-none",
                 tag = RenderContext::tbody
             ) {
                 scrollIntoView(vertical = ScrollPosition.center)
                 items.map { it.count() } handledBy storedFilteredSize.update
                 items.renderEach(Person::id, into = this, batch = true) { item ->
-                    dataCollectionItem(item, id = item.fullName, classes = "divide-x divide-primary-600", tag = RenderContext::tr) {
+                    dataCollectionItem(
+                        item,
+                        id = item.fullName,
+                        classes = "divide-x divide-primary-400",
+                        tag = RenderContext::tr
+                    ) {
                         className(selected.combine(active) { sel, act ->
                             if (sel) {
                                 if (act) "bg-primary-800 text-primary-100" else "bg-primary-700 text-primary-100"
@@ -158,10 +163,12 @@ fun RenderContext.dataTableDemo(amount: Int) {
         }
     }
 
-    div("""mt-4 p-2.5
+    div(
+        """mt-4 p-2.5
             | bg-primary-100 rounded shadow-sm
             | ring-2 ring-primary-500""".trimMargin(),
-        id = "result") {
+        id = "result"
+    ) {
         p("font-medium text-sm") {
             selectionStore.data.map { it.count() }
                 .combine(storedFilteredSize.data) { sel, count -> "Selected ($sel/$count):" }
@@ -189,18 +196,29 @@ fun RenderContext.gridListDemo(amount: Int) {
         selection.multi(selectionStore)
 
         div("flex items-center h-10 max-w-sm") {
+            inputField("my-2 grow") {
+                value(filterStore)
+                inputTextfield("""w-full max-w-sm py-2.5 px-2.5
+                    | bg-white rounded-sm border border-primary-600 hover:border-primary-800
+                    | font-sans text-sm text-primary-800 placeholder:text-slate-400
+                    | disabled:opacity-50
+                    | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
+                ) {
+                    placeholder("Filter...")
+                }
+            }
+
             dataCollectionSortButton(
                 compareBy(Person::fullName),
                 compareByDescending(Person::fullName),
-                """w-8 flex justify-center my-2 bg-white rounded-lg 
-                | shadow-md cursor-default focus:outline-none focus:ring-2 focus:ring-opacity-75 
-                | focus:ring-white focus:ring-offset-orange-300 focus:ring-offset-2 
-                | focus:border-indigo-500 sm:text-sm""".trimMargin(),
+                """ml-4 w-8 flex justify-center my-2 rounded
+                    | cursor-default sm:text-sm
+                    | focus:outline-none focus:ring-2 focus:ring-primary-600 """.trimMargin(),
                 id = "gridList-sort-name"
             ) {
                 direction.render(into = this) {
                     icon(
-                        "text-gray-500 m-2", content =
+                        "text-gray-500 h-6 w-6 m-2", content =
                         when (it) {
                             SortDirection.NONE -> HeroIcons.selector
                             SortDirection.ASC -> HeroIcons.sort_ascending
@@ -209,25 +227,13 @@ fun RenderContext.gridListDemo(amount: Int) {
                     )
                 }
             }
-
-            inputField("ml-4 my-2 grow") {
-                value(filterStore)
-                inputTextfield("""w-full py-2.5 px-2.5
-                                | bg-white rounded border border-primary-600 hover:border-primary-800
-                                | font-sans text-sm text-primary-800 placeholder:text-slate-400
-                                | disabled:opacity-50
-                                | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
-                ) {
-                    placeholder("Filter...")
-                }
-            }
         }
 
         filterStore.data handledBy filterByText { "${it.fullName}|${it.email}" }
 
         div("h-96 pt-4 overflow-x-auto relative") {
             dataCollectionItems(
-                "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto p-2",
+                "grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 overflow-y-auto p-2 focus:outline-none",
                 tag = RenderContext::ul
             ) {
                 scrollIntoView()
@@ -236,54 +242,51 @@ fun RenderContext.gridListDemo(amount: Int) {
                 items.renderEach(Person::id) { item ->
                     dataCollectionItem(
                         item,
-                        "col-span-1 rounded-lg shadow divide-y divide-gray-300",
+                        "col-span-1 rounded-lg border border-primary-400 divide-y divide-primary-400",
                         id = item.fullName,
                         tag = RenderContext::li
                     ) {
                         className(selected.combine(active) { sel, act ->
                             classes(
-                                if (act) "ring-2 ring-offset-2 ring-indigo-600" else "",
-                                if (sel) "bg-indigo-100" else "bg-white"
+                                if (act) "ring-4 ring-primary-600" else "",
+                                if (sel) "bg-primary-700 text-primary-100" else "bg-primary-200 text-primary-900"
                             )
                         })
-                        div("w-full flex items-center justify-between p-6 space-x-6") {
+                        div("w-full flex items-center justify-between p-4 space-x-6") {
                             div("flex-1 truncate") {
                                 div("flex items-center space-x-3") {
-                                    h3("text-gray-900 text-sm font-medium truncate") { +item.fullName }
-                                    span(
-                                        """flex-shrink-0 inline-block px-2 py-0.5 text-green-800 text-xs 
-                                        | font-medium bg-green-100 rounded-full""".trimMargin()
-                                    ) { +item.birthday }
+                                    h3("text-sm font-medium truncate") { +item.fullName }
                                 }
-                                p("mt-1 text-gray-500 text-sm truncate") {
-                                    +"${item.address.postalCode} ${item.address.city}, ${item.address.street} ${item.address.houseNumber}"
+                                p("mt-2 text-xs truncate opacity-80") {
+                                    +"${item.address.street} ${item.address.houseNumber} - ${item.address.postalCode} ${item.address.city}"
                                 }
+                                p("mt-1 text-xs truncate opacity-80") { +item.birthday }
                             }
-                            img("w-10 h-10 bg-gray-300 rounded-full flex-shrink-0") {
+                            img("w-16 h-16 bg-gray-300 rounded-md flex-shrink-0") {
                                 src(item.portraitUrl)
                                 alt("")
                             }
                         }
                         div {
-                            div("-mt-px flex divide-x divide-gray-300") {
+                            div("-mt-px flex divide-x divide-primary-400") {
                                 div("w-0 flex-1 flex") {
                                     a(
-                                        """relative -mr-px w-0 flex-1 inline-flex items-center justify-center  
-                                        | py-4 text-sm text-gray-700 font-medium border border-transparent  
-                                        | rounded-bl-lg hover:text-gray-500""".trimMargin()
+                                        """relative -mr-px w-0 flex-1 inline-flex items-center justify-center px-4 py-4
+                                            | border border-transparent rounded-bl-lg
+                                            | text-xs font-medium opacity-85""".trimMargin()
                                     ) {
-                                        icon("w-5 h-5 text-gray-400", content = HeroIcons.mail)
-                                        span("ml-3 truncate") { +item.email }
+                                        icon("w-5 h-5", content = HeroIcons.mail)
+                                        span("ml-3 truncate flex-1") { +item.email }
                                     }
                                 }
                                 div("-ml-px w-0 flex-1 flex") {
                                     a(
-                                        """relative w-0 flex-1 inline-flex items-center justify-center py-4 
-                                        | text-sm text-gray-700 font-medium border border-transparent rounded-br-lg 
-                                        | hover:text-gray-500""".trimMargin()
+                                        """relative w-0 flex-1 inline-flex items-center justify-center px-4 py-4
+                                            | border border-transparent rounded-br-lg
+                                            | text-xs font-medium opacity-85""".trimMargin()
                                     ) {
-                                        icon("w-5 h-5 text-gray-400", content = HeroIcons.phone)
-                                        span("ml-3") { +item.phone }
+                                        icon("w-5 h-5", content = HeroIcons.phone)
+                                        span("ml-3 truncate") { +item.phone }
                                     }
                                 }
                             }
@@ -297,13 +300,18 @@ fun RenderContext.gridListDemo(amount: Int) {
         }
     }
 
-    div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
-        em {
+    div(
+        """mt-4 p-2.5
+            | bg-primary-100 rounded shadow-sm
+            | ring-2 ring-primary-500""".trimMargin(),
+        id = "result"
+    ) {
+        p("font-medium text-sm") {
             selectionStore.data.map { it.count() }
                 .combine(storedFilteredSize.data) { sel, count -> "Selected ($sel/$count):" }
                 .renderText(into = this)
         }
-        ul("") {
+        ul("text-sm") {
             selectionStore.data.map { it.map { it.fullName } }.renderEach {
                 li { +it }
             }
