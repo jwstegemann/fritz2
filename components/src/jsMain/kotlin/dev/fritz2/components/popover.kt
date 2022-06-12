@@ -218,7 +218,22 @@ open class PopoverComponent : Component<Unit>,
             this@PopoverComponent.footer?.invoke(this)
 
             if (this@PopoverComponent.closeOnBlur.value) {
-                blurs.map {}.debounce(100) handledBy this@PopoverComponent.visible.toggle
+                blurs.events
+                    .debounce(100)
+                    .filter { focusEvent ->
+                        // Don't react to blur-events caused by child elements of the popover being focussed.
+                        // This is necessary in order for button clicks and similar actions to work reliably inside the
+                        // popover. Otherwise, clicks might be ignored due to the popover closing as a result of a
+                        // blur-event before the respective click-event could be handled.
+
+                        val currentTargetElement = focusEvent.currentTarget.asDynamic().unsafeCast<HTMLElement>()
+                        val relatedTargetElement = focusEvent.relatedTarget?.let {
+                            it.asDynamic().unsafeCast<HTMLElement>()
+                        }?: return@filter true
+
+                        !currentTargetElement.contains(relatedTargetElement)
+                    }
+                    .map { } handledBy this@PopoverComponent.visible.toggle
             }
         }.domNode
     }
