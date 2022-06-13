@@ -33,4 +33,4 @@ jobs:
           keep_history: false
           build_dir: api
         env:
-          GITHUB_PAT: ${{ secrets.FRITZ2_DOKKA_TOKEN }}
+          GITHUB_PAT: ${{ secrets.FRITZ2_WEB_TOKEN }}
