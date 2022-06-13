@@ -19,6 +19,7 @@ import dev.fritz2.styling.theme.PopoverSizes
 import dev.fritz2.styling.theme.Theme
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.events.EventTarget
 
 /**
  * This class combines the _configuration_ and rendering a popover that floats around a toggle element.
@@ -226,9 +227,11 @@ open class PopoverComponent : Component<Unit>,
                         // popover. Otherwise, clicks might be ignored due to the popover closing as a result of a
                         // blur-event before the respective click-event could be handled.
 
-                        val currentTargetElement = focusEvent.currentTarget.asDynamic().unsafeCast<HTMLElement>()
+                        val currentTargetElement = focusEvent.currentTarget?.let {
+                            it.asDynamic() as? HTMLElement
+                        }?: return@filter true
                         val relatedTargetElement = focusEvent.relatedTarget?.let {
-                            it.asDynamic().unsafeCast<HTMLElement>()
+                            it.asDynamic() as? HTMLElement
                         }?: return@filter true
 
                         !currentTargetElement.contains(relatedTargetElement)
