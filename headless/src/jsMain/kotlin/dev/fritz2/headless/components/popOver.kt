@@ -36,12 +36,15 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CB>>,
         content: Tag<CB>.() -> Unit
-    ) = tag(this, classes, "$componentId-button", scope) {
-        if (!openState.isSet) openState(storeOf(false))
-        content()
-        attr(Aria.expanded, opened.asString())
-        toggleOnClicksEnterAndSpace()
-    }.also { button = it }
+    ) : Tag<CB> {
+        addComponentStructureInfo("popOverButton", this@popOverButton.scope, this)
+        return tag(this, classes, "$componentId-button", scope) {
+            if (!openState.isSet) openState(storeOf(false))
+            content()
+            attr(Aria.expanded, opened.asString())
+            toggleOnClicksEnterAndSpace()
+        }.also { button = it }
+    }
 
     /**
      * Factory function to create a [popOverButton] with a [HTMLButtonElement] as default [Tag].
@@ -76,6 +79,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         tag: TagFactory<Tag<CP>>,
         initialize: PopOverPanel<CP>.() -> Unit
     ) {
+        addComponentStructureInfo("popOverPanel", this@popOverPanel.scope, this)
         PopOverPanel(this, tag, classes, scope).run {
             initialize()
             render()
@@ -130,12 +134,15 @@ fun <C : HTMLElement> RenderContext.popOver(
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
     initialize: PopOver<C>.() -> Unit
-): Tag<C> = tag(this, classes(classes, "relative"), id, scope) {
-    PopOver(this, id).run {
-        initialize(this)
-        render()
+): Tag<C> {
+    addComponentStructureInfo("popOver", this@popOver.scope, this)
+    return tag(this, classes(classes, "relative"), id, scope) {
+        PopOver(this, id).run {
+            initialize(this)
+            render()
+        }
+        trapFocus()
     }
-    trapFocus()
 }
 
 /**

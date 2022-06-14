@@ -44,7 +44,10 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
-    ) = tag(this, classes, "$componentId-label", scope, content).also { label = it }
+    ): Tag<CL> {
+        addComponentStructureInfo("checkboxGroupLabel", this@checkboxGroupLabel.scope, this)
+        return tag(this, classes, "$componentId-label", scope, content).also { label = it }
+    }
 
     /**
      * Factory function to create a [checkboxGroupLabel] with a [HTMLLabelElement] as default [Tag].
@@ -72,6 +75,11 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
             if (isNotEmpty) {
+                addComponentStructureInfo(
+                    "checkboxGroupValidationMessages",
+                    this@checkboxGroupValidationMessages.scope,
+                    this
+                )
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))
@@ -128,34 +136,37 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
             content: Tag<CT>.() -> Unit
-        ) = tag(this, classes, "${optionId}-toggle", scope) {
-            content()
-            attr("role", Aria.Role.checkbox)
-            attr(Aria.checked, selected.asString())
-            attr("tabindex", "0")
-            var withKeyboardNavigation = true
-            var toggleEvent: Listener<*, *> = clicks
-            if (domNode is HTMLInputElement) {
-                if (domNode.getAttribute("name") == null) {
-                    attr("name", componentId)
+        ): Tag<CT> {
+            addComponentStructureInfo("checkboxGroupOptionToggle", this@checkboxGroupOptionToggle.scope, this)
+            return tag(this, classes, "${optionId}-toggle", scope) {
+                content()
+                attr("role", Aria.Role.checkbox)
+                attr(Aria.checked, selected.asString())
+                attr("tabindex", "0")
+                var withKeyboardNavigation = true
+                var toggleEvent: Listener<*, *> = clicks
+                if (domNode is HTMLInputElement) {
+                    if (domNode.getAttribute("name") == null) {
+                        attr("name", componentId)
+                    }
+                    withKeyboardNavigation = false
+                    toggleEvent = changes
                 }
-                withKeyboardNavigation = false
-                toggleEvent = changes
-            }
-            value.handler?.invoke(value.data.flatMapLatest { value ->
-                toggleEvent.map { if (value.contains(option)) value - option else value + option }
-            })
-            if (withKeyboardNavigation) {
-                value.handler?.invoke(
-                    value.data.flatMapLatest { value ->
-                        keydowns.filter { shortcutOf(it) == Keys.Space }.map {
-                            it.stopImmediatePropagation()
-                            it.preventDefault()
-                            if (value.contains(option)) value - option else value + option
-                        }
-                    })
-            }
-        }.also { toggle = it }
+                value.handler?.invoke(value.data.flatMapLatest { value ->
+                    toggleEvent.map { if (value.contains(option)) value - option else value + option }
+                })
+                if (withKeyboardNavigation) {
+                    value.handler?.invoke(
+                        value.data.flatMapLatest { value ->
+                            keydowns.filter { shortcutOf(it) == Keys.Space }.map {
+                                it.stopImmediatePropagation()
+                                it.preventDefault()
+                                if (value.contains(option)) value - option else value + option
+                            }
+                        })
+                }
+            }.also { toggle = it }
+        }
 
         /**
          * Factory function to create a [checkboxGroupOptionToggle] with a [HTMLDivElement] as default [Tag].
@@ -180,7 +191,10 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CL>>,
             content: Tag<CL>.() -> Unit
-        ) = tag(this, classes, "$optionId-label", scope, content).also { label = it }
+        ): Tag<CL> {
+            addComponentStructureInfo("checkboxGroupOptionLabel", this@checkboxGroupOptionLabel.scope, this)
+            return tag(this, classes, "$optionId-label", scope, content).also { label = it }
+        }
 
         /**
          * Factory function to create a [checkboxGroupOptionLabel] with a [HTMLLabelElement] as default [Tag].
@@ -208,13 +222,16 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CL>>,
             content: Tag<CL>.() -> Unit
-        ) = tag(
-            this,
-            classes,
-            "$optionId-description-${descriptions.size}",
-            scope,
-            content
-        ).also { descriptions.add(it) }
+        ): Tag<CL> {
+            addComponentStructureInfo("checkboxGroupOptionDescription", this@checkboxGroupOptionDescription.scope, this)
+            return tag(
+                this,
+                classes,
+                "$optionId-description-${descriptions.size}",
+                scope,
+                content
+            ).also { descriptions.add(it) }
+        }
 
         /**
          * Factory function to create a [checkboxGroupOptionDescription] with a [HTMLSpanElement] as default [Tag].
@@ -242,8 +259,10 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CO>>,
         initialize: CheckboxGroupOption<CO>.() -> Unit
-    ): Tag<CO> = "$componentId-${id ?: Id.next()}".let { optionId ->
-        tag(this, classes, optionId, scope) {
+    ): Tag<CO> {
+        addComponentStructureInfo("checkboxGroupOption", this@checkboxGroupOption.scope, this)
+        val optionId = "$componentId-${id ?: Id.next()}"
+        return tag(this, classes, optionId, scope) {
             CheckboxGroupOption(this, option, optionId).run {
                 initialize()
                 render()
@@ -298,10 +317,13 @@ fun <C : HTMLElement, T> RenderContext.checkboxGroup(
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
     initialize: CheckboxGroup<C, T>.() -> Unit
-): Tag<C> = tag(this, classes, id, scope) {
-    CheckboxGroup<C, T>(this, id).run {
-        initialize()
-        render()
+): Tag<C> {
+    addComponentStructureInfo("checkboxGroup", this@checkboxGroup.scope, this)
+    return tag(this, classes, id, scope) {
+        CheckboxGroup<C, T>(this, id).run {
+            initialize()
+            render()
+        }
     }
 }
 
