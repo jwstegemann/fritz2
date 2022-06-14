@@ -28,20 +28,20 @@ extra.apply {
     set("junitJupiterParamsVersion", "5.8.2")
     set("assertJVersion", "3.23.1")
     // npm
-    set("popperjs", "2.10.1")
-    set("scroll-into-view-if-needed", "2.2.28")
+    set("popperjs", "2.11.5")
+    set("scroll-into-view-if-needed", "2.2.29")
 
     // tailwind
-    set("tailwindcss", "3.0.19")
-    set("tailwindcss/forms", "0.4.0")
+    set("tailwindcss", "3.1.2")
+    set("tailwindcss/forms", "0.5.2")
 
     // webpack
-    set("postcss", "8.4.6")
-    set("postcss-loader", "6.2.1")
-    set("autoprefixer", "10.4.2")
-    set("css-loader", "6.6.0")
+    set("postcss", "8.4.14")
+    set("postcss-loader", "7.0.0")
+    set("autoprefixer", "10.4.7")
+    set("css-loader", "6.7.1")
     set("style-loader", "3.3.1")
-    set("cssnano", "5.0.17")
+    set("cssnano", "5.1.11")
 }
 
 allprojects {
