@@ -14,7 +14,7 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLTableRowElement
 
 fun RenderContext.filterInput(filterStore: RootStore<String>) {
-    inputField("relative my-4    grow") {
+    inputField("relative my-4 grow") {
         value(filterStore)
         div("absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none") {
             icon("w-5 h-5 text-primary-600", content = HeroIcons.search)
