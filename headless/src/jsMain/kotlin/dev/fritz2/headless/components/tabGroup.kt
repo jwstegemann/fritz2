@@ -176,11 +176,14 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
             initialize: Tab<CT>.() -> Unit
-        ) = tag(this, classes, tabId(nextIndex), scope) {
-            disabledTabs.addTab()
-            Tab(this, nextIndex++).run {
-                initialize()
-                render()
+        ): Tag<CT> {
+            addComponentStructureInfo("tab", this@tab.scope, this)
+            return tag(this, classes, tabId(nextIndex), scope) {
+                disabledTabs.addTab()
+                Tab(this, nextIndex++).run {
+                    initialize()
+                    render()
+                }
             }
         }
 
@@ -208,10 +211,13 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
         initialize: TabList<CL>.() -> Unit
-    ): Tag<CL> = tag(this, classes, "$componentId-tab-list", scope) {
-        TabList(this).run {
-            initialize()
-            render()
+    ): Tag<CL> {
+        addComponentStructureInfo("tabList", this@tabList.scope, this)
+        return tag(this, classes, "$componentId-tab-list", scope) {
+            TabList(this).run {
+                initialize()
+                render()
+            }
         }
     }
 
@@ -260,6 +266,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             val currentIndex = nextIndex
             panels.add {
                 tag(this, classes, panelId(currentIndex), scope) {
+                    addComponentStructureInfo("parent is panel", this@add.scope, this)
                     content()
                     attr("tabindex", "0")
                     attr("role", Aria.Role.tabpanel)
@@ -293,10 +300,13 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CP>>,
         initialize: TabPanels<CP>.() -> Unit
-    ): Tag<CP> = tag(this, classes, "$componentId-tab-panels", scope) {
-        TabPanels(this).run {
-            initialize()
-            render()
+    ): Tag<CP> {
+        addComponentStructureInfo("tabPanels", this@tabPanels.scope, this)
+        return tag(this, classes, "$componentId-tab-panels", scope) {
+            TabPanels(this).run {
+                initialize()
+                render()
+            }
         }
     }
 
@@ -349,10 +359,13 @@ fun <C : HTMLElement> RenderContext.tabGroup(
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
     initialize: TabGroup<C>.() -> Unit
-): Tag<C> = tag(this, classes, id, scope) {
-    TabGroup(this, id).run {
-        initialize()
-        render()
+): Tag<C> {
+    addComponentStructureInfo("tabGroup", this@tabGroup.scope, this)
+    return tag(this, classes, id, scope) {
+        TabGroup(this, id).run {
+            initialize()
+            render()
+        }
     }
 }
 

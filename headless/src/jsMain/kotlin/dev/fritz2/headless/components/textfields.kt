@@ -50,7 +50,10 @@ abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
-    ) = tag(this, classes, "$componentId-label", scope, content).also { label = it }
+    ): Tag<CL> {
+        addComponentStructureInfo("textfieldLabel", this@textfieldLabel.scope, this)
+        return tag(this, classes, "$componentId-label", scope, content).also { label = it }
+    }
 
     protected fun RenderContext.textfieldLabel(
         classes: String? = null,
@@ -65,13 +68,16 @@ abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CD>>,
         content: Tag<CD>.() -> Unit
-    ) = tag(
-        this,
-        classes,
-        "$componentId-description-${descriptions.size}",
-        scope,
-        content
-    ).also { descriptions.add(it) }
+    ): Tag<CD> {
+        addComponentStructureInfo("textfieldDescription", this@textfieldDescription.scope, this)
+        return tag(
+            this,
+            classes,
+            "$componentId-description-${descriptions.size}",
+            scope,
+            content
+        ).also { descriptions.add(it) }
+    }
 
     protected fun RenderContext.textfieldDescription(
         classes: String? = null,
@@ -86,7 +92,8 @@ abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id
         initialize: ValidationMessages<CV>.() -> Unit
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
-            if(isNotEmpty) {
+            if (isNotEmpty) {
+                addComponentStructureInfo("textfieldValidationMessages", this@textfieldValidationMessages.scope, this)
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))
@@ -125,12 +132,15 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         content: HtmlTag<HTMLInputElement>.() -> Unit
-    ) = input(classes, id = fieldId, scope = scope, content).apply {
-        attr(Aria.invalid, "true".whenever(value.hasError))
-        value.handler?.invoke(changes.values())
-        value(value.data)
-        hook(placeholder, type, disabled)
-    }.also { field = it }
+    ): Tag<HTMLInputElement> {
+        addComponentStructureInfo("inputTextfield", this@inputTextfield.scope, this)
+        return input(classes, id = fieldId, scope = scope, content).apply {
+            attr(Aria.invalid, "true".whenever(value.hasError))
+            value.handler?.invoke(changes.values())
+            value(value.data)
+            hook(placeholder, type, disabled)
+        }.also { field = it }
+    }
 
     /**
      * Factory function to create a [inputLabel].
@@ -235,10 +245,13 @@ fun <C : HTMLElement> RenderContext.inputField(
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
     initialize: InputField<C>.() -> Unit
-): Tag<C> = tag(this, classes, id, scope) {
-    InputField(this, id).run {
-        initialize()
-        render()
+): Tag<C> {
+    addComponentStructureInfo("inputField", this@inputField.scope, this)
+    return tag(this, classes, id, scope) {
+        InputField(this, id).run {
+            initialize()
+            render()
+        }
     }
 }
 
@@ -290,12 +303,15 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         content: HtmlTag<HTMLTextAreaElement>.() -> Unit
-    ) = textarea(classes, id = fieldId, scope = scope, content).apply {
-        attr(Aria.invalid, "true".whenever(value.hasError))
-        value.handler?.invoke(changes.values())
-        value(value.data)
-        hook(placeholder, disabled)
-    }.also { field = it }
+    ): Tag<HTMLTextAreaElement> {
+        addComponentStructureInfo("textareaTextfield", this@textareaTextfield.scope, this)
+        return textarea(classes, id = fieldId, scope = scope, content).apply {
+            attr(Aria.invalid, "true".whenever(value.hasError))
+            value.handler?.invoke(changes.values())
+            value(value.data)
+            hook(placeholder, disabled)
+        }.also { field = it }
+    }
 
     /**
      * Factory function to create a [textareaLabel].
@@ -400,10 +416,13 @@ fun <C : HTMLElement> RenderContext.textArea(
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
     initialize: TextArea<C>.() -> Unit
-): Tag<C> = tag(this, classes, id, scope) {
-    TextArea(this, id).run {
-        initialize()
-        render()
+): Tag<C> {
+    addComponentStructureInfo("textArea", this@textArea.scope, this)
+    return tag(this, classes, id, scope) {
+        TextArea(this, id).run {
+            initialize()
+            render()
+        }
     }
 }
 

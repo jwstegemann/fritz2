@@ -56,6 +56,7 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
             if(isNotEmpty) {
+                addComponentStructureInfo("switchValidationMessages", this@switchValidationMessages.scope, this)
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))
@@ -117,10 +118,13 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CT>>,
         content: Tag<CT>.() -> Unit
-    ) = tag(this, classes, "$componentId-toggle", scope) {
-        content()
-        renderSwitchCore(this)
-    }.also { toggle = it }
+    ) : Tag<CT> {
+        addComponentStructureInfo("switchToggle", this@switchToggle.scope, this)
+        return tag(this, classes, "$componentId-toggle", scope) {
+            content()
+            renderSwitchCore(this)
+        }.also { toggle = it }
+    }
 
     /**
      * Factory function to create a [switchToggle] with a [HTMLButtonElement] as default [Tag].
@@ -147,9 +151,12 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
-    ) = tag(this, classes, "$componentId-label", scope, content).apply {
-        value.handler?.invoke(value.data.flatMapLatest { state -> clicks.map { !state } })
-    }.also { label = it }
+    ) : Tag<CL> {
+        addComponentStructureInfo("switchLabel", this@switchLabel.scope, this)
+        return tag(this, classes, "$componentId-label", scope, content).apply {
+            value.handler?.invoke(value.data.flatMapLatest { state -> clicks.map { !state } })
+        }.also { label = it }
+    }
 
     /**
      * Factory function to create a [switchLabel] with a [HTMLLabelElement] as default [Tag].
@@ -177,13 +184,16 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
-    ) = tag(
-        this,
-        classes,
-        "$componentId-description-${descriptions.size}",
-        scope,
-        content
-    ).also { descriptions.add(it) }
+    ) : Tag<CL> {
+        addComponentStructureInfo("switchDescription", this@switchDescription.scope, this)
+        return tag(
+            this,
+            classes,
+            "$componentId-description-${descriptions.size}",
+            scope,
+            content
+        ).also { descriptions.add(it) }
+    }
 
     /**
      * Factory function to create a [switchDescription] with a [HTMLSpanElement] as default [Tag].
@@ -225,10 +235,13 @@ fun <C : HTMLElement> RenderContext.switchWithLabel(
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
     initialize: SwitchWithLabel<C>.() -> Unit
-): Tag<C> = tag(this, classes, id, scope) {
-    SwitchWithLabel(this, id).run {
-        initialize()
-        render()
+): Tag<C> {
+    addComponentStructureInfo("switchWithLabel", this@switchWithLabel.scope, this)
+    return tag(this, classes, id, scope) {
+        SwitchWithLabel(this, id).run {
+            initialize()
+            render()
+        }
     }
 }
 
@@ -305,10 +318,13 @@ fun <C : HTMLElement> RenderContext.switch(
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
     initialize: Switch<C>.() -> Unit
-): Tag<C> = tag(this, classes, id, scope) {
-    Switch(this, id).run {
-        initialize()
-        render()
+): Tag<C> {
+    addComponentStructureInfo("switch", this@switch.scope, this)
+    return tag(this, classes, id, scope) {
+        Switch(this, id).run {
+            initialize()
+            render()
+        }
     }
 }
 

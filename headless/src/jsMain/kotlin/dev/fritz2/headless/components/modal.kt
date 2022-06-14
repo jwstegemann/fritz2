@@ -60,9 +60,12 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CO>>,
             content: Tag<CO>.() -> Unit
-        ) = tag(this, classes, "$componentId-overlay", scope) {
-            attr(Aria.hidden, "true")
-            content()
+        ): Tag<CO> {
+            addComponentStructureInfo("modalOverlay", this@modalOverlay.scope, this)
+            return tag(this, classes, "$componentId-overlay", scope) {
+                attr(Aria.hidden, "true")
+                content()
+            }
         }
 
         /**
@@ -88,7 +91,10 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
             content: Tag<CT>.() -> Unit
-        ) = tag(this, classes, "$componentId-title", scope, content).also { title = it }
+        ): Tag<CT> {
+            addComponentStructureInfo("modalTitle", this@modalTitle.scope, this)
+            return tag(this, classes, "$componentId-title", scope, content).also { title = it }
+        }
 
         /**
          * Factory function to create a [modalTitle] with a [HTMLHeadingElement] as default [Tag].
@@ -113,13 +119,16 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CD>>,
             content: Tag<CD>.() -> Unit
-        ) = tag(
-            this,
-            classes,
-            "$componentId-description-${descriptions.size}",
-            scope,
-            content
-        ).also { descriptions.add(it) }
+        ): Tag<CD> {
+            addComponentStructureInfo("modalDescription", this@modalDescription.scope, this)
+            return tag(
+                this,
+                classes,
+                "$componentId-description-${descriptions.size}",
+                scope,
+                content
+            ).also { descriptions.add(it) }
+        }
 
         /**
          * Factory function to create a [modalDescription] with a [HTMLParagraphElement] as default [Tag].
@@ -149,6 +158,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
     ) {
         panel = {
             tag(this, classes, id, internalScope) {
+                addComponentStructureInfo("parent is modalPanel", this@modalPanel.scope, this)
                 ModalPanel(this).run {
                     initialize()
                     render()
