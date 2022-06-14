@@ -376,6 +376,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                 itemId,
                 scope
             ) {
+                addComponentStructureInfo("parent is dataCollectionItem", this@dataCollectionItem.scope, this)
                 DataCollectionItem(item, itemId, this).run {
                     initialize()
                     render()
@@ -412,6 +413,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         tag: TagFactory<Tag<CI>>,
         initialize: DataCollectionItems<CI>.() -> Unit
     ) {
+        addComponentStructureInfo("dataCollectionItems", this@dataCollectionItems.scope, this)
         val collectionId = id ?: data.value?.id
         tag(this, classes, collectionId, scope) {
             DataCollectionItems(this, collectionId).run {
@@ -478,9 +480,12 @@ fun <T, C : HTMLElement> RenderContext.dataCollection(
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
     initialize: DataCollection<T, C>.() -> Unit
-): Tag<C> = tag(this, classes, id, scope) {
-    DataCollection<T, C>(this).run {
-        initialize(this)
+): Tag<C> {
+    addComponentStructureInfo("dataCollection", this@dataCollection.scope, this)
+    return tag(this, classes, id, scope) {
+        DataCollection<T, C>(this).run {
+            initialize(this)
+        }
     }
 }
 

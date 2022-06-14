@@ -65,7 +65,10 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
-    ) = tag(this, classes, "$componentId-label", scope, content).also { label = it }
+    ): Tag<CL> {
+        addComponentStructureInfo("radioGroupLabel", this@radioGroupLabel.scope, this)
+        return tag(this, classes, "$componentId-label", scope, content).also { label = it }
+    }
 
     /**
      * Factory function to create a [radioGroupLabel] with a [HTMLLabelElement] as default [Tag].
@@ -93,6 +96,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
             if (isNotEmpty) {
+                addComponentStructureInfo("radioGroupValidationMessages", this@radioGroupValidationMessages.scope, this)
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))
@@ -150,28 +154,31 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
             content: Tag<CT>.() -> Unit
-        ) = tag(this, classes, "$optionId-toggle", scope) {
-            content()
-            attr("role", Aria.Role.radio)
-            attr(Aria.checked, selected.asString())
-            attr("tabindex", selected.map { if (it) "0" else "-1" })
-            var toggleEvent: Listener<*, *> = clicks
-            if (domNode is HTMLInputElement) {
-                if (domNode.getAttribute("name") == null) {
-                    attr("name", componentId)
+        ): Tag<CT> {
+            addComponentStructureInfo("radioGroupOptionToggle", this@radioGroupOptionToggle.scope, this)
+            return tag(this, classes, "$optionId-toggle", scope) {
+                content()
+                attr("role", Aria.Role.radio)
+                attr(Aria.checked, selected.asString())
+                attr("tabindex", selected.map { if (it) "0" else "-1" })
+                var toggleEvent: Listener<*, *> = clicks
+                if (domNode is HTMLInputElement) {
+                    if (domNode.getAttribute("name") == null) {
+                        attr("name", componentId)
+                    }
+                    withKeyboardNavigation = false
+                    toggleEvent = changes
                 }
-                withKeyboardNavigation = false
-                toggleEvent = changes
-            }
-            value.handler?.invoke(toggleEvent.map { option })
-            active handledBy {
-                if (it && domNode != document.activeElement) {
-                    domNode.focus()
+                value.handler?.invoke(toggleEvent.map { option })
+                active handledBy {
+                    if (it && domNode != document.activeElement) {
+                        domNode.focus()
+                    }
                 }
-            }
-            focuss.map { option } handledBy isActive.update
-            blurs.map { null } handledBy isActive.update
-        }.also { toggle = it }
+                focuss.map { option } handledBy isActive.update
+                blurs.map { null } handledBy isActive.update
+            }.also { toggle = it }
+        }
 
         /**
          * Factory function to create a [radioGroupOptionToggle] with a [HTMLDivElement] as default [Tag].
@@ -196,7 +203,10 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CL>>,
             content: Tag<CL>.() -> Unit
-        ) = tag(this, classes, "$optionId-label", scope, content).also { label = it }
+        ): Tag<CL> {
+            addComponentStructureInfo("radioGroupOptionLabel", this@radioGroupOptionLabel.scope, this)
+            return tag(this, classes, "$optionId-label", scope, content).also { label = it }
+        }
 
         /**
          * Factory function to create a [radioGroupOptionLabel] with a [HTMLLabelElement] as default [Tag].
@@ -224,13 +234,16 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CL>>,
             content: Tag<CL>.() -> Unit
-        ) = tag(
-            this,
-            classes,
-            "$optionId-description-${descriptions.size}",
-            scope,
-            content
-        ).also { descriptions.add(it) }
+        ): Tag<CL> {
+            addComponentStructureInfo("radioGroupOptionDescription", this@radioGroupOptionDescription.scope, this)
+            return tag(
+                this,
+                classes,
+                "$optionId-description-${descriptions.size}",
+                scope,
+                content
+            ).also { descriptions.add(it) }
+        }
 
         /**
          * Factory function to create a [radioGroupOptionDescription] with a [HTMLSpanElement] as default [Tag].
@@ -262,8 +275,10 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CO>>,
         initialize: RadioGroupOption<CO>.() -> Unit
-    ): Tag<CO> = "$componentId-${id ?: Id.next()}".let { optionId ->
-        tag(this, classes, optionId, scope) {
+    ): Tag<CO> {
+        addComponentStructureInfo("radioGroupOption", this@radioGroupOption.scope, this)
+        val optionId = "$componentId-${id ?: Id.next()}"
+        return tag(this, classes, optionId, scope) {
             RadioGroupOption(this, option, optionId).run {
                 initialize()
                 render()
@@ -319,10 +334,13 @@ fun <C : HTMLElement, T> RenderContext.radioGroup(
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
     initialize: RadioGroup<C, T>.() -> Unit
-): Tag<C> = tag(this, classes, id, scope) {
-    RadioGroup<C, T>(this, id).run {
-        initialize()
-        render()
+): Tag<C> {
+    addComponentStructureInfo("radioGroup", this@radioGroup.scope, this)
+    return tag(this, classes, id, scope) {
+        RadioGroup<C, T>(this, id).run {
+            initialize()
+            render()
+        }
     }
 }
 

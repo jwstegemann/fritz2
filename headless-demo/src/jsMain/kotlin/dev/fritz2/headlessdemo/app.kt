@@ -1,6 +1,7 @@
 package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.*
+import dev.fritz2.headless.foundation.SHOW_COMPONENT_STRUCTURE
 import dev.fritz2.routing.routerOf
 
 data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)
@@ -133,7 +134,7 @@ fun main() {
 
     render {
         router.data.render { route ->
-            div("p-4") {
+            div("p-4", scope = { set(SHOW_COMPONENT_STRUCTURE, true) }) {
                 (pages[route]?.content ?: RenderContext::overview)()
             }
         }
