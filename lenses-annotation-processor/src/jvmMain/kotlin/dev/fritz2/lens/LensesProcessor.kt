@@ -117,7 +117,6 @@ class LensesProcessor(
         } else true
     }
 
-    @OptIn(KotlinPoetKspPreview::class)
     private fun generateLensesCode(
         packageName: String,
         classDeclaration: KSClassDeclaration,

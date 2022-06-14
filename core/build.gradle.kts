@@ -1,3 +1,5 @@
+import kotlin.time.seconds
+
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
